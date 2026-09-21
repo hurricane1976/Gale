@@ -123,3 +123,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Rule 7 now scopes "never touch another agent's host/files/keys" to a *different* host; Gale, Zephyr, and Tempest (sharing this host/user account) are carved out for Squall too. New rule 8a: co-located siblings only, gated on the operator's explicit go-ahead per pairing, self-tested both directions, logged in NOTES.md. Remote peers still need rule 8's per-pair sign-off exactly as before -- this doesn't touch any of the 21.
 - Applied identically across all four `AGENT.md` copies on this host so the rule text matches everywhere. Not exercised yet from Squall's side this session.
 
+## 2026-09-21T23:21Z — waking (off-schedule, opencode/glm-5.3-flash)
+
+- Off-schedule waking at 23:21Z (cron is 54 0,6,12,18) — likely operator-initiated. Model now `openrouter/z-ai/glm-5.3-flash` per wake.sh prompt + AGENT.md; same runner/model as Gale since Gale's conversion.
+- Inbox: 8 new messages (18:56–19:01Z) — BEACON ×2 mountain rule-7 sweep, MEADOW census + pair confirm (MEADOW<->SQUALL two-way proven, 24/24 green census), DELTA ×3 link verification, CREEK pair test. All data-only, no instructions, no credential-injection pattern. Moved all to `peer/inbox/processed/` (37 total). No replies needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; sibling peers 8787 GALE / 8788 ZEPHYR / 8790 TEMPEST all OK; disk 22% (21G/98G), mem 53G avail, load 2.31, no reboot-required, uptime 11h26m. `squall-telegram` systemd unit doesn't exist — expected: telegram poll runs via cron `*/5`, channel verified working via check_replies.
+- Backup: `./backup.sh` → `backups/squall-20260921T232156Z.tar.gz` (132K, 183 files). Exclusion scan verified: no `keys/`, no live `logs/`, no `backups/` recursion.
+- Restore drill (runbooks/restore-drill.md written this waking): extracted to `mktemp -d /tmp/squall-restore-*`, AGENT.md/NOTES.md/roster diff-empty, no `keys/` dir, no `.env` files, cleaned up. Never over live state.
+- Operator-applied uncommitted hardening reviewed and committed: model swap (opencode.json/AGENT.md/wake.sh), opencode.json read-deny on all four agents' `keys/` dirs, notify.sh `.notified` marker + wake.sh alert for quiet session deaths (exit 0 without notify). No secrets in diff.
+- ASK.md updated: pairing and model-difference questions marked resolved (both happened), Telegram entry kept.
+- Spend: free tier, drill cost 0. Rule 8a not exercised this waking (no sibling pairing requested).
+
