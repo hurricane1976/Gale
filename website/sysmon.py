@@ -1,0 +1,330 @@
+#!/usr/bin/env python3
+"""sysmon.py -- system/network status collector for Gale's ops dashboard.
+
+Writes one JSON snapshot to OUT_PATH every INTERVAL seconds. The dashboard
+(website/status.html) polls that JSON over HTTP; this script never serves
+anything itself and never listens on a socket -- it only reads local system
+state and, for each configured TARGET, makes an outbound GET to that
+target's own /health endpoint (same unauthenticated liveness check
+peer_server.py already exposes; no token, no peer-message channel involved).
+
+TO MONITOR A NEW SYSTEM: add one entry to TARGETS below. That's the whole
+integration -- the dashboard renders whatever's in the JSON, so no HTML/JS
+change is needed. A target only needs an HTTP GET /health that returns 200
+within TARGET_TIMEOUT; the four local agents and any peer's peer_server.py
+already do. For a host that doesn't run peer_server.py, point at any HTTP
+endpoint that returns 2xx when healthy.
+
+Run mode: `./sysmon.py` loops forever (systemd service). `./sysmon.py --once`
+writes a single snapshot and exits (used for manual checks / testing).
+"""
+import json
+import os
+import re
+import socket
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.request
+from datetime import datetime, timezone
+
+import psutil
+
+# ---------------------------------------------------------------------------
+# Config -- edit here to extend what's monitored. Nothing below this block
+# should need to change to add a system, a service, or a disk mount.
+# ---------------------------------------------------------------------------
+
+OUT_PATH = "/var/www/gale-api/status.json"
+INTERVAL_S = 15
+
+# Peer-fleet health targets. "local" = co-located on this host (same OS/
+# network stats as Gale itself, just a different agent+port); "remote" =
+# a genuinely separate host, reachable only over Tailscale, health-only.
+TARGETS = [
+    {"name": "Gale", "kind": "local", "addr": "100.66.39.59:8787"},
+    {"name": "Zephyr", "kind": "local", "addr": "100.66.39.59:8788"},
+    {"name": "Squall", "kind": "local", "addr": "100.66.39.59:8789"},
+    {"name": "Tempest", "kind": "local", "addr": "100.66.39.59:8790"},
+    {"name": "Beacon", "kind": "remote", "addr": "100.99.217.90:8787"},
+    {"name": "Tidal", "kind": "remote", "addr": "100.91.42.51:8787"},
+    {"name": "Mountain", "kind": "remote", "addr": "100.114.14.116:8787"},
+]
+TARGET_TIMEOUT_S = 2.5
+
+# systemd units this dashboard cares about (fleet + the services the site
+# and mesh depend on). Any unit name systemctl knows about works here.
+SERVICES = [
+    "gale-peer", "zephyr-peer", "squall-peer", "tempest-peer",
+    "nginx", "tailscaled", "cron",
+]
+
+# Disk mounts to report (skip pseudo/duplicate filesystems automatically;
+# this list is just which *real* mounts matter enough to show a tile for).
+DISK_MOUNTS = ["/"]
+
+SELF_HOSTNAME = socket.gethostname()
+
+# ---------------------------------------------------------------------------
+
+
+def iso_now():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def run(cmd, timeout=3):
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        return r.stdout.strip()
+    except Exception:
+        return ""
+
+
+def collect_host():
+    la1, la5, la15 = os.getloadavg()
+    vm = psutil.virtual_memory()
+    sw = psutil.swap_memory()
+    boot = psutil.boot_time()
+    os_release = {}
+    try:
+        with open("/etc/os-release") as f:
+            for line in f:
+                if "=" in line:
+                    k, v = line.rstrip("\n").split("=", 1)
+                    os_release[k] = v.strip('"')
+    except OSError:
+        pass
+    reboot_required = os.path.exists("/var/run/reboot-required")
+    return {
+        "hostname": SELF_HOSTNAME,
+        "os": os_release.get("PRETTY_NAME", "unknown"),
+        "kernel": run(["uname", "-r"]),
+        "arch": run(["uname", "-m"]),
+        "boot_time": datetime.fromtimestamp(boot, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "uptime_s": int(time.time() - boot),
+        "load": [round(la1, 2), round(la5, 2), round(la15, 2)],
+        "cpu_count": psutil.cpu_count(logical=True),
+        "cpu_pct": round(psutil.cpu_percent(interval=0.4), 1),
+        "cpu_per_core": [round(p, 1) for p in psutil.cpu_percent(interval=0.2, percpu=True)],
+        "mem": {
+            "total_mb": round(vm.total / 1048576),
+            "used_mb": round((vm.total - vm.available) / 1048576),
+            "avail_mb": round(vm.available / 1048576),
+            "pct": round(100 - (vm.available / vm.total * 100), 1),
+        },
+        "swap": {
+            "total_mb": round(sw.total / 1048576),
+            "used_mb": round(sw.used / 1048576),
+            "pct": round(sw.percent, 1),
+        },
+        "disks": collect_disks(),
+        "reboot_required": reboot_required,
+    }
+
+
+def collect_disks():
+    out = []
+    for mount in DISK_MOUNTS:
+        try:
+            du = psutil.disk_usage(mount)
+        except OSError:
+            continue
+        fs = "?"
+        for part in psutil.disk_partitions():
+            if part.mountpoint == mount:
+                fs = part.fstype
+                break
+        out.append({
+            "mount": mount,
+            "fs": fs,
+            "total_gb": round(du.total / 1073741824, 1),
+            "used_gb": round(du.used / 1073741824, 1),
+            "pct": round(du.percent, 1),
+        })
+    return out
+
+
+_prev_net = {"t": None, "counters": {}}
+
+
+def collect_network():
+    addrs = psutil.net_if_addrs()
+    counters = psutil.net_io_counters(pernic=True)
+    now = time.time()
+    prev_t, prev_c = _prev_net["t"], _prev_net["counters"]
+    dt = (now - prev_t) if prev_t else None
+
+    interfaces = []
+    for name, c in counters.items():
+        if name == "lo" or name.startswith(("veth", "docker", "cali", "vxlan")):
+            continue
+        ip = next((a.address for a in addrs.get(name, []) if a.family == socket.AF_INET), None)
+        if not ip:
+            continue
+        rx_mbps = tx_mbps = 0.0
+        if dt and name in prev_c:
+            rx_mbps = round((c.bytes_recv - prev_c[name].bytes_recv) * 8 / dt / 1_000_000, 3)
+            tx_mbps = round((c.bytes_sent - prev_c[name].bytes_sent) * 8 / dt / 1_000_000, 3)
+        interfaces.append({
+            "name": name,
+            "ip": ip,
+            "rx_mbps": max(rx_mbps, 0.0),
+            "tx_mbps": max(tx_mbps, 0.0),
+            "rx_total_gb": round(c.bytes_recv / 1073741824, 2),
+            "tx_total_gb": round(c.bytes_sent / 1073741824, 2),
+        })
+
+    _prev_net["t"] = now
+    _prev_net["counters"] = counters
+
+    return {
+        "interfaces": interfaces,
+        "listening_ports": collect_ports(),
+        "tailscale": collect_tailscale(),
+    }
+
+
+_PORT_LABELS = {
+    8787: "gale-peer", 8788: "zephyr-peer", 8789: "squall-peer", 8790: "tempest-peer",
+    8090: "nginx (gale site)", 22: "ssh", 53: "dns",
+}
+
+
+def collect_ports():
+    # sudo -n (no password prompt, fails fast if the passwordless rule is
+    # ever removed) gets process names for sockets owned by other users too;
+    # falls back to an unprivileged view (proc "?") if that ever changes.
+    text = run(["sudo", "-n", "ss", "-tlnp"]) or run(["ss", "-tlnp"])
+    by_port = {}
+    for line in text.splitlines()[1:]:
+        parts = line.split()
+        if len(parts) < 4:
+            continue
+        local = parts[3]
+        m = re.match(r"^(.*):(\d+)$", local)
+        if not m:
+            continue
+        addr, port = m.group(1).strip("[]"), int(m.group(2))
+        proc = "?"
+        pm = re.search(r'users:\(\("([^"]+)"', line)
+        if pm:
+            proc = pm.group(1)
+        # collapse the IPv4 / IPv6 / wildcard duplicate rows ss prints for
+        # the same listening service into one row per port.
+        key = port
+        entry = by_port.setdefault(key, {"port": port, "addrs": set(), "proc": proc, "label": _PORT_LABELS.get(port, "")})
+        entry["addrs"].add(addr)
+        if entry["proc"] == "?" and proc != "?":
+            entry["proc"] = proc
+    out = [{**e, "addrs": sorted(e["addrs"])} for e in by_port.values()]
+    out.sort(key=lambda p: p["port"])
+    return out
+
+
+def collect_tailscale():
+    raw = run(["tailscale", "status", "--json"], timeout=4)
+    if not raw:
+        return {"ok": False}
+    try:
+        d = json.loads(raw)
+    except json.JSONDecodeError:
+        return {"ok": False}
+    peers = d.get("Peer", {}) or {}
+    online = sum(1 for p in peers.values() if p.get("Online"))
+    return {
+        "ok": True,
+        "backend_state": d.get("BackendState"),
+        "self_ip": (d.get("Self", {}).get("TailscaleIPs") or [None])[0],
+        "peers_total": len(peers),
+        "peers_online": online,
+    }
+
+
+def collect_services():
+    out = []
+    for unit in SERVICES:
+        active = run(["systemctl", "is-active", unit]) or "unknown"
+        since = run(["systemctl", "show", unit, "--property=ActiveEnterTimestamp", "--value"])
+        out.append({"unit": unit, "state": active, "since": since})
+    return out
+
+
+def collect_security():
+    ufw = run(["sudo", "-n", "ufw", "status"], timeout=3)
+    ufw_active = ufw.startswith("Status: active") if ufw else None
+    unattended = run(["systemctl", "is-enabled", "unattended-upgrades"], timeout=2)
+    return {
+        "ufw_active": ufw_active,
+        "sudoers_dropin": os.path.exists("/etc/sudoers.d/99-agent"),
+        "unattended_upgrades": unattended or "unknown",
+        "reboot_required": os.path.exists("/var/run/reboot-required"),
+    }
+
+
+def probe_target(t):
+    # "up" = reachable, 2xx. "auth" = reachable, endpoint just wants a
+    # credential we don't send for a plain liveness check (still counts as
+    # the host being up -- distinct from truly unreachable). "down" = no
+    # response at all (refused/timeout/DNS).
+    url = f"http://{t['addr']}/health"
+    t0 = time.time()
+    try:
+        with urllib.request.urlopen(url, timeout=TARGET_TIMEOUT_S) as r:
+            body = r.read(2048)
+            latency_ms = round((time.time() - t0) * 1000, 1)
+            name = None
+            try:
+                name = json.loads(body).get("name")
+            except Exception:
+                pass
+            return {**t, "health": "up", "latency_ms": latency_ms, "reported_name": name}
+    except urllib.error.HTTPError as e:
+        latency_ms = round((time.time() - t0) * 1000, 1)
+        state = "auth" if e.code in (401, 403) else "error"
+        return {**t, "health": state, "latency_ms": latency_ms, "http_status": e.code}
+    except Exception as e:
+        return {**t, "health": "down", "latency_ms": None, "error": type(e).__name__}
+
+
+def collect_targets():
+    return [probe_target(t) for t in TARGETS]
+
+
+def snapshot():
+    return {
+        "generated_at": iso_now(),
+        "collector_interval_s": INTERVAL_S,
+        "host": collect_host(),
+        "network": collect_network(),
+        "services": collect_services(),
+        "security": collect_security(),
+        "targets": collect_targets(),
+    }
+
+
+def write_atomic(path, data):
+    d = os.path.dirname(path)
+    os.makedirs(d, exist_ok=True)
+    tmp = f"{path}.tmp-{os.getpid()}"
+    with open(tmp, "w") as f:
+        json.dump(data, f, indent=1)
+    os.replace(tmp, path)
+
+
+def main():
+    once = "--once" in sys.argv
+    # prime the network-rate calculation so the first real sample has a delta
+    collect_network()
+    while True:
+        try:
+            write_atomic(OUT_PATH, snapshot())
+        except Exception as e:
+            sys.stderr.write(f"sysmon: snapshot failed: {e!r}\n")
+        if once:
+            break
+        time.sleep(INTERVAL_S)
+
+
+if __name__ == "__main__":
+    main()

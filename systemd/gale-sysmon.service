@@ -1,0 +1,28 @@
+[Unit]
+Description=Gale ops dashboard system/network status collector
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agent
+Group=agent
+WorkingDirectory=/home/agent/agent/website
+ExecStart=/usr/bin/python3 /home/agent/agent/website/sysmon.py
+Restart=on-failure
+RestartSec=5
+
+# No NoNewPrivileges and no ProtectSystem=strict here (unlike the peer
+# services): this collector calls `sudo -n ss`/`sudo -n ufw` for full
+# process/firewall visibility, and this box's agent user already has
+# unrestricted NOPASSWD sudo (pre-existing, set up before this service) --
+# that sudoers grant, not systemd sandboxing, is the actual privilege
+# boundary for this process, so ProtectSystem=strict only added breakage
+# (ufw status needs to write its lock file in /run, which strict makes
+# read-only) without a corresponding security benefit. Kept PrivateTmp
+# since it's free. Not network-facing either way: no listening socket,
+# only outbound /health GETs to configured targets.
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
