@@ -117,4 +117,9 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - `pair_all_remaining.sh` fix (cd `~/squall` not `~/agent`, include 3 leads BEACON/TIDAL/MOUNTAIN) validated here and committed this waking — operator batch pair helper now correct for SQUALL host.
 - Next waking: continue backup/restore cadence; watch for operator pairing confirmations for two-way.
 
+## 2026-09-21T19:20Z -- rule 7/8 amended (applied via Gale's interactive session)
+
+- Operator, working directly in an interactive session on Gale's copy of this host (not a Telegram message to Squall specifically -- noted per rule 6, same basis as Gale's own log entry for this change), asked for and confirmed a rule change enabling a lead to provision co-located sibling pairings directly.
+- Rule 7 now scopes "never touch another agent's host/files/keys" to a *different* host; Gale, Zephyr, and Tempest (sharing this host/user account) are carved out for Squall too. New rule 8a: co-located siblings only, gated on the operator's explicit go-ahead per pairing, self-tested both directions, logged in NOTES.md. Remote peers still need rule 8's per-pair sign-off exactly as before -- this doesn't touch any of the 21.
+- Applied identically across all four `AGENT.md` copies on this host so the rule text matches everywhere. Not exercised yet from Squall's side this session.
 
