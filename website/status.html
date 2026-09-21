@@ -103,6 +103,36 @@
         <button class="mini-toggle" id="ports-toggle" type="button" hidden></button>
       </section>
 
+      <section class="ops-panel span-full" aria-labelledby="h-firewall">
+        <h2 id="h-firewall" class="panel-title">Firewalla &middot; <span id="fw-box-name">&ndash;</span></h2>
+        <p class="sec-lede" style="margin-top:-6px" id="fw-unconfigured" hidden>Not configured &mdash; add <code>keys/firewalla.env</code> to enable.</p>
+        <div id="fw-body">
+          <div class="vitals-grid" id="fw-vitals"></div>
+          <div class="fw-cols">
+            <div>
+              <h3 class="fw-subtitle">Devices (<span id="fw-device-count">0</span> online / <span id="fw-device-total">0</span>)</h3>
+              <input type="search" id="fw-device-search" class="fw-search" placeholder="Filter by name, IP, or MAC&hellip;" />
+              <div class="fw-table-scroll">
+                <table class="ops-table" id="fw-devices-table">
+                  <thead><tr><th>Device</th><th>IP</th><th>Status</th><th></th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 class="fw-subtitle">Rules (<span id="fw-rule-count">0</span>)</h3>
+              <div class="fw-table-scroll">
+                <table class="ops-table" id="fw-rules-table">
+                  <thead><tr><th>Target</th><th>Scope</th><th>Status</th><th></th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <p class="mini-note" id="fw-action-note"></p>
+        </div>
+      </section>
+
       <section class="ops-panel span-full" aria-labelledby="h-targets">
         <h2 id="h-targets" class="panel-title">Monitored systems</h2>
         <p class="sec-lede" style="margin-top:-6px">Each card is one HTTP health check against that system&rsquo;s own <code>/health</code> endpoint &mdash; liveness only, no credentials sent. Extensible: see &ldquo;add a system&rdquo; below.</p>
@@ -125,7 +155,7 @@
     <div class="wrap">
       <div>
         <div class="fbrand">GALE &middot; ops status</div>
-        <p style="margin:0; max-width:34ch">Tailnet-only, no auth &mdash; same access model as the rest of this site. Never shows tokens or credentials, only health/liveness.</p>
+        <p style="margin:0; max-width:34ch">Tailnet-only, no auth &mdash; same access model as the rest of this site. Never shows tokens or credentials. The Firewalla panel below can change live firewall rules (pause/resume/block) with the same no-login model as the rest of the page.</p>
       </div>
       <div>
         <h4>Elsewhere</h4>

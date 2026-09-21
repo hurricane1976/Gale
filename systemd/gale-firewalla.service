@@ -1,0 +1,26 @@
+[Unit]
+Description=Gale ops dashboard Firewalla control service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agent
+Group=agent
+WorkingDirectory=/home/agent/agent/website
+ExecStart=/usr/bin/python3 /home/agent/agent/website/firewalla_control.py
+Restart=on-failure
+RestartSec=5
+
+# Binds 127.0.0.1 only (see firewalla_control.py header) -- nginx's
+# /api/firewalla/ location is what actually makes it tailnet-reachable, so
+# ProtectSystem=strict/NoNewPrivileges are safe here (unlike gale-sysmon,
+# this process never shells out to sudo -- it only speaks HTTPS to the
+# Firewalla MSP API and reads keys/firewalla.env).
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadOnlyPaths=/home/agent/agent
+
+[Install]
+WantedBy=multi-user.target

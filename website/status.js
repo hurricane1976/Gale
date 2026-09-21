@@ -177,6 +177,146 @@ function renderTargets(d) {
     .join("");
 }
 
+const FW_API = "api/firewalla";
+let fwDeviceFilter = "";
+let lastFw = null;
+
+function fwRuleLabel(r) {
+  const t = r.target || {};
+  if (t.type === "domain") return `domain: ${t.value}`;
+  if (t.type === "category") return `category: ${t.value}`;
+  if (t.type === "application") return `app: ${t.value}`;
+  if (t.type === "ip") return `ip: ${t.value}`;
+  if (t.type === "port") return `port: ${t.value}`;
+  if (t.type === "internet") return "internet (all)";
+  return t.type || "-";
+}
+
+function fwScopeLabel(r, devicesByMac) {
+  const s = r.scope;
+  if (!s) return "network-wide";
+  if (s.type === "device") {
+    const d = devicesByMac.get((s.value || "").toUpperCase());
+    return d ? `${d.name || d.mac} (${d.ip || ""})` : s.value;
+  }
+  return `${s.type}: ${s.value}`;
+}
+
+async function fwAction(method, path, note) {
+  const noteEl = document.getElementById("fw-action-note");
+  noteEl.textContent = `${note}...`;
+  try {
+    const res = await fetch(`${FW_API}/${path}`, { method, cache: "no-store" });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || body.ok === false) throw new Error(body.error || `HTTP ${res.status}`);
+    noteEl.textContent = `${note} — done.`;
+    await fwRefresh();
+  } catch (e) {
+    noteEl.textContent = `Failed: ${e.message}`;
+  }
+}
+
+function renderFirewall(fw) {
+  const unconfigured = document.getElementById("fw-unconfigured");
+  const body = document.getElementById("fw-body");
+  if (!fw || !fw.ok) {
+    unconfigured.hidden = false;
+    unconfigured.textContent = fw && fw.error && fw.error !== "not configured"
+      ? `Firewalla error: ${fw.error}`
+      : "Not configured — add keys/firewalla.env to enable.";
+    body.hidden = true;
+    return;
+  }
+  unconfigured.hidden = true;
+  body.hidden = false;
+  lastFw = fw;
+
+  const box = fw.box || {};
+  document.getElementById("fw-box-name").textContent = box.name || "–";
+
+  const devices = fw.devices || [];
+  const rules = fw.rules || [];
+  const devicesByMac = new Map(devices.map((d) => [(d.mac || d.id || "").toUpperCase(), d]));
+  const online = devices.filter((d) => d.online).length;
+  const activeRules = rules.filter((r) => r.status === "active");
+
+  document.getElementById("fw-vitals").innerHTML = [
+    vitalCard("Box", box.online ? "online" : "offline", `${esc(box.model || "")} · v${esc(box.version || "?")}`, box.online ? "ok" : "crit"),
+    vitalCard("Devices", `${online}/${devices.length}`, "online / total", online === 0 && devices.length ? "warn" : "ok"),
+    vitalCard("Rules", rules.length, `${activeRules.length} active`, "ok"),
+    vitalCard("Alarms", box.alarmCount ?? 0, "open", (box.alarmCount || 0) > 0 ? "warn" : "ok"),
+  ].join("");
+
+  // active internet-block rules per device -- the exact shape the Block
+  // button creates -- drive the per-row Block/Unblock toggle state.
+  const blockedMacs = new Set(
+    activeRules
+      .filter((r) => (r.target || {}).type === "internet" && (r.scope || {}).type === "device")
+      .map((r) => (r.scope.value || "").toUpperCase())
+  );
+
+  document.getElementById("fw-device-total").textContent = devices.length;
+  document.getElementById("fw-device-count").textContent = online;
+
+  const q = fwDeviceFilter.trim().toLowerCase();
+  const filtered = q
+    ? devices.filter((d) => [d.name, d.ip, d.mac].some((v) => (v || "").toLowerCase().includes(q)))
+    : devices;
+  const sorted = filtered.slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0));
+
+  document.querySelector("#fw-devices-table tbody").innerHTML = sorted.slice(0, 300).map((d) => {
+    const mac = (d.mac || d.id || "").toUpperCase();
+    const blocked = blockedMacs.has(mac);
+    return `<tr>
+      <td>${esc(d.name || "(unnamed)")}<br><span class="mono-dim">${esc(mac)}</span></td>
+      <td><code>${esc(d.ip || "–")}</code></td>
+      <td><span class="pill" data-level="${d.online ? "ok" : "warn"}">${d.online ? "online" : "offline"}</span>${blocked ? ' <span class="pill" data-level="crit">blocked</span>' : ""}</td>
+      <td>${blocked
+        ? `<button class="row-btn" data-fw-unblock="${esc(mac)}">Unblock</button>`
+        : `<button class="row-btn" data-danger="true" data-fw-block="${esc(mac)}">Block</button>`}</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="4">no devices match</td></tr>`;
+
+  document.getElementById("fw-rule-count").textContent = rules.length;
+  document.querySelector("#fw-rules-table tbody").innerHTML = rules.map((r) => `<tr>
+      <td>${esc(fwRuleLabel(r))}${r.action === "block" ? "" : ` <span class="mono-dim">(${esc(r.action)})</span>`}</td>
+      <td class="mono-dim">${esc(fwScopeLabel(r, devicesByMac))}</td>
+      <td><span class="pill" data-level="${r.status === "active" ? "ok" : "warn"}">${esc(r.status)}</span></td>
+      <td>${r.status === "active"
+        ? `<button class="row-btn" data-fw-pause="${esc(r.id)}">Pause</button>`
+        : `<button class="row-btn" data-fw-resume="${esc(r.id)}">Resume</button>`}</td>
+    </tr>`).join("") || `<tr><td colspan="4">no rules</td></tr>`;
+}
+
+async function fwRefresh() {
+  try {
+    const res = await fetch(`${FW_API}/status`, { cache: "no-store" });
+    const data = await res.json();
+    if (data.ok) renderFirewall(data);
+  } catch (e) {
+    // control service unreachable -- leave last-rendered state; the next
+    // main poll (status.json, sysmon-collected) will retry on its own cadence
+  }
+}
+
+document.getElementById("fw-device-search").addEventListener("input", (e) => {
+  fwDeviceFilter = e.target.value;
+  if (lastFw) renderFirewall(lastFw);
+});
+
+document.getElementById("fw-body").addEventListener("click", (e) => {
+  const t = e.target;
+  if (t.dataset.fwPause) fwAction("POST", `rules/${encodeURIComponent(t.dataset.fwPause)}/pause`, "Pausing rule");
+  else if (t.dataset.fwResume) fwAction("POST", `rules/${encodeURIComponent(t.dataset.fwResume)}/resume`, "Resuming rule");
+  else if (t.dataset.fwBlock) {
+    if (confirm(`Block all internet access for ${t.dataset.fwBlock}?`)) {
+      fwAction("POST", `devices/${encodeURIComponent(t.dataset.fwBlock)}/block`, "Blocking device");
+    }
+  } else if (t.dataset.fwUnblock) {
+    fwAction("POST", `devices/${encodeURIComponent(t.dataset.fwUnblock)}/unblock`, "Unblocking device");
+  }
+});
+
 function setFresh(state, text) {
   freshEl.dataset.state = state;
   freshText.textContent = text;
@@ -194,6 +334,7 @@ function render(d) {
   renderSecurity(d);
   renderPorts(d);
   renderTargets(d);
+  renderFirewall(d.firewalla);
   updateFreshness(d.generated_at);
 }
 
