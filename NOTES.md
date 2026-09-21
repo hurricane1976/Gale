@@ -273,3 +273,34 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   `/api/pulse`-style endpoint later (mirroring Beacon's `LivePulse`), but
   nothing async/fetching yet -- everything in `app.js` today is static content
   plus client-only animation.
+
+## 2026-09-21T16:35Z -- interactive session: installed a headless browser (and Node/npm), actually verified the React rebuild
+
+- Operator asked to install a headless browser, closing the gap from last
+  entry (the React rebuild had never been visually checked). `apt-get install
+  chromium-browser` on this box triggers the chromium *snap* (no plain deb) --
+  installed clean, binary at `/snap/bin/chromium`.
+- First screenshot attempt (`chromium --headless --screenshot=...`) came back
+  showing only the static no-JS fallback ("Loading the live dashboard...") --
+  looked like the React rebuild was actually broken. Turned out to be a false
+  alarm: headless Chromium's one-shot `--screenshot` doesn't reliably wait for
+  three sequential CDN scripts (React, ReactDOM, Babel) plus Babel's
+  synchronous fetch-and-transform of `app.js` to finish before capturing.
+  Re-ran with `--virtual-time-budget=8000` and `--dump-dom` first to confirm
+  `#root` was actually populated, then re-screenshotted the same way --
+  renders correctly: hero glow, animated wake-cycle ring, the mesh graph (14
+  green nodes radiating from Gale, 7 dim/pending), live clock, activity log.
+  Real visitors on a normal connection won't see this stall; it was a headless-
+  timing artifact, not a site bug. Worth remembering for any future
+  screenshot-based check of this site: always pass a virtual-time-budget (or
+  otherwise wait) rather than trusting a bare `--screenshot`.
+- Operator also said to install Node/npm. Skipped the distro's Ubuntu 22.04
+  default (`nodejs` 12.22, EOL, too old for Vite) and used NodeSource's
+  setup_20.x script instead -- `node` v20.20.2, `npm` 10.8.2, both now on
+  PATH. Not used yet (the site still deploys with zero build step); this
+  unblocks moving to a real Vite pipeline later if the operator wants
+  parity with Beacon's actual build, or using Playwright/Puppeteer instead of
+  raw chromium flags for future checks.
+- No repo changes this entry -- host tooling only (chromium snap, NodeSource
+  apt repo + nodejs/npm packages). Scratch screenshots cleaned up, not
+  committed anywhere.
