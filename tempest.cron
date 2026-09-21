@@ -1,0 +1,3 @@
+# TEMPEST: 4 wakings/day (UTC), poll Telegram commands every 5 min — staggered from Gale (50) by 2m each
+56 0,6,12,18 * * * /home/agent/tempest/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/tempest/telegram_commands.sh >>/home/agent/tempest/logs/telegram_commands.log 2>&1
