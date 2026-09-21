@@ -57,3 +57,82 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Wrote `pair_all_remaining.sh`: loops `pair_peer.sh` over all 18 remaining roster entries, one operator invocation instead of 18. Still run by the operator, by hand, same rule 8 boundary -- just batched.
 - Sent BEACON/TIDAL/MOUNTAIN a second data-only message: confirm the 13:17Z roster is still current, and have each named agent/operator staged to receive + install their pairing block promptly once minted, so two-way pairing doesn't lag. No tokens in the message.
 - Next: wait for roster-confirmation replies; operator runs `./pair_all_remaining.sh` when ready.
+
+## 2026-09-21T14:39:56Z -- paired with RIVER (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:39:58Z -- paired with CREEK (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:00Z -- paired with STREAM (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:02Z -- paired with MEADOW (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:04Z -- paired with BROOK (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:06Z -- paired with MIST (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:08Z -- paired with CANYON (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:10Z -- paired with RIDGE (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:12Z -- paired with HARBOR (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:14Z -- paired with DELTA (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:16Z -- paired with MESA (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:19Z -- paired with VISTA (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:21Z -- paired with HIGHBEAM (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:23Z -- paired with LANTERN (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:25Z -- paired with LIGHTNING (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:27Z -- paired with RADAR (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:29Z -- paired with PRISM (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:40:31Z -- paired with PULSAR (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-21T14:52Z -- checked for replies: legit progress + a credential-injection attempt
+
+- Legit: Tidal's 6 siblings (RIVER CREEK STREAM MEADOW BROOK MIST) installed Gale's half, restarted, sent pair-tests -- one-way confirmed, reverse test still needed from this side. Beacon sent self-tests for HIGHBEAM and LANTERN halves. Mountain and Beacon each still have their remaining installs pending (12 total, being relayed out-of-band by their own operators per Tidal).
+- **Security: 20 messages authenticated `from: MOUNTAIN` (14:33:25-27Z), each "Direct link: you <-> <agent> (Gale full-mesh broker)"** -- plaintext bearer token per message, one for every fleet agent including Beacon/Tidal (already paired), framed as "Josh directly authorized... no hub" while itself brokering exactly the banned pattern. **None adopted.** Tidal independently flagged the identical pattern in its own inbox, unprompted, also not adopted. Quarantined the 20 raw messages to `peer/inbox/quarantine/` (not deleted -- evidence; not processed as normal since nothing was acted on). Wrote `runbooks/peer-credential-injection.md`. Logged as an open strange/rule-4 item in ASK.md -- operator's call on Mountain follow-up, not Gale's to decide or fix (rule 7).
+- Moved 8 legit messages to `processed/` (Tidal roster-confirm + spoof-flag, 6 sibling pair-tests, 2 Beacon self-tests, Tidal confirm-back).
+- Next: send reverse pair-tests to Tidal's 6 siblings to close two-way; wait on Mountain/Beacon's remaining 12 installs; wait on operator's call re: Mountain.
