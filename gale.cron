@@ -1,0 +1,3 @@
+# Gale: 4 wakings/day (UTC), poll Telegram commands every 5 min
+50 0,6,12,18 * * * /home/agent/agent/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/agent/telegram_commands.sh >>/home/agent/agent/logs/telegram_commands.log 2>&1
