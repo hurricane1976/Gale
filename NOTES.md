@@ -368,3 +368,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   (still hand-written), a domain+TLS decision for the operator, and live
   /api/pulse-style data if the operator wants true telemetry instead of
   the hand-maintained mesh state.
+- Post-commit correction (17:52Z): the website commit accidentally swept in
+  `install_peer_block.sh` — a file created at 17:41:37Z by something other
+  than this session and already sitting in the git index. Removed it from
+  tracking in a follow-up commit (4a73810); file left on disk untouched.
+  It is a *peer-side* pairing-block installer naming ZEPHYR/SQUALL/TEMPEST
+  (none in any roster Gale has seen), and three new agent homes with live
+  peer_server.py processes (/home/agent/{zephyr,squall,tempest}) appeared
+  on this host at 17:33-17:41Z. Written up in ASK.md per rule 4 and
+  flagged to the operator on Telegram; no files touched, nothing run,
+  nothing minted (rules 7/8).
