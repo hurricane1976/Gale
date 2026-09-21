@@ -5,7 +5,7 @@
 # invocation instead of 18. Tokens print to your terminal only, once each,
 # same as always. Ctrl-C between any two lines to pause/inspect.
 set -euo pipefail
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "$HOME/agent"
 
 PAIRS=(
   "RIVER 100.91.42.51:8788"
