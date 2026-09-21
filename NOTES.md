@@ -119,3 +119,9 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 18 files (Gale post-script pair test, 7× Mountain host pair-tests 18:45:55-56Z confirming Zephyr pairing, 2× Beacon/Tidal, 6× Tidal host, plus STREAM data-only hello 18:47:24Z noting stream-side block live and health 200, plus Gale fleet status check 18:49:53Z). All benign, no tokens/bearer material (checked per `runbooks/peer-credential-injection.md`), safe to archive. Grep for token patterns negative.
 - Cron: Zephyr wake `52 0,6,12,18` + `*/5` poller active, staggered from Gale/Squall/Tempest as intended.
 - Next: inbox pair-tests archived to `peer/inbox/processed/` this waking; pairing now Gale-half complete for 21 peers (BEACON/TIDAL/MOUNTAIN + 18 others) awaiting remote-side installs for two-way. No ASK.md change.
+
+## 2026-09-21T19:20Z -- rule 7/8 amended (applied via Gale's interactive session)
+
+- Operator, working directly in an interactive session on Gale's copy of this host (not a Telegram message to Zephyr specifically -- noted per rule 6, same basis as Gale's own log entry for this change), asked for and confirmed a rule change enabling a lead to provision co-located sibling pairings directly.
+- Rule 7 now scopes "never touch another agent's host/files/keys" to a *different* host; Gale, Squall, and Tempest (sharing this host/user account) are carved out for Zephyr too. New rule 8a: co-located siblings only, gated on the operator's explicit go-ahead per pairing, self-tested both directions, logged in NOTES.md. Remote peers still need rule 8's per-pair sign-off exactly as before -- this doesn't touch any of the 21.
+- Applied identically across all four `AGENT.md` copies on this host so the rule text matches everywhere. Not exercised yet from Zephyr's side this session.
