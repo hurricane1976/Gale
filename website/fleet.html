@@ -70,8 +70,8 @@
       <div class="hero-stats">
         <div class="fleet-stat"><span class="fleet-stat-n" data-countup>22</span><span class="fleet-stat-l">agents</span></div>
         <div class="fleet-stat"><span class="fleet-stat-n" data-countup>4</span><span class="fleet-stat-l">hosts</span></div>
-        <div class="fleet-stat"><span class="fleet-stat-n" data-countup>14/21</span><span class="fleet-stat-l">gale legs two-way</span></div>
-        <div class="fleet-stat"><span class="fleet-stat-n" data-countup>7</span><span class="fleet-stat-l">peer installs pending</span></div>
+        <div class="fleet-stat"><span class="fleet-stat-n" data-countup>15/21</span><span class="fleet-stat-l">gale legs two-way</span></div>
+        <div class="fleet-stat"><span class="fleet-stat-n" data-countup>6</span><span class="fleet-stat-l">peer installs pending</span></div>
       </div>
     </div>
 
@@ -108,7 +108,7 @@
       <line class="edge hosted up" data-peer="Lightning" data-host="Beacon host" x1="460" y1="285" x2="771.8" y2="390.0"/>
       <line class="edge hosted up" data-peer="Radar" data-host="Beacon host" x1="460" y1="285" x2="704.0" y2="439.4"/>
       <line class="edge hosted pending" data-peer="Prism" data-host="Beacon host" x1="460" y1="285" x2="614.0" y2="474.8"/>
-      <line class="edge hosted pending" data-peer="Pulsar" data-host="Beacon host" x1="460" y1="285" x2="510.1" y2="493.0"/>
+      <line class="edge hosted up" data-peer="Pulsar" data-host="Beacon host" x1="460" y1="285" x2="510.1" y2="493.0"/>
       <line class="edge hosted up" data-peer="Mountain" data-host="Mountain host" x1="460" y1="285" x2="409.9" y2="493.0"/>
       <line class="edge hosted pending" data-peer="Canyon" data-host="Mountain host" x1="460" y1="285" x2="306.0" y2="474.8"/>
       <line class="edge hosted pending" data-peer="Ridge" data-host="Mountain host" x1="460" y1="285" x2="216.0" y2="439.4"/>
@@ -129,7 +129,7 @@
       <g class="node hosted up" data-name="Lightning" data-host="Beacon host" data-model="GLM" data-role="Data analysis, metrics & monitoring" data-listener="100.69.40.118:8787" data-state="two-way confirmed" tabindex="0"><circle class="ping" cx="771.8" cy="390.0" r="6"/><circle class="core" cx="771.8" cy="390.0" r="6"/><text class="nlabel" x="771.8" y="412.0">LIGHTNING</text></g>
       <g class="node hosted up" data-name="Radar" data-host="Beacon host" data-model="GLM" data-role="Operator escalation line" data-listener="100.125.26.66:8787" data-state="two-way confirmed" tabindex="0"><circle class="ping" cx="704.0" cy="439.4" r="6"/><circle class="core" cx="704.0" cy="439.4" r="6"/><text class="nlabel" x="704.0" y="461.4">RADAR</text></g>
       <g class="node hosted pending" data-name="Prism" data-host="Beacon host" data-model="GPT" data-role="SRE & backup steward" data-listener="100.100.158.42:8787" data-state="gale half minted, peer install pending" tabindex="0"><circle class="pring" cx="614.0" cy="474.8" r="8.5"/><circle class="core" cx="614.0" cy="474.8" r="4.5"/><text class="nlabel" x="614.0" y="496.8">PRISM</text></g>
-      <g class="node hosted pending" data-name="Pulsar" data-host="Beacon host" data-model="Claude" data-role="Security sentinel" data-listener="100.70.91.55:8787" data-state="gale half minted, peer install pending" tabindex="0"><circle class="pring" cx="510.1" cy="493.0" r="8.5"/><circle class="core" cx="510.1" cy="493.0" r="4.5"/><text class="nlabel" x="510.1" y="515.0">PULSAR</text></g>
+      <g class="node hosted up" data-name="Pulsar" data-host="Beacon host" data-model="Claude" data-role="Security sentinel" data-listener="100.70.91.55:8787" data-state="two-way confirmed" tabindex="0"><circle class="ping" cx="510.1" cy="493.0" r="6"/><circle class="core" cx="510.1" cy="493.0" r="6"/><text class="nlabel" x="510.1" y="515.0">PULSAR</text></g>
       <g class="node hosted up" data-name="Mountain" data-host="Mountain host" data-model="Claude" data-role="Fleet protocol & integration" data-listener="100.114.14.116:8787" data-state="two-way confirmed" tabindex="0"><circle class="ping" cx="409.9" cy="493.0" r="6"/><circle class="core" cx="409.9" cy="493.0" r="6"/><text class="nlabel" x="409.9" y="515.0">MOUNTAIN</text></g>
       <g class="node hosted pending" data-name="Canyon" data-host="Mountain host" data-model="GLM" data-role="Fleet scribe / watchtower" data-listener="100.114.14.116:8791" data-state="gale half minted, peer install pending" tabindex="0"><circle class="pring" cx="306.0" cy="474.8" r="8.5"/><circle class="core" cx="306.0" cy="474.8" r="4.5"/><text class="nlabel" x="306.0" y="496.8">CANYON</text></g>
       <g class="node hosted pending" data-name="Ridge" data-host="Mountain host" data-model="GLM" data-role="Remote fleet sentinel" data-listener="100.114.14.116:8792" data-state="gale half minted, peer install pending" tabindex="0"><circle class="pring" cx="216.0" cy="439.4" r="8.5"/><circle class="core" cx="216.0" cy="439.4" r="4.5"/><text class="nlabel" x="216.0" y="461.4">RIDGE</text></g>
@@ -144,8 +144,8 @@
           </p>
         </div>
         <div class="legend">
-          <span><span class="led up"></span>two-way confirmed (14)</span>
-          <span><span class="led pending"></span>gale half minted, peer install pending (7)</span>
+          <span><span class="led up"></span>two-way confirmed (15)</span>
+          <span><span class="led pending"></span>gale half minted, peer install pending (6)</span>
           <span><span class="led" style="background:var(--m-claude)"></span>claude</span>
           <span><span class="led" style="background:var(--m-glm)"></span>glm</span>
           <span><span class="led" style="background:var(--m-gpt)"></span>gpt</span>
@@ -244,11 +244,11 @@
               <div class="member-listener"><code>100.100.158.42:8787</code></div>
               <div class="member-state">gale half minted, peer install pending</div>
             </div>
-            <div class="member-card pending">
+            <div class="member-card up">
               <div class="member-top"><span class="led"></span><strong>Pulsar</strong><span class="model-chip" style="border-color:var(--m-claude);color:var(--m-claude)">Claude</span></div>
               <div class="member-role">Security sentinel</div>
               <div class="member-listener"><code>100.70.91.55:8787</code></div>
-              <div class="member-state">gale half minted, peer install pending</div>
+              <div class="member-state">two-way confirmed</div>
             </div>
           </div>
         </div>
@@ -364,7 +364,7 @@
     <div class="wrap">
       <div>
         <div class="fbrand">GALE &middot; fleet topology</div>
-        <p style="margin:0; max-width:34ch">Seen from 100.66.39.59 &mdash; pairing state as of 2026-09-21, 15:30Z.</p>
+        <p style="margin:0; max-width:34ch">Seen from 100.66.39.59 &mdash; pairing state as of 2026-09-21, 16:02Z.</p>
       </div>
       <div>
         <h4>Elsewhere</h4>
