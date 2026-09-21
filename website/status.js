@@ -177,6 +177,79 @@ function renderTargets(d) {
     .join("");
 }
 
+function renderFullHosts(list) {
+  const grid = document.getElementById("full-hosts-grid");
+  if (!list || !list.length) {
+    grid.innerHTML = `<p class="mini-note">No remote hosts configured &mdash; add one to FULL_TARGETS in sysmon.py.</p>`;
+    return;
+  }
+  grid.innerHTML = list.map((t) => {
+    if (t.health !== "up" || !t.stats) {
+      return `<div class="full-host-card" data-health="down">
+        <div class="full-host-head">
+          <span class="full-host-name">${esc(t.name)}</span>
+          <span class="pill" data-level="crit">unreachable</span>
+          <span class="mono-dim">${esc(t.addr)}</span>
+        </div>
+        <p class="full-host-down">Collector not responding${t.error ? ` (${esc(t.error)})` : ""} &mdash; is it running on that machine? See <code>remote/${esc(t.platform || "")}/collector.py</code>.</p>
+      </div>`;
+    }
+    const h = t.stats.host;
+    const net = t.stats.network || { interfaces: [], listening_ports: [] };
+    const cpuLvl = level(h.cpu_pct);
+    const memLvl = level(h.mem.pct, 75, 92);
+    const disk = (h.disks && h.disks[0]) || { pct: 0 };
+    const diskLvl = level(disk.pct, 80, 93);
+
+    const vitals = [
+      vitalCard("CPU", `${h.cpu_pct}%`, h.load ? `load ${h.load.join(" / ")}` : `${h.cpu_count} cores`, cpuLvl, h.cpu_pct),
+      vitalCard("Memory", `${h.mem.pct}%`, `${(h.mem.used_mb / 1024).toFixed(1)} / ${(h.mem.total_mb / 1024).toFixed(1)} GB`, memLvl, h.mem.pct),
+      vitalCard("Disk", `${disk.pct}%`, disk.mount ? `${esc(disk.mount)} · ${disk.used_gb}/${disk.total_gb} GB` : "–", diskLvl, disk.pct),
+      vitalCard("Uptime", fmtUptime(h.uptime_s), h.reboot_required ? "reboot required" : "no reboot pending", h.reboot_required ? "warn" : "ok"),
+    ].join("");
+
+    const netRows = (net.interfaces || []).map((i) => `<tr>
+        <td><code>${esc(i.name)}</code></td>
+        <td><code>${esc(i.ip)}</code></td>
+        <td>${i.rx_mbps.toFixed(2)} Mb/s</td>
+        <td>${i.tx_mbps.toFixed(2)} Mb/s</td>
+      </tr>`).join("") || `<tr><td colspan="4">no interfaces reported</td></tr>`;
+
+    const svcRows = (t.stats.services || []).map((s) => `<tr>
+        <td><code>${esc(s.unit)}</code></td>
+        <td><span class="pill" data-level="${s.state === "active" ? "ok" : "warn"}">${esc(s.state)}</span></td>
+      </tr>`).join("") || `<tr><td colspan="2">none reported</td></tr>`;
+
+    const sec = t.stats.security || {};
+    const secLines = [
+      ["Firewall", sec.firewall_active == null ? "unknown" : (sec.firewall_active ? "active" : "inactive"), sec.firewall_active === false],
+      ["Defender", sec.defender_active == null ? "unknown" : (sec.defender_active ? "active" : "inactive"), sec.defender_active === false],
+    ];
+
+    return `<div class="full-host-card" data-health="up">
+      <div class="full-host-head">
+        <span class="full-host-name">${esc(t.name)}</span>
+        <span class="pill" data-level="ok">up</span>
+        <span class="mono-dim">${esc(t.addr)} · ${esc(h.os || "")} · ${t.latency_ms} ms</span>
+      </div>
+      <div class="vitals-grid">${vitals}</div>
+      <div class="full-host-sub">
+        <div>
+          <h3 class="fw-subtitle">Network</h3>
+          <table class="ops-table"><thead><tr><th>Interface</th><th>Address</th><th>Rx</th><th>Tx</th></tr></thead><tbody>${netRows}</tbody></table>
+        </div>
+        <div>
+          <h3 class="fw-subtitle">Services &amp; security</h3>
+          <table class="ops-table"><tbody>
+            ${svcRows}
+            ${secLines.map(([k, v, warn]) => `<tr><td>${esc(k)}</td><td><span class="pill" data-level="${warn ? "warn" : "ok"}">${esc(v)}</span></td></tr>`).join("")}
+          </tbody></table>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
 const FW_API = "api/firewalla";
 let fwDeviceFilter = "";
 let lastFw = null;
@@ -334,6 +407,7 @@ function render(d) {
   renderSecurity(d);
   renderPorts(d);
   renderTargets(d);
+  renderFullHosts(d.full_targets);
   renderFirewall(d.firewalla);
   updateFreshness(d.generated_at);
 }

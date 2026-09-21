@@ -61,6 +61,18 @@ TARGETS = [
 ]
 TARGET_TIMEOUT_S = 2.5
 
+# Full-stats targets: unlike TARGETS above (liveness-only /health ping),
+# each of these runs its own collector (see remote/<platform>/collector.py)
+# exposing GET /stats with a host/cpu/mem/disk/network/services/security
+# snapshot, which the dashboard renders as its own panel -- same idea as
+# Gale's own vitals, just sourced from a different machine's collector
+# instead of psutil calls made here. LAN-only today (private 192.168.x.x),
+# not tailnet -- reachable because gale-agent itself has a LAN NIC (eno1).
+FULL_TARGETS = [
+    {"name": "josh-desktop11", "addr": "192.168.1.197:8792", "platform": "windows"},
+]
+FULL_TARGET_TIMEOUT_S = 3.0
+
 # systemd units this dashboard cares about (fleet + the services the site
 # and mesh depend on). Any unit name systemctl knows about works here.
 SERVICES = [
@@ -299,6 +311,24 @@ def collect_targets():
     return [probe_target(t) for t in TARGETS]
 
 
+def probe_full_target(t):
+    url = f"http://{t['addr']}/stats"
+    t0 = time.time()
+    try:
+        with urllib.request.urlopen(url, timeout=FULL_TARGET_TIMEOUT_S) as r:
+            stats = json.loads(r.read())
+            latency_ms = round((time.time() - t0) * 1000, 1)
+            return {"name": t["name"], "addr": t["addr"], "platform": t.get("platform", ""),
+                    "health": "up", "latency_ms": latency_ms, "stats": stats}
+    except Exception as e:
+        return {"name": t["name"], "addr": t["addr"], "platform": t.get("platform", ""),
+                "health": "down", "latency_ms": None, "error": type(e).__name__, "stats": None}
+
+
+def collect_full_targets():
+    return [probe_full_target(t) for t in FULL_TARGETS]
+
+
 # Firewalla is a cloud API (MSP), not a local call -- poll it far less often
 # than the 15s host loop so this collector doesn't hammer the account.
 # Admin actions (pause/resume/block) go through firewalla_control.py, not
@@ -345,6 +375,7 @@ def snapshot():
         "security": collect_security(),
         "targets": collect_targets(),
         "firewalla": collect_firewalla(),
+        "full_targets": collect_full_targets(),
     }
 
 

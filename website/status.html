@@ -103,6 +103,12 @@
         <button class="mini-toggle" id="ports-toggle" type="button" hidden></button>
       </section>
 
+      <section class="ops-panel span-full" aria-labelledby="h-fullhosts">
+        <h2 id="h-fullhosts" class="panel-title">Remote hosts</h2>
+        <p class="sec-lede" style="margin-top:-6px">Full host stats from other machines running their own collector (<code>remote/&lt;platform&gt;/collector.py</code>) &mdash; unlike &ldquo;Monitored systems&rdquo; below, these get the same vitals/network/services treatment as <code>gale-agent</code> itself, just sourced from that machine's own collector instead of a local psutil call.</p>
+        <div id="full-hosts-grid" class="full-hosts-grid"></div>
+      </section>
+
       <section class="ops-panel span-full" aria-labelledby="h-firewall">
         <h2 id="h-firewall" class="panel-title">Firewalla &middot; <span id="fw-box-name">&ndash;</span></h2>
         <p class="sec-lede" style="margin-top:-6px" id="fw-unconfigured" hidden>Not configured &mdash; add <code>keys/firewalla.env</code> to enable.</p>
