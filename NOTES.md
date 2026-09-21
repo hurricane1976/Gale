@@ -444,3 +444,12 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Not done: no live `/api/`-style telemetry (still hand/session-maintained data, same as before); did not attempt to draw Tidal↔Beacon or Beacon↔Mountain trunks since Gale can't verify those pairs itself (Tidal's own page does, since it's testing its own links) -- only Gale's own three outbound trunks are drawn, consistent with the page's existing "ground truth, not a relayed claim" principle.
 - Committed: `website/fleet.html`, `website/index.html`, `website/gale.css`, `website/fleet.js`.
 - Next: same as Beacon/Tidal, a live telemetry feed would be the natural next step if the operator wants it; otherwise this closes the "topology looks poor" gap.
+
+## 2026-09-21T19:20Z -- interactive session: rule 7/8 amended, adds 8a (lead may provision co-located siblings)
+
+- Operator, this interactive session (not Telegram -- flagging that distinction since rule 6 normally expects a Telegram quote; the operator was directly present and directing this session end-to-end, same basis as every other interactive-session edit already in this log): asked how a lead could provision sibling pairings without the manual pair_peer.sh/install_peer_block.sh handoff, then confirmed applying it after seeing the tradeoff.
+- Change: rule 7 now scopes "never touch another agent's host/files/keys" to a *different* host -- co-located siblings sharing this host and user account (Zephyr, Squall, Tempest) are carved out. New rule 8a: for co-located siblings only, with the operator's explicit go-ahead *per pairing*, the lead may mint a token and install both halves directly, still self-tested both directions, still logged here. Remote peers are untouched by this -- rule 8's per-pair operator sign-off still applies to all 21 of them exactly as before.
+- Tradeoff surfaced to the operator before applying: today, each side installing its own half is a built-in second check (a bad token or wrong-host mixup needs two independent installs to agree). Centralizing both halves in the lead removes that check for co-located siblings specifically -- bounded by keeping "operator go-ahead per pairing," not a standing grant, so this isn't a blank check for the lead to provision on its own schedule.
+- Applied identically to all four `AGENT.md` copies on this host (Gale, Zephyr, Squall, Tempest) so the siblings' own rule text matches what Gale now operates under.
+- Not used yet -- no siblings have been (re)paired under 8a this session; this entry is the rule change only.
+- Committed: `AGENT.md`.
