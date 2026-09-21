@@ -26,6 +26,7 @@
   --m-claude: #ffc233;
   --m-glm: #ff2ec4;
   --m-gpt: #ff5a5f;
+  --m-muse: #9dff3d;
   --font-heading: "Fraunces", Georgia, serif;
   --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
@@ -471,7 +472,8 @@ h2.sec-title::before {
   border: 1px solid var(--glass-border); border-radius: 20px;
   padding: 10px 10px 0;
 }
-.topo-svg { width: 100%; height: auto; display: block; }
+.topo-scroll { overflow-x: auto; overflow-y: clip; }
+.topo-svg { width: 100%; min-width: 760px; height: auto; display: block; }
 .topo-detail {
   border-top: 1px solid var(--line);
   padding: 13px 16px; min-height: 54px;
@@ -493,6 +495,50 @@ h2.sec-title::before {
 
 .hostarc { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 6; }
 .hostlabel { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; fill: var(--text-faint); text-anchor: middle; }
+
+/* ---- host cluster boxes: static texture behind Gale's own live spokes.
+   Structure sourced from Tidal's own published /fleet map (cited in copy);
+   these lines carry no live/pending claim of Gale's own -- that signal
+   lives only on .edge below. ---- */
+.aurora-wrap { pointer-events: none; }
+.aurora {
+  fill: color-mix(in srgb, var(--gust) 7%, transparent);
+  filter: blur(70px); mix-blend-mode: screen;
+  animation: aurora-drift 16s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  from { transform: translate(-18px, -8px) scale(1); }
+  to { transform: translate(18px, 10px) scale(1.08); }
+}
+.hostbox { fill: color-mix(in srgb, var(--surface-2) 55%, transparent); stroke: var(--line); stroke-width: 1; }
+.hostbox-gale { stroke: color-mix(in srgb, var(--flag) 35%, var(--line)); }
+.meshline { stroke: var(--line); stroke-width: 0.75; opacity: 0.55; pointer-events: none; }
+
+.trunks { pointer-events: none; }
+.trunk-wash { fill: none; stroke: url(#gustGrad); stroke-width: 5; stroke-dasharray: 16 11; opacity: 0.25; }
+.trunk-glow { fill: none; stroke: var(--gust); stroke-width: 1; opacity: 0.18; filter: blur(3px); }
+.trunk-line { fill: none; stroke: var(--gust-dim); stroke-width: 1; }
+.trunk-flow {
+  fill: var(--gust); filter: drop-shadow(0 0 5px var(--gust-dim));
+  offset-rotate: 0deg; animation: trunk-run 3.4s linear infinite;
+}
+@keyframes trunk-run { from { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
+.gust-stop-a, .gust-stop-b, .gust-stop-c { animation: gust-cycle 9s ease-in-out infinite; }
+.gust-stop-b { animation-delay: -3s; }
+.gust-stop-c { animation-delay: -6s; }
+@keyframes gust-cycle {
+  0%, 100% { stop-color: var(--gust); }
+  50% { stop-color: var(--flag-soft); }
+}
+
+.scan {
+  fill: none; stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 2 5;
+  transform-box: fill-box; transform-origin: center; opacity: 0.6;
+  animation: scan-spin 8s linear infinite;
+}
+.scan.ccw { animation-direction: reverse; }
+.scan-hub { stroke: var(--flag-dim); animation-duration: 11s; }
+@keyframes scan-spin { to { transform: rotate(360deg); } }
 
 .edge { stroke-width: 1; fill: none; transition: opacity 0.35s, stroke-width 0.35s; }
 .edge.up { stroke: color-mix(in srgb, var(--ok) 52%, transparent); stroke-dasharray: 3 5; animation: edge-flow 2.8s linear infinite; }
@@ -546,11 +592,15 @@ h2.sec-title::before {
 .node[data-model="Claude"] .core { fill: var(--m-claude); color: var(--m-claude); }
 .node[data-model="GLM"] .core { fill: var(--m-glm); color: var(--m-glm); }
 .node[data-model="GPT"] .core { fill: var(--m-gpt); color: var(--m-gpt); }
+.node[data-model="Muse"] .core { fill: var(--m-muse); color: var(--m-muse); }
 
 /* host filtering: one rule per host; JS just sets data-filter on the svg root */
 .topo[data-filter="Tidal host"] .hosted:not([data-host="Tidal host"]),
 .topo[data-filter="Beacon host"] .hosted:not([data-host="Beacon host"]),
-.topo[data-filter="Mountain host"] .hosted:not([data-host="Mountain host"]) { opacity: 0.12; }
+.topo[data-filter="Mountain host"] .hosted:not([data-host="Mountain host"]),
+.topo[data-filter="Gale host"] .hosted:not([data-host="Gale host"]) { opacity: 0.12; }
+.topo[data-filter]:not([data-filter="All"]) .clusterbox:not(.galebox) .meshline,
+.topo[data-filter]:not([data-filter="All"]) .trunks { opacity: 0.12; transition: opacity 0.35s; }
 
 .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 26px; font-size: 0.82rem; color: var(--text-dim); }
 .legend .led { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: baseline; }
@@ -691,5 +741,5 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .ping, .photon, .signal-ring, .scene .rain-line { display: none; }
+  .ping, .photon, .signal-ring, .scene .rain-line, .scan, .trunk-flow, .aurora { display: none; }
 }

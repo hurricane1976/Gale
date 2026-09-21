@@ -8,7 +8,7 @@ const topo = document.getElementById("topo");
 const detail = document.getElementById("topo-detail");
 if (!topo || !detail) throw new Error("topology markup missing");
 
-const MODEL_COLOR = { Claude: "var(--m-claude)", GLM: "var(--m-glm)", GPT: "var(--m-gpt)" };
+const MODEL_COLOR = { Claude: "var(--m-claude)", GLM: "var(--m-glm)", GPT: "var(--m-gpt)", Muse: "var(--m-muse)" };
 const DEFAULT_DETAIL = detail.innerHTML;
 
 /* ---- photon pulses along confirmed edges (decoration: JS-only, and
