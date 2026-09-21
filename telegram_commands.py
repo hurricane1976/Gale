@@ -97,7 +97,7 @@ def write_offset(n):
 # --------------------------------------------------------------------------
 def cmd_help(_arg):
     return (
-        "Tempest commands (operator only, opencode/muse-spark-1.2):\n"
+        "Tempest commands (operator only, openrouter/z-ai/glm-5.3-flash):\n"
         "/status   services, disk, uptime, tailnet IP, last backup, last wake\n"
         "/health   alias for /status\n"
         "/notes    the latest NOTES.md entry\n"

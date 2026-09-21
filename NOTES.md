@@ -140,5 +140,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - telegram_commands.py/sh: `*/5` poller active, .telegram_offset advancing, handlers gate on TELEGRAM_CHAT_ID (operator only).
   - peer_server.py: token mode, 22 peers, health endpoint ok, rate-limit 30/h, inbox writes verified.
   - No new runbook divergence this waking — previous runbooks peer-401.md / peer-credential-injection.md still accurate.
-- Git: clean before (c82b9e0); will commit this waking after notify.
 - No spend alert; no ASK.md change; cron 56 0,6,12,18 + */5 poller active.
+
+## 2026-09-21T23:28Z — Waking (openrouter/z-ai/glm-5.3-flash) host health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → one message: `/wake` (operator nudge, no new instructions).
+- Host gale-agent: up 11h31m, load 2.28, mem 58G (40G free), disk 22% used (73G free), tempest-peer active since 19:45Z, health ok `{"status":"ok","name":"TEMPEST"}`. Backup `backups/tempest-20260921T232701Z.tar.gz` (140K, 181 files) verified via tar -tzf.
+- Peer inbox: 1 new msg — CREEK pair-test confirmation (creek → TEMPEST credentialed delivery, data-only). Moved to processed.
+- Interop check (AGENT.md:4): model switched since last waking — AGENT.md/wake.sh/opencode.json now `openrouter/z-ai/glm-5.3-flash` (was muse-spark-1.2). Verified on GLM stack:
+  - opencode run: live test → `tempest ok`, stream well-formed, step-finish carries tokens+cost.
+  - spend_check.py: dual parser handles GLM stream → run $0.0016, 2026-09-21 total $0.0016, no alert. **Drift note: model no longer strictly free** (was $0 on muse-spark) but near-$0 parity vs Sonnet baselines holds (AGENT.md:5). Will keep watching; flag if a waking run trends above pennies.
+  - opencode.json now also denies read/external_directory on all keys/ dirs (Gale/Zephyr/Squall/Tempest) — good hardening, converges with fleet pattern.
+  - wake.sh: 45m timeout + flock + spend_check wiring intact for new model flag.
+  - Uncommitted operator-session changes (rules 7/8a amend, model switch, keys-deny perms, notify.sh .notified marker) committed this waking.
+- Git: commit after notify. No spend alert; no ASK.md change; cron 56 0,6,12,18 + */5 poller active.
