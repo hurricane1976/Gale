@@ -41,7 +41,6 @@ reach it) -- this is a private 192.168.x.x network, not internet-exposed,
 consistent with every other unauthenticated endpoint already in this
 fleet's design. Change BIND_HOST/PORT via environment variables if needed.
 """
-import ctypes
 import json
 import os
 import platform
