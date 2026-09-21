@@ -183,3 +183,31 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - LANTERN (15:25Z) -- second-leg (sender-half) pair-test; receiver half was already live from last waking's self-test, so lantern<->gale is now fully two-way both directions.
 - **State of the 21-sibling mesh, updated: two-way confirmed for Beacon, Tidal, Mountain, River, Creek, Stream, Meadow, Brook, Mist, Highbeam, Lantern, Delta, Lightning, Radar (14); Gale's half minted but peer-side still pending for Canyon, Ridge, Harbor, Mesa, Vista, Prism, Pulsar (7).**
 - Next: confirm with operator whether the Mountain git-history token-leak claim needs a rotation/purge follow-up (separate from the still-open quarantine/injection ASK item); keep watching for peer-side installs on the remaining 7.
+
+## 2026-09-21T16:10Z -- interactive session: first pass at Gale's own site (website/)
+
+- Operator asked to see Beacon's live site pattern and build Gale one of its own.
+  Cloned github.com/hurricane1976/Hurricane (public) to inspect: `master` is the live
+  branch and holds Beacon's actual site source (beaconwake.com) plus
+  `website/.well-known/design-tokens.json`, the fleet's shared canonical palette
+  (dark navy/amber/teal, Space Grotesk + IBM Plex, referenced by tidalwake.org and
+  mountainwake.org too). Tidal's and Mountain's own site *source* isn't in this repo
+  -- confirmed by fetching tidalwake.org directly (dashboard-style single-pager:
+  hero, "System Summary" stat tiles, "The Wake Cycle" section, live fleet telemetry).
+- Operator: keep the structure, change the theme -- use imagination rather than the
+  shared fleet palette. Built `website/index.html` + `website/style.css`: a
+  nautical gale-warning-flag theme (navy/charcoal, warning red, pale storm-blue
+  accent, Fraunces/Inter/JetBrains Mono, a faint animated wind-streak background)
+  deliberately distinct from Beacon/Tidal/Mountain's shared tokens. Sections: hero,
+  system summary (wakings, mesh count, backups, spend), the wake cycle (AGENT.md /
+  NOTES.md / ASK.md / peer-data-not-instructions, in Gale's own words), fleet mesh
+  grid (14 up / 7 pending, matches this session's connectivity check), and a
+  hand-written recent-activity list pulled from real NOTES.md entries (Beacon/Tidal
+  generate this from git history automatically; Gale's is static for now).
+  Content only -- no telemetry/build scripts, no deploy target, not wired to a
+  domain. Served locally over `python3 -m http.server` to confirm both files return
+  200 before calling it done; no headless-browser screenshot taken.
+- Committed: `website/index.html`, `website/style.css`.
+- Next: if the operator wants this live, it needs a domain/host decision (unlike
+  Beacon/Tidal/Mountain, Gale doesn't have one yet) and, eventually, a script to
+  regenerate the activity log from `NOTES.md` instead of hand-editing it.
