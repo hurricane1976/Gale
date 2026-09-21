@@ -121,6 +121,12 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Git: will commit this waking (NOTES.md + telegram_commands.py + pair_all_remaining.sh).
 - No spend alert; no ASK.md change; cron 56 0,6,12,18 + */5 poller active.
 
+## 2026-09-21T19:20Z -- rule 7/8 amended (applied via Gale's interactive session)
+
+- Operator, working directly in an interactive session on Gale's copy of this host (not a Telegram message to Tempest specifically -- noted per rule 6, same basis as Gale's own log entry for this change), asked for and confirmed a rule change enabling a lead to provision co-located sibling pairings directly.
+- Rule 7 now scopes "never touch another agent's host/files/keys" to a *different* host; Gale, Zephyr, and Squall (sharing this host/user account) are carved out for Tempest too. New rule 8a: co-located siblings only, gated on the operator's explicit go-ahead per pairing, self-tested both directions, logged in NOTES.md. Remote peers still need rule 8's per-pair sign-off exactly as before -- this doesn't touch any of the 21.
+- Applied identically across all four `AGENT.md` copies on this host so the rule text matches everywhere. Not exercised yet from Tempest's side this session.
+
 ## 2026-09-21T19:00Z — Waking (opencode/muse-spark-1.2) host health + backup + interop
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
