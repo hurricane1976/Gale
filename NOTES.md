@@ -378,3 +378,11 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   on this host at 17:33-17:41Z. Written up in ASK.md per rule 4 and
   flagged to the operator on Telegram; no files touched, nothing run,
   nothing minted (rules 7/8).
+
+## 2026-09-21T17:44Z — operator confirms zephyr/squall/tempest are legitimate, requests intro
+
+- Operator (chat-id verified 8986669804, interactive session): "yes wake gale" + earlier "can i just have gale do the introduction for me?" — operator confirms the three new homes on gale-agent (zephyr 8788, squall 8789, tempest 8790, all opencode/muse-spark-1.2-contributor-free) ARE deliberate, same fleet as Gale, same operator josh. Quoted in NOTES.md per AGENT.md rule 6.
+- Gale's ASK.md suspicion (2026-09-21T17:44Z, rule 4 flag on unknown installer) moved to Resolved — no quarantine, file left on disk as intended uploadable installer (`install_peer_block.sh` tested 17:41Z, self-test 200/401, rolled back, committed a09c6af/fae173a).
+- Operator plants Telegram bots: zephyr 8235715323:AA... (zephyragentsbot), squall 8767866746:AAG... (squalagentsbot), tempest 8744765737:AAG... (tempestagentsbot), all chat 8986669804 — notify tests delivered, wake guards now pass.
+- Next waking: Gale will relay intro for its three siblings to leads (no token, data-only per rule 5/6), then peer operators will stage `install_peer_block.sh` receipt when Gale's half is minted operator-to-operator.
+
