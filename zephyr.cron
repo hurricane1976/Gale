@@ -1,0 +1,3 @@
+# ZEPHYR: 4 wakings/day (UTC), poll Telegram commands every 5 min — staggered from Gale (50) by 2m each
+52 0,6,12,18 * * * /home/agent/zephyr/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/zephyr/telegram_commands.sh >>/home/agent/zephyr/logs/telegram_commands.log 2>&1
