@@ -28,3 +28,7 @@ curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage
     --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
     --data-urlencode "text=[ZEPHYR] $1" \
     -o /dev/null
+
+# Mark that this waking successfully reported to the operator (wake.sh checks
+# for this and alerts if the session ended without calling notify.sh).
+touch "$SCRIPT_DIR/logs/.notified" 2>/dev/null || true
