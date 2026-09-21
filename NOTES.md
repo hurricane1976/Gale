@@ -304,3 +304,67 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - No repo changes this entry -- host tooling only (chromium snap, NodeSource
   apt repo + nodejs/npm packages). Scratch screenshots cleaned up, not
   committed anywhere.
+
+## 2026-09-21T17:50Z -- interactive session: full rebuild of website/ (dashboard + fleet topology), modern-technique pass
+
+- Operator asked for a complete update of the Gale site and fleet topology
+  using current web techniques/animations/graphics, reviewing Beacon's
+  beaconwake.com source (scratch clone at /tmp/opencode/hurricane) for
+  inspiration. Re-read Beacon's components via a subagent and adapted the
+  *mechanics* (not the files) into Gale's own storm theme.
+- Biggest structural change: **dropped the React-UMD + babel-standalone
+  runtime hack** (3 CDN round trips + ~700 KB in-browser JSX transform per
+  page load, and a blank page on any CDN hiccup). Replaced with plain
+  semantic HTML + one stylesheet + vanilla ES modules (`shared.js`,
+  `main.js`, `fleet.js`; `node --check` clean). Still zero build step.
+  Files: `gale.css` replaces `style.css`; `app.js` and `style.css` deleted
+  from repo and docroot (deploy.sh now rm's the stale two).
+- Progressive enhancement as the architecture, Beacon-style: the full mesh
+  and fleet-topology SVGs are *static markup in the HTML* (coordinates
+  pre-computed, data-* attrs carrying host/model/role/listener/state), so
+  JS-off visitors get the complete diagram, roster, stats, and log. JS only
+  adds: photons on confirmed edges, ping-halo stagger, hover/focus detail
+  strip, host filter chips (one data-filter attribute + 3 CSS rules),
+  count-ups, tilt/glow cards, live clock. Verified JS-off via Playwright
+  `javaScriptEnabled: false` -- full topology renders.
+- New/ported effects: sticky **scroll-scrubbed wake-cycle stage** (Beacon's
+  ScrollTopology pattern: 400vh track, rAF `--seen`-style progress, ring
+  draws + step dots + copy crossfade; content read from the static <ol> so
+  there's one source of truth; reduced-motion keeps the plain list);
+  **lighthouse-in-storm SVG hero scene** (rotating beam with mix-blend-mode
+  screen, pulsing signal rings, lightning flash, drifting blurred clouds,
+  looping waves + rain, pointer parallax on data-depth layers); **radar
+  sweep wedge** behind the fleet board (blurred, slow); photon comets via
+  stroke-dasharray travel; improved canvas wind-streak field (DPR-aware,
+  visibility-paused, cursor gusts, static frame under reduced motion);
+  gale-warning **conditions ticker** (CSS marquee); cross-document
+  **@view-transition** + speculation-rules prefetch; CSS scroll-timeline
+  scroll-progress with JS fallback; @property gradient-angle shine;
+  container-query card type; color-mix() tints; mask-fade nav on narrow
+  screens; skip link; :where():focus-visible ring; ::selection theming;
+  global reduced-motion kill-switch.
+- Verification (headless, per the virtual-time lesson): Chromium
+  --dump-dom for DOM/console checks, then **playwright-core driving the
+  snap chromium** (npm i playwright-core, executablePath=/snap/bin/chromium
+  -- no browser download, no spend) for real interaction: scrub at 5 scroll
+  depths (steps/dots/ring/bar all correct; my first "stuck on step 01"
+  reading was a mis-aimed test, not a bug), node hover -> detail strip +
+  peer-card highlight, host filter chips, mobile 390px (fixed hero
+  collapsing + headline clamp floor + detail-strip wrap), no-JS renders.
+  Console/pageerror: none anywhere.
+- Found+fixed along the way: unexported shared.js names (REDUCED/raf,
+  caught by chromium console), clock wake-time constants off by 100s and a
+  float-division "18.8055:48.33:00" bug, ticker spacing selector after the
+  markup gained .ticker-half, nav mask clipping "Log" on wide screens,
+  fleet eyebrow stretching full-width in the grid, radar sweep too hard
+  (added blur), lighthouse cluster crammed at scene edge (shifted 110px
+  left, stronger waves).
+- Scratch (_test docroot copy for instant-scroll screenshots,
+  /home/agent/site-shots, pwtest scratch) all cleaned up. Live at
+  http://100.66.39.59:8090/ and /fleet.html; deployed via deploy.sh.
+- Committed: website/{index.html,fleet.html,gale.css,shared.js,main.js,
+  fleet.js,deploy.sh}, removal of app.js/style.css, this entry.
+- Next candidates: render the activity log from NOTES.md automatically
+  (still hand-written), a domain+TLS decision for the operator, and live
+  /api/pulse-style data if the operator wants true telemetry instead of
+  the hand-maintained mesh state.
