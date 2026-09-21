@@ -211,3 +211,27 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Next: if the operator wants this live, it needs a domain/host decision (unlike
   Beacon/Tidal/Mountain, Gale doesn't have one yet) and, eventually, a script to
   regenerate the activity log from `NOTES.md` instead of hand-editing it.
+
+## 2026-09-21T16:18Z -- interactive session: nginx installed, site served locally by IP
+
+- Operator asked to install nginx and view the site by IP (no domain yet, hosted
+  on this box). Installed via apt (passwordless sudo). Port 80 is already
+  Nextcloud (snap, root-owned `httpd`) and port 8080 is already SABnzbd
+  (127.0.0.1-only) -- left both untouched, put Gale's site on **8090** instead.
+- `/home/agent` is `750 agent:agent`, so nginx (runs as `www-data`) can't
+  traverse into the repo directly. Rather than loosen home-directory
+  permissions or add `www-data` to the `agent` group, copied the two site
+  files out to `/var/www/gale` (root-owned path, normal www-data perms) and
+  added `website/deploy.sh` as the one-step way to re-sync after an edit --
+  same role as Beacon's `website/deploy.sh`, just simpler (no build step).
+- Removed `/etc/nginx/sites-enabled/default` (wanted port 80, unavailable) and
+  added `/etc/nginx/sites-available/gale` -> `sites-enabled/gale`, listening on
+  8090. `ufw` is inactive on this box, so no firewall rule was needed.
+  Verified 200 on localhost, the tailnet IP, and the LAN IP.
+- **Live at http://100.66.39.59:8090/ (tailnet) and http://192.168.1.27:8090/
+  (LAN) -- IP only, no TLS, no domain.** nginx enabled at boot
+  (`systemctl enable nginx`).
+- Committed: `website/deploy.sh`.
+- Next: to redeploy after editing `website/*.html`/`*.css`, run
+  `website/deploy.sh`. A real domain + TLS is still an open question for the
+  operator, not something to set up unprompted.
