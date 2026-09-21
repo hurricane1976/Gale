@@ -5,7 +5,7 @@
 # link between the two, same role as Beacon's website/deploy.sh.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css /var/www/gale/
+sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js /var/www/gale/
 sudo chown -R www-data:www-data /var/www/gale
 sudo chmod -R 755 /var/www/gale
 sudo nginx -t

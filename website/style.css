@@ -40,33 +40,68 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-body::before {
-  /* wind streaks: three faint diagonal gusts drifting across the hero */
-  content: "";
+#root { position: relative; }
+
+/* ---- Backdrop: fixed SVG storm arcs, rendered by the Backdrop component ---- */
+.backdrop {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 0;
-  background:
-    repeating-linear-gradient(
-      100deg,
-      transparent 0,
-      transparent 140px,
-      var(--gust-dim) 140px,
-      transparent 142px,
-      transparent 340px
-    );
-  opacity: 0.12;
-  animation: gust 22s linear infinite;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-@keyframes gust {
-  from { background-position: 0 0; }
-  to { background-position: 1200px 0; }
+.backdrop svg { width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; }
+
+.backdrop-arc {
+  fill: none;
+  stroke: var(--gust);
+  stroke-width: 1;
+  opacity: 0.1;
+  transform-origin: 300px 300px;
+  animation: swirl 60s linear infinite;
+}
+
+.backdrop-arc:nth-child(2) { stroke: var(--flag); opacity: 0.07; animation-duration: 90s; animation-direction: reverse; }
+.backdrop-arc:nth-child(3) { opacity: 0.05; animation-duration: 130s; }
+
+@keyframes swirl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body::before { animation: none; }
+  .backdrop-arc { animation: none; }
+}
+
+/* ---- Hero pointer glow (HeroGlow), set via --mx/--my custom properties ---- */
+.hero { position: relative; }
+
+.hero-glow {
+  position: absolute;
+  inset: -40px -32px auto -32px;
+  height: 420px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    460px circle at var(--mx, 30%) var(--my, 20%),
+    var(--flag-dim),
+    transparent 60%
+  );
+  transition: background-position 0.2s ease-out;
+}
+
+/* ---- Reveal: fade-up on first intersection ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
 
 a { color: var(--gust); text-decoration: none; }
@@ -215,9 +250,9 @@ section h2 {
 
 .wake-cycle {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 0.95fr 1.05fr;
   gap: 40px;
-  align-items: start;
+  align-items: center;
 }
 
 @media (max-width: 760px) {
@@ -231,6 +266,55 @@ section h2 {
 
 .wake-cycle li { margin-bottom: 14px; }
 .wake-cycle li strong { color: var(--text); font-weight: 500; }
+
+/* ---- OrbitRing: the wake cycle as an animated ring, 4 steps ---- */
+.orbit-card { display: flex; justify-content: center; }
+
+.orbit-ring { stroke: var(--line); stroke-width: 1.5; fill: none; }
+.orbit-ring-dash { stroke: var(--glass-border); stroke-width: 1; fill: none; stroke-dasharray: 2 6; }
+
+.orbit-step-dot { fill: var(--text-faint); }
+
+.orbit-travel {
+  transform-origin: 130px 130px;
+  animation: orbit-spin 16s linear infinite;
+}
+
+.orbit-traveller { fill: var(--flag); filter: drop-shadow(0 0 6px var(--flag-dim)); }
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-travel { animation: none; }
+}
+
+/* ---- Live clock + next-wake countdown ---- */
+.clock-card {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-top: 18px;
+}
+
+.clock-time {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.clock-next {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--gust);
+}
 
 .wake-times {
   display: flex;
@@ -248,6 +332,33 @@ section h2 {
   padding: 8px 12px;
   color: var(--gust);
 }
+
+.mesh-graph { display: flex; justify-content: center; margin-bottom: 32px; }
+.mesh-svg { max-width: 100%; height: auto; }
+
+.mesh-line { stroke-width: 1; fill: none; }
+.mesh-line.up { stroke: var(--ok); opacity: 0.55; stroke-dasharray: 3 4; animation: mesh-flow 2.4s linear infinite; }
+.mesh-line.pending { stroke: var(--text-faint); opacity: 0.3; stroke-dasharray: 1 5; }
+
+@keyframes mesh-flow {
+  to { stroke-dashoffset: -14; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-line.up { animation: none; }
+}
+
+.mesh-node-hub { fill: var(--flag); filter: drop-shadow(0 0 8px var(--flag-dim)); }
+.mesh-node.up { fill: var(--ok); }
+.mesh-node.pending { fill: var(--text-faint); }
+
+.mesh-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--text-faint);
+}
+
+.mesh-label.up { fill: var(--text-dim); }
 
 .mesh-grid {
   display: grid;

@@ -235,3 +235,41 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Next: to redeploy after editing `website/*.html`/`*.css`, run
   `website/deploy.sh`. A real domain + TLS is still an open question for the
   operator, not something to set up unprompted.
+
+## 2026-09-21T16:26Z -- interactive session: rebuilt the site in React, matching fleet techniques
+
+- Operator: liked the layout but called it plain, and asked to look at how
+  Beacon/Tidal/Mountain do it and use more advanced techniques (React, etc).
+  Re-checked out `master` in the scratch clone and read the actual front-door
+  components (`website/site/src/components/`): `Reveal.jsx` (IntersectionObserver
+  fade-up), `HeroLattice.jsx` (pointer-tracked glow via CSS custom properties),
+  `OrbitLoop.jsx` (SVG ring, 4-step wake cycle, animated traveller dot),
+  `FleetGraph.jsx` (SVG hub-and-spoke of the whole fleet), `LivePulse.jsx` /
+  `NowWidget.jsx` (live client-fetched widgets). Beacon's version is a real
+  Vite + React SSR/prerender pipeline (`npm run release` -> `deploy.sh`) -- this
+  box has no `node`/`npm` installed, and installing a full Node toolchain on a
+  shared home server (also running Nextcloud, SABnzbd) just to build a personal
+  status page felt like more ongoing maintenance than the ask warranted.
+- Went with the same *techniques*, no build step: React 18 + ReactDOM UMD from
+  cdnjs, JSX authored in `website/app.js` and transformed in-browser by
+  babel-standalone (`<script type="text/babel" src="app.js">`). Original
+  implementations of each pattern, adapted to Gale's own content and gale-
+  warning theme (not copied from Beacon's files, which are Beacon-specific):
+  scroll-reveal wrapper, pointer-glow hero, an animated wake-cycle ring, an SVG
+  mesh graph (Gale at the hub, 21 peers around it, confirmed links pulse,
+  pending ones stay dim/static), and a live UTC clock with a countdown to the
+  next scheduled wake. `index.html` keeps a static (no-JS) fallback in `#root`
+  in case the CDN scripts fail to load.
+- `deploy.sh` updated to also copy `app.js` (previously just `*.html`/`*.css`).
+- No headless browser on this box to screenshot/render-test the result --
+  checked instead by: confirming all three files (and the three CDN scripts)
+  return 200, and a manual bracket/paren-balance pass over `app.js` since a
+  JSX syntax error would otherwise only surface as a blank page at runtime.
+  Flagging this gap rather than claiming a visual check that didn't happen --
+  operator should eyeball http://100.66.39.59:8090/ before considering this done.
+- Committed: `website/app.js`, `website/index.html`, `website/style.css`,
+  `website/deploy.sh`.
+- Next: if this holds up, the same no-build approach could grow a live
+  `/api/pulse`-style endpoint later (mirroring Beacon's `LivePulse`), but
+  nothing async/fetching yet -- everything in `app.js` today is static content
+  plus client-only animation.
