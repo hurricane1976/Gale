@@ -17,6 +17,12 @@ endpoint that returns 2xx when healthy.
 
 Run mode: `./sysmon.py` loops forever (systemd service). `./sysmon.py --once`
 writes a single snapshot and exits (used for manual checks / testing).
+
+Also includes a read-only Firewalla box/device/rule snapshot (see
+firewalla.py, collect_firewalla() below) polled on its own slower interval
+since it's a cloud API call, not a local one. Admin actions on that data
+(pause/resume/block) are a separate always-on service, firewalla_control.py
+-- this collector never writes.
 """
 import json
 import os
@@ -30,6 +36,8 @@ import urllib.request
 from datetime import datetime, timezone
 
 import psutil
+
+from firewalla import FirewallaClient, FirewallaError
 
 # ---------------------------------------------------------------------------
 # Config -- edit here to extend what's monitored. Nothing below this block
@@ -291,6 +299,42 @@ def collect_targets():
     return [probe_target(t) for t in TARGETS]
 
 
+# Firewalla is a cloud API (MSP), not a local call -- poll it far less often
+# than the 15s host loop so this collector doesn't hammer the account.
+# Admin actions (pause/resume/block) go through firewalla_control.py, not
+# this collector; this only ever reads.
+_fw_client = FirewallaClient()
+_fw_cache = {"t": 0, "data": None}
+FIREWALLA_POLL_S = 60
+
+
+def collect_firewalla():
+    now = time.time()
+    if _fw_cache["data"] is not None and now - _fw_cache["t"] < FIREWALLA_POLL_S:
+        return _fw_cache["data"]
+    if not _fw_client.configured:
+        data = {"ok": False, "error": "not configured"}
+    else:
+        try:
+            boxes = _fw_client.boxes()
+            box = boxes[0] if boxes else None
+            gid = box["gid"] if box else None
+            devices = _fw_client.devices(gid) if gid else []
+            rules = _fw_client.rules(gid) if gid else []
+            data = {
+                "ok": True,
+                "box": box,
+                "devices": devices,
+                "rules": rules,
+                "devices_online": sum(1 for d in devices if d.get("online")),
+            }
+        except FirewallaError as e:
+            data = {"ok": False, "error": str(e)}
+    _fw_cache["t"] = now
+    _fw_cache["data"] = data
+    return data
+
+
 def snapshot():
     return {
         "generated_at": iso_now(),
@@ -300,6 +344,7 @@ def snapshot():
         "services": collect_services(),
         "security": collect_security(),
         "targets": collect_targets(),
+        "firewalla": collect_firewalla(),
     }
 
 
