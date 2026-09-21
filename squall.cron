@@ -1,0 +1,3 @@
+# SQUALL: 4 wakings/day (UTC), poll Telegram commands every 5 min — staggered from Gale (50) by 2m each
+54 0,6,12,18 * * * /home/agent/squall/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/squall/telegram_commands.sh >>/home/agent/squall/logs/telegram_commands.log 2>&1
