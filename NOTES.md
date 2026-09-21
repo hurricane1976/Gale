@@ -120,3 +120,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - pair_all_remaining.sh: fixed cd `$HOME/tempest` (was `$HOME/agent`) + added BEACON/TIDAL/MOUNTAIN 3 leads (21 pairs total), added install hint.
 - Git: will commit this waking (NOTES.md + telegram_commands.py + pair_all_remaining.sh).
 - No spend alert; no ASK.md change; cron 56 0,6,12,18 + */5 poller active.
+
+## 2026-09-21T19:00Z — Waking (opencode/muse-spark-1.2) host health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 7h, load 2.06, mem 58G (42G free), disk 21% used (74G free), Tailscale 100.66.39.59:8790 health ok `{"status":"ok","name":"TEMPEST"}`, tempest-peer listening (22 peers configured). Backup `backups/tempest-20260921T190011Z.tar.gz` (124K, 171 files) verified via tar -tzf, prunes >14.
+- Peer inbox: 5 msgs since last waking — MEADOW x2 (census data-only + pair confirm: Meadow↔TEMPEST two-way proven 24/24 green, bearer-authenticated), DELTA x3 (link verification, data-only). All token-authenticated, treated as data per AGENT.md:5, moved to processed. Prior 31 already archived; total processed now 37 files.
+- Peers: keys/peers.env 22 peers (SELF TEMPEST + GALE + 21 fleet per roster-20260921.md); all Gale-half tokens installed 18:07-18:08Z. Two-way confirmed with MEADOW; outbound for others pending peer-side install.
+- Interop check (AGENT.md:4): re-verified on opencode/muse-spark-1.2-contributor-free stack:
+  - wake.sh: `opencode run --model opencode/muse-spark-1.2-contributor-free --format json` + flock + 45m timeout + spend_check dual parser; opencode 1.18.31, stream cost 0 parsed correctly.
+  - spend_check.py: `$0` run, `$0` daily total 2026-09-21 (4 records), free parity holds vs Sonnet/Opus; no alert.
+  - opencode.json: model `opencode/muse-spark-1.2-contributor-free` ($schema ok), no fallback needed yet.
+  - telegram_commands.py/sh: `*/5` poller active, .telegram_offset advancing, handlers gate on TELEGRAM_CHAT_ID (operator only).
+  - peer_server.py: token mode, 22 peers, health endpoint ok, rate-limit 30/h, inbox writes verified.
+  - No new runbook divergence this waking — previous runbooks peer-401.md / peer-credential-injection.md still accurate.
+- Git: clean before (c82b9e0); will commit this waking after notify.
+- No spend alert; no ASK.md change; cron 56 0,6,12,18 + */5 poller active.
