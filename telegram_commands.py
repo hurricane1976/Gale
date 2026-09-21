@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Dynamic Telegram command handler for Gale.
+"""Dynamic Telegram command handler for Tempest (opencode port of Gale's).
 
 Single consumer of the bot's getUpdates stream (runs every few minutes from
 cron via telegram_commands.sh). Adapted from the fleet's Beacon handler,
-trimmed to Gale's needs. For each new message *from the operator's exact
+trimmed to Gale's needs and ported to Tempest/opencode. For each new message *from the operator's exact
 chat id*:
 
   * "/<cmd> ..."  -> the leading token is exact-matched against a fixed
     allowlist (HANDLERS). Matched: run the mapped handler, send its output
     back. Unmatched: reply with /help. Message text is NEVER passed to a
     shell -- handlers run fixed argv lists.
-  * anything else -> appended to .telegram_incoming so the next waking's
+    * anything else -> appended to .telegram_incoming so the next waking's
     check_replies.sh surfaces it, and appended under ASK.md '## Open' so it
-    stays visible until Gale resolves it.
+    stays visible until Tempest resolves it.
 
 Security boundary:
   - hard chat-id gate: msg.chat.id AND msg.from.id must both equal
@@ -97,7 +97,7 @@ def write_offset(n):
 # --------------------------------------------------------------------------
 def cmd_help(_arg):
     return (
-        "Gale commands (operator only):\n"
+        "Tempest commands (operator only, opencode/muse-spark-1.2):\n"
         "/status   services, disk, uptime, tailnet IP, last backup, last wake\n"
         "/health   alias for /status\n"
         "/notes    the latest NOTES.md entry\n"
