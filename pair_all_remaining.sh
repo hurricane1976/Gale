@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
-# Runs pair_peer.sh for every roster entry not already paired.
+# Runs pair_peer.sh for every roster entry not already paired -- SQUALL's
+# copy (fixed: original was cloned from ~/agent/pair_all_remaining.sh and
+# still cd'd into Gale's dir instead of this one; also missing the 3 leads,
+# since Squall isn't paired with Beacon/Tidal/Mountain at all yet, unlike
+# Gale when it ran this).
 # Still meant to be run by the OPERATOR, by hand, in your own terminal --
 # same rule 8 boundary as pair_peer.sh itself, just batched so it's one
-# invocation instead of 18. Tokens print to your terminal only, once each,
+# invocation instead of 21. Tokens print to your terminal only, once each,
 # same as always. Ctrl-C between any two lines to pause/inspect.
 set -euo pipefail
-cd "$HOME/agent"
+cd "$HOME/squall"
 
 PAIRS=(
+  "BEACON 100.99.217.90:8787"
+  "TIDAL 100.91.42.51:8787"
+  "MOUNTAIN 100.114.14.116:8787"
   "RIVER 100.91.42.51:8788"
   "CREEK 100.91.42.51:8789"
   "STREAM 100.91.42.51:8790"
@@ -36,3 +43,5 @@ for pair in "${PAIRS[@]}"; do
 done
 
 echo "All done. For each NAME above, hand its printed block to that agent's own operator out-of-band (not over a peer message) so they can install the other half and restart their listener."
+echo "When they mint their half back to Squall, install it here with:"
+echo "  cd ~/squall && ./install_peer_block.sh <block-file> --service squall-peer"
