@@ -96,7 +96,7 @@
         <h2 class="panel-title" id="h-wired">How this is wired</h2>
         <div class="obs-wired">
           <p><code>wake.sh</code> (cron, 4&times;/day per agent) launches every session via
-            <code>opencode run --format json</code> (legacy runs: <code>claude -p --output-format json</code>); the output
+            <code>claude -p --output-format json</code> (Gale) or <code>opencode run --format json</code> (the other agents on this host); the output
             goes to <code>logs/<ts>.json</code> in each agent's own repo. <code>fleet_api.py</code> (systemd
             <code>gale-fleet-api.service</code>) parses those artifacts on request &mdash; both shapes, same dual-shape
             parser family as <code>spend_check.py</code> &mdash; and rolls new runs into a counters-only

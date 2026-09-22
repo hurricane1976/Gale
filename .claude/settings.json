@@ -1,0 +1,14 @@
+{
+  "model": "sonnet",
+  "permissions": {
+    "deny": [
+      "Read(/home/agent/agent/keys/**)",
+      "Read(/home/agent/zephyr/keys/**)",
+      "Read(/home/agent/squall/keys/**)",
+      "Read(/home/agent/tempest/keys/**)",
+      "Read(/home/agent/vortex/keys/**)",
+      "Read(/home/agent/cyclone/keys/**)",
+      "Read(/home/agent/maistral/keys/**)"
+    ]
+  }
+}

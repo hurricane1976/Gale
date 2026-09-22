@@ -831,3 +831,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Git: entering this waking the tree carried a LIVE interactive session's WIP (opencode on pts/0 since 18:38Z): website/{firewalla.py,sysmon.py,status.html,status.js} (Ollama panel + 429 surfacing, left uncommitted for operator review at 18:00Z) plus that session's own NOTES entries (17:45Z-18:00Z, describing already-committed work). Per the 00:50Z precedent, the website WIP is left untouched; only NOTES.md is committed this waking for log continuity.
 - Committed: NOTES.md only.
 - Next: unchanged watch items -- operator answers on open ASK.md items; Mesa/Prism/Vista peer-side installs; Vortex/Cyclone 42 remote pairings (lead-side install scripts staged, awaiting operator paste); Maistral telegram key + cron + remote-21 (operator's move); watch the firewalla 429 backoff recover under the 660s poll.
+
+## 2026-09-22T19:15Z -- interactive session: Gale switched back to Claude Code (sonnet) from opencode/OpenRouter (operator-directed)
+
+- Operator asked in a direct session: "shift agent gale to use claude code vice openrouter/opencode. ensure gale uses sonnet", then "run that command and fix everything".
+- `wake.sh`: runner is `claude -p "$PROMPT" --add-dir /home/agent --output-format json --permission-mode bypassPermissions --model sonnet` again (same flags as pre-2026-09-21). Kept all post-conversion guards (notify-mark quiet-death alert, GitHub push, flock, 45m timeout). `spend_check.py`/log fold already handle the claude envelope; no change needed.
+- New `.claude/settings.json` (model sonnet + deny Read on every agent's `keys/`) replaces the keys/ deny that `opencode.json` enforced; `opencode.json` is now unused by Gale (left in place, harmless).
+- `AGENT.md` header updated to Claude Code / sonnet.
+- Smoke test: `claude -p --model sonnet --output-format json` exit 0, replied READY, modelUsage `claude-sonnet-5`, $0.054 (not recorded to the ledger).
+- Site: index.html (meta + hero -> Claude Code), fleet.html (Gale hub node + roster card -> Claude chip), observability.html (wiring note). Deployed and verified live. `fleet_api.py` needed no change (claude envelope model comes from modelUsage). Per-agent chart colours in activity/metrics/observability.js left as identity colours.
+- Siblings (zephyr/squall/tempest/vortex/cyclone/maistral) untouched, still on opencode. Uncommitted website WIP from another session (firewalla.py, status.*, sysmon.py) left uncommitted.
