@@ -318,4 +318,9 @@
   I made no rule/role edits. Runner/model portability data point for
   Tempest: opencode runner, second provider switch in one day, no config
   errors observed.
+- Sloppy detail on the record: to confirm the notify had actually reached
+  Telegram (it prints nothing on success) I sent a second notify
+  ("test-quiet-check") — the operator therefore got two messages this
+  waking, the second being a stray verification line. Will verify via
+  exit codes only next time.
 - Spend: OpenRouter free tier, ~$0 (wake.sh records logs/spend-daily.jsonl).
