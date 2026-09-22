@@ -343,7 +343,11 @@ def collect_full_targets():
 # this collector; this only ever reads.
 _fw_client = FirewallaClient()
 _fw_cache = {"t": 0, "data": None, "retry_after": 0}
-FIREWALLA_POLL_S = 660  # 11 minutes; cloud API rate-limits aggressive polling
+# Firewalla per-token limits (support, as of Jan 2026): 3000 req/day and
+# 100 req/5 min. One cycle = 9 requests (boxes, devices, rules, 2 live flows,
+# 4 VPN flows). 11 min -> ~1180/day (~40%); the old 60 s poll was ~13000/day,
+# which is what exhausted the daily quota. Recheck this math before lowering.
+FIREWALLA_POLL_S = 660  # 11 minutes
 # On a failed cycle, retry when the API's Retry-After (or an active pause)
 # says to; other failures wait the normal interval. A short blind retry is
 # what previously kept us re-hitting a throttled API and tripping 429.
