@@ -359,6 +359,47 @@ function renderFirewall(fw) {
         ? `<button class="row-btn" data-fw-pause="${esc(r.id)}">Pause</button>`
         : `<button class="row-btn" data-fw-resume="${esc(r.id)}">Resume</button>`}</td>
     </tr>`).join("") || `<tr><td colspan="4">no rules</td></tr>`;
+
+  renderVpn(fw);
+}
+
+function fmtAgoEpoch(ts) {
+  if (!ts) return "–";
+  return fmtAgo(new Date(ts * 1000).toISOString());
+}
+
+function fmtBytes(n) {
+  if (!n) return "0 B";
+  if (n >= 1e9) return `${(n / 1e9).toFixed(2)} GB`;
+  if (n >= 1e6) return `${(n / 1e6).toFixed(2)} MB`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(1)} KB`;
+  return `${n} B`;
+}
+
+function renderVpn(fw) {
+  const vpn = fw.vpn || {};
+  const body = document.getElementById("fw-vpn-body");
+  const profiles = vpn.profiles || [];
+  const tunnels = vpn.tunnels || [];
+  document.getElementById("fw-vpn-total").textContent = profiles.length;
+  document.getElementById("fw-vpn-online").textContent = vpn.profiles_online || 0;
+  const kindLabel = { "wireguard-peer": "WireGuard peer", "openvpn-profile": "OpenVPN" };
+  document.querySelector("#fw-vpn-table tbody").innerHTML = profiles.map((p) => `<tr>
+      <td>${esc(p.name)}</td>
+      <td>${esc(kindLabel[p.kind] || p.kind)}</td>
+      <td><span class="pill" data-level="${p.online ? "ok" : "warn"}">${p.online ? "connected" : "offline"}</span></td>
+      <td><code>${esc(p.ip || "–")}</code></td>
+      <td>&darr; ${fmtBytes(p.download_24h)} / &uarr; ${fmtBytes(p.upload_24h)}</td>
+    </tr>`).join("") || `<tr><td colspan="5">no VPN profiles on the box</td></tr>`;
+  document.querySelector("#fw-tunnel-table tbody").innerHTML = tunnels.map((t) => `<tr>
+      <td>${esc(t.device)}</td>
+      <td>${t.direction === "inbound" ? "&larr; inbound" : "&rarr; outbound"}</td>
+      <td>${esc(t.protocol || "–")}</td>
+      <td>${t.flows}</td>
+      <td>${fmtBytes(t.bytes)}</td>
+      <td>${fmtAgoEpoch(t.last_ts)}</td>
+    </tr>`).join("") || `<tr><td colspan="6">no tunnel flows in the last 24h</td></tr>`;
+  document.getElementById("fw-vpn-note").textContent = vpn.note || "";
 }
 
 async function fwRefresh() {

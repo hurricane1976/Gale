@@ -80,6 +80,15 @@ class FirewallaClient:
         d = self._request("GET", f"/v2/rules?box={gid}")
         return d.get("results", d) if isinstance(d, dict) else d
 
+    def flows(self, gid, query, limit=10):
+        """Search flows (docs: /api-reference/flow + search.md qualifiers).
+        VPN tunnel traffic is derived here rather than from a dedicated VPN
+        endpoint -- the MSP API exposes no VPN-specific one (verified against
+        the live API and the published docs, 2026-09-22)."""
+        from urllib.parse import quote
+        d = self._request("GET", f"/v2/flows?query={quote(query)}&box={gid}&limit={limit}")
+        return d.get("results", []) if isinstance(d, dict) else []
+
     # ---- write ----
 
     def pause_rule(self, rule_id):

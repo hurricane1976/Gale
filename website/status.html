@@ -140,6 +140,31 @@
           </div>
           <p class="mini-note" id="fw-action-note"></p>
         </div>
+
+        <div id="fw-vpn-body" style="margin-top:26px">
+          <h3 class="fw-subtitle">VPN status <span style="color:var(--text-faint);font-weight:400">&middot; box profiles + tunnel activity through the network</span></h3>
+          <div class="fw-cols">
+            <div>
+              <h4 class="fw-subtitle" style="font-size:0.85rem">VPN profiles on the box (<span id="fw-vpn-online">0</span> online / <span id="fw-vpn-total">0</span>)</h4>
+              <div class="fw-table-scroll">
+                <table class="ops-table" id="fw-vpn-table">
+                  <thead><tr><th>Profile</th><th>Type</th><th>Session</th><th>IP</th><th>Traffic 24h</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h4 class="fw-subtitle" style="font-size:0.85rem">VPN tunnel activity (24h, common ports 51820/1194)</h4>
+              <div class="fw-table-scroll">
+                <table class="ops-table" id="fw-tunnel-table">
+                  <thead><tr><th>Device</th><th>Direction</th><th>Proto</th><th>Flows</th><th>Bytes</th><th>Last seen</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <p class="mini-note" id="fw-vpn-note"></p>
+        </div>
       </section>
 
       <section class="ops-panel span-full" aria-labelledby="h-targets">

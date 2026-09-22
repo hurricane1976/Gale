@@ -338,6 +338,67 @@ _fw_cache = {"t": 0, "data": None}
 FIREWALLA_POLL_S = 60
 
 
+VPN_PORTS = ("51820", "1194")  # wireguard default, openvpn default
+
+
+def _collect_vpn(gid, devices):
+    """VPN status, derived from the MSP API only (verified 2026-09-22: the
+    cloud API has no dedicated VPN endpoint, and the box object carries no
+    VPN fields). Two real sources:
+      * The box's own VPN profiles ARE devices with ovpn:/wg_peer: id
+        prefixes; their `online` flag is the live session state.
+      * Tunnel traffic of VPN clients running on LAN machines shows as
+        flows with sport/dport on the common VPN ports (51820/1194).
+    Richer per-handshake state would need the box's local API on :8833,
+    which is not accepting requests from here (needs a token minted on
+    the box itself) -- surfaced as a note in the dashboard."""
+    profiles = []
+    for d in devices:
+        did = str(d.get("id", ""))
+        if did.startswith("wg_peer:"):
+            kind = "wireguard-peer"
+        elif did.startswith("ovpn:"):
+            kind = "openvpn-profile"
+        else:
+            continue
+        profiles.append({
+            "kind": kind,
+            "name": d.get("name") or "(unnamed profile)",
+            "online": bool(d.get("online")),
+            "ip": d.get("ip"),
+            "download_24h": int(d.get("totalDownload") or 0),
+            "upload_24h": int(d.get("totalUpload") or 0),
+        })
+    tunnels = {}
+    for port in VPN_PORTS:
+        for direction, q in (("outbound", f"sport:{port}"), ("inbound", f"dport:{port}")):
+            try:
+                flows = _fw_client.flows(gid, q, limit=12)
+            except FirewallaError:
+                continue
+            for f in flows:
+                dev = f.get("device") or {}
+                key = (dev.get("name") or dev.get("ip") or "?", direction)
+                t = tunnels.setdefault(key, {
+                    "device": dev.get("name") or dev.get("ip") or "?",
+                    "direction": direction,
+                    "protocol": f.get("protocol"),
+                    "last_ts": 0, "flows": 0, "bytes": 0,
+                })
+                t["flows"] += 1
+                t["bytes"] += int(f.get("download") or 0) + int(f.get("upload") or 0)
+                t["last_ts"] = max(t["last_ts"], f.get("ts") or 0)
+    tunnel_list = sorted(tunnels.values(), key=lambda t: -t["last_ts"])[:8]
+    return {
+        "profiles": profiles,
+        "profiles_online": sum(1 for p in profiles if p["online"]),
+        "tunnels": tunnel_list,
+        "note": "Box-server session state = profile 'online' flag. The MSP cloud API has no VPN "
+                "endpoint (verified 2026-09-22); the box's local API on :8833 would give per-handshake "
+                "state but needs a token minted on the box itself.",
+    }
+
+
 def collect_firewalla():
     now = time.time()
     if _fw_cache["data"] is not None and now - _fw_cache["t"] < FIREWALLA_POLL_S:
@@ -357,6 +418,7 @@ def collect_firewalla():
                 "devices": devices,
                 "rules": rules,
                 "devices_online": sum(1 for d in devices if d.get("online")),
+                "vpn": _collect_vpn(gid, devices),
             }
         except FirewallaError as e:
             data = {"ok": False, "error": str(e)}
