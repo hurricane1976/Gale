@@ -141,6 +141,19 @@
           <p class="mini-note" id="fw-action-note"></p>
         </div>
 
+        <div id="fw-live-body" style="margin-top:26px">
+          <h3 class="fw-subtitle">Live network throughput <span style="color:var(--text-faint);font-weight:400">&middot; derived from flow records, last 15 min &middot; approximate</span></h3>
+          <div class="vitals-grid" id="fw-live-vitals"></div>
+          <h4 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers (last 2h)</h4>
+          <div class="fw-table-scroll">
+            <table class="ops-table" id="fw-talkers-table">
+              <thead><tr><th>Device</th><th>Traffic</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="mini-note" id="fw-live-note"></p>
+        </div>
+
         <div id="fw-vpn-body" style="margin-top:26px">
           <h3 class="fw-subtitle">VPN status <span style="color:var(--text-faint);font-weight:400">&middot; box profiles + tunnel activity through the network</span></h3>
           <div class="fw-cols">

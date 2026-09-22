@@ -341,6 +341,44 @@ FIREWALLA_POLL_S = 60
 VPN_PORTS = ("51820", "1194")  # wireguard default, openvpn default
 
 
+def _collect_live(gid):
+    """Live-ish throughput + top talkers, DERIVED from MSP flow records (the
+    cloud API has no live counter). Summed over a 15-min window of recent
+    flows; the export lags a few minutes behind realtime and the record cap
+    truncates busy periods, so the dashboard labels this approximate ('≥')."""
+    import time as _time
+    import urllib.parse as _up
+    now = _time.time()
+    window = 900
+    out = {"window_s": window, "mbps_down": 0.0, "mbps_up": 0.0, "flows": 0,
+           "truncated": False, "top_talkers": [], "ts": now, "approx": True}
+    try:
+        q = _up.quote(f"ts:>{now - window:.0f}")
+        d = _fw_client._request("GET", f"/v2/flows?query={q}&box={gid}&limit=500")
+        res = d.get("results", []) if isinstance(d, dict) else []
+        down = sum(int(f.get("download") or 0) for f in res)
+        up = sum(int(f.get("upload") or 0) for f in res)
+        out["flows"] = int(d.get("count") or len(res))
+        out["truncated"] = bool(d.get("count") and d["count"] > len(res))
+        out["mbps_down"] = round(down * 8 / window / 1e6, 2)
+        out["mbps_up"] = round(up * 8 / window / 1e6, 2)
+    except FirewallaError as e:
+        out["error"] = str(e)[:160]
+        return out
+    try:
+        q2 = _up.quote(f"ts:>{now - 7200:.0f}")
+        d2 = _fw_client._request(
+            "GET", f"/v2/flows?query={q2}&box={gid}&groupBy=device.name&sortBy=total:desc&limit=5")
+        res2 = d2.get("results", []) if isinstance(d2, dict) else []
+        out["top_talkers"] = [
+            {"name": (r.get("device") or {}).get("name") or "?", "bytes": int(r.get("total") or 0)}
+            for r in res2
+        ]
+    except FirewallaError:
+        pass
+    return out
+
+
 def _collect_vpn(gid, devices):
     """VPN status, derived from the MSP API only (verified 2026-09-22: the
     cloud API has no dedicated VPN endpoint, and the box object carries no
@@ -419,6 +457,7 @@ def collect_firewalla():
                 "rules": rules,
                 "devices_online": sum(1 for d in devices if d.get("online")),
                 "vpn": _collect_vpn(gid, devices),
+                "live": _collect_live(gid),
             }
         except FirewallaError as e:
             data = {"ok": False, "error": str(e)}

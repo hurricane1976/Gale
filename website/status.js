@@ -361,6 +361,46 @@ function renderFirewall(fw) {
     </tr>`).join("") || `<tr><td colspan="4">no rules</td></tr>`;
 
   renderVpn(fw);
+  renderFwLive(fw);
+}
+
+function fmtMbps(v) {
+  if (v >= 100) return `${Math.round(v)} Mbps`;
+  if (v >= 10) return `${v.toFixed(1)} Mbps`;
+  return `${v.toFixed(2)} Mbps`;
+}
+
+function fmtBytes2(n) {
+  if (n >= 1e9) return `${(n / 1e9).toFixed(2)} GB`;
+  if (n >= 1e6) return `${(n / 1e6).toFixed(1)} MB`;
+  if (n >= 1e3) return `${(n / 1e3).toFixed(0)} KB`;
+  return `${n} B`;
+}
+
+function renderFwLive(fw) {
+  const live = fw.live || {};
+  const body = document.getElementById("fw-live-body");
+  if (!body) return;
+  if (live.error) {
+    document.getElementById("fw-live-vitals").innerHTML = "";
+    document.getElementById("fw-live-note").textContent = `Live throughput unavailable: ${live.error}`;
+    return;
+  }
+  document.getElementById("fw-live-vitals").innerHTML = [
+    vitalCard("Download", fmtMbps(live.mbps_down || 0), `avg over ${(live.window_s || 900) / 60} min`, "ok"),
+    vitalCard("Upload", fmtMbps(live.mbps_up || 0), `avg over ${(live.window_s || 900) / 60} min`, "ok"),
+    vitalCard("Flows", `${live.truncated ? "≥ " : ""}${live.flows ?? 0}`, `opened in ${(live.window_s || 900) / 60} min`, "ok"),
+    vitalCard("Throughput", fmtMbps(((live.mbps_down || 0) + (live.mbps_up || 0)) || 0), "combined", "ok"),
+  ].join("");
+  const talkers = live.top_talkers || [];
+  const max = Math.max(...talkers.map((t) => t.bytes || 0), 1);
+  document.querySelector("#fw-talkers-table tbody").innerHTML = talkers.map((t) => `<tr>
+      <td>${esc(t.name)}</td>
+      <td>${fmtBytes2(t.bytes || 0)}</td>
+      <td style="width:42%"><div class="meter" data-level="ok"><i style="width:${((t.bytes || 0) / max * 100).toFixed(1)}%"></i></div></td>
+    </tr>`).join("") || `<tr><td colspan="3">no flow records in the last 2h</td></tr>`;
+  document.getElementById("fw-live-note").textContent =
+    "Derived from completed flow records via the Firewalla MSP API — the export lags realtime by a few minutes and busy windows get capped, so treat these as recent averages ('≥' = truncated), not a live interface counter. True per-interface counters would need the box's local API (see the VPN note).";
 }
 
 function fmtAgoEpoch(ts) {
