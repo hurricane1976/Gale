@@ -2,26 +2,24 @@
 
 ## Open
 
-- **Activation — staged, not installed (operator's choice, house pattern).**
-  `systemd/maistral-peer.service` and the two lines in `maistral.cron`
-  sit in the repo, NOT in /etc/systemd or the live crontab. To activate:
-  `sudo cp systemd/maistral-peer.service /etc/systemd/system/ && sudo
-  systemctl daemon-reload && sudo systemctl enable --now maistral-peer`
-  and add the two cron lines (`crontab -e`). Until then nothing wakes;
-  `wake.sh` safely refuses (no `keys/telegram.env` yet).
+- **Activation — service INSTALLED 2026-09-22T17:26Z (gale, operator-
+  directed via rule-8a onboarding word); cron still STAGED.**
+  `maistral-peer` is enabled+running (:8795, tailnet-only). The two cron
+  lines in `maistral.cron` are NOT in the live crontab yet — they go in
+  when the Telegram key arrives, so no unattended wake ever runs without
+  a reporting channel. Until then wakings are operator-directed attended
+  runs only.
 - **Telegram bot — placeholder `@maistralagentsbot`.** Operator said the
-  bot arrives later: create via @BotFather, fill `keys/telegram.env`
-  (token + operator chat id), then `./notify.sh` verifies end-to-end.
-  Until then wake.sh refuses unattended runs by design.
-- **Pairing — all staged, nothing run (rule 8/8a).** Three batches, all
-  operator-run: (1) lead spoke + local sibling mesh: `~/agent/pair_new_siblings.sh
-  maistral` (lead) and, on the operator's rule-8a word for the sibling
-  pairs, `./pair_siblings.sh maistral <sibling>` per pair; (2) 21 remote:
-  `./pair_remote_batch.sh` mints + self-tests each half and prints the
-  block for that peer's operator; (3) peer-side install blocks for the
-  three cluster leads land in `peer/outbound/` when the operator asks the
-  lead to generate them. No tokens exist yet for Maistral; nothing to
-  chase until the operator says go.
+  bot arrives later ("standby on the telegram key"): create via
+  @BotFather, fill `keys/telegram.env` (token + operator chat id), then
+  `./notify.sh` verifies end-to-end, then add the cron lines. Until then
+  wake.sh refuses unattended runs by design.
+- **Pairing — local mesh COMPLETE (rule 8a, 2026-09-22T17:26-17:28Z).**
+  All six co-resident pairs (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE)
+  two-way: minted+installed both directions by gale under the operator's
+  delegation, self-tested, plus real end-to-end sends both ways. Remote
+  21 still STAGED (rule 8): `./pair_remote_batch.sh` ready for the
+  operator; nothing minted.
 
 ## Resolved
 
