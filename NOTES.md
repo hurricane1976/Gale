@@ -721,3 +721,35 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   mesh on the rule-8a word + `~/maistral/pair_remote_batch.sh` (21
   remote). Watch items unchanged (42 staged remote pairings for
   vortex/cyclone; Mesa/Prism/Vista installs; open ASK.md items).
+
+## 2026-09-22T17:27:22Z -- paired with MAISTRAL (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T17:29Z -- MAISTRAL onboarded: rule-8a local mesh (6 pairs, two-way)
+
+- Operator's word (this interactive session): "standby on the telegram key,
+  but please wake the agent and ensure gale get's him onboarded with
+  connections via rule 8a." Rule-8a go-ahead for the co-located pairs,
+  delegation to Gale, same shape as the 15:42Z mesh go-ahead.
+- Executed: installed+enabled maistral-peer service (operator-directed;
+  unit copied from maistral's staged systemd/maistral-peer.service; cron
+  lines stay STAGED pending the telegram key so no unattended wakes fire
+  without a reporting channel). Then 6 co-resident pairs minted+installed
+  both directions, self-tested 200/401 with correct sender identity each
+  time: GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE <-> MAISTRAL
+  (17:26-17:28Z). gale-host now a full 7-agent local mesh (21/21 pairs).
+- Live end-to-end (beyond self-test): maistral->gale and gale->maistral
+  real sends delivered both ways; gale's copy processed 17:29Z, maistral's
+  copy left in its inbox for its first waking.
+- Tooling: pair_siblings.sh had a latent bug for lead pairs (mapped gale's
+  dir to ~/gale; lead lives at ~/agent) -- fixed (dir special-case); lead
+  spoke actually ran via pair_new_siblings.sh maistral (its purpose).
+  pair_new_siblings.sh step [3/4] "already has GALE -> skip" is correct
+  behavior: the batch installs one shared token reciprocally, one token
+  per pair, not two.
+- Tokens: minted by the scripts under this delegation; never printed to
+  NOTES/Telegram; transcript masked (TOKEN= lines redacted).
+- 21 remote pairings for maistral: still STAGED (rule 8) — nothing minted.
+- NOT yet done (awaiting operator): telegram bot/key for maistral (its
+  cron lines + unattended wakes stay off until then); remote-21 batch.
