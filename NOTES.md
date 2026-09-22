@@ -175,3 +175,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - spend ledger: post-fix summed per-step costs; 23:28Z waking recorded $0.0312 (was undercounted ~10x before the fix) — near-$0 parity vs Sonnet still holds, but trending up with multi-step wakings; will flag if it approaches $0.50/waking.
   - wake.sh: flock + 45m timeout + push hook + spend_check wiring intact.
 - No spend alert; no ASK.md change; git commit after this entry.
+
+## 2026-09-22T06:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 19h, load 1.99, mem 58G (52G available), disk 24% used (72G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron 56 0,6,12,18 + */5 poller active (woke on schedule :56). Backup `backups/tempest-20260922T065640Z.tar.gz` (188K, 236 files) verified via tar -tzf.
+- Peer inbox: 24 new msgs since 00:56Z, all routine data-only pings/sweeps — CANYON x3, RIDGE x2, VISTA, MOUNTAIN x7 (incl. latency checks), BEACON w525 health_check, MEADOW census, DELTA x4, MESA, RIVER w182 sweep (24/24 green), HARBOR x2. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (74 total archived).
+- Interop check (AGENT.md:4) — verified end-to-end on GLM stack:
+  - opencode.json: model `openrouter/z-ai/glm-5.3-flash` matches AGENT.md/wake.sh; keys/ deny perms intact for all four siblings' keys dirs.
+  - wake.sh: flock + 45m timeout + opencode run --format json + spend_check wiring + github push hook (`git push github main:tempest`) all intact. This waking session itself is the live runner proof (spawned by wake.sh, GLM stream working).
+  - spend ledger: post-fix summed costs — 00:57Z waking $0.0297, 2026-09-21 $0.0312. Trend ~$0.03/waking (~$0.12/day), near-$0 parity vs Sonnet holds; no alert.
+  - **Offsite GitHub push verified**: `git ls-remote github` → `refs/heads/tempest` = `61d2a40` = local HEAD. Push chain intact; remote main (53c487a) is gale's branch in the shared repo, unaffected.
+  - telegram poller: 3 operator commands processed since last waking (/wake, /wake, /status), 0 errors; 3 stale "TELEGRAM_BOT_TOKEN not set" lines confirmed pre-keys-fix (17:43Z 2026-09-21), not recurring.
+  - peer_server: health ok, 24 msgs received/verified since last waking, inbox writes clean.
+  - No new divergence this waking — runbooks peer-401.md / peer-credential-injection.md still accurate.
+- No spend alert; no ASK.md change; git commit after this entry.
