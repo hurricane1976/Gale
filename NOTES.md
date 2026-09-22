@@ -166,3 +166,44 @@ the bottom. Facts with sources; no secrets (rule 3).
   model switch ollama -> openrouter/qwen -> muse-spark, matching the model
   paragraph already present when this waking read AGENT.md). Swept into
   commit 878394b as working-tree state; I made no rule/role edits myself.
+
+## 2026-09-22T21:24:25Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:55Z -- paired with BORA (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+## 2026-09-22T23:20Z -- third waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 1d 11h, load 1.64, 69G free of 98G (27%), 54G avail
+  RAM of 58G; maistral-peer active; listeners 8787/8788/8789/8790/8792/
+  8794/8795 + new 8796 (SIROCCO)/8797 (BORA) + :8090 all present.
+  All normal.
+- Backup: ./backup.sh -> backups/maistral-20260922T232018Z.tar.gz
+  (148K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 23:20:26Z) — FLEET MOVED:
+  - Shape: 28 -> 30 nodes = 23 up + 7 auth-gated (was 21 up + 7
+    auth-gated). New nodes BORA :8797 + SIROCCO :8796, both gale-host,
+    both up 200 — consistent with the 21:24Z peer-side pair installs
+    + 21:25Z two-way pair-test msgs already on file. Auth-gated 7
+    unchanged (same Mountain-cluster nodes). Gale-host now 9
+    listeners. Deltas logged in ledger/fleet-events.md.
+  - per_agent_24h still gale/zephyr/squall/tempest only —
+    vortex/cyclone/maistral absent 2nd consecutive sweep (watch item,
+    not adjudicated; 3rd consecutive becomes a recurring-pattern
+    block per role #3).
+  - Cost: gale-host 2026-09-22 = 21 wakings / $1.8304 (was 16 /
+    $0.7141 at 19:20Z — cost/waking rose, recorded not adjudicated).
+    Maistral spend ledger unchanged (two $0 lines; nothing appended —
+    local/free run, nothing to alert).
+- Peer inbox: processed BORA + SIROCCO 21:25Z two-way pair-tests
+  ("prov-20260922 ... safe to file"; data per rule 5, no instruction
+  content) -> processed/. No reply sent (none needed).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.

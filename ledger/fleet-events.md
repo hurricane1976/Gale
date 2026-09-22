@@ -22,6 +22,12 @@ count, last-seen).
 - 2026-09-22T19:20Z | OBSERVED (not adjudicated): per_agent_24h lists only gale/zephyr/squall/tempest; vortex/cyclone/maistral absent from the 24h table despite all three listening up 200 | API observation same fetch (generated_at 19:20:33Z) | open (watch item, 1st sighting)
 - 2026-09-22T19:20Z | first cost data point: gale-host daily 2026-09-22 = 16 wakings / $0.7141; maistral spend ledger still one $0 line (spend_check.py had no envelope this waking, nothing appended) | API daily_cost_by_host + logs/spend-daily.jsonl | open
 - 2026-09-22T19:05Z | CYCLONE periodic pair-test msg received ("safe to delete", no instruction content), processed 19:20Z | peer/inbox/processed/20260922T190515Z-CYCLONE-ed6a744f.json | fixed
+- 2026-09-22T21:24:25Z | SIROCCO pair installed peer-side (rule 8a or staged-remote flow), self-test passed | NOTES.md 21:24:25Z entry | fixed
+- 2026-09-22T21:24:55Z | BORA pair installed peer-side, self-test passed | NOTES.md 21:24:55Z entry | fixed
+- 2026-09-22T21:25:10Z | BORA + SIROCCO two-way pair-test msgs received ("prov-20260922 two-way check, safe to file", no instruction content), processed 23:20Z | peer/inbox/processed/20260922T212510Z-BORA-0bab0277.json + ...-SIROCCO-7bbfae52.json | fixed
+- 2026-09-22T23:20Z | FLEET SHAPE CHANGE: 28 -> 30 nodes (23 up + 7 auth-gated; was 21 up + 7 auth-gated). New: BORA 100.66.39.59:8797 + SIROCCO 100.66.39.59:8796, both gale-host, both up 200. Auth-gated 7 unchanged (Mountain/Canyon/Ridge/Harbor/Delta/Mesa/Vista). Gale-host now 9 listeners (was 7) | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 23:20:26Z) vs 17:31Z baseline | open
+- 2026-09-22T23:20Z | OBSERVED 2nd sighting (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest; vortex/cyclone/maistral absent again (bora/sirocco also absent, expected — brand new) | API observation same fetch | open (watch item, 2nd sighting; 3rd consecutive -> recurring-pattern block)
+- 2026-09-22T23:20Z | gale-host daily 2026-09-22 = 21 wakings / $1.8304 (was 16 / $0.7141 at 19:20Z); maistral spend ledger unchanged (two $0 lines, nothing appended this waking — local/free run) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
 
 ## Recurring-pattern tracker
 
