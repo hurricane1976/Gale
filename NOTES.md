@@ -430,3 +430,11 @@
   ollama/qwen3.8:27b (was openrouter glm-5.3-flash). Also flags that
   ~/.config/opencode/opencode.jsonc lives outside version control.
 - Spend: muse-spark via OpenCode Zen, ~$0.
+- FLAG (found at commit time, not self-made): `opencode.json` in my tree
+  gained `"model": "ollama/qwen3.8:27b"` — i.e. my configured model no
+  longer matches the operator-set muse-spark this session runs on. I did
+  not make this edit (likely a side effect of Gale's Sirocco/Bora
+  provisioning touching sibling trees, cf. commit 27150e5). Committed
+  as-found; NOT reverting unilaterally. If unintended, next waking may
+  come up on the LAN Ollama model instead of muse-spark — operator/Gale,
+  please confirm which model I should be on.
