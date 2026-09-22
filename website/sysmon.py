@@ -73,6 +73,13 @@ FULL_TARGETS = [
 ]
 FULL_TARGET_TIMEOUT_S = 3.0
 
+# Ollama instance (LAN -- the operator's box, same NIC as FULL_TARGETS above).
+# LAN not tailnet, so latency is negligible; polled on the 15s cycle. Its REST
+# API exposes no server-wide token counter, so "usage" here = loaded/active
+# models + committed VRAM + the model inventory (see collect_ollama()).
+OLLAMA_ADDR = os.environ.get("OLLAMA_ADDR", "192.168.1.197:11434")
+OLLAMA_TIMEOUT_S = 3.0
+
 # systemd units this dashboard cares about (fleet + the services the site
 # and mesh depend on). Any unit name systemctl knows about works here.
 SERVICES = [
@@ -330,12 +337,18 @@ def collect_full_targets():
 
 
 # Firewalla is a cloud API (MSP), not a local call -- poll it far less often
-# than the 15s host loop so this collector doesn't hammer the account.
+# than the 15s host loop so this collector doesn't hammer the account. The
+# cloud API throttles on request rate (HTTP 429), so poll at ~11 min.
 # Admin actions (pause/resume/block) go through firewalla_control.py, not
 # this collector; this only ever reads.
 _fw_client = FirewallaClient()
-_fw_cache = {"t": 0, "data": None}
-FIREWALLA_POLL_S = 60
+_fw_cache = {"t": 0, "data": None, "retry_after": 0}
+FIREWALLA_POLL_S = 660  # 11 minutes; cloud API rate-limits aggressive polling
+# On a failed cycle, wait at least the success-window before retrying, or
+# longer when the API told us to via Retry-After. A short failure-retry
+# window here is what previously kept us re-hitting a throttled API every
+# 2 minutes and tripping 429 continuously.
+FIREWALLA_FAIL_RETRY_S = 660
 
 
 VPN_PORTS = ("51820", "1194")  # wireguard default, openvpn default
@@ -439,7 +452,10 @@ def _collect_vpn(gid, devices):
 
 def collect_firewalla():
     now = time.time()
-    if _fw_cache["data"] is not None and now - _fw_cache["t"] < FIREWALLA_POLL_S:
+    ok = _fw_cache["data"] is not None and _fw_cache["data"].get("ok")
+    fail_window = max(FIREWALLA_FAIL_RETRY_S, _fw_cache["retry_after"])
+    window = FIREWALLA_POLL_S if ok else fail_window
+    if _fw_cache["data"] is not None and now - _fw_cache["t"] < window:
         return _fw_cache["data"]
     if not _fw_client.configured:
         data = {"ok": False, "error": "not configured"}
@@ -459,10 +475,87 @@ def collect_firewalla():
                 "vpn": _collect_vpn(gid, devices),
                 "live": _collect_live(gid),
             }
+            _fw_cache["retry_after"] = 0  # a good cycle clears any 429 backoff
         except FirewallaError as e:
             data = {"ok": False, "error": str(e)}
+            if getattr(e, "retry_after", None):
+                _fw_cache["retry_after"] = e.retry_after
     _fw_cache["t"] = now
     _fw_cache["data"] = data
+    return data
+
+
+def _ollama_get(path, timeout=OLLAMA_TIMEOUT_S):
+    url = f"http://{OLLAMA_ADDR}{path}"
+    with urllib.request.urlopen(url, timeout=timeout) as r:
+        return json.loads(r.read())
+
+
+def _fmt_bytes(n):
+    b = int(n or 0)
+    for unit, div in (("GB", 1e9), ("MB", 1e6), ("KB", 1e3)):
+        if b >= div:
+            return f"{b / div:.1f} {unit}"
+    return f"{b} B"
+
+
+def collect_ollama():
+    from datetime import datetime, timezone
+    data = {"ok": False, "addr": OLLAMA_ADDR, "reachable": False,
+            "version": None, "loaded": [], "inventory": [],
+            "models_total": 0, "vram_loaded_gb": 0.0, "error": None}
+    try:
+        ver = _ollama_get("/api/version")
+        data["reachable"] = True
+        data["version"] = ver.get("version")
+        ps = _ollama_get("/api/ps")
+        loaded = ps.get("models") or []
+        vram = 0.0
+        for m in loaded:
+            sz = m.get("size") or 0
+            vram += sz
+            det = m.get("details") or {}
+            exp = m.get("expires_at")
+            exp_iso = None
+            if exp:
+                try:
+                    d = datetime.fromisoformat(str(exp).replace("Z", "+00:00"))
+                    secs = (d - datetime.now(timezone.utc)).total_seconds()
+                    exp_iso = max(0, int(secs // 60))
+                except ValueError:
+                    pass
+            data["loaded"].append({
+                "name": m.get("name"),
+                "params": det.get("parameter_size"),
+                "quant": det.get("quantization_level"),
+                "family": (det.get("families") or [det.get("family") or ""])[0] or det.get("family"),
+                "context": m.get("context_length"),
+                "size": sz,
+                "size_human": _fmt_bytes(sz),
+                "size_vram": m.get("size_vram") or 0,
+                "vram_human": _fmt_bytes(m.get("size_vram")),
+                "expires_minutes": exp_iso,
+            })
+        data["vram_loaded_gb"] = round(vram / 1e9, 1)
+
+        tags = _ollama_get("/api/tags")
+        models = tags.get("models") or []
+        data["models_total"] = len(models)
+        for m in models:
+            det = m.get("details") or {}
+            data["inventory"].append({
+                "name": m.get("name"),
+                "params": det.get("parameter_size"),
+                "quant": det.get("quantization_level"),
+                "size": m.get("size") or 0,
+                "size_human": _fmt_bytes(m.get("size")),
+                "context": m.get("context_length"),
+                "caps": m.get("capabilities") or [],
+            })
+
+        data["ok"] = True
+    except Exception as e:
+        data["error"] = f"{type(e).__name__}: {e}"
     return data
 
 
@@ -476,6 +569,7 @@ def snapshot():
         "security": collect_security(),
         "targets": collect_targets(),
         "firewalla": collect_firewalla(),
+        "ollama": collect_ollama(),
         "full_targets": collect_full_targets(),
     }
 

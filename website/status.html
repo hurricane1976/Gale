@@ -112,6 +112,41 @@
         <div id="full-hosts-grid" class="full-hosts-grid"></div>
       </section>
 
+      <section class="ops-panel span-full" aria-labelledby="h-ollama">
+        <h2 id="h-ollama" class="panel-title">Ollama &middot; <span id="ollama-addr">&ndash;</span></h2>
+        <p class="sec-lede" style="margin-top:-6px" id="ollama-down" hidden>Unreachable</p>
+        <div id="ollama-body">
+          <div class="vitals-grid" id="ollama-vitals"></div>
+          <div class="fw-cols">
+            <div>
+              <h3 class="fw-subtitle">Loaded models (<span id="ollama-loaded-count">0</span>)</h3>
+              <div class="fw-table-scroll">
+                <table class="ops-table" id="ollama-loaded-table">
+                  <thead><tr><th>Model</th><th>Params</th><th>Quant</th><th>VRAM</th><th>Context</th><th>Unloads in</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 class="fw-subtitle">Model inventory (<span id="ollama-inv-count">0</span>)</h3>
+              <div class="fw-table-scroll">
+                <table class="ops-table" id="ollama-inv-table">
+                  <thead><tr><th>Model</th><th>Params</th><th>Quant</th><th>Size</th><th>Capabilities</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <p class="mini-note" id="ollama-note">
+            &ldquo;Usage&rdquo; here is what the Ollama API actually exposes: models actively loaded in
+            VRAM (<code>/api/ps</code>), their committed VRAM, and the full model inventory
+            (<code>/api/tags</code>). Ollama ships no server&ndash;wide token/PROMPT counter and no per-model
+            throughput API, so request counts and MB/s are not available&mdash;the per-turn token usage this
+            fleet sees is the opencode <code>step_finish</code> metrics in each agent&rsquo;s session log.
+          </p>
+        </div>
+      </section>
+
       <section class="ops-panel span-full" aria-labelledby="h-firewall">
         <h2 id="h-firewall" class="panel-title">Firewalla &middot; <span id="fw-box-name">&ndash;</span></h2>
         <p class="sec-lede" style="margin-top:-6px" id="fw-unconfigured" hidden>Not configured &mdash; add <code>keys/firewalla.env</code> to enable.</p>

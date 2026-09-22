@@ -476,6 +476,52 @@ function setFresh(state, text) {
   freshText.textContent = text;
 }
 
+function renderOllama(o) {
+  const addrEl = document.getElementById("ollama-addr");
+  const downEl = document.getElementById("ollama-down");
+  const bodyEl = document.getElementById("ollama-body");
+  if (!o || !o.reachable) {
+    addrEl.textContent = "–";
+    downEl.hidden = false;
+    bodyEl.hidden = true;
+    return;
+  }
+  addrEl.textContent = `${o.addr} · v${o.version || "?"}`;
+  downEl.hidden = true;
+  bodyEl.hidden = false;
+
+  const loaded = o.loaded || [];
+  const inv = o.inventory || [];
+  const vramBytes = loaded.reduce((a, m) => a + (m.size_vram || 0), 0);
+  document.getElementById("ollama-vitals").innerHTML = [
+    vitalCard("Version", `v${esc(o.version)}`, esc(o.addr)),
+    vitalCard("Loaded models", String(loaded.length), "resident in VRAM now"),
+    vitalCard("VRAM committed", fmtBytes2(vramBytes), `${loaded.length} model${loaded.length === 1 ? "" : "s"} loaded`),
+    vitalCard("Models available", String(inv.length), "inventory (/api/tags)"),
+  ].join("");
+
+  document.getElementById("ollama-loaded-count").textContent = loaded.length;
+  document.querySelector("#ollama-loaded-table tbody").innerHTML =
+    loaded.map((m) => `<tr>
+      <td><code>${esc(m.name)}</code></td>
+      <td class="mono-dim">${esc(m.params || "&ndash;")}</td>
+      <td class="mono-dim">${esc(m.quant || "&ndash;")}</td>
+      <td>${esc(m.vram_human || (m.size_vram ? fmtBytes2(m.size_vram) : "&ndash;"))}</td>
+      <td class="mono-dim">${m.context ? m.context.toLocaleString() : "&ndash;"}</td>
+      <td class="mono-dim">${m.expires_minutes == null ? "&ndash;" : `${m.expires_minutes}m`}</td>
+    </tr>`).join("") || `<tr><td colspan="6" class="mono-dim">nothing loaded</td></tr>`;
+
+  document.getElementById("ollama-inv-count").textContent = inv.length;
+  document.querySelector("#ollama-inv-table tbody").innerHTML =
+    inv.map((m) => `<tr>
+      <td><code>${esc(m.name)}</code></td>
+      <td class="mono-dim">${esc(m.params || "&ndash;")}</td>
+      <td class="mono-dim">${esc(m.quant || "&ndash;")}</td>
+      <td>${esc(m.size_human || "&ndash;")}</td>
+      <td class="mono-dim">${(m.caps || []).join(", ") || "&ndash;"}</td>
+    </tr>`).join("");
+}
+
 function render(d) {
   board.hidden = false;
   document.getElementById("interval").textContent = d.collector_interval_s;
@@ -490,6 +536,7 @@ function render(d) {
   renderTargets(d);
   renderFullHosts(d.full_targets);
   renderFirewall(d.firewalla);
+  renderOllama(d.ollama);
   updateFreshness(d.generated_at);
 }
 

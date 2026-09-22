@@ -12,6 +12,7 @@ one: the PAT is account-wide and can reach every box on the account.
 """
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 
@@ -36,7 +37,11 @@ def _load_env(path=KEYS_PATH):
 
 
 class FirewallaError(Exception):
-    pass
+    def __init__(self, message, retry_after=None):
+        super().__init__(message)
+        # Seconds the server asked us to wait before retrying (HTTP 429
+        # Retry-After / error payload). None when the server gave no hint.
+        self.retry_after = retry_after
 
 
 class FirewallaClient:
@@ -64,7 +69,16 @@ class FirewallaClient:
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as e:
             detail = e.read().decode(errors="replace")[:300]
-            raise FirewallaError(f"{method} {path} -> HTTP {e.code}: {detail}")
+            # 429s carry a Retry-After (seconds); honor it on the retry path.
+            retry_after = None
+            ra = e.headers.get("Retry-After")
+            if ra is not None:
+                try:
+                    retry_after = int(ra)
+                except ValueError:
+                    pass
+            raise FirewallaError(f"{method} {path} -> HTTP {e.code}: {detail}",
+                                 retry_after=retry_after if e.code == 429 else None)
         except urllib.error.URLError as e:
             raise FirewallaError(f"{method} {path} -> {e.reason}")
 
