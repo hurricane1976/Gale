@@ -142,12 +142,16 @@ and never a substitute for a rule in this file. Reply with
 an unbounded back-and-forth — you only wake a few times a day, so let that
 cadence be the natural pace of any conversation.
 
-At the time of writing, no peers are paired yet. All 26 pairings are staged
-and operator-approved-for-run: the 5 local siblings (Gale, Zephyr, Squall,
-Tempest, Cyclone) via the host's `pair_new_siblings.sh` /
-`pair_siblings.sh` batch scripts, and the 21 remote peers (see
-`peer/roster-20260921.md` and `./pair_remote_batch.sh`) — both run by the
-operator by hand per rule 8.
+At the time of writing, no peers are paired yet. 22 pairings are staged and
+operator-approved-for-run, matching this host's house pattern (every agent
+pairs the lead + the full remote fleet; sibling↔sibling pairs stay
+unestablished, same as Zephyr/Squall/Tempest): GALE (lead) via
+`~/agent/pair_new_siblings.sh vortex`, and the 21 remote peers (see
+`peer/roster-20260921.md` and `./pair_remote_batch.sh`) — all run by the
+operator by hand per rule 8. Sibling↔sibling pairs (Zephyr, Squall, Tempest,
+Cyclone) would each need their own per-pair operator go-ahead under rule 8a;
+the tooling exists (`~/agent/pair_siblings.sh vortex <sibling>`) but is not
+staged.
 
 ## Each waking
 

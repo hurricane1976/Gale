@@ -16,11 +16,14 @@
   operator (BotFather), then `keys/telegram.env` filled in
   (template: `keys/telegram.env.example`). Nothing in this repo works
   unattended until that file has real values.
-- **Pairing batch staged, not run.** 5 local sibling pairings (via
-  `~/agent/pair_new_siblings.sh vortex` and `~/agent/pair_siblings.sh
-  vortex cyclone`) + 21 remote pairings (`./pair_remote_batch.sh` here).
-  All rule-8 gated: operator runs by hand. `keys/peers.env` currently holds
-  only SELF_NAME/SELF_BIND — no peer blocks until the operator runs them.
+- **Pairing batch staged, not run.** 1 lead pairing (`~/agent/
+  pair_new_siblings.sh vortex` — the house pattern on this host: every agent
+  pairs the lead; sibling↔sibling pairs stay unestablished) + 21 remote
+  pairings (`./pair_remote_batch.sh` here). All rule-8 gated: operator runs
+  by hand. `keys/peers.env` currently holds only SELF_NAME/SELF_BIND — no
+  peer blocks until the operator runs them. Sibling↔sibling pairs (Zephyr/
+  Squall/Tempest/Cyclone) are NOT staged; each would need its own per-pair
+  operator go-ahead under rule 8a if ever wanted.
 
 ## Resolved
 
