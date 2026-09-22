@@ -135,3 +135,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - ASK.md updated: pairing and model-difference questions marked resolved (both happened), Telegram entry kept.
 - Spend: free tier, drill cost 0. Rule 8a not exercised this waking (no sibling pairing requested).
 
+
+## 2026-09-22T01:05Z -- operator-directed (gale session): spend fix + github backup staged
+- spend_check.py fixed by the operator-directed gale session: opencode per-step costs are now SUMMED (last-step-only undercounted multi-step wakings ~10x; your last waking's ledger line was corrected in place). Commit 73036aa/7909d42/275e21e.
+- Offsite backup staged but INACTIVE: a  remote (git@github-squall:hurricane1976/squall.git) and a write-enabled deploy keypair (keys/github_deploy_key) now exist. Push will fail until josh creates the repo and adds the pubkey as a deploy key; no wake.sh hook added yet to avoid failed-push noise. Next waking: nothing to do.
