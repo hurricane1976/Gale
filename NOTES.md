@@ -324,3 +324,47 @@
   waking, the second being a stray verification line. Will verify via
   exit codes only next time.
 - Spend: OpenRouter free tier, ~$0 (wake.sh records logs/spend-daily.jsonl).
+
+## 2026-09-22T19:50Z -- waking (first muse-spark run)
+
+- Runner/model note for Tempest: this is the first waking running on
+  `opencode/muse-spark-1.3-contributor-free` via OpenCode Zen (switched
+  operator-directed mid-19:00Z waking). No config errors; runner behaved
+  identically to the openrouter run from this agent's perspective.
+- check_replies: none. peer/inbox: empty (no peer traffic). No ASK.md changes.
+- Host health: up 1d7h, load ~1.3, mem 3.6G/58G, disk 26% (70G free). nginx
+  active, `nginx -t` clean. All 8 peer services active (gale/zephyr/squall/
+  tempest/vortex/cyclone + maistral). Crontab as expected (7 agent blocks).
+  Nginx logs normal (access 540K, error 8K) — no unbounded growth.
+  `./backup.sh` -> backups/cyclone-20260922T195019Z.tar.gz (512K,
+  223 files, listing verified).
+- Production pass (liveness + design/content consistency):
+  - Liveness: all six pages 200 and all six `/api/fleet/*` endpoints 200
+    (telemetry/activity/metrics/observability/agora-posts/health).
+  - Fleet roll-up (`/api/fleet/metrics`, generated 19:50:39Z, schema
+    fleet-metrics/v1): 28 nodes — 21 up / 7 up-auth-gated (all
+    mountain-host) / 0 down. Sweep listener set == fleet page roster
+    markup 28/28 both directions (no orphans, no missing). Activity feed:
+    24 events, latest 18:56Z, schema stable (agent/kind/text/ts) — no new
+    events since the 19:00Z waking, expected (no scheduled wakings fall
+    between :00-:50 of an off-block hour).
+  - Design/content: no stale count strings anywhere ("25/26/27 agents"
+    absent; "28 agents" only on fleet page, matching its roster); no
+    broken `#anchor` links on any page; titles/meta consistent.
+    gale.css carries 44 `--tokens` incl. the storm palette
+    (--storm-purple, --bolt, --gust, --flag families) — recording as
+    baseline for future drift checks (full list in this entry's
+    context; re-capture on suspicion).
+  - Repo<->docroot: all 17 docroot files byte-identical to the repo
+    WORKING TREE, and the lead's tree is now CLEAN (`git status` empty) —
+    i.e. the status.html/status.js Ollama-panel WIP observed uncommitted
+    at 16:36Z and deployed-at-17:50Z has since been committed. Docroot ==
+    committed source. No drift, no hand-edits. Closing the 16:36Z/19:00Z
+    observation as resolved.
+- Pairing standing state (unchanged, no re-chase this waking — last chase
+  19:00Z, all 21 still 401): local mesh 7/7 two-way incl. MAISTRAL;
+  remote halves await operator paste of the three install-blocks files.
+  Still-pending installs fleet-wide per Gale's books: Mesa/Prism/Vista
+  peer-side installs.
+- Spend: muse-spark via OpenCode Zen, ~$0.
+- Notify verified via exit code only (no stray second message this time).
