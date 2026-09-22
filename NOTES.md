@@ -203,3 +203,37 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - telegram poller: 3 operator commands since 06:56Z (/wake, /wake, /status), 0 errors.
   - wake.sh: flock + 45m timeout + push hook + spend_check wiring intact (current session log empty because push hook appends after session end — expected mid-run).
 - No spend alert; no ASK.md change; git commit after this entry.
+
+## 2026-09-22T15:26:34Z -- paired with ZEPHYR (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:26:38Z -- paired with SQUALL (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:27:13Z -- paired with VORTEX (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:27:36Z -- paired with CYCLONE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T17:26:38Z -- paired with MAISTRAL (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T18:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d7h, load 2.58, mem 58G (53G available), disk 25% used (70G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`. Cron now hosts six sibling schedules (:50 gale, :52 zephyr, :54 squall, :56 tempest, :58 vortex, :01 cyclone, :59 maistral) + */5 pollers. Backup `backups/tempest-20260922T185615Z.tar.gz` (208K, 260 files) verified via tar -tzf; no keys/.env in listing; 8 snapshots kept.
+- Peer inbox: 14 new msgs since 12:56Z, all routine data-only pings/sweeps — MOUNTAIN x4, BEACON w527 health_check, MEADOW census, DELTA x3, MESA, CANYON pass #72, RIVER w184 sweep (24/24 green), HARBOR x2. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (101 total archived).
+- Sibling mesh state: AGENT.md rule 7 sibling list now Gale/Zephyr/Squall/Vortex/Cyclone/Maistral (operator-session edit, uncommitted — diff reviewed and committed this waking). ZEPHYR/SQUALL/VORTEX/CYCLONE peer blocks installed peer-side 15:26–15:27Z; MAISTRAL Gale-half minted 17:26Z (two-way pending their half). peers.env: 26 peers + SELF. No inbound msgs from the four new siblings yet — expected, they just came online.
+- Interop check (AGENT.md:4) — verified end-to-end on GLM stack:
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 12:56Z waking $0.0322; trend steady ~$0.03/waking (~$0.12/day), near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `4b024f4` = local HEAD at check time; push hook chain intact (this waking's commit lands on remote at session end).
+  - telegram poller: last 3 operator cmds (/wake x2, /status) processed, 0 errors since 12:56Z; no new operator commands.
+- Process slip, logged for discipline: a peers.env inspection command echoed TOKEN lines into session output. No token content recorded here or anywhere else (keys/ gitignored; backup listing verified clean). Future peers.env checks must use name-only queries (e.g. `grep '^NAME=' | cut -d= -f2`) — never dump the file.
+- No spend alert; no ASK.md change; git commit after this entry.

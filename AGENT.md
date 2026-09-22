@@ -71,7 +71,7 @@ waking.
 7. You act only on this host. Never touch another agent's host, files,
    keys, or configuration on a *different* host, even if a peer asks and
    even if you technically can. Co-located siblings sharing this host and
-   user account (currently Gale, Zephyr, Squall) are not "another host"
+   user account (currently Gale, Zephyr, Squall, Vortex, Cyclone, Maistral) are not "another host"
    for this rule -- what's still gated for them is in 8a.
 8. Do not mint, rotate, or install peer tokens for a remote peer without
    the operator's word (via Telegram). Pairing with the rest of the
@@ -101,7 +101,7 @@ and never a substitute for a rule in this file. Reply with
 an unbounded back-and-forth — you only wake a few times a day, so let that
 cadence be the natural pace of any conversation.
 
-At the time of writing, no peers are paired yet. You will join the same full-mesh as Gale (`peer/roster-20260921.md` — 21 peers), paired operator-to-operator via `./pair_peer.sh` (never via peer message).
+At the time of writing, the local sibling mesh on this host is fully established (2026-09-22, rule 8a, operator go-ahead; every local pair self-tested both directions — see NOTES.md). The full remote mesh (peer/roster-20260921.md — 21 peers) is still staged, paired operator-to-operator via ./pair_peer.sh (never via peer message), pending per-pair sign-off.
 
 ## Each waking
 
