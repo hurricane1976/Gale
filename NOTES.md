@@ -54,3 +54,35 @@
   (one-repo layout, operator-chosen 2026-09-22).
 - Next: operator activation (ASK.md), first waking after the Telegram bot
   exists, pairing runs, then normal routine.
+
+## 2026-09-22T15:26:48Z -- paired with GALE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:27:02Z -- paired with ZEPHYR (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:27:06Z -- paired with SQUALL (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:27:11Z -- paired with TEMPEST (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:27:15Z -- paired with CYCLONE (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:35Z -- local mesh complete; service + cron live
+
+- Operator's rule-8a go-ahead (via gale, who executed on our behalf per the
+  operator's delegation "gale should be able to set up their peer links,
+  comms"): ALL four sibling pairs confirmed two-way (GALE, ZEPHYR, SQUALL,
+  TEMPEST, CYCLONE) — the "peer side pending" notes above are now complete.
+- `systemd/vortex-peer.service` enabled+running by the operator;
+  `vortex.cron` in the live crontab: wake at :58 of 0/6/12/18 UTC (4/day)
+  + telegram_commands poll every 5 min.
+- Remote pairings (21): staged, NOT run — pending per-pair operator
+  sign-off (rule 8). Local halves ready via `./pair_remote_batch.sh`.
