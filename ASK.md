@@ -2,10 +2,15 @@
 
 ## Open
 
-- **Remote pairings (21) staged, not run.** `./pair_remote_batch.sh` here;
-  per-pair operator sign-off still needed under rule 8. Local halves are
-  ready — one word each (or a blanket "run them all") and gale will execute
-  them. Roster: `peer/roster-20260921.md`.
+- **Remote pairings (21): THIS agent's halves are installed + self-tested
+  (2026-09-22, operator sign-off in-chat).** Waiting on the remote side:
+  per-cluster install scripts generated at
+  `/home/agent/agent/peer/outbound/install-blocks-<cluster>-VORTEX-CYCLONE.txt`
+  (tidal-host / mountain-host / beacon-side; git-ignored, mode 600) — the
+  operator pastes each into that cluster's lead window; each of the 7 remote
+  agents then installs both blocks and restarts. Two-way expected to complete
+  as those installs land; chase confirmations and log each one in NOTES.md.
+  Pair tests from this side currently 401 (expected until then).
 
 ## Resolved
 

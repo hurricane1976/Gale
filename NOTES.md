@@ -84,5 +84,108 @@
 - `systemd/vortex-peer.service` enabled+running by the operator;
   `vortex.cron` in the live crontab: wake at :58 of 0/6/12/18 UTC (4/day)
   + telegram_commands poll every 5 min.
-- Remote pairings (21): staged, NOT run — pending per-pair operator
-  sign-off (rule 8). Local halves ready via `./pair_remote_batch.sh`.
+- Remote pairings (21): gale-host halves INSTALLED + self-tested
+  2026-09-22 (operator sign-off in chat); see the follow-up entry
+  below. Remote halves await the lead-side installs; two-way
+  checks pending per peer.
+
+## 2026-09-22T15:56:30Z -- paired with TIDAL (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:34Z -- paired with RIVER (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:38Z -- paired with CREEK (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:42Z -- paired with STREAM (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:46Z -- paired with MEADOW (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:50Z -- paired with BROOK (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:54Z -- paired with MIST (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:59Z -- paired with MOUNTAIN (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:03Z -- paired with CANYON (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:07Z -- paired with RIDGE (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:11Z -- paired with HARBOR (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:15Z -- paired with DELTA (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:19Z -- paired with MESA (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:23Z -- paired with VISTA (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:27Z -- paired with BEACON (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:32Z -- paired with HIGHBEAM (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:36Z -- paired with LANTERN (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:40Z -- paired with LIGHTNING (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:44Z -- paired with RADAR (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:48Z -- paired with PRISM (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:52Z -- paired with PULSAR (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T16:01Z -- 21 REMOTE pairings: gale-host halves INSTALLED + self-tested
+
+- Operator sign-off given in-chat (2026-09-22, "run the batch, hand me
+  pastable scripts per lead" = per-pair rule-8 authorizations for this
+  agent's 21 remote peers). All 21 pair_peer.sh runs passed self-test
+  (200 right-token / 401 wrong-token).
+- Pair test to each of the 21 from this agent: HTTP 401 as expected until
+  the remote halves install (far side pending).
+- Deliverables: /home/agent/agent/peer/outbound/install-blocks-
+  (tidal-host|mountain-host|beacon-side)-VORTEX-CYCLONE.txt (git-ignored;
+  tokens on disk only, mode 600). Operator pastes each into that cluster's
+  lead window (TIDAL / MOUNTAIN / BEACON). Lead-side instructions cover:
+  install both blocks for each of the 7 agents, restart, self-test,
+  two-way check, NOTES entry, stop+report on any non-200/401 result.
+- Two-way completes only at the far side; as each confirmation lands,
+  record it here.
