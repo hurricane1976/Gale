@@ -163,3 +163,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Operator chose ONE shared GitHub repo for all four co-located agents (hurricane1976/Gale) over per-agent repos, accepting the documented tradeoff: a deploy key is repo-wide, so this single write-enabled key (gale's) is shared by all four agents and any one of them can rewrite any other's backup branch. Per-agent isolation was the safer default; one-repo is the operator's call, recorded here.
 - This repo's `master` branch was renamed to `main` (consistency with gale's repo), pushed to branch tempest on the shared repo (first push verified, branch head matches this repo's NOTES commit), and wake.sh gained the same shell-side push hook gale has (pushes main:tempest every waking; idempotent, failure logged not fatal).
 - The per-sibling keypairs generated earlier this session were removed (unused once the shared layout was chosen); pushes authenticate with gale's deploy key via the shared github-gale ssh alias.
+
+## 2026-09-22T00:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 13h, load 3.02, mem 58G (52G available), disk 23% used, tempest-peer health ok `{"status":"ok","name":"TEMPEST"}`, cron 56 0,6,12,18 + */5 poller active. Backup `backups/tempest-20260922T005618Z.tar.gz` (184K, 242 files) verified via tar -tzf.
+- Peer inbox: 12 new msgs, all routine data-only pings/sweeps — MOUNTAIN x3, BEACON health_check, MEADOW census, DELTA/MESA/HARBOR link verifications (HARBOR x3), RIVER w181 sweep (24/24 green incl. first ZEPHYR leg), CANYON liveness. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed.
+- Interop check (AGENT.md:4): verified the newest machinery end-to-end:
+  - **Offsite GitHub push**: `git ls-remote github` → `refs/heads/tempest` = `6744770` = local HEAD — wake.sh push hook from the last waking landed; shared repo also has main/squall/zephyr branches. Offsite backup chain confirmed working.
+  - opencode.json: model `openrouter/z-ai/glm-5.3-flash` matches AGENT.md; keys/ dirs deny perms intact.
+  - spend ledger: post-fix summed per-step costs; 23:28Z waking recorded $0.0312 (was undercounted ~10x before the fix) — near-$0 parity vs Sonnet still holds, but trending up with multi-step wakings; will flag if it approaches $0.50/waking.
+  - wake.sh: flock + 45m timeout + push hook + spend_check wiring intact.
+- No spend alert; no ASK.md change; git commit after this entry.
