@@ -50,7 +50,7 @@ export function initStormCanvas() {
     ctx.moveTo(p.x, p.y);
     ctx.lineTo(p.x - p.vx * 5.5, p.y - p.vy * 5.5);
     ctx.lineWidth = p.w;
-    ctx.strokeStyle = `rgba(127, 184, 224, ${p.a})`;
+    ctx.strokeStyle = `rgba(140, 175, 255, ${p.a})`;
     ctx.stroke();
   };
 

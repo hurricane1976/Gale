@@ -1,27 +1,34 @@
-/* GALE — gale-warning signal theme (storm navy / warning red / storm blue).
-   Deliberately its own identity, not the fleet's shared amber/teal tokens.
-   No build step: static HTML + one stylesheet + vanilla ES modules.
+/* GALE — thunderstorm theme (storm-black sky / lightning bolt / electric
+   blue / storm purple / gale-warning red). The fleet's names are all wind
+   and storm — the palette now is too: near-black storm sky, electric
+   lightning accents, occasional flash. No build step: static HTML + one
+   stylesheet + vanilla ES modules.
    Everything degrades: no-JS still shows all content; reduced motion
    collapses every animation through the global kill-switch at the bottom. */
 
 /* ---- design tokens ---- */
 :root {
-  --bg: #0a0e14;
-  --bg-deep: #070a10;
-  --surface: #10161f;
-  --surface-2: #141c28;
+  --bg: #05070d;
+  --bg-deep: #030409;
+  --surface: #0d1120;
+  --surface-2: #131a2c;
   --glass: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.09);
-  --line: rgba(219, 228, 238, 0.08);
-  --line-strong: rgba(219, 228, 238, 0.18);
-  --text: #e6ebf2;
-  --text-dim: #93a2b4;
-  --text-faint: #66748a;
+  --glass-border: rgba(160, 185, 230, 0.1);
+  --line: rgba(160, 185, 230, 0.08);
+  --line-strong: rgba(160, 185, 230, 0.18);
+  --text: #e4eaf4;
+  --text-dim: #92a2bc;
+  --text-faint: #5e6c84;
   --flag: #e8482c;
   --flag-soft: #ff7a5c;
   --flag-dim: rgba(232, 72, 44, 0.32);
-  --gust: #7fb8e0;
-  --gust-dim: rgba(127, 184, 224, 0.3);
+  --bolt: #ffd23f;
+  --bolt-bright: #ffe97a;
+  --bolt-dim: rgba(255, 210, 63, 0.35);
+  --gust: #6ea6ff;
+  --gust-dim: rgba(110, 166, 255, 0.3);
+  --storm-purple: #9b8cff;
+  --storm-purple-dim: rgba(155, 140, 255, 0.3);
   --ok: #4fae7a;
   --ok-dim: rgba(79, 174, 122, 0.3);
   --warn: #f0a83c;
@@ -91,17 +98,37 @@ code { font-family: var(--font-mono); font-size: 0.85em; color: var(--gust); }
 }
 .skip:focus { left: 12px; }
 
-/* ---- atmosphere: grid ground, washes, drifting storm-light blobs, wind canvas ---- */
+/* ---- atmosphere: storm sky, rain grid, lightning flash, drifting clouds ---- */
 body::before {
   content: "";
   position: fixed; inset: 0; z-index: -3; pointer-events: none;
   background:
-    radial-gradient(ellipse 90% 55% at 50% -8%, color-mix(in srgb, var(--gust) 7%, transparent), transparent 62%),
-    radial-gradient(ellipse 60% 40% at 85% 110%, color-mix(in srgb, var(--flag) 5%, transparent), transparent 60%),
-    linear-gradient(rgba(230, 235, 242, 0.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(230, 235, 242, 0.024) 1px, transparent 1px),
+    radial-gradient(ellipse 90% 55% at 50% -8%, color-mix(in srgb, var(--storm-purple) 8%, transparent), transparent 62%),
+    radial-gradient(ellipse 60% 40% at 85% 110%, color-mix(in srgb, var(--flag) 6%, transparent), transparent 60%),
+    linear-gradient(rgba(200, 215, 240, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 215, 240, 0.022) 1px, transparent 1px),
     var(--bg-deep);
   background-size: auto, auto, 64px 64px, 64px 64px, auto;
+}
+
+/* lightning flash: a bolt-wash over the whole sky, rare and brief */
+body::after {
+  content: "";
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 34% at 18% 0%, rgba(255, 244, 214, 0.5), transparent 55%),
+    radial-gradient(ellipse 55% 28% at 78% 4%, rgba(190, 214, 255, 0.35), transparent 60%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  animation: lightning-flash 13s linear infinite;
+}
+
+@keyframes lightning-flash {
+  0%, 88.9%, 91.2%, 94%, 100% { opacity: 0; }
+  89.2% { opacity: 0.5; }
+  89.9% { opacity: 0.08; }
+  90.6% { opacity: 0.75; }
+  93% { opacity: 0.05; }
 }
 
 .blob {
@@ -110,12 +137,12 @@ body::before {
 }
 .blob-red {
   width: 540px; height: 540px; left: -160px; top: -180px;
-  background: color-mix(in srgb, var(--flag) 13%, transparent);
+  background: color-mix(in srgb, var(--flag) 12%, transparent);
   animation: blob-a 26s ease-in-out infinite alternate;
 }
 .blob-blue {
   width: 620px; height: 620px; right: -220px; top: 22vh;
-  background: color-mix(in srgb, var(--gust) 9%, transparent);
+  background: color-mix(in srgb, var(--storm-purple) 10%, transparent);
   animation: blob-b 34s ease-in-out infinite alternate;
 }
 @keyframes blob-a { to { transform: translate(10vw, 8vh) scale(1.18); } }
@@ -249,7 +276,7 @@ h1.hero-title {
   margin: 0 0 22px; text-wrap: balance;
 }
 h1.hero-title .shine {
-  background: linear-gradient(var(--shine-angle), var(--flag-soft), var(--gust) 45%, var(--flag-soft));
+  background: linear-gradient(var(--shine-angle), var(--bolt-bright), var(--gust) 45%, var(--bolt-bright));
   background-size: 220% auto;
   -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: shine 9s linear infinite;
@@ -893,6 +920,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  body::after { animation: none !important; opacity: 0 !important; }
   .ping, .photon, .signal-ring, .scene .rain-line, .scan, .trunk-flow, .aurora { display: none; }
 }
 

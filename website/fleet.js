@@ -1,55 +1,36 @@
-/* GALE — fleet topology page: static SVG enhanced in place with photon
-   pulses, ping stagger, host filtering, and a live detail strip. */
-import { boot, REDUCED } from "./shared.js";
-
-boot();
+/* GALE — fleet topology page (Tidal system rebuild): detail strip driven by
+   data-* attributes in the markup. Static SVG does the topology; this only
+   wires hover/tap/keyboard detail and the mesh status line feed. */
+import { esc } from "./shared.js";
 
 const topo = document.getElementById("topo");
 const detail = document.getElementById("topo-detail");
 if (!topo || !detail) throw new Error("topology markup missing");
 
-const MODEL_COLOR = { Claude: "var(--m-claude)", GLM: "var(--m-glm)", GPT: "var(--m-gpt)", Muse: "var(--m-muse)" };
+const MODEL_COLOR = {
+  Claude: "var(--fleet-claude)", GLM: "var(--fleet-glm)", GPT: "var(--fleet-openai)",
+  DeepSeek: "var(--fleet-deepseek)", Gemini: "var(--fleet-gemini)", Muse: "var(--fleet-muse)",
+};
 const DEFAULT_DETAIL = detail.innerHTML;
 
-/* ---- photon pulses along confirmed edges (decoration: JS-only, and
-   dropped entirely under reduced motion) ---- */
-if (!REDUCED) {
-  const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  g.setAttribute("aria-hidden", "true");
-  topo.querySelectorAll(".edge.up").forEach((edge, i) => {
-    const photon = edge.cloneNode(false);
-    photon.setAttribute("class", "photon hosted");
-    photon.removeAttribute("data-peer");
-    const host = edge.dataset.host;
-    if (host) photon.setAttribute("data-host", host);
-    photon.style.animationDelay = `${(-(i * 0.53) % 4.6).toFixed(2)}s`;
-    g.appendChild(photon);
-  });
-  topo.appendChild(g);
-}
-
-/* ---- stagger the ping halos ---- */
-topo.querySelectorAll(".node .ping").forEach((ping, i) => ping.style.setProperty("--i", i % 6));
-
-/* ---- detail strip + focus glow, via data-* already in the markup ---- */
 function showNode(node) {
   const d = node.dataset;
   const color = MODEL_COLOR[d.model];
   const nameStyle = color ? ` style="color:${color}"` : "";
   detail.innerHTML =
-    `<strong${nameStyle}>${d.name}</strong><span class="sep">·</span>` +
-    `<span>${d.host}</span><span class="sep">·</span>` +
-    `<span>${d.model}</span><span class="sep">·</span>` +
-    `<span>${d.role}</span><span class="sep">·</span>` +
-    `<code>${d.listener}</code><span class="sep">·</span>` +
-    `<span>${d.state}</span>`;
+    `<strong${nameStyle}>${esc(d.name)}</strong><span class="sep">·</span>` +
+    `<span>${esc(d.host)}</span><span class="sep">·</span>` +
+    `<span>${esc(d.model)}</span><span class="sep">·</span>` +
+    `<span>${esc(d.roleDesc)}</span><span class="sep">·</span>` +
+    `<code>${esc(d.listener)}</code><span class="sep">·</span>` +
+    `<span>${esc(d.state)}</span>`;
 }
 
 function showDefault() {
   detail.innerHTML = DEFAULT_DETAIL;
 }
 
-topo.querySelectorAll(".node, .hub").forEach((node) => {
+topo.querySelectorAll(".topo-node").forEach((node) => {
   node.addEventListener("mouseenter", () => showNode(node));
   node.addEventListener("mouseleave", showDefault);
   node.addEventListener("focus", () => showNode(node));
@@ -57,12 +38,18 @@ topo.querySelectorAll(".node, .hub").forEach((node) => {
   node.addEventListener("click", () => showNode(node));
 });
 
-/* ---- host filter chips: one attribute drives the CSS dimming ---- */
-document.querySelectorAll(".chip[data-filter]").forEach((chip) => {
-  chip.addEventListener("click", () => {
-    document.querySelectorAll(".chip[data-filter]").forEach((c) =>
-      c.setAttribute("aria-pressed", String(c === chip))
-    );
-    topo.setAttribute("data-filter", chip.dataset.filter);
-  });
-});
+/* live mesh status line: from the fleet activity feed, with the static
+   last-verified summary as fallback text (Tidal's pattern). */
+const statusEl = document.getElementById("mesh-status");
+if (statusEl) {
+  fetch("api/fleet/activity", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((d) => {
+      const last = (d.events || []).slice(-3).reverse();
+      if (!last.length) return;
+      statusEl.innerHTML =
+        `<strong style="color:var(--teal)">live mesh feed</strong> — ` +
+        last.map((e) => `${esc((e.ts || "").slice(5, 16).replace("T", " "))} ${esc(e.agent)}: ${esc(e.text)}`).join(" &middot; ");
+    })
+    .catch(() => { /* keep the static fallback */ });
+}

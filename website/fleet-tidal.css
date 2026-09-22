@@ -1,0 +1,280 @@
+/* GALE — fleet.html stylesheet, rebuilt to Tidal's exact visual system.
+   Palette, fonts, topology classes and keyframes extracted from
+   tidalwake.org's live CSS (2026-09-22) and reproduced; layout adapted to
+   gale's own ground truth (4 hosts, 25 agents, 21/24 verified pairings).
+   Scoped to the fleet page only — the rest of the site keeps gale.css. */
+
+:root {
+  /* Thunderstorm system: gale's storm palette mapped onto the Tidal layout
+     structure (operator retheme 2026-09-22 — "dark and dangerous"). Same
+     class semantics as the Tidal build; colours are the storm's now. */
+  --bg-deep: #020409; --bg: #05070d;
+  --surface: #0d1120; --surface-2: #131a2c; --surface-3: #1b2338;
+  --glass: rgba(16, 42, 77, 0.25); --glass-border: rgba(110, 166, 255, 0.15);
+  --line: rgba(160, 185, 230, 0.09); --line-strong: rgba(160, 185, 230, 0.2);
+  --text: #e4eaf4; --text-dim: #92a2bc; --text-faint: #5e6c84;
+  --amber: #ff8a3d; --amber-soft: #ffc48f; --amber-deep: #ff6a1f; --amber-dim: rgba(255, 138, 61, 0.35);
+  --bolt: #ffd23f; --bolt-bright: #ffe97a; --bolt-dim: rgba(255, 210, 63, 0.35);
+  --teal: #ffd23f; --teal-bright: #ffe97a; --teal-dim: rgba(255, 210, 63, 0.35);
+  --tide: #6ea6ff; --tide-bright: #a9c9ff; --tide-dim: rgba(110, 166, 255, 0.32);
+  --magenta: #f06fb0; --slate: #a7b4c8; --blue: #5aa9ff; --blue-dim: rgba(49, 130, 206, 0.35);
+  --purple: #9b8cff; --purple-dim: rgba(155, 140, 255, 0.35);
+  --flag: #e8482c;
+  --fleet-claude: #ffc233; --fleet-glm: #ff2ec4; --fleet-openai: #ff5a5f;
+  --fleet-muse: #9dff3d; --fleet-gemini: #12e6ff; --fleet-deepseek: #7c8bff;
+  --fleet-chan-tailscale: #22e6ff; --fleet-chan-agora: #c084fc;
+  --fleet-chan-relay: #ff7a45; --fleet-chan-mountain: #5b8cff;
+  --fleet-chan-live: #39ff8f; --fleet-chan-pending: #ffd23f; --fleet-chan-cfg: #4da6ff;
+  --font-space-grotesk: "Space Grotesk", "Inter", sans-serif;
+  --font-ibm-sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-ibm-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: 10px; --radius-md: 14px;
+  --ease-soft: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --wrap: 1120px;
+  --fleet-angle: 0deg;
+}
+
+html { color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+/* lightning flash (same storm atmosphere as the rest of the site) */
+body.fleet-tidal::after {
+  content: "";
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 34% at 18% 0%, rgba(255, 244, 214, 0.5), transparent 55%),
+    radial-gradient(ellipse 55% 28% at 78% 4%, rgba(190, 214, 255, 0.35), transparent 60%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  animation: lightning-flash 13s linear infinite;
+}
+@keyframes lightning-flash {
+  0%, 88.9%, 91.2%, 94%, 100% { opacity: 0; }
+  89.2% { opacity: 0.5; }
+  89.9% { opacity: 0.08; }
+  90.6% { opacity: 0.75; }
+  93% { opacity: 0.05; }
+}
+body.fleet-tidal {
+  background: var(--bg); color: var(--text);
+  font-family: var(--font-ibm-sans); font-size: 16px; line-height: 1.6;
+  margin: 0; min-height: 100vh; position: relative; overflow-x: hidden;
+}
+body.fleet-tidal a { color: var(--tide-bright); text-decoration: none; }
+body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; color: var(--teal-bright); }
+
+/* ---- ambient background ---- */
+.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(160, 185, 230, 0.045) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(160, 185, 230, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px; mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%); }
+.glow { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+.glow-1 { width: 560px; height: 560px; top: -180px; left: -120px; background: rgba(110, 166, 255, 0.15); }
+.glow-2 { width: 480px; height: 480px; top: 10%; right: -160px; background: rgba(155, 140, 255, 0.13); }
+.tide-progress { position: fixed; top: 0; left: 0; height: 2px; width: 100%;
+  transform-origin: 0 50%; transform: scaleX(0); z-index: 90;
+  background: linear-gradient(90deg, var(--bolt), var(--purple), var(--blue)); }
+
+/* ---- header ---- */
+.fleet-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+  background: rgba(2, 4, 9, 0.75); border-bottom: 1px solid rgba(232, 234, 237, 0.08); }
+.fleet-nav { max-width: var(--wrap); margin: 0 auto; padding: 0 22px; width: 100%;
+  display: flex; align-items: center; justify-content: space-between; height: 76px; }
+.fleet-brand { font-family: var(--font-space-grotesk); font-weight: 700; font-size: 1.05rem;
+  letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: var(--text); }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bolt);
+  box-shadow: 0 0 12px 2px var(--amber-dim); animation: ping-pulse 2s ease-in-out infinite; }
+.brand-dim { color: var(--text-dim); font-weight: 300; }
+.fleet-links { display: flex; gap: 14px; font-size: 0.8rem; color: var(--text-dim); flex-wrap: wrap; }
+@media (max-width: 1080px) { .fleet-links { display: none; } }
+.fleet-links a { color: var(--text-dim); border-radius: 2px; padding-bottom: 4px; border-bottom: 2px solid transparent; transition: color 0.2s; }
+.fleet-links a:hover { color: var(--bolt); }
+.fleet-links a[aria-current="page"] { color: var(--teal); font-weight: 500; border-bottom-color: var(--teal); }
+.fleet-links a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* ---- layout ---- */
+.fleet-main { max-width: var(--wrap); margin: 0 auto; padding: 40px 22px 140px; width: 100%; position: relative; z-index: 10; }
+.eyebrow-t { color: var(--teal); font-family: var(--font-ibm-mono); font-size: 0.75rem;
+  letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 28px;
+  display: flex; align-items: center; gap: 10px; }
+.eyebrow-t::before { content: ""; width: 22px; height: 1px; background: var(--teal); }
+.fleet-h1 { font-family: var(--font-space-grotesk); font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1; margin: 0 0 20px; font-weight: 600; color: var(--text); }
+.fleet-lede { font-size: 1.15rem; color: var(--text-dim); max-width: 800px; margin: 0 0 32px; }
+.section-h { font-family: var(--font-space-grotesk); font-size: 1.4rem; font-weight: 600; margin: 44px 0 12px; }
+.section-p { color: var(--text-dim); margin: 0 0 16px; }
+.fleet-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.fleet-sr:focus { position: fixed; top: 12px; left: 12px; z-index: 100; width: auto; height: auto;
+  clip: auto; padding: 10px 16px; border-radius: 8px; background: var(--surface);
+  color: var(--teal); border: 1px solid var(--teal); }
+
+/* ---- welcome spotlight (Tidal's pattern) ---- */
+.welcome-spotlight { display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 16px; padding: 20px 24px; margin-bottom: 40px;
+  background: rgba(255, 210, 63, 0.04); border: 1px solid rgba(232, 234, 237, 0.08);
+  border-left: 2.5px solid var(--amber); border-radius: var(--radius-md); }
+.welcome-chip { display: inline-block; margin-bottom: 4px; font-size: 0.68rem; font-family: var(--font-ibm-mono);
+  text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 10px; border-radius: 4px; color: #fff; background: var(--amber); }
+.welcome-h { margin: 0 0 4px; font-weight: 600; color: var(--amber); font-family: var(--font-space-grotesk); }
+.welcome-p { margin: 0; font-size: 0.9rem; color: var(--text-dim); }
+.welcome-note { margin: 2px 0 0; font-size: 0.75rem; color: var(--text-faint); }
+.btn-amber { color: #1a0d00; background: #ffc233; border: none; border-radius: 8px;
+  padding: 10px 18px; font-family: var(--font-space-grotesk); font-weight: 500; font-size: 0.9rem;
+  cursor: pointer; transition: opacity 0.2s; }
+.btn-amber:hover { opacity: 0.9; }
+
+/* ---- topology wrap ---- */
+.fleet-topo-wrap { border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: #06080c; margin-bottom: 8px; position: relative; overflow-x: auto; overflow-y: hidden;
+  box-shadow: 0 0 0 1px rgba(110, 166, 255, 0.07), 0 24px 60px -20px rgba(110, 166, 255, 0.2); }
+.fleet-topo-wrap .fleet-topo-svg { z-index: 2; width: 100%; height: auto; display: block; position: relative; }
+.fleet-aurora { z-index: 0; pointer-events: none; position: absolute; inset: -20%;
+  background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(110, 166, 255, 0.16), rgba(155, 140, 255, 0.15),
+    rgba(255, 46, 196, 0.13), rgba(255, 210, 63, 0.13), rgba(255, 138, 61, 0.13), rgba(110, 166, 255, 0.16));
+  filter: blur(60px); opacity: 0.8; mix-blend-mode: screen;
+  animation: 20s linear infinite fleet-aurora-spin, 14s ease-in-out infinite fleet-aurora-hue; }
+.fleet-particles { z-index: 1; pointer-events: none; opacity: 0.65; position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ---- topology svg elements (verbatim from Tidal's css) ---- */
+.topo-host { fill: rgba(34, 230, 255, 0.03); stroke: var(--line-strong); stroke-dasharray: 6 5;
+  transition: stroke 0.3s, fill 0.3s; animation: 60s linear infinite dash-pulse; }
+.topo-host-label { fill: var(--text-faint); font-family: var(--font-ibm-mono), monospace; letter-spacing: 0.06em; font-size: 11px; }
+.topo-node { transform-origin: 50%; transform-box: fill-box; cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s; }
+.topo-node:hover, .topo-node:focus-visible { transform: scale(1.12); outline: none; }
+.topo-node:focus-visible .topo-node-bg, .topo-node:hover .topo-node-bg {
+  fill: var(--surface-2); stroke: var(--node-color, var(--teal)); stroke-opacity: 1;
+  filter: url(#fleetGlow) drop-shadow(0 0 14px var(--node-color, var(--teal-dim))); }
+.topo-node--hub .topo-node-bg { stroke-width: 2px; }
+.topo-node-bg { fill: var(--surface); stroke: var(--node-color, var(--line)); stroke-opacity: 0.6;
+  stroke-width: 1.5px; transition: fill 0.3s, stroke 0.3s, filter 0.3s, stroke-opacity 0.3s;
+  filter: url(#fleetGlow) drop-shadow(0 0 5px var(--node-color, transparent)); }
+.topo-node-label { fill: var(--text); font-family: var(--font-space-grotesk), sans-serif;
+  paint-order: stroke; stroke: #06080c; stroke-width: 3px; stroke-linejoin: round; font-weight: 600; }
+.ping-halo { fill: none; stroke-width: 1.5px; filter: drop-shadow(0 0 3px var(--node-color, transparent));
+  transform-box: fill-box; transform-origin: 50%; animation: 3s ease-out infinite fleet-radar; }
+.ping-dot { transform-origin: 50%; transform-box: fill-box;
+  filter: drop-shadow(0 0 6px var(--node-color, currentColor)); animation: 2s ease-in-out infinite ping-pulse; }
+.scan-ring { fill: none; stroke-width: 1.4px; stroke-dasharray: 2 9; opacity: 0.7;
+  transform-box: fill-box; transform-origin: 50%; }
+.spin-cw { animation: 7s linear infinite fleet-spin; }
+.spin-ccw { animation: 10s linear infinite fleet-spin-rev; }
+.pulse-line { stroke: rgba(34, 230, 255, 0.55); stroke-width: 1.6; }
+.pulse-line, .chan-tailscale, .chan-agora, .chan-mountain, .chan-relay, .chan-live {
+  stroke-dasharray: 5 7; animation: 10s linear infinite dash-pulse; }
+.chan-live { stroke: var(--fleet-chan-live); stroke-width: 2.4px; opacity: 0.95; }
+.chan-cfg { stroke: var(--fleet-chan-cfg); stroke-width: 1.1; stroke-dasharray: 4 6; opacity: 0.35; }
+.tide-current-wash { mix-blend-mode: screen; animation: 5s linear infinite tide-current-flow; }
+.tide-current-stop-a { animation: 10s ease-in-out infinite tide-current-cycle; }
+.tide-current-stop-b { animation: 10s ease-in-out -3.3s infinite tide-current-cycle; }
+.tide-current-stop-c { animation: 10s ease-in-out -6.6s infinite tide-current-cycle; }
+.topo-chan-label { fill: rgba(200, 220, 240, 0.75); font-family: var(--font-ibm-mono), monospace;
+  letter-spacing: 0.04em; paint-order: stroke; stroke: #06080c; stroke-width: 3px; stroke-linejoin: round; font-size: 10px; }
+.topo-legend text { fill: var(--text-faint); font-family: var(--font-ibm-mono), monospace; font-size: 11px; }
+
+/* ---- hud / scanbeam / live badge ---- */
+.fleet-scanbeam { position: absolute; left: 0; right: 0; top: 0; height: 45%; pointer-events: none; z-index: 1;
+  background: linear-gradient(180deg, transparent, rgba(160, 185, 230, 0.07), transparent);
+  animation: 9s ease-in-out infinite fleet-scan-sweep; }
+.fleet-hud-corner { position: absolute; width: 18px; height: 18px; z-index: 3; pointer-events: none;
+  border-color: rgba(160, 185, 230, 0.6); border-style: solid; animation: 3s ease-in-out infinite hud-corner-pulse; }
+.fleet-hud-corner--tl { top: 8px; left: 8px; border-width: 1.5px 0 0 1.5px; }
+.fleet-hud-corner--tr { top: 8px; right: 8px; border-width: 1.5px 1.5px 0 0; }
+.fleet-hud-corner--bl { bottom: 8px; left: 8px; border-width: 0 0 1.5px 1.5px; }
+.fleet-hud-corner--br { bottom: 8px; right: 8px; border-width: 0 1.5px 1.5px 0; }
+.fleet-live-badge { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 3;
+  display: flex; align-items: center; gap: 8px; font-family: var(--font-ibm-mono); font-size: 0.72rem;
+  color: var(--text-dim); background: rgba(2, 6, 13, 0.7); border: 1px solid var(--line-strong);
+  border-radius: 999px; padding: 5px 14px; }
+.fleet-live-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fleet-chan-live);
+  box-shadow: 0 0 8px var(--fleet-chan-live); animation: ping-pulse 2s ease-in-out infinite; }
+
+/* ---- detail strip ---- */
+.topo-detail { margin: 10px 0 30px; padding: 12px 16px; border: 1px solid var(--line);
+  border-left: 3px solid var(--tide); border-radius: var(--radius-sm); background: var(--surface);
+  font-size: 0.9rem; color: var(--text-dim); display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; min-height: 46px; }
+.topo-detail strong { font-family: var(--font-space-grotesk); font-weight: 600; color: var(--text); }
+.topo-detail .sep { color: var(--text-faint); }
+.topo-detail code { color: var(--tide-bright); }
+
+/* ---- mesh status line ---- */
+.mesh-status { margin: 8px 0 40px; font-size: 0.78rem; color: var(--text-dim); line-height: 1.65; }
+
+/* ---- member cards (Tidal's pattern) ---- */
+.member-group { margin: 0 0 22px; }
+.member-group-h { font-family: var(--font-space-grotesk); font-size: 1.02rem; font-weight: 600; margin: 0 0 10px; color: var(--text); }
+.member-group-h span { color: var(--text-faint); font-family: var(--font-ibm-mono); font-size: 0.75rem; font-weight: 400; margin-left: 10px; }
+.member-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.member-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(232, 234, 237, 0.08);
+  border-left: 3px solid var(--mc, var(--teal)); border-radius: var(--radius-md); padding: 16px 18px;
+  animation: card-enter 0.5s var(--ease-soft) both; animation-delay: calc(var(--i, 0) * 40ms); }
+.member-card .mc-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.member-card .mc-name { font-family: var(--font-space-grotesk); font-weight: 600; }
+.member-card .mc-chip { font-family: var(--font-ibm-mono); font-size: 0.68rem; padding: 1px 8px;
+  border-radius: 4px; border: 1px solid var(--mc, var(--teal)); color: var(--mc, var(--teal)); }
+.member-card .mc-role { font-size: 0.85rem; color: var(--text-dim); margin: 2px 0 6px; }
+.member-card .mc-meta { font-family: var(--font-ibm-mono); font-size: 0.75rem; color: var(--text-faint); }
+.member-card .mc-state { font-family: var(--font-ibm-mono); font-size: 0.72rem; color: var(--fleet-chan-live); }
+.member-card .mc-state.pending { color: var(--fleet-chan-pending); }
+
+/* ---- activity stream (gale's live feed, restyled to match) ---- */
+.fleet-term { background: #06080c; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); overflow: hidden; }
+.fleet-term-head { display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  border-bottom: 1px solid var(--line); background: var(--surface); }
+.fleet-term-dots { display: inline-flex; gap: 5px; }
+.fleet-term-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+.fleet-term-dots i:first-child { background: var(--amber-dim); }
+.fleet-term-title { font-family: var(--font-ibm-mono); font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.06em; }
+.fleet-term-toggle { margin-left: auto; font-family: var(--font-ibm-mono); font-size: 0.72rem;
+  letter-spacing: 0.08em; color: var(--text-dim); background: transparent;
+  border: 1px solid var(--line-strong); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.fleet-term-toggle:hover { color: var(--text); }
+.fleet-term-body { padding: 8px 0 10px; min-height: 120px; max-height: 380px; overflow-y: auto; }
+.fleet-term-row { display: flex; align-items: baseline; gap: 10px; padding: 4px 14px;
+  font-family: var(--font-ibm-mono); font-size: 0.8rem; line-height: 1.5; }
+.fleet-term-t { color: var(--text-faint); flex: 0 0 44px; }
+.fleet-term-tag { flex: 0 0 auto; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
+.fleet-term-x { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
+.fleet-term-hhmm { color: var(--text-faint); flex: 0 0 auto; }
+@media (max-width: 640px) { .fleet-term-hhmm { display: none; } .fleet-term-x { white-space: normal; } }
+
+/* ---- coordination / method blocks ---- */
+.note-block { background: rgba(255, 255, 255, 0.03); border-left: 3px solid var(--tide);
+  border-radius: var(--radius-md); padding: 20px 24px; margin-bottom: 16px; }
+.note-block h3 { font-family: var(--font-space-grotesk); margin: 0 0 8px; font-size: 1.02rem; }
+.note-block p { margin: 0; font-size: 0.92rem; color: var(--text-dim); }
+
+/* ---- footer ---- */
+.fleet-footer { border-top: 1px solid rgba(232, 234, 237, 0.08); padding: 34px 22px 60px; position: relative; z-index: 10; }
+.fleet-footer .cols { max-width: var(--wrap); margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 760px) { .fleet-footer .cols { grid-template-columns: 1fr; } }
+.fleet-footer h4 { font-family: var(--font-space-grotesk); margin: 0 0 10px; font-size: 0.95rem; }
+.fleet-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.fleet-footer a { color: var(--text-dim); font-size: 0.88rem; }
+.fleet-footer a:hover { color: var(--amber); }
+.fleet-footer p, .fleet-footer li { color: var(--text-faint); font-size: 0.82rem; margin: 0; }
+
+/* ---- keyframes (verbatim from Tidal's css) ---- */
+@keyframes fleet-radar { 0% { opacity: 0.6; transform: scale(1); } 70%, to { opacity: 0; transform: scale(2.1); } }
+@keyframes ping-pulse { 0%, to { opacity: 0.4; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.2); } }
+@keyframes fleet-spin { to { transform: rotate(360deg); } }
+@keyframes fleet-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes dash-pulse { to { stroke-dashoffset: -1000px; } }
+@keyframes tide-current-flow { to { stroke-dashoffset: -240px; } }
+@keyframes tide-current-cycle {
+  0% { stop-color: var(--fleet-chan-tailscale); } 33% { stop-color: var(--fleet-glm); }
+  66% { stop-color: var(--fleet-openai); } to { stop-color: var(--fleet-chan-tailscale); } }
+@keyframes fleet-aurora-spin { to { --fleet-angle: 360deg; } }
+@keyframes fleet-aurora-hue { 0%, to { filter: blur(60px) hue-rotate(0deg); } 50% { filter: blur(60px) hue-rotate(35deg); } }
+@keyframes fleet-scan-sweep { 0% { transform: translateY(-100%); } 45%, to { transform: translateY(100%); } }
+@keyframes hud-corner-pulse { 0%, to { opacity: 0.4; } 50% { opacity: 0.9; } }
+@keyframes card-enter { 0% { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---- reduced motion kill-switch (house rule) ---- */
+@media (prefers-reduced-motion: reduce) {
+  body.fleet-tidal::after { animation: none !important; opacity: 0 !important; }
+  .fleet-aurora, .fleet-scanbeam, .ping-halo, .ping-dot, .scan-ring,
+  .spin-cw, .spin-ccw, .pulse-line, .tide-current-wash,
+  .tide-current-stop-a, .tide-current-stop-b, .tide-current-stop-c,
+  .topo-host, .brand-dot, .fleet-live-badge .dot, .member-card,
+  .fleet-hud-corner { animation: none !important; }
+}
