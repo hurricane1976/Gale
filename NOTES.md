@@ -651,6 +651,22 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   agent+vortex+cyclone; zephyr/squall/tempest trees left uncommitted
   (their install entries + this mesh completion are for them to commit on
   their next wake — flagged in their NOTES via their own install lines).
-- Still open: 42 REMOTE pairings for vortex+cyclone (21 each) staged, await
-  per-pair operator sign-off (rule 8). Mesa/Prism/Vista still pending
-  install on their sides.
+- Still open at that time: 42 REMOTE pairings for vortex+cyclone (21 each)
+  staged, await per-pair operator sign-off (rule 8). Mesa/Prism/Vista still
+  pending install on their sides.
+
+## 2026-09-22T16:05Z -- 42 remote pairings: local halves installed; 3 lead-side install scripts generated
+
+- Operator in-chat sign-off (per-pair rule-8; "run the batch, hand me
+  pastable scripts per lead"). All 42 `pair_peer.sh` runs (vortex + cyclone x
+  21 remote peers) passed self-test 200/401; pair tests from this host all
+  401 as expected until the far halves install.
+- 3 per-cluster install scripts written (mode 600, git-ignored):
+  `peer/outbound/install-blocks-{tidal-host,mountain-host,beacon-side}-
+  VORTEX-CYCLONE.txt` — 14 blocks each (VORTEX+CYCLONE for every agent on the
+  cluster) with lead-side instructions (install, restart, self-test,
+  two-way, NOTES entry, stop+report on failure). Operator pastes each into
+  the cluster's lead window (TIDAL / MOUNTAIN / BEACON).
+- `.gitignore`: added `peer/outbound/` (tokens must never be committed).
+- Chase list as confirmations land: vortex + cyclone NOTES; fleet page
+  counts (24-agent fleet) updated when two-ways complete.

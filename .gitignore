@@ -9,3 +9,4 @@ peer/inbox/*.json
 peer/inbox/processed/*.json
 peer/inbox/*/*.json
 peer/logs/
+peer/outbound/
