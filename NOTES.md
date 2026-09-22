@@ -993,3 +993,31 @@ Operator asked to save everything for a later session. Committed + pushed:
   burned-and-rotated passphrase; no live credential appears).
 - fleet.html: fixed stale "Maistral telegram pending" lines (live 18:01Z).
 Resume procedure for a fresh session: read ~/agent/HANDOFF.md first.
+
+## 2026-09-22 ~23:30Z — LAN Ollama (192.168.1.197) wired into opencode: all 15 models
+
+Operator request (address given as 192.167.1.197 — typo; 192.167 is not a
+private range and is unreachable; correct host 192.168.1.197:11434,
+Ollama v0.34.0). Found and fixed a real regression: the GLOBAL opencode
+config (~/.config/opencode/opencode.jsonc) lost its Ollama provider block
+when it was rewritten 2026-09-22T18:38 — so NO LAN model was reachable
+from opencode on this box despite fleet notes assuming otherwise (the
+agents' ollama/qwen3.8:27b runs would have failed since then).
+
+- Enumerated the host's /api/tags: 15 models (qwen3.8:27b/latest,
+  qwen3.6:27b + 35b-a3b variants, qwen3.5:9b, qwen:latest 4B,
+  qwen2.5-coder 14b/7b, gemma4 8b/26b/31b, muse-glimmer 27.9B,
+  nemotron-3.5-lightning 32.9B, gpt-oss-abliterated 20.9B).
+- Added provider block "ollama" (@ai-sdk/openai-compatible, baseURL
+  http://192.168.1.197:11434/v1) with all 15 ids to the global config.
+  Verified: opencode models lists all 15 as ollama/<id>.
+- Smoke tests LIVE: ollama/qwen2.5-coder:7b -> READY; ollama/qwen3.8:27b
+  -> READY (fleet's old fallback works again).
+- Caveat: ollama/qwen:latest (4B) does NOT support tools — listed but
+  unusable for agent runs (opencode requires tool support).
+- NOTE: ~/.config/opencode/opencode.jsonc lives OUTSIDE version control
+  (its rewrite today is what dropped the provider block). Consider
+  committing it somewhere; the same clobber can happen again.
+- "Pull" note: all 15 models are already pulled on the Ollama host —
+  inventory == what is present; nothing to download. Status.html's
+  Ollama panel picks the inventory up automatically via sysmon.
