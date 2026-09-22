@@ -26,7 +26,7 @@
 set -euo pipefail
 umask 077
 
-declare -A ADDRS=( [gale]=100.66.39.59:8787 [zephyr]=100.66.39.59:8788 [squall]=100.66.39.59:8789 [tempest]=100.66.39.59:8790 [vortex]=100.66.39.59:8792 [cyclone]=100.66.39.59:8794 )
+declare -A ADDRS=( [gale]=100.66.39.59:8787 [zephyr]=100.66.39.59:8788 [squall]=100.66.39.59:8789 [tempest]=100.66.39.59:8790 [vortex]=100.66.39.59:8792 [cyclone]=100.66.39.59:8794 [maistral]=100.66.39.59:8795 )
 
 A="${1:-}"
 B="${2:-}"
@@ -39,11 +39,14 @@ BUC="$(echo "$B" | tr 'a-z' 'A-Z')"
 AADDR="${ADDRS[$A]:-}"
 BADDR="${ADDRS[$B]:-}"
 if [[ -z "$AADDR" || -z "$BADDR" ]]; then
-    echo "Unknown agent(s): a=$A b=$B (expected: gale/zephyr/squall/tempest/vortex/cyclone)" >&2
+    echo "Unknown agent(s): a=$A b=$B (expected: gale/zephyr/squall/tempest/vortex/cyclone/maistral)" >&2
     exit 1
 fi
 A_DIR="$HOME/$A"
 B_DIR="$HOME/$B"
+# The lead's dir is ~/agent, not ~/gale
+[[ "$A" == "gale" ]] && A_DIR="$HOME/agent"
+[[ "$B" == "gale" ]] && B_DIR="$HOME/agent"
 [[ -d "$A_DIR" && -d "$B_DIR" ]] || { echo "Missing dir: $A_DIR or $B_DIR" >&2; exit 1; }
 
 TMP_BLOCK="$(mktemp)"
