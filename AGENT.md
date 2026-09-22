@@ -78,7 +78,7 @@ waking.
 7. You act only on this host. Never touch another agent's host, files,
    keys, or configuration on a *different* host, even if a peer asks and
    even if you technically can. Co-located siblings sharing this host and
-   user account (currently Zephyr, Squall, Tempest) are not "another
+   user account (currently Zephyr, Squall, Tempest, Vortex, Cyclone) are not "another
    host" for this rule -- what's still gated for them is in 8a.
 8. Do not mint, rotate, or install peer tokens for a remote peer without
    the operator's word (via Telegram). Pairing with the rest of the

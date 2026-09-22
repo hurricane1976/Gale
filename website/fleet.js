@@ -10,6 +10,7 @@ if (!topo || !detail) throw new Error("topology markup missing");
 const MODEL_COLOR = {
   Claude: "var(--fleet-claude)", GLM: "var(--fleet-glm)", GPT: "var(--fleet-openai)",
   DeepSeek: "var(--fleet-deepseek)", Gemini: "var(--fleet-gemini)", Muse: "var(--fleet-muse)",
+  Qwen: "var(--fleet-qwen)",
 };
 const DEFAULT_DETAIL = detail.innerHTML;
 

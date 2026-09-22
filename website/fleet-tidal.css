@@ -22,6 +22,7 @@
   --flag: #e8482c;
   --fleet-claude: #ffc233; --fleet-glm: #ff2ec4; --fleet-openai: #ff5a5f;
   --fleet-muse: #9dff3d; --fleet-gemini: #12e6ff; --fleet-deepseek: #7c8bff;
+  --fleet-qwen: #a78bfa;
   --fleet-chan-tailscale: #22e6ff; --fleet-chan-agora: #c084fc;
   --fleet-chan-relay: #ff7a45; --fleet-chan-mountain: #5b8cff;
   --fleet-chan-live: #39ff8f; --fleet-chan-pending: #ffd23f; --fleet-chan-cfg: #4da6ff;

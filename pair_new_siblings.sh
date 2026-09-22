@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # pair_new_siblings.sh — full two-way pairing between Gale and each of the
-# three new same-host siblings (Zephyr/Squall/Tempest), in one run.
+# new same-host siblings (Zephyr/Squall/Tempest, plus Vortex/Cyclone added
+# 2026-09-22), in one run.
 #
 # Meant to be run by the OPERATOR, by hand, in your own terminal -- same
 # rule 8 boundary as pair_peer.sh/install_peer_block.sh themselves (Gale
@@ -20,19 +21,20 @@
 # already does on its own -- that part isn't changed or suppressed here.
 #
 # Usage: ./pair_new_siblings.sh [NAME...]
-#   No args = all three (zephyr squall tempest). Or name a subset, e.g.:
-#   ./pair_new_siblings.sh zephyr squall
+#   No args = all five (zephyr squall tempest vortex cyclone). Or name a
+#   subset, e.g.:
+#   ./pair_new_siblings.sh zephyr vortex
 set -euo pipefail
 umask 077
 
 GALE_DIR="$HOME/agent"
 GALE_ADDR="100.66.39.59:8787"
 
-declare -A ADDRS=( [zephyr]=100.66.39.59:8788 [squall]=100.66.39.59:8789 [tempest]=100.66.39.59:8790 )
+declare -A ADDRS=( [zephyr]=100.66.39.59:8788 [squall]=100.66.39.59:8789 [tempest]=100.66.39.59:8790 [vortex]=100.66.39.59:8792 [cyclone]=100.66.39.59:8794 )
 
 TARGETS=("$@")
 if [[ ${#TARGETS[@]} -eq 0 ]]; then
-  TARGETS=(zephyr squall tempest)
+  TARGETS=(zephyr squall tempest vortex cyclone)
 fi
 
 TMP_BLOCK="$(mktemp)"
@@ -50,7 +52,7 @@ for lc in "${TARGETS[@]}"; do
   ADDR="${ADDRS[$lc]:-}"
   DIR="$HOME/$lc"
 
-  if [[ -z "$ADDR" ]]; then echo "Unknown sibling: $lc (expected zephyr/squall/tempest)" >&2; exit 1; fi
+  if [[ -z "$ADDR" ]]; then echo "Unknown sibling: $lc (expected zephyr/squall/tempest/vortex/cyclone)" >&2; exit 1; fi
   if [[ ! -d "$DIR" ]]; then echo "Missing dir: $DIR" >&2; exit 1; fi
 
   echo
