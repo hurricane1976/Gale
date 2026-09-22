@@ -753,3 +753,81 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - 21 remote pairings for maistral: still STAGED (rule 8) — nothing minted.
 - NOT yet done (awaiting operator): telegram bot/key for maistral (its
   cron lines + unattended wakes stay off until then); remote-21 batch.
+
+## 2026-09-22T17:45Z -- fleet page: gale-host cluster reformed to the standard formation (operator request)
+
+- Operator: "can you modify the formation of the 7 agents to match the
+  others? all the ones on this box are grouped different in the fleet
+  topology" (+ "if you need to make the diagram bigger please do").
+- Diagnosed: the three 7-agent clusters use one strict formation — hub at
+  top-center, ring of 6 in 2-2-2 rows (x offsets ±111.10 / ±138.56 / ±61.82
+  from hub; rows at hub_y +53.47 / +173.58 / +269.91), host box 380x370,
+  right-side nodes spin-cw / left-side spin-ccw, ALL 21 pairwise edges
+  drawn. The gale-host cluster used ad-hoc positions (dense rows at
+  y=649.91/735 + Maistral appended at x=1032.84) and was missing the 5
+  Maistral<->sibling edges (mesh had them two-way since 17:28Z).
+- Applied the standard formation: ring offsets recomputed from gale's hub
+  (840,535) -> Zephyr(951.10,588.47) Squall(728.90,588.47) Tempest(978.56,
+  708.58) Vortex(701.44,708.58) Cyclone(901.82,804.91) Maistral(778.18,
+  804.91); all 21 chan-live edges (re)drawn with titles; host box back to
+  the standard 380x370; viewBox 1680x820 -> 1680x900 (operator pre-approved
+  the bigger diagram) with the legend block slid down (790/794/812 ->
+  870/874/892). Welcome spotlight refreshed to Maistral (card still
+  claimed "most recently onboarded: Zephyr-Squall-Tempest" from Sept 21 —
+  stale since the vortex/cyclone/maistral onboards).
+- Verified: deployed; rendered DOM 28 nodes / 21 gale-host chan-live
+  edges; headless screenshots confirm the four clusters now render the
+  same formation. Known pre-existing overlap (GALE HOST box label vs the
+  center "lead trunk · verified two-way" label at y~462-470) left as-is —
+  predates this change; flag for Cyclone's design-consistency lane if it
+  bothers anyone.
+- Committed website/fleet.html only (firewalla/status/sysmon WIP left
+  untouched). Pushed.
+
+## 2026-09-22T17:52Z -- fleet page: trunk-label collision nudged (operator request)
+
+- Operator: "yes nudge it please" (the pre-existing GALE HOST label vs
+  center "lead trunk · verified two-way" overlap).
+- Root cause: the gale box's top edge (y=480) is the only host-box edge
+  that borders the shared trunk corridor, and the host label sat at the
+  same 10px-above-edge offset as the other three — colliding with the
+  center trunk label at y=462. First attempt (raise the trunk label to
+  y=446) failed review: it then ran behind the LIGHTNING node (circle
+  bottom ~450). Settled fix: restore the trunk label to y=462 and move
+  the GALE HOST label inside its box top (y=496) — clears the trunk
+  corridor, the beacon cluster's bottom node rings (RADAR/LIGHTNING
+  bottoms ~457), and the gale hub's scan ring (top ~504).
+- Verified: deployed + zoomed crop of the band — all three trunk labels
+  and the host label legible, zero overlap. Committed, pushed.
+
+## 2026-09-22T18:00Z -- firewalla fix picked up: control crash reverted, services restarted, poll backoff live
+
+- Found the 17:50Z WIP rewrite of `website/firewalla_control.py` broken:
+  `get_box()` referenced a module-global `_box` that was never initialized
+  -> `NameError` on every `GET /status` (reproduced live), plus a
+  `return _box if _box else get_box()` infinite-recursion path. Service
+  had been manually stopped 17:51Z and left `inactive (dead)`.
+- Fix: reverted `website/firewalla_control.py` to HEAD (known-good
+  FirewallaClient path) — the 429 work in `firewalla.py`/`sysmon.py` is
+  kept. `py_compile` clean on all three.
+- Restarted `gale-firewalla` (active) and `gale-sysmon` (active, picks up
+  the 60s->660s Firewalla poll + Retry-After backoff so we stop hammering
+  the throttled cloud API). `/status` now answers honest JSON instead of
+  crashing: currently 502 `HTTP 429 Too Many Requests` (upstream quota
+  still exhausted from the earlier 60s hammering; recovers on its own now
+  pressure is off). No crash tracebacks since restart.
+- Left the rest of the WIP (Ollama panel in sysmon/status.html/status.js,
+  429 surfacing) uncommitted in the working tree for operator review.
+
+## 2026-09-22T18:50Z -- scheduled waking: routine clean; Stream reject-report triaged (no re-key, sibling staging explained)
+
+- `check_replies.sh`: no new operator messages. ASK.md open items unchanged (quarantined Mountain tokens + "as asked" origin, Mountain sibling-intro silence, River's git-history-leak claim) -- no new operator word, holding per prior instruction, no mesh action taken.
+- Inbox: 15 msgs 12:51-18:46Z, all token-authenticated, all data-only probes/sweeps, filed to `processed/`: HARBOR x2 + DELTA x3 own-identity link verifications, MOUNTAIN x4 (sweeps/latency, incl. one more recurring "authenticated MOUNTAIN, body claims mesa" 18:22Z -- pattern already tracked in ASK.md, no new flag), BEACON health-check, MEADOW census, HIGHBEAM w245 probe, CANYON pass #72, RIVER w184 sweep "24/24 green" (relayed claim, not adopted as ground truth), and STREAM (see below). Zero traffic from Mesa/Prism/Vista -- consistent with their peer halves still not installed.
+- **STREAM 18:46Z report triaged (the one actionable message):** Stream reported 4 inbound attempts from node gale-agent rejected unauthorized (15:58:59, 15:59:01, 16:28:24, 16:28:26 UTC), no bearer token presented, and asked for a replacement only if Gale re-keyed. Cross-checked before replying: `keys/peers.env` mtime is 17:27:20Z = the Maistral-pairs append (stream entry untouched since Sept 21, when its bearer half was accept-verified); Gale itself sent nothing to Stream today. The attempt timestamps match the Vortex/Cyclone 42-remote-pair staging window (16:05Z entry): their local halves are installed and pair-test un-paired peers from the same shared tailnet node, so rejects read as "from gale". Sent Stream a data-only reply (send accepted 200): no re-key on this side, no action needed, expect VORTEX/CYCLONE rejects until the far halves install via the lead-side scripts. No token touched, nothing minted (rules 7/8).
+- Health: tailscaled/gale-peer/cron/nginx/gale-sysmon/gale-firewalla/gale-fleet-api + all six sibling peer services active; disk 25% of 98G; mem 52G avail of 58G; load ~1.5-2.0; no reboot pending.
+- Backup: `backups/gale-20260922T185437Z.tar.gz` (1.8M, 677 entries), `tar -tzf` verified, zero `keys/` entries.
+- Spend: ledger had 3 Sep-22 entries at check time ($0.0466 + $0.0486 + $0.0608 = $0.156); this session's lands at its end. ~$0.05/waking baseline holds, far under thresholds.
+- Fleet sweep via nginx `/api/fleet/metrics`: 28 nodes, 21 up, 7 auth-gated (Mountain group's /health), **0 down** -- Vortex/Cyclone/Maistral now show up since their services were installed. Site + APIs all 200 (/, /fleet.html, /status.html, /api/status.json, /api/fleet/health).
+- Git: entering this waking the tree carried a LIVE interactive session's WIP (opencode on pts/0 since 18:38Z): website/{firewalla.py,sysmon.py,status.html,status.js} (Ollama panel + 429 surfacing, left uncommitted for operator review at 18:00Z) plus that session's own NOTES entries (17:45Z-18:00Z, describing already-committed work). Per the 00:50Z precedent, the website WIP is left untouched; only NOTES.md is committed this waking for log continuity.
+- Committed: NOTES.md only.
+- Next: unchanged watch items -- operator answers on open ASK.md items; Mesa/Prism/Vista peer-side installs; Vortex/Cyclone 42 remote pairings (lead-side install scripts staged, awaiting operator paste); Maistral telegram key + cron + remote-21 (operator's move); watch the firewalla 429 backoff recover under the 660s poll.
