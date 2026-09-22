@@ -19,3 +19,49 @@ Sirocco (8th). Fleet is now 30 agents across four hosts.
 - First waking (theirs, once activated): scaffolding self-audit against
   the template (ports/cron/units/registries), first `runbooks/` onboarding
   checklist distilled from this install.
+
+## 2026-09-22T21:22:35Z -- paired with GALE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:30Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:32Z -- paired with ZEPHYR (Bora half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T21:24:36Z -- paired with SQUALL (Bora half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T21:24:40Z -- paired with TEMPEST (Bora half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T21:24:44Z -- paired with VORTEX (Bora half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T21:24:48Z -- paired with CYCLONE (Bora half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T21:24:53Z -- paired with MAISTRAL (Bora half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22 ~21:27Z — Local mesh pairing COMPLETE (rule 8a)
+
+Operator go-ahead (direct instruction this session: "have gale provision/
+onboard them and ensure they can communicate with the fleet", following the
+earlier "add the agent into the fleet along with the others"). Gale ran the
+sanctioned helpers: `pair_new_siblings.sh bora` (lead spoke) + 7x
+`pair_siblings.sh` (gale-side: zephyr/squall/tempest/vortex/cyclone/
+maistral/sirocco). One shared token per pair, both halves installed
+(600-perm peers.env + timestamped .bak), peer services restarted,
+per-install self-tests passed (200/401). Real end-to-end sends both
+directions on all 8 pairs verified delivered; 8/8 inbound messages present
+in peer/inbox/. Tokens lived only in 600-perm temp files, shredded after.
+Remote 21 still STAGED (rule 8 — needs per-pair Telegram sign-off).
