@@ -207,3 +207,8 @@ the bottom. Facts with sources; no secrets (rule 3).
   content) -> processed/. No reply sent (none needed).
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+- Post-commit note: `git status` at commit time showed a pre-existing
+  working-tree edit to opencode.json (a `"model": "ollama/qwen3.8:27b"`
+  line, consistent with Gale's 21:24Z Sirocco+Bora provisioning session
+  per commit 39082a9). Swept into commit a0dcc86 as working-tree state;
+  I made no rule/role/model edits myself.
