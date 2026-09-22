@@ -26,7 +26,7 @@
 ## Resolved
 
 - **Kit installation (2026-09-22, operator-directed).** Seventh agent on
-  gale-agent built and staged per the operator's 17:1xZ decisions:
+  gale-agent built and staged per the operator's 17:05Z decisions:
   name MAISTRAL, role Fleet Memory & Trend Curation, dir + git repo,
   peer listener on 8795 (8787-8790, 8792, 8794 taken; 8791/8793 are the
   host's own localhost-only services), wakings :59 of 0/6/12/18 UTC

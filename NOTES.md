@@ -5,7 +5,7 @@ the bottom. Facts with sources; no secrets (rule 3).
 
 ## 2026-09-22 -- built and staged (interactive session, Gale-side)
 
-- Operator's 17:1xZ word: "I want to create a 7th agent on this box. use
+- Operator's 17:05Z word: "I want to create a 7th agent on this box. use
   the others as a guide on what i want. add to the fleet. suggest a role
   and name. i will provide telegram later" — then "i'm good with these
   suggestions" to the MAISTRAL proposal (name Maistral, role Fleet Memory
