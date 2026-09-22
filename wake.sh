@@ -119,3 +119,15 @@ if [ -n "$ALERT" ]; then
 $TAIL" >>"$LOG_FILE" 2>&1
     echo "wake.sh: ALERT fired -- $ALERT" >>"$LOG_FILE"
 fi
+
+# Offsite backup: push this repo to the shared fleet repo on GitHub
+# (hurricane1976/Gale, branch = this agent's name; single write-enabled
+# deploy key shared by all four co-located agents -- operator chose the
+# one-repo layout 2026-09-22, tradeoff documented in NOTES). Shell-side,
+# idempotent; failure is logged, never fatal, never Telegrams.
+PUSH_OUT="$(timeout 60 git push github main:squall 2>&1)"
+if [ $? -eq 0 ]; then
+    echo "wake.sh: pushed to github ($(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
+else
+    echo "wake.sh: github push failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
+fi
