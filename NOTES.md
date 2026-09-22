@@ -306,3 +306,69 @@
   spend-daily.jsonl records only error/nonzero — nothing to record).
 - Verdict: clean waking. No incidents, no quarantine, one expected exposure
   change (maistral :8795).
+
+## 2026-09-22T21:24:17Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:46Z -- paired with BORA (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T23:16Z -- off-schedule waking (operator-triggered; second on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: two messages, SIROCCO + BORA `pair-test` ("safe to
+  file") — benign, same shape as CYCLONE's 19:05Z pair-test: no
+  credential/token content, no instructions, no links, no identity
+  mismatch (authenticated-X/body-claims-Y absent). Both moved to
+  `processed/`. Quarantine empty, nothing filed.
+- Peer server log (`peer/logs/peer_server.log`): 30 REJECT-unknown-token
+  lines total, ALL from 100.66.39.59 (self) at timestamps matching the
+  documented pair_peer.sh self-test sequences (15:57 remote batch, 17:26
+  MAISTRAL, 21:24 SIROCCO/BORA). Zero external-origin events; no 401
+  storm. SIROCCO/BORA pair-test ACCEPTs 21:25Z complete the two-way
+  check for the new siblings.
+- Host health: disk 25G/98G (27%), 58Gi RAM, uptime 1d11h, load ~1.7.
+  NINE peer listeners now, all tailnet-only: 8787-8790 (gale/zephyr/
+  squall/tempest) + 8792 vortex + 8794 cyclone + 8795 maistral +
+  8796 sirocco + 8797 bora (new since last waking; expected from the
+  21:24Z pairings, not drift). 8791 firewalla-control + 8793 fleet-api
+  localhost-only, nginx 8090. `ufw` still not installed (baseline,
+  unchanged). All nine peer services active.
+- systemd sandboxing: sirocco-peer + bora-peer both show
+  ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes. OK.
+- Tailscale: 11 nodes visible, all known fleet members, no unknown
+  peers (same as last waking's count).
+- Credential hygiene (all NINE local dirs incl. sirocco + bora,
+  read-only): every non-example keys/ file 600; `*.example` files the
+  only non-600 entries, as designed. Sirocco/bora have no
+  `keys/telegram.env` yet (only `.example`) — new agents, expected,
+  not a finding. Secret-pattern scan: the only hits repo-wide were my
+  own prior scan *command strings* recorded inside my session JSON
+  logs (false positives); zero hits in tracked files or git history.
+  .gitignore sane (keys/* deny + *.example exception; logs, backups,
+  inbox json, peer logs ignored). Reporting only, touched nothing
+  outside this repo.
+- Remote pairings: re-chased all 21 (right-token POST each) — every
+  one still HTTP 401, no far-side installs yet. Ball still with the
+  operator (paste the three install blocks into TIDAL / MOUNTAIN /
+  BEACON lead windows).
+- CONFIG ANOMALY (evidence preserved, not acted on): `opencode.json`
+  in the working tree re-adds `"model": "ollama/qwen3.8:27b"` versus
+  HEAD (commit 04adc9b, no model key). File mtime 2026-09-22 23:05Z —
+  ~10 min before this waking, after the SIROCCO/BORA pairings. No
+  NOTES entry, ASK entry, or Telegram word authorizes a model switch
+  on record. Functionally `wake.sh` still pins
+  `--model opencode/muse-spark-1.3-contributor-free` on the CLI (wins
+  over the file for wakes), so this waking was unaffected. I made no
+  model edits myself. Committing the file as-is to keep the change in
+  version control (per the Beacon lesson), flagged as unattributed in
+  the commit message; open question added to ASK.md for the operator.
+- Backup: `backups/vortex-20260922T231619Z.tar.gz` (500K), read-back verified.
+- Runner/model note (for Tempest portability tracking): second Muse
+  Spark 1.3 via OpenCode Zen waking, runs cleanly at ~$0, no
+  transport issues.
+- Verdict: clean waking. No incidents, no quarantine, one expected
+  exposure change (sirocco :8796, bora :8797) + one unattributed
+  config edit flagged for the operator.

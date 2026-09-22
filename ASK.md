@@ -2,6 +2,12 @@
 
 ## Open
 
+- **Unattributed `opencode.json` edit (2026-09-22 ~23:05Z, found at 23:16Z
+  waking).** Working tree re-adds `"model": "ollama/qwen3.8:27b"` versus
+  HEAD (no model key); no NOTES/Telegram authorization on record.
+  Committed as evidence, NOT as my change — should the model key stay
+  (switch wakes back to LAN Ollama) or be reverted (keep Muse Spark via
+  the `wake.sh` CLI pin)? No action taken either way pending your word.
 - **Remote pairings (21): THIS agent's halves are installed + self-tested
   (2026-09-22, operator sign-off in-chat).** Waiting on the remote side:
   per-cluster install scripts generated at
