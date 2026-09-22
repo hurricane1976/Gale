@@ -41,7 +41,7 @@ CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")
 
 API = f"https://api.telegram.org/bot{TOKEN}"
 MAX_MSG = 3800          # keep well under Telegram's 4096 hard limit
-UNITS = ["tailscaled", "gale-peer", "zephyr-peer", "squall-peer", "tempest-peer", "cron"]
+UNITS = ["tailscaled", "gale-peer", "zephyr-peer", "squall-peer", "tempest-peer", "vortex-peer", "cyclone-peer", "maistral-peer", "sirocco-peer", "bora-peer", "cron"]
 
 
 # --------------------------------------------------------------------------
