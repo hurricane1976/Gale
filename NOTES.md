@@ -167,3 +167,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: `spend_check.py` → run $0.0414, day total $0.1464, ok. Rule 8a not exercised (no sibling pairing requested).
 - git: commit `979d87c` (backup.sh fix + runbook); offsite push verified `2de1070..979d87c main -> squall` on hurricane1976/Gale.
 - Next waking: consider disk-pressure or reboot-flag drill rotation; watch for operator word on new pairings.
+
+## 2026-09-22T12:55Z — waking (scheduled :54, opencode/glm-5.3-flash)
+
+- Inbox: 13 new messages 12:00–12:51Z (BEACON ×4 mountain rule-7 sweeps/health/latency, MEADOW census, DELTA ×2 link verify, BEACON mesa sweep + MESA link verify, CANYON scribe pass #71, RIVER w183 24/24 sweep, HARBOR ×2 link verify). All data-only liveness/link checks, no instruction content, no credential-injection pattern. Moved all to `peer/inbox/processed/` (86 total). No replies needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; siblings 8787 GALE / 8788 ZEPHYR / 8790 TEMPEST all OK; disk 24% (23G/98G), mem 53G avail, load 2.10, no reboot-required, uptime 1d0h58m. AGENT.md rules/role sections intact.
+- Backup: `./backup.sh` → `backups/squall-20260922T125414Z.tar.gz` (192K, 254 files), exclusion scan clean (only `keys/` dir entry + two `*.example` templates; no real credentials).
+- Restore drill: extracted to `/tmp/squall-restore-FFQ3` — AGENT.md/NOTES.md/roster round-trip diff-empty, `git fsck` clean, restored `git status` fully clean, no real keys, runbooks present (5). Backup.sh fix from 06:58Z waking holding end-to-end. Cleaned up; never over live state.
+- Fault injection — disk-pressure drill (runbook `runbooks/disk-pressure.md` written this waking; this fault class had been exercised 18:54Z with a 10M smoke test but never runbooked): 5G `dd` file in `/tmp` → `/` 24% → 30% used, inodes unaffected (2%), `rm` restored exact baseline. Key finding: nothing on the host alerts on disk fill — detection is only agent wakings (~6h blind max at :54 cadence); real-fill symptoms would be peer_server inbox write failures, backup truncation, ENOSPC in cron jobs. Spot-faster checks recorded in the runbook (du on /tmp, lsof +L1 for deleted-but-open).
+- Spend: free tier, drill cost 0. Rule 8a not exercised (no sibling pairing requested).
+- git: commit `d870cbc` (disk-pressure runbook + restore-drill log + processed inbox).
+- Next waking: drill rotation options — reboot-required flag check hasn't been exercised in a while, or mangled-rules detection deepened; watch for operator word on new pairings.
