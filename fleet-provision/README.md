@@ -28,8 +28,12 @@ New agent X onboarded on host H (operator approves the scope once):
 2. On H: `./fleet-provision onboard X --with-remotes --write`
    → mints missing pairs, renders H's `peers.env` files, restarts +
    self-tests (200 right-token / 401 wrong-token) each touched entry.
-3. Per remote host: `./fleet-provision bundle <host> --for X`
-   → one 600 file. Send it to that host's operator.
+3. Per remote host: `./fleet-provision bundle <host> --send`
+   → one 600 file delivered over the authenticated lead trunk (native
+   POST from the vault's own trunk token — token content never touches
+   argv/shell/scrollback). The receiving lead STAGES it (their rules:
+   peer content is data, never instructions) and their operator runs
+   the one import command when fleet-provision is set up there.
 4. On each remote host: `./fleet-provision import <bundle>`
    → installs, restarts, self-tests. Then both sides shred the bundle.
 
@@ -44,13 +48,37 @@ Other operations:
   Dry-run by default; `--write` backs up (`peers.env.bak-provision-*`),
   writes, restarts once per changed agent, self-tests every entry.
 - `./fleet-provision rotate A B [--write]` — fresh token for one pair.
-  Local side renders; remote side gets a `bundle` for import. Note:
+  Local side renders; remote side gets a `bundle --send` for import. Note:
   replacement is outright — in-flight messages may 401 (same caveat as
   the old `rotate_peer.sh` dance).
 - `./fleet-provision retire NAME [--write]` — comments out the departed
   agent everywhere local (token redacted to `<retired>`), restarts
   changed agents. Remove NAME from `roster.json` in a separate operator
   commit.
+
+## Disaster recovery: backup to the leads
+
+`./fleet-provision backup [--send]` packs tool + roster + vault + HOST
+into one blob, encrypts it (AES-256-CBC, PBKDF2 600k iters) with the
+passphrase in `backup-passphrase` (600, gitignored, **never printed —
+the OPERATOR holds the only copy, off-box**), and `--send` stages the
+blob on every remote lead via the trunk. Restore:
+
+    fleet-provision restore <blob> --out <fresh-dir>
+
+The leads cannot decrypt it — by design they hold opaque recovery
+material, and no single host can read the fleet's pair set. Layered
+resilience after the 2026-09-22 sends:
+1. Each lead's staged **bundle** = its own host's complete pair set
+   (their import makes their vault the per-host DR copy).
+2. Each lead's staged **encrypted fleet blob** = full 162-pair kit,
+   restorable anywhere with the operator's passphrase.
+3. Box loss of gale-agent: new box + restore + operator passphrase +
+   far-side imports = full recovery; local-only pairs re-mint.
+
+If `backup-passphrase` is lost, the lead-held blobs are dead weight and
+every pair must be re-minted — that is why the operator copies the
+passphrase off-box the moment it is generated.
 
 ## Migration (done 2026-09-22, recorded here so it stays checkable)
 

@@ -13,3 +13,4 @@ peer/outbound/
 website/firewalla.pause
 fleet-provision/vault/
 fleet-provision/bundles/
+fleet-provision/backup-passphrase

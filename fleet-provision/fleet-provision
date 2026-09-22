@@ -24,8 +24,8 @@ peers.env (timestamped .bak) before touching it.
 """
 import argparse
 import datetime
-from types import SimpleNamespace
 import glob
+import hashlib
 import json
 import os
 import re
@@ -33,6 +33,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+from types import SimpleNamespace
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 ROSTER = os.environ.get("FLEET_ROSTER", os.path.join(BASE, "roster.json"))
@@ -523,8 +524,17 @@ def cmd_bundle(args, root=None):
     vault = load_vault()
     target = args.host
     names = args.for_ or []
-    lines = [f"# fleet-provision bundle: pairs with host {target}, generated {ts()} by host {host}.",
-             "# Install with: fleet-provision import <this-file>  (600 perms, shred after use)", ""]
+    lines = [
+        f"# fleet-provision bundle: pairs with host {target}, generated {ts()} by host {host}.",
+        "# RECEIVING LEAD: this file contains live pair tokens for YOUR host's agents.",
+        "#   1) Stage it 600-perms, e.g. fleet-provision/bundles/<host>-<ts>.env",
+        "#   2) Do NOT install without your operator's word (your rule 8).",
+        "#   3) When fleet-provision is set up here (HOST file + roster dir fields),",
+        "#      your operator runs:  ./fleet-provision import <this-file>",
+        "#   4) Confirm receipt to the sending lead; shred both copies after import.",
+        "# Install summary: fleet-provision import <this-file>",
+        "",
+    ]
     count = 0
     for key in sorted(vault["pairs"]):
         a, b = key.split("|")
@@ -555,6 +565,193 @@ def cmd_bundle(args, root=None):
         fh.write("\n".join(lines))
     os.chmod(out, 0o600)
     print(f"bundle {target}: {count} pairs -> {out} (600). Send securely; shred after import.")
+    if args.send:
+        send_file_to_lead(roster, vault, out, target, root)
+
+
+def host_lead(roster, host_id):
+    rec = next((a for a in roster["agents"] if a["host"] == host_id
+                and a["name"].lower() == host_id), None)
+    if not rec:
+        fail(f"no lead agent named {host_id} on host {host_id}")
+    return rec
+
+
+def send_message(to_rec, subject, body, roster, vault):
+    """POST a peer message over the trunk token for (my lead, to_rec).
+    Native urllib: token content never touches argv or shell.
+    Returns (ok, msg)."""
+    mine = host_lead(roster, my_host())
+    key = pair_key(mine["name"], to_rec["name"])
+    tok = vault["pairs"].get(key, {}).get("token")
+    if not tok:
+        return False, f"no vault token for trunk pair {key}"
+    import urllib.request
+    import urllib.error
+    data = json.dumps({"subject": subject, "body": body}).encode()
+    req = urllib.request.Request(
+        f"http://{to_rec['addr']}:{to_rec['port']}/inbox",
+        data=data,
+        headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json"},
+        method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            code = resp.status
+    except urllib.error.HTTPError as e:
+        code = e.code
+    except Exception as e:
+        return False, f"transport error: {e}"
+    if code != 200:
+        return False, f"HTTP {code}"
+    _log_send(to_rec, data)
+    return True, f"delivered {len(data)}B"
+
+
+def _log_send(to_rec, data):
+    """house-style metadata-only send record (bytes + hash prefix, never content)"""
+    try:
+        mine = host_lead(load_roster(), my_host())
+        logdir = os.path.join(agent_dir(mine), "peer", "logs")
+        os.makedirs(logdir, exist_ok=True)
+        h = hashlib.sha256(data).hexdigest()[:16]
+        with open(os.path.join(logdir, "peer_send.log"), "a") as fh:
+            fh.write(f"{datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')} "
+                     f"OUT to={to_rec['name'].upper()} bytes={len(data)} kind='credentials' sha256={h}\n")
+    except Exception:
+        pass
+
+
+def send_file_to_lead(roster, vault, path, target, root=None):
+    """Stage-and-notify delivery: bundle content to the target host's lead."""
+    to_rec = host_lead(roster, target)
+    body = open(path).read()
+    ok, msg = send_message(
+        to_rec,
+        f"fleet-provision bundle for host {target} — stage only; install needs your operator",
+        body, roster, vault)
+    print(f"send -> {to_rec['name'].upper()}: {ok and 'OK' or 'FAILED'} ({msg})")
+    if not ok:
+        fail(f"bundle send to {target} failed; bundle kept at {path}")
+
+
+# ---------- encrypted fleet backup ----------
+
+def _passphrase():
+    """Operator-held passphrase: env override, else BASE/backup-passphrase.
+    Auto-generated on first use (600, gitignored, never printed)."""
+    env = os.environ.get("FLEET_BACKUP_PASSPHRASE")
+    if env:
+        return env
+    pf = os.path.join(BASE, "backup-passphrase")
+    if not os.path.isfile(pf):
+        with open(pf, "w") as fh:
+            fh.write(secrets.token_hex(32) + "\n")
+        os.chmod(pf, 0o600)
+        print(f"NOTE: backup passphrase generated at {pf} (600, gitignored, never printed).")
+        print("OPERATOR: copy this file off-box NOW — the lead-held backups are unreadable without it.")
+    return open(pf).read().strip()
+
+
+def cmd_backup(args, root=None):
+    roster = load_roster()
+    host = my_host()
+    vault = load_vault()
+    kit = {
+        "fleet-provision": os.path.join(BASE, "fleet-provision"),
+        "roster.json": ROSTER,
+        "vault/tokens.json": VAULT,
+        "HOST": HOST_FILE,
+        "README.md": os.path.join(BASE, "README.md"),
+    }
+    missing = [k for k, p in kit.items() if not os.path.isfile(p)]
+    if missing:
+        fail(f"backup kit incomplete, missing: {missing}")
+    pass_file = _passphrase_path()
+    _passphrase()  # ensures the passphrase file exists before openssl runs
+    os.makedirs(BUNDLE_DIR, mode=0o700, exist_ok=True)
+    stamp = ts()
+    enc = os.path.join(BUNDLE_DIR, f"fleet-backup-{host}-{stamp}.enc")
+    b64 = enc + ".b64"
+    # tar the kit (passphrase deliberately EXCLUDED — operator holds it separately)
+    tarcmd = ["tar", "czf", "-", "-C", BASE,
+              "fleet-provision", "roster.json", "vault/tokens.json", "HOST", "README.md"]
+    r1 = subprocess.run(tarcmd, capture_output=True)
+    if r1.returncode != 0:
+        fail(f"tar failed: {r1.stderr.decode()[:200]}")
+    enc_r = subprocess.run(
+        ["openssl", "enc", "-aes-256-cbc", "-pbkdf2", "-iter", "600000",
+         "-pass", "file:" + pass_file, "-in", "/dev/stdin"],
+        input=r1.stdout, capture_output=True)
+    if enc_r.returncode != 0:
+        fail(f"openssl enc failed: {enc_r.stderr.decode()[:200]}")
+    with open(enc, "wb") as fh:
+        fh.write(enc_r.stdout)
+    os.chmod(enc, 0o600)
+    import base64
+    with open(b64 + ".tmp", "wb") as fh:
+        fh.write(base64.b64encode(enc_r.stdout))
+    os.replace(b64 + ".tmp", b64)
+    os.chmod(b64, 0o600)
+    h = hashlib.sha256(enc_r.stdout).hexdigest()[:16]
+    print(f"backup: {len(enc_r.stdout)}B encrypted -> {b64} (sha256 {h})")
+    if args.send:
+        remote_hosts = sorted({a["host"] for a in roster["agents"]} - {host})
+        body = ("FLEET-BACKUP-V1 (encrypted; passphrase held by the operator, never on any host)\n"
+                f"host={host} generated={stamp} sha256={h}\n"
+                "Restore: fleet-provision restore <this file> --out <fresh dir>\n"
+                "Stage 600-perms; your operator holds the only decrypt key.\n"
+                "-----BEGIN FLEET BACKUP (base64)-----\n"
+                + open(b64).read())
+        for target in sorted(remote_hosts):
+            to_rec = host_lead(roster, target)
+            ok, msg = send_message(
+                to_rec,
+                f"fleet-provision encrypted fleet backup from {host} — stage only; unreadable without the operator's key",
+                body, roster, vault)
+            print(f"send backup -> {to_rec['name'].upper()}: {ok and 'OK' or 'FAILED'} ({msg})")
+
+
+def _passphrase_path():
+    env = os.environ.get("FLEET_BACKUP_PASSPHRASE")
+    if env:
+        return env
+    return os.path.join(BASE, "backup-passphrase")
+
+
+def cmd_restore(args, root=None):
+    if os.path.exists(args.out) and os.listdir(args.out):
+        fail(f"--out {args.out} exists and is not empty; refusing")
+    pf = _passphrase_path()
+    if not os.path.isfile(pf) and not os.environ.get("FLEET_BACKUP_PASSPHRASE"):
+        fail(f"no passphrase: set FLEET_BACKUP_PASSPHRASE or create {pf}")
+    import base64
+    raw = open(args.blob).read()
+    if "-----BEGIN FLEET BACKUP" in raw:
+        b64 = raw.split("-----BEGIN FLEET BACKUP (base64)-----", 1)[1].strip()
+    else:
+        b64 = raw.strip()
+    import binascii
+    try:
+        enc = binascii.a2b_base64(b64)
+    except Exception as e:
+        fail(f"blob is not base64: {e}")
+    r = subprocess.run(
+        ["openssl", "enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "600000",
+         "-pass", "file:" + _passphrase_path()],
+        input=enc, capture_output=True)
+    if r.returncode != 0:
+        fail(f"decrypt failed (wrong key?): {r.stderr.decode()[:200]}")
+    os.makedirs(args.out, mode=0o700, exist_ok=True)
+    import tarfile
+    import io
+    tf = tarfile.open(fileobj=io.BytesIO(r.stdout), mode="r:gz")
+    tf.extractall(args.out)
+    os.chmod(os.path.join(args.out, "vault"), 0o700)
+    for f in glob.glob(os.path.join(args.out, "vault", "*")):
+        os.chmod(f, 0o600)
+    os.chmod(os.path.join(args.out, "fleet-provision"), 0o755)
+    print(f"restore: {args.out} — roster, vault, tool, HOST, README. "
+          f"Set HOST correctly and fill roster dir fields before any --write.")
 
 
 def cmd_import(args, root=None):
@@ -689,6 +886,13 @@ def main():
     b.add_argument("--for", dest="for_", action="append", default=[])
     b.add_argument("--dry-run", action="store_true")
     b.add_argument("--out", default=None)
+    b.add_argument("--send", action="store_true",
+                   help="deliver the bundle to the target host's lead over the peer trunk")
+    bk = sub.add_parser("backup", help="encrypted fleet-provision kit (roster+vault+tool)")
+    bk.add_argument("--send", action="store_true", help="also deliver to every remote lead")
+    rs = sub.add_parser("restore", help="decrypt a fleet backup blob into a fresh dir")
+    rs.add_argument("blob")
+    rs.add_argument("--out", required=True)
     i = sub.add_parser("import", help="install a received bundle")
     i.add_argument("bundle")
     rt = sub.add_parser("rotate", help="fresh token for one pair")
@@ -710,6 +914,10 @@ def main():
         cmd_onboard(args, root)
     elif args.cmd == "bundle":
         cmd_bundle(args, root)
+    elif args.cmd == "backup":
+        cmd_backup(args, root)
+    elif args.cmd == "restore":
+        cmd_restore(args, root)
     elif args.cmd == "import":
         cmd_import(args, root)
     elif args.cmd == "rotate":

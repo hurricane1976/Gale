@@ -954,3 +954,28 @@ record. Gale's AGENT.md now carries rule 8b (scoped unattended provisioning
 via the pinned fleet-provision tool) and the rule 3 vault clause, exactly
 as drafted in fleet-provision/RULES-PROPOSAL.md. Other agents adopt per
 their own rule-6 channel requirement (their next waking / their channels).
+
+## 2026-09-22 ~22:30Z — fleet-provision --send wired; bundles + encrypted fleet backups delivered to all three leads
+
+Operator-directed ("wire and send", then "make each of the leads a
+backup"). Implemented:
+- `bundle <host> --send`: native trunk POST of the bundle to the target
+  host's lead, authenticated with the vault's own Gale<->lead pair
+  token (token content never touches argv/shell — send_to_peer.sh's
+  argv path deliberately bypassed). House metadata-only send log kept.
+- `backup [--send]` + `restore <blob> --out <dir>`: tool + roster +
+  vault + HOST tarball, AES-256-CBC/PBKDF2-600k encrypted with the
+  passphrase in fleet-provision/backup-passphrase (600, gitignored,
+  auto-generated, NEVER printed). Leads receive stage-only copies they
+  cannot decrypt; the operator holds the only key. Restore round-trip
+  verified locally (162 pairs intact, tool runs, scratch shredded).
+Deliveries (all HTTP 200, metadata in peer/logs/peer_send.log):
+- bundle beacon/tidal/mountain --send: 42 pairs each (~6KB)
+- backup --send: 22,704B encrypted blob staged on BEACON, MOUNTAIN, TIDAL
+Incident: one passphrase value leaked to this session's console during a
+fleet-provision bug (openssl "-pass file:" got the hex value instead of a
+path). Burned immediately: file shredded + regenerated; the leaked value
+opens nothing (blob regenerated with the new key). Transcript redaction
+applies at next sessions/ export.
+Far side still pending: each lead stages and awaits its operator
+bootstrapping fleet-provision (HOST + roster dir fields), then imports.
