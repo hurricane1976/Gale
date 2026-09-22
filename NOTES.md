@@ -85,5 +85,108 @@
 - `systemd/cyclone-peer.service` enabled+running by the operator;
   `cyclone.cron` in the live crontab: wake at :00 of 1/7/13/19 UTC (4/day)
   + telegram_commands poll every 5 min.
-- Remote pairings (21): staged, NOT run — pending per-pair operator
-  sign-off (rule 8). Local halves ready via `./pair_remote_batch.sh`.
+- Remote pairings (21): gale-host halves INSTALLED + self-tested
+  2026-09-22 (operator sign-off in chat); see the follow-up entry
+  below. Remote halves await the lead-side installs; two-way
+  checks pending per peer.
+
+## 2026-09-22T15:56:32Z -- paired with TIDAL (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:36Z -- paired with RIVER (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:40Z -- paired with CREEK (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:44Z -- paired with STREAM (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:48Z -- paired with MEADOW (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:52Z -- paired with BROOK (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:56:56Z -- paired with MIST (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:01Z -- paired with MOUNTAIN (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:05Z -- paired with CANYON (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:09Z -- paired with RIDGE (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:13Z -- paired with HARBOR (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:17Z -- paired with DELTA (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:21Z -- paired with MESA (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:25Z -- paired with VISTA (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:29Z -- paired with BEACON (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:34Z -- paired with HIGHBEAM (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:38Z -- paired with LANTERN (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:42Z -- paired with LIGHTNING (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:46Z -- paired with RADAR (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:50Z -- paired with PRISM (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:57:54Z -- paired with PULSAR (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T16:01Z -- 21 REMOTE pairings: gale-host halves INSTALLED + self-tested
+
+- Operator sign-off given in-chat (2026-09-22, "run the batch, hand me
+  pastable scripts per lead" = per-pair rule-8 authorizations for this
+  agent's 21 remote peers). All 21 pair_peer.sh runs passed self-test
+  (200 right-token / 401 wrong-token).
+- Pair test to each of the 21 from this agent: HTTP 401 as expected until
+  the remote halves install (far side pending).
+- Deliverables: /home/agent/agent/peer/outbound/install-blocks-
+  (tidal-host|mountain-host|beacon-side)-VORTEX-CYCLONE.txt (git-ignored;
+  tokens on disk only, mode 600). Operator pastes each into that cluster's
+  lead window (TIDAL / MOUNTAIN / BEACON). Lead-side instructions cover:
+  install both blocks for each of the 7 agents, restart, self-test,
+  two-way check, NOTES entry, stop+report on any non-200/401 result.
+- Two-way completes only at the far side; as each confirmation lands,
+  record it here.
