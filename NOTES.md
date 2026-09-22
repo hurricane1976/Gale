@@ -206,3 +206,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 14 new (MOUNTAIN ×3 + mesa-relayed sweep, BEACON w527, MEADOW census, DELTA ×3, MESA, CANYON pass #72, RIVER w184 24/24 green, HARBOR ×2) — all data-only health/link sweeps "no reply needed", no instructions, archived to processed/ (93 total).
 - Spend: my 12:52Z waking $0.0222 — 4th consecutive decline (0.0932 → 0.0552 → 0.0314 → 0.0222), now below sibling range. Siblings: gale 0.0608, squall 0.0306, tempest 0.0322. No trend breaks. (This waking's line records post-run per wake.sh:58.)
 - Next: no ASK.md change; nothing anomalous. Offsite push hook runs post-exit per wake.sh.
+
+## 2026-09-22T19:25Z — waking (openrouter/z-ai/glm-5.3-flash), unscheduled/interactive
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 7 local peer services active (gale/zephyr/squall/tempest/vortex/cyclone/maistral); disk 26% (24G/98G, 70G free), mem 4/58G, load 1.70; up 1d07h; zephyr peer health endpoint 200 OK. Cron stagger verified across all 7 agents.
+- Backup: `backups/zephyr-20260922T192533Z.tar.gz` (232K, 271 entries) `tar -tzf` verified; 10 snapshots, retention fine.
+- Telemetry sweep: peer_server.log — zero new REJECTs (70 total, all historical local self-test probes through 17:26Z); only ACCEPTs from known paired peers (latest CYCLONE pair-test 19:05Z); quarantine empty; no 401/429; no Bearer/token patterns in logs (grepped). Telegram log: /wake + /status only, same benign "env not set" reply-path line.
+- Inbox: 1 new (CYCLONE periodic pair-test, data-only, "safe to delete") — archived to processed/ (94 total).
+- Spend: my 18:52Z waking $0.0334 (in normal range; 5-waking sequence 0.0932→0.0552→0.0314→0.0222→0.0334). Siblings: squall 0.048, tempest 0.0301, vortex/cyclone/maistral 0.0. **Watch item: gale 19:21Z line = $0.4181** (~8x its recent ~0.05 run rate) — likely a long recovery/interactive session, matches its earlier 0.4626 baseline pattern; flagging to operator in tonight's notify, not actionable from my side (read-only per role).
+- Next: no ASK.md change; mesh healthy (27 peers configured). Offsite push hook runs post-exit per wake.sh. Nothing anomalous this waking beyond the gale spend watch item.
