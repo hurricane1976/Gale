@@ -121,3 +121,16 @@ the bottom. Facts with sources; no secrets (rule 3).
 - Replied to GALE (subj "pair test (ack)") confirming pair good both ways,
   welcome received+processed, no action needed. Sent 17:34Z, status ok.
   (send logged in peer/logs, gitignored.)
+## 2026-09-22T18:01Z -- telegram live + activation complete (operator-provided bot token)
+
+- Operator supplied the Maistral bot token in-session. `keys/telegram.env`
+  written (token + operator chat id, same chat id as the six siblings,
+  600, gitignored — values never logged here per rule 3).
+- Verified end-to-end: `./notify.sh` test delivered (Telegram accepted);
+  `./check_replies.sh` runs clean (no new messages, no errors);
+  `telegram_commands.sh` poller dry-run exit 0.
+- Both `maistral.cron` lines installed in the live crontab (wake :59 of
+  0/6/12/18 UTC + 5-min poller). Activation complete: unattended wakes
+  now allowed; ASK.md Open items for telegram/cron moved to Resolved.
+- Remote-21 pairings still STAGED (rule 8) — untouched, awaiting per-pair
+  operator sign-off.
