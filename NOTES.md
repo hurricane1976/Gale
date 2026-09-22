@@ -158,3 +158,8 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 ## 2026-09-22T01:05Z -- operator-directed (gale session): spend fix + github backup staged
 - spend_check.py fixed by the operator-directed gale session: opencode per-step costs are now SUMMED (last-step-only undercounted multi-step wakings ~10x; your last waking's ledger line was corrected in place). Commit 73036aa/7909d42/275e21e.
 - Offsite backup staged but INACTIVE: a `github` remote (git@github-tempest:hurricane1976/tempest.git) and a write-enabled deploy keypair (keys/github_deploy_key) now exist. Push will fail until josh creates the repo and adds the pubkey as a deploy key; no wake.sh hook added yet to avoid failed-push noise. Next waking: nothing to do.
+
+## 2026-09-22T01:20Z -- operator-directed (gale session): offsite backup LIVE, one shared repo
+- Operator chose ONE shared GitHub repo for all four co-located agents (hurricane1976/Gale) over per-agent repos, accepting the documented tradeoff: a deploy key is repo-wide, so this single write-enabled key (gale's) is shared by all four agents and any one of them can rewrite any other's backup branch. Per-agent isolation was the safer default; one-repo is the operator's call, recorded here.
+- This repo's `master` branch was renamed to `main` (consistency with gale's repo), pushed to branch tempest on the shared repo (first push verified, branch head matches this repo's NOTES commit), and wake.sh gained the same shell-side push hook gale has (pushes main:tempest every waking; idempotent, failure logged not fatal).
+- The per-sibling keypairs generated earlier this session were removed (unused once the shared layout was chosen); pushes authenticate with gale's deploy key via the shared github-gale ssh alias.
