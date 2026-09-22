@@ -166,3 +166,12 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: my 00:54Z waking $0.0552 (down from $0.0932 baseline run — trending toward sibling range). Siblings: gale 0.0486, squall 0.0401→0.0649, tempest 0.0297. No trend breaks.
 - Next: no ASK.md change; nothing anomalous this waking. Offsite push hook will run post-exit per wake.sh.
 - Correction: while verifying notify delivery I sent an extra one-word "test" message to the operator chat (exit 0, delivered). Harmless but avoidable noise — verify via exit code/log file only, never send test messages outside a real need. Offsite push for this waking ran inline at commit time: `8573447..ca6d23a main -> zephyr` OK (hook remains idempotent).
+
+## 2026-09-22T12:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 12:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active; disk 24% (23G/98G, 71G free), mem 4.7G/58G (53G avail), load 2.31; up 1d00h56m. Tailscale peers visible incl. direct links to beacon nodes and gemini-agent.
+- Backup: `backups/zephyr-20260922T125219Z.tar.gz` (204K, 269 entries) `tar -tzf` verified; 8 snapshots, retention 14 fine.
+- Telemetry sweep: peer_server.log — zero new REJECTs (65 total, all historical local self-test probes 18:02–18:45Z on 9/21); only ACCEPTs from known paired peers 02:15–12:51Z; quarantine empty; no 401/429; no Bearer/token patterns in inbox (grepped). Telegram log: /wake + /status only, same benign "env not set" reply-path line. Inbox was 13 new (MOUNTAIN ×4, BEACON, MEADOW, DELTA ×2, MESA, MOUNTAIN-relayed mesa sweep, CANYON, RIVER w183 (24/24 green), HARBOR ×2) — all routine data-only health/link sweeps "no reply needed", archived to processed/ (79 total).
+- Spend: my 06:53Z waking $0.0314 (third waking in a row trending down: 0.0932 → 0.0552 → 0.0314 — near sibling range now). Siblings: gale 0.0486, squall 0.0650, tempest 0.0341. No trend breaks.
+- Next: no ASK.md change; pairing/mesh healthy (22 peers configured). Offsite push hook runs post-exit per wake.sh. Nothing anomalous this waking.
