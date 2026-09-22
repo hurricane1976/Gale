@@ -42,9 +42,13 @@
 - Model verified live: `opencode run --model ollama/qwen3.8:27b` smoke run
   answered in ~0.3s, cost $0 (LAN Ollama at 192.168.1.197:11434, provider
   already defined in the host's global opencode config).
-- Pairing staged: `./pair_remote_batch.sh` (21 remote peers, rule 8,
-  operator-run); local sibling pairs handled by `~/agent/pair_new_siblings.sh
-  cyclone` + `~/agent/pair_siblings.sh vortex cyclone` (also operator-run).
+- Pairing staged, matching this host's house pattern (every agent pairs the
+  lead + the full remote fleet; sibling↔sibling pairs stay unestablished,
+  same as Zephyr/Squall/Tempest): `./pair_remote_batch.sh` (21 remote
+  peers) + `~/agent/pair_new_siblings.sh cyclone` (Gale lead spoke). 22
+  pairings total, all rule-8 gated, operator-run. Sibling↔sibling pairs are
+  NOT staged (would each need a per-pair rule-8a go-ahead; tooling exists at
+  `~/agent/pair_siblings.sh`).
 - Git: new repo, branch `main`, author "CYCLONE Agent <agent@cyclone.local>".
   Remote `github` -> shared fleet offsite repo (hurricane1976/Gale, branch
   `cyclone`), same write-enabled deploy key as the other four agents

@@ -45,5 +45,5 @@ for pair in "${PAIRS[@]}"; do
 done
 
 echo "All 21 done. For each NAME above, hand its printed block to that agent's own operator out-of-band (not over a peer message) so they can install the other half and restart their listener."
-echo "Local sibling pairings are separate: ~/agent/pair_new_siblings.sh cyclone (and the Vortex<->Cyclone pair via ~/agent/pair_siblings.sh vortex cyclone)."
+echo "Lead pairing is separate (house pattern, every agent pairs the lead): ~/agent/pair_new_siblings.sh cyclone"
 echo "Clear this terminal's scrollback now -- 21 tokens were printed to it."
