@@ -36,19 +36,47 @@ def _load_env(path=KEYS_PATH):
     return env
 
 
-# Operator cool-down: while this file holds a future epoch timestamp, every
-# client call fails fast without touching the network. Delete the file (or
-# let the time pass) to resume; sysmon then returns to its normal poll.
+# Shared backoff: while this file holds a future epoch timestamp ("<epoch>
+# <reason>"), every client call fails fast without touching the network.
+# Written by an operator pause or by any 429 (now + Retry-After), and shared
+# by sysmon and firewalla_control so one process's 429 quiets both. Delete
+# the file (or let the time pass) to resume.
 PAUSE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "firewalla.pause")
+# 429 without a usable Retry-After: fall back to the normal poll interval.
+DEFAULT_429_BACKOFF_S = 660
+
+
+def _read_pause():
+    try:
+        with open(PAUSE_PATH) as f:
+            parts = f.read().strip().split(None, 1)
+        return float(parts[0]), (parts[1] if len(parts) > 1 else "")
+    except (OSError, ValueError, IndexError):
+        return 0.0, ""
 
 
 def paused_until():
-    try:
-        with open(PAUSE_PATH) as f:
-            until = float(f.read().strip())
-    except (OSError, ValueError):
-        return None
+    until, _ = _read_pause()
     return until if until > time.time() else None
+
+
+def _extend_pause(until, reason):
+    """Push the shared pause out to `until`; never shortens a longer pause
+    (e.g. an operator cool-down). firewalla_control runs with a read-only
+    filesystem, so a failed write is fine -- it keeps its in-memory copy."""
+    if _read_pause()[0] >= until:
+        return
+    try:
+        tmp = PAUSE_PATH + ".tmp"
+        with open(tmp, "w") as f:
+            f.write(f"{int(until)} {reason}\n")
+        os.replace(tmp, PAUSE_PATH)
+    except OSError:
+        pass
+
+
+def _iso(t):
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(t))
 
 
 class FirewallaError(Exception):
@@ -64,6 +92,7 @@ class FirewallaClient:
         env = _load_env()
         self.domain = env.get("FIREWALLA_MSP_DOMAIN", "")
         self.token = env.get("FIREWALLA_PAT", "")
+        self._backoff_until = 0.0  # in-memory copy for processes that can't write PAUSE_PATH
 
     @property
     def configured(self):
@@ -72,10 +101,13 @@ class FirewallaClient:
     def _request(self, method, path, body=None, timeout=6):
         if not self.configured:
             raise FirewallaError("keys/firewalla.env not configured")
-        until = paused_until()
-        if until:
-            raise FirewallaError("Firewalla API paused (operator cool-down) until "
-                                 + time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(until)))
+        now = time.time()
+        file_until, reason = _read_pause()
+        until = max(file_until, self._backoff_until)
+        if until > now:
+            why = reason or "rate-limit backoff"
+            raise FirewallaError(f"Firewalla API paused ({why}) until {_iso(until)}",
+                                 retry_after=int(until - now) + 1)
         url = f"https://{self.domain}{path}"
         data = json.dumps(body).encode() if body is not None else None
         req = urllib.request.Request(url, data=data, method=method)
@@ -88,16 +120,20 @@ class FirewallaClient:
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as e:
             detail = e.read().decode(errors="replace")[:300]
-            # 429s carry a Retry-After (seconds); honor it on the retry path.
-            retry_after = None
-            ra = e.headers.get("Retry-After")
-            if ra is not None:
-                try:
-                    retry_after = int(ra)
-                except ValueError:
-                    pass
-            raise FirewallaError(f"{method} {path} -> HTTP {e.code}: {detail}",
-                                 retry_after=retry_after if e.code == 429 else None)
+            if e.code != 429:
+                raise FirewallaError(f"{method} {path} -> HTTP {e.code}: {detail}")
+            # Firewalla: on 429, wait exactly Retry-After seconds, then retry.
+            try:
+                retry_after = max(1, int(e.headers.get("Retry-After", "")))
+                why = f"429, Retry-After {retry_after}s"
+            except ValueError:
+                retry_after = DEFAULT_429_BACKOFF_S
+                why = f"429, no Retry-After, default {retry_after}s"
+            until = time.time() + retry_after
+            self._backoff_until = max(self._backoff_until, until)
+            _extend_pause(until, why)
+            raise FirewallaError(f"{method} {path} -> HTTP 429 ({why}): {detail}",
+                                 retry_after=retry_after)
         except urllib.error.URLError as e:
             raise FirewallaError(f"{method} {path} -> {e.reason}")
 

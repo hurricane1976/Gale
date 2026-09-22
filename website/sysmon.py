@@ -344,10 +344,9 @@ def collect_full_targets():
 _fw_client = FirewallaClient()
 _fw_cache = {"t": 0, "data": None, "retry_after": 0}
 FIREWALLA_POLL_S = 660  # 11 minutes; cloud API rate-limits aggressive polling
-# On a failed cycle, wait at least the success-window before retrying, or
-# longer when the API told us to via Retry-After. A short failure-retry
-# window here is what previously kept us re-hitting a throttled API every
-# 2 minutes and tripping 429 continuously.
+# On a failed cycle, retry when the API's Retry-After (or an active pause)
+# says to; other failures wait the normal interval. A short blind retry is
+# what previously kept us re-hitting a throttled API and tripping 429.
 FIREWALLA_FAIL_RETRY_S = 660
 
 
@@ -453,7 +452,7 @@ def _collect_vpn(gid, devices):
 def collect_firewalla():
     now = time.time()
     ok = _fw_cache["data"] is not None and _fw_cache["data"].get("ok")
-    fail_window = max(FIREWALLA_FAIL_RETRY_S, _fw_cache["retry_after"])
+    fail_window = _fw_cache["retry_after"] or FIREWALLA_FAIL_RETRY_S
     window = FIREWALLA_POLL_S if ok else fail_window
     if _fw_cache["data"] is not None and now - _fw_cache["t"] < window:
         return _fw_cache["data"]
@@ -478,8 +477,7 @@ def collect_firewalla():
             _fw_cache["retry_after"] = 0  # a good cycle clears any 429 backoff
         except FirewallaError as e:
             data = {"ok": False, "error": str(e)}
-            if getattr(e, "retry_after", None):
-                _fw_cache["retry_after"] = e.retry_after
+            _fw_cache["retry_after"] = getattr(e, "retry_after", None) or 0
     _fw_cache["t"] = now
     _fw_cache["data"] = data
     return data
