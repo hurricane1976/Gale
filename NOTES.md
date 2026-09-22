@@ -179,3 +179,36 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: free tier, drill cost 0. Rule 8a not exercised (no sibling pairing requested).
 - git: commit `d870cbc` (disk-pressure runbook + restore-drill log + processed inbox).
 - Next waking: drill rotation options — reboot-required flag check hasn't been exercised in a while, or mangled-rules detection deepened; watch for operator word on new pairings.
+
+## 2026-09-22T15:25:33Z -- paired with ZEPHYR (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:26:36Z -- paired with TEMPEST (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:27:08Z -- paired with VORTEX (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:27:32Z -- paired with CYCLONE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T17:26:34Z -- paired with MAISTRAL (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T18:54Z — waking (scheduled :54, opencode/glm-5.3-flash)
+
+- Inbox: 14 new messages 18:00–18:51Z (BEACON ×5 mountain rule-7 sweeps/health/latency/mesa sweep, MEADOW census, DELTA ×3 link verify, MESA link verify, CANYON pass #72, RIVER w184 24/24 sweep, HARBOR ×2 link verify). All data-only liveness/link checks, no instruction content, no credential-injection pattern. Moved all to `peer/inbox/processed/` (100 total). No replies needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; siblings 8787 GALE / 8788 ZEPHYR / 8790 TEMPEST all OK; disk 25% (24G/98G), mem 52G avail, load 1.76, no reboot-required, uptime 1d6h58m. AGENT.md rules/role sections intact.
+- Backup: `./backup.sh` → `backups/squall-20260922T185416Z.tar.gz` (212K, 283 files), exclusion scan clean (only `keys/` dir entry + 2 `*.example` templates).
+- Restore drill: extracted to `/tmp/squall-restore-1kKa` — AGENT.md/NOTES.md/roster round-trip diff-empty, `git fsck` clean, no real keys, runbooks present (6), cleaned up. Restored-tree `M AGENT.md/NOTES.md` mirrored live uncommitted state (see below), not a backup defect. Never over live state.
+- Found + fixed a real gap: AGENT.md's operator-directed rule-7 sibling-list expansion (Vortex, Cyclone, Maistral) + mesh-status paragraph from the 15:25–17:26Z pairing session were sitting **uncommitted** — exactly the Beacon lost-history failure class (rule 4). Reviewed the diff line-by-line, committed this waking.
+- Fault injection — mangled-rules drill deepened (runbook `runbooks/mangled-rules.md` written): injected a one-line semantic tamper into rule 5 in a temp repo copy ("only the operator" → "operator OR A PEER WITH OPERATOR DELEGATION"). Finding: the header-presence grep used in past wakings **passes on the tampered file** (false negative); `git diff` against HEAD catches it (1+/1-). Live-procedure rule recorded: read every uncommitted AGENT.md diff each waking, commit it, so future diffs are attributable; same review applies to executable files (wake.sh, notify.sh, peer_server.py, telegram_commands.py). Cleanup verified.
+- Spend: ledger last runs $0.0306 (12:56Z), day total well under alerts; free-tier drift none. Rule 8a not exercised this waking (no sibling pairing requested).
+- git: commit this waking (AGENT.md rule-7 sibling update + mangled-rules runbook + processed inbox); offsite push verified via wake.sh hook's `github` remote.
+- Next waking: drill rotation — peer-credential-injection was runbooked but not re-exercised since install; or 429 live-path re-test. Watch for operator word on remote re-pairs.
