@@ -841,3 +841,9 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Smoke test: `claude -p --model sonnet --output-format json` exit 0, replied READY, modelUsage `claude-sonnet-5`, $0.054 (not recorded to the ledger).
 - Site: index.html (meta + hero -> Claude Code), fleet.html (Gale hub node + roster card -> Claude chip), observability.html (wiring note). Deployed and verified live. `fleet_api.py` needed no change (claude envelope model comes from modelUsage). Per-agent chart colours in activity/metrics/observability.js left as identity colours.
 - Siblings (zephyr/squall/tempest/vortex/cyclone/maistral) untouched, still on opencode. Uncommitted website WIP from another session (firewalla.py, status.*, sysmon.py) left uncommitted.
+
+## 2026-09-22T19:12Z -- interactive session: Firewalla API paused 24h (operator-directed)
+
+- Operator: "pause the firewalla api for 24 hours and then reset the polling to every 11 minutes". Cloud API was returning HTTP 429.
+- `website/firewalla.py` now has a pause gate: while `website/firewalla.pause` holds a future epoch, every `FirewallaClient` call (sysmon poll, firewalla_control status AND admin actions) fails fast with no network call. File set to 1790190652 = **2026-09-23T19:10:52Z**; git-ignored.
+- Resumes automatically: after expiry sysmon's next check (<=11 min, failure window 660s) hits the API; on success it polls every 11 min (FIREWALLA_POLL_S=660). No cron/manual step. Do NOT delete the pause file early or "fix" the status-page error during the window -- it is intentional. To end early: `rm website/firewalla.pause`.

@@ -36,6 +36,21 @@ def _load_env(path=KEYS_PATH):
     return env
 
 
+# Operator cool-down: while this file holds a future epoch timestamp, every
+# client call fails fast without touching the network. Delete the file (or
+# let the time pass) to resume; sysmon then returns to its normal poll.
+PAUSE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "firewalla.pause")
+
+
+def paused_until():
+    try:
+        with open(PAUSE_PATH) as f:
+            until = float(f.read().strip())
+    except (OSError, ValueError):
+        return None
+    return until if until > time.time() else None
+
+
 class FirewallaError(Exception):
     def __init__(self, message, retry_after=None):
         super().__init__(message)
@@ -57,6 +72,10 @@ class FirewallaClient:
     def _request(self, method, path, body=None, timeout=6):
         if not self.configured:
             raise FirewallaError("keys/firewalla.env not configured")
+        until = paused_until()
+        if until:
+            raise FirewallaError("Firewalla API paused (operator cool-down) until "
+                                 + time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(until)))
         url = f"https://{self.domain}{path}"
         data = json.dumps(body).encode() if body is not None else None
         req = urllib.request.Request(url, data=data, method=method)

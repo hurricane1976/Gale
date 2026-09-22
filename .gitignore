@@ -10,3 +10,4 @@ peer/inbox/processed/*.json
 peer/inbox/*/*.json
 peer/logs/
 peer/outbound/
+website/firewalla.pause
