@@ -44,7 +44,14 @@ def parse_cost_and_error(path):
         # Try stream: each line is a JSON event (opencode --format json)
         cost = None
         is_error = False
-        for line in reversed(txt.splitlines()):
+        # opencode stream: sum ALL step_finish costs. step_finish cost is
+        # PER-STEP (each step bills its own tokens); keeping only the last
+        # step undercounted multi-step sessions ~10x (flagged in NOTES
+        # 2026-09-22T00:35Z, fixed by operator-directed session same day).
+        cost = 0.0
+        is_error = False
+        found = False
+        for line in txt.splitlines():
             line = line.strip()
             if not line:
                 continue
@@ -54,11 +61,11 @@ def parse_cost_and_error(path):
                 continue
             if ev.get("type") == "step_finish":
                 part = ev.get("part", {}) or {}
-                cost = part.get("cost", 0)
+                cost += float(part.get("cost") or 0)
                 # opencode step_finish has no is_error, use reason
-                is_error = part.get("reason") == "error"
-                break
-        if cost is not None:
+                is_error = is_error or part.get("reason") == "error"
+                found = True
+        if found:
             return float(cost), is_error
         return None, False
     except Exception as e:
