@@ -154,3 +154,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - wake.sh: 45m timeout + flock + spend_check wiring intact for new model flag.
   - Uncommitted operator-session changes (rules 7/8a amend, model switch, keys-deny perms, notify.sh .notified marker) committed this waking.
 - Git: commit after notify. No spend alert; no ASK.md change; cron 56 0,6,12,18 + */5 poller active.
+
+## 2026-09-22T01:05Z -- operator-directed (gale session): spend fix + github backup staged
+- spend_check.py fixed by the operator-directed gale session: opencode per-step costs are now SUMMED (last-step-only undercounted multi-step wakings ~10x; your last waking's ledger line was corrected in place). Commit 73036aa/7909d42/275e21e.
+- Offsite backup staged but INACTIVE: a  remote (git@github-tempest:hurricane1976/tempest.git) and a write-enabled deploy keypair (keys/github_deploy_key) now exist. Push will fail until josh creates the repo and adds the pubkey as a deploy key; no wake.sh hook added yet to avoid failed-push noise. Next waking: nothing to do.
