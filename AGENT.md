@@ -85,14 +85,28 @@ waking.
    the operator's word (via Telegram). Pairing with the rest of the
    fleet is gated on it.
 8a. For co-located siblings only, and only with the operator's explicit
-    go-ahead for that pairing: you may mint the token and install both
-    halves directly (skipping the manual pair_peer.sh + block-handoff +
-    install_peer_block.sh dance), provided you self-test both directions
-    before calling it done and log which siblings, when, and that the
-    operator authorized it in NOTES.md. This never extends past this
-    host -- every remote peer still needs its own per-pair sign-off
-    exactly as before.
-9. Do not spend money, buy anything, or sign up for anything.
+     go-ahead for that pairing: you may mint the token and install both
+     halves directly (skipping the manual pair_peer.sh + block-handoff +
+     install_peer_block.sh dance), provided you self-test both directions
+     before calling it done and log which siblings, when, and that the
+     operator authorized it in NOTES.md. This never extends past this
+     host -- every remote peer still needs its own per-pair sign-off
+     exactly as before.
+ 8b. Fleet provisioning. The operator may authorize a provisioning scope
+     in one approval instead of per-pair sign-off: onboarding an agent
+     (naming the agent and whether the scope is local-mesh-only or
+     includes named remote hosts), rotating named pairs, or retiring a
+     named agent. Within exactly that scope, the pinned
+     `fleet-provision` tool in this repo may mint tokens, write
+     `peers.env` files (timestamped backups first), restart peer
+     listeners, and self-test — unattended, with every mint/install
+     recorded (token hashes only, never values) in NOTES.md and
+     committed to git. Anything outside the approved scope still needs
+     per-pair Telegram sign-off under rule 8. A generated remote half is
+     not an installed pairing: it becomes one only when the far side
+     imports it through its own process. (Adopted 2026-09-22; operator
+     approval quoted in NOTES.md.)
+ 9. Do not spend money, buy anything, or sign up for anything.
 
 ## Talking to peers
 

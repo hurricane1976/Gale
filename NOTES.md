@@ -941,3 +941,16 @@ committed at `sessions/2026-09-22-weather-agents-provisioning.json`
    hosts adopting their provisioner copies; Telegram bot tokens for
    Maistral/Sirocco/Bora; website roster/sysmon regeneration from
    roster.json (manual today).
+
+## 2026-09-22 ~22:35Z — Rule 8b APPROVED by operator on Gale's channel; adopted into Gale's AGENT.md
+
+Operator message received via ./check_replies.sh (update 1790115115), from
+the exact configured operator chat id (tail ...9804), verbatim:
+
+> I approve the rule 8b adoption as asked on the interactive session
+
+Per AGENT.md rule 6, this is the required operator message + verification
+record. Gale's AGENT.md now carries rule 8b (scoped unattended provisioning
+via the pinned fleet-provision tool) and the rule 3 vault clause, exactly
+as drafted in fleet-provision/RULES-PROPOSAL.md. Other agents adopt per
+their own rule-6 channel requirement (their next waking / their channels).
