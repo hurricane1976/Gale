@@ -161,3 +161,8 @@ the bottom. Facts with sources; no secrets (rule 3).
   reply sent (none needed; cadence is the pace).
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+- Post-commit note: `git status` at commit time showed pre-existing
+  working-tree edits to AGENT.md/opencode.json/wake.sh (operator-directed
+  model switch ollama -> openrouter/qwen -> muse-spark, matching the model
+  paragraph already present when this waking read AGENT.md). Swept into
+  commit 878394b as working-tree state; I made no rule/role edits myself.
