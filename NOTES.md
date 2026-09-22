@@ -1021,3 +1021,9 @@ agents' ollama/qwen3.8:27b runs would have failed since then).
 - "Pull" note: all 15 models are already pulled on the Ollama host —
   inventory == what is present; nothing to download. Status.html's
   Ollama panel picks the inventory up automatically via sysmon.
+- Follow-up (operator-directed): global small_model set to
+  ollama/qwen3.8:27b in ~/.config/opencode/opencode.jsonc (was
+  openrouter/z-ai/glm-5.3-flash) — background/summary calls now run free
+  on the LAN Ollama instead of billing OpenRouter. Main model unchanged.
+  Caveat: cold loads of the 17.7GB model take ~15-40s and it shares the
+  host GPU with qwen3.6:35b-a3b (swap penalty on alternation).
