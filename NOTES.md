@@ -190,3 +190,72 @@
   two-way check, NOTES entry, stop+report on any non-200/401 result.
 - Two-way completes only at the far side; as each confirmation lands,
   record it here.
+
+## 2026-09-22T16:45Z -- remote pairing chase: all 21 still 401 (no far-side installs yet)
+
+- Re-ran the documented pair test (one POST per peer, right token) to all
+  21 remote peers from this agent: TIDAL RIVER CREEK STREAM MEADOW BROOK
+  MIST (tidal-host), MOUNTAIN CANYON RIDGE HARBOR DELTA MESA VISTA
+  (mountain-host), BEACON HIGHBEAM LANTERN LIGHTNING RADAR PRISM PULSAR
+  (beacon-side) -- every one returned HTTP 401.
+- Peer inboxes empty: no confirmations or replies received.
+- Local halves remain installed + self-tested; deliverables intact at
+  /home/agent/agent/peer/outbound/install-blocks-<cluster>-VORTEX-CYCLONE.txt.
+- Ball is with the operator: paste the three install blocks into the
+  TIDAL / MOUNTAIN / BEACON lead windows. Will re-chase on request or at
+  the next waking.
+
+## 2026-09-22T16:35Z -- Telegram label bug fixed: /commands replies said [SQUALL]
+
+- Operator reported that waking VORTEX/CYCLONE via Telegram produced a
+  "response from squall". Diagnosis: telegram_commands.py send() was
+  adapted from squall's handler and still hardcoded the "[SQUALL] "
+  prefix on every reply. The replies themselves came from the correct
+  bots (@vortexagentsbot / @cycloneagentsbot) -- only the label was wrong.
+- Fixed: prefix is now "[CYCLONE] " (vortex's is "[VORTEX] "); py_compile
+  clean; end-to-end send() check delivered a labeled test message to the
+  operator chat.
+- Note: this agent has NO wake logs -- the operator's /wake never reached
+  @cycloneagentsbot (command log empty since install; only scheduled
+  wake attempts logged are the 15:08Z pre-key refusals). Flagged to the
+  operator to re-send.
+
+## 2026-09-22T16:36Z -- scheduled waking 1 (first unattended since install)
+
+- check_replies: 1 queued operator message ("Yes the word is given",
+  id 1790093633) -- already resolved in ASK.md (telegram word given); no
+  action. Inbox empty; no peer traffic.
+- Host health: up 1d4h, mem 4.1G/58G, disk 25% (71G free), load ~2,
+  nginx active + `nginx -t` clean, `cyclone-peer` active. `./backup.sh`
+  produced backups/cyclone-20260922T163524Z.tar.gz (464K, 187 files
+  listed, verified).
+- Production pass (liveness + repo<->docroot drift):
+  - All six pages 200 (index/fleet/status/metrics/observability/agora);
+    all six fleet API endpoints 200 (telemetry/activity/metrics/
+    observability + agora/posts + fleet/health). Note: AGENT.md lists
+    the health endpoint as `/api/health`; the live route is
+    `/api/fleet/health` (200). Minor docs/impl mismatch in MY role file
+    wording or the route path -- reporting, not touching the repo.
+  - Content assertion: fleet page roster markup = 27 unique listeners,
+    set-IDENTICAL to the `/api/fleet/metrics` sweep (27 nodes:
+    21 up / 6 up-auth-gated, 0 down). No orphans, no missing; the
+    sweep is fresh data, not a stale cached envelope.
+  - DRIFT/CLEANSWEEP, resolved in Gale's favor on re-check: repo
+    `~/agent/website/status.html` working tree = 16:18Z / 13568 B, and
+    it carries a +35-line UNCOMMITTED change (a new "Ollama" ops-panel:
+    loaded /api/ps, inventory /api/tags) vs its own committed HEAD.
+    Committed HEAD status.html == the deployed docroot (verified
+    byte-diff equal). So the published status page is CONSISTENT with
+    the committed source and is missing only the lead's not-yet-committed
+    work. Conclusion: NOT a deploy bug, NOT a hand-edited docroot, NOT a
+    stale envelope -- just uncommitted WIP in the lead's tree that has
+    not been committed/deployed yet. All other docroot-vs-repo files
+    matched (no other drift). Not escalating; logged as observation so
+    the "200 but wrong" class stays covered if the lead deploys it later
+    and I should then see the Ollama panel appear. (I do not commit or
+    deploy the lead's repo -- read-only for me.)
+  - Other files in docroot vs repo: no other diffs (spot-checked the
+    rest of the file set; only status.html differed).
+- Spend: local-model run, ~$0 (logs/spend-daily.jsonl recorded by
+  wake.sh per kit).
+- No new ASK.md items. No notify needed beyond this summary.
