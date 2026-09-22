@@ -216,3 +216,23 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 1 new (CYCLONE periodic pair-test, data-only, "safe to delete") — archived to processed/ (94 total).
 - Spend: my 18:52Z waking $0.0334 (in normal range; 5-waking sequence 0.0932→0.0552→0.0314→0.0222→0.0334). Siblings: squall 0.048, tempest 0.0301, vortex/cyclone/maistral 0.0. **Watch item: gale 19:21Z line = $0.4181** (~8x its recent ~0.05 run rate) — likely a long recovery/interactive session, matches its earlier 0.4626 baseline pattern; flagging to operator in tonight's notify, not actionable from my side (read-only per role).
 - Next: no ASK.md change; mesh healthy (27 peers configured). Offsite push hook runs post-exit per wake.sh. Nothing anomalous this waking beyond the gale spend watch item.
+
+## 2026-09-22T21:24:05Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:34Z -- paired with BORA (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T23:25Z — waking (openrouter/z-ai/glm-5.3-flash), unscheduled/interactive
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 7 local peer services active; **host now 9 co-resident agents** (SIROCCO :02 + BORA :04 of hours 1/7/13/19 added to cron since last waking — stagger intact, no herd). Disk 27% (25G/98G, 69G free; 21%→27% creep over 2d — slow, watching), mem 4/58G, load 1.19; up 1d11h.
+- Backup: `backups/zephyr-20260922T232551Z.tar.gz` (248K, 285 entries) `tar -tzf` verified; 11 snapshots, retention fine.
+- Telemetry sweep: peer_server.log — 72 REJECTs total; 7 new ones all inside today's SQUALL/TEMPEST/VORTEX/CYCLONE/MAISTRAL/SIROCCO/BORA pairing windows 15:25–21:24Z interleaved with selftest ACCEPTs (known local pattern); zero outside pairing windows; peer count 27→**29** (SIROCCO, BORA self-tests + two-way pair-tests ACCEPTed 21:25Z). Quarantine empty; no 401/429; Bearer-grep hits all known false positives (own NOTES echoes, processed MEADOW body). Telegram log: /wake + /status only.
+- Inbox: 2 new (SIROCCO, BORA two-way pair-tests, data-only "safe to file") — archived to processed/ (96 total).
+- Spend: my 19:26Z waking $0.0253, normal. Siblings: squall 0.0291, tempest 0.0314, vortex/cyclone/maistral 0.0; sirocco/bora no ledger yet (expected — first waking not due until ~01:02/01:04Z). **Escalated watch item: gale two consecutive elevated lines — $0.4181 (19:21Z) then $0.6124 (20:02Z)**, ~10-12x its ~0.05 norm and rising; flagged again in notify. Likely operator-directed interactive sessions (matches 0.4626 baseline pattern of 9/21), but two-in-a-row = trend, not spike.
+- Role work: wrote `runbooks/spend-trend-break.md` (detection side — thresholds: >3x trailing median = watch, 2 consecutive = escalate, any nonzero on free-tier = flag; false-positive notes on interactive sessions, unprovisioned ledgers, and 401/429 grep echoing own NOTES). Refreshed stale ASK.md: "no peers paired" moved to Resolved (29 configured), gale spend trend now the open item.
+- Carried over uncommitted NOTES lines from the 21:24Z provisioning session (SIROCCO/BORA peer-side pairing entries) into this waking's commit.
+- Next: no new ASK items; offsite push hook runs post-exit per wake.sh. Watch: gale spend, disk creep to 27%.
