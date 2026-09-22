@@ -9,7 +9,9 @@
       "/home/agent/tempest/keys/**": "deny",
       "/home/agent/vortex/keys/**": "deny",
       "/home/agent/cyclone/keys/**": "deny",
-      "/home/agent/maistral/keys/**": "deny"
+      "/home/agent/maistral/keys/**": "deny",
+      "/home/agent/sirocco/keys/**": "deny",
+      "/home/agent/bora/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
@@ -19,7 +21,9 @@
       "/home/agent/tempest/keys/*": "deny",
       "/home/agent/vortex/keys/*": "deny",
       "/home/agent/cyclone/keys/*": "deny",
-      "/home/agent/maistral/keys/*": "deny"
+      "/home/agent/maistral/keys/*": "deny",
+      "/home/agent/sirocco/keys/*": "deny",
+      "/home/agent/bora/keys/*": "deny"
     }
   }
 }
