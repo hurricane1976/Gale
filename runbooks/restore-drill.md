@@ -47,6 +47,10 @@ rm -rf "$RESTORE"    # always clean up
   `squall-20260922T065654Z.tar.gz`: no secrets, round-trip identical, fsck
   clean; only remaining item was `M backup.sh` because the fix itself was
   uncommitted at snapshot time — after committing, restores are clean.
+- 2026-09-22T12:54Z: restore of `squall-20260922T125414Z.tar.gz` (192K,
+  254 files) with the fixed backup.sh: round-trip diffs empty, fsck clean,
+  restored `git status` fully clean, `keys/` contains only the two
+  `*.example` templates. Fix holding.
 
 ## How to spot a failure faster
 
