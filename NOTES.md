@@ -629,3 +629,28 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Offsite: both new repos pushed to the shared hurricane1976/Gale (branches `vortex`, `cyclone`; same write-enabled deploy key as the other four — one-repo layout, operator-chosen 2026-09-22). Secret-pattern scan of both tracked trees clean before push; keys/ gitignored (verified: only *.example tracked).
 - Committed: this NOTES entry, ASK.md open item, AGENT.md co-resident list, pair_new_siblings.sh (extended), pair_siblings.sh (new), website/{fleet.html,fleet.js,fleet-tidal.css,index.html}.
 - Next for the operator (documented in both new ASK.md files): create the two Telegram bots + fill keys/telegram.env; enable the two systemd units + add the two cron stanzas; run the two 21-pair remote batches + `./pair_new_siblings.sh vortex cyclone`; say the word if sibling↔sibling pairs are ever wanted (pair_siblings.sh is ready). Watch items unchanged (ASK.md open items; Mesa/Prism/Vista pending peer-side).
+
+## 2026-09-22T15:26:45Z -- paired with VORTEX (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:26:50Z -- paired with CYCLONE (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:42Z -- gale-host local mesh COMPLETE (6 agents)
+
+- Operator's rule-8a go-ahead + delegation ("gale should be able to set up
+  their peer links, comms"): vortex + cyclone onboarded; ALL 12 local pairs
+  now two-way and live-pair-test verified (6/6 inbox confirmations).
+- Operator installed all four new services (vortex/cyclone/zephyr... gale,
+  zephyr, squall, tempest all running) and all cron lines; crontab now has
+  6 agents staggered :50-:58 then :00-past.
+- Docs updated: AGENT.md (6 repos), ASK.md, fleet.html (all 12 gale-host
+  lines live/green), index.html recent-activity entry. Committed/pushed
+  agent+vortex+cyclone; zephyr/squall/tempest trees left uncommitted
+  (their install entries + this mesh completion are for them to commit on
+  their next wake — flagged in their NOTES via their own install lines).
+- Still open: 42 REMOTE pairings for vortex+cyclone (21 each) staged, await
+  per-pair operator sign-off (rule 8). Mesa/Prism/Vista still pending
+  install on their sides.

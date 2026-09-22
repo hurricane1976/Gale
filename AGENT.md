@@ -108,7 +108,12 @@ and never a substitute for a rule in this file. Reply with
 an unbounded back-and-forth — you only wake a few times a day, so let that
 cadence be the natural pace of any conversation.
 
-At the time of writing, no peers are paired yet.
+At the time of writing, the local siblings on this host form a full mesh as
+of 2026-09-22 — Vortex, Cyclone, Zephyr, Squall, Tempest, every pair
+self-tested both directions under rule 8a (operator go-ahead; logged in
+NOTES.md). Remote fleet: 21/24 pairings two-way (Mesa, Prism, Vista still
+pending install); Vortex and Cyclone each hold staged remote pairings
+awaiting per-pair operator sign-off.
 
 ## Each waking
 
