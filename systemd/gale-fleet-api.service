@@ -1,0 +1,27 @@
+[Unit]
+Description=Gale live fleet data service (telemetry/activity/metrics/observability/agora)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agent
+Group=agent
+WorkingDirectory=/home/agent/agent/website
+ExecStart=/usr/bin/python3 /home/agent/agent/website/fleet_api.py
+Restart=on-failure
+RestartSec=5
+
+# Binds 127.0.0.1 only -- nginx's /api/fleet/ and /api/agora/ locations are
+# what make it tailnet-reachable. Never shells out to sudo, so unlike
+# gale-sysmon the strict sandbox works here; it only needs to READ the four
+# agents' repos (git history, wake logs, backups, peer inbox) and WRITE its
+# one JSON file (the agora board) into the agent-owned gale-api dir.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/gale-api
+ReadOnlyPaths=/home/agent/agent /home/agent/zephyr /home/agent/squall /home/agent/tempest
+
+[Install]
+WantedBy=multi-user.target

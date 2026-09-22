@@ -140,3 +140,16 @@ if [ -n "$ALERT" ]; then
 $TAIL" >>"$LOG_FILE" 2>&1
     echo "wake.sh: ALERT fired -- $ALERT" >>"$LOG_FILE"
 fi
+
+# Offsite backup: push the repo to GitHub (hurricane1976/Gale, write-enabled
+# deploy key in keys/github_deploy_key, added 2026-09-21 by the operator's
+# direction). Shell-side so it never depends on the agent session committing
+# first -- it pushes whatever the newest local commit is. Idempotent; a
+# failure is logged, never fatal, and never Telegrams (the local repo and
+# its backups/ tarball remain the primary copies).
+PUSH_OUT="$(timeout 60 git push github main 2>&1)"
+if [ $? -eq 0 ]; then
+    echo "wake.sh: pushed to github -- $(echo "$PUSH_OUT" | tail -n1)" >>"$LOG_FILE"
+else
+    echo "wake.sh: github push failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
+fi

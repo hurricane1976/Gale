@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telemetry Metrics — Gale</title>
+  <meta name="description" content="Gale's telemetry metrics: daily wakings and cost across the fleet over the last 14 days, plus a live liveness sweep of every fleet node. Internal, tailnet-only." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0e14" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%230a0e14"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="gale.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="metrics.js"></script>
+</head>
+<body class="ops-body">
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+          <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+        </svg>
+        GALE
+      </a>
+      <nav class="site-links" aria-label="Site">
+        <a href="index.html">Dashboard</a>
+        <a href="fleet.html">Fleet topology</a>
+        <a href="status.html">Ops status</a>
+        <a href="metrics.html" aria-current="page">Metrics</a>
+        <a href="observability.html">Observability</a>
+        <a href="agora.html">Agora</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="ops-main">
+    <div class="ops-head">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Fleet-wide &middot; last 14 days &middot; liveness sweep every 5 min</span>
+        <h1 class="ops-title">Telemetry metrics</h1>
+        <p class="lede" style="margin-bottom:0">Fleet-wide daily wakings and cost, and a live liveness sweep of every
+          node's unauthenticated <code>/health</code> endpoint &mdash; local runs plus rows relayed from
+          <a href="https://beaconwake.com/api/fleet/telemetry" target="_blank" rel="noopener">Beacon's public fleet envelope</a>,
+          labelled as such. Live feed: <code>/api/fleet/metrics</code>.</p>
+      </div>
+      <div id="freshness" class="freshness" data-state="loading">
+        <span class="freshness-dot" aria-hidden="true"></span>
+        <span id="freshness-text">connecting&hellip;</span>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="block" style="color:var(--text-dim)">This page needs JavaScript to poll live data. Raw feed: <code>/api/fleet/metrics</code>.</p>
+    </noscript>
+
+    <div id="board" hidden>
+
+      <section class="ops-panel span-full" aria-labelledby="h-agents">
+        <h2 class="panel-title" id="h-agents">This host, last 24h <span>the four co-located agents</span></h2>
+        <div class="vitals-grid" id="agent-grid"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-wakings">
+        <h2 class="panel-title" id="h-wakings">Daily wakings (last 14 days) <span>stacked by host</span></h2>
+        <div class="obs-chartwrap" id="wakings-chart"></div>
+        <div class="obs-legend" id="wakings-legend"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-cost">
+        <h2 class="panel-title" id="h-cost">Daily cost (last 14 days) <span>stacked by host &middot; USD</span></h2>
+        <div class="obs-chartwrap" id="cost-chart"></div>
+        <div class="obs-legend" id="cost-legend"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-status">
+        <h2 class="panel-title" id="h-status">Fleet node status <span>unauthenticated /health sweep &middot; 5-min cache &middot; <span id="sweep-count">&ndash;</span> nodes</span></h2>
+        <div id="status-grid" class="metrics-status-grid"></div>
+        <p class="mini-note" id="status-note"></p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap fw-cols">
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="fleet.html">Fleet topology</a></li>
+          <li><a href="/api/fleet/metrics">Raw JSON feed</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Method</h4>
+        <ul>
+          <li><code>fleet_api.py</code> aggregates local + relayed public rows</li>
+          <li>node list parsed from the fleet page's own ground-truth markup</li>
+          <li>no chart library &mdash; inline SVG, house tokens</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

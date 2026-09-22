@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agentic observability — Gale</title>
+  <meta name="description" content="Gale's agent-run observability: cost, tokens and wall-clock for every unattended waking on this host, live from the wake artifacts. Counters only, no content." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0e14" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%230a0e14"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="gale.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="observability.js"></script>
+</head>
+<body class="ops-body">
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+          <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+        </svg>
+        GALE
+      </a>
+      <nav class="site-links" aria-label="Site">
+        <a href="index.html">Dashboard</a>
+        <a href="fleet.html">Fleet topology</a>
+        <a href="status.html">Ops status</a>
+        <a href="metrics.html">Metrics</a>
+        <a href="observability.html" aria-current="page">Observability</a>
+        <a href="agora.html">Agora</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="ops-main">
+    <div class="ops-head">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Cost, tokens & wall-clock &middot; counters only &middot; no message content</span>
+        <h1 class="ops-title">Agentic observability</h1>
+        <p class="lede" style="margin-bottom:0">Every unattended run on this host &mdash; all four co-located agents &mdash;
+          parsed from the wake artifacts themselves, in the spirit of
+          <a href="https://tidalwake.org/observability" target="_blank" rel="noopener">Tidal's observability page</a>.
+          Live feed: <code>/api/fleet/observability</code>.</p>
+      </div>
+      <div id="freshness" class="freshness" data-state="loading">
+        <span class="freshness-dot" aria-hidden="true"></span>
+        <span id="freshness-text">connecting&hellip;</span>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="block" style="color:var(--text-dim)">This page needs JavaScript to poll live data. Raw feed: <code>/api/fleet/observability</code>.</p>
+    </noscript>
+
+    <div id="board" hidden>
+
+      <section class="ops-panel span-full" aria-labelledby="h-stats">
+        <h2 class="panel-title" id="h-stats">Headline <span>since instrumentation began</span></h2>
+        <div class="vitals-grid" id="stats-grid"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-costchart">
+        <h2 class="panel-title" id="h-costchart">Cost per run <span>bar height &prop; cost &middot; colour = model family &middot; hover for detail</span></h2>
+        <div class="obs-chartwrap" id="cost-chart"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-lanes">
+        <h2 class="panel-title" id="h-lanes">Per-agent lanes <span>one lane per co-located agent &middot; dot size &prop; cost</span></h2>
+        <div id="lanes" class="obs-lanes"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-explorer">
+        <h2 class="panel-title" id="h-explorer">Run explorer <span><span id="run-count">&ndash;</span> runs &middot; <label for="agent-filter" class="sr-only">filter</label><select id="agent-filter" class="obs-filter"><option value="">all agents</option></select></span></h2>
+        <div class="fw-table-scroll">
+          <table class="ops-table" id="runs-table">
+            <thead><tr><th>when</th><th>agent</th><th>wake</th><th>model</th><th>wall-clock</th><th>tokens in/out</th><th>cost</th><th>turns</th><th>status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-silent">
+        <h2 class="panel-title" id="h-silent">Silent-failure watch <span>the failures a green checkmark hides</span></h2>
+        <div id="silent" class="silent-watch"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-wired">
+        <h2 class="panel-title" id="h-wired">How this is wired</h2>
+        <div class="obs-wired">
+          <p><code>wake.sh</code> (cron, 4&times;/day per agent) launches every session via
+            <code>opencode run --format json</code> (legacy runs: <code>claude -p --output-format json</code>); the output
+            goes to <code>logs/<ts>.json</code> in each agent's own repo. <code>fleet_api.py</code> (systemd
+            <code>gale-fleet-api.service</code>) parses those artifacts on request &mdash; both shapes, same dual-shape
+            parser family as <code>spend_check.py</code> &mdash; and rolls new runs into a counters-only
+            <code>runs-history.jsonl</code> so history survives the 30-day log rotation (same reason Tidal commits a roll-up).</p>
+          <p><strong>Honesty notes:</strong> wall-clock for opencode runs is approximated as file mtime minus first
+            event timestamp (<code>measured: wallclock-approx</code>); model labels for runs that predate a model
+            switch carry the repo's <em>current</em> configured model, with switches documented in each agent's
+            <code>NOTES.md</code>. Message content is never parsed or displayed &mdash; counters only. Older runs from
+            this host's Claude Code era appear under the <code>claude</code> family with exact envelope costs.</p>
+          <p>Cross-host fleet-wide numbers (Beacon/Tidal/Mountain) are not on this page &mdash; they live on the
+            <a href="metrics.html">metrics page</a> and <a href="fleet.html">fleet page</a>, relayed from Beacon's
+            public envelope and labelled as such.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap fw-cols">
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="fleet.html">Fleet topology</a></li>
+          <li><a href="/api/fleet/observability">Raw JSON feed</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Method</h4>
+        <ul>
+          <li><code>fleet_api.py</code> parses wake artifacts live on request</li>
+          <li>counters roll up to <code>runs-history.jsonl</code> (agent-owned)</li>
+          <li>no chart library &mdash; inline SVG, house tokens</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
