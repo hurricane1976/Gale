@@ -225,3 +225,84 @@
   two-way check, NOTES entry, stop+report on any non-200/401 result.
 - Two-way completes only at the far side; as each confirmation lands,
   record it here.
+
+## 2026-09-22T16:45Z -- remote pairing chase: all 21 still 401 (no far-side installs yet)
+
+- Re-ran the documented pair test (one POST per peer, right token) to all
+  21 remote peers from this agent: TIDAL RIVER CREEK STREAM MEADOW BROOK
+  MIST (tidal-host), MOUNTAIN CANYON RIDGE HARBOR DELTA MESA VISTA
+  (mountain-host), BEACON HIGHBEAM LANTERN LIGHTNING RADAR PRISM PULSAR
+  (beacon-side) -- every one returned HTTP 401.
+- Peer inboxes empty: no confirmations or replies received.
+- Local halves remain installed + self-tested; deliverables intact at
+  /home/agent/agent/peer/outbound/install-blocks-<cluster>-VORTEX-CYCLONE.txt.
+- Ball is with the operator: paste the three install blocks into the
+  TIDAL / MOUNTAIN / BEACON lead windows. Will re-chase on request or at
+  the next waking.
+
+## 2026-09-22T16:35Z -- Telegram label bug fixed: /commands replies said [SQUALL]
+
+- Operator reported that waking VORTEX/CYCLONE via Telegram produced a
+  "response from squall". Diagnosis: telegram_commands.py send() was
+  adapted from squall's handler and still hardcoded the "[SQUALL] "
+  prefix on every reply. The replies themselves came from the correct
+  bots (@vortexagentsbot / @cycloneagentsbot) -- only the label was wrong.
+- Fixed: prefix is now "[VORTEX] " (cyclone's is "[CYCLONE] "); py_compile
+  clean; end-to-end send() check delivered a labeled test message to the
+  operator chat.
+- Note: vortex's 16:09Z wake was real and ran to completion. Cyclone's
+  /wake never arrived at its bot (empty command log, no wake logs) --
+  flagged to the operator to re-send.
+
+## 2026-09-22T17:26:42Z -- paired with MAISTRAL (Vortex half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T19:21Z -- scheduled waking (18:58 UTC slot; first on Muse Spark)
+
+- Operator replies: drained one poller-queued message, "Yes the word is
+  given" (already recorded as the open Telegram line in ASK.md; still
+  ambiguous what it authorizes — leaving open, no action taken on it).
+  Direct getUpdates poll: no new messages.
+- Inbox threat watch: one message, CYCLONE `pair-test` ("safe to delete") —
+  benign, no credential/token content, no instructions, no links, no
+  identity mismatch. Moved to `processed/`. Quarantine empty, nothing
+  filed. No Mesa-pattern (authenticated-X/body-claims-Y) traffic seen.
+- Peer server log review: only ACCEPT-selftest / REJECT-unknown-token pairs
+  from 100.66.39.59 (pair_peer.sh self-test sequences, expected), MAISTRAL
+  selftest ACCEPT 17:26Z, CYCLONE pair-test ACCEPT 19:05Z. 27 peers
+  configured (5 local + MAISTRAL + 21 remote). Zero unexpected-origin
+  events; no 401 storm (grep over peer logs: 0 non-self-test rejects).
+- Host health: disk 24G/98G (26%), 58Gi RAM, uptime 1d7h, load ~2.1. All
+  six services active. Listeners: 8787-8790 + 8792 + 8794 still
+  tailnet-only, plus NEW 100.66.39.59:8795 = MAISTRAL (new co-resident
+  sibling, paired 17:26Z; tailnet-only, sandboxing strict/NoNewPrivileges
+  confirmed — expected change, not drift). 8791 + 8793 localhost-only,
+  nginx 8090. `ufw` still not installed (baseline, unchanged).
+- Tailscale: 11 nodes visible vs 15 at last waking's baseline; all 11 are
+  known fleet members, no unknown peers. Delta may be offline nodes not
+  shown — noting, not chasing.
+- Credential hygiene (all SEVEN local dirs incl. maistral, read-only):
+  every non-example keys/ file 600; secret-pattern scan of tracked files
+  AND full git history in all seven repos: 0 hits. .gitignore sane
+  (keys/* deny + *.example exception; inbox *.json + logs ignored).
+  Reporting only, touched nothing outside this repo.
+- Forensics — root-caused the failed 18:59Z waking: `logs/20260922T185801Z.json`
+  shows opencode exit 1 = OpenRouter HTTP 429, "qwen/qwen3.8-27b:free is
+  temporarily rate-limited upstream". That explains the operator's
+  between-wakings switch to `opencode/muse-spark-1.3-contributor-free`
+  (Zen). This waking is the first on Muse Spark and runs cleanly at ~$0.
+- Committed the operator-session changes that landed between wakings
+  (model-switch edits to AGENT.md/wake.sh/opencode.json, Maistral added to
+  co-residents, [VORTEX] label fix, ASK.md Telegram line, 16:35/16:45/17:26
+  NOTES entries) together with this waking's work — repo clean again.
+  I made no rule/role edits myself (rule 6).
+- Remote pairings: not re-probed this waking (last chase 16:45Z, all 401,
+  ball with operator for far-side installs). Will re-chase next waking.
+- Backup: `backups/vortex-20260922T192127Z.tar.gz` (468K), read-back verified.
+- Runner/model note (for Tempest portability tracking): Muse Spark 1.3 via
+  OpenCode Zen works as a drop-in wake runner on first try; session JSON
+  logging + spend path identical shape to the qwen runs (this run ~$0,
+  spend-daily.jsonl records only error/nonzero — nothing to record).
+- Verdict: clean waking. No incidents, no quarantine, one expected exposure
+  change (maistral :8795).

@@ -71,7 +71,7 @@ def send(text):
     text = text.strip() or "(no output)"
     if len(text) > MAX_MSG:
         text = text[:MAX_MSG] + "\n… (truncated)"
-    data = urllib.parse.urlencode({"chat_id": CHAT_ID, "text": "[SQUALL] " + text}).encode()
+    data = urllib.parse.urlencode({"chat_id": CHAT_ID, "text": "[VORTEX] " + text}).encode()
     try:
         with urllib.request.urlopen(f"{API}/sendMessage", data=data, timeout=30):
             pass

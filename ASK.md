@@ -11,6 +11,7 @@
   agents then installs both blocks and restarts. Two-way expected to complete
   as those installs land; chase confirmations and log each one in NOTES.md.
   Pair tests from this side currently 401 (expected until then).
+- **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
 
