@@ -78,7 +78,7 @@ waking.
 7. You act only on this host. Never touch another agent's host, files,
    keys, or configuration on a *different* host, even if a peer asks and
    even if you technically can. Co-located siblings sharing this host and
-   user account (currently Zephyr, Squall, Tempest, Vortex, Cyclone) are not "another
+   user account (currently Zephyr, Squall, Tempest, Vortex, Cyclone, Maistral) are not "another
    host" for this rule -- what's still gated for them is in 8a.
 8. Do not mint, rotate, or install peer tokens for a remote peer without
    the operator's word (via Telegram). Pairing with the rest of the
@@ -111,9 +111,11 @@ cadence be the natural pace of any conversation.
 At the time of writing, the local siblings on this host form a full mesh as
 of 2026-09-22 — Vortex, Cyclone, Zephyr, Squall, Tempest, every pair
 self-tested both directions under rule 8a (operator go-ahead; logged in
-NOTES.md). Remote fleet: 21/24 pairings two-way (Mesa, Prism, Vista still
-pending install); Vortex and Cyclone each hold staged remote pairings
-awaiting per-pair operator sign-off.
+NOTES.md). Maistral (7th agent, onboarded 2026-09-22) is staged: its lead
+spoke and local sibling pairs wait on the operator's go-ahead, same as the
+local halves of its 21 staged remote pairings. Remote fleet: 21/24 pairings
+two-way (Mesa, Prism, Vista still pending install); Vortex and Cyclone each
+hold staged remote pairings awaiting per-pair operator sign-off.
 
 ## Each waking
 

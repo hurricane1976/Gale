@@ -670,3 +670,54 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - `.gitignore`: added `peer/outbound/` (tokens must never be committed).
 - Chase list as confirmations land: vortex + cyclone NOTES; fleet page
   counts (24-agent fleet) updated when two-ways complete.
+
+## 2026-09-22T17:10Z -- 7th agent MAISTRAL built + staged (interactive session)
+
+- Operator's word: "i want to create a 7th agent on this box. use the
+  others as a guide on what i want. add to the fleet. suggest a role and
+  name. i will provide telegram later" -> proposal accepted in-chat
+  ("i'm good with these suggestions"): **Maistral — Fleet Memory & Trend
+  Curation**, port 8795, waking :59 of 0/6/12/18 UTC (after Vortex :58,
+  before Cyclone :00), model ollama/qwen3.8:27b via opencode, telegram
+  bot deferred by the operator.
+- Built `~/maistral` from the cyclone donor kit, same construction as the
+  vortex/cyclone onboard (14:25Z): full standard kit adapted — AGENT.md
+  (new role section: event ledger `ledger/fleet-events.md`, trend deltas,
+  fixed-vs-recurring rollup, first-reporter ground truth, fleet-shape
+  watch; rule 7 gets a read-only-siblings emphasis), ASK.md, NOTES.md,
+  opencode.json (permission-deny for all SEVEN keys dirs), wake.sh (same
+  guards; offsite push `main:maistral`), telegram_commands.py (UNITS now
+  all seven peer services, [MAISTRAL] prefix), pair_peer.sh/rotate_peer.sh/
+  peers_rotate.py (MAISTRAL_NEW_TOKEN), fresh keys/peers.env (SELF only,
+  600), systemd/maistral-peer.service + maistral.cron staged in-repo,
+  ledger/ scaffold. peer_server.py unchanged. py_compile + bash -n clean;
+  wake.sh guard verified (refuses without telegram.env, exit 0, logged);
+  ./backup.sh verified (52K snapshot).
+- **Staged, NOT installed** (operator's standing choice, same as
+  vortex/cyclone at build time): systemd unit + cron lines live in the
+  repo only. Pairing staged, nothing minted (rule 8/8a).
+- Port check: 8795 free (8787-8790 siblings, 8791/8793 localhost-only
+  host services, 8792 vortex, 8794 cyclone).
+- Offsite: committed (init commit) + pushed to hurricane1976/Gale branch
+  `maistral` (same one-repo layout). Secret-pattern scan of tracked tree
+  clean; keys/ gitignored; no 64-hex strings tracked.
+- Fleet page + index updated to 28-agent ground truth: fleet.html (meta/
+  welcome/badge 28; gale-host box widened 380->460 for the 7th node at
+  the bottom row's natural extension x=1032.84; Gale<->Maistral edge
+  drawn chan-cfg "staged"; aria-label/legend/mesh-status updated; member
+  group 7 agents + Maistral card pending-yellow; ALSO fixed stale
+  Vortex/Cyclone member-card states left saying "pairing staged" — they
+  have been two-way confirmed (local mesh) since 15:42Z), index.html
+  (meta + footer 27->28, recent-activity entry). Deployed; pages 200.
+- pair_new_siblings.sh extended to accept maistral (address map, targets,
+  usage). Sibling AGENT.md rule-7 co-resident lists updated in all six
+  repos to name Maistral — left uncommitted in zephyr/squall/tempest/
+  vortex/cyclone per the 23:12Z/14:25Z precedent (their next waking's
+  routine commit picks them up). Gale's own AGENT.md change committed
+  with this entry.
+- Next for the operator (documented in maistral's ASK.md): create the
+  @maistralagentsbot + fill keys/telegram.env; install the systemd unit
+  + cron lines; run `./pair_new_siblings.sh maistral` (lead) + local
+  mesh on the rule-8a word + `~/maistral/pair_remote_batch.sh` (21
+  remote). Watch items unchanged (42 staged remote pairings for
+  vortex/cyclone; Mesa/Prism/Vista installs; open ASK.md items).

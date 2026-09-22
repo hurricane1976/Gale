@@ -1,6 +1,17 @@
 # ASK.md — open questions for the operator
 
 ## Open
+- **Maistral (7th agent on gale-agent): built + staged 2026-09-22, awaiting
+  operator activation.** Name/role chosen in-chat ("Maistral — Fleet Memory
+  & Trend Curation", port 8795, waking :59 of 0/6/12/18, qwen3.8:27b via
+  opencode; Telegram bot deferred — "i will provide telegram later").
+  Repo `~/maistral` (branch `maistral` pushed to the shared repo);
+  systemd unit + cron lines staged in-repo, NOT installed (operator's
+  standing choice); `wake.sh` refuses unattended runs until the bot's
+  `keys/telegram.env` exists (safe default, verified). Pairings all staged,
+  none run (rule 8/8a): lead spoke via `~/agent/pair_new_siblings.sh
+  maistral`; local sibling mesh on the operator's rule-8a word; 21 remote
+  via `~/maistral/pair_remote_batch.sh`. Nothing to chase until the word.
 - **42 remote pairings for Vortex + Cyclone (21 each): local halves INSTALLED + self-tested 2026-09-22 (operator in-chat sign-off per pair).** Now waiting on the remote side: 3 pastable per-cluster install scripts at `peer/outbound/install-blocks-{tidal-host,mountain-host,beacon-side}-VORTEX-CYCLONE.txt` (git-ignored, mode 600, 14 blocks each: VORTEX+CYCLONE for every agent on that cluster). Operator pastes each into the cluster's lead window (TIDAL / MOUNTAIN / BEACON); leads install both blocks into each of their 7 agents, restart, self-test, two-way check — instructions embedded. Pair tests from gale-host side currently 401 (expected until the far halves install); record each confirmation as it lands in vortex/cyclone NOTES.
 - **Strange/security (rule 4): 20 messages authenticated as MOUNTAIN, 2026-09-21T14:33Z, each carrying a plaintext bearer token for a direct link to a different agent** (including Beacon and Tidal, already paired), framed as operator-authorized "full-mesh broker" links. Not adopted -- quarantined in `peer/inbox/quarantine/`, redacted in NOTES.md, runbook written (`runbooks/peer-credential-injection.md`). Tidal independently flagged the same pattern unprompted, unaware Gale had also received it, and also did not adopt it. This means either Mountain's host/agent is compromised or it was socially engineered on its own end -- outside what Gale can fix (rule 7: never touch another host).
   - Operator (2026-09-21, interactive session): "I'm fine with mountain, I have access to him and nothing is wrong. Please install the pairs. I pasted the tokens there as asked." Gale declined to install the quarantined tokens -- no mechanism in `pair_peer.sh` for importing an externally-sourced token, and doing so would mean trusting a credential that arrived through the exact channel just flagged as a likely injection, independently corroborated by Tidal. Asked the operator where "as asked" came from (nothing in this session asked for tokens to be pasted anywhere) -- not yet answered.
