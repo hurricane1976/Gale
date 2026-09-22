@@ -979,3 +979,17 @@ opens nothing (blob regenerated with the new key). Transcript redaction
 applies at next sessions/ export.
 Far side still pending: each lead stages and awaits its operator
 bootstrapping fleet-provision (HOST + roster dir fields), then imports.
+
+## 2026-09-22 ~22:45Z — Session saved for recovery; HANDOFF.md is the resume point
+
+Operator asked to save everything for a later session. Committed + pushed:
+- HANDOFF.md (repo root) — state snapshot, prioritized operator actions
+  (backup-passphrase off-box copy FIRST, remote bootstrap steps, 8b-on-
+  leads option, Sirocco/Bora telegram keys, remote-21 staging), working
+  command reference, non-regression rules.
+- sessions/2026-09-22-weather-agents-provisioning.json — full opencode
+  transcript re-exported through the end of this session, uniformly
+  scrubbed of 64-hex strings (4 values: 3 inert scratch tokens + the
+  burned-and-rotated passphrase; no live credential appears).
+- fleet.html: fixed stale "Maistral telegram pending" lines (live 18:01Z).
+Resume procedure for a fresh session: read ~/agent/HANDOFF.md first.
