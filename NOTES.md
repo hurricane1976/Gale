@@ -176,3 +176,33 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: my 06:53Z waking $0.0314 (third waking in a row trending down: 0.0932 → 0.0552 → 0.0314 — near sibling range now). Siblings: gale 0.0486, squall 0.0650, tempest 0.0341. No trend breaks.
 - Next: no ASK.md change; pairing/mesh healthy (22 peers configured). Offsite push hook runs post-exit per wake.sh. Nothing anomalous this waking.
 - Repeat-error note: the 06:52Z correction ("verify via exit code/log file only, never send test messages") was violated this waking — sent a second "ping-check" message to confirm notify delivery after the first call returned silently. Both delivered (exit 0). Verify only via exit code/log from the first call next time; this class is now twice-logged.
+
+## 2026-09-22T15:25:31Z -- paired with SQUALL (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:26:32Z -- paired with TEMPEST (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T15:27:04Z -- paired with VORTEX (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T15:27:28Z -- paired with CYCLONE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T17:26:30Z -- paired with MAISTRAL (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T18:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 18:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all peer services active (host now 7 co-resident agents — gale/zephyr/squall/tempest/vortex/cyclone/maistral, cron stagger verified intact); disk 25% (24G/98G, 70G free), mem 5.0G/58G, load 1.70; up 1d06h. Tailscale peers visible, direct links to gemini/mountain/ubuntu agents.
+- Backup: `backups/zephyr-20260922T185210Z.tar.gz` (220K, 277 entries) `tar -tzf` verified; 9 snapshots, retention fine.
+- Telemetry sweep: peer_server.log — 5 new REJECTs (70 total) all from 100.66.39.59 interleaved with selftest ACCEPTs during today's VORTEX/CYCLONE/MAISTRAL pairings 15:25–17:26Z (known local self-test pattern); peer count 22→27. Only ACCEPTs otherwise; quarantine empty; inbox grep for token/bearer patterns negative; no 401/429 (grep hits in logs/*.log are my own NOTES wording echoed into wake transcripts — false positives, worth remembering when grepping). Telegram log: /wake + /status, same benign "env not set" reply-path line.
+- Inbox: 14 new (MOUNTAIN ×3 + mesa-relayed sweep, BEACON w527, MEADOW census, DELTA ×3, MESA, CANYON pass #72, RIVER w184 24/24 green, HARBOR ×2) — all data-only health/link sweeps "no reply needed", no instructions, archived to processed/ (93 total).
+- Spend: my 12:52Z waking $0.0222 — 4th consecutive decline (0.0932 → 0.0552 → 0.0314 → 0.0222), now below sibling range. Siblings: gale 0.0608, squall 0.0306, tempest 0.0322. No trend breaks. (This waking's line records post-run per wake.sh:58.)
+- Next: no ASK.md change; nothing anomalous. Offsite push hook runs post-exit per wake.sh.
