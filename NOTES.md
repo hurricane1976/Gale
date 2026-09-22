@@ -596,6 +596,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Committed: this NOTES entry only.
 - Next: unchanged watch items -- operator answers on open ASK.md items; Mesa/Prism/Vista peer-side installs (ack as they arrive); watch next ledger entries for the ~10x-corrected totals to stay well under thresholds.
 
+## 2026-09-22T12:50Z -- scheduled waking: routine clean; first full backup-restore drill passed
+
+- `check_replies.sh`: no new operator messages. ASK.md open items unchanged (quarantined Mountain tokens + "as asked" origin, Mountain sibling-intro silence, River's git-history-leak claim) -- no new operator word, holding per prior instruction, no mesh action taken.
+- Inbox: 13 msgs 06:51-12:32Z, all token-authenticated, all data-only (Rule-7 sweeps/latency from MOUNTAIN x4, BEACON health-check, MEADOW census, DELTA x2 + HARBOR x2 own-identity link verifications, HIGHBEAM w244 probe, CANYON scribe pass, RIVER w183 sweep "24/24 green" -- relayed claim, not adopted as ground truth), none asked for or needed a reply, filed to `processed/`. One MOUNTAIN 12:22:23Z carries the recurring "authenticated MOUNTAIN, body claims mesa" pattern (already tracked in ASK.md; no new flag). Zero traffic from Mesa/Prism/Vista -- consistent with their peer halves still not installed.
+- Health: tailscaled/gale-peer/cron/gale-sysmon/gale-firewalla/gale-fleet-api/nginx all active, plus sibling zephyr/squall/tempest-peer services active; disk 24% of 98G; mem 54G avail of 58G; load ~1.8 (holds the ~2 baseline with 4 agents waking); no reboot pending; peer listeners 8787-8790 tailnet-only, firewalla-control 8791 + fleet-api 8793 localhost-only, nginx 8090.
+- Backup: `backups/gale-20260922T125049Z.tar.gz` (1.4M, 580 entries), `tar -tzf` verified, zero `keys/` entries.
+- **Role work: first full restore drill (beyond read-back).** Extracted the newest snapshot to `/tmp/opencode/restore-test`: 382 files came out; spot-checked 7 files (AGENT.md, NOTES.md, ASK.md, wake.sh, backup.sh, notify.sh, website/fleet_api.py) byte-identical (`cmp`) to the live working tree; `keys/` present-but-empty as designed. Scratch removed after. `tar -tzf` proves a snapshot is readable; this proves it actually restores -- worth repeating occasionally rather than treating as a one-time check.
+- Fleet sweep via `/api/fleet/metrics` (fleet_status, not sweep/ -- shape is a name-keyed dict): 25 nodes, 18 up, 7 auth-gated (Mountain group's auth-gated /health), **0 down**. Site pages + APIs all 200 (/, /fleet.html, /status.html, /observability.html, /api/status.json, /api/fleet/health, /api/fleet/metrics).
+- Spend: Sep-22 has 2 ledger entries so far ($0.0466 + $0.0486 = $0.0952); this session's lands at its end. Baseline ~$0.05/waking holds, far under thresholds.
+- Git: working tree clean entering this waking; offsite `git push github main` up to date; all four branches (main, zephyr, squall, tempest) present on hurricane1976/Gale.
+- Committed: this NOTES entry only.
+- Next: unchanged watch items -- operator answers on open ASK.md items; Mesa/Prism/Vista peer-side installs (ack as they arrive); repeat the restore drill occasionally (not every waking) to keep backup confidence honest.
+
 ## 2026-09-22T01:35Z -- interactive session: live network throughput + top talkers on the Firewalla panel
 
 - Operator asked for live flows / LAN or WAN throughput. The MSP cloud API has no live counter; verified what it CAN give live-probed against the account: flow records are queryable by time window (`ts:>{epoch}` — note the > must be URL-encoded or the API 400s), the record cap is 500/page, and flow export lags realtime by minutes (newest record was ~9 min old at 01:04Z quiet hours). Trend endpoints (daily buckets) exist but returned inconsistently (30 buckets on one probe, empty on the next) — not used.
