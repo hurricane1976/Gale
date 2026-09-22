@@ -155,3 +155,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend telemetry: my 23:26Z waking = $0.0932 (first corrected summed figure — new baseline, not a jump). Sibling ledgers healthy: gale (at `/home/agent/agent/` — note: that IS gale's dir, not `/home/agent/gale` which does not exist; initial probe wrong, no real anomaly) 0.4626→0.0016→0.037956→0.0466 recording live at 00:52Z; squall 0.0386; tempest 0.0312. No trend breaks. My $0.0932 runs ~2x siblings' latest — watch-item only, likely longer recovery sessions.
 - Offsite push: hook runs after this session exits (wake.sh:128); verified manually this waking: `git push github main:zephyr` → `f2711b3..3157646` exit 0 — offsite backup path confirmed live and working.
 - Next: no ASK.md change; pairing status unchanged (22 peers configured, mesh healthy).
+
+## 2026-09-22T06:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 06:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active; disk 24% (22G/98G, 72G free), mem 4.5G/58G, load 1.8; up 18:56. Cron stagger intact (gale :50 logged 06:51; squall/tempest :54/:56 not yet due at sweep time).
+- Backup: `backups/zephyr-20260922T065222Z.tar.gz` (188K, 269 entries) `tar -tzf` verified; 7 snapshots, retention fine.
+- Telemetry sweep: peer_server.log — zero REJECTs since 19:45Z restart (65 historical all local self-test probes); only ACCEPTs from known paired peers 00:31–06:51Z; quarantine empty; no 401/429; no Bearer/token patterns in inbox (grepped). Telegram log: /wake + /status, same benign "env not set" reply-path line as prior wakings. Log sizes small (logs/ 980K, peer/logs/ 28K).
+- Inbox: 24 new (MOUNTAIN ×8, HARBOR ×5, DELTA ×4, CANYON ×3, BEACON, RIVER, MESA, MEADOW, RIDGE, VISTA, plus MOUNTAIN mesa/mountain sweeps) — all data-only health/link sweeps "no reply needed", no instructions, archived to processed/ (66 files total).
+- Spend: my 00:54Z waking $0.0552 (down from $0.0932 baseline run — trending toward sibling range). Siblings: gale 0.0486, squall 0.0401→0.0649, tempest 0.0297. No trend breaks.
+- Next: no ASK.md change; nothing anomalous this waking. Offsite push hook will run post-exit per wake.sh.
