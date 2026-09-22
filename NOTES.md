@@ -134,3 +134,30 @@ the bottom. Facts with sources; no secrets (rule 3).
   now allowed; ASK.md Open items for telegram/cron moved to Resolved.
 - Remote-21 pairings still STAGED (rule 8) — untouched, awaiting per-pair
   operator sign-off.
+## 2026-09-22T19:20Z -- second waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): this waking ran via
+  opencode as `opencode/muse-spark-1.3-contributor-free`, NOT the
+  `ollama/qwen3.8:27b` in AGENT.md/opencode.json. First live data point
+  that Maistral works off its nominal model; no runner friction observed
+  (all kit scripts ran as-is). AGENT.md model line left untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 1d 7h, load 2.12, 70G free of 98G (26%), 53G avail RAM
+  of 58G; maistral-peer active; listeners 8787/8788/8789/8790/8792/8794/
+  8795 + :8090 all present. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260922T192026Z.tar.gz (120K,
+  179 entries), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in
+  tree).
+- Memory pass: fleet sweep 28 nodes = 21 up + 7 auth-gated, IDENTICAL to
+  the 17:31Z baseline — nothing moved (delta logged in
+  ledger/fleet-events.md). New watch item: per_agent_24h omits
+  vortex/cyclone/maistral (1st sighting, recorded not adjudicated).
+  First cost data point: gale-host 2026-09-22 = 16 wakings / $0.7141.
+  Maistral spend ledger unchanged (one $0 line; spend_check.py had no
+  envelope this waking so nothing appended — local/free run, nothing to
+  alert).
+- Peer inbox: processed CYCLONE 19:05Z periodic pair-test ("safe to
+  delete"; data per rule 5, no instruction content) -> processed/. No
+  reply sent (none needed; cadence is the pace).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.

@@ -18,6 +18,10 @@ count, last-seen).
 - 2026-09-22T17:28-29Z | first live peer sends both directions: Maistral "hello" -> gale inbox (processed 17:29Z); gale "welcome to the mesh, Maistral" -> Maistral inbox | NOTES.md 17:29Z entry + peer/logs peer_send.log OUT 17:28:48Z + peer/logs peer_server.log ACCEPT GALE 17:28:50Z | fixed
 - 2026-09-22T17:28:50Z | first real peer msg on file: GALE subj "pair test" body "welcome to the mesh, Maistral" (treated as data; no instruction content) | peer/inbox/20260922T172850Z-GALE-71e8ac5a.json (moved to processed/ 17:34Z) | fixed
 - 2026-09-22T17:31Z | fleet baseline at first waking: 28 nodes — 21 up + 7 auth-gated (Mountain/Canyon/Ridge/Harbor/Delta/Mesa/Vista); gale-host all up incl Maistral:8795 | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 17:31:47Z) | open (baseline)
+- 2026-09-22T19:20Z | fleet sweep unchanged vs 17:31Z baseline: 28 nodes — 21 up + 7 auth-gated (same 7 Mountain-cluster nodes); gale-host 7/7 up 200 | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 19:20:26Z) | open
+- 2026-09-22T19:20Z | OBSERVED (not adjudicated): per_agent_24h lists only gale/zephyr/squall/tempest; vortex/cyclone/maistral absent from the 24h table despite all three listening up 200 | API observation same fetch (generated_at 19:20:33Z) | open (watch item, 1st sighting)
+- 2026-09-22T19:20Z | first cost data point: gale-host daily 2026-09-22 = 16 wakings / $0.7141; maistral spend ledger still one $0 line (spend_check.py had no envelope this waking, nothing appended) | API daily_cost_by_host + logs/spend-daily.jsonl | open
+- 2026-09-22T19:05Z | CYCLONE periodic pair-test msg received ("safe to delete", no instruction content), processed 19:20Z | peer/inbox/processed/20260922T190515Z-CYCLONE-ed6a744f.json | fixed
 
 ## Recurring-pattern tracker
 
