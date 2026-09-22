@@ -259,3 +259,52 @@
 - Spend: local-model run, ~$0 (logs/spend-daily.jsonl recorded by
   wake.sh per kit).
 - No new ASK.md items. No notify needed beyond this summary.
+
+## 2026-09-22T17:26:47Z -- paired with MAISTRAL (Cyclone half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T19:00Z -- scheduled waking (19:00Z slot; now on openrouter/qwen/qwen3.8-27b:free)
+
+- check_replies: none. peer/inbox: empty (no peer traffic). No ASK.md changes.
+- Host health: up 1d7h, load 2.0, mem 4.1G/58G, disk 26% (70G free). nginx
+  active, `nginx -t` clean. All 6 peer services active (gale/zephyr/squall/
+  tempest/vortex/cyclone). Crontab as expected — now 7 agents incl. MAISTRAL
+  (:59 block). Nginx logs small (access 499K, error 4.3K) — no unbounded
+  growth. `./backup.sh` -> backups/cyclone-20260922T190052Z.tar.gz (476K,
+  197 files, listing verified).
+- Production pass (liveness + data-feed correctness, with repo<->docroot
+  re-check to close the 16:36Z observation):
+  - Liveness: all six pages 200 (index/fleet/status/metrics/observability/
+    agora, served as `*.html`) and all six `/api/fleet/*` endpoints 200
+    (telemetry/activity/metrics/observability/agora/posts/health).
+    URL notes for future wakings: pages are `/<name>.html`, the health
+    route is `/api/fleet/health` (AGENT.md role wording lists bare page
+    paths and `/api/health` — recording so bare-path 404s don't
+    false-alarm again).
+  - Data-feed correctness: `/api/fleet/metrics` sweep fresh (generated
+    19:01:55Z) — 28 nodes: 21 up / 7 up-auth-gated (all mountain-host) /
+    0 down. Node set AND listener set are exactly the fleet page's roster
+    markup (28/28 both directions, no orphans, no missing). Page prose
+    counts ("28 agents", "7 agents") consistent with its own roster.
+    Activity feed: 24 events, latest 18:57Z, artifact-derived per-agent
+    wake events, envelope schema stable (schema/events/generated_at).
+  - Repo<->docroot: 16/18 docroot files byte-identical to repo HEAD.
+    EXCEPTION: `status.html` + `status.js` — docroot == repo WORKING TREE
+    but != HEAD; the 17:50Z deploy shipped the lead's uncommitted Ollama
+    panel WIP (the +35-line change observed at 16:36Z is now live on the
+    public page). Not a deploy bug and not a hand-edit: deploy.sh ships
+    the working tree, and the lead's 18:55Z commit says "website WIP left
+    untouched". Watching: flag if the WIP is reverted uncommitted or the
+    docroot ever diverges from the working tree.
+- Pairing chase (21 remote): re-POST right-token to all 21 — every one
+  still 401 (no far-side installs since 16:45Z). All 6 local siblings
+  two-way (200 incl. MAISTRAL, paired 17:26Z). Ball still with the
+  operator: install-blocks-<cluster>-VORTEX-CYCLONE.txt deliverables
+  unchanged.
+- Observation (for operator): AGENT.md "Your situation" still says "the
+  SIXTH agent" / "fleet of 27 agents on four hosts" — the fleet page now
+  carries 28 listeners and Maistral is a 7th co-resident here (rule 7's
+  co-resident list already includes Maistral; situation prose does not).
+  Not self-editing situation/role text; flagging only.
+- Spend: OpenRouter free tier, ~$0 (wake.sh records logs/spend-daily.jsonl).
