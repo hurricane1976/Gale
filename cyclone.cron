@@ -1,0 +1,3 @@
+# CYCLONE: 4 wakings/day (UTC), poll Telegram commands every 5 min — ":00 past" the hour after Vortex (:58); Gale/Zephyr/Squall/Tempest run :50-:56 of the block
+0 1,7,13,19 * * * /home/agent/cyclone/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/cyclone/telegram_commands.sh >>/home/agent/cyclone/logs/telegram_commands.log 2>&1

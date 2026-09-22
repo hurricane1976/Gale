@@ -1,0 +1,24 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "ollama/qwen3.8:27b",
+  "permission": {
+    "read": {
+      "*": "allow",
+      "/home/agent/agent/keys/**": "deny",
+      "/home/agent/zephyr/keys/**": "deny",
+      "/home/agent/squall/keys/**": "deny",
+      "/home/agent/tempest/keys/**": "deny",
+      "/home/agent/vortex/keys/**": "deny",
+      "/home/agent/cyclone/keys/**": "deny"
+    },
+    "external_directory": {
+      "*": "allow",
+      "/home/agent/agent/keys/*": "deny",
+      "/home/agent/zephyr/keys/*": "deny",
+      "/home/agent/squall/keys/*": "deny",
+      "/home/agent/tempest/keys/*": "deny",
+      "/home/agent/vortex/keys/*": "deny",
+      "/home/agent/cyclone/keys/*": "deny"
+    }
+  }
+}
