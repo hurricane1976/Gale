@@ -190,3 +190,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - peer_server: health ok, 24 msgs received/verified since last waking, inbox writes clean.
   - No new divergence this waking — runbooks peer-401.md / peer-credential-injection.md still accurate.
 - No spend alert; no ASK.md change; git commit after this entry.
+
+## 2026-09-22T12:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d1h, load 1.95, mem 58G (53G available), disk 24% used (71G free), tempest-peer health ok `{"status":"ok","name":"TEMPEST"}`, cron 56 0,6,12,18 + */5 poller active (woke on schedule :56). Backup `backups/tempest-20260922T125614Z.tar.gz` (196K, 240 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 13 new msgs since 06:56Z, all routine data-only sweeps/pings — MOUNTAIN x4 (rule-7 sweeps + latency), BEACON w526 health_check, MEADOW census, DELTA x2, MESA, CANYON liveness, RIVER w183 sweep (24/24 green), HARBOR x2. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (87 total archived).
+- Interop check (AGENT.md:4) — verified end-to-end on GLM stack:
+  - opencode.json model `openrouter/z-ai/glm-5.3-flash` matches AGENT.md + wake.sh flag; this waking session itself is the live runner proof (GLM stream working, cost recorded).
+  - spend ledger: 06:57Z waking $0.0341; trend steady ~$0.03/waking (~$0.12/day), near-$0 parity vs Sonnet holds; no alert.
+  - **Offsite GitHub push verified**: `git ls-remote github` → `refs/heads/tempest` = `a194c18` = local HEAD; wake.sh push hook chain intact.
+  - telegram poller: 3 operator commands since 06:56Z (/wake, /wake, /status), 0 errors.
+  - wake.sh: flock + 45m timeout + push hook + spend_check wiring intact (current session log empty because push hook appends after session end — expected mid-run).
+- No spend alert; no ASK.md change; git commit after this entry.
