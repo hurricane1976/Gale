@@ -872,3 +872,72 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Did the actual role work this waking:** the queued operator ask ("update website to account for addition of all new agents, check all pages for correctness") turned out to already be satisfied by prior sessions (17:10Z Maistral-onboard update, 17:45Z/17:52Z fleet-formation fixes) -- verified rather than re-done: all 6 site pages (index/fleet/status/metrics/observability/agora) return 200; grepped every page for stale lower agent counts (21/20/15-agent etc.), none found; index.html and fleet.html both read "28"; `/api/fleet/metrics` reports 28 nodes, 21 up + 7 auth-gated + 0 down, matching fleet.html's topology; activity log's newest entry is the accurate 17:10Z Maistral onboarding. Moved the ASK.md item to Resolved with this verification recorded. Only gap noted (not a correctness issue, not acted on): the activity log doesn't yet mention the 19:15Z Claude-Code-runtime switch or the Firewalla 429 work, since neither is a "new agent."
 - Git: entering this waking, only `ASK.md` had uncommitted state (the queued-item append from an earlier session). Committed `ASK.md` (resolved-item edit) + this `NOTES.md` entry together.
 - Next: unchanged watch items -- operator answers on open ASK.md items (quarantined Mountain tokens, Mountain sibling-intro silence, River's git-history-leak claim); Mesa/Prism/Vista peer-side installs; Vortex/Cyclone 42 remote pairings; Maistral telegram key + cron + remote-21; watch firewalla pause expire naturally tomorrow ~19:11Z.
+
+## 2026-09-22T21:22:29Z -- paired with SIROCCO (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22T21:22:33Z -- paired with BORA (Gale half)
+
+- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-22 ~21:27Z — Provisioned Sirocco + Bora local mesh (rule 8a)
+
+Operator-directed in-session ("have gale provision/onboard them and ensure
+they can communicate with the fleet"). Ran the sanctioned helpers:
+pair_new_siblings.sh sirocco bora (lead spokes) + 13x pair_siblings.sh
+(all other co-resident pairs; 15 new pairs total, host now K9 = 36 edges).
+One shared token per pair, both halves installed with timestamped .bak
+backups, all 9 peer services restarted clean, per-install self-tests
+200/401 throughout. Verified with real sends both directions on all 15
+pairs (30/30 delivered) plus inbox spot-checks (8/8 inbound each for the
+new agents). Token material lived only in 600-perm temp files, shredded
+after use. Website flipped to match (edges green, roster live). Remote 21
+per new agent NOT minted — rule 8 needs per-pair Telegram sign-off plus
+remote-side installs, neither available from here.
+
+## 2026-09-22 ~22:20Z — Session record: weather page, Sirocco+Bora, fleet-provision (operator-driven interactive session)
+
+Full interactive session with the operator (opencode, not a cron waking).
+Everything below is committed in this repo; full opencode transcript also
+committed at `sessions/2026-09-22-weather-agents-provisioning.json`
+(scratch-test token strings redacted; no live credentials ever appeared).
+
+1. **Weather tracker page** (website/weather.html + weather.js, gale.css
+   additions, nav wired on all pages): live conditions, 48h strip, 7-day,
+   RainViewer radar on Leaflet (Esri dark basemap after CARTO began
+   key-gating tiles; radar maxNativeZoom=7 — RainViewer serves error
+   tiles at z8+), NWS alerts, Open-Meteo AQI, location search/presets/
+   GPS, unit toggles. Defaults Woodbridge VA. Deployed + headless-Chrome
+   verified.
+2. **Topology model refresh:** Vortex/Cyclone/Maistral chips Qwen->Muse
+   (muse-spark-1.3-contributor-free, operator-directed switch earlier
+   that day). Verified against each agent's own files + activity stream.
+3. **Sirocco (8th, :8796, wakes :02 of 1/7/13/19) and Bora (9th, :8797,
+   wakes :04) onboarded** on the operator's request, muse-spark-1.3 via
+   opencode, full Maistral-template kit, AGENT.md roles: upstream
+   dependency/external-service health; fleet scaffolding/onboarding.
+   systemd enabled+active, cron installed, git repos initialized.
+4. **Local mesh completed under rule-8a go-ahead:** 15 new pairs, all 9
+   host agents fully two-way (36 edges), 30/30 verification sends
+   delivered, self-tests 200/401 throughout. Website flipped green,
+   deployed, screenshot-verified. Remote-21 per new agent still STAGED
+   (rule 8) — pair_remote_batch.sh ready in both repos.
+5. **fleet-provision built and migrated-to** (fleet-provision/ in this
+   repo): roster.json (30 nodes, source of truth), CLI (import-vault/
+   verify/render/onboard/bundle/import/rotate/retire), token vault
+   (162 pairs, 600, gitignored). Migration read-only, zero-drift proof
+   on all 9 configs. Full write path proven against scratch peer_server
+   listeners: onboard->rotate(old 401/new 200)->import->retire->verify.
+   Two bugs fixed during testing (stale-server squat; renderer comment
+   stacking) — documented in fleet-provision/README.md NOTES section.
+   RULES-PROPOSAL.md holds draft rule-8b + rule-3 vault amendment text
+   for the operator — NOT yet adopted; agents must not self-edit rules.
+6. **Sibling repos:** opencode.json (sirocco/bora keys-deny) +
+   telegram_commands.py (UNITS incl. sirocco-peer/bora-peer) updated in
+   all 7 and left uncommitted per authorship precedent — committed this
+   time at the operator's save request, attributed to Gale's session.
+7. **Pending (needs operator):** rule-8b adoption via Telegram; remote
+   hosts adopting their provisioner copies; Telegram bot tokens for
+   Maistral/Sirocco/Bora; website roster/sysmon regeneration from
+   roster.json (manual today).

@@ -1,0 +1,722 @@
+#!/usr/bin/env python3
+"""fleet-provision — roster-driven key management for the fleet mesh.
+
+One provisioner per host; each host's vault holds ONLY the pairs its own
+agents participate in. Cross-host coordination is bundle exchange, never
+remote file access.
+
+Subcommands (all dry-run / read-only unless --write is given):
+  import-vault          read local peers.env files into vault/tokens.json
+  verify                semantic compare: rendered config vs live files
+  render [--write] [--agent NAME]
+                        reconcile local peers.env files with roster+vault
+  onboard NAME [--with-remotes] [--write]
+                        mint missing pairs for a roster agent
+  bundle HOST [--for AGENT] [--dry-run] [--out FILE]
+                        emit import bundle for a remote host
+  import BUNDLE         install a received bundle into local peers.env files
+  rotate A B [--write]  mint a fresh token for one pair
+  retire NAME [--write] comment out a departed agent from local peers.env
+
+Tokens are NEVER printed to stdout by this tool. Bundles and the vault
+are 600-perm files; both are gitignored. Write operations back up every
+peers.env (timestamped .bak) before touching it.
+"""
+import argparse
+import datetime
+from types import SimpleNamespace
+import glob
+import json
+import os
+import re
+import secrets
+import shutil
+import subprocess
+import sys
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+ROSTER = os.environ.get("FLEET_ROSTER", os.path.join(BASE, "roster.json"))
+VAULT_DIR = os.environ.get("FLEET_VAULT_DIR", os.path.join(BASE, "vault"))
+VAULT = os.path.join(VAULT_DIR, "tokens.json")
+HOST_FILE = os.path.join(BASE, "HOST")
+HOST_OVERRIDE = os.environ.get("FLEET_HOST")
+BUNDLE_DIR = os.path.join(BASE, "bundles")
+
+
+def ts():
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def load_roster():
+    with open(ROSTER) as fh:
+        return json.load(fh)
+
+
+def my_host():
+    if HOST_OVERRIDE:
+        return HOST_OVERRIDE
+    if os.path.isfile(HOST_FILE):
+        return open(HOST_FILE).read().strip()
+    return "gale"
+
+
+def fail(msg):
+    print(f"fleet-provision: error: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def svc_name(agent):
+    return "gale-peer" if agent == "Gale" else f"{agent.lower()}-peer"
+
+
+def agent_dir(agent_rec, root=None):
+    d = agent_rec.get("dir")
+    if not d:
+        fail(f"roster agent {agent_rec['name']} has no dir (set it on its host's copy)")
+    if root:
+        d = root + d
+    return d
+
+
+def peers_path(agent_rec, root=None):
+    return os.path.join(agent_dir(agent_rec, root), "keys", "peers.env")
+
+
+def pair_key(a, b):
+    return "|".join(sorted([a, b]))
+
+
+# ---------- peers.env parsing / rendering ----------
+
+def parse_peers_env(path):
+    """Return (self_name, self_bind, entries, lines).
+    entries: NAME -> (addr, token). lines: raw file lines for round-trip."""
+    if not os.path.isfile(path):
+        fail(f"missing {path}")
+    with open(path) as fh:
+        lines = fh.read().splitlines(keepends=True)
+    self_name = self_bind = None
+    entries = {}
+    cur = {}
+    for ln in lines:
+        s = ln.strip()
+        if s.startswith("SELF_NAME="):
+            self_name = s.split("=", 1)[1].strip()
+        elif s.startswith("SELF_BIND="):
+            self_bind = s.split("=", 1)[1].strip()
+        elif s.startswith("NAME="):
+            cur = {"NAME": s.split("=", 1)[1].strip()}
+        elif s.startswith("ADDR=") and cur and "ADDR" not in cur:
+            cur["ADDR"] = s.split("=", 1)[1].strip()
+        elif s.startswith("TOKEN=") and cur and "TOKEN" not in cur:
+            cur["TOKEN"] = s.split("=", 1)[1].strip()
+            entries[cur["NAME"]] = (cur["ADDR"], cur["TOKEN"])
+            cur = {}
+    return self_name, self_bind, entries, lines
+
+
+def render_content(agent_name, bind, existing_lines, desired):
+    """Reconcile peers.env content. desired: NAME -> (addr, token).
+    Byte-stable for entries that already match; canonical blocks for
+    new/changed; retired entries commented out with a marker."""
+    out = []
+    seen = set()
+    pending = []  # comment/blank lines since the last block or setting
+    PROV = re.compile(r"^# (.* (managed|re-rendered) by fleet-provision|retired by fleet-provision)")
+    i = 0
+    n = len(existing_lines)
+    while i < n:
+        ln = existing_lines[i]
+        s = ln.strip()
+        if s.startswith("NAME="):
+            name = s.split("=", 1)[1].strip()
+            # collect contiguous block (NAME/ADDR/TOKEN lines only)
+            j = i
+            addrs = toks = None
+            while j < n and existing_lines[j].strip().split("=")[0] in ("NAME", "ADDR", "TOKEN"):
+                k, v = existing_lines[j].strip().split("=", 1)
+                if k == "ADDR":
+                    addrs = v.strip()
+                elif k == "TOKEN":
+                    toks = v.strip()
+                j += 1
+            seen.add(name)
+            if name in desired and desired[name] == (addrs, toks):
+                out.extend(pending)
+                out.extend(existing_lines[i:j])  # byte-stable
+            elif name in desired:
+                # replaced: drop our own stale provenance comments, keep the rest
+                out.extend([pl for pl in pending if not PROV.match(pl.strip())])
+                daddr, dtok = desired[name]
+                out.append(f"# {name} pairing -- re-rendered by fleet-provision {ts()} (was stale).\n")
+                out.append(f"NAME={name}\nADDR={daddr}\nTOKEN={dtok}\n")
+            else:
+                out.extend([pl for pl in pending if not PROV.match(pl.strip())])
+                out.append(f"# retired by fleet-provision {ts()} (peer left the roster):\n")
+                for bl in existing_lines[i:j]:
+                    if bl.strip().startswith("TOKEN="):
+                        out.append("# TOKEN=<retired>\n")
+                    else:
+                        out.append("# " + bl if not bl.startswith("#") else bl)
+            pending = []
+            i = j
+        elif not s or s.startswith("#"):
+            pending.append(ln)
+            i += 1
+        else:
+            out.extend(pending)
+            pending = []
+            out.append(ln)
+            i += 1
+    out.extend(pending)
+    for name in sorted(desired):
+        if name not in seen:
+            daddr, dtok = desired[name]
+            if out and not out[-1].endswith("\n"):
+                out[-1] += "\n"
+            if out and out[-1].strip():
+                out.append("\n")
+            out.append(f"# {name} pairing -- managed by fleet-provision {ts()}.\n")
+            out.append(f"NAME={name}\nADDR={daddr}\nTOKEN={dtok}\n")
+    return out
+
+
+# ---------- vault ----------
+
+def load_vault():
+    if not os.path.isfile(VAULT):
+        return {"version": 1, "pairs": {}}
+    st = os.stat(VAULT)
+    if st.st_mode & 0o077:
+        fail(f"vault {VAULT} is too permissive (must be 600)")
+    with open(VAULT) as fh:
+        return json.load(fh)
+
+
+def save_vault(vault):
+    os.makedirs(VAULT_DIR, mode=0o700, exist_ok=True)
+    tmp = VAULT + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(vault, fh, indent=2)
+        fh.write("\n")
+    os.chmod(tmp, 0o600)
+    os.replace(tmp, VAULT)
+
+
+# ---------- service helpers ----------
+
+def sh(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+
+
+def restart_service(agent_rec, bind, root=None):
+    """Restart the listener (systemctl in prod, scoped scratch restart in
+    test mode). Returns (ok, msg). No traffic sent."""
+    svc = svc_name(agent_rec["name"])
+    if root:
+        # test mode: scoped restart of a scratch server only (never prod).
+        # Refuses unless the agent dir is under /tmp and the listener
+        # process command line contains that exact dir.
+        import time
+        d = agent_dir(agent_rec, root)
+        if not d.startswith("/tmp/"):
+            print(f"  [test-root: skip restart of {svc}]")
+        else:
+            # scoped restart: only processes whose command line mentions
+            # BOTH this exact agent dir and peer_server, or whose cwd IS
+            # the agent dir while running peer_server (covers servers
+            # launched with a relative path). Never prod paths: refuse
+            # unless the agent dir is under /tmp/.
+            import signal
+            me = os.getpid()
+            port = bind.rsplit(":", 1)[1]
+
+            def listeners():
+                try:
+                    r = sh(["ss", "-tlnp"])
+                except Exception:
+                    return set()
+                pids = set()
+                for ln in r.stdout.splitlines():
+                    if f":{port} " in ln or f":{port}\t" in ln:
+                        for m in re.finditer(r"pid=(\d+)", ln):
+                            pids.add(m.group(1))
+                return pids
+
+            def in_scope(pid):
+                if pid == str(me):
+                    return False
+                try:
+                    with open(f"/proc/{pid}/cmdline", "rb") as fh:
+                        cl = fh.read().decode("utf-8", "replace")
+                    cwd = os.readlink(f"/proc/{pid}/cwd")
+                except Exception:
+                    return False
+                return "peer_server" in cl and (d in cl or cwd == d.rstrip("/"))
+
+            old_pids = listeners()
+            killed = []
+            for pid in filter(str.isdigit, os.listdir("/proc")):
+                if in_scope(pid):
+                    try:
+                        os.kill(int(pid), signal.SIGTERM)
+                        killed.append(pid)
+                    except Exception:
+                        pass
+            time.sleep(1)
+            subprocess.Popen([sys.executable, os.path.join(d, "peer_server.py")],
+                             cwd=d, stdout=subprocess.DEVNULL,
+                             stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL,
+                             start_new_session=True)
+            # prove the REPLACEMENT bound: a listener pid that is not one
+            # of the pre-restart pids (catches stale servers squatting).
+            new_pid = None
+            for _ in range(40):
+                now = listeners() - set(old_pids)
+                # also accept: old pids all gone and something listens
+                if now or not (listeners() & set(old_pids)):
+                    now = listeners()
+                    if now:
+                        new_pid = sorted(now)[0]
+                        break
+                time.sleep(0.5)
+            if not new_pid:
+                return False, (f"no fresh listener on {bind} after restart "
+                               f"(killed {killed}; port still held?)")
+            for _ in range(30):
+                try:
+                    import urllib.request
+                    with urllib.request.urlopen(f"http://{bind}/health", timeout=2):
+                        break
+                except Exception:
+                    time.sleep(0.5)
+            else:
+                return False, f"scratch listener on {bind} did not come up"
+    else:
+        r = sh(["sudo", "systemctl", "restart", svc])
+        if r.returncode != 0:
+            return False, f"restart {svc} failed: {r.stderr.strip()[:200]}"
+        import time
+        time.sleep(2)
+        r = sh(["systemctl", "is-active", "--quiet", svc])
+        if r.returncode != 0:
+            return False, f"{svc} not active after restart"
+    return True, "restarted"
+
+
+def restart_and_selftest(agent_rec, bind, peer_name, token, root=None):
+    """Restart listener, POST right/wrong token, expect 200/401, clean up."""
+    ok, msg = restart_service(agent_rec, bind, root)
+    if not ok:
+        return False, msg
+    import urllib.request
+    import urllib.error
+
+    def post(tok):
+        req = urllib.request.Request(
+            f"http://{bind}/inbox",
+            data=b'{"subject":"selftest","body":"fleet-provision self-test; safe to delete"}',
+            headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json"},
+            method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                return resp.status
+        except urllib.error.HTTPError as e:
+            return e.code
+        except Exception:
+            return -1
+
+    code, bad = post(token), post("0000")
+    # clean up the self-test message
+    d = agent_dir(agent_rec, root)
+    cands = sorted(glob.glob(os.path.join(d, "peer", "inbox", f"*-{peer_name}-*.json")),
+                   key=os.path.getmtime, reverse=True)
+    if cands:
+        try:
+            with open(cands[0]) as fh:
+                frm = json.load(fh).get("from")
+            if frm == peer_name:
+                os.remove(cands[0])
+            else:
+                return False, f"newest inbox file records sender {frm}, want {peer_name}"
+        except Exception as e:
+            return False, f"inbox cleanup failed: {e}"
+    if code == 200 and bad == 401:
+        return True, "200/401 ok"
+    return False, f"got {code}/401-want-{bad} (want 200/401)"
+
+
+# ---------- roster helpers ----------
+
+def agents_by_name(roster):
+    return {a["name"]: a for a in roster["agents"]}
+
+
+def desired_entries(agent_rec, roster, vault, root=None):
+    """NAME -> (addr, token) for every roster peer with a vault token."""
+    me = agent_rec["name"]
+    want = {}
+    for other in roster["agents"]:
+        if other["name"] == me:
+            continue
+        key = pair_key(me, other["name"])
+        rec = vault["pairs"].get(key)
+        if rec:
+            want[other["name"].upper()] = (f"{other['addr']}:{other['port']}", rec["token"])
+    return want
+
+
+# ---------- subcommands ----------
+
+def cmd_import_vault(_args, root=None):
+    roster = load_roster()
+    host = my_host()
+    vault = load_vault()
+    added, matched, conflicts = 0, 0, []
+    for rec in roster["agents"]:
+        if rec["host"] != host:
+            continue
+        path = peers_path(rec, root)
+        if not os.path.isfile(path):
+            print(f"  skip {rec['name']}: no {path}")
+            continue
+        self_name, _bind, entries, _lines = parse_peers_env(path)
+        if self_name != rec["name"].upper():
+            fail(f"{path}: SELF_NAME={self_name}, roster says {rec['name'].upper()}")
+        for peer, (_addr, tok) in entries.items():
+            key = pair_key(rec["name"], peer.title())
+            if key in vault["pairs"]:
+                if vault["pairs"][key]["token"] != tok:
+                    conflicts.append(key)
+                else:
+                    matched += 1
+            else:
+                vault["pairs"][key] = {"token": tok, "minted": ts(), "by": "import"}
+                added += 1
+    if conflicts:
+        print("CONFLICTS (vault kept, live files untouched):")
+        for c in conflicts:
+            print(f"  {c}")
+        fail(f"{len(conflicts)} token conflicts need operator eyes")
+    save_vault(vault)
+    print(f"import-vault: +{added} new pairs, {matched} already known, "
+          f"{len(vault['pairs'])} total in vault. Live files untouched.")
+
+
+def cmd_verify(_args, root=None):
+    roster = load_roster()
+    host = my_host()
+    vault = load_vault()
+    drift = 0
+    for rec in roster["agents"]:
+        if rec["host"] != host:
+            continue
+        path = peers_path(rec, root)
+        if not os.path.isfile(path):
+            print(f"  {rec['name']}: MISSING {path}")
+            drift += 1
+            continue
+        _sn, _sb, live, _ln = parse_peers_env(path)
+        want = desired_entries(rec, roster, vault, root)
+        if live == want:
+            print(f"  {rec['name']}: OK ({len(live)} pairs)")
+        else:
+            drift += 1
+            only_live = sorted(set(live) - set(want))
+            only_want = sorted(set(want) - set(live))
+            changed = sorted(n for n in set(live) & set(want) if live[n] != want[n])
+            print(f"  {rec['name']}: DRIFT live-only={only_live} want-only={only_want} changed={changed}")
+    if drift:
+        fail(f"{drift} agent(s) drifted from roster+vault")
+    print("verify: all local configs match roster+vault (values never printed).")
+
+
+def cmd_render(args, root=None):
+    roster = load_roster()
+    byname = agents_by_name(roster)
+    host = my_host()
+    vault = load_vault()
+    targets = [args.agent] if args.agent else [a["name"] for a in roster["agents"] if a["host"] == host]
+    changed = []
+    for name in targets:
+        rec = byname.get(name)
+        if not rec or rec["host"] != host:
+            fail(f"{name} is not a roster agent on host {host}")
+        path = peers_path(rec, root)
+        _sn, bind, _live, lines = parse_peers_env(path)
+        want = desired_entries(rec, roster, vault, root)
+        new_lines = render_content(rec["name"].upper(), bind, lines, want)
+        old = "".join(lines)
+        new = "".join(new_lines)
+        if old == new:
+            print(f"  {name}: no change")
+            continue
+        print(f"  {name}: would change ({len(new.splitlines())} lines; tokens redacted from diff)")
+        if args.write:
+            bak = f"{path}.bak-provision-{ts()}"
+            shutil.copy2(path, bak)
+            os.chmod(bak, 0o600)
+            with open(path, "w") as fh:
+                fh.write(new)
+            os.chmod(path, 0o600)
+            print(f"    wrote {path} (backup {bak})")
+            changed.append((rec, bind))
+    # restart once per changed agent, then self-test all its entries
+    for rec, bind in changed:
+        _sn2, _sb2, live2, _ln2 = parse_peers_env(peers_path(rec, root))
+        for peer, (_addr, tok) in sorted(live2.items()):
+            ok, msg = restart_and_selftest(rec, bind, peer, tok, root)
+            print(f"    self-test {rec['name']}/{peer}: {'PASS' if ok else 'FAIL ' + msg}")
+            if not ok:
+                fail(f"self-test failed; restore from {peers_path(rec, root)}.bak-provision-*")
+    if not args.write:
+        print("render: dry-run only. Re-run with --write to apply (needs rule-8b scope).")
+
+
+def cmd_onboard(args, root=None):
+    roster = load_roster()
+    byname = agents_by_name(roster)
+    host = my_host()
+    me = args.name
+    rec = byname.get(me)
+    if not rec:
+        fail(f"{me} not in roster (add it to roster.json first, committed by operator)")
+    if rec["host"] != host:
+        fail(f"{me} lives on host {rec['host']}, this provisioner is host {host}")
+    vault = load_vault()
+    missing_local, missing_remote, present = [], [], []
+    for other in roster["agents"]:
+        if other["name"] == me:
+            continue
+        key = pair_key(me, other["name"])
+        if key in vault["pairs"]:
+            present.append(other["name"])
+            continue
+        (missing_local if other["host"] == host else missing_remote).append(other["name"])
+    remote_plan = missing_remote if args.with_remotes else []
+    print(f"onboard {me}: {len(present)} pairs exist, "
+          f"{len(missing_local)} local + {len(remote_plan)} remote to mint"
+          f"{f' ({len(missing_remote)} remote still staged)' if missing_remote and not args.with_remotes else ''}.")
+    if not args.write:
+        if missing_local:
+            print("  would mint local:", ", ".join(sorted(missing_local)))
+        if remote_plan:
+            print("  would mint remote:", ", ".join(sorted(remote_plan)))
+        print("onboard: dry-run only. Re-run with --write (needs rule-8b scope).")
+        return
+    for other in sorted(missing_local + remote_plan):
+        key = pair_key(me, other)
+        vault["pairs"][key] = {"token": secrets.token_hex(32), "minted": ts(),
+                               "by": f"onboard-{me}"}
+    save_vault(vault)
+    # render only the agents this onboarding touched (me + local peers)
+    touched = [me] + sorted(o for o in missing_local if byname[o]["host"] == host)
+    for name in touched:
+        cmd_render(SimpleNamespace(write=True, agent=name), root)
+    print(f"onboard {me}: minted {len(missing_local) + len(remote_plan)} pairs into vault; "
+          f"local configs rendered. Remote bundles: run `bundle` per host.")
+
+
+def cmd_bundle(args, root=None):
+    roster = load_roster()
+    host = my_host()
+    vault = load_vault()
+    target = args.host
+    names = args.for_ or []
+    lines = [f"# fleet-provision bundle: pairs with host {target}, generated {ts()} by host {host}.",
+             "# Install with: fleet-provision import <this-file>  (600 perms, shred after use)", ""]
+    count = 0
+    for key in sorted(vault["pairs"]):
+        a, b = key.split("|")
+        byname = agents_by_name(roster)
+        ra, rb = byname.get(a), byname.get(b)
+        if not ra or not rb:
+            continue
+        # exactly one side on the target host, other side on my host
+        if (ra["host"] == target) == (rb["host"] == target):
+            continue
+        mine, theirs = (rb, ra) if ra["host"] == target else (ra, rb)
+        if mine["host"] != host:
+            continue
+        if names and theirs["name"] not in names and mine["name"] not in names:
+            continue
+        tok = vault["pairs"][key]["token"]
+        lines += [f"AGENT={theirs['name']}", f"NAME={mine['name'].upper()}",
+                  f"ADDR={mine['addr']}:{mine['port']}", f"TOKEN={tok}", ""]
+        count += 1
+    if args.dry_run:
+        print(f"bundle {target}: {count} pairs would be exported (no file written).")
+        return
+    if count == 0:
+        fail(f"no vault pairs touch host {target}")
+    os.makedirs(BUNDLE_DIR, mode=0o700, exist_ok=True)
+    out = args.out or os.path.join(BUNDLE_DIR, f"{target}-{ts()}.env")
+    with open(out, "w") as fh:
+        fh.write("\n".join(lines))
+    os.chmod(out, 0o600)
+    print(f"bundle {target}: {count} pairs -> {out} (600). Send securely; shred after import.")
+
+
+def cmd_import(args, root=None):
+    roster = load_roster()
+    byname = agents_by_name(roster)
+    host = my_host()
+    vault = load_vault()
+    if not os.path.isfile(args.bundle):
+        fail(f"no such bundle: {args.bundle}")
+    with open(args.bundle) as fh:
+        raw = fh.read().splitlines()
+    blocks, cur = [], {}
+    for ln in raw:
+        s = ln.strip()
+        if not s or s.startswith("#"):
+            continue
+        k, v = s.split("=", 1)
+        cur[k.strip()] = v.strip()
+        if k.strip() == "TOKEN":
+            blocks.append(cur)
+            cur = {}
+    if cur:
+        fail("bundle ends mid-block")
+    # group by receiving agent
+    from collections import defaultdict
+    by_agent = defaultdict(list)
+    for b in blocks:
+        if set(b) != {"AGENT", "NAME", "ADDR", "TOKEN"}:
+            fail(f"malformed block (keys {sorted(b)})")
+        if b["AGENT"] not in byname or byname[b["AGENT"]]["host"] != host:
+            fail(f"bundle targets {b['AGENT']}, not ours to install")
+        by_agent[b["AGENT"]].append(b)
+    for agent, blist in sorted(by_agent.items()):
+        rec = byname[agent]
+        path = peers_path(rec, root)
+        _sn, bind, _live, lines = parse_peers_env(path)
+        # fold bundle entries into desired map
+        _sn2, _sb2, live2, _ln2 = parse_peers_env(path)
+        for b in blist:
+            live2[b["NAME"]] = (b["ADDR"], b["TOKEN"])
+            key = pair_key(agent, b["NAME"].title())
+            if key not in vault["pairs"]:
+                vault["pairs"][key] = {"token": b["TOKEN"], "minted": ts(), "by": "import-bundle"}
+            elif vault["pairs"][key]["token"] != b["TOKEN"]:
+                fail(f"bundle token for {key} conflicts with vault; refusing (operator eyes needed)")
+        new_lines = render_content(agent.upper(), bind, lines, live2)
+        bak = f"{path}.bak-import-{ts()}"
+        shutil.copy2(path, bak)
+        os.chmod(bak, 0o600)
+        with open(path, "w") as fh:
+            fh.write("".join(new_lines))
+        os.chmod(path, 0o600)
+        for b in blist:
+            ok, msg = restart_and_selftest(rec, bind, b["NAME"], b["TOKEN"], root)
+            print(f"  {agent}/{b['NAME']}: {'PASS' if ok else 'FAIL ' + msg}")
+            if not ok:
+                fail(f"self-test failed; backup at {bak}")
+    save_vault(vault)
+    print(f"import: {len(blocks)} entries installed across {len(by_agent)} agents. "
+          f"Shred the bundle now: shred -u {args.bundle}")
+
+
+def cmd_rotate(args, root=None):
+    roster = load_roster()
+    byname = agents_by_name(roster)
+    a, b = args.a, args.b
+    if a not in byname or b not in byname:
+        fail("both agents must be in the roster")
+    vault = load_vault()
+    key = pair_key(a, b)
+    if not args.write:
+        print(f"rotate {a}/{b}: would mint a fresh token ({'local' if byname[b]['host'] == my_host() else 'remote'} pair). "
+              f"Re-run with --write (needs rule-8b scope).")
+        return
+    vault["pairs"][key] = {"token": secrets.token_hex(32), "minted": ts(), "by": f"rotate-{a}-{b}"}
+    save_vault(vault)
+    # update whichever side is local
+    for name in (a, b):
+        if byname[name]["host"] == my_host():
+            cmd_render(SimpleNamespace(write=True, agent=name), root)
+    other_host = [byname[x]["host"] for x in (a, b) if byname[x]["host"] != my_host()]
+    if other_host:
+        print(f"rotate {a}/{b}: local side rendered. Remote side needs: bundle {other_host[0]} --for {a if byname[a]['host'] != my_host() else b}")
+    print("note: rotation replaces the token outright; in-flight messages may 401 (same caveat as rotate_peer.sh).")
+
+
+def cmd_retire(args, root=None):
+    roster = load_roster()
+    byname = agents_by_name(roster)
+    host = my_host()
+    dead = args.name
+    if not args.write:
+        affected = [a["name"] for a in roster["agents"] if a["host"] == host and a["name"] != dead]
+        print(f"retire {dead}: would comment out its entries in {len(affected)} local peers.env files. "
+              f"Re-run with --write, then commit the roster.json removal separately.")
+        return
+    class _W:
+        write = True
+        agent = None
+    # render() comments out entries missing from desired; desired comes from
+    # vault, so drop vault pairs touching the retired agent first
+    vault = load_vault()
+    drop = [k for k in vault["pairs"] if dead in k.split("|")]
+    for k in drop:
+        del vault["pairs"][k]
+    save_vault(vault)
+    # render comments out the retired entries and restarts every changed
+    # agent (with self-tests on the remaining entries), so removals take
+    # effect immediately
+    cmd_render(SimpleNamespace(write=True, agent=None), root)
+    print(f"retire {dead}: {len(drop)} pairs removed from local configs. "
+          f"Now remove {dead} from roster.json (operator commit) and tell its peers.")
+
+
+def main():
+    ap = argparse.ArgumentParser(prog="fleet-provision",
+                                 description="Roster-driven key management for the fleet mesh.")
+    ap.add_argument("--root", default=None,
+                    help="prefix for agent dirs (tests only; default: live paths)")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("import-vault", help="read local peers.env files into the vault (read-only)")
+    sub.add_parser("verify", help="semantic compare rendered vs live configs (read-only)")
+    r = sub.add_parser("render", help="reconcile local peers.env with roster+vault")
+    r.add_argument("--write", action="store_true")
+    r.add_argument("--agent", default=None)
+    o = sub.add_parser("onboard", help="mint missing pairs for a roster agent")
+    o.add_argument("name")
+    o.add_argument("--with-remotes", action="store_true")
+    o.add_argument("--write", action="store_true")
+    b = sub.add_parser("bundle", help="emit import bundle for a remote host")
+    b.add_argument("host")
+    b.add_argument("--for", dest="for_", action="append", default=[])
+    b.add_argument("--dry-run", action="store_true")
+    b.add_argument("--out", default=None)
+    i = sub.add_parser("import", help="install a received bundle")
+    i.add_argument("bundle")
+    rt = sub.add_parser("rotate", help="fresh token for one pair")
+    rt.add_argument("a")
+    rt.add_argument("b")
+    rt.add_argument("--write", action="store_true")
+    re_ = sub.add_parser("retire", help="remove an agent from local configs")
+    re_.add_argument("name")
+    re_.add_argument("--write", action="store_true")
+    args = ap.parse_args()
+    root = args.root
+    if args.cmd == "import-vault":
+        cmd_import_vault(args, root)
+    elif args.cmd == "verify":
+        cmd_verify(args, root)
+    elif args.cmd == "render":
+        cmd_render(args, root)
+    elif args.cmd == "onboard":
+        cmd_onboard(args, root)
+    elif args.cmd == "bundle":
+        cmd_bundle(args, root)
+    elif args.cmd == "import":
+        cmd_import(args, root)
+    elif args.cmd == "rotate":
+        cmd_rotate(args, root)
+    elif args.cmd == "retire":
+        cmd_retire(args, root)
+
+
+if __name__ == "__main__":
+    main()

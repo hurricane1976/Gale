@@ -163,6 +163,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .pulse-line, .chan-tailscale, .chan-agora, .chan-mountain, .chan-relay, .chan-live {
   stroke-dasharray: 5 7; animation: 10s linear infinite dash-pulse; }
 .chan-live { stroke: var(--fleet-chan-live); stroke-width: 2.4px; opacity: 0.95; }
+.chan-pending { stroke: var(--fleet-chan-pending); stroke-width: 1.6px; opacity: 0.85; }
 .chan-cfg { stroke: var(--fleet-chan-cfg); stroke-width: 1.1; stroke-dasharray: 4 6; opacity: 0.35; }
 .tide-current-wash { mix-blend-mode: screen; animation: 5s linear infinite tide-current-flow; }
 .tide-current-stop-a { animation: 10s ease-in-out infinite tide-current-cycle; }

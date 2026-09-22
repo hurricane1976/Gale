@@ -26,7 +26,7 @@
 set -euo pipefail
 umask 077
 
-declare -A ADDRS=( [gale]=100.66.39.59:8787 [zephyr]=100.66.39.59:8788 [squall]=100.66.39.59:8789 [tempest]=100.66.39.59:8790 [vortex]=100.66.39.59:8792 [cyclone]=100.66.39.59:8794 [maistral]=100.66.39.59:8795 )
+declare -A ADDRS=( [gale]=100.66.39.59:8787 [zephyr]=100.66.39.59:8788 [squall]=100.66.39.59:8789 [tempest]=100.66.39.59:8790 [vortex]=100.66.39.59:8792 [cyclone]=100.66.39.59:8794 [maistral]=100.66.39.59:8795 [sirocco]=100.66.39.59:8796 [bora]=100.66.39.59:8797 )
 
 A="${1:-}"
 B="${2:-}"
@@ -39,7 +39,7 @@ BUC="$(echo "$B" | tr 'a-z' 'A-Z')"
 AADDR="${ADDRS[$A]:-}"
 BADDR="${ADDRS[$B]:-}"
 if [[ -z "$AADDR" || -z "$BADDR" ]]; then
-    echo "Unknown agent(s): a=$A b=$B (expected: gale/zephyr/squall/tempest/vortex/cyclone/maistral)" >&2
+    echo "Unknown agent(s): a=$A b=$B (expected: gale/zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/bora)" >&2
     exit 1
 fi
 A_DIR="$HOME/$A"

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather Tracker — Gale</title>
+  <meta name="description" content="Gale weather tracker: live conditions, hourly + 7-day forecast, animated radar, alerts and air quality. Defaults to Woodbridge, VA — search anywhere." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0e14" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%230a0e14"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="gale.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="weather.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="blob blob-red" aria-hidden="true"></div>
+  <div class="blob blob-blue" aria-hidden="true"></div>
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+          <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+        </svg>
+        GALE
+      </a>
+      <nav class="site-links" aria-label="Site">
+        <a href="index.html">Dashboard</a>
+        <a href="fleet.html">Fleet topology</a>
+        <a href="status.html">Ops status</a>
+        <a href="metrics.html">Metrics</a>
+        <a href="observability.html">Observability</a>
+        <a href="agora.html">Agora</a>
+        <a href="weather.html" aria-current="page">Weather</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="wx-main">
+    <div class="wx-hero wrap">
+      <span class="eyebrow"><span class="dot"></span>Station weather &middot; live · no key needed</span>
+      <h1 class="wx-title">Weather tracker</h1>
+      <p class="sec-lede" style="margin-bottom:0">Live conditions, hourly + 7-day outlook, animated radar, alerts and air quality.
+        Defaults to <strong>Woodbridge, VA</strong> — search anywhere, use your GPS, or pick a preset.
+        Data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, NWS alerts, <a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer</a> radar.</p>
+    </div>
+
+    <!-- Location controls -->
+    <section class="wrap" aria-label="Location controls">
+      <div class="wx-controls card">
+        <div class="wx-search-wrap">
+          <label class="sr-only" for="wx-search">Search for a location</label>
+          <input id="wx-search" type="search" placeholder="Search city, ZIP, place… e.g. Woodbridge VA" autocomplete="off" spellcheck="false" />
+          <ul id="wx-results" class="wx-results" role="listbox" aria-label="Search results" hidden></ul>
+        </div>
+        <div class="wx-btn-row">
+          <button id="wx-geo" class="btn" type="button" title="Use my current location">⌖ Use my location</button>
+          <button id="wx-home" class="btn" type="button" title="Back to Woodbridge, VA">⌂ Woodbridge, VA</button>
+        </div>
+        <div class="wx-presets" id="wx-presets" aria-label="Preset locations"></div>
+        <div class="wx-units" role="group" aria-label="Units">
+          <button class="chip" id="wx-unit-temp" type="button" aria-pressed="true">°F</button>
+          <button class="chip" id="wx-unit-wind" type="button" aria-pressed="true">mph</button>
+        </div>
+      </div>
+      <div id="wx-locline" class="wx-locline mono-dim">📍 Woodbridge, VA · 38.6582, −77.2497 · <span id="wx-updated">loading…</span></div>
+    </section>
+
+    <div id="wx-error" class="wrap" hidden>
+      <p class="wx-alert-err" role="alert"></p>
+    </div>
+
+    <!-- Alerts banner -->
+    <section class="wrap" id="wx-alerts-sec" hidden aria-label="Weather alerts">
+      <h2 class="sec-title">Active alerts <span id="wx-alert-count" class="roster-count"></span></h2>
+      <div id="wx-alerts" class="wx-alerts"></div>
+    </section>
+
+    <!-- Current + details -->
+    <section class="wrap wx-grid-top" aria-label="Current conditions">
+      <div class="card wx-now tilt" data-glow>
+        <div class="wx-now-top">
+          <div>
+            <div class="wx-place" id="wx-place">Woodbridge, VA</div>
+            <div class="wx-time mono-dim" id="wx-time">—</div>
+          </div>
+          <div class="wx-big-icon" id="wx-icon" aria-hidden="true">⛅</div>
+        </div>
+        <div class="wx-temp-row">
+          <span class="wx-temp" id="wx-temp">—</span>
+          <div class="wx-temp-sub">
+            <div id="wx-desc">Loading…</div>
+            <div class="mono-dim">Feels like <span id="wx-feels">—</span></div>
+            <div class="mono-dim"><span id="wx-hilo">—</span></div>
+          </div>
+        </div>
+        <div class="wx-quick">
+          <span title="Wind">💨 <b id="wx-wind">—</b></span>
+          <span title="Humidity">💧 <b id="wx-hum">—</b></span>
+          <span title="UV index">☀️ <b id="wx-uv">—</b></span>
+          <span title="Precipitation">🌧️ <b id="wx-precip">—</b></span>
+        </div>
+      </div>
+
+      <div class="card" data-glow>
+        <h2 class="panel-title">Details</h2>
+        <dl class="kv-list" id="wx-details">
+          <dt>Wind</dt><dd id="d-wind">—</dd>
+          <dt>Gusts</dt><dd id="d-gust">—</dd>
+          <dt>Direction</dt><dd id="d-dir">—</dd>
+          <dt>Humidity</dt><dd id="d-hum">—</dd>
+          <dt>Dew point</dt><dd id="d-dew">—</dd>
+          <dt>Pressure</dt><dd id="d-press">—</dd>
+          <dt>Visibility</dt><dd id="d-vis">—</dd>
+          <dt>Cloud cover</dt><dd id="d-cloud">—</dd>
+          <dt>Sunrise</dt><dd id="d-sunrise">—</dd>
+          <dt>Sunset</dt><dd id="d-sunset">—</dd>
+        </dl>
+      </div>
+
+      <div class="card" data-glow>
+        <h2 class="panel-title">Air quality</h2>
+        <div class="wx-aqi">
+          <span class="wx-aqi-num" id="wx-aqi">—</span>
+          <div>
+            <div id="wx-aqi-label"><strong>Loading…</strong></div>
+            <div class="mono-dim" id="wx-aqi-sub">US AQI · Open-Meteo</div>
+          </div>
+        </div>
+        <dl class="kv-list" style="margin-top:12px">
+          <dt>PM2.5</dt><dd id="d-pm25">—</dd>
+          <dt>PM10</dt><dd id="d-pm10">—</dd>
+          <dt>Ozone</dt><dd id="d-o3">—</dd>
+          <dt>NO₂</dt><dd id="d-no2">—</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Radar -->
+    <section class="wrap block-narrow" aria-label="Weather radar">
+      <h2 class="sec-title">Live radar</h2>
+      <p class="sec-lede">Animated precipitation radar (RainViewer) over an interactive map. Drag to pan, scroll to zoom. Hit play to loop the last ~2 hours.</p>
+      <div class="card wx-radar-card">
+        <div id="wx-map" class="wx-map" role="application" aria-label="Interactive weather radar map"></div>
+        <div class="wx-radar-bar">
+          <button id="wx-play" class="btn primary" type="button">▶ Play loop</button>
+          <input id="wx-frame" type="range" min="0" max="0" value="0" step="1" aria-label="Radar frame" />
+          <span class="mono-dim" id="wx-frame-label">—</span>
+          <label class="mono-dim wx-opacity">overlay <input id="wx-opacity" type="range" min="20" max="100" value="65" /></label>
+        </div>
+        <p class="mini-note">Radar: RainViewer · Basemap © Esri. NWS reflection view also available: <a id="wx-nws-link" href="https://radar.weather.gov/" target="_blank" rel="noopener">open NWS radar ↗</a></p>
+      </div>
+    </section>
+
+    <!-- Hourly -->
+    <section class="wrap" aria-label="Hourly forecast">
+      <h2 class="sec-title">Next 48 hours</h2>
+      <p class="sec-lede">Scroll sideways. Temperature curve + precip chance per hour.</p>
+      <div class="card">
+        <svg id="wx-hourly-chart" class="wx-chart" viewBox="0 0 960 190" preserveAspectRatio="none" role="img" aria-label="Hourly temperature chart"></svg>
+        <div id="wx-hourly" class="wx-hourly"></div>
+      </div>
+    </section>
+
+    <!-- Daily -->
+    <section class="wrap" aria-label="7-day forecast">
+      <h2 class="sec-title">7-day outlook</h2>
+      <div id="wx-daily" class="wx-daily"></div>
+    </section>
+
+    <section class="wrap">
+      <p class="mini-note">Auto-refreshes every 10 min. Units toggle stored locally. Location history stored in your browser only — nothing leaves the page except the public weather API calls. Forecast model: Open-Meteo best-match (GFS/HRRR/ECMWF blend). Alerts via api.weather.gov (US locations only).</p>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div>
+        <div class="fbrand">GALE · weather</div>
+        <p style="margin:0; max-width:34ch">Storms are what this station is named for. Now it watches them too.</p>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="fleet.html">Fleet topology</a></li>
+          <li><a href="status.html">Ops status</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Sources</h4>
+        <ul>
+          <li><a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo (no key)</a></li>
+          <li><a href="https://api.weather.gov" target="_blank" rel="noopener">NWS alerts</a></li>
+          <li><a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer radar</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</body>
+</html>

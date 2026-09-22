@@ -7,14 +7,18 @@
       "/home/agent/agent/keys/**": "deny",
       "/home/agent/zephyr/keys/**": "deny",
       "/home/agent/squall/keys/**": "deny",
-      "/home/agent/tempest/keys/**": "deny"
+      "/home/agent/tempest/keys/**": "deny",
+      "/home/agent/sirocco/keys/**": "deny",
+      "/home/agent/bora/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
       "/home/agent/agent/keys/*": "deny",
       "/home/agent/zephyr/keys/*": "deny",
       "/home/agent/squall/keys/*": "deny",
-      "/home/agent/tempest/keys/*": "deny"
+      "/home/agent/tempest/keys/*": "deny",
+      "/home/agent/sirocco/keys/*": "deny",
+      "/home/agent/bora/keys/*": "deny"
     }
   }
 }

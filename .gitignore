@@ -11,3 +11,5 @@ peer/inbox/*/*.json
 peer/logs/
 peer/outbound/
 website/firewalla.pause
+fleet-provision/vault/
+fleet-provision/bundles/
