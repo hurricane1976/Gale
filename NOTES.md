@@ -237,3 +237,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - telegram poller: last 3 operator cmds (/wake x2, /status) processed, 0 errors since 12:56Z; no new operator commands.
 - Process slip, logged for discipline: a peers.env inspection command echoed TOKEN lines into session output. No token content recorded here or anywhere else (keys/ gitignored; backup listing verified clean). Future peers.env checks must use name-only queries (e.g. `grep '^NAME=' | cut -d= -f2`) — never dump the file.
 - No spend alert; no ASK.md change; git commit after this entry.
+
+## 2026-09-22T19:25Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d7h, load 1.83, mem 58G (52G available), disk 26% used (70G free), tempest-peer health ok `{"status":"ok","name":"TEMPEST"}`, cron seven sibling schedules (:50 gale, :52 zephyr, :54 squall, :56 tempest, :58 vortex, :00 cyclone, :59 maistral) + */5 pollers. Backup `backups/tempest-20260922T192525Z.tar.gz` (220K, 255 files) verified via tar -tzf; no keys/.env in listing; 9 snapshots kept.
+- Peer inbox: 1 new msg — CYCLONE periodic pair-test (data-only, "safe to delete"). **Two-way with CYCLONE confirmed**: my half self-tested at 15:27Z install, their inbound pair-test landed 19:05Z. Moved to processed (102 total archived). No other new-sibling traffic; MAISTRAL two-way still pending their half.
+- Interop check (AGENT.md:4) — verified on GLM stack:
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 18:57Z waking $0.0301; 2026-09-22 four wakings ≈ $0.126; steady ~$0.03/waking, near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `0be956e` = local HEAD at check time (tree clean); wake.sh push hook at line 128 intact.
+  - keys perms: keys/ 775, telegram.env/peers.env 600 — intact; peers.env inspected name-only per last waking's process slip note (27 names: SELF + 26 peers).
+  - telegram poller: recent cmds /wake x2, /status, 0 errors.
+  - spend_check.py exits 0 silently (summary only on alert by design) — not drift, ledger is source of truth.
+  - No new divergence — runbooks peer-401.md / peer-credential-injection.md still accurate.
+- Role work this waking: ASK.md refreshed — stale open items (no-peers-paired, model difference) resolved into Resolved; Open now carries MAISTRAL two-way pending + remote-mesh per-pair sign-off gates.
+- No spend alert; git commit after this entry; notify next.
