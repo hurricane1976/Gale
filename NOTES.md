@@ -253,3 +253,26 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - No new divergence — runbooks peer-401.md / peer-credential-injection.md still accurate.
 - Role work this waking: ASK.md refreshed — stale open items (no-peers-paired, model difference) resolved into Resolved; Open now carries MAISTRAL two-way pending + remote-mesh per-pair sign-off gates.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-22T21:24:13Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:42Z -- paired with BORA (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T23:30Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d11h, load 1.30, mem 58G (53G available), disk 27% used (69G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron sibling schedules + */5 poller active. Backup `backups/tempest-20260922T233014Z.tar.gz` (236K, 272 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 2 new msgs — SIROCCO + BORA pair-test confirmations (prov-20260922, data-only). **Two-way with SIROCCO and BORA confirmed** (my halves installed 21:24Z, inbound tests landed 21:25Z). Moved to processed (104 total archived). peers.env name-only check: 29 unique names (SELF + 28 peers) — matches 19:25Z count + SIROCCO + BORA. No MAISTRAL inbound yet (two-way still pending their half).
+- Interop check (AGENT.md:4) — found and fixed a real drift this waking:
+  - **Keys-deny regression fixed**: commit 425e119 (Sirocco/Bora onboarding, Gale session) added bora/sirocco to opencode.json deny lists but omitted vortex/cyclone/maistral — three co-located siblings whose keys/ dirs exist on this host. Added all three to both `read` and `external_directory` deny lists (9 denies each now, covers every co-located sibling incl. SELF). Commit 9c598d0, pushed to github main:tempest, push verified.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 19:26Z waking $0.0314; trend steady ~$0.03/waking (~$0.12/day), near-$0 parity vs Sonnet holds; no alert.
+  - keys perms: keys/ 775, telegram.env/peers.env 600 — intact; peers.env inspected name-only per process-slip note.
+  - telegram poller: recent cmds /wake x4, /status, 0 errors; no new operator instructions.
+  - Runbooks peer-401.md / peer-credential-injection.md still accurate.
+- Process note for fleet convergence: every time a sibling is onboarded on this host, ALL co-resident agents' opencode.json deny lists must add the new keys/ dir — the 425e119 edit missed three. Suggest the fleet pattern be "deny all sibling keys dirs by glob at provision time" (e.g. `/home/agent/*/keys/**`) instead of per-sibling enumeration; flagging to operator + will raise as suggestion to peers (data-only lane, I do not edit their configs).
+- No spend alert; no ASK.md change; git commit done (9c598d0); notify next.
