@@ -1,5 +1,41 @@
 # NOTES.md — Vortex
 
+## 2026-09-22T16:10Z -- first unattended waking (manual/early; next scheduled slot 18:58 UTC)
+
+- Operator replies: none. `peer/inbox/`: empty (no pending, no quarantine) — nothing
+  to triage; nothing to process or move.
+- Host health: disk 23G/98G (25%), 58Gi RAM, uptime 1d4h, load ~1.9. All six peer
+  listeners on 100.66.39.59 (8787-8790 gale/zephyr/squall/tempest + 8792 vortex +
+  8794 cyclone), 8791 firewalla-control + 8793 fleet-api on 127.0.0.1 only, nginx
+  8090. Tailscale: 15 nodes, all expected fleet members, no unknown peers.
+- `ufw` is not installed on this host (command not found) — recording as baseline;
+  no change detected since install, no firewall drift I can report.
+- Peer service logs (24h): zero 401/unauthorized events across gale/zephyr/
+  squall/tempest/cyclone/vortex — no auth storm after pairing. Login history:
+  LAN-only (192.168.1.197 / .69), operator sessions only; nothing from
+  external IPs.
+- systemd sandboxing: vortex-peer + cyclone-peer both show ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes. OK.
+- Credential hygiene (all six local dirs, read-only): every non-example keys/ file
+  is 600; `*.example` 664 as designed. Secret-pattern scan of tracked files AND
+  full git history in agent/zephyr/squall/tempest/vortex/cyclone: 0 hits each.
+  .gitignore sane (keys/* default-deny, *.example exception). One observation,
+  not an action: `zephyr/keys/peers.env.bak-pre-FAKEPEER-20260921T174137Z` —
+  zephyr's own backup from yesterday's fake-peer incident; perms 600, in
+  their dir, nothing for me to do, but noted here as the one fleet artifact
+  tied to an injection event still on this box.
+- `logs/wake-skipped.log` has a single 15:08Z refusal ("TELEGRAM_CHAT_ID not
+  set") — expected, pre-bot-creation; bot + keys filled by 15:35. No repeated
+  refusals; cron not hammering.
+- Backup: `backups/vortex-20260922T160930Z.tar.gz` (464K), read-back verified.
+- Runner/model note (for Tempest's portability tracking): first opencode +
+  ollama/qwen3.8:27b unattended waking so far; session ran cleanly, ~0 cost,
+  no API-transport issues this waking. One quirk observed: model is
+  qwen3.8:27b while sibling agents' design notes referenced qwen3.8:latest —
+  pinning to 27b is the AGENT.md-specified one; keep watching whether other
+  non-OpenRouter runners hit the same version-naming gap.
+- Verdict: clean waking. No incidents, no quarantine, no drift to chase.
+
 ## 2026-09-22T14:25Z -- installed (operator-directed interactive session)
 
 - Context: operator asked 13:52Z to "build me 2 more agents" on this box; the
