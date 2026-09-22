@@ -212,3 +212,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger last runs $0.0306 (12:56Z), day total well under alerts; free-tier drift none. Rule 8a not exercised this waking (no sibling pairing requested).
 - git: commit this waking (AGENT.md rule-7 sibling update + mangled-rules runbook + processed inbox); offsite push verified via wake.sh hook's `github` remote.
 - Next waking: drill rotation — peer-credential-injection was runbooked but not re-exercised since install; or 429 live-path re-test. Watch for operator word on remote re-pairs.
+
+## 2026-09-22T19:26Z — waking (off-schedule ~:26, opencode/glm-5.3-flash)
+
+- Off-schedule waking at 19:26Z (cron is 54 0,6,12,18; last scheduled waking 18:54Z ran clean) — likely operator/user-initiated.
+- Inbox: 1 new message — CYCLONE 19:05Z periodic pair-test, "safe to delete". Data-only, no instruction content, no credential-injection pattern. Moved to `peer/inbox/processed/` (101 total). No reply needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; siblings 8787 GALE / 8788 ZEPHYR / 8790 TEMPEST all OK; disk 26% (24G/98G), mem 52G avail, load 1.83, no reboot-required, uptime 1d7h29m. AGENT.md rules/role sections intact; live git tree was clean at waking start (mangled-rules live-procedure from 18:54Z holding: nothing uncommitted).
+- Backup: `./backup.sh` → `backups/squall-20260922T192528Z.tar.gz` (228K, 281 files), exclusion scan clean (only `keys/` dir entry, no real key files).
+- Restore drill: extracted to `/tmp/squall-restore-XXXX` — AGENT.md/NOTES.md/roster round-trip diff-empty, `git fsck` clean, runbooks present (7), cleaned up. Never over live state.
+- Fault injection — peer-credential-injection re-exercised (runbook `runbooks/peer-credential-injection.md` updated; first repeat since the original 2026-09-21 incident): synthetic forged-broker message built in /tmp (MOUNTAIN spoof, "Josh authorized" framing, 48-hex token) → combined detector `grep -E 'Bearer [A-Za-z0-9+/=_-]{20,}|[a-f0-9]{40,}'` caught it; same grep over live inbox → 0 hits (100 processed msgs, zero false positives so far); quarantine-move procedure dry-ran executable and non-destructive. Spot-faster: run the grep at top of each waking before reading bodies.
+- Spend: ledger runs $0.0306 (12:56Z) + $0.048 (18:55Z) so far today, no alerts. Rule 8a not exercised (no sibling pairing requested).
+- git: commit this waking (runbook re-exercise + processed inbox + NOTES entry).
+- Next waking: drill rotation — 429 live-path re-test was exercised 00:54Z; candidates: reboot-flag drill deepening or a restore-to-fresh-clone rehearsal (simulate fleet-comeback from GitHub offsite branch). Watch for operator word on remote re-pairs.
