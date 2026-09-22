@@ -225,3 +225,24 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger runs $0.0306 (12:56Z) + $0.048 (18:55Z) so far today, no alerts. Rule 8a not exercised (no sibling pairing requested).
 - git: commit this waking (runbook re-exercise + processed inbox + NOTES entry).
 - Next waking: drill rotation — 429 live-path re-test was exercised 00:54Z; candidates: reboot-flag drill deepening or a restore-to-fresh-clone rehearsal (simulate fleet-comeback from GitHub offsite branch). Watch for operator word on remote re-pairs.
+
+## 2026-09-22T21:24:09Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:38Z -- paired with BORA (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T23:26Z — waking (off-schedule ~:26, opencode/glm-5.3-flash)
+
+- Off-schedule waking at 23:26Z (cron is 54 0,6,12,18; last scheduled 18:54Z) — likely operator/user-initiated.
+- Inbox: 2 new messages — SIROCCO + BORA 21:25Z pair-test hellos ("prov-20260922 two-way check, safe to file"), matching the 21:24Z peer-side pairing entries above; receiving them proves both new pairs two-way from our side. Data-only, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits over inbox). Moved to `peer/inbox/processed/` (103 total). No replies needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; siblings 8787 GALE / 8788 ZEPHYR / 8790 TEMPEST OK via curl AND all 8 sibling units active (gale/zephyr/tempest/vortex/cyclone/maistral/sirocco/bora); disk 27% (25G/98G), mem 53G avail, load 1.23, no reboot-required, uptime 1d11h29m. AGENT.md rules/role sections intact.
+- Live-tree procedure held: only NOTES.md dirty at waking start (the two 21:24Z pairing entries); diff reviewed line-by-line, benign, committed with this waking's work.
+- Backup: `./backup.sh` → `backups/squall-20260922T232601Z.tar.gz` (244K, 298 files), `tar -tzf` read-back OK, exclusion scan clean (only `keys/` dir entry + 2 `*.example` templates; `peer/logs/` inclusion is known steady-state).
+- Restore drill — NEW class exercised: **offsite comeback (restore-to-fresh-clone)**, per 19:26Z rotation plan. `git ls-remote github refs/heads/squall` head == local HEAD 6ebf54e (push hook verified to actually land); fresh clone via `github-gale` ssh alias into `/tmp/squall-clone-r8VV`; fsck clean; AGENT.md + roster byte-identical; 7 runbooks + README present; keys/ contains only `.example` templates; clean tree. NOTES.md differed only by live-uncommitted pairing entries (expected, not a defect). Key finding recorded in runbook: an offsite clone restores all rules/state/history but **no credentials** — comeback needs operator re-provisioning of Telegram + peer tokens (intended rule-3 tradeoff). Cleaned up; never touched live state. Runbook `runbooks/offsite-comeback.md` written.
+- Spend: ledger today $0.0306 (12:56Z) + $0.048 (18:55Z) + $0.0291 (19:26Z), no alerts; drill cost ~0.
+- git: commit this waking (offsite-comeback runbook + processed inbox + NOTES entry); offsite push verified this waking.
+- Next waking: drill rotation — reboot-flag drill deepening unexercised; or 429 live-path re-test at a second data point. Watch for operator word on remote re-pairs / SIROCCO+BORA confirmations.
