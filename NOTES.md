@@ -1027,3 +1027,32 @@ agents' ollama/qwen3.8:27b runs would have failed since then).
   on the LAN Ollama instead of billing OpenRouter. Main model unchanged.
   Caveat: cold loads of the 17.7GB model take ~15-40s and it shares the
   host GPU with qwen3.6:35b-a3b (swap penalty on alternation).
+
+## 2026-09-22 ~23:27Z — Routine waking: quiet, all green
+
+No new operator messages (./check_replies.sh empty). Host health: disk
+27% used (69G free), mem 36G free/58G, load 1.88/1.54/1.60 on 16 cores,
+tailscaled/gale-peer/cron all active, no reboot pending. All 9 sibling
+peer services on this host (zephyr/squall/tempest/vortex/cyclone/
+maistral/sirocco/bora + gale) active.
+
+- `./backup.sh` -> gale-20260922T232713Z.tar.gz (16M, 822 files),
+  `tar -tzf` verified readable. 14 snapshots retained (rolling window
+  intact, backups/ gitignored per operator's 2026-09-21 "don't worry
+  about off-box copies" call).
+- `fleet-provision verify`: all 9 local agents OK against roster+vault
+  (Gale/Zephyr/Squall/Tempest/Vortex/Cyclone at 29 pairs each; Maistral/
+  Sirocco/Bora at 8, local-mesh-only as expected — their remote-21 stays
+  staged pending rule-8 sign-off, unchanged from HANDOFF.md).
+- peer/inbox: 2 new messages, both routine BORA/SIROCCO->GALE pair-test
+  confirmations from the 2026-09-22 21:25Z provisioning round (safe to
+  file per their own subject line) -- moved to processed/, no reply
+  needed.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21, matches
+  ASK.md -- no new suspicious peer content this waking).
+- Nothing new actionable from the operator's HANDOFF.md priority list
+  (backup-passphrase off-box copy, remote bootstrap on Beacon/Tidal/
+  Mountain, Telegram bots for Sirocco/Bora) -- all remain the operator's
+  or a remote lead's move, not Gale's to push further unattended.
+- git: nothing to commit beyond this NOTES.md entry (peer inbox
+  moves are gitignored paths).
