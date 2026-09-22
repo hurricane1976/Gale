@@ -368,3 +368,65 @@
   peer-side installs.
 - Spend: muse-spark via OpenCode Zen, ~$0.
 - Notify verified via exit code only (no stray second message this time).
+
+## 2026-09-22T21:24:21Z -- paired with SIROCCO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T21:24:50Z -- paired with BORA (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-22T23:10Z -- scheduled waking (muse-spark)
+
+- Runner/model note for Tempest: `opencode/muse-spark-1.3-contributor-free`
+  via OpenCode Zen, no config errors; runner behaved identically to prior
+  runs from this agent's perspective.
+- check_replies: none. peer/inbox: 2 msgs (SIROCCO + BORA pair-test
+  two-way checks, "prov-20260922", received 21:25:09/10Z) — acted on,
+  moved to processed/.
+- New co-residents: SIROCCO (:8796) + BORA (:8797) provisioned by Gale
+  under direct operator instruction ("have gale provision/onboard them and
+  ensure they can communicate with the fleet"). Gale ran pair_new_siblings
+  + pair_siblings incl. my halves (NOTES entries 21:24:21Z/21:24:50Z).
+  Verified this waking: inbound pair-tests present AND outbound
+  CYCLONE->SIROCCO / CYCLONE->BORA both `{"status":"ok"}` — local mesh
+  now 9/9 two-way (gale/zephyr/squall/tempest/vortex/cyclone/maistral/
+  sirocco/bora). All 9 peer services active; crontab has all 9 blocks
+  (sirocco :02, bora :04). Gale's notes say Sirocco/Bora remote-21 still
+  STAGED (rule 8). My AGENT.md "Your situation"/rule-7 co-resident list
+  predates Sirocco/Bora (lists through Maistral) — flagging, not
+  self-editing.
+- Host health: up 1d11h, load ~1.3, mem 3G/58G, disk 27% (69G free).
+  nginx active, `nginx -t` clean. Nginx logs not re-measured this waking
+  (were normal at 19:50Z). `./backup.sh` ->
+  backups/cyclone-20260922T231012Z.tar.gz (528K, 236 files, listing
+  verified).
+- Production pass (liveness + data-feed correctness + drift re-check):
+  - Liveness: all six pages 200 (as `*.html`) and all six
+    `/api/fleet/*` endpoints 200 (telemetry/activity/metrics/
+    observability/agora-posts/health).
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated 23:10:34Z — fresh): 30 nodes — 23 up / 7 up-auth-gated
+    (all mountain-host) / 0 down. Sweep listener set == fleet page
+    roster markup 30/30 both directions (no orphans, no missing;
+    verified programmatically). Page prose "30 agents" consistent with
+    its roster; gale-host block shows 9 agents. Sirocco/Bora already in
+    both sweep and page.
+  - Activity feed: 24 events, latest 22:56Z (gale commit), schema stable
+    (agent/kind/text/ts), artifact-derived — no invented events.
+  - Repo<->docroot: `diff -rq` shows no content diffs on deployed files
+    (only expected "Only in website/" non-deployed sources: deploy.sh,
+    fleet_api.py, etc.); lead's tree clean. No drift, no hand-edits.
+- Pairing chase (21 remote): re-POST to all 21 — every one still 401 (no
+  far-side installs since 19:00Z). Ball still with the operator: the
+  three install-blocks-<cluster>-VORTEX-CYCLONE.txt deliverables
+  unchanged. Standing pending installs fleet-wide per Gale's books:
+  Mesa/Prism/Vista peer-side installs.
+- Gale-side note (from lead's NOTES, relevant to production): Gale found
+  and fixed a real regression — the GLOBAL opencode config lost its
+  Ollama provider block in an 18:38Z rewrite; re-added (15 models) and
+  smoke-tested READY, then set global small_model to
+  ollama/qwen3.8:27b (was openrouter glm-5.3-flash). Also flags that
+  ~/.config/opencode/opencode.jsonc lives outside version control.
+- Spend: muse-spark via OpenCode Zen, ~$0.

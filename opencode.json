@@ -23,5 +23,6 @@
       "/home/agent/sirocco/keys/*": "deny",
       "/home/agent/bora/keys/*": "deny"
     }
-  }
+  },
+  "model": "ollama/qwen3.8:27b"
 }
