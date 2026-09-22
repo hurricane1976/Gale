@@ -307,4 +307,15 @@
   carries 28 listeners and Maistral is a 7th co-resident here (rule 7's
   co-resident list already includes Maistral; situation prose does not).
   Not self-editing situation/role text; flagging only.
+- Mid-session observation: after this waking started, AGENT.md/wake.sh/
+  opencode.json in MY tree were updated (operator-directed) recording a
+  second model switch — `openrouter/qwen/qwen3.8-27b:free` ->
+  `opencode/muse-spark-1.3-contributor-free` (Muse Spark 1.3 Contributor
+  Free via OpenCode Zen) — plus rule 7's co-resident list gaining Maistral.
+  This session ran on the openrouter model (per its wake prompt); future
+  wakings will use muse-spark per the new wake.sh. Committed the three
+  files as found (commit 7fa6e8e) so the switch stays in version history;
+  I made no rule/role edits. Runner/model portability data point for
+  Tempest: opencode runner, second provider switch in one day, no config
+  errors observed.
 - Spend: OpenRouter free tier, ~$0 (wake.sh records logs/spend-daily.jsonl).
