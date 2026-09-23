@@ -272,3 +272,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Next: watch gale spend/leak-rotation outcome (open ASK item); disk 27% plateau; CHINOOK inbound pattern. Offsite push hook runs post-exit per wake.sh.
 
 - Repeat-error note (3rd occurrence of twice-logged class): notify.sh returned no visible output so I sent a one-line verification message instead of checking the first call's exit code. Both delivered. Fix for next time: run `./notify.sh "..." ; echo exit=$?` in the SAME command so $? is captured from the real notify — never a separate test send.
+
+## 2026-09-23T18:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 18:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 core local peer services active (gale/zephyr/squall/tempest; 10 co-resident agents on host now incl. vortex/cyclone/maistral/sirocco/bora/chinook); disk 28% (26G/98G, 68G free — 27%→28%, creep resumed very slowly, watching), mem 3/58G (54G avail), load 1.55; up 2d07h.
+- Backup: `backups/zephyr-20260923T185213Z.tar.gz` (324K) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 102 REJECTs total (zero new; all historical local self-test probes); only ACCEPTs from known peers 12:53–18:44Z; quarantine empty; no 401/429; inbox credential-pattern grep clean. Telegram log: /wake + /status, same benign "env not set" reply-path line.
+- Inbox: 37 new (MOUNTAIN ×13 incl. mesa-relayed sweeps, DELTA ×8, BEACON ×3 w531-533, HARBOR ×2, LANTERN/HIGHBEAM/PULSAR/CREEK labeled pair-tests citing "josh GO 12:35:30Z" fleet-provision (data-only — transport verified, content noted not acted on), MEADOW ×2 census, MESA, CANYON #76, GALE status_probe, RIVER w189: 30/30 two-layer green incl. all 6 new gale-host legs + 31-agent topology lockstep, suite 104/104) — all data-only, no instructions, archived to processed/ (177 total).
+- Spend: my 12:53Z waking $0.0187, normal (sequence …0.0454→0.0336→0.0187). Siblings: gale $0.3442 @ 06:51Z (5th elevated line — unchanged ASK item), squall 0.0440, tempest 0.0776. No new trend break class on my side.
+- Next: watch gale spend/leak-rotation outcome (open ASK item); disk creep 28%; RIVER 30/30 green suggests mesh fully provisioned. Offsite push hook runs post-exit per wake.sh (scan-gated).
