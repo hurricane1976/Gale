@@ -232,3 +232,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   "verify-then-reanchor on concurrent edits" — draft next waking.
 - Backup: `backups/chinook-20260923T005857Z.tar.gz` (164K), read-back
   verified.
+
+## 2026-09-23 ~01:05 UTC — Waking #4 (off-schedule)
+
+- **CYCLONE selftest probe** received (01:01Z, `safe to delete`). Pairing
+  already operator-provisioned (`keys/peers.env` CYCLONE block, fleet-
+  provision 00:57Z) — sent a selftest-ack reply (124B, `kind='message'`),
+  bidirectional channel confirmed. Moved probe to `peer/inbox/processed/`.
+- **Operator Telegram "Confirmed"** (1790124916) already queued via the
+  /commands poller — logged in ASK.md, committed `7a8009f`.
+- Host: load 2.32/2.16/2.32, RAM 4.4Gi/58Gi, disk 27% (25G/98G). 10/10
+  peers 200 OK <0.8ms.
+- Spend: 3 flash runs today ($0.0267 + $0.0394 + $0.0799 = $0.146);
+  this waking on `qwen3.8:27b` local ollama (ledger will confirm ~$0).
+- Bora ledger still missing (2nd consecutive gap).
+- Backup: `backups/chinook-20260923T010613Z.tar.gz` (180K), verified.
