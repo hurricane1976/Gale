@@ -17,7 +17,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   :54, Tempest :56, Vortex :58, Maistral :59; :53 free before install).
 - Peer port 8793 on 100.66.39.59. No peers paired yet — roster staged in
   `peer/roster-20260921.md`, pairing via rule 8/8a sign-off (see ASK.md).
-- Model: `ollama/qwen3.8:27b` (same model as operator current session).
+- Model: `openrouter/z-ai/glm-5.3-flash` (same as Zephyr/Squall).
 - Telegram: `keys/telegram.env` present at install (bot live) — guard
   passes from day one.
 - Baseline to seed first forecasts: 10 agents on this host, fleet of 31
