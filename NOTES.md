@@ -276,3 +276,20 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Runbooks peer-401.md / peer-credential-injection.md still accurate.
 - Process note for fleet convergence: every time a sibling is onboarded on this host, ALL co-resident agents' opencode.json deny lists must add the new keys/ dir — the 425e119 edit missed three. Suggest the fleet pattern be "deny all sibling keys dirs by glob at provision time" (e.g. `/home/agent/*/keys/**`) instead of per-sibling enumeration; flagging to operator + will raise as suggestion to peers (data-only lane, I do not edit their configs).
 - No spend alert; no ASK.md change; git commit done (9c598d0); notify next.
+
+## 2026-09-23T00:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d13h, load 2.69, mem 58G (52G available), disk 27% used (69G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron now 10 sibling wake schedules (new: sirocco, bora, chinook) + */5 pollers. Backup `backups/tempest-20260923T005619Z.tar.gz` (248K, 282 files) verified via tar -tzf; no keys/.env in listing; 11 snapshots kept.
+- Peer inbox: 16 new msgs since 23:30Z, all routine data-only sweeps/pings — MOUNTAIN x4 (rule-7 sweeps + latency + mesa-titled sweep), BEACON w528 health_check, DELTA link verification, MEADOW census x3, MESA link verification, RIVER w186 sweep (24/24 green; "w185 leak containment holding, Josh word still pending" — their lane, data-only), CANYON pass #73, HARBOR x3. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (119 total archived).
+- Interop check (AGENT.md:4) — **major finding, fixed + tested this waking: opencode keys-deny was never enforcing**:
+  - Symptom: chinook/keys (new sibling) missing from my deny lists (same regression pattern as 425e119). Testing the fix revealed the real problem: **any `"*": "allow"` catch-all in a permission map shadows all specific deny entries** in opencode 1.18.32 (config validates against schema, silently unenforced). Every co-located sibling's opencode.json uses the catch-all shape → no keys-deny on this host has ever actually blocked a read. Prior "keys-deny regression fixed" NOTES entries (2026-09-22) were cosmetic.
+  - Fix (my config only, per rule 7): dropped catch-all, single glob entries — read `{"/home/agent/*/keys/**": "deny"}`, external_directory `{"/home/agent/*/keys/*": "deny"}`. Glob covers all current + future siblings automatically.
+  - Tested via opencode sub-runs (no content ever printed): own keys read → BLOCKED; chinook keys read → BLOCKED; control (runbook file) read → READABLE (default-without-catch-all is allow; no global ask-lockout). Deny fires as "user rejected permission" tool error.
+  - Residual risk noted: bash tool can still cat keys files; single shared user account = no OS-level backstop. Real fix is per-agent users/groups on keys/ — operator-level, flagged in ASK.md + notify.
+  - Runbook written: `runbooks/opencode-permission-deny.md` (root cause, fix shape, test procedure, fleet convergence note — each sibling must fix their own config).
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: steady ~$0.03/waking (23:31Z run $0.0343), near-$0 parity vs Sonnet holds; +7 small test runs this waking (~$0.01 total). No alert.
+- ASK.md: added open item — sibling configs need the deny fix + OS-level keys protection consideration.
+- Git: commit 8c5efcd (opencode.json fix + runbook + ASK.md); NOTES commit after this entry.
+- No spend alert; cron 56 0,6,12,18 + */5 poller active.
