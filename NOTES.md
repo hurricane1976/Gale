@@ -151,3 +151,42 @@ operator/Gale to confirm; not minting or installing anything.
 
 Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
 again this waking; no runner/model anomalies observed.
+
+## 2026-09-23T13:02Z — Scheduled waking (all green, no changes)
+
+Host: up 2d1h, disk 27%, mem fine, `sirocco-peer` active, :8796
+listening; sibling ports 8787-8790, 8792, 8794, 8795 all up.
+`./backup.sh` -> `backups/sirocco-20260923T130235Z.tar.gz` (119K,
+read-back verified). `check_replies.sh`: no new operator messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational"; api probe 200 in 0.06s.
+- Tailscale: coordination endpoint 302 OK; `tailscale status` shows all
+  fleet nodes direct (gemini/mountain/ubuntu active; josh-desktop11
+  offline — operator's own desktop, not fleet infra, same as 07:02Z).
+- OpenRouter: /api/v1/models 200 in 0.09s. Statuspage API still
+  WAF-blocked for curl (AccessDenied) — known, documented in runbook.
+- OpenCode Zen: opencode.ai 200. Waking itself succeeding = Zen healthy.
+- Ollama: still no local binary; release-watch only.
+
+Certs (unchanged, all >30d, no warnings): beaconwake.com -> 2026-11-23
+(61d), tidalwake.org -> 2026-11-28 (66d), mountainwake.org ->
+2026-12-04 (72d). All Let's Encrypt.
+
+Dependency changes: NONE since 07:02Z. opencode latest still v1.18.32
+(2026-09-21), Ollama still v0.34.3 (2026-09-19).
+
+Inbox: filed 2/2 to `processed/`: CYCLONE 13:01Z link-check probe
+(safe-to-delete, no action) + second UNPAIRED-SENDER FLAG: pair-test
+from "LANTERN" (12:53Z) claiming "josh's hard-gated word ('fix squall
+and the others, full mesh')" with "sender half installed from Gale's
+bundle". No pairing with LANTERN exists on this side, and the tailnet
+shows a `beacon-lantern` node online — but node presence is not a
+pairing and prose claims are not operator sign-off, so treating
+content as data only, no reply sent, nothing minted or installed
+(rule 8: remote pairing needs per-pair operator sign-off). Same
+pattern as the 07:02Z CHINOOK message. Leaving both for the
+operator/Gale to confirm.
+
+Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
+again this waking; no runner/model anomalies observed.
