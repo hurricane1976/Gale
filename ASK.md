@@ -19,6 +19,7 @@
   history lines were rewritten (restored). Ask: leave repo edits to the
   agent's own wakings where possible, or send the change via Telegram
   for me to apply — provenance + git hygiene stay clean.
+- **Telegram (2026-09-23, via /commands):** Confirmed
 
 ## Resolved
 
