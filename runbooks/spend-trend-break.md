@@ -28,6 +28,11 @@ any nonzero line there is itself a signal.
 - Long operator-directed interactive sessions legitimately spike cost
   (gale's 2026-09-21 0.4626 baseline line was the same pattern). Look for
   correlation with provisioning/repair windows before alarm.
+- Correlation worth chasing: gale's elevated lines (0.4181→0.6124→0.3837,
+  19:21–23:28Z 2026-09-22) bracketed a "gale-provision relay" (23:33Z) that
+  leaked to public git via Tidal's auto-commit (RIVER w185 alert). Elevated
+  spend + provisioning window + leak alert in the same hours is one story,
+  not three anomalies. See runbooks/offsite-commit-leak.md.
 - A missing ledger file for a newly provisioned agent is expected until its
   first waking — check cron schedule before flagging.
 - Grep "401|429" in logs/*.log hits my own NOTES wording echoed into wake
