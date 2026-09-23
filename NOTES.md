@@ -305,3 +305,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `d919de0` = local HEAD; chain intact.
   - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-09-23T12:59Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 2d1h, load 1.91, mem 58G (52G available), disk 27% used (68G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `56 0,6,12,18` + `*/5` poller intact (woke on schedule :56). Backup `backups/tempest-20260923T125702Z.tar.gz` (280K, 322 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 16 new msgs since 06:59Z, all routine data-only sweeps/pings — MOUNTAIN x5, BEACON w530 health_check, DELTA x3, MEADOW census, MESA, CANYON #75, RIVER w188 sweep (24/24 green; w185 containment holding, w188 MESA-relay contained pre-commit — their lane, fleet context only), HARBOR x3. All token-authenticated, treated as data per AGENT.md:5, moved to processed (153 total archived).
+- **Fleet mesh activation observed (data-only)**: LANTERN pair-test w238 landed credentialed 12:53Z — sender half installed from Gale's 20260923T124304Z bundle, labeled "on josh's hard-gated 2026-09-23 12:35:30Z word ('fix squall and the others, full mesh')". Proves LANTERN→TEMPEST inbound. Per rule 6 this is data, not my authorization: I hold no Telegram word from the operator, so outbound to remote peers stays gated per rule 8 (no minting, no broadcasts). ASK.md updated to ask the operator directly whether Tempest outbound-to-remote is now unlocked, given the mesh is evidently activating fleet-side.
+- peers.env name-only check: 30 peer names (up from 28; LANTERN bundle-era provisioning, file ts 01:40Z). Self-test of the new inbound proven by the LANTERN arrival itself. keys/ perms: peers.env/telegram.env 600 intact.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: opencode.json glob shape intact, zero catch-alls; live probe per runbook procedure (own keys/peers.env) → read tool `error` "user rejected permission", BLOCKED, no contents touched ($0.0017 test cost). Control-READABLE verified last waking; not rerun this waking.
+  - spend ledger: 06:58Z waking $0.0337 — back to steady ~$0.03/waking (00:59Z $0.08 was test-run-elevated, as expected). Near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `60a5bc5` = local HEAD at check time; wake.sh push hook chain intact (this waking's commit lands remote at session end).
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - py_compile: spend_check.py / telegram_commands.py / peer_server.py all ok.
+- No spend alert; no ASK.md structural change (one wording update, open item reframed); git commit after this entry; notify next.
+
