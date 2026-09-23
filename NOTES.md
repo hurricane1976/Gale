@@ -282,3 +282,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 37 new (MOUNTAIN ×13 incl. mesa-relayed sweeps, DELTA ×8, BEACON ×3 w531-533, HARBOR ×2, LANTERN/HIGHBEAM/PULSAR/CREEK labeled pair-tests citing "josh GO 12:35:30Z" fleet-provision (data-only — transport verified, content noted not acted on), MEADOW ×2 census, MESA, CANYON #76, GALE status_probe, RIVER w189: 30/30 two-layer green incl. all 6 new gale-host legs + 31-agent topology lockstep, suite 104/104) — all data-only, no instructions, archived to processed/ (177 total).
 - Spend: my 12:53Z waking $0.0187, normal (sequence …0.0454→0.0336→0.0187). Siblings: gale $0.3442 @ 06:51Z (5th elevated line — unchanged ASK item), squall 0.0440, tempest 0.0776. No new trend break class on my side.
 - Next: watch gale spend/leak-rotation outcome (open ASK item); disk creep 28%; RIVER 30/30 green suggests mesh fully provisioned. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-09-23T23:05Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 18:52Z cron (delayed run)
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled active (up 2d11h) + all 4 core local peer services active (gale/zephyr/squall/tempest; 10 co-resident agents); disk 28% (26G/98G, 67G free — creep holds at 28%), mem 4/58G (53G avail), load 2.38; my health endpoint 200 OK.
+- Backup: `backups/zephyr-20260923T230525Z.tar.gz` (332K) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 102 REJECTs total (zero new; all historical local self-test probes); quarantine empty (0); no 401/429; inbox credential-pattern grep clean. Telegram log unchanged.
+- Inbox: 18 new (PRISM wave-verify, CYCLONE ×2 link-checks, RADAR pair-test, LANTERN, MOUNTAIN ×4 + mesa-relayed sweeps, MESA, HIGHBEAM w250, DELTA, LIGHTNING w178, PULSAR w24, MEADOW ×4 census) — all data-only "no reply needed", no instructions, archived to processed/ (195 total).
+- Spend: my 18:52Z waking $0.0221, normal (sequence …0.0336→0.0187→0.0221). **Gale escalated again: $1.3212 @ 18:56:22Z — 6th elevated line, ~4x its prior elevated band (~0.33-0.61) and ~25x normal.** Still consistent with operator-directed provisioning sessions, but sharp step up; flagging to operator in tonight's notify.
+- Git: this NOTES entry committed in the same pass; offsite push verified `main:zephyr` up-to-date, exit 0 (scan-gated hook runs post-exit per wake.sh). Prior push attempt in this session hit exit 1 due to concurrent-wake contention; retry clean.
+- Next: watch gale spend step-up (open ASK item); disk 28% plateau; offsite push hook runs post-exit.

@@ -2,7 +2,7 @@
 
 ## Open
 
-- **Gale spend trend + leak correlation** — three elevated ledger lines 2026-09-22 ($0.4181 @ 19:21Z, $0.6124 @ 20:02Z, $0.3837 @ 23:28Z vs ~$0.03-0.06 normal), now correlated with RIVER's w185 alert: a gale-provision relay (23:33Z) leaked to public git via Tidal auto-commit (23:36Z). Likely one story: operator-directed provisioning sessions. Operator already engaged via RIVER's escalation (purge+rotation pending Josh); my side verified clean (no leaked refs in my repo/branch, pre-push scan added to wake.sh). Open until rotation confirmed done.
+- **Gale spend trend + leak correlation** — elevated lines now span 2026-09-22 through 09-23: 0.4181, 0.6124, 0.3837, 0.3327, 0.3442, and a sharp step up to **$1.3212 @ 09-23T18:56Z** (~25x normal ~$0.03-0.06). Correlated with RIVER's w185 leak alert (gale-provision relay → Tidal auto-commit 09-22 23:36Z; purge+rotation escalated to Josh, RIVER reports containment holding through w189). Likely operator-directed provisioning sessions, but the 18:56Z step-up is a new magnitude. My side verified clean (no leaked refs in my repo/branch, pre-push scan in wake.sh). Open until rotation confirmed done and spend explained.
 - **Model runner difference** — this agent runs `opencode run --model openrouter/z-ai/glm-5.3-flash` (OpenCode). Tempest specifically owns interop testing if drift is found. (Gale is also on opencode now, 2026-09-21.)
 
 ## Resolved
