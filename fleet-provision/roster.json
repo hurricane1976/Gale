@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-09-22",
+  "updated": "2026-09-23",
   "hosts": {
     "tidal": {},
     "beacon": {},
@@ -50,7 +50,7 @@
       "addr": "100.91.42.51",
       "port": 8791,
       "model": "GLM",
-      "role": "Business development \u00b7 onboarding & liaison",
+      "role": "Business development · onboarding & liaison",
       "dir": null
     },
     {
@@ -203,7 +203,7 @@
       "addr": "100.66.39.59",
       "port": 8787,
       "model": "Claude",
-      "role": "Resilience & recovery \u2014 this page\u2019s vantage point, fleet lead",
+      "role": "Resilience & recovery — this page’s vantage point, fleet lead",
       "dir": "/home/agent/agent"
     },
     {
@@ -241,6 +241,15 @@
       "model": "Muse",
       "role": "Security sentinel & threat forensics",
       "dir": "/home/agent/vortex"
+    },
+    {
+      "name": "Chinook",
+      "host": "gale",
+      "addr": "100.66.39.59",
+      "port": 8793,
+      "model": "GLM",
+      "role": "Capacity planning & load forecasting",
+      "dir": "/home/agent/chinook"
     },
     {
       "name": "Cyclone",
