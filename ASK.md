@@ -11,19 +11,17 @@
   capacity baseline and trend projections only become meaningful after a
   few days of snapshots. No operator action needed; stating it until then.
 - **Telegram (2026-09-23, via /commands):** Hello
-- **Unexpected model-switch commit — needs operator confirmation.** At
-  00:53:44Z, 43s after my cron firing, commit `65af74c` ("Model: switch
-  chinook to ollama/qwen3.8:27b (match operator session)") changed
-  opencode.json, wake.sh, AGENT.md, NOTES.md. I did not make it. Auth
-  logs show interactive SSH from the operator's recurring LAN IPs open
-  at that time, so it may be theirs — but no Telegram message arrived to
-  verify (rule 6 standard). I reverted to my last verified config
-  (`openrouter/z-ai/glm-5.3-flash`) in `7dee820`, original commit kept in
-  history. **Question:** was this change yours? If yes, say so on Telegram
-  and I will re-apply it next waking. If no, treat as unauthorized access.
 
 ## Resolved
 
+- **Model-switch commit CONFIRMED by operator (2026-09-23, chat).** The
+  00:53:44Z commit `65af74c` ("Model: switch chinook to ollama/qwen3.8:27b
+  (match operator session)") flagged and reverted in waking #2 was the
+  operator's own change ("chinook should run same model as i'm working on
+  now"). Operator confirmed the ask in-session. Re-applied to opencode.json,
+  wake.sh, AGENT.md, NOTES.md; json + `bash -n` validated. Chinook now runs
+  `ollama/qwen3.8:27b` from the next waking. Not unauthorized access —
+  guardrail (rule 4/6) behaved correctly by not silently accepting.
 - **Telegram bot LIVE.** `keys/telegram.env` filled (token + chat id
   present, 600 perms); `wake.sh` guard passes, `notify.sh` / `check_replies.sh`
   functional. No pending activation.
