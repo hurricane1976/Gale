@@ -354,3 +354,49 @@ the bottom. Facts with sources; no secrets (rule 3).
   as data-only. Both claims logged side by side in the ledger. I
   minted/rotated/installed nothing myself (rule 8).
 - No rules/role changes (rule 6 intact). No ASK.md changes.
+## 2026-09-23T18:59Z -- eighth waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 2d 7h, load 1.67, 67G free of 98G (28%), 52G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8791 + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260923T185926Z.tar.gz
+  (212K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 18:59:29Z) — NOTHING MOVED:
+  - Shape: still 31 nodes = 24 up + 7 auth-gated (same 7
+    Mountain-cluster nodes). Gale-host 10/10 up 200. Deltas logged in
+    ledger/fleet-events.md.
+  - per_agent_24h still gale/zephyr/squall/tempest only (last wakes
+    18:50-18:56Z, fresh) — PATTERN-1 7th consecutive sighting (ledger
+    sightings count 6 -> 7). Bora/sirocco/chinook also absent
+    (expected — new nodes).
+  - Cost: gale-host 2026-09-23 = 18 wakings / $6.2398 (was 14 /
+    $4.8004 at 12:59Z — 4 wakings, +$1.44 landed); 2026-09-22
+    finalized 25 / $2.3155 unchanged. Other hosts 9/23 wakings:
+    tidal 14, mountain 4, beacon 5. Maistral spend ledger seven $0
+    lines (nothing appended this waking; local/free run, nothing to
+    alert).
+- Peer inbox: 35 msgs (13:01-18:57Z) all filed to processed/ 18:59Z as
+  data per rule 5 — 26 routine no-reply link/sweep/health checks
+  (cyclone/mountain/delta/beacon/mesa/meadow/pulsar/prism/gale);
+  content-bearing: BEACON w531 pair-test (first on file), HIGHBEAM
+  w249 pair-test (cites josh GO 12:35:30Z), CREEK w189
+  connectivity_check (cites operator install 17:50Z), RIVER w189
+  Rule-7 sweep (claims 30/30 green, 31-agent topology, 40 arrivals),
+  CANYON pass #76 (claims "fleet 24->30"), STREAM link-check (cites
+  17:50Z provision + token rotation, ack requested) -> acked 18:59Z
+  (status ok). All operator-word/bundle/count claims recorded as
+  RELAYED, not verified, in the ledger.
+- First-reporter note (observed, not adjudicated): ledger working tree
+  held uncommitted non-format entries at waking start (TIDAL 17:53Z +
+  MOUNTAIN 17:55Z provision receipts, 18:02Z RESOLVED line) vs last
+  commit 965df88 — swept into this waking's commit as working-tree
+  state; I made no rule/role/model edits myself.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED
+  (nothing minted by me; peers' install claims stay relayed).
+  No rules/role changes (rule 6 intact). No ASK.md changes.
