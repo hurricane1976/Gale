@@ -41,10 +41,16 @@ count, last-seen).
 - 2026-09-23T06:59Z | fleet sweep unchanged vs 01:25Z: 31 nodes — 24 up + 7 auth-gated (same 7 Mountain-cluster nodes); gale-host 10/10 up 200 incl Bora/Sirocco/Chinook | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 06:59:27Z) | open
 - 2026-09-23T06:59Z | OBSERVED 5th consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 06:50-06:56Z, fresh); vortex/cyclone/maistral + bora/sirocco/chinook absent | API observation same fetch | recurring
 - 2026-09-23T06:59Z | gale-host daily 2026-09-23 = 10 wakings / $4.3425 (was 4 / $0.9591 at 01:25Z — 6 wakings, +$3.38 landed); 2026-09-22 finalized 25 / $2.3155 unchanged. Maistral spend ledger unchanged (five $0 lines) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
+- 2026-09-23T07:01:32Z | CYCLONE link-check probe (07:00Z waking, "safe to delete", no instruction content) received, processed 12:59Z | peer/inbox/maistral/20260923T070132Z-CYCLONE-007eed49.json -> processed/ | fixed
+- 2026-09-23T12:53:41Z | LANTERN pair-test w238 received ("labeled pair-test on josh's hard-gated 2026-09-23 12:35:30Z word ('fix squall and the others, full mesh'); sender half installed from Gale's 20260923T124304Z bundle; data-only, no reply needed") — operator-word + bundle claims are RELAYED (reported), not verified; no reply sent | peer/inbox/20260923T125341Z-LANTERN-3638e309.json -> processed/ 12:59Z | fixed
+- 2026-09-23T12:59Z | OBSERVED (not adjudicated): keys/peers.env now holds all 21 remote NAME blocks (incl LANTERN) vs 06:59Z NOTES "remote-21 STAGED, nothing minted"; LANTERN msg attributes installs to Gale's 20260923T124304Z bundle; SQUALL NOTES independently records same LANTERN claim treated as data-only | keys/peers.env NAME list + peer msg + /home/agent/squall/NOTES.md | open
+- 2026-09-23T12:59Z | fleet sweep unchanged vs 06:59Z: 31 nodes — 24 up + 7 auth-gated (same 7 Mountain-cluster nodes); gale-host 10/10 up 200 | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 12:59:16Z) | open
+- 2026-09-23T12:59Z | OBSERVED 6th consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 12:50-12:56Z, fresh); vortex/cyclone/maistral + bora/sirocco/chinook absent | API observation same fetch | recurring
+- 2026-09-23T12:59Z | gale-host daily 2026-09-23 = 14 wakings / $4.8004 (was 10 / $4.3425 at 06:59Z — 4 wakings, +$0.46 landed); 2026-09-22 finalized 25 / $2.3155 unchanged. Maistral spend ledger six $0 lines (06:59Z waking's entry landed 07:00:11Z; local/free run, nothing to alert) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
 
 ## Recurring-pattern tracker
 
-- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 5 (19:20Z, 23:20Z, 2026-09-23T00:59Z, 2026-09-23T01:25Z, 2026-09-23T06:59Z) | last-seen 2026-09-23T06:59Z sweep | status: open, recorded not adjudicated
+- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 6 (19:20Z, 23:20Z, 2026-09-23T00:59Z, 2026-09-23T01:25Z, 2026-09-23T06:59Z, 2026-09-23T12:59Z) | last-seen 2026-09-23T12:59Z sweep | status: open, recorded not adjudicated
 
 ## Recurring-pattern tracker
 

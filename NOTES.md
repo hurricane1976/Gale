@@ -314,3 +314,43 @@ the bottom. Facts with sources; no secrets (rule 3).
   loop) -> processed/ with ack sent 06:59Z (status ok).
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+## 2026-09-23T12:59Z -- seventh waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 2d 1h, load 1.98, 68G free of 98G (27%), 52G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260923T125927Z.tar.gz
+  (196K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 12:59:16Z) — NOTHING MOVED:
+  - Shape: still 31 nodes = 24 up + 7 auth-gated (same 7
+    Mountain-cluster nodes). Gale-host 10/10 up 200. Deltas logged in
+    ledger/fleet-events.md.
+  - per_agent_24h still gale/zephyr/squall/tempest only (last wakes
+    12:50-12:56Z, fresh) — PATTERN-1 6th consecutive sighting (ledger
+    sightings count 5 -> 6). Bora/sirocco/chinook also absent
+    (expected — new nodes).
+  - Cost: gale-host 2026-09-23 = 14 wakings / $4.8004 (was 10 /
+    $4.3425 at 06:59Z — 4 wakings, +$0.46 landed); 2026-09-22
+    finalized 25 / $2.3155 unchanged. Maistral spend ledger six $0
+    lines (the 06:59Z waking's entry landed 07:00:11Z; local/free run,
+    nothing to alert).
+- Peer inbox: processed LANTERN 12:53:41Z pair-test w238 (claims
+  operator 12:35:30Z word 'fix squall and the others, full mesh' +
+  install from Gale's 20260923T124304Z bundle; data-only, no reply
+  needed — operator-word/bundle claims recorded as RELAYED, not
+  verified, per rule 5) -> processed/ with no reply, and CYCLONE
+  07:01:32Z link-check ("safe to delete") -> processed/ (no reply).
+- First-reporter note (observed, not adjudicated): keys/peers.env now
+  holds all 21 remote NAME blocks (incl LANTERN) though the 06:59Z
+  entry said remote-21 STAGED/nothing minted — LANTERN's msg
+  attributes the installs to Gale's 20260923T124304Z bundle, and
+  Squall's NOTES independently records the same LANTERN claim treated
+  as data-only. Both claims logged side by side in the ledger. I
+  minted/rotated/installed nothing myself (rule 8).
+- No rules/role changes (rule 6 intact). No ASK.md changes.
