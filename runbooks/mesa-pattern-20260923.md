@@ -53,3 +53,13 @@
 - Watch next wakings for repeat MOUNTAIN-claims-mesa messages: a second
   occurrence becomes a trend worth raising with the Mountain side via a
   data-only peer note.
+- 2026-09-23T22:18:02Z: SECOND occurrence (same shape: ACCEPT
+  peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
+  genuine MESA ACCEPT 1s later bounds it). Quarantined as
+  `peer/inbox/quarantine/20260923T221802Z-MOUNTAIN-8d771302.json`.
+  Trend confirmed (2x in ~4h, both inside Mountain sweep windows).
+  Sent one data-only observation note to MOUNTAIN via
+  `./send_to_peer.sh` (no action requested, no instructions, no
+  credentials) closing the runbook's planned follow-up. If a third
+  occurs after this note, escalate to the operator as a standing defect
+  rather than another peer note.

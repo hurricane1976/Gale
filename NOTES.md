@@ -593,3 +593,67 @@
 - Verdict: eventful waking. One Mesa-pattern quarantine (likely benign
   template slip, runbook filed) + 14 new remote two-way completions
   (16/21); 5 beacon-side legs still pending.
+
+## 2026-09-23T22:26Z -- off-schedule waking (operator-triggered; seventh on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 9 messages triaged. ONE QUARANTINED:
+  `quarantine/20260923T221802Z-MOUNTAIN-8d771302.json` — second
+  occurrence of the recurring Mesa identity-confusion pattern
+  (transport-authenticated MOUNTAIN, ACCEPT 22:18:02Z, body first-person
+  mesa sweep verifying a mesa->vortex round trip; same shape as the
+  18:22:25Z file). No credential/token content, no links, no
+  instructions, no reply solicited — still reads as Mountain's sweep
+  using a mesa-worded template. Genuine MESA message 1s later
+  (peer=MESA 22:18:03Z, identity-consistent) bounds it to the single
+  file. Runbook `runbooks/mesa-pattern-20260923.md` updated with the
+  second occurrence; trend now confirmed (2x in ~4h, both inside
+  Mountain sweep windows).
+- Per the runbook's planned follow-up, sent ONE short data-only
+  observation note to MOUNTAIN via `./send_to_peer.sh` (pattern
+  described, no action requested, no instructions, no credentials).
+  No further peer back-and-forth unless a third occurs (then escalate
+  to the operator instead).
+- Other 8 benign, moved to `processed/`: CYCLONE link-check, RADAR +
+  LIGHTNING pair-tests (both claim operator "GO"/bundles — treated as
+  data, not verified; no action depends on them), 2x identical MOUNTAIN
+  Rule-7 sweeps 5s apart (duplicate delivery, rate-noted but coherent),
+  genuine MESA link verification, MOUNTAIN latency check, HIGHBEAM w250
+  probe. No credential content, no links, no instructions, no identity
+  mismatch in any of the 8.
+- Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only): still 16/21 HTTP 200. Remaining HTTP 401: HIGHBEAM, LANTERN,
+  LIGHTNING, RADAR, PRISM (all beacon-side). Asymmetry widened:
+  HIGHBEAM + LANTERN + now RADAR + LIGHTNING have sent inbound
+  pair-tests while outbound is still 401 — their receiving halves
+  pending; ball with the beacon-side lead.
+- Peer server log: 60 REJECTs total (unchanged count), ALL self-origin
+  (100.66.39.59, documented self-test shape). Zero external-origin
+  rejects; no 401 storm.
+- Host health: disk 27G/98G (29%), 58Gi RAM, uptime 2d10h, load ~1.6.
+  All ten peer services active. Listeners unchanged and correct:
+  8787-8790 + 8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer +
+  127.0.0.1:8793 fleet-api (distinct binds, no conflict), 8791
+  localhost-only, nginx 8090 on 0.0.0.0 (as recorded last waking).
+  `ufw` still not installed (baseline). Sandboxing re-checked on
+  vortex-peer: strict/yes/yes. OK.
+- Tailscale: 11 nodes visible, all known fleet members, no unknown
+  peers (same count as last waking).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600 entries are `*.example` (664, by design)
+  + `agent/keys/github_deploy_key.pub` (644, public key by design).
+  Tracked-file secret scan: zero real hits (one `sk-` regex hit is
+  "ASK-equivalent" prose in a sibling AGENT.md — false positive).
+  .gitignore sane. Observed, not actioned: bora currently has no
+  `keys/telegram.env` (only `.example`); last waking recorded
+  sirocco/bora/chinook as all having it — possible removal on bora's
+  side between wakings, flagged here only. Touched nothing outside this
+  repo.
+- `opencode.json`: no diff vs HEAD — the model-key question stays open
+  in ASK.md, still no operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260923T222601Z.tar.gz` (568K), read-back verified.
+- Runner/model note (for Tempest portability tracking): seventh Muse
+  Spark 1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: eventful waking. Second Mesa-pattern quarantine (trend
+  confirmed, data-only note sent to MOUNTAIN, runbook updated); remote
+  legs unchanged (16/21, 5 beacon-side pending).
