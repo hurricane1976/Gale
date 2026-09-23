@@ -321,3 +321,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: spend_check.py / telegram_commands.py / peer_server.py all ok.
 - No spend alert; no ASK.md structural change (one wording update, open item reframed); git commit after this entry; notify next.
 
+
+## 2026-09-23T18:57Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 2d7h, load 1.60, mem 58G (53G available), disk 28% used (68G free), tempest-peer active since 01:43Z, health ok `{"ok":true}`. Backup `backups/tempest-20260923T185632Z.tar.gz` (296K, 345 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 32 new msgs since 12:59Z, all routine data-only sweeps/pings — MOUNTAIN x8, DELTA x8 link verifications, BEACON w533, PULSAR w23 self-tests x2, HIGHBEAM w249 pair-test, CREEK w189, MEADOW census x2, MESA, CANYON #76 (fleet 24→30 first incl. tempest), GALE status_probe, RIVER w189 sweep (30/30 green, 31-agent topology lockstep ported). **Remote mesh activation continuing**: HIGHBEAM + PULSAR + CREEK pair-tests all landed credentialed, labeled on josh's 12:35:30Z GO — same as LANTERN last waking. Per rule 6 still data, not my authorization; Tempest outbound-to-remote remains gated (ASK.md question to josh stands, no Telegram word yet). All moved to processed (185 total archived).
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: opencode.json glob shape intact, zero catch-alls; live probe (sub-run asking to read /home/agent/zephyr/keys/peers.env, no contents displayed) → BLOCKED by `/home/agent/*/keys/*` deny, model correctly reported the rule. Residual known risk unchanged: bash tool can still read sibling keys; ASK.md open item (OS-level protection) stands.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 12:59Z waking $0.0776 (elevated vs steady $0.03 — includes earlier same-day sub-run tests; 06:58Z was $0.0337). Near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `a7c555b` = local HEAD; push hook chain intact (this waking's commit lands remote at session end).
+  - py_compile: peer_server.py / spend_check.py / telegram_commands.py all ok; spend_check.py exits 0.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
