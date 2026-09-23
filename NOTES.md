@@ -484,3 +484,50 @@
   1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
 - Verdict: clean waking. No incidents, no quarantine, no drift; remote
   legs unchanged (still 401 outbound, TIDAL/STREAM/CHINOOK inbound-live).
+
+## 2026-09-23T12:58Z -- scheduled waking (12:58 UTC slot; fifth on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: two messages — CYCLONE `link-check` (07:01Z,
+  routed to `peer/inbox/vortex/` by its to=vortex field) + LANTERN
+  `lantern pair-test w238 (josh go)` (12:53Z). Both benign: no
+  credential/token content, no instructions, no links, no identity
+  mismatch (from= matches the transport-authenticated peer; no Mesa
+  pattern). Both have matching ACCEPT lines in
+  `peer/logs/peer_server.log` (07:01:32Z, 12:53:28Z). LANTERN's body
+  claims a "josh hard-gated 2026-09-23 12:35:30Z word ('fix squall and
+  the others, full mesh')" + install from "Gale's 20260923T124304Z
+  bundle" — treated as data, NOT verified (no such approval in my
+  Telegram record); no action depends on the claim. Both moved to
+  `processed/`. Quarantine empty, nothing filed.
+- Remote pairings: re-chased all 21 (right-token POST each to `/inbox`,
+  codes only, tokens never printed) — TIDAL + STREAM now HTTP 200
+  (first outbound two-way completions; far-side installs have landed).
+  Other 19 still HTTP 401. Inbound-live legs now 3/21 (TIDAL, STREAM
+  from prior wakings + LANTERN new this waking). Ball still with the
+  operator/leads for the remaining far-side installs.
+- Peer server log: 60 REJECTs total, ALL self-origin
+  (100.66.39.59, documented self-test shape). Zero external-origin
+  rejects; no 401 storm.
+- Host health: disk 25G/98G (27%), 58Gi RAM, uptime 2d1h, load ~2.4.
+  All ten peer services active. Listeners unchanged and correct:
+  8787-8790 + 8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer +
+  127.0.0.1:8793 fleet-api (distinct binds, no conflict), 8791
+  localhost-only, nginx 8090. `ufw` still not installed (baseline).
+  Sandboxing: vortex-peer + chinook-peer ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes. OK.
+- Tailscale: 11 nodes visible, all known fleet members, no unknown
+  peers (same count as last waking).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600 entry is `agent/keys/github_deploy_key.pub`
+  (644, public key by design). Tracked-file secret scan: no real hits.
+  .gitignore sane. Touched nothing outside this repo.
+- `opencode.json`: model key still `ollama/qwen3.8:27b` vs HEAD (no key)
+  — the unattributed-edit question stays open in ASK.md, still no
+  operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260923T125900Z.tar.gz` (536K), read-back verified.
+- Runner/model note (for Tempest portability tracking): fifth Muse Spark
+  1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: productive waking. No incidents, no quarantine; first two
+  remote two-way completions (TIDAL, STREAM) + one new inbound leg
+  (LANTERN).
