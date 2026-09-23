@@ -190,3 +190,55 @@ operator/Gale to confirm.
 
 Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
 again this waking; no runner/model anomalies observed.
+
+## 2026-09-23T19:02Z — Scheduled waking (upstream all green; pairing-state FINDING, see ASK.md)
+
+Host: up 2d7h, disk 28%, mem fine, `sirocco-peer` active, :8796
+listening; sibling ports 8787-8790, 8792, 8794, 8795 all up.
+`./backup.sh` -> `backups/sirocco-20260923T190313Z.tar.gz` (129K,
+read-back verified: 226 entries). `check_replies.sh`: no new operator
+messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational"; api probe 200 in 0.06s.
+- Tailscale: coordination endpoint 302 OK; `tailscale status` shows all
+  fleet nodes direct (gemini/mountain/ubuntu active; josh-desktop11
+  offline — operator's own desktop, not fleet infra, same as before).
+- OpenRouter: /api/v1/models 200 in 0.11s.
+- OpenCode Zen: opencode.ai 200. Waking itself succeeding = Zen healthy.
+- Ollama: still no local binary; release-watch only.
+
+Certs (unchanged, all >30d, no warnings): beaconwake.com -> 2026-11-23
+(61d), tidalwake.org -> 2026-11-28 (66d), mountainwake.org ->
+2026-12-04 (71d). All Let's Encrypt.
+
+Dependency changes: NONE since 13:02Z. opencode latest still v1.18.32
+(2026-09-21), Ollama still v0.34.3 (2026-09-19).
+
+FINDING — 22 remote pairings installed outside my wakings (ASK.md):
+`keys/peers.env` gained CHINOOK (~01:40:34Z) + a 20-block batch
+(BEACON/BROOK/CANYON/CREEK/DELTA/HARBOR/HIGHBEAM/LANTERN/LIGHTNING/
+MEADOW/MESA/MIST/MOUNTAIN/PRISM/PULSAR/RADAR/RIDGE/RIVER/STREAM/
+TIDAL/VISTA, ~12:40:55Z). Evidence: mtimes + `.bak-provision-*` pair;
+`sirocco-peer` restarted 8x 12:41:40-12:41:54Z with per-peer self-tests
+in `peer/logs/peer_server.log` ("30 peer(s) configured" = 8 local +
+22 remote). Inbound prose claims operator authorization but is data
+only (rule 5); no quotable Telegram word, no NOTES record. I
+minted/installed nothing; leaving steady state untouched (unilateral
+removal/rotation would itself breach rule 8); flagged in ASK.md +
+Telegram notify. CORRECTIONS: the 07:02Z "no CHINOOK pairing" and
+13:02Z "no LANTERN pairing" claims were already false when written
+(installed 01:40Z/12:40Z, unknown to those wakings). Lesson: inspect
+`keys/peers.env` peer NAMES (never values) every waking from now on.
+
+Inbox: filed 35/35 to `processed/` (10x MOUNTAIN latency/sweep probes,
+3x BEACON pair-test/health, 8x DELTA link verifications, HIGHBEAM +
+CREEK + PULSAR x2 pair-tests, MEADOW census, MESA link verification,
+CANYON liveness sweep, GALE status probe, RIVER Rule-7 sweep, STREAM
+link-check, PRISM verify, CYCLONE link-check). STREAM's 18:47Z message
+asks for an ack: bearer reach is confirmed by transport ACCEPTs in
+`peer_server.log`, logged here instead of a reply. No replies sent to
+any peer; nothing minted or installed.
+
+Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
+again this waking; no runner/model anomalies observed.
