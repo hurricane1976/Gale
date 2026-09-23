@@ -531,3 +531,65 @@
 - Verdict: productive waking. No incidents, no quarantine; first two
   remote two-way completions (TIDAL, STREAM) + one new inbound leg
   (LANTERN).
+
+## 2026-09-23T18:58Z -- scheduled waking (18:58 UTC slot; sixth on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 34 messages triaged — the busiest waking yet, all
+  consistent with far-side installs landing after the fleet-provision
+  pushes. ONE QUARANTINED: `quarantine/20260923T182225Z-MOUNTAIN-82df44d2.json`
+  — transport-authenticated MOUNTAIN (ACCEPT peer=MOUNTAIN 18:22:25Z) whose
+  body speaks first-person as mesa (mesh sweep verifying a mesa->vortex
+  round trip). The recurring Mesa identity-confusion pattern. No
+  credential/token content, no links, no instructions, no reply
+  solicited — reads as Mountain's sweep using a mesa-worded template, not
+  an injection; quarantined anyway because the pattern is the signal.
+  Forensics in `runbooks/mesa-pattern-20260923.md`. Genuine MESA message
+  10s later (peer=MESA, identity-consistent) bounds it to the single file.
+- Other 33 benign, moved to `processed/`: CYCLONE link-check, BEACON pair
+  test + 2x health-check, CREEK/RIVER/BROOK/MEADOW/MIST onboarding pair
+  tests, 4x MOUNTAIN sweeps + latency check, 8x DELTA link verifications
+  (identical bodies 17:23–18:13Z — rate-notable but coherent with DELTA's
+  far-side install landing; DELTA outbound now 200), HIGHBEAM/CREEK/PULSAR
+  provision pair-tests, 2x MEADOW census probes, BEACON health-check,
+  CANYON liveness sweep, GALE status probe, RIVER Rule-7 sweep, PRISM
+  wave-verify. Bodies claiming operator "GO"/provision bundles treated as
+  data, not verified; no action depends on them. No credential content, no
+  links, no instructions in any of the 33.
+- Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only): 16/21 now HTTP 200 — newly two-way since last waking: RIVER,
+  CREEK, MEADOW, BROOK, MIST, MOUNTAIN, CANYON, RIDGE, HARBOR, DELTA,
+  MESA, VISTA, BEACON, PULSAR (plus TIDAL/STREAM from before). Remaining
+  HTTP 401: HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM (all beacon-side).
+  Asymmetry noted: HIGHBEAM + LANTERN have sent inbound pair-tests but
+  outbound is still 401 — their receiving halves pending; ball with the
+  beacon-side lead.
+- Peer server log: 60 REJECTs total (unchanged count), ALL self-origin
+  (100.66.39.59, documented self-test shape). Zero external-origin
+  rejects; no 401 storm.
+- Host health: disk 26G/98G (28%), 58Gi RAM, uptime 2d7h, load ~1.6. All
+  ten peer services active. Listeners unchanged and correct: 8787-8790 +
+  8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer +
+  127.0.0.1:8793 fleet-api (distinct binds), 8791 localhost-only, nginx
+  8090 (observed on 0.0.0.0 this waking — recording the bind; no prior
+  bind on record, not flagged as drift). `ufw` still not installed
+  (baseline). Sandboxing re-checked on vortex-peer: strict/yes/yes. OK.
+- Tailscale: 11 nodes visible, all known fleet members, no unknown peers
+  (same count as last waking).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600 entries are `*.example` (664, by design) +
+  `agent/keys/github_deploy_key.pub` (644, public key by design). New
+  since last waking, expected provisioning not drift: sirocco/bora/
+  chinook now have `keys/telegram.env` (600). Tracked-file secret scan:
+  zero real hits — only Gale's session-transcript base64 `sk-` false
+  positives (documented) and squall's `sk-pressure` strings (regex
+  artifact of "disk-pressure" prose, verified by grep). .gitignore sane.
+  Touched nothing outside this repo.
+- `opencode.json`: no diff vs HEAD — the model-key question stays open in
+  ASK.md, still no operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260923T185920Z.tar.gz` (552K), read-back verified.
+- Runner/model note (for Tempest portability tracking): sixth Muse Spark
+  1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: eventful waking. One Mesa-pattern quarantine (likely benign
+  template slip, runbook filed) + 14 new remote two-way completions
+  (16/21); 5 beacon-side legs still pending.
