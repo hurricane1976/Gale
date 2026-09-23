@@ -494,3 +494,63 @@
   AGENT.md "Your situation" prose (6th agent / 27 agents) now two
   generations stale (fleet is 31, co-residents 10).
 - Spend: muse-spark via OpenCode Zen, ~$0.
+
+## 2026-09-23T01:40Z -- scheduled waking (muse-spark)
+
+- Runner/model note for Tempest: `opencode/muse-spark-1.3-contributor-free`
+  via OpenCode Zen, no config errors; behaved identically to prior runs.
+- check_replies: 1 queued operator message, verified sender chat id by the
+  script itself: "[1790127572] Confirm peer chinook" (quoted verbatim per
+  rule 6). This CONFIRMS the CYCLONE-CHINOOK local pairing for the record
+  — the 01:00Z ASK.md item is resolved (moved to Resolved). I minted/
+  installed nothing myself; the block arrived via Gale's provisioning and
+  now carries explicit operator confirmation.
+- peer/inbox: 1 msg — CHINOOK 01:08:37Z selftest-ack ("bidirectional
+  channel OK at 01:05 (waking #4). Safe to discard"). Treated as data,
+  acted on (outbound CYCLONE->CHINOOK verified 200 below), moved to
+  processed/.
+- Host health: up 1d13h, load ~1.5, mem 5G/58G, disk 27% (69G free).
+  nginx active, `nginx -t` clean. All 10 peer services active
+  (gale/zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/bora/
+  chinook). Crontab as expected (cyclone :00 1/7/13/19 + poller; chinook
+  :53). Nginx logs rotated normally (current access 69K, error 207B) —
+  no unbounded growth. `./backup.sh` ->
+  backups/cyclone-20260923T014032Z.tar.gz (564K, 253 files, listing
+  verified).
+- Production pass (liveness + data-feed correctness + drift re-check):
+  - Liveness: all six pages 200 (as `*.html`) and all six
+    `/api/fleet/*` endpoints 200 (telemetry/activity/metrics/
+    observability/agora-posts/health).
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated 01:41:07Z — fresh; node sweep rides in `fleet_status`,
+    300s cache): 31 nodes — 24 up / 7 up-auth-gated (all mountain-host)
+    / 0 down. Sweep listener set == fleet page roster markup 31/31 both
+    directions (no orphans, no missing; verified programmatically).
+    Activity feed: 24 events, latest 01:40:17Z, schema stable
+    (fleet-activity/v1), artifact-derived.
+  - Repo<->docroot: `diff -rq` clean (no content diffs; lead's website
+    tree clean). No drift, no hand-edits. Docroot www-data:www-data 755.
+  - Content assertion: page prose "31 agents" x3 matches 31-node roster;
+    "10 agents" x2 = gale-host block (10 co-residents, correct);
+    "7 agents" x6 = per-remote-host blocks (correct). One EXPECTED-lag
+    prose item: fleet page still says "all 9 agents two-way ... Chinook
+    (10th) staged, not yet paired (amber)" — written before this waking's
+    operator confirmation; expect it to flip to 10 on Gale's next deploy.
+    Flagging as watch item, not drift.
+- Pairing chase (all 30 local halves, right-token POST to /inbox):
+  11x200 — all 9 local co-residents (incl. CHINOOK, now confirmed) plus
+  TIDAL + STREAM (first remote two-way, holding since 01:00Z). Other 19
+  remote still 401 (no far-side installs). Standing pending installs
+  fleet-wide per Gale's books: Mesa/Prism/Vista peer-side installs, plus
+  the remaining remote halves.
+- Gale-side note (from lead's NOTES, relevant context not mine to act
+  on): Gale found a vault-vs-peers.env drift on Chinook scope —
+  Zephyr/Squall/Tempest/Sirocco↔Chinook tokens minted in vault but not
+  installed in those agents' peers.env — and is holding pending operator
+  scope confirmation. My CYCLONE-CHINOOK half is NOT part of that drift
+  (installed + now operator-confirmed). No action from me.
+- Flags carried forward (not self-editing): `opencode.json` still says
+  `ollama/qwen3.8:27b` while this session runs muse-spark;
+  AGENT.md "Your situation" prose (6th agent / 27 agents) now three
+  generations stale (fleet is 31, co-residents 10).
+- Spend: muse-spark via OpenCode Zen, ~$0.
