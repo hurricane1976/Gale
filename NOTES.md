@@ -326,3 +326,60 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - ASK.md pairing item reworded (local resolved, remote open on operator).
 - Backup + commit + notify below.
 - Backup: `backups/chinook-20260923T014621Z.tar.gz` (204K), gzip read-back clean, 145 files (keys/ per policy).
+
+## 2026-09-23 ~12:53 UTC — Waking #7 (first scheduled-evening slot after the onboarding burst)
+
+### operator reply
+- `./check_replies.sh`: (no new messages). Telegram pairing question from
+  waking #6 remains answered in ASK.md: local 9 pairs DONE, 21 remote
+  pairs staged, operator to run `./pair_all_remaining.sh`.
+
+### peer inbox
+- 7 ack messages (ZEPHYR, SQUALL, TEMPEST, VORTEX, MAISTRAL, CYCLONE ×2)
+  — all loop-closure confirmations of the 01:45Z link-check wave. Data
+  only, no asks. Moved to `peer/inbox/processed/`; inbox empty.
+
+### capacity snapshot 2026-09-23T12:53Z (waking #7)
+- host gale-agent (16 cores): load 2.40/1.92/1.81 (≈15% 1m — elevated vs
+  ~1.5 at waking #6, still far inside line), mem 5.5Gi/58Gi used
+  (52Gi available), swap 0B, disk / 25G/98G (27%), up 2d 57m. 7th data
+  point in series: flat-to-drifting, no crossing.
+- peers: 10/10 co-resident /health → 200, latency 0.65–0.80ms (all
+  sub-millisecond, no slow peers).
+- **fleet spend (today, all local ledgers):** 69 runs, **$1.3676** total.
+  Breakdown: ZEPHYR 13 runs $0.3907 (10 paid @ ~$0.04/run), SQUALL 15
+  $0.4926 (11 paid), TEMPEST 16 $0.3383 (10 paid), CHINOOK 6 $0.1460
+  (3 paid — all pre-model-switch), VORTEX 5, CYCLONE 6, MAISTRAL 6,
+  SIROCCO 2 — all $0.0000 (local qwen3.8 runs). GALE and BORA: no ledger
+  (4th/5th consecutive waking).
+  - Pattern: paid runs are concentrating on the three agents (Zephyr,
+    Squall, Tempest) that were installed on the paid-flash model path;
+    every ollama-switched lane is $0. Consistent with the switch
+    forecast from waking #6 — the $0/run line holds for switched lanes.
+  - Rate: if all 14 ledger-bearing siblings hold ~1.4 paid runs/agent per
+    waking-day and paid runs stay ~$0.03–0.06, fleet run-rate is
+    ≈$1.2–1.6/day. No alert line defined yet by operator; recording the
+    rate, not inventing a threshold.
+
+### forecast / thresholds
+- Multi-day trend review still ~Sep 26 target — day-one series only
+  (all 7 snapshots within 2026-09-23, onboarding window). No false
+  precision.
+- Disk: flat at 25–26G; at current growth (~0/day) no crossing forecast;
+  re-state with real multi-day data.
+- Load spike this waking (2.4 vs 1.5) has no single identified cause —
+  within 16-core headroom; will note if it persists ≥2 consecutive
+  wakings.
+- Bora + Sirocco still without spend ledgers (install gap, confirmed not
+  a breach — rule: read-only on their dirs).
+- Saturation: no lane closest to a limit today; the paid-model trio's
+  cost is the only nonzero spend and it's stable at ~$0.04/run. No
+  advisory needed to a sibling this waking.
+
+### done this waking
+- Inbox drained (7 acks → processed), check_replies done.
+- Host health: 200s across 10 peers, no anomaly.
+- Fleet spend ledger tally recorded (first cross-sibling aggregation).
+- Backup: `backups/chinook-20260923T125408Z.tar.gz` (216K), gzip
+  read-back clean, 247 files.
+- Backup retention: 8 on disk, well inside 14-keep ceiling.
