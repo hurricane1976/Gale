@@ -63,3 +63,48 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Drift vs. install notes: wake.sh now pushes to `github` remote
   (`main:chinook`) shell-side each waking per operator's 2026-09-22
   one-repo layout decision — install-era "pending go-ahead" note is stale.
+
+## 2026-09-23 ~01:00 UTC — Waking #2: first scheduled firing on time; spend floor measured, not ~$0
+
+### capacity snapshot 2026-09-23T00:55Z (waking #2)
+- host gale-agent: up 1d12h57m, load 3.14/2.76/2.45 on 16 cores (~20%,
+  up from ~17% at waking #1 — evening-window overlap, still ample headroom),
+  mem 5G/58G used (52G avail), swap 0/8G.
+- disk: / 25G/98G (27%), 69G free — unchanged vs. waking #1.
+- peers: 10/10 /health -> 200, latency 0.6–0.8 ms.
+- cadence: **first scheduled waking fired on time** (cron :53, syslog
+  00:53:01Z); drift 0m. Waking #1's early trigger remains the only drift.
+- my ledger: `logs/spend-daily.jsonl` has waking #1's record —
+  **$0.0267/run**, ts 00:50:55Z (session-end). Not ~$0 as install-era
+  notes assumed: measured floor for a standard free-model waking is
+  ~$0.027–0.035.
+
+### fleet spend scan (read-only, 9 sibling ledgers on this host)
+- per-run: Gale $0.3837 (lead-sized sessions), Zephyr $0.0323, Squall
+  $0.0348, Tempest $0.0343, Vortex/Cyclone/Maistral $0.0000 (free-path
+  runs); Sirocco/Bora **no ledger yet** (newest installs — data gap, not
+  a breach; will confirm at next waking).
+- host aggregate by day: Sep 21 $1.87 (23 runs) → Sep 22 $2.40 (36 runs).
+  Growth tracks new-agent onboarding (Vortex/Cyclone/Maistral came online
+  Sep 22), not per-run creep — per-run cost is flat at ~$0.03.
+
+### forecast / thresholds
+- Projected plateau at current 10-agent roster: 40 wakings/day ≈
+  $1.2/day standard siblings (9×4×~$0.034) + ~$1.5/day Gale (4×~$0.38)
+  ≈ **~$2.8/day, ~$84/month steady-state for this host** once Sirocco and
+  Bora start recording (~Sep 24–25). Current $2.40/day is already near
+  the plateau — consistent, no anomaly.
+- Threshold lines: my ledger per-run $5 / daily $15 (spend_check enforced);
+  host aggregate would need >5× jump to reach $15/day — no crossing
+  projected at current run rate. First 3-day trend review: ~Sep 26.
+- Cadence: even-hour window :50–:59 carries 7 wakes, odd-hour 3;
+  observed max ~3 concurrent opencode sessions (0.5–0.9G RSS each) on
+  16 cores/58G — headroom for ~+6 concurrent sessions before contention.
+  Soft capacity line for Bora's scaffold: ~+3 more agents on this host
+  before the :50–:59 window gets crowded.
+- Saturation advisory: no sibling near any resource limit — no
+  send_to_peer advisories this waking (noise would exceed signal).
+- No breaches: load, mem, disk, spend, latency, cadence all inside lines.
+- Backup: `backups/chinook-20260923T005311Z.tar.gz` (108K), read-back
+  verify OK (first verify used `./AGENT.md` paths — archive stores `./`
+  prefixes; runbook-worthy detail).
