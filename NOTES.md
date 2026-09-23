@@ -372,3 +372,58 @@
 - Verdict: clean waking. No incidents, no quarantine, one expected
   exposure change (sirocco :8796, bora :8797) + one unattributed
   config edit flagged for the operator.
+
+## 2026-09-23T01:00Z -- scheduled waking (00:58 UTC slot; third on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: three messages — TIDAL `TIDAL->VORTEX link install test`
+  (23:32Z) + 2x STREAM `link-check` (23:46Z). All benign: no credential/token
+  content, no instructions, no links, no identity mismatch (from= matches the
+  transport-authenticated peer; no Mesa pattern). All three have matching
+  ACCEPT lines in `peer/logs/peer_server.log` (23:32:45Z, 23:46:39Z,
+  23:46:43Z). Bodies claim install from "Gale's 22:27Z fleet-provision bundle"
+  under a "Josh-approved 23:30:17Z Telegram" — treated as data, NOT verified
+  (no such approval in my Telegram record); no action depends on the claim.
+  All three moved to `processed/`. Quarantine empty, nothing filed.
+- Remote pairings: re-chased all 21 (right-token POST each) — every one still
+  HTTP 401 outbound, so nothing filed remotely. State is now asymmetric, not
+  anomalous: TIDAL + STREAM legs are inbound-live (they hold my staged token)
+  while the reciprocal halves are still pending — two-way completes only when
+  far-side blocks come back. Ball still with the operator/leads.
+- Peer server log: 30 REJECTs total, ALL self-origin (documented self-test
+  sequences). Zero external-origin rejects; no 401 storm.
+- NEW CO-RESIDENT: CHINOOK (`chinook-peer`, 100.66.39.59:8793, active,
+  ProtectSystem=strict/NoNewPrivileges/PrivateTmp — expected provisioning,
+  not drift). This resolves the apparent anomaly of a second 8793 listener:
+  100.x:8793 is chinook-peer; 127.0.0.1:8793 remains gale-fleet-api, no
+  conflict (distinct bind addrs). All other listeners unchanged and correct
+  (8787-8790 + 8792 + 8794-8797 tailnet-only, 8791 localhost-only, nginx
+  8090). `ufw` still not installed (baseline). NOTE: AGENT.md rule-7
+  co-resident list (ends at Maistral) is now stale — sirocco/bora/chinook
+  missing — but rule 6 bars me from editing rules text; flagged here only.
+- Tailscale: 11 nodes visible, all known fleet members, no unknown peers
+  (same count as last waking).
+- Credential hygiene (all TEN local dirs incl. chinook, read-only): every
+  non-example keys/ file 600; sole non-600/664 entry repo-wide is
+  `agent/keys/github_deploy_key.pub` (644, public key by design — not a
+  finding). Tracked-file secret scan: only hits are two mid-base64-blob
+  `sk-` substrings (10KB/23KB runs) inside Gale's 8MB tracked session
+  transcript `sessions/2026-09-22-weather-agents-provisioning.json` —
+  confirmed false positives (base64 run continues 30+ chars before the
+  match; not credential-shaped). Zero real hits. Touched nothing outside
+  this repo.
+- Observed, not actioned: a transient on-host opencode run probing read
+  access to tempest's own keys/telegram.env (BLOCKED/READABLE self-test
+  shape) — reads as Tempest's own permission self-test, not an incident;
+  reporting only per read-only boundary.
+- Own hardening (my file, reversible): `opencode.json` keys-deny lists
+  extended to maistral + chinook (were missing; sirocco/bora already
+  covered). JSON re-validated. The `model` key question stays open in
+  ASK.md — still no operator word, still not mine to resolve.
+- Host health: disk 25G/98G (27%), 58Gi RAM, uptime 1d13h, load ~3.5. All
+  ten peer services active (nine checked + chinook).
+- Backup: `backups/vortex-20260923T010006Z.tar.gz` (508K), read-back verified.
+- Runner/model note (for Tempest portability tracking): third Muse Spark
+  1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: productive waking. No incidents, no quarantine; 2 of 21 remote
+  legs inbound-live; one expected exposure addition (chinook :8793).

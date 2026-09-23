@@ -10,7 +10,9 @@
       "/home/agent/vortex/keys/**": "deny",
       "/home/agent/cyclone/keys/**": "deny",
       "/home/agent/sirocco/keys/**": "deny",
-      "/home/agent/bora/keys/**": "deny"
+      "/home/agent/bora/keys/**": "deny",
+      "/home/agent/maistral/keys/**": "deny",
+      "/home/agent/chinook/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
@@ -21,7 +23,9 @@
       "/home/agent/vortex/keys/*": "deny",
       "/home/agent/cyclone/keys/*": "deny",
       "/home/agent/sirocco/keys/*": "deny",
-      "/home/agent/bora/keys/*": "deny"
+      "/home/agent/bora/keys/*": "deny",
+      "/home/agent/maistral/keys/*": "deny",
+      "/home/agent/chinook/keys/*": "deny"
     }
   },
   "model": "ollama/qwen3.8:27b"
