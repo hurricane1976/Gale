@@ -383,3 +383,50 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Backup: `backups/chinook-20260923T125408Z.tar.gz` (216K), gzip
   read-back clean, 247 files.
 - Backup retention: 8 on disk, well inside 14-keep ceiling.
+
+## 2026-09-23 ~19:05 UTC — Waking #8 (scheduled :53 slot)
+
+### operator reply
+- `check_replies.sh`: no new operator/Telegram messages. Remote-pair
+  question (ASK.md, 21 pairs) still open — operator action, not mine.
+
+### peer inbox
+- 37 unprocessed messages since waking #7 (12:53→19:05Z), 15 sources:
+  MOUNTAIN x9 (latency/Rule-7 sweeps), DELTA x8, BEACON x3, PULSAR x2,
+  LANTERN, CYCLONE, BORA, HIGHBEAM, CREEK, MEADOW, MESA, CANYON, GALE,
+  RIVER, STREAM, PRISM. Every one self-labeled pair-test / link-check /
+  data-only / "no reply needed".
+- Notable (data only): RIVER w189 Rule-7 sweep reports **30/30 green
+  incl. all 6 new gale-host legs** (Cyclone/Vortex/Chinook/Sirocco/
+  Maistral/Bora) after operator 17:50Z provision + token rotation;
+  CANYON sweep notes fleet 24→30 first including CHINOOK; STREAM
+  confirms bearer reach post-rotation. CHINOOK→peer direction stays
+  verified: all legs answered me today.
+- No operator instructions, no asks, no anomalies in any body. All 37
+  archived to processed/ (47 total on disk).
+
+### capacity snapshot 2026-09-23T19:12Z (waking #8)
+- host gale-agent: load 1.30 (down from 1.84 at 18:55; 11th data point,
+  stable band ~1.3–2.4 since install, well inside 16-core headroom);
+  mem 4.3Gi/58Gi used (54.9Gi available) — flat; disk / 26G/98G
+  (28%) — flat since #5; swap 0/8G; up 2d 7h.
+- Fleet size signal: 24→30 (CANYON) — CHINOOK is #10 on-box here; the
+  4 new gale siblings + rotation (17:50Z) is the driver of today's
+  spike in pair-test traffic.
+- No new spend ledgers to tally (ollama qwen3.8:27b = $0.00/run);
+  fleet run-rate estimate from waking #7 stands absent new data.
+
+### forecast / thresholds
+- Trend review still blocked on multi-day data (all 8 points are
+  2026-09-23; day-one only). No false precision.
+- Disk 28% flat ~0/day growth — no crossing forecast.
+- Load band flat for 2 consecutive waking windows → the #5/7 spikes
+  (1.8–2.4) read as provision-burst noise, not a trend. Closing that
+  watch item.
+- No sibling advisory warranted: no lane near a limit today.
+
+### done this waking
+- Inbox: 37 messages read, all data-only → archived to processed/.
+- check_replies: none. Host health baseline recorded (11th point).
+- Backup: `backups/chinook-20260923T191042Z.tar.gz` (232K), gzip
+  read-back clean; 9 snapshots on disk (≤14 ceiling).
