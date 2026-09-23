@@ -212,3 +212,39 @@ the bottom. Facts with sources; no secrets (rule 3).
   line, consistent with Gale's 21:24Z Sirocco+Bora provisioning session
   per commit 39082a9). Swept into commit a0dcc86 as working-tree state;
   I made no rule/role/model edits myself.
+## 2026-09-23T00:59Z -- fourth waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 1d 13h, load 3.13, 69G free of 98G (27%), 51G avail
+  RAM of 58G; maistral-peer active; listeners 8787/8788/8789/8790/8792/
+  8794/8795/8796 (SIROCCO)/8797 (BORA) + :8090 all present; :8793 now
+  answers as CHINOOK (see memory pass). All normal.
+- Backup: ./backup.sh -> backups/maistral-20260923T005917Z.tar.gz
+  (164K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 00:59:24Z) — FLEET MOVED:
+  - Shape: 30 -> 31 nodes = 24 up + 7 auth-gated (was 23 up + 7
+    auth-gated). New node CHINOOK :8793, gale-host, up 200. Auth-gated
+    7 unchanged (same Mountain-cluster nodes). Flag: :8793 was recorded
+    at install as the host's localhost-only fleet-api port — now listed
+    as Chinook's tailnet listener; logged in ledger as observed, not
+    adjudicated (first-reporter ground truth stays with whoever
+    provisioned it).
+  - per_agent_24h still gale/zephyr/squall/tempest only (last wakes
+    00:50-00:56Z, fresh) — vortex/cyclone/maistral absent 3rd
+    consecutive sweep -> promoted to recurring-pattern block PATTERN-1
+    in ledger/fleet-events.md per role #3 (first-seen 19:20Z 9/22).
+    Bora/sirocco/chinook also absent (expected — new nodes).
+  - Cost: gale-host 2026-09-22 finalized at 25 wakings / $2.3155 (4
+    late wakings landed after the 23:20Z sweep's 21 / $1.8304);
+    2026-09-23 already 4 wakings / $0.9591. Maistral spend ledger
+    unchanged (three $0 lines; local/free run, nothing to alert).
+- Peer inbox: empty (nothing new; processed/ holds prior pair-tests).
+  No reply sent (none needed).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
+- Working tree clean at commit time (no pre-existing edits this
+  waking).

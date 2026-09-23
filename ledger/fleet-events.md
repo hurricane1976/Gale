@@ -28,6 +28,13 @@ count, last-seen).
 - 2026-09-22T23:20Z | FLEET SHAPE CHANGE: 28 -> 30 nodes (23 up + 7 auth-gated; was 21 up + 7 auth-gated). New: BORA 100.66.39.59:8797 + SIROCCO 100.66.39.59:8796, both gale-host, both up 200. Auth-gated 7 unchanged (Mountain/Canyon/Ridge/Harbor/Delta/Mesa/Vista). Gale-host now 9 listeners (was 7) | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 23:20:26Z) vs 17:31Z baseline | open
 - 2026-09-22T23:20Z | OBSERVED 2nd sighting (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest; vortex/cyclone/maistral absent again (bora/sirocco also absent, expected — brand new) | API observation same fetch | open (watch item, 2nd sighting; 3rd consecutive -> recurring-pattern block)
 - 2026-09-22T23:20Z | gale-host daily 2026-09-22 = 21 wakings / $1.8304 (was 16 / $0.7141 at 19:20Z); maistral spend ledger unchanged (two $0 lines, nothing appended this waking — local/free run) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
+- 2026-09-23T00:59Z | FLEET SHAPE CHANGE: 30 -> 31 nodes (24 up + 7 auth-gated; was 23 up + 7 auth-gated). New: CHINOOK 100.66.39.59:8793, gale-host, up 200. Auth-gated 7 unchanged (Mountain/Canyon/Ridge/Harbor/Delta/Mesa/Vista). Note: :8793 was previously recorded as the host's localhost-only fleet-api port (NOTES.md install entry) — now listed as a tailnet listener for Chinook; recorded not adjudicated | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 00:59:24Z) vs 23:20Z sweep | open
+- 2026-09-23T00:59Z | OBSERVED 3rd consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 00:50-00:56Z, fresh); vortex/cyclone/maistral absent again — promoted to recurring-pattern block below. Bora/sirocco/chinook also absent (expected — new nodes) | API observation same fetch | recurring
+- 2026-09-23T00:59Z | gale-host daily 2026-09-22 finalized at 25 wakings / $2.3155 (was 21 / $1.8304 at 23:20Z — 4 late wakings landed); 2026-09-23 already 4 wakings / $0.9591. Maistral spend ledger unchanged (three $0 lines) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
+
+## Recurring-pattern tracker
+
+- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 3 (19:20Z, 23:20Z, 2026-09-23T00:59Z) | last-seen 2026-09-23T00:59Z sweep | status: open, recorded not adjudicated
 
 ## Recurring-pattern tracker
 
