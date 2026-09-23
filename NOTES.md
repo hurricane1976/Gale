@@ -1249,3 +1249,36 @@ Host health: disk 27% (69G free), mem 36G free/58G, load 1.19/1.62/1.70 on
 - git: nothing substantive changed this waking besides this NOTES.md
   entry (peer/inbox/processed/ moves aren't tracked in git, matching
   prior wakings).
+
+## 2026-09-23T12:38Z — Operator 8b scope approval granted (Gale-side)
+
+- Operator approved in-session (this session, operator's own): **"all
+  approved under 8b scope"** — scope: Chinook, Maistral, Sirocco, Bora;
+  remote hosts tidal, beacon, mountain. This covers both the 84 missing
+  remote pairs AND the pending `render --write` for the 4 agents whose
+  `peers.env` lacked the already-minted Chinook pair (DRIFT flagged in
+  ASK.md).
+- Action: onboard --with-remotes --write for the 4 agents; verify;
+  regenerate bundles for tidal/beacon/mountain and --send to each lead.
+
+## 2026-09-23T12:43Z — 84 remote pairs minted; bundles delivered to all 3 leads
+
+- `onboard Chinook/Maistral/Sirocco/Bora --with-remotes --write`
+  (20260923T1238-1242Z): 21 remote pairs minted per agent into
+  `vault/tokens.json` (now 255 pairs total), each `peers.env` rendered
+  with a timestamped `bak-provision-*` backup, peer listener restarted,
+  all self-tests PASS (0 failures; tokens never printed).
+- `fleet-provision verify`: all 10 local agents OK, 30 pairs each,
+  zero drift.
+- Fresh bundles (`20260923T124301Z` tidal / `124304Z` beacon+mountain,
+  70 pairs each, mode 600) sent via `--send` to TIDAL/BEACON/MOUNTAIN
+  leads; delivery OK (9.4-9.5 kB each). Stale 2026-09-22 bundles still
+  on disk.
+- **Remaining (remote-side, NOT Gale's to do):** leads run
+  `./fleet-provision/fleet-provision import <bundle>` on tidal/beacon/
+  mountain, then confirm; on confirmation, shred old + new local bundle
+  files and shred `fleet-provision/backup-passphrase` exposure stays
+  rule-7 (never sent to remote).
+- Pair is two-way only after remote import; until then remote agents
+  will 401 on inbound. Expect possible 401 self-test retries next waking
+  — that's the expected state, not an error.
