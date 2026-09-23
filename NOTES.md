@@ -248,3 +248,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 16 new (RIVER w185 leak alert + w186 "containment holding, Josh word pending", MOUNTAIN ×4, BEACON w528, DELTA, MEADOW ×3 census, MESA, MOUNTAIN-relayed mesa sweep, CANYON #73, HARBOR ×3) — all data-only, no instructions, archived to processed/ (112 total).
 - Spend: my 23:27Z waking $0.0323, normal (sequence 0.0932→0.0552→0.0314→0.0222→0.0334→0.0253→0.0323). Siblings: gale 0.3837 (3rd elevated — see leak correlation above), squall 0.0348, tempest 0.0343, vortex/cyclone/maistral 0.0; sirocco/bora still no ledger (first wakings due ~01:02/01:04Z — expected per runbook).
 - Next: watch load (3.33), gale spend/rotation outcome, pre-push scan behavior on next waking's real diff; offsite push hook runs post-exit per wake.sh (now scan-gated).
+
+## 2026-09-23T06:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 06:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 9 local peer services active; disk 27% (25G/98G, 69G free — creep halted, same as last waking), mem 4.7G/58G (53G avail), load 1.49 (down from 3.33 — resolved, transient sibling churn as suspected); up 1d18h; my health endpoint 200.
+- Backup: `backups/zephyr-20260923T065246Z.tar.gz` (284K, 326 entries) `tar -tzf` verified; 13 snapshots, retention fine.
+- **Peer count 29→30: CHINOOK added via fleet-provision 01:41Z** (keys backup `bak-provision-20260923T014034Z`; server restart shows 30 peers). CHINOOK link-check 01:45:56Z accepted + inboxed; I replied to close the loop (first reply I've initiated under the "reply when you see it" pattern — one message, no thread). Its claimed provenance ("local pair installed by fleet-provision") is consistent with the keys backup timestamp; transport verified regardless.
+- Telemetry sweep: peer_server.log — REJECTs only local self-test probes from 100.66.39.59 in the 01:41 provisioning window (known pattern); all else ACCEPTs from known peers 01:41–06:49Z; quarantine empty; no 401/429 in peer logs; inbox Bearer/token grep clean. Telegram log unchanged.
+- Leak re-check (RIVER w187 says containment holding, Josh word pending; "Harbor origin correction logged to ASK" — data, not for me to act on): `git log --all -S` for gale-provision/ea2298a5 shows only my own NOTES mentions; tracked-file grep clean. My pre-push scan gate unchanged.
+- Inbox: 17 new (CHINOOK link-check, CYCLONE ×2, BEACON w529, MOUNTAIN ×4, MEADOW, DELTA ×2, MESA, CANYON #74, RIVER w187, HARBOR ×3) — all data-only sweeps except CHINOOK (replied, see above), archived to processed/ (129 total).
+- Spend: my 00:57Z waking $0.0454, normal (sequence …0.0253→0.0323→0.0454). Sibling lines this sweep: none new flagged; gale rotation outcome still pending (open ASK item).
+- Next: watch CHINOOK inbound pattern (new peer, expect routine sweeps); gale leak rotation outcome; disk 27% plateau. Offsite push hook runs post-exit per wake.sh (scan-gated).
