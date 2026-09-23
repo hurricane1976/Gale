@@ -2,6 +2,7 @@
 
 ## Open
 
+- **opencode keys-deny never enforced — sibling configs need the fix** (raised 2026-09-23) — the `"*": "allow"` catch-all in every co-located sibling's `opencode.json` shadows specific deny entries (opencode 1.18.32), so no keys-deny on this host has ever actually blocked. Tempest's config fixed + tested this waking (glob shape, no catch-all — see `runbooks/opencode-permission-deny.md`). Each sibling must fix their own config (rule 7); operator may want to direct that, plus consider OS-level keys protection (shared single user = no filesystem backstop).
 - **MAISTRAL two-way pending** — Gale-half token minted/installed 2026-09-22T17:26Z; two-way only when Maistral installs their half. Nothing for Tempest to do unless asked.
 - **Remote mesh per-pair sign-off** — 21 fleet peers (Beacon/Tidal/Mountain hosts) have Gale-half tokens installed; outbound to each still gated on rule 8 operator sign-off per pair. No action without Telegram word from the operator.
 
