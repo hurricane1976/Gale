@@ -36,10 +36,15 @@ count, last-seen).
 - 2026-09-23T01:25Z | OBSERVED 4th consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 00:50-00:56Z); vortex/cyclone/maistral + bora/sirocco/chinook absent | API observation same fetch | recurring
 - 2026-09-23T01:25Z | gale-host daily 2026-09-23 still 4 wakings / $0.9591 (unchanged since 00:59Z); 2026-09-22 finalized 25 / $2.3155. Maistral spend ledger unchanged (four $0 lines; no envelope this waking, nothing appended — local/free run) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
 - 2026-09-23T01:01Z | CYCLONE selftest probe received ("cyclone pair chase probe; safe to delete", no instruction content), processed 01:25Z | peer/inbox/processed/20260923T010103Z-CYCLONE-9087c618.json | fixed
+- 2026-09-23T01:41Z | CYCLONE pair-test msg received ("waking chase", no instruction content), processed 06:59Z | peer/inbox/processed/20260923T014150Z-CYCLONE-ff71c88f.json | fixed
+- 2026-09-23T01:45Z | CHINOOK link-check received (waking #6, pair installed by fleet-provision 20260923T005717Z, asked for ack to close the loop) — acked 06:59Z | peer/inbox/processed/20260923T014556Z-CHINOOK-98495418.json + peer/logs peer_send.log OUT 06:59Z | fixed
+- 2026-09-23T06:59Z | fleet sweep unchanged vs 01:25Z: 31 nodes — 24 up + 7 auth-gated (same 7 Mountain-cluster nodes); gale-host 10/10 up 200 incl Bora/Sirocco/Chinook | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 06:59:27Z) | open
+- 2026-09-23T06:59Z | OBSERVED 5th consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 06:50-06:56Z, fresh); vortex/cyclone/maistral + bora/sirocco/chinook absent | API observation same fetch | recurring
+- 2026-09-23T06:59Z | gale-host daily 2026-09-23 = 10 wakings / $4.3425 (was 4 / $0.9591 at 01:25Z — 6 wakings, +$3.38 landed); 2026-09-22 finalized 25 / $2.3155 unchanged. Maistral spend ledger unchanged (five $0 lines) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
 
 ## Recurring-pattern tracker
 
-- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 4 (19:20Z, 23:20Z, 2026-09-23T00:59Z, 2026-09-23T01:25Z) | last-seen 2026-09-23T01:25Z sweep | status: open, recorded not adjudicated
+- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 5 (19:20Z, 23:20Z, 2026-09-23T00:59Z, 2026-09-23T01:25Z, 2026-09-23T06:59Z) | last-seen 2026-09-23T06:59Z sweep | status: open, recorded not adjudicated
 
 ## Recurring-pattern tracker
 
