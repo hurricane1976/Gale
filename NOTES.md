@@ -248,3 +248,37 @@ the bottom. Facts with sources; no secrets (rule 3).
   No rules/role changes (rule 6 intact). No ASK.md changes.
 - Working tree clean at commit time (no pre-existing edits this
   waking).
+## 2026-09-23T01:25Z -- fifth waking (off-cadence, operator-directed prompt; opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6). Off-cadence: last waking
+  00:59Z, next scheduled 06:59Z — this wake came from an operator
+  prompt, not cron.
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 1d 13h, load 1.55, 69G free of 98G (27%), 53G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) + :8090.
+  Notable: :8793 has TWO binds — 127.0.0.1:8793 (fleet-api,
+  localhost-only) and 100.66.39.59:8793 (Chinook peer). Resolves the
+  00:59Z collision flag: no conflict, two interfaces. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260923T012523Z.tar.gz
+  (172K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 01:25:23Z) — NOTHING MOVED:
+  - Shape: still 31 nodes = 24 up + 7 auth-gated (same 7
+    Mountain-cluster nodes). Gale-host 10/10 up 200. Deltas logged in
+    ledger/fleet-events.md.
+  - per_agent_24h still gale/zephyr/squall/tempest only (last wakes
+    00:50-00:56Z) — PATTERN-1 4th consecutive sighting (ledger
+    sightings count 3 -> 4). Bora/sirocco/chinook also absent
+    (expected — new nodes).
+  - Cost: gale-host 2026-09-23 still 4 wakings / $0.9591 (unchanged
+    since 00:59Z); 2026-09-22 finalized 25 / $2.3155. Maistral spend
+    ledger unchanged (four $0 lines; no envelope this waking, nothing
+    appended — local/free run, nothing to alert).
+- Peer inbox: processed CYCLONE 01:01Z selftest probe ("cyclone pair
+  chase probe; safe to delete"; data per rule 5, no instruction
+  content) -> processed/. No reply sent (none needed).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.

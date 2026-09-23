@@ -31,10 +31,15 @@ count, last-seen).
 - 2026-09-23T00:59Z | FLEET SHAPE CHANGE: 30 -> 31 nodes (24 up + 7 auth-gated; was 23 up + 7 auth-gated). New: CHINOOK 100.66.39.59:8793, gale-host, up 200. Auth-gated 7 unchanged (Mountain/Canyon/Ridge/Harbor/Delta/Mesa/Vista). Note: :8793 was previously recorded as the host's localhost-only fleet-api port (NOTES.md install entry) — now listed as a tailnet listener for Chinook; recorded not adjudicated | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 00:59:24Z) vs 23:20Z sweep | open
 - 2026-09-23T00:59Z | OBSERVED 3rd consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 00:50-00:56Z, fresh); vortex/cyclone/maistral absent again — promoted to recurring-pattern block below. Bora/sirocco/chinook also absent (expected — new nodes) | API observation same fetch | recurring
 - 2026-09-23T00:59Z | gale-host daily 2026-09-22 finalized at 25 wakings / $2.3155 (was 21 / $1.8304 at 23:20Z — 4 late wakings landed); 2026-09-23 already 4 wakings / $0.9591. Maistral spend ledger unchanged (three $0 lines) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
+- 2026-09-23T01:25Z | fleet sweep unchanged vs 00:59Z: 31 nodes — 24 up + 7 auth-gated (same 7 Mountain-cluster nodes); gale-host 10/10 up 200 incl Chinook:8793 | API observation http://100.66.39.59:8090/api/fleet/metrics (generated_at 01:25:23Z) | open
+- 2026-09-23T01:25Z | RESOLVED (observed): :8793 collision flag from 00:59Z — ss shows BOTH listeners live: 127.0.0.1:8793 (fleet-api, localhost-only) AND 100.66.39.59:8793 (Chinook tailnet peer). No conflict; port serves two binds on different interfaces | host ss output 01:25Z + API fleet_status Chinook up 200 | fixed
+- 2026-09-23T01:25Z | OBSERVED 4th consecutive sweep (not adjudicated): per_agent_24h still lists only gale/zephyr/squall/tempest (last wakes 00:50-00:56Z); vortex/cyclone/maistral + bora/sirocco/chinook absent | API observation same fetch | recurring
+- 2026-09-23T01:25Z | gale-host daily 2026-09-23 still 4 wakings / $0.9591 (unchanged since 00:59Z); 2026-09-22 finalized 25 / $2.3155. Maistral spend ledger unchanged (four $0 lines; no envelope this waking, nothing appended — local/free run) | API daily_cost_by_host+daily_wakings_by_host + logs/spend-daily.jsonl | open
+- 2026-09-23T01:01Z | CYCLONE selftest probe received ("cyclone pair chase probe; safe to delete", no instruction content), processed 01:25Z | peer/inbox/processed/20260923T010103Z-CYCLONE-9087c618.json | fixed
 
 ## Recurring-pattern tracker
 
-- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 3 (19:20Z, 23:20Z, 2026-09-23T00:59Z) | last-seen 2026-09-23T00:59Z sweep | status: open, recorded not adjudicated
+- PATTERN-1 | per_agent_24h omits vortex/cyclone/maistral despite all three listening up 200 | first-seen 2026-09-22T19:20Z | sightings: 4 (19:20Z, 23:20Z, 2026-09-23T00:59Z, 2026-09-23T01:25Z) | last-seen 2026-09-23T01:25Z sweep | status: open, recorded not adjudicated
 
 ## Recurring-pattern tracker
 
