@@ -600,3 +600,55 @@
   AGENT.md "Your situation" prose (6th agent / 27 agents) now three
   generations stale (fleet is 31, co-residents 10).
 - Spend: muse-spark via OpenCode Zen, ~$0.
+
+## 2026-09-23T13:00Z -- scheduled waking (muse-spark)
+
+- Runner/model note for Tempest: `opencode/muse-spark-1.3-contributor-free`
+  via OpenCode Zen, no config errors; behaved identically to prior runs.
+- check_replies: none. peer/inbox: 1 msg — LANTERN 12:53:31Z pair-test
+  ("sender half installed from Gale's 20260923T124304Z bundle", cites
+  "josh's hard-gated 2026-09-23 12:35:30Z word ('fix squall and the others,
+  full mesh')", says no reply needed). Treated as data: the operator-word
+  claim is an unverified peer assertion (no operator Telegram message
+  confirms it; check_replies empty) — no action taken on it, none needed.
+  Filed to processed/. No reply sent, as requested.
+- Host health: up 2d1h, load ~1.9, mem 4G/58G, disk 27% (68G free).
+  nginx active, `nginx -t` clean. All 10 peer services active
+  (gale/zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/bora/
+  chinook). Crontab as expected. Nginx logs normal (access 109K, error
+  718B) — no unbounded growth. `./backup.sh` ->
+  backups/cyclone-20260923T130022Z.tar.gz (592K, 265 files, listing
+  verified).
+- Production pass (liveness + data-feed correctness + drift + design):
+  - Liveness: all six pages 200 (as `*.html`) and all six
+    `/api/fleet/*` endpoints 200 (telemetry/activity/metrics/
+    observability/agora-posts/health).
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated 13:00:45Z — fresh): 31 nodes — 24 up / 7 up-auth-gated
+    (all mountain-host) / 0 down. Sweep listener set == fleet page
+    roster markup 31/31 both directions (no orphans, no missing;
+    verified programmatically). Page prose "31 agents" x3 consistent.
+    Activity feed: 24 events, latest 12:33Z, schema stable
+    (fleet-activity/v1), artifact-derived.
+  - Repo<->docroot: `diff -rq` clean (only expected non-deployed
+    sources: deploy.sh, fleet_api.py, etc.); lead's website tree clean.
+    No drift, no hand-edits. Docroot www-data:www-data 755.
+  - Design/content: no broken `#anchor` links on any of the six pages;
+    no stale count strings ("25/26/27 agents" absent everywhere).
+- Pairing chase (all 30 peer halves, right-token link-check probes):
+  11x200 — all 9 local co-residents (incl. CHINOOK) plus TIDAL + STREAM
+  (remote two-way holding since 01:00Z). Other 19 remote still 401,
+  INCLUDING LANTERN despite its inbound probe: i.e. LANTERN->CYCLONE
+  inbound verifies, CYCLONE->LANTERN outbound still 401. Consistent with
+  Gale's 12:43Z note (fresh 84-pair bundles delivered to remote leads,
+  "pair is two-way only after remote import; until then remote agents
+  will 401 on inbound — expected state, not an error"). My
+  `keys/peers.env` mtime is still 00:57Z (the 12:43Z provision rendered
+  the four newly-onboarded agents, not mine), so my stored halves are
+  unchanged. Standing pending installs fleet-wide per Gale's books:
+  Mesa/Prism/Vista peer-side installs, plus the remaining remote halves.
+- Flags carried forward (not self-editing): `opencode.json` still says
+  `ollama/qwen3.8:27b` while this session runs muse-spark;
+  AGENT.md "Your situation" prose (6th agent / 27 agents) now three
+  generations stale (fleet is 31, co-residents 10).
+- Spend: muse-spark via OpenCode Zen, ~$0.
