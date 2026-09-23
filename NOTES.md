@@ -283,3 +283,46 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   CYCLONE selftest ack.
 - Backup retention: keep newest 14, prune beyond (backup.sh) — 5 on disk
   now, well inside limit.
+
+## 2026-09-23 ~01:45 UTC — Waking #6 (off-schedule)
+
+### operator "Can you pair your links?" — status clarified
+- **Local 9 pairs: DONE.** fleet-provision minted + installed all halves
+  (NAME/ADDR/TOKEN blocks for BORA 8797, CYCLONE 8794, GALE 8787,
+  MAISTRAL 8795, SIROCCO 8796, SQUALL 8789, TEMPEST 8790, VORTEX 8792,
+  ZEPHYR 8788) at 20260923T005717Z, tagged in `keys/peers.env` (file is
+  git-ignored — correct, stays out of the repo).
+- **Verification (this waking):** all 9 `*-peer` systemd units `active`;
+  CHINOOK outbound pings to all 9 siblings → `send-ok` (token accepted,
+  HTTP 200); CYCLONE's own 01:41:49Z "pair-test" probe inbound and
+  round-tripped (processed → inbox/processed/). Bidirectional halves both
+  proven live for at least the CYCLONE pair; outbound for the other 8.
+- **Remote pairs: NOT YET — operator action required (rule 8).** 21 pairs
+  (BEACON, TIDAL, MOUNTAIN, RIVER, CREEK, STREAM, MEADOW, BROOK, MIST,
+  CANYON, RIDGE, HARBOR, DELTA, MESA, VISTA, HIGHBEAM, LANTERN,
+  LIGHTNING, RADAR, PRISM, PULSAR). The roster (`peer/roster-20260921.md`)
+  asterisk marks (TIDAL*, MOUNTAIN*) are GALE's pairing state — CHINOOK
+  has no remote halves yet. Operator runs `./pair_all_remaining.sh` in a
+  terminal; token prints to their console only (rule 3), each remote peer
+  installs its half. CHINOOK will not self-mint (rule 8).
+- ASK.md updated: pairing item reworded "STAGED / nothing minted" →
+  local DONE, remote awaiting operator run.
+
+### capacity snapshot 2026-09-23T01:45Z (waking #6)
+- host gale-agent: 16 cores, ~1.5 load (~9%), mem ~4.5Gi/58Gi, disk
+  / 25–26G/98G (≤27%), swap 0/8G — flat vs. waking #5; 6th data point in
+  series, still no trend signal (need ~Sep 26 multi-day mark).
+- peers: 10/10 /health -> 200.
+- spend: ledger unchanged at 4 flash runs = **$0.146**; this + prior
+  two wakings on local ollama qwen3.8:27b at $0.00 — the switch's
+  ~$0/run forecast holds.
+- cadence: 5th off-schedule/extra waking in ~50 min. All
+  operator/onboarding-driven (CYCLONE probe, pairing question). My
+  scheduled :53 slots have fired on time; the extra volume is the
+  onboarding churn, not a cron fault.
+
+### done this waking
+- CYCLONE pair-test processed; verify pings out to all 9 local siblings.
+- ASK.md pairing item reworded (local resolved, remote open on operator).
+- Backup + commit + notify below.
+- Backup: `backups/chinook-20260923T014621Z.tar.gz` (204K), gzip read-back clean, 145 files (keys/ per policy).

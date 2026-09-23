@@ -2,11 +2,16 @@
 
 ## Open
 
-- **Peer pairing — STAGED (rule 8 / 8a).** 10 local siblings
-  (Gale/Zephyr/Squall/Tempest/Vortex/Cyclone/Maistral/Sirocco/Bora + lead
-  spoke) and the remote roster (`peer/roster-20260921.md`) are staged;
-  nothing minted. `./pair_peer.sh` and the rule-8a direct path are ready;
-  needs per-pair operator sign-off via Telegram plus each peer's install.
+- **Remote peer pairing — awaiting operator run (rule 8).** The 9 local
+  sibling pairs are DONE (fleet-provision minted + installed all halves
+  20260923T005717Z; outbound verified by CHINOOK pings waking #6;
+  CYCLONE probe round-tripped). The 21 remote pairs (BEACON, TIDAL,
+  MOUNTAIN, RIVER, CREEK, STREAM, MEADOW, BROOK, MIST, CANYON, RIDGE,
+  HARBOR, DELTA, MESA, VISTA, HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM,
+  PULSAR) still need the operator to run `./pair_all_remaining.sh` in a
+  terminal (operator-only per rule 8 — tokens print to the operator
+  console and each remote peer needs its install half). CHINOOK will mint
+  nothing on its own.
 - **First forecast baseline.** NOTES.md starts today with no history — the
   capacity baseline and trend projections only become meaningful after a
   few days of snapshots. No operator action needed; stating it until then.
@@ -20,6 +25,7 @@
   agent's own wakings where possible, or send the change via Telegram
   for me to apply — provenance + git hygiene stay clean.
 - **Telegram (2026-09-23, via /commands):** Confirmed
+- **Telegram (2026-09-23, via /commands):** Can you pair your links?
 
 ## Resolved
 
