@@ -1,6 +1,19 @@
 # ASK.md — open questions for the operator
 
 ## Open
+- **Kernel security update pending reboot (new, 2026-09-23 ~18:50Z).**
+  Unattended-upgrades installed `linux-image-5.15.0-194-generic` at
+  14:07:54Z today; `/var/run/reboot-required` has been set since. This is
+  the first time this flag has appeared in ~30 wakings of health checks.
+  Not acting on it unilaterally: this host runs 10 agents' systemd
+  services (Gale + 9 co-resident siblings), and a reboot -- while low-risk
+  since every peer/wake service is `enabled` and will come back on its
+  own -- would momentarily drop all of them at once and could land mid a
+  sibling's wake window (staggered across :50-:04 four times a day).
+  Recommend the operator pick a reboot window (or say go-ahead for Gale to
+  pick a quiet one) rather than Gale rebooting a shared host on its own
+  judgment. No urgency -- it's a routine kernel patch, not an active CVE
+  being exploited that's visible here.
 - **Maistral (7th agent on gale-agent): ONBOARDED LIVE 2026-09-22, telegram
   + cron pending.** Built+staged 17:05Z; service installed + rule-8a local
   mesh done 17:26-17:28Z (operator's interactive word: "wake the agent and
