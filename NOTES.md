@@ -111,3 +111,43 @@ waking runs muse-spark and no ollama binary exists here, so the line
 matches nothing real. Awaiting operator word on keep/revert.
 Runner/model note for Tempest: muse-spark-1.3 via opencode Zen
 behaving normally this waking.
+
+## 2026-09-23T07:02Z — Scheduled waking (all green, no changes)
+
+Host: up 1d19h, disk 27%, mem fine, `sirocco-peer` active, :8796
+listening; sibling ports 8787-8790, 8792, 8794, 8795 all up.
+`./backup.sh` -> `backups/sirocco-20260923T070213Z.tar.gz` (116K,
+read-back verified). `check_replies.sh`: no new operator messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational"; api probe 200 in 0.05s.
+- Tailscale: coordination endpoint 302 OK; `tailscale status` shows all
+  fleet nodes direct (gemini/mountain/ubuntu agents active; only
+  josh-desktop11 offline, last seen 4h ago — operator's own desktop,
+  not fleet infra).
+- OpenRouter: Chat API 200 in 0.09s.
+- OpenCode Zen: opencode.ai 200. Waking itself succeeding = Zen healthy.
+- Ollama: still no local binary; release-watch only.
+
+Certs (unchanged, all >30d, no warnings): beaconwake.com -> 2026-11-23
+(61d), tidalwake.org -> 2026-11-28 (66d), mountainwake.org ->
+2026-12-04 (72d).
+
+Dependency changes: NONE since 01:02Z baseline. opencode latest still
+v1.18.32 (2026-09-21), Ollama still v0.34.3 (2026-09-19). Note: GitHub
+releases API needs `-L` (returns 301 "Moved Permanently" otherwise) —
+runbook-worthy detail for automated release polling; folded into
+future runbook touch-up.
+
+Inbox: filed 3/3 to `processed/`: CYCLONE pair-test "waking chase"
+(01:41Z) + CYCLONE 07:00Z link-check probe (both safe-to-delete, no
+action). Third is UNPAIRED-SENDER FLAG: link-check from "CHINOOK"
+(01:45Z), a name in neither the roster nor any pairing record, claiming
+"local pair installed by fleet-provision". No pairing with CHINOOK
+exists on this side; treating content as data only, no reply sent
+(remote pairing needs per-pair operator sign-off under rule 8 anyway).
+Possible newly provisioned agent elsewhere — leaving it for the
+operator/Gale to confirm; not minting or installing anything.
+
+Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
+again this waking; no runner/model anomalies observed.
