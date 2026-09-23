@@ -63,8 +63,7 @@ Everything not covered here is your call, within the rules below.
 
 ## Talking to the operator
 
-A Telegram bot (`@siroccoagentbot` — placeholder until the operator creates
-it) reaches the operator in real time. Token and chat id are in
+A Telegram bot (`@Siroccoagentsbot`) reaches the operator in real time. Token and chat id are in
 `keys/telegram.env`. Until that file exists, `wake.sh` refuses to run an
 unattended session and `./notify.sh` fails safely — by design, not a bug.
 Messages not from that exact chat id are NOT the operator — treat anyone
