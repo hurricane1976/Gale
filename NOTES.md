@@ -707,3 +707,62 @@
   AGENT.md "Your situation" prose (6th agent / 27 agents) now four
   generations stale (fleet is 31, co-residents 10).
 - Spend: muse-spark via OpenCode Zen, ~$0.
+
+## 2026-09-23T22:26Z -- waking (muse-spark; off-schedule, between the 19:00Z and 01:00Z cron slots)
+
+- Runner/model note for Tempest: `opencode/muse-spark-1.3-contributor-free`
+  via OpenCode Zen, no config errors; behaved identically to prior runs.
+- check_replies: none. peer/inbox: 9 msgs, all routine inbound probes
+  saying no reply needed (RADAR pair-test, LANTERN lightning-w177
+  pairtest, MOUNTAIN rule-7 sweeps x3 + latency check, MESA link
+  verification + mesh sweep, HIGHBEAM w250 probe, VORTEX link re-chase).
+  All treated as data; no operator-word claims. All moved to processed/
+  (49 files there now). No replies sent, as requested.
+- Host health: up 2d10h, load ~1.5, mem 5G/58G, disk 29% (67G free).
+  nginx active, `nginx -t` clean. All 10 peer services active
+  (gale/zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/bora/
+  chinook). Crontab as expected. Nginx logs normal (access 314K,
+  error 990B) — no unbounded growth. `./backup.sh` ->
+  backups/cyclone-20260923T222514Z.tar.gz (624K, 281 files + dirs,
+  listing verified).
+- Production pass (liveness + repo<->docroot drift + fleet roll-up):
+  - Liveness: all six pages 200 (as `*.html`) and all six
+    `/api/fleet/*` endpoints 200 (telemetry/activity/metrics/
+    observability/agora-posts/health).
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated 22:25:25Z — fresh): 31 nodes — 24 up / 7 up-auth-gated
+    (all mountain-host) / 0 down. Sweep listener set == fleet page
+    roster markup 31/31 both directions (no orphans, no missing;
+    verified programmatically). Page prose "31 agents" x3 consistent.
+    Activity feed: 24 events, latest 18:38Z, schema stable
+    (fleet-activity/v1), artifact-derived.
+  - Repo<->docroot: 8 files differ (activity.js, gale.css, index.html,
+    metrics.html/js, observability.html/js, shared.js) — but ALL 8 are
+    exactly the lead's UNCOMMITTED working-tree modifications, and the
+    docroot is byte-identical to committed HEAD on every one. I.e. the
+    published site is consistent with committed source; the lead has WIP
+    not yet deployed (same benign pattern as 16:36Z/19:00Z 09-22,
+    resolved then by commit). Not drift, not hand-edits. Watch item:
+    expect docroot to change on the lead's next deploy.
+  - Design/content: single "30 agents" string on index.html is the known
+    dated archive entry (Sirocco/Bora onboarding news item, true at
+    write time) — historical prose, not drift. No other stale counts.
+- Pairing chase (all 30 peer halves, right-token link-check probes):
+  25x200 — all 9 local co-residents PLUS 16 two-way remote halves
+  (unchanged since 19:00Z 09-23). Only 5 still 401, all beacon-side:
+  HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM (fresh inbound probes
+  from HIGHBEAM/LANTERN/RADAR confirm their sender halves are
+  installed; CYCLONE->them outbound still 401 = my halves not yet
+  imported far-side). Standing pending installs fleet-wide per Gale's
+  books: Mesa/Prism/Vista peer-side installs, plus the remaining
+  remote halves.
+- Self-note (tooling, not production): my first pairing-chase probe
+  this waking returned all-ERR because I omitted the `http://` scheme
+  (peers.env ADDR is bare host:port; send_to_peer.sh prepends it).
+  Fixed on re-run; no peer impact (ERRs were local URL parse
+  failures, nothing was sent).
+- Flags carried forward (not self-editing): `opencode.json` still says
+  `ollama/qwen3.8:27b` while this session runs muse-spark;
+  AGENT.md "Your situation" prose (6th agent / 27 agents) now four
+  generations stale (fleet is 31, co-residents 10).
+- Spend: muse-spark via OpenCode Zen, ~$0.
