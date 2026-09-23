@@ -50,7 +50,7 @@ export function initStormCanvas() {
     ctx.moveTo(p.x, p.y);
     ctx.lineTo(p.x - p.vx * 5.5, p.y - p.vy * 5.5);
     ctx.lineWidth = p.w;
-    ctx.strokeStyle = `rgba(140, 175, 255, ${p.a})`;
+    ctx.strokeStyle = `rgba(90, 190, 255, ${p.a})`;
     ctx.stroke();
   };
 
@@ -226,6 +226,27 @@ export function initClocks() {
 }
 
 /* ---- hero scene parallax ---- */
+/* ---- magnetic buttons: pull toward the pointer, spring back on leave ---- */
+export function initMagnetic() {
+  const magnets = document.querySelectorAll("[data-magnet]");
+  if (!magnets.length || !FINE || REDUCED) return;
+  for (const el of magnets) {
+    const strength = parseFloat(el.dataset.magnet) || 0.25;
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width / 2) * strength;
+      const y = (e.clientY - r.top - r.height / 2) * strength;
+      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+    }, { passive: true });
+    el.addEventListener("pointerleave", () => {
+      el.style.transition = "transform .55s cubic-bezier(.22,1,.36,1)";
+      el.style.transform = "";
+      el.addEventListener("transitionend", () => { el.style.transition = ""; }, { once: true });
+    }, { passive: true });
+  }
+}
+
+/* ---- hero scene parallax ---- */
 export function initParallax() {
   const wrap = document.querySelector(".scene-wrap");
   if (!wrap || !FINE || REDUCED) return;
@@ -255,6 +276,7 @@ export function boot() {
   initProgressFallback();
   initCountUps();
   initPointerCards();
+  initMagnetic();
   initClocks();
   initParallax();
 }

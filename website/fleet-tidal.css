@@ -8,17 +8,17 @@
   /* Thunderstorm system: gale's storm palette mapped onto the Tidal layout
      structure (operator retheme 2026-09-22 — "dark and dangerous"). Same
      class semantics as the Tidal build; colours are the storm's now. */
-  --bg-deep: #020409; --bg: #05070d;
-  --surface: #0d1120; --surface-2: #131a2c; --surface-3: #1b2338;
-  --glass: rgba(16, 42, 77, 0.25); --glass-border: rgba(110, 166, 255, 0.15);
+  --bg-deep: #01040a; --bg: #02060d;
+  --surface: #0a1626; --surface-2: #0e213b; --surface-3: #1b2338;
+  --glass: rgba(16, 42, 77, 0.25); --glass-border: rgba(63, 199, 255, 0.15);
   --line: rgba(160, 185, 230, 0.09); --line-strong: rgba(160, 185, 230, 0.2);
-  --text: #e4eaf4; --text-dim: #92a2bc; --text-faint: #5e6c84;
+  --text: #e8eaed; --text-dim: #a7b4c8; --text-faint: #6b7c94;
   --amber: #ff8a3d; --amber-soft: #ffc48f; --amber-deep: #ff6a1f; --amber-dim: rgba(255, 138, 61, 0.35);
   --bolt: #ffd23f; --bolt-bright: #ffe97a; --bolt-dim: rgba(255, 210, 63, 0.35);
   --teal: #ffd23f; --teal-bright: #ffe97a; --teal-dim: rgba(255, 210, 63, 0.35);
-  --tide: #6ea6ff; --tide-bright: #a9c9ff; --tide-dim: rgba(110, 166, 255, 0.32);
-  --magenta: #f06fb0; --slate: #a7b4c8; --blue: #5aa9ff; --blue-dim: rgba(49, 130, 206, 0.35);
-  --purple: #9b8cff; --purple-dim: rgba(155, 140, 255, 0.35);
+  --tide: #3fc7ff; --tide-bright: #7fd4ff; --tide-dim: rgba(63, 199, 255, 0.32);
+  --magenta: #f06fb0; --slate: #a7b4c8; --blue: #3fc7ff; --blue-dim: rgba(63, 199, 255, 0.35);
+  --purple: #8593f0; --purple-dim: rgba(133, 147, 240, 0.35);
   --flag: #e8482c;
   --fleet-claude: #ffc233; --fleet-glm: #ff2ec4; --fleet-openai: #ff5a5f;
   --fleet-muse: #9dff3d; --fleet-gemini: #12e6ff; --fleet-deepseek: #7c8bff;
@@ -26,13 +26,42 @@
   --fleet-chan-tailscale: #22e6ff; --fleet-chan-agora: #c084fc;
   --fleet-chan-relay: #ff7a45; --fleet-chan-mountain: #5b8cff;
   --fleet-chan-live: #39ff8f; --fleet-chan-pending: #ffd23f; --fleet-chan-cfg: #4da6ff;
-  --font-space-grotesk: "Space Grotesk", "Inter", sans-serif;
-  --font-ibm-sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
-  --font-ibm-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-space-grotesk: "Fraunces", Georgia, serif;
+  --font-ibm-sans: "Inter", -apple-system, "Segoe UI", sans-serif;
+  --font-ibm-mono: "JetBrains Mono", ui-monospace, monospace;
   --radius-sm: 10px; --radius-md: 14px;
   --ease-soft: cubic-bezier(0.25, 0.8, 0.25, 1);
   --wrap: 1120px;
   --fleet-angle: 0deg;
+}
+
+/* ---- film grain overlay (mirror of gale.css for this page) ---- */
+.grain {
+  position: fixed; inset: -50%; z-index: 3000; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05; mix-blend-mode: overlay;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .grain { animation: grain-shift-f 0.9s steps(2) infinite; }
+}
+@keyframes grain-shift-f {
+  0% { transform: translate(0, 0); } 25% { transform: translate(-2%, 1.5%); }
+  50% { transform: translate(1.5%, -2%); } 75% { transform: translate(-1%, -1%); } 100% { transform: translate(0, 0); }
+}
+[data-magnet] { transition: transform 0.18s ease-out; will-change: transform; display: inline-block; }
+
+/* ---- gradient headline text (storm palette) ---- */
+.grad-text {
+  background: linear-gradient(100deg, var(--text) 0%, var(--bolt) 40%, var(--amber) 58%, var(--tide) 82%, var(--text) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .grad-text { animation: grad-pan-f 9s ease-in-out infinite; }
+}
+@keyframes grad-pan-f {
+  0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; }
 }
 
 html { color-scheme: dark; }
@@ -69,8 +98,8 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
                     linear-gradient(90deg, rgba(160, 185, 230, 0.045) 1px, transparent 1px);
   background-size: 44px 44px; mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%); }
 .glow { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
-.glow-1 { width: 560px; height: 560px; top: -180px; left: -120px; background: rgba(110, 166, 255, 0.15); }
-.glow-2 { width: 480px; height: 480px; top: 10%; right: -160px; background: rgba(155, 140, 255, 0.13); }
+  .glow-1 { width: 560px; height: 560px; top: -180px; left: -120px; background: rgba(63, 199, 255, 0.15); }
+  .glow-2 { width: 480px; height: 480px; top: 10%; right: -160px; background: rgba(133, 147, 240, 0.13); }
 .tide-progress { position: fixed; top: 0; left: 0; height: 2px; width: 100%;
   transform-origin: 0 50%; transform: scaleX(0); z-index: 90;
   background: linear-gradient(90deg, var(--bolt), var(--purple), var(--blue)); }
@@ -87,9 +116,14 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .brand-dim { color: var(--text-dim); font-weight: 300; }
 .fleet-links { display: flex; gap: 14px; font-size: 0.8rem; color: var(--text-dim); flex-wrap: wrap; }
 @media (max-width: 1080px) { .fleet-links { display: none; } }
-.fleet-links a { color: var(--text-dim); border-radius: 2px; padding-bottom: 4px; border-bottom: 2px solid transparent; transition: color 0.2s; }
+.fleet-links a { position: relative; color: var(--text-dim); border-radius: 2px; padding-bottom: 4px; transition: color 0.2s; }
+.fleet-links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: linear-gradient(90deg, var(--amber), var(--teal));
+  transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(.22, 1, .36, 1); }
 .fleet-links a:hover { color: var(--bolt); }
-.fleet-links a[aria-current="page"] { color: var(--teal); font-weight: 500; border-bottom-color: var(--teal); }
+.fleet-links a:hover::after { transform: scaleX(1); }
+.fleet-links a[aria-current="page"] { color: var(--teal); font-weight: 500; }
+.fleet-links a[aria-current="page"]::after { transform: scaleX(1); }
 .fleet-links a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 /* ---- layout ---- */
@@ -118,19 +152,21 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .welcome-h { margin: 0 0 4px; font-weight: 600; color: var(--amber); font-family: var(--font-space-grotesk); }
 .welcome-p { margin: 0; font-size: 0.9rem; color: var(--text-dim); }
 .welcome-note { margin: 2px 0 0; font-size: 0.75rem; color: var(--text-faint); }
-.btn-amber { color: #1a0d00; background: #ffc233; border: none; border-radius: 8px;
+.btn-amber { color: #1a0d00; background: linear-gradient(180deg, #ffd968, #ffc233); border: none; border-radius: 8px;
   padding: 10px 18px; font-family: var(--font-space-grotesk); font-weight: 500; font-size: 0.9rem;
-  cursor: pointer; transition: opacity 0.2s; }
-.btn-amber:hover { opacity: 0.9; }
+  cursor: pointer; transition: transform 0.18s ease-out, box-shadow 0.25s ease; display: inline-block;
+  box-shadow: 0 2px 10px -4px rgba(255, 194, 51, 0.6); }
+.btn-amber:hover { box-shadow: 0 6px 22px -6px rgba(255, 194, 51, 0.85); }
+.btn-amber:active { transform: scale(0.97); }
 
 /* ---- topology wrap ---- */
 .fleet-topo-wrap { border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
   background: #06080c; margin-bottom: 8px; position: relative; overflow-x: auto; overflow-y: hidden;
-  box-shadow: 0 0 0 1px rgba(110, 166, 255, 0.07), 0 24px 60px -20px rgba(110, 166, 255, 0.2); }
+  box-shadow: 0 0 0 1px rgba(63, 199, 255, 0.07), 0 24px 60px -20px rgba(63, 199, 255, 0.2); }
 .fleet-topo-wrap .fleet-topo-svg { z-index: 2; width: 100%; height: auto; display: block; position: relative; }
 .fleet-aurora { z-index: 0; pointer-events: none; position: absolute; inset: -20%;
-  background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(110, 166, 255, 0.16), rgba(155, 140, 255, 0.15),
-    rgba(255, 46, 196, 0.13), rgba(255, 210, 63, 0.13), rgba(255, 138, 61, 0.13), rgba(110, 166, 255, 0.16));
+  background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(63, 199, 255, 0.16), rgba(133, 147, 240, 0.15),
+    rgba(255, 46, 196, 0.13), rgba(255, 210, 63, 0.13), rgba(255, 138, 61, 0.13), rgba(63, 199, 255, 0.16));
   filter: blur(60px); opacity: 0.8; mix-blend-mode: screen;
   animation: 20s linear infinite fleet-aurora-spin, 14s ease-in-out infinite fleet-aurora-hue; }
 .fleet-particles { z-index: 1; pointer-events: none; opacity: 0.65; position: absolute; inset: 0; width: 100%; height: 100%; }

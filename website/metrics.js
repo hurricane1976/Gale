@@ -6,7 +6,7 @@ boot();
 
 const FEED = "api/fleet/metrics";
 const POLL_MS = 30000;
-const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#5aa9ff", mountain: "#9b8cff" };
+const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "#8593f0" };
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)" };
 let DATA = null;
 
@@ -72,7 +72,7 @@ function stackedBars(series, labelFmt) {
       if (!v) return;
       const hgt = (v / max) * (H - pad.t - pad.b);
       y -= hgt;
-      segs += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${hgt.toFixed(1)}"
+      segs += `<rect class="bar-rise" style="--i:${i}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${hgt.toFixed(1)}"
         fill="${hostColor(h)}" opacity="0.88" rx="1.5"><title>${esc(`${day} ${h}: ${labelFmt(v)}`)}</title></rect>`;
     });
     const totalLbl = labelFmt(total) === "0" ? "" : labelFmt(total);
@@ -80,13 +80,25 @@ function stackedBars(series, labelFmt) {
       <text x="${(x + bw / 2).toFixed(1)}" y="${H - pad.b + 18}" text-anchor="middle" class="obs-tick">${esc(day.slice(5))}</text>
       <text x="${(x + bw / 2).toFixed(1)}" y="${(y - 5).toFixed(1)}" text-anchor="middle" class="obs-tick obs-tick-top">${esc(totalLbl)}</text>`;
   });
+  const maxTot = Math.max(...totals, 0.000001);
+  const sparkPts = totals.map((t, i) => {
+    const cx = (pad.l + i * ((W - pad.l - pad.r) / days.length) + (W - pad.l - pad.r) / days.length / 2).toFixed(1);
+    const cy = (H - pad.b - (t / maxTot) * (H - pad.t - pad.b)).toFixed(1);
+    return `${cx},${cy}`;
+  }).join(" ");
+  const spark = `<polyline class="bar-spark" points="${sparkPts}"/>` +
+    totals.map((t, i) => {
+    const cx = (pad.l + i * ((W - pad.l - pad.r) / days.length) + (W - pad.l - pad.r) / days.length / 2).toFixed(1);
+    const cy = (H - pad.b - (t / maxTot) * (H - pad.t - pad.b)).toFixed(1);
+    return `<circle class="bar-spark-dot" style="--i:${i}" cx="${cx}" cy="${cy}" r="2.4"><title>${esc(`${days[i]} total: ${labelFmt(t)}`)}</title></circle>`;
+  }).join("");
   const grid = [0, 0.5, 1].map((f) => {
     const y = (H - pad.b - f * (H - pad.t - pad.b)).toFixed(1);
     return `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="var(--line)"/>
       <text x="${pad.l - 6}" y="${+y + 4}" text-anchor="end" class="obs-tick">${esc(labelFmt(max * f))}</text>`;
   }).join("");
   return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="stacked daily chart">
-    ${grid}${bars}</svg></div>`;
+    ${grid}${bars}${spark}</svg></div>`;
 }
 
 function legend(containerId, hosts) {

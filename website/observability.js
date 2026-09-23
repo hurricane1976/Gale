@@ -7,7 +7,7 @@ boot();
 
 const FEED = "api/fleet/observability";
 const POLL_MS = 30000;
-const FAM_COLOR = { claude: "var(--m-claude)", glm: "var(--m-glm)", gpt: "var(--m-gpt)", muse: "var(--m-muse)", gemini: "#5aa9ff", deepseek: "#9b8cff" };
+const FAM_COLOR = { claude: "var(--m-claude)", glm: "var(--m-glm)", gpt: "var(--m-gpt)", muse: "var(--m-muse)", gemini: "#3fc7ff", deepseek: "#8593f0" };
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)" };
 let DATA = null;
 let filter = "";
@@ -82,6 +82,12 @@ function renderCostChart(d) {
       fill="${famColor(r.model_family)}" opacity="0.85" rx="2" style="--i:${i}">
       <title>${esc(label)}</title></rect>`;
   });
+  const sparkPts = runs.map((r, i) => {
+    const cx = (pad.l + i * ((W - pad.l - pad.r) / runs.length) + 3 + bw / 2).toFixed(1);
+    const cy = (H - pad.b - ((r.cost_usd || 0) / maxCost) * (H - pad.t - pad.b)).toFixed(1);
+    return `${cx},${cy}`;
+  }).join(" ");
+  const spark = `<polyline class="bar-spark" points="${sparkPts}"/>`;
   const ticks = [0, 0.5, 1].map((f) => {
     const y = (H - pad.b - f * (H - pad.t - pad.b)).toFixed(1);
     return `<line x1="${pad.l}" y1="${y}" x2="${W - pad.r}" y2="${y}" stroke="var(--line)"/>
@@ -90,7 +96,7 @@ function renderCostChart(d) {
   const first = esc(runs[0].ts.slice(5, 16).replace("T", " "));
   const last = esc(runs[runs.length - 1].ts.slice(5, 16).replace("T", " "));
   wrap.innerHTML = `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Cost per run">
-    ${ticks}${bars}
+    ${ticks}${bars}${spark}
     <text x="${pad.l}" y="${H - 6}" class="obs-tick">${first}</text>
     <text x="${W - pad.r}" y="${H - 6}" text-anchor="end" class="obs-tick">${last}</text>
   </svg></div>`;

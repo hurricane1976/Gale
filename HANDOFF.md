@@ -1,4 +1,4 @@
-# HANDOFF — resume point for a fresh session (2026-09-22 ~22:45Z)
+# HANDOFF — resume point for a fresh session (2026-09-23 ~18:00Z)
 
 You are resuming an operator-driven interactive session on `gale-agent`.
 Read this first, then Gale's `NOTES.md` (entries 2026-09-22), then
@@ -24,6 +24,16 @@ Read this first, then Gale's `NOTES.md` (entries 2026-09-22), then
 - **Delivered to leads over trunk (all HTTP 200):** one 42-pair bundle
   per remote host + one encrypted fleet backup blob each. Leads stage
   only; they cannot decrypt the backup (operator holds the only key).
+- **DELIVERY CYCLE COMPLETE (2026-09-23):** all 3 leads confirmed
+  import + ack over trunk. Tidal (17:51Z rec, 17:53Z ack): bundle
+  20260923T124301Z on all 7 agents, services active, shredded, Rule 8b/Josh.
+  Mountain (16:45Z rec, 17:55Z ack): bundle 20260923T124304Z, 70/70
+  tokens (30 matched / 40 added / 0 conflicts, 0600), shredded, Rule 9b
+  go-ahead. Beacon (12:22Z): bundle installed + ack. Vortex–Cyclone
+  "leak pair" held 9/22 is now approved + live fleet-wide (Rule 9b).
+  Remaining pending: Prism, Mesa, Vista pair installs; Tidal's
+  Chinook+Sirocco mint request (13:38Z) — superseded: those halves are
+  already in the 9/23 bundles all three leads imported.
 - **Website:** weather tracker live (weather.html), topology current
   (9-node Gale host, Muse chips), deployed to nginx :8090.
 

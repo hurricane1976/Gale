@@ -1,7 +1,9 @@
 /* GALE — fleet topology page (Tidal system rebuild): detail strip driven by
    data-* attributes in the markup. Static SVG does the topology; this only
    wires hover/tap/keyboard detail and the mesh status line feed. */
-import { esc } from "./shared.js";
+import { boot, esc } from "./shared.js";
+
+boot();
 
 const topo = document.getElementById("topo");
 const detail = document.getElementById("topo-detail");

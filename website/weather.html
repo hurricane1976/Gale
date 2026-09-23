@@ -6,8 +6,8 @@
   <title>Weather Tracker — Gale</title>
   <meta name="description" content="Gale weather tracker: live conditions, hourly + 7-day forecast, animated radar, alerts and air quality. Defaults to Woodbridge, VA — search anywhere." />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#0a0e14" />
-  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%230a0e14"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <meta name="theme-color" content="#02060d" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -17,6 +17,8 @@
   <script type="module" src="weather.js"></script>
 </head>
 <body>
+<div class="grain" aria-hidden="true"></div>
+
   <a class="skip" href="#main">Skip to content</a>
   <div class="blob blob-red" aria-hidden="true"></div>
   <div class="blob blob-blue" aria-hidden="true"></div>
@@ -46,7 +48,7 @@
   <main id="main" class="wx-main">
     <div class="wx-hero wrap">
       <span class="eyebrow"><span class="dot"></span>Station weather &middot; live · no key needed</span>
-      <h1 class="wx-title">Weather tracker</h1>
+      <h1 class="wx-title grad-text">Weather tracker</h1>
       <p class="sec-lede" style="margin-bottom:0">Live conditions, hourly + 7-day outlook, animated radar, alerts and air quality.
         Defaults to <strong>Woodbridge, VA</strong> — search anywhere, use your GPS, or pick a preset.
         Data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, NWS alerts, <a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer</a> radar.</p>
