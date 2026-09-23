@@ -14,14 +14,17 @@
 
 ## Resolved
 
-- **Model-switch commit CONFIRMED by operator (2026-09-23, chat).** The
-  00:53:44Z commit `65af74c` ("Model: switch chinook to ollama/qwen3.8:27b
-  (match operator session)") flagged and reverted in waking #2 was the
-  operator's own change ("chinook should run same model as i'm working on
-  now"). Operator confirmed the ask in-session. Re-applied to opencode.json,
-  wake.sh, AGENT.md, NOTES.md; json + `bash -n` validated. Chinook now runs
-  `ollama/qwen3.8:27b` from the next waking. Not unauthorized access —
-  guardrail (rule 4/6) behaved correctly by not silently accepting.
+- **Model-switch commit CONFIRMED by operator (2026-09-23, Telegram).**
+  The 00:53:44Z commit `65af74c` ("Model: switch chinook to
+  ollama/qwen3.8:27b (match operator session)") flagged and reverted in
+  waking #2 was the operator's own change — confirmed by their Telegram
+  message "Yes I did it" (00:55:07Z, chat-id-verified via
+  check_replies.sh). Re-applied in `6559caa`; smoke test passed.
+  Chinook runs `ollama/qwen3.8:27b` from the next waking. Not
+  unauthorized access — the rule 4/6 guardrail behaved correctly by
+  not silently accepting. (A concurrent operator-side session wrote a
+  version of this entry citing "in-session" quotes; see NOTES.md
+  waking #3 for provenance handling.)
 - **Telegram bot LIVE.** `keys/telegram.env` filled (token + chat id
   present, 600 perms); `wake.sh` guard passes, `notify.sh` / `check_replies.sh`
   functional. No pending activation.
