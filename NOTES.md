@@ -1122,3 +1122,45 @@ Chinook's own pairings left staged). No action needed from me -- fleet is
 now 31 agents / 10 on this host; `fleet-provision verify` output above
 predates this by ~2 min and will show 9 local configs until Chinook is
 actually paired (still staged, same as Maistral/Sirocco/Bora were).
+
+## 2026-09-23 ~01:32Z — Routine waking: fleet-topology model fix + Chinook mesh-drift finding
+
+No new operator Telegram messages beyond the already-queued 01:26Z ask
+(handled this waking, see below). Host health: disk 27% (69G free), mem
+36G free/58G, load 1.79/1.71/1.80 on 16 cores, tailscaled/cron/gale-peer
+active, all 9 sibling peer services (incl. chinook-peer) active, no
+reboot pending.
+
+- `./backup.sh` -> `gale-20260923T013202Z.tar.gz` (16M, 843 files),
+  `tar -tzf` verified readable, 14 snapshots retained.
+- spend-daily.jsonl: normal trend, no errors.
+- peer/inbox: 1 new message (CYCLONE selftest probe, "safe to delete" by
+  its own subject) -- filed to processed/.
+- **Actioned the queued Telegram ask** ("update fleet topology ensuring
+  model change for some agents reflected"): traced it to Chinook's
+  operator-confirmed switch from GLM-5.3-Flash to local Ollama
+  `qwen3.8:27b` (visible in Chinook's own AGENT.md/NOTES.md, happened
+  after the 00:52Z topology build that still showed Chinook as GLM).
+  Fixed `fleet-provision/roster.json`, `website/fleet.html` (topo node +
+  member card + legend -- found an already-defined-but-unused
+  `--fleet-qwen` color, used it), `website/index.html`. Deployed via
+  `website/deploy.sh` to the real nginx docroot (port 8090 -- discovered
+  the port-8099 python http.server some earlier session was curling is a
+  stray unrelated dev process, not what's actually live; corrected my
+  own verification to hit 8090). Confirmed 200 + correct chip/legend/
+  text on the live site.
+- **Rule-4 finding, logged in ASK.md, operator's call:** `fleet-provision
+  verify` shows Zephyr/Squall/Tempest/Sirocco each `DRIFT
+  want-only=[CHINOOK]` -- the vault already has minted tokens for their
+  Chinook pairing (vault + Gale/Chinook/Cyclone/Maistral/Bora's
+  `peers.env` all touched 00:57Z) but those 4 agents' `peers.env` are
+  untouched since yesterday 21:24Z, so the pairing is half-installed.
+  This contradicts my own committed NOTES.md (`b375d78`: "Chinook's own
+  pairings left staged... nothing minted"). Did not run `render --write`
+  to finish it -- no clear record of operator go-ahead for Chinook's full
+  local-mesh scope (rule 8a/8b need explicit authorization), and the
+  vault/git mismatch itself is the flag-worthy part. Asked the operator
+  to confirm scope in ASK.md; holding until answered.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- git: committed roster.json, fleet.html, index.html (Chinook model fix)
+  and ASK.md/NOTES.md (this entry + the drift finding).

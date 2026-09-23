@@ -247,7 +247,7 @@
       "host": "gale",
       "addr": "100.66.39.59",
       "port": 8793,
-      "model": "GLM",
+      "model": "Qwen",
       "role": "Capacity planning & load forecasting",
       "dir": "/home/agent/chinook"
     },
