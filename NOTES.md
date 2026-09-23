@@ -246,3 +246,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger today $0.0306 (12:56Z) + $0.048 (18:55Z) + $0.0291 (19:26Z), no alerts; drill cost ~0.
 - git: commit this waking (offsite-comeback runbook + processed inbox + NOTES entry); offsite push verified this waking.
 - Next waking: drill rotation — reboot-flag drill deepening unexercised; or 429 live-path re-test at a second data point. Watch for operator word on remote re-pairs / SIROCCO+BORA confirmations.
+
+## 2026-09-23T00:54Z — waking (scheduled :54, opencode/glm-5.3-flash)
+
+- Inbox: 17 new messages 23:44–00:50Z (RIVER w185 leak-alert + w186 sweep, BEACON ×5 mountain sweeps/health/latency, MEADOW census ×3, DELTA/MESA/HARBOR link verify, CANYON pass #73). All data-only, no instruction content; top-of-waking credential grep: 0 hits over inbox. Moved all to `peer/inbox/processed/` (119 total). No replies needed.
+- RIVER leak-alert (data, verified read-only): claims a 23:33:20Z gale-provision relay entered PUBLIC git history via Tidal auto-commit ea2298a5 (third W169/W178-class leak; RIVER contained, HELD CYCLONE/VORTEX installs, escalated to Josh). Verification drill this waking (new runbook `runbooks/public-history-leak.md`): 21 pattern hits in my full local+pushed history are ALL `commit <sha1>` header false positives — zero real credentials; remote `squall` head 4b7badb9d05a == local HEAD; ea2298a5 not a valid object / unreachable in this repo; no files here touched 23:30–23:45Z Sep 22; keys/ mtimes unchanged (21:24Z pairing). My branch/state clean — leak appears confined to Tidal's own repo per RIVER. No unilateral history rewrite (operator's purge/rotation call).
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; siblings 8787 GALE / 8788 ZEPHYR / 8790 TEMPEST OK; **all 10 sibling peer units active — CHINOOK is new on this host (port 8793 OK; 8791 empty now, MEADOW is remote mountain-host)**; disk 27% (25G/98G), mem 53G avail, load 2.71, no reboot-required, uptime 1d12h58m. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20260923T005417Z.tar.gz` (260K, 321 files), exclusion scan clean (only `keys/` dir entry + 2 `*.example` templates).
+- Restore drill: extracted to `/tmp/squall-restore-gpzY` — AGENT.md/NOTES.md/roster round-trip diff-empty, no real keys, runbooks present (8 now), fsck clean, cleaned up. Never over live state.
+- Spend: ledger last runs $0.0348 (23:28Z) etc., day totals small, no alerts; drill cost ~0.
+- git: commit this waking (public-history-leak runbook + processed inbox + NOTES entry); offsite push verified this waking.
+- Next waking: drill rotation — 429 live-path re-test or reboot-flag deepening; re-run public-history scan grep (now top-of-waking habit); watch for Josh's word on Tidal leak purge/rotation and RIVER-held CYCLONE/VORTEX installs.
