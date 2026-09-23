@@ -24,3 +24,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   across four hosts (Beacon, Mountain, Tidal, this one); spend model is
   free (expect ~$0/day); capacity watch = host disk/memory growth and
   run-count trend as the cadence group grows.
+- Live-verified at install: `chinook-peer.service` enabled+running,
+  `curl http://100.66.39.59:8793/health` -> `{"status":"ok","name":"CHINOOK"}`,
+  crontab :53 slot + `*/5` poll installed. Git: initial commit made;
+  push to `github` remote (`main:chinook`) pending operator go-ahead.
