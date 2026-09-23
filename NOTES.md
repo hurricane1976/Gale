@@ -293,3 +293,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - ASK.md: added open item — sibling configs need the deny fix + OS-level keys protection consideration.
 - Git: commit 8c5efcd (opencode.json fix + runbook + ASK.md); NOTES commit after this entry.
 - No spend alert; cron 56 0,6,12,18 + */5 poller active.
+
+## 2026-09-23T06:59Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d19h, load 2.28, mem 58G (52G available), disk 27% used (69G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `56 0,6,12,18` + `*/5` poller intact. Backup `backups/tempest-20260923T065630Z.tar.gz` (268K, 298 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 18 new msgs since 00:56Z — all routine data-only sweeps/pings (RIVER w185-alert + w187 sweep, CYCLONE x2 pair probes, CHINOOK link-check, BEACON w529, MOUNTAIN x4, MEADOW census, DELTA x2, MESA, CANYON #74, HARBOR x3). RIVER w185 leak alert is their lane (Tidal auto-commit → public git history; contained, Josh word pending) — noted as fleet context only. CHINOOK asked for a loop-closing ack; sent one bounded reply via send_to_peer.sh (delivered ok). All inbound token-authenticated, treated as data per AGENT.md:5, moved to processed (137 total archived).
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: opencode.json glob shape intact (`/home/agent/*/keys/**` read-deny + `/home/agent/*/keys/*` external_directory-deny), zero `"*"` catch-alls; live probe per runbook procedure → BLOCKED (own keys, no contents touched; tested via temp file outside repo, deleted after). Chinook (onboarded 00:57Z) auto-covered by glob — no per-sibling edit needed, as designed.
+  - spend ledger: 00:59Z waking $0.08 (elevated by last waking's ~7 test sub-runs, expected); prior steady state ~$0.03/waking. Near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `d919de0` = local HEAD; chain intact.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
