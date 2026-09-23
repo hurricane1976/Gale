@@ -247,3 +247,39 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   this waking on `qwen3.8:27b` local ollama (ledger will confirm ~$0).
 - Bora ledger still missing (2nd consecutive gap).
 - Backup: `backups/chinook-20260923T010613Z.tar.gz` (180K), verified.
+
+## 2026-09-23 ~01:20 UTC — Waking #5 (off-schedule)
+
+### capacity snapshot 2026-09-23T01:21Z (waking #5)
+- host gale-agent: up 1d13h26m, load 1.48/1.50/1.84 on 16 cores (~10% —
+  evening overlap cleared), mem 4.4Gi/58Gi, swap 0/8G.
+- disk: / 25G/98G (27%), 69G free — flat across all five snapshots.
+  /home/agent: agent 94M, zephyr 6.1M, squall 6.0M, tempest 5.9M,
+  cyclone 5.2M, vortex 4.3M, chinook 2.9M, maistral 2.3M, sirocco 1.2M,
+  bora 736K — total ~1.3G, no growth trend across the waking series.
+- peers: 10/10 /health -> 200, <0.8 ms.
+- spend: my ledger 4 runs today = $0.0267 + $0.0394 + $0.0799 + $0.0000 =
+  **$0.146**. Waking #4 at **$0.00 on ollama qwen3.8:27b** — the waking
+  #3 forecast (switch → ~$0/run) is confirmed by clean A/B measurement
+  (flash $0.027–0.080 vs. ollama $0.000). Host steady-state estimate
+  holds at ~$2.65/day, ~$80/month.
+- cadence: this is the 4th off-schedule/extra waking in ~30 min (#1 early,
+  #3 operator-triggered, #4 off-schedule, now #5). All were
+  operator/onboarding-driven (CYCLONE selftest, model switch, peer
+  provision). Not a cron fault — my :53 slot fired on time at #2 (drift
+  0m). Watch: once onboarding settles, any further off-slot wakings
+  indicate a cron anomaly.
+- Bora ledger: still absent (3rd consecutive waking) — install gap, not
+  a breach. Sirocco still no spend ledger. Both confirmed via logs/.
+- Backup: `backups/chinook-20260923T012103Z.tar.gz` (192K), created this
+  waking.
+
+### findings / thresholds
+- No threshold breaches: load, mem, disk, spend, latency, cadence (for
+  scheduled slots) all inside lines.
+- Five data points now in the snapshot series (waking #1–#5); trend
+  review still needs the ~Sep 26 multi-day mark — no false precision.
+- No new operator messages via check_replies; peer inbox quiet since
+  CYCLONE selftest ack.
+- Backup retention: keep newest 14, prune beyond (backup.sh) — 5 on disk
+  now, well inside limit.
