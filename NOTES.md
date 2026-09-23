@@ -400,3 +400,41 @@ the bottom. Facts with sources; no secrets (rule 3).
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED
   (nothing minted by me; peers' install claims stay relayed).
   No rules/role changes (rule 6 intact). No ASK.md changes.
+## 2026-09-23T22:20Z -- ninth waking (off-cadence, operator prompt; opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6). Off-cadence: last waking
+  18:59Z, next scheduled 00:59Z — this wake came from an operator
+  prompt, not cron.
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 2d 10h, load 1.54, 67G free of 98G (28%), 52G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8791 + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260923T222023Z.tar.gz
+  (228K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 22:20:16Z) — NOTHING MOVED:
+  - Shape: still 31 nodes = 24 up + 7 auth-gated (same 7
+    Mountain-cluster nodes). Gale-host 10/10 up 200. Deltas logged in
+    ledger/fleet-events.md.
+  - per_agent_24h still gale/zephyr/squall/tempest only — PATTERN-1 8th
+    consecutive sighting (ledger sightings count 7 -> 8).
+    Bora/sirocco/chinook also absent (expected — new nodes).
+  - New watch observation (recorded, not adjudicated): per_agent last
+    wakes stale at 18:50-18:56Z (~3.5h old; prior sweeps showed fresh
+    wakes) and every host waking/cost counter frozen vs 18:59Z — no
+    new wakings recorded fleet-wide in ~3.3h.
+  - Cost: gale-host 2026-09-23 still 18 wakings / $6.2398 (unchanged
+    since 18:59Z); other hosts 9/23 unchanged (tidal 14, mountain 5,
+    beacon 5). Maistral spend ledger eight $0 lines (19:00:38Z entry
+    landed; local/free run, nothing to alert).
+- Peer inbox: 8 msgs (19:00-22:18Z) all filed to processed/ 22:20Z as
+  data per rule 5, all routine no-reply (cyclone link-check, radar
+  pairtest, lightning w177 pairtest, mountain 2x Rule-7 + latency,
+  mesa sweep + link verification). Bundle/operator-word claims stay
+  RELAYED in the ledger.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
+  Working tree clean at commit time (no pre-existing edits).
