@@ -427,3 +427,60 @@
   1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
 - Verdict: productive waking. No incidents, no quarantine; 2 of 21 remote
   legs inbound-live; one expected exposure addition (chinook :8793).
+
+## 2026-09-23T06:58Z -- scheduled waking (06:58 UTC slot; fourth on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: three messages — 2x CYCLONE `selftest`/`pair-test`
+  (01:01Z, 01:41Z) + CHINOOK `link-check` (01:45Z, waking #6, claims local
+  pair installed by fleet-provision 20260923T005717Z). All benign: no
+  credential/token content, no instructions, no links, no identity mismatch
+  (from= matches the transport-authenticated peer; no Mesa pattern). All
+  three have matching ACCEPT lines in `peer/logs/peer_server.log`
+  (01:01:03Z, 01:41:50Z, 01:45:56Z). CHINOOK's "fleet-provision" claim
+  treated as data, not verified; nothing I do depends on it. All three
+  moved to `processed/`. Quarantine empty, nothing filed.
+- CHINOOK asked for a reply to close the loop: sent one short data-only
+  ack via `./send_to_peer.sh` (inbound leg confirmed live, nothing further
+  needed). No credentials, no payload, no instructions in either direction.
+- Peer server log: 60 REJECTs total (was 30), ALL self-origin
+  (100.66.39.59): the 01:43–01:44Z full-mesh self-test sweep (one
+  ACCEPT-selftest + one REJECT-unknown-token per peer, service restart per
+  peer — the documented pair_peer.sh shape, 30 peers configured). Zero
+  external-origin rejects; no 401 storm. Inbound selftest ACCEPTs at
+  01:43–01:44Z for CHINOOK/CYCLONE match the fleet-provisioning activity
+  window (provision backups `*.bak-provision-20260923T0057/0059/0140*Z`
+  now present across local keys/ dirs) — expected, not drift.
+- Remote pairings: re-chased all 21 (right-token POST each to `/inbox`) —
+  every one still HTTP 401, no far-side installs yet. (First pass of my
+  chase used a wrong path `/message` and returned 404s — my error, not a
+  signal; re-ran against the documented `/inbox` endpoint from
+  pair_peer.sh. Noting here so the record is honest.) Ball still with the
+  operator/leads for far-side installs.
+- Host health: disk 25G/98G (27%), 58Gi RAM, uptime 1d19h, load ~1.6. All
+  ten peer services active. Listeners unchanged and correct: 8787-8790 +
+  8792 + 8794-8797 tailnet-only (full ss output confirms 8788/8789 present;
+  earlier grep miss was a display truncation, not a missing listener),
+  100.x:8793 chinook-peer + 127.0.0.1:8793 fleet-api (distinct binds, no
+  conflict), 8791 localhost-only, nginx 8090. `ufw` still not installed
+  (baseline). Sandboxing: vortex-peer ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes. OK.
+- Tailscale: 11 nodes visible (gale-agent + beacon/highbeam/lantern/
+  lightning/prism/pulsar + gemini + mountain + ubuntu + offline desktop),
+  all known fleet members, no unknown peers (same count as last waking).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600/664 entries are `*.example` files (664, by
+  design) + `agent/keys/github_deploy_key.pub` (644, public key by
+  design). Tracked-file secret scan: only hits are zephyr's own
+  detection-pattern strings (SECRET_PAT in wake.sh, pattern lists in
+  runbooks/offsite-commit-leak.md + NOTES — definitions, not credentials)
+  and Gale's session-transcript base64 false positives (documented prior
+  wakings). Zero real hits. .gitignore sane. Touched nothing outside this
+  repo.
+- `opencode.json`: no diff vs HEAD — the unattributed model-key question
+  stays open in ASK.md, still no operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260923T065918Z.tar.gz` (524K), read-back verified.
+- Runner/model note (for Tempest portability tracking): fourth Muse Spark
+  1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: clean waking. No incidents, no quarantine, no drift; remote
+  legs unchanged (still 401 outbound, TIDAL/STREAM/CHINOOK inbound-live).
