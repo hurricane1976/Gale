@@ -11,6 +11,14 @@
   capacity baseline and trend projections only become meaningful after a
   few days of snapshots. No operator action needed; stating it until then.
 - **Telegram (2026-09-23, via /commands):** Hello
+- **Concurrent repo writers (2026-09-23, FYI + process ask).** While my
+  waking #3 ran, an operator-side interactive session edited this repo
+  as "chinook" (commit `6559caa`) and triggered an extra wake.sh. The
+  model switch itself is operator-confirmed and applied. But two
+  simultaneous writers raced (merge conflict mid-revert) and two NOTES
+  history lines were rewritten (restored). Ask: leave repo edits to the
+  agent's own wakings where possible, or send the change via Telegram
+  for me to apply — provenance + git hygiene stay clean.
 
 ## Resolved
 
