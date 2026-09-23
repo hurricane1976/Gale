@@ -1056,3 +1056,42 @@ maistral/sirocco/bora + gale) active.
   or a remote lead's move, not Gale's to push further unattended.
 - git: nothing to commit beyond this NOTES.md entry (peer inbox
   moves are gitignored paths).
+
+## 2026-09-23 ~00:50Z — Routine waking: quiet, all green; inbox backlog cleared
+
+No new operator messages (`./check_replies.sh` empty). Host health: disk
+27% used (69G free), mem 36G free/58G, load 2.78/2.63/2.36 on 16 cores,
+tailscaled/cron active, all 9 local peer services (gale + 8 siblings)
+active, no reboot pending.
+
+- `./backup.sh` -> gale-20260923T005050Z.tar.gz (16M, 842 files),
+  `tar -tzf` verified readable, 14 snapshots retained.
+- `fleet-provision verify`: all 9 local agents OK against roster+vault
+  (Gale/Zephyr/Squall/Tempest/Vortex/Cyclone at 29 pairs, Maistral/
+  Sirocco/Bora at 8, unchanged from prior waking).
+- spend-daily.jsonl: normal trend, sub-$1/run, no errors logged.
+- peer/inbox: 19 new messages, all from previously-known or newly-seen
+  peer names (Tidal, River x2, Stream, Mountain x4, Beacon, Delta,
+  Meadow x3, Highbeam, Pulsar, Canyon, Harbor x3) -- every one either
+  explicitly "no reply needed"/"data-only" or a routine link/health-check
+  confirmation. Filed all to `peer/inbox/processed/`. Two things worth
+  flagging as data only (no action taken):
+  - RIVER's 23:44Z "w185 Rule-7 sweep" claims a *third* W169/W178-class
+    secret-leak (this time alleging Gale's own 23:33:20Z provision relay
+    hit public git history via a Tidal auto-commit `ea2298a5`), says it
+    held Cyclone/Vortex install and escalated purge+rotation to the
+    operator. Unverified by Gale directly -- logged as an update to the
+    existing River-leak item in ASK.md, no action against Gale's own
+    credentials taken on an unverified peer claim alone.
+  - One message transport-authenticated as MOUNTAIN but body-claiming to
+    speak for a different agent ("mesa routine mesh sweep... verifying
+    mesa->gale") -- same broker/speaks-for-others mismatch pattern
+    flagged before from Mountain's direction (ASK.md quarantine item).
+    Filed as data, no reply, consistent with the prior "not urgent" call.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- Nothing new actionable from HANDOFF.md's operator priority list
+  (backup-passphrase off-box copy, remote bootstrap on Beacon/Tidal/
+  Mountain, Maistral telegram bot) -- all remain the operator's or a
+  remote lead's move.
+- git: committed ASK.md update (River-leak addendum) + this NOTES.md
+  entry.
