@@ -1123,6 +1123,56 @@ now 31 agents / 10 on this host; `fleet-provision verify` output above
 predates this by ~2 min and will show 9 local configs until Chinook is
 actually paired (still staged, same as Maistral/Sirocco/Bora were).
 
+## 2026-09-23 ~01:45Z — Chinook local-mesh finished; 5 more siblings confirmed on qwen
+
+Host health: disk 27% (69G free), mem 35G free/58G, load 1.55/1.58/1.71 on
+16 cores, tailscaled/cron/gale-peer active, all 9 sibling peer services
+(incl. chinook-peer) active, no reboot pending.
+
+- `./backup.sh` -> `gale-20260923T014017Z.tar.gz` (16M, 852 files),
+  `tar -tzf` verified readable, 14 snapshots retained.
+- `./check_replies.sh`: one queued Telegram message, already the one
+  answering the drift item from last waking's ASK.md ("They should
+  continue to peer they have approval. Also several others are now
+  running qwen so there is more than just chinook"). peer/inbox: no new
+  peer messages.
+- **Finished Chinook's local-mesh provisioning.** Operator's approval
+  authorized the rule-8a/8b scope flagged last waking. `fleet-provision
+  render --write` (no `--agent` filter -- it self-selected exactly the
+  5 drifted agents: Zephyr, Squall, Tempest, Vortex, Sirocco) backed up
+  each `peers.env` (`*.bak-provision-20260923T014034Z`), wrote, restarted
+  each changed listener, self-tested every entry. `fleet-provision
+  verify` now clean across all 10 local agents (Gale 30 pairs,
+  Chinook/Maistral/Sirocco/Bora 9 pairs each, rest 30). Confirmed by hand
+  that Zephyr's `peers.env` now carries a CHINOOK block (values not
+  read). No token values ever printed.
+- **Checked the "several others now running qwen" tip directly against
+  each sibling's own `opencode.json`** (not AGENT.md prose, which was
+  stale for some) rather than trust roster.json. Confirmed: Vortex,
+  Cyclone, Maistral, Sirocco, Bora are all `ollama/qwen3.8:27b`, same as
+  Chinook. Zephyr/Squall/Tempest still `openrouter/z-ai/glm-5.3-flash`,
+  unchanged. Updated `fleet-provision/roster.json` (5x model Muse->Qwen),
+  `website/fleet.html` (topo-node colors + data-model, member-card
+  chips, dropped the now-unused Muse legend entry and reflowed the
+  legend row, Chinook's 9 local-mesh edges flipped amber `chan-pending`
+  -> green `chan-live`, Chinook node/member-card state -> "two-way
+  confirmed (local mesh)", welcome banner + footer text updated), and
+  `website/index.html` (new dated activity-log entry, left the historical
+  entries as-is since they were accurate snapshots at the time). Deployed
+  via `website/deploy.sh` to the real nginx docroot (port 8090); curl
+  + grep verified 200s, correct chips/state, zero stray "Muse" text.
+  Headless-Chromium screenshot attempt failed to write to disk (sandbox
+  write issue, not a site problem) -- relied on curl/grep content checks
+  instead, same as prior wakings when the screenshot path was flaky.
+- ASK.md: moved both the drift finding and the Telegram reply into
+  Resolved with what was checked and changed.
+- spend-daily.jsonl: normal trend (largest single run $1.53, this
+  waking's provisioning+website work), no errors.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- git: committed roster.json, fleet.html, index.html, ASK.md, this
+  NOTES.md entry. `keys/` and `vault/` stay untracked/gitignored as
+  always -- no token values touched git.
+
 ## 2026-09-23 ~01:32Z — Routine waking: fleet-topology model fix + Chinook mesh-drift finding
 
 No new operator Telegram messages beyond the already-queued 01:26Z ask

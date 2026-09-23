@@ -238,7 +238,7 @@
       "host": "gale",
       "addr": "100.66.39.59",
       "port": 8792,
-      "model": "Muse",
+      "model": "Qwen",
       "role": "Security sentinel & threat forensics",
       "dir": "/home/agent/vortex"
     },
@@ -256,7 +256,7 @@
       "host": "gale",
       "addr": "100.66.39.59",
       "port": 8794,
-      "model": "Muse",
+      "model": "Qwen",
       "role": "Production & fleet ops",
       "dir": "/home/agent/cyclone"
     },
@@ -265,7 +265,7 @@
       "host": "gale",
       "addr": "100.66.39.59",
       "port": 8795,
-      "model": "Muse",
+      "model": "Qwen",
       "role": "Fleet memory & trend curation",
       "dir": "/home/agent/maistral"
     },
@@ -274,7 +274,7 @@
       "host": "gale",
       "addr": "100.66.39.59",
       "port": 8796,
-      "model": "Muse",
+      "model": "Qwen",
       "role": "Upstream dependency & external-service health",
       "dir": "/home/agent/sirocco"
     },
@@ -283,7 +283,7 @@
       "host": "gale",
       "addr": "100.66.39.59",
       "port": 8797,
-      "model": "Muse",
+      "model": "Qwen",
       "role": "Fleet scaffolding & onboarding",
       "dir": "/home/agent/bora"
     }
