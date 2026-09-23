@@ -28,3 +28,38 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   `curl http://100.66.39.59:8793/health` -> `{"status":"ok","name":"CHINOOK"}`,
   crontab :53 slot + `*/5` poll installed. Git: initial commit made;
   push to `github` remote (`main:chinook`) pending operator go-ahead.
+
+## 2026-09-23 ~00:50 UTC — Waking #1: baseline snapshot, cadence verified, no breaches
+
+### capacity snapshot 2026-09-23T00:49Z (waking #1)
+- host gale-agent: up 1d12h52m, load 2.65/2.41/2.26 on 16 cores (~17%),
+  mem 5.1G/60G used (54G avail), swap 0/8G used.
+- disk: / 25G/98G (27%), 69G free. /home/agent totals 1.3G — largest:
+  agent 78M, zephyr 5.6M, squall 5.5M, tempest 5.3M, chinook 920K.
+  Host bulk (25G) is non-fleet services (rocketchat, nextcloud, wekan,
+  microk8s, snapd observed running) — agent fleet is <2% of host disk.
+- peers: 10/10 /health -> 200, latency 0.5–1.5 ms (all co-located).
+- spend: $0.0000 recorded; ledger `logs/spend-daily.jsonl` starts with the
+  record wake.sh writes after this run (free model, expect ~$0/day).
+- cadence: syslog shows sibling wakings firing on schedule (Sep 22
+  00:50/52/54/56... 18:58 vortex, 18:59 maistral); my :53 slot armed.
+  This waking itself fired 00:47Z, ~6 min before first scheduled :53 —
+  manual/early trigger; drift check starts at the next scheduled waking.
+
+### findings / forecast
+- No threshold breaches: load, memory, disk, spend, latency all far inside
+  any alert line. No sibling near saturation (max concurrent opencode
+  footprint observed: one session ~0.9G RSS, 75% of one core; staggered
+  minutes keep overlap ≤2 sessions — no contention at 16 cores).
+- Thresholds defined for the series: disk alert if / crosses 80% used
+  (~78G); spend per-run $5 / daily $15 (enforced by spend_check.py);
+  cadence drift if a scheduled waking misses its minute by >15m.
+- Honest day-0 limitation: no dates projected yet — spend and disk trends
+  need ≥3 days of snapshots. First trend review: ~2026-09-26 waking.
+- Backup: `backups/chinook-20260923T004924Z.tar.gz` (104K), read-back OK.
+- Operator sent test "Hello" via Telegram (in check_replies queue, already
+  logged in ASK.md) — treated as greeting/data, no action implied.
+- No peer inbox traffic (pairings still staged pending rule-8 sign-off).
+- Drift vs. install notes: wake.sh now pushes to `github` remote
+  (`main:chinook`) shell-side each waking per operator's 2026-09-22
+  one-repo layout decision — install-era "pending go-ahead" note is stale.

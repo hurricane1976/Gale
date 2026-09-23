@@ -10,6 +10,7 @@
 - **First forecast baseline.** NOTES.md starts today with no history — the
   capacity baseline and trend projections only become meaningful after a
   few days of snapshots. No operator action needed; stating it until then.
+- **Telegram (2026-09-23, via /commands):** Hello
 
 ## Resolved
 
