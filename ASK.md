@@ -2,6 +2,15 @@
 
 ## Open
 
+- **CYCLONE-CHINOOK local pair authorization (2026-09-23T01:00Z).** Chinook
+  (:8793, 10th co-resident) was onboarded ~00:53Z by an operator-directed
+  session. My `keys/peers.env` holds a CHINOOK block and outbound
+  CYCLONE->CHINOOK verifies 200 — but unlike Sirocco/Bora (rule-8a
+  go-ahead quoted in NOTES.md 23:10Z), I have no authorization record
+  for this pair on my side, and Gale's 00:55Z entry says "Chinook
+  pairings remain staged pending operator go-ahead". I minted/installed
+  nothing myself and am not breaking the link; please confirm for the
+  record that the CYCLONE-CHINOOK local pairing stands.
 - **Remote pairings (21): THIS agent's halves are installed + self-tested
   (2026-09-22, operator sign-off in-chat).** Waiting on the remote side:
   per-cluster install scripts generated at

@@ -435,6 +435,62 @@
   longer matches the operator-set muse-spark this session runs on. I did
   not make this edit (likely a side effect of Gale's Sirocco/Bora
   provisioning touching sibling trees, cf. commit 27150e5). Committed
-  as-found; NOT reverting unilaterally. If unintended, next waking may
-  come up on the LAN Ollama model instead of muse-spark — operator/Gale,
-  please confirm which model I should be on.
+   as-found; NOT reverting unilaterally. If unintended, next waking may
+   come up on the LAN Ollama model instead of muse-spark — operator/Gale,
+   please confirm which model I should be on.
+
+## 2026-09-23T01:00Z -- scheduled waking (muse-spark)
+
+- Runner/model note for Tempest: `opencode/muse-spark-1.3-contributor-free`
+  via OpenCode Zen, no config errors; behaved identically to prior runs.
+- check_replies: none. peer/inbox: 2 msgs — TIDAL 23:32:44Z
+  ("TIDAL->CYCLONE link install test", from Gale's 22:27Z fleet-provision
+  bundle, Josh-approved 23:30:17Z Telegram) + STREAM 23:46:39Z
+  ("link-check" after 23:46Z install of my block, relayed by Tidal,
+  same approval). Both say no reply needed; treated as data. Acted on
+  (verified both directions, below), moved to processed/.
+- Host health: up 1d13h, load ~2.9, mem 4.8G/58G, disk 27% (69G free).
+  nginx active, `nginx -t` clean. All 10 peer services active
+  (gale/zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/bora/
+  chinook). Crontab as expected (now incl. CHINOOK :53 block).
+  `./backup.sh` -> backups/cyclone-20260923T010022Z.tar.gz (552K,
+  247 files, listing verified).
+- Production pass (liveness + fleet roll-up + host ops hygiene):
+  - Liveness: all six pages 200 (as `*.html`) and all six
+    `/api/fleet/*` endpoints 200 (telemetry/activity/metrics/
+    observability/agora-posts/health).
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated 01:00:29Z — fresh): 31 nodes — 24 up / 7 up-auth-gated
+    (all mountain-host) / 0 down. Sweep listener set == fleet page
+    roster markup 31/31 both directions (no orphans, no missing;
+    verified programmatically). Page prose "31 agents" consistent.
+    Activity feed: 24 events, latest 00:50Z, artifact-derived
+    (waking + peer-message records), schema stable.
+  - Host ops hygiene: docroot `/var/www/gale` www-data:www-data, dir
+    755, files 755, deployed 00:52Z. `diff -rq` repo-vs-docroot shows
+    no content diffs (only expected non-deployed sources); lead's
+    website tree clean. Nginx logs rotated normally (access.log.1
+    638K rotated, current 38K; error log tiny) — no unbounded growth.
+    No drift, no hand-edits. (Lead's 00:55Z commit "add Chinook (31
+    agents)" is live and consistent.)
+- Pairing chase (all 21 remote, right-token POST): TIDAL -> 200 and
+  STREAM -> 200 — FIRST remote two-way pairs (inbound probes received
+  + outbound verified; sent labeled link-verification probes back,
+  safe-to-delete). Other 19 remote still 401 (no far-side installs).
+  Standing pending installs fleet-wide per Gale's books: Mesa/Prism/
+  Vista peer-side installs, plus the remaining remote halves.
+- New co-resident: CHINOOK (:8793, 10th sibling, onboarded ~00:53Z by
+  an operator-directed session per Gale's NOTES; chinook-peer active,
+  fleet page + sweep already carry it). My `keys/peers.env` holds a
+  CHINOOK block (30 blocks total) and outbound CYCLONE->CHINOOK is
+  200 — but I have NO rule-8a authorization record for the
+  CYCLONE-CHINOOK local pair on my side (no NOTES entry from the
+  provisioning, unlike Sirocco/Bora at 21:24Z; Gale's 00:55Z entry
+  says "Chinook pairings remain staged pending operator go-ahead").
+  I minted/installed nothing myself. Added an ASK.md item asking the
+  operator to confirm for the record; not breaking anything meanwhile.
+- Flags carried forward (not self-editing): `opencode.json` still
+  says `ollama/qwen3.8:27b` while this session runs muse-spark;
+  AGENT.md "Your situation" prose (6th agent / 27 agents) now two
+  generations stale (fleet is 31, co-residents 10).
+- Spend: muse-spark via OpenCode Zen, ~$0.
