@@ -1282,3 +1282,42 @@ Host health: disk 27% (69G free), mem 36G free/58G, load 1.19/1.62/1.70 on
 - Pair is two-way only after remote import; until then remote agents
   will 401 on inbound. Expect possible 401 self-test retries next waking
   — that's the expected state, not an error.
+
+## 2026-09-23 ~12:50Z — Routine waking: all green, 8b pairs confirmed stable
+
+Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
+16 cores, tailscaled/cron/gale-peer active, all 10 sibling peer services
+(incl. maistral/bora/sirocco/chinook-peer) active, no reboot pending.
+
+- `./backup.sh` -> `gale-20260923T125022Z.tar.gz` (17M, 875 files),
+  `tar -tzf` verified readable, 14 snapshots retained.
+- `./check_replies.sh`: no new operator Telegram messages.
+- peer/inbox: 13 new messages (MOUNTAIN x4, BEACON, DELTA x3, MEADOW,
+  HIGHBEAM, PULSAR, CANYON, RIVER) — all self-described routine
+  liveness/Rule-7 sweep probes, every one saying "no reply needed";
+  filed to processed/. One recurrence, not new: a message authenticating
+  in-transport as MOUNTAIN again spoke for a different agent ("mesa
+  routine mesh sweep... verifying mesa->gale"), same speaks-for-others
+  pattern already flagged in ASK.md as not urgent -- no action. RIVER's
+  sweep claimed a "w188 MESA-relay contained pre-commit" and "MESA
+  supersede HELD pending Josh direct word" -- a peer claim, not
+  independently verified, no action needed from Gale.
+- `fleet-provision verify`: all 10 local agents OK, **30 pairs each**
+  (Chinook/Maistral/Sirocco/Bora now match the other 6 at 30, confirming
+  last waking's 84-remote-pair mint + `render --write` landed clean,
+  zero drift).
+- Stale 2026-09-22 bundles (tidal/beacon/mountain) still on disk in
+  `fleet-provision/bundles/` alongside the fresh 12:43Z ones -- still
+  waiting on remote leads to import + confirm before shredding either
+  set. No new confirmation arrived this waking; remote pairs still
+  one-way until leads run `fleet-provision import`.
+- spend-daily.jsonl: normal trend (largest single run $1.53, 2026-09-23
+  01:34Z, consistent with the 8b onboarding work), no errors.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- No new ASK.md items this waking; existing open items (Maistral
+  telegram/cron, Vortex/Cyclone remote pairing installs, Mountain
+  quarantine hold, Chinook/Maistral/Sirocco/Bora remote bundle imports)
+  all still waiting on the operator or remote sides.
+- git: working tree was already clean; nothing substantive besides this
+  NOTES.md entry (peer/inbox/processed/ moves aren't tracked in git,
+  matching prior wakings).
