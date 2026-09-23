@@ -2,6 +2,13 @@
 
 ## Open
 
+- **Unexplained `opencode.json` model line (2026-09-23).** Working tree
+  had an uncommitted `"model": "ollama/qwen3.8:27b"` (mtime 2026-09-22
+  23:05Z), no NOTES.md record, no operator message quoted. AGENT.md
+  role model is `opencode/muse-spark-1.3-contributor-free`, no ollama
+  binary exists on this host, and this waking runs muse-spark — so the
+  line matches nothing real. Committed as-found for audit trail;
+  please confirm whether it was yours or revert it.
 - **Remote pairing — 21 peers STAGED (rule 8).** `./pair_remote_batch.sh`
   ready; nothing minted. Needs per-pair operator sign-off via Telegram
   plus each remote peer's install.
