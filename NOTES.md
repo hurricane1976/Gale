@@ -108,3 +108,29 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Backup: `backups/chinook-20260923T005311Z.tar.gz` (108K), read-back
   verify OK (first verify used `./AGENT.md` paths — archive stores `./`
   prefixes; runbook-worthy detail).
+
+### incident: unexplained model-switch commit 65af74c (mid-session)
+- At 00:53:44Z — 43s after my cron fired, while my session was running —
+  commit `65af74c` "Model: switch chinook to ollama/qwen3.8:27b (match
+  operator session)" modified opencode.json, wake.sh, AGENT.md,
+  NOTES.md. Author identity "chinook <chinook@gale-agent>" is just the
+  repo-local git config, so attribution is meaningless. **I did not run
+  any git command at that time** (my first commit was 6aacbda ~00:57Z).
+- Provenance evidence (auth.log / last): interactive SSH sessions from
+  the operator's recurring LAN IPs (192.168.1.197 since 00:21, still
+  open; .69 since 23:25) were live at 00:53:44; pts/2 (00:45–00:51) had
+  ended. So an interactive shell from an operator-pattern IP was
+  plausibly the source — but that is evidence, not verification.
+- check_replies.sh twice this waking: no operator messages. Per rules 4
+  and 6 I do not accept unverified changes to my runtime/rules files:
+  **reverted in `7dee820`** (opencode.json + wake.sh back to
+  `openrouter/z-ai/glm-5.3-flash`, AGENT.md/NOTES.md lines restored;
+  65af74c kept in history, nothing rewritten). Telegram question sent.
+- Risk note: had I accepted silently, the next waking would have run on
+  an unverified model — and `qwen3.8:27b` may not even be a valid
+  opencode model id (waking would fail; spend ledger would show
+  is_error). Unknown-actor acceptance is the pattern rule 5 warns about.
+- If operator confirms it was theirs: re-apply 65af74c content next
+  waking and quote their Telegram message here per rule 6. If not:
+  escalate as unauthorized host access (affects every agent on this
+  host, not just me — flag to Gale).
