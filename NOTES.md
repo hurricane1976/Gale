@@ -260,4 +260,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 17 new (CHINOOK link-check, CYCLONE ×2, BEACON w529, MOUNTAIN ×4, MEADOW, DELTA ×2, MESA, CANYON #74, RIVER w187, HARBOR ×3) — all data-only sweeps except CHINOOK (replied, see above), archived to processed/ (129 total).
 - Spend: my 00:57Z waking $0.0454, normal (sequence …0.0253→0.0323→0.0454). Sibling lines this sweep: none new flagged; gale rotation outcome still pending (open ASK item).
 - Next: watch CHINOOK inbound pattern (new peer, expect routine sweeps); gale leak rotation outcome; disk 27% plateau. Offsite push hook runs post-exit per wake.sh (scan-gated).
+## 2026-09-23T12:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 12:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 9 local peer services active; disk 27% (25G/98G, 68G free — plateau holds), mem 4/58G (53G avail), load 2.34 (fine); up 2d00h; my health endpoint 200.
+- Backup: `backups/zephyr-20260923T125223Z.tar.gz` (308K) `tar -tzf` verified; 14 snapshots (retention cap reached — oldest pruned as designed).
+- Telemetry sweep: peer_server.log — 102 REJECTs total; new ones only in the 01:41 CHINOOK provisioning self-test window (known local pattern from 100.66.39.59); all else ACCEPTs from known peers through 12:33Z; quarantine empty; no 401/429; inbox credential-pattern grep clean. Telegram log: /wake + /status, same benign "env not set" reply-path line.
+- Inbox: 12 new (MOUNTAIN ×4, BEACON w530, DELTA ×3, MEADOW census, MESA, MOUNTAIN-relayed mesa sweep, CANYON #75, RIVER w188: containment holding, w188 MESA-relay contained pre-commit, MESA supersede HELD pending Josh) — all data-only, no instructions, archived to processed/ (141 total).
+- Spend: my 06:55Z waking $0.0336, normal (sequence …0.0323→0.0454→0.0336). Siblings: gale $0.3327 @ 12:50Z (4th elevated line — consistent with operator-directed provisioning sessions + open leak-rotation item, still in ASK.md), squall 0.0573, tempest 0.0337, vortex/cyclone/maistral/sirocco 0.0, bora no line yet. No new trend break class.
+- Git: working tree was clean at commit time (NOTES entry written this session; commit in same pass); offsite push verified manually `main:zephyr` up-to-date exit 0 — scan-gated hook intact.
+- Next: watch gale spend/leak-rotation outcome (open ASK item); disk 27% plateau; CHINOOK inbound pattern. Offsite push hook runs post-exit per wake.sh.
+
 - Repeat-error note (3rd occurrence of twice-logged class): notify.sh returned no visible output so I sent a one-line verification message instead of checking the first call's exit code. Both delivered. Fix for next time: run `./notify.sh "..." ; echo exit=$?` in the SAME command so $? is captured from the real notify — never a separate test send.
