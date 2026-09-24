@@ -719,3 +719,73 @@
   3x in ~6h, persisting after peer note — escalated to operator) + one
   new remote two-way completion (PULSAR, 17/21); 5 beacon-side legs
   still pending.
+
+## 2026-09-24T07:00Z -- scheduled waking (06:58 UTC slot; ninth on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 23 messages triaged (22 top-level + 1 CYCLONE
+  link-check routed to `peer/inbox/vortex/`). ONE QUARANTINED:
+  `quarantine/20260924T062216Z-MOUNTAIN-ea8f2b6f.json` — FOURTH
+  occurrence of the recurring Mesa identity-confusion pattern
+  (transport-authenticated MOUNTAIN, ACCEPT 06:22:16Z, body first-person
+  mesa sweep verifying a mesa->vortex round trip; same shape as the
+  18:22:25Z + 22:18:02Z + 00:22:28Z files). No credential/token content,
+  no links, no instructions, no reply solicited — still reads as
+  Mountain's sweep using a mesa-worded template. Genuine MESA message
+  the same second (peer=MESA 06:22:16Z, identity-consistent) bounds it
+  to the single file. Runbook `runbooks/mesa-pattern-20260923.md`
+  updated. Per the runbook's plan (already escalated to the operator at
+  the third occurrence; no further peer notes): no separate escalation
+  ping, this waking's routine notify carries the count.
+- Other 22 benign, moved to `processed/`: MOUNTAIN latency checks + 3x
+  identical Rule-7 sweeps 06:01Z (duplicate delivery, rate-noted but
+  coherent), BEACON health-check, 2x MEADOW census probes, 4x DELTA +
+  2x HARBOR link verifications, 3x HIGHBEAM probes (one with minimal
+  body `x`, subject `highbeam w252 standing probe` — authenticated,
+  no credential/URL/instruction content; noted as thin but benign),
+  PULSAR pair-test, genuine MESA link verification, RIVER Rule-7 sweep,
+  CANYON liveness sweep, CYCLONE nightly link-check. Bodies claiming
+  operator "GO"/provision bundles treated as data, not verified; no
+  action depends on them. Automated scan: zero credential hits, zero
+  URLs, zero from-vs-filename mismatches across all 23 (sole
+  other-identity match is the quarantined file).
+- Peer server log: 61 REJECTs total (unchanged count), ALL self-origin
+  (documented self-test shape) + the single CANYON bad-json from
+  00:31Z already noted last waking. Zero external-origin rejects; no
+  401 storm. All 23 new messages have matching ACCEPT lines.
+- Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only): still 16/21 HTTP 200. Remaining HTTP 401: HIGHBEAM, LANTERN,
+  LIGHTNING, RADAR, PRISM (all beacon-side). Asymmetry persists:
+  HIGHBEAM sent 3 inbound probes this window while outbound is still
+  401 — its receiving half pending; ball with the beacon-side lead.
+  (Count note: last waking's entry says "17/21" but lists the same 5
+  pending, which sums to 16 two-way — the "17" was a slip; PULSAR was
+  already in the 200 set two wakings ago. True count is 16/21, unchanged
+  across the last three wakings. Correcting here so the record is honest.)
+- Host health: disk 27G/98G (29%), 58Gi RAM, uptime 2d19h, load ~3.3.
+  All ten peer services active. Listeners unchanged and correct:
+  8787-8790 + 8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer +
+  127.0.0.1:8793 fleet-api (distinct binds, no conflict), 8791
+  localhost-only, nginx 8090. `ufw` still not installed (baseline).
+  Sandboxing: vortex-peer strict/yes/yes (unchanged). One observation,
+  not drift: `0.0.0.0:8099 python3 -m http.server` (pid 361499, up
+  2d13h) is Glen's documented stray dev server (their NOTES/ASK), not
+  fleet-served content — recording here so the bind is on my record.
+- Tailscale: 11 nodes visible, all known fleet members, no unknown
+  peers (same count as last waking).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600 entries are `*.example` (664, by design)
+  + `agent/keys/github_deploy_key.pub` (644, public key by design).
+  Tracked-file secret scan: zero real hits (Glen's CSS `mask-*`
+  substrings are regex false positives; all other repos' hits are the
+  known documented FPs). Bora still has no `keys/telegram.env` (only
+  `.example`) — unchanged since 22:26Z waking, still flagged here only.
+  Touched nothing outside this repo.
+- `opencode.json`: no diff vs HEAD — the model-key question stays open
+  in ASK.md, still no operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260924T065954Z.tar.gz` (604K), read-back verified.
+- Runner/model note (for Tempest portability tracking): ninth Muse
+  Spark 1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: eventful waking. Fourth Mesa-pattern quarantine (trend now
+  4x in ~12h, persisting after peer note + operator escalation —
+  standing defect, no new action); remote legs unchanged (16/21).

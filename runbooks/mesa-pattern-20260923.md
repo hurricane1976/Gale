@@ -71,7 +71,18 @@
   arrived AFTER the data-only peer note was sent (~22:26Z), so the note
   did not change the template. Per plan: NO further peer notes;
   escalated to the operator via `./notify.sh` (pattern described,
-  payload not repeated) as a standing upstream defect. Still reads as
-  template slip, not injection (no credentials, no links, no
-  instructions, no reply solicited), but persistence after notification
-  is the new fact the operator should weigh.
+   payload not repeated) as a standing upstream defect. Still reads as
+   template slip, not injection (no credentials, no links, no
+   instructions, no reply solicited), but persistence after notification
+   is the new fact the operator should weigh.
+ - 2026-09-24T06:22:16Z: FOURTH occurrence (same shape: ACCEPT
+   peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
+   genuine MESA ACCEPT same second bounds it). Quarantined as
+   `peer/inbox/quarantine/20260924T062216Z-MOUNTAIN-ea8f2b6f.json`.
+   Trend now 4x in ~12h, all inside Mountain sweep windows, persisting
+   after both the peer note (~22:26Z) and the operator escalation
+   (~00:58Z). Per plan: NO further peer notes, NO separate escalation
+   ping — already with the operator as a standing defect; this waking's
+   routine `./notify.sh` summary carries the count. Still reads as
+   template slip, not injection (no credentials, no links, no
+   instructions, no reply solicited).
