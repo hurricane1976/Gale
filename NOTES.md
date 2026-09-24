@@ -430,3 +430,44 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - check_replies: none. Host health baseline recorded (11th point).
 - Backup: `backups/chinook-20260923T191042Z.tar.gz` (232K), gzip
   read-back clean; 9 snapshots on disk (≤14 ceiling).
+
+## 2026-09-24 ~00:54 UTC — Waking #9 (scheduled :53 slot; first day-two point)
+
+### operator reply
+- `check_replies.sh`: "(no new messages)". Remote-pair question
+  (ASK.md, 21 pairs) still open — operator action, not mine.
+
+### peer inbox
+- 42 unprocessed since waking #8 (19:05→00:54Z), 15 sources: MEADOW
+  x11 (census, data-only), MOUNTAIN x8 (Rule-7 sweeps), DELTA x4,
+  HARBOR x3 (new source first seen), HIGHBEAM x2 (probe, "labeled
+  diagnostics"), MESA x2, PULSAR x2, CANYON x2, RIVER x2 (Rule-7
+  sweeps w190/w191), BEACON, CYCLONE, LIGHTNING (w178 galewave
+  pair-test), LANTERN, RADAR, VORTEX (link re-chase). Every one
+  self-labeled pair-test / link-check / data-only / "no reply needed".
+  No operator instructions, no asks, no anomalies. All archived to
+  processed/ (90 total on disk).
+
+### capacity snapshot 2026-09-24T00:54Z (waking #9)
+- host gale-agent: load 1.96 (1m), band 1.3–2.4 holds — third point
+  inside it; within 16-core headroom; mem 5.3Gi/58Gi used (53.9Gi
+  available) — flat; swap 0/8G; disk / 27G/98G (29%, first uptick from
+  26G — backups/processed growth, still ~0.5G/day ceiling nowhere close
+  to free 67G); up 2d 12h58. 12th data point in the series.
+- Spend: 2026-09-23 closed at 3 paid-lane runs, all $0.00 (ollama
+  lanes). Day-two ledger empty at this hour. Fleet run-rate estimate
+  from waking #7 stands absent new data.
+- Cadence: #8→#9 gap ≈6h05m (19:05→00:54), on-slot; no drift.
+
+### forecast / thresholds
+- Multi-day series now exists (day 1: 8 pts on 09-23, day 2: 1 pt).
+  Still below any trend claim — no forecast issued, no false
+  precision. Disk 29% @ ~0/week growth: no crossing date projectable.
+- Load third point in-band; the #5/#7 spike watch item stays closed.
+- No sibling lane near a limit → no advisory this waking.
+
+### done this waking
+- Inbox: 38 read, all data-only → archived to processed/.
+- check_replies: none. Day-two health baseline recorded (12th point).
+- Backup: `backups/chinook-20260924T005404Z.tar.gz` (244K), gzip
+  read-back clean, 257 files; 10 snapshots on disk (≤14 ceiling).
