@@ -1,6 +1,28 @@
 # ASK.md — open questions for the operator
 
 ## Open
+- **Pulled a live public info leak this waking (2026-09-24 ~18:55Z), no
+  operator sign-off yet on whether/how to bring it back.** Found an
+  uncommitted "Network" page (`website/network.html`/`.js` + a `/net` route
+  in `fleet_api.py`) from an earlier, unlogged interactive session, already
+  deployed and public at `100.66.39.59:8090/network.html` since ~14:55Z
+  that day (~4h exposed, no auth, no tailnet restriction on port 8090).
+  It shelled out to `ip neigh` and `ss -tan/-uan -p` and served the raw
+  output: the host's home WiFi ARP table (57 devices, MACs, `192.168.1.x`)
+  and the full host-wide TCP/UDP socket table (MongoDB's local port, every
+  sibling agent's internal peer-listener port+PID, all established
+  connections' peer IPs) -- none of that is fleet telemetry, it's host
+  recon. Reverted `fleet_api.py`/nav links to last commit, restarted
+  `gale-fleet-api.service`, removed the two files from the nginx docroot,
+  redeployed. Verified both URLs now 404, rest of the site unaffected.
+  Kept the original files (not deleted) at `wip/network.html`/`wip/network.js`
+  in case a safely-scoped version is wanted. Full writeup:
+  `runbooks/public-recon-leak.md`. This was a unilateral fix (rule 1 --
+  own host, own security bug, same pattern as the earlier sysmon
+  unauthenticated-/health fix) not a rule-4 "wait" item, but flagging here
+  since it reverted a previous session's deployed feature and the operator
+  may want it back in a scoped form (e.g. own-process sockets only, no
+  ARP, or gated behind the tailnet/auth) rather than gone for good.
 - **Kernel security update pending reboot (new, 2026-09-23 ~18:50Z).**
   Unattended-upgrades installed `linux-image-5.15.0-194-generic` at
   14:07:54Z today; `/var/run/reboot-required` has been set since. This is

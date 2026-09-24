@@ -1520,3 +1520,66 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - git status clean, nothing to commit this waking.
 - No new ASK.md items; existing open items unchanged, still waiting on the
   operator or remote sides.
+
+## 2026-09-24T18:50Z — pulled a live public info-disclosure: unauthenticated "Network" page leaked LAN ARP table + host-wide socket list
+
+- `./check_replies.sh`: no new operator Telegram messages.
+- Host health: disk 34% (63G free), mem 28G free/52G avail, load
+  1.47/1.44/1.39 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md).
+- **Found and fixed a live security issue before anything else this waking.**
+  `git status` showed the usual uncommitted `website/*` files plus two new
+  untracked files (`network.html`, `network.js`) from an earlier interactive
+  session (file mtimes ~14:51-14:55Z that day, no matching NOTES entry --
+  nobody logged doing this work). Diffed everything before touching it:
+  it was a new "Network" ops page + a `/net` route added to `fleet_api.py`
+  that shelled out to `ip -j neigh` and `ss -H -tan/-uan -p` and returned
+  the raw output as JSON, linked from every page's top nav. Checked whether
+  it was already live -- yes: `curl 127.0.0.1:8090/network.html` and
+  `/api/fleet/net` both 200, and `/net`'s payload was real: the host's home
+  WiFi ARP table (57 entries, `192.168.1.x`, real MACs) and 319+ TCP/UDP
+  sockets host-wide (not scoped to this service) including local MongoDB
+  ports and every sibling agent's internal peer-listener port+PID. Port 8090
+  has no nginx `allow`/`deny` (`server_name _`, all interfaces) and
+  `fleet_api.py` is deliberately unauthenticated by design (fine for fleet
+  telemetry, not fine for a live socket/ARP dump) -- so this had been
+  publicly exposed, no auth, for ~4 hours.
+  Treated as a rule-1 "fix what's mine to fix" item (own host, own bug,
+  same class as the earlier sysmon `/health`-auth fix in `a5eae44`), not a
+  rule-4 wait-for-operator item, since it was a live ongoing leak and the
+  fix is fully reversible. Mitigated immediately: moved `network.html`/
+  `network.js` to `wip/` (kept, not deleted), `git checkout --` on the
+  8 modified tracked files to revert to last commit, `website/deploy.sh`,
+  manually removed the two stale files from `/var/www/gale` (deploy.sh only
+  prunes a hardcoded stale-list, not new additions), `sudo systemctl restart
+  gale-fleet-api` (service runs the repo file directly -- editing it alone
+  doesn't change the running process). Verified: `/network.html` and
+  `/api/fleet/net` both 404 now, `/fleet.html` still 200. Wrote
+  `runbooks/public-recon-leak.md` and an `ASK.md` item flagging that the
+  operator may want a safely-scoped version back (own-process sockets only,
+  no ARP, or gated) rather than gone for good -- this was my call to revert
+  publicly, not my call to redesign or decide the feature is dead.
+- `./backup.sh` -> `gale-20260924T185154Z.tar.gz` (18M), `tar -tzf` verified
+  readable (971 entries), 14 snapshots retained.
+- peer/inbox: 20 new messages (MOUNTAIN x4, MEADOW x2, DELTA x3, HIGHBEAM,
+  PULSAR, MESA, CANYON, RIVER, HARBOR x4, BEACON) plus 1 leftover CYCLONE
+  message in a nested `peer/inbox/gale/` subfolder -- all routine
+  liveness/link-check/Rule-7 sweep probes, every one self-described "no
+  reply needed"; filed to `processed/`. Recurring MOUNTAIN-speaking-as-MESA
+  pattern again (18:22Z) -- same already-flagged low-signal item in ASK.md,
+  no new action. RIVER's w194 sweep: 30/30 green, w185 containment holding,
+  reboot-required flag noted on their side too, no change.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- `fleet-provision verify` not re-run this waking (no provisioning scope
+  changes since last check).
+- spend-daily.jsonl: normal trend, no errors.
+- Committed: revert of the 8 `website/*` files to HEAD (no-op vs. last
+  commit, so nothing new to commit there) plus this NOTES/ASK/runbook
+  update. `wip/network.html`/`wip/network.js` are new untracked files, left
+  uncommitted deliberately (not fleet state, just parked work pending the
+  operator's call).
+- New ASK.md item: the network-page revert, above. Existing open items
+  (kernel reboot window, Maistral telegram/cron, Vortex/Cyclone remote
+  pairing installs, Mountain quarantine hold, remote bundle imports)
+  unchanged, still waiting on the operator or remote sides.
