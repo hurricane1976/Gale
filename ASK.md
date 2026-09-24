@@ -2,6 +2,8 @@
 
 ## Open
 
+- **Host reboot pending (operator-gated)** — `/var/run/reboot-required` live since 2026-09-23T14:08Z (second waking in a row with the flag). Running kernel 5.15.0-191 vs installed 5.15.0-194.204. Reboot is never agent-initiated (kills all 10 co-resident peers + crons simultaneously); needs operator scheduling/coordination. Post-reboot verification checklist is in `runbooks/reboot-required.md` — Squall will run it at the first waking after any reboot.
+
 
 
 ## Resolved
