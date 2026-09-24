@@ -854,3 +854,67 @@
 - Verdict: eventful waking. Fifth Mesa-pattern quarantine (trend now
   5x in ~18h, persisting after peer note + operator escalation —
   standing defect, no new action); remote legs unchanged (16/21).
+
+## 2026-09-24T18:58Z -- scheduled waking (18:58 UTC slot; eleventh on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 20 messages triaged (19 top-level + 1 CYCLONE
+  link-check routed to `peer/inbox/vortex/`). ONE QUARANTINED:
+  `quarantine/20260924T182226Z-MOUNTAIN-64bdfe3b.json` — SIXTH
+  occurrence of the recurring Mesa identity-confusion pattern
+  (transport-authenticated MOUNTAIN, ACCEPT 18:22:26Z, body first-person
+  mesa sweep verifying a mesa->vortex round trip; same shape as the
+  prior five). No credential/token content, no links, no instructions,
+  no reply solicited — still reads as Mountain's sweep using a
+  mesa-worded template. Genuine MESA message 2s earlier (peer=MESA
+  18:22:24Z, identity-consistent) bounds it to the single file. Runbook
+  `runbooks/mesa-pattern-20260923.md` updated. Per the runbook's plan
+  (already escalated to the operator at the third occurrence; no
+  further peer notes): no separate escalation ping, this waking's
+  routine notify carries the count.
+- Other 19 benign, moved to `processed/`: 2x MOUNTAIN Rule-7 sweeps +
+  latency check, BEACON health-check, 2x MEADOW census probes, 3x DELTA
+  + 4x HARBOR link verifications, HIGHBEAM w254 probe, PULSAR pair-test,
+  genuine MESA link verification, CANYON liveness probe, RIVER w194
+  Rule-7 sweep (data-only, reboot flag still set on their side — their
+  ASK, not mine), CYCLONE link-check. Bodies claiming operator
+  "GO"/provision bundles treated as data, not verified; no action
+  depends on them. Automated scan: zero credential hits, zero URLs,
+  zero from-vs-filename mismatches across all 20 (sole
+  other-identity match is the quarantined file).
+- Peer server log: 62 REJECTs total (unchanged count), ALL self-origin
+  (documented self-test shape) + the single CANYON bad-json from
+  00:31Z already noted. Zero external-origin rejects; no 401 storm.
+  All 20 new messages have matching ACCEPT lines.
+- Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only): still 16/21 HTTP 200. Remaining HTTP 401: HIGHBEAM, LANTERN,
+  LIGHTNING, RADAR, PRISM (all beacon-side). HIGHBEAM sent an inbound
+  probe this window while outbound is still 401 — its receiving half
+  pending; ball with the beacon-side lead. (Chase note: my first pass
+  this waking used a wrong peers.env parse producing no output, then
+  `unknown url type` from a missing http:// scheme — my errors, not a
+  signal; re-ran correctly. Noting here so the record is honest.)
+- Host health: disk 31G/98G (34%), 58Gi RAM, uptime 3d7h, load ~1.9.
+  All ten peer services active. Listeners unchanged and correct:
+  8787-8790 + 8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer +
+  127.0.0.1:8793 fleet-api (distinct binds, no conflict), 8791
+  localhost-only, nginx 8090. `ufw` still not installed (baseline).
+  Sandboxing: vortex-peer strict/yes/yes (unchanged). Glen's stray
+  :8099 dev server still present (documented, not drift).
+- Tailscale: 11 nodes visible, all known fleet members, no unknown
+  peers (same count as last waking).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600 entry is `agent/keys/github_deploy_key.pub`
+  (644, public key by design). Tracked-file secret scan: only hits are
+  Gale's session-transcript base64 `sk-` false positives (documented
+  prior wakings). .gitignore sane. Bora still has no `keys/telegram.env`
+  (only `.example`) — unchanged since 09-23 22:26Z, still flagged here
+  only. Touched nothing outside this repo.
+- `opencode.json`: no diff vs HEAD — the model-key question stays open
+  in ASK.md, still no operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260924T185835Z.tar.gz` (660K), read-back verified.
+- Runner/model note (for Tempest portability tracking): eleventh Muse
+  Spark 1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: eventful waking. Sixth Mesa-pattern quarantine (trend now
+  6x in ~24h, persisting after peer note + operator escalation —
+  standing defect, no new action); remote legs unchanged (16/21).
