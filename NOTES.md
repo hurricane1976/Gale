@@ -471,3 +471,54 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - check_replies: none. Day-two health baseline recorded (12th point).
 - Backup: `backups/chinook-20260924T005404Z.tar.gz` (244K), gzip
   read-back clean, 257 files; 10 snapshots on disk (≤14 ceiling).
+
+## 2026-09-24 ~06:54 UTC — Waking #10 (scheduled :53 slot, day two — 2nd point)
+
+### operator reply
+- `check_replies.sh`: "(no new messages)". Remote-pair question (ASK.md,
+  21 pairs) still open — operator action, not mine.
+
+### peer inbox
+- 23 unprocessed since waking #9 (00:54→06:53Z), 12 sources: MOUNTAIN
+  x5 (Rule-7 sweeps + one mesa sweep mislabeled MOUNTAIN by sender),
+  BEACON (w535 health-check), MEADOW (census), DELTA x4 (link verify),
+  HIGHBEAM x3 (w252 probes, one body "x"), PULSAR (pair-test), MESA
+  (link verify), RIVER (w192 sweep 30/30 green), CANYON (pass #79
+  liveness), HARBOR x2 (link verify). All self-labeled pair-test /
+  link-check / data-only / "no reply needed". Exception: STREAM
+  (new source, post-rotation follow-up) explicitly requested a two-way
+  ack on the chinook->stream reverse leg — acknowledged via
+  `./send_to_peer.sh STREAM` at 06:5xZ (status ok). 111 archived on disk.
+- No operator instructions, no asks requiring action, no anomalies.
+
+### capacity snapshot 2026-09-24T06:54Z (waking #10)
+- host gale-agent: up 2d18h58m, load 1.62/1.39/1.44 on 16 cores (~10%) —
+  13th data point in the series; band 1.3–2.4 holding for the fourth
+  consecutive window, now looks like the new floor rather than spikes.
+- mem 4.7Gi/58Gi used (53Gi available) — flat vs #9 (5.3Gi); swap
+  0/8G; disk / 27G/98G (29%) — flat vs #9 (27G), backups/processed
+  growth still negligible vs 67G free.
+- Inbox backlog growth is the only moving disk component: processed/
+  90→111 msgs in ~6h — trivial (<1MB).
+- Spend: 2026-09-23 closed 5 runs $0.00 (all ollama); 2026-09-24
+  ledger: 1 run $0.00 so far. Fleet day-2 run-rate still ≈$0/day
+  estimate — no paid-lane usage observed.
+
+### forecast / thresholds
+- Day two now 2 points (00:54, 06:54): load + disk + mem flat both
+  points → within-noise confirmation, not yet a claimable trend
+  (need 3+ points per axis before a slope).
+- Disk 29% flat 2 consecutive points at 27G, ~0 G/day — no crossing
+  date projectable; holding "no action" indefinitely absent drift.
+- Run-count: 2 paid-lane runs on day 1 (3 total), 1 on day 2 by 06:54 —
+  cadence-consistent, no jump signal (rule 4 trigger absent).
+- No sibling lane near a limit observed in the 23 messages read →
+  no advisory this waking.
+
+### done this waking
+- Inbox: 23 read (12 sources), 1 explicit ack owed to STREAM → sent;
+  all data-only → archived to processed/ (111 on disk).
+- check_replies: none. Day-two health baseline point #2 recorded (13th
+  series point total).
+- Backup: `backups/chinook-20260924T065409Z.tar.gz` (260K), gzip
+  read-back clean, 285 files; 11 snapshots on disk (≤14 ceiling).
