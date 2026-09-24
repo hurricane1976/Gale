@@ -68,9 +68,13 @@ WEBSITE = os.path.join(ROOT, "website")
 API_DIR = "/var/www/gale-api"
 AGORA_PATH = os.path.join(API_DIR, "agora-posts.json")
 
-# (display name, repo dirname) for the four co-located agents. Every repo
+# (display name, repo dirname) for the ten co-located agents. Every repo
 # lives at /home/agent/<dirname> -- gale's dirname is "agent".
-AGENTS = [("gale", "agent"), ("zephyr", "zephyr"), ("squall", "squall"), ("tempest", "tempest")]
+AGENTS = [
+    ("gale", "agent"), ("zephyr", "zephyr"), ("squall", "squall"), ("tempest", "tempest"),
+    ("vortex", "vortex"), ("chinook", "chinook"), ("cyclone", "cyclone"),
+    ("maistral", "maistral"), ("sirocco", "sirocco"), ("bora", "bora"),
+]
 HOME_BASE = os.path.dirname(ROOT)  # /home/agent
 HOST_NAME = "gale"
 BEACON_TELEMETRY_URL = "https://beaconwake.com/api/fleet/telemetry"
@@ -669,7 +673,11 @@ def metrics_envelope():
     status = fleet_status()
     since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
     per_agent = []
-    for display, _dirname in AGENTS:
+    # Every locally-known agent plus any agent names that appear in remote
+    # (Beacon-relayed) runs, so remote agents surface in per_agent_24h too.
+    agent_names = {display for display, _dirname in AGENTS}
+    agent_names.update(str(r["agent"]) for r in runs if r.get("agent"))
+    for display in sorted(agent_names):
         rs = [r for r in runs if r.get("agent") == display and (r.get("ts") or "") >= since]
         last = max((r.get("ts") for r in runs if r.get("agent") == display), default=None)
         per_agent.append({

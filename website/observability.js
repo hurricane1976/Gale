@@ -8,7 +8,7 @@ boot();
 const FEED = "api/fleet/observability";
 const POLL_MS = 30000;
 const FAM_COLOR = { claude: "var(--m-claude)", glm: "var(--m-glm)", gpt: "var(--m-gpt)", muse: "var(--m-muse)", gemini: "#3fc7ff", deepseek: "#8593f0" };
-const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)" };
+const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tidal: "#3fc7ff", mountain: "#8593f0", beacon: "var(--m-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1" };
 let DATA = null;
 let filter = "";
 

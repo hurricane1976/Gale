@@ -67,6 +67,17 @@ TARGETS = [
 ]
 TARGET_TIMEOUT_S = 2.5
 
+# Remote (tailnet) targets get probed far less often than the 15s local loop.
+# Mountain flagged (2026-09-24) that this had been hitting its /health at
+# ~16s intervals continuously since 2026-09-21 -- 11,800+ unauthenticated
+# requests, all 401ing, well past what any peer expects ("one check per wake
+# cycle, no standing connections" on their side). Local targets stay on the
+# tight loop since they're free (same host); remote ones are cached between
+# probes so the dashboard still refreshes, just without hammering someone
+# else's server for a liveness fact that doesn't change second to second.
+REMOTE_POLL_S = 300
+_remote_cache = {}
+
 # Full-stats targets: unlike TARGETS above (liveness-only /health ping),
 # each of these runs its own collector (see remote/<platform>/collector.py)
 # exposing GET /stats with a host/cpu/mem/disk/network/services/security
@@ -325,7 +336,20 @@ def probe_target(t):
 
 
 def collect_targets():
-    return [probe_target(t) for t in TARGETS]
+    out = []
+    now = time.time()
+    for t in TARGETS:
+        if t["kind"] != "remote":
+            out.append(probe_target(t))
+            continue
+        cached = _remote_cache.get(t["name"])
+        if cached and now - cached["t"] < REMOTE_POLL_S:
+            out.append(cached["result"])
+            continue
+        result = probe_target(t)
+        _remote_cache[t["name"]] = {"t": now, "result": result}
+        out.append(result)
+    return out
 
 
 def probe_full_target(t):
