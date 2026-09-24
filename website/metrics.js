@@ -7,7 +7,7 @@ boot();
 const FEED = "api/fleet/metrics";
 const POLL_MS = 30000;
 const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "#8593f0" };
-const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)" };
+const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)" };
 let DATA = null;
 
 const $ = (id) => document.getElementById(id);

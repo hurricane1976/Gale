@@ -246,29 +246,6 @@ export function initMagnetic() {
   }
 }
 
-/* ---- hero scene parallax ---- */
-export function initParallax() {
-  const wrap = document.querySelector(".scene-wrap");
-  if (!wrap || !FINE || REDUCED) return;
-  const groups = wrap.querySelectorAll("[data-depth]");
-  if (!groups.length) return;
-  let rafId = 0;
-  wrap.addEventListener("pointermove", (e) => {
-    if (rafId) return;
-    rafId = raf(() => {
-      rafId = 0;
-      const r = wrap.getBoundingClientRect();
-      const mx = (e.clientX - r.left) / r.width - 0.5;
-      const my = (e.clientY - r.top) / r.height - 0.5;
-      groups.forEach((g) => {
-        const d = parseFloat(g.dataset.depth) || 0;
-        g.style.transform = `translate(${(mx * d * 18).toFixed(1)}px, ${(my * d * 11).toFixed(1)}px)`;
-      });
-    });
-  }, { passive: true });
-  wrap.addEventListener("pointerleave", () => groups.forEach((g) => (g.style.transform = "")), { passive: true });
-}
-
 /* ---- shared boot for both pages ---- */
 export function boot() {
   initStormCanvas();
@@ -278,5 +255,4 @@ export function boot() {
   initPointerCards();
   initMagnetic();
   initClocks();
-  initParallax();
 }

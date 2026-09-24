@@ -1,25 +1,20 @@
-/* GALE — dashboard page: wake-cycle scroll scrub, mesh graph enhancement. */
+/* GALE — home: wake-cycle scrub, live pulse feed, spend & quota. */
 import { boot, clamp, esc, raf, REDUCED } from "./shared.js";
 
 boot();
 
-/* ---- wake cycle: turn the static <ol> into a scroll-scrubbed sticky
-   stage. Content stays in the HTML (single source of truth) — JS reads
-   it out, builds the stage, and hides the list only when live. ---- */
+/* ---- wake cycle: scroll-scrubbed orbit. The four steps live in the HTML
+   (#wake-steps); JS reads them out and drives the sticky SVG stage. ---- */
 function buildWakeScrub() {
   const ol = document.getElementById("wake-steps");
   const mount = document.getElementById("wake-scrub");
-  const section = document.getElementById("wake-cycle");
+  const section = document.getElementById("stats");
   if (!ol || !mount || !section || REDUCED) return;
 
-  const items = [...ol.querySelectorAll("li")].map((li) => {
-    const strong = li.querySelector("strong");
-    const title = strong ? strong.textContent.trim() : "";
-    const clone = li.cloneNode(true);
-    const s = clone.querySelector("strong");
-    if (s) s.remove();
-    const body = clone.textContent.replace(/\s+/g, " ").trim();
-    return { title, body };
+  const items = [...ol.querySelectorAll("span")].map((s) => {
+    const t = s.textContent.replace(/\s+/g, " ").trim();
+    const m = t.match(/^\d+\s*·\s*(.*)$/);
+    return { title: (m ? m[1] : t).trim(), body: "" };
   });
   if (items.length < 2) return;
 
@@ -37,7 +32,6 @@ function buildWakeScrub() {
           <div class="wake-copy${i === 0 ? " on" : ""}">
             <div class="k">Step 0${i + 1} / 0${items.length}</div>
             <h3>${esc(it.title)}</h3>
-            <p>${esc(it.body)}</p>
           </div>`
             )
             .join("")}
@@ -61,7 +55,6 @@ function buildWakeScrub() {
   mount.setAttribute("aria-hidden", "false");
 
   const track = mount.querySelector(".wake-track");
-  const stage = mount.querySelector(".wake-stage");
   const copies = [...mount.querySelectorAll(".wake-copy")];
   const stepDots = [...mount.querySelectorAll(".ostep")];
   const draw = mount.querySelector(".odraw");
@@ -86,7 +79,6 @@ function buildWakeScrub() {
     copies.forEach((c, i) => c.classList.toggle("on", i === idx));
     stepDots.forEach((d, i) => d.classList.toggle("on", i <= idx));
     num.textContent = `0${idx + 1}`;
-    stage.style.setProperty("--step", idx);
     bar.style.transform = `translateX(${idx * 100}%)`;
   };
 
@@ -97,38 +89,82 @@ function buildWakeScrub() {
 }
 buildWakeScrub();
 
-/* ---- mesh graph: photon pulses on confirmed edges, ping stagger,
-   node -> peer-card highlight ---- */
-function enhanceMesh() {
-  const svg = document.querySelector(".mesh-svg");
-  if (!svg) return;
-  const upEdges = [...svg.querySelectorAll(".edge.up")];
+/* ---- §3 live pulse: last 8 mesh events, newest first ---- */
+const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
 
-  if (!REDUCED && upEdges.length) {
-    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    g.setAttribute("aria-hidden", "true");
-    upEdges.forEach((edge, i) => {
-      const photon = edge.cloneNode(false);
-      photon.setAttribute("class", "photon");
-      photon.removeAttribute("data-peer");
-      photon.style.animationDelay = `${(-(i * 0.67) % 4.6).toFixed(2)}s`;
-      g.appendChild(photon);
-    });
-    svg.appendChild(g);
-  }
-
-  svg.querySelectorAll(".node").forEach((node, i) => {
-    const ping = node.querySelector(".ping");
-    if (ping) ping.style.setProperty("--i", i % 7);
-    const name = node.dataset.name;
-    if (!name) return;
-    const card = document.querySelector(`.peer[data-peer="${name}"]`);
-    const on = () => { if (card) card.classList.add("hot"); node.classList.add("focus"); };
-    const off = () => { if (card) card.classList.remove("hot"); node.classList.remove("focus"); };
-    node.addEventListener("mouseenter", on);
-    node.addEventListener("mouseleave", off);
-    node.addEventListener("focus", on);
-    node.addEventListener("blur", off);
-  });
+function fmtAgo(iso) {
+  const s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+  if (!isFinite(s)) return "";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
 }
-enhanceMesh();
+
+async function renderLivePulse() {
+  const feed = document.getElementById("pulse-feed");
+  if (!feed) return;
+  try {
+    const r = await fetch("api/fleet/activity", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+    const events = (d.events || []).slice(-8).reverse();
+    if (!events.length) {
+      feed.innerHTML = `<li class="pulse-row muted">mesh quiet — no recent wakes</li>`;
+      return;
+    }
+    feed.innerHTML = events.map((ev) => `
+      <li class="pulse-row">
+        <span class="pulse-kind">${esc(KIND_ICON[ev.kind] || "·")}</span>
+        <span class="pulse-agent">${esc((ev.agent || "?").toUpperCase())}</span>
+        <span class="pulse-text">${esc(ev.text || "")}</span>
+        <span class="pulse-ago">${esc(fmtAgo(ev.ts))}</span>
+      </li>`).join("");
+  } catch {
+    feed.innerHTML = `<li class="pulse-row muted">feed unreachable — mesh offline or 8090 down</li>`;
+  }
+}
+renderLivePulse();
+
+/* ---- §12 spend & quota: cost by host + busiest agents, last 24h ---- */
+const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "var(--m-deepseek)", mountain: "var(--m-qwen)" };
+
+async function renderSpend() {
+  const bars = document.getElementById("spend-bars");
+  const agents = document.getElementById("spend-agents");
+  if (!bars || !agents) return;
+  try {
+    const r = await fetch("api/fleet/metrics", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+
+    const totals = Object.entries(d.daily_cost_by_host || {})
+      .map(([h, series]) => [h, series.reduce((s, v) => s + (v || 0), 0)])
+      .sort((a, b) => b[1] - a[1]);
+    const max = Math.max(...totals.map(([, v]) => v), 0.000001);
+    bars.innerHTML = totals.length
+      ? totals.map(([h, v]) => `
+        <div class="spend-row">
+          <span class="spend-host">${esc(h)}</span>
+          <span class="spend-track"><i style="width:${(v / max * 100).toFixed(1)}%;background:${HOST_COLOR[h] || "var(--flag)"}"></i></span>
+          <span class="spend-val">$${v.toFixed(2)}</span>
+        </div>`).join("")
+      : `<span class="muted">no cost data yet</span>`;
+
+    const top = [...(d.per_agent_24h || [])]
+      .sort((a, b) => b.cost_24h - a.cost_24h)
+      .slice(0, 6);
+    agents.innerHTML = top.length
+      ? top.map((a) => `
+        <li class="spend-agent-row">
+          <span class="spend-agent-name">${esc(a.agent)}</span>
+          <span class="spend-agent-runs">${a.runs_24h} run${a.runs_24h === 1 ? "" : "s"}</span>
+          <span class="spend-agent-cost">$${a.cost_24h.toFixed(4)}</span>
+        </li>`).join("")
+      : `<li class="muted">no agent activity in the last 24h</li>`;
+  } catch {
+    bars.innerHTML = `<span class="muted">spend feed unreachable</span>`;
+    agents.innerHTML = `<li class="muted">spend feed unreachable</li>`;
+  }
+}
+renderSpend();

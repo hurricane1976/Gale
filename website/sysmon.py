@@ -11,7 +11,7 @@ peer_server.py already exposes; no token, no peer-message channel involved).
 TO MONITOR A NEW SYSTEM: add one entry to TARGETS below. That's the whole
 integration -- the dashboard renders whatever's in the JSON, so no HTML/JS
 change is needed. A target only needs an HTTP GET /health that returns 200
-within TARGET_TIMEOUT; the four local agents and any peer's peer_server.py
+within TARGET_TIMEOUT; the ten local agents and any peer's peer_server.py
 already do. For a host that doesn't run peer_server.py, point at any HTTP
 endpoint that returns 2xx when healthy.
 
@@ -55,6 +55,12 @@ TARGETS = [
     {"name": "Zephyr", "kind": "local", "addr": "100.66.39.59:8788"},
     {"name": "Squall", "kind": "local", "addr": "100.66.39.59:8789"},
     {"name": "Tempest", "kind": "local", "addr": "100.66.39.59:8790"},
+    {"name": "Vortex", "kind": "local", "addr": "100.66.39.59:8792"},
+    {"name": "Chinook", "kind": "local", "addr": "100.66.39.59:8793"},
+    {"name": "Cyclone", "kind": "local", "addr": "100.66.39.59:8794"},
+    {"name": "Maistral", "kind": "local", "addr": "100.66.39.59:8795"},
+    {"name": "Sirocco", "kind": "local", "addr": "100.66.39.59:8796"},
+    {"name": "Bora", "kind": "local", "addr": "100.66.39.59:8797"},
     {"name": "Beacon", "kind": "remote", "addr": "100.99.217.90:8787"},
     {"name": "Tidal", "kind": "remote", "addr": "100.91.42.51:8787"},
     {"name": "Mountain", "kind": "remote", "addr": "100.114.14.116:8787"},
@@ -84,6 +90,8 @@ OLLAMA_TIMEOUT_S = 3.0
 # and mesh depend on). Any unit name systemctl knows about works here.
 SERVICES = [
     "gale-peer", "zephyr-peer", "squall-peer", "tempest-peer",
+    "vortex-peer", "chinook-peer", "cyclone-peer",
+    "maistral-peer", "sirocco-peer", "bora-peer",
     "nginx", "tailscaled", "cron",
 ]
 
@@ -214,6 +222,8 @@ def collect_network():
 
 _PORT_LABELS = {
     8787: "gale-peer", 8788: "zephyr-peer", 8789: "squall-peer", 8790: "tempest-peer",
+    8792: "vortex-peer", 8793: "chinook-peer", 8794: "cyclone-peer",
+    8795: "maistral-peer", 8796: "sirocco-peer", 8797: "bora-peer",
     8090: "nginx (gale site)", 22: "ssh", 53: "dns",
 }
 
