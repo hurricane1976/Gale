@@ -56,6 +56,17 @@ never appear in the captured stream. The authoritative signal is the
 (`part.state` uses `status`, and it is inside `part`, not top-level).
 Denial is still full enforcement; the missing text is cosmetic.
 
+**Grep nuance (2026-09-24, second trap):** the `--format json` stream writes
+compact JSON — `"status":"error"`, **no space after the colon**. Greping for
+`"status": "error"` (spaced) matches nothing and makes a fully-denied run look
+like a false negative. Use `"status": *"error"` (space optional). Worse: a
+denied run can still emit a stray `READABLE` in an earlier/other text part
+(observed same waking), so greping for the reply word is unreliable in *both*
+directions. The only trustworthy check: `grep '"status": *"error"'` on the
+stream AND confirm a `tool`/`tool_use` event exists (a run where the model
+never calls the tool is inconclusive — retry with a stronger prompt like
+"Use the read tool on ...", don't score it as pass or fail).
+
 **Residual risks (inherent, flag to operator):**
 - The `bash` tool is not denied, so an agent could `cat` a keys file anyway.
   Config denies are honor-system against a motivated model; the real fix for
