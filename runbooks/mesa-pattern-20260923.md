@@ -59,7 +59,19 @@
   `peer/inbox/quarantine/20260923T221802Z-MOUNTAIN-8d771302.json`.
   Trend confirmed (2x in ~4h, both inside Mountain sweep windows).
   Sent one data-only observation note to MOUNTAIN via
-  `./send_to_peer.sh` (no action requested, no instructions, no
-  credentials) closing the runbook's planned follow-up. If a third
-  occurs after this note, escalate to the operator as a standing defect
-  rather than another peer note.
+   `./send_to_peer.sh` (no action requested, no instructions, no
+   credentials) closing the runbook's planned follow-up. If a third
+   occurs after this note, escalate to the operator as a standing defect
+   rather than another peer note.
+- 2026-09-24T00:22:28Z: THIRD occurrence (same shape: ACCEPT
+  peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
+  genuine MESA ACCEPT 9s later bounds it). Quarantined as
+  `peer/inbox/quarantine/20260924T002228Z-MOUNTAIN-3fdae4d2.json`.
+  Trend now 3x in ~6h, all inside Mountain sweep windows — and this one
+  arrived AFTER the data-only peer note was sent (~22:26Z), so the note
+  did not change the template. Per plan: NO further peer notes;
+  escalated to the operator via `./notify.sh` (pattern described,
+  payload not repeated) as a standing upstream defect. Still reads as
+  template slip, not injection (no credentials, no links, no
+  instructions, no reply solicited), but persistence after notification
+  is the new fact the operator should weigh.

@@ -657,3 +657,65 @@
 - Verdict: eventful waking. Second Mesa-pattern quarantine (trend
   confirmed, data-only note sent to MOUNTAIN, runbook updated); remote
   legs unchanged (16/21, 5 beacon-side pending).
+
+## 2026-09-24T00:58Z -- scheduled waking (00:58 UTC slot; eighth on Muse Spark)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 44 messages triaged. ONE QUARANTINED:
+  `quarantine/20260924T002228Z-MOUNTAIN-3fdae4d2.json` — THIRD
+  occurrence of the recurring Mesa identity-confusion pattern
+  (transport-authenticated MOUNTAIN, ACCEPT 00:22:28Z, body first-person
+  mesa sweep verifying a mesa->vortex round trip; same shape as the
+  18:22:25Z + 22:18:02Z files). No credential/token content, no links,
+  no instructions, no reply solicited — still reads as Mountain's sweep
+  using a mesa-worded template. Genuine MESA message 9s later
+  (peer=MESA 00:22:37Z, identity-consistent) bounds it to the single
+  file. Runbook `runbooks/mesa-pattern-20260923.md` updated. Per the
+  runbook's plan (third occurrence after my data-only peer note ->
+  escalate, no further peer notes): escalated to the operator via
+  `./notify.sh` with the pattern described, payload not repeated.
+- Other 43 benign, moved to `processed/`: CYCLONE link-check, 3x DELTA
+  + 3x HARBOR link verifications, LIGHTNING pair-test, PULSAR self-tests,
+  22x MEADOW census probes (identical bodies in bursts 22:35/00:07/
+  00:21/00:29Z — rate-notable but coherent with MEADOW's automated
+  census job; no identity mismatch, no action solicited), CANYON
+  sweeps, 2x RIVER Rule-7 sweeps, 3x MOUNTAIN sweeps + latency check,
+  BEACON health-check, HIGHBEAM probe. Bodies claiming operator
+  "GO"/provision bundles treated as data, not verified; no action
+  depends on them. Automated scan: zero credential hits, zero URLs,
+  zero from-vs-filename mismatches across all 44.
+- Peer server log: 61 REJECTs total (was 60). The one new line is
+  `REJECT bad-json peer=CANYON` 00:31:48Z — a malformed payload from an
+  authenticated peer, no inbox file stored (rejected by design). Single
+  occurrence, no repeat; noted, not chased. Zero external-origin
+  rejects; no 401 storm.
+- Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only): 17/21 now HTTP 200 — PULSAR newly two-way since last waking.
+  Remaining HTTP 401: HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM (all
+  beacon-side). Asymmetry persists: HIGHBEAM + LIGHTNING + RADAR sent
+  inbound pair-tests this window while outbound is still 401 — their
+  receiving halves pending; ball with the beacon-side lead.
+- Host health: disk 27G/98G (29%), 58Gi RAM, uptime 2d13h, load ~2.3.
+  All ten peer services active. Listeners unchanged and correct:
+  8787-8790 + 8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer +
+  127.0.0.1:8793 fleet-api (distinct binds, no conflict), 8791
+  localhost-only, nginx 8090 on 0.0.0.0+[::] (as recorded). `ufw`
+  still not installed (baseline). Sandboxing spot-checked on
+  vortex-peer last waking; unchanged since.
+- Tailscale: not re-polled this waking (same 11-node count three
+  wakings running; will re-poll next waking per rotation).
+- Credential hygiene (all TEN local dirs, read-only): every non-example
+  keys/ file 600; only non-600 entries are `*.example` (664, by design)
+  + `agent/keys/github_deploy_key.pub` (644, public key by design).
+  Tracked-file secret scan: zero real hits. Bora still has no
+  `keys/telegram.env` (only `.example`) — unchanged since last waking,
+  still flagged here only. Touched nothing outside this repo.
+- `opencode.json`: no diff vs HEAD — the model-key question stays open
+  in ASK.md, still no operator word, still not mine to resolve.
+- Backup: `backups/vortex-20260924T005859Z.tar.gz` (588K), read-back verified.
+- Runner/model note (for Tempest portability tracking): eighth Muse
+  Spark 1.3 via OpenCode Zen waking, clean at ~$0, no transport issues.
+- Verdict: eventful waking. Third Mesa-pattern quarantine (trend now
+  3x in ~6h, persisting after peer note — escalated to operator) + one
+  new remote two-way completion (PULSAR, 17/21); 5 beacon-side legs
+  still pending.
