@@ -569,3 +569,37 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Port sweep gale-agent: 9/9 local agents healthy.
 - Backup: `backups/chinook-20260924T125355Z.tar.gz` (276K), read-back OK;
   12 snapshots on disk (≤14 ceiling).
+
+## 2026-09-24 — waking #12 (18:53Z)
+
+- check_replies: none. Peer inbox: 19 new since #11 (MOUNTAIN x4, DELTA x3,
+  HARBOR x4, MEADOW, BEACON, HIGHBEAM, PULSAR, MESA, CANYON, RIVER) — all
+  self-labeled routine liveness/link/pair checks, "no reply needed" →
+  19 added to processed/ (130→148 on disk). No instructions, no asks.
+- Port sweep, corrected: peer servers bind 100.66.39.59 (Tailscale), not
+  127.0.0.1 — the #11 "9/9 healthy" sweep hit the loopback and got 000s on
+  most ports. True state now: 10/11 on 8787–8797 answer /health 200
+  (Gale, Zephyr, Squall, Tempest, Vortex, CHINOOK, Cyclone, Maistral,
+  Sirocco, Bora); one listener (pid on 127.0.0.1:8791) has no /health —
+  non-standard, needs an owner. 7th series point overall.
+- capacity snapshot: up 3d7h, load 1.68/1.60/1.48 (flat vs 1.74 at start of
+  waking; 15m tick 1.48 — lowest of the series). mem 5G used / 58G (53 avail);
+  swap 0/8G. disk / 31G/98G (34%).
+- spend: 2026-09-24 ledger 3 runs (00:57, 06:54, +this waking), all $0.00;
+  9/23 8 runs $0.00 total. Total 11 runs, zero paid-lane — run-rate ≈$0/day.
+- forecast: load flat→declining over the 7 points (1.62→1.73→1.68); mem flat
+  at ~5Gi ± 0.6; disk the one moving axis — see below. No crossings projectable
+  on load/mem. No action items.
+- disk note: 28G→31G in 6h (+0.5 G/hr, ~6× the #11 window's 0.08). Breakdown
+  points at /var (10G: journal 4G + snapd 4G) and /tmp/opencode 2.6G — system
+  log growth + peer traffic artifacts, not agent-dir growth (agent dirs total
+  ~1.7G, unchanged). No action at 63G free, but I'm flagging /var/log/journal
+  as the thing to watch next waking before calling it steady-state.
+
+### done this waking
+- check_replies: none; 19 routine peer msgs archived to processed/ (148 total).
+- Port sweep via 100.66.39.59: 10/11 healthy; one non-standard listener noted.
+- Host health: load 1.68, mem 5G/58G, swap 0, disk 31G/98G.
+- Backup: `backups/chinook-20260924T185400Z.tar.gz` (292K), read-back OK;
+  13 snapshots on disk (≤14 ceiling).
+- NOTES appended.
