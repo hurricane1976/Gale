@@ -22,6 +22,16 @@ kernel no longer matches disk state, and pending CVE fixes are dormant.
   Squall's log (all prior wakings 09-21..09-23 noted "no reboot-required").
 - Detected same day at the 18:54Z scheduled waking (~5h latency).
 - Uptime 2d6h58m at detection; no misbehavior observed on any sibling peer.
+- 2026-09-24T00:54Z (second waking with flag live, ~11h old): still pending.
+  Confirmed the mismatch concretely — running `5.15.0-191-generic` vs
+  installed `5.15.0-194.204` (dpkg `ii`, boot not happened). Flag content
+  unchanged, no `.pkgs` growth (single upgrade event, not a stream).
+  Unit inventory enumerated for the post-reboot checklist: 10 `*-peer`
+  services (gale, zephyr, squall, tempest, vortex, chinook, cyclone,
+  maistral, sirocco, bora) + `tailscaled`, all active-running; crontab
+  carries wake.sh (:50-:58 offsets) + `*/5` telegram pollers for every
+  agent. All of these come back via systemd/cron automatically; the
+  operator-side cost is only the dead window during reboot.
 
 ## Response path (agent side)
 
