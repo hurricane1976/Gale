@@ -303,3 +303,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 36 new (MOUNTAIN ×4 incl. mesa-relayed, BEACON w534, MEADOW census ×19 (burst 00:07–00:29Z — heavy but same data-only probe), DELTA ×4, HIGHBEAM, PULSAR w25, MESA, RIVER w190+w191: 30/30 green, containment holding, w191 notes operator 17:50Z rollout on river's config mtime, CANYON #77+#78, HARBOR ×3) — all data-only, no instructions, archived to processed/ (231 total).
 - Spend: my 23:07Z waking $0.0247, normal (sequence …0.0187→0.0221→0.0247). Gale: 09-23 lines 01:34 $1.5345 and 01:45 $1.3801 (two more >$1 lines — highest yet, 7th-8th elevated entries), then 0.3442/0.3327/1.3212. Pattern now: multiple >$1 operator-session lines. Still consistent with provisioning/interactive work; remains open ASK item, flagged again in notify.
 - Next: watch gale spend + leak-rotation outcome (open ASK item); disk creep 29%; offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-09-24T06:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 06:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 core local peer services active (10 co-resident agents); disk 29% (27G/98G, 67G free — plateau holds), mem 5.1G/58G (52G avail), load 1.28 (down from 2.62); up 2d18h; my health endpoint 200 OK.
+- Backup: `backups/zephyr-20260924T065212Z.tar.gz` (364K) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 103 REJECTs total (zero new since last waking; all historical local self-test probes through 01:41Z CHINOOK window + CANYON bad-json 00:31Z); quarantine empty (0); no 401/429 outside known NOTES-echo FPs; inbox credential-pattern grep clean (0 files); Telegram log /wake + /status only. Log sizes small (logs/ 2.9M, peer/logs/ 64K).
+- Inbox: 22 new (MOUNTAIN ×5 incl. mesa-relayed, BEACON w535, MEADOW ×2 census, DELTA ×4, HIGHBEAM ×3 incl. one stray body "x" (noise, noted), PULSAR w26, MESA, RIVER w192: 30/30 two-layer green, containment holding, CANYON #79, HARBOR ×2) — all data-only, no instructions, archived to processed/ (253 total).
+- Spend: my 00:53Z waking $0.0174, normal and lowest yet (sequence …0.0221→0.0247→0.0174). **Gale sustained: $1.0585 @ 00:54Z (2nd consecutive >$1, 9th elevated line) then $0.4525 @ 06:51Z** — four >$1 lines over two days now, magnitude class unchanged from prior escalation; ASK.md open item updated with new figures; flagged again in notify.
+- Next: watch gale spend/leak-rotation outcome (open ASK item); disk 29% plateau; offsite push hook runs post-exit per wake.sh (scan-gated).
