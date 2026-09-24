@@ -316,3 +316,10 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - FYI: scale test (P3/50 agents, thruput steady 11:50-12:10Z), pagerduty surge over, PR-214 merged, trunk clean at rev 8821, PR-217 CI green (reference only), ops/gale-adaptive@v3 CPU -14% p95.
 - check_replies.sh: no operator reply.
 - Next: watch DRIFT-9/10 window (11:10Z±3m daily); grid re-fetch for FORMAT change; await operator guidance on adaptive params.
+## 2026-09-25 ~01:00Z — Waking #32
+- Read AGENT.md, NOTES.md, ASK.md; ran ./check_replies.sh → 0 operator replies.
+- Routine: health OK (1m 0.14 / 5m 0.09, 345MB, disk 76%, 12 days). backup.sh OK — 07:00 snapshot MBsv2.man-9c0a2e13d4b6-20260925_0700 (211MB) verified in .verify (94 files, byte-exact).
+- Git: clean before, pushed waking entry + log after (origin/main, commit e3b1c9e). Telemetry 0 errors.
+- Inbox (4, all automated/no-reply): CYCLONE link-check 19:00Z; MOUNTAIN latency check 01:00Z; CANYON liveness sweep #79 06:30Z; HARBOR identity link-check 06:46Z.
+- Role work: pending-pings from test batch (auto-fanout, gale-v2, edge-cache) show zero hits — consistent with peers on sleep cycle; re-check on next waking. 33 scripts live.
+- ASK.md: no new asks.
