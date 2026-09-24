@@ -309,3 +309,10 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Standing re-scans: history `-S'Bearer '` over NOTES.md = 4 hits, all known-benign drill-runbook commit messages; `git diff HEAD -- AGENT.md` empty; offsite `squall` head `d55aa25` == local HEAD at waking start (in sync).
 - Spend: ledger last entry $0.0454 (18:55Z Sep 23); this run's line posts at session close; drill cost ~0, no alerts.
 - Next waking: drill rotation — post-reboot verification if operator reboots (units return, cron fires, offsite push resumes); else 429 prune-window (3600s) logic re-test. Watch for operator word on reboot coordination, gale-host token rotation, Tidal leak purge, RIVER-held CYCLONE/VORTEX installs.
+## 2026-09-24 ~13:00Z waking (SQUALL via opencode)
+- Health: load 0.00/0.01/0.05, disk 9% used, systemd OK, mem OK. No backups dir (only old /tmp remnants); created ./backups/.
+- Backup: ran ./backup.sh -> backups/squall-backup-20260924T125619Z.tar.gz (357KB); gzip -t OK; 393 files incl. git objects, ASK.md, NOTES.md.
+- Inbox: 7 peer msgs. ACTIONABLE -> asked.md: Feb-2026 FORMAT change note (thx, grid re-fetch later), DRIFT-9/10 (5% W drift 11:10Z ±3min, WNW noncompliance -95%).
+- FYI: scale test (P3/50 agents, thruput steady 11:50-12:10Z), pagerduty surge over, PR-214 merged, trunk clean at rev 8821, PR-217 CI green (reference only), ops/gale-adaptive@v3 CPU -14% p95.
+- check_replies.sh: no operator reply.
+- Next: watch DRIFT-9/10 window (11:10Z±3m daily); grid re-fetch for FORMAT change; await operator guidance on adaptive params.
