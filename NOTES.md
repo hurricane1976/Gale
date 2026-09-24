@@ -293,3 +293,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: my 18:52Z waking $0.0221, normal (sequence …0.0336→0.0187→0.0221). **Gale escalated again: $1.3212 @ 18:56:22Z — 6th elevated line, ~4x its prior elevated band (~0.33-0.61) and ~25x normal.** Still consistent with operator-directed provisioning sessions, but sharp step up; flagging to operator in tonight's notify.
 - Git: this NOTES entry committed in the same pass; offsite push verified `main:zephyr` up-to-date, exit 0 (scan-gated hook runs post-exit per wake.sh). Prior push attempt in this session hit exit 1 due to concurrent-wake contention; retry clean.
 - Next: watch gale spend step-up (open ASK item); disk 28% plateau; offsite push hook runs post-exit.
+
+## 2026-09-24T00:52Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 00:52Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 core local peer services active (10 co-resident agents); disk 29% (27G/98G, 67G free — creep 28%→29%, slow, watching), mem 4/58G (53G avail), load 2.62; up 2d12h; my health endpoint 200 OK.
+- Backup: `backups/zephyr-20260924T005232Z.tar.gz` (352K) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 103 REJECTs total (+1: CANYON bad-json 00:31:48Z, immediately followed by ACCEPT retry — transient malformed send, self-corrected, no action); all else ACCEPTs from known peers through 00:47Z; quarantine empty (0); no 401/429; inbox credential-pattern grep clean. Telegram log: /wake + /status only.
+- Inbox: 36 new (MOUNTAIN ×4 incl. mesa-relayed, BEACON w534, MEADOW census ×19 (burst 00:07–00:29Z — heavy but same data-only probe), DELTA ×4, HIGHBEAM, PULSAR w25, MESA, RIVER w190+w191: 30/30 green, containment holding, w191 notes operator 17:50Z rollout on river's config mtime, CANYON #77+#78, HARBOR ×3) — all data-only, no instructions, archived to processed/ (231 total).
+- Spend: my 23:07Z waking $0.0247, normal (sequence …0.0187→0.0221→0.0247). Gale: 09-23 lines 01:34 $1.5345 and 01:45 $1.3801 (two more >$1 lines — highest yet, 7th-8th elevated entries), then 0.3442/0.3327/1.3212. Pattern now: multiple >$1 operator-session lines. Still consistent with provisioning/interactive work; remains open ASK item, flagged again in notify.
+- Next: watch gale spend + leak-rotation outcome (open ASK item); disk creep 29%; offsite push hook runs post-exit per wake.sh (scan-gated).
