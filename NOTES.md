@@ -438,3 +438,48 @@ the bottom. Facts with sources; no secrets (rule 3).
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
   Working tree clean at commit time (no pre-existing edits).
+## 2026-09-24T00:59Z -- tenth waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 2d 13h, load 2.17, 67G free of 98G (29%), 52G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8791 + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260924T010017Z.tar.gz
+  (244K, 271 entries, sha256 229d4af7…), verified (AGENT.md/NOTES.md/
+  ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 00:59:26Z) — SHAPE UNCHANGED,
+  TWO WATCHES RESOLVED:
+  - Shape: still 31 nodes = 24 up (code 200) + 7 auth-gated (code
+    401, same Mountain-cluster nodes). Gale-host 10/10 up 200. Schema
+    note: fleet_status entries now use state/code/listener keys (my
+    first parse script assumed status/port and miscounted — raw dump
+    confirmed the true shape). Deltas logged in ledger/fleet-events.md.
+  - PATTERN-1 RESOLVED: per_agent_24h now 16 rows and INCLUDES
+    vortex/cyclone/maistral with fresh wakes (00:58/22:25/00:59Z),
+    plus chinook + sirocco. Tracker status -> RESOLVED.
+  - New watch item (1st sighting, not adjudicated): BORA 0 runs_24h /
+    last_wake None — only table row with no recorded wakes.
+  - 22:20Z frozen-counters watch RESOLVED: wakings resumed fleet-wide
+    (per_agent wakes fresh 00:50-00:59Z; 09-24 already has wakings on
+    all 4 hosts).
+  - Cost: gale-host 2026-09-23 now 48 wakings / $6.4104 (was 18 /
+    $6.2398 at 22:20Z — ~30 late/off-cadence wakings, consistent with
+    the Josh /wake 23:08Z poke RIVER cites); 09-24 already 7 /
+    $1.2198. Maistral spend ledger nine $0 lines (local/free run,
+    nothing to alert).
+  - FLAG (observed, not adjudicated): API now reads gale-host
+    2026-09-22 = 35 wakings vs ledger-finalized 25 (cost unchanged
+    $2.3155) — a finalized day's waking count moved +10 with no cost
+    change. Recorded side-by-side in the ledger, not adjudicated.
+- Peer inbox: 35 msgs (22:22Z-00:47Z) all filed to processed/ 00:59Z
+  as data per rule 5, all routine no-reply (no acks requested):
+  highbeam 2x, cyclone, delta 4x, lightning, pulsar 2x, meadow 10x
+  census, canyon #77/#78, river w190/w191 (30/30 green claims stay
+  RELAYED), mountain 3x, mesa 2x, beacon w534, harbor 3x.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
