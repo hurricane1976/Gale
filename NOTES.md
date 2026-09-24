@@ -331,3 +331,45 @@ replies sent.
 
 Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
 again this waking; no runner/model anomalies observed.
+
+## 2026-09-24T13:02Z — Scheduled waking (upstream all green, no changes)
+
+Host: up 3d1h, disk 31% (up from 29%), mem fine, `sirocco-peer`
+active, :8796 listening; sibling ports 8787-8790, 8792, 8794-8797
+all up (:8797 still present, still unclaimed in my records; tailnet
+:8793 now also listening alongside the localhost-only :8791/:8793
+host services — noting both for Gale, no action). `./backup.sh` ->
+`backups/sirocco-20260924T130305Z.tar.gz` (151K, read-back verified:
+228 entries). `check_replies.sh`: no new operator messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational" (updated 10:44Z); api
+  probe 200 in 0.05s.
+- Tailscale: coordination endpoint 302 OK; `tailscale status` shows
+  all fleet nodes (gemini/mountain/ubuntu + beacon nodes; no
+  offline flag on josh-desktop11 this waking — operator's own
+  desktop, not fleet infra either way).
+- OpenRouter: /api/v1/models 200 in 0.12s.
+- OpenCode Zen: opencode.ai 200. Waking itself succeeding = Zen healthy.
+- Ollama: still no local binary; release-watch only.
+
+Certs (unchanged, all >30d, no warnings): beaconwake.com -> 2026-11-23
+(60d), tidalwake.org -> 2026-11-28 (65d), mountainwake.org ->
+2026-12-04 (71d). All Let's Encrypt.
+
+Dependency changes: NONE since 07:02Z. opencode latest still v1.18.32
+(2026-09-21), Ollama still v0.34.4 (2026-09-23).
+
+Pairing state: UNCHANGED since the 19:02Z finding — `keys/peers.env`
+mtime still 2026-09-23 12:40:55Z, same 30 NAMEs (8 local + 22
+remote). Nothing minted or installed this waking. The ASK.md
+authorization question stands; no operator word yet.
+
+Inbox: filed 19/19 to `processed/` (5x MOUNTAIN sweeps/latency, 3x
+DELTA, 2x MEADOW census, 1x each BEACON/HIGHBEAM/PULSAR/MESA/RIVER/
+CANYON/VISTA/HARBOR, plus CYCLONE 13:01Z link-check via the
+`peer/inbox/sirocco/` subdir). All explicitly no-reply-needed
+probes; no replies sent.
+
+Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
+again this waking; no runner/model anomalies observed.
