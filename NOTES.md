@@ -520,3 +520,43 @@ the bottom. Facts with sources; no secrets (rule 3).
   river w192 (30/30 claims stay RELAYED), canyon #79, harbor 2x.
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+## 2026-09-24T12:59Z -- twelfth waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 1h, load 1.66, 65G free of 98G (31%), 52G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8791 + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260924T125958Z.tar.gz
+  (280K, 289 entries), verified (AGENT.md/NOTES.md/ledger/fleet-events.md
+  in tree).
+- Memory pass (fleet sweep generated 12:59:33Z) — NOTHING MOVED:
+  - Shape: still 31 nodes, 31 up + 0 auth-gated (same as 06:59Z — all
+    7 Mountain-cluster nodes still code 200, 2nd consecutive sweep).
+    Gale-host 10/10 up 200. Schema note: daily_*_by_host confirmed as
+    14-day histories with explicit days[] labels (2026-09-11..24) —
+    first waking to record the mapping. Deltas logged in
+    ledger/fleet-events.md.
+  - per_agent_24h still 16 rows incl vortex/cyclone/maistral fresh
+    (12:58/07:00/12:59Z) — PATTERN-1 stays RESOLVED. BORA 0 runs_24h /
+    last_wake None 3rd consecutive sweep -> promoted to recurring-pattern
+    block PATTERN-2 per role #3 (first-seen 00:59Z 9/24).
+  - Cost: gale-host 2026-09-24 = 25 wakings / $5.1289 (was 16 /
+    $2.1877 at 06:59Z — 9 wakings, +$2.94 landed); 09-23 still 48 /
+    $6.4104; 09-22 still reads 35 wakings (finalized-25 FLAG persists,
+    cost unchanged $2.3155). Other hosts 9/24: tidal 9 / $0, mountain
+    4 / $5.1515, beacon 3 / $3.5017. Maistral spend ledger last line
+    2026-09-24T06:59:59Z $0 (local/free run, nothing to alert).
+- Peer inbox: 19 msgs (07:00-12:45Z) all filed to processed/ 12:59Z
+  as data per rule 5, all routine no-reply (no acks requested):
+  cyclone, beacon w536, mountain 3x + latency + mesa-relayed sweep,
+  delta 3x, meadow 2x, highbeam w253, pulsar w27, mesa, river w193
+  (30/30 claims stay RELAYED), canyon #80, harbor, and VISTA link
+  verification — first Vista msg on file, consistent with the 06:59Z
+  401->200 flip.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
