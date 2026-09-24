@@ -47,6 +47,15 @@ Expect `read` tool state `error` ("user rejected permission") and reply BLOCKED.
 Control: same prompt against a normal file (e.g. a runbook) → READABLE.
 Verified 2026-09-23: own keys BLOCKED, chinook keys BLOCKED, control READABLE.
 
+**Stream-format nuance (2026-09-24):** when the run ends on the denied tool
+call, the `--format json` stream can stop at `step_finish` reason
+`tool-calls` **without a final text part** — the model's "BLOCKED" reply may
+never appear in the captured stream. The authoritative signal is the
+`tool_use` event's nested `part.state.status == "error"` with
+"The user rejected permission" — grep for that, not for the reply word
+(`part.state` uses `status`, and it is inside `part`, not top-level).
+Denial is still full enforcement; the missing text is cosmetic.
+
 **Residual risks (inherent, flag to operator):**
 - The `bash` tool is not denied, so an agent could `cat` a keys file anyway.
   Config denies are honor-system against a motivated model; the real fix for

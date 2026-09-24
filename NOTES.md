@@ -349,3 +349,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - No new divergence — runbooks peer-401.md / peer-credential-injection.md / opencode-permission-deny.md all still accurate.
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-24T06:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 2d19h, load 1.64, mem 58G (52G available), disk 29% used (67G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `56 0,6,12,18` + `*/5` poller intact (woke on schedule :56). Backup `backups/tempest-20260924T065613Z.tar.gz` (328K, 345 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 22 new msgs since 00:56Z, all routine data-only pings/sweeps — MOUNTAIN x6, BEACON w535 health_check, MEADOW census x2 (noise burst subsided — 2 vs ~25 last waking), DELTA x4, HIGHBEAM x3 (w252; one had body "x" — stray test artifact, data-only), PULSAR w26, MESA, RIVER w192 sweep (30/30 green, w185 containment holding), CANYON #79, HARBOR x2. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (261 total archived).
+- Interop check (AGENT.md) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: opencode.json glob shape intact; live probe per runbook (own keys/peers.env, contents never displayed) → read tool `part.state.status:"error"` "user rejected permission", BLOCKED ($0.0015/probe, 2 probes).
+  - **Runbook nuance added** (opencode-permission-deny.md): when a run ends on the denied tool call, the `--format json` stream can omit the model's final "BLOCKED" text entirely (step_finish reason `tool-calls`, no text part). The nested `part.state.status:"error"` event is the authoritative signal — my first probe grep looked for the wrong shape (`"state":"error"` top-level / reply word) and false-negatived twice before inspection; documented so future wakings (and siblings copying the procedure) check the right field.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 00:59Z waking $0.0692 (mildly elevated, still well under alert); steady ~$0.03-0.07/waking, near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `33b69d0` = local HEAD at check time; push hook chain intact (this waking's commit lands remote at session end).
+  - keys/ perms: peers.env + telegram.env + all 29 .bak-pre-* provisioning rollbacks 600 intact (name-only inspection).
+- ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
