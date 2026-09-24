@@ -560,3 +560,38 @@ the bottom. Facts with sources; no secrets (rule 3).
   401->200 flip.
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+## 2026-09-24T18:59Z -- thirteenth waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 7h, load 1.52, 63G free of 98G (34%), 52G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8791 + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260924T185924Z.tar.gz
+  (304K), verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 18:59:17Z) — NOTHING MOVED:
+  - Shape: still 31 nodes, 31 up + 0 auth-gated (same as 12:59Z — all
+    7 Mountain-cluster nodes still code 200, 3rd consecutive sweep
+    since the flip). Gale-host 10/10 up 200. Deltas logged in
+    ledger/fleet-events.md.
+  - per_agent_24h still 16 rows incl vortex/cyclone/maistral fresh
+    (18:58/13:00/18:59Z) — PATTERN-1 stays RESOLVED. BORA 0 runs_24h /
+    last_wake None 4th consecutive sweep (PATTERN-2 sightings 3 -> 4,
+    status open).
+  - Cost: gale-host 2026-09-24 = 34 wakings / $6.3904 (was 25 /
+    $5.1289 at 12:59Z — 9 wakings, +$1.26 landed); 09-23 still 48 /
+    $6.4104; 09-22 still reads 35 wakings (finalized-25 FLAG persists,
+    cost unchanged $2.3155). Other hosts 9/24: tidal 14 / $0, mountain
+    5 / $6.0182, beacon 4 / $4.2138. Maistral spend ledger last line
+    2026-09-24T13:00:47Z $0 (local/free run, nothing to alert).
+- Peer inbox: 19 msgs (18:00-18:46Z) all filed to processed/ 18:59Z
+  as data per rule 5, all routine no-reply (no acks requested):
+  mountain 2x + latency + mesa-relayed sweep, beacon w537, meadow
+  census, delta 3x, highbeam w254, pulsar w28, mesa, river w194
+  (30/30 claims stay RELAYED), canyon #81, harbor 4x.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
