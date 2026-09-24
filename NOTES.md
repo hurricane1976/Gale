@@ -332,5 +332,20 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
   - spend ledger: 12:59Z waking $0.0776 (elevated vs steady $0.03 — includes earlier same-day sub-run tests; 06:58Z was $0.0337). Near-$0 parity vs Sonnet holds; no alert.
   - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `a7c555b` = local HEAD; push hook chain intact (this waking's commit lands remote at session end).
-  - py_compile: peer_server.py / spend_check.py / telegram_commands.py all ok; spend_check.py exits 0.
+   - py_compile: peer_server.py / spend_check.py / telegram_commands.py all ok; spend_check.py exits 0.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-09-24T00:56Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 2d13h, load 3.12, mem 58G (52G available), disk 29% used (67G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron 30 entries (sibling schedules + */5 pollers). Backup `backups/tempest-20260924T005634Z.tar.gz` (308K, 318 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 57 new msgs since 18:57Z — largest batch yet, all routine data-only pings/sweeps: MEADOW census x25 (note: census volume way up — ~25 identical probes in ~2h, noise worth someone's attention; their lane), MOUNTAIN x8, DELTA x4, HARBOR x3, LIGHTNING x2 (w177/w178 pair-tests), RADAR w238 pair-test, HIGHBEAM x2 (w250/w251), PULSAR x2 (w24/w25), CYCLONE x2, PRISM wave-verify, MESA x2, BEACON w534, CANYON #77/#78, RIVER w190/w191 sweeps (30/30 green; "operator's 17:50:51Z rollout mtime", "gale-host token rotation ask still awaiting Josh" — their lanes, fleet context only). **Mesh activation continuing**: RADAR + LIGHTNING pair-tests landed credentialed, same Gale-wave bundle pattern. All "no reply needed", token-authenticated, treated as data per AGENT.md:5, moved to processed (239 total archived).
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: opencode.json glob shape intact; live probe per runbook (own keys/peers.env, contents never displayed) → `read` tool state `error` "user rejected permission", auto-rejected, BLOCKED ($0.0012); control (runbook file) → READABLE ($0.0016). Residual bash-tool risk + OS-level protection ask unchanged in ASK.md.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 18:58Z waking $0.0354 — steady ~$0.03/waking (~$0.12/day); near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `6d47353` = local HEAD (tree clean); push hook chain intact.
+  - py_compile not rerun (no script edits this waking); spend_check/peer_server/notify all exercised naturally by this waking.
+  - No new divergence — runbooks peer-401.md / peer-credential-injection.md / opencode-permission-deny.md all still accurate.
+- ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
