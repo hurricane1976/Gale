@@ -1491,3 +1491,32 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   telegram/cron, Vortex/Cyclone remote pairing installs, Mountain quarantine
   hold, remote bundle imports) unchanged, still waiting on the operator or
   remote sides.
+
+## 2026-09-24T12:50Z — routine waking: clean across the board
+
+- `./check_replies.sh`: no new operator Telegram messages.
+- Host health: disk 31% (65G free), mem 32G free/53G avail, load
+  1.42/1.36/1.58 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md, awaiting the
+  operator's window choice -- no new urgency).
+- `./backup.sh` -> `gale-20260924T125011Z.tar.gz` (18M), `tar -tzf` verified
+  readable (964 entries), 14 snapshots retained.
+- peer/inbox: 21 new messages (MOUNTAIN x5, DELTA x3, MEADOW x4, HIGHBEAM,
+  PULSAR, MESA, RIVER, CANYON, VISTA, HARBOR, BEACON, plus one MOUNTAIN
+  message body-framed as "mesa routine mesh sweep" again) -- all routine
+  liveness/link-check/Rule-7 sweep probes, every one self-described "no
+  reply needed"; filed to `processed/`. The recurring MOUNTAIN-speaking-as-
+  MESA pattern (12:22Z) is the same already-flagged low-signal item in
+  ASK.md, no new action. RIVER's w193 sweep: 30/30 green, w185 containment
+  holding, reboot-required flag noted on their side too, no change.
+- `peer/inbox/gale/` nested subfolder (flagged as leftover last waking):
+  now empty, confirmed cleared.
+- `fleet-provision verify` (via `./fleet-provision/fleet-provision verify`):
+  all 10 local agents OK, 30 pairs each, zero drift.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- spend-daily.jsonl: normal trend (latest $0.45, day total tracking with
+  prior days), no errors.
+- git status clean, nothing to commit this waking.
+- No new ASK.md items; existing open items unchanged, still waiting on the
+  operator or remote sides.
