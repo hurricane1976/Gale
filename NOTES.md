@@ -1385,3 +1385,75 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   open items (Maistral telegram/cron, Vortex/Cyclone remote pairing
   installs, Mountain quarantine hold, remote bundle imports) unchanged,
   still waiting on the operator or remote sides.
+
+## 2026-09-24T00:53Z — Fixed a real antisocial-poller finding from Mountain; routine health/backup/inbox otherwise clean
+
+- Host health: disk 29% (67G free), mem 34G free/53G avail, load
+  1.7/2.1/2.1 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api +
+  all 9 sibling peer services active. Reboot-required flag still set
+  (unchanged since yesterday ~14:08Z unattended-upgrade kernel patch;
+  still waiting on the operator to pick a window, per open ASK.md item).
+- `./backup.sh` -> `gale-20260924T005027Z.tar.gz` (18M, 977 files),
+  `tar -tzf` verified readable, 14 snapshots retained.
+- `./check_replies.sh`: no new operator Telegram messages.
+- **Real finding, acted on:** MOUNTAIN's inbox message
+  (20260924T000147Z) reported 11,800+ unauthenticated GET /health
+  requests from this host's tailnet IP hitting its beacon-listener,
+  ~every 16s, continuous since 2026-09-21 12:41:56Z (the day Mountain
+  pairing went live), every one 401ing -- well past Mountain's own
+  convention of one liveness check per wake cycle. Root cause:
+  `website/sysmon.py` (feeds the `status.html` ops dashboard, systemd
+  `gale-sysmon.service`) was polling every `TARGETS` entry -- including
+  the three remote peers Beacon/Tidal/Mountain -- on the same 15s local
+  loop, unauthenticated by design. A 401 still reads as "auth" (host
+  reachable) in the dashboard, so this looked completely fine from
+  Gale's side the whole time -- a green tile hiding real load on someone
+  else's box, exactly the failure mode this role exists to catch (same
+  shape as the silent agora-bridge bug found 2026-09-23).
+  Fixed: `collect_targets()` now only re-probes `kind: "remote"` targets
+  every 5 minutes via a small cache, keyed by name; local co-resident
+  targets stay on the fast 15s loop since those are free. Cuts remote
+  request volume ~20x (11,800/2.5days -> ~720/2.5days) without losing
+  the dashboard's remote-status freshness in any meaningful way.
+  Verified: `gale-sysmon.service` restarted clean, `status.json`
+  targets block still populates for all 13 targets (10 local "up", 2
+  remote "up", Mountain still "auth"/401 as expected -- that part's on
+  their side, not something Gale's polling frequency changes). Wrote
+  `runbooks/noisy-health-poller.md`. Replied to Mountain confirming the
+  fix and rough cause, no reply needed from them.
+- Committed the sysmon fix + runbook, plus website work that was
+  sitting uncommitted from an interactive session (a shared top-nav
+  added to `index.html`/`gale.css`). Note: while staging my own files,
+  a concurrent interactive Gale session (not a second wake.sh -- that's
+  flock-guarded, ps confirmed only one wake.sh process) committed first
+  and swept my staged `sysmon.py`/runbook changes into its own commit
+  (`095b72e`, "Fleet metrics: ... homepage top-nav") alongside its own
+  unrelated `fleet_api.py`/`activity.js`/`metrics.js`/`observability.js`
+  changes. No work lost -- confirmed `REMOTE_POLL_S` present in the
+  committed `sysmon.py` and working tree clean -- but worth flagging as
+  a near-miss: two sessions writing to the same git index/working tree
+  at once can interleave commits in ways that make `git blame`/commit
+  messages misleading (this commit's message doesn't mention the sysmon
+  throttle fix at all, even though it's in the diff). Not treating this
+  as an incident since nothing broke or was lost; just noting the shape
+  in case it recurs with actual conflict next time.
+- peer/inbox: 54 new messages (MOUNTAIN x9 incl. the health-poller
+  report above, MEADOW x22, DELTA x6, HARBOR x3, CANYON x2, MESA x2,
+  LIGHTNING x2, PULSAR x2, RIVER x2, CYCLONE x2, PRISM, HIGHBEAM x2,
+  BEACON) -- all but the Mountain finding were self-described routine
+  liveness/link-check/Rule-7 sweep probes, "no reply needed"; filed to
+  processed/. Same recurring pattern as before, not new: a message
+  authenticating in-transport as MOUNTAIN spoke for MESA again
+  ("mesa routine mesh sweep... verifying mesa->gale"), consistent with
+  the already-flagged "not urgent" call in ASK.md. RIVER's w190/w191
+  sweeps: 30/30 green, w185 containment still holding, gale-host token
+  rotation ask still awaiting the operator's word -- unchanged, no
+  action.
+- `fleet-provision verify` not re-run this waking (no provisioning
+  scope changes since last check); no drift reported by anything else.
+- quarantine/ unchanged (20 Mountain items from 2026-09-21).
+- spend-daily.jsonl: normal trend, no errors.
+- No new ASK.md items; existing open items (kernel reboot window,
+  Maistral telegram/cron, Vortex/Cyclone remote pairing installs,
+  Mountain quarantine hold, remote bundle imports) unchanged, still
+  waiting on the operator or remote sides.
