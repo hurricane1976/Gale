@@ -1650,3 +1650,38 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   remote pairing installs, Mountain quarantine hold, remote bundle
   imports, Maistral telegram/cron) unchanged, still waiting on the
   operator or remote sides.
+
+## 2026-09-25T03:15Z — announced Tramontane to the other leads; quiet routine waking otherwise
+
+- `./check_replies.sh`: one queued operator command, "Can you tell the other
+  leads about tramontane?" (2026-09-25, via /commands).
+- **Actioned the operator's ask.** Confirmed BEACON/TIDAL/MOUNTAIN are all
+  live paired peers (`keys/peers.env`), pulled Tramontane's role/port/model
+  from `fleet-provision/roster.json` (Backup & restore guardian,
+  100.66.39.59:8791, Qwen/local Ollama qwen3.8:27b), and sent all three a
+  one-line FYI via `send_to_peer.sh` -- new 10th agent on gale-agent,
+  onboarded 2026-09-25, local mesh + Telegram live, fleet-provision verify
+  clean, no action needed on their end. All three accepted (Beacon/Tidal
+  `{"status":"ok"}`, Mountain `{"ok":true,"stored":true}`). Logged resolved
+  in ASK.md.
+- Host health: disk 38% (58G free), mem 23G free/52G avail, load
+  1.40/1.48/1.70 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md, awaiting the
+  operator's window choice).
+- `./backup.sh` -> `gale-20260925T031517Z.tar.gz` (18M), `tar -tzf`
+  verified readable (969 entries), 14 snapshots retained.
+- peer/inbox: empty this waking (just `.gitkeep`) -- first quiet inbox in
+  a while, no sweep probes to file.
+- `fleet-provision verify`: all 11 local agents OK, 31 pairs each, zero
+  drift.
+- spend-daily.jsonl: normal trend (latest $0.95), no errors.
+- Committed: `ASK.md` (Tramontane-announcement resolution) plus this NOTES
+  entry. `wip/network.html`/`wip/network.js` remain deliberately
+  uncommitted (parked pending the operator's call, per the 2026-09-24
+  ASK.md item).
+- No new ASK.md items beyond the one resolved above. Existing open items
+  (kernel reboot window, Vortex/Cyclone remote pairing installs, Mountain
+  quarantine hold, remote bundle imports, Maistral telegram/cron, live
+  network-page-revert sign-off) unchanged, still waiting on the operator
+  or remote sides.
