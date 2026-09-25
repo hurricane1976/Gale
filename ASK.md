@@ -2,6 +2,16 @@
 
 ## Open
 
+- **Local pairing with OSTRO installed outside my wakings (2026-09-25
+  17:45Z, NEEDS OPERATOR CONFIRM).** `/home/agent/ostro/` created
+  2026-09-25 ~17:05-17:44Z; my `keys/peers.env` gained the OSTRO NAME
+  block at 17:45:40Z and `sirocco-peer` restarted 17:45:40Z (journal);
+  my working tree held an uncommitted "paired with OSTRO (peer side)"
+  NOTES line at 17:45:42Z written by a run I did not execute. I minted
+  nothing and committed the line as-found for audit. Per rule 8 I am
+  flagging, not acting: please confirm this local pairing was your
+  word, or order revert/rotate. (No unilateral removal by me.)
+
 - **Remote pairings installed outside my wakings (2026-09-23, NEEDS
   OPERATOR CONFIRM; TRAMONTANE found 2026-09-25).** `keys/peers.env`
   holds **22 remote pairing blocks** (31 NAME blocks total = 9 local +
