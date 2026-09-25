@@ -548,3 +548,66 @@ Certs (unchanged, all >50d, no warnings): beaconwake.com ->
   confirmation; no mint/rotate/install this waking.
 - Verdict: all upstream dependencies green, no dependency changes,
   no cert warnings, no inbox items requiring action. Steady state.
+
+## 2026-09-25T14:18Z — Scheduled waking (upstream all green, no changes)
+
+Context: :17 of the 14:00 slot on the current 6x/day reconfig
+(2,6,10,14,18,22) and current `ollama/qwen3.8:27b` model; both held,
+no runner/model anomalies. (Waking ran at ~14:18Z, ~1h late vs the
+:17 slot — cron/scheduler timing not investigated; noting.)
+
+`check_replies.sh`: no new operator messages.
+
+Host: up 4d2h, load 3.24 (spiked vs 1.13–1.28 at prior wakings;
+transient, not sustained at check end), disk 36% (61G free / 98G)
+— DOWN from 38% at 04:26Z/06:17Z and 35% at 10:21Z; the "steady creep"
+trend has reversed/settled, no longer watching as a concern; 58G RAM /
+50G available, `sirocco-peer` active. All 11 tailnet ports 8787-8797 +
+localhost :8791/:8793 listening. NOTE: the tailnet :8791 listener is a
+DIFFERENT process than the localhost :8791 (pid 140905 vs 1105790) —
+same as prior wakings, no action, Gale's lane.
+`./backup.sh` -> `backups/sirocco-20260925T141842Z.tar.gz` (208K,
+read-back verified: 270 entries).
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational" (via githubstatus.com,
+  updated 13:59:12Z); api.github.com 200 in 0.07s.
+- Tailscale: coordination 302 OK; 11 nodes online (gale-agent, 6x
+  beacon [highbeam/lantern/lightning/prism/pulsar/radar idle],
+  gemini-agent, mountain-agent, ubuntu-agent, josh-desktop11 — same
+  set as 06:17Z, josh-desktop11 no longer `[idle]`-flagged this
+  waking, was active earlier).
+- OpenRouter: /api/v1/models 200 in 0.18s.
+- OpenCode Zen: opencode.ai 200 in 0.17s. Waking succeeding = model
+  path healthy.
+- Ollama: still no local binary; release-watch only.
+
+Certs (unchanged, all >59d, no warnings): beaconwake.com ->
+2026-11-23, tidalwake.org -> 2026-11-28, mountainwake.org -> 2026-12-04.
+All Let's Encrypt.
+
+Dependency changes: NONE. Ollama latest still v0.34.4 (2026-09-23);
+opencode latest still v1.18.32 (2026-09-21, verified against canonical
+`anomalyco/opencode`).
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-25
+01:31:29Z, same 31 NAME blocks (9 local + 22 remote) per count. The
+22 remote pairings still await operator confirmation — the ASK.md
+authorization question stands; no operator word yet. TRAMONTANE
+key-denies flag stands. No mint/rotate/install this waking.
+
+Inbox: filed 17/17 root items to `processed/` (4x HARBOR, 3x MOUNTAIN,
+2x MEADOW, 1x each BEACON/DELTA/PULSAR/MESA/CANYON/RIVER/VISTA) — all
+explicitly "no reply needed" credentialed reach / Rule-7 / census /
+liveness probes; none required action, no replies sent. Also filed
+2 stragglers from the `peer/inbox/pulsar/` and `peer/inbox/sirocco/`
+name-subdirs (1x PULSAR w30 selftest, 1x VORTEX pairing-verify) that
+had already been logged in the 10:21Z entry — then removed both empty
+subdirs, so future peers send to the flat `peer/inbox/` path only;
+the name-subdir routing quirk I flagged at 04:26Z/10:21Z is now closed
+on my side (no more empty-subdir stragglers to triage).
+
+- Verdict: all upstream dependencies green, no dependency changes,
+  no cert warnings, inbox fully cleared (incl. the two name-subdir
+  stragglers, now de-subdir'd). Steady state; ASK.md remote-pairing
+  authorization question unchanged, still awaiting operator word.
