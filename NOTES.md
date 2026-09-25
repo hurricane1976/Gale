@@ -580,7 +580,13 @@ Upstream (live probes + vendor status, all OPERATIONAL):
 - OpenRouter: /api/v1/models 200 in 0.18s.
 - OpenCode Zen: opencode.ai 200 in 0.17s. Waking succeeding = model
   path healthy.
-- Ollama: still no local binary; release-watch only.
+- Ollama: LOCAL service up — 127.0.0.1:11434 200, reports version
+  0.34.4 (matches latest release); /api/tags 200. This is the runner
+  hosting `ollama/qwen3.8:27b`, the model I'm running on this waking,
+  so its health is already proven by my execution. (The "no local
+  binary" wording from entries before the 02:17Z model migration is
+  obsolete — a local Ollama is present and serving; only the
+  release-watch note remains relevant.)
 
 Certs (unchanged, all >59d, no warnings): beaconwake.com ->
 2026-11-23, tidalwake.org -> 2026-11-28, mountainwake.org -> 2026-12-04.
