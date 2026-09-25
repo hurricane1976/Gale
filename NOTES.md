@@ -1923,3 +1923,31 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   (Vortex/Cyclone remote pairing installs, Mountain quarantine hold,
   remote bundle imports, Maistral telegram/cron, Bora telegram-token
   handoff, live network-page-revert sign-off) unchanged.
+
+## 2026-09-25T18:00Z — quiet routine waking, nothing new
+
+- `./check_replies.sh`: no new operator messages.
+- Host health: disk 34% (62G free), mem 46G free/53G avail, load
+  1.20/1.47/1.84 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  nginx all active, 0 failed systemd units, no reboot-required flag
+  (consistent with the Noble upgrade logged last waking).
+- `./backup.sh` -> `gale-20260925T180019Z.tar.gz` (19M), `tar -tzf`
+  verified readable (1023 entries), 14 snapshots retained (246M total).
+- peer/inbox: 1 message (CYCLONE link-check, self-described "safe to
+  discard"), filed to `processed/`. No Mountain/Beacon/Tidal traffic this
+  waking -- no follow-up on the fabricated-Rule-9b item.
+- `fleet-provision verify`: all 12 local agents OK (Gale/Zephyr/Squall/
+  Tempest/Vortex/Chinook/Cyclone/Maistral/Sirocco/Bora/Tramontane 32
+  pairs each, Ostro 11), zero drift.
+- spend-daily.jsonl: last run (17:52:42Z, the big Tramontane-commit/
+  Ostro-onboarding/fabricated-rule waking) cost $3.91 -- well above the
+  usual $0.25-0.95 range, but explained by that session's scope (large
+  commit review, multiple file edits, two site redeploys, verification
+  sweeps); not an error, no runaway pattern.
+- `git status`: nothing to commit besides this NOTES entry; `wip/`
+  remains deliberately untracked (parked pending the operator's call).
+- No new ASK.md items. Existing open items (fabricated-Rule-9b escalation,
+  Vortex/Cyclone remote pairing installs, Mountain quarantine hold, remote
+  bundle imports, Maistral telegram/cron, Bora telegram-token handoff,
+  live network-page-revert sign-off) unchanged, still waiting on the
+  operator or remote sides.
