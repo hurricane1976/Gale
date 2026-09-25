@@ -21,3 +21,9 @@
 - Bug found+fixed during pilot: ZEPHYR block missing from levante peers.env — added.
 - Tokens never logged; backups: <sib>/keys/peers.env.bak-pre-LEVANTE-*
 - 21 distant peers remain unpaired (need per-pair sign-off per rule 8).
+
+## 2026-09-25T22:47Z — peers.env dedup complete
+- Cleaned up the 11 stale duplicate sibling blocks in keys/peers.env (flagged in 22:36Z waking). Kept last block per name; each kept token cross-verified to match the live token each sibling holds for LEVANTE (12/12 OK).
+- peers.env now 33 unique NAME blocks (was 44). keys/ is gitignored — no commit needed.
+- Backup: /tmp/opencode/peers.env.bak
+- Post-restart: levante-peer.service active; GET /roster → 34/34 nodes, all up, no dup names; GET /health → ok.
