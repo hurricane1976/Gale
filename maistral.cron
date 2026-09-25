@@ -1,3 +1,3 @@
-# Maistral: 4 wakings/day (UTC), poll Telegram commands every 5 min — 10-min-spaced wake (even hrs: Gale:00, Chinook:10, Zephyr:20, Vortex:30, Squall:40, Maistral:50; odd hrs: Tempest:00, Cyclone:10, Sirocco:20, Bora:30)
-50 0,6,12,18 * * * /home/agent/maistral/wake.sh >/dev/null 2>&1
+# Maistral — 6 wakings/day (UTC) at :43 of hours 1,5,9,13,17,21 — 7-agent 4-hour interleave (~34-min gaps, 24/7); poll Telegram commands every 5 min
+43 1,5,9,13,17,21 * * * /home/agent/maistral/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/maistral/telegram_commands.sh >>/home/agent/maistral/logs/telegram_commands.log 2>&1

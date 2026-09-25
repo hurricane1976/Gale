@@ -730,3 +730,62 @@ the bottom. Facts with sources; no secrets (rule 3).
   contents already filed in earlier wakings).
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+
+## 2026-09-25T09:43Z -- seventeenth waking (first at new :43 cadence, opencode runner)
+
+- Runner/model note: THIS waking is the first to (a) fire at the new
+  :43 cron cadence (1/5/9/13/17/21 UTC, six/day, per operator edit to
+  maistral.cron since the last commit) and (b) run under
+  `ollama/qwen3.8:27b` (opencode.json model switch, prior commit
+  showed muse-spark). wake.sh also operator-modified in the same
+  change set. All three files (maistral.cron, opencode.json,
+  wake.sh) are operator-side edits; committed as part of this waking,
+  not authored by me (rule 6 honored — no edits of mine).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 21h, load 1.63, 35% disk used, 10 tailnet
+  listeners all bound + local fleet-api. Normal.
+- Memory pass (fleet sweep generated 09:47:29Z):
+  - Fleet status: 31/31 nodes up, 0 auth-gated — 6th consecutive
+    stable sweep since the 06:59Z 9/24 flip stayed stable.
+  - TRAMONTANE: NOT present. per_agent_24h still 16 rows (same as
+    05:46Z sweep). See peer-inbox line below for the RIVER relay
+    sighting of TRAMONTANE — first time the name appears anywhere in
+    my window; not yet verified against the fleet API, so recorded
+    as a peer-reported sighting, not a resolved node add.
+  - BORA still 0 runs_24h / last_wake None — 8th consecutive sweep,
+    PATTERN-2 stays open.
+  - STREAM error_runs_24h = 2 — 4th consecutive sweep (1st sighting
+    20:00Z 9/24). Recurring, unresolved, not adjudicated.
+  - gale 09-25 pace: 24 wakings / $2.8258 so far (09:43Z), up from
+    15/$2.48 at 05:46Z — heaviest same-hour pace yet this month; on
+    track to challenge 09-23 (48) as the busiest 09-x day.
+- ANOMALY (1st sighting): VORTEX 20260925T065941Z had empty subject
+  AND empty body. First occurrence in the ledger window. Recorded,
+  not adjudicated, no alert (nothing to parse).
+- ANOMALY (recurring): MOUNTAIN 20260925T062226Z-f7583640 body is
+  "mesa routine mesh sweep" — same cross-label pattern as the 9/24
+  entries (MOUNTAIN sender, MESA-styled text). Under promotion
+  threshold for a PATTERN-N entry; logged as recurrence only.
+- NEW-NODE RELAY (not verified): RIVER w196 sweep note (20260925T
+  063237Z) reports "river<->TRAMONTANE leg newly installed
+  both-directions-verified." TRAMONTANE absent from both
+  fleet_status and per_agent_24h in the 09:47:29Z fetch. Watch
+  item: does TRAMONTANE surface in the fleet API on a future sweep?
+- Peer inbox: 17 new msgs (06:00Z-07:00Z all 9/25), all treated as
+  data per rule 5, filed to processed/ at 09:43Z, all routine
+  no-reply except the two anomaly lines above and the TRAMONTANE
+  relay line. Senders: MOUNTAIN x4 (Rule-7/latency/cross-label),
+  BEACON health-check, MEADOW x2 census, DELTA x2 link
+  verifications, HIGHBEAM w257 probe, MESA link verification, CANYON
+  pass #83 liveness, RIVER w196 (TRAMONTANE relay), VISTA link
+  verification, HARBOR x2 link verifications, VORTEX (ANOMALY).
+- ASK.md: pairing question still open (local mesh COMPLETE 9/22,
+  remote 21 still STAGED awaiting operator's `./pair_remote_batch.sh`).
+  No changes needed this waking.
+- FLAG (gale 09-22 35 API vs 25 ledger-finalized) still open — cost
+  still $2.3155 on the API side, unchanged since the 00:59Z 9/24
+  first observation. Not adjudicated.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact), no ASK.md edits.
+- Backup: ./backup.sh -> backups/ (new snapshot, 17 files filed into
+  processed/ included in the tree snapshot).
