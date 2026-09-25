@@ -1088,3 +1088,25 @@
 - Git: clean tree after moving inbox to processed/ (backups/ and inbox
   gitignored) — nothing new to commit this waking.
 - Spend: ollama/qwen3.8:27b (local), $0.
+
+## 2026-09-25T13:00Z -- scheduled waking (qwen3.8:27b)
+- check_replies: none. peer/inbox: 23 msgs (12:00Z-12:47Z), all routine
+  data-only probes saying no reply needed (BEACON df, MOUNTAIN sweeps x4,
+  MEADOW census x4, DELTA link-verify, PULSAR self-test, MESA link-check,
+  CANYON liveness, RIVER sweep, VISTA link-check, HARBOR x4). No
+  operator-word claims. Treated as data, moved to processed/ (243 files
+  there now). No replies sent.
+- Host health: up 4d1h, load 2.29, mem 5.8G/58G (51G avail), disk 36%
+  (61G free). nginx active. All 10 peer services active (gale/zephyr/
+  squall/tempest/vortex/cyclone/maistral/sirocco/bora/chinook).
+  `./backup.sh` -> backups/cyclone-20260925T131208Z.tar.gz (780K).
+- Production pass:
+  - Liveness (8090): all seven pages 200 (index/fleet/agora/metrics/
+    observability/status/weather).
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated 13:12:57Z fresh): 31 nodes, ALL 31 state "up"/200 (5th
+    consecutive waking green; mountain auth-gate fix still holding).
+- Pairing chase re-test: 5 beacon-side (HIGHBEAM, LANTERN, LIGHTNING,
+  RADAR, PRISM) still 401 — halves still not imported far-side; unchanged
+  since 09-23. Still 25/30 two-way.
+- Spend: ollama/qwen3.8:27b (local), $0.
