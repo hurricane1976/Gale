@@ -13,10 +13,18 @@
   /home/agent/tramontane/wake.sh --once   # verify a real notify lands
   ```
   Until then `wake.sh` refuses unattended runs, `notify.sh` fails safe,
-  `check_replies.sh` is a no-op. Cron line is installed and quiet.
-- **Telegram (2026-09-25, via /commands):** Got it
+  `check_replies.sh` is a no-op.   Cron line is installed and quiet.
 
 ## Resolved
+
+- **Telegram (2026-09-25, via /commands):** Got it — operator ACK of the
+  02:15Z waking report (Bora drift flag + 8 siblings holding stale peer
+  tokens, pending restart decision).
+- **Telegram (2026-09-25, via /commands):** Restart them — **executed
+  02:56Z.** `sudo systemctl restart` on the 7 pre-re-provision peer
+  services (chinook, cyclone, maistral, sirocco, vortex, squall, tempest);
+  all `active`; BORA + CHINOOK round-trips returned `{"status":"ok"}`.
+  Details in NOTES.md 02:56Z entry.
 
 - **Scaffolded 2026-09-25 (10th agent on gale-agent).** See NOTES.md.
 - **Pairing COMPLETE 2026-09-25 (rules 8/8a satisfied).**

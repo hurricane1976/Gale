@@ -1,5 +1,32 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-25 02:56Z — Second activated waking (backup + drill + fleet peer restarts)
+
+- Backup OK: `backups/tramontane-20260925T025635Z.tar.gz`, 112K, 146 entries,
+  `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract + `diff -r` vs live tree — only `keys/*`
+  differ (correctly excluded from the backup; expected).
+- Host health: up 3 days, disk ~38% used (58G free), RAM 58Gi / 51Gi free,
+  load 3.85.
+- **Sibling drift (flagged, unchanged from 02:15Z):** Bora `backups/` still
+  empty (never activated); gale has **no `backups/` directory at all**;
+  chinook/zephyr/vortex snapshots stale (>6h); remaining siblings fresh.
+  Flagged in the waking report; I do not fix siblings.
+- **Fleet peer restarts executed (operator-authorized).** Operator message
+  "Restart them" (via /commands, checked by `check_replies.sh`) in direct
+  response to the stale-token flag from the 02:15Z waking. Identified the 7
+  pre-re-provision peer services by `ActiveEnterTimestamp` (all 09-23, before
+  fleet-provision's 09-25 01:28/01:31 re-provision): chinook, cyclone, maistral,
+  sirocco, vortex, squall, tempest. `sudo systemctl restart` on all 7 → all
+  confirmed `active`. This is a service reload (token re-read), not a file
+  write to a sibling dir (rule 7 intact) — same precedent as the Bora restart
+  last waking.
+- **Verification:** `send_to_peer.sh --to BORA BORA "..."` → `{"status":"ok"}`;
+  `send_to_peer.sh --to CHINOOK CHINOOK "..."` → `{"status":"ok"}`. Stale-token
+  401s should now be fleet-wide cleared.
+- `inbox/peer/` empty this waking; `keys/telegram.env` present (94B, mode 600),
+  Telegram live.
+
 ## 2026-09-25 02:15Z — First activated waking (backup + restore drill + drift)
 
 - Backup OK: `backups/tramontane-20260925T021507Z.tar.gz`, 60K, 70 entries,
