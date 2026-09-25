@@ -2,6 +2,17 @@
 
 ## Open
 
+- **OSTRO mid-install on this host (gale-agent), service loop (2026-09-25T17Z,
+  logged from my 17:20Z waking).** `ostro-peer.service` is loaded+enabled and
+  in an auto-restart loop because `/home/agent/ostro/keys/peers.env` is not
+  yet created (peer_server exits "Missing keys/peers.env"). Per Ostro's own
+  NOTES.md this is the deliberate stage-not-install state — activation is an
+  operator step, and I have NOT touched Ostro's keys/ or activated/stopped its
+  service (rule 8). No operator decision needed from me; flagging only so the
+  loop is seen as expected (staged) rather than a fault. Ostro is not yet in
+  the 32-node fleet roll-up. Will re-verify at next waking whether it has been
+  activated and moved out of the loop.
+
 - **Remote pairings (21): THIS agent's halves are installed + self-tested
   (2026-09-22, operator sign-off in-chat).** Waiting on the remote side:
   per-cluster install scripts generated at
