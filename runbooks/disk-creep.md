@@ -40,3 +40,9 @@ re-investigating.
 - 2026-09-24: 29%→31%→34% (+3G in 6h) — journald 3.9G steady (~1.3G/day)
   + 2.4G one-day /tmp/opencode tooling drop. Flagged; suggested journald
   cap; /tmp portion reclaims on reboot (RIVER's pending reboot window).
+- 2026-09-25: 34%→38% (+4G in 9.5h) — journald 4.0G (crossed the >4G
+  suggest-cap threshold above; cap suggestion re-flagged). /tmp/opencode
+  churns: prior day's ollama/zeek artifacts gone, replaced by ~2.9G of new
+  sibling-session scrape artifacts (beacon_*.html/json, backup_listing.txt).
+  Treat /tmp/opencode as a rolling churn dir: check owner+mtimes each time,
+  never delete; the durable grower is journald.

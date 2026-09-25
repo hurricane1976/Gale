@@ -37,3 +37,11 @@ any nonzero line there is itself a signal.
   first waking — check cron schedule before flagging.
 - Grep "401|429" in logs/*.log hits my own NOTES wording echoed into wake
   transcripts — restrict log greps to peer/logs/peer_server.log for that class.
+- Recurrence without consecutiveness: squall logged $2.8613 (09-24 07:11Z),
+  then a normal $0.1329 (12:58Z), then a fleet-record $3.3977 (19:15Z).
+  Strict "two consecutive" logic would have cleared it after line 2 — but
+  repeated >$2 lines on a ~$0.05 agent are a pattern regardless of spacing.
+  After the 09-25 00:38Z host cron re-stagger, ledger timestamps no longer
+  map 1:1 to cron slots (off-cron interactive//wake sessions are common) —
+  check the sender's current crontab before calling an "unexpected time"
+  anomalous; judge on magnitude + recurrence, not clock position.
