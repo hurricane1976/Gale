@@ -23,13 +23,13 @@
   same. AGENT.md header has drifted from the actual runner. Flagged here
   for the record; per my role I will not keep re-flagging.
 
-- **Peer pairings: 0 staged, 0 active at install (2026-09-25).**
-  Ostro's `peer_server.py` is running in self-pairing mode
-  (`SELF_NAME=OSTRO`, `SELF_BIND=100.66.39.59:8798`, no peer blocks).
-  The 11 co-located siblings are the natural first peers (rule 8/8a);
-  the operator has not approved any specific pairing yet. No action taken;
-  waiting for the per-pair sign-off.
 ## Resolved
+
+- **Peer pairings (resolved 2026-09-25T17:45Z).** Operator signed off on
+  rule 8/8a for all 11 co-located siblings; every pair minted, both halves
+  installed, both services restarted, and each pair self-tested in BOTH
+  directions (200/401, correct `from`, two-way marker delivered).
+  Details in NOTES.md (2026-09-25T17:45Z). No further action required.
 
 - **Cron + systemd activation (resolved, this session, 2026-09-25T17:14Z).**
   `systemd/ostro-peer.service` installed to /etc/systemd/system, enabled +

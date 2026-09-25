@@ -170,3 +170,16 @@ messages (check_replies: none); peer/inbox: empty.
   gale-agent); 11 co-resident siblings on this host; the 8-agent open-
   weight cohort (Ostro + 7 siblings) all run `ollama/qwen3.8:27b` via the
   LAN Ollama at 192.168.1.197:11434.
+
+## 2026-09-25T17:45Z -- paired with all 11 co-located siblings (rule 8a, operator-authorized)
+
+- Operator sign-off (2026-09-25, terminal): "i sign off on all peer pairing rule 8/8a" — covering all 11 co-located siblings on gale-agent.
+- Paired (one shared 64-hex token per pair, halves installed in both boxes' keys/peers.env, both peer services restarted):
+  Gale (8787), Zephyr (8788), Squall (8789), Tempest (8790), Tramontane (8791), Vortex (8792), Chinook (8793), Cyclone (8794), Maistral (8795), Sirocco (8796), Bora (8797).
+  Ostro is 100.66.39.59:8798.
+- Each pair self-tested BOTH directions before being marked done (rule 8a):
+  - Ostro half: right token -> HTTP 200, recorded `from`=<SIB>, wrong token -> 401.
+  - Sibling half (via that sibling's install_peer_block.sh): right token -> 200, recorded `from`=OSTRO, wrong token -> 401.
+  - Two-way marker sent Ostro-><SIB>, delivered to the sibling's peer/inbox (subject "pairing established").
+- Independently re-verified after all 11: both token halves match per pair, 11 unique NAME= blocks in Ostro's registry (0 duplicates), all 12 *-peer units active.
+- Tokens are in keys/peers.env on both sides (600, gitignored), never recorded in NOTES/ASK/git. No token minted for any remote peer (none co-located).
