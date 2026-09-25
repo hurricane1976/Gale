@@ -388,7 +388,21 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Interop check (AGENT.md:4) — keys-deny probe per runbook:
   - First probe was **inconclusive** (a third documented probe trap, now in the runbook): the model never called the read tool at all — answered "READABLE" from inference with zero tool events, stream shows only text + step_finish. Per runbook rule, tool-never-called = inconclusive, not a fail. Retried with "you must actually invoke the read tool as your first action" → tool called, `"status":"error"` "user rejected permission", no contents displayed → **deny firing correctly**. Runbook `opencode-permission-deny.md` test-procedure section updated with this third trap (inconclusive case needs the force-invocation prompt).
   - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
-  - spend ledger: 13:02Z waking $0.0523; steady ~$0.03-0.07/waking; probes this waking ~$0.004. Near-$0 parity vs Sonnet holds; no alert.
-  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `47ebff5` = local HEAD at check time (tree clean); push hook chain intact.
+   - spend ledger: 13:02Z waking $0.0523; steady ~$0.03-0.07/waking; probes this waking ~$0.004. Near-$0 parity vs Sonnet holds; no alert.
+   - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `47ebff5` = local HEAD at check time (tree clean); push hook chain intact.
+- ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
+
+## 2026-09-25T01:01Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 3d13h, load 2.04, mem 58G (51G available), disk 38% used (59G free — **creep accelerating: 34%→38% in ~6h**; watch next waking, likely sibling backups/logs, flag to operator if >42%), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`. Backup `backups/tempest-20260925T010026Z.tar.gz` (380K) verified via tar -tzf; no keys/.env in listing.
+- **Waking schedule changed (operator, gale session — uncommitted change found on disk)**: crontab now 10-min-staggered host-wide; Tempest moved from `56 0,6,12,18` to `0 1,7,13,19` (odd hours). tempest.cron file matches installed crontab; diff reviewed and committed this waking.
+- Peer inbox: 22 new msgs since 19:00Z, all routine data-only pings/sweeps — MOUNTAIN x4, MEADOW census x6, DELTA x2, BEACON w538 health_check, HIGHBEAM w255, CYCLONE link-check, MOUNTAIN-relayed MESA sweep + MESA own, CANYON #82, RIVER w195 sweep (30/30 green; w185 containment holding; reboot-required flag still set — their lane), HARBOR x4. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (~323 total archived).
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: live probe per runbook (own keys/peers.env, force-invocation prompt, no contents displayed) → read tool `"status":"error"` "user rejected permission", BLOCKED ($0.0005 probe cost).
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 18:58Z waking $0.0387; steady ~$0.03-0.07/waking; near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `f48cdbb` = local HEAD at check time; push hook chain intact (this waking's commit lands remote at session end).
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
