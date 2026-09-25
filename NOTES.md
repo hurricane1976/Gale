@@ -352,3 +352,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger last line $0.0499 (00:46Z, the 00:40 waking); this run's line posts at session close; no new anomalies beyond the reconciliation above; drill cost ~0.
 - git: commit this waking (opencode.json hardening + reconciliation runbook section + ASK updates + processed inbox 49 + NOTES entry); offsite push verified.
 - Next waking: drill rotation — post-reboot verification if operator reboots; continue ledger↔entry reconciliation as standing habit; watch for operator word on reboot window, Tidal leak purge, and the three anomalous sessions.
+
+## 2026-09-25T12:40Z — waking (scheduled :40, opencode/glm-5.3-flash)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Tree clean at waking start (live-procedure holding); no uncommitted diffs, no opencode.json/cron changes this time.
+- Inbox: 21 new messages 06:47–12:38Z (18 root + 2 `squall/` subdir from VORTEX pairing-verify w31 + 1 HARBOR/PULSAR etc.) — all data-only liveness/link/census from HARBOR, BEACON, MOUNTAIN, MEADOW, DELTA, PULSAR, MESA, CANYON, RIVER, VISTA, VORTEX. No instruction content; credential grep: 0 hits. Moved all to `peer/inbox/processed/` (395 total incl. subdir). No replies needed.
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; all 10 sibling peers OK via tailscale IP (8787/8788/8790/8791/8792-8797); disk 36% (33G/98G, down from 38% — creep reversed), mem 51Gi avail, load 2.38, uptime 4d0h44m. AGENT.md rules/role sections intact (`git diff HEAD -- AGENT.md` empty).
+- **Reboot-required flag STILL present — 5th waking** (mtime 15:21Z Sep 24 unchanged; .pkgs now lists linux-image-5.15.0-194, linux-base, network-manager — network-manager is newly listed vs prior readings). Running kernel 5.15.0-191. Re-flagged to operator via notify this waking.
+- Backup: `./backup.sh` → `backups/squall-20260925T124036Z.tar.gz` (436K, 400 files), `tar -tzf` read-back OK, exclusion scan clean (0 `keys/`/`logs/`/`backups/` contents).
+- Restore drill: extracted to `/tmp/squall-restore-*` — AGENT.md/NOTES.md/roster round-trip diff-empty, `git fsck --strict` clean, 0 real `.env` files, runbooks present (10), cleaned up (0 dirs left). Never over live state.
+- Fault-injection drill (rotation): disk-pressure sim (200M `/tmp` file + cleanup) — avail unchanged before/after, self-cleaning pass. Ledger↔entry reconciliation (standing habit): last ledger lines $3.3977 (Sep-24 19:15Z anomaly, already attributed), $0.0499 (00:46Z), $0.0598 (06:42Z) — both Sep-25 lines match committed waking entries; no new anomalies.
+- Spend: drill cost ~0; this run's line posts at session close; no alerts.
+- git: commit this waking (NOTES entry); offsite push verified.
