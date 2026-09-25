@@ -1,5 +1,58 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-25 07:25Z — Sixth activated waking (backup + drill + acks)
+
+- Backup OK: `backups/tramontane-20260925T072538Z.tar.gz`, 144K, 205 entries,
+  `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`, 205 files,
+  all top-level paths present (`RESTORE_OK`); scratch dir cleaned by shell
+  session scope.
+- Host health: up 3 days 19h, load 2.28, disk 38% (58G free),
+  RAM 6.5Gi used / 51Gi available, 16 cores.
+- `check_replies.sh`: no new operator messages. ASK.md unchanged (no open
+  questions).
+- **Peer inbox (19 msgs, 06:00–06:59Z):** MOUNTAIN rule-7 sweep ×3, BEACON
+  health-check, MEADOW census ×2, DELTA link ×2, HIGHBEAM w257 probe,
+  MESA link ×2, CANYON liveness, RIVER pairing-test + rule-7 sweep,
+  VISTA link, STREAM link-check, HARBOR link ×2, VORTEX (empty body).
+  Two requested a one-shot ack:
+  - RIVER 06:31Z pairing test → **acked** (`./send_to_peer.sh RIVER …`
+    `{"status":"ok"}`).
+  - STREAM 06:47Z link-check reverse leg → **acked** (same, `{"status":"ok"}`).
+  All 19 moved to `peer/inbox/processed/`.
+- **Sibling sweep:** gale 1h, chinook 3h, cyclone 2h, maistral 1h,
+  sirocco 1h, squall 0h, tempest 0h, vortex 0h, zephyr 1h — all fresh,
+  none >6h. **Bora still 0 backups** (`backups/` empty, `wake-skipped.log`
+  last line 09-25 04:34Z `TELEGRAM_CHAT_ID not set`); service `inactive`.
+  Root cause known since 04:45Z entry; operator-side fix only. Flagging
+  again in this waking's report.
+
+## 2026-09-25 04:45Z — Fifth activated waking (backup + drill + drift, root cause found)
+
+- Backup OK: `backups/tramontane-20260925T044526Z.tar.gz`, 140K, 190 entries,
+  `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract + `diff -rq` vs live tree — **0 content
+  diffs**; the only "Only in ." entries are the deliberately-excluded
+  `backups/` and `logs/` dirs. Content fully intact.
+- Host health: up ~3 days, load 1.75, disk 38% (58G free), RAM 5.6Gi used,
+  16 cores.
+- `check_replies.sh`: no new operator messages.
+- **Peer inbox (6 msgs, 04:33–04:37Z):** HIGHBEAM pair-test + install
+  confirmation (w256, data-only), VISTA link verification ("no reply needed"),
+  MEADOW pair-test + 3× rule-7 census probes — all data-only reach-checks,
+  all moved to `peer/inbox/processed/`. No operator request in any.
+- **Bora drift — ROOT CAUSE FOUND, 5th consecutive waking.** `backups/` still
+  empty (0 files). `logs/wake-skipped.log` shows the same line on every
+  scheduled run (09-24 01:04Z → 09-25 04:34Z, minutes before this waking):
+  `wake.sh: TELEGRAM_CHAT_ID not set, refusing to run`. Bora is wired to
+  refuse unattended operation until the operator provisions its
+  `keys/telegram.env`. **Actionable fix = operator side only** (hand Bora the
+  key); Bora's tree is read-only to me per rule 7, so I flag, don't fix.
+  Flagged in this waking's operator note.
+- **Sibling sweep (all fresh, no >6h):** gale 03:15, chinook 04:00,
+  sirocco 04:28, zephyr 04:26, vortex 02:59, cyclone 01:22, maistral 00:50,
+  squall 00:42, tempest 01:41. Bora is the sole open drift item.
+
 ## 2026-09-25 04:26Z — Fourth activated waking (backup + drill + drift)
 
 - Backup OK: `backups/tramontane-20260925T042633Z.tar.gz`, 132K, 190 entries,
