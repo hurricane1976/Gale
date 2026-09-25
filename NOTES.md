@@ -1,5 +1,59 @@
 # NOTES.md — Cyclone
 
+## 2026-09-25T17:20Z -- waking (routine, scheduled :09 window of 6-wake day)
+
+- REBOOTED HOST: up only ~2h (was 4d1h at 13Z wake). All peer services
+  reactivated on boot. This is a fresh boot, so state was re-verified
+  (fleet page, sweep, pairings) rather than assumed.
+- check_replies: none. peer/inbox fresh: 5 msgs (17:17-17:20Z), all
+  routine data-only pings, "no reply needed": MOUNTAIN rule-7 sweeps x3
+  + MOUNTAIN latency check 1, BEACON w542 health-check 1. Moved to
+  processed/. No operator-word claims. No replies sent.
+- New peer-service detected: `ostro-peer` (12th co-resident, new
+  co-resident being onboarded). `keys/peers.env` not yet created for it
+  so its service is in auto-restart loop (Missing keys/peers.env).
+  Staged-not-installed state per Ostro's own NOTES ("activation command
+  set for the operator — do not run from this session"). NOT in the 32-node
+  fleet yet. Not my box to fix; logged here for operator awareness.
+  Do NOT touch Ostro's keys/ or activate its service (rule 8 + explicit
+  stage-not-install note).
+- Fleet grew 31 -> 32 (TRAMONTANE onboarded this morning ~01:31Z — my
+  peers.env was re-provisioned at 01:31, which I'd tracked; now confirmed
+  live in fleet roll-up). New co-resident TRAMONTANE (12th on gale-host;
+  gale-host group now shows 11 on fleet page = TRAMONTANE included, prior
+  10).
+- Production pass (post-reboot, live @8090):
+  - Liveness: index/fleet/status/metrics/observability/agora all 200,
+    /api/fleet/telemetry 200 (fleet-telemetry/v1), /api/fleet/activity
+    200 (fleet-activity/v1, 24 events), /api/fleet/health 200.
+  - Fleet roll-up (`/api/fleet/metrics`, schema fleet-metrics/v1,
+    generated fresh 17:14:09Z): 32 nodes, ALL 32 state "up"/200, 0
+    not-up. Sweep listeners == fleet-page roster 32/32 both directions.
+  - Content consistency: index/fleet pages report 32 agents, 11 on
+    gale-host, 7 each on tidal/beacon/mountain — internally consistent;
+    one stale "31 agents" changelog line on index (historical log entry,
+    not the live count) — acceptable.
+  - nginx -t: syntax ok. Owned files www-data:www-data 755. No drift
+    between /home/agent/agent/website and /var/www/gale (diff -rq clean,
+    excluding generated fleet_api/sysmon/firewalla/agora_bridge/deploy).
+  - NOTE: /home/agent/agent (GALE's repo) has uncommitted changes
+    (website/*.html/css/js, sysmon.py, fleet_api.py, gale.css, NOTES.md,
+    + ollama_keepalive.sh, wip/) — that is GALE's working tree, not mine.
+    Left untouched.
+- Pairing chase (post-reboot re-test of 5 still-401 beacon-side halves):
+  HIGHBEAM/LANTERN/LIGHTNING/RADAR/PRISM still 401 (their half not
+  imported far-side; unchanged since 09-23). Confirmed 2-way still working:
+  GALE 200, TIDAL 200, MOUNTAIN 200, TRAMONTANE 200. Still 25/30 two-way.
+  (My peers.env format is NAME=/ADDR=/TOKEN=, not NAME:/ADDR:/TOKEN: —
+  my earlier parser used the wrong delimiter and spuriously reported
+  NO_BLOCK for 5 names; re-ran with -F= and got real results.)
+- Host health: up ~2h, load ~2.0, mem ~58G (51G avail), disk 34% used
+  (31G/98G). All 12 peer services active except ostro (staged, loop).
+  cron: my lines intact (wake + telegram_commands), no ostro line yet.
+  `./backup.sh` -> backups/cyclone-20260925T171512Z.tar.gz (800K),
+  verified 331 entries.
+- Spend: ollama/qwen3.8:27b (local), $0.
+
 ## 2026-09-22T14:25Z -- installed (operator-directed interactive session)
 
 - Context: operator asked 13:52Z to "build me 2 more agents" on this box; the
