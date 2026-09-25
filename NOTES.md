@@ -976,3 +976,73 @@
   pattern in ~28h), one standing gap unchanged (5 beacon-side pairs
   401). Operator has acted on the model question and the cadence;
   both noted and committed as evidence, no action needed from me.
+
+## 2026-09-25T06:58Z -- scheduled waking (06:51 slot; thirteenth on Qwen3.8:27b)
+
+> **CRITICAL — active credential exposure found and closed this
+> waking.** A long-running `python3 -m http.server` (PID 361499,
+> started **2026-09-21 17:17**, user `agent`, cwd
+> `/home/agent/agent`) was serving that directory's tree — including
+> **`/home/agent/agent/keys/`** — to the ENTIRE tailnet on
+> `0.0.0.0:8099` for ~4 days: `peers.env` (31 peer tokens) + 33
+> `.bak` snapshots, `telegram.env` (live VORTEX bot token),
+> `firewalla.env`, and **`github_deploy_key` (private)**. Verified live before closing:
+> `curl http://100.66.39.59:8099/keys/` → HTTP 200, file contents
+> downloadable. This was logged in prior wakings as "Glen's stray
+> :8099 dev server… documented, not drift" (e.g. entry above) — that
+> assessment did not hold up: it was not a dev server, and it was
+> serving `keys/`. **Remediation (done, verified):** no
+> cron/systemd/supervisor respawn; `kill 361499`; port 8099 free,
+> connection refused on localhost and tailnet; no further
+> `http.server` processes. **Operator action required: treat all
+> exposed credentials as compromised and rotate** (GitHub deploy key
+> first, then Telegram bot token, then the 30 peer tokens) — I am not
+> rotating unilaterally: it spans sibling agents and the remote side,
+> and I cannot verify which halves are actually read. Escalated to
+> ASK.md and this notify. The other public binders were checked
+> post-kill (:3000 Meteor, :3001/:8092 302, :80 gunicorn,
+> :8091 dashboard, :9090/:9483 monitors) — none are raw static
+> credential servers; :9483 was read-verified as data JSON.
+
+- Runner/model note: first Qwen3.8:27b waking on the 6/day :51
+  cadence the operator set yesterday; behavior clean.
+- Inbox: 46 pending (the largest batch seen). 45 routine fleet
+  items processed (from==self or peer-to-self sweeps, no
+  credentials, links, or instructions — spot-verified); 1 Mesa
+  pattern (8th) quarantined:
+  `quarantine/20260925T062227Z-MOUNTAIN-a905688a.json` (same
+  MOUNTAIN transport, same template shape — see the standing
+  plan). The 8th continues the ~5-6h MOUNTAIN cadence; already
+  escalated at the 3rd and in the loop since — count is on the
+  notify, no new action beyond that.
+- Automated scans: credential/URL/from-filename checks run on
+  the 46 files, results clean on the 45 processed.
+- Host health: disk 36G/98G (38%), 58G RAM (~5G used), uptime
+  3d19h, load ~2.6. `vortex-peer` active. `ufw` not installed
+  (baseline). Sandbox strict/yes/yes unchanged.
+- Tailscale: 11 nodes, all known (same set as last waking, incl.
+  new `tramontane` from yesterday's operator change).
+- Credential hygiene (local, read-only): every non-example
+  `keys/` file 600 across all TEN local dirs; only the :8099
+  server in `/home/agent/agent/` was a leak vector (now closed).
+  Inode check: the exposed `/home/agent/agent/keys/peers.env`
+  (7007 B) is a distinct file from this repo's
+  `keys/peers.env` (7314 B) — the exposure did not touch this
+  copy, but both share the same 31 tokens, all of which are
+  compromised. Tracked-tree secret scan: only the known Gale
+  transcript base64 `sk-` false positives.
+- Remote pairings re-chased (31 records, correct multi-line
+  block parse — my first pass this waking mis-parsed the
+  format, caught, no signal): **still 26/31 HTTP 200**.
+  Remaining 401: HIGHBEAM (100.81.147.28), LANTERN
+  (100.76.139.96), LIGHTNING (100.69.40.118), RADAR
+  (100.125.26.66), PRISM (100.100.158.42) — all beacon-side,
+  unchanged; ASK.md item stands.
+- Backup: `backups/vortex-20260925T065253Z.tar.gz` (707K, 323
+  entries, read-back verified); previous 6 kept.
+- Verdict: **not a routine waking.** The :8099 exposure is the
+  most consequential finding in this repo's history; it is
+  closed, but credential rotation is now the operator's
+  highest-priority open item (ASK.md #1). Mesa-pattern count
+  reaches 8 — standing defect, no new action beyond the
+  notify.
