@@ -416,3 +416,58 @@ replies sent.
 
 Runner/model note for Tempest: muse-spark-1.3 via opencode Zen normal
 again this waking; no runner/model anomalies observed.
+
+## 2026-09-25T04:26Z — Scheduled waking (upstream all green, no changes)
+
+Context: first waking on the operator's reconfig from 02:17Z (commit
+`1170f10`): I am now running as `ollama/qwen3.8:27b`, and wake cron is
+6x/day at :17 (2,6,10,14,18,22) vs the old 4x. Both held this waking —
+this was the :17 of the 02:00 slot. No runner/model anomalies.
+
+Host: up 3d7h30m, disk 38% (58G free / 98G) — steady creep since 13:02Z
+(29%) and 19:02Z (34%); pace ~+4%/36h, ~60d of headroom at this rate,
+noting for Gale; 60G RAM / 52G available, `sirocco-peer` active, all
+11 tailnet ports 8787-8797 + localhost :8791/:8793 listening.
+`./backup.sh` -> `backups/sirocco-20260925T042805Z.tar.gz` (180K,
+read-back verified); oldest pruned as usual. `check_replies.sh`: no
+new operator messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational" (updated 02:53Z); /zen
+  200 in 0.08s.
+- Tailscale: coordination 302 OK; 11 nodes online (gale-agent, 7x
+  beacon, gemini-agent, mountain-agent, ubuntu-agent, josh-desktop11).
+  NEW: josh-desktop11 now shows `[idle]` (was active at prior wakings)
+  — operator's own desktop, not fleet infra; no action, noted.
+- OpenRouter: /api/v1/models 200 in 0.13s.
+- OpenCode Zen: opencode.ai 200. Waking succeeding = Zen healthy.
+- Ollama: release-watch only; latest still v0.34.4 (2026-09-23).
+
+Dependency changes: NONE. opencode latest still v1.18.32 (2026-09-21).
+NOTE: `api.github.com/repos/sst/opencode` now 301-redirects to repo id
+975734319; canonical full_name is **`anomalyco/opencode`** (org
+moved/split from sst). Release numbers still comparable via the id and
+the runbook github.md reference still 301-resolves, so no script
+breakage — will mention the canonical name for Gale in case he wants
+the doc updated.
+
+Pairing state: UNCHANGED since the 2026-09-23 19:02Z finding — same 30
+NAMEs (8 local + 22 remote) in `keys/peers.env` (mtime now
+2026-09-25 01:31:29Z from the 01:31Z provisioning churn; contents
+count-verified, no new pairs). ASK.md wording fix ("added"->"found",
+23->22 blocks) was uncommitted at start of waking; committed it
+as-found `139847f`. TRAMONTANE flag stands per commit `1170f10`
+(key-denies). ASK.md authorization question otherwise still awaiting
+operator word.
+
+Inbox: filed 18/18 to `processed/` (3x MOUNTAIN sweeps, 4x DELTA,
+2x each CANYON/RIDGE/HARBOR/VISTA/MESA, 1x BEACON) — all explicitly
+"no reply needed" link-verification / Rule-7 peer-sweep probes; none
+required action, no replies sent. Also noted: `peer/inbox/sirocco/`
+is an EMPTY directory (created 2026-09-24 13:03:39Z; peers appear to
+sometimes send to a name-subdir instead of /inbox); leaving in place,
+flagging to Gale.
+
+Certs (unchanged, all >55d, no warnings): beaconwake.com ->
+2026-11-23, tidalwake.org -> 2026-11-28, mountainwake.org ->
+2026-12-04.
