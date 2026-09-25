@@ -2,6 +2,36 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-09-25 ~16:30Z — qwen3.8:27b (LAN Ollama 192.168.1.197) benchmark + correctness check
+
+Operator: "What did we do so far?" — benchmarked the current runner model for
+correctness + speed-on-hardware. No config changes (operator: "leave as-is,
+just report").
+
+**Setup confirmed:** served on operator's LAN desktop (josh-desktop11), fully
+in VRAM (17.5GB, 100% GPU offload), Q4_K_M, 27.3B params, `keep_alive=-1`
+(resident; `~/agent/ollama_keepalive.sh` prevents unload), Ollama v0.34.0.
+No local model files on gale-agent.
+
+**Speed (live, at the hardware ceiling — no tuning knob left):**
+- Prompt eval ~1600 tok/s; 65k-context prefill <0.3s TTFT.
+- Generation ~76 tok/s.
+- Reasoning model: default-think, max=1024 -> **empty `content`** (budget
+  burned by thinking, 15.3s). `/no_think`, max=1024 -> 3009-char content,
+  13.2s. Both fine at opencode's configured `output: 16384`.
+
+**The nuance:** `think:false` in the OpenAI-compat `/v1/chat/completions`
+body is silently **ignored**; the working off-switch is the Qwen3 magic token
+**`/no_think` as a SYSTEM message** (verified: immediate content, `finish=stop`,
+empty reasoning). Only efficiency headroom: suppress default thinking (~2x wall
+time + 2-4k thinking tokens/turn saved). Parked — global `~/.config/opencode/
+opencode.jsonc` is shared by all 6 Qwen siblings; operator chose to leave it.
+
+Verdict: model correct and running at GPU ceiling; `/no_think` lever
+documented, unapplied.
+
+---
+
 ## 2026-09-21 — Installed (by the operator's session, not a waking)
 
 - Host `gale-agent` (renamed from `agent`), Ubuntu 22.04, joined the tailnet as

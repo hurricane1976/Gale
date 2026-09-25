@@ -11,28 +11,68 @@ export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => s.replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
-/* ---- wind-streak canvas: DPR-aware, pauses when hidden, one static
-   frame under reduced motion, gentle cursor gusts ---- */
+/* ---- storm canvas: DPR-aware, pauses when hidden, one static frame under
+   reduced motion, gentle cursor gusts. Rain falls steeply with a light
+   wind slant; soft cloud-bank clumps drift across the top of the sky;
+   occasional jagged lightning bolts with a soft glow. ---- */
 export function initStormCanvas() {
   const canvas = document.getElementById("storm-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   let parts = [];
+  let clouds = [];
+  let bolts = [];
+  let nextBolt = performance.now() + 4000 + Math.random() * 5000;
   let rafId = 0;
   let running = true;
+  let flashUntil = 0;
   const mouse = { x: -1e4, y: -1e4 };
 
   const spawn = (w, h) => {
-    const n = Math.floor((w * h) / 16000) + 30;
+    const n = Math.floor((w * h) / 9000) + 40;
     return Array.from({ length: n }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      vx: 0.5 + Math.random() * 1.6,
-      vy: (Math.random() - 0.5) * 0.45,
-      w: 0.5 + Math.random() * 1.5,
-      a: 0.06 + Math.random() * 0.22,
+      vx: 0.35 + Math.random() * 0.75,
+      vy: 2.5 + Math.random() * 2.2,
+      w: 0.6 + Math.random() * 1.0,
+      a: 0.09 + Math.random() * 0.17,
       ph: Math.random() * Math.PI * 2,
     }));
+  };
+
+  const spawnClouds = (w, h) => {
+    const n = 6;
+    return Array.from({ length: n }, (_, i) => ({
+      x: (w / n) * i + Math.random() * (w / n),
+      y: -30 + Math.random() * h * 0.35,
+      rx: 170 + Math.random() * 210,
+      ry: 52 + Math.random() * 52,
+      vx: 0.08 + Math.random() * 0.18,
+      a: 0.32 + Math.random() * 0.38,
+      g: 26 + ((i * 13) % 4),
+    }));
+  };
+
+  const makeBolt = (w, h) => {
+    const x0 = 70 + Math.random() * Math.max(1, w - 140);
+    const y0 = Math.random() * h * 0.14;
+    const depth = h * (0.3 + Math.random() * 0.42);
+    const segs = 6 + Math.floor(Math.random() * 5);
+    const pts = [[x0, y0]];
+    let x = x0;
+    for (let i = 1; i <= segs; i++) {
+      x += (Math.random() - 0.55) * 46;
+      pts.push([x, y0 + (depth * i) / segs]);
+    }
+    let branch = null;
+    if (Math.random() < 0.65) {
+      const bi = 2 + Math.floor(Math.random() * (segs - 2));
+      const bx = pts[bi][0], by = pts[bi][1];
+      const bend = (Math.random() < 0.5 ? -1 : 1) * (40 + Math.random() * 55);
+      branch = [bx, by, bx + bend * 0.4, by + 22, bx + bend, by + 48];
+    }
+    return { pts, branch, born: performance.now(), life: 240 };
   };
 
   const resize = () => {
@@ -42,46 +82,117 @@ export function initStormCanvas() {
     canvas.style.width = w + "px"; canvas.style.height = h + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     parts = spawn(w, h);
+    clouds = spawnClouds(w, h);
     if (REDUCED) drawStatic(w, h);
   };
 
-  const streak = (p) => {
+  const raindrop = (p) => {
+    const k = 4.6;
     ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
-    ctx.lineTo(p.x - p.vx * 5.5, p.y - p.vy * 5.5);
+    ctx.moveTo(p.x - p.vx * k, p.y - p.vy * k);
+    ctx.lineTo(p.x, p.y);
     ctx.lineWidth = p.w;
-    ctx.strokeStyle = `rgba(90, 190, 255, ${p.a})`;
+    ctx.strokeStyle = `rgba(165, 195, 240, ${p.a})`;
     ctx.stroke();
+  };
+
+  const cloud = (c) => {
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.scale(c.rx, c.ry);
+    const g = ctx.createRadialGradient(0, 0.2, 0.1, 0, 0.2, 1);
+    g.addColorStop(0, `rgba(125, 150, 196, ${c.a})`);
+    g.addColorStop(0.55, `rgba(104, 128, 175, ${c.a * 0.62})`);
+    g.addColorStop(1, "rgba(90, 112, 158, 0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(0, 0, c.g, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  const boltPath = (b, alpha) => {
+    ctx.save();
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(160, 185, 245, 0.9)";
+    ctx.shadowBlur = 16;
+    ctx.strokeStyle = `rgba(214, 229, 255, ${alpha})`;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(b.pts[0][0], b.pts[0][1]);
+    for (let i = 1; i < b.pts.length; i++) ctx.lineTo(b.pts[i][0], b.pts[i][1]);
+    ctx.stroke();
+    if (b.branch) {
+      ctx.lineWidth = 1.1;
+      ctx.strokeStyle = `rgba(190, 208, 250, ${alpha * 0.8})`;
+      ctx.beginPath();
+      ctx.moveTo(b.branch[0], b.branch[1]);
+      ctx.lineTo(b.branch[2], b.branch[3]);
+      ctx.lineTo(b.branch[4], b.branch[5]);
+      ctx.stroke();
+    }
+    ctx.restore();
   };
 
   const drawStatic = (w, h) => {
     ctx.clearRect(0, 0, w, h);
-    for (const p of parts.slice(0, 46)) streak(p);
+    for (const c of clouds) cloud(c);
+    for (const p of parts.slice(0, 60)) raindrop(p);
   };
 
   const tick = () => {
     if (!running) return;
+    const now = performance.now();
     const w = window.innerWidth, h = window.innerHeight;
     ctx.clearRect(0, 0, w, h);
+
+    for (const c of clouds) {
+      c.x += c.vx;
+      if (c.x - c.rx > w) c.x = -c.rx;
+      cloud(c);
+    }
+
     for (const p of parts) {
       const dx = mouse.x - p.x, dy = mouse.y - p.y;
       const d2 = dx * dx + dy * dy;
       if (d2 < 67600 && d2 > 0.01) {           // gust: push away within 260px
         const d = Math.sqrt(d2);
-        const f = ((260 - d) / 260) * 0.55;
-        p.vx -= (dx / d) * f; p.vy -= (dy / d) * f;
+        const f = ((260 - d) / 260) * 0.4;
+        p.vx -= (dx / d) * f;
       }
-      p.ph += 0.014;
-      p.vx += (1.05 - p.vx) * 0.012;            // relax to base wind
-      p.vy *= 0.985;
-      p.x += p.vx;
-      p.y += p.vy + Math.sin(p.ph) * 0.22;
-      if (p.x > w + 12) { p.x = -12; p.y = Math.random() * h; }
-      if (p.x < -12) p.x = w + 12;
-      if (p.y > h + 12) p.y = -12;
-      if (p.y < -12) p.y = h + 12;
-      streak(p);
+      p.ph += 0.012;
+      p.vx += (0.6 - p.vx) * 0.02;
+      p.vy += (3.2 - p.vy) * 0.008;
+      p.x += p.vx + Math.sin(p.ph) * 0.18;
+      p.y += p.vy;
+      if (p.y > h + 14) { p.y = -14; p.x = Math.random() * w; }
+      if (p.x > w + 14) p.x = -10;
+      if (p.x < -14) p.x = w + 10;
+      raindrop(p);
     }
+
+    if (now >= nextBolt) {
+      bolts.push(makeBolt(w, h));
+      flashUntil = now + 170;
+      nextBolt = now + 4200 + Math.random() * 5200;
+    }
+    bolts = bolts.filter((b) => now - b.born < b.life);
+    for (const b of bolts) {
+      const t = (now - b.born) / b.life;
+      boltPath(b, Math.max(0, 1 - t) * 0.92);
+    }
+    if (now < flashUntil) {
+      ctx.save();
+      const fy = bolts.length ? bolts[0].pts[0][1] : 0;
+      const g = ctx.createRadialGradient(w * 0.55, fy, 0, w * 0.55, fy, w * 0.5);
+      g.addColorStop(0, "rgba(210, 226, 255, 0.22)");
+      g.addColorStop(1, "rgba(210, 226, 255, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+    }
+
     rafId = raf(tick);
   };
 
