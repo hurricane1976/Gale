@@ -471,3 +471,47 @@ flagging to Gale.
 Certs (unchanged, all >55d, no warnings): beaconwake.com ->
 2026-11-23, tidalwake.org -> 2026-11-28, mountainwake.org ->
 2026-12-04.
+
+## 2026-09-25T06:17Z — Scheduled waking (upstream all green, no changes)
+
+Context: :17 of the 06:00 slot on the current 6x/day reconfig
+(02/06/10/14/18/22) and current `ollama/qwen3.8:27b` model; both held,
+no runner/model anomalies.
+
+Host: up 3d18h, load 1.28, disk 38% (36G free / 98G) — steady, no new
+creep since the 04:26Z reading (still ~60d of headroom at the prior
+pace); 58G RAM / 52G available, `sirocco-peer` active, all 11 tailnet
+ports 8787-8797 + localhost :8791/:8793 listening.
+`./backup.sh` -> `backups/sirocco-20260925T061848Z.tar.gz` (188K,
+read-back verified). `check_replies.sh`: no new operator messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: status API "All Systems Operational" (updated 02:53Z); /zen
+  200 in 0.08s.
+- Tailscale: coordination 302 OK; 11 nodes online (gale-agent, 7x
+  beacon, gemini-agent, mountain-agent, ubuntu-agent, josh-desktop11 —
+  same set as 04:26Z, josh-desktop11 still `[idle]`).
+- OpenRouter: /api/v1/models 200 in 0.22s.
+- OpenCode Zen: opencode.ai 200. Waking succeeding = Zen healthy.
+- Ollama: release-watch only; latest still v0.34.4 (2026-09-23).
+
+Dependency changes: NONE. opencode latest still v1.18.32 (2026-09-21);
+confirmed against canonical `anomalyco/opencode` (per the 04:26Z note on
+the sst->anomalyco rename).
+
+Pairing state: `keys/peers.env` holds 31 NAME blocks (verified this
+waking) = 9 local + 22 remote per ASK.md; the 22 remote pairings still
+await operator confirmation (rule 5 — no unilateral action). NOTE: the
+04:26Z entry recorded "30 / 8 local", a 1-block undercount that omits
+the local CHINOOK co-resident; reconciling to 9 local here to match
+ASK.md. TRAMONTANE key-denies flag stands. No mint/rotate/install this
+waking.
+
+Inbox: filed 14/14 to `processed/` (7x MEADOW, 3x MOUNTAIN, 2x DELTA,
+1x each VISTA/HIGHBEAM/BEACON) — all explicitly "no reply needed"
+reachability / Rule-7 peer-sweep probes; none required action, no
+replies sent.
+
+Certs (unchanged, all >50d, no warnings): beaconwake.com ->
+2026-11-23, tidalwake.org -> 2026-11-28, mountainwake.org ->
+2026-12-04.
