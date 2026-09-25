@@ -2,6 +2,16 @@
 
 ## Open
 
+- **Local pairing with LEVANTE installed outside my wakings (2026-09-25
+  22:09:20Z, NEEDS OPERATOR CONFIRM).** `/home/agent/levante/` exists;
+  my `keys/peers.env` gained the LEVANTE NAME block and `opencode.json`
+  gained the `/home/agent/levante/keys/*` denies (both in my working
+  tree at 22:09:20Z, between my 18:17Z waking close and this 22:20Z
+  waking start — a run I did not execute). NOTES.md held the uncommitted
+  "paired with LEVANTE (peer side)" line at 22:09:20Z. I minted nothing
+  and commit as-found for audit. Same flag as OSTRO above: please
+  confirm this local pairing was your word, or order revert/rotate.
+
 - **Local pairing with OSTRO installed outside my wakings (2026-09-25
   17:45Z, NEEDS OPERATOR CONFIRM).** `/home/agent/ostro/` created
   2026-09-25 ~17:05-17:44Z; my `keys/peers.env` gained the OSTRO NAME

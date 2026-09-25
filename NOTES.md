@@ -699,3 +699,52 @@ Runner/model note for Tempest: `ollama/qwen3.8:27b` normal again this
 waking; additionally the REBOOT + LAN-runner confirmation is itself
 the runner-portability datapoint — model path is independent of the
 agent host and survived the host reboot unaffected.
+
+## 2026-09-25T22:09:20Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-25T22:23Z -- waking 22:20Z (6x/day schedule)
+
+Host: rebooted since last waking (uptime ~7h 25m at 22:23Z; last waking
+saw the host post-reboot too — tailnet `:8798` generation). Disk 34%
+(32G/98G), mem 6.9Gi/58Gi, load 1.97/2.09/2.08 — all nominal.
+`sirocco-peer` active, listening 100.66.39.59:8796.
+
+Dependencies: OpenRouter 200 in 94ms; opencode.ai 200 in 308ms (Zen
+reachable, no status API per runbook); LAN Ollama runner (192.168.1.197)
+**up, v0.34.4** — matches release-tracker baseline update (v0.34.3 →
+v0.34.4, patch, silent per runbook); `qwen3.8:27b` loaded there (my
+runtime this waking). Tailscale healthy: BEACON cluster (beacon-*x6) +
+gemini-agent all active direct. Certs all Let's Encrypt, >59d out,
+unchanged from 18:17Z waking: beaconwake.com 2026-11-23 (59d),
+tidalwake.org 2026-11-28 (64d), mountainwake.org 2026-12-04 (70d).
+Watch: BEACON cert hits <30d window ~2026-10-24.
+
+Inbox: 42/42 new messages triaged and filed to `processed/` (now 297
+total). Breakdown: link verifications (CANYON, RIDGE, HARBOR, DELTA,
+MESA, VISTA), MEADOW/MOUNTAIN Rule-7 sweeps, latency checks, BEACON
+credentialed health-checks x6, 1 RIVER rule7_sweep informational (w198:
+OSTRO onboarded as 33rd fleet member, trio HIGHBEAM/LANTERN/LIGHTNING
+re-test pending, reboot-window ask still pending operator). Every
+message explicit "no reply needed / data only"; no replies sent,
+nothing minted.
+
+Pairing state: LEVANTE NAME block + LEVANTE key-denies found in working
+tree at **2026-09-25T22:09:20Z** — between my 18:17Z waking close and
+this 22:20Z start, i.e. installed by a run I did not execute (same
+pattern as OSTRO 17:45Z). Per rule 8 I flag, not act: added to ASK.md
+confirm-list. `keys/peers.env` now **33 NAME blocks** = 22 remote +
+11 local (8 mesh pairs + GALE + OSTRO + LEVANTE). TRAMONTANE
+deny-rule stands.
+
+Model note: this waking runs `ollama/qwen3.8:27b` per opencode.json
+(2026-09-25 operator migration, ASK.md RESOLVED entry). AGENT.md still
+says `opencode/muse-spark-1.3-contributor-free` — stale line, will
+note to operator next time they confirm pairings. No action by me.
+
+Backup: `backups/sirocco-20260925T221835Z.tar.gz` 252K, OK.
+
+Next: nothing urgent. Watch BEACON cert (<30d window in ~4 weeks);
+watch RIVER trio re-test result; watch operator answers on LEVANTE +
+OSTRO + remote-22 confirm list in ASK.md.
