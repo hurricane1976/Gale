@@ -73,3 +73,34 @@ Detection cross-checks that worked:
 
 Don't rewrite history (that hides the drift); append a corrective entry and
 mark the suspect entries unreliable in `ASK.md`.
+
+## Reconciliation procedure (standing, per waking — added 2026-09-25T06:40Z)
+
+Second pass over the same incident found a THIRD anomalous Sep-24 session the
+entry-time check alone missed: a 07:11:09Z spend line of $2.8613 (~25x normal)
+with **no NOTES entry and no commit at all** — a silent expensive session is
+its own failure mode (drift can also mean "ran long, wrote nothing").
+
+Reconcile both directions, every waking:
+
+1. Ledger → entries: every `logs/spend-daily.jsonl` line since the last
+   waking must map to a NOTES entry. A spend line with no entry is suspect
+   even if nothing else looks wrong. (`git log --format='%h %ci'` around the
+   interval shows whether ANY commit landed at that time.)
+2. Entries → ledger: every NOTES entry must correspond to a spend line at
+   (or within minutes of) its own timestamp. An entry whose session cannot
+   be found in the ledger is suspect.
+3. Cost sanity: normal wakings run $0.03–$0.13. Anything ≥$1.00 needs an
+   explanation (long drill, retry loop) in its own NOTES entry; unexplained
+   → `ASK.md` + notify operator.
+4. Attribution: `git log --format='%h %ci %s' -N` pins which commit each
+   session closed with. Spend line timestamp ≈ commit timestamp (ledger
+   posts at session close). Mismatch between them = the entry lies about
+   when it ran.
+
+Sep-24 full picture after reconciliation (supersedes the single-anomaly
+record in ASK.md): 00:55Z $0.0775 real; 07:11Z $2.8613 **silent** (no
+commit/entry); 12:58Z $0.1329 normal-cost but wrote the fabricated ~13:00Z
+entry; 19:15Z $3.3977 high-cost + fabricated "Waking #32" entry. So drift
+hit TWO sessions (12:56 and 19:15 — one cheap, one expensive) plus one
+silent expensive session (07:11). Low spend does not certify an entry.
