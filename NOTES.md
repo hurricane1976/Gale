@@ -1,5 +1,84 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-25 23:26Z — Tenth activated waking (backup + drill + drift sweep; zephyr sole stale)
+
+- Backup OK: `backups/tramontane-20260925T232604Z.tar.gz`, 176K,
+  218 entries, `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`;
+  AGENT.md + NOTES.md `cmp` byte-identical to live (CORE_DRILL_PASS);
+  `peer/inbox/` tree matches (only expected `peer/inbox/processed`
+  excluded by backup.sh); scratch dir cleaned.
+- Host health: up 8h27m (kernel 6.8 since 14:58Z), load 1.19/1.35/1.41,
+  disk 35% (62G free), RAM 7Gi used / 51Gi available, 16 cores.
+- `check_replies.sh`: no new operator messages. ASK.md unchanged
+  (no open questions). Inbox: 0 new — `cyclone/` + `tramontane/`
+  subdirs empty; nothing to process.
+- Peer services: all 13 active (incl. new LEVANTE + OSTRO);
+  tramontane listening on 100.66.39.59:8791 + 127.0.0.1:8791.
+- Drift sweep: all 12 other siblings fresh (32m–5h, incl. LEVANTE
+  50m, OSTRO 158m). **ZEPHYR STALE — 16.7h** (`zephyr-20260925T062037Z`),
+  same open item as last waking; sole drift.
+- Netbox/wekan: netbox still `active`; **wekan now `inactive`**
+  (was `active` degrading at 19:32Z, NRestarts=953) — new regression,
+  flagged for operator.
+
+---
+
+## 2026-09-25 19:32Z — Ninth activated waking (backup + drill + new sibling OSTRO + zephyr still stale)
+
+- Backup OK: `backups/tramontane-20260925T193213Z.tar.gz`, 180K,
+  279 entries, `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`, 191 files,
+  key files all present (AGENT.md, NOTES.md, ASK.md, backup.sh, wake.sh,
+  notify.sh, spend_check.py, ledger/backup-ledger.md,
+  runbooks/restore-this-agent.md, runbooks/host-recovery.md); AGENT.md
+  byte-identical to live (`cmp` clean); scratch dir cleaned.
+- Host health: up 4h31m (post-reboot, kernel 6.8 since 14:58Z),
+  load 1.73/1.89/1.77, disk 34% (62G free), RAM 7Gi used / 51Gi
+  available, 16 cores.
+- `check_replies.sh`: no new operator messages. ASK.md unchanged (no open
+  questions).
+- **Peer inbox (49 msgs, 17:17–18:48Z)** — all routine, data-only: MOUNTAIN
+  rule-7 peer sweeps + latency probes ×12, BEACON routine credentialed
+  health-checks ×8, MEADOW census ×2, DELTA link ×5, CANYON ×3 (+1 "canyon pass
+  #85 liveness/token-classification" mislabeled under MOUNTAIN), RIDGE ×4,
+  HARBOR ×7, MESA ×4, VISTA ×3, RIVER w198 rule-7 sweep ×1, CYCLONE
+  link-check ×1 (in `peer/inbox/cyclone/`). All 49 moved to
+  `peer/inbox/processed/`. No operator request in any.
+- **RIVER w198 sweep notes a new fleet member: OSTRO** — "33rd fleet
+  member OSTRO onboarded test-first this waking (two-way green, manifest
+  32->33, pins ported from Tidal 2c77f89e)". Verified from my side
+  (read-only): `/home/agent/ostro/` exists with
+  `backups/ostro-20260925T184742Z.tar.gz` (164K), `ostro-peer` service
+  `active` — 11th local sibling; now folded into the drift sweep.
+  Pairing test msg 17:45Z (`20260925T174520Z-OSTRO-87f221e8`) says
+  "rule 8a operator sign-off, bidirectional self-test passed, safe to
+  delete" — data-only, no action.
+- **Drift sweep (11 siblings, all READ-ONLY):**
+  gale `181402Z`, chinook `160633Z`, cyclone `171512Z`, maistral
+  `175120Z`, sirocco `181748Z`, squall `184237Z`, tempest `192836Z`,
+  vortex `190339Z`, bora `164748Z`, ostro `184742Z` — all fresh (≤4h).
+  **ZEPHYR STALE — 2nd consecutive waking:** last snapshot
+  `zephyr-20260925T062037Z`, ~13h old (was ~9h at 15:26Z wake; >6h line
+  crossed 12:20Z). `zephyr-peer` service still `active`;
+  `zephyr/logs/wake-skipped.log` last line unchanged since 09-21:
+  `TELEGRAM_CHAT_ID not set, refusing to run` — same refusal pattern as
+  Bora's, but zephyr's is stale (no recent skip entries), so zephyr may be
+  silently skipping or its wake.sh guard changed; I do not enter zephyr's
+  tree to investigate further — flagged for operator (and for zephyr's own
+  owner if any).
+- **Bora drift still CLOSED:** `bora-20260925T164748Z` fresh (139K),
+  `wake-skipped.log` unchanged at 08:34Z (as expected — Bora's resolved
+  per its own 12:37Z peer msg; verified at 15:26Z).
+- **Post-reboot host services (read-only status check, flagged 15:26Z):**
+  `netbox.service` **RECOVERED** — `ActiveState=active`, `NRestarts=0`
+  (was crash-looping 343 with `No module named 'gunicorn'`; looks like the
+  python dep was restored). `snap.wekan.wekan.service` still degraded but
+  `active` (`NRestarts=953`, up and serving but accumulating restarts —
+  worth a host-level look eventually; not my lane).
+- Peer services `tramontane-peer`/`bora-peer`/`zephyr-peer`/`ostro-peer`
+  all `active`.
+
 ## 2026-09-25 15:26Z — Eighth activated waking (backup + drill + Bora resolved + post-reboot findings)
 
 - Backup OK: `backups/tramontane-20260925T152602Z.tar.gz`, 164K, 226 entries,
@@ -261,3 +340,11 @@ operator's direction to add a backup/restore role to the fleet.
   sibling pairs + remote pairings await operator go-ahead — see ASK.md.
 - First waking (once activated): scaffold self-audit (ports/cron/unit/
   registries), first `runbooks/` entry: restore-this-agent.
+
+## 2026-09-25T17:45:20Z -- paired with OSTRO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-25T22:09:27Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
