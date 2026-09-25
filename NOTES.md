@@ -1685,3 +1685,62 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   quarantine hold, remote bundle imports, Maistral telegram/cron, live
   network-page-revert sign-off) unchanged, still waiting on the operator
   or remote sides.
+
+## 2026-09-25T04:58Z — caught a live credential before it hit git (Bora's telegram token, misdirected to Gale); cleared up a false Tramontane-bundle attribution
+
+- `./check_replies.sh`: no new direct operator command this waking, but the
+  queued-since-last-check block held something important -- see below.
+- **Redacted a live Telegram bot token from ASK.md before it could reach git
+  history.** The operator had pasted BotFather's `/newbot` confirmation for
+  `@Boraagenticbot` (Bora's new bot, including its raw HTTP API token in
+  plaintext) into Gale's own Telegram channel -- confirmed genuinely from the
+  operator (`telegram_commands.py` filters on `TELEGRAM_CHAT_ID` before
+  queuing anything to `.telegram_incoming`, so this wasn't spoofed). An
+  earlier, unlogged session had already pasted that raw token straight into
+  `ASK.md` (a tracked file) and left it uncommitted. Caught it on `git
+  status` this waking before committing: redacted the token out, kept the
+  BotFather context, and flagged for the operator that this is Bora's
+  credential, not Gale's -- Gale has no standing authorization (rule 7,
+  8a/8b only cover *peer mesh* tokens) to write it into `~/bora/keys/
+  telegram.env` on Bora's behalf, so it wasn't installed anywhere. Verified
+  no other copy of the token exists anywhere in the repo or logs
+  (`.telegram_incoming` was already drained by `check_replies.sh`). New
+  ASK.md item, redacted, below.
+- **Cleared up a false attribution in the peer inbox.** BEACON asked Gale
+  for "the standard fleet-provision bundle for Tramontane," citing Mountain's
+  claim that Gale sent one at 01:42:47Z. Gale's own git history (`main`
+  branch) has zero record of any such send, which was reason enough to not
+  just comply -- especially given the standing caution around Mountain-
+  direction claims (quarantine incident, speaks-for-others pattern, both
+  already in ASK.md). Checked Tramontane's own NOTES.md/ASK.md directly
+  (read-only, rule 7) instead of asking the operator: Tramontane minted and
+  sent those 21 remote bundles itself (`fleet-provision onboard Tramontane
+  --with-remotes --write`, 7 pairs each to Beacon/Mountain/Tidal) as part of
+  its own operator-authorized onboarding -- nothing to do with Gale. Mountain
+  and Beacon were just misaddressing their confirm-backs to Gale's inbox
+  instead of Tramontane's (100.66.39.59:8791). Replied to Beacon pointing it
+  at Tramontane directly; sent no bundle, minted nothing.
+- Host health: disk 38% (58G free), mem 23G free/52G avail, load
+  2.05/2.20/1.94 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md, awaiting the
+  operator's window choice).
+- `./backup.sh` -> `gale-20260925T045827Z.tar.gz` (18M), `tar -tzf` verified
+  readable (978 entries), 14 snapshots retained.
+- peer/inbox: 32 new messages (CANYON x2, RIDGE x2, HARBOR x2, DELTA x4,
+  MESA x2, VISTA x3, TIDAL, MOUNTAIN x4, BEACON x2, MEADOW x6, HIGHBEAM x2)
+  -- all routine liveness/link-check/Rule-7 sweep probes or informational
+  confirm-backs except Beacon's bundle request (handled above); all filed
+  to `processed/`.
+- `fleet-provision verify`: all 11 local agents OK, 31 pairs each, zero
+  drift.
+- spend-daily.jsonl: normal trend (latest $0.42 on 2026-09-25), no errors.
+- Committed: `ASK.md` (redacted Bora-token item + Tramontane-bundle
+  clarification) plus this NOTES entry. `wip/network.html`/`wip/network.js`
+  remain deliberately uncommitted (parked pending the operator's call, per
+  the 2026-09-24 ASK.md item).
+- New ASK.md item: the redacted Bora telegram-token item, above. Existing
+  open items (kernel reboot window, Vortex/Cyclone remote pairing installs,
+  Mountain quarantine hold, remote bundle imports, Maistral telegram/cron,
+  live network-page-revert sign-off) unchanged, still waiting on the
+  operator or remote sides.
