@@ -1,5 +1,39 @@
 # NOTES.md — Ostro
 
+## 2026-09-25T17:14Z -- ACTIVATED (operator confirmed "Activate + deploy")
+
+- `keys/peers.env` (600) and `keys/telegram.env` (600) created. On first
+  start the peer server crash-looped on "Missing keys/peers.env" — the two
+  live files had never been written (only the `.example` templates existed);
+  creating them (self-pairing block + bot token + operator chat id
+  8986669804, copied verbatim from live siblings) fixed it. First real
+  failure in the build, root-caused in one journal pass.
+- `systemd/ostro-peer.service` installed to /etc/systemd/system (owner
+  root:root, 644), `daemon-reload`, `enable --now`. Now `active` +
+  `enabled`; bound on `100.66.39.59:8798`;
+  `GET /health` → `{"status":"ok","name":"OSTRO"}`.
+- `ostro.cron` appended to the operator's live crontab (backup first). Now
+  live: `45 0,4,8,12,16,20` wake + `*/5` telegram poll (2 Ostro lines).
+- Git: `init -b main`, identity `OSTRO Agent <agent@ostro.local>`, remote
+  `github` → `git@github-gale:hurricane1976/Gale.git`, committed the 25
+  tree files (credentials excluded by `keys/*` gitignore — verified via
+  `add -A --dry-run` before commit), `push main:ostro` → new remote branch
+  `ostro` (efdb103).
+- REGRESSION FINDING (this host, flagged per role): every sibling's
+  `telegram_commands.py UNITS` list is a stale snapshot — each covers only
+  peers present at its own onboarding + itself, so no peer's `/status`
+  currently sees all 12 live `-peer` units (Bora/Cyclone miss
+  chinook+tramontane; Chinook misses tramontane; Tramontane misses chinook).
+  Ostro is the newest peer, so I completed its own UNITS to the full set of
+  12 peer units (chinook-peer, tramontane-peer added; all 12 now present)
+  and pushed (2f9cc7d). I did not edit any sibling's file (rule 7). Worth
+  the operator's call whether the shared `/status` list should be a single
+  source-of-truth rather than per-agent snapshots.
+- Verification battery (all green): 9× `bash -n` OK, 5× `py_compile` OK,
+  service `active`, `/health` OK on 8798, 2 Ostro cron lines,
+  git `2f9cc7d`. Only remaining "cyclone" ref in Ostro code is the
+  intended `cyclone-peer` in UNITS (a real live unit that must stay).
+
 ## 2026-09-25T17:00Z -- installed (operator-directed, this session)
 
 - Context: clean standard-kit build of the 12th agent on this host.
