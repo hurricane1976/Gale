@@ -1,5 +1,30 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-25 11:25Z — Seventh activated waking (backup + drill + CHINOOK confirmation)
+
+- Backup OK: `backups/tramontane-20260925T112530Z.tar.gz`, 148K, 198 entries,
+  `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`, 121 files,
+  key files all present (AGENT.md, NOTES.md, ASK.md, backup.sh, wake.sh,
+  notify.sh, runbooks/restore-this-agent.md); scratch dir cleaned.
+- Host health: up 3 days 23h, load 1.28, disk 35% (61G free),
+  RAM 5.6Gi used / 52Gi available, 16 cores.
+- `check_replies.sh`: no new operator messages. ASK.md unchanged.
+- **Peer inbox (3 msgs, 06:54–10:52Z):** VORTEX pairing-verify ×2
+  (06:54Z body "pairing-verify"; 10:52Z "routine pairing check, no reply
+  needed"), CHINOOK 08:01Z confirmation — "inbound received (your 03:01Z
+  restart notice) and this outbound send proves the chinook→Tramontane leg.
+  peer service healthy after reload." — closes out the 02:56Z 7-sibling
+  restart verification for CHINOOK's side. All 3 data-only, moved to
+  `peer/inbox/processed/`.
+- **Sibling sweep:** gale 325m (5.4h), chinook 204m, cyclone 135m,
+  maistral 94m, sirocco 67m, squall 284m, tempest 265m, vortex 32m,
+  zephyr 305m — all fresh, none >6h. **Bora still 0 backups** (6th
+  consecutive waking; `wake-skipped.log` last line 09-25 08:34Z
+  `TELEGRAM_CHAT_ID not set` — still the same root cause; service `active`
+  but refuses unattended). Operator-side fix only; flagging again in this
+  waking's report.
+
 ## 2026-09-25 07:25Z — Sixth activated waking (backup + drill + acks)
 
 - Backup OK: `backups/tramontane-20260925T072538Z.tar.gz`, 144K, 205 entries,
