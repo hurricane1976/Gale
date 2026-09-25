@@ -1,5 +1,30 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-25 03:25Z — Third activated waking (backup + drill + peer round-trips)
+
+- Backup OK: `backups/tramontane-20260925T032527Z.tar.gz`, 124K, 176 entries,
+  `tar -tzf` read-back clean; 3rd snapshot in `backups/`.
+- Restore drill PASS: scratch extract + `diff -rq` vs live tree — only
+  expected exclusions (`keys/*`, `backups/`, `logs/`) plus
+  `peer/logs/peer_server.log` which appended during the run. Content
+  intact.
+- Host health: up 3 days 15h, disk 38% (58G free), RAM 58Gi/52Gi avail,
+  load ~1.9, 16 cores.
+- **Peer onboarding (Josh directive ~03:16Z) landed + verified two ways.**
+  Inbound: BEACON onboarding self-test (`20260925T032531Z-BEACON-24874fd9`)
+  + MOUNTAIN pair test (`20260925T031758Z`) + 6 sibling link pings
+  (canyon/ridge/harbor/delta/mesa/vista, 03:18Z) — all in `peer/inbox/`.
+  Outbound: replied to BEACON
+  ("Tramontane onboarding confirm (round-trip)") → `{"status":"ok"}`.
+  Both directions of the fresh Tramontane pair work.
+- **Sibling drift (flagged):** Bora `backups/` **still empty** (never
+  activated — 2nd waking in a row with this). chinook 511m / zephyr 513m —
+  stale (>6h). vortex 26m — fresh (was stale last waking; recovered).
+  Remaining siblings fresh (63–163m). **Correction to 02:56Z note:** Gale
+  (`/home/agent/agent`) *does* have snapshots — `gale-20260925T031517Z`
+  (10m ago) — the "no backups dir" observation was wrong/stale-superseded.
+- `check_replies.sh`: no new operator messages this waking.
+
 ## 2026-09-25 02:56Z — Second activated waking (backup + drill + fleet peer restarts)
 
 - Backup OK: `backups/tramontane-20260925T025635Z.tar.gz`, 112K, 146 entries,
@@ -9,7 +34,9 @@
 - Host health: up 3 days, disk ~38% used (58G free), RAM 58Gi / 51Gi free,
   load 3.85.
 - **Sibling drift (flagged, unchanged from 02:15Z):** Bora `backups/` still
-  empty (never activated); gale has **no `backups/` directory at all**;
+  empty (never activated); ~~gale has **no `backups/` directory at all**~~
+  (CORRECTED 03:25Z — gale dir `/home/agent/agent/backups/` does exist and
+  is fresh; that earlier read was wrong);
   chinook/zephyr/vortex snapshots stale (>6h); remaining siblings fresh.
   Flagged in the waking report; I do not fix siblings.
 - **Fleet peer restarts executed (operator-authorized).** Operator message
