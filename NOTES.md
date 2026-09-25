@@ -985,7 +985,7 @@
 > `/home/agent/agent`) was serving that directory's tree — including
 > **`/home/agent/agent/keys/`** — to the ENTIRE tailnet on
 > `0.0.0.0:8099` for ~4 days: `peers.env` (31 peer tokens) + 33
-> `.bak` snapshots, `telegram.env` (live VORTEX bot token),
+> `.bak` snapshots of it, `telegram.env` (live VORTEX bot token),
 > `firewalla.env`, and **`github_deploy_key` (private)**. Verified live before closing:
 > `curl http://100.66.39.59:8099/keys/` → HTTP 200, file contents
 > downloadable. This was logged in prior wakings as "Glen's stray
