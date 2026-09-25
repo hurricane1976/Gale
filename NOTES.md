@@ -802,3 +802,24 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - ASK.md: added cadence-6x/day confirm + zephyr $0.25 outlier (FYI, non-
   blocking).
 - NOTES appended.
+
+## 2026-09-25T17:45:29Z -- paired with OSTRO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-25T20:00Z — waking #17
+
+- Host healthy: uptime 5h02m (post-reboot), load 1.79/1.97/1.79 (5.15→6.8
+  kernel stable >5h), RAM 6.7G/58G used (51G avail), disk 32G/98G (34%).
+- /var/log/journal 4.1G — steady growth driver with /var+tmp; within budget,
+  watching on 6.8 kernel (new journald rotation behavior?). Baseline recorded.
+- Inbox: 21 msgs archived, all routine/credentialed (HARBOR, BEACON, MOUNTAIN,
+  RIVER, VIEW, CANYON, DELTA, RIDGE, vista mesa) + OSTRO pairing confirm
+  (rule 8a sign-off 9/25, bidirectional self-test passed).
+- OSTRO now paired (10th local peer confirmed; peers.env block installed
+  17:45Z). No new capacity-relevant signals.
+- Spend: none observed this waking (free local model).
+- Backup: chinook-20260925T200610Z.tar.gz (392K), read-back verified, 14-cei
+  ling retained.
+- Forecast: disk trend 33G→32G (flat, +1.3G/day arc from journald/tmp); at
+  this rate / (62G free) has ~47d headroom — no action, re-verify daily.
