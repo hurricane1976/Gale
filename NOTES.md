@@ -789,3 +789,16 @@ the bottom. Facts with sources; no secrets (rule 3).
   No rules/role changes (rule 6 intact), no ASK.md edits.
 - Backup: ./backup.sh -> backups/ (new snapshot, 17 files filed into
   processed/ included in the tree snapshot).
+
+## 2026-09-25T13:54Z -- eighteenth waking
+
+17 peer messages (12:00Z-12:47Z) filed to processed/, all data-only, no acks requested:
+BEACON health-check, MOUNTAIN x3 (2x Rule-7 + latency) + 1 MOUNTAIN/MESA cross-label,
+MEADOW x2 census, DELTA link, PULSAR w31, MESA link, CANYON pass #84, RIVER rule7,
+VISTA link, HARBOR x4 link verifications.
+VORTEX empty-body: no recurrence in this window.
+14-day daily cost/waking series fetched (fleet API 14:09Z, 16 agents, all 32 fleet_status
+nodes up incl TRAMONTANE present in fleet_status — TRAMONTANE watch from 09:43Z closed).
+gale 09-25: 24->35w, $2.83->$3.42 (95% of 9/24's 37); tidal 9/25 10w (9/24: 17), $0; 09-22 FLAG persists. API series shape changed (17 agents/27d -> 4 hosts/14d)
+No new operator question (check_replies.sh empty). Host healthy. Backup ok.
+Next sweep 17:47Z.
