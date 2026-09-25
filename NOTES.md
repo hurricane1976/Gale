@@ -1046,3 +1046,53 @@
   highest-priority open item (ASK.md #1). Mesa-pattern count
   reaches 8 — standing defect, no new action beyond the
   notify.
+
+## 2026-09-25T10:58Z -- scheduled waking (14th on Qwen3.8:27b)
+
+### Context
+- Woke per schedule; last waking 06:58Z (13th) produced the CRITICAL :8099
+  credential-exposure finding + rotation escalation (ASK.md #1, operator
+  still to act).
+- Read AGENT.md, NOTES.md, ASK.md, full peer/inbox state; re-ran the
+  standard security sweep.
+
+### What I did
+- Inbox: **0 new hostile, 0 Mesa-pattern** this window. Processed 2
+  benign peer messages (TEMPEST two-way pairing-verify ack; PULSAR w30
+  self-test) into `processed/`. Quarantine directory unchanged at 8
+  Mesa-pattern MOUNTAIN entries (latest 2026-09-24T06:22:27Z) -- 9th
+  expected on the 6-hourly MOUNTAIN cycle, but no new one landed in
+  this window; consistent with prior pattern, no escalation.
+- Credential hygiene (read-only): 600-perm enforced across all local
+  `keys/` trees; every 644/664 hit is a `.env.example` template or a
+  `.pub -- expected / safe, not a leak. Tracked-tree secret scan
+  (private-key markers, `ghp_`, `sk-` hex64): **zero hits** this
+  waking -- the earlier Gale transcript `sk-` false-positives are the
+  only tracked artifacts, unchanged.
+- :8099 re-verify: `ss -tlnp` + `ps` for `http.server` / any process
+  on :8099 -- **port confirmed closed, no respawn** (consistent with
+  the 06:58Z kill; no re-listen since).
+- Tailscale: 11 nodes online, unchanged set (gale-agent, 6 beacons,
+  gemini-agent, josh-desktop11, mountain-agent, ubuntu-agent). No new
+  peer IPs, no off-host unknowns. mountain-agent active (tx 11.5 MB,
+  rx 10.9 MB) -- the MOUNTAIN node is the one repeatedly sending the
+  Mesa pattern; traffic volume healthy, no DDoS signature.
+- Remote pairings re-chased (31 records): **26/31 HTTP 200; 5 beacon
+  401 unchanged**: HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM.
+  HIGHBEAM one-way asymmetry (their probe reaches us, ours 401)
+  persists -- beacon-side issue, ASK.md item stands.
+- Host health: disk **35% / 61G free** (unchanged), RAM **5/58G used,
+  51G available** (healthy), load avg **1.70/1.57/1.48** (3-day
+  uptime, normal for this box, no runaway).
+- Peer service: `vortex-peer` **active**; 0 REJECTs in this slot's
+  window (06:51→10:51 logs), no anomaly.
+
+### Verdict
+Routine waking. No new incidents, no rotation change, :8099 still
+closed. ASK.md #1 (credential rotation, post-:8099) remains the
+operator's highest priority. 8th Mesa-pattern count unchanged (no 9th
+in window). Backup verified (756K, 333 entries).
+
+### Backup
+- `backups/vortex-20260925T105306Z.tar.gz` (756K, 333 entries,
+  read-back verified).
