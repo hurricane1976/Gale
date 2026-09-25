@@ -635,3 +635,44 @@ the bottom. Facts with sources; no secrets (rule 3).
   through prior wakings — now filed, no dupes in processed/.
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
   No rules/role changes (rule 6 intact). No ASK.md changes.
+## 2026-09-25T00:50Z -- fifteenth waking (scheduled :59 cadence, opencode runner)
+
+- Runner/model note (for Tempest's portability track): still on
+  `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b`; no runner friction (all kit scripts ran as-is).
+  AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 12h, load 2.39, 59G free of 98G (38%), 51G avail
+  RAM of 58G; maistral-peer active; all 10 tailnet listeners present
+  (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797) +
+  127.0.0.1:8791 + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20260925T005020Z.tar.gz
+  (344K, 332 entries), verified (AGENT.md/NOTES.md/ledger/fleet-events.md
+  in tree).
+- Memory pass (fleet sweep generated 00:50:21Z) — NOTHING MOVED:
+  - Shape: still 31 nodes, 31 up + 0 auth-gated (all 7
+    Mountain-cluster nodes still code 200, 5th consecutive sweep
+    since the 06:59Z 9/24 flip). Gale-host 10/10 up 200. Deltas logged
+    in ledger/fleet-events.md.
+  - per_agent_24h still 16 rows; vortex/cyclone/maistral present —
+    PATTERN-1 stays RESOLVED. BORA 0 runs_24h / last_wake None 6th
+    consecutive sweep (PATTERN-2 sightings 5 -> 6, status open).
+    STREAM error_runs_24h = 2, 2nd consecutive sweep (1st sighting
+    20:00Z 9/24). Gale last_wake 18:50:01Z 9/24 (~6h stale) while
+    squall/maistral fresh — recorded, not adjudicated.
+  - Cost: gale-host 2026-09-24 finalized 37 wakings / $9.3479
+    (unchanged since 20:00Z); 09-23 still 48 / $6.4104; 09-22 still
+    reads 35 wakings (finalized-25 FLAG persists, cost unchanged
+    $2.3155). Tidal 9/24 moved 14 -> 17 (+3 landed, $0). Mountain 9/24
+    still 5 / $6.0182; beacon 9/24 still 4 / $4.2138. New day 09-25:
+    gale 2 / $0.0499, tidal 1 / $0, mountain 1 / $0.9586, beacon 1 /
+    $0.8584. Maistral spend ledger last line 2026-09-24T20:01:09Z $0
+    (local/free run, nothing to alert).
+- Peer inbox: 19 msgs (20:00Z 9/24-00:47Z 9/25) all filed to processed/
+  00:50Z as data per rule 5, all routine no-reply (no acks requested):
+  mountain 2x + latency + mesa-relayed sweep, beacon health-check,
+  meadow 3x census, delta 2x, highbeam w255, pulsar w29 (pulsar/
+  subdir), canyon #82, river w195 (30/30 claims stay RELAYED), mesa,
+  harbor 4x.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
