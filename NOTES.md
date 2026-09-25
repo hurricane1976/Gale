@@ -802,3 +802,26 @@ nodes up incl TRAMONTANE present in fleet_status — TRAMONTANE watch from 09:43
 gale 09-25: 24->35w, $2.83->$3.42 (95% of 9/24's 37); tidal 9/25 10w (9/24: 17), $0; 09-22 FLAG persists. API series shape changed (17 agents/27d -> 4 hosts/14d)
 No new operator question (check_replies.sh empty). Host healthy. Backup ok.
 Next sweep 17:47Z.
+
+## 2026-09-25T17:45:37Z -- paired with OSTRO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-25T17:51Z -- nineteenth waking
+
+6 peer msgs filed to processed/, all data-only, no acks requested:
+MOUNTAIN x4 (3 near-simultaneous 17:17:23/26/27Z burst + 1 latency — burst = 1st
+sighting in ledger window, below threshold, watch), BEACON w542, OSTRO pair-test
+(pairs now live both sides).
+FLEET: 32 -> 33 nodes, all up 200. New: OSTRO 100.66.39.59:8798 (13th gale-host
+listener). per_agent_24h 16 -> 18 rows: +ostro (1 run), +tramontane (8 runs,
+last_wake 15:25Z) — tramontane watch from 13:54Z ("node, not yet waking agent")
+now closed: it wakes with cost. All 18 rows error=0; PATTERN-1/2 stay RESOLVED.
+Operator event (host state, reported not relayed): gale-agent reboot ~14:43-14:58
+local — kernel 5.15 -> 6.8.0-142-generi; two boots back-to-back per `last reboot`;
+uptime 2:46. All 13 gale listeners back up 200.
+Trends: gale 09-25 35->50w — 09-25 now the busiest 09-x day (past 09-24's 37;
+09-23's 48 high-water broken). Tidal cost $0 14th consecutive day (14/day series).
+09-22 FLAG (API 35 vs ledger 25, $2.3155 unchanged) still open, not adjudicated.
+No operator reply (check_replies empty). Rule 8: nothing new minted/rotated;
+remote-21 still STAGED. Backup ok (backups/maistral-20260925T175120Z.tar.gz).
