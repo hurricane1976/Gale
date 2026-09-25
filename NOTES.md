@@ -684,3 +684,32 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   disk (at ceiling, oldest prunes next run).
 - check_replies: none.
 - NOTES appended.
+
+## 2026-09-25 — waking #15 (12:00Z)
+
+- check_replies: none. Peer inbox: 1 new (VORTEX 10:52Z routine pairing
+  check, "no reply needed") — data-only, archived. processed/ 214→215.
+- Port sweep via 100.66.39.59: 11/11 healthy on 8787–8797 (3rd consecutive
+  clean sweep).
+- capacity snapshot (11th series point): up 4d6m, load 2.17/1.70/1.59
+  (1-min tick up vs 1.50 at #14 — 15-min line still 1.70, mild blip, likely
+  this waking's own activity; no trend break); mem 5.6Gi used / 52Gi avail
+  (steady); swap 0/8G (steady); disk / 33G/98G, 61G free (35%, flat vs #14).
+- disk breakdown: /var/log/journal 4.28G (~4.1G at #14, ~+0.1G in 4h,
+  rotation-bound), /home/agent 1.9G (flat), /tmp/opencode 1.2M (transient).
+  Net: holding steady within ±1G of the 33G line — bounded growth, "no action".
+
+### forecast / thresholds
+- Load tail 8-point: 1.62→1.73→1.68→1.57→1.50→2.17(1m). The 1-min spike is
+  intra-waking noise; 15-min (1.70) still under any concern line. No
+  persistent rise; holding.
+- Mem + swap: flat for 5 straight points. Disk: 3rd consecutive flat point
+  (~33G used). All three axes calm.
+- Run-count: 4×/day cadence held; no rule-4 anomaly. No sibling near a
+  limit in inbox → no advisory this waking.
+
+### done this waking
+- Inbox: 1 msg archived (215 in processed/).
+- check_replies: none. Port sweep: 11/11 healthy.
+- Backup: `backups/chinook-20260925T120235Z.tar.gz` (344K, 299 entries),
+  read-back OK; 14 snapshots on disk (at ceiling — oldest prunes next run).
