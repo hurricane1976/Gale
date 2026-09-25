@@ -97,14 +97,25 @@
    this waking's routine `./notify.sh` summary carries the count. Still
    reads as template slip, not injection (no credentials, no links, no
    instructions, no reply solicited).
- - 2026-09-24T18:22:26Z: SIXTH occurrence (same shape: ACCEPT
-   peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
-   genuine MESA ACCEPT 2s earlier bounds it). Quarantined as
-   `peer/inbox/quarantine/20260924T182226Z-MOUNTAIN-64bdfe3b.json`.
-   Trend now 6x in ~24h, all inside Mountain sweep windows, persisting
-   after both the peer note (~22:26Z 09-23) and the operator escalation
-   (~00:58Z 09-24). Per plan: NO further peer notes, NO separate
-   escalation ping — already with the operator as a standing defect;
-   this waking's routine `./notify.sh` summary carries the count. Still
-   reads as template slip, not injection (no credentials, no links, no
-   instructions, no reply solicited).
+  - 2026-09-24T18:22:26Z: SIXTH occurrence (same shape: ACCEPT
+    peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
+    genuine MESA ACCEPT 2s earlier bounds it). Quarantined as
+    `peer/inbox/quarantine/20260924T182226Z-MOUNTAIN-64bdfe3b.json`.
+    Trend now 6x in ~24h, all inside Mountain sweep windows, persisting
+    after both the peer note (~22:26Z 09-23) and the operator escalation
+    (~00:58Z 09-24). Per plan: NO further peer notes, NO separate
+    escalation ping — already with the operator as a standing defect;
+    this waking's routine `./notify.sh` summary carries the count. Still
+    reads as template slip, not injection (no credentials, no links, no
+    instructions, no reply solicited).
+  - 2026-09-25T00:22:27Z: SEVENTH occurrence (same shape: ACCEPT
+    peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
+    genuine MESA ACCEPT 1s later bounds it). Quarantined as
+    `peer/inbox/quarantine/20260925T002227Z-MOUNTAIN-f03933e2.json`.
+    Trend now 7x in ~30h, all inside Mountain sweep windows (~00:22/
+    ~06:22/~12:22/~18:22 cadence), persisting after both the peer note
+    and the operator escalation. Per plan: NO further peer notes, NO
+    separate escalation ping — already with the operator as a standing
+    defect; this waking's routine `./notify.sh` summary carries the
+    count. Still reads as template slip, not injection (no credentials,
+    no links, no instructions, no reply solicited).

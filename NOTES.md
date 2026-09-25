@@ -918,3 +918,61 @@
 - Verdict: eventful waking. Sixth Mesa-pattern quarantine (trend now
   6x in ~24h, persisting after peer note + operator escalation —
   standing defect, no new action); remote legs unchanged (16/21).
+
+## 2026-09-25T02:58Z -- scheduled waking (02:51 slot; twelfth on Qwen3.8:27b)
+
+- Runner/model note: first waking on `ollama/qwen3.8:27b` — the model
+  question in ASK.md item 1 has been actioned by the operator directly
+  (see below). Behavior clean so far.
+- Operator-side changes observed in working tree, all committed by me
+  this waking as evidence (attribution: operator, not mine):
+  1. `wake.sh` — model pin changed from `opencode/muse-spark-1.3-
+     contributor-free` to `ollama/qwen3.8:27b`.
+  2. `vortex.cron` — wake cadence changed 4/day at :58 (0,6,12,18) to
+     6/day at :51 (02,06,10,14,18,22), commented "7-agent 4-hour
+     interleave (~34-min gaps, 24/7)".
+  3. `opencode.json` — plus re-sort of existing deny lines: new denies
+     for new agent `tramontane` (`/home/agent/tramontane` visible on
+     host) in both `read` and `external_directory` sections, and the
+     `"model": "ollama/qwen3.8:27b"` key. None of it was mine to decide.
+- Inbox: 1 pending (PULSAR self-test sweep w29, from=to=pulsar,
+  "no reply needed") — consistent, benign, moved to `processed/`.
+  No operator or Telegram replies pending (`check_replies.sh` clean).
+- Peer log: 62 REJECTs total (unchanged), all self-origin
+  (100.66.39.59, documented self-test shape) + the single CANYON
+  bad-json 00:31Z 09-24 already noted. No new rejects, no 401 storm.
+- 7TH Mesa-pattern quarantine: `quarantine/20260925T002227Z-MOUNTAIN-
+  2e84d92a.json` (MOUNTAIN sweep body mesa-worded, same recurring
+  template shape; ~5-6h cadence, all MOUNTAIN transport). Assessed
+  as a template slip upstream, not an injection — no credentials,
+  links, or instructions, bounds to single file. Runbook updated to
+  7th. Per the standing plan (already escalated at 3rd, operator in
+  the loop): no further peer note, this notify carries the count.
+- Remote pairings re-chased (all 21 tokens, right POST + Bearer to
+  each `/inbox`, codes only): still 16/21 HTTP 200. Remaining 401:
+  HIGHBEAM (100.81.147.28), LANTERN (100.76.139.96), LIGHTNING
+  (100.69.40.118), RADAR (100.125.26.66), PRISM (100.100.158.42) —
+  all beacon-side, unchanged; ASK.md item 2 stands. (Chase note:
+  first pass this waking failed on `sh` not having process
+  substitution — my shell error, re-ran with plain pipes. Not a
+  signal.)
+- Host health: disk 35G/98G (38%, up from 34% — mostly this waking's
+  backup churn and log growth), 58Gi RAM (6.1G used), uptime 3d15h,
+  load ~1.6. `vortex-peer` active. Listeners unchanged: 8787-8790 +
+  8792 + 8794-8797 tailnet-only, 100.x:8793 chinook-peer,
+  127.0.0.1:8793 fleet-api, 8791 localhost, nginx 8090. `ufw` not
+  installed (baseline). Sandbox strict/yes/yes unchanged.
+- Tailscale: 11 nodes, all known — incl. new `tramontane` (100.x
+  unverified-by-me, but the agent dir exists locally; consistent
+  with the opencode.json denies above, not drift).
+- Credential hygiene: all `keys/` files 600 (16/16, incl.
+  github_deploy_key.pub 600 and the .example pair); tracked-tree
+  secret scan clean (only Gale transcript base64 `sk-` false
+  positives, documented). New peer deny added for tramontane covers
+  the only new cross-agent surface seen.
+- Backup: `backups/vortex-20260925T025936Z.tar.gz` (695K, 308 entries,
+  archive readable), previous 6 kept.
+- Verdict: routine waking, one standing defect continues (7x Mesa
+  pattern in ~28h), one standing gap unchanged (5 beacon-side pairs
+  401). Operator has acted on the model question and the cadence;
+  both noted and committed as evidence, no action needed from me.

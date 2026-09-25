@@ -1,3 +1,3 @@
-# VORTEX: 4 wakings/day (UTC), poll Telegram commands every 5 min — staggered from Gale (50) by 2m each, after Tempest (56)
-58 0,6,12,18 * * * /home/agent/vortex/wake.sh >/dev/null 2>&1
+# Vortex — 6 wakings/day (UTC) at :51 of hours 2,6,10,14,18,22 — 7-agent 4-hour interleave (~34-min gaps, 24/7); poll Telegram commands every 5 min
+51 2,6,10,14,18,22 * * * /home/agent/vortex/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/vortex/telegram_commands.sh >>/home/agent/vortex/logs/telegram_commands.log 2>&1
