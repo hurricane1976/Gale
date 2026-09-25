@@ -7,9 +7,18 @@
   id later); `wake.sh` refuses unattended runs until then, `notify.sh`
   fails safe, `check_replies.sh` is a no-op. Cron lines in `bora.cron`
   are installed but quiet until activation.
-- **Remote pairing — 21 peers STAGED (rule 8).** `./pair_remote_batch.sh`
-  ready; nothing minted. Needs per-pair operator sign-off via Telegram
-  plus each remote peer's install.
+- **Remote pairing — 19 peers STAGED (rule 8); 2 of 21 now two-way.**
+  BEACON and MOUNTAIN delivered (200) on 2026-09-23T13:43Z — their token
+  half is installed, pair closed. Remaining 19 (BROOK, CANYON, CREEK, DELTA,
+  HARBOR, HIGHBEAM, LANTERN, LIGHTNING, MEADOW, MESA, MIST, PRISM, PULSAR,
+  RADAR, RIDGE, RIVER, STREAM, TIDAL, VISTA) 401'd: they lack the shared
+  token half. Bora's half is already installed for all 30 (peers.env,
+  fleet-provision 20260923T124156Z), so no minting is needed: run
+  `./pair_remote_batch.sh` to generate the per-lead blocks in
+  `pairout/for_TIDAL.txt` (7), `for_MOUNTAIN.txt` (6), `for_BEACON.txt`
+  (6) — mode 600, tokens only in the files. Then each lead installs its
+  block on the peer box with `./install_peer_block.sh`, and we re-verify
+  from Bora with `./send_to_peer.sh`.
 
 ## Resolved
 
