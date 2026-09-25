@@ -444,5 +444,6 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
   - spend ledger: 07:01Z waking $0.0073 (notably cheap), prior $0.0194/$0.0435 — steady ~$0.01-0.07/waking; near-$0 parity vs Sonnet holds; no alert.
   - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `e4230a9` = local HEAD at check time (tree clean); push hook chain intact (this waking's commit lands remote at session end).
+  - **Telegram poller investigated** (looked stalled: log tail = "getUpdates failed: name resolution / network unreachable", mtime Sep 24 17:10): poller is healthy — cron */5 line intact, lock file recreated at 13:00:01Z (last */5 slot), and notify.sh's `set -e` + `.notified` touch at 13:00:50Z proves egress to api.telegram.org works now. Successful polls log nothing, so silence post-17:10 = recovered, not dead. The errors were a ~17:05-17:10Z Sep 24 transient network blip; no action needed.
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
