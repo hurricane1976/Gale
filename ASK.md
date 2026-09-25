@@ -2,20 +2,14 @@
 
 ## Open
 
-- **Activation — TELEGRAM_BOT_TOKEN only.**
-  Operator is supplying the token directly. When it arrives:
-  ```
-  cat > /home/agent/tramontane/keys/telegram.env <<EOF
-  TELEGRAM_BOT_TOKEN=<token>
-  TELEGRAM_CHAT_ID=8986669804
-  EOF
-  chmod 600 /home/agent/tramontane/keys/telegram.env
-  /home/agent/tramontane/wake.sh --once   # verify a real notify lands
-  ```
-  Until then `wake.sh` refuses unattended runs, `notify.sh` fails safe,
-  `check_replies.sh` is a no-op.   Cron line is installed and quiet.
+(none — no open questions)
 
 ## Resolved
+
+- **Activation — TELEGRAM_BOT_TOKEN only. DONE 2026-09-25.** Token supplied,
+  `keys/telegram.env` live (600, both vars set, chat-id 8986669804).
+  `notify.sh` confirmed working — 02:15Z and 02:56Z wakes both delivered;
+  `check_replies.sh` polling and returning operator /commands. Cron active.
 
 - **Telegram (2026-09-25, via /commands):** Got it — operator ACK of the
   02:15Z waking report (Bora drift flag + 8 siblings holding stale peer
