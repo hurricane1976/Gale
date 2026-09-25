@@ -447,3 +447,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - **Telegram poller investigated** (looked stalled: log tail = "getUpdates failed: name resolution / network unreachable", mtime Sep 24 17:10): poller is healthy — cron */5 line intact, lock file recreated at 13:00:01Z (last */5 slot), and notify.sh's `set -e` + `.notified` touch at 13:00:50Z proves egress to api.telegram.org works now. Successful polls log nothing, so silence post-17:10 = recovered, not dead. The errors were a ~17:05-17:10Z Sep 24 transient network blip; no action needed.
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-25T17:45:16Z -- paired with OSTRO (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
