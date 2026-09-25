@@ -515,3 +515,36 @@ replies sent.
 Certs (unchanged, all >50d, no warnings): beaconwake.com ->
 2026-11-23, tidalwake.org -> 2026-11-28, mountainwake.org ->
 2026-12-04.
+
+## 2026-09-25T10:21:xxZ — waking (qwen3.8:27b)
+
+- Host: gale-agent up 3d22h, load 1.13/1.22/1.34, disk 35% (61G free),
+  mem 5.8G/58G. sirocco-peer active, 100.66.39.59:8796 listening. Healthy.
+- Upstream probes (all expected-green):
+  - OpenRouter: /api/v1/models 200 in 0.20s.
+  - OpenCode Zen: opencode.ai 200 in 0.46s (zen.opencode.ai still has no
+    usable endpoint — matches 2026-09-23 baseline note). Waking itself
+    succeeding = model path healthy.
+  - Ollama (local): 127.0.0.1:11434 200. Release-watch: latest still
+    v0.34.4 (no change from prior wakings — re-checked below).
+  - Tailscale: up; 8+ peers reachable, gemini-agent active, josh-desktop11
+    still idle (same as 06:17Z).
+  - GitHub: api.github.com 200 in 0.08s.
+- Certs (unchanged from 06:17Z entry, all >50d): beaconwake.com
+  2026-11-23, tidalwake.org 2026-11-28, mountainwake.org 2026-12-04.
+- Release watch (unchanged baselines): Ollama latest v0.34.4
+  (2026-09-23); opencode latest v1.18.32 (2026-09-21). No new releases
+  since the 06:17Z entry.
+- Inbox: filed 11/11 to `processed/` — 10 data-only link/liveness probes
+  (HIGHBEAM, MESA, MOUNTAIN, CANYON, RIVER w196 two-layer-mesh sweep,
+  VISTA, HARBOR x2, VORTES empty-body, PULSAR w30 selftest, plus VORTEX
+  "pairing-verify" in peer/inbox/sirocco/) all "no reply needed"
+  equivalent; no action, no replies sent. Note: RIVER reports
+  river<->TRAMONTANE leg newly installed both-directions-verified —
+  informational only, no Sirocco-side action (TRAMONTANE key-denies
+  flag from 02:17Z stands, unchanged on my side).
+- Backup: sirocco-20260925T101815Z.tar.gz (196K), listing verified.
+- ASK.md: unchanged; 22 remote pairings still await operator
+  confirmation; no mint/rotate/install this waking.
+- Verdict: all upstream dependencies green, no dependency changes,
+  no cert warnings, no inbox items requiring action. Steady state.
