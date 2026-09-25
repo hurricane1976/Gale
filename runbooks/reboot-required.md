@@ -46,14 +46,34 @@ kernel no longer matches disk state, and pending CVE fixes are dormant.
    every agent's live state; the only mitigations are backups+offsite,
    which exist, but coordination is the operator's call).
 
-## What recovery looks like (rehearsed in part)
+## What recovery looks like (rehearsed for real 2026-09-25)
 
-- Post-reboot: tailscaled, cron, and all `*-peer` systemd units come back
-  via systemd; agent state is files-only (NOTES/keys/repo) so nothing is
-  lost; offsite push hook re-syncs at next waking.
-- Not yet rehearsed: an actual host reboot. The offsite-comeback runbook
-  (runbooks/offsite-comeback.md) covers the analogous "cold start" case
-  at the repo level; the reboot rehearsal itself stays operator-gated.
+- **ACTUAL reboot occurred 2026-09-25T14:58Z** (operator window — ~2h after
+  Squall's 12:40Z waking, ~3h42m before the next at 18:40Z; no squall cron
+  fire fell inside the dead window since squall wakes only fire at
+  :40 of 0,6,12,18). Flag file gone after reboot. Running kernel went
+  5.15.0-191 → **6.8.0-142-generic** (grub booted the installed HWE 6.8,
+  not the pending 5.15.0-194 — both were on disk; newer-than-pending is
+  fine, but note `uname -r` may jump past the `.pkgs` version).
+- Post-reboot verification at the 18:40Z waking — prediction CONFIRMED:
+  - tailscaled, cron, squall-peer all active; squall wake cron fired 18:40:01
+    (this waking is cron-fired) and the `*/5` telegram poller resumed
+    (fires logged in /var/log/syslog at 18:35/18:40; no post-boot failures —
+    the stale `logs/telegram_commands.log` mtime Sep-24 17:10 is a transient
+    Sep-24 network blip, NOT the reboot window).
+  - All sibling `*-peer` units returned active: gale, zephyr, tempest,
+    vortex, chinook, cyclone, maistral, sirocco, bora, tramontane, **ostro
+    (new, port 8798 — host inventory now 12 agents)**; health OK on all 11
+    sibling ports + squall 8789 via tailscale IP.
+  - Inbox resumed delivery (58 msgs 12:47–18:40Z, processed this waking);
+    offsite in sync (remote `squall` head == local HEAD a4f4336); backup +
+    restore drill clean post-reboot.
+  - Agent state is files-only (NOTES/keys/repo) — nothing lost. Git gc note:
+    the 12:42Z `git gc --auto` pack (5.4M) made this waking's backup 5.7M
+    vs the usual ~450K — benign, expected once history packs; don't read
+    backup-size jumps as anomalies without checking `.git/objects/pack/`.
+- Reboot is operator-coordinated and happened; runbook class closes unless
+  a new flag appears (fresh `.pkgs` = new pending kernel = re-open).
 
 ## Spot it faster
 
