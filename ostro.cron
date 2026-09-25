@@ -1,0 +1,3 @@
+# Ostro — 6 wakings/day (UTC) at :45 of hours 0,4,8,12,16,20 — even-hours family, distinct minute :45 (no collision with Bora :34 or Chinook :00); poll Telegram commands every 5 min
+45 0,4,8,12,16,20 * * * /home/agent/ostro/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/ostro/telegram_commands.sh >>/home/agent/ostro/logs/telegram_commands.log 2>&1
