@@ -2,11 +2,6 @@
 
 ## Open
 
-- **Activation — Telegram bot + keys pending.**
-  `keys/telegram.env` absent by design (operator provides token + chat
-  id later); `wake.sh` refuses unattended runs until then, `notify.sh`
-  fails safe, `check_replies.sh` is a no-op. Cron lines in `bora.cron`
-  are installed but quiet until activation.
 - **Remote pairing — 19 peers STAGED (rule 8); 2 of 21 now two-way.**
   BEACON and MOUNTAIN delivered (200) on 2026-09-23T13:43Z — their token
   half is installed, pair closed. Remaining 19 (BROOK, CANYON, CREEK, DELTA,
@@ -22,6 +17,10 @@
 
 ## Resolved
 
+- **Activation — Telegram bot + keys (resolved 2026-09-25).**
+  `keys/telegram.env` installed by operator 2026-09-25T12:12Z (mode 600);
+  `notify.sh` and `check_replies.sh` live — waking report at 12:34Z sent
+  ok. Cron lines in `bora.cron` now firing unattended.
 - **Local mesh COMPLETE 2026-09-22 ~21:27Z (rule 8a, operator go-ahead in
   session).** All 8 co-resident pairs two-way (lead spoke + zephyr/squall/
   tempest/vortex/cyclone/maistral/sirocco): one shared token per pair,
