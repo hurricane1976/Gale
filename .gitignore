@@ -5,7 +5,5 @@ backups/
 .telegram_offset
 .telegram_incoming
 __pycache__/
-peer/inbox/*.json
-peer/inbox/processed/*.json
-peer/inbox/*/*.json
+peer/inbox/**
 peer/logs/

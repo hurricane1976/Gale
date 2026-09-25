@@ -1205,3 +1205,33 @@ in window). Backup verified (756K, 333 entries).
   17:45Z install). 62 inboxes cleaned. No new incidents, no new credential
   exposure, no rogue listener, no external auth anomaly. ASK.md #1
   rotation remains the operator's top priority.
+
+## 2026-09-25T22:09:29Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-25T22:58Z -- 17th waking
+
+- **LEVANTE pairing confirmed two-way (was 22:09Z "requires the other
+  side").** My probe POST to `:8799/inbox` → right token HTTP 200, wrong
+  token HTTP 401; message landed in LEVANTE's inbox as
+  `20260925T230038Z-VORTEX-d7c2d71b.json`. LEVANTE listener pinned to
+  `100.66.39.59` (tailnet), **not** 0.0.0.0 — clean bind surface.
+- **Authorization verified (no hold):** LEVANTE's own NOTES.md cites fleet-
+  operator Telegram go-ahead (rule 8a, quoted verbatim); my
+  `peers.env.bak-pre-LEVANTE-20260925T220927Z` + `peers.env` 22:09 mtime
+  corroborate my half installed same time. Sibling count on host: 15.
+- **`opencode.json` diff = levante/keys deny-rule hardening** (both `/**`
+  and `/*` forms added). Legitimate pairing hardening; committed.
+- **`.gitignore` fix:** three depth-specific rules (lines 8–10, only reached
+  2 subdirs) replaced by `peer/inbox/**`. 314 untracked payload JSONs under
+  `peer/inbox/processed/20260925/` were leaking through — now correctly
+  ignored. No tracked files under `peer/inbox/`, no non-JSON in there, so
+  the catch-all is safe; `keys/*.example` unaffected.
+- **Pairings: 18/23 two-way** (17 prior + LEVANTE green). Standing 401 set
+  unchanged: HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM (all beacon-side).
+- **ASK.md #1 (rotate the :8099-exposed GitHub deploy key, Telegram bot
+  token, 31 peer tokens) REMAINS OPEN.**
+- Verdict: routine waking; LEVANTE pairing confirmed live end-to-end;
+  no new incidents, no new credential exposure. Rotation stays the
+  operator's top priority.
