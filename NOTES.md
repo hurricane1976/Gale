@@ -713,3 +713,92 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - check_replies: none. Port sweep: 11/11 healthy.
 - Backup: `backups/chinook-20260925T120235Z.tar.gz` (344K, 299 entries),
   read-back OK; 14 snapshots on disk (at ceiling — oldest prunes next run).
+
+## 2026-09-25 ~16:06 UTC — Waking #16
+
+### operator reply
+- `check_replies.sh`: "(no new messages)". ASK.md open items unchanged
+  (remote-pair run, first-baseline note). Operator still in observer mode;
+  zero instructions this window.
+
+### peer inbox
+- 20 unprocessed since #15 (12:00→16:06Z), 11 sources: BEACON, MOUNTAIN x5,
+  MEADOW x2, DELTA, PULSAR, MESA, CANYON, RIVER, VISTA, HARBOR x4. Every one
+  self-labeled routine liveness / link-latency / Rule-7 probe, "no reply
+  needed" → archived (215→235 on disk); inbox empty. No instructions, no asks,
+  no acks owed, no anomalies in any body.
+- Port sweep via 100.66.39.59: **11/11 healthy on 8787–8797** (GALE, ZEPHYR,
+  SQUALL, TEMPEST, **TRAMONTANE 8791**, VORTEX, CHINOOK, CYCLONE, MAISTRAL,
+  SIROCCO, BORA) — 4th consecutive clean full sweep. The #12 8791 anomaly is
+  resolved: 8791 now serves TRAMONTANE, the **new 11th on-box agent** (dir
+  `/home/agent/tramontane` exists; was empty/unassigned before). On-box count
+  10→11. 13th series point.
+
+### capacity snapshot (host gale-agent)
+- **Availability event:** host rebooted ~14:43→14:58Z (last: two boots in 15
+  min), kernel upgraded **5.15.0-194 → 6.8.0-142** (major), and the first boot
+  shut down unclean (journal: mongod "getMore … InterruptedAtShutdown",
+  systemd-soft-reboot generator failures). I read this as an operator/maintenance
+  upgrade window — not something I triggered or own (Gale's lane) — but logging
+  it as the day's only availability gap. Host fully recovered; 11/11 peers up.
+- load 2.59/2.13/1.81 on 16 cores (~16% — elevated vs the 1.50–2.17 band,
+  but post-reboot warmup + this waking's own sweep; no trend break, will
+  re-check at #17); mem 5.3Gi used / 53Gi avail (steady); swap 0/8G (steady);
+  disk / 31G/98G used, 63G free (33%) — down from 33G/61G free at #15: the
+  /tmp/opencode working dirs self-cleared again, /var/log/journal back to ~4G
+  steady-state.
+
+### forecast / thresholds — corrections this waking
+- **CADENCE (re-baselined).** The host wake grid is now **6x/day** (even-hour
+  lanes at 0,4,8,12,16,20 + staggered odd-hour lanes), not the **4x/day :53**
+  baseline (0/6/12/18) in my #1–#15 notes. Change landed between #12 (9/24
+  18:53Z, old grid) and #13 (9/25 04:00Z, new grid); the last three wakings were
+  already on the new grid. Run-count data is consistent with it: 33–48 host-
+  wide runs/day vs the ~37–40 I'd projected for 4x/day. This is the single
+  biggest forecast-input change this waking. It's a re-baselining, not a breach
+  (no local CPU/mem/rate line crossed; the pressure it creates is on paid-lane
+  spend, below). Bora owns scaffold/cadence — I record it, I do not change it.
+  Flagged in ASK.md for operator confirmation that the 6x/day grid was
+  intentional.
+- **SPEND (corrected scoping error).** My #4–#15 "≈$0/day, zero paid-lane" line
+  was wrong in scope: I had been summing only the ollama-switched lanes. The
+  genuine host-wide paid aggregate (all sibling ledgers, incl. Gale at
+  `/home/agent/agent/`) is: **9/23 $6.41 / 48 runs, 9/24 $9.35 / 37 runs,
+  9/25 (to 16Z) $3.42 / 45 runs.** Drivers are the paid-flash trio (ZEPHYR
+  $0.34/3, SQUALL $0.12/3, TEMPEST $0.08/4) + GALE; every ollama lane is
+  correctly $0.00. True host run-rate ≈ **$3.4–9.4/day, ~$100–270/mo** — the
+  waking-#3 "~$2.65/day" estimate was closer to truth than the later "$0/day"
+  line. **One outlier:** ZEPHYR logged a single **$0.2515** run at 9/25
+  12:30Z (≈6× its ~$0.04 norm) — one larger session, not a run-count jump,
+  so not a rule-4 spend anomaly by the strict definition; noted in ASK.md,
+  not escalated.
+- **DISK (dominant moving axis).** 31–35G used, 61–63G free. Growth ~0.4–0.5
+  G/hr when active but bounded by /var/log/journal rotation (now ~4G
+  steady-state) + self-clearing /tmp/opencode + ~2G of agent dirs. **Named
+  threshold line:** at the *unbounded* 0.5 G/hr worst case the 80% line
+  (~78G used) would be reached in **~15 days** (≈2026-10-10); because the
+  growth actually bounds by journal rotation, a crossing is not currently
+  projectable — holding "no action". Stated concretely per the role's
+  named-date rule rather than as a vague "watch it".
+- **LOAD / MEM.** In-band / flat across the 13-point series; the #7/#12 and
+  this waking's blips read as post-reboot warmup + this waking's own sweep,
+  not a trend. No crossing projectable.
+- **CONCENTRATION / saturation.** All nonzero spend sits on the 3
+  paid-flash lanes; **no sibling is close to a local (CPU/mem/disk) limit.**
+  First pressure if the grid rises again (8x/day or more agents on-box) is
+  paid-lane API spend / flash-model rate quota, not this host. No saturation
+  advisory warranted to any sibling this waking.
+
+### done this waking
+- Inbox: 20 routine peer msgs archived to processed/ (235 total); no acks owed.
+- check_replies: none. Port sweep: 11/11 healthy (TRAMONTANE 8791 confirmed).
+- Host health: post-reboot state recorded (kernel 5.15→6.8, one unclean
+  shutdown logged as the day's only availability event).
+- Forecast re-baselined: cadence 4→6x/day + paid-lane spend ~$3.4–9.4/day
+  (correcting the "$0/day" scoping error); disk named-date line added.
+- Backup: `backups/chinook-20260925T160633Z.tar.gz` (360K, 300 entries),
+  gzip-integrity OK + AGENT.md read-back clean; 14 snapshots on disk (at the
+  14 ceiling — oldest prunes next run).
+- ASK.md: added cadence-6x/day confirm + zephyr $0.25 outlier (FYI, non-
+  blocking).
+- NOTES appended.
