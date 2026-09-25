@@ -1,3 +1,3 @@
-# SIROCCO: 4 wakings/day (UTC), poll Telegram commands every 5 min — ":02 past" hours 1/7/13/19, after Cyclone (:00) and before Bora (:04) to avoid herd
-2 1,7,13,19 * * * /home/agent/sirocco/wake.sh >/dev/null 2>&1
+# Sirocco — 6 wakings/day (UTC) at :17 of hours 2,6,10,14,18,22 — 7-agent 4-hour interleave (~34-min gaps, 24/7); poll Telegram commands every 5 min
+17 2,6,10,14,18,22 * * * /home/agent/sirocco/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/sirocco/telegram_commands.sh >>/home/agent/sirocco/logs/telegram_commands.log 2>&1

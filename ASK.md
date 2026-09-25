@@ -3,9 +3,12 @@
 ## Open
 
 - **Remote pairings installed outside my wakings (2026-09-23, NEEDS
-  OPERATOR CONFIRM).** `keys/peers.env` now holds 22 remote pairing
-  blocks I never minted and have no verifiable operator word for:
-  CHINOOK (written ~01:40:34Z) plus a 20-block batch (BEACON, BROOK,
+  OPERATOR CONFIRM; TRAMONTANE added 2026-09-25).** `keys/peers.env`
+  now holds 23 remote pairing blocks I never minted and have no
+  verifiable operator word for: CHINOOK (written ~01:40:34Z),
+  TRAMONTANE (`peers.env` mtime now **2026-09-25 01:31:29Z** — written
+  inside the Sep-24-19:02→Sep-25-02:02 gap, appears as the newest NAME
+  block, not in the 09-23 list), plus a 20-block batch (BEACON, BROOK,
   CANYON, CREEK, DELTA, HARBOR, HIGHBEAM, LANTERN, LIGHTNING, MEADOW,
   MESA, MIST, MOUNTAIN, PRISM, PULSAR, RADAR, RIDGE, RIVER, STREAM,
   TIDAL, VISTA — written ~12:40:55Z). Evidence: file mtimes plus the
@@ -26,13 +29,7 @@
   "unpaired-sender" notes — those senders are now transport-credentialed
   (ACCEPTs in log); the open question is authorization, not reach.
 
-- **Unexplained `opencode.json` model line (2026-09-23).** Working tree
-  had an uncommitted `"model": "ollama/qwen3.8:27b"` (mtime 2026-09-22
-  23:05Z), no NOTES.md record, no operator message quoted. AGENT.md
-  role model is `opencode/muse-spark-1.3-contributor-free`, no ollama
-  binary exists on this host, and this waking runs muse-spark — so the
-  line matches nothing real. Committed as-found for audit trail;
-  please confirm whether it was yours or revert it.
+
 - **Remote pairing — 21 peers STAGED (rule 8).** `./pair_remote_batch.sh`
   ready; nothing minted. Needs per-pair operator sign-off via Telegram
   plus each remote peer's install.
@@ -40,6 +37,21 @@
 - **Telegram (2026-09-23, via /commands):** What’s up
 
 ## Resolved
+
+- **Unexplained `opencode.json` model line (2026-09-23) — RESOLVED
+  2026-09-25 02:2xZ, operator reconfig confirmed.** The line
+  `"model": "ollama/qwen3.8:27b"` (flagged 2026-09-23) is confirmed as
+  a deliberate operator model migration: Sep 25 00:59–01:22Z the
+  working tree picked up a consistent three-file change set —
+  `opencode.json` model line, `wake.sh` prompt + `--model` flag both
+  switched `muse-spark-1.3-contributor-free` → `ollama/qwen3.8:27b`,
+  plus `sirocco.cron` rescheduled 4×/day (1,7,13,19 @:02) → 6×/day
+  (2,6,10,14,18,22 @:17) for the new "7-agent 4-hour interleave", and
+  key-denies extended to NEW siblings `/home/agent/chinook/keys/**`
+  and `/home/agent/tramontane/keys/**`. This waking
+  (2026-09-25T02:02Z) itself runs under `ollama/qwen3.8:27b`, so the
+  line now matches reality. Committed the three files as-is for the
+  audit trail (operator reconfig, not mine). No further action asked.
 
 - **Activation — Telegram live 2026-09-23 ~00:24Z.** Bot `@Siroccoagentsbot`;
   operator provided token, chat id taken from their `/start`;
