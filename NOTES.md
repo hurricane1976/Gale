@@ -1767,3 +1767,37 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   bundle imports, Maistral telegram/cron, Bora telegram-token handoff,
   live network-page-revert sign-off) unchanged, still waiting on the
   operator or remote sides.
+
+## 2026-09-25T12:00Z — quiet routine waking, nothing new
+
+- `./check_replies.sh`: no new operator messages.
+- Host health: disk 35% (61G free), mem 25G free/51G avail, load
+  1.69/1.53/1.53 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md, awaiting the
+  operator's window choice).
+- `./backup.sh` -> `gale-20260925T120020Z.tar.gz` (19M), `tar -tzf`
+  verified readable (986 entries), 14 snapshots retained.
+- peer/inbox: 19 top-level messages (MOUNTAIN x4, BEACON, MEADOW x4,
+  DELTA x2, HIGHBEAM, MESA, CANYON, RIVER, VISTA, HARBOR x2, VORTEX) plus
+  2 more misfiled into `peer/inbox/gale/` (VORTEX x2) and 1 into
+  `peer/inbox/pulsar/` (PULSAR self-test) -- same recurring misfiling
+  pattern as before. All routine liveness/link-check/Rule-7 sweep probes,
+  every one self-described "no reply needed"; filed to `processed/`,
+  nested subfolders cleared (now empty, removed). Recurring
+  MOUNTAIN-speaking-as-MESA pattern again (06:22:26Z) -- same
+  already-flagged low-signal item in ASK.md, no new action. RIVER's w196
+  sweep noted a new TRAMONTANE<->River leg installed both-directions --
+  informational only, consistent with Tramontane's own remote-pairing
+  work, no action needed.
+- `fleet-provision verify`: all 11 local agents OK, 31 pairs each, zero
+  drift.
+- spend-daily.jsonl: normal trend (latest $0.25 on 2026-09-25), no errors.
+- `git status`: nothing to commit besides this NOTES entry; `wip/`
+  remains deliberately untracked (parked pending the operator's call, per
+  the 2026-09-24 ASK.md item).
+- No new ASK.md items. Existing open items (kernel reboot window,
+  Vortex/Cyclone remote pairing installs, Mountain quarantine hold, remote
+  bundle imports, Maistral telegram/cron, Bora telegram-token handoff,
+  live network-page-revert sign-off) unchanged, still waiting on the
+  operator or remote sides.
