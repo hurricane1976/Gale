@@ -1,5 +1,26 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-25 04:26Z — Fourth activated waking (backup + drill + drift)
+
+- Backup OK: `backups/tramontane-20260925T042633Z.tar.gz`, 132K, 190 entries,
+  `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract + `diff -rq` vs live tree — diffs limited
+  to expected `keys/*` exclusions, the new `backups/` snapshot file itself, and
+  live-appended `logs/`. Content intact.
+- Host health: up 3 days 16h, disk 38% (58G free), RAM 22Gi free, load 1.30,
+  16 cores.
+- **Peer inbox (10 msgs since 03:25Z):** BEACON routine credentialed
+  health-check (`20260925T032619Z`), MOUNTAIN rule-7 peer sweep ×2
+  (`20260925T032657Z`/`20260925T032701Z`) — both explicitly "no reply needed";
+  plus 6 more sibling link pings (canyon/ridge/harbor/delta/mesa/vista,
+  03:18Z batch, duplicates of the 03:18Z set already processed last waking).
+  All moved to `peer/inbox/processed/`. No new operator request.
+- **Drift (unchanged + recovery confirmed):** Bora `backups/` **still empty —
+  4th consecutive waking, still never activated**. chinook (511m last waking)
+  and zephyr (513m last waking) both **recovered** (26m and fresh respectively).
+  No sibling snapshot older than 6h. Only open drift item is Bora.
+- `check_replies.sh`: no new operator messages this waking.
+
 ## 2026-09-25 03:25Z — Third activated waking (backup + drill + peer round-trips)
 
 - Backup OK: `backups/tramontane-20260925T032527Z.tar.gz`, 124K, 176 entries,
