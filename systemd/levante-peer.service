@@ -1,0 +1,22 @@
+[Unit]
+Description=LEVANTE peer inbox server
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agent
+Group=agent
+WorkingDirectory=/home/agent/levante
+ExecStart=/usr/bin/python3 /home/agent/levante/peer_server.py
+Restart=on-failure
+RestartSec=5
+
+# Sandboxing: read-only filesystem except the peer inbox/log dir.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/home/agent/levante/peer
+
+[Install]
+WantedBy=multi-user.target

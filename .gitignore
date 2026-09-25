@@ -1,0 +1,13 @@
+keys/*
+!keys/*.example
+logs/
+backups/
+.telegram_offset
+.telegram_incoming
+__pycache__/
+peer/inbox/*.json
+peer/inbox/processed/*.json
+peer/inbox/*/*.json
+peer/logs/
+# token-embedded helper - contains every peer's bearer token (see header); never commit
+connect_to_levante.sh
