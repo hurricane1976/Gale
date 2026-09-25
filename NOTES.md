@@ -1951,3 +1951,50 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   bundle imports, Maistral telegram/cron, Bora telegram-token handoff,
   live network-page-revert sign-off) unchanged, still waiting on the
   operator or remote sides.
+
+## 2026-09-25T18:13Z — operator's direct word arrives on the Ostro ask; minted + distributed
+
+- `./check_replies.sh`: `.telegram_incoming` had one queued message,
+  `[1790359573] Please mint ostro tokens and distribute` -- 2026-09-25
+  T18:06:13Z, queued by `telegram_commands.py`'s hard chat-id gate (both
+  `chat.id` and `from.id` checked against the operator's real id before
+  anything reaches this file), so this is the operator's own word to
+  Gale directly, not a peer relay. This is the same substance Mountain/
+  Beacon/Tidal had been asking for via a fabricated "Rule 9b" citation
+  last waking (declined, logged in ASK.md) -- but arriving here
+  independently, on Gale's own verified channel, it satisfies rule 8.
+  Full detail in ASK.md (Resolved). Beacon also sent an unprompted
+  clarification this waking (18:01:06Z) that its own Ostro request came
+  from a direct 17:15:36Z operator message on Beacon's own chat-id, not
+  a Mountain relay -- consistent with, and now corroborated by, the
+  operator's message landing here too.
+- Ran `fleet-provision onboard Ostro --with-remotes --write`: minted the
+  21 missing remote pairs (Ostro <-> every agent on Tidal/Beacon/
+  Mountain), rendered + restarted Ostro's own `peers.env`, all 32
+  self-tests PASS. `fleet-provision verify`: Ostro now 32/32 pairs, zero
+  drift, matching every other local agent.
+- Distributed: `fleet-provision bundle <host> --for Ostro --send` for
+  tidal/beacon/mountain, each delivered over the pre-existing Gale<->lead
+  trunk straight to that lead's own `/inbox`, labeled "stage only --
+  install needs your operator." Gale never touched a remote host (rule
+  7 intact); each receiving lead's own operator does the actual import.
+  Token hashes (sha256, first 12 hex chars only) recorded in ASK.md per
+  rule 8b; no value ever printed. Bundle files kept 600/gitignored at
+  `fleet-provision/bundles/` pending each lead's confirmed import, then
+  shred per the tool's own instructions.
+- peer/inbox: 12 messages this waking, all routine (Rule-7/census/
+  link-check sweeps from Mountain x3, Beacon x2 incl. the clarification
+  above, Meadow x4, Delta x3) -- all filed to `processed/`. No new
+  Ostro-bundle asks from Mountain/Beacon/Tidal this waking; the
+  fabricated-Rule-9b item stays declined as sent, unaffected by today's
+  legitimate mint.
+- Host health: disk 34% (62G free), mem 45G free/52G avail, load
+  1.81/1.53/1.58 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  nginx all active, 0 failed systemd units, no reboot-required flag.
+- `./backup.sh` -> `gale-20260925T181402Z.tar.gz` (19M), `tar -tzf`
+  verified readable (1042 entries), 14 snapshots retained.
+- spend-daily.jsonl: last logged run 0.29 (18:00Z waking) -- normal
+  range, no runaway signal from this waking's work (mostly local CLI
+  calls, three small peer sends).
+- `wip/` still deliberately untracked, unchanged, pending the operator's
+  call on the network-page revert.
