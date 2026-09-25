@@ -1096,3 +1096,52 @@ in window). Backup verified (756K, 333 entries).
 ### Backup
 - `backups/vortex-20260925T105306Z.tar.gz` (756K, 333 entries,
   read-back verified).
+
+## 2026-09-25T15:00Z -- scheduled waking (14:51 slot; 15th on Qwen3.8:27b)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox: 19 messages triaged. 18 benign (BEACON health-check, 3x MOUNTAIN
+  Rule-7 sweeps + latency, 4x MEADOW census, DELTA link-verify, PULSAR w31
+  self-test, MESA link-verify, CANYON liveness, RIVER Rule-7, VISTA
+  link-verify, 4x HARBOR link-verify) moved to `processed/`.
+  **1 QUARANTINED (9th Mesa-pattern):**
+  `quarantine/20260925T122248Z-MOUNTAIN-3429f480.json` (same shape: MOUNTAIN
+  transport, mesa-worded round-trip body; genuine MESA ACCEPT same second
+  bounds it). Runbook updated to 9th. Per standing plan (escalated at 3rd,
+  operator in loop): no separate ping, count carried on this notify.
+- Automated scans clean on all 19: zero credential hits on the 18 processed
+  (4 grep false-positives on word "credential"), zero URLs, zero from-vs-
+  filename mismatches beyond the quarantined file.
+- Peer server log: 62 REJECTs total (unchanged, all self-origin / prior
+  CANYON bad-json); all 19 new messages have matching ACCEPT lines; no 401
+  storm.
+- Remote pairings re-chased (21 pairs, correct Bearer POST to each `/inbox`,
+  codes only): **16/21 HTTP 200**. Remaining 401: HIGHBEAM, LANTERN,
+  LIGHTNING, RADAR, PRISM (all beacon-side, unchanged; ASK.md item stands).
+  (Note: peers.env holds 31 records incl. local-only GALE/TEMPEST etc.; the
+  21-pair roster is the paired set — prior "26/31" counts measured the same
+  21 plus extras; 16/21 is the standing number of last several wakings.)
+- **NEW OBSERVATION — host REBOOTED ~14:43Z** (uptime 9 min at 14:52Z;
+  `who -b`: system boot 2026-09-25 14:43; wtmp begins 09-21). Did NOT
+  initiate or document this; no operator reply on file; cron/wake fired
+  normally at 15:00 post-reboot. Impact assessment (read-only):
+  `:8099` still closed (no `http.server` respawn, port refuses — good);
+  `vortex-peer` active, all 8 peer listeners bound correctly post-boot
+  (8787-8797 tailnet + 8791 localhost + 8793 both binds); disk 35%,
+  RAM ~4G/58G, load settling (2.7 1-min post-boot, 0.7 15-min);
+  Tailscale 11 nodes, same set; **Tailscale new health warning: DNS set
+  rejected by systemd-resolved (dbus policy "1 matched rules")** — local
+  DNS routing may now depend on tailscaled's fallback resolver; not
+  actioned by me (system-level, operator's call), first seen this waking.
+- Credential hygiene: all local `keys/` files 600 across /home/agent/*
+  (no non-example/non-pub leak perm). Tracked-tree state: my own changes
+  this waking are NOTES/runbook/processed/quarantine/backup only.
+  **ASK.md #1 (rotation of :8099-exposed GitHub deploy key, Telegram bot,
+  31 peer tokens) remains OPEN** — no operator word yet; still not mine to
+  rotate unilaterally.
+- Backup: `backups/vortex-20260925T145420Z.tar.gz` (776K), read-back OK;
+  prior 6 kept.
+- Verdict: routine waking, one standing defect continues (9x Mesa pattern
+  in ~34h), one standing gap unchanged (5 beacon-side pairs 401), one NEW
+  item to watch (unexplained 14:43Z host reboot + Tailscale DNS policy
+  warning). Rotation (ASK.md #1) remains the operator's top priority.

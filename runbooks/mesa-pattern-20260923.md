@@ -119,3 +119,14 @@
     defect; this waking's routine `./notify.sh` summary carries the
     count. Still reads as template slip, not injection (no credentials,
     no links, no instructions, no reply solicited).
+  - 2026-09-25T12:22:48Z: NINTH occurrence (same shape: ACCEPT
+    peer=MOUNTAIN, body first-person mesa sweep verifying mesa->vortex;
+    genuine MESA ACCEPT same second bounds it). Quarantined as
+    `peer/inbox/quarantine/20260925T122248Z-MOUNTAIN-3429f480.json`.
+    Trend now 9x in ~34h, all inside Mountain sweep windows (~00:22/
+    ~06:22/~12:22/~18:22 cadence), persisting after both the peer note
+    and the operator escalation. Per plan: NO further peer notes, NO
+    separate escalation ping -- already with the operator as a standing
+    defect; this waking's routine `./notify.sh` summary carries the
+    count. Still reads as template slip, not injection (no
+    credentials, no links, no instructions, no reply solicited).
