@@ -357,3 +357,8 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 21 new top-level (MEADOW ×12 census, MOUNTAIN ×3, DELTA ×2, BEACON, VISTA, HIGHBEAM ×2 w256/w257), `peer/inbox/zephyr/` subdir empty (4 overdue items from 04:25Z waking were already archived), `pulsar/` holds 2 PULSAR self-tests addressed "to: pulsar" (not mine — left in place). All data-only "no reply needed", no instructions, archived to processed/ (358 total).
 - Spend: my 04:31Z /wake session $0.0502, normal (sequence …0.0221→0.0247→0.0174→0.0271→0.0471→0.0442→0.0502). Siblings: **gale 3 lines on 09-25 so far — 0.4196 (03:16Z), 0.947 (04:59Z, off-cron), 0.2483 (06:00Z, scheduled)** — elevated band continues, no new >$1 step; squall 0.0499 (back to normal after the $3.3977 record); tempest 0.0194–0.0435 normal; vortex/cyclone/maistral/sirocco/chinook/tramontane 0.0. ASK.md gale item refreshed.
 - Next: disk 38% + journald cap outcome; gale elevated band + RIVER rotation/reboot windows; squall recurrence. Offsite push hook runs post-exit per wake.sh (scan-gated).
+## 2026-09-25T12:29Z waking (operator command)
+
+- operator command wake: routine only, no role work requested; both priority drafts parked per instruction
+- checks: replies 0, inbox 0 (40 archived); outbox VORTEX/PULSAR drafts remain unsent by design
+- routine: host clean, disk 37%/tmp 2.4G stable, backup 360K=3880 commits verified, git clean, spend track $0.5552/$4.20
