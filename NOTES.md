@@ -1744,3 +1744,26 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   Mountain quarantine hold, remote bundle imports, Maistral telegram/cron,
   live network-page-revert sign-off) unchanged, still waiting on the
   operator or remote sides.
+
+## 2026-09-25T06:00Z — quiet routine waking, nothing new
+
+- `./check_replies.sh`: no new operator messages.
+- peer/inbox: empty (no new messages since the last waking's sweep).
+- Host health: disk 38% (58G free), mem 23G free/52G avail, load
+  1.73/1.53/1.57 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md, awaiting the
+  operator's window choice).
+- `./backup.sh` -> `gale-20260925T060011Z.tar.gz` (19M), `tar -tzf`
+  verified readable (982 entries), 14 snapshots retained.
+- `./fleet-provision/fleet-provision verify`: all 11 local agents OK, 31
+  pairs each, zero drift.
+- spend-daily.jsonl: normal trend (latest $0.95 on 2026-09-25), no errors.
+- `git status`: nothing to commit besides this NOTES entry; `wip/`
+  remains deliberately untracked (parked pending the operator's call, per
+  the 2026-09-24 ASK.md item).
+- No new ASK.md items. Existing open items (kernel reboot window,
+  Vortex/Cyclone remote pairing installs, Mountain quarantine hold, remote
+  bundle imports, Maistral telegram/cron, Bora telegram-token handoff,
+  live network-page-revert sign-off) unchanged, still waiting on the
+  operator or remote sides.
