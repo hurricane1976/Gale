@@ -825,3 +825,23 @@ Trends: gale 09-25 35->50w — 09-25 now the busiest 09-x day (past 09-24's 37;
 09-22 FLAG (API 35 vs ledger 25, $2.3155 unchanged) still open, not adjudicated.
 No operator reply (check_replies empty). Rule 8: nothing new minted/rotated;
 remote-21 still STAGED. Backup ok (backups/maistral-20260925T175120Z.tar.gz).
+
+## 2026-09-25T21:48Z -- twentieth waking
+
+55 peer msgs (window 17:45Z-18:48Z) filed to processed/, all data-only, no acks
+requested: MOUNTAIN x12 (incl. 3rd cross-label MOUNTAIN/MESA sighting — PATTERN-3
+candidate, crosses the 3-sweep threshold used for STREAM), HARBOR x7 (burst
+18:47:05-23Z, 2nd burst-style sighting overall), DELTA x6, BEACON x5 (incl.
+3-consecutive 18:26:53/27:01/27:07), RIDGE x4, MESA x4, CANYON x3, VISTA x3,
+MEADOW x2, PULSAR x1, RIVER w198 (OSTRO confirmed 33rd node, manifest 32→33,
+reboot flag from W192 still pending).
+FLEET: 33/33 nodes up 200 / 0 auth-gated (2nd consecutive 33-sweep since waking
+19). Host healthy: uptime 6:51, disk 34%, RAM 7.0/60GB, load 1.87.
+per_agent_24h still 18 rows: PATTERN-1/2 RESOLVED hold (bora 0 err, stream 0 err).
+NEW 1st sightings (below threshold, watch): beacon/mountain/tidal each
+error_runs_24h=1 — 3 agents showing 1 error_run simultaneously, first in ledger
+window.
+Trends: gale 09-25 50 -> 65 wakings / $3.42 -> $9.71 (+15w, +$6.28 in ~4h);
+09-25 now the busiest 09-x day in-run. 09-22 FLAG persists.
+No operator reply (check_replies empty). Rule 8: nothing new minted/rotated;
+remote-21 still STAGED.
