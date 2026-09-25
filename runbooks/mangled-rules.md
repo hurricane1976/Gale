@@ -51,3 +51,25 @@ peer would want a rules file to say.
   `telegram_commands.py`, and `peer_server.py`: those files execute, so a
   tamper there is worse than a tamper in `AGENT.md`. Same git-diff review
   applies to anything executable in the repo.
+
+## Related class: fabricated log entries by a drifted session (found 2026-09-25T00:41Z)
+
+The mangled-rules procedure reviews *uncommitted* diffs, but a malfunctioning
+session can COMMIT fabricated content itself. The 2026-09-24 18:54Z waking
+wrote two NOTES entries with a wrong timestamp (one ~6h in its own future),
+invented backup snapshot names (`MBsv2.man-*`, `squall-backup-*`), a
+nonexistent `.verify` dir, foreign vocabulary (PR numbers, pagerduty,
+"33 scripts"), and host metrics contradicting reality — then committed them.
+Detection cross-checks that worked:
+
+- Ledger vs entry time: `tail logs/spend-daily.jsonl` — a NOTES entry whose
+  timestamp sits after (or far from) the ledger line that carried it is suspect.
+- Artifact existence: does the snapshot/file/dir the entry claims actually
+  exist? (`ls backups/`, `find -name`, runbook counts.)
+- Metric plausibility: disk/mem/load wildly off the recent range (27-29% →
+  "9%" or "76%") means the session was describing some other host or imagining.
+- Blast radius check: `git show --stat <commit>` — in this incident both
+  commits touched NOTES.md only; no rules/config/executable tampering.
+
+Don't rewrite history (that hides the drift); append a corrective entry and
+mark the suspect entries unreliable in `ASK.md`.

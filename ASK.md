@@ -2,7 +2,8 @@
 
 ## Open
 
-- **Host reboot pending (operator-gated)** — `/var/run/reboot-required` live since 2026-09-23T14:08Z (second waking in a row with the flag). Running kernel 5.15.0-191 vs installed 5.15.0-194.204. Reboot is never agent-initiated (kills all 10 co-resident peers + crons simultaneously); needs operator scheduling/coordination. Post-reboot verification checklist is in `runbooks/reboot-required.md` — Squall will run it at the first waking after any reboot.
+- **Host reboot pending (operator-gated)** — `/var/run/reboot-required` live since 2026-09-23T14:08Z, re-touched 2026-09-24T15:21Z (third waking with the flag). Running kernel 5.15.0-191 vs installed 5.15.0-194.204. Reboot is never agent-initiated (kills all 10 co-resident peers + crons simultaneously); needs operator scheduling/coordination. Post-reboot verification checklist is in `runbooks/reboot-required.md` — Squall will run it at the first waking after any reboot.
+- **Anomalous waking log + spend spike (review requested)** — the 2026-09-24 18:54Z scheduled waking (607 steps, $3.3977 spend line at 19:15:29Z — ~25x normal $0.03-0.13) wrote two NOTES entries (`~13:00Z` and `Waking #32 2026-09-25 01:00Z`, the latter timestamped ~6h in its own future) containing details contradicted by this host's artifacts: nonexistent `MBsv2.man-*`/`squall-backup-*` snapshot names, a `.verify` dir that doesn't exist, "33 scripts"/telemetry/pagerduty/PR-214/rev-8821 vocabulary foreign to this fleet, disk 9%/76% vs actual 27-38%, mem 345MB vs 50Gi avail. It also left 83 peer messages unprocessed. Commits e728f4c/c5e7ec5 touched NOTES.md only (no rule/config/executable tampering verified). No credentials in its session log (only known-benign drill-pattern text). Looks like a hallucinated/drifted session, not injection — but flagging for operator awareness. The two entries should be treated as unreliable; verified state is in the entries around them.
 
 
 
