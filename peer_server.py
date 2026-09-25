@@ -242,8 +242,162 @@ def resolve_identity(ip):
     return ROSTER.get(m.group(1)) if m else None
 
 
+# --- Fleet observability (LEVANTE's role): registry + status endpoints ------
+# The registry is LEVANTE's own keys/peers.env -- the single source of truth
+# for the whole fleet (all 43 peers co-located and remote). We read only our
+# own file and never write another agent's. "co-located" vs "remote" is decided
+# by which Tailscale node the peer's address lives on, not by any IP-prefix
+# guess (the 100/8 CGNAT range spans many unrelated fleets). A node is "up"
+# only when its own /health answers in time (unauthenticated liveness probe,
+# exactly what any node does). Tokens are never read or exposed here.
+PEER_HOSTS = {
+    "100.66.39.59": "gale-agent",
+    "100.99.217.90": "beacon-host",
+    "100.91.42.51": "tidal-host",
+    "100.114.14.116": "mountain-host",
+    "100.81.147.28": "highbeam-host",
+    "100.76.139.96": "lantern-host",
+    "100.69.40.118": "lightning-host",
+    "100.125.26.66": "radar-host",
+    "100.100.158.42": "prism-host",
+    "100.70.91.55": "pulsar-host",
+}
+
+
+def _registry():
+    """Fleet roster: parse LEVANTE's own peers.env (NAME=/ADDR= blocks) into
+    one entry per peer. SELF is added last so it is always visible."""
+    seen = {}
+    if not os.path.isfile(PEERS_ENV):
+        return seen
+    name = None
+    try:
+        with open(PEERS_ENV) as fh:
+            for line in fh:
+                line = line.strip()
+                if line.startswith("NAME="):
+                    name = line.split("=", 1)[1].strip().upper()
+                elif line.startswith("ADDR=") and name:
+                    addr = line.split("=", 1)[1].strip()
+                    host = addr.rsplit(":", 1)[0]
+                    remote = host != SELF_BIND.rsplit(":", 1)[0]
+                    seen[name] = {
+                        "name": name,
+                        "addr": addr,
+                        "host": host,
+                        "host_name": PEER_HOSTS.get(host, "unknown"),
+                        "remote": remote,
+                        "role": ("fleet observability & roster (this node)"
+                                if name == SELF_NAME
+                                else ("remote peer" if remote
+                                      else "co-located sibling")),
+                    }
+                    name = None
+    except OSError:
+        return seen
+    # Ensure SELF is always present even if the env omits a self block.
+    if SELF_NAME not in seen:
+        host = SELF_BIND.rsplit(":", 1)[0]
+        seen[SELF_NAME] = {
+            "name": SELF_NAME, "addr": SELF_BIND, "host": host,
+            "host_name": PEER_HOSTS.get(host, "unknown"), "remote": False,
+            "role": "fleet observability & roster (this node)",
+        }
+    return seen
+
+
+def fleet_data():
+    """Live liveness probe of every registry entry: up/down + last success."""
+    import urllib.request
+    import urllib.error
+    registry = _registry()
+    stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    for name, entry in registry.items():
+        entry["up"] = False
+        entry["last_seen"] = None
+        entry["latency_ms"] = None
+        if name == SELF_NAME:  # we are answering; we are trivially up
+            entry["up"] = True
+            entry["last_seen"] = stamp
+            entry["latency_ms"] = 0
+            continue
+        ip, _, port = entry["addr"].rpartition(":")
+        t0 = time.time()
+        try:
+            with urllib.request.urlopen(f"http://{ip}:{port}/health", timeout=3) \
+                    as resp:
+                if resp.status == 200:
+                    entry["up"] = True
+                    entry["last_seen"] = stamp
+                    entry["latency_ms"] = round((time.time() - t0) * 1000)
+        except (urllib.error.URLError, OSError):
+            pass
+    ordered = sorted(registry.values(), key=lambda e: (e["remote"], e["name"]))
+    return {
+        "self": SELF_NAME,
+        "generated_at": stamp,
+        "nodes": ordered,
+        "summary": {
+            "total": len(ordered),
+            "up": sum(1 for e in ordered if e["up"]),
+            "down": sum(1 for e in ordered if not e["up"]),
+            "local_up": sum(1 for e in ordered if not e["remote"] and e["up"]),
+            "local_total": sum(1 for e in ordered if not e["remote"]),
+            "remote_up": sum(1 for e in ordered if e["remote"] and e["up"]),
+            "remote_total": sum(1 for e in ordered if e["remote"]),
+        },
+    }
+
+
+def _dashboard_html(data):
+    from html import escape
+    s = data["summary"]
+    rows = []
+    for e in data["nodes"]:
+        dot = "up" if e["up"] else "down"
+        seen = e["last_seen"] or "--"
+        lat = f"{e['latency_ms']} ms" if e["latency_ms"] is not None else "--"
+        mark = "" if not e["remote"] else ' <span class="tag">remote</span>'
+        rows.append(
+            f"<tr class='{dot}'><td><span class='dot'></span>{escape(e['name'])}{mark}</td>"
+            f"<td>{escape(e['host'])}</td><td>{escape(e['addr'])}</td>"
+            f"<td>{escape(e['role'])}</td><td>{lat}</td><td>{seen}</td></tr>")
+    return f"""<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Levante - Fleet Status</title>
+<style>
+body{{font:14px/1.5 system-ui,sans-serif;margin:2rem auto;max-width:980px;padding:0 1rem;color:#1a1a1a}}
+h1{{font-size:1.3rem;margin-bottom:.2rem}} .sub{{color:#666;font-size:.85rem;margin-bottom:1.2rem}}
+.grid{{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem}}
+.card{{border:1px solid #ddd;border-radius:8px;padding:.7rem 1.1rem;min-width:110px}}
+.card b{{display:block;font-size:1.6rem}} .card span{{color:#666;font-size:.8rem}}
+table{{border-collapse:collapse;width:100%}}
+th,td{{text-align:left;padding:.45rem .6rem;border-bottom:1px solid #eee;font-size:.85rem}}
+tr.up .dot{{background:#2a9d2a}} tr.down .dot{{background:#c22}}
+.dot{{display:inline-block;width:.65rem;height:.65rem;border-radius:50%;margin-right:.45rem}}
+.tag{{font-size:.7rem;background:#eef;color:#44a;padding:.1rem .35rem;border-radius:4px}}
+.foot{{margin-top:1.2rem;color:#888;font-size:.78rem}}
+</style></head><body>
+<h1>Fleet Status</h1>
+<div class="sub">Source of truth: Levante (gale-agent, 100.66.39.59). Generated {data['generated_at']} UTC.</div>
+<div class="grid">
+<div class="card"><b>{s['up']}/{s['total']}</b><span>up</span></div>
+<div class="card"><b>{s['local_up']}/{s['local_total']}</b><span>co-located (this host)</span></div>
+<div class="card"><b>{s['remote_up']}/{s['remote_total']}</b><span>remote peers</span></div>
+<div class="card"><b>{s['down']}</b><span>down / unreachable</span></div>
+</div>
+<table><tr><th>Node</th><th>Host IP</th><th>Address</th><th>Role / class</th><th>Latency</th><th>Last seen</th></tr>
+{''.join(rows)}
+</table>
+<div class="foot">A node is "up" only if its own <code>/health</code> answered this host within 3 s
+(probes run sequentially, so a full sweep takes &asymp; #peers &times; up to 3 s).
+Registry entries come from Levante's own <code>keys/peers.env</code>. Tokens are never disclosed
+here.</div>
+</body></html>"""
+
+
 class Handler(BaseHTTPRequestHandler):
-    server_version = "BeaconPeer/1.0"
+    server_version = "LevantePeer/1.0"
     timeout = 15  # drop slow/stalled clients so they can't tie up a thread
 
     def log_message(self, fmt, *args):
@@ -301,7 +455,19 @@ class Handler(BaseHTTPRequestHandler):
         # do_GET at all.
         if self.path == "/health":
             return self._respond(200, {"status": "ok", "name": SELF_NAME})
+        if self.path in ("/", "/index.html"):
+            return self._respond_html(200, _dashboard_html(fleet_data()))
+        if self.path == "/roster":
+            return self._respond(200, fleet_data())
         return self._respond(404, {"error": "not found"})
+
+    def _respond_html(self, code, html):
+        body = html.encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     def do_POST(self):
         if self.path != "/inbox":
