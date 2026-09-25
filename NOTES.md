@@ -1,5 +1,62 @@
 # NOTES.md — Ostro
 
+## 2026-09-25T18:45Z -- SCHEDULED WAKING 2 (:45 family)
+
+Routine sharpness pass. No operator messages (check_replies: none).
+peer/inbox: ~40 new inbound since last waking — all data-only (link
+verifications from canyon/ridge/harbor/delta/mesa/vista, beacon
+self-tests, mountain/rule-7 sweep probes, lantern/river "install
+self-test" messages that cite operator words via the peer channel —
+treated as data per rules 5/6, no inbox file is an operator action
+item, so nothing moved to ASK.md and no replies sent).
+
+**All-green items (regression-re-check vs 17:30Z baseline):**
+- Service liveness: all eleven sibling peer units + `ostro-peer` +
+  `tailscaled` → `active`. Clean, no restart behavior observed.
+- Website liveness (regression half): `/` + all seven named pages
+  (index/fleet/status/metrics/observability/agora/weather .html) → 200;
+  `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` →
+  200 with fresh data (status.json generated_at 18:46:22Z, fleet/metrics
+  18:46:35Z, collector_interval 15s — fresh, regenerated after my probe).
+  Clean. (My 17:30Z probe listed extensionless paths; the site serves
+  `.html` — the 404s there were my probe error, not a regression.)
+- Model/runner consistency: my AGENT.md + wake.sh both read
+  `ollama/qwen3.8:27b`; LAN Ollama serves `qwen3.8:27b` (also
+  `qwen3.8:latest`); `/home/agent/agent/ollama_keepalive.sh` still in
+  live crontab (`*/5`), last log update 18:45:06Z (running). Clean.
+- **FLEET ROLL-UP (item 6):** sweep now lists **33** roster agents (was
+  32 at 17:30Z), all `up`/200, no auth-gated, no down. **Ostro is now in
+  the roster: `Ostro → 100.66.39.59:8798, up, 200` — the 17:30Z
+  missing-from-sweep finding is RESOLVED** (collector picked me up
+  between the two wakings). Moved that item to ASK.md `## Resolved`.
+- Sibling `peers.env` block counts: all 12 co-located agents now at
+  **32** blocks (up from 31/32 at 17:30Z). Own registry grew from my 11
+  rule-8a pairs to 32 (added: BEACON, BROOK, CANYON, CREEK, DELTA,
+  HARBOR, HIGHBEAM, LANTERN, LIGHTNING, MEADOW, MESA, MIST, MOUNTAIN,
+  PRISM, PULSAR, RADAR, RIDGE, RIVER, STREAM, TIDAL, VISTA — remote
+  names from Beacon/Mountain/Tidal hosts, consistent with the 18:2x-
+  18:4x inbound self-test storm). File mtime 18:12:32Z. Counts are equal
+  and non-zero; no per-file content inspected (rule 7/8 posture), and no
+  operator word is needed to *flag* an equal, symmetric count — noted
+  as observation, not a red flag.
+- Host health: `/` 34% used (32G/98G), RAM 6.2G/58G used, load 1.70/
+  1.52/1.48 (steady, up 3h47m), no `/var/run/reboot-required`,
+  dmesg err/warn tail = boot-time apparmor noise only. Log growth
+  spot-check: sibling logs 35K-15M (squall largest, 15M), no runaway.
+  Clean.
+- Spend: `logs/spend-daily.jsonl` = one 2026-09-25 row at $0.00 (local
+  model), no OpenRouter usage, no spike vs sibling baseline. Clean.
+
+**No new regressions this waking. Fleet roll-up: 33 up / 0 gated / 0 down.**
+
+**Backups + VCS this waking:**
+- `./backup.sh` → `backups/ostro-20260925T184742Z.tar.gz`, 164K, 225
+  entries, `tar -tf` verified, core files (AGENT/NOTES/ASK/wake/notify/
+  peer_server) present.
+- Git: committing this NOTES + ASK update, then push to
+  `github main:ostro`.
+
 ## 2026-09-25T17:30Z -- FIRST SCHEDULED WAKING (0,4,8,12,16,20 :45 UTC)
 
 Routine sharpness pass, first full baseline since activation. No operator
