@@ -1,5 +1,62 @@
 # NOTES.md — Ostro
 
+## 2026-09-25T17:30Z -- FIRST SCHEDULED WAKING (0,4,8,12,16,20 :45 UTC)
+
+Routine sharpness pass, first full baseline since activation. No operator
+messages (check_replies: none); peer/inbox: empty.
+
+**All-green items (baseline, no finding):**
+- Service liveness: all eleven sibling peer units + `ostro-peer` +
+  `tailscaled` → `active`. Clean.
+- Website liveness (regression half): `/` + index/agora/fleet/metrics/
+  observability/status/weather → 200; `/api/fleet/metrics`,
+  `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+  `/api/agora/posts` → 200 with fresh data (status.json generated
+  17:27Z, fleet/metrics 17:28Z, re-swept 17:28 — fresh). Clean.
+- Model/runner consistency: my AGENT.md and wake.sh both say
+  `ollama/qwen3.8:27b`; LAN Ollama 192.168.1.197:11434 serves
+  `qwen3.8:27b`; keepalive `/home/agent/agent/ollama_keepalive.sh` still in
+  live crontab (`*/5`). Clean.
+- Fleet status roll-up: sweep now shows 32 listeners all up/200 (was the
+  11 siblings before my activation + 21 remote). No auth-gated, no down.
+  Note: I am NOT yet in the sweep (see finding below).
+- Sibling `peers.env` block counts: 5 siblings at 31 blocks, 3 at 32
+  (sirocco/bora/tramontane) — these carry remote peer blocks, not
+  self-pairing-only, so non-zero is expected. gale (lead) shows no env
+  file path I can read. No unauthorized-block red flag on the
+  self-pairing-only ones. No anomaly.
+- Spend: my `logs/spend-daily.jsonl` does not yet exist (first scheduled
+  waking, spend_check not yet run); all sibling tails for 2026-09-25
+  show ~$0 local-model runs. No spike. Baseline established.
+
+**FINDING (regression, this host, Ostro-owned / regression half):**
+- **Ostro is absent from the host's own fleet-metrics sweep.**
+  `/api/fleet/metrics` on `100.66.39.59:8090` lists 32 listeners (11
+  siblings on this host + 21 remote) — every `*-peer` `active` unit on
+  this host except `ostro-peer` (:8798). My own `/health` on :8798
+  answers `{"status":"ok","name":"OSTRO"}` → 200, and I am live. So the
+  collector's roster predates my 17:14Z install and I am not registered.
+  Consequence: fleet status roll-up item (item 6) cannot see me; the
+  shared `/status`/liveness surface undercounts this host by one. This is
+  a regression from the "all 12 peer units visible" baseline I expected
+  post-install. Root cause is outside my owned surface (the collector /
+  website code, likely Cyclone's domain), so I am flagging it for the
+  operator rather than editing a sibling's file (rule 7). Recommend the
+  fleet-metrics collector add `100.66.39.59:8798` to its node list.
+- **KNOWN DRIFT (first-flag, then stop — per AGENT.md item 4):**
+  Cyclone's `AGENT.md` says `opencode/muse-spark-1.3-contributor-free`
+  while its `wake.sh` still runs `--model ollama/qwen3.8:27b` (line 48) —
+  the documented drift example. Confirmed at `cyclone/AGENT.md:7` and
+  `cyclone/wake.sh:48`. Noting once; will not re-flag. (Separate note:
+  cyclone's PROMPT on line 45 itself still says "model ollama/qwen3.8:27b",
+  so its self-prompt matches its runner, only the AGENT.md header has
+  drifted.)
+
+**Backups + VCS this waking:**
+- `./backup.sh` → `backups/ostro-20260925T172816Z.tar.gz` (155 entries),
+  integrity `tar -tf` OK, AGENT/NOTES/wake/notify/peer_server present.
+- Git: committing this NOTES entry now.
+
 ## 2026-09-25T17:14Z -- ACTIVATED (operator confirmed "Activate + deploy")
 
 - `keys/peers.env` (600) and `keys/telegram.env` (600) created. On first
