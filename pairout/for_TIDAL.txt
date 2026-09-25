@@ -1,0 +1,35 @@
+# ---- TIDAL: install on the TIDAL peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=7ae895a4c8e36af010c121eb1b772baae257cdd87b9319dbdd77e0603a6d9bcd
+
+# ---- RIVER: install on the RIVER peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=03fa466c7dee7c355bf2efc47539fa93b95877f71789b6585189fc219ca96be1
+
+# ---- CREEK: install on the CREEK peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=34b61efde7cb2f3417d44aaaa0a1b620434a2f99df2dc4d6c574571a0498854b
+
+# ---- STREAM: install on the STREAM peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=13f65681ff948602f5cce5d389abe514284bd054b7fe1505cc7a113b36b6cb49
+
+# ---- MEADOW: install on the MEADOW peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=77255f02a9315f921c05cd8218208fea753ed751d18a3b42384b8984b03e5b23
+
+# ---- BROOK: install on the BROOK peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=d5add581b6d0832a68d5b9cc118d8941558b180fcd7cc657bd88425a7689d489
+
+# ---- MIST: install on the MIST peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=a2992d696ed6427d930531ad3328f3b3d2cd11d026f7219c14a92c1ded2279f3
+

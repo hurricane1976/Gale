@@ -65,3 +65,47 @@ per-install self-tests passed (200/401). Real end-to-end sends both
 directions on all 8 pairs verified delivered; 8/8 inbound messages present
 in peer/inbox/. Tokens lived only in 600-perm temp files, shredded after.
 Remote 21 still STAGED (rule 8 — needs per-pair Telegram sign-off).
+
+## 2026-09-23T13:43Z — Outbound verification round
+
+Sent link-check to the 22 peers not yet in peer_send.log (CHINOOK + 21
+remote):
+- Delivered HTTP 200: **CHINOOK, BEACON, MOUNTAIN** → their token half is
+  installed; pair confirmed two-way.
+- 401 unknown-token (19 remote): BROOK, CANYON, CREEK, DELTA, HARBOR,
+  HIGHBEAM, LANTERN, LIGHTNING, MEADOW, MESA, MIST, PRISM, PULSAR, RADAR,
+  RIDGE, RIVER, STREAM, TIDAL, VISTA — they lack the shared-token half;
+  pairing still STAGED (rule 8). Bora's side is fine.
+- Two-way after round: **11/30** (local 9 + BEACON + MOUNTAIN).
+- Detail: `ledger/20260923-outbound-verify.md`.
+
+## 2026-09-23T14:02Z — Per-lead install blocks generated
+
+Rewrote `pair_remote_batch.sh`: it no longer mints (Bora's half for all
+19 is already in `keys/peers.env` from fleet-provision
+20260923T124156Z; `pair_peer.sh` would refuse on the duplicate guard).
+It now formats the EXISTING shared tokens into per-lead blocks:
+- `pairout/for_TIDAL.txt` — 7 blocks (TIDAL RIVER CREEK STREAM MEADOW BROOK MIST)
+- `pairout/for_MOUNTAIN.txt` — 6 (CANYON RIDGE HARBOR DELTA MESA VISTA)
+- `pairout/for_BEACON.txt` — 6 (HIGHBEAM LANTERN LIGHTNING RADAR PRISM PULSAR)
+Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
+600, tokens never on the terminal. Per lead: `./install_peer_block.sh
+<block>` on the peer box, then re-verify from Bora with `send_to_peer.sh`.
+
+## 2026-09-25T12:16Z — Per-waking routine; drift fix confirmed to TRAMONTANE
+
+- Host healthy: up 4d, load ~2.5, df 35%, mem 5.7G/60G. `bora-peer` active
+  (restarted 2026-09-25T02:29:38Z, re-provisioned tokens loaded).
+- Inbox: 225 msgs; today's are all data-only probes (MEADOW census x2,
+  DELTA link-verify) or empty (VORTEX) — no action needed.
+- TRAMONTANE drift notice (2026-09-25T02:30Z) resolved: `backups/` was
+  indeed empty (backup loop never ran under unattended wakes). Ran `backup.sh`
+  → `backups/bora-20260925T121603Z.tar.gz` (120K). `wake-skipped.log`
+  "TELEGRAM_CHAT_ID not set" entries end 2026-09-25T08:34Z — expected while
+  `keys/telegram.env` is outstanding (ASK.md), not an activation failure.
+- Sent confirmation to TRAMONTANE (`send_to_peer.sh` → status ok).
+- Git: uncommitted work (ASK.md, NOTES.md, bora.cron, opencode.json,
+  pair_remote_batch.sh, wake.sh, ledger/, pairout/) left uncommitted pending
+  operator direction — no commit without explicit ask.
+- Outstanding (unchanged): `keys/telegram.env` absent (ASK.md); 19 remote
+  peers still staged awaiting lead install of `pairout/for_{TIDAL,MOUNTAIN,BEACON}.txt`.

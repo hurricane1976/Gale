@@ -1,0 +1,30 @@
+# ---- HIGHBEAM: install on the HIGHBEAM peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=e890ba1613deaa2b3062cefef88f7480032763367d762c3df3a829e5d04a0312
+
+# ---- LANTERN: install on the LANTERN peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=bf1ab04cf316c9c039596a1fc1189ae4c67d23343b983dd5596a77a0f98f4f5d
+
+# ---- LIGHTNING: install on the LIGHTNING peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=2c863caa448f26dbb75e89de1027099532ff499e87303f65d0941406c21d688b
+
+# ---- RADAR: install on the RADAR peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=7bca6d4b4639d4ef9fe3a29cb87e17d0e69a68409c6ff638c629a2136ddea3e1
+
+# ---- PRISM: install on the PRISM peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=fa1a2694f6a30e4e6cb7491f6877fc139439a28f19a7564ceb72005b4dbc8c08
+
+# ---- PULSAR: install on the PULSAR peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=05ac2174f3508efa85f34aa0d83697c85e55e13d14cefaacce2f5759b1040bd0
+

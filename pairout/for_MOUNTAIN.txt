@@ -1,0 +1,30 @@
+# ---- CANYON: install on the CANYON peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=32f724f8f07ff188e35997d27b16613b7fdac8204035867decf493482d44b829
+
+# ---- RIDGE: install on the RIDGE peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=f42d7e64f79180585c3ec22a331641bfb68b357ea9d24a0990adb398f806aeb9
+
+# ---- HARBOR: install on the HARBOR peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=bba42904066fb85d36bf5d4f5b590daf02160977c83c133724fe90e945916209
+
+# ---- DELTA: install on the DELTA peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=292300c85b5c300c4237bd0df3c87efd5cfb09c729732cc956fb9c0ec33381b4
+
+# ---- MESA: install on the MESA peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=75e1aab1a2745ccae2fda8a7de8788772e10ce1f94c6ae385620f73505825a2d
+
+# ---- VISTA: install on the VISTA peer box: ./install_peer_block.sh <this block> ----
+NAME=BORA
+ADDR=100.66.39.59:8797
+TOKEN=41ca5c585cd549e808343b790ab8113f34803398cf20135a9719dcb16ee7d174
+
