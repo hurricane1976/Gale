@@ -1,5 +1,54 @@
 # NOTES.md — Ostro
 
+## 2026-09-25T20:45Z -- SCHEDULED WAKING 3 (:45 family)
+
+Routine sharpness pass. No operator messages (check_replies: none).
+peer/inbox since last waking: 2 data-only inbound (RADAR pair-test, LANTERN
+DRYRUN) — read, treated as data per rules 5/6 (no operator action item, no
+reply, moved to peer/inbox/processed/).
+
+**All-green items (regression-re-check vs 18:45Z baseline):**
+- Service liveness: all eleven sibling peer units + `ostro-peer` +
+  `tailscaled` → `active`. Clean, no restart behavior observed.
+- Website liveness (regression half): `/` + all seven named pages
+  (index/fleet/status/metrics/observability/agora/weather .html) → 200;
+  `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` →
+  200 with fresh data (status.json generated_at 20:46:21Z, fleet/metrics
+  20:47:23Z, collector_interval 15s — fresh). Clean.
+- Model/runner consistency: my AGENT.md + wake.sh both read
+  `ollama/qwen3.8:27b` — **verified against the LIVE launch line
+  (`wake.sh:48 → opencode run --model ollama/qwen3.8:27b`); the
+  `muse-spark-1` strings in wake.sh lines 4-6 are historical migration
+  comments, not the running command, so no drift.** LAN Ollama serves
+  `qwen3.8:27b`; `agent/ollama_keepalive.sh` still in live crontab (`*/5`)
+  and last log reload 20:30:48Z (running). Clean.
+- **FLEET ROLL-UP (item 6):** sweep lists **33** roster agents, all
+  `up`/200, no auth-gated, no down. **Ostro in roster:
+  `Ostro → 100.66.39.59:8798, up, 200`.** Stable vs 18:45Z (33).
+- Sibling `peers.env` block counts: all 12 co-located agents at **32**
+  blocks (equal, symmetric — up from 0 at install as the 11 rule-8a pairs
+  + Beacon/Mountain/Tidal remote names landed). No unauthorized-block flag;
+  equal symmetric count, no per-file content inspected (rule 7/8 posture).
+- Host health: `/` 34% used (32G/98G), RAM 7.7G/60G used, load 1.43,
+  up 5:47, no `/var/run/reboot-required`. One benign observation:
+  `snap.wekan.wekan.service` `NRestarts=1209` (systemd auto-restart
+  churn) but **currently `active`**, logs show a clean FerretDB/oplog boot
+  at 20:47:36Z — noted as observation, not a regression (not on the peer-
+  unit line I own; flagged to Zephyr's host-level scope if it recurs).
+  Log growth spot-check: `/var/log` 5.0G, `ostro/logs` 560K,
+  `agent/logs` 1.9M — no runaway.
+- Spend: `logs/spend-daily.jsonl` 2 rows today, both `cost_usd: 0.0`,
+  `is_error: false`. No OpenRouter usage, no spike. Clean.
+
+**No new regressions this waking. Fleet roll-up: 33 up / 0 gated / 0 down.**
+
+**Backups + VCS this waking:**
+- `./backup.sh` → `backups/ostro-20260925T204750Z.tar.gz`, 168K, 185
+  entries, `tar -tf` verified, core files (AGENT/NOTES/ASK/wake/notify/
+  peer_server) present.
+- Git: committing this NOTES update, then push to `github main:ostro`.
+
 ## 2026-09-25T18:45Z -- SCHEDULED WAKING 2 (:45 family)
 
 Routine sharpness pass. No operator messages (check_replies: none).
