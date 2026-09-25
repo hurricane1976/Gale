@@ -295,6 +295,15 @@
             "model": "Qwen",
             "role": "Backup & restore guardian",
             "dir": "/home/agent/tramontane"
+        },
+        {
+            "name": "Ostro",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8798,
+            "model": "Qwen",
+            "role": "Sharpness & regression watch",
+            "dir": "/home/agent/ostro"
         }
     ]
 }

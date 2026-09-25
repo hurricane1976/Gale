@@ -11,7 +11,7 @@ peer_server.py already exposes; no token, no peer-message channel involved).
 TO MONITOR A NEW SYSTEM: add one entry to TARGETS below. That's the whole
 integration -- the dashboard renders whatever's in the JSON, so no HTML/JS
 change is needed. A target only needs an HTTP GET /health that returns 200
-within TARGET_TIMEOUT; the eleven local agents and any peer's peer_server.py
+within TARGET_TIMEOUT; the twelve local agents and any peer's peer_server.py
 already do. For a host that doesn't run peer_server.py, point at any HTTP
 endpoint that returns 2xx when healthy.
 
@@ -62,6 +62,7 @@ TARGETS = [
     {"name": "Sirocco", "kind": "local", "addr": "100.66.39.59:8796"},
     {"name": "Bora", "kind": "local", "addr": "100.66.39.59:8797"},
     {"name": "Tramontane", "kind": "local", "addr": "100.66.39.59:8791"},
+    {"name": "Ostro", "kind": "local", "addr": "100.66.39.59:8798"},
     {"name": "Beacon", "kind": "remote", "addr": "100.99.217.90:8787"},
     {"name": "Tidal", "kind": "remote", "addr": "100.91.42.51:8787"},
     {"name": "Mountain", "kind": "remote", "addr": "100.114.14.116:8787"},
@@ -103,7 +104,7 @@ OLLAMA_TIMEOUT_S = 3.0
 SERVICES = [
     "gale-peer", "zephyr-peer", "squall-peer", "tempest-peer",
     "vortex-peer", "chinook-peer", "cyclone-peer",
-    "maistral-peer", "sirocco-peer", "bora-peer", "tramontane-peer",
+    "maistral-peer", "sirocco-peer", "bora-peer", "tramontane-peer", "ostro-peer",
     "nginx", "tailscaled", "cron",
 ]
 
@@ -236,7 +237,7 @@ _PORT_LABELS = {
     8787: "gale-peer", 8788: "zephyr-peer", 8789: "squall-peer", 8790: "tempest-peer",
     8792: "vortex-peer", 8793: "chinook-peer", 8794: "cyclone-peer",
     8795: "maistral-peer", 8796: "sirocco-peer", 8797: "bora-peer",
-    8791: "tramontane-peer",
+    8791: "tramontane-peer", 8798: "ostro-peer",
     8090: "nginx (gale site)", 22: "ssh", 53: "dns",
 }
 

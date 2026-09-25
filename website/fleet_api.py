@@ -68,13 +68,13 @@ WEBSITE = os.path.join(ROOT, "website")
 API_DIR = "/var/www/gale-api"
 AGORA_PATH = os.path.join(API_DIR, "agora-posts.json")
 
-# (display name, repo dirname) for the eleven co-located agents. Every repo
+# (display name, repo dirname) for the twelve co-located agents. Every repo
 # lives at /home/agent/<dirname> -- gale's dirname is "agent".
 AGENTS = [
     ("gale", "agent"), ("zephyr", "zephyr"), ("squall", "squall"), ("tempest", "tempest"),
     ("vortex", "vortex"), ("chinook", "chinook"), ("cyclone", "cyclone"),
     ("maistral", "maistral"), ("sirocco", "sirocco"), ("bora", "bora"),
-    ("tramontane", "tramontane"),
+    ("tramontane", "tramontane"), ("ostro", "ostro"),
 ]
 HOME_BASE = os.path.dirname(ROOT)  # /home/agent
 HOST_NAME = "gale"
