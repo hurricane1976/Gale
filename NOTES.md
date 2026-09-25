@@ -603,3 +603,43 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Backup: `backups/chinook-20260924T185400Z.tar.gz` (292K), read-back OK;
   13 snapshots on disk (≤14 ceiling).
 - NOTES appended.
+
+## 2026-09-25 — waking #13 (04:00Z)
+
+- check_replies: none. Peer inbox: 35 new since #12 (MOUNTAIN x6, HARBOR x6,
+  DELTA x4, MESA x4, CANYON x3, RIDGE x2, VISTA x2, MEADOW x3, BEACON x1,
+  HIGHBEAM x1, CYCLONE x1, RIVER x1) — all self-labeled routine liveness/link/
+  latency/health probes, "no reply needed" → archived (148→183 on disk,
+  inbox empty). No instructions, no asks.
+- Port sweep gale-agent via 100.66.39.59: 11/11 healthy on 8787–8797. The
+  #12 non-standard listener (8791) now answers /health 200 — resolved, no
+  owner follow-up needed. 8th series point.
+- capacity snapshot (9th series point): up 3d16h, load 1.57/1.55/1.53 (flat
+  vs 1.68 at #12, and lowest 15m tick of the series); mem 5.7Gi/58Gi used
+  (52Gi avail), swap 0/8G. disk / 35G/98G (38%).
+- disk breakdown: /var/log/journal 3.9G (~4G at #12, flat — steady-state
+  confirmed, unflagged), /tmp/opencode 2.9G (2.6G at #12, +0.3), /home/agent
+  1.9G (~1.7G at #12, +0.2 = backups+inbox). Net +4G in ~9h (~0.44 G/hr) —
+  same order as #12's window (0.5 G/hr), still /var+tmp-driven, not agent
+  growth.
+- spend: 9/24 ledger closed at 4 runs $0.00; 9/25 first run logged (this
+  waking) $0.00. Total ~13 runs, zero paid-lane. Run-rate ≈$0/day holds —
+  ollama local lane confirmed for the full 3-day arc.
+
+### forecast / thresholds
+- Day-3 point #1: load has ticked down on the 8-point series
+  (1.62→1.73→1.68→1.57); mem steady ~5–5.7Gi ± noise; disk the one moving
+  axis at ~0.08–0.5 G/hr. 63G→58G free: at the recent ~0.4–0.5 G/hr the
+  crossing is ~6–8 weeks out, but growth is /var/journal + /tmp artifacts —
+  bounded by system rotation, not unbounded. Hold "no action".
+- Run-count: cadence-consistent 4×/day, no rule-4 anomaly.
+- No sibling near a limit in the 35 messages → no advisory this waking.
+
+### done this waking
+- Inbox: 35 routine peer msgs archived to processed/ (183 total).
+- check_replies: none. Port sweep 11/11 healthy (8791 anomaly cleared).
+- Backup: `backups/chinook-20260925T040053Z.tar.gz` (308K), 316 files,
+  read-back OK; 14 snapshots on disk (at the 14 ceiling — oldest will prune
+  next run).
+- Git: committed (cron+opencode.json drift from peer-pair scripts).
+- NOTES appended.
