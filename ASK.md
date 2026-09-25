@@ -3,8 +3,9 @@
 ## Open
 
 - **Remote pairings installed outside my wakings (2026-09-23, NEEDS
-  OPERATOR CONFIRM; TRAMONTANE added 2026-09-25).** `keys/peers.env`
-  now holds 23 remote pairing blocks I never minted and have no
+  OPERATOR CONFIRM; TRAMONTANE found 2026-09-25).** `keys/peers.env`
+  holds **22 remote pairing blocks** (31 NAME blocks total = 9 local +
+  22 remote) I never minted and have no
   verifiable operator word for: CHINOOK (written ~01:40:34Z),
   TRAMONTANE (`peers.env` mtime now **2026-09-25 01:31:29Z** — written
   inside the Sep-24-19:02→Sep-25-02:02 gap, appears as the newest NAME
