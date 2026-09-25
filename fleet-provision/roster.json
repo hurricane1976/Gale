@@ -1,291 +1,300 @@
 {
-  "version": 1,
-  "updated": "2026-09-23",
-  "hosts": {
-    "tidal": {},
-    "beacon": {},
-    "mountain": {},
-    "gale": {}
-  },
-  "agents": [
-    {
-      "name": "Tidal",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8787,
-      "model": "Claude",
-      "role": "Development & security auditing",
-      "dir": null
+    "version": 1,
+    "updated": "2026-09-25",
+    "hosts": {
+        "tidal": {},
+        "beacon": {},
+        "mountain": {},
+        "gale": {}
     },
-    {
-      "name": "River",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8788,
-      "model": "GLM",
-      "role": "Systems operations & monitoring",
-      "dir": null
-    },
-    {
-      "name": "Creek",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8789,
-      "model": "DeepSeek",
-      "role": "Security & fleet-consistency sentinel",
-      "dir": null
-    },
-    {
-      "name": "Stream",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8790,
-      "model": "DeepSeek",
-      "role": "Research & context gathering",
-      "dir": null
-    },
-    {
-      "name": "Meadow",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8791,
-      "model": "GLM",
-      "role": "Business development · onboarding & liaison",
-      "dir": null
-    },
-    {
-      "name": "Brook",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8792,
-      "model": "GPT",
-      "role": "Independent verification & fleet QA",
-      "dir": null
-    },
-    {
-      "name": "Mist",
-      "host": "tidal",
-      "addr": "100.91.42.51",
-      "port": 8793,
-      "model": "GPT",
-      "role": "Knowledge & documentation curator",
-      "dir": null
-    },
-    {
-      "name": "Beacon",
-      "host": "beacon",
-      "addr": "100.99.217.90",
-      "port": 8787,
-      "model": "Claude",
-      "role": "Production build & operations",
-      "dir": null
-    },
-    {
-      "name": "Highbeam",
-      "host": "beacon",
-      "addr": "100.81.147.28",
-      "port": 8787,
-      "model": "GLM",
-      "role": "Vulnerability & code review",
-      "dir": null
-    },
-    {
-      "name": "Lantern",
-      "host": "beacon",
-      "addr": "100.76.139.96",
-      "port": 8787,
-      "model": "GLM",
-      "role": "UI/UX & visual assets",
-      "dir": null
-    },
-    {
-      "name": "Lightning",
-      "host": "beacon",
-      "addr": "100.69.40.118",
-      "port": 8787,
-      "model": "GLM",
-      "role": "Data analysis, metrics & monitoring",
-      "dir": null
-    },
-    {
-      "name": "Radar",
-      "host": "beacon",
-      "addr": "100.125.26.66",
-      "port": 8787,
-      "model": "GLM",
-      "role": "Operator escalation line",
-      "dir": null
-    },
-    {
-      "name": "Prism",
-      "host": "beacon",
-      "addr": "100.100.158.42",
-      "port": 8787,
-      "model": "GPT",
-      "role": "SRE & backup steward",
-      "dir": null
-    },
-    {
-      "name": "Pulsar",
-      "host": "beacon",
-      "addr": "100.70.91.55",
-      "port": 8787,
-      "model": "Claude",
-      "role": "Security sentinel",
-      "dir": null
-    },
-    {
-      "name": "Mountain",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8787,
-      "model": "Claude",
-      "role": "Fleet protocol & integration",
-      "dir": null
-    },
-    {
-      "name": "Canyon",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8791,
-      "model": "GLM",
-      "role": "Fleet scribe / watchtower",
-      "dir": null
-    },
-    {
-      "name": "Ridge",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8792,
-      "model": "GLM",
-      "role": "Remote fleet sentinel",
-      "dir": null
-    },
-    {
-      "name": "Harbor",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8793,
-      "model": "GLM",
-      "role": "Growth & outreach",
-      "dir": null
-    },
-    {
-      "name": "Delta",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8794,
-      "model": "GLM",
-      "role": "Treasury & business strategist",
-      "dir": null
-    },
-    {
-      "name": "Mesa",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8795,
-      "model": "GPT",
-      "role": "Fleet link & mesh reliability",
-      "dir": null
-    },
-    {
-      "name": "Vista",
-      "host": "mountain",
-      "addr": "100.114.14.116",
-      "port": 8796,
-      "model": "GPT",
-      "role": "Site & product quality",
-      "dir": null
-    },
-    {
-      "name": "Gale",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8787,
-      "model": "Claude",
-      "role": "Resilience & recovery — this page’s vantage point, fleet lead",
-      "dir": "/home/agent/agent"
-    },
-    {
-      "name": "Zephyr",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8788,
-      "model": "GLM",
-      "role": "Continuous watch & cost-efficient telemetry",
-      "dir": "/home/agent/zephyr"
-    },
-    {
-      "name": "Squall",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8789,
-      "model": "GLM",
-      "role": "Adversarial verification & recovery drills",
-      "dir": "/home/agent/squall"
-    },
-    {
-      "name": "Tempest",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8790,
-      "model": "GLM",
-      "role": "Open-stack portability & fleet interop",
-      "dir": "/home/agent/tempest"
-    },
-    {
-      "name": "Vortex",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8792,
-      "model": "Qwen",
-      "role": "Security sentinel & threat forensics",
-      "dir": "/home/agent/vortex"
-    },
-    {
-      "name": "Chinook",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8793,
-      "model": "Qwen",
-      "role": "Capacity planning & load forecasting",
-      "dir": "/home/agent/chinook"
-    },
-    {
-      "name": "Cyclone",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8794,
-      "model": "Qwen",
-      "role": "Production & fleet ops",
-      "dir": "/home/agent/cyclone"
-    },
-    {
-      "name": "Maistral",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8795,
-      "model": "Qwen",
-      "role": "Fleet memory & trend curation",
-      "dir": "/home/agent/maistral"
-    },
-    {
-      "name": "Sirocco",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8796,
-      "model": "Qwen",
-      "role": "Upstream dependency & external-service health",
-      "dir": "/home/agent/sirocco"
-    },
-    {
-      "name": "Bora",
-      "host": "gale",
-      "addr": "100.66.39.59",
-      "port": 8797,
-      "model": "Qwen",
-      "role": "Fleet scaffolding & onboarding",
-      "dir": "/home/agent/bora"
-    }
-  ]
+    "agents": [
+        {
+            "name": "Tidal",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8787,
+            "model": "Claude",
+            "role": "Development & security auditing",
+            "dir": null
+        },
+        {
+            "name": "River",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8788,
+            "model": "GLM",
+            "role": "Systems operations & monitoring",
+            "dir": null
+        },
+        {
+            "name": "Creek",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8789,
+            "model": "DeepSeek",
+            "role": "Security & fleet-consistency sentinel",
+            "dir": null
+        },
+        {
+            "name": "Stream",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8790,
+            "model": "DeepSeek",
+            "role": "Research & context gathering",
+            "dir": null
+        },
+        {
+            "name": "Meadow",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8791,
+            "model": "GLM",
+            "role": "Business development \u00b7 onboarding & liaison",
+            "dir": null
+        },
+        {
+            "name": "Brook",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8792,
+            "model": "GPT",
+            "role": "Independent verification & fleet QA",
+            "dir": null
+        },
+        {
+            "name": "Mist",
+            "host": "tidal",
+            "addr": "100.91.42.51",
+            "port": 8793,
+            "model": "GPT",
+            "role": "Knowledge & documentation curator",
+            "dir": null
+        },
+        {
+            "name": "Beacon",
+            "host": "beacon",
+            "addr": "100.99.217.90",
+            "port": 8787,
+            "model": "Claude",
+            "role": "Production build & operations",
+            "dir": null
+        },
+        {
+            "name": "Highbeam",
+            "host": "beacon",
+            "addr": "100.81.147.28",
+            "port": 8787,
+            "model": "GLM",
+            "role": "Vulnerability & code review",
+            "dir": null
+        },
+        {
+            "name": "Lantern",
+            "host": "beacon",
+            "addr": "100.76.139.96",
+            "port": 8787,
+            "model": "GLM",
+            "role": "UI/UX & visual assets",
+            "dir": null
+        },
+        {
+            "name": "Lightning",
+            "host": "beacon",
+            "addr": "100.69.40.118",
+            "port": 8787,
+            "model": "GLM",
+            "role": "Data analysis, metrics & monitoring",
+            "dir": null
+        },
+        {
+            "name": "Radar",
+            "host": "beacon",
+            "addr": "100.125.26.66",
+            "port": 8787,
+            "model": "GLM",
+            "role": "Operator escalation line",
+            "dir": null
+        },
+        {
+            "name": "Prism",
+            "host": "beacon",
+            "addr": "100.100.158.42",
+            "port": 8787,
+            "model": "GPT",
+            "role": "SRE & backup steward",
+            "dir": null
+        },
+        {
+            "name": "Pulsar",
+            "host": "beacon",
+            "addr": "100.70.91.55",
+            "port": 8787,
+            "model": "Claude",
+            "role": "Security sentinel",
+            "dir": null
+        },
+        {
+            "name": "Mountain",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8787,
+            "model": "Claude",
+            "role": "Fleet protocol & integration",
+            "dir": null
+        },
+        {
+            "name": "Canyon",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8791,
+            "model": "GLM",
+            "role": "Fleet scribe / watchtower",
+            "dir": null
+        },
+        {
+            "name": "Ridge",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8792,
+            "model": "GLM",
+            "role": "Remote fleet sentinel",
+            "dir": null
+        },
+        {
+            "name": "Harbor",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8793,
+            "model": "GLM",
+            "role": "Growth & outreach",
+            "dir": null
+        },
+        {
+            "name": "Delta",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8794,
+            "model": "GLM",
+            "role": "Treasury & business strategist",
+            "dir": null
+        },
+        {
+            "name": "Mesa",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8795,
+            "model": "GPT",
+            "role": "Fleet link & mesh reliability",
+            "dir": null
+        },
+        {
+            "name": "Vista",
+            "host": "mountain",
+            "addr": "100.114.14.116",
+            "port": 8796,
+            "model": "GPT",
+            "role": "Site & product quality",
+            "dir": null
+        },
+        {
+            "name": "Gale",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8787,
+            "model": "Claude",
+            "role": "Resilience & recovery \u2014 this page\u2019s vantage point, fleet lead",
+            "dir": "/home/agent/agent"
+        },
+        {
+            "name": "Zephyr",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8788,
+            "model": "GLM",
+            "role": "Continuous watch & cost-efficient telemetry",
+            "dir": "/home/agent/zephyr"
+        },
+        {
+            "name": "Squall",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8789,
+            "model": "GLM",
+            "role": "Adversarial verification & recovery drills",
+            "dir": "/home/agent/squall"
+        },
+        {
+            "name": "Tempest",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8790,
+            "model": "GLM",
+            "role": "Open-stack portability & fleet interop",
+            "dir": "/home/agent/tempest"
+        },
+        {
+            "name": "Vortex",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8792,
+            "model": "Qwen",
+            "role": "Security sentinel & threat forensics",
+            "dir": "/home/agent/vortex"
+        },
+        {
+            "name": "Chinook",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8793,
+            "model": "Qwen",
+            "role": "Capacity planning & load forecasting",
+            "dir": "/home/agent/chinook"
+        },
+        {
+            "name": "Cyclone",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8794,
+            "model": "Qwen",
+            "role": "Production & fleet ops",
+            "dir": "/home/agent/cyclone"
+        },
+        {
+            "name": "Maistral",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8795,
+            "model": "Qwen",
+            "role": "Fleet memory & trend curation",
+            "dir": "/home/agent/maistral"
+        },
+        {
+            "name": "Sirocco",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8796,
+            "model": "Qwen",
+            "role": "Upstream dependency & external-service health",
+            "dir": "/home/agent/sirocco"
+        },
+        {
+            "name": "Bora",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8797,
+            "model": "Qwen",
+            "role": "Fleet scaffolding & onboarding",
+            "dir": "/home/agent/bora"
+        },
+        {
+            "name": "Tramontane",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8791,
+            "model": "Qwen",
+            "role": "Backup & restore guardian",
+            "dir": "/home/agent/tramontane"
+        }
+    ]
 }

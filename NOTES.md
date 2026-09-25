@@ -1583,3 +1583,70 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
   (kernel reboot window, Maistral telegram/cron, Vortex/Cyclone remote
   pairing installs, Mountain quarantine hold, remote bundle imports)
   unchanged, still waiting on the operator or remote sides.
+
+## 2026-09-25T02:56Z — found + fixed a live crontab gap (Gale/Zephyr/Squall/Tempest wake lines missing); verified Tramontane's own onboarding
+
+- `./check_replies.sh`: one queued operator command, "Ensure tramontane is
+  onboarded and keyed" (2026-09-25, via /commands).
+- **Found and fixed a live host-health problem before anything else.**
+  `git status` showed uncommitted changes in `ASK.md`, `fleet-provision/
+  roster.json`, `gale.cron`, `opencode.json` -- leftovers from an earlier,
+  unlogged session (~00:38Z: gale.cron schedule edit + opencode.json
+  keys-deny entries for the newer siblings; ~01:56-02:55Z: Tramontane's own
+  onboarding waking, which added its roster.json entry). Diffed everything
+  before touching it -- all legitimate, already-tested work, just never
+  committed (rule 3 gap). While reconciling `gale.cron` against the live
+  crontab, found the installed crontab (`crontab -l`) had 11
+  `telegram_commands.sh` lines but only 7 `wake.sh` lines: Gale, Zephyr,
+  Squall, and Tempest's wake lines were gone, even though their individual
+  `<name>.cron` source files on disk were all correct. Root cause: the
+  ~01:57Z cron reorg (part of Tramontane's onboarding, moving the fleet
+  from 4x/day fixed slots to an hourly round-robin) combined all 10
+  siblings' + Gale's `.cron` files into one and installed it via
+  `crontab <file>` -- but whatever produced that combined file dropped 4
+  wake lines. Left alone, those 4 agents would have silently stopped
+  waking, no error anywhere. Caught with hours to spare (next affected
+  slot was 06:xx/07:xx that day). Rebuilt the crontab by `cat`-ing all 11
+  per-agent `.cron` files fresh and reinstalling; verified 11/11 wake +
+  11/11 telegram lines, no schedule collisions. Runbook:
+  `runbooks/cron-install-drop.md`.
+- **Verified the operator's Telegram ask ("ensure tramontane is onboarded
+  and keyed") is already satisfied**, done by Tramontane's own earlier
+  waking that same day -- not re-done, just confirmed from outside its
+  directory (rule 7): `tramontane-peer.service` active on :8791, cron
+  installed, `fleet-provision verify` shows 31/31 pairs zero drift for all
+  11 local agents (incl. Tramontane), and `keys/telegram.env` holds
+  non-empty `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` (lengths checked only,
+  values never read). Logged in ASK.md as resolved.
+- Host health: disk 38% (58G free), mem 21G free/50G avail, load
+  2.37/1.78/1.75 on 16 cores, tailscaled/cron/gale-peer/gale-fleet-api/
+  gale-sysmon all active. Reboot-required flag still set (unchanged since
+  2026-09-23 ~14:08Z kernel patch; still open in ASK.md, awaiting the
+  operator's window choice).
+- `./backup.sh` -> `gale-20260925T025651Z.tar.gz` (18M), `tar -tzf`
+  verified readable (982 entries), 14 snapshots retained.
+- peer/inbox: 22 new messages (MOUNTAIN x4, MEADOW x6, DELTA x2, HIGHBEAM,
+  CANYON, RIVER, HARBOR x4, CYCLONE, MESA, PULSAR) plus one leftover
+  PULSAR self-test message in a nested `peer/inbox/pulsar/` subfolder (same
+  misfiling pattern seen before with `peer/inbox/gale/`) -- all routine
+  liveness/link-check/Rule-7 sweep probes, every one self-described "no
+  reply needed"; filed to `processed/`, nested subfolder cleared. Recurring
+  MOUNTAIN-speaking-as-MESA pattern again (00:22:26Z) -- same already-
+  flagged low-signal item in ASK.md, no new action. RIVER's w195 sweep:
+  30/30 green, w185 containment holding, reboot-required flag noted on
+  their side too, no change.
+- quarantine/ (`peer/inbox/quarantine/`) unchanged (20 Mountain items from
+  2026-09-21).
+- spend-daily.jsonl: normal trend (latest $0.72 on 2026-09-24), no errors.
+- `fleet-provision verify`: all 11 local agents OK, 31 pairs each, zero
+  drift.
+- Committed: `ASK.md`/`gale.cron`/`fleet-provision/roster.json`/
+  `opencode.json` (the previously-uncommitted legitimate work above) plus
+  this NOTES entry and the new cron runbook. `wip/network.html`/
+  `wip/network.js` remain deliberately uncommitted (parked pending the
+  operator's call, per the 2026-09-24 ASK.md item).
+- New ASK.md items: both resolved same waking (Tramontane verification,
+  cron gap fix). Existing open items (kernel reboot window, Vortex/Cyclone
+  remote pairing installs, Mountain quarantine hold, remote bundle
+  imports, Maistral telegram/cron) unchanged, still waiting on the
+  operator or remote sides.
