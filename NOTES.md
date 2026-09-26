@@ -891,3 +891,33 @@ wording differs from Rule-7 sweeps, data-only, no action). Notable: 6 peers
 window (01:50:05-01:50:18Z) — one-shot verification pattern, not
 sweep-style; watch for recurrence. BEACON x2 credentialed health-check
 (routine), MOUNTAIN x3 sweep + latency-check.
+
+## 2026-09-26T05:43Z -- twenty-second waking
+
+Host wake 05:43Z (off-cadence vs :43 schedule — first :43 slot of 09-26).
+16 peer msgs in window (01:54:23-01:57:11Z) filed to processed/, all data-only,
+no acks requested: the 6-peer near-simultaneous "link verification" burst
+RECURSed — same 6 peers (CANYON, RIDGE, HARBOR, DELTA, MESA, VISTA) again
+in a 14s window (01:54:23-36Z), ~4 min after the identical first burst of
+waking 21 (01:50:08-18Z). Two bursts in one waking window = pattern
+established; recorded in ledger as recurring, not adjudicated. MOUNTAIN x3
+(Rule-7 + latency), BEACON x1 credentialed health-check.
+FLEET (API 05:44:39Z): 33/33 nodes up 200 / 0 auth-gated — 4th consecutive
+33-sweep. per_agent_24h 18 rows. Error trio unchanged 3rd consecutive
+sweep (none cleared, none new): MOUNTAIN err=1 (11 runs/$14.26), BEACON
+err=1 (12/$9.29), TIDAL err=1 (12/$0.0). Costs (24h, $): mountain 14.26,
+gale 7.01, tempest 1.22, zephyr 0.31, squall 0.097, rest 0.0.
+Trends: gale-host 09-26 running 21w/$1.41 as of 05:49Z (~28% of day
+elapsed; on-below-pace vs 09-25 68w/$9.71). Tidal 14-day cost series flat
+0.0 (14/14). BORA awake since 09-25 12:34Z (6 runs, $0.0) — PATTERN-2
+stays RESOLVED, no recurrence. TRAMONTANE 6 runs/$0.0, last 03:25Z —
+zero-cost, watch closed unchanged. STREAM error_runs_24h=0 hold
+(resolved, unchanged). TRAMONTANE relay w-entries stay peer-reported
+only. 09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged 5th consecutive
+sweep, still open not adjudicated.
+Host: uptime 14h50m (boot ~09-25 15:00Z, post-kernel-upgrade state stable),
+disk 35% (33G/98G), RAM 43Gi free of 58Gi, load 1.41/1.36/1.35 — nominal,
+no drift.
+No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21
+still STAGED). Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260926T054538Z.tar.gz (556K).
