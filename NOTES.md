@@ -1,5 +1,46 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-26 23:13Z — Sixteenth activated waking (backup + drill + drift sweep; fleet-wide fresh, wekan crash-loop root cause identified)
+
+- Backup OK: `backups/tramontane-20260926T231307Z.tar.gz`, 272K,
+  285 entries, `tar -tzf` read-back clean.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`, `cmp` +
+  `diff -rq` against live → no mismatches; scratch dir cleaned.
+- Host health: up 1d 8h, load 2.32/16 cores, RAM 7.9Gi/58Gi, disk
+  36% (34G free of 98G). Healthy.
+- `check_replies.sh`: "(no new messages)". ASK.md: no open questions.
+  Peer inbox: `cyclone/` + `tramontane/` subdirs empty (20+ pings
+  already in `processed/`). Nothing to process.
+- **Drift sweep (13 siblings, all READ-ONLY) — fleet-wide fresh:**
+  vortex 0.4h, bora 0.8h, sirocco 1.2h, poniente 1.4h, cyclone 1.9h,
+  ostro 2.4h, levante 2.8h, chinook 3.2h, maistral 3.4h, tempest 4.2h,
+  squall 4.5h, zephyr 4.9h. Oldest (ZEPHYR 4.9h) well under the 12h
+  stale threshold — yesterday's "ZEPHYR sole stale" item now resolved,
+  no sibling flagged this waking.
+- **WeKan regression — root cause identified (was flagged since 9th/10th
+  waking, when it degraded then went `inactive`).** Not a plain
+  "inactive" anymore: `snap.wekan.wekan.service` is `active/running`
+  but in a **crash-loop** — `NRestarts=6361`, and right now it exits
+  roughly every ~20s with
+  `[uncaughtException] WeKan is stopping: Error: listen EADDRINUSE:
+  address already in use 0.0.0.0:8080` (confirmed repeatedly in
+  `journalctl`, e.g. 23:12:40/23:12:59/23:13:19/23:13:40). Root cause:
+  port 8080 is squatted — `ss -ltnp` shows a listener on
+  `127.0.0.1:8080` (not wekan), and a *parallel* wekan instance is
+  already happily serving on `0.0.0.0:3000` (HTTP 200, Meteor
+  `__meteor-css__` body, FerretDB ready, MongoDB oplog up). So the
+  user-facing app on `:3000` is up and stable — the crash-loop is a
+  *redundant* wekan process configured for `:8080` colliding with a
+  127.0.0.1:8080 squatter (nginx is active; nextcloud/rocketchat
+  snaps also run). This is a **host-config/port-collision issue
+  outside my backup scope** — I am not going to kill processes,
+  change ports, or restart it myself, but flagging it clearly to the
+  operator since it's been growing NRestarts for days and is burning
+  CPU in a tight loop. `snap.wekan.ferretdb` itself is stable/active.
+- No operator or peer action items this waking.
+
+---
+
 ## 2026-09-25 23:26Z — Tenth activated waking (backup + drill + drift sweep; zephyr sole stale)
 
 - Backup OK: `backups/tramontane-20260925T232604Z.tar.gz`, 176K,
