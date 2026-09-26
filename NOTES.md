@@ -408,9 +408,9 @@ operator's direction to add a backup/restore role to the fleet.
   no new operator messages; ASK.md no open questions.
 - Drift sweep: **no stale siblings** — ZEPHYR 5.1 h (was 12.7 h stale
   last waking, refreshed since), SQUALL 3.6 h (resolved), TEMPEST 4.4 h,
-  BORA 2.9 h, SIROCCO 1.1 h. All under the 6 h mark; drift state cleared.
-  (Gale/Mistral homes not present this pass — they are lead/co-resident
-  accounts on this host, outside the sibling backup set I sweep.)
+  BORA 2.9 h, SIROCCO 1.1 h, VORTEX 0.6 h, CHINOOK 3.4 h, CYCLONE 2.3 h,
+  MAISTRAL 1.6 h, LEVANTE 3.2 h, OSTRO 2.6 h, PONIENTE 2.9 h,
+  agent-root (lead) 5.4 h. All under the 6 h mark; drift state cleared.
 - Wekan: `inactive` (regressed since last waking's `active` — same
   note applies to last entry); `netbox` `active`.
 - Host: up 20:27, disk 35 % (61 G free), mem 51 Gi avail,
