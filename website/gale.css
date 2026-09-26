@@ -1498,3 +1498,42 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .gpu-track.gpu-bar-warn i { background: linear-gradient(90deg, var(--warn-dim), var(--warn)); }
 .gpu-empty { padding: 18px 4px; font-size: 0.85rem; color: var(--text-faint); }
 .gpu-err { color: var(--warn); }
+
+/* ---- status: alert strip ---- */
+.alert-strip { margin: 4px 0 18px; }
+.alert-strip h2 {
+  font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600;
+  margin: 0 0 10px; color: var(--text-dim);
+}
+.alert-count {
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+.alert-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.alert-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 0.82rem/1.2 var(--font-body); color: var(--text);
+  background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: 999px; padding: 7px 14px; cursor: pointer;
+  transition: transform 0.15s var(--ease-out), border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
+}
+.alert-chip:hover { transform: translateY(-1px); background: var(--surface-2); }
+.alert-chip:focus-visible { outline: 2px solid var(--flag-soft); outline-offset: 2px; }
+.alert-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex: none;
+}
+.alert-text { color: var(--text); }
+.alert-chip--crit { border-color: var(--flag-dim); background: color-mix(in srgb, var(--flag) 10%, var(--surface)); }
+.alert-chip--crit .alert-dot { background: var(--flag); box-shadow: 0 0 8px var(--flag); animation: led-pulse-crit 2.2s ease-in-out infinite; }
+.alert-chip--crit:hover { border-color: var(--flag-soft); }
+.alert-chip--warn { border-color: var(--warn-dim); background: color-mix(in srgb, var(--warn) 10%, var(--surface)); }
+.alert-chip--warn .alert-dot { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.alert-chip--warn:hover { border-color: var(--warn); }
+.alert-chip--info { border-color: var(--gust-dim); background: color-mix(in srgb, var(--gust) 8%, var(--surface)); }
+.alert-chip--info .alert-dot { background: var(--gust); }
+.alert-chip--info:hover { border-color: var(--gust); }
+@keyframes led-pulse-crit { 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--flag) 22%, transparent); } }
+@media (prefers-reduced-motion: no-preference) {
+  .alert-chip { animation: chip-in 0.35s var(--ease-out) both; }
+}
+@keyframes chip-in { from { opacity: 0; transform: translateY(4px); } }

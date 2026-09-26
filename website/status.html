@@ -63,9 +63,14 @@
       <p class="block" style="color:var(--text-dim)">This board needs JavaScript to poll live data. Raw feed: <code>/api/status.json</code>.</p>
     </noscript>
 
+    <section id="alert-strip" class="alert-strip" role="alert" aria-live="polite" aria-labelledby="h-alerts" hidden>
+      <h2 id="h-alerts" class="alert-strip-head">Needs attention</h2>
+      <div class="alert-chips" id="alert-chips"></div>
+    </section>
+
     <div id="board" class="ops-board" hidden>
 
-      <section class="ops-panel span-full" aria-labelledby="h-vitals">
+      <section class="ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
         <h2 id="h-vitals" class="panel-title">Host vitals &middot; <span id="hostname">&ndash;</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
       </section>
@@ -89,7 +94,7 @@
         <p class="mini-note" id="tailscale-line"></p>
       </section>
 
-      <section class="ops-panel" aria-labelledby="h-services">
+      <section class="ops-panel" id="sec-services" aria-labelledby="h-services">
         <h2 id="h-services" class="panel-title">Services</h2>
         <table class="ops-table" id="services-table">
           <thead><tr><th>Unit</th><th>State</th><th>Active since</th></tr></thead>
@@ -97,7 +102,7 @@
         </table>
       </section>
 
-      <section class="ops-panel" aria-labelledby="h-security">
+      <section class="ops-panel" id="sec-security" aria-labelledby="h-security">
         <h2 id="h-security" class="panel-title">Security posture</h2>
         <dl class="kv-list" id="security-info"></dl>
       </section>

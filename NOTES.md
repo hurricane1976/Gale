@@ -2111,3 +2111,10 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Service: `sudo -n systemctl restart gale-fleet-api` (plain `systemctl` needs interactive auth). Verified live via `http://127.0.0.1:8793/net`.
 - Deploy: `bash website/deploy.sh` (nginx -t + reload OK). E2E through nginx on public IP `http://100.66.39.59:8090/` — `network.html` 200, `network.js` 200, `api/fleet/net` feed OK (schema `fleet-net/v1`).
 - Committed 11 files (9 modified + 2 new, +113/-8); pushed to `github` remote.
+
+## 2026-09-26T23:15Z -- #1 Alert strip on status.html (idea 1 of 7)
+
+- Hybrid alert strip above the vitals board on status.html: host-level alerts derived client-side from `status.json` (any disk >=80% warn / >=93% crit, swap >=10% warn, ufw inactive warn, reboot-required warn, any non-active service crit) + fleet-level alerts from new backend route `GET /alerts` (`alerts_envelope()` in fleet_api.py, 60s TTL cache, cap 12, sorted crit>warn>info): node-down crit, agent error-runs-in-24h warn, agent stale >7d info, 24h peer-flag/quarantine info (deduped on (agent,text)).
+- Chips are buttons: crit/warn/info severity tints (gale --flag/--warn/--gust tokens, color-mix, led-pulse on crit dots, chip-in animation gated by prefers-reduced-motion), click jumps to section (`sec-vitals`/`sec-services`/`sec-security` ids added in status.html) or navigates to fleet.html for fleet kinds (agent/errors/wakeup/quarantine).
+- `role="alert" aria-live="polite"` on the strip; hidden entirely when no alerts.
+- Verified: both curl paths OK - `http://127.0.0.1:8793/alerts` and `http://100.66.39.59:8090/api/fleet/alerts` (nginx `proxy_pass http://127.0.0.1:8793/` strips `/api/fleet/`). Note: service needed `sudo -n systemctl restart gale-fleet-api` to pick up the new route (old process predated the edit) - earlier 404s were that in-flight restart, not a routing bug.

@@ -548,15 +548,76 @@ function updateFreshness(generatedAt) {
   else setFresh("live", `updated ${fmtAgo(generatedAt)}`);
 }
 
+const SEV_ORDER = { crit: 0, warn: 1, info: 2 };
+const stripEl = document.getElementById("alert-strip");
+const chipsEl = document.getElementById("alert-chips");
+const CHIP_TARGETS = {
+  disk: "sec-vitals", swap: "sec-vitals", cpu: "sec-vitals", load: "sec-vitals",
+  ufw: "sec-security", reboot: "sec-security",
+  service: "sec-services",
+  agent: "fleet", errors: "fleet", wakeup: "fleet", quarantine: "fleet",
+};
+
+function hostAlerts(d) {
+  const a = [];
+  const h = d.host || {};
+  for (const dk of h.disks || []) {
+    const lvl = level(dk.pct, 80, 93);
+    if (lvl !== "ok") a.push({ sev: lvl, kind: "disk", text: `disk ${dk.mount} at ${Math.round(dk.pct)}%` });
+  }
+  if (h.swap && h.swap.pct >= 10) a.push({ sev: "warn", kind: "swap", text: `swap ${Math.round(h.swap.pct)}% used` });
+  const s = d.security || {};
+  if (s.ufw_active === false) a.push({ sev: "warn", kind: "ufw", text: "ufw firewall inactive" });
+  if (s.reboot_required) a.push({ sev: "warn", kind: "reboot", text: "reboot required" });
+  for (const sv of d.services || []) {
+    if (sv.state !== "active") a.push({ sev: "crit", kind: "service", text: `${sv.unit} ${sv.state}` });
+  }
+  return a;
+}
+
+async function fleetAlerts() {
+  try {
+    const res = await fetch("api/fleet/alerts", { cache: "no-store" });
+    if (!res.ok) return [];
+    const j = await res.json();
+    return (j.alerts || []).map((x) => ({ ...x, kind: String(x.kind || "").split("-")[0] || "fleet" }));
+  } catch { return []; }
+}
+
+function renderAlertStrip(all) {
+  all.sort((x, y) => (SEV_ORDER[x.sev] ?? 9) - (SEV_ORDER[y.sev] ?? 9));
+  if (!all.length) { stripEl.hidden = true; return; }
+  stripEl.hidden = false;
+  chipsEl.innerHTML = all.map((a) =>
+    `<button type="button" class="alert-chip alert-chip--${a.sev}" data-target="${CHIP_TARGETS[a.kind] || ""}" data-kind="${esc(a.kind)}" title="${esc(a.kind)}">
+      <i class="alert-dot" aria-hidden="true"></i>
+      <span class="alert-text">${esc(a.text)}</span>
+    </button>`
+  ).join("");
+}
+
+chipsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".alert-chip");
+  if (!btn) return;
+  const t = btn.dataset.target;
+  if (t === "fleet") { window.location.href = "fleet.html"; return; }
+  const el = document.getElementById(t);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
 async function tick() {
+  let data = null;
   try {
     const res = await fetch(FEED, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    data = await res.json();
     render(data);
   } catch (e) {
     setFresh("down", `collector unreachable (${e.message})`);
   }
+  const host = data ? hostAlerts(data) : [];
+  const fleet = data ? await fleetAlerts() : [];
+  renderAlertStrip([...fleet, ...host]);
 }
 
 // keep the "Ns ago" freshness line moving between polls

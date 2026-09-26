@@ -707,6 +707,72 @@ def metrics_envelope():
 
 
 # --------------------------------------------------------------------------
+# Alerts (server-side fleet issues; host vitals are derived client-side)
+# --------------------------------------------------------------------------
+
+ALERTS_TTL_S = 60
+ALERTS_MAX = 12
+
+_SEV_RANK = {"crit": 0, "warn": 1, "info": 2}
+
+_ALERTS = {"ts": 0.0, "data": None}
+_ALERTS_LOCK = threading.Lock()
+
+
+def _age_days(ts):
+    try:
+        t = datetime.strptime((ts or "")[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+        return max(0, (datetime.now(timezone.utc) - t).days)
+    except Exception:
+        return None
+
+
+def alerts_envelope():
+    with _ALERTS_LOCK:
+        if _ALERTS["data"] is not None and time.time() - _ALERTS["ts"] < ALERTS_TTL_S:
+            return _ALERTS["data"]
+    alerts = []
+    status = fleet_status()
+    for name, info in sorted(status.items()):
+        state = info.get("state", "") or ""
+        if not state.startswith("up"):
+            alerts.append({"sev": "crit", "kind": "node-down",
+                           "text": f"{name} is down (listener {info.get('listener', '?')}, {state})"})
+    per_agent = metrics_envelope().get("per_agent_24h", [])
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    day_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    for a in per_agent:
+        errs = a.get("error_runs_24h") or 0
+        if errs:
+            alerts.append({"sev": "warn", "kind": "agent-errors",
+                           "text": f"{a.get('agent', '?')}: {errs} failed waking(s) in the last 24h"})
+    for a in per_agent:
+        last = a.get("last_wake")
+        if last and last < week_ago:
+            days = _age_days(last)
+            alerts.append({"sev": "info", "kind": "agent-stale",
+                           "text": f"{a.get('agent', '?')} last woke {last[:10]}"
+                                  + (f" ({days}d ago)" if days is not None else "")})
+    seen = set()
+    for e in _peer_events():
+        if e.get("kind") == "peer-flag" and (e.get("ts") or "") >= day_ago:
+            key = (e.get("agent"), e.get("text"))
+            if key in seen:
+                continue
+            seen.add(key)
+            alerts.append({"sev": "info", "kind": "quarantine",
+                           "text": f"{e.get('agent', '?')}: {e.get('text', '')}"})
+    alerts.sort(key=lambda a: _SEV_RANK.get(a.get("sev"), 9))
+    alerts = alerts[:ALERTS_MAX]
+    payload = {"schema": "fleet-alerts/v1", "count": len(alerts),
+               "alerts": alerts, "generated_at": now_iso()}
+    with _ALERTS_LOCK:
+        _ALERTS["ts"] = time.time()
+        _ALERTS["data"] = payload
+    return payload
+
+
+# --------------------------------------------------------------------------
 # Agora board
 # --------------------------------------------------------------------------
 
@@ -928,6 +994,8 @@ class Handler(BaseHTTPRequestHandler):
                                         "generated_at": now_iso()})
             if path in ("/metrics",):
                 return self._send(200, metrics_envelope())
+            if path in ("/alerts",):
+                return self._send(200, alerts_envelope())
             if path in ("/observability",):
                 return self._send(200, observability_envelope())
             if path in ("/net",):
