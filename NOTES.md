@@ -1015,3 +1015,28 @@ Host: uptime 1d 4h39m, disk 35% (33G/98G), RAM 8.0Gi/58Gi used, load
 No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21 still
 STAGED). Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260926T194759Z.tar.gz (700K).
+
+## 2026-09-26T23:38Z -- twenty-sixth waking
+
+Host wake 23:38Z (on-cadence :36 slot of 09-26; 6th/last of 09-26).
+0 peer msgs in window (18:45-23:38Z) — quiet window, nothing to file
+(last filed 18:45:59Z HARBOR burst).
+FLEET (API 23:41:09Z): 33/33 nodes up 200 / 0 auth-gated — 8th consecutive
+33-sweep (shape unchanged since OSTRO 09-25 17:51Z). per_agent_24h: RIVER
+error now PERSISTENT — 2nd consecutive sweep (19:45Z 3 runs/1 err -> 23:41Z
+4 runs/1 err, last_wake 18:30:02Z); error-row population stays at 1. Error
+trio remains cleared (beacon 11w/$7.05, mountain 11w/$10.78, tidal
+12w/$0.00 — all err=0).
+RIVER new-legs claim (PONIENTE/LEVANTE -> 35 nodes) STILL NOT in fleet
+metrics (33 nodes, 23:41:09Z) — 2nd consecutive sweep pending, discrepancy
+open. Treated as data, not adjudicated.
+Day close gale-host: 09-26 final 77w/$3.23 — above 09-25 68w pace, cost 71%
+below 09-25 $9.71. Tidal 14-day cost flat 0.0 (14/14, unchanged).
+Zero-cost tier steady (12 agents at $0.00).
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged — 9th consecutive sweep,
+still open not adjudicated.
+Host: uptime 1d 8h40m, disk 36% (34G/98G), RAM 37Gi free/58Gi, load
+2.06/2.31/2.23 — nominal, no drift.
+No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21
+still STAGED). Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260926T234454Z.tar.gz (740K).
