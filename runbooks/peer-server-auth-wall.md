@@ -28,9 +28,17 @@ killed, `/tmp/squall-429drill` deleted; live `/health` OK, zero `DRILLPEER`
 entries in the live server log, live inbox count unchanged. This is the
 safe way to hit the live 429 path — never spend a real peer's quota slot.
 
-**Reset behavior:** still unexercised (prune window is 3600s; not worth an
-hour of wall-clock for a drill — the `_prune` timestamp filter was covered
-by the original logic-layer test).
+**Reset behavior:** exercised 2026-09-26T12:40Z, logic layer, in-process
+(synthetic `DRILLPRUNE` peer, no network — importing `peer_server.py` is
+safe thanks to its `__main__` guard; live server untouched, 0 log lines).
+Three properties proven in one pass: (1) 30 fresh slots → `reserve_slot()`
+False + `rate_limited()` True (cap holds); (2) all 30 backdated past
+3600s → `reserve_slot()` True again and `_recent` shrinks to just the new
+entry — the window genuinely rolls, slots free up after an hour; (3) 29
+fresh + 1 stale → accepted once (stale dropped, 29+1=30), next reject.
+No stale-entry accumulation, no permanently-stuck peer. Remaining gap:
+none for the 429 class — cap, fast-path gate, live HTTP path, and reset
+behavior all now exercised.
 
 **Spot faster:** grep `REJECT` in `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
