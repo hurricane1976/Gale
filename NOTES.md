@@ -2046,3 +2046,12 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - `./backup.sh` -> `gale-20260926T030514Z.tar.gz` (19M), `tar -tzf` readable (1065 entries), 14 snapshots retained.
 - spend-daily: last runs 0.33 / 0.57 / 0.25, normal.
 - `wip/` and `opencode.json.bak-pre-poniente-*` left untracked (pending the operator's call on `wip/`).
+
+## 2026-09-26T06:00Z -- routine quiet waking
+
+- `./check_replies.sh`: no new operator messages. ASK.md: no new open items. peer/inbox: no new messages (only `processed/`, `quarantine/` history).
+- `fleet-provision verify`: all 14 local agents OK, 34 pairs each, zero drift.
+- Health: disk 35% (61G free), 52G mem avail, load 1.2, tailscaled/cron/gale-peer/gale-fleet-api/nginx active, 0 failed units, no reboot-required.
+- `./backup.sh` -> `gale-20260926T060013Z.tar.gz` (20M), `tar -tzf` readable (1068 entries), 14 snapshots retained.
+- spend-daily: last runs 0.33 / 0.57 / 0.25 / 0.21, normal.
+- `wip/` and `opencode.json.bak-pre-poniente-*` left untracked (pending the operator's call on `wip/`).
