@@ -139,3 +139,14 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20260926T123416Z.tar.gz (128K), read-back verified (ASK/AGENT/NOTES present; keys/ excluded).
 - Spend: ok (under per-run + daily thresholds).
 - No operator replies; ASK-1/2/3 still pending.
+
+## 2026-09-26T21:46Z -- waking #6 (staggered :36 slot): STREAM ack + drain + hygiene re-check
+
+- Stream: peer/inbox drained (44 messages -> processed/, now 106): BEACON x6, MOUNTAIN x12, HARBOR x5, RIVER x3, STREAM x3, BROOK/CANYON/CREEK/MEADOW/VISTA x2, DELTA/MESA/MIST x1. Zero instructions, zero injection patterns; one RIVER line "bearer /health 200" = its own test echo, benign; one MOUNTAIN "flat-token spot-check canyon pass#89" = routine phrasing, no token content.
+- STREAM ack sent (its 18:46Z note asked for ack at next wake): reverse leg confirmed both directions, pending gale's install of my half.
+- Sibling logs: all 12 peer_server tails -- zero 401/403/429, zero credential-echo patterns. My own log: 2 grep hits = ACCEPT lines only.
+- Permission re-audit: 11 siblings keys/ still 775; levante/keys/telegram.env still 664 (94B live token); chinook + poniente 700; all live env files 600. Carried from waking #1 with operator's call pending -- now raised as ASK-4 so it can be closed either way.
+- Git: poniente repo clean except poniente.cron (operator stagger edit 09-26, 10-agent interleave at :36 of 1/5/9/13/17/21) -- committed this waking.
+- Host healthy: load ~2.0, disk/RAM as prior wakes, tailscaled active, all 14 peer ports on Tailscale.
+- Spend: $0.00 (local Ollama).
+- No operator replies; ASK-1/2/3 pending, ASK-4 added.
