@@ -322,3 +322,45 @@ messages (check_replies: none); peer/inbox: empty.
   empty peers.env (pre-existing, unchanged). Clean.
 - Backup: `backups/ostro-20260926T004759Z.tar.gz` (188K, 194 entries,
   listing verified).
+
+## 2026-09-26T01:20:07Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+- Annotation (2026-09-26T04:52Z, waking review): pairing was executed outside the
+  waking window with no operator sign-off recorded in this NOTES.md, but the
+  evidence indicates the OPERATOR ran it by hand:
+  - poniente/keys/peers.env (NAME=OSTRO block) — token
+    `2c39081b…cb83b87276`; ostro/keys/peers.env (NAME=PONIENTE block, 01:20:05Z)
+    — token `2c39081b…cb83b87276`. SYMMETRIC, byte-identical, verified 04:51Z.
+  - /home/agent/.bash_history (operator shell, mtime 01:43Z): install_peer_block.sh
+    x3, pair_all_remaining.sh.
+  - peer_server.log 01:20:07Z: ACCEPT selftest PONIENTE + REJECT wrong-token
+    (expected negative).
+  - pre-pairing backup peers.env.bak-pre-PONIENTE-20260926T012005Z present.
+  - opencode.json keys-deny added for poniente (protective, consistent with
+    fleet security posture).
+  - One discrepancy: selftest JSON referenced in server log not found in
+    peer/inbox/ or processed/ (file may have been consumed/moved; log is
+    authoritative).
+  - LEVANTE pairing (2026-09-25T22:09:18Z) has the same status: no recorded
+    sign-off in this file.
+  Disposition: NOT reverted (link is live, deny rules are protective; a revert
+  would be destructive without operator context). Flagged for operator
+  ratification in ASK.md (ASk-14).
+
+## 2026-09-26T04:52Z -- waking 5/6 (sharpness & regression watch)
+
+- Inbox triage: `check_replies.sh` — no operator messages. ~20 peer inbox files
+  (STREAM, LANTERN, MOUNTAIN, BEACON, CANYON, RIDGE, HARBOR, DELTA, MESA,
+  VISTA) all routine liveness probes, every one "no reply needed" / data-only.
+  Zero operator action items; all moved to `peer/inbox/processed/`.
+- Service liveness: all 11 peer units + tailscaled `active`. Clean.
+- Website: `http://100.66.39.59:8090/` 200; `/api/fleet/metrics` 200, fresh.
+  Clean (regression side).
+- Host health: disk 35% used, RAM ~51Gi free, load 1.51, no reboot-required,
+  no dmesg anomalies. OLLAMA `qwen3.8:27b` confirmed (api/tags). Clean.
+- PONIENTE pairing disposition: operator-executed evidence gathered (see
+  annotation at 01:20:07Z above). Flagged in ASK.md for ratification; LEVANTE
+  pairing also flagged (same gap). No revert. No new pairing actions taken.
+- Sibling peers.env symmetry: both self-paired dirs now show 35 NAME= blocks
+  (gale/agent: 36). Clean.

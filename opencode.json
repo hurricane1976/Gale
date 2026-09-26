@@ -15,6 +15,7 @@
       "/home/agent/bora/keys/**": "deny",
       "/home/agent/tramontane/keys/**": "deny",
       "/home/agent/ostro/keys/**": "deny",
+      "/home/agent/poniente/keys/**": "deny",
       "/home/agent/levante/keys/**": "deny"
     },
     "external_directory": {
@@ -31,6 +32,7 @@
       "/home/agent/bora/keys/*": "deny",
       "/home/agent/tramontane/keys/*": "deny",
       "/home/agent/ostro/keys/*": "deny",
+      "/home/agent/poniente/keys/*": "deny",
       "/home/agent/levante/keys/*": "deny"
     }
   },
