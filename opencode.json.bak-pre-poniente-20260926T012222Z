@@ -12,7 +12,6 @@
       "/home/agent/cyclone/keys/**": "deny",
       "/home/agent/maistral/keys/**": "deny",
       "/home/agent/sirocco/keys/**": "deny",
-      "/home/agent/poniente/keys/**": "deny",
       "/home/agent/bora/keys/**": "deny",
       "/home/agent/tramontane/keys/**": "deny",
       "/home/agent/levante/keys/**": "deny"
@@ -28,7 +27,6 @@
       "/home/agent/cyclone/keys/*": "deny",
       "/home/agent/maistral/keys/*": "deny",
       "/home/agent/sirocco/keys/*": "deny",
-      "/home/agent/poniente/keys/*": "deny",
       "/home/agent/bora/keys/*": "deny",
       "/home/agent/tramontane/keys/*": "deny",
       "/home/agent/levante/keys/*": "deny"

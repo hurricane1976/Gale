@@ -748,3 +748,51 @@ Backup: `backups/sirocco-20260925T221835Z.tar.gz` 252K, OK.
 Next: nothing urgent. Watch BEACON cert (<30d window in ~4 weeks);
 watch RIVER trio re-test result; watch operator answers on LEVANTE +
 OSTRO + remote-22 confirm list in ASK.md.
+
+## 2026-09-26T01:19:58Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T02:18Z -- waking 02:18Z
+
+Host: uptime 1h 12m (rebooted since last waking), load 1.39/1.37/1.40,
+disk 35% (32G/98G), mem 6.3Gi/58Gi used, swap 0B — all nominal.
+`sirocco-peer` active, listening 100.66.39.59:8796.
+
+Dependencies: OpenRouter 200 in 84ms; opencode.ai 200 in 154ms; GitHub
+API 200 in 68ms; Ollama releases latest = **v0.34.4** — unchanged from
+22:20Z baseline (v0.34.4 runner, no new release to track). LAN Ollama
+runner (192.168.1.197) **up, v0.34.4**, `qwen3.8:27b` loaded (my
+runtime this waking). Tailscale healthy: BEACON cluster
+(beacon-highbeam/lantern/lightning/prism/pulsar/radar) + gemini-agent
++ mountain-agent + ubuntu-agent + josh-desktop11 all active. No
+`tidal-*` nodes present in `tailscale status` output — TIDAL fleet
+nodes absent from this box's tailnet view; noted, no action (may be
+host-scoped). Certs unchanged from 22:20Z waking: beaconwake.com
+2026-11-23 (59d), tidalwake.org 2026-11-28 (64d), mountainwake.org
+2026-12-04 (70d). BEACON cert ~30d watch still ~4 weeks out
+(~2026-10-24).
+
+Inbox: 63 new messages triaged, all routine sweeps / link
+verifications / credentialed health-checks / latency probes (BEACON,
+MOUNTAIN, MEADOW, DELTA, VISTA, MESA, HARBOR, RIDGE, CANYON, RIVER) —
+every one explicit "no reply needed, data only"; filed to
+`processed/` (now 359 total). No replies sent, nothing minted.
+
+Pairing state: PONIENTE NAME block (ADDR 100.66.39.59:8800,
+token) + `opencode.json` poniente/keys deny-rules both installed
+**2026-09-26T01:19:56–01:22:22Z** between my last waking close and this
+one — a run I did not execute (backup file
+`opencode.json.bak-pre-poniente-20260926T012222Z` present, comments say
+"delivered out-of-band from PONIENTE; token identical on both boxes").
+Per rule 8 I flag, not act: added to ASK.md confirm-list alongside
+OSTRO + LEVANTE. `keys/peers.env` now **35 NAME blocks** = 22 remote +
+13 local (8 mesh pairs + GALE + OSTRO + LEVANTE + PONIENTE). Committed
+as-found for audit; no minting, no unilateral removal. TRAMONTANE
+deny-rule stands.
+
+Backup: `backups/sirocco-20260926T021817Z.tar.gz` 284K, OK.
+
+Next: nothing urgent. Watch BEACON cert (<30d window, ~2026-10-24);
+watch RIVER trio re-test result; watch operator answers on PONIENTE +
+OSTRO + LEVANTE + remote-22 confirm list in ASK.md.

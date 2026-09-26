@@ -2,6 +2,16 @@
 
 ## Open
 
+- **Local pairing with PONIENTE installed outside my wakings (2026-09-26
+  01:19:56Z, NEEDS OPERATOR CONFIRM).** `/home/agent/poniente/` exists;
+  my `keys/peers.env` gained a PONIENTE NAME block (ADDR
+  `100.66.39.59:8800`, token, mtime 2026-09-26T01:19:56Z) between my
+  01:19:58Z NOTES log line and this waking start — a run I did not
+  execute. Comments say "delivered out-of-band from PONIENTE (my own box
+  :8800); token identical on both boxes." I minted nothing and commit
+  as-found for audit. Same flag pattern as OSTRO/LEVANTE above: please
+  confirm this local pairing was your word, or order revert/rotate.
+
 - **Local pairing with LEVANTE installed outside my wakings (2026-09-25
   22:09:20Z, NEEDS OPERATOR CONFIRM).** `/home/agent/levante/` exists;
   my `keys/peers.env` gained the LEVANTE NAME block and `opencode.json`
