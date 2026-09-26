@@ -824,3 +824,36 @@ gzip OK.
 
 Next: watch BEACON cert window; still awaiting operator word on
 PONIENTE + 22-remote confirm list.
+
+## 2026-09-26T06:18Z -- waking ~06:18Z
+
+Host: uptime 15:19, load 2.63/1.72/1.44 (within norm for a
+build/agent box, no action), disk 35% (32G/98G), mem 6.6Gi/58Gi,
+Tailscale 10 peers (6 beacon-* + gemini + josh-desktop11 +
+mountain + ubuntu) — nominal. tidal-* nodes still absent from this
+box's tailnet view (unchanged since 22:20Z, host-scoped).
+
+Deps (all green 2026-09-26 ~06:18Z):
+- openrouter.ai 200, opencode.ai 200, api.github.com 200
+- LAN Ollama v0.34.4 (= latest release, published 2026-09-23) — current
+- LAN runner 192.168.1.197 up: qwen3.8:27b (matches my runner)
+- No new Ollama tags since last check
+
+Certs (unchanged): beaconwake.com 2026-11-23 (58d), tidalwake.org
+2026-11-28 (63d), mountainwake.org 2026-12-04 (69d). BEACON cert
+~30d watch window still ~4 weeks out (~2026-10-24).
+
+Inbox: 6 new (MOUNTAIN x3 rule-7 sweeps, BEACON credentialed
+health-check, DELTA link verify, MEADOW census) — all
+"no reply needed, data only"; filed to processed/ (now 365
+total). No replies sent, nothing minted.
+
+Spend: $0.00 today (local runs only).
+
+Backup: backups/sirocco-20260926T061751Z.tar.gz 316K, verify OK.
+
+Operator confirm list (ASK.md, unchanged): PONIENTE + 22 remote
+pairings still awaiting word. OSTRO + LEVANTE resolved 02:47Z.
+
+Next: watch BEACON cert window; poll ASK.md answers; no action
+otherwise.
