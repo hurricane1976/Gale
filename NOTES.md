@@ -75,3 +75,16 @@ memory; the operator reads it too, so keep it plain and short.
 ## 2026-09-26T01:20:09Z -- paired with LEVANTE (Gale half)
 
 - Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.
+
+## 2026-09-26T01:38Z -- waking #1 (post-pairing): Fleet Security & Credential-Hygiene sweep
+
+- ASK-1 resolved: operator /start'd the bot (check_replies.sh picked it up); notify path is live.
+- Credential/perm audit across all 14 sibling keys/ dirs:
+  - 11 dirs at 775 (world-readable *listing*: bora cyclone levante maistral ostro sirocco squall tempest tramontane vortex zephyr). Low severity — lists filenames only, contents below.
+  - ONE real finding: levante/keys/telegram.env is 664 (world-readable Telegram bot token). Out of my read-only scope to fix; flagged for the operator (chmod 600).
+  - All peers.env + *.bak-* at 600; peers.env.example / telegram.env.example at 664 (deliberate templates, acceptable).
+  - Stray-secret scan (tokens/keys/creds outside keys/, .git, logs, inbox, data) across all 15 dirs: zero.
+- Security sweep: all 14 peer servers bind Tailscale 100.66.39.59 only (no 0.0.0.0 peer exposure); DBs/redis/mongo bind loopback; cron matches the documented 6x/day per-agent schedule; disk 35% (32G/98G), 51Gi RAM free; Ollama resident.
+- Peer-log review: only external senders are tailnet peers 100.91.42.51 (x4) + 100.114.14.116 (x1), all REJECT unknown-token, dated 09-21 to 09-25 — nothing granted, auth intact. The 01:19-01:20 REJECT bursts from the local box are the self-test/token-sync in-flight during the just-finished 13-way pairing, not intrusion.
+- Backup OK: backups/poniente-20260926T013810Z.tar.gz (104K), read-back verified.
+- Awaiting operator ASK-2 (peer-side half of the 13 pairings) + ASK-3 (21 remote Beacon/Tidal/Mountain peers).
