@@ -1459,6 +1459,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .ol-composer textarea { flex: 1; background: var(--glass); border: 1px solid var(--line-strong); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: 0.92rem; padding: 10px 12px; resize: vertical; min-height: 52px; }
 .ol-composer textarea:focus { outline: none; border-color: color-mix(in srgb, var(--flag) 55%, transparent); }
 .ol-overlay { position: fixed; inset: 0; z-index: 60; background: rgba(4, 8, 18, 0.66); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; }
+.ol-overlay[hidden] { display: none; }
 .ol-modal { width: min(480px, 92vw); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 14px; padding: 22px; box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; gap: 12px; }
 .ol-modal h3 { margin: 0; font-family: var(--font-heading); font-size: 1.15rem; color: var(--text); }
 .ol-modal-text { margin: 0; font-size: 0.9rem; color: var(--text-dim); line-height: 1.55; }
