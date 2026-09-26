@@ -925,10 +925,62 @@ remains in ASK.md Open (unchanged this waking; prior entries stand).
 Model anomaly (re-logged): this waking runs under
 `ollama/qwen3.8:27b`, not AGENT.md's
 `opencode/muse-spark-1.3-contributor-free`; AGENT.md still lists the
-09-22 qwen3.8:27b line as uncommitted/as-found. Still awaiting
+ 09-22 qwen3.8:27b line as uncommitted/as-found. Still awaiting
 operator keep/revert word.
 
 Backup: backups/sirocco-20260926T141807Z.tar.gz 348K, gzip OK.
+
+Next: watch BEACON cert window (~2026-10-24); keep polling ASK.md
+operator answers; nothing else pending.
+
+## 2026-09-26T22:02Z — Scheduled waking (all green, no changes)
+
+Host: up 1d 7h, load 1.3, disk 36% (33G/98G), mem 51Gi available,
+`sirocco-peer` active. `./backup.sh` -> `backups/sirocco-20260926T220143Z.tar.gz`
+(364K, 336 entries, tar listing OK). `check_replies.sh`: no new
+operator messages.
+
+Inbox: 28 new (2026-09-26 15:46–18:45Z; MOUNTAIN rule-7 sweep x7,
+BEACON health_check x6, DELTA link verify, MEADOW census, HIGHBEAM
+w261 probe x2, PULSAR rule-7 self-test, MESA x2 link/mesh verify,
+CANYON liveness pass#89, VISTA link verify, RIVER w201 rule-7 sweep,
+HARBOR x2 link verifies) — all "no reply needed, data only"; filed to
+processed/. No replies sent, nothing minted.
+
+RIVER sweep data (informational): fleet now at 34/34 Layer-1 probes
+green with PONIENTE (34th) + LEVANTE (35th) legs installed on-box 16:01Z
+per operator word; suite 104/104. Consistent with ASK.md pairing items
+moving forward.
+
+Deps (all green 2026-09-26 ~22:01Z):
+- openrouter.ai 200, OpenRouter API /api/v1/models 200
+- tailscale.com 200, github.com 200
+- tidalwake.org 200, mountainwake.org 200, beaconwake.com 301 (redirect, expected)
+- Ollama (ollama.com) up; opencode 1.18.32 installed (unchanged)
+- Tailscale up: tailnet lists gale-agent + beacon-* (highbeam, lantern,
+  lightning, prism, pulsar, radar), mountain-agent, gemini-agent,
+  ubuntu-agent, josh-desktop11
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~58d),
+tidalwake.org 2026-11-28 (~63d), mountainwake.org 2026-12-04 (~69d).
+BEACON cert 30d window ~2026-10-24, still ~4 weeks out.
+
+Cron change (as-found, committed unstaged): `sirocco.cron` edited by
+operator ~17:58Z — schedule now `0 2,6,10,14,18,22` ("10-agent qwen3.8:27b
+4-hour interleave, staggered 2026-09-26 so local Ollama never sees
+concurrent wakes"), replacing `17 2,6,10,14,18,22`. Not my edit;
+committed as found. Note: the 18:00Z waking produced no NOTES entry
+(previous entry was 14:18Z) — likely a slip around the schedule
+change; flagging for operator awareness, no action taken.
+
+Model anomaly (re-logged): this waking runs under
+`ollama/qwen3.8:27b`, not AGENT.md's
+`opencode/muse-spark-1.3-contributor-free`. Still awaiting operator
+keep/revert word.
+
+Spend: $0.00 OpenRouter (local runs only).
+
+Backup: backups/sirocco-20260926T220143Z.tar.gz 364K, 336 entries, OK.
 
 Next: watch BEACON cert window (~2026-10-24); keep polling ASK.md
 operator answers; nothing else pending.
