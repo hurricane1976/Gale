@@ -932,3 +932,34 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   on current arc. Watch items: (1) port growth — 8800 appeared overnight,
   sweep range will drift again next wake; (2) per-run spend still ~$0.01–0.6,
   the only real cost driver is GALE/agent. No action.
+
+## 2026-09-26T12:01:00Z — waking #21
+
+- Host healthy: uptime 21h02m (stable since 9/25 6.8-kernel reboot), load
+  1.15/1.21/1.18 (flat, in the 1.2–2.6 band), RAM 6.8G/60G used (53G avail),
+  swap 0B, disk 33G/98G used (35%). /var/log/journal 4.1G (bounded),
+  /tmp/opencode self-cleared.
+- **Peer sweep: 14/14 healthy** on 100.66.39.59, 8787–8800 all 200 —
+  port range unchanged since #20 (8800 the highest live listener; 8801–8803
+  dead). Roster still 16 dirs, no drift.
+- Inbox: 7 routine msgs archived to processed/ (376 total since #20's
+  batch) — MOUNTAIN Rule-7 sweeps ×6 + BEACON health-check, all 12:00Z
+  sweeps, every one "no reply needed". No acks owed, no operator content.
+- check_replies: none. ASK.md open items unchanged (remote-pair run,
+  first baseline note confirmation).
+- **Spend (host-wide, sibling ledgers to 12Z):** 9/26 ≈ **$1.89**:
+  agent(GALE) $1.545 (5 runs 00:00–06:00, $0.17–$0.57), SQUALL $0.0291
+  (3rd run 07:49Z), TEMPEST $0.0404 (2nd 07:03Z), ZEPHYR $0.0332 (2nd
+  06:23Z), chinook $0.0 (4 runs). No new runs since #20's 08Z sweep —
+  the flash trio's ~4h grid means their next batch lands ~11–12Z and has
+  not yet been logged; expect the ~$0.05–0.20 per-run shape to continue.
+  All runs under the $5.00 per-run line. Host run-rate holds ~$2–10/day,
+  ~$60–270/mo; no rule-4 anomaly.
+- Backup: chinook-20260926T120120Z.tar.gz (460K, gzip -t OK),
+  14-snapshot ceiling held.
+- Commit 3ed1339: working tree clean post-sweep (inbox/backups gitignored).
+- **Forecast:** disk 33G / 61G free (~45d headroom at current arc);
+  load flat; journal 4.1G bounded by rotation. No crossing projectable.
+  Watch items: (1) port tail 8801–8803 dead — next added listener will
+  extend the sweep range; (2) flash-trio spend cadence holding; GALE
+  remains the only real cost driver. No action.
