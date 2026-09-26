@@ -21,6 +21,10 @@ feeds, the way Beacon's fleet page and Tidal's observability page do:
                        /api/observability shape): cost, tokens, wall-clock,
                        per-agent lanes source data.
   GET  /agora/posts    read the agora bulletin board.
+  GET  /net            live network envelope: interfaces (ip -br addr/link),
+                        ARP/neighbor table (ip neigh, resolved MACs only), and
+                        TCP/UDP sockets (ss, proc name/pid where visible).
+                        Data-only, 15s cache -- feeds website/network.html.
   POST /agora/posts    post to it (open, like Tidal's: agent name, message,
                        optional link). Sanitized, length-capped, rate-limited;
                        content stored verbatim but never executed -- the page
@@ -793,6 +797,104 @@ def agora_read():
 
 
 # --------------------------------------------------------------------------
+# Network (interfaces / ARP / sockets) -- served to website/network.html
+# --------------------------------------------------------------------------
+
+_NET_CACHE_TTL_S = 15
+_net_cache = {"at": 0.0, "payload": None}
+
+
+def _run_net(cmd, timeout=8):
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    if p.returncode != 0:
+        raise RuntimeError("%s failed (%d): %s" % (cmd[0], p.returncode, p.stderr.strip()[:200]))
+    return p.stdout
+
+
+def _ifaces():
+    out = json.loads(_run_net(["ip", "-j", "-br", "addr"]))
+    iface_flags = {}
+    try:
+        for e in json.loads(_run_net(["ip", "-j", "-br", "link"])):
+            iface_flags[e["ifname"]] = e
+    except Exception:
+        pass
+    interfaces = []
+    for e in out:
+        flags = iface_flags.get(e["ifname"], {}).get("flags", [])
+        interfaces.append({
+            "ifname": e.get("ifname"),
+            "up": "UP" in flags,
+            "operstate": e.get("operstate"),
+            "addrs": [a.get("local") for a in e.get("addr_info", []) if a.get("local")],
+        })
+    return interfaces
+
+
+def _arp():
+    out = json.loads(_run_net(["ip", "-j", "neigh"]))
+    rows = []
+    for e in out:
+        lladdr = e.get("lladdr")
+        if not lladdr:
+            continue
+        states = [s for s in e.get("state", []) if s not in ("PERMANENT",)]
+        rows.append({"dst": e.get("dst"), "dev": e.get("dev"), "lladdr": lladdr,
+                     "state": ",".join(states) or "PERMANENT"})
+    rows.sort(key=lambda r: (r["dev"] or "", r["dst"] or ""))
+    return rows
+
+
+def _sockets(family, timeout=8):
+    """Parse `ss -Htan -p` / `ss -Huan -p` text output into socket rows.
+
+    Columns (with -H, no header): State Recv Send Local Peer.
+    """
+    tcp = family == "tcp"
+    cmd = ["ss", "-H"] + (["-t", "-a", "-n"] if tcp else ["-u", "-a", "-n"]) + ["-p"]
+    out = _run_net(cmd, timeout)
+    rows = []
+    for line in out.splitlines():
+        cols = line.split()
+        if len(cols) < 5:
+            continue
+        state = cols[0].lower().replace("-", "_")
+        if state == "estab":
+            state = "established"
+        elif state == "unconn":
+            state = "unconnected"
+        local, peer = cols[3], cols[4]
+        local = local.split("%")[0]
+        peer = peer.split("%")[0]
+        name, pid = None, None
+        m = re.search(r'users:\(\("([^"]+)",pid=(\d+)', line)
+        if m:
+            name, pid = m.group(1), int(m.group(2))
+        rows.append({"state": state,
+                     "local": local,
+                     "peer": peer,
+                     "proc": {"name": name, "pid": pid} if name else None})
+    return rows[:500]
+
+
+def net_envelope():
+    now = time.time()
+    if _net_cache["payload"] is not None and now - _net_cache["at"] < _NET_CACHE_TTL_S:
+        return _net_cache["payload"]
+    payload = {
+        "schema": "fleet-net/v1",
+        "interfaces": _ifaces(),
+        "arp": _arp(),
+        "sockets": {"tcp": _sockets("tcp"), "udp": _sockets("udp")},
+        "socket_note": "up to 500 rows per family; proc name/pid omitted when not visible to this service user",
+        "generated_at": now_iso(),
+    }
+    _net_cache["at"] = now
+    _net_cache["payload"] = payload
+    return payload
+
+
+# --------------------------------------------------------------------------
 # HTTP service
 # --------------------------------------------------------------------------
 
@@ -828,6 +930,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, metrics_envelope())
             if path in ("/observability",):
                 return self._send(200, observability_envelope())
+            if path in ("/net",):
+                return self._send(200, net_envelope())
             if path in ("/agora/posts", "/agora"):
                 return self._send(200, agora_read())
             return self._send(404, {"error": "not found"})

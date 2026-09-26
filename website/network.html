@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Network — Gale</title>
+  <meta name="description" content="Gale's live network state on this host: interfaces, ARP table and TCP/UDP sockets, straight from iproute2. What the tools print, labeled with their source." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#02060d" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="gale.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="network.js"></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+          <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+        </svg>
+        GALE
+      </a>
+      <nav class="site-links" aria-label="Site">
+        <a href="index.html">Dashboard</a>
+        <a href="fleet.html">Fleet topology</a>
+        <a href="status.html">Ops status</a>
+        <a href="metrics.html">Metrics</a>
+        <a href="observability.html">Observability</a>
+        <a href="agora.html">Agora</a>
+        <a href="weather.html">Weather</a>
+        <a href="network.html" aria-current="page">Network</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="ops-main">
+    <div class="ops-head">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>interfaces &middot; ARP &middot; sockets &middot; native tools only</span>
+        <h1 class="ops-title grad-text">Network</h1>
+        <p class="lede" style="margin-bottom:0">This host's live network state &mdash; interfaces from <code>ip -br addr</code>,
+          the ARP table from <code>ip neigh</code>, and the TCP/UDP socket tables from <code>ss</code>.
+          Same honesty rule as every other feed: it reports exactly what the tools print.
+          Live feed: <code>/api/fleet/net</code>.</p>
+      </div>
+      <div id="freshness" class="freshness" data-state="loading">
+        <span class="freshness-dot" aria-hidden="true"></span>
+        <span id="freshness-text">connecting&hellip;</span>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="block" style="color:var(--text-dim)">This page needs JavaScript to poll live data. Raw feed: <code>/api/fleet/net</code>.</p>
+    </noscript>
+
+    <div id="board" hidden>
+
+      <section class="ops-panel span-full" aria-labelledby="h-stats">
+        <h2 class="panel-title" id="h-stats">Headline <span>point-in-time snapshot &middot; refreshes every 30s</span></h2>
+        <div class="vitals-grid" id="stats-grid"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-ifaces">
+        <h2 class="panel-title" id="h-ifaces">Interfaces <span><span id="iface-count">&ndash;</span> interfaces &middot; from <code>ip -br addr</code></span></h2>
+        <div class="fw-table-scroll">
+          <table class="ops-table" id="ifaces-table">
+            <thead><tr><th>interface</th><th>state</th><th>addresses</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-arp">
+        <h2 class="panel-title" id="h-arp">ARP table <span><span id="arp-count">&ndash;</span> entries &middot; from <code>ip neigh</code></span></h2>
+        <div class="fw-table-scroll">
+          <table class="ops-table" id="arp-table">
+            <thead><tr><th>dst</th><th>dev</th><th>lladdr</th><th>state</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-socks">
+        <h2 class="panel-title" id="h-socks">Sockets <span><span id="sock-count">&ndash;</span> rows &middot; <label for="sock-filter" class="sr-only">filter</label><select id="sock-filter" class="obs-filter"><option value="">all</option><option value="tcp">tcp</option><option value="udp">udp</option></select> &middot; from <code>ss -p</code></span></h2>
+        <div class="fw-table-scroll">
+          <table class="ops-table" id="socks-table">
+            <thead><tr><th>proto</th><th>state</th><th>local</th><th>peer</th><th>process</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-wired">
+        <h2 class="panel-title" id="h-wired">How this is wired</h2>
+        <div class="obs-wired">
+          <p><code>fleet_api.py</code> (systemd <code>gale-fleet-api.service</code>) shells out to
+            <code>ip -j -br addr</code>, <code>ip -j neigh</code>, <code>ss -H -tan -p</code> and
+            <code>ss -H -uan -p</code> on every request and returns the raw rows as JSON &mdash;
+            nothing is inferred, joined or normalised beyond what the tools print.</p>
+          <p><strong>Honesty notes:</strong> socket lists are capped at 500 rows per family to keep
+            the payload small; the row count you see is the min of that cap and the kernel table at
+            snapshot time. Process attribution comes from <code>ss -p</code> and is only visible for
+            sockets owned by the service user &mdash; every other row reads <code>proc: &ndash;</code>.
+            Nothing here is sampled or accumulated between polls; it is a point-in-time snapshot.</p>
+          <p>Fleet-wide reachability and the relay chain live on the
+            <a href="fleet.html">fleet page</a> and the <a href="metrics.html">metrics page</a>;
+            this page is deliberately scoped to what one host's own kernel reports about itself.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="wrap fw-cols">
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="fleet.html">Fleet topology</a></li>
+          <li><a href="/api/fleet/net">Raw JSON feed</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Method</h4>
+        <ul>
+          <li><code>iproute2 ip</code> + <code>ss</code>, parsed live on request</li>
+          <li>no sampling, no state carried between polls</li>
+          <li>no chart library &mdash; plain tables, house tokens</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -2101,3 +2101,13 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Deployed to `http://100.66.39.59:8090/ollama.html` (v3 JS, panel renders; showing `collector unreachable` until the Windows box gets the new collector - expected, rule 7: operator must replace `C:\Gale\collector.py` and restart on josh-desktop11). Backend service restarted to pick up the new route (old process predated the edit); route verified live.
 - Commit d5f75bb = 5 files, +209/-8; pushed `github` remote (earlier push attempt failed: remote is named `github`, not `origin`; no upstream tracking on this worktree - plain `git push` prints a hint but does not push).
 - Housekeeping: untracked `wip/` dir exists at agent root (network.html/network.js, 2026-09-24) - not mine, left alone.
+
+## 2026-09-26T22:20Z -- Network board: ship the wip/ network.html (to be committed + pushed)
+
+- Finished the Network page that had sat untracked in `wip/` since 2026-09-24. Moved `network.html` + `network.js` into `website/`, deleted the now-empty `wip/`.
+- Backend: `net_envelope()` + helpers in `fleet_api.py` (`_run_net`, `_ifaces`, `_arp`, `_sockets`, 15s cache, 500-row cap, `users:((name,pid))` regex, 8s timeouts). Route `/net` in `do_GET`. No nginx change needed — existing `location /api/fleet/` proxy to 127.0.0.1:8793 already covers it.
+- Fixed the backend/socket JS contract drift: `state` normalized `lower().replace("-","_")` with `estab→established`, `unconn→unconnected` matched to `STATE_COLOR` keys; `local`/`peer` plain `host:port` strings; `proc` `null` when no owning process. Verified: TCP `listen` rows carry process, UDP `unconn` rows have `proc: null`, 500 TCP / 9 UDP / 4 ifaces / 25 ARP sample parse clean.
+- Nav: added `network.html → Network` link to all 8 existing pages (index/fleet/status/metrics/observability/agora/weather/ollama) plus a new `dash-card` on the index after Weather.
+- Service: `sudo -n systemctl restart gale-fleet-api` (plain `systemctl` needs interactive auth). Verified live via `http://127.0.0.1:8793/net`.
+- Deploy: `bash website/deploy.sh` (nginx -t + reload OK). E2E through nginx on public IP `http://100.66.39.59:8090/` — `network.html` 200, `network.js` 200, `api/fleet/net` feed OK (schema `fleet-net/v1`).
+- Committed 11 files (9 modified + 2 new, +113/-8); pushed to `github` remote.
