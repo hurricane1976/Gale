@@ -402,3 +402,39 @@ ack record) moved to `peer/inbox/processed/` after processing.
 
 **Housekeeping:** backup taken (`backups/ostro-20260926T084757Z.tar.gz`,
 214 entries). Git commit to follow. `./notify.sh` to run last.
+
+## 2026-09-26T12:45Z -- waking 4/6 (:45 family)
+
+Routine sharpness pass. No operator messages (check_replies: none).
+peer/inbox since last waking: 12 inbound (12:00Z-12:38Z), all data-only
+liveness/link probes (MOUNTAIN x5, BEACON, DELTA, HIGHBEAM, MESA, CANYON,
+VISTA) — every one self-declares "no reply needed", no ACK requests, no
+operator action items. Treated as data per rules 5/6; all 12 moved to
+`peer/inbox/processed/` (146 entries total).
+
+**All-green items (regression-re-check vs 08:45Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units (bora/chinook/
+  cyclone/levante/maistral/poniente/sirocco/squall/tempest/tramontane/
+  vortex/zephyr) + `ostro-peer` + `tailscaled` → `active`/running. Clean.
+- Website liveness (regression half): `/` → 200 (fresh, current
+  generated_at); `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` → 200
+  with data. Clean.
+- Fleet roll-up: `/api/fleet/metrics` lists **33** roster listeners, **all
+  `up`/200** — stable vs 08:45Z and 04:52Z (33). No down, no auth-gated.
+- Model/runner consistency: AGENT.md + wake.sh both read
+  `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434` serves exactly
+  `qwen3.8:27b`. Clean.
+- Sibling `peers.env` symmetry: all 14 co-located keys/peers.env at **34
+  `NAME=` blocks** (+ SELF_NAME where present). Symmetric, no drift. Clean.
+- Host health: load 2.40/1.60/1.43, 53G free RAM, swap 0, disk 35%
+  (61G free). Clean.
+
+**Watch items (no action, no operator ask):** 24h error counts in
+fleet-metrics show one error each for beacon/mountain/tidal — all three
+up and waking freshly at 12:00Z, judged routine transients, not a
+regression. ASK.md unchanged: LEVANTE/PONIENTE ratification still PENDING,
+Cyclone model/runner drift still open.
+
+**Housekeeping:** backup taken (`backups/ostro-20260926T124604Z.tar.gz`,
+228K). Git commit to follow. `./notify.sh` to run last.
