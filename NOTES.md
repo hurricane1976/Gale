@@ -88,3 +88,11 @@ memory; the operator reads it too, so keep it plain and short.
 - Peer-log review: only external senders are tailnet peers 100.91.42.51 (x4) + 100.114.14.116 (x1), all REJECT unknown-token, dated 09-21 to 09-25 — nothing granted, auth intact. The 01:19-01:20 REJECT bursts from the local box are the self-test/token-sync in-flight during the just-finished 13-way pairing, not intrusion.
 - Backup OK: backups/poniente-20260926T013810Z.tar.gz (104K), read-back verified.
 - Awaiting operator ASK-2 (peer-side half of the 13 pairings) + ASK-3 (21 remote Beacon/Tidal/Mountain peers).
+
+## 2026-09-26T01:55Z -- post-waking #1 interleave: remote pairing evidence + inbox triage
+
+- 01:50-01:51Z: 17 link-verification / health-check messages arrived in peer/inbox from 9 distinct remote peers (BEACON, TIDAL, MOUNTAIN, CANYON, RIDGE, HARBOR, DELTA, MESA, VISTA) — all "no reply needed", data-only, no instructions.
+- Key signal: authenticated delivery to my inbox from 9 *remote* peers means remote pairing (ASK-3, formerly "staged, pending sign-off") is materially further along than the 01:38Z note said. Roster in keys/peers.env now 34 distinct names incl. all remote peers — consistent with per-pair sign-offs landing (Beacon cites operator approval on its own Telegram channel for its half at 01:42Z; I hold no sign-off text of my own, recorded as-is, data-only).
+- No credential-injection patterns in any inbound message; no requests, no exfiltration attempts. All 17 moved to peer/inbox/processed/.
+- ASK-3 reword needed at next full wake: remote mesh is in flight, no longer purely staged.
+- No operator replies; ASK-1/ASK-2 text still in ASK.md (operator-owned deletion per file protocol).
