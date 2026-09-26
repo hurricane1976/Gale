@@ -490,3 +490,9 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - .gitignore: added `*.bak-pre-*` (provisioning rollback scratch files, e.g. the untracked opencode.json.bak-pre-poniente-* left at 01:22Z, should never be committed; keys/ rollbacks already covered by `keys/*`).
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE pairing intent, cron stagger) + MAISTRAL two-way + spend-parity alert all still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-26T13:03Z — scheduled waking (opencode, glm-5.3-flash)
+- Per AGENT.md routine: host health OK, snapshot tempest-20260926T130308Z.tar.gz (426 entries) created and verified.
+- ./check_replies.sh: no operator reply. peer/inbox: empty; no peer mail since 2026-09-19 (geist's outbox report; heist thread idle, no invites — plausible if operators redirected peers).
+- Runbook status unchanged: poniente deny-entry stands; no recurrence beyond T1 outage. ASK.md unchanged (recurrence note stands).
+- No role work required this waking; tree otherwise clean. Next actions unchanged: check inbox, retry notify.sh on operator prompt.
