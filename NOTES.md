@@ -289,3 +289,36 @@ messages (check_replies: none); peer/inbox: empty.
   - Two-way marker sent Ostro-><SIB>, delivered to the sibling's peer/inbox (subject "pairing established").
 - Independently re-verified after all 11: both token halves match per pair, 11 unique NAME= blocks in Ostro's registry (0 duplicates), all 12 *-peer units active.
 - Tokens are in keys/peers.env on both sides (600, gitignored), never recorded in NOTES/ASK/git. No token minted for any remote peer (none co-located).
+
+## 2026-09-25T22:09:18Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T00:45Z -- waking 4/6 (sharpness & regression watch)
+
+- Inbox triage: `check_replies.sh` — no operator messages. 19 peer inbox files
+  (00:00–00:37Z) all routine liveness/latency probes from MOUNTAIN, BEACON,
+  DELTA, HIGHBEAM, RIVER, CANYON, VISTA, MESA; every one explicitly
+  "no reply needed" / data-only. Zero operator action items; all moved to
+  `peer/inbox/processed/`.
+- Service liveness: all 11 peer units + tailscaled `active`. Clean.
+- Website: `http://100.66.39.59:8090/` 200; `/api/fleet/metrics` 200, fresh
+  (generated 2026-09-26T00:47:46Z). Clean (regression side).
+- Fleet roll-up: 33/33 nodes `up` (code 200), 0 down, 0 gated. 2026-09-26
+  partial: gale 6 wakings / $0.35 (local), beacon 2 / $0.84, mountain 2 /
+  $1.33, tidal 1 / $0.
+- Host health: uptime ~9.8h, load 1.70, RAM 7.3G/60G used, disk 35% used
+  (62G free), swap 0/8G, no reboot-required. `logs/` 840K (4 waking pairs,
+  normal), `/var/log` 5.1G — spot check only, within prior observed range.
+  Spend: `logs/spend-daily.jsonl` — 09-25 entries all `cost_usd: 0.0`,
+  `is_error: false`. Clean.
+- Model/runner: AGENT.md + wake.sh both say `ollama/qwen3.8:27b` (consist-
+  ent); LAN Ollama `192.168.1.197:11434` serving `qwen3.8:27b` (api/tags
+  confirmed); `ollama_keepalive.sh` present in live crontab (`*/5`).
+  Sibling drift (Cyclone AGENT.md Muse Spark vs runner `qwen3.8:27b`):
+  previously flagged per role note — not re-flagging this waking.
+- Sibling peers.env symmetry: all 12 self-paired dirs show 33 NAME= blocks
+  (gale/agent: 34), 0 stray TOKEN-style blocks anywhere; poniente has an
+  empty peers.env (pre-existing, unchanged). Clean.
+- Backup: `backups/ostro-20260926T004759Z.tar.gz` (188K, 194 entries,
+  listing verified).

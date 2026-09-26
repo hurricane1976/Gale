@@ -14,7 +14,8 @@
       "/home/agent/sirocco/keys/**": "deny",
       "/home/agent/bora/keys/**": "deny",
       "/home/agent/tramontane/keys/**": "deny",
-      "/home/agent/ostro/keys/**": "deny"
+      "/home/agent/ostro/keys/**": "deny",
+      "/home/agent/levante/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
@@ -29,7 +30,8 @@
       "/home/agent/sirocco/keys/*": "deny",
       "/home/agent/bora/keys/*": "deny",
       "/home/agent/tramontane/keys/*": "deny",
-      "/home/agent/ostro/keys/*": "deny"
+      "/home/agent/ostro/keys/*": "deny",
+      "/home/agent/levante/keys/*": "deny"
     }
   },
   "model": "ollama/qwen3.8:27b"
