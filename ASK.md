@@ -12,26 +12,6 @@
   as-found for audit. Same flag pattern as OSTRO/LEVANTE above: please
   confirm this local pairing was your word, or order revert/rotate.
 
-- **Local pairing with LEVANTE installed outside my wakings (2026-09-25
-  22:09:20Z, NEEDS OPERATOR CONFIRM).** `/home/agent/levante/` exists;
-  my `keys/peers.env` gained the LEVANTE NAME block and `opencode.json`
-  gained the `/home/agent/levante/keys/*` denies (both in my working
-  tree at 22:09:20Z, between my 18:17Z waking close and this 22:20Z
-  waking start — a run I did not execute). NOTES.md held the uncommitted
-  "paired with LEVANTE (peer side)" line at 22:09:20Z. I minted nothing
-  and commit as-found for audit. Same flag as OSTRO above: please
-  confirm this local pairing was your word, or order revert/rotate.
-
-- **Local pairing with OSTRO installed outside my wakings (2026-09-25
-  17:45Z, NEEDS OPERATOR CONFIRM).** `/home/agent/ostro/` created
-  2026-09-25 ~17:05-17:44Z; my `keys/peers.env` gained the OSTRO NAME
-  block at 17:45:40Z and `sirocco-peer` restarted 17:45:40Z (journal);
-  my working tree held an uncommitted "paired with OSTRO (peer side)"
-  NOTES line at 17:45:42Z written by a run I did not execute. I minted
-  nothing and committed the line as-found for audit. Per rule 8 I am
-  flagging, not acting: please confirm this local pairing was your
-  word, or order revert/rotate. (No unilateral removal by me.)
-
 - **Remote pairings installed outside my wakings (2026-09-23, NEEDS
   OPERATOR CONFIRM; TRAMONTANE found 2026-09-25).** `keys/peers.env`
   holds **22 remote pairing blocks** (31 NAME blocks total = 9 local +
@@ -66,8 +46,27 @@
   plus each remote peer's install.
 - **Telegram (2026-09-23, via /commands):** Hello
 - **Telegram (2026-09-23, via /commands):** What’s up
+- **Telegram (2026-09-26, via /commands):** Confirm ostro and lavante
 
 ## Resolved
+
+- **Local pairing with LEVANTE (2026-09-25 22:09:20Z) — CONFIRMED by
+  operator 2026-09-26 02:47:28Z** (Telegram `[1790390848]` "Confirm ostro
+  and lavante", chat-ID checked via `check_replies.sh`). Was flagged
+  NEEDS OPERATOR CONFIRM at the 02:18Z waking: `/home/agent/levante/`
+  installed out-of-band; `keys/peers.env` LEVANTE NAME block +
+  `opencode.json` `/home/agent/levante/keys/**` denies written by a run
+  I did not execute; I minted nothing, committed as-found for audit.
+  Now authorized — pairing stands as-is.
+
+- **Local pairing with OSTRO (2026-09-25 17:45Z) — CONFIRMED by operator
+  2026-09-26 02:47:28Z** (Telegram `[1790390848]` "Confirm ostro and
+  lavante", chat-ID checked via `check_replies.sh`). Was flagged
+  NEEDS OPERATOR CONFIRM at the 02:18Z waking: `/home/agent/ostro/`
+  created ~17:05–17:44Z; `keys/peers.env` OSTRO NAME block 17:45:40Z,
+  `sirocco-peer` restart 17:45:40Z — a run I did not execute; I minted
+  nothing, committed the NOTES line as-found for audit. Now authorized —
+  pairing stands as-is.
 
 - **Unexplained `opencode.json` model line (2026-09-23) — RESOLVED
   2026-09-25 02:2xZ, operator reconfig confirmed.** The line

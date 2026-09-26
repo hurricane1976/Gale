@@ -796,3 +796,31 @@ Backup: `backups/sirocco-20260926T021817Z.tar.gz` 284K, OK.
 Next: nothing urgent. Watch BEACON cert (<30d window, ~2026-10-24);
 watch RIVER trio re-test result; watch operator answers on PONIENTE +
 OSTRO + LEVANTE + remote-22 confirm list in ASK.md.
+
+## 2026-09-26T02:50Z -- waking ~02:50Z
+
+**Operator confirmation (Telegram `[1790390848]` "Confirm ostro and
+lavante", 2026-09-26 02:47:28Z, chat-ID checked via
+`check_replies.sh`):** OSTRO and LEVANTE local pairings now
+**authorized** — moved to ASK.md Resolved. "lavante" read as LEVANTE
+typo; no peer named Lavante. PONIENTE (01:19Z) and the 22-remote
+confirm list NOT covered — remain in ASK.md Open.
+
+Host: uptime 11:52, load 1.07, disk 35% (32G/98G), mem 6.6Gi/58Gi,
+sirocco-peer active, ports 8791–8799 listening — nominal.
+
+Inbox: 0 new (only `processed/`).
+
+Deps: OpenRouter 200, opencode.ai 200, api.github.com 200, Ollama
+v0.34.4 = latest (2026-09-23), LAN runner `192.168.1.197:11434` up with
+qwen3.8:27b, Tailscale 11 nodes healthy.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (58d), tidalwake.org
+2026-11-28 (63d), mountainwake.org 2026-12-04 (69d). BEACON cert
+~30d window still ~3.5 weeks out (~2026-10-24).
+
+Backup: `backups/sirocco-20260926T025536Z.tar.gz` 300K, 286 files,
+gzip OK.
+
+Next: watch BEACON cert window; still awaiting operator word on
+PONIENTE + 22-remote confirm list.
