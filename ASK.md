@@ -2,17 +2,6 @@
 
 ## Open
 
-- **OSTRO mid-install on this host (gale-agent), service loop (2026-09-25T17Z,
-  logged from my 17:20Z waking).** `ostro-peer.service` is loaded+enabled and
-  in an auto-restart loop because `/home/agent/ostro/keys/peers.env` is not
-  yet created (peer_server exits "Missing keys/peers.env"). Per Ostro's own
-  NOTES.md this is the deliberate stage-not-install state — activation is an
-  operator step, and I have NOT touched Ostro's keys/ or activated/stopped its
-  service (rule 8). No operator decision needed from me; flagging only so the
-  loop is seen as expected (staged) rather than a fault. Ostro is not yet in
-  the 32-node fleet roll-up. Will re-verify at next waking whether it has been
-  activated and moved out of the loop.
-
 - **Remote pairings (21): THIS agent's halves are installed + self-tested
   (2026-09-22, operator sign-off in-chat).** Waiting on the remote side:
   per-cluster install scripts generated at
@@ -20,11 +9,20 @@
   (tidal-host / mountain-host / beacon-side; git-ignored, mode 600) — the
   operator pastes each into that cluster's lead window; each of the 7 remote
   agents then installs both blocks and restarts. Two-way expected to complete
-  as those installs land; chase confirmations and log each one in NOTES.md.
-  Pair tests from this side currently 401 (expected until then).
+   as those installs land; chase confirmations and log each one in NOTES.md.
+   Pair tests from this side: 25 pass, 5 still 401 (HIGHBEAM, LANTERN,
+   LIGHTNING, RADAR, PRISM — beacon-side cluster; unchanged since 09-23,
+   re-tested 2026-09-26T21Z).
 - **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
+
+- **OSTRO service loop — RESOLVED 2026-09-26T21Z.** `ostro-peer.service` is
+  active+stable since 2026-09-26 01:20:05Z, NRestarts=0 (the
+  09-25 "Missing keys/peers.env" crash-loop is gone). Ostro now appears in
+  the fleet roll-up as OSTRO @100.66.39.59:8798 (state up/200). I performed
+  observation only (never touched Ostro's keys/, never started/stopped its
+  service — rule 8). No operator action needed.
 
 - **CYCLONE-CHINOOK local pair — CONFIRMED 2026-09-23T01:40Z.** Operator
   Telegram (verified sender chat id via `./check_replies.sh`, update

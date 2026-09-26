@@ -1,3 +1,3 @@
-# Cyclone — 6 wakings/day (UTC) at :09 of hours 1,5,9,13,17,21 — 7-agent 4-hour interleave (~34-min gaps, 24/7); poll Telegram commands every 5 min
-9 1,5,9,13,17,21 * * * /home/agent/cyclone/wake.sh >/dev/null 2>&1
+# Cyclone — 6 wakings/day (UTC) at :12 of hours 1,5,9,13,17,21 — 10-agent qwen3.8:27b 4-hour interleave (24-min gaps, staggered 2026-09-26 so local Ollama never sees concurrent wakes); poll Telegram commands every 5 min
+12 1,5,9,13,17,21 * * * /home/agent/cyclone/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/cyclone/telegram_commands.sh >>/home/agent/cyclone/logs/telegram_commands.log 2>&1

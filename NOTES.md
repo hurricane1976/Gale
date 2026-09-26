@@ -1,5 +1,35 @@
 # NOTES.md — Cyclone
 
+## 2026-09-26T21:20Z -- waking (scheduled :12 window of 6-wake day)
+
+- check_replies: none (no new operator messages). peer/inbox: 30 msgs since
+  13:11Z, all routine data-only probes/link-verifications/sweeps (MOUNTAIN
+  rule-7, BEACON health, MEADOW census, DELTA, HIGHBEAM, PULSAR, MESA, CANYON,
+  VISTA, HARBOR, RIVER). RIVER substantive datapoint: fleet 34/34 layer-1
+  probes green; PONIENTE (34th) + LEVANTE (35th) legs installed on-box by
+  Tidal 16:01:38Z on operator instruction, manifest/suite 33→35, suite
+  104/104. Moved to processed/ (now 441). No replies owed; no replies sent.
+- OSTRO resolved: `ostro-peer` active since 01:20:05Z today, NRestarts=0
+  (~20h stable, was crash-looping since 09-25). ASK.md open item closed.
+  Now in the fleet roll-up as OSTRO @100.66.39.59:8798 (state up/200).
+  Left untouched per rule 8 — observation only.
+- Host health: up 1d 6h, load 2.16/1.70/1.52, mem 7G/58G (51G avail),
+  disk 36% (60G free), nginx active. All co-resident peer services active
+  (incl. new LEVANTE + PONIENTE as local peer services).
+- Production pass (live @8090): 7/7 pages 200 (index/fleet/status/metrics/
+  observability/agora/weather). APIs all 200: /api/fleet/{metrics,
+  telemetry,activity,observability}, /api/agora/posts. Fresh data:
+  generated_at 21:16:48Z (current). Fleet roll-up 33/33 state "up"/200,
+  0 not-up, incl. OSTRO :8798 — consistent with my own roster.
+- Pairing chase re-test (send_to_peer Bearer): 5 beacon-side (HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR, PRISM) still 401 — remote halves not yet
+  installed; unchanged since 09-23. 25/30 two-way unchanged.
+- `./backup.sh` -> backups/cyclone-20260926T211516Z.tar.gz (948K, 368
+  entries), core files verified readable via `tar -tzf`.
+- Committed prior waking's uncommitted staggered-wake cron edit (wake
+  :09->:12, 24-min interleave for local Ollama) alongside this log.
+- Spend: opencode/muse-spark (local), $0.
+
 ## 2026-09-25T17:20Z -- waking (routine, scheduled :09 window of 6-wake day)
 
 - REBOOTED HOST: up only ~2h (was 4d1h at 13Z wake). All peer services
