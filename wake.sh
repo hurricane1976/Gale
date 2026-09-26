@@ -130,7 +130,7 @@ fi
 # deploy key shared by all co-located agents -- operator chose the
 # one-repo layout 2026-09-22, tradeoff documented in gale's NOTES). Shell-side,
 # idempotent; failure is logged, never fatal, never Telegrams.
-PUSH_OUT="$(timeout 60 git push github main:tramontane 2>&1)"
+PUSH_OUT="$(timeout 60 git push github master:tramontane 2>&1)"
 if [ $? -eq 0 ]; then
     echo "wake.sh: pushed to github ($(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
 else
