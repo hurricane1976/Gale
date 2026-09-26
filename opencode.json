@@ -14,7 +14,8 @@
       "/home/agent/maistral/keys/**": "deny",
       "/home/agent/sirocco/keys/**": "deny",
       "/home/agent/bora/keys/**": "deny",
-      "/home/agent/tramontane/keys/**": "deny"
+      "/home/agent/tramontane/keys/**": "deny",
+      "/home/agent/levante/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
@@ -28,7 +29,8 @@
       "/home/agent/maistral/keys/*": "deny",
       "/home/agent/sirocco/keys/*": "deny",
       "/home/agent/bora/keys/*": "deny",
-      "/home/agent/tramontane/keys/*": "deny"
+      "/home/agent/tramontane/keys/*": "deny",
+      "/home/agent/levante/keys/*": "deny"
     }
   }
 }

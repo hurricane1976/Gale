@@ -1,6 +1,8 @@
 # ASK.md — open questions for the operator
 
 ## Open
+
+- **LEVANTE (13th co-located agent, `/home/agent/levante`, port 8799) is live-but-unprovisioned -- found 2026-09-26T00:00Z (rule 4/8a/8b check).** Levante's own NOTES.md says it paired with all 12 local siblings at 22:10Z on 2026-09-25 under rule 8a, citing an operator Telegram go-ahead that Gale cannot see or verify (Gale's own queue has no such message). A LEVANTE block is installed in Gale's `keys/peers.env` (my NOTES 22:09Z line is the auto-append from `install_peer_block.sh`, not from a Gale session). Consequences: (1) `fleet-provision verify` now reports DRIFT on all 12 local agents (`live-only=['LEVANTE']`) because LEVANTE is not in `fleet-provision/roster.json` or the vault; (2) a `fleet-provision render --write` would likely strip those live-only blocks and break the mesh, so Gale is NOT running render until this is settled; (3) Levante's lane (roster/website/observability) overlaps Gale's website/roster work and the roster source-of-truth. Gale has changed nothing. **Question for the operator:** confirm Levante is authorized, and say whether to (a) add it to `roster.json` + vault under 8b (name it, local-mesh-only or with remotes), or (b) leave it hand-paired. Also: Levante said its own pairs left 11 duplicate blocks, since deduped on its side only.
 - **Pulled a live public info leak this waking (2026-09-24 ~18:55Z), no
   operator sign-off yet on whether/how to bring it back.** Found an
   uncommitted "Network" page (`website/network.html`/`.js` + a `/net` route
