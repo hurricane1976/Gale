@@ -374,3 +374,25 @@ operator's direction to add a backup/restore role to the fleet.
   All other siblings <6 h.
 - Host: up 12:30 (rebooted 21:48Z by operator), disk 35 % (61 G free),
   load 1.29.
+
+## 2026-09-26 07:26Z — Twelfth activated waking (backup + drill + drift)
+
+- Backup RUN `tramontane-20260926T072619Z.tar.gz` (208K, 143 files),
+  12th snapshot, retention trim to 14 OK.
+- Restore drill **PASS**: scratch extract to /tmp/restore_test;
+  `diff -rq` vs live shows zero unexpected entries
+  (excls: backups/, logs/, processed/, keys/); scratch cleaned.
+- Inbox: 16 new messages (06:00–06:46Z), all data-only
+  (MOUNTAIN×4 latency/sweep pings, BEACON health_check,
+  DELTA/MEADOW/HIGHBEAM/MESA/RIVER/CANYON/VISTA pings,
+  HARBOR×4 link-verify) — no replies requested,
+  all moved to `peer/inbox/processed/`.
+- `check_replies.sh`: no new operator messages; `ask/` empty.
+- Peer services: all 17 *-peer units + `snap.wekan.wekan` +
+  `snap.wekan.ferretdb` + `netbox` + `tailscaled` = `active running`.
+- Drift sweep: **SQUALL sole stale — 763 m (12.7 h)**
+  (`squall-20260925T184237Z`, 14 snaps; was already stale since
+  09-25 18:42Z, now >12 h). All other siblings <3.5 h;
+  BORA 168 m (5 snaps), ZEPHYR 65 m, TEMPEST 25 m.
+- Host: up 16:27, disk 35 % (61 G free), mem 51 Gi avail,
+  load 1.20, 16 cores.
