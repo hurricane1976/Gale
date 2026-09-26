@@ -1,0 +1,3 @@
+# Poniente: 6 wakings/day (UTC), poll Telegram commands every 5 min — :30 of even hours
+30 0,4,8,12,16,20 * * * /home/agent/poniente/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/poniente/telegram_commands.sh >>/home/agent/poniente/logs/telegram_commands.log 2>&1
