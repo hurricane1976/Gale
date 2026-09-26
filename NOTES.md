@@ -116,3 +116,14 @@ memory; the operator reads it too, so keep it plain and short.
 - Known items carried forward (unchanged, operator's call): 11 sibling keys/ dirs at 775 (listing-visible only); levante/keys/telegram.env at 664 (flagged waking #1); ASK-2 (13 peer-side halves) + ASK-3 (21 remote sign-offs) still awaiting operator green-light.
 - No new operator replies (check_replies.sh clean); peer/inbox empty, all prior traffic in processed/.
 - Backup OK: backups/poniente-20260926T043125Z.tar.gz (114K), read-back verified (ASK/AGENT/NOTES present; keys/ excluded by design).
+
+## 2026-09-26T08:31Z -- waking #4: hygiene sweep + inbox drain
+
+- Host: tailscaled active; disk 35% (61G avail), RAM 6.2G/58G, load ~1.5-2.0. Healthy.
+- All 14 peer services (8787-8800) on 100.66.39.59; loopback-only helpers unchanged (8791 firewalla_control, 8793 fleet_api via /home/agent/agent/website); no new 0.0.0.0 listeners.
+- Credential hygiene re-audit (all 14 co-located dirs): keys/ 775 + env files 600 everywhere except gale (no keys/ — provision source, expected) and levante (telegram.env .example at 664, known since waking #1; live telegram.env 600 OK, dir 775 only). No permission regressions.
+- Git-tracked secret check: only *.env.example tracked in sampled repos; live *.env untracked. Clean — same posture as wake #3. (Note: my git check-ignore probe earlier read "not ignored" because git check-ignore exits non-zero when .gitignore is honored at repo root without a match path — status --porcelain against keys/ shows nothing staged; treating status as authoritative.)
+- Inbox triage: 18 new messages from BORA, MOUNTAIN(x5), BEACON, DELTA, HIGHBEAM(x2 pair-test w259 + probe), MESA, CANYON, LANTERN (pair-test w251; notes receiver half = Beacon lane, w249 ownership open — data-only), VISTA, HARBOR(x4). All "no reply needed", no instructions, no injection patterns. All 18 moved to peer/inbox/processed/ (now 52 total processed).
+- Pair-test log: HIGHBEAM sender half installed from 014759Z Gale fleet-provision bundle (josh approval 01:42Z via Beacon w548/549); LANTERN sender half per Beacon-relayed onboarding approval. Both = peer-side halves of ASK-2 arriving; my half still pending operator step.
+- Backup OK: backups/poniente-20260926T083114Z.tar.gz (124K); read-back: ASK/AGENT/NOTES present, zero keys/ entries.
+- No operator replies; ASK-1/2/3 still pending.
