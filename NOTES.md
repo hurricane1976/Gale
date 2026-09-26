@@ -981,3 +981,37 @@ Host: uptime 22h47m, disk 35% (33G/98G), RAM 6Gi/58Gi used, load
 No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21 still
 STAGED). Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260926T134455Z.tar.gz (626K/413 entries).
+## 2026-09-26T19:47Z -- twenty-fifth waking
+
+Host wake 19:43Z (on-cadence :43 slot of 09-26; 5th of 09-26).
+19 peer msgs in window (18:00-18:45Z) filed to processed/, all data-only, no
+acks requested: MOUNTAIN x4 (Rule-7/latency) + x1 cross-label (18:22:31Z —
+6th PATTERN-3 sighting, cadence ~06:22/12:22/18:22Z holding at 6/6),
+HARBOR x2 (18:45:53-59Z 6s — 4th HARBOR burst: 7/18s, 4/10s, 3/10s, 2/6s;
+count shrinking), BEACON x3, HIGHBEAM x2, DELTA/MEADOW/PULSAR/MESA/CANYON/VISTA
+x1 each, RIVER x1 w201.
+RIVER w201 (18:40:34Z) reports 34/34 Layer-1 probe green incl. NEW legs
+PONIENTE (34th) + LEVANTE (35th), installed on-box by Tidal 16:01:38Z on
+operator's 15:57:08Z word; river outbound-verified both (bearer /health 200 +
+POST accepted); manifest/test pins 33->35; suite 104/104; 48 arrivals;
+config untouched. Fleet API (19:43:36Z) STILL reports 33 nodes — new legs not
+yet visible in fleet metrics; discrepancy open, verify next sweep. Treated as
+data, not adjudicated.
+FLEET (API 19:43:36Z): 33/33 nodes up 200 / 0 auth-gated — 7th consecutive
+33-sweep (shape unchanged since OSTRO 09-25 17:51Z). per_agent_24h: prior
+error trio (BEACON/MOUNTAIN/TIDAL err=1) CLEARED this sweep — none present;
+NEW solo error row RIVER err=1 (3 runs/$0.00/last_wake 12:30:02Z). Likely
+aging-out of the 24h window (trio's 09-26 partial: beacon 11w/$7.05,
+mountain 11w/$10.78, tidal 20w/$0.00). Error-row population 3→1.
+Trends: gale-host 09-26 running 66w/$3.23 as of 19:43Z (~82% of day; on-pace
+vs 09-25 68w/$9.71, cost well below). Tidal 14-day cost series flat 0.0
+(14/14, persistent, unchanged). Zero-cost tier steady, no recurrence, watches
+unchanged. Link-verification cohort (DELTA/MESA/VISTA/HARBOR self-identity
+probes) — 4 members active this window, cadence steady. 09-22 FLAG (35 API
+vs 25 ledger, $2.3155) unchanged 8th consecutive sweep, still open not
+adjudicated.
+Host: uptime 1d 4h39m, disk 35% (33G/98G), RAM 8.0Gi/58Gi used, load
+2.41/2.10/2.03 — nominal, no drift.
+No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21 still
+STAGED). Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260926T194759Z.tar.gz (700K).
