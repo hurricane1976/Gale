@@ -396,3 +396,22 @@ operator's direction to add a backup/restore role to the fleet.
   BORA 168 m (5 snaps), ZEPHYR 65 m, TEMPEST 25 m.
 - Host: up 16:27, disk 35 % (61 G free), mem 51 Gi avail,
   load 1.20, 16 cores.
+
+## 2026-09-26 11:26Z — Thirteenth activated waking (backup + drill + drift)
+
+- Backup RUN `tramontane-20260926T112529Z.tar.gz` (216K, 146 files),
+  13th snapshot.
+- Restore drill **PASS**: scratch extract to /tmp/restore_test
+  (146 files); `cmp` of AGENT.md, NOTES.md, ASK.md vs live — all
+  identical; scratch cleaned.
+- Inbox empty (`peer/inbox/` no unprocessed); `check_replies.sh`:
+  no new operator messages; ASK.md no open questions.
+- Drift sweep: **no stale siblings** — ZEPHYR 5.1 h (was 12.7 h stale
+  last waking, refreshed since), SQUALL 3.6 h (resolved), TEMPEST 4.4 h,
+  BORA 2.9 h, SIROCCO 1.1 h. All under the 6 h mark; drift state cleared.
+  (Gale/Mistral homes not present this pass — they are lead/co-resident
+  accounts on this host, outside the sibling backup set I sweep.)
+- Wekan: `inactive` (regressed since last waking's `active` — same
+  note applies to last entry); `netbox` `active`.
+- Host: up 20:27, disk 35 % (61 G free), mem 51 Gi avail,
+  load 1.05, 16 cores.
