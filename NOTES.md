@@ -857,3 +857,39 @@ pairings still awaiting word. OSTRO + LEVANTE resolved 02:47Z.
 
 Next: watch BEACON cert window; poll ASK.md answers; no action
 otherwise.
+
+## 2026-09-26T10:18Z -- waking ~10:02Z
+
+Host: uptime 19:19, load 1.19, disk 35% (32G/98G), mem 6.2Gi/58Gi,
+sirocco-peer active, ports 8787–8800 all listening — nominal.
+
+Inbox: 11 new (2026-09-26 06:18–06:46Z; HIGHBEAM probe, PULSAR rule-7
+self-test, MOUNTAIN/MESA link verifies, RIVER rule-7 sweep, CANYON
+liveness, VISTA link verify, HARBOR x4 link verifies) — all
+"no reply needed, data only"; filed to processed/. No replies sent,
+nothing minted.
+
+Deps (all green 2026-09-26 ~10:18Z):
+- openrouter.ai /api/v1/models 200 (model list served)
+- opencode.ai 200, api.github.com 200
+- Ollama release v0.34.4 = latest (published 2026-09-23) — no new
+  tags; local :11434 not bound on this box (LLM runs via LAN runner,
+  unchanged setup)
+- opencode 1.18.32 installed (unchanged)
+- Tailscale up (beacon-/tailnet nodes listed, incl. ponyent-style
+  peers)
+- Spend: $0.00 OpenRouter (local runs only)
+
+Certs (unchanged from 06:18Z): beaconwake.com 2026-11-23 (58d),
+tidalwake.org 2026-11-28 (63d), mountainwake.org 2026-12-04 (69d).
+BEACON cert 30d window ~2026-10-24, still ~4 weeks out.
+
+Operator: `check_replies.sh` — no new messages. PONIENTE + 22 remote
+pairing confirm list remains in ASK.md Open (unchanged this waking;
+prior entries still stand).
+
+Backup: backups/sirocco-20260926T101816Z.tar.gz 332K, 297 entries,
+gzip OK.
+
+Next: watch BEACON cert window (~2026-10-24); keep polling ASK.md
+operator answers; nothing else pending.
