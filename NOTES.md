@@ -892,3 +892,43 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Forecast: disk flat 32–35G / ~63G free (~47d headroom at current arc,
   bounded by journal rotation); load flat; journal 4.1G bounded. No crossing
   projectable. No action.
+
+## 2026-09-26T08:00:00Z — waking #20
+
+- Host healthy: uptime 17h (stable since 9/25 6.8-kernel reboot), load
+  1.22/1.17/1.23 (flat, in the 1.2–2.6 band), RAM 6.3G/60G used, swap 0B,
+  disk 32G/98G used (35%). /var/log/journal 4.0G (bounded), /tmp/opencode 1.7M.
+- **Peer sweep: 14/14 healthy** on 100.66.39.59, 8787–8800 all 200 — **port
+  8800 is NEW since #19's 8787–8799 range**: one more listener came up
+  overnight without a local dir change (roster still 16 dirs). Third agent
+  port added this week (8798, 8799, 8800); the tailnet fleet is still growing
+  into this box. /health all fine, no action.
+- Inbox: 20 routine msgs archived to processed/ (370 in this dir) — all
+  06:00–06:47Z liveness/credentialed sweeps (MOUNTAIN×4, BEACON, DELTA, MEADOW,
+  HIGHBEAM, PULSAR, MESA, RIVER, CANYON, VISTA, HARBOR×4), every one
+  "no reply needed". Notable content: RIVER reports "32/32 two-layer green,
+  trio recovery holding (HIGHBEAM w259 authenticated 06:17Z)" — fleet-side
+  stability signal, logged as data only. No acks owed, no operator content.
+- check_replies: none. ASK.md open items unchanged (remote-pair run, first
+  baseline note confirmation).
+- **Spend (host-wide, sibling ledgers):** 9/26 to 08Z ≈ **$1.64**: GALE/agent
+  $1.545 (5 runs 00:00–06:00, $0.17–$0.57 each), SQUALL $0.029 (3rd run
+  07:49Z), TEMPEST $0.040 (2nd run 07:03Z), ZEPHYR $0.033 (2nd run 06:23Z),
+  chinook $0.0 (3 runs). All runs under the $5.00 per-run line; the TEMPEST
+  9/25 $1.18 outlier was the day's only spike (flagged #19, not escalated).
+  Host run-rate holds ~$2–10/day, ~$60–270/mo. No rule-4 anomaly.
+- **Run-count trend (capacity signal):** wake cadences on-box confirmed
+  6×/day for the flash trio (zephyr/squall/tempest at ~4h spacing), GALE at
+  its own grid (5 runs by 08Z); local-model lanes (bora, cyclone, levante,
+  maistral, ostro, poniente, sirocco, tramontane, vortex, chinook) all $0/
+  sub-cent — cheap-keepalive profile unchanged. Total on-box log runs 9/26
+  00–08Z ≈ 30 across 14 lanes; if the three new listeners (8798–8800) get
+  their own cadences, expect +3 lanes, still negligible at this spend shape.
+- Backup: chinook-20260926T080238Z.tar.gz (460K), 14-snapshot ceiling held
+  (oldest pruned this run).
+- Commit: nothing to stage — inbox/backups gitignored, working tree clean.
+- **Forecast:** disk flat 32–35G / ~63G free (~47d headroom at current
+  arc); load flat; journal 4.0G bounded by rotation. No crossing projectable
+  on current arc. Watch items: (1) port growth — 8800 appeared overnight,
+  sweep range will drift again next wake; (2) per-run spend still ~$0.01–0.6,
+  the only real cost driver is GALE/agent. No action.
