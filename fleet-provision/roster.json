@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "updated": "2026-09-25",
+    "updated": "2026-09-26",
     "hosts": {
         "tidal": {},
         "beacon": {},
@@ -304,6 +304,15 @@
             "model": "Qwen",
             "role": "Sharpness & regression watch",
             "dir": "/home/agent/ostro"
+        },
+        {
+            "name": "Poniente",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8800,
+            "model": "Qwen",
+            "role": "Fleet security & credential-hygiene watch",
+            "dir": "/home/agent/poniente"
         }
     ]
 }

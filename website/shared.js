@@ -13,8 +13,9 @@ export const esc = (s) => s.replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
 /* ---- storm canvas: DPR-aware, pauses when hidden, one static frame under
    reduced motion, gentle cursor gusts. Rain falls steeply with a light
-   wind slant; soft cloud-bank clumps drift across the top of the sky;
-   occasional jagged lightning bolts with a soft glow. ---- */
+   wind slant; drifting clouds in three depth bands (soft pre-rendered puff
+   sprites, parallax speed + size + opacity, gentle bob); occasional jagged
+   lightning bolts with a soft glow. ---- */
 export function initStormCanvas() {
   const canvas = document.getElementById("storm-canvas");
   if (!canvas) return;
@@ -41,17 +42,87 @@ export function initStormCanvas() {
     }));
   };
 
+  const rr = (a) => a[0] + Math.random() * (a[1] - a[0]);
+
+  /* depth layers: far = small/slow/faint, near = big/fast/denser.
+     palettes: [top highlight, mid body, base shade] */
+  const CLOUD_LAYERS = [
+    { n: 4, s: [0.5, 0.72], v: [0.04, 0.08], a: [0.45, 0.65], y: [0.0, 0.2],
+      col: ["168,184,212", "126,146,180", "96,116,150"],
+      storm: ["118,136,168", "84,102,134", "62,76,104"] },
+    { n: 3, s: [0.8, 1.1], v: [0.09, 0.16], a: [0.6, 0.8], y: [-0.05, 0.28],
+      col: ["180,196,226", "136,156,192", "104,126,162"],
+      storm: ["126,144,178", "90,108,142", "68,84,112"] },
+    { n: 2, s: [1.15, 1.55], v: [0.16, 0.28], a: [0.7, 0.9], y: [-0.1, 0.34],
+      col: ["192,206,236", "150,170,204", "118,140,176"],
+      storm: ["140,158,190", "102,120,152", "78,94,122"] },
+  ];
+
+  const makePuffs = (s) => {
+    const R = (64 + Math.random() * 70) * s;
+    const n = 6 + Math.floor(Math.random() * 5);
+    const span = R * 2.6;
+    const puffs = [];
+    for (let i = 0; i < n; i++) {
+      const t = i / (n - 1);
+      const taper = 0.72 + 0.28 * Math.sin(t * Math.PI); // flatter ends
+      puffs.push({
+        x: t * span + (Math.random() - 0.5) * R * 0.4,
+        y: (Math.random() - 0.6) * R * 0.55,
+        r: R * (0.5 + Math.random() * 0.38) * taper,
+        a: 0.26 + Math.random() * 0.2,
+      });
+    }
+    return puffs;
+  };
+
+  /* one cloud = pre-rendered sprite of overlapping soft puffs with a light
+     top-to-bottom falloff, so per-frame cost is a single drawImage */
+  const makeSprite = (puffs, col) => {
+    let minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9;
+    for (const p of puffs) {
+      minx = Math.min(minx, p.x - p.r); miny = Math.min(miny, p.y - p.r);
+      maxx = Math.max(maxx, p.x + p.r); maxy = Math.max(maxy, p.y + p.r);
+    }
+    const W = Math.max(1, Math.ceil(maxx - minx)), H = Math.max(1, Math.ceil(maxy - miny));
+    const cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    const c2 = cv.getContext("2d");
+    for (const p of puffs) {
+      const px = p.x - minx, py = p.y - miny;
+      const g = c2.createRadialGradient(px, py - p.r * 0.28, p.r * 0.08, px, py, p.r);
+      g.addColorStop(0, `rgba(${col[0]}, ${p.a})`);
+      g.addColorStop(0.62, `rgba(${col[1]}, ${p.a * 0.5})`);
+      g.addColorStop(1, `rgba(${col[2]}, 0)`);
+      c2.fillStyle = g;
+      c2.beginPath();
+      c2.arc(px, py, p.r, 0, Math.PI * 2);
+      c2.fill();
+    }
+    return { cv, w: W, h: H };
+  };
+
   const spawnClouds = (w, h) => {
-    const n = 6;
-    return Array.from({ length: n }, (_, i) => ({
-      x: (w / n) * i + Math.random() * (w / n),
-      y: -30 + Math.random() * h * 0.35,
-      rx: 170 + Math.random() * 210,
-      ry: 52 + Math.random() * 52,
-      vx: 0.08 + Math.random() * 0.18,
-      a: 0.32 + Math.random() * 0.38,
-      g: 26 + ((i * 13) % 4),
-    }));
+    const out = [];
+    for (const L of CLOUD_LAYERS) {
+      for (let i = 0; i < L.n; i++) {
+        const pal = Math.random() < 0.32 ? L.storm : L.col;
+        const sp = makeSprite(makePuffs(rr(L.s)), pal);
+        const y0 = L.y[0], y1 = L.y[1];
+        out.push({
+          cv: sp.cv, bw: sp.w, bh: sp.h,
+          x: Math.random() * (w + sp.w) - sp.w,
+          y: h * (y0 + Math.random() * (y1 - y0)),
+          yMin: y0, yMax: y1,
+          vx: rr(L.v),
+          a: rr(L.a),
+          bobA: 2 + Math.random() * 3,
+          bobS: 0.03 + Math.random() * 0.03,
+          bobP: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+    return out;
   };
 
   const makeBolt = (w, h) => {
@@ -96,19 +167,11 @@ export function initStormCanvas() {
     ctx.stroke();
   };
 
-  const cloud = (c) => {
-    ctx.save();
-    ctx.translate(c.x, c.y);
-    ctx.scale(c.rx, c.ry);
-    const g = ctx.createRadialGradient(0, 0.2, 0.1, 0, 0.2, 1);
-    g.addColorStop(0, `rgba(125, 150, 196, ${c.a})`);
-    g.addColorStop(0.55, `rgba(104, 128, 175, ${c.a * 0.62})`);
-    g.addColorStop(1, "rgba(90, 112, 158, 0)");
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(0, 0, c.g, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+  const cloud = (c, now = 0) => {
+    const y = c.y + Math.sin(now * c.bobS + c.bobP) * c.bobA;
+    ctx.globalAlpha = c.a;
+    ctx.drawImage(c.cv, c.x, y);
+    ctx.globalAlpha = 1;
   };
 
   const boltPath = (b, alpha) => {
@@ -149,8 +212,11 @@ export function initStormCanvas() {
 
     for (const c of clouds) {
       c.x += c.vx;
-      if (c.x - c.rx > w) c.x = -c.rx;
-      cloud(c);
+      if (c.x > w + 4) {
+        c.x = -c.bw - 4;
+        c.y = h * (c.yMin + Math.random() * (c.yMax - c.yMin));
+      }
+      cloud(c, now);
     }
 
     for (const p of parts) {

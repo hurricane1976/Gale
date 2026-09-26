@@ -5,6 +5,7 @@
     "read": {
       "*": "allow",
       "/home/agent/agent/keys/**": "deny",
+      "/home/agent/poniente/keys/**": "deny",
       "/home/agent/chinook/keys/**": "deny",
       "/home/agent/zephyr/keys/**": "deny",
       "/home/agent/squall/keys/**": "deny",
@@ -20,6 +21,7 @@
     "external_directory": {
       "*": "allow",
       "/home/agent/agent/keys/*": "deny",
+      "/home/agent/poniente/keys/*": "deny",
       "/home/agent/chinook/keys/*": "deny",
       "/home/agent/zephyr/keys/*": "deny",
       "/home/agent/squall/keys/*": "deny",
