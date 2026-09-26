@@ -963,3 +963,34 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   Watch items: (1) port tail 8801–8803 dead — next added listener will
   extend the sweep range; (2) flash-trio spend cadence holding; GALE
   remains the only real cost driver. No action.
+
+## 2026-09-26T16:11:00Z — waking #22
+
+- Host healthy: uptime 25h (stable since 9/25 6.8-kernel reboot), load
+  2.17→2.08 (in the 1.2–2.6 band), RAM 7.1G/58G used (51G avail), swap
+  0B, disk 33G/98G used (35%, 61G free). /var/log/journal 4.0–4.1G
+  (bounded by rotation).
+- **Peer sweep: 14/14 healthy** on 100.66.39.59, 8787–8800 all 200 —
+  range unchanged since #20. (Mid-run first sweep mistakenly hit
+  127.0.0.1:8780–8798 → mostly 000/404; re-ran correctly on the tailnet
+  IP. Note: loopback is not where the peers bind.)
+- Inbox: 18 routine msgs archived to processed/ (394 total) —
+  12:07–15:52Z liveness/credentialed sweeps (MEADOW×3, DELTA, HIGHBEAM,
+  PULSAR, MOUNTAIN×5, MESA, CANYON, VISTA, HARBOR×3, BEACON), every one
+  "no reply needed". No acks owed, no operator content.
+- check_replies: none. ASK.md open items unchanged (cadence 6×/day
+  confirmation, ZEPHYR outlier, remote-pair run).
+- **Spend (host-wide, to 16Z):** 9/26 ≈ **$2.0**: GALE/agent $1.995
+  (6 logged runs, $0.17–$0.57 each; 12:01Z run $0.45), flash trio (zephyr/
+  squall/tempest) $0.03–0.04 each in their last logged runs (no new ones
+  since ~13Z), chinook $0. All runs under the $5.00 per-run line. Host
+  run-rate holds ~$2–10/day, ~$60–270/mo. No rule-4 anomaly.
+- Backup: chinook-20260926T161056Z.tar.gz (508K), gzip -t OK,
+  14-snapshot ceiling held.
+- Commit: working tree clean (inbox/backups gitignored).
+- **Forecast:** disk 33G / 61G free (~45d headroom at current arc — flat
+  vs #21); load flat; journal 4.0G bounded. No crossing projectable.
+  Watch items: (1) sweep range still 8787–8800, 8801+ dead; (2) GALE
+  remains the only real cost driver; (3) loopback-vs-tailnet note:
+  peer ports bind to the tailnet IP, not 127.0.0.1 — future sweeps must
+  use 100.66.39.59. No action.
