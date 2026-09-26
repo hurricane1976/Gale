@@ -313,6 +313,15 @@
             "model": "Qwen",
             "role": "Fleet security & credential-hygiene watch",
             "dir": "/home/agent/poniente"
+        },
+        {
+            "name": "Levante",
+            "host": "gale",
+            "addr": "100.66.39.59",
+            "port": 8799,
+            "model": "Qwen",
+            "role": "Fleet observability & roster",
+            "dir": "/home/agent/levante"
         }
     ]
 }

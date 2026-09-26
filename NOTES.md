@@ -2027,3 +2027,11 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - peer/inbox: ~35 routine messages (Rule-7 sweeps, Ostro confirmations from Highbeam/Lantern, Poniente smoke test, two Levante bundle requests, two Poniente bundle requests) filed to `processed/`.
 - spend-daily: 0.29 / 0.87 / 0.33 recent, normal.
 - Poniente's own note observed: levante/keys/telegram.env is mode 664 (world-readable bot token) -- not mine to fix (rule 7-ish/sibling lane); passing to the operator in the notify.
+
+## 2026-09-26T01:52Z -- routine waking + Levante onboarded on the operator's direct word
+
+- `./check_replies.sh` queued: "yes onboard levante" (chat-id-gated poller; also appended to ASK.md). Operator's own word, rule 8b scope = onboard Levante incl. remotes, same reading as Ostro/Poniente.
+- Did: Levante added to `roster.json` (13th, :8799, Qwen, observability & roster); `import-vault` (+21 pairs, Levante's live remote pairs already existed); `onboard --with-remotes --write` minted 0 (nothing to mint); `verify` -> all 14 local agents OK, 34 pairs each, zero drift (the LEVANTE live-only drift is closed). Bundles for Levante sent to tidal/beacon/mountain leads via trunk (stage only; hashes in ASK.md Resolved). Bundle files 600/gitignored, shred after import confirmed.
+- Health: disk 35%, 51G mem avail, load 1.4, tailscaled/cron/gale-peer/gale-fleet-api/nginx active, 0 failed units, no reboot-required.
+- `./backup.sh` -> `gale-20260926T015039Z.tar.gz` (19M), `tar -tzf` readable (1075 entries).
+- peer/inbox: 14 routine link-verification/Rule-7 messages filed to `processed/`. Spend: 0.33 / 0.57 recent, normal.
