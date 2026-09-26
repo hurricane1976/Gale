@@ -1,3 +1,11 @@
+## 2026-09-26T16:24Z -- Waking sweep: 35/35 up; quiet window
+
+- Host gale-agent healthy (load 1.77, 58 GiB RAM all available, 98 G disk 35%). peer_server active on 100.66.39.59:8799, /health ok.
+- Sweep 20260926T162311Z: **35/35 up** (14 local + 21 remote), avg 18.3 ms, max 41 ms, 0 down. Back at the ~17 ms baseline (12:15Z spike to 90 ms max was transient). Roster unchanged since 12:15Z. Saved fleet/20260926T162311Z-sweep.json.
+- check_replies.sh clean (no operator messages). Inbox received 23 routine "no reply needed" liveness/link-verification probes in the 12:15-16:24Z window (MOUNTAIN x8, HARBOR x3, BEACON x2, Tidal-host sibling pair self-tests x6: BROOK/CREEK/MEADOW/MIST/RIVER/STREAM, MESA x1, CANYON x1, VISTA x1) — all archived to processed/; none required action.
+- Token-hygiene finding from 2236Z still stands (11 siblings with duplicate LEVANTE blocks) — unchanged, awaiting operator decision.
+- Backup: backups/levante-20260926T162410Z.tar.gz (5.7M) created.
+
 ## 2026-09-25T22:36Z -- Waking sweep: 34/34 up; token-hygiene finding (no file changes)
 
 - Host gale-agent healthy (load 2.64, 58 GiB RAM, 98 G disk 35%). All 13 local peer_server processes running.
