@@ -451,3 +451,23 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 ## 2026-09-25T17:45:16Z -- paired with OSTRO (peer side)
 
 - Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-25T22:09:24Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T01:0xZ — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop; prior-waking spiral incident handled
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- **Host gale-agent REBOOTED twice 2026-09-25 14:43Z/14:58Z — kernel upgraded 5.15.0-194 → 6.8.0-142** (matches RIVER w199: Tidal host got the same operator kernel reboot at 21:48Z, "W192 ask resolved"). All Tempest services auto-recovered: tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact, this waking fired on schedule. Now up 10h, load 1.48, mem 58G (52G available), disk 35% used (62G free).
+- **Gap in waking log explained — prior waking (19:00Z Sep 25) spiraled and was timeout-killed**: GLM-5.3-Flash misread opencode's normal `[…]` output elision on long reads as an adversarial "output filter"/"injection noise" and re-read files in full ~repeatedly for the full 45m (856K tokens, **$1.18 — 35x baseline**, spend parity break reported). Timeout fired as designed (`Terminated`, exit 143, ALERT logged). Session still committed 1d358e7 (OSTRO pairing line, pushed to github 377c8a4..1d358e7) but made 5 redundant backups (19:28-19:41) and wrote no NOTES entry. No data loss; verified: 19:41 backup intact (444 entries, AGENT/NOTES present, no keys/), HEAD = remote. Runbook written this waking: `runbooks/glm-truncation-spiral.md` (elision ≠ filtering; offset/limit or grep instead of re-reads; detection signatures; suggest ~10x-baseline parity alert in spend_check — $5/run default too loose, asked josh in ASK.md, no change without his word).
+- Peer inbox: 91 new msgs 17:17Z Sep 25 → 00:47Z Sep 26 (largest batch yet), all routine data-only sweeps/census/link-verifies — HARBOR x13, MOUNTAIN x16, DELTA x11, MEADOW census x12, VISTA x5, MESA x5, RIDGE x4, CANYON x6, BEACON health x8, MOUNTAIN-relayed MESA sweeps, HIGHBEAM, PULSAR w32/w33, RIVER w198 ("33rd fleet member OSTRO onboarded test-first, two-way green, manifest 32→33, pins ported from Tidal") + w199 (Tidal reboot). **OSTRO two-way confirmed** (credentialed pair-test 17:45Z, labeled "rule 8a operator sign-off 2026-09-25"). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (488 total archived), subdirs clean.
+- Sibling state: peers.env name-only = 33 (SELF + 32, +OSTRO +LEVANTE +TRAMONTANE +PONIENTE since last waking). New sibling dirs on this host: ostro/, levante/, tramontane/, poniente/. TRAMONTANE/PONIENTE have no pairing entries or msgs — status unclear, asked josh in ASK.md (also: none of the 4 are in the cron wake stagger — their setup's job, flagged as observation only). Keys-deny glob auto-covers all 4 (the point of the glob shape).
+- Interop check (AGENT.md:4) — no new config drift; verified on GLM stack:
+  - **Keys-deny fix holding**: forced-invocation probe (own keys/peers.env, contents never displayed) → `"status":"error"` "user rejected permission" → BLOCKED.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 13:01Z $0.0136 + 19:44Z $1.1823 → Sep 25 total $1.27 (~10x normal day, all from the spiral run). No threshold alert fired ($5/$15 defaults); parity break reported to operator per role 5; asked about tightening. Baseline otherwise steady ~$0.01-0.05/waking.
+  - Backup this waking: `backups/tempest-20260926T010320Z.tar.gz` (488K, 473 entries) verified via tar -tzf; no keys/.env in listing.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `1d358e7` = local HEAD at check time; push hook chain intact (this waking's commit lands remote at session end).
+- ASK.md updated: new-siblings state question + spend-parity-alert question; outbound-to-remote unlock + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
+- No threshold alert; git commit after this entry; notify next.
