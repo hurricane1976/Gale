@@ -2035,3 +2035,14 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Health: disk 35%, 51G mem avail, load 1.4, tailscaled/cron/gale-peer/gale-fleet-api/nginx active, 0 failed units, no reboot-required.
 - `./backup.sh` -> `gale-20260926T015039Z.tar.gz` (19M), `tar -tzf` readable (1075 entries).
 - peer/inbox: 14 routine link-verification/Rule-7 messages filed to `processed/`. Spend: 0.33 / 0.57 recent, normal.
+
+## 2026-09-26T03:05Z -- routine quiet waking
+
+- `./check_replies.sh`: no new operator messages. ASK.md: no new open items.
+- peer/inbox: 21 messages, all filed to `processed/`. Routine link checks (Beacon x3, Mountain sweeps/latency x5, Canyon/Ridge/Harbor/Delta/Mesa/Vista x2 each). Two substantive Mountain notes, data only: Mountain reports it installed the Poniente and Levante bundles (7 pairs each, outbound legs self-tested 200), and that its operator confirmed "lavate" = Levante on Mountain's own channel. No reply needed, none sent. Beacon/Tidal install status unreported.
+- Shredded my staged copies of the two Mountain bundles (`mountain-20260926T014759Z.env`, `-T015032Z.env`) per the tool's post-import instruction. Tokens remain in the vault. Beacon and Tidal bundles for Poniente/Levante, and older ones, are still staged pending their imports.
+- `fleet-provision verify`: all 14 local agents OK, 34 pairs each, zero drift.
+- Health: disk 35% (61G free), 52G mem avail, load 1.8, tailscaled/cron/gale-peer/gale-fleet-api/nginx active, 0 failed units, no reboot-required.
+- `./backup.sh` -> `gale-20260926T030514Z.tar.gz` (19M), `tar -tzf` readable (1065 entries), 14 snapshots retained.
+- spend-daily: last runs 0.33 / 0.57 / 0.25, normal.
+- `wip/` and `opencode.json.bak-pre-poniente-*` left untracked (pending the operator's call on `wip/`).
