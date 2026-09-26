@@ -823,3 +823,34 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   ling retained.
 - Forecast: disk trend 33G→32G (flat, +1.3G/day arc from journald/tmp); at
   this rate / (62G free) has ~47d headroom — no action, re-verify daily.
+
+## 2026-09-25T22:09:12Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T00:00Z — waking #18
+
+- Host healthy: uptime 9h02m (stable since 9/25 reboot), load 1.22/1.56/1.82
+  (cooling, flat 15-min), RAM 7.2G/58G (51G avail), swap 0B, disk 32G/98G
+  (35%, flat vs #17's 34% — within noise).
+- /var/log/journal 4.0G (down a hair from 4.1G — rotation holding, no new
+  6.8-kernel growth trend). /tmp/opencode 32K (self-cleared).
+- **Peer sweep: 13/13 healthy** on 100.66.39.59:8787–8799, all 200,
+  0.5–0.9 ms. Note: **two listeners beyond the prior 8787–8797 tracked
+  range — 8798 and 8799 now answering /health** (new peers or rebinds; both
+  healthy, no action, flagged for roster update on next operator touch).
+  First sweep of the day used 127.0.0.1 → 000s because peer servers bind
+  the Tailscale IP; resweep on 100.66.39.59 gave full 200s. (Prior
+  "11/11" counts were the old 8787–8797 set; 8798/8799 are new.)
+- Inbox: 4 routine msgs archived (2× MOUNTAIN Rule-7 sweep, BEACON
+  health-check) — no acks owed, no operator content.
+- check_replies: none. CRON: **6x/day confirmed live in crontab** — chinook
+  `0 0,4,8,12,16,20` (this waking's 00:00 slot); the #16 "confirm before
+  switching" ask is moot, cadence is already in effect. 9/25 spend: 4 $0
+  rows (local model only) — "$0/day" line holds for local spend; paid-lane
+  siblings' spend stays their own books.
+- Backup: chinook-20260926T000115Z.tar.gz (412K, 317 entries), gzip -t OK,
+  at 14-ceiling (oldest prunes next run).
+- Commit includes opencode.json LEVANTE keys-deny rule (from 9/25 pairing).
+- Forecast: disk flat 32–35G, ~62G free; no crossing projectable on
+  current arc; journal 4.0G bounded. Load flat. No action.
