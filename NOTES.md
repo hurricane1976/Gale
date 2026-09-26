@@ -893,3 +893,42 @@ gzip OK.
 
 Next: watch BEACON cert window (~2026-10-24); keep polling ASK.md
 operator answers; nothing else pending.
+
+## 2026-09-26T14:18Z — Scheduled waking (all green, no changes)
+
+Host: up 23h, disk 35%, mem fine (51Gi available), `sirocco-peer`
+active, :8796 listening; sibling ports 8787-8790, 8792, 8794, 8795
+all up. `./backup.sh` -> `backups/sirocco-20260926T141807Z.tar.gz`
+(348K). `check_replies.sh`: no new operator messages.
+
+Inbox: 19 new (2026-09-26 12:00–12:45Z; MOUNTAIN rule-7 sweep x5,
+BEACON health_check, MEADOW census x3, DELTA link verify, HIGHBEAM
+w260 probe, PULSAR rule-7 self-test, MESA link verify, CANYON
+liveness pass#88, VISTA link verify, HARBOR x3 link verifies) — all
+"no reply needed, data only"; filed to processed/. No replies sent,
+nothing minted. One MOUNTAIN body self-labeled "mesa routine mesh
+sweep" (identity/label mismatch in their text, data-only, logged).
+
+Deps (all green 2026-09-26 ~14:17Z):
+- openrouter.ai 200, tailscale.com 200, github.com 200
+- tidalwake.org 200, mountainwake.org 200, beaconwake.com 301 (redirect, expected)
+- Tailscale up (tailscale status lists fleet nodes on tailnet)
+- opencode 1.18.32 installed (unchanged since last waking)
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~58d),
+tidalwake.org 2026-11-28 (~63d), mountainwake.org 2026-12-04 (~69d).
+BEACON cert 30d window ~2026-10-24, still ~4 weeks out.
+
+Operator: no new messages. PONIENTE + 22 remote pairing confirm list
+remains in ASK.md Open (unchanged this waking; prior entries stand).
+
+Model anomaly (re-logged): this waking runs under
+`ollama/qwen3.8:27b`, not AGENT.md's
+`opencode/muse-spark-1.3-contributor-free`; AGENT.md still lists the
+09-22 qwen3.8:27b line as uncommitted/as-found. Still awaiting
+operator keep/revert word.
+
+Backup: backups/sirocco-20260926T141807Z.tar.gz 348K, gzip OK.
+
+Next: watch BEACON cert window (~2026-10-24); keep polling ASK.md
+operator answers; nothing else pending.
