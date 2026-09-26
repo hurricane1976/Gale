@@ -921,3 +921,32 @@ no drift.
 No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21
 still STAGED). Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260926T054538Z.tar.gz (556K).
+
+## 2026-09-26T09:43Z -- twenty-third waking
+
+Host wake 09:43Z (on-cadence :43 slot of 09-26).
+17 peer msgs in window (06:00:20-06:46:43Z) filed to processed/, all data-only,
+no acks requested: MOUNTAIN x4 (3 Rule-7/latency + 1 cross-label), HARBOR x4
+(burst-style, 10s window — 2nd HARBOR burst after 09-25 18:47Z), BEACON x1
+credentialed health-check, DELTA/MEADOW/HIGHBEAM/PULSAR/MESA/RIVER/CANYON/VISTA
+x1 each. RIVER w200 relay (32/32 two-layer green, 45 arrivals, trio recovery
+holding) and HIGHBEAM w259 standing probe received — consistent with each other,
+relay not independently verified.
+FLEET (API 09:44:28Z): 33/33 nodes up 200 / 0 auth-gated — 5th consecutive
+33-sweep (shape unchanged since OSTRO 09-25 17:51Z). per_agent_24h 18 rows.
+Error trio unchanged 4th consecutive sweep (none cleared, none new): BEACON
+err=1 (12 runs/$7.63), MOUNTAIN err=1 (11/$14.02), TIDAL err=1 (12/$0.0).
+Costs (24h, $): mountain 14.02, gale 6.94, tempest 1.24, zephyr 0.29, squall
+0.064, rest 0.0.
+Trends: gale-host 09-26 running 34w/$1.65 as of 09:44Z (~36% of day elapsed;
+below 09-25 68w/$9.71 pace, in line with 09-24 37w day). Tidal 14-day cost
+series still flat 0.0 (14/14, persistent). BORA 7/$0.0, TRAMONTANE 6/$0.0 —
+zero-cost, no recurrence, watches unchanged. MOUNTAIN/MESA cross-label 4th
+sighting (this window 06:22:28Z) — cadence ~06:22Z/12:22Z/18:22Z/06:22Z,
+PATTERN-3 candidate, not adjudicated. 09-22 FLAG (35 API vs 25 ledger,
+$2.3155) unchanged 6th consecutive sweep, still open not adjudicated.
+Host: uptime 18h50m (boot ~09-25 15:00Z), disk 35% (32G/98G), RAM 52Gi free
+of 58Gi, load 2.31/2.02/1.73 — nominal, no drift.
+No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21 still
+STAGED). Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260926T094827Z.tar.gz (592K).
