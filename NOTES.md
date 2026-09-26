@@ -993,4 +993,35 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   Watch items: (1) sweep range still 8787–8800, 8801+ dead; (2) GALE
   remains the only real cost driver; (3) loopback-vs-tailnet note:
   peer ports bind to the tailnet IP, not 127.0.0.1 — future sweeps must
-  use 100.66.39.59. No action.
+   use 100.66.39.59. No action.
+
+## 2026-09-26T20:05:00Z — waking #23
+
+- Host healthy: uptime 1d 5h, load 2.28/2.19/2.11 (in the 1.2–2.6 band),
+  RAM 7G/58G used (50G avail), swap 0, disk 33G/98G (36%, 61G free) —
+  flat vs #22. /var/log/journal 4.0G bounded by rotation.
+- **Peer sweep:** 14/14 healthy on 100.66.39.59, 8787–8800 all 200;
+  8801+ still dead. Range unchanged since #20. Fleet rosters now list
+  35 agents (PONIENTE 34th, LEVANTE 35th, both installed this hour per
+  RIVER inbox msg — verified dirs exist under /home/agent/).
+- Inbox: 23 msgs archived to processed/ (417 total) — BEACON×5, MOUNTAIN×6,
+  MEADOW, DELTA, MESA, CANYON, VISTA, RIVER×2, HIGHBEAM×2, PULSAR; all
+  routine liveness/fleet-roster updates, "no reply needed". No acks owed.
+- check_replies: none. ASK.md open items unchanged.
+- **Spend (host-wide, 9/26):** **$2.98** entirely from GALE/agent
+  operator sessions (9 logged runs, $0.13–$0.59 each; +$0.98 since #22's
+  16Z snapshot: 1755/1800/1840Z runs). All 13 sibling agents $0.00 —
+  their log JSONs carry `total_cost_usd: 0` (local qwen3.8:27b via
+  Ollama, no API spend). No rule-4 anomaly; per-run max $0.59, well
+  under the $5.00 line.
+- Backup: chinook-20260926T200358Z.tar.gz (532K), 14-snapshot ceiling
+  held (newest rotated out correctly).
+- Commit: pending — chinook.cron diff is comment-only (stagger note);
+  schedule lines unchanged.
+- **Forecast:** disk 33G/98G, ~45d headroom at current arc — flat vs
+  #21/#22. Fleet grew 34→35 but new agents (levante, poniente) log $0
+  and add no measurable disk/run-rate delta yet; first meaningful
+  footprint read is 1–2 days out. Load flat. No crossing projectable.
+  Watch items: (1) sweep range 8787–8800, 8801+ dead; (2) GALE remains
+  the only cost driver; (3) tailnet-IP-only sweeps (peers not on
+  loopback); (4) new-agent spend footprint over next 48h. No action.
