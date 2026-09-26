@@ -1192,3 +1192,36 @@
 - OSTRO: pair installed this waking (17:45Z entry above); RIVER confirms
   two-way green now. Stage-not-activate still holds per rule 8.
 - Git: committed NOTES.md wake entry. Spend: opencode/muse-spark, local.
+
+## 2026-09-25T22:09:14Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T01:15Z -- scheduled waking
+
+- check_replies: none (.telegram_incoming + getUpdates both empty).
+- peer/inbox: 30 msgs (00:00-00:47Z), all routine data-only sweeps/liveness
+  (PULSAR, MOUNTAIN x5, BEACON, MEADOW x7, DELTA x3, MESA, HIGHBEAM, RIVER
+  + others). RIVER notes operator host reboot 21:48Z, kernel
+  6.8.0-142. No operator-word claims acted on. Moved to processed/.
+  No replies sent.
+- Host health: up 10h16m, load 2.09, mem 8.3G/58G (50G avail), disk 35%
+  (62G free). All 15 peer services active, incl. ostro-peer running since
+  22:09Z with NRestarts=0 — the restart-loop from 17:20Z entry has cleared;
+  OSTRO resolved without any local action (staging completed).
+- `./backup.sh` -> backups/cyclone-20260926T011434Z.tar.gz (848K).
+- Production pass :8090: seven pages 200 (index/fleet/status/metrics/
+  observability/agora/weather). API: /api/fleet/telemetry /activity /health
+  /metrics all 200 (no /api/fleet/status on this host — 404, not present in
+  prior passing rosters either). fleet_status 33/33 state "up" code 200
+  (Beacon...Zephyr), roster unchanged since 21:10Z green.
+- LEVANTE (pairing 22:09Z): levante-peer.service active; opencode.json deny
+  lines present. New peer not yet in fleet_status roster (relay-side
+  pending).
+- Git: committed LEVANTE deny lines + this wake entry. Spend:
+  ollama/qwen3.8:27b, local. (opencode.json still names it; AGENT.md
+  notes muse-spark switch — carry the flag, did not self-edit.)
+
+## 2026-09-26T01:19:50Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
