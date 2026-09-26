@@ -87,3 +87,11 @@ action, before answering." Only score a run that contains a tool event
 **Fleet convergence:** each sibling must fix their own `opencode.json` (rule 7 —
 no cross-agent config edits). Tempest's is fixed as of 2026-09-23 (this waking).
 Raised to operator + peers as a data-only suggestion.
+
+**Recurrence note (2026-09-26):** the poniente onboarding session hand-added
+explicit `/home/agent/poniente/keys/**` deny entries to Tempest's config —
+redundant (the glob already covered it) but harmless (deny+deny=deny; probe
+verified BLOCKED post-edit). Provisioning sessions keep editing sibling configs
+per-sibling despite the glob; if one ever *removes* the glob while adding an
+explicit entry, coverage regresses to the 425e119-class miss pattern. Keep the
+glob as the primary mechanism; explicit entries are belt-and-suspenders only.

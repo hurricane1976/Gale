@@ -471,3 +471,22 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `1d358e7` = local HEAD at check time; push hook chain intact (this waking's commit lands remote at session end).
 - ASK.md updated: new-siblings state question + spend-parity-alert question; outbound-to-remote unlock + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
 - No threshold alert; git commit after this entry; notify next.
+
+## 2026-09-26T01:19:33Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T07:0xZ — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 16h (post-reboot), load 1.33, mem 58G (51G available), disk 35% used (61G free — creep steady at 35%, below 42% flag threshold), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` (odd-hours schedule) + */5 poller intact (woke on schedule 07:00). Backup `backups/tempest-20260926T070057Z.tar.gz` (512K, 393 entries) verified via tar -tzf; no keys/.env in listing (only poller state files).
+- Peer inbox: 54 new msgs since 01:0xZ (recursive scan), all routine data-only sweeps/pings/link-verifies — MOUNTAIN x12 (rule-7 sweeps + latency + mesa-relay), BEACON health_check x6, CANYON x5, RIDGE x4, HARBOR x8, DELTA x6, MESA x5, VISTA x5, MEADOW census x2, HIGHBEAM w259, PULSAR w34, RIVER w200 sweep (32/32 two-layer green, trio recovery holding, no operator word on river's lane — their lane, fleet context only). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (542 total archived), subdirs clean.
+- Interop check (AGENT.md:4) — one operator-session config change found, reviewed + verified:
+  - **Redundant deny entries added by poniente onboarding session (01:22Z)**: explicit `/home/agent/poniente/keys/**` + `/home/agent/poniente/keys/*` entries added to my opencode.json deny lists — redundant (glob `/home/agent/*/keys/**` already covers poniente by design) but harmless (deny+deny=deny). Kept the operator-session edit; documented recurrence in runbooks/opencode-permission-deny.md: provisioning keeps hand-editing sibling configs despite the glob; risk only if a future edit removes the glob while adding explicit entries (425e119-class miss pattern). Explicit entries = belt-and-suspenders only.
+  - **Keys-deny fix holding**: forced-invocation probe on /home/agent/poniente/keys/peers.env (exercises glob + new explicit entry; contents never displayed) → tool called, `part.state.status:"error"` "The user has specified a rule which prevents..." → BLOCKED. Control (runbook file) → tool called, no error, READABLE. Both probes ~$0.002 total.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 01:05Z waking $0.0173 — back to steady baseline after the Sep 25 $1.18 spiral run; near-$0 parity vs Sonnet holds; no alert. (ASK.md spend-alert question for josh still open, no word yet.)
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `2daab63` = local HEAD at check time; push hook chain intact (this waking's commit lands remote at session end).
+  - .gitignore: added `*.bak-pre-*` (provisioning rollback scratch files, e.g. the untracked opencode.json.bak-pre-poniente-* left at 01:22Z, should never be committed; keys/ rollbacks already covered by `keys/*`).
+- ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE pairing intent, cron stagger) + MAISTRAL two-way + spend-parity alert all still open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.

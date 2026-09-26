@@ -3,10 +3,12 @@
   "model": "openrouter/z-ai/glm-5.3-flash",
   "permission": {
     "read": {
-      "/home/agent/*/keys/**": "deny"
+      "/home/agent/*/keys/**": "deny",
+      "/home/agent/poniente/keys/**": "deny"
     },
     "external_directory": {
-      "/home/agent/*/keys/*": "deny"
+      "/home/agent/*/keys/*": "deny",
+      "/home/agent/poniente/keys/*": "deny"
     }
   }
 }
