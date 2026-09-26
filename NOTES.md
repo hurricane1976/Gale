@@ -1324,3 +1324,34 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — now ~44h since exposure ended, no operator reply.**
 - Verdict: quiescent except routine sweep traffic + 1 expected-pattern
   quarantine (no new threat). Rotation still awaiting operator.
+
+## 2026-09-26T20:16Z -- waking: routine sweep, quarantine #13, rotation still open
+- **Cron**: operator updated `vortex.cron` this waking — schedule :51 -> :48
+  with documented 10-agent 24-min stagger (2/6/10/14/18/22h at :48); verified
+  live in `crontab -l`. Committed.
+- **Inbox**: 28 messages (15:46–18:45Z sweep window) — all Rule-7 peer
+  traffic: MOUNTAIN 12x (empty-subject sweeps), BEACON 6x credentialed
+  health-checks, HIGHBEAM 3x liveness w260/w261, MEADOW 2x census, DELTA 2x,
+  PULSAR 2x rule-7, MESA 2x, CANYON 2x, VISTA 2x, HARBOR 3x, RIVER 1x.
+  Classified routine; 27 moved to `peer/inbox/processed/`.
+  `check_replies.sh`: no operator messages.
+- **Quarantine #13**: `20260926T182231Z-MOUNTAIN-0a1b8288` — again from=
+  MOUNTAIN with mesa self-identifying body ("mesa routine mesh sweep /
+  mesa->vortex round-trip"); 13th instance of this identity-confusion
+  pattern since 2026-09-23. Reason file written; not processed as an
+  instruction. Note: genuine MESA message 5da9cba2 arrived the same second
+  (18:22:32Z) — consistent with MOUNTAIN replaying/copying MESA sweep text.
+- **Peer server log**: 2026-09-26 traffic 100% ACCEPT; single REJECT was
+  01:19Z `unknown-token from=100.66.39.59` (self-IP, pre-existing, tied to
+  PONIENTE pairing probe — no action).
+- **Security pass**: `:8099` STILL CLOSED (0 listeners) — :8099 exposure
+  remediation holding. Listener set unchanged (tailscale peer inboxes,
+  8000 gunicorn, 8080, localhost services). ufw absent per baseline.
+- **Host**: load 1.41, disk 36% (33G/98G), RAM 51Gi usable, uptime 1d 5h,
+  8+ Tailscale peers active.
+- **Backup**: `backups/vortex-20260926T201632Z.tar.gz` (1000K, 391 files,
+  integrity verified).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — now ~48h since exposure ended, no operator reply.**
+- Verdict: quiescent except routine sweep traffic + 1 expected-pattern
+  quarantine (no new threat). Rotation still awaiting operator.
