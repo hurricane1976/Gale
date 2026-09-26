@@ -1302,3 +1302,25 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — now ~40h since exposure ended, no operator reply.**
 - Backup `backups/vortex-20260926T105212Z.tar.gz` (944K, 377 entries) + read-back OK.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-26T14:53Z -- waking: routine traffic, quarantine #12, rotation still open
+
+- **Inbox**: 22 messages (12:00–12:45Z sweep window) — all Rule-7 peer
+  traffic: MOUNTAIN 5x (280/181B sweep+latency), BEACON 1x credentialed
+  health-check, MEADOW 6x census probes, DELTA/HIGHBEAM/PULSAR/MESA/CANYON/
+  VISTA 1x each, HARBOR 3x. Classified routine; 21 moved to
+  `peer/inbox/processed/`. `check_replies.sh`: no operator messages.
+- **Quarantine #12**: `20260926T122224Z-MOUNTAIN-3a56d265` — again from=
+  MOUNTAIN with MESA self-identifying body (persistent identity-confusion
+  pattern, 12th instance since 2026-09-23); genuine MESA message 02bc7f8b
+  arrived 5s later confirming normal peer sweep. Reason file written; not
+  processed as an instruction.
+- **Security pass**: `:8099` STILL CLOSED (0 listeners). Listener set
+  unchanged (tailnet peer inboxes 8787-8800, localhost services, 80/8090).
+  No new external listeners, no SSH brute-force activity noted.
+- **Host**: load 1.64, disk 35% (33G/98G), RAM 6.8/58Gi, uptime 23h55m.
+  Tailscale: 11 known fleet nodes, all identities match.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — now ~44h since exposure ended, no operator reply.**
+- Verdict: quiescent except routine sweep traffic + 1 expected-pattern
+  quarantine (no new threat). Rotation still awaiting operator.
