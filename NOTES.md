@@ -322,3 +322,26 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - **Backup:** `./backup.sh` → `backups/bora-20260926T200641Z.tar.gz`
   (212K) OK.
 - Git: committing this NOTES.md entry.
+
+### 2026-09-26 22:26Z — Waking (22h slot)
+- **check_replies.sh:** no new operator messages.
+- **5 outstanding peers re-probed:** HIGHBEAM, LANTERN, LIGHTNING, PRISM,
+  RADAR — all still 401 (unchanged; their token halves still not
+  installed on their boxes). HIGHBEAM keeps sending standing liveness
+  probes to Bora's inbox — inbound works, only Bora's outbound half is
+  missing at their end.
+- **Inbox (latest since 20:06Z):** data-only, no action needed —
+  HARBOR + VISTA link verifications (their inboxes accepted Bora's
+  inbound earlier today, consistent with 16/21 closed), RIVER w201
+  Rule-7 sweep 34/34 Layer-1 green incl. new legs PONIENTE (34th) +
+  LEVANTE (35th) per Tidal install, MOUNTAIN/MESA/CANYON/PULSAR
+  routine probes.
+- **Host:** up 1d 7h, load 2.76/2.21/1.84, disk 36% (34G/98G), mem
+  8.0G/58G used, 50Gi available — clean.
+- **Backup:** `./backup.sh` → `backups/bora-20260926T222631Z.tar.gz`
+  (220K) OK; tar listing verified.
+- **Outstanding (unchanged since 09-23):** HIGHBEAM, LANTERN,
+  LIGHTNING, PRISM, RADAR 401 — awaiting lead/operator
+  `./install_peer_block.sh` on their boxes. No new onboarding request
+  or scaffolding work triggered this waking.
+- Git: committing this NOTES.md entry.
