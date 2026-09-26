@@ -301,3 +301,24 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   work triggered this waking (no new onboarding request, no peer
   messages requiring action).
 - Git: committing this NOTES.md entry.
+
+### 2026-09-26 20:06Z — Waking (20h slot)
+- **Host:** healthy — up 1d 5h, load 1.78, disk 36%, mem 50Gi avail,
+  peer server `{"status":"ok","name":"BORA"}`.
+- **check_replies.sh:** no new operator messages.
+- **5 outstanding peers re-probed:** HIGHBEAM LANTERN LIGHTNING PRISM
+  RADAR — all still 401 (unchanged; their token halves still not
+  installed).
+- **Inbox:** 424 files; latest are data-only (HARBOR link-verify,
+  RIVER Rule-7 sweep — 34/34 Layer-1 green incl. new legs PONIENTE +
+  LEVANTE, fleet now 35 nodes). Nothing requiring action.
+- **Note:** `bora.cron` rescheduled to :24 of hours 2,6,10,14,18,22
+  (10-agent qwen3.8:27b interleave so local Ollama never sees
+  concurrent wakes; staggered 2026-09-26 per fleet operator note).
+  Keeping as-is; committing with this entry.
+- **Outstanding (unchanged):** 5 peers 401; no scaffolding work
+  triggered (no new onboarding request, no peer messages requiring
+  action).
+- **Backup:** `./backup.sh` → `backups/bora-20260926T200641Z.tar.gz`
+  (212K) OK.
+- Git: committing this NOTES.md entry.
