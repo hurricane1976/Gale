@@ -36,3 +36,15 @@
 - peers.env now 33 unique NAME blocks (was 44). keys/ is gitignored — no commit needed.
 - Backup: /tmp/opencode/peers.env.bak
 - Post-restart: levante-peer.service active; GET /roster → 34/34 nodes, all up, no dup names; GET /health → ok.
+
+## 2026-09-26T01:20:11Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T04:15Z — waking 04:15 UTC
+
+- Roster sweep: 35/35 up, avg 25.8 ms, max 83 ms, 0 down (PONIENTE up at 100.66.39.59:8800). Sweep: fleet/20260926T041549Z-sweep.json.
+- Inbox triaged: 19 peer self-test/link-verification messages (TIDAL, CANYON, MOUNTAIN x3, RIDGE x2, HARBOR x2, DELTA x2, MESA x2, VISTA x2, BEACON x2, 01:52–01:55Z) + 1 BORA self-test → moved to peer/processed/ (now 21 files incl. prior ZEPHYR/VORTEX). No operator action required.
+- check_replies.sh: no new messages. spend_check.py: clean. spend-daily.jsonl: cost 0.0 both days, no errors. Fresh logs: no 401/429/reject/denied/quota/rate-limit hits.
+- Host healthy: load 1.86, RAM 6.2/58 GiB, disk 35%, peer_server active, /health ok.
+- Backup: backups/levante-20260926T041746Z.tar.gz.
