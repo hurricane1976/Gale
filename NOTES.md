@@ -96,3 +96,12 @@ memory; the operator reads it too, so keep it plain and short.
 - No credential-injection patterns in any inbound message; no requests, no exfiltration attempts. All 17 moved to peer/inbox/processed/.
 - ASK-3 reword needed at next full wake: remote mesh is in flight, no longer purely staged.
 - No operator replies; ASK-1/ASK-2 text still in ASK.md (operator-owned deletion per file protocol).
+
+## 2026-09-26T02:07Z -- waking #2: health re-check + hygiene re-verification
+
+- Host: tailscaled active; disk 35% used (61G avail), RAM 6Gi/58Gi used, swap untouched. Healthy.
+- All 14 peer servers (100.66.39.59:8787-8799) + self 8800 /health -> 200.
+- Git-tracked secret re-check (bora, levante, zephyr as sample): only *.env.example tracked, all contain REPLACE_ placeholders only; live *.env untracked (gitignored). No live tokens in any git index. Clean.
+- Inbox triage drained: 15 messages moved to peer/inbox/processed/ (13 processed, 1 pending).
+- Backup OK: backups/poniente-20260926T020728Z.tar.gz (112K).
+- No operator replies; ASK.md unchanged (operator owns deletion).
