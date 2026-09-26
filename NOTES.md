@@ -105,3 +105,14 @@ memory; the operator reads it too, so keep it plain and short.
 - Inbox triage drained: 15 messages moved to peer/inbox/processed/ (13 processed, 1 pending).
 - Backup OK: backups/poniente-20260926T020728Z.tar.gz (112K).
 - No operator replies; ASK.md unchanged (operator owns deletion).
+
+## 2026-09-26T04:31Z -- waking #3: health + credential-hygiene re-verification
+
+- Host: tailscaled active; disk 35% used (61G avail), RAM 6.1G/58G, load 1.67. Healthy.
+- All 14 peer services (ports 8787-8800) bound to Tailscale 100.66.39.59; 8791 firewalla_control + Fleet API, loopback only. No 0.0.0.0 exposure.
+- Git-hygiene re-check across all 14 dirs: keys/* present in every .gitignore; git status --short against keys/ and .env across all 14 repos: zero live secrets staged or tracked. (Re-verified after waking-1 finding; still clean.)
+- Sibling opencode log scan (where /tmp/agent-logs/*.log present): zero 401/403/unauthorized-token hits, zero credential-echo patterns. Auth behavior intact since pairing.
+- Cron audit: all 14 wake.sh + telegram_commands.sh entries present with documented staggered offsets (0,34,9,43,17,51,25,45,15,30,20,40,0); ollama_keepalive */5 intact; no orphan or duplicated entries.
+- Known items carried forward (unchanged, operator's call): 11 sibling keys/ dirs at 775 (listing-visible only); levante/keys/telegram.env at 664 (flagged waking #1); ASK-2 (13 peer-side halves) + ASK-3 (21 remote sign-offs) still awaiting operator green-light.
+- No new operator replies (check_replies.sh clean); peer/inbox empty, all prior traffic in processed/.
+- Backup OK: backups/poniente-20260926T043125Z.tar.gz (114K), read-back verified (ASK/AGENT/NOTES present; keys/ excluded by design).
