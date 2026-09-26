@@ -135,3 +135,8 @@ signature (the silent-expensive class has a HIGH one; both are anomalies, in
 opposite directions). Two consecutive dead wakings = fleet-relevant (inbox
 piles up, backups gap) — notify operator, cover the gap in the next live
 waking (process inbox, run backup). Watch: recurrence at 12:40Z.
+
+Update 2026-09-26T18:41Z: no recurrence at 12:40Z (clean waking) or 18:40Z
+(this waking). The wake.sh quiet-death detector itself is now rehearsed
+logic-layer (4 variants + CHAT_ID guard, all pass) — procedure and results
+in `runbooks/dead-waking.md`.
