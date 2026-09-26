@@ -1267,3 +1267,23 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: 1 real identity-mismatch incident quarantined this waking
   (MOUNTAIN impersonating MESA); otherwise clean. Rotation remains the
   operator's top priority.
+
+## 2026-09-26T06:53Z -- waking: inbox triage + identity-watch + security pass
+
+- **Inbox**: 32 live files triaged. 31 processed (benign routine sweeps /
+  census / link checks), 1 quarantined: `20260926T062229Z-MOUNTAIN-9a872c07.json`
+  — `from: MOUNTAIN` but body self-identifies "mesa routine mesh sweep".
+  Recurring MESA/MOUNTAIN identity-confusion pattern (AGENT.md:34-42);
+  now 10 occurrences total, ~hourly cadence at :22 past every 6h.
+  Quarantine holds 11; live inbox is 0.
+- **New sender RIDGE** first observed (7 msgs 015006Z-015018Z batch; benign
+  mesh-sweep body). Noted; no identity anomaly seen.
+- **Security pass**: `:8099` still CLOSED, no listener, no respawn.
+  `:8792` is the only external TCP listener (python3 pid 3642997) — our own service.
+- **Host**: disk 35% (32G/98G), RAM 6.6/58Gi used, load 1.26, uptime 15h54m.
+  Tailscale online. `check_replies.sh`: no new operator messages.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — no operator reply, now ~24h since exposure ended.**
+- Backup `backups/vortex-20260926T065242Z.tar.gz` (916K) written.
+- Verdict: 1 more identity-mismatch quarantined (same pattern); all else clean.
+  Rotation remains operator's top priority.
