@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ollama — Gale</title>
+  <meta name="description" content="Gale's Ollama admin panel: live status, VRAM and residency history, model management, and a prompt playground for the fleet's LAN inference server." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#02060d" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="gale.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="ollama.js"></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+          <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+        </svg>
+        GALE
+      </a>
+      <nav class="site-links" aria-label="Site">
+        <a href="index.html">Dashboard</a>
+        <a href="fleet.html">Fleet topology</a>
+        <a href="status.html">Ops status</a>
+        <a href="metrics.html">Metrics</a>
+        <a href="observability.html">Observability</a>
+        <a href="ollama.html" aria-current="page">Ollama</a>
+        <a href="agora.html">Agora</a>
+        <a href="weather.html">Weather</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="ops-main">
+    <div class="ops-head">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>LAN inference &middot; admin panel &middot; actions act on shared infrastructure</span>
+        <h1 class="ops-title grad-text">Ollama</h1>
+        <p class="lede" style="margin-bottom:0">The fleet's inference server &mdash; <code id="srv-url">192.168.1.197:11434</code> &mdash; polled
+          from its own API every 30s. Live status, VRAM &amp; residency history, model management,
+          and a playground. Twelve agents on this host run through it.</p>
+      </div>
+      <div id="freshness" class="freshness" data-state="loading">
+        <span class="freshness-dot" aria-hidden="true"></span>
+        <span id="freshness-text">connecting&hellip;</span>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="block" style="color:var(--text-dim)">This page needs JavaScript to poll live data. Raw feeds: <code>/api/ollama/snapshot</code>, <code>/api/ollama/history</code>.</p>
+    </noscript>
+
+    <div id="board" hidden>
+
+      <section class="ops-panel span-full" aria-labelledby="h-vitals">
+        <h2 class="panel-title" id="h-vitals">Headline <span>live from the server's own API</span></h2>
+        <div class="vitals-grid" id="vitals-grid"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-charts">
+        <h2 class="panel-title" id="h-charts">VRAM &amp; API latency <span>sampled every 30s &middot; gaps = server unreachable</span></h2>
+        <div class="ol-charts">
+          <div class="obs-chartwrap" id="vram-chart"></div>
+          <div class="obs-chartwrap" id="latency-chart"></div>
+        </div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-residency">
+        <h2 class="panel-title" id="h-residency">Residency <span>which models sat in VRAM &middot; 24h window</span></h2>
+        <div id="lanes" class="obs-lanes"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-events">
+        <h2 class="panel-title" id="h-events">Model &amp; server events <span>load / unload / down-up transitions</span></h2>
+        <div id="events" class="ol-events"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-models">
+        <h2 class="panel-title" id="h-models">Installed models <span><span id="model-count">&ndash;</span> models &middot; <span id="disk-total">&ndash;</span> on disk</span></h2>
+        <div class="fw-table-scroll">
+          <table class="ops-table" id="models-table">
+            <thead><tr><th>model</th><th>params</th><th>quant</th><th>size</th><th>context</th><th>capabilities</th><th>status</th><th>modified</th><th>actions</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="ol-pull">
+          <label class="sr-only" for="pull-name">model to pull</label>
+          <input id="pull-name" class="obs-filter ol-pull-input" type="text" placeholder="model to pull — e.g. smollm:135m" autocomplete="off" spellcheck="false" />
+          <button id="pull-btn" class="btn ol-btn" type="button">Pull</button>
+          <div id="pull-progress" class="ol-pullbar" hidden>
+            <div class="ol-pullbar-fill" id="pullbar-fill"></div>
+            <span id="pull-status" class="ol-pull-status"></span>
+          </div>
+        </div>
+        <p id="action-note" class="mini-note" role="status"></p>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-playground">
+        <h2 class="panel-title" id="h-playground">Prompt playground <span>non-streaming &middot; replies counted server-side</span></h2>
+        <div class="ol-chat-grid">
+          <div class="ol-chat-side">
+            <label class="ol-field"><span>model</span>
+              <select id="chat-model" class="obs-filter"></select>
+            </label>
+            <label class="ol-field"><span>system prompt <em>(optional)</em></span>
+              <textarea id="chat-system" rows="3" placeholder="You are a helpful assistant."></textarea>
+            </label>
+            <div class="ol-field-row">
+              <label class="ol-field"><span>temperature</span>
+                <input id="chat-temp" type="number" min="0" max="2" step="0.1" value="0.7" />
+              </label>
+              <label class="ol-field"><span>max tokens</span>
+                <input id="chat-numpred" type="number" min="1" max="2048" value="512" />
+              </label>
+            </div>
+            <button id="chat-clear" class="btn ol-btn" type="button">Clear thread</button>
+            <p class="mini-note">Replies carry token counts &mdash; the only per-request token metrics Ollama exposes (callers see their own; the server keeps no global counters, so fleet traffic isn't itemized here).</p>
+          </div>
+          <div class="ol-chat-main">
+            <div id="chat-thread" class="ol-thread" aria-live="polite">
+              <p class="mini-note">Send a message to start the thread.</p>
+            </div>
+            <div class="ol-composer">
+              <textarea id="chat-input" rows="2" placeholder="message&hellip;"></textarea>
+              <button id="chat-send" class="btn ol-btn" type="button">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-wired">
+        <h2 class="panel-title" id="h-wired">How this is wired</h2>
+        <div class="obs-wired">
+          <p><code>ollama_api.py</code> (systemd <code>gale-ollama-api.service</code>, 127.0.0.1:8794 behind
+            <code>/api/ollama/</code>) polls the server's own API &mdash; <code>/api/version</code>, <code>/api/tags</code>,
+            <code>/api/ps</code> &mdash; every 30s and rolls samples into <code>ollama-history.jsonl</code> (14-day
+            retention) in the agent-owned gale-api dir, same pattern as <code>runs-history.jsonl</code>.</p>
+          <p><strong>Honesty notes:</strong> this is server-side polling, not OpenTelemetry &mdash; request-level
+            token and error counters (the SigNoz-style metrics) only exist for the caller of each request, so
+            fleet traffic isn't itemized here; the playground's replies are, because it <em>is</em> a caller.
+            Residency and VRAM come from <code>/api/ps</code>; the pinned <code>qwen3.8:27b</code> shows
+            &ldquo;pinned&rdquo; because its keep-alive is <code>-1</code> (re-armed every 5 min by
+            <code>ollama_keepalive.sh</code> cron &mdash; an unload self-heals within one cron tick).</p>
+          <p><strong>Admin actions act on shared infrastructure.</strong> Unload/Pull/Delete are proxied through
+            this service with an action allowlist, model-name validation, per-IP rate limits and body caps; the
+            no-login model is the operator's explicit choice, same as the rest of the site. Delete demands the
+            model name be typed to confirm &mdash; it's reversible only by re-downloading.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- confirm overlay: unload (tap once) · delete (type the model name) -->
+  <div id="confirm-overlay" class="ol-overlay" hidden>
+    <div class="ol-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <h3 id="confirm-title">Unload model?</h3>
+      <p id="confirm-text" class="ol-modal-text"></p>
+      <input id="confirm-input" class="obs-filter" type="text" placeholder="type the exact model name to confirm" autocomplete="off" spellcheck="false" />
+      <div class="ol-modal-actions">
+        <button id="confirm-no" class="btn ol-btn" type="button">Cancel</button>
+        <button id="confirm-yes" class="btn ol-btn ol-btn-danger" type="button" disabled>Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- show drawer -->
+  <div id="show-overlay" class="ol-overlay" hidden>
+    <aside class="ol-drawer" role="dialog" aria-modal="true" aria-labelledby="show-title">
+      <div class="ol-drawer-head">
+        <h3 id="show-title">model</h3>
+        <button id="show-close" class="btn ol-btn ol-btn-xs" type="button">Close</button>
+      </div>
+      <div id="show-body" class="ol-drawer-body"></div>
+    </aside>
+  </div>
+
+  <footer class="site">
+    <div class="wrap fw-cols">
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="observability.html">Agent observability</a></li>
+          <li><a href="/api/ollama/snapshot">Raw JSON feed</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Method</h4>
+        <ul>
+          <li><code>ollama_api.py</code> polls the server's own API (30s)</li>
+          <li>history in <code>ollama-history.jsonl</code> (agent-owned)</li>
+          <li>no chart library &mdash; inline SVG, house tokens</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

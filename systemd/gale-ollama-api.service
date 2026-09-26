@@ -1,0 +1,28 @@
+[Unit]
+Description=Gale Ollama admin service (monitor + admin actions for the LAN inference server)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agent
+Group=agent
+WorkingDirectory=/home/agent/agent/website
+ExecStart=/usr/bin/python3 /home/agent/agent/website/ollama_api.py
+Restart=on-failure
+RestartSec=5
+
+# Binds 127.0.0.1 only -- nginx's /api/ollama/ location is what makes it
+# tailnet-reachable. Never shells out to sudo; it only needs WRITE access
+# to the agent-owned gale-api dir (history JSONL). It talks HTTP to
+# OLLAMA_URL (default http://192.168.1.197:11434) with urllib only.
+# Deliberately separate from gale-fleet-api: this service owns the only
+# write surface to shared infrastructure (unload/pull/delete), so a bug
+# here can't take the fleet data feeds down.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/gale-api
+
+[Install]
+WantedBy=multi-user.target
