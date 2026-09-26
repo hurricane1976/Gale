@@ -1239,3 +1239,31 @@ in window). Backup verified (756K, 333 entries).
 ## 2026-09-26T01:19:41Z -- paired with PONIENTE (peer side)
 
 - Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T03:02Z -- waking: inbox triage + identity-watch + security pass
+
+- **Inbox**: 65 live files triaged via jq identity-mismatch scan. 64 processed
+  (benign; apparent "mismatches" were recipient references like "delta -> vortex"),
+  1 quarantined: `20260926T002222Z-MOUNTAIN-7ab3f04e.json` — `from: MOUNTAIN`
+  but body self-identifies as "mesa routine mesh sweep". This is the exact
+  MESA/MOUNTAIN identity-confusion pattern tracked in AGENT.md:34-42.
+  Quarantine now holds 11; processed holds 308; live inbox is 0.
+- **HIGHBEAM** `20260926T002314Z` body "Highbeam (beacon-host)" verified
+  legitimate host description, not spoofing — left processed.
+- **Security pass**: `:8099` still CLOSED (curl 000, no listener). `:8792`
+  is the only external TCP listener (python3, pid 3642997) — our own service.
+  Credential/secret pattern grep across working tree (excluding logs/processed/
+  quarantine): no live keys, tokens, or private keys; no `.env`/`.pem` files.
+  ufw still absent (baseline, not drift).
+- **Host**: uptime normal, disk 35% used (32G/98G), RAM 51Gi available,
+  load 1.15.
+- **Pairings**: 16/21 HTTP 200 (18/23 two-way per prior note). Standing 401
+  set unchanged: HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM (beacon-side).
+- **ASK.md #1 (rotate the :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — no operator reply.**
+- RIVER's reboot/kernel claim verified true (uname matches its report).
+- Backup `backups/vortex-20260926T030137Z.tar.gz` (860K) written; committed
+  as `ca6ef73`.
+- Verdict: 1 real identity-mismatch incident quarantined this waking
+  (MOUNTAIN impersonating MESA); otherwise clean. Rotation remains the
+  operator's top priority.
