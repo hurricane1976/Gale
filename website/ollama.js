@@ -103,6 +103,57 @@ function renderVitals() {
   ].join("");
 }
 
+function heat(v, warn, crit) {
+  return v == null ? "" : v >= crit ? "crit" : v >= warn ? "warn" : "";
+}
+
+function gpuTile(label, value, sub, cls) {
+  return `<div class="gpu-tile ${cls ? `gpu-${cls}` : ""}">
+    <span class="gpu-label">${esc(label)}</span>
+    <span class="gpu-value">${value}</span>
+    <span class="gpu-sub">${sub || ""}</span>
+  </div>`;
+}
+
+function gpuBar(label, pct, sub) {
+  const level = pct >= 90 ? "warn" : "";
+  const w = Math.max(0, Math.min(100, pct));
+  return `<div class="gpu-bar">
+    <div class="gpu-bar-head"><span class="gpu-label">${esc(label)}</span><span class="gpu-sub">${sub || ""}</span></div>
+    <div class="gpu-track ${level ? `gpu-bar-${level}` : ""}"><i style="width:${w.toFixed(1)}%"></i></div>
+  </div>`;
+}
+
+function renderGpu(g) {
+  const box = $("gpu-wrap");
+  if (!box) return;
+  if (!g || !g.ok || !Array.isArray(g.gpus) || !g.gpus.length) {
+    const err = (g && g.error) || "no gpu data";
+    box.innerHTML = `<div class="gpu-empty gpu-err">${esc(err)}</div>`;
+    return;
+  }
+  const parts = g.gpus.map((gpu, i) => {
+    const name = gpu.name || `gpu ${gpu.index ?? i}`;
+    const memPct = gpu.mem_used_mb != null && gpu.mem_total_mb ? (gpu.mem_used_mb / gpu.mem_total_mb) * 100 : null;
+    const tiles = [
+      gpuTile("VRAM", `${gpu.mem_used_mb ?? "\u2013"} / ${gpu.mem_total_mb ?? "?"} MB`, "video memory", heat(memPct, 85, 95)),
+      gpuTile("Temp", `${gpu.temp_c ?? "\u2013"} \u00b0C`, "junction", heat(gpu.temp_c, 78, 88)),
+      gpuTile("Power", `${gpu.power_w ?? "\u2013"} W`, gpu.power_limit_w ? `limit ${gpu.power_limit_w} W` : "limit ?"),
+    ];
+    const bars = [
+      gpuBar("Utilization", gpu.util_pct ?? 0, `${Math.round(gpu.util_pct ?? 0)}%`),
+      gpuBar("VRAM", gpu.mem_total_mb ? (gpu.mem_used_mb || 0) / gpu.mem_total_mb * 100 : 0, `${gpu.mem_used_mb ?? 0} / ${gpu.mem_total_mb ?? "?"} MB`),
+      gpuBar("Power draw", gpu.power_limit_w ? (gpu.power_w || 0) / gpu.power_limit_w * 100 : 0, `${gpu.power_w ?? "\u2013"} W`),
+    ];
+    return `<div class="gpu-card">
+      <div class="gpu-card-head"><span class="gpu-name">${esc(name)}</span>${g.stale ? '<span class="gpu-stale">stale</span>' : ""}</div>
+      <div class="gpu-tilegrid">${tiles.join("")}</div>
+      <div class="gpu-bars">${bars.join("")}</div>
+    </div>`;
+  });
+  box.innerHTML = `<div class="gpu-grid">${parts.join("")}</div>`;
+}
+
 /* ---------------- charts ---------------- */
 function timeRange(series) {
   const t0 = new Date(series[0].ts).getTime();
@@ -470,7 +521,19 @@ async function loadHist() {
   } catch { /* snapshot poll will surface feed errors */ }
 }
 
+async function loadGpu() {
+  try {
+    const r = await fetch("api/ollama/gpu", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    renderGpu(await r.json());
+  } catch {
+    const box = $("gpu-wrap");
+    if (box) box.innerHTML = '<div class="gpu-empty gpu-err">gpu feed unreachable</div>';
+  }
+}
+
 document.getElementById("board").hidden = false;
-await Promise.all([loadSnap(), loadHist()]);
+await Promise.all([loadSnap(), loadHist(), loadGpu()]);
 setInterval(loadSnap, POLL_SNAP_MS);
 setInterval(loadHist, POLL_HIST_MS);
+setInterval(loadGpu, 15000);

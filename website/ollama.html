@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="gale.css" />
   <script>document.documentElement.classList.add("js");</script>
-  <script type="module" src="ollama.js?v=2"></script>
+  <script type="module" src="ollama.js?v=3"></script>
 </head>
 <body class="ops-body">
 <div class="grain" aria-hidden="true"></div>
@@ -68,6 +68,11 @@
       <section class="ops-panel span-full" aria-labelledby="h-vitals">
         <h2 class="panel-title" id="h-vitals">Headline <span>live from the server's own API</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
+      </section>
+
+      <section class="ops-panel span-full" aria-labelledby="h-gpu">
+        <h2 class="panel-title" id="h-gpu">GPU hardware <span>RTX 4090 &middot; josh-desktop11 collector &middot; cached 30s</span></h2>
+        <div class="gpu-wrap" id="gpu-wrap"><div class="gpu-empty" id="gpu-empty">waiting for first gpu reading&hellip;</div></div>
       </section>
 
       <section class="ops-panel span-full" aria-labelledby="h-charts">

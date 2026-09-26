@@ -10,9 +10,12 @@ nothing here can change anything on this PC, it only reads system state):
   GET /health -- {"name": "josh-desktop11"}, matches the same liveness
                  contract every other TARGET on the board already exposes.
   GET /stats  -- host/CPU/memory/disk/network/services/security snapshot,
-                 same field shapes as sysmon.py's own collect_host() /
-                 collect_network() where a Windows equivalent exists, so
-                 the dashboard can render it with the same components.
+                  same field shapes as sysmon.py's own collect_host() /
+                  collect_network() where a Windows equivalent exists, so
+                  the dashboard can render it with the same components.
+   GET /gpu    -- list of per-GPU dicts (name, index, mem used/total,
+                  utilization %, temp C, power draw/limit W) read from
+                  nvidia-smi on this PC; {"error": ...} when unavailable.
 
 SETUP on josh-desktop11:
   1. Install Python 3 (python.org) if not already present.
@@ -228,6 +231,57 @@ def _reboot_pending():
     return False
 
 
+def collect_gpu():
+    """Reads GPU stats directly from the GPU host's nvidia-smi.exe.
+
+    Returns a list of per-GPU dicts, or {"error": ...} when nvidia-smi is
+    missing / fails (e.g. non-nVIDIA machine) so the caller can degrade
+    gracefully instead of 500-ing.
+    """
+    out = run(
+        [
+            r"C:\Windows\System32\nvidia-smi.exe",
+            "--query-gpu=name,index,memory.used,memory.total,utilization.gpu,temperature.gpu,power.draw,power.limit",
+            "--format=csv,noheader,nounits",
+        ],
+        timeout=5,
+    )
+    if not out:
+        # fall back to PATH lookup in case System32 copy is absent
+        out = run(
+            [
+                "nvidia-smi",
+                "--query-gpu=name,index,memory.used,memory.total,utilization.gpu,temperature.gpu,power.draw,power.limit",
+                "--format=csv,noheader,nounits",
+            ],
+            timeout=5,
+        )
+    if not out or "Unable" in out or "ERROR" in out.upper():
+        return {"error": "nvidia-smi unavailable or failed"}
+    gpus = []
+    for line in out.splitlines():
+        parts = [p.strip() for p in line.split(",")]
+        # expected 8 columns; skip malformed lines rather than crashing
+        if len(parts) < 8:
+            continue
+        try:
+            gpus.append({
+                "name": parts[0],
+                "index": int(parts[1]),
+                "mem_used_mb": int(parts[2]),
+                "mem_total_mb": int(parts[3]),
+                "util_pct": int(parts[4]),
+                "temp_c": int(parts[5]),
+                "power_w": float(parts[6]),
+                "power_limit_w": float(parts[7]),
+            })
+        except ValueError:
+            continue
+    if not gpus:
+        return {"error": "no GPU data parsed"}
+    return gpus
+
+
 def collect_security():
     fw = run(["netsh", "advfirewall", "show", "allprofiles", "state"])
     fw_active = None
@@ -284,6 +338,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(200, snapshot())
             except Exception as e:
                 self._json(500, {"error": str(e)})
+        elif self.path == "/gpu":
+            self._json(200, collect_gpu())
         else:
             self._json(404, {"error": "not found"})
 

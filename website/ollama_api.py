@@ -12,9 +12,13 @@ feeds down with it.
   GET  /snapshot      live view: version, API latency, installed models
                       (/api/tags), resident models (/api/ps) with VRAM and
                       unload countdown, derived totals. ~5s TTL cache.
-  GET  /history       sampled history from the in-memory ring (backed by
-                      JSONL on disk): VRAM/latency series, residency spans,
-                      load/unload/down-up events, uptime % over ?hours=24.
+   GET  /history       sampled history from the in-memory ring (backed by
+                       JSONL on disk): VRAM/latency series, residency spans,
+                       load/unload/down-up events, uptime % over ?hours=24.
+   GET  /gpu           live GPU vitals (util %, VRAM, temp C, power W) from
+                       the Windows collector's /gpu endpoint (nvidia-smi on
+                       josh-desktop11). 30s TTL cache with last-good
+                       fallback; {"error": ...} when the collector is down.
   GET  /show?model=   passthrough of Ollama's /api/show, 60s per-model cache.
   GET  /pull/status    progress of the single background pull, if any.
   POST /action        admin actions: unload | pull | delete. Guards: action
@@ -48,12 +52,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://192.168.1.197:11434").rstrip("/")
+COLLECTOR_URL = os.environ.get("GPU_COLLECTOR_URL", "http://192.168.1.197:8792").rstrip("/")
 API_DIR = "/var/www/gale-api"
 HISTORY_PATH = os.path.join(API_DIR, "ollama-history.jsonl")
 
 SAMPLE_EVERY_S = 30
 SNAPSHOT_TTL_S = 5
 SHOW_TTL_S = 60
+GPU_TTL_S = 30
 HISTORY_KEEP_LINES = 64000          # 14 days of 30s samples is ~40k
 HISTORY_TRIM_EVERY_S = 6 * 3600
 PULL_TIMEOUT_S = 3600               # pulls of large models can take a while
@@ -227,6 +233,7 @@ class Sampler:
                 resident.append(name)
                 vram += int(m.get("size_vram") or 0)
 
+        _, gobj = fetch_gpu()
         sample = {
             "ts": now_iso(),
             "reachable": reachable,
@@ -234,6 +241,7 @@ class Sampler:
             "version": version,
             "resident": resident,
             "vram_bytes": vram,
+            "gpu": (gobj if (gobj or {}).get("ok") else None),
         }
         events = []
         with self.lock:
@@ -385,6 +393,50 @@ def show_cached(model):
             return {"ok": True, "model": model, "show": obj}
         return {"ok": False, "model": model, "error": (obj or {}).get("error", "unreachable")}
     return c.get(build)
+
+
+# --------------------------------------------------------------------------
+# GPU vitals -- from the Windows collector (nvidia-smi on josh-desktop11)
+
+_GPU = {"lock": threading.Lock(), "at": 0.0, "data": None, "last_good": None}
+
+
+def fetch_gpu():
+    """30s-cached GET /gpu from the collector, last-good on failure.
+
+    Returns (code, body). 200 on success; 502 only when the collector has
+    never answered with GPU data. A stale snapshot (collector down) is
+    still served with "stale": true so the page can show the vitals with a
+    "last seen" marker instead of an empty card.
+    """
+    with _GPU["lock"]:
+        fresh = _GPU["data"] is not None and (time.monotonic() - _GPU["at"]) < GPU_TTL_S
+        if fresh:
+            return 200, _GPU["data"]
+        last = _GPU["last_good"]
+    stale_body = None
+    if last is not None:
+        stale_body = dict(last)
+        stale_body["stale"] = True
+    try:
+        req = urllib.request.Request(COLLECTOR_URL.rstrip("/") + "/gpu")
+        with urllib.request.urlopen(req, timeout=5) as r:
+            obj = json.loads(r.read().decode("utf-8"))
+    except Exception as e:
+        if stale_body is not None:
+            return 200, stale_body
+        return 502, {"ok": False, "error": f"collector unreachable ({type(e).__name__})"}
+    if isinstance(obj, list) and obj and all(isinstance(g, dict) for g in obj):
+        body = {"ok": True, "gpus": obj, "generated_at": now_iso(), "stale": False}
+        with _GPU["lock"]:
+            _GPU["data"] = body
+            _GPU["at"] = time.monotonic()
+            _GPU["last_good"] = body
+        return 200, body
+    err = obj.get("error") if isinstance(obj, dict) else "no GPU data"
+    if stale_body is not None:
+        return 200, stale_body
+    return 502, {"ok": False, "error": f"collector: {err}"}
 
 
 # --------------------------------------------------------------------------
@@ -592,6 +644,9 @@ class Handler(BaseHTTPRequestHandler):
                                         "generated_at": now_iso()})
             if path == "/snapshot":
                 return self._send(200, SNAP.get(build_snapshot))
+            if path == "/gpu":
+                code, obj = fetch_gpu()
+                return self._send(code, obj)
             if path == "/history":
                 return self._send(200, history_envelope((q.get("hours") or [24])[0]))
             if path == "/show":

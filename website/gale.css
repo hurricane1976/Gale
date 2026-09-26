@@ -1476,3 +1476,25 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .ol-show-grid dt { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
 .ol-show-grid dd { margin: 2px 0 0; color: var(--text); font-family: var(--font-mono); font-size: 0.85rem; }
 .ol-caps { margin-top: 12px; }
+
+/* ---- ollama panel: gpu hardware ---- */
+.gpu-wrap { margin-top: 6px; }
+.gpu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+.gpu-card { border: 1px solid var(--line); border-radius: 10px; background: var(--glass); padding: 14px 16px; }
+.gpu-card-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.gpu-name { font-family: var(--font-heading); font-size: 1.05rem; font-weight: 600; }
+.gpu-stale { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--warn); border: 1px solid var(--warn-dim); border-radius: 999px; padding: 2px 8px; }
+.gpu-tilegrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.gpu-tile { display: flex; flex-direction: column; gap: 3px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: rgba(160, 185, 230, 0.03); }
+.gpu-tile.gpu-warn .gpu-value { color: var(--warn); }
+.gpu-tile.gpu-crit .gpu-value { color: var(--flag-soft); }
+.gpu-label { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+.gpu-value { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; line-height: 1.1; }
+.gpu-sub { font-size: 0.72rem; color: var(--text-faint); }
+.gpu-bars { display: flex; flex-direction: column; gap: 10px; }
+.gpu-bar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.gpu-track { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.gpu-track i { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--flag-dim), var(--flag-soft)); transition: width 0.6s var(--ease-out); }
+.gpu-track.gpu-bar-warn i { background: linear-gradient(90deg, var(--warn-dim), var(--warn)); }
+.gpu-empty { padding: 18px 4px; font-size: 0.85rem; color: var(--text-faint); }
+.gpu-err { color: var(--warn); }
