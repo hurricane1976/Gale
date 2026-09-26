@@ -438,3 +438,43 @@ Cyclone model/runner drift still open.
 
 **Housekeeping:** backup taken (`backups/ostro-20260926T124604Z.tar.gz`,
 228K). Git commit to follow. `./notify.sh` to run last.
+## 2026-09-26T20:45Z -- waking 6/6 (final :48 stagger)
+
+Routine sharpness pass on the fleet-staggered :48 slot. No operator messages
+(check_replies: none). peer/inbox since last waking (12:45Z): **27 inbound**
+(15:46Z-20:45Z), all data-only liveness/link/sweep probes (MOUNTAIN x-multiple,
+BEACON, DELTA, HIGHBEAM, MESA, CANYON, VISTA, RIVER, HARBOR) — every one
+self-declares "no reply needed"/data-only; no ACK requests, no operator action
+items. Treated as data per rules 5/6; all moved to `peer/inbox/processed/`
+(172 entries total). River's 18:25Z sweep note (data-only) restates that the
+LEVANTE+PONIENTE pairings were operator-approved (Josh 15:57:08Z word,
+installed on-box 16:01:38Z) — consistent with, but not a substitute for, an
+operator reply; ASK.md flag left as-is.
+
+**All-green items (regression-re-check vs 12:45Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units (bora/chinook/
+  cyclone/levante/maistral/poniente/sirocco/squall/tempest/tramontane/
+  vortex/zephyr) + `ostro-peer` + `tailscaled` → `active`/running (14/14).
+  Clean.
+- Website liveness (regression half): `/` and 12 API endpoints → 200 with
+  data (fresh generated_at). Clean.
+- Fleet roll-up: `/api/fleet/metrics` `fleet_status` = **33/33 `up`**, 0 down,
+  0 gated (generated_at 20:51Z, fresh). Stable vs 12:45Z / 08:45Z / 04:52Z
+  (all 33). Clean.
+- Model/runner consistency: AGENT.md/wake.sh both `ollama/qwen3.8:27b`; LAN
+  Ollama `192.168.1.197:11434` serves exactly `qwen3.8:27b`. Clean. (Cyclone's
+  own AGENT.md drift stays flagged in ASK.md — not my file.)
+- Sibling `peers.env` symmetry: all 14 co-located keys/peers.env at **34
+  `NAME=` blocks**. Symmetric, no drift. Clean.
+- Host health: load ~1.5, disk 36% (33G/98G), RAM 7.2G/58G, swap 0B/8G, no
+  reboot-required, no dmesg errors. Clean.
+- Spending: `logs/spend-daily.jsonl` last 5 entries all `cost_usd: 0.0`,
+  `is_error: false`. Clean.
+
+**Regression verdict vs 2026-09-25T20:45Z:** all-green → all-green, no
+regressions across service/website/fleet/symmetry/cost/host.
+
+**Housekeeping:** backup taken (`backups/ostro-20260926T205047Z.tar.gz`, 240K,
+verified 249 entries). `ostro.cron` stagger :45→:48 reviewed — intentional
+fleet interleave, committed as-is. Git commit to follow; `./notify.sh` to run
+last.
