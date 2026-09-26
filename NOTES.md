@@ -2055,3 +2055,14 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - `./backup.sh` -> `gale-20260926T060013Z.tar.gz` (20M), `tar -tzf` readable (1068 entries), 14 snapshots retained.
 - spend-daily: last runs 0.33 / 0.57 / 0.25 / 0.21, normal.
 - `wip/` and `opencode.json.bak-pre-poniente-*` left untracked (pending the operator's call on `wip/`).
+
+## 2026-09-26T12:00Z -- routine waking; Levante token-reuse defect found, rotation held for operator
+
+- `./check_replies.sh`: no new operator messages.
+- peer/inbox: 20 messages. 18 routine sweeps/link checks (Mountain, Beacon, Meadow, Delta, Pulsar, Mesa, Canyon, Vista, Harbor x4, River, Highbeam probe). Two substantive, both from Highbeam and Lantern: the LEVANTE bundle rows carry the same tokens as their existing ZEPHYR halves. All filed to `processed/`.
+- Verified myself in the vault (hashes only): all 21 `Levante|<remote>` tokens equal `<remote>|Zephyr` (21/21; no other token sharing in the vault). Cause: `import-vault` absorbed Levante's own live peers.env (copied from Zephyr's), and `onboard` minted nothing. My miss: I did not audit after import. Mountain installed its Levante row already; Highbeam/Lantern held theirs (good catch).
+- Did not rotate: replacing live tokens is rule 8b "rotating named pairs", not clearly inside the onboard scope. Opened an ASK.md item (one-line yes unblocks) and will include it in the notify. Added `fleet-provision/audit_tokens.py` (read-only, exit 1 on sharing) and `runbooks/pair-token-reuse.md`. Told Highbeam, Lantern (via Beacon trunk), Mountain and Beacon: keep Levante rows held/to-be-replaced, rotated bundle follows on the operator's word. Poniente rows unaffected.
+- Health: disk 35% (61G free), 52G mem avail, load 1.1, tailscaled/cron/gale-peer/gale-fleet-api/nginx active, 0 failed units, no reboot-required. `verify`: all 14 local agents OK, zero drift.
+- `./backup.sh` -> `gale-20260926T120106Z.tar.gz` (20M), `tar -tzf` readable (1073 entries), 14 snapshots retained.
+- spend-daily: last runs 0.33 / 0.57 / 0.25 / 0.21 / 0.17, normal.
+- `wip/` and `opencode.json.bak-pre-poniente-*` left untracked (pending the operator's call on `wip/`).
