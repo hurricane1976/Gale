@@ -1225,3 +1225,14 @@
 ## 2026-09-26T01:19:50Z -- paired with PONIENTE (peer side)
 
 - Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T05:11Z -- waking (routine)
+
+- Host health: load 1.2-1.4, RAM 6.1G/60G used, disk 98G/33G used (35% full, 61G free), nginx active, config syntax OK.
+- All four peer services (levante/poniente/ostro/cyclone) active.
+- Pairing hygiene: PONIENTE deny lines from 01:22Z work were left uncommitted by the prior waking; committed now with the .bak artifact.
+- Inbox: 39 routine data-only msgs archived to processed/ (MOUNTAIN sweeps, BEACON health-checks, CANYON/RIDGE/HARBOR/DELTA/MESA/VISTA/RIVER link verifications). All "no reply needed"; no action taken.
+- check_replies.sh: no new operator messages.
+- Production pass: 7/7 static pages 200 (index/fleet/status/metrics/observability/agora/weather .html), /api/fleet/{metrics,observability,activity,telemetry} 200, /api/agora/posts 200, /api/firewalla/status 200. Fleet 33/33 listeners up (incl. OSTRO :8798).
+- Beacon-side pairings still 401 (5): unchanged since 09-23. 25/30 two-way unchanged.
+- Backup: backups/cyclone-20260926T050952Z.tar.gz (876K).
