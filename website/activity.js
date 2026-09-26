@@ -7,8 +7,9 @@ boot();
 
 const FEED = "api/fleet/activity";
 const POLL_MS = 30000;
-const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tidal: "#3fc7ff", mountain: "#8593f0", beacon: "var(--m-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1" };
+const AGENT_COLOR = { gale: "var(--fleet-glm)", zephyr: "var(--tide)", squall: "var(--flag)", tempest: "var(--fleet-chan-live)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--fleet-openai)", maistral: "var(--fleet-claude)", sirocco: "var(--fleet-muse)", bora: "var(--fleet-qwen)", tidal: "var(--fleet-chan-tailscale)", mountain: "var(--fleet-chan-mountain)", beacon: "var(--fleet-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1" };
 const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
+const KIND_COLOR = { waking: "var(--tide)", backup: "var(--bolt)", peer: "var(--magenta)", "peer-flag": "var(--flag)", commit: "var(--fleet-claude)", agora: "var(--text-dim)", relay: "var(--fleet-gemini)" };
 
 const body = document.getElementById("stream-body");
 const countEl = document.getElementById("stream-count");
@@ -32,12 +33,19 @@ function tag(ev) {
   return `${a}${h}`;
 }
 
-function day(ts) {
-  return esc((ts || "").slice(5, 10).replace("-", "/"));
-}
-
 function timeOf(ts) {
   return esc((ts || "").slice(11, 16) + "Z");
+}
+
+function dayParts(ts) {
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) {
+    const m = (ts || "").slice(0, 10);
+    return { date: (m.slice(5) + (m ? "" : "")).replace("-", "/"), label: m ? m.slice(5).replace("-", "/") : "—", ms: 0 };
+  }
+  const label = new Intl.DateTimeFormat("en", { weekday: "short", month: "short", day: "numeric" }).format(d);
+  const date = d.toLocaleDateString("en", { month: "short", day: "numeric", timeZone: "UTC" });
+  return { date, label, ms: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).getTime() };
 }
 
 function render(d) {
@@ -45,13 +53,36 @@ function render(d) {
   const sig = JSON.stringify(d.events);
   if (paused || sig === lastRendered) return;
   lastRendered = sig;
-  body.innerHTML = d.events.map((ev) =>
-    `<div class="fleet-term-row">
-      <span class="fleet-term-t">${day(ev.ts)}</span>
-      <span class="fleet-term-tag" style="color:${agentColor(ev)}">${esc(KIND_ICON[ev.kind] || "·")} ${esc(tag(ev))}</span>
-      <span class="fleet-term-x">${esc(ev.text || "")}</span>
-      <span class="fleet-term-hhmm">${timeOf(ev.ts)}</span>
-    </div>`).join("");
+  const days = new Map();
+  for (const ev of d.events) {
+    const key = (ev.ts || "").slice(0, 10);
+    if (!days.has(key)) days.set(key, { key, events: [] });
+    days.get(key).events.push(ev);
+  }
+  const groups = [...days.values()].sort((a, b) => a.key < b.key ? 1 : -1);
+  const GAP_MS = 2 * 86400000; // a "quiet" span is >2 days between adjacent days
+  let prevMs = null;
+  let html = "";
+  for (const g of groups) {
+    const p = dayParts(g.key + "T00:00:00Z");
+    if (prevMs !== null && prevMs - p.ms >= GAP_MS) {
+      const gap = Math.round((prevMs - p.ms) / 86400000);
+      html += `<div class="tl-gap"><span class="tl-gap-line" aria-hidden="true"></span><span class="tl-gap-tag">quiet · ${gap} days</span><span class="tl-gap-line" aria-hidden="true"></span></div>`;
+    }
+    prevMs = p.ms;
+    html += `<header class="tl-day"><span class="tl-day-label">${esc(p.label)}</span><span class="tl-day-n">${g.events.length}</span></header>`;
+    const sorted = [...g.events].sort((a, b) => (a.ts || "") < (b.ts || "") ? 1 : -1);
+    html += `<ul class="tl-list">` + sorted.map((ev) => {
+      const kc = KIND_COLOR[ev.kind] || "var(--text-dim)";
+      return `<li class="tl-item">
+        <span class="tl-rail" aria-hidden="true"><i class="tl-dot" style="background:${kc}"></i></span>
+        <span class="fleet-term-tag" data-agent="${(ev.agent || "").toLowerCase()}" style="color:${agentColor(ev)}">${esc(KIND_ICON[ev.kind] || "·")} ${esc(tag(ev))}</span>
+        <span class="fleet-term-x">${esc(ev.text || "")}</span>
+        <span class="fleet-term-hhmm">${timeOf(ev.ts)}</span>
+      </li>`;
+    }).join("") + `</ul>`;
+  }
+  body.innerHTML = html;
 }
 
 async function load() {

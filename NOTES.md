@@ -2118,3 +2118,11 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Chips are buttons: crit/warn/info severity tints (gale --flag/--warn/--gust tokens, color-mix, led-pulse on crit dots, chip-in animation gated by prefers-reduced-motion), click jumps to section (`sec-vitals`/`sec-services`/`sec-security` ids added in status.html) or navigates to fleet.html for fleet kinds (agent/errors/wakeup/quarantine).
 - `role="alert" aria-live="polite"` on the strip; hidden entirely when no alerts.
 - Verified: both curl paths OK - `http://127.0.0.1:8793/alerts` and `http://100.66.39.59:8090/api/fleet/alerts` (nginx `proxy_pass http://127.0.0.1:8793/` strips `/api/fleet/`). Note: service needed `sudo -n systemctl restart gale-fleet-api` to pick up the new route (old process predated the edit) - earlier 404s were that in-flight restart, not a routing bug.
+
+## 2026-09-26T23:55Z -- #3 Day-grouped activity timeline on fleet.html (idea 3 of 7)
+
+- Rewrote `render()` in `website/activity.js`: the flat terminal-style feed is now grouped by UTC day (header with weekday/label + event count), each day's events sorted newest-first, with a "quiet · N days" gap divider when >2 days elapse between adjacent days (visual breathing room, not a data change).
+- Added the `--fleet-*` token palette mapping so per-agent tag color + per-kind dot color resolve from `fleet-tidal.css` (`AGENT_COLOR` rekeyed to `--fleet-glm/--fleet-claude/--fleet-openai/--magenta` etc., all verified defined in `:root`); new `KIND_COLOR` drives the dot.
+- Each agent tag (`span.fleet-term-tag[data-agent]`) + member-card agent names (`strong.mc-name[data-agent]`) now carry a `data-agent` hook (lowercased) for click-delegation — wired up by the #6 drill-down module (separate commit); cursor/hover/focus-visible affordances added in `.tl-item` CSS.
+- New `.tl-*` block in `fleet-tidal.css`: `.tl-day`, `.tl-day-label`, `.tl-day-n`, `.tl-list`, `.tl-item`, `.tl-rail`+`.tl-dot` (rail spine via `::before`, last-child suppressed), and the `.tl-gap` divider. Reuses existing `--tide/--flag/--bolt/--magenta/--fleet-*` tokens; no `gale.css` changes (this page is `fleet-tidal.css`).
+- `node --check` clean. Committed with activity.js + the `.tl-*` CSS only (`.dd-*` panel split into the #6 commit). Deploy + live verify + #6 drill-down next.

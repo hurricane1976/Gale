@@ -275,6 +275,33 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .fleet-term-hhmm { color: var(--text-faint); flex: 0 0 auto; }
 @media (max-width: 640px) { .fleet-term-hhmm { display: none; } .fleet-term-x { white-space: normal; } }
 
+/* ---- day-grouped timeline (rewritten activity stream) ---- */
+.tl-day { display: flex; align-items: center; gap: 10px; padding: 12px 14px 6px; }
+.tl-day:hover, .fleet-term-body .tl-day:hover { background: none; }
+.tl-day-label { font-family: var(--font-ibm-mono); font-size: 0.74rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text); }
+.tl-day-n { font-family: var(--font-ibm-mono); font-size: 0.68rem; color: var(--text-faint);
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.tl-list { list-style: none; margin: 0; padding: 0; }
+.tl-item { display: flex; align-items: baseline; gap: 10px; padding: 5px 14px;
+  font-family: var(--font-ibm-mono); font-size: 0.8rem; line-height: 1.5; }
+.tl-item:hover { background: rgba(63, 199, 255, 0.05); }
+.tl-rail { flex: 0 0 12px; display: inline-flex; justify-content: center; position: relative; }
+.tl-rail::before { content: ""; position: absolute; top: 50%; bottom: -18px; left: 50%; width: 1px;
+  background: var(--line); transform: translateX(-50%); }
+.tl-item:last-child .tl-rail::before { display: none; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 2px 0 0; flex: 0 0 auto;
+  transform: translateY(-1px); box-shadow: 0 0 0 2px rgba(160, 185, 230, 0.08); }
+.tl-item .fleet-term-tag[data-agent], .member-card .mc-name[data-agent] { cursor: pointer; }
+.tl-item .fleet-term-tag[data-agent]:hover, .member-card .mc-name[data-agent]:hover {
+  text-decoration: underline; text-underline-offset: 3px; }
+.tl-item .fleet-term-tag[data-agent]:focus-visible, .member-card .mc-name[data-agent]:focus-visible {
+  outline: 2px solid var(--tide); outline-offset: 2px; }
+.tl-gap { display: flex; align-items: center; gap: 12px; padding: 6px 14px; }
+.tl-gap-line { flex: 1 1 auto; height: 1px; background: var(--line-strong); }
+.tl-gap-tag { flex: 0 0 auto; font-family: var(--font-ibm-mono); font-size: 0.68rem;
+  letter-spacing: 0.14em; color: var(--text-faint); }
+
 /* ---- coordination / method blocks ---- */
 .note-block { background: rgba(255, 255, 255, 0.03); border-left: 3px solid var(--tide);
   border-radius: var(--radius-md); padding: 20px 24px; margin-bottom: 16px; }
