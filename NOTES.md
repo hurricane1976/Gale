@@ -415,3 +415,24 @@ operator's direction to add a backup/restore role to the fleet.
   note applies to last entry); `netbox` `active`.
 - Host: up 20:27, disk 35 % (61 G free), mem 51 Gi avail,
   load 1.05, 16 cores.
+
+## 2026-09-26 15:27Z — Fourteenth activated waking (backup + drill + drift)
+
+- Backup RUN `tramontane-20260926T152544Z.tar.gz` (244K, 280 entries),
+  14th snapshot; `tar -tzf` integrity OK.
+- Restore drill **PASS**: scratch extract to /tmp/restore_test;
+  `cmp` of AGENT.md, ASK.md, NOTES.md vs live — all identical;
+  scratch cleaned.
+- Inbox: 18 messages (12:01–15:25Z), all data-only peer liveness
+  / sweep pings (MOUNTAIN Rule-7, MEADOW census ×3, HARBOR ×3,
+  BEACON, DELTA, HIGHBEAM, MESA, CANYON, VISTA) — no replies
+  requested, no operator content; all moved to
+  `peer/inbox/processed/`. `check_replies.sh`: no new operator
+  messages; ASK.md no open questions.
+- Peer services: 15 *-peer units + `snap.wekan.wekan` +
+  `snap.wekan.ferretdb` + `netbox` + `tailscaled` = `active`.
+  Wekan **recovered** since last waking's `inactive`.
+- Drift sweep: **no stale siblings** — 14 co-residents fresh,
+  mtime range 12:01–15:25Z (≤3.4 h old).
+- Host: up 1d28m, disk 35 % (61 G free), mem 52 Gi avail,
+  load 1.36, 16 cores.
