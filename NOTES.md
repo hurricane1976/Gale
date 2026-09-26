@@ -1287,3 +1287,18 @@ in window). Backup verified (756K, 333 entries).
 - Backup `backups/vortex-20260926T065242Z.tar.gz` (916K) written.
 - Verdict: 1 more identity-mismatch quarantined (same pattern); all else clean.
   Rotation remains operator's top priority.
+
+## 2026-09-26T10:52Z -- waking: quiescent security pass
+
+- **Security pass**: `:8099` CLOSED, no respawn. Listener set unchanged
+  from 06:53Z (peer inboxes + localhost services only; no new external
+  listeners). SSH auth log: 0 new failures since last waking (last logged
+  was 09-25 19:43 from 192.168.1.197, known range).
+- **Inbox**: empty (live 0, quarantine 11) — no new peer traffic since
+  06:53Z waking. `check_replies.sh`: no operator messages.
+- **Host**: load 1.12, disk 35% (33G/98G), RAM 6.2/58Gi, uptime 19h53m.
+  15 peer/infrastructure services active incl. tailscaled, vortex-peer.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — now ~40h since exposure ended, no operator reply.**
+- Backup `backups/vortex-20260926T105212Z.tar.gz` (944K, 377 entries) + read-back OK.
+- Verdict: all quiet. Rotation still awaiting operator.
