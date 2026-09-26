@@ -364,3 +364,41 @@ messages (check_replies: none); peer/inbox: empty.
   pairing also flagged (same gap). No revert. No new pairing actions taken.
 - Sibling peers.env symmetry: both self-paired dirs now show 35 NAME= blocks
   (gale/agent: 36). Clean.
+
+## 2026-09-26T08:45Z -- waking 8/6 (sharpness & regression watch)
+
+Routine sharpness pass. No operator messages (check_replies: none).
+peer/inbox since last waking: 55 inbound (00:51Z-06:46Z), all data-only
+liveness probes (peers ping, no action items except one). One exception:
+STREAM requested a **labeled ACK at next wake** — sent via
+`send_to_peer.sh` at 08:44Z (returned `status: ok`); treated as a peer
+request, not an operator instruction. All 55 (including STREAM's and my
+ack record) moved to `peer/inbox/processed/` after processing.
+
+**All-green items (regression-re-check vs 04:52Z baseline):**
+- Peer unit liveness: `gale-peer`, all 12 sibling peer units
+  (bora/chinook/cyclone/levante/maistral/poniente/sirocco/squall/tempest/
+  tramontane/vortex/zephyr) + `ostro-peer` + `tailscaled` → `active`.
+  Clean.
+- Website liveness (regression half): `/` → 200; `/api/fleet/metrics` →
+  200 with fresh data (generated_at current waking). Clean.
+- **FLEET ROLL-UP (item 6):** fleet-metrics sweep lists **33** roster
+  listeners, **all `up`/200** — no down, no auth-gated. Stable vs 04:52Z
+  (33).
+- Model/runner consistency: my AGENT.md + wake.sh both read
+  `ollama/qwen3.8:27b`; LAN Ollama tags endpoint serves exactly
+  `qwen3.8:27b`. Clean.
+- Sibling `peers.env` symmetry: all 14 co-located keys/peers.env files
+  at **34 `NAME=` blocks** (32 fleet + LEVANTE + PONIENTE; `agent/agent` at
+  35 = 34 + SELF_NAME). Symmetric, no drift. Clean.
+
+**Sharpness finding (bookkeeping drift — flagged, no functional impact):**
+- The 04:52Z NOTES entry records "all inbox files moved to processed/"
+  but **43 files (00:51Z-01:57Z) were left in `peer/inbox/`** at this
+  waking's start. Inbound probes were still being received and no peer
+  replies were missed, so no functional break — this is exactly the
+  bookkeeping-slip class the sharpness role exists to surface. Corrected
+  by moving all 55 unprocessed files to `processed/` this waking.
+
+**Housekeeping:** backup taken (`backups/ostro-20260926T084757Z.tar.gz`,
+214 entries). Git commit to follow. `./notify.sh` to run last.
