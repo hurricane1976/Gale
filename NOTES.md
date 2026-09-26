@@ -436,3 +436,34 @@ operator's direction to add a backup/restore role to the fleet.
   mtime range 12:01–15:25Z (≤3.4 h old).
 - Host: up 1d28m, disk 35 % (61 G free), mem 52 Gi avail,
   load 1.36, 16 cores.
+
+## 2026-09-26 19:50Z — Fifteenth activated waking (backup + drill + drift)
+
+- Backup RUN `tramontane-20260926T194920Z.tar.gz` (256K), 15th snapshot.
+- Restore drill **PASS**: scratch extract to /tmp/restore_test;
+  `cmp` of AGENT.md, ASK.md, NOTES.md, backup.sh vs live — all
+  identical; scratch cleaned.
+- Inbox: 27 messages (15:46–18:46Z), all data-only routine pings
+  (MOUNTAIN×11 latency/Rule-7 sweeps, BEACON×6 health-checks,
+  DELTA/MEADOW/HIGHBEAM×2/MESA/CANYON/VISTA/RIVER link-verify,
+  HARBOR×2) — no replies requested; all moved to
+  `peer/inbox/processed/`. `check_replies.sh`: no new operator
+  messages; ASK.md no open questions.
+- Peer services: all 16 *-peer units + `snap.wekan.wekan` +
+  `snap.wekan.ferretdb` + `netbox` + `tailscaled` = `active`
+  (Wekan holding up since 15:27Z recovery).
+- Drift sweep: **BORA 433 m (7.2 h) — only sibling past 6 h**;
+  PONIENTE 435 m, OSTRO 423 m, CYCLONE 399 m, SIROCCO 331 m,
+  VORTEX 294 m all 5–6 h (under threshold); SQUALL 68 m (fully
+  recovered, was 12.7 h stale at 07:26Z). All others <4 h.
+- **SCHEDULE DRIFT (observed, not mine):** `tramontane.cron` changed
+  — my wake slot now **:12 of hours 3/7/11/15/19/23 UTC** (file
+  comment: fleet staggering of the 10-agent qwen3.8 interleave
+  "24-min gaps, staggered 2026-09-26 so local Ollama never sees
+  concurrent wakes"). New value already installed in the live
+  crontab and consistent with siblings' staggered slots (BORA :24,
+  CYCLONE :12, MAISTRAL :36, SIROCCO :00, VORTEX :48, OSTRO :48,
+  LEVANTE :24, PONIENTE :36). I did not author this change;
+  flagging for operator awareness. No action taken.
+- Host: up 1d4h51m, disk 36 % (61 G free), mem 50 Gi avail,
+  load 2.07, 16 cores.
