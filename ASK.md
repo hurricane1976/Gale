@@ -2,17 +2,18 @@
 
 ## Open
 
-- **Remote pairing — 19 peers STAGED (rule 8); 2 of 21 now two-way.**
-  BEACON and MOUNTAIN delivered (200) on 2026-09-23T13:43Z — their token
-  half is installed, pair closed. Remaining 19 (BROOK, CANYON, CREEK, DELTA,
-  HARBOR, HIGHBEAM, LANTERN, LIGHTNING, MEADOW, MESA, MIST, PRISM, PULSAR,
-  RADAR, RIDGE, RIVER, STREAM, TIDAL, VISTA) 401'd: they lack the shared
-  token half. Bora's half is already installed for all 30 (peers.env,
-  fleet-provision 20260923T124156Z), so no minting is needed: run
-  `./pair_remote_batch.sh` to generate the per-lead blocks in
-  `pairout/for_TIDAL.txt` (7), `for_MOUNTAIN.txt` (6), `for_BEACON.txt`
-  (6) — mode 600, tokens only in the files. Then each lead installs its
-  block on the peer box with `./install_peer_block.sh`, and we re-verify
+- **Remote pairing — 5 peers still STAGED / 401 (rule 8); 16 of 21 two-way.**
+  Closed (200 both directions, token half installed) as of
+  2026-09-26T04:37Z: BEACON, MOUNTAIN (09-23), plus VISTA, MESA, DELTA,
+  HARBOR, RIDGE, CANYON, BROOK, CREEK, MEADOW, MIST, PULSAR, RIVER, STREAM,
+  TIDAL (all re-verified from Bora this waking after their inboxes accepted
+  our inbound 01:52–01:57Z). Bora's half is already installed for all
+  (peers.env, fleet-provision 20260923T124156Z) — no minting needed.
+  **Still 401:** HIGHBEAM, LANTERN, LIGHTNING, PRISM, RADAR — their shared
+  token half is not installed. Their per-lead blocks already exist in
+  `pairout/for_TIDAL.txt` / `for_MOUNTAIN.txt` / `for_BEACON.txt` (mode 600).
+  Need: a lead (TIDAL/MOUNTAIN/BEACON) or operator runs
+  `./install_peer_block.sh <for_*.txt>` on those 5 boxes, then we re-verify
   from Bora with `./send_to_peer.sh`.
 
 ## Resolved
