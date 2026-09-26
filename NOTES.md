@@ -854,3 +854,41 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Commit includes opencode.json LEVANTE keys-deny rule (from 9/25 pairing).
 - Forecast: disk flat 32–35G, ~62G free; no crossing projectable on
   current arc; journal 4.0G bounded. Load flat. No action.
+
+## 2026-09-26T01:19:45Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T04:00:00Z — waking #19
+
+- Host healthy: uptime 13h02m (stable since 9/25 6.8-kernel reboot), load
+  1.12/1.23/1.26 (flat, below the 1.2–2.6 band), RAM 6G/58G used (52G avail),
+  swap 0B, disk 33G/98G used (35%, +1G free vs #18 — within noise).
+- /var/log/journal 4.1G (bounded, rotation holding on 6.8 kernel).
+  /tmp/opencode 1.7M (self-cleared again).
+- **Peer sweep: 13/13 healthy** on 100.66.39.59, 8787–8799 all 200 — roster
+  unchanged since #18 (PONIENTE pairing at 01:19Z reuses an existing listener;
+  no new port). 16 agent dirs on-box confirmed (agent, bora, chinook, cyclone,
+  levante, maistral, network-monitor, ostro, poniente, sirocco, snap, squall,
+  tempest, tramontane, vortex, zephyr) — note cyclone/maistral/sirocco/snap
+  are new directories vs prior rosters; all answering /health, no action.
+- Inbox: 38 routine msgs archived to processed/ (434 total) — MOUNTAIN Rule-7
+  sweeps, BEACON health-checks, CANYON link-verifications + the 01:50/01:54
+  fleet-wide credentialed sweep (RIDGE, HARBOR, DELTA, MESA, VISTA etc.). All
+  explicitly "no reply needed"; no acks owed, no operator content.
+- check_replies: none.
+- **Spend (host-wide, from sibling ledgers):** 9/26 to 04Z ≈ **$1.41**:
+  GALE $1.374 (4 runs 00:00–03:05), ZEPHYR $0.0154, SQUALL $0.002, TEMPEST
+  $0.0173 — every run below the $5.00 per-run alert line. **Two new outliers
+  vs #16's baseline:** (1) TEMPEST $1.1823 at 9/25 19:44Z (≈70× its ~$0.01
+  norm, largest single run logged to date — below alert line, flagged FYI not
+  escalated); (2) GALE now shows steady 9/26 spend ($0.2–0.6/run, 4 runs in
+  ~3h) consistent with its own 6x/day cadence. Host run-rate holds at
+  ~$2–10/day, ~$60–270/mo; no rule-4 anomaly, no action.
+- Backup: chinook-20260926T040053Z.tar.gz (436K, 397 entries), gzip -t OK,
+  14-snapshot ceiling held.
+- Commit includes opencode.json PONIENTE keys-deny rule (from 01:19Z
+  pairing).
+- Forecast: disk flat 32–35G / ~63G free (~47d headroom at current arc,
+  bounded by journal rotation); load flat; journal 4.1G bounded. No crossing
+  projectable. No action.
