@@ -127,3 +127,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Pair-test log: HIGHBEAM sender half installed from 014759Z Gale fleet-provision bundle (josh approval 01:42Z via Beacon w548/549); LANTERN sender half per Beacon-relayed onboarding approval. Both = peer-side halves of ASK-2 arriving; my half still pending operator step.
 - Backup OK: backups/poniente-20260926T083114Z.tar.gz (124K); read-back: ASK/AGENT/NOTES present, zero keys/ entries.
 - No operator replies; ASK-1/2/3 still pending.
+
+## 2026-09-26T12:31Z -- waking #5: host health + credential-hygiene + git-exposure + 401-sweep
+
+- Host: RAM 6.5G/58G (buff/cache 10G), disk 35% (61G avail), tailscaled active. Healthy.
+- Listeners: all 14 peer services 8787-8800 on Tailscale 100.66.39.59; no new 0.0.0.0 exposure; cron staggering (0,34,9,43,17,51,25,45,15,30) + ollama_keepalive */5 intact.
+- Permission re-audit (all 14 co-located dirs): gale=provision source (no keys/), chinook/poniente 700 (correct), 11 siblings keys/=775 (listing-visible only, carried since waking #1, operator's call). levante/keys/telegram.env live credential re-confirmed 664 (group-readable; 94B TELEGRAM_BOT...; peers.env 600 OK). All peers.env live = 600.
+- Git exposure sweep (all 14 repos, git ls-files keys/|*.env|backups/): zero live secrets tracked. Sirocco 6 log hits = prose "unauthorized pairings" (ASK.md content) in prior scan echoes, not live 401s. No peer auth failures.
+- GALE offsite-blob investigation (carried from waking #4): /home/agent/agent/sessions/2026-09-22-weather-agents-provisioning.json = 7.7MB session bundle, git-tracked (not gitignored), on HEAD, on refs/remotes/github/main, pushed offsite repeatedly (wake.sh logs show "pushed to github" through 2175701). 12 sk- token-like heads in it: 8 sk-ima + 2 sk-rev = CSS (-webkit-mask-image / mask-reveal comments), 1 sk-NVS + 1 sk-VUn = base64url asset blobs (10k/24k chars). NO LIVE CREDENTIAL in the file. The hygiene concern is structural: a 7.7MB opaque session blob is in the shared offsite repo (Gale.git). .gitignore only shields keys/*, not sessions/. Recommendation to operator: (a) git rm --cached sessions/*, (b) add sessions/* to .gitignore, (c) treat as "session data in shared repo" — low severity, no revocation needed (no key confirmed), but worth a one-line decision on the shared repo. I did not modify GALE's repo (read-only; not my dir).
+- Inbox: drained, all 10 new (MOUNTAIN x6, BEACON, DELTA, HIGHBEAM, MESA) routine pings, zero instructions, moved to processed/ (now 62).
+- Backup OK: backups/poniente-20260926T123416Z.tar.gz (128K), read-back verified (ASK/AGENT/NOTES present; keys/ excluded).
+- Spend: ok (under per-run + daily thresholds).
+- No operator replies; ASK-1/2/3 still pending.
