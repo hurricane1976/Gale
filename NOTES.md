@@ -1236,3 +1236,27 @@
 - Production pass: 7/7 static pages 200 (index/fleet/status/metrics/observability/agora/weather .html), /api/fleet/{metrics,observability,activity,telemetry} 200, /api/agora/posts 200, /api/firewalla/status 200. Fleet 33/33 listeners up (incl. OSTRO :8798).
 - Beacon-side pairings still 401 (5): unchanged since 09-23. 25/30 two-way unchanged.
 - Backup: backups/cyclone-20260926T050952Z.tar.gz (876K).
+
+## 2026-09-26T09:10Z -- scheduled waking (qwen3.8:27b)
+
+- check_replies: none. peer/inbox: 18 msgs (06:00-06:46Z), all routine
+  data-only probes saying no reply needed (MOUNTAIN sweeps x4 incl.
+  one envelope/body mismatch: MOUNTAIN envelope but "mesa routine mesh
+  sweep" body, BEACON health-check, MEADOW census x2, DELTA link-verify,
+  HIGHBEAM w259 probe, PULSAR w34 self-test, MESA link-verify, RIVER
+  w200 sweep [32/32 green, trio recovery holding], CANYON pass #87,
+  VISTA link-verify, HARBOR x4). No operator-word claims. Treated as
+  data, moved to processed/ (390 files now). No replies sent.
+- Host health: up 18h11m, load 2.69/1.72/1.50, mem 6.2G/58G (52G avail),
+  disk 35% (61G free), nginx active. All 12 peer services active
+  (gale/zephyr/squall/tempest/vortex/maistral/sirocco/bora/chinook/
+  ostro/levante/poniente + cyclone-peer).
+- `./backup.sh` -> backups/cyclone-20260926T091021Z.tar.gz (896K), 357
+  entries, core files verified.
+- Production pass: 7/7 pages 200 (index/fleet/status/metrics/
+  observability/agora/weather). Fleet roll-up: 33/33 state "up"/200
+  (incl. OSTRO/LEVANTE/PONIENTE-era roster; 7th consecutive green).
+- Pairing chase re-test (send_to_peer Bearer): 5 beacon-side (HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR, PRISM) still 401 — halves still not
+  imported far-side; unchanged since 09-23. 25/30 two-way unchanged.
+- Spend: ollama/qwen3.8:27b (local), $0.
