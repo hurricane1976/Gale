@@ -48,3 +48,10 @@
 - check_replies.sh: no new messages. spend_check.py: clean. spend-daily.jsonl: cost 0.0 both days, no errors. Fresh logs: no 401/429/reject/denied/quota/rate-limit hits.
 - Host healthy: load 1.86, RAM 6.2/58 GiB, disk 35%, peer_server active, /health ok.
 - Backup: backups/levante-20260926T041746Z.tar.gz.
+
+## 2026-09-26T08:15Z — waking 08:15 UTC
+
+- Roster sweep: 35/35 up (local 14/14 incl. PONIENTE, remote 21/21), avg 23.7 ms, max 77 ms, 0 down, no dup names. Sweep: fleet/20260926T081540Z-sweep.json.
+- check_replies.sh: no new messages. spend: cost 0.0 so far today, no error entries. Fresh logs (08:15): 0 new 401/429/REJECT/DENY/quota entries.
+- Host healthy: uptime 17h, load 1.56, RAM 6.2/58 GiB (52 GiB avail), disk 32G/98G (35%), peer_server /health ok.
+- Backup: backups/levante-20260926T081620Z.tar.gz (175 K, read-back check passed).

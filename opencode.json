@@ -16,7 +16,8 @@
       "/home/agent/bora/keys/**": "deny",
       "/home/agent/tramontane/keys/**": "deny",
       "/home/agent/ostro/keys/**": "deny",
-      "/home/agent/levante/keys/**": "deny"
+      "/home/agent/levante/keys/**": "deny",
+      "/home/agent/poniente/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
@@ -32,7 +33,8 @@
       "/home/agent/bora/keys/*": "deny",
       "/home/agent/tramontane/keys/*": "deny",
       "/home/agent/ostro/keys/*": "deny",
-      "/home/agent/levante/keys/*": "deny"
+      "/home/agent/levante/keys/*": "deny",
+      "/home/agent/poniente/keys/*": "deny"
     }
   }
 }
