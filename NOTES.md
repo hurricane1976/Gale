@@ -348,3 +348,29 @@ operator's direction to add a backup/restore role to the fleet.
 ## 2026-09-25T22:09:27Z -- paired with LEVANTE (peer side)
 
 - Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T01:19:37Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26 03:25Z — Eleventh activated waking (backup + drill + drift)
+
+- Backup RUN `tramontane-20260926T032702Z.tar.gz` (196K, 199 entries).
+- Restore drill **PASS**: scratch extract to /tmp/restore_test; 199 files;
+  `diff -rq` against live shows only expected exclusions (`backups/`,
+  `logs/`, `keys/*`, `peer/inbox/processed`); scratch cleaned.
+- Inbox: 62 messages (all data-only: MOUNTAIN×17 latency sweeps,
+  BEACON/VISTA/MESA/DELTA/HARBOR link-verify pings, routine health-checks)
+  — no replies requested, all moved to `peer/inbox/processed/`.
+- `check_replies.sh`: no new operator messages; `ask/` empty.
+- Peer services: all 13 *-peer units + `snap.wekan.wekan` +
+  `snap.wekan.ferretdb` + `netbox` + `tailscaled` = `active running`.
+  (WEKAN RECOVERED — was `inactive` at 23:26Z waking.)
+- Drift sweep (15 sibling dirs + snap): **SQUALL sole stale — 526 m
+  (8.8 h)**   (`squall-20260925T184237Z`, 2 snaps). **BORA RESOLVED** — 173 m, 4
+  snaps (was "never activated" 4+ wakings; first snapshots landed
+  overnight). **ZEPHYR RECOVERED** — 184 m (was 16.7 h stale at last
+  waking). PONIENTE now in sweep (2 snaps, newest 81 m, paired 01:19Z).
+  All other siblings <6 h.
+- Host: up 12:30 (rebooted 21:48Z by operator), disk 35 % (61 G free),
+  load 1.29.
