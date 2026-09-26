@@ -682,6 +682,17 @@ def metrics_envelope():
     # (Beacon-relayed) runs, so remote agents surface in per_agent_24h too.
     agent_names = {display for display, _dirname in AGENTS}
     agent_names.update(str(r["agent"]) for r in runs if r.get("agent"))
+    agent_wak = {}
+    agent_cost = {}
+    for r in runs:
+        a = r.get("agent")
+        if not a:
+            continue
+        d = _day_key(r.get("ts"))
+        agent_wak.setdefault(a, {}).setdefault(d, 0)
+        agent_cost.setdefault(a, {}).setdefault(d, 0.0)
+        agent_wak[a][d] += 1
+        agent_cost[a][d] += float(r.get("cost_usd") or 0)
     for display in sorted(agent_names):
         rs = [r for r in runs if r.get("agent") == display and (r.get("ts") or "") >= since]
         last = max((r.get("ts") for r in runs if r.get("agent") == display), default=None)
@@ -691,6 +702,9 @@ def metrics_envelope():
             "cost_24h": round(sum(float(r.get("cost_usd") or 0) for r in rs), 4),
             "error_runs_24h": sum(1 for r in rs if r.get("is_error")),
             "last_wake": last,
+            "daily_wakings_14d": [agent_wak.get(display, {}).get(d, 0) for d in days],
+            "daily_cost_14d": [round(agent_cost.get(display, {}).get(d, 0.0), 4) for d in days],
+            "total_wakings_14d": sum(agent_wak.get(display, {}).values()),
         })
     return {
         "schema": "fleet-metrics/v1",

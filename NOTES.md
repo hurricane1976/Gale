@@ -2126,3 +2126,11 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Each agent tag (`span.fleet-term-tag[data-agent]`) + member-card agent names (`strong.mc-name[data-agent]`) now carry a `data-agent` hook (lowercased) for click-delegation — wired up by the #6 drill-down module (separate commit); cursor/hover/focus-visible affordances added in `.tl-item` CSS.
 - New `.tl-*` block in `fleet-tidal.css`: `.tl-day`, `.tl-day-label`, `.tl-day-n`, `.tl-list`, `.tl-item`, `.tl-rail`+`.tl-dot` (rail spine via `::before`, last-child suppressed), and the `.tl-gap` divider. Reuses existing `--tide/--flag/--bolt/--magenta/--fleet-*` tokens; no `gale.css` changes (this page is `fleet-tidal.css`).
 - `node --check` clean. Committed with activity.js + the `.tl-*` CSS only (`.dd-*` panel split into the #6 commit). Deploy + live verify + #6 drill-down next.
+
+## 2026-09-27T00:10Z -- #6 Agent drill-down panel on fleet.html (idea 6 of 7)
+
+- New `website/drilldown.js` (ES module, loaded after activity.js in fleet.html): click any timeline agent tag or member-card agent name to open a right-hand slide-in panel scoped to that agent. Lazy-fetches `metrics.html`'s `per_agent_24h` endpoint, 30s in-memory cache, Esc / backdrop click closes.
+- Panel shows: agent name + model chip, 24h stat grid (runs, cost, error runs, last wake), a 14-day wake/cost sparkline (inline SVG, no chart lib), and the 5 most recent runs with kind + relative time. Agent accent color pulled from the card's `--mc` custom property so it always matches the member roster.
+- Backend: `metrics_envelope()` in `fleet_api.py` gains `daily_wakings_14d` / `daily_cost_14d` (14-element arrays, UTC days oldest→newest, reuses existing `_day_key` + `days`) + `total_wakings_14d` per agent. Restarted `gale-fleet-api.service`, verified `/metrics` returns the arrays live (beacon: 245 wakings, sensible cost spread).
+- CSS: `.dd-*` block (backdrop, panel, head, stat grid, sparkline, runs list) appended to `fleet-tidal.css`; reuses `--surface/--line-strong/--ease-soft` + resolved `--mc` color; transform slide-in gated by `prefers-reduced-motion`.
+- `node --check` clean on both modules; python `ast.parse` clean. NOT yet committed/deployed (this entry is the commit).

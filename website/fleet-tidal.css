@@ -302,6 +302,52 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .tl-gap-tag { flex: 0 0 auto; font-family: var(--font-ibm-mono); font-size: 0.68rem;
   letter-spacing: 0.14em; color: var(--text-faint); }
 
+/* ---- agent drill-down panel (#6) ---- */
+.dd-backdrop { position: fixed; inset: 0; z-index: 80; background: rgba(1, 4, 10, 0.6);
+  backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity 0.25s var(--ease-soft); }
+.dd-backdrop.open { opacity: 1; pointer-events: auto; }
+.dd-panel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 81; width: min(430px, 100vw);
+  background: var(--surface); border-left: 1px solid var(--line-strong);
+  transform: translateX(100%); transition: transform 0.3s var(--ease-soft);
+  display: flex; flex-direction: column; overflow-y: auto; box-shadow: -18px 0 48px rgba(1, 4, 10, 0.5); }
+.dd-panel.open { transform: translateX(0); }
+.dd-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px;
+  border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); z-index: 1; }
+.dd-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto;
+  box-shadow: 0 0 10px 1px rgba(255, 210, 63, 0.3); }
+.dd-name { font-family: var(--font-space-grotesk); font-size: 1.05rem; letter-spacing: 0.02em; }
+.dd-sub { display: block; font-family: var(--font-ibm-mono); font-size: 0.68rem;
+  letter-spacing: 0.1em; color: var(--text-faint); text-transform: uppercase; }
+.dd-close { margin-left: auto; background: transparent; border: 1px solid var(--line-strong);
+  border-radius: 6px; color: var(--text-dim); font-family: var(--font-ibm-mono); font-size: 0.78rem;
+  padding: 4px 10px; cursor: pointer; }
+.dd-close:hover { color: var(--text); border-color: var(--tide); }
+.dd-body { padding: 16px 18px 24px; display: flex; flex-direction: column; gap: 20px; }
+.dd-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.dd-stat { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 10px 12px; }
+.dd-stat b { display: block; font-family: var(--font-ibm-mono); font-size: 1.05rem; color: var(--text); }
+.dd-stat span { font-family: var(--font-ibm-mono); font-size: 0.66rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-faint); }
+.dd-stat.err b { color: var(--flag); }
+.dd-sec h4 { margin: 0 0 8px; font-family: var(--font-ibm-mono); font-size: 0.68rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
+.dd-spark svg { display: block; width: 100%; height: 64px; }
+.dd-spark .spark-cap { display: flex; justify-content: space-between; margin-top: 4px;
+  font-family: var(--font-ibm-mono); font-size: 0.66rem; color: var(--text-faint); }
+.dd-runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.dd-run { display: flex; align-items: center; gap: 8px; font-family: var(--font-ibm-mono);
+  font-size: 0.74rem; padding: 7px 10px; background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line); border-radius: 8px; }
+.dd-run .rr-time { color: var(--text-faint); flex: 0 0 auto; }
+.dd-run .rr-model { flex: 0 0 auto; color: var(--text-dim); }
+.dd-run .rr-cost { margin-left: auto; flex: 0 0 auto; color: var(--bolt); }
+.dd-run .rr-err { flex: 0 0 auto; color: var(--flag); font-size: 0.7rem; }
+.dd-empty { font-family: var(--font-ibm-mono); font-size: 0.76rem; color: var(--text-faint); }
+@media (prefers-reduced-motion: reduce) {
+  .dd-backdrop, .dd-panel { transition: none !important; }
+}
+
 /* ---- coordination / method blocks ---- */
 .note-block { background: rgba(255, 255, 255, 0.03); border-left: 3px solid var(--tide);
   border-radius: var(--radius-md); padding: 20px 24px; margin-bottom: 16px; }
