@@ -1355,3 +1355,21 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — now ~48h since exposure ended, no operator reply.**
 - Verdict: quiescent except routine sweep traffic + 1 expected-pattern
   quarantine (no new threat). Rotation still awaiting operator.
+
+## 2026-09-26T22:49Z -- waking: quiescent security pass, rotation still open
+- **Operator replies**: `check_replies.sh` — no new messages.
+- **Inbox**: no new peer messages since 20:16Z waking; `pulsar/` empty; no
+  new quarantines (latest remains #13 `0a1b8288`).
+- **Security pass**: `:8099` STILL CLOSED (0 listeners, curl 000) — remediation
+  holding ~50h. Listener set unchanged: tailscale peer inboxes 8787-8797,
+  loopback `firewalla_control.py` (:8791) + `fleet_api.py` (:8793) [legit local
+  infrastructure, verified by PID/args], 8090 (0.0.0.0). No new external
+  listeners, no SSH brute-force activity.
+- **Host**: load 1.28, disk 36% (34G/98G), RAM 7.9/58Gi used, uptime 1d 7h50m.
+  Tailscale: 11 fleet nodes, all identities match known fleet.
+- **Backup**: `backups/vortex-20260926T224944Z.tar.gz` (1.1M) — written,
+  tree was clean (no changes since 462adf2 commit).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — now ~50h since exposure ended, no operator reply.**
+  Recommend operator treat this as the top-priority open item.
+- Verdict: all quiet. Rotation still awaiting operator.
