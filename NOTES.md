@@ -1235,3 +1235,7 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: routine waking; LEVANTE pairing confirmed live end-to-end;
   no new incidents, no new credential exposure. Rotation stays the
   operator's top priority.
+
+## 2026-09-26T01:19:41Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
