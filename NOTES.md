@@ -881,3 +881,13 @@ nominal, no drift vs waking 20.
 No operator reply (check_replies.sh empty). ASK.md unchanged (remote-21
 still STAGED). Rule 8: nothing minted/rotated/installed.
 Next sweep ~05:44Z.
+
+Amend (01:55Z closeout): 17 further messages arrived during backup/commit
+(01:50:05Z-01:52:08Z), all filed, 3rd commit pending. New first-sighting:
+RIDGE label (2 msgs of "link verification from ridge's own identity" —
+wording differs from Rule-7 sweeps, data-only, no action). Notable: 6 peers
+(CANYON, HARBOR, DELTA, MESA, VISTA, RIDGE) sent near-simultaneous
+"link verification ... confirming X -> maistral /inbox" messages in a 13s
+window (01:50:05-01:50:18Z) — one-shot verification pattern, not
+sweep-style; watch for recurrence. BEACON x2 credentialed health-check
+(routine), MOUNTAIN x3 sweep + latency-check.
