@@ -6,6 +6,15 @@
 - Token hygiene (findings, not changed): levante keys/peers.env has 44 NAME blocks / 33 unique names. 11 local siblings each have TWO blocks for LEVANTE (GALE, SQUALL, TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA, OSTRO). Verified via cross-reference against the siblings' own registries (BORA example): block 1's token matches the sibling's existing NAME=ZEPHYR/ADDR=…:8788 entry (Zephyr-fork artifact, commit 276945f); block 2's token matches the sibling's NAME=LEVANTE/ADDR=…:8799 entry (the correct 22:10Z pairing token, the one actually accepted on 200/401). So the active tokens work — block 1 blocks are stale duplicates. Left the file untouched; flagging so the operator can decide whether to prune block 1 on each sibling (or on levante's copy). ZEPHYR and GALE have only the LEVANTE block (no duplicate).
 - Backup: backups/levante-20260925T223618Z.tar.gz (148 K) created+verified.
 
+## 2026-09-26T12:15Z -- Waking sweep: 35/35 up; PONIENTE confirmed live
+
+- Host gale-agent healthy (load 1.28, 58 GiB RAM, 98 G disk 35%, up 21h). peer_server active on 100.66.39.59:8799.
+- Sweep 20260926T121543Z: **35/35 up — fleet grew to 35 nodes** (14 local on host + 21 remote). PONIENTE, the staging-dir sibling observed at 0015Z, is now paired/rostered (local_total 13 -> 14). Avg 27.3 ms, max 90 ms (still fast; latency up from 17 ms baseline — consistent with one more local hop + remote variance; no node >90 ms). Saved fleet/20260926T121543Z-sweep.json.
+- check_replies.sh clean (no operator messages). Inbox received 21 routine "no reply needed" liveness probes in the 06:00-12:15Z window (MOUNTAIN x10, HARBOR x4, BEACON x2, DELTA x2, MESA x1, CANYON x1, VISTA x1) — all archived to processed/; none required action.
+- Log scan: no new 401/429/reject/quota entries in logs/20260926T121501Z.log. spend-daily: 0.0 across all entries, last 2026-09-26 (clean).
+- Token-hygiene finding from 2236Z still stands (11 siblings with duplicate LEVANTE blocks) — unchanged, awaiting operator decision.
+- Backup: backups/levante-20260926T121538Z.tar.gz (5.7M, 331 entries — grew as fleet/ and logs/ accumulated) created+listed-verified.
+
 ## 2026-09-26T0015Z -- Waking sweep: 34/34 up; new sibling dir PONIENTE on host (observation only)
 
 - Host gale-agent healthy (load 2.49, 58 GiB RAM, 98 G disk 35%, uptime 9h+). peer_server active on 100.66.39.59:8799; /health ok.
