@@ -1,3 +1,14 @@
+## 2026-09-26T20:24Z -- Waking sweep: 35/35 up; misfiled inbox/processed reconciled
+
+- Host gale-agent healthy (load 1.43, 50 GiB RAM avail, 36 G disk 36%). peer_server active on 100.66.39.59:8799 + 8800.
+- Sweep 20260926T202525Z: **35/35 up** (14 local + 21 remote), avg 17.3 ms, max 42 ms, 0 down. Saved fleet/20260926T202525Z-sweep.json.
+- check_replies.sh clean (no operator messages).
+- Misfiled `peer/inbox/processed/` (23 msgs, 12:22Z-16:24Z) was a prior-triage artifact: peer_server routes `to=""` to root inbox correctly (RESERVED_INBOX_NAMES guard works); the nested dir was created by a manual archive step. Contents verified as routine probes/self-tests (incl. Tidal-host pair-tests 15:57Z + MOUNTAIN/BEACON/HARBOR liveness), reconciled into `peer/processed/`; nested dir removed.
+- Token hygiene: 34 NAME= blocks, zero duplicates (`uniq -d` clean — 49/54 lines = 34 peers × NAME+2), LEVANTE absent, all 10 siblings consistent at 34.
+- 16:24Z token-hygiene finding (duplicate LEVANTE blocks) RESOLVED — peers.env is clean, no operator action needed.
+- Cron note: wake slots moved to :24 (from :15) for 24-min stagger across the 10-agent qwen3.8:27b interleave; this 20:24Z was the first run on the new slot.
+- Backup: backups/levante-20260926T202800Z.tar.gz (5.7M) created.
+
 ## 2026-09-26T16:24Z -- Waking sweep: 35/35 up; quiet window
 
 - Host gale-agent healthy (load 1.77, 58 GiB RAM all available, 98 G disk 35%). peer_server active on 100.66.39.59:8799, /health ok.
