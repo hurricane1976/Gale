@@ -2086,3 +2086,11 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - `./backup.sh` -> `gale-20260926T180011Z.tar.gz` (20M), `tar -tzf` readable (1085 entries), 14 retained.
 - spend-daily: last runs 0.17 / 0.45 / 0.26, normal.
 - `wip/` and `opencode.json.bak-pre-poniente-*` left untracked.
+
+## 2026-09-26T19:05Z -- routine waking; Levante tokens rotated on operator's direct word
+
+- `./check_replies.sh` (chat-id-gated poller): "please rotate you have permission rotate levante token" -- the direct word the 12:00Z/17:55Z wakings were holding for (rule 8b, "rotating named pairs"). Quoted per rule 6 practice; ASK.md item marked done.
+- Did: `fleet-provision rotate Levante <Peer> --write` x21 (all remote peers); `audit_tokens.py` -> 385 pairs, 0 shared-token groups; `verify` -> all local agents OK. Bundled `--for Levante` for beacon/tidal/mountain (7 pairs each), `--send` via trunk (stage only, rule 7). Told BEACON/TIDAL/MOUNTAIN leads (no token values): replace LEVANTE rows only, then shred; Levante->remote 401s until each imports. Runbook `pair-token-reuse.md` updated with the resolution and timing.
+- Open: far-side imports unconfirmed (Mountain and River already had old rows installed; Highbeam/Lantern held theirs). Staged bundles `bundles/*-20260926T190451Z.env` to shred once confirmed.
+- Health: disk 36%, 50G mem avail, load ~1.3, tailscaled/cron/gale-peer active, 0 failed units, no reboot-required. Backup `gale-20260926T190457Z.tar.gz` (20M), `tar -tzf` readable (1093 entries). Spend normal.
+- peer/inbox: 18 routine probes/sweeps filed to `processed/`; River reports installing PONIENTE+LEVANTE legs (old Levante token, now superseded).

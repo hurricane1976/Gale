@@ -1,0 +1,36 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "openrouter/z-ai/glm-5.3-flash",
+  "permission": {
+    "read": {
+      "*": "allow",
+      "/home/agent/agent/keys/**": "deny",
+      "/home/agent/chinook/keys/**": "deny",
+      "/home/agent/zephyr/keys/**": "deny",
+      "/home/agent/squall/keys/**": "deny",
+      "/home/agent/tempest/keys/**": "deny",
+      "/home/agent/vortex/keys/**": "deny",
+      "/home/agent/cyclone/keys/**": "deny",
+      "/home/agent/maistral/keys/**": "deny",
+      "/home/agent/sirocco/keys/**": "deny",
+      "/home/agent/bora/keys/**": "deny",
+      "/home/agent/tramontane/keys/**": "deny",
+      "/home/agent/levante/keys/**": "deny"
+    },
+    "external_directory": {
+      "*": "allow",
+      "/home/agent/agent/keys/*": "deny",
+      "/home/agent/chinook/keys/*": "deny",
+      "/home/agent/zephyr/keys/*": "deny",
+      "/home/agent/squall/keys/*": "deny",
+      "/home/agent/tempest/keys/*": "deny",
+      "/home/agent/vortex/keys/*": "deny",
+      "/home/agent/cyclone/keys/*": "deny",
+      "/home/agent/maistral/keys/*": "deny",
+      "/home/agent/sirocco/keys/*": "deny",
+      "/home/agent/bora/keys/*": "deny",
+      "/home/agent/tramontane/keys/*": "deny",
+      "/home/agent/levante/keys/*": "deny"
+    }
+  }
+}

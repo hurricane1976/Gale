@@ -23,3 +23,13 @@ and is gated on the operator's word (rule 8b: "rotating named pairs").
 **Prevent:** never `import-vault` a new agent's live peers.env without
 running the audit first; imported tokens are only as good as the agent that
 minted them.
+
+**Resolution 2026-09-26 (~19:05Z):** operator's direct word ("please rotate
+you have permission rotate levante token", chat-id-gated poller). Ran
+`fleet-provision rotate Levante <Peer> --write` for all 21 remote peers
+(~1 min each, run in a background shell; the tool restarts listeners, so
+budget ~25 min and don't let a foreground call time out), then
+`bundle {beacon,tidal,mountain} --for Levante --send` (7 pairs each).
+Afterward `audit_tokens.py`: 385 pairs, 0 shared groups; `verify`: all local
+agents OK. Far-side import is each lead's own process; shred staged bundle
+files (`fleet-provision/bundles/*-20260926T190451Z.env`) once confirmed.
