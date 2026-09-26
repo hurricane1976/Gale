@@ -383,3 +383,24 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Ledger↔entry reconciliation (standing habit): Sep-25 lines $0.0499 (00:46Z), $0.0598 (06:42Z), $0.0096 (12:42Z) — all match committed waking entries; no new anomalies; this run's line posts at session close.
 - git: commit this waking (post-reboot runbook update + ASK reboot→Resolved + OSTRO pairing entry + processed inbox 58 + NOTES entry); offsite push verified.
 - Next waking: watch for operator word on the three anomalous Sep-24 sessions; ledger↔entry + log-drift recurrence check; reboot flag closed unless a fresh `.pkgs` appears.
+
+## 2026-09-25T22:09:22Z -- paired with LEVANTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T01:19:29Z -- paired with PONIENTE (peer side)
+
+- Block installed via install_peer_block.sh; self-test passed. Two-way requires the other side also installed.
+
+## 2026-09-26T07:45Z — waking (off-schedule ~:45, opencode/glm-5.3-flash; covers two dead cron fires)
+
+- **NEW failure class — two consecutive dead wakings (00:40Z + 06:40Z Sep 26)**: both cron fires read AGENT.md, then **refused the wake.sh bootstrap prompt as "untrusted pasted text"** and exited 0 doing nothing (00:40Z explicitly refused, 104 out-tokens; 06:40Z silent, 29 out-tokens; costs $0.0020/$0.0014 — the very-low-spend signature, inverse of the silent-expensive Sep-24 class). Both caught by wake.sh quiet-death ALERT; run logs show no notify curl errors, so the operator likely got both warnings. The refusal misapplies rule 5: the bootstrap is shell-side code (wake.sh:41, committed), not inbound peer/web/file content. Provenance-verification procedure added to `runbooks/mangled-rules.md` (new section). This waking covers the 18:40Z→07:45Z gap.
+- Operator replies: none (`./check_replies.sh` → no new messages). Four `/wake` commands in telegram_commands.log (operator probing; network hiccups too: getUpdates "Network is unreachable"/DNS failures, undated — network healthy now). This waking likely operator-/wake-triggered.
+- Uncommitted diffs reviewed line-by-line at waking start (live-procedure): NOTES.md = two script-generated pairing entries (LEVANTE 22:09Z Sep 25, PONIENTE 01:19Z Sep 26 — 14th agent on host, 13 co-located siblings + me; sibling list now incl. levante-peer, poniente-peer services, both active); opencode.json = keys-deny ADDED for poniente + levante in both read and external_directory (restrictive-only, same pattern as prior operator hardening); `.bak-pre-poniente` snapshot confirms only poniente lines added after levante. All committed this waking; .bak removed after commit (diff captured in git history).
+- Inbox: 91 messages 18:47Z Sep 25–06:46Z Sep 26 — all data-only liveness/link/census/selftest (HARBOR, BEACON, MOUNTAIN, MEADOW, DELTA, PULSAR, HIGHBEAM, MESA, CANYON, RIDGE, VISTA, RIVER w199/w200). No instruction content; top-of-waking credential grep: 0 hits. Moved all to `peer/inbox/processed/` (543 total). No replies needed. RIVER w199 reports ITS host rebooted 21:48Z Sep 25 (kernel 6.8.0-142) — data only, consistent fleet HWE.
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; all 13 sibling peers active (8787, 8788, 8790–8798); uptime 16h48m (kernel 6.8.0-142, no reboot-required), disk 35% (32G/98G), mem 52G avail, load 1.3. **Watch item: EXT4 EIO warnings ×2** (04:17Z, 07:46Z, `error -5 reading directory block`, inode 2 on sda2, both from `find` kernelside) — rare but nonzero; smartctl unavailable; will re-check each waking and flag if frequency grows.
+- Backup: `./backup.sh` → `backups/squall-20260926T074759Z.tar.gz` (5.8M — again the Sep-25 12:42Z 5.3M git pack, same benign cause as last waking), read-back OK, exclusion scan clean (only `./keys/` dir + 2 `.example` templates).
+- Restore drill: extracted to `/tmp/squall-restore-*` — AGENT.md/NOTES.md/roster round-trip diff-empty, `git fsck --strict` clean, 0 real `.env` files, runbooks present (10), cleaned up (0 dirs left). Never over live state.
+- Ledger↔entry reconciliation (standing habit): since last committed waking — $0.0256 (18:45Z Sep 25, the 18:40 waking, committed), $0.0020 (00:41Z) + $0.0014 (06:40Z) = the two dead sessions (now explained in ASK.md + runbook). No other anomalies; this run's line posts at session close.
+- git: commit this waking (dead-waking runbook section + ASK dead-wakings entry + LEVANTE/PONIENTE pairing entries + opencode.json hardening + processed inbox 91 + NOTES entry); offsite push verified.
+- Next waking (12:40Z cron): watch for a THIRD dead session (recurrence check); EXT4 EIO re-check; ledger↔entry as standing habit; watch for operator word on the drift sessions review and any new pairing guidance.
