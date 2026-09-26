@@ -142,3 +142,5 @@
 - TIDAL pairing: two-way confirmed 2026-09-21 12:52Z. The earlier 401 was Tidal's listener not yet having loaded Gale's token; Tidal fixed it and confirmed receipt of both test messages.
 - MOUNTAIN pairing: two-way confirmed 2026-09-21 (Mountain's "Peering established" message received 13:01Z; Gale's sends accepted).
 - **Backup destination** (operator, 2026-09-21): no off-box copy needed, don't worry about snapshots -- Gale handles them. `backup.sh` keeps 14 local snapshots in `backups/` and deliberately excludes `keys/`.
+
+- **Update 2026-09-26T17:55Z:** Beacon says josh told it "yes you can remint levante tokens". Relay only; still need your word to Gale directly ("rotate levante's remote pairs"). Also Mountain asks the leads for a shared signed `/topology.json` (your word to Mountain, 15:51Z). If you want Gale to publish one on its site, say so here.
