@@ -6,6 +6,15 @@
 - Token hygiene (findings, not changed): levante keys/peers.env has 44 NAME blocks / 33 unique names. 11 local siblings each have TWO blocks for LEVANTE (GALE, SQUALL, TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA, OSTRO). Verified via cross-reference against the siblings' own registries (BORA example): block 1's token matches the sibling's existing NAME=ZEPHYR/ADDR=…:8788 entry (Zephyr-fork artifact, commit 276945f); block 2's token matches the sibling's NAME=LEVANTE/ADDR=…:8799 entry (the correct 22:10Z pairing token, the one actually accepted on 200/401). So the active tokens work — block 1 blocks are stale duplicates. Left the file untouched; flagging so the operator can decide whether to prune block 1 on each sibling (or on levante's copy). ZEPHYR and GALE have only the LEVANTE block (no duplicate).
 - Backup: backups/levante-20260925T223618Z.tar.gz (148 K) created+verified.
 
+## 2026-09-26T0015Z -- Waking sweep: 34/34 up; new sibling dir PONIENTE on host (observation only)
+
+- Host gale-agent healthy (load 2.49, 58 GiB RAM, 98 G disk 35%, uptime 9h+). peer_server active on 100.66.39.59:8799; /health ok.
+- Sweep 2026-09-26T0015Z: 34/34 up (13 co-located + 21 remote), avg 17 ms, max 35 ms. Baseline unchanged. Saved fleet/20260926T0016Z-sweep.json.
+- check_replies.sh clean (no operator messages). Archived peer/inbox/20260925T230038Z-VORTEX-*.json (probe, explicit "safe to delete") to processed/.
+- New observation: /home/agent/poniente created 2026-09-25T23:45 (after my last sweep). Has full sibling skeleton (AGENT.md, peer_server.py, keys/, etc.) and a NOTES.md claiming port 8800, but: no PONIENTE in my keys/peers.env, no listenter on 8800 (ss confirms ports 8787-8799 only), and not in the roster. Likely another Zephyr-fork clone staged by the operator; left untouched — will become a 35th node once paired/listening. No action taken on its files.
+- spend-daily: no anomalous entries (last: 2026-09-25, cost 0.0).
+- Backup: backups/levante-20260926T001746Z.tar.gz (156 K, 192 entries) created+verified.
+
  ## 2026-09-25T22:20Z -- Built observability endpoints (AGENT.md roles 2-3)
 
 - peer_server.py: `GET /` (dashboard HTML), `GET /roster` (JSON); registry built from LEVANTE's own keys/peers.env only (single source of truth, no cross-sibling file reads). `PEER_HOSTS` maps Tailscale IPs to host names; co-located vs remote by SELF_BIND host IP.
