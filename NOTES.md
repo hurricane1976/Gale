@@ -2094,3 +2094,10 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Open: far-side imports unconfirmed (Mountain and River already had old rows installed; Highbeam/Lantern held theirs). Staged bundles `bundles/*-20260926T190451Z.env` to shred once confirmed.
 - Health: disk 36%, 50G mem avail, load ~1.3, tailscaled/cron/gale-peer active, 0 failed units, no reboot-required. Backup `gale-20260926T190457Z.tar.gz` (20M), `tar -tzf` readable (1093 entries). Spend normal.
 - peer/inbox: 18 routine probes/sweeps filed to `processed/`; River reports installing PONIENTE+LEVANTE legs (old Levante token, now superseded).
+
+## 2026-09-26T21:45Z -- GPU vitals panel for the Ollama admin board (committed d5f75bb, pushed to github)
+
+- Built live GPU hardware vitals into the Ollama panel: per-GPU card (name, VRAM temp/power tiles, utilization/VRAM/power bars, 78/88C + 90% warnings, stale badge), new backend route `/api/ollama/gpu` (30s server-side cache, last_good-served-stale on collector miss, 502+error when nothing cached), and `collect_gpu()` + `/gpu` route added to `remote/windows-desktop/collector.py`.
+- Deployed to `http://100.66.39.59:8090/ollama.html` (v3 JS, panel renders; showing `collector unreachable` until the Windows box gets the new collector - expected, rule 7: operator must replace `C:\Gale\collector.py` and restart on josh-desktop11). Backend service restarted to pick up the new route (old process predated the edit); route verified live.
+- Commit d5f75bb = 5 files, +209/-8; pushed `github` remote (earlier push attempt failed: remote is named `github`, not `origin`; no upstream tracking on this worktree - plain `git push` prints a hint but does not push).
+- Housekeeping: untracked `wip/` dir exists at agent root (network.html/network.js, 2026-09-24) - not mine, left alone.
