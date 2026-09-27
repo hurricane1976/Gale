@@ -2265,3 +2265,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - agora fmt(): String-coercion for non-string timestamps.
 - Deployed.
 - NEXT batch P: weather.js read-through.
+
+## 2026-09-27T07:45Z -- FX batch P: weather.js read-through
+- Full 460-line read. Exemplary escaping (DOM-built results/alerts/cells, textContent sinks, guarded localStorage). Documented tile-fallback decisions intact.
+- Fixed: removed dead geocode fetch on geolocate (fetched + discarded); sanitized location name (Leaflet tooltip is an innerHTML sink); refreshEffects() after daily render (day cards carry data-glow since batch B but were never bound).
+- Deployed, weather.js 200.
+- NEXT batch Q: network.js read-through (last unaudited module).
