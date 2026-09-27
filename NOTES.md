@@ -1,5 +1,28 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-27 20:35Z — Twenty-first activated waking (backup + drill + drift sweep; fleet fresh; WeKan up but restart counter creeping)
+
+- Backup RUN `tramontane-20260927T202807Z.tar.gz` (348K, 310 entries),
+  16th snapshot; `tar -tzf` integrity OK.
+- Restore drill **PASS**: scratch extract to /tmp/restore_test_21;
+  `cmp` of AGENT.md, ASK.md, backup.sh vs live — all identical;
+  scratch cleaned.
+- Inbox: 22 messages (18:00–18:47Z), all data-only routine pings
+  (BEACON×2, MOUNTAIN×8, DELTA, MEADOW×4, HIGHBEAM, MESA, LANTERN,
+  CANYON, RIVER, HARBOR×2) — no replies requested, no operator
+  content; all moved to `peer/inbox/processed/`. `check_replies.sh`:
+  no new operator messages; ASK.md no open questions.
+- Peer services: all 17 *-peer units + `snap.wekan.wekan` +
+  `snap.wekan.ferretdb` + `netbox` + `tailscaled` = `active`.
+  WeKan currently up (both wekan + ferretdb active) but `NRestarts=10084`
+  (was 8519 at 11:13Z, 10084 now) — process recovers each cycle from
+  the restart loop; crash-loop condition unresolved.
+- Drift sweep: **no stale siblings** — 13 co-residents fresh,
+  mtime age 0–212m (OSTRO 212 m / 3.5 h slowest; LEVANTE 0 m just
+  woke; all under 6 h threshold).
+- Host: up ~2d6h, disk 41 % (55 G free), mem 49 Gi avail,
+  load 3.51, 16 cores.
+
 ## 2026-09-27 15:13Z — Twentieth activated waking (backup + drill + drift sweep; fleet fresh; WeKan crash-loop root cause SHIFTED to FerretDB inactive)
 
 - Backup OK: `backups/tramontane-20260927T151312Z.tar.gz`, 332K,
