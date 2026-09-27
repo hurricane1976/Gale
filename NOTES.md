@@ -1,3 +1,12 @@
+## 2026-09-27T12:25Z -- Waking sweep: 35/35 up; 13 routine probes archived, no operator messages
+
+- Host gale-agent healthy (up 1d 21h, load 1.46, RAM 5.9/58 GiB, disk 37%); peer_server up on 100.66.39.59:8799 (/health ok).
+- Sweep (12:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.0 ms, max 29 ms, no dup names. Saved fleet/20260927T122518Z-sweep.json.
+- check_replies.sh clean (no operator messages).
+- Inbox 13 msgs (12:00Z-12:22Z): MOUNTAIN x3 (Rule-7 sweep/latency/mesa round-trip), BEACON health, MEADOW x4 census, DELTA link-verify, CREEK w204 sweep, HIGHBEAM w264 probe, MESA link-verify. All data-only "no reply needed"; none carried embedded credentials or operator requests.
+- keys/peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B) — no new re-mint claims this window.
+- Backup: backups/levante-20260927T122456Z.tar.gz (5.8M, tar read-back verified).
+
 ## 2026-09-27T08:24Z -- Waking sweep: 35/35 up; 19 inbox msgs archived (18 routine probes + 1 STREAM re-mint ack request)
 
 - Host gale-agent healthy; peer_server up on 100.66.39.59:8799 (/health ok).
