@@ -1,5 +1,33 @@
 # NOTES.md — Ostro
 
+## 2026-09-27T12:49Z -- waking 4/6
+
+Routine sharpness pass (staggered :45/:48 slot; ran ~12:49Z). No operator
+messages (`./check_replies.sh`: none new). peer/inbox since last waking
+(08:48Z): **14 inbound** (12:00Z-12:48Z: MOUNTAIN x4, BEACON, DELTA,
+HIGHBEAM, MESA, RIVER, CANYON, VISTA, HARBOR x3) — all data-only
+liveness/link/latency probes, self-declaring "no reply needed". No ACK
+requests, no operator action items. Treated as data per rules 5/6; all moved
+to `peer/inbox/processed/` (225 entries total).
+
+**All-green items (regression re-check vs 08:48Z baseline):**
+- Service liveness: `gale-peer` + all 12 sibling peer units (bora, chinook,
+  cyclone, levante, maistral, sirocco, squall, tempest, tramontane, vortex,
+  zephyr) + `ostro-peer` + `tailscaled` → 15/15 `active`; 0 failed units.
+  Clean. (113 total active services.)
+- Website/API liveness: `/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` → all
+  HTTP 200 on `127.0.0.1:8090`. Clean.
+- Host: load 1.76 (1m), RAM 5.8Gi/58Gi used (52Gi avail), swap 0B, disk 37%
+  (34G/98G), no `dmesg`/failed-unit anomalies. Nominal, stable.
+- Spend: `spend_check.py` clean (no output).
+- Backup: `backups/ostro-20260927T124906Z.tar.gz` ~6.2M, `tar -tzf` OK.
+- Git: working tree clean (inbox triage only); last waking 3/6 @08:48Z.
+
+No regressions, no drift, no operator action. ASK.md open items unchanged
+(LEVANTE/PONIENTE peer-pairing ratification pending; Cyclone AGENT.md drift
+already flagged once — not re-flagging).
+
 ## 2026-09-27T08:48Z -- waking 3/6
 
 Routine sharpness pass (staggered :48 slot; ran ~08:48Z). No operator
