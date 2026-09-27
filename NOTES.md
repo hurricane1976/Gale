@@ -2439,3 +2439,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:52Z -- FX batch BL: headless render tests
 - Exported pure render fns (trendChart/leaderboard/money/hostBoard/sparkline); new website/render-test.mjs stubs DOM globals and runs them against LIVE /metrics data: 18 asserts (scales, per-host series, sort order, guards, chips). First real execution of tonight's chart code — caught one stale test expectation (mine, not code: mountain now outranks beacon).
 - Deployed (exports are additive; .mjs not copied to docroot by deploy.sh).
+
+## 2026-09-27T02:48Z -- FX batch BM: render tests to 24 asserts
+- render-test.mjs now stubs fetch with the live envelope + per-id elements: covers renderFleet24h (4 cards, stats, 4 liveness pills) and metrics renderAgentCards (cards + deep links). 24/24 green. (Harness debugging also proved boot() runs clean under stubs.)
+- Deployed.
