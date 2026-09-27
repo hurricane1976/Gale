@@ -674,3 +674,53 @@ ALERT (`exited 0 without reporting to the operator`). Prior alert
 **Action:** AGENT.md "Each waking" step 6 now states `./notify.sh` is
 mandatory and unconditional — never pending, never gated on confirmation
 (2026-09-27T17:10Z).
+
+## 2026-09-27T20:49Z — waking 6/6 (final scheduled waking of the day)
+
+**Inbox triage:** 19 new peer messages (18:00Z–18:46Z, beacon/gale/mountain/
+squall) all confirmed data-only (health-check pings, link/latency
+verifications). No instructions, no action items. Moved to `processed/`
+(243 total). **Data note (not an action):** 2 MOUNTAIN-sourced envelopes
+carry body text referencing "mesa" and "canyon" identities — labeling
+inconsistency, treated purely as data per AGENT.md.
+
+**Replies/ASK:** `./check_replies.sh` → no new operator messages. ASK.md
+unchanged: LEVANTE+PONIENTE pairing ratification still PENDING; no new
+asks raised this waking.
+
+**All-green items (regression-recheck vs 16:55Z baseline):**
+- Service liveness: 12 sibling peer units + `ostro-peer` + `tailscaled`
+  → active (14/14), no failed units. Clean.
+- Website liveness: `/` → 200; `/api/status.json` → 200;
+  `/api/fleet/metrics` → 200 (0.45s, generated_at 20:49:31Z, fresh);
+  `/api/fleet/activity`, `/api/fleet/observability`, `/api/agora/posts`
+  → 200. `/api/agents` and `/api/peers` → 404 — expected/known
+  (see 12:49Z entry: "the 404s there were my probe error, not a
+  regression"). Clean.
+- Fleet roll-up: `fleet_status` → **35/35 `up`**, all code 200 (Tidal
+  through Levante, beacon/gale/mountain/tidal). Clean. (Mid-check I
+  briefly misread a `nodes` key as empty — wrong key; the authoritative
+  `fleet_status` dict confirms 35/35.)
+- Model/runner consistency: AGENT.md + wake.sh both `ollama/qwen3.8:27b`;
+  LAN Ollama `192.168.1.197:11434/api/tags` serves exactly `qwen3.8:27b`.
+  Clean.
+- Host health: load 1.52/1.98/2.20, CPU 16@11.3%, RAM 8.5G/60G (14.1%),
+  swap 0B, disk 39G/98G (41%), uptime 2d 5:50, dmesg err/crit empty.
+  Clean.
+- Spending: `logs/spend-daily.jsonl` last entry 16:56:59Z `cost_usd: 0.0`,
+  `is_error: false`; local-model run. Clean.
+
+**Carried state (not new):** `/var/run/reboot-required` (mstamps 14:12)
+still present — root-caused in the 16:55Z waking to the 14:07–14:12Z
+GUI/X11 apt auto-dependency install; tmpfs file, self-clearing on next
+reboot; not an operator action item. Wekan snap crash-loop remains a
+known sibling issue, unchanged.
+
+**Regression verdict vs 2026-09-27T16:55Z:** all-green → all-green. No new
+regressions; no new operator asks.
+
+**Housekeeping:** backup taken and verified
+(`backups/ostro-20260927T204951Z.tar.gz`, 6.2M, 330 entries via `tar
+-tzf`). Git: working tree clean — no new committable content (inbox JSONs
+are gitignored by design; last commit `e40bf26`). `./notify.sh` to run
+last.
