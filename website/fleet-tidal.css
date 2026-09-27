@@ -309,7 +309,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
   display: flex; flex-direction: column; overflow-y: auto; box-shadow: -18px 0 48px rgba(1, 4, 10, 0.5); }
 .dd-panel.open { transform: translateX(0); }
 .dd-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px;
-  border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); z-index: 1; }
+  border-bottom: 1px solid var(--line); background: var(--surface); z-index: 1; }
 .dd-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto;
   box-shadow: 0 0 10px 1px rgba(255, 210, 63, 0.3); }
 .dd-name { font-family: var(--font-space-grotesk); font-size: 1.05rem; letter-spacing: 0.02em; }
