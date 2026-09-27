@@ -415,20 +415,6 @@ h2.sec-title::before {
 @keyframes orbit-spin { to { transform: rotate(360deg); } }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .chip {
   font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em;
   color: var(--text-dim); background: var(--surface); border: 1px solid var(--line);
@@ -443,7 +429,6 @@ h2.sec-title::before {
 
 
 .roster-count { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 400; color: var(--text-faint); letter-spacing: 0.06em; }
-
 
 
 /* ---- buttons ---- */
