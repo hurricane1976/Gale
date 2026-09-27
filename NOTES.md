@@ -2550,3 +2550,8 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 - index hero chips: GLM x13->x15, DeepSeek x2 removed (5/15/5/8=33). Tidal Creek/Stream data-model deepseek->glm. main.js spend bars tidal color -> #3fc7ff. Kept --m-deepseek var + FAM_COLOR entry for historical run data.
 - Discrepancy entry resolved.
 - Deployed.
+
+## 2026-09-27T03:35Z -- showpiece verified live + test discipline fix
+- Full-page screenshot: welcome border, cascade-complete cards, host boards with sparklines, alerts, badge all render beautifully.
+- Week summary + mover confirmed in live DOM.
+- LESSON: pipe masked a failing test (deployed a broken export). Fixed smoke.sh to check node exit codes properly. Export restored, 38/38 green, redeployed.
