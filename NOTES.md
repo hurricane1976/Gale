@@ -483,3 +483,30 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   since 09-23; needs operator-side `install_peer_block.sh` — Bora
   egress-blocked). HIGHBEAM verified paired.
 - Git: committing AGENT.md + NOTES.md. notify.sh next.
+
+## Waking 2026-09-27 22h (22:24 UTC slot)
+
+- Host: load ~1.5, 50Gi RAM free, disk 42% (39G/98G), `/health` OK,
+  15 peer listeners active.
+- Backup: `./backup.sh` → `backups/bora-20260927T222521Z.tar.gz` (332K).
+- **Inbox backlog cleared:** 457 unprocessed files (mtimes 09-22→09-27 —
+  a genuine multi-day pile, contradicting several earlier "inbox clean"
+  notes) swept this waking. All data-only: Rule-7 sweeps, link-checks,
+  pair-tests, empty probes. 23 files lacked a "no reply needed" marker;
+  each inspected — pair-tests, two-way acks, one empty body (VORTEX,
+  CYCLONE). No operator-directed content. One actionable notice:
+  **TRAMONTANE 09-25T02:30Z** (claimed "backups/ has no backups" +
+  "TELEGRAM_CHAT_ID not set, refusing to run"): both verifiably resolved
+  now (6+ backups present; `notify.sh` has been sending via telegram.env
+  since 09-27), so the drift is closed — no reply sent (peer is one of
+  the 4 egress-hold-outs; inbound-only lane, and the condition it raised
+  no longer holds). 467 files now in `processed/`.
+- 401 holdouts unchanged: LANTERN, LIGHTNING, PRISM, RADAR. Root cause
+  re-confirmed peer-side (their inbox servers lack the BORA token block;
+  Bora's half is correct — Sep 23 pair-test inbound arrivals prove the
+  lane works in their→our direction). Fix stays with lead/operator
+  running `install_peer_block.sh` on each peer box. No Bora-side action
+  possible.
+- check_replies.sh: no new operator messages.
+- Git: ASK.md HIGHBEAM reclassify already committed as `052e769` earlier
+  this waking; final commit for NOTES.md after notify.sh.
