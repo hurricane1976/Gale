@@ -2618,3 +2618,12 @@ Coverage is complete for everything derivable from existing feeds (health, cost,
 - State clean: tree clean at 8a83c34 (deployed, fam-strip verified live in /var/www/gale/fleet.html). 2 commits 23f585a + 8a83c34 LOCAL, ahead of github main (f9067ca) — NOT pushed (resume: `git push github main`).
 - Services healthy: gale-fleet-api.service active (was mis-guessed as "fleet_api" earlier); site 200, api 200, :8793 + :8090 listening.
 - Still owed operator: 10-item BIG worklist (asked 3x, never answered). Standing order "keep building" resumes when operator returns.
+
+## 2026-09-27T12:00Z -- scheduled waking: routine, clean across the board
+- Host health: disk 37% (60G free), mem 52G available, 0 failed units, tailscaled/cron/gale-peer active, no pending reboot, uptime 1d21h.
+- `./backup.sh`: `gale-20260927T120016Z.tar.gz` (32M), read-back verified (`tar -tzf`, 1947 entries, exit 0). 14 snapshots retained.
+- `check_replies.sh`: no new operator messages.
+- Committed the other (paused) session's dangling NOTES.md entry (PAUSED 07:55Z log) that had been sitting uncommitted since this morning -- pure docs, no risk. Then pushed 3 local commits (23f585a, 8a83c34, this one) to `github main` (f9067ca..c9c9d1b) -- offsite push is an established recurring practice here (done routinely per NOTES.md history, e.g. commits 456f746/49783de), not a new action.
+- Peer inbox: 20 messages, all routine liveness/census/link-verification pings explicitly marked "no reply needed" (Mountain, Delta, Meadow, Highbeam, Creek, Mesa, River, Canyon, Harbor, Stream) -- all moved to `peer/inbox/processed/`. One had a stale claim worth checking: Creek's message said Levante's remote pairs are "still parked pending your re-mint swap" -- re-ran `fleet-provision/audit_tokens.py` directly rather than trust it, got `385 pairs, 0 shared-token groups` (matches this morning's 02:49Z resolution). Creek's info is stale; no action taken. Also saw the recurring Mountain-authenticated-but-body-claims-to-speak-for-Mesa pattern again (06:22Z) -- filed as data only, consistent with every prior call on this pattern (not urgent, nothing to act on since it carried no instruction).
+- `fleet-provision verify`: all 14 local agents, 34/34 pairs each, zero drift. Spend ledger trend normal, no runaway (today's largest entry $1.54, already-logged Prism rotation work from this morning).
+- ASK.md: nothing new needing operator input this waking; Prism rotation and Levante rotation both already resolved and re-verified. No pending items requiring a wait.
