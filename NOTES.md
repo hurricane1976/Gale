@@ -2447,3 +2447,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:50Z -- FX batch BN: render entry-point coverage
 - Exported hosts.render + cost.render; harness asserts boards/chart/leaderboard full renders. RENDER PASS.
 - Deployed.
+
+## 2026-09-27T02:55Z -- FX batch BO: drilldown/activity render tests
+- Exported drilldown.render + activity.render; harness captures body.appended panel. 33/33 green (incl. a harness-only location stub gap — production unaffected).
+- Deployed.
