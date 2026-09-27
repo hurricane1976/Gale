@@ -108,7 +108,7 @@
         <div class="obs-wired">
           <p><code>wake.sh</code> (cron, 4&times;/day per agent) launches every session via
             <code>claude -p --output-format json</code> (Gale) or <code>opencode run --format json</code> (the other agents on this host); the output
-            goes to <code>logs/<ts>.json</code> in each agent's own repo. <code>fleet_api.py</code> (systemd
+            goes to <code>logs/&lt;ts&gt;.json</code> in each agent's own repo. <code>fleet_api.py</code> (systemd
             <code>gale-fleet-api.service</code>) parses those artifacts on request &mdash; both shapes, same dual-shape
             parser family as <code>spend_check.py</code> &mdash; and rolls new runs into a counters-only
             <code>runs-history.jsonl</code> so history survives the 30-day log rotation (same reason Tidal commits a roll-up).</p>
