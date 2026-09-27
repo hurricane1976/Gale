@@ -787,14 +787,33 @@ async function initPushBell() {
       bell.style.cssText = "position:fixed;bottom:14px;right:14px;z-index:60;padding:8px 12px;min-height:32px";
       bell.addEventListener("click", togglePush);
       document.body.appendChild(bell);
+      const test = document.createElement("button");
+      test.id = "push-test";
+      test.type = "button";
+      test.className = "mini-toggle";
+      test.textContent = "test";
+      test.hidden = true;
+      test.style.cssText = "position:fixed;bottom:14px;right:110px;z-index:60;padding:8px 12px;min-height:32px";
+      test.addEventListener("click", async () => {
+        test.disabled = true;
+        try {
+          const r = await fetch("api/push/test", { method: "POST" });
+          const d = await r.json();
+          console.log("test push:", r.status, d);
+        } catch {}
+        setTimeout(() => { test.disabled = false; }, 5000);
+      });
+      document.body.appendChild(test);
     };
     const paint = async () => {
       const sub = await reg.pushManager.getSubscription().catch(() => null);
       const bell = document.getElementById("push-bell");
+      const test = document.getElementById("push-test");
       if (bell) {
         bell.textContent = sub ? "🔔 alerts on" : "🔔 alerts off";
         bell.setAttribute("aria-pressed", String(!!sub));
       }
+      if (test) test.hidden = !sub;
     };
     async function togglePush() {
       const sub = await reg.pushManager.getSubscription().catch(() => null);

@@ -45,6 +45,7 @@ MAX_SUBS = 50
 
 _subs_lock = threading.Lock()
 _last_sent = set()          # fingerprints of crit alerts already pushed
+_last_test = 0.0            # manual-test throttle
 
 
 def b64u(data):
@@ -230,6 +231,28 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlsplit(self.path).path
+        if path == "/test":
+            # operator self-service: push a test notification to every
+            # subscription. Global 30s throttle -- tailnet-only anyway.
+            global _last_test
+            now = time.time()
+            if now - _last_test < 30:
+                return self._send(429, {"ok": False,
+                                        "error": f"wait {int(30 - (now - _last_test))}s between tests"})
+            _last_test = now
+            payload = json.dumps({
+                "title": "GALE — test alert",
+                "body": "Test of the fleet push channel at "
+                        + time.strftime("%H:%M:%SZ", time.gmtime()),
+                "sev": "crit", "count": 1, "url": "/status.html",
+            }).encode()
+            vapid = load_vapid()
+            results = [(s["endpoint"][:60], push_one(s, payload, vapid))
+                       for s in load_subs()]
+            log(f"manual test push: {results}")
+            ok = any(code == 201 for _, code in results)
+            return self._send(200 if ok else 502,
+                              {"ok": ok, "results": results})
         if path not in ("/subscribe", "/unsubscribe"):
             return self._send(404, {"error": "not found"})
         payload = self._read_json()
