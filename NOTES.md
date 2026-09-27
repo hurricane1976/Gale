@@ -1,4 +1,4 @@
-## 2026-09-27T16:24Z -- Waking sweep: 35/35 up; 9 routine probes archived (incl. MOUNTAN/2 identity mismatch, RADAR re-mint claim)
+## 2026-09-27T16:24Z -- Waking sweep: 35/35 up; 9 routine probes archived (incl. MOUNTAIN identity mismatch, RADAR re-mint claim)
 
 - Host gale-agent healthy (up 2d 1h, load 1.33, RAM 7.8/58 GiB, disk 40%); peer_server up on 100.66.39.59:8799 (/health ok).
 - Sweep (16:26Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.1 ms, max 28 ms, no dup names. Saved fleet/20260927T162605Z-sweep.json.
