@@ -145,15 +145,19 @@ export function weekSummary(d) {
   if (!el) return;
   const days = d.days || [];
   const byHost = d.daily_cost_by_host || {};
+  const byWake = d.daily_wakings_by_host || {};
   const perDay = days.map((_, i) =>
     Object.values(byHost).reduce((s, arr) => s + ((arr || [])[i] || 0), 0));
+  const runsDay = days.map((_, i) =>
+    Object.values(byWake).reduce((s, arr) => s + ((arr || [])[i] || 0), 0));
   if (perDay.length < 2) { el.textContent = ""; return; }
   const last7 = perDay.slice(-7).reduce((s, v) => s + v, 0);
   const prev7 = perDay.slice(-14, -7).reduce((s, v) => s + v, 0);
   const delta = last7 - prev7;
   const dir = delta > 0.005 ? "up" : delta < -0.005 ? "down" : "flat";
   const arrow = dir === "up" ? "▲" : dir === "down" ? "▼" : "▬";
-  el.innerHTML = `<span>last 7d <b>${esc(money(last7))}</b></span>` +
+  const r7 = Math.round(runsDay.slice(-7).reduce((s, v) => s + v, 0));
+  el.innerHTML = `<span>last 7d <b>${esc(money(last7))}</b> · ${r7} runs</span>` +
     (perDay.length >= 14
       ? `<span class="ct-delta" data-dir="${dir}">${arrow} ${esc(money(Math.abs(delta)))} vs prior week</span>`
       : "");
