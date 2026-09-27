@@ -2344,3 +2344,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:35Z -- cleanup: dead .legend rules
 - .legend survived the purge only because "legend" matched inside "obs-legend" (hyphen-boundary false positive). No element uses it; removed. Verified live markers still served.
+
+## 2026-09-27T02:35Z -- FX batch AG: fleet roster filter
+- fleet.html members section gains a filter input (name/model/role text match, Escape clears, live count, empty groups hidden). fleet.js + fleet-tidal.css. Deployed, live.
+- NEXT batch AH: dialog focus audit (ollama overlays, drilldown panel).
