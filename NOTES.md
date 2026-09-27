@@ -2307,3 +2307,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - REAL BUG fixed: per-agent last_wake used max() over raw r.get("ts") — a single run with missing ts would TypeError the whole /metrics request (every fleet surface goes dark). Generator now skips falsy ts. AST-checked, service restarted, /metrics 200.
 - Deployed (backend needs no static deploy; committed).
 - NEXT batch X: sysmon.py skim (status.json producer).
+
+## 2026-09-27T10:35Z -- FX batch X: sysmon.py skim (verification only)
+- Atomic snapshot writes, contained failures, sane structure. FULL_TARGETS=josh-desktop11 only (known). No changes.
+- NEXT batch Y: ollama_api.py action validation (destructive ops surface).
