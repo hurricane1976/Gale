@@ -34,6 +34,7 @@ function money(v) {
 
 function sparkline(vals, hue) {
   if (!vals || !vals.length) return `<div class="hb-spark-empty">no series</div>`;
+  vals = vals.map((v) => (Number.isFinite(v) ? v : 0));
   const W = 400, H = 64, pad = 4;
   const max = Math.max(...vals, 1);
   const step = (W - pad * 2) / Math.max(vals.length - 1, 1);

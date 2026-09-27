@@ -88,6 +88,7 @@ function agentHostMap(d) {
 
 function miniSpark(vals, color) {
   if (!vals || !vals.length) return `<div class="lb-spark-empty">no series</div>`;
+  vals = vals.map((v) => (Number.isFinite(v) ? v : 0));
   const W = 220, H = 44, pad = 3;
   const max = Math.max(...vals, 0.000001);
   const step = (W - pad * 2) / Math.max(vals.length - 1, 1);

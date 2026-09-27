@@ -84,6 +84,7 @@ function fmtTime(ts) {
 }
 
 function sparkline(vals, colorName) {
+  vals = (vals || []).map((v) => (Number.isFinite(v) ? v : 0));
   const w = 400, h = 64, pad = 4;
   const max = Math.max(...vals, 1);
   const n = vals.length;
