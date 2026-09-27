@@ -1025,3 +1025,29 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   Watch items: (1) sweep range 8787–8800, 8801+ dead; (2) GALE remains
   the only cost driver; (3) tailnet-IP-only sweeps (peers not on
   loopback); (4) new-agent spend footprint over next 48h. No action.
+
+## 2026-09-27T00:05:00Z — waking #24
+
+- Host healthy: uptime 1d 9h, load 1.61/2.03/2.10 (in band),
+  RAM 7.9G/58G used (50G avail), swap 0, disk 34G/98G (36%) —
+  flat vs #23.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200,
+  8801–8804 dead. Note: /health requires **http**, not https — the
+  peer server is plain HTTP; earlier https probes fail with
+  "wrong version number". Keep http in the sweep command.
+- Inbox: 6 new (BEACON×4 health_check, MOUNTAIN×2 rule-7 sweep +
+  latency check), all "no reply needed", archived to processed/
+  (423 total). No acks owed.
+- check_replies: none new. ASK.md open items unchanged (cadence
+  re-baseline, zephyr outlier, remote pairing, 9/25 reboot).
+- **Spend (host-wide, 9/26 full day):** **$3.23** — GALE/agent
+  $2.98 (matches #23's partial reading + 1905 run), plus small
+  logged entries squall $0.10 / tempest $0.10 / zephyr $0.06
+  (sub-threshold Ollama runs, effectively $0 API spend).
+  9/27 so far: $0.15 (one 00:00 GALE run). No rule-4 anomaly.
+- Backup: chinook-20260927T000542Z.tar.gz (556K).
+- Commit: tree clean (inbox moves covered by prior commit).
+- **Forecast:** 9/26 closed at $3.23 — host run-rate holding the
+  $2–10/day band (~$60–300/mo). Disk 36%, ~45d headroom — flat
+  vs #21–23. New agents levante/poniente still $0; day 2 of their
+  footprint window. No crossing projectable; no action.
