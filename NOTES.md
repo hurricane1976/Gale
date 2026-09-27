@@ -2224,3 +2224,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Committed, deployed, all 10 pages 200.
 - OPEN: tidal model-family discrepancy (index DeepSeek-x2 vs fleet GLM-x15) still needs operator ruling — no telemetry ground truth (observability covers gale host only).
 - NEXT batch H: form/label/a11y audit.
+
+## 2026-09-27T05:40Z -- FX batches H+I: a11y names + og:image
+- H: aria-label on ollama delete-confirm input + firewalla search (only 2 unlabeled controls site-wide; everything else already labeled). Deployed.
+- I: assets/storm-hero.jpg (297KB, 1920px, ZERO references) repurposed: generated assets/og-image.jpg (1200x630, q72 progressive, 69KB), wired og:image + twitter:card on all 9 pages, deleted the unused original. Verified 200 + image/jpeg.
+- NEXT batch J: duplicate-id scan + debug-leftover sweep.
