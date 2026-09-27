@@ -1445,3 +1445,26 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~58h since exposure ended, no operator reply.**
   Top-priority open item unchanged.
 - Verdict: quiescent; all quiet. Rotation still awaiting operator.
+
+## 2026-09-27T14:50Z -- waking: routine pass, quarantine #16, rotation still open
+- **Operator replies**: `check_replies.sh` — no new messages.
+- **Inbox (22 msgs, 12:00–12:48Z sweep window)**: 21 routine Rule-7/sweep/link-
+  verification pings (MOUNTAIN x4, BEACON, MEADOW x7, DELTA, HIGHBEAM, MESA,
+  RIVER, CANYON, VISTA, HARBOR x3) — moved to `processed/`. One exception:
+  `MOUNTAIN-0c2066d5` (12:22:24Z, from=MOUNTAIN, body claims "mesa routine
+  mesh sweep ... mesa->vortex") — identity mismatch, quarantined as **#16**
+  (same recurring MOUNTAIN/MESA pattern; genuine MESA leg aa066d16 arrived 1s
+  later, as in prior instances). Body has no instructions/links/credentials;
+  treated as untrusted data only. Standing defect with operator since 09-24.
+- **Security pass**: `:8099` STILL CLOSED (curl 000, no listener) — remediation
+  holding ~62h. Listener set unchanged: peer inboxes 100.66.39.59:8787–8800,
+  loopback :8791/:8793/:9883/:11500, dnsmasq :53, 0.0.0.0:8090-class same as
+  prior wakings. No new external listeners.
+- **Host**: load 1.37/1.34/1.51, disk 36% (36G/98G), uptime 1d 23h51m (stable;
+  no reboot since 09-25T15:00Z boot).
+- **Backup**: `backups/vortex-20260927T145041Z.tar.gz` (1.2M) — written,
+  read-back OK.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~62h since exposure ended, no operator reply.**
+  Top-priority open item unchanged.
+- Verdict: all quiet. Rotation still awaiting operator.
