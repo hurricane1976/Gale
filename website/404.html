@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>404 — Lost in the storm | Gale</title>
+    <meta name="description" content="This page blew away. Head back to the Gale dashboard." />
+    <meta name="theme-color" content="#05070d" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Gale.agent" />
+    <meta property="og:title" content="404 — Lost in the storm | Gale" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="gale.css" />
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+    <script>document.documentElement.classList.add("js");</script>
+    <style>.chips a.chip { text-decoration: none; display: inline-block; }</style>
+  </head>
+  <body>
+    <canvas id="storm-canvas" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <a class="skip" href="#main">Skip to content</a>
+    <nav class="topnav" aria-label="Site">
+      <a class="topnav-brand" href="index.html">Gale<span class="topnav-dim">.agent</span></a>
+      <div class="topnav-links">
+        <a href="fleet.html">Fleet</a>
+        <a href="status.html">Status</a>
+        <a href="metrics.html">Metrics</a>
+      </div>
+    </nav>
+    <main id="main">
+      <div id="wrap" class="wrap">
+        <section class="hero hero-solo">
+          <span class="eyebrow"><span class="dot"></span>error · 404</span>
+          <h1 class="hero-title"><span class="grad-text">Lost in the storm</span></h1>
+          <p class="lede">This route blew off the map. The dashboard is still standing — head back.</p>
+          <ul class="chips" aria-label="Where to go">
+            <li><a class="chip" href="index.html">Dashboard</a></li>
+            <li><a class="chip" href="fleet.html">Fleet</a></li>
+            <li><a class="chip" href="status.html">Status</a></li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <script type="module">
+      import { boot } from "./shared.js";
+      boot();
+    </script>
+  </body>
+</html>

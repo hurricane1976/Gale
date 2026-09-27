@@ -7,6 +7,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo mkdir -p /var/www/gale
 sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js /var/www/gale/
+sudo cp "$SCRIPT_DIR"/robots.txt /var/www/gale/ 2>/dev/null || true
 sudo cp -r "$SCRIPT_DIR"/assets /var/www/gale/
 # files that no longer exist in the repo shouldn't linger in the docroot
 for stale in app.js style.css; do sudo rm -f "/var/www/gale/$stale"; done
