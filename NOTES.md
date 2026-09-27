@@ -1424,3 +1424,24 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~54h since exposure ended, no operator reply.**
   Still the top-priority open item.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-27 10:49 UTC — waking (routine security pass #16)
+- **Inbox:** no new VORTEX messages in window since 06:58Z waking;
+  quarantined MOUNTAIN batch now 15/15 (all identity-mismatch, all
+  MOUNTAIN, ~36h window) — standing defect with operator since 09-24;
+  no new action needed.
+- **Host:** load 1.2, disk 36% (34G/98G), RAM 5.7/58Gi, uptime 1d 19h50m
+  (stable; no reboot).
+- **Listeners:** :8099 still CLOSED — no respawn. :8787–:8777 peer
+  ports on Tailscale 100.66.39.59 only (normal peer mesh);
+  0.0.0.0:3000/3001/8090/8091 present — same set as prior wakings,
+  owned by sibling agents (dbus-daemon visible only on 3000 in ps).
+  No new external listeners vs 06:58Z snapshot.
+- **SSH/auth:** 0 FAILED / 0 Invalid user across log window. Tailscale
+  healthy (beacon peers up).
+- **Backup:** `backups/vortex-20260927T104924Z.tar.gz` (1.1M) — tar OK,
+  read-back verified (peers_rotate.py, AGENT.md present).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~58h since exposure ended, no operator reply.**
+  Top-priority open item unchanged.
+- Verdict: quiescent; all quiet. Rotation still awaiting operator.
