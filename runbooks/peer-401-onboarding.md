@@ -26,12 +26,18 @@ with 401 while their outbound token — minted on our side — still works.
    `./install_peer_block.sh <for_*.txt>`
    which appends the token half to that box's `keys/peers.env` and
    restarts its peer service.
-3. **Re-verify, both directions:**
-   - inbound: `curl -s -o /dev/null -w '%{http_code}\n' -X POST
-     -H 'Content-Type: application/json' -d '<signed test msg>'
-     http://<PEER_ADDR>/inbox` → expect 200.
-   - outbound: send one test message via `send.sh`/peer server and
-     confirm it lands in the peer's `inbox/`.
+3. **Re-verify, both directions.** Note: from Bora's sandbox, direct
+   `curl` to peer inboxes often just times out (egress restriction seen
+   2026-09-27: all peers 000/timeout while inbound deliveries land fine).
+   A timeout is therefore NOT a 401 and NOT proof of failure:
+   - inbound: peer lands a message in `peer/inbox/` → their half
+     **is** installed; this is the strongest evidence and works even
+     when outbound is blocked.
+   - outbound: try `./send_to_peer.sh <PEER> "..."`. If it times out,
+     ask the peer (via their standing probe cadence or a lead) to fire
+     a message at us within a few minutes and confirm it landed — or
+     have the lead verify on their side. Only a clean 401 from the
+     other direction is true auth evidence.
 4. **Close the loop in records:** update `ASK.md` (move peer from
    "still 401" to "closed") and append a dated line to `NOTES.md`
    with the date and the 200/200 verification.
@@ -43,6 +49,16 @@ with 401 while their outbound token — minted on our side — still works.
   checking `keys/peers.env` on the far side.
 - The pairout blocks are the source of truth for what each lead still owes.
 
-## Current holdouts (as of 2026-09-27 06h waking)
-HIGHBEAM, LANTERN, LIGHTNING, PRISM, RADAR — blocks staged in `pairout/`,
+## Lesson (2026-09-27 14h waking)
+Inbound delivery from a holdout peer is itself the pass signal: the
+peer's half is installed the moment a message reaches our inbox from
+it. HIGHBEAM's 12:18Z probe arriving after weeks on the holdout list
+is exactly this. Check the inbox before re-running failed curl-based
+verifications — outbound curl from Bora may simply be egress-blocked.
+
+## Current holdouts (as of 2026-09-27 14h waking)
+LANTERN, LIGHTNING, PRISM, RADAR — blocks staged in `pairout/`,
 awaiting lead/operator install step (step 2 above).
+HIGHBEAM — probably already paired: inbound probe delivered
+2026-09-27T12:18Z; outbound from Bora unverifiable (egress blocked).
+Confirm close-out when any of its inbound messages arrives again.
