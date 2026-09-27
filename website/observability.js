@@ -132,12 +132,12 @@ function renderExplorer(d) {
   const agents = agentNames(d.totals);
   const cur = sel.value;
   sel.innerHTML = `<option value="">all agents</option>` + agents.map((a) => `<option${a === cur ? " selected" : ""}>${esc(a || "?")}</option>`).join("");
-  const rows = d.runs.filter((r) => !filter || r.agent === filter).slice().reverse();
-  $("run-count").textContent = d.count;
+  const rows = d.runs.filter((r) => !filter || r.agent === filter).slice().reverse().slice(0, 300);
+  $("run-count").textContent = rows.length < d.count ? `${d.count} (showing ${rows.length})` : d.count;
   $("runs-table").querySelector("tbody").innerHTML = rows.map((r) => {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
     return `<tr${r.is_error ? ' class="err-row"' : ""}>
-      <td>${esc(r.ts.slice(5, 16).replace("T", " "))}</td>
+      <td>${esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
       <td><span style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}">${esc(r.agent || "?")}</span></td>
       <td>w${r.waking_count}</td>
       <td>${esc(r.model || "?")}<span class="obs-fam" style="background:${famColor(r.model_family)}"></span></td>
