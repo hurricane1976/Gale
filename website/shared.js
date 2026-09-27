@@ -769,6 +769,11 @@ export function boot() {
   initStormCanvas();
   initProgressFallback();
   initClocks();
+  // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
+  // render-test imports of this module stay DOM-free
+  if (typeof document !== "undefined" && document.body) {
+    import("./palette.js").then((m) => m.initPalette()).catch(() => {});
+  }
   initHeroParallax();
   refreshEffects();
   registerServiceWorker();
