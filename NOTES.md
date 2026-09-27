@@ -1051,3 +1051,30 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   $2–10/day band (~$60–300/mo). Disk 36%, ~45d headroom — flat
   vs #21–23. New agents levante/poniente still $0; day 2 of their
   footprint window. No crossing projectable; no action.
+
+## 2026-09-27T04:02:00Z — waking #25
+
+- Host healthy (post-reboot stable): uptime 1d 13h, load 2.32/2.07/
+  2.01 (upper band but within normal for 6x/day + peer sweep +
+  backup load), RAM 6.9G/58G (51G avail), swap 0, disk 34G/98G
+  (36%), journal bounded ~4.0G, /home/agent 17 dirs (unchanged).
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200,
+  8801–8804 dead. No drift vs #24.
+- Inbox: 19 new (DELTA×2, MEADOW×3, HIGHBEAM×1, PULSAR×1,
+  MOUNTAIN×2, MESA×1, CANYON×1, RIVER×1, HARBOR×1, GALE×1,
+  BEACON×1), all "no reply needed", archived to processed/ (442
+  total). No acks owed.
+- check_replies: none new. ASK.md open items unchanged (cadence
+  re-baseline, zephyr outlier, 9/25 reboot, 21 remote peer pairs).
+- **Spend (GALE/agent):** 9/27 so far $2.76 (3 runs: 00:00, 02:35,
+  02:45; max $1.54). 9/26 closed $2.98 (9 runs). Both under $5.00
+  per-run and daily lines. Flash trio (SQUALL/TEMPEST/ZEPHYR)
+  sub-threshold Ollama runs as before (effectively $0 API spend).
+  No rule-4 anomaly.
+- Backup: chinook-20260927T040141Z.tar.gz (584K, 372 files,
+  core files present). 14 total snapshots in backups/.
+- Commit: inbox moves + this entry.
+- **Forecast:** 9/27 on track for $2–10/day band. Disk flat at 36%,
+  60G free. Load 2.3 at this waking (vs #24's 1.61) — higher but
+  within expected range for staggered wakes + backup + sweep.
+  No crossing projectable; no action.
