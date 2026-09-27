@@ -39,7 +39,7 @@ function statCard(label, value, sub, lvl = "ok", href = null) {
   </div>`;
 }
 
-function renderAgentCards(d) {
+export function renderAgentCards(d) {
   $("agent-grid").innerHTML = d.per_agent_24h.map((a) => {
     const lvl = a.error_runs_24h > 0 ? "warn" : "ok";
     return statCard(

@@ -9,12 +9,22 @@ globalThis.window = {
   innerWidth: 1280, innerHeight: 800, devicePixelRatio: 1,
   scrollY: 0, CSS: undefined,
 };
-const mkEl = () => ({ dataset: {}, style: {}, textContent: "", innerHTML: "",
-  classList: { add() {}, contains: () => false }, addEventListener() {},
-  setAttribute() {}, getBoundingClientRect: () => ({ left: 0, top: 0, width: 1, height: 1 }) });
+const ctxStub = new Proxy(function () {}, {
+  get: (t, p) => (p === Symbol.toPrimitive ? () => 0 : (...a) => ctxStub),
+  set: () => true,
+  apply: () => ctxStub,
+});
+const mkEl = () => ({ dataset: {}, style: { setProperty() {}, removeProperty() {} }, textContent: "", innerHTML: "",
+  width: 0, height: 0, hidden: false, disabled: false, value: "",
+  classList: { add() {}, remove() {}, contains: () => false, toggle() {} }, addEventListener() {},
+  setAttribute() {}, getAttribute: () => null, removeAttribute() {},
+  getBoundingClientRect: () => ({ left: 0, top: 0, width: 1, height: 1 }),
+  getContext: () => ctxStub, focus() {}, blur() {}, click() {},
+  querySelector: () => mkEl(), querySelectorAll: () => [] });
+const __els = {};
 globalThis.document = {
-  getElementById: () => null,
-  querySelector: () => null,
+  getElementById: (id) => (__els[id] || (__els[id] = mkEl())),
+  querySelector: () => mkEl(),
   querySelectorAll: () => [],
   createElement: () => mkEl(),
   addEventListener: () => {},
@@ -27,6 +37,9 @@ globalThis.performance = { now: () => 0 };
 
 const raw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/metrics').toString();
 const d = JSON.parse(raw);
+globalThis.fetch = async () => ({ ok: true, json: async () => d });
+// stub network: every feed returns the live metrics envelope
+globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => d });
 
 const cost = await import("/home/agent/agent/website/cost.js");
 const hosts = await import("/home/agent/agent/website/hosts.js");
@@ -60,6 +73,20 @@ t("host board stats", board.includes("hb-stats") && board.includes("last 24h"));
 t("host board agents", board.includes("hb-chip") && board.includes("zephyr"));
 const spark = hosts.sparkline([1, 2, 3], "#fff");
 t("sparkline svg", spark.includes("<svg") && spark.includes("polyline"));
+
+const status = await import("/home/agent/agent/website/status.js");
+await status.renderFleet24h();
+const gridHtml = __els["fleet-24h-grid"].innerHTML;
+t("fleet strip 4 cards", (gridHtml.match(/fleet-24h-card/g) || []).length >= 4);
+t("fleet strip stats", gridHtml.includes("runs 24h") && gridHtml.includes("cost 24h"));
+const stripHtml = __els["fleet-live-strip"].innerHTML;
+t("liveness pills", (stripHtml.match(/fleet-live-pill/g) || []).length >= 4);
+
+const metrics = await import("/home/agent/agent/website/metrics.js");
+metrics.renderAgentCards(d);
+const agentHtml = __els["agent-grid"].innerHTML;
+t("agent cards render", agentHtml.includes("vital"));
+t("agent deep links", agentHtml.includes("fleet.html#agent-"));
 
 console.log(fail === 0 ? "RENDER PASS" : "RENDER FAIL");
 process.exit(fail === 0 ? 0 : 1);

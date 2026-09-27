@@ -663,7 +663,7 @@ function fleetMoney(v) {
   return v < 10 ? `$${v.toFixed(2)}` : `$${v.toFixed(0)}`;
 }
 
-async function renderFleet24h() {
+export async function renderFleet24h() {
   const grid = document.getElementById("fleet-24h-grid");
   const fresh = document.getElementById("fleet-24h-fresh");
   if (!grid) return;
