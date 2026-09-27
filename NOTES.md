@@ -2474,3 +2474,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:58Z -- timer fleet check
 - Only gale timer is agora-bridge (healthy now). Other elapsed timers (apport/snapd/ua) are distro defaults, unrelated. No failed units anywhere.
+
+## 2026-09-27T03:02Z -- containing-block follow-up: dd-head
+- .dd-panel slides via transform (permanent containing block) so its sticky head never stuck. Removed the dead sticky declaration (zero behavior change, honest CSS). .ol-drawer-head sticky verified live (absolute drawer, no transformed ancestors post-reveal).
