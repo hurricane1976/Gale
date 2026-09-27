@@ -677,6 +677,29 @@ async function renderFleet24h() {
   const errs = data.error_runs_24h_by_host || {};
   const last = data.last_wake_by_host || {};
   const agents = data.agents_by_host || {};
+  const strip = document.getElementById("fleet-live-strip");
+  if (strip) {
+    const sweep = data.fleet_status || {};
+    const hostOf = {};
+    Object.entries(agents).forEach(([h, arr]) => (arr || []).forEach((a) => { hostOf[String(a).toLowerCase()] = h; }));
+    const perHost = {};
+    FLEET_ORDER.forEach((h) => { perHost[h] = { up: 0, total: 0, down: 0 }; });
+    Object.entries(sweep).forEach(([name, st]) => {
+      const h = hostOf[String(name).toLowerCase()];
+      if (!h || !perHost[h]) return;
+      perHost[h].total += 1;
+      if (st && st.state === "up") perHost[h].up += 1;
+      else if (st && st.state === "down") perHost[h].down += 1;
+      else perHost[h].up += 1;
+    });
+    strip.innerHTML = FLEET_ORDER.map((h) => {
+      const p = perHost[h], n = (agents[h] || []).length;
+      const lvl = p.down > 0 ? "crit" : p.total === 0 ? "idle" : p.up >= n && n > 0 ? "ok" : "warn";
+      const label = p.total === 0 ? `${n} agents · no sweep yet` : `${p.up}/${Math.max(p.total, n)} up`;
+      return `<span class="fleet-live-pill" data-level="${lvl}" title="${esc(h)}: ${esc(label)}">` +
+        `<i class="fleet-live-dot" aria-hidden="true"></i>${esc(h)} <b>${esc(label)}</b></span>`;
+    }).join("");
+  }
   grid.innerHTML = FLEET_ORDER.map((h) => {
     const meta = FLEET_META[h] || { hue: "var(--text-faint)", note: "" };
     const r = runs[h] ?? null, c = cost[h] ?? null, e = errs[h] || 0;

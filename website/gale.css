@@ -1551,3 +1551,15 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .fleet-24h-stat > span:first-child { font-family: var(--font-mono); color: var(--text); font-size: 0.92rem; white-space: nowrap; }
 .fleet-24h-stat.err > span:first-child { color: var(--warn); }
 .fleet-24h-sub { color: var(--text-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ---- fleet liveness strip (#5) ---- */
+.fleet-live-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 14px; }
+.fleet-live-strip:empty { display: none; }
+.fleet-live-pill { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono);
+  font-size: 0.72rem; color: var(--text-dim); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px 4px 9px; }
+.fleet-live-pill b { color: var(--text); font-weight: 500; }
+.fleet-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); flex: none; }
+.fleet-live-pill[data-level="ok"] .fleet-live-dot { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.fleet-live-pill[data-level="warn"] .fleet-live-dot { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+.fleet-live-pill[data-level="crit"] .fleet-live-dot { background: var(--flag); box-shadow: 0 0 6px var(--flag); }

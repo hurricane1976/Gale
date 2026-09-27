@@ -2160,3 +2160,12 @@ STATUS at time of writing:
 - [TODO] 7) Continue to #4, #5, #7 per plan; then autonomous improvement pass.
 
 Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 runs/$0.00, mountain 11 runs/$11.18, beacon 11 runs/$6.98, tidal 1 error.
+
+## 2026-09-27T01:20Z -- #2 shipped; #4/#5/#7 built autonomously
+- #2 DONE + deployed + live-verified as commit 90dce67 ("feat(fleet): per-host fleet boards on fleet.html + status.html"). fleet.html hosts section + hosts.js + fleet-tidal.css .hosts-* CSS; status.html sec-fleet-24h + status.js renderFleet24h + gale.css .fleet-24h-* CSS. `bash website/deploy.sh` clean; both pages verified live.
+- #4/#5/#7 were undocumented ("?" in plan, lived in lost conversation). Operator authorized autonomous build; proceeding with 3 high-value items derived from shipped features + available API data:
+- #4 Fleet cost trend (fleet.html): new `website/cost.js` ES module (boot+esc, 30s poll of api/fleet/metrics). Renders 14-day per-host cost lines + dashed fleet-total line (SVG, no lib) from `daily_cost_by_host` + `days`, legend with per-host 14d totals, fresh line with fleet 14d total. New `#cost-trend` section between hosts and activity stream; activity renumbered 3->5.
+- #7 Agent cost leaderboard (fleet.html): same cost.js module renders top-6 by `cost_24h` from `per_agent_24h` into `#cost-leaderboard` grid; each card has rank, host chip (via agents_by_host reverse map), 24h cost, runs + last wake, mini sparkline from `daily_cost_14d` (falls back to `daily_wakings_14d` for zero-cost agents). CSS `.ct-*`/`.lb-*` appended to fleet-tidal.css. `node --check` clean.
+- #5 Fleet liveness strip (status.html): `<div id="fleet-live-strip">` at top of sec-fleet-24h; status.js renderFleet24h aggregates `fleet_status` per host (up/down via agents_by_host reverse map) into pills (`x/y up`, ok/warn/crit/idle); CSS `.fleet-live-*` appended to gale.css using --ok/--warn/--flag tokens. `node --check` clean.
+- Live numbers at build time: runs24 gale 76 / tidal 21 / mountain 10 / beacon 10; cost24 mountain $10.49 / beacon $6.59 / gale $3.09 / tidal $0.00; tidal 1 error; per-agent daily_cost_14d present for sparklines.
+- NEXT: commit all (#4/#5/#7), deploy, live-verify, then autonomous improvement pass.

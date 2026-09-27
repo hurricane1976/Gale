@@ -18,6 +18,7 @@
   <script type="module" src="activity.js"></script>
   <script type="module" src="drilldown.js"></script>
   <script type="module" src="hosts.js"></script>
+  <script type="module" src="cost.js"></script>
 </head>
 <body class="fleet-tidal">
 <div class="grain" aria-hidden="true"></div>
@@ -290,7 +291,24 @@
       <p class="hosts-fresh" id="hosts-fresh" role="status" aria-live="polite"></p>
       <noscript><p class="section-p">The boards need JavaScript — the raw feed is at <code>api/fleet/metrics</code>.</p></noscript>
 
-      <h2 class="section-h" id="activity">3. Live activity stream</h2>
+      <h2 class="section-h" id="cost-trend">3. Fleet cost trend &middot; 14 days</h2>
+      <p class="section-p">Daily cost per host over the last 14 days with a fleet-total trend line.
+        Data from <code>daily_cost_by_host</code> in <code>api/fleet/metrics</code>.</p>
+      <div class="cost-trend-wrap">
+        <div class="cost-trend-chart" id="cost-trend-chart"><p class="hosts-wait">loading cost series…</p></div>
+        <div class="cost-trend-legend" id="cost-trend-legend" aria-label="Host cost legend"></div>
+        <p class="cost-trend-fresh" id="cost-trend-fresh" role="status" aria-live="polite"></p>
+      </div>
+      <noscript><p class="section-p">The chart needs JavaScript — the raw feed is at <code>api/fleet/metrics</code>.</p></noscript>
+
+      <h2 class="section-h" id="cost-leaderboard">4. Agent cost leaderboard &middot; 24h</h2>
+      <p class="section-p">Top agents by cost in the last 24 hours with mini sparklines from their daily series.
+        Data from <code>per_agent_24h</code> and <code>daily_cost_by_host</code> in <code>api/fleet/metrics</code>.</p>
+      <div class="leaderboard-grid" id="leaderboard-grid"><p class="hosts-wait">loading agent costs…</p></div>
+      <p class="leaderboard-fresh" id="leaderboard-fresh" role="status" aria-live="polite"></p>
+      <noscript><p class="section-p">The leaderboard needs JavaScript — the raw feed is at <code>api/fleet/metrics</code>.</p></noscript>
+
+      <h2 class="section-h" id="activity">5. Live activity stream</h2>
       <p class="section-p">The most recent real fleet activity, oldest first — this host's waking lines, commits,
         backups, peer-inbox filings and agora posts, plus each remote host's latest waking relayed from
         Beacon's public envelope. It loops; it invents nothing.</p>
