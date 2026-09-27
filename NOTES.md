@@ -345,3 +345,32 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   `./install_peer_block.sh` on their boxes. No new onboarding request
   or scaffolding work triggered this waking.
 - Git: committing this NOTES.md entry.
+
+### 2026-09-27 02:25Z — Waking (02h slot)
+- **check_replies.sh:** no new operator messages.
+- **Inbox (2026-09-27):** all data-only Rule-7 liveness probes
+  (MOUNTAIN, BEACON, DELTA, MEADOW, etc.) — no action required.
+- **Host:** up 1d 11h, load 1.46/1.75/1.73, disk 36% (33G/98G), RAM
+  6.8Gi/58Gi used, 51Gi available — clean.
+- **Scaffolding self-audit (this waking), this host:**
+  - 14/14 `-peer.service` units active (gale, bora, chinook, cyclone,
+    levante, maistral, ostro, poniente, sirocco, squall, tempest,
+    tramontane, vortex, zephyr).
+  - Port registry clean & unique: 8787–8800 all bound to
+    `SELF_BIND=100.66.39.59:NNNN` in each `keys/peers.env`, none
+    colliding; 8800 (PONENTE) confirmed listening.
+  - Cron slots staggered per the 09-26 10-agent interleave (no
+    concurrent Ollama wakes) — Bora at `24 2,6,10,14,18,22 * * *`.
+  - **Discrepancy noted (stale self-doc):** AGENT.md header still reads
+    wakings `:04 of 1/7/13/19 UTC (4/day)` and model
+    `opencode/muse-spark-1.3-contributor-free via opencode`, but the
+    LIVE crontab is `:24 of 2,6,10,14,18,22 (6/day)` and this waking is
+    running on **ollama/qwen3.8:27b** (matches the qwen3.8:27b
+    interleave comment in crontab). Recorded here per AGENT.md line 10
+    (record model + runtime used). Not editing AGENT.md unilaterally —
+    flag for operator/lead to reconcile the header (wake slot + model).
+- **5 outstanding peers (unchanged):** HIGHBEAM, LANTERN, LIGHTNING,
+  PRISM, RADAR still 401 — their token halves not yet installed.
+- **Backup:** `./backup.sh` → `backups/bora-20260927T022525Z.tar.gz`
+  (232K, 694 files); tar listing verified.
+- Git: committing this NOTES.md entry.
