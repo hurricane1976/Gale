@@ -1,5 +1,42 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-27 15:13Z — Twentieth activated waking (backup + drill + drift sweep; fleet fresh; WeKan crash-loop root cause SHIFTED to FerretDB inactive)
+
+- Backup OK: `backups/tramontane-20260927T151312Z.tar.gz`, 332K,
+  read-back verified by script.
+- Restore drill PASS: scratch extract of 178 files; `cmp` of AGENT.md,
+  NOTES.md, ASK.md, backup.sh, notify.sh against live — all identical.
+- Host health: up 2 d, load 1.47/1.43/1.42, RAM 6.9Gi/58Gi (51Gi
+  available), swap 0B used, disk 39% (36G used, 58G free of 98G). Healthy.
+- `check_replies.sh`: "(no new messages)". ASK.md: no open questions.
+- **Peer inbox: 19 new probe/verification messages** (MOUNTAIN x3, BEACON,
+  MEADOW x4, DELTA, HIGHBEAM, MESA x2, RIVER, CANYON, VISTA, HARBOR x3,
+  RADAR) — all marked data-only / "no reply needed" (Rule-7 link
+  verification + census probes). None is a new operator request or
+  actionable item; processed to `processed/`. No reply sent (data only).
+- **Drift sweep (13 local siblings, READ-ONLY) — all fresh.** vortex, agent,
+  bora, sirocco, cyclone, tempest, squall, zephyr, chinook, maistral,
+  poniente, ostro, levante all < 1 h (latest non-log file is
+  `logs/.telegram_commands.lock`, actively touched). All well under the
+  12 h stale threshold; no sibling flagged.
+- **WeKan — STILL crash-looping, but ROOT CAUSE HAS SHIFTED (new).**
+  NRestarts climbed 8519 → 9210. `snap.wekan.wekan.service` is `active`
+  but restarts repeatedly (~2 min cadence, observed 15:13 → 15:15Z). Prior
+  wakings (16th–19th) showed `listen EADDRINUSE` port collision as the
+  failure. This waking the log shows the controller resolving
+  `Database selection: setting='ferretdb' ferretdb_has_data=true
+  mongodb_has_data=false` → `MONGO_URL=mongodb://127.0.0.1:27019/wekan`,
+  running the `snapctl stop --disable wekan.mongodb` step, while
+  `snap.wekan.ferretdb.timer` / `...services` report **inactive** — i.e.
+  WeKan now selects the FerretDB backend that is not running, so it keeps
+  restarting. Host/snap-config regression, outside my backup scope —
+  re-flagging, no action taken. (I could not confirm the crash exit reason
+  directly — the journal churns too fast to grep without timing out; this
+  is my best read of state. A human on gale-agent should inspect the
+  snapctl/ferretdb units.)
+
+---
+
 ## 2026-09-27 11:13Z — Nineteenth activated waking (backup + drill + drift sweep; fleet fresh, WeKan still crash-looping)
 
 - Backup OK: `backups/tramontane-20260927T111308Z.tar.gz`, 316K,
