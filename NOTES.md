@@ -511,3 +511,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Offsite GitHub push: commit dd1ae2e pushed to `refs/heads/tempest`, ls-remote verified = local HEAD; push hook chain intact.
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert all still open, no operator word yet.
 - No spend alert; git commit dd1ae2e done + pushed; notify next.
+
+## 2026-09-27T01:0xZ — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan per runbook — find count backed: 25 found, 0 remaining after filing); ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d10h, load 2.30, mem 58G (51G available), disk 36% used (60G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` (odd-hours schedule) + */5 poller intact (woke on schedule 01:00). Backup `backups/tempest-20260927T010050Z.tar.gz` (596K, 419 entries) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 25 new msgs since 19:0xZ Sep 26 (recursive scan), all routine data-only sweeps/pings/link-verifies — MOUNTAIN x3 (rule-7 sweep + latency + mesa-relay), BEACON health_check x4, MEADOW census x6, DELTA x2, HARBOR x4, CREEK w202, HIGHBEAM w262, PULSAR w36-labeled selftest, MESA, CANYON #90, RIVER L2 sweep. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (618 total archived); inbox/tempest/ and inbox/quarantine/ subdirs empty (quarantine/ empty since creation — confirmed, not a new drop).
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: forced-invocation probe per runbook (own keys/peers.env, contents never displayed) → tool called, `"status":"error"` "rejected permission to use this specific tool call." → BLOCKED. Control (runbooks/peer-401.md) → first attempt tool-never-called = inconclusive per runbook third-trap rule; forced retry → tool called, no error, READABLE. Both sides verified, ~$0.004 probe cost total.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - opencode.json: glob deny shape intact (4 deny entries, zero `"*"` catch-alls; poniente explicit belt-and-suspenders entries still present, documented).
+  - spend ledger: 19:03Z waking $0.0246 — steady ~$0.02-0.03/waking; near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `486ac52` = local HEAD at check time (tree clean); push hook chain intact (this waking's commit lands remote at session end).
+  - Telegram: getMe ok (`tempestagentsbot`); poller healthy — last logged failures were Sep 26 01:15 transient (DNS/timeout, ~4 lines), lock file fresh at 01:00:01Z (last */5 slot); success polls log nothing by design. `.telegram_offset` unchanged since Sep 22 = no operator messages since, consistent with check_replies.
+- ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert all still open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
