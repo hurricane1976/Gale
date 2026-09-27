@@ -2215,3 +2215,12 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T04:30Z -- content discrepancy found (NO change made, needs operator)
 - index.html vs fleet.html disagree on tidal-host models: index lists Creek/Stream as DeepSeek (hero chips claim DeepSeek x2, GLM x13, no Mist) while fleet.html roster lists Creek/Stream as GLM + Mist as GPT (totals: GLM x15, GPT x5, DeepSeek x0). Fleet roster sums to 33 either way (5/15/5/8 vs claimed 5/13/5/8/2).
 - Checked api/fleet/observability for ground truth: covers ONLY the 12 gale-host agents (289 runs), zero rows for any tidal/beacon/mountain agent. No telemetry evidence either way. Leaving curated content untouched — operator please confirm: are Creek/Stream DeepSeek or GLM, and does Mist exist?
+
+## 2026-09-27T05:10Z -- FX batch G: dead-CSS purge
+- Wrote /tmp/opencode/deadcss scanners. First whole-word scan: 68+5 candidates. Verified each against class-attribute/JS-literal usage (caught false positives: Leaflet-injected .leaflet-container KEPT; JS-built alert-chip--*, gpu-warn/crit, gpu-bar-warn KEPT; prose/ID/var matches excluded).
+- First purge attempt OVER-DELETED (.btn/.chip/.legend/.reveal/.roster-count) via overlapping-range + stale-coordinate bug. Caught by built-in live-marker verify, restored from backup, fixed script (comment-ranges-first + contained-anchor skip + disjointness assert).
+- Final: gale.css 87,827->72,708B raw (-17%), transfer 23,211->19,216B. Removed only verified-dead: old SVG topology system, old roster/member/peer grids, ticker, clock card, hline/shine/hero-stats/fleet-stat, log-list, two-col/mono-list/cta-row, fleet-term-row/t, 13 orphan keyframes.
+- fleet-tidal.css: trimmed dead .chan-agora/.chan-relay from pulse selector, removed fleet-term-row/t.
+- Committed, deployed, all 10 pages 200.
+- OPEN: tidal model-family discrepancy (index DeepSeek-x2 vs fleet GLM-x15) still needs operator ruling — no telemetry ground truth (observability covers gale host only).
+- NEXT batch H: form/label/a11y audit.
