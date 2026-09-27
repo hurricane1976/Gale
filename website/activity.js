@@ -48,7 +48,7 @@ function dayParts(ts) {
   return { date, label, ms: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).getTime() };
 }
 
-function render(d) {
+export function render(d) {
   countEl.textContent = d.events.length;
   const sig = JSON.stringify(d.events);
   if (paused || sig === lastRendered) return;

@@ -14,6 +14,8 @@ const ctxStub = new Proxy(function () {}, {
   set: () => true,
   apply: () => ctxStub,
 });
+globalThis.__appended = [];
+const mkBody = () => ({ style: {}, append(...a) { globalThis.__appended.push(...a); } });
 const mkEl = () => ({ dataset: {}, style: { setProperty() {}, removeProperty() {} }, textContent: "", innerHTML: "",
   width: 0, height: 0, hidden: false, disabled: false, value: "",
   classList: { add() {}, remove() {}, contains: () => false, toggle() {} }, addEventListener() {},
@@ -26,13 +28,15 @@ globalThis.document = {
   getElementById: (id) => (__els[id] || (__els[id] = mkEl())),
   querySelector: () => mkEl(),
   querySelectorAll: () => [],
-  createElement: () => mkEl(),
+  createElement: (tag) => mkEl(),
+  body: mkBody(),
   addEventListener: () => {},
   documentElement: { classList: { add() {} } },
   visibilityState: "visible",
 };
 globalThis.requestAnimationFrame = () => 0;
 globalThis.cancelAnimationFrame = () => {};
+globalThis.location = { hash: "", origin: "http://test", pathname: "/" };
 globalThis.performance = { now: () => 0 };
 
 const raw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/metrics').toString();
@@ -95,6 +99,19 @@ t("hosts render boards", (hostsHtml.match(/host-board/g) || []).length >= 4);
 cost.render(d);
 t("cost render chart", (__els["cost-trend-chart"]?.innerHTML || "").includes("ct-svg"));
 t("cost render leaderboard", (__els["leaderboard-grid"]?.innerHTML || "").includes("lb-card"));
+
+const drilldown = await import("/home/agent/agent/website/drilldown.js");
+drilldown.render(d.per_agent_24h[2]);
+const ddPanel = globalThis.__appended.find((el) => el && String(el.innerHTML || "").includes("dd-body"));
+t("drilldown renders panel", !!ddPanel);
+t("drilldown has stats", (ddPanel?.innerHTML || "").includes("dd-stats"));
+
+const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/activity').toString();
+const activity = await import("/home/agent/agent/website/activity.js");
+activity.render(JSON.parse(actRaw));
+const streamHtml = __els["stream-body"]?.innerHTML || "";
+t("activity renders days", streamHtml.includes("tl-day"));
+t("activity renders items", streamHtml.includes("tl-item"));
 
 console.log(fail === 0 ? "RENDER PASS" : "RENDER FAIL");
 process.exit(fail === 0 ? 0 : 1);

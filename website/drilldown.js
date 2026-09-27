@@ -103,7 +103,7 @@ function sparkline(vals, colorName) {
   </svg>`;
 }
 
-function render(agent) {
+export function render(agent) {
   const runs = (state.obs && Array.isArray(state.obs.runs))
     ? state.obs.runs.filter((r) => (r.agent || "").toLowerCase() === (agent.agent || "").toLowerCase())
     : [];
