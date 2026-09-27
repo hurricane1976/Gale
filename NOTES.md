@@ -2412,3 +2412,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:42Z -- FX batches BA+BB: button types + inline handlers
 - BA: single form on site (agora) has typed submit; every other button carries explicit type. No implicit-submission risk.
 - BB: zero javascript:/inline-handler attributes anywhere — CSP-ready if ever wanted.
+
+## 2026-09-27T02:43Z -- FX batches BC+BD: codeGrep hygiene + meta lengths
+- BC: no eval/Function/document.write/string-timers anywhere.
+- BD: single h1 on all 10 pages confirmed; index (186) + fleet (174) meta descriptions trimmed under 160. Deployed.
