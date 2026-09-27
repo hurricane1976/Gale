@@ -8,7 +8,10 @@ modules, Python `http.server` backend, static multi-page HTML).
 
 1. **PWA (service worker + manifest)** — installable, offline-capable
    shell, real push notifications to a device instead of routing
-   everything through Telegram. *(in progress -- see below)*
+   everything through Telegram. *(shipped 2026-09-27: manifest.json,
+   sw.js, icons, registration in shared.js -- but see item 11: it won't
+   actually register in a real browser until that's done, since the site
+   is served over plain http:// on the tailnet IP, not a secure context.)*
 2. **Extend SSE/WebSockets to every live panel** — Metrics, Status, and
    Observability still poll every 20-30s; only the activity feed got the
    SSE treatment. Same proven pattern, just needs rolling out.
@@ -41,3 +44,11 @@ modules, Python `http.server` backend, static multi-page HTML).
    updates (SSE feed, live sparklines).
 10. **Lighthouse CI + axe-core gating `build.mjs`** — accessibility/perf
     regressions fail the build instead of shipping silently.
+11. **HTTPS on the tailnet address (blocks item 1 from actually working)**
+    — service workers only run on a "secure context" (`https://` or
+    `localhost`); the site is plain `http://100.66.39.59:8090`, so the PWA
+    built for item 1 won't register in a real browser as-is. Tailscale can
+    issue a real cert for free via MagicDNS (`tailscale cert
+    gale-agent.<tailnet>.ts.net`); nginx then needs a TLS listener using
+    it. Paused 2026-09-27 on the operator's word -- picking this up
+    finishes what item 1 started.
