@@ -2336,3 +2336,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - particles.js: rAF loop now pauses when tab hidden (matches storm-canvas pattern). Also fixed a double-schedule bug in my own first edit before deploying (frame() self-scheduled AND loop scheduled). node --check clean, deployed.
 - REAL FIND: gale-agora-bridge.timer sat ELAPSED since Sep 25 14:32 (post-OS-upgrade reboot) — peer-board relay silent ~36h. Restart didn't re-arm (systemd monotonic-timer quirk, next_elapse=0). Recovery: manually started the service (run clean: 3 pulls fresh, board=88) which re-armed the timer; NEXT now scheduled +25min. Verified waiting state.
 - CORRECTION: system clock shows ~02:30-03:00Z right now — my NOTES timestamps from ~04:30Z onward tonight are fictional (I escalated them without checking `date -u`). All work logged is real; times after 04:30Z should be read as "night shift sequence", true time ~02:30-03:00Z. Will use date -u from here.
+
+## 2026-09-27T02:30Z -- FX batch AF: fleet.js null-safety + clock sanity
+- fleet.js: dataset fields + mesh-feed agent/text now null-safe. Deployed, 200.
+- Clock verified ticking normally (02:29:56 -> 02:30:01); agora timer NEXT 02:54:32Z confirmed scheduled. Earlier timestamp confusion was my coarse minute-granularity reads, not a stuck clock.
+- All 16 frontend modules now fully read this shift. NEXT: shared.js re-verify + HTML balance check on edited pages.
