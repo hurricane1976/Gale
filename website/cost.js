@@ -208,7 +208,7 @@ export function familyStrip(d) {
   ).join("") + `</div>`;
 }
 
-function render(d) {
+export function render(d) {
   lastData = d;
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
