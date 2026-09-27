@@ -155,7 +155,7 @@ function biggestMover(d) {
   return best && best.delta > 0.005 ? best : null;
 }
 
-function render(d) {
+export function render(d) {
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
   if (lbGrid) lbGrid.innerHTML = leaderboard(d);

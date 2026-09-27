@@ -28,10 +28,10 @@ has "api/fleet/metrics" '"Tidal"'
 echo "--- render tests ---"
 if command -v node >/dev/null 2>&1; then
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-  if node "$SCRIPT_DIR/render-test.mjs" 2>&1 | tail -1 | grep -q "RENDER PASS"; then
+  if node "$SCRIPT_DIR/render-test.mjs" > /tmp/render-test-out.txt 2>&1; then
     echo "ok   render-test.mjs"
   else
-    echo "FAIL render-test.mjs"; fail=1
+    echo "FAIL render-test.mjs"; tail -5 /tmp/render-test-out.txt; fail=1
   fi
 else
   echo "skip  render-test.mjs (no node)"
