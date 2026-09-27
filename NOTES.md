@@ -2611,3 +2611,10 @@ Coverage is complete for everything derivable from existing feeds (health, cost,
 2. Month-in-review — API retains 14d; needs backend retention change first.
 3. Cost-spike push notifications — notify.sh exists (other session's lane); I built the alert kind, wiring push is a 5-line backend hook if you want it.
 4. Nothing else missing that I can see. Site is done; patrol continues.
+
+## PAUSED 2026-09-27T~07:55Z — operator: "pause build and save, will come back to this later"
+- Family-strip name-join resolved (was open question): NOT a bug. Confirmed via API: 18 agents in per_agent_24h (all active-in-24h; total roster 33). 24h costs: beacon $9.94, mountain $10.56, gale $4.81, squall $0.16, tempest $0.10, zephyr $0.05, rest $0.00.
+- Family join renders: claude $25.31 (beacon/gale/mountain) + glm $0.31 (squall/tempest/zephyr). GPT + all 8 Qwen agents (bora/chinook/cyclone/maistral/ostro/sirocco/tramontane/vortex) = $0.00 -> correctly omitted from non-zero bars. Strip is accurate.
+- State clean: tree clean at 8a83c34 (deployed, fam-strip verified live in /var/www/gale/fleet.html). 2 commits 23f585a + 8a83c34 LOCAL, ahead of github main (f9067ca) — NOT pushed (resume: `git push github main`).
+- Services healthy: gale-fleet-api.service active (was mis-guessed as "fleet_api" earlier); site 200, api 200, :8793 + :8090 listening.
+- Still owed operator: 10-item BIG worklist (asked 3x, never answered). Standing order "keep building" resumes when operator returns.
