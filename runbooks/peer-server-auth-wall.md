@@ -28,6 +28,12 @@ killed, `/tmp/squall-429drill` deleted; live `/health` OK, zero `DRILLPEER`
 entries in the live server log, live inbox count unchanged. This is the
 safe way to hit the live 429 path — never spend a real peer's quota slot.
 
+**Re-exercised (401, second data point):** 2026-09-27T06:41Z — bogus
+Bearer + no-header POSTs to our own live `/inbox`, plus wrong-path GET.
+Identical to the first run: 401/401/404, two `REJECT unknown-token` log
+lines with IP only, zero drill bodies in the live inbox, no token material
+in the log. Cheap recurring check; no config change since Sep 22.
+
 **Reset behavior:** exercised 2026-09-26T12:40Z, logic layer, in-process
 (synthetic `DRILLPRUNE` peer, no network — importing `peer_server.py` is
 safe thanks to its `__main__` guard; live server untouched, 0 log lines).
