@@ -522,7 +522,7 @@ function renderOllama(o) {
     </tr>`).join("");
 }
 
-function render(d) {
+export function render(d) {
   board.hidden = false;
   document.getElementById("interval").textContent = d.collector_interval_s;
   pollMs = Math.max(5000, (d.collector_interval_s || 15) * 1000);

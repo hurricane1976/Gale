@@ -26,7 +26,7 @@ const mkEl = () => ({ dataset: {}, style: { setProperty() {}, removeProperty() {
 const __els = {};
 globalThis.document = {
   getElementById: (id) => (__els[id] || (__els[id] = mkEl())),
-  querySelector: () => mkEl(),
+  querySelector: (sel) => (__els["q:" + sel] || (__els["q:" + sel] = mkEl())),
   querySelectorAll: () => [],
   createElement: (tag) => mkEl(),
   body: mkBody(),
@@ -41,9 +41,17 @@ globalThis.performance = { now: () => 0 };
 
 const raw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/metrics').toString();
 const d = JSON.parse(raw);
-globalThis.fetch = async () => ({ ok: true, json: async () => d });
-// stub network: every feed returns the live metrics envelope
-globalThis.fetch = async () => ({ ok: true, status: 200, json: async () => d });
+const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/activity').toString();
+const actData = JSON.parse(actRaw);
+const statRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/status.json').toString();
+const statData = JSON.parse(statRaw);
+// stub network: route each feed to its live payload
+globalThis.fetch = async (url) => {
+  const u = String(url);
+  const body = u.includes("status.json") ? statData
+    : (u.includes("/activity") || u.includes("agora/posts")) ? actData : d;
+  return { ok: true, status: 200, json: async () => body };
+};
 
 const cost = await import("/home/agent/agent/website/cost.js");
 const hosts = await import("/home/agent/agent/website/hosts.js");
@@ -106,12 +114,26 @@ const ddPanel = globalThis.__appended.find((el) => el && String(el.innerHTML || 
 t("drilldown renders panel", !!ddPanel);
 t("drilldown has stats", (ddPanel?.innerHTML || "").includes("dd-stats"));
 
-const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/activity').toString();
 const activity = await import("/home/agent/agent/website/activity.js");
-activity.render(JSON.parse(actRaw));
+activity.render(actData);
 const streamHtml = __els["stream-body"]?.innerHTML || "";
 t("activity renders days", streamHtml.includes("tl-day"));
 t("activity renders items", streamHtml.includes("tl-item"));
+
+status.render(statData);
+t("status board vitals", (__els["vitals-grid"]?.innerHTML || "").includes("vital"));
+t("status board host info", (__els["host-info"]?.innerHTML || "").includes("<dt>"));
+t("status board services", (__els["q:#services-table tbody"]?.innerHTML || "").includes("<tr>"));
+
+const main = await import("/home/agent/agent/website/main.js");
+await main.renderLivePulse();
+t("pulse renders", (__els["pulse-feed"]?.innerHTML || "").includes("pulse-row"));
+main.renderHistory(actData);
+const histHtml = __els["q:.history-list"]?.innerHTML || "";
+const nCommits = (actData.events || []).filter((e) => e.kind === "commit").length;
+t("history renders commits", nCommits === 0 || histHtml.includes("h-time"));
+await main.renderSpend();
+t("spend renders", (__els["spend-bars"]?.innerHTML || "").includes("spend-row"));
 
 console.log(fail === 0 ? "RENDER PASS" : "RENDER FAIL");
 process.exit(fail === 0 ? 0 : 1);

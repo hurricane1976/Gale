@@ -110,7 +110,7 @@ function fmtAgo(iso) {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
-async function renderLivePulse() {
+export async function renderLivePulse() {
   const feed = document.getElementById("pulse-feed");
   if (!feed) return;
   try {
@@ -137,7 +137,7 @@ async function renderLivePulse() {
 
 /* ---- recent history: latest commits from the same activity feed.
    Static 2026-09-23 list in markup stays as the no-JS fallback. ---- */
-function renderHistory(d) {
+export function renderHistory(d) {
   const list = document.querySelector(".history-list");
   if (!list) return;
   const commits = (d.events || []).filter((ev) => ev.kind === "commit").slice(-8).reverse();
@@ -153,7 +153,7 @@ renderLivePulse();
 /* ---- §12 spend & quota: cost by host + busiest agents, last 24h ---- */
 const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "var(--m-deepseek)", mountain: "var(--m-qwen)" };
 
-async function renderSpend() {
+export async function renderSpend() {
   const bars = document.getElementById("spend-bars");
   const agents = document.getElementById("spend-agents");
   if (!bars || !agents) return;
