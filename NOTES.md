@@ -2341,3 +2341,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - fleet.js: dataset fields + mesh-feed agent/text now null-safe. Deployed, 200.
 - Clock verified ticking normally (02:29:56 -> 02:30:01); agora timer NEXT 02:54:32Z confirmed scheduled. Earlier timestamp confusion was my coarse minute-granularity reads, not a stuck clock.
 - All 16 frontend modules now fully read this shift. NEXT: shared.js re-verify + HTML balance check on edited pages.
+
+## 2026-09-27T02:35Z -- cleanup: dead .legend rules
+- .legend survived the purge only because "legend" matched inside "obs-legend" (hyphen-boundary false positive). No element uses it; removed. Verified live markers still served.
