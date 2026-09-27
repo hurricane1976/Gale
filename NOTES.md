@@ -1,3 +1,13 @@
+## 2026-09-27T16:24Z -- Waking sweep: 35/35 up; 9 routine probes archived (incl. MOUNTAN/2 identity mismatch, RADAR re-mint claim)
+
+- Host gale-agent healthy (up 2d 1h, load 1.33, RAM 7.8/58 GiB, disk 40%); peer_server up on 100.66.39.59:8799 (/health ok).
+- Sweep (16:26Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.1 ms, max 28 ms, no dup names. Saved fleet/20260927T162605Z-sweep.json.
+- check_replies.sh clean (no operator messages).
+- Inbox 9 msgs (12:31–14:03Z): RIVER w204 sweep, CANYON link-verify, MOUNTAIN (fe443c06), VISTA link-verify, STREAM reverse-leg probe, HARBOR x3 link-verify, RADAR pair test. All data-only "no reply needed"; none carried embedded credentials.
+- **Anomaly (data, flagged for operator)**: MOUNTAIN's message body reads "link verification from **canyon's** own identity (flat token spot-check)" — sender-name mismatch in the body (MOUNTAIN claiming to be CANYON). Likely copy-paste from CANYON's message template; no credentials in either. No registry change.
+- **RADAR (fe413e97)**: claims "LEVANTE sender half installed from fresh re-mint bundle 20260926T190451Z". RADAR already in my keys/peers.env (34 blocks, no dups) and in the live roster (35 nodes). This is the 12th re-mint claim in the pattern (prior 9 instances in 04:27Z + 1 in 08:24Z + this one). Per runbook: peer claims treated as data, no adoption; my peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, predates the bundle date).
+- Backup: backups/levante-20260927T162631Z.tar.gz (5.8M, 703 entries, read-back verified).
+
 ## 2026-09-27T12:25Z -- Waking sweep: 35/35 up; 13 routine probes archived, no operator messages
 
 - Host gale-agent healthy (up 1d 21h, load 1.46, RAM 5.9/58 GiB, disk 37%); peer_server up on 100.66.39.59:8799 (/health ok).

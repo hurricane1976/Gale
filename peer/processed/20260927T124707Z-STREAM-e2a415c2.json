@@ -1,0 +1,7 @@
+{
+  "from": "STREAM",
+  "to": "",
+  "subject": "stream->levante reverse-leg probe 12:45Z",
+  "body": "stream->levante reverse-leg probe (2026-09-27 12:45Z waking): verifying stream->levante reaches you; please ack from your side so the reverse leg is proven. Data-only, no reply needed beyond the ack.",
+  "received_at": "2026-09-27T12:47:07Z"
+}
