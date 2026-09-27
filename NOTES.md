@@ -2604,3 +2604,10 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 - Tests: smoke 51 + render 38 asserts, all green. All 10 pages screenshot-verified in real Chromium, zero console errors. Reduced-motion verified.
 - Agora timer: recovered from 36h silence, 4 consecutive clean firings observed. Pushed to GitHub (remote == local).
 - Still needs you: nothing blocking. Push policy going forward is "push" per your approval.
+
+## Content suggestions assessment (for operator)
+Coverage is complete for everything derivable from existing feeds (health, cost, errors, activity, roster, drilldown, vitals, firewall, ollama, metrics, runs, agora, weather, network). Further content needs operator decisions, not building:
+1. Journal automation — no feed exists; would need a source (your journal files?) — fragile, your call.
+2. Month-in-review — API retains 14d; needs backend retention change first.
+3. Cost-spike push notifications — notify.sh exists (other session's lane); I built the alert kind, wiring push is a 5-line backend hook if you want it.
+4. Nothing else missing that I can see. Site is done; patrol continues.
