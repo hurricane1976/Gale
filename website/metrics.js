@@ -31,9 +31,9 @@ function fmtAgo(iso) {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
-function statCard(label, value, sub, lvl = "ok") {
+function statCard(label, value, sub, lvl = "ok", href = null) {
   return `<div class="vital" data-glow data-level="${lvl}">
-    <span class="vital-label">${esc(label)}</span>
+    <span class="vital-label">${href ? `<a href="${esc(href)}">${esc(label)}</a>` : esc(label)}</span>
     <span class="vital-value">${value}</span>
     <span class="vital-sub">${sub || ""}</span>
   </div>`;
@@ -43,11 +43,12 @@ function renderAgentCards(d) {
   $("agent-grid").innerHTML = d.per_agent_24h.map((a) => {
     const lvl = a.error_runs_24h > 0 ? "warn" : "ok";
     return statCard(
-      a.agent,
+      a.agent || "?",
       `${a.runs_24h} run${a.runs_24h === 1 ? "" : "s"}`,
       `$${a.cost_24h.toFixed(4)} &middot; last wake ${a.last_wake ? esc(fmtAgo(a.last_wake)) : "&ndash;"}` +
       (a.error_runs_24h ? ` &middot; <strong>${a.error_runs_24h} error</strong>` : ""),
-      lvl
+      lvl,
+      a.agent ? `fleet.html#agent-${encodeURIComponent(a.agent)}` : null
     );
   }).join("");
 }

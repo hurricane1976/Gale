@@ -188,6 +188,16 @@ panel.addEventListener("click", (e) => { if (e.target.closest(".dd-close")) clos
 backdrop.addEventListener("click", closeDrilldown);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && panel.classList.contains("open")) closeDrilldown(); });
 
+/* deep link: fleet.html#agent-<name> opens that agent's panel on load. */
+async function openFromHash() {
+  const m = (location.hash || "").match(/^#agent-(.+)$/i);
+  if (!m) return;
+  await getData();
+  const name = decodeURIComponent(m[1]);
+  if (findAgent(name)) openDrilldown(name);
+}
+openFromHash();
+
 async function tryOpen(name) {
   openDrilldown(name);
 }
