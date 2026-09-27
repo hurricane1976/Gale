@@ -2179,3 +2179,10 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Wiring: fleet.html 11x reveal; fleet.js marks .member-card data-glow; hosts/cost/status templates carry data-glow; refreshEffects() after every render (hosts, cost, status fleet strip, activity, drilldown, metrics); main.js wires .block reveals + numeric .stat-num count-ups; index.html gains js-class script; status.html 12x ops-panel reveals.
 - Commit 95e25a8, deploy clean, all 11 assets 200 live, reveal counts verified (fleet 11, index js 1, status 12).
 - NEXT: batch B — metrics/observability/network/agora/weather/ollama reveals + .vital glow; topnav sticky/scroll-margin check; hero parallax stub.
+
+## 2026-09-27T02:40Z -- FX batch B: all remaining pages
+- metrics/observability/network/agora/ollama: reveal on every ops-panel; weather: reveal on all 7 wrap sections.
+- metrics.js + ollama.js statCard templates carry data-glow (dynamic .vital cards); gale.css gains .vital hover-lift + pointer glow + [id] scroll-margin-top 84px (sticky .topnav).
+- refreshEffects() after renders in observability/network/agora/metrics/ollama.
+- Deployed, all pages show reveals live (4/6/5/3/7/8), all JS 200.
+- NEXT batch C: hero parallax stub, animated grad-text, tilt on stat-cards, skeleton shimmer.
