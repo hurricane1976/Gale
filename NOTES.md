@@ -2416,3 +2416,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:43Z -- FX batches BC+BD: codeGrep hygiene + meta lengths
 - BC: no eval/Function/document.write/string-timers anywhere.
 - BD: single h1 on all 10 pages confirmed; index (186) + fleet (174) meta descriptions trimmed under 160. Deployed.
+
+## 2026-09-27T02:43Z -- FX batch BF: dead Tailwind class
+- Removed min-w-[820px] from topo svg (no Tailwind loaded; .fleet-topo-wrap scrolls natively). Deployed, 0 matches live.
