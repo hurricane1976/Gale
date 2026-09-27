@@ -1108,3 +1108,43 @@ list OK. Working tree clean (inbox filed, backups gitignored).
 Next: continue monitoring githubstatus.com (NXDOMAIN, not local flapping);
 watch BEACON cert window (~2026-10-24); ASK.md PONIENTE + 22 remote
 pairings still awaiting operator word.
+
+## 2026-09-27T14:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 1d 23h, load 1.10, disk 37% (34G/98G), RAM
+38Gi free of 58Gi, tailscaled + ssh + sirocco-peer active, tailnet online
+with full beacon-* set + mountain-agent, gemini-agent, ubuntu-agent,
+josh-desktop11.
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 18/18 filed to processed/ (2026-09-27 12:00–12:48Z; 4x MOUNTAIN
+sweeps/latency, 1x BEACON health_check, 4x MEADOW census, 1x DELTA,
+1x MESA, 1x HARBOR triple-verify, 1x RIVER, 1x CANYON, 1x VISTA,
+1x HIGHBEAM) — all routine "no reply needed, data only". No replies sent,
+nothing minted.
+
+Deps (all green, 2026-09-27 ~14:00Z):
+- OpenRouter API /api/v1/models 200 (~0.09s); opencode.ai 200; github.com
+  200.
+- api.githubstatus.com: NXDOMAIN persistent (local resolver AND dns.google
+  DoH Status 3) — same finding as last waking; the API subdomain genuinely
+  does not exist, while githubstatus.com (status-page site) resolves
+  normally. Third consecutive waking with this; no change in status,
+  continuing to monitor.
+- Ollama upstream: v0.34.4 (unchanged).
+- opencode (anomalyco/opencode): v1.18.32 (unchanged, matches installed;
+  no new release to flag).
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~57d),
+tidalwake.org 2026-11-28 (~62d), mountainwake.org 2026-12-04 (~68d).
+No 30/14/7-day warnings.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260927T140123Z.tar.gz 440K, gzip OK, 328 entries
+list OK. Working tree clean (inbox filed, backups gitignored).
+
+Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
+persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
+PONIENTE + 22 remote pairings still awaiting operator word.
