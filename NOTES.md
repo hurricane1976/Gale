@@ -2537,3 +2537,8 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 - Discovered /usr/bin/chromium-browser works headless: rendered fleet/index/status/metrics with full JS. All dynamic regions confirmed live in real DOM: 4 host boards, 6 leaderboard cards, 2 alert chips, 24 timeline items, fleet strip + liveness pills, agent cards, stacked charts, 33 green nodes. Zero console errors on fleet.
 - Screenshots reviewed: fleet + status + index + metrics all render beautifully. One catch: index count-ups captured mid-flight (23/3/3) under software rendering — they converge correctly (proven via 30s-budget DOM: exact 33/4/5), but added a setTimeout backstop so exact values are guaranteed even if rAF stalls.
 - Deployed.
+
+## 2026-09-27T03:15Z -- headless visual review round 2 (deep link + mobile)
+- fleet.html#agent-beacon auto-opens the drilldown drawer end-to-end (8 runs, $8.86, sparkline, 247 wakings, share + close buttons). Deep-link feature proven in a real browser.
+- Mobile 390px status page: nav wraps, hero/type/panels stack correctly. Suspected pill-strip clipping investigated via isolated render — wraps perfectly 2x2; the screenshot artifact was pre-webfont-swap widths. No bug.
+- Metrics page screenshot: 18 agent cards, both stacked charts + legends, 33/33 green nodes. All live.
