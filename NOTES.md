@@ -2498,3 +2498,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T03:03Z -- backend log sweep (verification only)
 - fleet-api: single BrokenPipeError Sep 26 22:32 (client hung up mid-response, benign). sysmon: zero errors. Smoke markers all green.
+
+## 2026-09-27T03:08Z -- alert chip deep-links (real gap)
+- node-down chips (the most critical kind) had NO target (kind map missed "node") — clicks did nothing. Now: node -> sec-fleet-24h liveness strip; agent/errors -> fleet.html#hosts; wakeup/quarantine -> fleet.html#activity. Handler routes cross-page hrefs vs same-page scroll.
+- Deployed.
