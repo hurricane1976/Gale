@@ -200,7 +200,6 @@ async function loadAll(soft) {
     $("wx-error").hidden = true;
   } catch (e) {
     showError("Weather fetch failed (" + e.message + "). Check connection — retrying automatically.");
-    if (!soft) throw e;
   }
 }
 
