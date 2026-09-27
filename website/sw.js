@@ -132,9 +132,13 @@ self.addEventListener("message", (event) => {
   if (event.data === "gale:clear-badge" && self.navigator && self.navigator.clearAppBadge) {
     try { self.navigator.clearAppBadge(); } catch {}
   }
-  // version handshake so the page can verify the ACTIVE sw has push support
+  // version handshake so the page can verify the ACTIVE sw has push support.
+  // (self.PushManager doesn't exist in worker scope and the SW global has no
+  // "push" property -- the honest check is feature-detection on the
+  // ServiceWorkerGlobalScope: PushEvent constructor presence, which every
+  // push-capable browser defines and old ones don't.)
   if (event.data === "gale:ping" && event.source) {
     event.source.postMessage({ type: "gale:pong", version: CACHE_VERSION,
-      push: typeof self.PushManager !== "undefined" || "push" in self.registration });
+      push: typeof PushEvent !== "undefined" });
   }
 });
