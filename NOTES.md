@@ -2356,3 +2356,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:40Z -- FX batch AI: table scroll wrappers + html audits
 - All 17 ops tables (10 status incl. 2 dynamic templates, 3 network, 1 observability, 1 ollama, +models) wrapped in .table-scroll (overflow-x auto, 520px floor). Verified balance on all touched pages; the one observability imbalance traced to a literal `<ts>` in docs (pre-existing) — escaped it.
 - Deployed.
+
+## 2026-09-27T02:38Z -- FX batches AJ+AK: tag scan + reduced-motion scroll
+- AJ: literal-tag whitelist scan across all pages — clean (the <ts> was the only one).
+- AK: the only two JS smooth-scrolls (status alert-chip jump, ollama chat thread) now respect REDUCED. All pages lang="en" confirmed.
+- Deployed.
