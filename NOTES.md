@@ -2492,3 +2492,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T03:01Z -- capstone: esc() null-safe by construction
 - Root-fixed tonight's whole null-safety theme: esc(null/undefined) no longer throws (coerces via ?? + String; esc(0)==="0" preserved). Verified 6/6 unit + full render suite green. Earlier per-callsite fallbacks now redundant but harmless.
+
+## 2026-09-27T03:05Z -- icons from access-log evidence
+- Access log showed 54 favicon/apple-touch-icon 404s from an iPhone on the LAN. Generated matching icon set via PIL (dark rounded badge + red bars, same design as inline SVG favicon): favicon.ico (multi-size, 2.2KB) + 2x180px PNGs. deploy.sh now copies root icons. All 200 with correct MIME.
