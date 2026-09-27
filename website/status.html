@@ -101,19 +101,19 @@
 
       <section class="reveal ops-panel" aria-labelledby="h-net">
         <h2 id="h-net" class="panel-title">Network interfaces</h2>
-        <table class="ops-table" id="net-table">
+        <div class="table-scroll"><table class="ops-table" id="net-table">
           <thead><tr><th>Interface</th><th>Address</th><th>Rx</th><th>Tx</th><th>Total</th></tr></thead>
           <tbody></tbody>
-        </table>
+        </table></div>
         <p class="mini-note" id="tailscale-line"></p>
       </section>
 
       <section class="reveal ops-panel" id="sec-services" aria-labelledby="h-services">
         <h2 id="h-services" class="panel-title">Services</h2>
-        <table class="ops-table" id="services-table">
+        <div class="table-scroll"><table class="ops-table" id="services-table">
           <thead><tr><th>Unit</th><th>State</th><th>Active since</th></tr></thead>
           <tbody></tbody>
-        </table>
+        </table></div>
       </section>
 
       <section class="reveal ops-panel" id="sec-security" aria-labelledby="h-security">
@@ -123,10 +123,10 @@
 
       <section class="reveal ops-panel" aria-labelledby="h-ports">
         <h2 id="h-ports" class="panel-title">Listening ports</h2>
-        <table class="ops-table" id="ports-table">
+        <div class="table-scroll"><table class="ops-table" id="ports-table">
           <thead><tr><th>Port</th><th>Process</th><th>Fleet role</th><th>Address</th></tr></thead>
           <tbody></tbody>
-        </table>
+        </table></div>
         <button class="mini-toggle" id="ports-toggle" type="button" hidden></button>
       </section>
 
@@ -145,19 +145,19 @@
             <div>
               <h3 class="fw-subtitle">Loaded models (<span id="ollama-loaded-count">0</span>)</h3>
               <div class="fw-table-scroll">
-                <table class="ops-table" id="ollama-loaded-table">
+                <div class="table-scroll"><table class="ops-table" id="ollama-loaded-table">
                   <thead><tr><th>Model</th><th>Params</th><th>Quant</th><th>VRAM</th><th>Context</th><th>Unloads in</th></tr></thead>
                   <tbody></tbody>
-                </table>
+                </table></div>
               </div>
             </div>
             <div>
               <h3 class="fw-subtitle">Model inventory (<span id="ollama-inv-count">0</span>)</h3>
               <div class="fw-table-scroll">
-                <table class="ops-table" id="ollama-inv-table">
+                <div class="table-scroll"><table class="ops-table" id="ollama-inv-table">
                   <thead><tr><th>Model</th><th>Params</th><th>Quant</th><th>Size</th><th>Capabilities</th></tr></thead>
                   <tbody></tbody>
-                </table>
+                </table></div>
               </div>
             </div>
           </div>
@@ -181,19 +181,19 @@
               <h3 class="fw-subtitle">Devices (<span id="fw-device-count">0</span> online / <span id="fw-device-total">0</span>)</h3>
               <input type="search" id="fw-device-search" class="fw-search" placeholder="Filter by name, IP, or MAC&hellip;" aria-label="Filter devices by name, IP, or MAC" />
               <div class="fw-table-scroll">
-                <table class="ops-table" id="fw-devices-table">
+                <div class="table-scroll"><table class="ops-table" id="fw-devices-table">
                   <thead><tr><th>Device</th><th>IP</th><th>Status</th><th></th></tr></thead>
                   <tbody></tbody>
-                </table>
+                </table></div>
               </div>
             </div>
             <div>
               <h3 class="fw-subtitle">Rules (<span id="fw-rule-count">0</span>)</h3>
               <div class="fw-table-scroll">
-                <table class="ops-table" id="fw-rules-table">
+                <div class="table-scroll"><table class="ops-table" id="fw-rules-table">
                   <thead><tr><th>Target</th><th>Scope</th><th>Status</th><th></th></tr></thead>
                   <tbody></tbody>
-                </table>
+                </table></div>
               </div>
             </div>
           </div>
@@ -205,10 +205,10 @@
           <div class="vitals-grid" id="fw-live-vitals"></div>
           <h4 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers (last 2h)</h4>
           <div class="fw-table-scroll">
-            <table class="ops-table" id="fw-talkers-table">
+            <div class="table-scroll"><table class="ops-table" id="fw-talkers-table">
               <thead><tr><th>Device</th><th>Traffic</th><th></th></tr></thead>
               <tbody></tbody>
-            </table>
+            </table></div>
           </div>
           <p class="mini-note" id="fw-live-note"></p>
         </div>
@@ -219,19 +219,19 @@
             <div>
               <h4 class="fw-subtitle" style="font-size:0.85rem">VPN profiles on the box (<span id="fw-vpn-online">0</span> online / <span id="fw-vpn-total">0</span>)</h4>
               <div class="fw-table-scroll">
-                <table class="ops-table" id="fw-vpn-table">
+                <div class="table-scroll"><table class="ops-table" id="fw-vpn-table">
                   <thead><tr><th>Profile</th><th>Type</th><th>Session</th><th>IP</th><th>Traffic 24h</th></tr></thead>
                   <tbody></tbody>
-                </table>
+                </table></div>
               </div>
             </div>
             <div>
               <h4 class="fw-subtitle" style="font-size:0.85rem">VPN tunnel activity (24h, common ports 51820/1194)</h4>
               <div class="fw-table-scroll">
-                <table class="ops-table" id="fw-tunnel-table">
+                <div class="table-scroll"><table class="ops-table" id="fw-tunnel-table">
                   <thead><tr><th>Device</th><th>Direction</th><th>Proto</th><th>Flows</th><th>Bytes</th><th>Last seen</th></tr></thead>
                   <tbody></tbody>
-                </table>
+                </table></div>
               </div>
             </div>
           </div>

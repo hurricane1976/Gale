@@ -236,14 +236,14 @@ function renderFullHosts(list) {
       <div class="full-host-sub">
         <div>
           <h3 class="fw-subtitle">Network</h3>
-          <table class="ops-table"><thead><tr><th>Interface</th><th>Address</th><th>Rx</th><th>Tx</th></tr></thead><tbody>${netRows}</tbody></table>
+          <div class="table-scroll"><table class="ops-table"><thead><tr><th>Interface</th><th>Address</th><th>Rx</th><th>Tx</th></tr></thead><tbody>${netRows}</tbody></table></div>
         </div>
         <div>
           <h3 class="fw-subtitle">Services &amp; security</h3>
-          <table class="ops-table"><tbody>
+          <div class="table-scroll"><table class="ops-table"><tbody>
             ${svcRows}
             ${secLines.map(([k, v, warn]) => `<tr><td>${esc(k)}</td><td><span class="pill" data-level="${warn ? "warn" : "ok"}">${esc(v)}</span></td></tr>`).join("")}
-          </tbody></table>
+          </tbody></table></div>
         </div>
       </div>
     </div>`;

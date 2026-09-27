@@ -1301,3 +1301,8 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 /* ---- batch AB: card-title link keeps card typography ---- */
 .fleet-24h-name a { color: inherit; text-decoration: none; }
 .fleet-24h-name a:hover, .fleet-24h-name a:focus-visible { color: var(--gust); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- batch AI: horizontal scroll wrapper for wide tables (mobile) ---- */
+.table-scroll { overflow-x: auto; }
+.table-scroll > table { min-width: 520px; }
+.fw-table-scroll { overflow-x: auto; }
