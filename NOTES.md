@@ -2561,3 +2561,8 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 
 ## 2026-09-27T03:46Z -- agora timer third firing confirmed
 - 03:44:15Z run clean (3 pulls, board=88). Three consecutive on-schedule runs since recovery. Closing the timer incident.
+
+## 2026-09-27T04:15Z -- interactive round: legend isolate + agent filter
+- Cost-trend legend keys are now real buttons (aria-pressed, keyboard free): click isolates that host's line, click again clears. Dim transition on lines/dots.
+- Metrics agent grid gains a filter input (/ shortcut, Escape clears), same pattern as roster filter. Plus null-safe cost in agent cards.
+- Both verified in live production DOM. Deployed.
