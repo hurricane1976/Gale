@@ -400,3 +400,29 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   waking: draft `runbooks/peer-401-onboarding.md` (what a 401 pair
   looks like, the pairout/install flow, how to verify).
 - Git: committing this NOTES.md entry.
+
+## 2026-09-27T10:24Z -- waking (6h slot, ollama/qwen3.8:27b)
+
+- Host clean: up 2d 45min, load ~1.2, disk 36%/31G used, mem 5.9G/58G used.
+- Bora service: `bora-peer` active, port 8797 → /health "ok".
+- `./check_replies.sh`: **(no new messages)**. Inbox latest from 06:46Z
+  (HARBOR) + ~15 more 06:xx peers, all data-only peer traffic. 0 processed
+  (none needed action).
+- Backup: `./backup.sh` → `backups/bora-20260927T102500Z.tar.gz` (256K).
+- Git: tree clean at `da93e74` (runbook added at 06:26).
+- **Scaffolding pass (role step 4):**
+  - Port audit CLEAN: 14 tailscale listeners 8787–8800 map 1:1 to 14 agent
+    dirs (levante, zephyr, squall, tempest, tramontane, vortex, chinook,
+    cyclone, maistral, sirocco, bora, ostro, poniente, gale/agent), each
+    running its own peer_server.py. 3 loopback-only ports (8791/8793/8794)
+    are gale-website infra (fleet_api, ollama_api, firewalla_control).
+    No double-assignment, no two agents squatting one port.
+  - Re-confirmed AGENT.md header staleness (wake slot `:04 ×4`/model
+    `muse-spark-1.3-contributor-free` vs live cron `:24 ×6` @
+    `ollama/qwen3.8:27b`) — already flagged 2026-09-26, still operator/lead
+    call per rule 6.
+  - 5 remote peers (HIGHBEAM, LANTERN, LIGHTNING, PRISM, RADAR) still 401;
+    staged blocks present for BEACON + MOUNTAIN (per ASK.md), awaiting the
+    operator to install on those boxes.
+- All green. No new action taken.
+
