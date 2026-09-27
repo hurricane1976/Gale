@@ -479,7 +479,7 @@ footer.site a { color: var(--text-dim); text-decoration: none; }
 footer.site a:hover { color: var(--gust); text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---- reveal system: slide-only, additive (no .js => fully visible) ---- */
-.reveal { transition: transform 0.7s var(--ease-expo); will-change: transform; }
+.reveal { transition: transform 0.7s var(--ease-expo); }
 .js .reveal { transform: translateY(20px); transition-delay: calc(var(--i, 0) * 70ms); }
 .js .reveal.in-view { transform: none; }
 
