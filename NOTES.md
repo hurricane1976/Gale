@@ -2204,3 +2204,10 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - og:type/site_name/title/description on all 9 pages; theme-color added to index (#05070d storm black).
 - Commit + deploy clean, 4 og: tags verified live on every page.
 - NEXT batch F: weight audit, favicon parity, branded 404, robots.txt.
+
+## 2026-09-27T04:15Z -- FX batch F: performance + hygiene
+- gzip: nginx.conf had gzip_types commented out — only text/html compressed. Enabled text/css, application/javascript, image/svg+xml (+backup of nginx.conf). gale.css 87,827->23,211B (74% smaller), shared.js 17,737->6,848, fleet-tidal 37,727->10,928.
+- index.html gains the inline-SVG favicon (parity with other 8 pages).
+- New website/404.html (storm-themed, grad-text hero, nav chips, boots shared.js for canvas) + `error_page 404 /404.html` in sites-enabled/gale. Verified: missing URL -> 404 status + branded body (first test raced the reload; reloaded and re-verified).
+- New website/robots.txt (Disallow: / — tailnet-only dashboards) + deploy.sh copies it (was html/css/js/assets only).
+- NEXT batch G: ideas — stale-content audit (model-family mismatch index vs fleet?), dead CSS sweep, JS size diet.
