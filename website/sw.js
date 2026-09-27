@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v1";
+const CACHE_VERSION = "gale-v2";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -131,5 +131,10 @@ self.addEventListener("notificationclick", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data === "gale:clear-badge" && self.navigator && self.navigator.clearAppBadge) {
     try { self.navigator.clearAppBadge(); } catch {}
+  }
+  // version handshake so the page can verify the ACTIVE sw has push support
+  if (event.data === "gale:ping" && event.source) {
+    event.source.postMessage({ type: "gale:pong", version: CACHE_VERSION,
+      push: typeof self.PushManager !== "undefined" || "push" in self.registration });
   }
 });

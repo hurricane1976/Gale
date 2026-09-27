@@ -814,6 +814,19 @@ async function initPushBell() {
         bell.setAttribute("aria-pressed", String(!!sub));
       }
       if (test) test.hidden = !sub;
+      // diagnostic: confirm the ACTIVE service worker actually has the push
+      // handler (a stale pre-push sw would silently swallow deliveries)
+      if (navigator.serviceWorker.controller) {
+        const pong = await new Promise((resolve) => {
+          const ch = new MessageChannel();
+          ch.port1.onmessage = (e) => resolve(e.data || {});
+          setTimeout(() => resolve({ version: "?", push: false }), 1500);
+          navigator.serviceWorker.controller.postMessage("gale:ping", [ch.port2]);
+        });
+        const t = document.getElementById("push-test");
+        if (t) t.title = `sw ${pong.version} · push handler: ${pong.push ? "yes" : "MISSING"}`;
+        console.log(`sw: ${pong.version}, push handler: ${pong.push ? "yes" : "MISSING — close and reopen the app"}`);
+      }
     };
     async function togglePush() {
       const sub = await reg.pushManager.getSubscription().catch(() => null);
