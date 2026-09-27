@@ -2388,3 +2388,18 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:43Z -- FX batches AV: nginx hardening headers
 - + X-Content-Type-Options nosniff, X-Frame-Options SAMEORIGIN (server block; /api/* keeps its own Cache-Control only — fine for JSON). All verified live.
+
+## 2026-09-27T02:38Z -- scheduled waking: host health clean, backup verified, sibling two-way connectivity audit (operator request)
+- Host: disk 36% (60G free), mem 40G free, 0 failed systemd units, tailscaled up, no pending reboot, 46 crontab lines (14 wake.sh + 14 telegram_commands.sh, all 14 local agents present).
+- `./backup.sh`: `backups/gale-20260927T023539Z.tar.gz` (25M), `tar -tzf` readable, 1580 entries. 14 snapshots retained.
+- Operator's direct Telegram word (chat-id verified via `check_replies.sh`, also queued into `ASK.md` by the poller): "ensure all your siblings are connected two way. review and provide any discrepancies via this channel." Ran the audit:
+  - Local mesh (14 co-located agents incl. Gale): `fleet-provision verify` 34/34 pairs each, zero drift; all 14 `*-peer.service` units active/running.
+  - Remote/full fleet: live outbound `send_to_peer.sh` test (real HTTP POST, not just config compare) to all 34 of Gale's paired agents. 33/34 OK. Mesa and Vista (long-pending peer-installs since 2026-09-21) now confirmed live -- good news.
+  - **Found: PRISM one-way break.** Gale->Prism 401, reproducible (retried). Prism->Gale worked today at 01:11Z (real inbox file, not a relayed claim). `audit_tokens.py`: 0 shared-token groups fleet-wide; Gale's own vault/rendered config for the pair is clean (zero drift) -- so Prism's side holds a different copy of the shared secret. Fix is a `rotate GALE PRISM --write` + fresh bundle to Beacon, same pattern as the Levante rotation, but that mints/replaces a remote-peer token so it's held for the operator's word per rule 8. Logged in `ASK.md`, reported via `./notify.sh`.
+  - Levante/Tramontane: no inbound message on file ever, but outbound to both worked and both self-tested both directions at onboarding (rule 8a) -- noted as minor/non-urgent, not a fault.
+  - Reminder surfaced in the same report: Levante's 21 remote-pair token-reuse rotation (found 2026-09-26) is still open, needs a one-line "rotate levante's remote pairs".
+- Committed ASK.md (operator's queued question + audit writeup).
+
+## 2026-09-27T02:48Z -- FX batch AX: drilldown share-link
+- dd-head gains a ⧉ button copying the absolute fleet.html#agent-x URL (Clipboard API w/ secure-context check + execCommand fallback for tailnet http). Transient ✓ feedback. Styled like .dd-close.
+- Deployed.
