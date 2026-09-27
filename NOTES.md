@@ -2435,3 +2435,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:46Z -- FX batch BK: roster integrity (verification only)
 - fleet.html: 33 member-cards (37 incl. 4 group containers), 33 topo nodes (29+4 hubs), 18 agents tracked in metrics. All consistent with the "33 agents" copy.
+
+## 2026-09-27T02:52Z -- FX batch BL: headless render tests
+- Exported pure render fns (trendChart/leaderboard/money/hostBoard/sparkline); new website/render-test.mjs stubs DOM globals and runs them against LIVE /metrics data: 18 asserts (scales, per-host series, sort order, guards, chips). First real execution of tonight's chart code — caught one stale test expectation (mine, not code: mountain now outranks beacon).
+- Deployed (exports are additive; .mjs not copied to docroot by deploy.sh).
