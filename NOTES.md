@@ -2186,3 +2186,10 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - refreshEffects() after renders in observability/network/agora/metrics/ollama.
 - Deployed, all pages show reveals live (4/6/5/3/7/8), all JS 200.
 - NEXT batch C: hero parallax stub, animated grad-text, tilt on stat-cards, skeleton shimmer.
+
+## 2026-09-27T03:05Z -- FX batch C: parallax, tilt, shimmer
+- shared.js: implemented the dead `hero scene parallax` stub — .blob/.bolt/.glow layers drift at staggered scroll rates (rAF-throttled, transform-only, reduced-motion off, idle past 1.5 viewports). Wired into boot().
+- main.js: .stat-card gains tilt (drives existing pointer-tilt path, zero engine change).
+- fleet-tidal.css: .hosts-wait skeleton shimmer (subtle tide-tinted sweep, reduced-motion off).
+- Commit + deploy clean, shared.js/main.js/fleet-tidal.css all 200 live.
+- NEXT batch D: sparkline draw-in animation, page-load fade, ops-table row hovers.
