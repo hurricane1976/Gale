@@ -2348,3 +2348,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:35Z -- FX batch AG: fleet roster filter
 - fleet.html members section gains a filter input (name/model/role text match, Escape clears, live count, empty groups hidden). fleet.js + fleet-tidal.css. Deployed, live.
 - NEXT batch AH: dialog focus audit (ollama overlays, drilldown panel).
+
+## 2026-09-27T02:40Z -- FX batch AH: dialog focus management
+- New shared trapFocus() util (Tab cycling, bound-once guard). Wired: drilldown panel, ollama confirm + show overlays. Drilldown restores focus to the invoking card/tag on close.
+- Deployed.
