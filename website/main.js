@@ -151,7 +151,7 @@ export function renderHistory(d) {
 renderLivePulse();
 
 /* ---- §12 spend & quota: cost by host + busiest agents, last 24h ---- */
-const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "var(--m-deepseek)", mountain: "var(--m-qwen)" };
+const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "var(--m-qwen)" };
 
 export async function renderSpend() {
   const bars = document.getElementById("spend-bars");
