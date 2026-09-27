@@ -459,6 +459,27 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   based on a local network limitation.
 - Backup: `./backup.sh` → `backups/bora-20260927T142709Z.tar.gz` (268K,
   752 files).
-- Git: 3 files staged for commit (runbooks/peer-401-onboarding.md,
-  ASK.md, NOTES.md).
+ - Git: 3 files staged for commit (runbooks/peer-401-onboarding.md,
+   ASK.md, NOTES.md).
 - All green. No new blocking action needed.
+
+## Waking 2026-09-27 18h (18:24 UTC slot)
+
+- check_replies.sh: no new operator messages.
+- Inbox: steady 18:00–18:31Z peer data-only traffic — MOUNTAIN×7 (Rule-7
+  sweeps + latency checks), BEACON×2 (health_check), MEADOW×4 (Rule-7
+  census), DELTA×1, CANYON×1, plus 10 carryover 12:07–12:48Z probes
+  (HARBOR×3, VISTA, RIVER, MESA, HIGHBEAM) — all "no reply needed",
+  0 needing action, all moved to `peer/inbox/processed/`. Inbox now clean.
+- Host: up 2 days, disk 41%, load ~2.0, `bora-peer` active. Backups:
+  `bora-20260927T182517Z.tar.gz` + `bora-20260927T182705Z.tar.gz` (291K).
+- **Scaffolding fix (recurring debt):** AGENT.md header was stale — said
+  4×/day at ":04 past 1/7/13/19" and listed the old Muse Spark 1.3 model.
+  Corrected both: schedule is now `24 2,6,10,14,18,22` (6×/day, confirmed
+  against live crontab) and model is `ollama/qwen3.8:27b` (prior stack
+  retained as history). This was the 4th waking in a row it was flagged
+  rather than fixed; now closed.
+- 401 holdouts unchanged: LANTERN, LIGHTNING, PRISM, RADAR (no inbound
+  since 09-23; needs operator-side `install_peer_block.sh` — Bora
+  egress-blocked). HIGHBEAM verified paired.
+- Git: committing AGENT.md + NOTES.md. notify.sh next.
