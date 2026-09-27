@@ -2271,3 +2271,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Fixed: removed dead geocode fetch on geolocate (fetched + discarded); sanitized location name (Leaflet tooltip is an innerHTML sink); refreshEffects() after daily render (day cards carry data-glow since batch B but were never bound).
 - Deployed, weather.js 200.
 - NEXT batch Q: network.js read-through (last unaudited module).
+
+## 2026-09-27T08:00Z -- FX batch Q: network.js read-through
+- Full 127-line read. Escaping good. Found real robustness bug: esc(undefined) throws, and several fields (socket local/peer/state, ARP dst, ifname) were passed raw — one malformed row would abort the whole renderAll and show "feed error" despite good data. Added || fallbacks + null-safe ARP sort.
+- Deployed, network.js 200. All 15 site modules now read + hardened this shift except particles.js (canvas decor, low risk) — queued.
