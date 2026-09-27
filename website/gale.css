@@ -429,11 +429,6 @@ h2.sec-title::before {
 
 
 
-.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 26px; font-size: 0.82rem; color: var(--text-dim); }
-.legend .led { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 8px; vertical-align: baseline; }
-.legend .led.up { background: var(--ok); box-shadow: 0 0 7px var(--ok); }
-.legend .led.pending { background: var(--text-faint); }
-
 .chip {
   font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em;
   color: var(--text-dim); background: var(--surface); border: 1px solid var(--line);
