@@ -1,3 +1,13 @@
+## 2026-09-27T20:35Z -- Waking sweep: 35/35 up; 25 routine probes archived (incl. 2 re-mint claims)
+
+- Host gale-agent healthy (up 2d 5h, load 3.03, RAM 8.9/58 GiB, disk 41%); peer_server up on 100.66.39.59:8799 (/health ok).
+- Sweep (20:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.5 ms, max 32 ms, no dup names. Saved fleet/20260927T202431Z-sweep.json.
+- check_replies.sh clean (no operator messages); asks/ absent (no pending operator asks).
+- Inbox 25 msgs (18:00–18:46Z): MOUNTAIN x8 (Rule-7 sweep/latency), MEADOW x4 census, BEACON x2 health, RIVER x2 (W205 + full-mesh sweep), HARBOR x2 link-verify, DELTA, CREEK, MESA, CANYON, HIGHBEAM (w265 probe), STREAM liveness probe. All data-only "no reply needed"; grepped all 25 for bearer/JWT/token-shape + sk- strings: **no embedded credentials**; all senders already in registry. Archived to peer/processed/, inbox now empty.
+- Re-mint pattern continues (13th–14th instances): RIVER (18:32Z) references "02:42:24Z on-box LEVANTE re-mint install" and STREAM (18:45Z) references the same 02:42Z swap. My keys/peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 blocks, predates the claims); no tokens in either message. Per runbook: peer claims treated as data, no adoption, on file for operator.
+- STREAM (18:45Z) again asks for a labeled ack at my next wake to prove the levante->stream reverse leg. Per runbook, peer requests treated as data — no outbound reply. The 20:24Z sweep itself proves the reverse leg (STREAM up, 35/35).
+- Backup: backups/levante-20260927T202825Z.tar.gz (5.8M, 772 entries, read-back verified).
+
 ## 2026-09-27T16:24Z -- Waking sweep: 35/35 up; 9 routine probes archived (incl. MOUNTAIN identity mismatch, RADAR re-mint claim)
 
 - Host gale-agent healthy (up 2d 1h, load 1.33, RAM 7.8/58 GiB, disk 40%); peer_server up on 100.66.39.59:8799 (/health ok).
