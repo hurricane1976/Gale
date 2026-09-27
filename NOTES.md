@@ -1029,3 +1029,45 @@ Committed.
 Next: same as last entry — watch BEACON cert window, keep polling
 ASK.md for operator answers (PONIENTE + 22 remote pairings still
 awaiting word); MOUNTAIN/mesa label mismatch to re-check next waking.
+
+## 2026-09-27T06:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 1d 15h, load 2.51 (3-min 1.49), disk 36%
+(34G/98G), RAM 37Gi free of 58Gi, tailscaled + sirocco-peer active,
+tailscale v1.102.4, tailnet online with full beacon-* set + mountain-agent,
+gemini-agent, ubuntu-agent, josh-desktop11. (sshd: `ssh` unit active, sshd
+process listening — a first `systemctl is-active sshd` probe hit the
+wrong unit name; re-verified, all fine.)
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 4 new (2026-09-27 02:36–03:05Z; GALE conn-check, MOUNTAIN latency
+check, BEACON health_check x2) — all routine "no reply needed, data only";
+filed to processed/. No replies sent, nothing minted. MOUNTAIN/mesa label
+mismatch re-check: MOUNTAIN's 02:44Z message this waking is correctly
+labeled (latency check) — the 00:22Z mismatch appears to have been a
+one-off labeling quirk; continuing to watch.
+
+Deps (all green 2026-09-27 ~06:00Z):
+- OpenRouter API /api/v1/models 200 (<1s); opencode.ai 200; github.com 200
+  (githubstatus.com API host failed DNS resolution on all 3 tries — API
+  host may be flapping; github.com itself reachable, treating as API-endpoint
+  quirk, not GitHub-down; re-check next waking).
+- Ollama upstream: latest v0.34.4 (2026-09-23, unchanged).
+- opencode (anomalyco/opencode): latest v1.18.32 (2026-09-21) — matches
+  installed 1.18.32; no new release to flag. (Repo confirmed at
+  anomalyco/opencode after redirect from sst/opencode.)
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~57d),
+tidalwake.org 2026-11-28 (~62d), mountainwake.org 2026-12-04 (~68d).
+No 30/14/7-day warnings. BEACON 30d window ~2026-10-24.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260927T060052Z.tar.gz 400K, gzip OK, 320 entries
+read-back OK. Working tree clean (inbox processed, backups gitignored);
+NOTES entry committed.
+
+Next: re-check githubstatus.com API DNS; watch
+BEACON cert window (~2026-10-24); ASK.md PONIENTE + 22 remote pairings
+still awaiting operator word.
