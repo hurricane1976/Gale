@@ -844,6 +844,15 @@ async function initPushBell() {
           t.textContent = `test (sw ${pong.version} ${pong.push ? "✓" : "✗ no push handler"})`;
         }
         console.log(`sw: ${pong.version}, push handler: ${pong.push ? "yes" : "MISSING — close and reopen the app"}`);
+        // phone-home the diagnostic (best-effort): sw state per subscription,
+        // so the server log shows exactly what each device is running
+        const sub = await reg.pushManager.getSubscription().catch(() => null);
+        if (sub) {
+          fetch("api/push/diag", { method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ endpoint_tail: sub.endpoint.slice(-24),
+              sw_version: pong.version, push_handler: pong.push }) }).catch(() => {});
+        }
       }
     };
     async function togglePush() {

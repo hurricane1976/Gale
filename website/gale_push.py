@@ -231,6 +231,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlsplit(self.path).path
+        if path == "/diag":
+            # device-side sw diagnostic from the page (best-effort, no auth
+            # beyond tailnet locality): version + push-handler flag.
+            payload = self._read_json()
+            if payload:
+                log(f"device diag: {payload}")
+            return self._send(200, {"ok": True})
         if path == "/test":
             # operator self-service: push a test notification to every
             # subscription. Global 30s throttle -- tailnet-only anyway.
