@@ -441,7 +441,7 @@ async function sendChat() {
     const r = await fetch("api/ollama/chat", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ model, messages, options: {
-        temperature: parseFloat($("chat-temp").value) || 0.7,
+        temperature: Number.isFinite(parseFloat($("chat-temp").value)) ? parseFloat($("chat-temp").value) : 0.7,
         num_predict: parseInt($("chat-numpred").value, 10) || 512,
       } }),
     });
@@ -504,9 +504,9 @@ async function loadSnap() {
     renderVitals();
     renderModels();
     if (HIST) renderLanes();
-    setFresh(SNAP.reachable ? "live" : "stale", SNAP.reachable ? `live · v${esc(SNAP.version)} · ${SNAP.latency_ms} ms` : "server unreachable");
+    setFresh(SNAP.reachable ? "live" : "stale", SNAP.reachable ? `live · v${SNAP.version} · ${SNAP.latency_ms} ms` : "server unreachable");
   } catch (e) {
-    setFresh("error", `feed error: ${esc(String(e.message || e))}`);
+    setFresh("error", `feed error: ${String(e.message || e)}`);
   }
 }
 async function loadHist() {
