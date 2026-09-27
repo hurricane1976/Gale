@@ -108,43 +108,51 @@ def vapid_auth(endpoint, pub_b64, priv_b64, subject):
 
 
 def push_one(sub, payload, vapid):
-    """Encrypt+send one JSON payload to one subscription. Returns HTTP code."""
+    """Encrypt+send one JSON payload via the reference pywebpush library.
+    (A hand-rolled RFC 8291/8292 impl produced records Apple queued with
+    201 but Safari couldn't decrypt -- push event never fired. The library
+    is the ground truth; venv at /opt/gale-push-venv.)"""
     endpoint = sub["endpoint"]
-    p256dh = b64u_dec(sub["keys"]["p256dh"])
-    auth = b64u_dec(sub["keys"]["auth"])
-
-    server_key = ec.generate_private_key(ec.SECP256R1())
-    client_pub = ec.EllipticCurvePublicKey.from_encoded_point(
-        ec.SECP256R1(), p256dh)
-    shared = server_key.exchange(ec.ECDH(), client_pub)
-    server_pub = server_key.public_key().public_bytes(
-        Encoding.X962, PublicFormat.UncompressedPoint)
-
-    salt = os.urandom(16)
-    ikm = hkdf(salt, shared, b"WebPush: info\x00" + p256dh + server_pub, 32)
-    cek = hkdf(salt, ikm, b"Content-Encoding: aes128gcm\x00", 16)
-    nonce = hkdf(salt, ikm, b"Content-Encoding: nonce\x00", 12)
-
-    ciphertext = AESGCM(cek).encrypt(nonce, payload + b"\x02", None)
-    # aes128gcm record: rs(4BE) | salt(16) | idhlen(1) | idh | ciphertext
-    record = struct.pack(">I", 4096) + salt + bytes([len(server_pub)]) + server_pub + ciphertext
-
-    headers = {
-        "Authorization": vapid_auth(endpoint, *vapid),
-        "Content-Encoding": "aes128gcm",
-        "Content-Type": "application/octet-stream",
-        "TTL": str(PUSH_TTL),
-        "Urgency": "high",
-    }
-    req = urllib.request.Request(endpoint, data=record, method="POST", headers=headers)
+    auth_header = vapid_auth(endpoint, *vapid)
+    script = (
+        "import json,sys\n"
+        "from pywebpush import webpush\n"
+        "sub = json.loads(sys.argv[1])\n"
+        "data = json.loads(sys.argv[2])\n"
+        "auth = sys.argv[3]\n"
+        "ttl = sys.argv[4]\n"
+        "resp = webpush(subscription_info=sub, data=data,\n"
+        "    vapid_claims=None if False else None,\n"
+        "    **{}) if False else None\n"
+    )
+    # call the reference library in-process; venv site-packages appended to
+    # sys.path if the system python doesn't have it
     try:
-        with urllib.request.urlopen(req, timeout=20) as r:
-            return r.status
-    except urllib.error.HTTPError as e:
-        return e.code
+        from pywebpush import webpush as _wp  # noqa: F401
+    except ImportError:
+        import glob as _glob
+        for sp in sorted(_glob.glob("/opt/gale-push-venv/lib/python3*/site-packages"), reverse=True):
+            if sp not in sys.path:
+                sys.path.insert(0, sp)
+        try:
+            from pywebpush import webpush as _wp  # noqa: F401
+        except ImportError as e:
+            log(f"pywebpush unavailable: {e}")
+            return 0
+    try:
+        resp = _wp(
+            subscription_info={"endpoint": endpoint, "keys": sub["keys"]},
+            data=payload,
+            vapid_private_key=vapid[1],
+            vapid_claims={"sub": vapid[2], "aud": "/".join(endpoint.split("/")[:3]),
+                          "exp": int(time.time()) + 12 * 3600},
+            headers={"TTL": str(PUSH_TTL), "Urgency": "high"},
+        )
+        return resp.status_code
     except Exception as e:
-        log(f"push to {endpoint[:60]}… failed: {type(e).__name__}: {e}")
-        return 0
+        code = getattr(getattr(e, "response", None), "status_code", 0)
+        log(f"push to {endpoint[:60]}… failed: {type(e).__name__}: {str(e)[:150]}")
+        return code
 
 
 def alert_fingerprint(a):
