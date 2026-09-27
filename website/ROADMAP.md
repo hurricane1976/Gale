@@ -47,7 +47,13 @@ modules, Python `http.server` backend, static multi-page HTML).
    a small signals primitive would cut wasted re-renders on high-frequency
    updates (SSE feed, live sparklines).
 10. **Lighthouse CI + axe-core gating `build.mjs`** — accessibility/perf
-    regressions fail the build instead of shipping silently.
+     regressions fail the build instead of shipping silently.
+     *(shipped 2026-09-27: `tools/audit.mjs` + `npm run audit`, wired into
+     smoke.sh; gates accessibility ≥ 0.9 (axe-core), best-practices ≥ 0.9,
+     seo ≥ 0.5 (deliberately loose — robots.txt Disallow / is by design),
+     performance ≥ 0.6; the run surfaced and fixed real color-contrast
+     failures: `--text-faint` 4.36→5.82:1, wake-copy label → `--flag-soft`
+     7.6:1.)*
 11. **HTTPS on the tailnet address (blocks item 1 from actually working)**
     — service workers only run on a "secure context" (`https://` or
     `localhost`); the site is plain `http://100.66.39.59:8090`, so the PWA
