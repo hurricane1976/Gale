@@ -2280,3 +2280,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - 11 fallback fixes across hosts/drilldown/metrics/main/observability/status: esc(undefined) throws, so any single malformed API field used to abort whole-board renders. Boards now degrade per-field.
 - Deployed all 200.
 - NEXT batch S: self-review fresh code (cost.js/hosts.js) + drilldown/activity reads.
+
+## 2026-09-27T09:00Z -- FX batch S: sparkline NaN guards
+- Self-review of fresh code: miniSpark (cost.js), sparkline (hosts.js + drilldown.js) all did Math.max(...vals) — a single NaN poisons max and blanks the whole polyline. Added Number.isFinite map guards in all three.
+- Deployed.
+- NEXT batch T: drilldown/activity remainder reads.
