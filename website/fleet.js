@@ -1,7 +1,7 @@
 /* GALE — fleet topology page (Tidal system rebuild): detail strip driven by
    data-* attributes in the markup. Static SVG does the topology; this only
    wires hover/tap/keyboard detail and the mesh status line feed. */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, REDUCED } from "./shared.js";
 
 boot();
 
@@ -85,4 +85,12 @@ refreshEffects();
   };
   q.addEventListener("input", apply);
   q.addEventListener("keydown", (e) => { if (e.key === "Escape") { q.value = ""; apply(); } });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
+        !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) {
+      e.preventDefault();
+      q.focus();
+      q.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "nearest" });
+    }
+  });
 })();
