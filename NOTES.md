@@ -2595,3 +2595,12 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 ## Sparkline visibility investigation (no bug found)
 - Status fleet sparklines appeared as dots-only in two headless screenshots. Isolated via reduced-motion shot (geometry perfect) + 45s-budget shot (all 4 lines fully drawn): the draw-in animation is correct — captures were landing mid-redraw right after 30s-poll re-renders. Same re-draw pulse as the established bar-rise pattern; accepted house behavior.
 - Testing lesson: headless screenshots need budgets clear of poll boundaries (poll interval + animation duration + margin) or animations read as broken.
+
+## MORNING BRIEF update 07:25Z — evening additions
+- DeepSeek purged per your word (GLM x15; discrepancy closed).
+- Showpiece effects live: card cascade, rotating welcome border, crit pulse, dash glow/tilt, week spend summary + biggest mover, legend isolate toggles, metrics agent filter, cross-links everywhere, drilldown share button, alert chip deep-links, roster filter with / shortcut.
+- Cost-spike alerts (new kind, warn 2x / crit 4x) live in both strips; current ratio 1.07x = quiet.
+- Icons fixed (54 iPhone 404s gone), nginx hardened, table mobile scroll, focus traps, keyboard operability, null-safe renders everywhere, esc() hardened at root.
+- Tests: smoke 51 + render 38 asserts, all green. All 10 pages screenshot-verified in real Chromium, zero console errors. Reduced-motion verified.
+- Agora timer: recovered from 36h silence, 4 consecutive clean firings observed. Pushed to GitHub (remote == local).
+- Still needs you: nothing blocking. Push policy going forward is "push" per your approval.
