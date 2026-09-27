@@ -1309,3 +1309,19 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 
 /* ---- batch BI: hidden must win over panel grid display ---- */
 .ops-board[hidden] { display: none; }
+
+/* ---- showpiece: dash-card pointer glow ---- */
+.dash-card { position: relative; overflow: clip; }
+.dash-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none; opacity: 0;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--flag) 14%, transparent), transparent 70%);
+  transition: opacity 0.35s; }
+.dash-card:hover::after { opacity: 1; }
+
+/* ---- showpiece: critical alert pulse ---- */
+@keyframes chip-crit-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 72, 44, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(232, 72, 44, 0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .alert-chip--crit { animation: chip-crit-pulse 2.2s ease-in-out infinite; } }

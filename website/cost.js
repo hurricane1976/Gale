@@ -122,17 +122,57 @@ export function leaderboard(d) {
   }).join("");
 }
 
-export function render(d) {
+export function weekSummary(d) {
+  const el = document.getElementById("cost-trend-sum");
+  if (!el) return;
+  const days = d.days || [];
+  const byHost = d.daily_cost_by_host || {};
+  const perDay = days.map((_, i) =>
+    Object.values(byHost).reduce((s, arr) => s + ((arr || [])[i] || 0), 0));
+  if (perDay.length < 2) { el.textContent = ""; return; }
+  const last7 = perDay.slice(-7).reduce((s, v) => s + v, 0);
+  const prev7 = perDay.slice(-14, -7).reduce((s, v) => s + v, 0);
+  const delta = last7 - prev7;
+  const dir = delta > 0.005 ? "up" : delta < -0.005 ? "down" : "flat";
+  const arrow = dir === "up" ? "▲" : dir === "down" ? "▼" : "▬";
+  el.innerHTML = `<span>last 7d <b>${esc(money(last7))}</b></span>` +
+    (perDay.length >= 14
+      ? `<span class="ct-delta" data-dir="${dir}">${arrow} ${esc(money(Math.abs(delta)))} vs prior week</span>`
+      : "");
+}
+
+function biggestMover(d) {
+  let best = null;
+  for (const a of d.per_agent_24h || []) {
+    const s = Array.isArray(a.daily_cost_14d) ? a.daily_cost_14d : [];
+    if (s.length < 14) continue;
+    const d7 = s.slice(-7).reduce((x, v) => x + (v || 0), 0);
+    const d0 = s.slice(-14, -7).reduce((x, v) => x + (v || 0), 0);
+    if (d0 < 0.05) continue;
+    const delta = d7 - d0;
+    if (!best || delta > best.delta) best = { agent: a.agent, delta };
+  }
+  return best && best.delta > 0.005 ? best : null;
+}
+
+function render(d) {
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
   if (lbGrid) lbGrid.innerHTML = leaderboard(d);
+  weekSummary(d);
   const stamp = d.generated_at ? ago(d.generated_at) : null;
   if (chartFresh) {
     const totals = (d.days || []).map((_, i) =>
       Object.values(d.daily_cost_by_host || {}).reduce((s, arr) => s + ((arr || [])[i] || 0), 0));
     chartFresh.textContent = stamp ? `updated ${stamp} · 14d fleet ${money(totals.reduce((s, v) => s + v, 0))}` : "";
   }
-  if (lbFresh) lbFresh.textContent = stamp ? `updated ${stamp} · top ${LEAD_N} by 24h cost` : "";
+  if (lbFresh) {
+    const mover = biggestMover(d);
+    lbFresh.textContent = stamp
+      ? `updated ${stamp} · top ${LEAD_N} by 24h cost` +
+        (mover ? ` · biggest mover: ${mover.agent} +${mover.delta < 10 ? mover.delta.toFixed(2) : Math.round(mover.delta)} vs prior week` : "")
+      : "";
+  }
   refreshEffects();
 }
 

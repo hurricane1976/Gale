@@ -107,6 +107,8 @@ t("hosts render boards", (hostsHtml.match(/host-board/g) || []).length >= 4);
 cost.render(d);
 t("cost render chart", (__els["cost-trend-chart"]?.innerHTML || "").includes("ct-svg"));
 t("cost render leaderboard", (__els["leaderboard-grid"]?.innerHTML || "").includes("lb-card"));
+t("week summary", (__els["cost-trend-sum"]?.innerHTML || "").includes("last 7d"));
+t("mover line", (__els["leaderboard-fresh"]?.textContent || "").includes("top 6"));
 
 const drilldown = await import("/home/agent/agent/website/drilldown.js");
 drilldown.render(d.per_agent_24h[2]);
