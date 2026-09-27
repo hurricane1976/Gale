@@ -21,12 +21,12 @@ function showNode(node) {
   const color = MODEL_COLOR[d.model];
   const nameStyle = color ? ` style="color:${color}"` : "";
   detail.innerHTML =
-    `<strong${nameStyle}>${esc(d.name)}</strong><span class="sep">·</span>` +
-    `<span>${esc(d.host)}</span><span class="sep">·</span>` +
-    `<span>${esc(d.model)}</span><span class="sep">·</span>` +
-    `<span>${esc(d.roleDesc)}</span><span class="sep">·</span>` +
-    `<code>${esc(d.listener)}</code><span class="sep">·</span>` +
-    `<span>${esc(d.state)}</span>`;
+    `<strong${nameStyle}>${esc(d.name || "?")}</strong><span class="sep">·</span>` +
+    `<span>${esc(d.host || "")}</span><span class="sep">·</span>` +
+    `<span>${esc(d.model || "")}</span><span class="sep">·</span>` +
+    `<span>${esc(d.roleDesc || "")}</span><span class="sep">·</span>` +
+    `<code>${esc(d.listener || "")}</code><span class="sep">·</span>` +
+    `<span>${esc(d.state || "")}</span>`;
 }
 
 function showDefault() {
@@ -52,7 +52,7 @@ if (statusEl) {
       if (!last.length) return;
       statusEl.innerHTML =
         `<strong style="color:var(--teal)">live mesh feed</strong> — ` +
-        last.map((e) => `${esc((e.ts || "").slice(5, 16).replace("T", " "))} ${esc(e.agent)}: ${esc(e.text)}`).join(" &middot; ");
+        last.map((e) => `${esc((e.ts || "").slice(5, 16).replace("T", " "))} ${esc(e.agent || "?")}: ${esc(e.text || "")}`).join(" &middot; ");
     })
     .catch(() => { /* keep the static fallback */ });
 }
