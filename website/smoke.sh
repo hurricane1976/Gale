@@ -24,6 +24,7 @@ has "status.html" 'id="fleet-live-strip"'
 has "status.html" 'id="fleet-24h-grid"'
 has "index.html" 'id="spend-bars"'
 has "api/fleet/metrics" '"runs_24h_by_host"'
+has "api/fleet/metrics" '"Tidal"'
 echo "--- render tests ---"
 if command -v node >/dev/null 2>&1; then
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
