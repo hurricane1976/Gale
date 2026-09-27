@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v4";
+const CACHE_VERSION = "gale-v5";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -158,8 +158,16 @@ self.addEventListener("message", (event) => {
   // "push" property -- the honest check is feature-detection on the
   // ServiceWorkerGlobalScope: PushEvent constructor presence, which every
   // push-capable browser defines and old ones don't.)
-  if (event.data === "gale:ping" && event.source) {
-    event.source.postMessage({ type: "gale:pong", version: CACHE_VERSION,
-      push: typeof PushEvent !== "undefined" });
+  // Reply via broadcast (clients.matchAll) instead of event.source/MessagePort
+  // transfer -- iOS home-screen PWAs have been unreliable with port transfer.
+  if (event.data === "gale:ping") {
+    self.clients.matchAll({ includeUncontrolled: true, type: "window" })
+      .then((clients) => {
+        for (const client of clients) {
+          client.postMessage({ type: "gale:pong", version: CACHE_VERSION,
+            push: typeof PushEvent !== "undefined" });
+        }
+      })
+      .catch(() => {});
   }
 });

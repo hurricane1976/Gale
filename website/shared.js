@@ -831,15 +831,24 @@ async function initPushBell() {
       if (test) test.hidden = !sub;
       // diagnostic: confirm the ACTIVE service worker actually has the push
       // handler (a stale pre-push sw would silently swallow deliveries)
-      // ping the ACTIVE worker via the registration (not .controller, which
-      // is null on the first load after a SW activates — that race produced
-      // a misleading "sw ? ✗" right after every update)
+      // Ping via broadcast: send the message plainly (no MessageChannel
+      // port transfer — iOS PWAs have been flaky with transferred ports),
+      // and listen on navigator.serviceWorker for the SW's broadcast reply.
       if (reg.active) {
         const pong = await new Promise((resolve) => {
-          const ch = new MessageChannel();
-          ch.port1.onmessage = (e) => resolve(e.data || {});
-          setTimeout(() => resolve({ version: "?", push: false }), 1500);
-          reg.active.postMessage("gale:ping", [ch.port2]);
+          const onMsg = (e) => {
+            const d = e.data || {};
+            if (d.type === "gale:pong") {
+              navigator.serviceWorker.removeEventListener("message", onMsg);
+              resolve(d);
+            }
+          };
+          navigator.serviceWorker.addEventListener("message", onMsg);
+          setTimeout(() => {
+            navigator.serviceWorker.removeEventListener("message", onMsg);
+            resolve({ version: "?", push: false });
+          }, 1500);
+          reg.active.postMessage("gale:ping");
         });
         const t = document.getElementById("push-test");
         if (t) {
