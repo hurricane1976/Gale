@@ -80,7 +80,7 @@ function renderSocks(d) {
     ...(d.sockets.tcp || []).map((s) => ({ ...s, proto: "tcp" })),
     ...(d.sockets.udp || []).map((s) => ({ ...s, proto: "udp" })),
   ];
-  const rows = sockFilter ? all.filter((s) => s.proto === sockFilter) : all;
+  const rows = (sockFilter ? all.filter((s) => s.proto === sockFilter) : all).slice(0, 400);
   $("sock-count").textContent = `${all.length} total (${rows.length} shown)`;
   $("socks-table").querySelector("tbody").innerHTML = rows.map((s) => {
     const color = STATE_COLOR[s.state] || "var(--text-dim)";
