@@ -808,7 +808,7 @@ async function initPushBell() {
       test.className = "mini-toggle";
       test.textContent = "test";
       test.hidden = true;
-      test.style.cssText = "position:fixed;bottom:14px;right:110px;z-index:60;padding:8px 12px;min-height:32px";
+      test.style.cssText = "position:fixed;bottom:14px;right:210px;z-index:60;padding:8px 12px;min-height:32px";
       test.addEventListener("click", async () => {
         test.disabled = true;
         try {
@@ -905,6 +905,35 @@ async function initPushBell() {
   } catch { /* push is enhancement-only; never break boot */ }
 }
 
+/* ---- light/dark theme (ROADMAP-modern): stored choice in localStorage
+   ("light" | "dark"), absent = follow prefers-color-scheme. Applied
+   pre-render via the inline snippet the pages carry; this toggle just
+   cycles + persists. ---- */
+export function initThemeToggle() {
+  if (document.getElementById("theme-toggle")) return;
+  const btn = document.createElement("button");
+  btn.id = "theme-toggle";
+  btn.type = "button";
+  btn.className = "mini-toggle";
+  btn.style.cssText = "position:fixed;bottom:14px;right:110px;z-index:61;padding:8px 12px;min-height:32px";
+  const label = () => {
+    const cur = document.documentElement.dataset.theme ||
+      (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    btn.textContent = cur === "light" ? "🌙 dark" : "☀️ light";
+    btn.setAttribute("aria-pressed", String(cur === "light"));
+  };
+  btn.addEventListener("click", () => {
+    const cur = document.documentElement.dataset.theme ||
+      (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    const next = cur === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("gale-theme", next); } catch {}
+    label();
+  });
+  document.body.appendChild(btn);
+  label();
+}
+
 export function boot() {
   initStormCanvas();
   initProgressFallback();
@@ -912,6 +941,7 @@ export function boot() {
   // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
+    initThemeToggle();
     import("./palette.js").then((m) => m.initPalette()).catch(() => {});
     if (new URLSearchParams(location.search).has("kiosk")) {
       import("./kiosk.js").then((m) => m.initKiosk()).catch(() => {});

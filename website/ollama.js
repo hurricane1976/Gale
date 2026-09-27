@@ -501,7 +501,7 @@ function stopPullWatch() {
 }
 
 /* ---------------- playground ---------------- */
-function refreshChatModelSelect() {
+let refreshChatModelSelect = function () {
   const sel = $("chat-model");
   const cur = sel.value;
   const names = ((SNAP && SNAP.models) || []).map((m) => m.name);
@@ -655,6 +655,72 @@ $("chat-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
 });
 $("chat-clear").addEventListener("click", () => { THREAD = []; renderThread(); });
+
+/* ---------------- A/B compare (same prompt, two models) ---------------- */
+function refreshAbSelects() {
+  const names = ((SNAP && SNAP.models) || []).map((m) => m.name);
+  for (const id of ["ab-model-a", "ab-model-b"]) {
+    const sel = $(id);
+    const cur = sel.value;
+    sel.innerHTML = names.map((n) => `<option${n === cur ? " selected" : ""}>${esc(n)}</option>`).join("");
+  }
+  // sensible default: A = first, B = second (or same if only one model)
+  const a = $("ab-model-a"), b = $("ab-model-b");
+  if (names.length > 1 && a.value === b.value) b.value = names.find((n) => n !== a.value) || names[0];
+}
+const origRefreshChatModelSelect = refreshChatModelSelect;
+refreshChatModelSelect = function () { origRefreshChatModelSelect(); refreshAbSelects(); };
+
+function abStatsLine(st) {
+  if (!st) return "";
+  const bits = [];
+  if (st.load_duration_ns) bits.push(`load ${(st.load_duration_ns / 1e9).toFixed(1)}s`);
+  if (st.prompt_eval_tok_s) bits.push(`prompt ${st.prompt_eval_tok_s} tok/s`);
+  if (st.eval_tok_s) bits.push(`eval ${st.eval_tok_s} tok/s (${st.eval_count} tok)`);
+  return bits.join(" · ");
+}
+
+$("ab-run").addEventListener("click", async () => {
+  const prompt = $("chat-input").value.trim();
+  if (!prompt) { $("ab-note").textContent = "type a prompt in the composer first"; return; }
+  const modelA = $("ab-model-a").value, modelB = $("ab-model-b").value;
+  if (!modelA || !modelB) { $("ab-note").textContent = "two models needed"; return; }
+  const options = collectChatOptions();
+  const sys = $("chat-system").value.trim();
+  const messages = sys ? [{ role: "system", content: sys }, { role: "user", content: prompt }]
+                       : [{ role: "user", content: prompt }];
+  $("ab-run").disabled = true;
+  BUSY = true;
+  for (const [side, model] of [["a", modelA], ["b", modelB]]) {
+    $(`ab-thread-${side}`).innerHTML = `<p class="mini-note">generating on ${esc(model)}…</p>`;
+    $(`ab-stats-${side}`).textContent = "";
+  }
+  $("ab-note").textContent = "running…";
+  const runOne = async (side, model) => {
+    const t0 = Date.now();
+    try {
+      const r = await fetch("api/ollama/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model, messages, options }),
+      });
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.error || `HTTP ${r.status}`);
+      $(`ab-thread-${side}`).innerHTML =
+        `<div class="ol-bubble ol-bubble-ai"><span class="ol-who">${esc(model)}</span>${esc((d.message && d.message.content) || "")}</div>`;
+      $(`ab-stats-${side}`).textContent =
+        `${abStatsLine(d.stats)}${d.stats && d.stats.total_duration_ns ? ` · ${((Date.now() - t0) / 1000).toFixed(1)}s wall` : ""}`;
+    } catch (e) {
+      $(`ab-thread-${side}`).innerHTML = `<div class="ol-bubble ol-bubble-ai">⚠ ${esc(String(e.message || e))}</div>`;
+      $(`ab-stats-${side}`).textContent = "failed";
+    }
+  };
+  // parallel -- wall-clock fairness matters when comparing
+  await Promise.all([runOne("a", modelA), runOne("b", modelB)]);
+  $("ab-note").textContent = `done — ${modelA} vs ${modelB}`;
+  $("ab-run").disabled = false;
+  BUSY = false;
+  $("chat-input").value = "";
+});
 
 /* ---------------- confirm overlay wiring ---------------- */
 trapFocus($("confirm-overlay"));

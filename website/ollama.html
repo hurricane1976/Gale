@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    /* pre-paint theme: apply the persisted choice before first render */
+    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ollama — Gale</title>
@@ -178,6 +183,28 @@
               <textarea id="chat-input" rows="2" placeholder="message&hellip;"></textarea>
               <button id="chat-send" class="btn ol-btn" type="button">Send</button>
             </div>
+            <details id="ab-compare" class="ol-opts">
+              <summary>A/B compare &mdash; same prompt to two models, side by side</summary>
+              <div class="ol-ab-grid">
+                <div class="ol-ab-col">
+                  <label class="ol-field"><span>A</span>
+                    <select id="ab-model-a" class="obs-filter"></select></label>
+                  <div id="ab-thread-a" class="ol-thread" aria-live="polite"><p class="mini-note">model A output</p></div>
+                  <div class="ol-ab-stats" id="ab-stats-a"></div>
+                </div>
+                <div class="ol-ab-col">
+                  <label class="ol-field"><span>B</span>
+                    <select id="ab-model-b" class="obs-filter"></select></label>
+                  <div id="ab-thread-b" class="ol-thread" aria-live="polite"><p class="mini-note">model B output</p></div>
+                  <div class="ol-ab-stats" id="ab-stats-b"></div>
+                </div>
+              </div>
+              <div class="ol-field-row">
+                <button id="ab-run" class="btn ol-btn" type="button">Run compare</button>
+                <span id="ab-note" class="mini-note" role="status"></span>
+              </div>
+              <p class="mini-note">Uses the composer's message and inference options (temperature, max tokens, presets). Each model gets a fresh thread; stats show prompt-eval vs eval tok/s &mdash; the apples-to-apples comparison for qwen3.8 vs everything else.</p>
+            </details>
           </div>
         </div>
       </section>

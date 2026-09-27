@@ -1,11 +1,13 @@
-/* GALE — force-directed 3D topology (ROADMAP #5). Reads the static
-   topology SVG's nodes (data-name/data-host + resolved --node-color) and
-   its mesh lines (A &harr; B titles), then renders the same roster as an
-   interactive force-directed graph on WebGL: point repulsion + link
-   springs + centering, orbit-drag, wheel zoom, hover tooltip. No chart
-   library — one shader pair, a flat line buffer, tokens for color. The
-   SVG stays the default (and print) view; this is the
-   scaled-to-hundreds-of-nodes path, toggled by the "3d view" control. */
+/* GALE — force-directed 3D topology (ROADMAP #5 + heat overlays). Reads
+   the static topology SVG's nodes (data-name/data-host + resolved
+   --node-color) and its mesh lines (A &harr; B titles), then renders the
+   same roster as an interactive force-directed graph on WebGL: point
+   repulsion + link springs + centering, orbit-drag, wheel zoom, hover
+   tooltip. Heat overlays recolor nodes by 24h runs/cost/errors from
+   /api/fleet/metrics. No chart library — one shader pair, a flat line
+   buffer, tokens for color. The SVG stays the default (and print) view;
+   this is the scaled-to-hundreds-of-nodes path, toggled by the "3d view"
+   control. */
 
 
 const NODE_VS = `
@@ -91,7 +93,6 @@ export function initTopology3D() {
   const toggle = document.getElementById("topo-3d-toggle");
   const canvas = document.getElementById("topo-3d-canvas");
   const svg = document.querySelector(".topo-svg");
-  const tip = document.getElementById("topo-3d-tip");
   if (!toggle || !canvas || !svg) return;
 
   // roster from the SVG's own markup — one source of truth, zero drift
@@ -285,4 +286,142 @@ export function initTopology3D() {
     if (on && !raf) draw();
   });
   if (!toggle.hidden) draw();
+
+  /* ---- heat overlays (cost / runs / errors, 24h) ---- */
+  const LAYERS = {
+    none: null,
+    runs: { pick: (a) => a.runs_24h, hue: [0.29, 0.83, 0.62], label: "runs 24h" },
+    cost: { pick: (a) => a.cost_24h, hue: [1.0, 0.75, 0.29], label: "cost 24h" },
+    errors: { pick: (a) => a.error_runs_24h, hue: [0.95, 0.32, 0.42], label: "errors 24h" },
+  };
+  let heatMode = "none";
+  let heatStats = null; // Map(agentName_lower -> per_agent_24h entry)
+
+  // selector chips under the toggle, visible only in 3d view
+  let heatBar = null;
+  const ensureHeatBar = () => {
+    if (heatBar) return heatBar;
+    heatBar = document.createElement("div");
+    heatBar.id = "topo-heat";
+    heatBar.setAttribute("role", "toolbar");
+    heatBar.setAttribute("aria-label", "Heat overlay layer");
+    heatBar.style.cssText = "position:absolute;top:10px;right:110px;z-index:3;display:flex;gap:4px";
+    heatBar.innerHTML = Object.keys(LAYERS).map((k) =>
+      `<button type="button" data-heat="${k}" class="mini-toggle" aria-pressed="false"
+        style="padding:6px 10px;min-height:32px;font-size:0.7rem">${LAYERS[k] ? LAYERS[k].label : "no heat"}</button>`).join("");
+    heatBar.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-heat]");
+      if (!b) return;
+      heatMode = b.dataset.heat;
+      for (const btn of heatBar.querySelectorAll("[data-heat]"))
+        btn.setAttribute("aria-pressed", String(btn.dataset.heat === heatMode));
+      applyHeat();
+    });
+    const wrap = canvas.parentElement;
+    if (wrap) wrap.appendChild(heatBar);
+    return heatBar;
+  };
+
+  const hexToLinear = (hex) => {
+    const m = hex.match(/^#?([0-9a-f]{6})$/i);
+    if (!m) return null;
+    const n = parseInt(m[1], 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+  };
+
+  async function loadHeat() {
+    try {
+      const r = await fetch("api/fleet/metrics", { cache: "no-store" });
+      if (!r.ok) return;
+      const d = await r.json();
+      heatStats = new Map((d.per_agent_24h || [])
+        .map((a) => [String(a.agent || "").toLowerCase(), a]));
+      applyHeat();
+    } catch { /* heat is optional decoration */ }
+  }
+
+  function applyHeat() {
+    const layer = LAYERS[heatMode];
+    const colors = new Float32Array(nodes.length * 3);
+    if (!layer || !heatStats) {
+      nodes.forEach((n, i) => colors.set(n.color, i * 3));
+    } else {
+      // normalize this metric across nodes to [0.15, 1] heat intensity
+      const raw = nodes.map((n) => {
+        const a = heatStats.get(n.name.toLowerCase());
+        return a ? (layer.pick(a) || 0) : 0;
+      });
+      const max = Math.max(...raw, 0.0001);
+      nodes.forEach((n, i) => {
+        const t = 0.15 + 0.85 * (raw[i] / max);
+        const base = n.color;
+        colors.set([
+          base[0] * (1 - t) + layer.hue[0] * t,
+          base[1] * (1 - t) + layer.hue[1] * t,
+          base[2] * (1 - t) + layer.hue[2] * t,
+        ], i * 3);
+      });
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, colBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+  }
+
+  // refresh heat each time the 3d view opens + every 60s while open
+  const origToggle = toggle.onclick;
+  toggle.addEventListener("click", () => {
+    if (!canvas.hidden) {
+      ensureHeatBar().style.display = "flex";
+      if (!heatStats) loadHeat();
+      else applyHeat();
+    } else if (heatBar) heatBar.style.display = "none";
+  });
+  setInterval(() => { if (!canvas.hidden) loadHeat(); }, 60000);
+
+  // tooltip: agent + its heat numbers on hover
+  const tip = document.createElement("div");
+  tip.id = "topo-3d-tip";
+  tip.hidden = true;
+  tip.style.cssText = "position:absolute;z-index:4;pointer-events:none;padding:6px 10px;" +
+    "background:var(--surface,#18213a);border:1px solid var(--line-strong,rgba(160,185,230,.2));" +
+    "border-radius:8px;font-family:var(--font-mono,monospace);font-size:0.72rem;color:var(--text,#e8eaed)";
+  canvas.parentElement && canvas.parentElement.appendChild(tip);
+
+  // pick nearest node by projected screen distance
+  function project(i, m) {
+    const x = pos[i * 3], y = pos[i * 3 + 1], z = pos[i * 3 + 2];
+    const w = m[3] * x + m[7] * y + m[11] * z + m[15];
+    const cx = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
+    const cy = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
+    return [(cx * 0.5 + 0.5) * gl.drawingBufferWidth,
+            (0.5 - cy * 0.5) * gl.drawingBufferHeight];
+  }
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (dragging) { tip.hidden = true; return; }
+    const rect = canvas.getBoundingClientRect();
+    const px = (e.clientX - rect.left) * (gl.drawingBufferWidth / rect.width);
+    const py = (e.clientY - rect.top) * (gl.drawingBufferHeight / rect.height);
+    const eye = [
+      dist * Math.cos(pitch) * Math.sin(yaw),
+      dist * Math.sin(pitch),
+      dist * Math.cos(pitch) * Math.cos(yaw),
+    ];
+    const view = mat4LookAt(eye, [0, 0, 0], [0, 1, 0]);
+    const m = mul4(mat4Perspective(0.9, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 50), view);
+    let best = -1, bestD = 24 * 24;
+    for (let i = 0; i < nodes.length; i++) {
+      const [sx, sy] = project(i, m);
+      const dx = sx - px, dy = sy - py;
+      if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; best = i; }
+    }
+    if (best === -1) { tip.hidden = true; return; }
+    const n = nodes[best];
+    const a = heatStats && heatStats.get(n.name.toLowerCase());
+    const a2 = a ? `${a.runs_24h ?? "–"} runs · $${(a.cost_24h ?? 0).toFixed(2)} · ${a.error_runs_24h ?? 0} err` : "";
+    tip.innerHTML = `<strong>${esc(n.name)}</strong> · ${esc(n.model || "")}<br>${esc(n.host)}<br>${esc(n.listener)}${a2 ? `<br><span style="color:var(--text-faint,#6b7c94)">${esc(a2)}</span>` : ""}`;
+    tip.hidden = false;
+    tip.style.left = `${Math.min(e.clientX - rect.left + 14, rect.width - 190)}px`;
+    tip.style.top = `${Math.max(e.clientY - rect.top - 10, 4)}px`;
+  });
+  canvas.addEventListener("pointerleave", () => { tip.hidden = true; });
 }

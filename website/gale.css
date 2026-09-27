@@ -1444,3 +1444,47 @@ dialog#palette::backdrop { background: rgba(6, 9, 16, 0.55); backdrop-filter: bl
    so they interpolate/animate natively instead of snapping. ---- */
 @property --step { syntax: "<integer>"; inherits: false; initial-value: 0; }
 .wake-bar { transition: --step 0.45s var(--ease-out, ease); }
+
+/* ---- ROADMAP-modern: light theme. Tokens override under [data-theme=light];
+   with no explicit choice, follows prefers-color-scheme. The toggle in
+   shared.js sets data-theme and persists to localStorage ("light"/"dark"/
+   remove = follow system). Storm-canvas/particles keep their own canvases
+   light-safe via CSS opacity. ---- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #eef2f8; --bg-deep: #e3e9f2; --surface: #ffffff; --surface-2: #f4f7fc;
+    --glass: rgba(13, 19, 34, 0.03); --glass-border: rgba(13, 19, 34, 0.1);
+    --line: rgba(13, 19, 34, 0.1); --line-strong: rgba(13, 19, 34, 0.22);
+    --text: #1a2233; --text-dim: #44506a; --text-faint: #5d6c88;
+    --flag: #2563d9; --flag-soft: #1d4fb8; --flag-dim: rgba(37, 99, 217, 0.18);
+    --ok: #1f8a55; --warn: #b97514;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #eef2f8; --bg-deep: #e3e9f2; --surface: #ffffff; --surface-2: #f4f7fc;
+  --glass: rgba(13, 19, 34, 0.03); --glass-border: rgba(13, 19, 34, 0.1);
+  --line: rgba(13, 19, 34, 0.1); --line-strong: rgba(13, 19, 34, 0.22);
+  --text: #1a2233; --text-dim: #44506a; --text-faint: #5d6c88;
+  --flag: #2563d9; --flag-soft: #1d4fb8; --flag-dim: rgba(37, 99, 217, 0.18);
+  --ok: #1f8a55; --warn: #b97514;
+  color-scheme: light;
+}
+
+/* decorative fixed layers get light-theme adjustments (storm canvas dims,
+   grain backs off) */
+:root[data-theme="light"] #storm-canvas,
+html:has([data-theme="light"]) #storm-canvas { opacity: 0.35; }
+:root[data-theme="light"] .grain { opacity: 0.03; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) #storm-canvas { opacity: 0.35; }
+  :root:not([data-theme="dark"]) .grain { opacity: 0.03; }
+}
+
+/* ---- ollama A/B compare ---- */
+.ol-ab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+@media (max-width: 820px) { .ol-ab-grid { grid-template-columns: 1fr; } }
+.ol-ab-col { display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.ol-ab-col .ol-thread { min-height: 140px; max-height: 320px; }
+.ol-ab-stats { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-faint); min-height: 1.1em; }

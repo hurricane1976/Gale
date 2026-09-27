@@ -62,6 +62,17 @@ function collectItems() {
     });
   }
   kioskItem(items);
+  items.push({
+    icon: "◐", label: "Toggle light / dark theme",
+    hint: "or the ☀️/🌙 button, bottom-right",
+    go: () => {
+      const cur = document.documentElement.dataset.theme ||
+        (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      const next = cur === "light" ? "dark" : "light";
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem("gale-theme", next); } catch {}
+    },
+  });
   return items;
 }
 
