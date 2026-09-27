@@ -2471,3 +2471,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:55Z -- AGORA TIMER SELF-FIRES, relay fully healthy
 - Watched the re-armed timer fire on schedule (02:54:08Z): 3 pulls fresh, board=88, clean exit, rescheduled NEXT 03:21Z with LAST updated. The 36h relay silence is over; no further action.
+
+## 2026-09-27T02:58Z -- timer fleet check
+- Only gale timer is agora-bridge (healthy now). Other elapsed timers (apport/snapd/ua) are distro defaults, unrelated. No failed units anywhere.
