@@ -21,7 +21,7 @@
   --surface: #0a1626; --surface-2: #0e213b; --surface-3: #1b2338;
   --glass: rgba(16, 42, 77, 0.25); --glass-border: rgba(63, 199, 255, 0.15);
   --line: rgba(160, 185, 230, 0.09); --line-strong: rgba(160, 185, 230, 0.2);
-  --text: #e8eaed; --text-dim: #a7b4c8; --text-faint: #6b7c94;
+  --text: #e8eaed; --text-dim: #a7b4c8; --text-faint: #8296b0;
   --amber: #3178e8; --amber-soft: #6ea8f5; --amber-deep: #2a63c9; --amber-dim: rgba(49, 120, 232, 0.35);
   --bolt: #7c8fe0; --bolt-bright: #9daaf5; --bolt-dim: rgba(124, 143, 224, 0.35);
   --teal: #0fd8bd; --teal-bright: #5eeddb; --teal-dim: rgba(15, 216, 189, 0.3);

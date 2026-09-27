@@ -170,7 +170,7 @@ def member_card(agent, i, is_hub):
     listener = f'{agent["addr"]}:{agent["port"]}'
     state = "hub · this page’s vantage point" if is_hub else "two-way confirmed (local mesh)"
     return (
-        f'<agent-card name="{esc(agent["name"])}" model="{esc(model)}" role="{esc(role)}" '
+        f'<agent-card name="{esc(agent["name"])}" model="{esc(model)}" job="{esc(role)}" '
         f'listener="{esc(listener)}" state="{esc(state)}" color="{color}" index="{i}"></agent-card>'
     )
 

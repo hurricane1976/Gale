@@ -14,7 +14,7 @@ const TTL_MS = 30000;
 
 const backdrop = document.createElement("div");
 backdrop.className = "dd-backdrop";
-const panel = document.createElement("aside");
+const panel = document.createElement("div");
 panel.className = "dd-panel";
 panel.setAttribute("role", "dialog");
 panel.setAttribute("aria-modal", "true");

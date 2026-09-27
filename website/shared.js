@@ -197,14 +197,16 @@ export function patchList(el, items) {
 if (typeof HTMLElement !== "undefined") {
   class AgentCard extends HTMLElement {
     static get observedAttributes() {
-      return ["name", "model", "role", "listener", "state", "color", "index", "pending"];
+      return ["name", "model", "job", "listener", "state", "color", "index", "pending"];
     }
     connectedCallback() { this.render(); }
     attributeChangedCallback() { if (this.isConnected) this.render(); }
     render() {
       const name = this.getAttribute("name") || "";
       const model = this.getAttribute("model") || "";
-      const role = this.getAttribute("role") || "";
+      // "job" not "role": role= is the ARIA role attribute and a custom
+      // element's plain role="..." collides with it (axe-core flagged all 35)
+      const role = this.getAttribute("job") || this.getAttribute("role") || "";
       const listener = this.getAttribute("listener") || "";
       const state = this.getAttribute("state") || "";
       const color = this.getAttribute("color") || "var(--text-dim)";
