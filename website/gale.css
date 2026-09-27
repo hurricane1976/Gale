@@ -1596,3 +1596,10 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .vital:hover::after { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .vital, .vital:hover { transform: none; transition: none; } }
+
+/* ---- batch D: page-load fade + table row hover ---- */
+@keyframes page-in-g { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.js main { animation: page-in-g 0.55s cubic-bezier(.22,1,.36,1) both; }
+.ops-table tbody tr { transition: background-color 0.2s; }
+.ops-table tbody tr:hover { background-color: rgba(160, 185, 230, 0.05); }
+@media (prefers-reduced-motion: reduce) { .js main { animation: none; } }
