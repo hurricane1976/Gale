@@ -2297,3 +2297,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - REAL BUG found by reasoning about containing blocks: `.reveal { will-change: transform }` permanently creates a containing block, which breaks ALL sticky/fixed descendants — including the index wake scrub stage (.wake-stage sticky inside #stats.reveal) and potentially drawer heads. Removed will-change from .reveal in both themes (transition still composes fine). [data-magnet]/.card will-change left: no sticky descendants, harmless.
 - Deployed.
 - NEXT batch V: continue site QA loop.
+
+## 2026-09-27T10:00Z -- FX batch V: containing-block audit (verification only)
+- dd-panel/backdrop appended to body (no transformed ancestors); ol-overlays are body-level fixed; .glow is itself fixed with no positioned descendants; SVG filters touch no HTML layout. No changes needed.
+- NEXT batch W: fleet_api.py metrics_envelope read.
