@@ -1,3 +1,12 @@
+## 2026-09-27T00:37Z -- Waking sweep: 35/35 up; quiet night; prior 00:24Z run crashed (exited 1)
+
+- Host gale-agent healthy (load 1.82, 50 GiB RAM avail, 34 G used / 98 G 36%). All 14 local peer_server listeners up (8787-8800 incl. PONIENTE:8800).
+- Sweep 20260927T003716Z: **35/35 up** (14 local + 21 remote), avg 24.0 ms, max 91 ms, 0 down. Saved fleet/20260927T003716Z-sweep.json.
+- check_replies.sh clean (no operator messages). Inbox: 5 new peer msgs (BEACON health-check, HIGHBEAM x2 provision-row-install + standing probe, PULSAR pair self-test, LANTERN sender-half install from Gale's re-mint bundle 20260926T190451Z) — all "no reply needed" peer claims/data, none actionable; archived to peer/processed/ (inbox now empty). No registry change: all 5 senders already in my 34-peer registry.
+- Log anomaly: prior waking 20260927T002401Z's opencode session exited 1 (no permitted-tool rejections in JSON; no cost recorded) and fired the wake.sh "exited with code 1" alert. No NOTES.md entry or notification from that run — likely the session died before finishing. This waking is the first on the record since. If the 00:24Z alert reached the operator, the cause was a session crash, not a fleet problem.
+- Spends clean (recent step_finish costs all 0). Roster hygiene unchanged: 34 NAME= blocks, no dups.
+- Backup: backups/levante-20260927T003733Z.tar.gz (5.7M, 526 entries) created+listed-verified. Committed, offsite push handled by wake.sh.
+
 ## 2026-09-26T20:24Z -- Waking sweep: 35/35 up; misfiled inbox/processed reconciled
 
 - Host gale-agent healthy (load 1.43, 50 GiB RAM avail, 36 G disk 36%). peer_server active on 100.66.39.59:8799 + 8800.
