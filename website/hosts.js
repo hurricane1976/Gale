@@ -60,7 +60,7 @@ function money(v) {
   return v < 10 ? `$${v.toFixed(2)}` : `$${v.toFixed(0)}`;
 }
 
-function sparkline(vals, hue) {
+export function sparkline(vals, hue) {
   if (!vals || !vals.length) return `<div class="hb-spark-empty">no series</div>`;
   vals = vals.map((v) => (Number.isFinite(v) ? v : 0));
   const W = 400, H = 64, pad = 4;
@@ -81,7 +81,7 @@ function sparkline(vals, hue) {
   </svg>`;
 }
 
-function hostBoard(h, d) {
+export function hostBoard(h, d) {
   const meta = HOST_META[h] || { hue: "var(--text-faint)", note: "" };
   const series = (d.daily_wakings_by_host || {})[h] || [];
   const runs = (d.runs_24h_by_host || {})[h] ?? null;

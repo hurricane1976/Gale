@@ -17,7 +17,7 @@ const chartFresh = document.getElementById("cost-trend-fresh");
 const lbGrid = document.getElementById("leaderboard-grid");
 const lbFresh = document.getElementById("leaderboard-fresh");
 
-function money(v) {
+export function money(v) {
   if (v == null || !isFinite(v)) return "–";
   if (v === 0) return "$0.00";
   return v < 10 ? `$${v.toFixed(2)}` : `$${v.toFixed(0)}`;
@@ -34,7 +34,7 @@ function ago(iso) {
 
 const hue = (h) => HOST_HUE[h] || "var(--text-faint)";
 
-function trendChart(d) {
+export function trendChart(d) {
   const days = d.days || [];
   const byHost = d.daily_cost_by_host || {};
   const hosts = HOST_ORDER.filter((h) => Array.isArray(byHost[h])).concat(
@@ -100,7 +100,7 @@ function miniSpark(vals, color) {
     `<circle class="lb-spark-dot" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" style="--lc:${color}"/></svg>`;
 }
 
-function leaderboard(d) {
+export function leaderboard(d) {
   const rows = [...(d.per_agent_24h || [])].sort((a, b) => (b.cost_24h || 0) - (a.cost_24h || 0)).slice(0, LEAD_N);
   if (!rows.length) return `<p class="hosts-wait">no agent costs yet</p>`;
   const hostOf = agentHostMap(d);
