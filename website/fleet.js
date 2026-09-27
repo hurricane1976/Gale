@@ -63,6 +63,7 @@ if (statusEl) {
 /* pointer glow on the static roster cards (wired here so the shared
    engine picks them up even though they carry no data-glow in markup). */
 document.querySelectorAll(".member-card:not([data-glow])").forEach((c) => c.setAttribute("data-glow", ""));
+document.querySelectorAll(".mc-name:not([tabindex])").forEach((el) => el.setAttribute("tabindex", "0"));
 refreshEffects();
 
 /* roster filter: match name, model chip, or role text; hide empty groups. */

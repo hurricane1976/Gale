@@ -234,6 +234,13 @@ async function tryOpen(name) {
   openDrilldown(name);
 }
 
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target instanceof Element &&
+      e.target.matches(".mc-name, .fleet-term-tag[data-agent]")) {
+    e.preventDefault();
+    e.target.click();
+  }
+});
 document.addEventListener("click", async (e) => {
   const tagEl = e.target.closest(".mc-name, .fleet-term-tag[data-agent]");
   if (!tagEl) return;

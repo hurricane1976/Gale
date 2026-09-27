@@ -289,10 +289,10 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .tl-item:last-child .tl-rail::before { display: none; }
 .tl-dot { width: 8px; height: 8px; border-radius: 50%; margin: 0 2px 0 0; flex: 0 0 auto;
   transform: translateY(-1px); box-shadow: 0 0 0 2px rgba(160, 185, 230, 0.08); }
-.tl-item .fleet-term-tag[data-agent], .member-card .mc-name[data-agent] { cursor: pointer; }
-.tl-item .fleet-term-tag[data-agent]:hover, .member-card .mc-name[data-agent]:hover {
+.tl-item .fleet-term-tag[data-agent], .member-card .mc-name { cursor: pointer; }
+.tl-item .fleet-term-tag[data-agent]:hover, .member-card .mc-name:hover {
   text-decoration: underline; text-underline-offset: 3px; }
-.tl-item .fleet-term-tag[data-agent]:focus-visible, .member-card .mc-name[data-agent]:focus-visible {
+.tl-item .fleet-term-tag[data-agent]:focus-visible, .member-card .mc-name:focus-visible {
   outline: 2px solid var(--tide); outline-offset: 2px; }
 .tl-gap { display: flex; align-items: center; gap: 12px; padding: 6px 14px; }
 .tl-gap-line { flex: 1 1 auto; height: 1px; background: var(--line-strong); }
