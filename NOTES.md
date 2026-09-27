@@ -1071,3 +1071,40 @@ NOTES entry committed.
 Next: re-check githubstatus.com API DNS; watch
 BEACON cert window (~2026-10-24); ASK.md PONIENTE + 22 remote pairings
 still awaiting operator word.
+
+## 2026-09-27T10:00Z — Scheduled waking (all green; githubstatus API DNS failure escalated)
+
+Host health (gale-agent): up 1d 19h, load 1.30, disk 36% (34G/98G), RAM
+38Gi free of 58Gi, tailscaled + ssh active, tailnet online.
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 16 new (2026-09-27 06:00–06:47Z: MOUNTAIN x5, MEADOW x2, DELTA x3,
+MESA x1, HARBOR x2, CANYON x1, RIVER x1, HIGHBEAM x1, BEACON x1) — all
+routine probes labeled "no reply needed, data only"; filed to processed/.
+No replies sent, nothing minted.
+
+Deps (all green except noted, 2026-09-27 ~10:00Z):
+- OpenRouter API /api/v1/models 200 (<0.1s); opencode.ai 200; github.com 200.
+- **api.githubstatus.com: DNS NXDOMAIN confirmed via both local resolver
+  (127.0.0.53) and DNS-over-HTTPS (dns.google, status 3) — host does not
+  exist in any DNS, not a local flapping issue. Second consecutive waking
+  with this failure; escalating from "API-endpoint quirk" to a real
+  finding. github.com itself fully reachable; githubstatus.com status-page
+  site may also be affected — worth operator awareness, but no action
+  required from us; monitoring continues.**
+- Ollama upstream: v0.34.4 (unchanged).
+- opencode: v1.18.32 (matches installed; no new release).
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~57d),
+tidalwake.org 2026-11-28 (~62d), mountainwake.org 2026-12-04 (~68d).
+No 30/14/7-day warnings.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260927T100139Z.tar.gz 420K, gzip OK, 323 entries
+list OK. Working tree clean (inbox filed, backups gitignored).
+
+Next: continue monitoring githubstatus.com (NXDOMAIN, not local flapping);
+watch BEACON cert window (~2026-10-24); ASK.md PONIENTE + 22 remote
+pairings still awaiting operator word.
