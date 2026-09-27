@@ -52,6 +52,48 @@ LVM root. Checks that resolved it, in order:
   filtering, or grep the device string: root-fs errors would say
   `dm-0`/`ubuntu--vg`/`nvme0n1p3`; anything else is an auxiliary disk.
 
+## Second event: re-attach flake storm (2026-09-27 14:20–14:40Z, observed 18:40Z)
+
+The disk came back the same day under operator control, and the
+attachment itself was unstable — a different failure signature worth
+knowing:
+
+- 14:20:28Z — USB hub + peripherals appear (Bridgesil USB2.1/USB3.2 hub,
+  Identive SCR33xx smart-card reader, Logitech receiver): operator at the
+  physical console. udisksd active (desktop session).
+- 14:26:02Z — the 2TB disk re-attaches, now enumerated **`sdb`** (came
+  through the new hub chain; device letter is NOT stable across
+  attachments). Partitions: `sdb1` FAT, `sdb2` ext4 label **"backup"**,
+  `sdb3` ext4 (UUID d3717808…). udisksd auto-mounted `sdb3` at
+  `/media/agent/<uuid>` as uid 1000.
+- 14:28:19Z — `device offline error, dev sdb, sector 0 (WRITE)` → EXT4
+  **shut down `sdb3`** (`shut down requested (2)`), journal aborted,
+  udisksd cleaned the mount. Disk re-enumerated ~6s later; `sdb2`
+  auto-mounted at `/media/agent/backup 2`.
+- Further dropoffs 14:33–14:37Z (journal recovery + re-mount, unmount,
+  partitions vanish, re-attach, cache-sync failures). 14:40:02Z —
+  operator **unplugged the hub**; trailing `FAT-fs (sdb1) unable to read
+  boot sector` + cache-sync errors. Disk gone; `/media/agent` empty by
+  14:40Z.
+- Net: 3+ bus dropoffs in 14 minutes. Whatever the cause (enclosure,
+  cable, hub, power), this attachment path is **flaky and not yet
+  trustworthy as a backup target**. The `backup` label says intent; the
+  behavior says test again after hardware triage (different port/cable,
+  no hub, or direct attachment).
+
+## What should alert vs what did (event 2)
+
+- Repeated attach/detach cycles are visible in `journalctl -k | grep -E
+  'sd[a-z].*Attached|usb.*disconnect'` — nothing alerts; found by waking
+  review at 18:40Z (same ~4h detection gap as event 1).
+- `sda` vs `sdb`: same physical disk can enumerate under different
+  letters through different hub chains. **Never key any check on the
+  device letter** — key on size/vendor/UUID. (Event 1 = sda, event 2 =
+  sdb, both 2.00TB.)
+- Stale-mount lesson held: the OLD stale mount (`sda2` at
+  `/mnt/usb-disk`) is unrelated to the new `sdb` work; don't conflate
+  them when grepping EXT4 errors.
+
 ## Open item (operator decision, flagged via notify 2026-09-27)
 
 - The stale `/mnt/usb-disk` mount is left in place (operator hardware,
@@ -60,8 +102,11 @@ LVM root. Checks that resolved it, in order:
   re-mount. Recommended when convenient: `sudo umount /mnt/usb-disk`, and
   on re-plug run `sudo fsck -f /dev/sda2` before mounting — the journal
   was aborted mid-write at disconnect, so the fs likely needs recovery.
-- If the disk was intended as an offsite/backup target, it never became
-  one (no references anywhere; it lived 20 minutes).
+- If the disk was intended as an offsite/backup target, event 2
+  (2026-09-27) confirms intent — partition `sdb2` is labeled **"backup"**
+  — but the attachment dropped off the bus 3+ times in 14 minutes, so it
+  is not yet a reliable target. Flagged to the operator with the
+  event-2 timeline.
 
 ## Risk to fleet state
 
