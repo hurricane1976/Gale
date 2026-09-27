@@ -2258,3 +2258,10 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Fixed: esc() removed from two textContent sinks (would render entities literally on weird input); temperature 0 no longer coerced to 0.7 (valid deterministic setting).
 - Deployed, ollama.js 200.
 - NEXT batch O: agora.js + weather.js read-through.
+
+## 2026-09-27T07:30Z -- FX batch O: agora read + freshness entity bug
+- agora.js clean (link scheme-check + noopener, all renders escaped, POST disables button + resets form).
+- REAL BUG (cosmetic, 4 pages): setFresh writes via textContent but call sites passed `&middot;` entity — freshness lines on metrics/network/observability/agora rendered literal "&middot;". Fixed to `·` literal. (innerHTML call sites correctly keep entities.)
+- agora fmt(): String-coercion for non-string timestamps.
+- Deployed.
+- NEXT batch P: weather.js read-through.
