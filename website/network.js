@@ -53,7 +53,7 @@ function renderIfaces(d) {
     const addrs = (i.addrs || []).filter(Boolean).map((a) => esc(a)).join("<br>") || "&ndash;";
     const upColor = i.up ? "var(--ok)" : "var(--text-dim)";
     return `<tr${i.up ? "" : ' style="opacity:.6"'}>
-      <td><code>${esc(i.ifname)}</code></td>
+      <td><code>${esc(i.ifname || "?")}</code></td>
       <td><span style="color:${upColor}">&#9679;</span> ${esc((i.operstate || "?").toLowerCase().replace(/_/g, " "))}</td>
       <td style="font-family:var(--font-mono);font-size:.82em">${addrs}</td>
     </tr>`;
@@ -62,12 +62,12 @@ function renderIfaces(d) {
 
 function renderArp(d) {
   $("arp-count").textContent = d.arp.length;
-  const rows = [...d.arp].sort((a, b) => a.dst.localeCompare(b.dst, undefined, { numeric: true }));
+  const rows = [...d.arp].sort((a, b) => String(a.dst || "").localeCompare(String(b.dst || ""), undefined, { numeric: true }));
   $("arp-table").querySelector("tbody").innerHTML = rows.map((a) => {
     const state = a.state || "?";
     const isStale = /stale|failed|INCOMPLETE/i.test(state);
     return `<tr${isStale ? ' style="opacity:.6"' : ""}>
-      <td><code>${esc(a.dst)}</code></td>
+      <td><code>${esc(a.dst || "?")}</code></td>
       <td>${esc(a.dev || "?")}</td>
       <td style="font-family:var(--font-mono);font-size:.82em">${a.lladdr ? esc(a.lladdr) : '<span style="color:var(--text-dim)">&ndash; (incomplete)</span>'}</td>
       <td style="color:${isStale ? "var(--warn)" : "var(--text-dim)"}">${esc(state)}</td>
@@ -88,9 +88,9 @@ function renderSocks(d) {
       : `<span style="color:var(--text-dim)">&ndash;</span>`;
     return `<tr>
       <td style="color:var(--text-dim)">${s.proto}</td>
-      <td style="color:${color}">${esc(s.state)}</td>
-      <td style="font-family:var(--font-mono);font-size:.82em">${esc(s.local)}</td>
-      <td style="font-family:var(--font-mono);font-size:.82em">${esc(s.peer)}</td>
+      <td style="color:${color}">${esc(s.state || "?")}</td>
+      <td style="font-family:var(--font-mono);font-size:.82em">${esc(s.local || "–")}</td>
+      <td style="font-family:var(--font-mono);font-size:.82em">${esc(s.peer || "–")}</td>
       <td>${proc}</td>
     </tr>`;
   }).join("") || `<tr><td colspan="5" class="mini-note">No socket rows match.</td></tr>`;
