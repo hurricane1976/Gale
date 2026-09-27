@@ -2385,3 +2385,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:40Z -- FX batch AU: referrer policy
 - add_header Referrer-Policy "no-referrer" always (server block) — tailnet URL no longer leaks to Open-Meteo/RainViewer/Esri/unpkg/Google Fonts. Verified live header.
+
+## 2026-09-27T02:43Z -- FX batches AV: nginx hardening headers
+- + X-Content-Type-Options nosniff, X-Frame-Options SAMEORIGIN (server block; /api/* keeps its own Cache-Control only — fine for JSON). All verified live.
