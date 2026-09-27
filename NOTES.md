@@ -2477,3 +2477,15 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T03:02Z -- containing-block follow-up: dd-head
 - .dd-panel slides via transform (permanent containing block) so its sticky head never stuck. Removed the dead sticky declaration (zero behavior change, honest CSS). .ol-drawer-head sticky verified live (absolute drawer, no transformed ancestors post-reveal).
+
+## 2026-09-27T03:00Z -- catch-up log (batches AJ-AW, work committed, docs skipped)
+- AJ: literal-tag whitelist scan, all pages clean.
+- AK: status chip-jump + ollama thread scroll honor reduced-motion.
+- AL: weather first-load failure no longer an unhandled rejection.
+- AM: STATUS_TTL matches copy; metrics payload 9.7KB.
+- AN/AO: render caps — observability explorer 300 rows, network sockets 400 rows.
+- AQ: nginx logs — zero real 4xx/5xx (404s were my own probes); traffic + disk healthy.
+- AS: fleet 1-6 + index comment numbering consistent.
+- AU/AV: nginx Referrer-Policy no-referrer, nosniff, SAMEORIGIN — all live.
+- AW: button types + inline handlers + eval audits clean.
+- NOTE: another session is committing concurrently (Prism rotation docs); our files don't overlap. ASK.md modified by them — left untouched.
