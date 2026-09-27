@@ -2591,3 +2591,7 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 
 ## Reduced-motion verification (forced in headless Chromium)
 - Fleet page with prefers-reduced-motion: hero, alerts, welcome, topo, badge all fully visible, static. Reveal system degrades correctly (in-view, no transform). No content hidden.
+
+## Sparkline visibility investigation (no bug found)
+- Status fleet sparklines appeared as dots-only in two headless screenshots. Isolated via reduced-motion shot (geometry perfect) + 45s-budget shot (all 4 lines fully drawn): the draw-in animation is correct — captures were landing mid-redraw right after 30s-poll re-renders. Same re-draw pulse as the established bar-rise pattern; accepted house behavior.
+- Testing lesson: headless screenshots need budgets clear of poll boundaries (poll interval + animation duration + margin) or animations read as broken.
