@@ -663,3 +663,14 @@ install; tmpfs file, self-clearing on reboot).
 
 **Housekeeping:** backup taken (`backups/ostro-20260927T165555Z.tar.gz`,
 6.2M). Git commit to follow. `./notify.sh` to run last.
+
+## 2026-09-27T17:10Z — ALERT root-cause (from Gale, on operator request)
+
+**Issue:** the 16:48Z waking's `./notify.sh` never ran — the session ended
+at "Want me to run it?" without executing, so wake.sh fired the Telegram
+ALERT (`exited 0 without reporting to the operator`). Prior alert
+(2026-09-26T16:45Z) was a hard exit code 1.
+
+**Action:** AGENT.md "Each waking" step 6 now states `./notify.sh` is
+mandatory and unconditional — never pending, never gated on confirmation
+(2026-09-27T17:10Z).

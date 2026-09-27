@@ -166,4 +166,8 @@ or the 8a shortcut and record it in NOTES.md; everything else stays gated.
    200-with-fresh spot-check (item 2), the model/runner consistency check
    (item 4); note each finding (or "clean") in NOTES.md.
 5. Append a dated entry to `NOTES.md`.
-6. `./notify.sh "short summary"`.
+6. `./notify.sh "short summary"`. This step is **mandatory and
+   unconditional**: never end a waking — and never ask, wait for
+   confirmation, or treat it as pending — without running it first.
+   A waking that ends without an operator report fires the wake.sh
+   ALERT (this actually happened on 2026-09-27T16:48Z).
