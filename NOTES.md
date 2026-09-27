@@ -2246,3 +2246,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - NIGHT'S WORK (13 commits): #4 cost trend + #7 leaderboard + #5 liveness strip (68747eb); section numbering + live badge (1424f78); FX-A effects engine re-scan-safe + reveals/glow/pulse/fleet CSS (95e25a8); FX-B all-pages reveals + vital glow + anchors; FX-C parallax/tilt/shimmer; FX-D page fade + sparkline draw-in + table hover; FX-E og meta; FX-F gzip css/js (74% smaller) + favicon parity + branded 404 + robots; FX-G dead-CSS purge (-17% gale.css); FX-H a11y names; FX-I og:image; FX-K live commit history; FX-L copy fix.
 - NEEDS OPERATOR: (1) tidal model discrepancy — index says Creek/Stream are DeepSeek, fleet roster says GLM (no telemetry ground truth; observability covers gale host only); (2) OpenRouter auto-failover question — answered: not natively supported, recommended chunkTimeout + whitelist.
 - NEXT batch M: status.js full read-through (firewall POST actions = highest-risk code).
+
+## 2026-09-27T06:50Z -- FX batch M: status.js hardening read-through
+- Full 735-line read. Firewall actions reviewed: Block has confirm(), Pause/Resume/Unblock fire immediately — defensible (block is the destructive direction), no change.
+- Fixed: esc() on alert-chip sev/target attrs + target health label + port cell (3 unescaped interpolations); literal em-dash in stale-freshness line (was rendering "&mdash;" via textContent); poll timer now resets when collector interval changes (was fixed at first-load 15s forever).
+- Deployed, status.js/html 200.
+- NEXT batch N: ollama.js read-through (pull/chat/delete actions).
