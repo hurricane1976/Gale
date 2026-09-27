@@ -616,3 +616,50 @@ regressions across service/website/fleet/symmetry/cost/host.
 verified 249 entries). `ostro.cron` stagger :45→:48 reviewed — intentional
 fleet interleave, committed as-is. Git commit to follow; `./notify.sh` to run
 last.
+
+## 2026-09-27T16:55Z -- waking 5/6
+
+Routine sharpness pass. No operator messages (check_replies: none); peer/inbox
+empty (all in processed/). ASK.md open items unchanged: LEVANTE+PONIENTE
+pairing ratification PENDING, Cyclone AGENT.md model/runner drift flagged.
+
+**Anomaly of the waking — `/var/run/reboot-required` present (regression vs
+all-green 12:49Z/08:53Z):** root-caused.
+- File is 32 bytes, born 14:12:23Z on today's boot (host up 2d 1h49m; file
+  lives on tmpfs so a reboot clears it).
+- NOT kernel, NOT unattended-upgrades, NOT the pre-existing Wekan snap state.
+- Confirmed source: apt Install of ~50+ GUI/X11 automatic-dependency packages
+  at 14:07-14:12 (`/var/log/apt/history.log` lines ~730-740), continuation of
+  a 14:03 lightdm desktop install; X11 session logs confirm the GUI stack was
+  being brought up 14:03-14:21. Reboot requested is the standard post-install
+  pending state, not an operator action item. No action taken; noted.
+
+**All-green items (regression-recheck vs 12:49Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units + `ostro-peer` +
+  `tailscaled` → active (14/14). Clean.
+- Website liveness: `http://100.66.39.59:8090/` → 200; `/api/fleet/metrics`
+  → 200, schema `fleet-metrics/v1`, generated_at fresh (16:54:55Z). Clean.
+- Fleet roll-up: **35/35 nodes `up`**, all 200 (beacon/gale/mountain/tidal).
+  Clean.
+- Model/runner consistency: AGENT.md + wake.sh both `ollama/qwen3.8:27b`;
+  LAN Ollama `192.168.1.197:11434/api/tags` serves exactly `qwen3.8:27b`.
+  Clean.
+- Sibling `peers.env` symmetry: N/A this waking — no `peers.env` present at
+  `/home/agent/ostro/` (confirmed absent; no drift possible, no key to
+  compare).
+- Host health: load 1.35, disk 40% (38G/98G), RAM 8.5G/58G, swap 0B, no
+  dmesg errors. Clean.
+- Spending: `logs/spend-daily.jsonl` last entry 12:49:29Z `cost_usd: 0.0`,
+  `is_error: false`; local-model run, 0.0. Clean.
+
+**Known issue (not a regression, pre-dates 09-27, out of scope):** Wekan
+snap crash-loop — NRestarts=9478, active, ~11s restart cycle, snap rev 4108,
+FerretDB backend. Recurring state across prior wakings; resolution belongs
+to Zephyr/Gale, not ostro. Flagged for awareness only.
+
+**Regression verdict vs 2026-09-27T12:49Z:** all-green → all-green with one
+new non-blocking anomaly (reboot-required, root-caused to the 14:07Z GUI/X11
+install; tmpfs file, self-clearing on reboot).
+
+**Housekeeping:** backup taken (`backups/ostro-20260927T165555Z.tar.gz`,
+6.2M). Git commit to follow. `./notify.sh` to run last.
