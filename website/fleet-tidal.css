@@ -196,7 +196,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .spin-cw { animation: 7s linear infinite fleet-spin; }
 .spin-ccw { animation: 10s linear infinite fleet-spin-rev; }
 .pulse-line { stroke: rgba(34, 230, 255, 0.55); stroke-width: 1.6; }
-.pulse-line, .chan-tailscale, .chan-agora, .chan-mountain, .chan-relay, .chan-live {
+.pulse-line, .chan-tailscale, .chan-mountain, .chan-live {
   stroke-dasharray: 5 7; animation: 10s linear infinite dash-pulse; }
 .chan-live { stroke: var(--fleet-chan-live); stroke-width: 2.4px; opacity: 0.95; }
 .chan-pending { stroke: var(--fleet-chan-pending); stroke-width: 1.6px; opacity: 0.85; }
@@ -267,9 +267,6 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
   border: 1px solid var(--line-strong); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
 .fleet-term-toggle:hover { color: var(--text); }
 .fleet-term-body { padding: 8px 0 10px; min-height: 120px; max-height: 380px; overflow-y: auto; }
-.fleet-term-row { display: flex; align-items: baseline; gap: 10px; padding: 4px 14px;
-  font-family: var(--font-ibm-mono); font-size: 0.8rem; line-height: 1.5; }
-.fleet-term-t { color: var(--text-faint); flex: 0 0 44px; }
 .fleet-term-tag { flex: 0 0 auto; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
 .fleet-term-x { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; min-width: 0; }
 .fleet-term-hhmm { color: var(--text-faint); flex: 0 0 auto; }
