@@ -129,9 +129,24 @@ async function renderLivePulse() {
         <span class="pulse-text">${esc(ev.text || "")}</span>
         <span class="pulse-ago">${esc(fmtAgo(ev.ts))}</span>
       </li>`).join("");
+    renderHistory(d);
   } catch {
     feed.innerHTML = `<li class="pulse-row muted">feed unreachable — mesh offline or 8090 down</li>`;
   }
+}
+
+/* ---- recent history: latest commits from the same activity feed.
+   Static 2026-09-23 list in markup stays as the no-JS fallback. ---- */
+function renderHistory(d) {
+  const list = document.querySelector(".history-list");
+  if (!list) return;
+  const commits = (d.events || []).filter((ev) => ev.kind === "commit").slice(-8).reverse();
+  if (!commits.length) return;
+  list.innerHTML = commits.map((ev) => {
+    const msg = String(ev.text || "").split(" -- ").slice(1).join(" -- ") || ev.text || "";
+    return `<li><span class="h-time">${esc((ev.ts || "").slice(0, 10))}</span>` +
+      `<span class="h-msg">${esc(msg.slice(0, 140))}</span></li>`;
+  }).join("");
 }
 renderLivePulse();
 
