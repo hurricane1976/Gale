@@ -98,3 +98,30 @@ refreshEffects();
     }
   });
 })();
+
+/* pairing progress: counted live from the roster markup (pending = any
+   .mc-state that is neither two-way confirmed nor the local hub card). */
+(function initPairingProgress() {
+  const el = document.getElementById("pairing-progress");
+  if (!el) return;
+  const cards = [...document.querySelectorAll(".member-card")];
+  const remote = cards.filter((c) => {
+    const st = (c.querySelector(".mc-state")?.textContent || "").toLowerCase();
+    return !st.includes("vantage point");
+  });
+  const ok = remote.filter((c) => {
+    const st = (c.querySelector(".mc-state")?.textContent || "").toLowerCase();
+    return st.includes("two-way");
+  }).length;
+  const pct = remote.length ? Math.round((ok / remote.length) * 100) : 0;
+  el.innerHTML = `<span class="pp-label">${ok}/${remote.length} gale-side pairings two-way</span>` +
+    `<span class="pp-track" role="img" aria-label="${ok} of ${remote.length} pairings verified two-way">` +
+    `<i style="width:0%"></i></span>`;
+  const setW = () => {
+    const bar = el.querySelector(".pp-track i");
+    if (bar) bar.style.width = `${pct}%`;
+  };
+  if (REDUCED) setW();
+  else requestAnimationFrame(() => requestAnimationFrame(setW));
+  refreshEffects();
+})();

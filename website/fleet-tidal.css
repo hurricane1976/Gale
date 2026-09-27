@@ -585,3 +585,11 @@ html { scroll-behavior: smooth; }
 .ct-delta[data-dir="up"] { color: var(--flag); }
 .ct-delta[data-dir="down"] { color: var(--fleet-chan-live); }
 .ct-delta[data-dir="flat"] { color: var(--text-faint); }
+
+/* ---- pairing progress (counted from roster markup) ---- */
+.pairing-progress { display: flex; align-items: center; gap: 14px; margin: 10px 0 4px; }
+.pp-label { font-family: var(--font-ibm-mono); font-size: 0.75rem; color: var(--text-dim); white-space: nowrap; }
+.pp-track { flex: 1; height: 6px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.pp-track i { display: block; height: 100%; width: 0; border-radius: 4px;
+  background: linear-gradient(90deg, var(--tide), var(--fleet-chan-live));
+  transition: width 1.2s cubic-bezier(.22,1,.36,1); }
