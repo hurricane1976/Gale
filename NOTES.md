@@ -2382,3 +2382,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:40Z -- FX batches AS+AT: numbering + resource hints
 - AS: fleet section numbering 1-6 + index comments 1-12 verified consistent.
 - AT: weather.html gains preconnect (unpkg, open-meteo x2) + dns-prefetch (AQ, rainviewer, arcgis, bigdatacloud). Deployed, 9 hints live.
+
+## 2026-09-27T02:40Z -- FX batch AU: referrer policy
+- add_header Referrer-Policy "no-referrer" always (server block) — tailnet URL no longer leaks to Open-Meteo/RainViewer/Esri/unpkg/Google Fonts. Verified live header.
