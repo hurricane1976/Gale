@@ -1537,3 +1537,17 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   .alert-chip { animation: chip-in 0.35s var(--ease-out) both; }
 }
 @keyframes chip-in { from { opacity: 0; transform: translateY(4px); } }
+
+/* ---- fleet activity (24h) strip ---- */
+.fleet-24h-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 18px; }
+.fleet-24h-card { background: var(--glass); border: 1px solid var(--line); border-left: 3px solid var(--fh, var(--line-strong)); border-radius: 8px; padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+.fleet-24h-card.has-err { border-color: var(--warn-dim); border-left-color: var(--warn); }
+.fleet-24h-head { display: flex; align-items: center; gap: 8px; }
+.fleet-24h-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--fh, var(--text-faint)); box-shadow: 0 0 6px var(--fh, transparent); flex: none; }
+.fleet-24h-name { color: var(--text); font-size: 0.95rem; }
+.fleet-24h-note { color: var(--text-faint); font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fleet-24h-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+.fleet-24h-stat { display: flex; flex-direction: column; min-width: 0; }
+.fleet-24h-stat > span:first-child { font-family: var(--font-mono); color: var(--text); font-size: 0.92rem; white-space: nowrap; }
+.fleet-24h-stat.err > span:first-child { color: var(--warn); }
+.fleet-24h-sub { color: var(--text-faint); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }

@@ -618,6 +618,87 @@ async function tick() {
   const host = data ? hostAlerts(data) : [];
   const fleet = data ? await fleetAlerts() : [];
   renderAlertStrip([...fleet, ...host]);
+  renderFleet24h();
+}
+
+/* ---- fleet activity (24h) — polls api/fleet/metrics, one card per host ---- */
+const FLEET_FEED = "api/fleet/metrics";
+const FLEET_TTL = 30000;
+const FLEET_ORDER = ["gale", "tidal", "mountain", "beacon"];
+const FLEET_META = {
+  gale: { hue: "#ff8a3d", note: "fleet lead" },
+  tidal: { hue: "#3fc7ff", note: "tidalwake.org" },
+  mountain: { hue: "#8593f0", note: "mountainwake.org" },
+  beacon: { hue: "#ffc233", note: "beaconwake.com" },
+};
+let fleetCache = { at: 0, data: null, err: null };
+
+async function fetchFleet24h() {
+  if (Date.now() - fleetCache.at < FLEET_TTL && (fleetCache.data || fleetCache.err)) {
+    return { data: fleetCache.data, err: fleetCache.err };
+  }
+  try {
+    const res = await fetch(FLEET_FEED, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    fleetCache = { at: Date.now(), data: await res.json(), err: null };
+  } catch (e) {
+    fleetCache = { at: Date.now(), data: null, err: String(e.message || e) };
+  }
+  return { data: fleetCache.data, err: fleetCache.err };
+}
+
+function fleetAgo(iso) {
+  const s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+  if (!Number.isFinite(s)) return "–";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+function fleetMoney(v) {
+  if (v == null) return "–";
+  if (v === 0) return "$0.00";
+  return v < 10 ? `$${v.toFixed(2)}` : `$${v.toFixed(0)}`;
+}
+
+async function renderFleet24h() {
+  const grid = document.getElementById("fleet-24h-grid");
+  const fresh = document.getElementById("fleet-24h-fresh");
+  if (!grid) return;
+  const { data, err } = await fetchFleet24h();
+  if (!data) {
+    grid.innerHTML = `<p class="mini-note" style="grid-column:1/-1;color:var(--warn)">fleet metrics unreachable (${esc(err || "unknown")}) — see fleet.html</p>`;
+    if (fresh) fresh.textContent = "";
+    return;
+  }
+  const runs = data.runs_24h_by_host || {};
+  const cost = data.cost_24h_by_host || {};
+  const errs = data.error_runs_24h_by_host || {};
+  const last = data.last_wake_by_host || {};
+  const agents = data.agents_by_host || {};
+  grid.innerHTML = FLEET_ORDER.map((h) => {
+    const meta = FLEET_META[h] || { hue: "var(--text-faint)", note: "" };
+    const r = runs[h] ?? null, c = cost[h] ?? null, e = errs[h] || 0;
+    const agg = last[h] || null, n = (agents[h] || []).length;
+    return `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-host="${esc(h)}" style="--fh:${meta.hue}">
+      <header class="fleet-24h-head">
+        <span class="fleet-24h-dot" aria-hidden="true"></span>
+        <strong class="fleet-24h-name">${esc(h)}</strong>
+        <span class="fleet-24h-note">${esc(meta.note)} · ${n} agents</span>
+      </header>
+      <div class="fleet-24h-stats">
+        <div class="fleet-24h-stat"><span>${r == null ? "–" : r}</span><span class="fleet-24h-sub">runs 24h</span></div>
+        <div class="fleet-24h-stat"><span>${fleetMoney(c)}</span><span class="fleet-24h-sub">cost 24h</span></div>
+        <div class="fleet-24h-stat${e > 0 ? " err" : ""}"><span>${e > 0 ? `${e} err` : "0 err"}</span><span class="fleet-24h-sub">errors</span></div>
+        <div class="fleet-24h-stat"><span>${agg ? esc(fleetAgo(agg)) : "–"}</span><span class="fleet-24h-sub">last wake</span></div>
+      </div>
+    </article>`;
+  }).join("");
+  if (fresh) {
+    const gen = data.generated_at ? ` · metrics generated ${fleetAgo(data.generated_at)}` : "";
+    fresh.textContent = `refreshes every 30s${gen}`;
+  }
 }
 
 // keep the "Ns ago" freshness line moving between polls

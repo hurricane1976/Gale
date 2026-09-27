@@ -675,8 +675,26 @@ def metrics_envelope():
         cost.setdefault(h, {}).setdefault(d, 0.0)
         wak[h][d] += 1
         cost[h][d] += float(r.get("cost_usd") or 0)
-    status = fleet_status()
     since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    # per-host 24h summary + 14d agent roster (for the per-host fleet boards)
+    h_runs_24h, h_cost_24h, h_err_24h = {}, {}, {}
+    h_last, h_agents = {}, {}
+    for r in runs:
+        h = r.get("host")
+        if not h or h == "?":
+            continue
+        if r.get("agent"):
+            h_agents.setdefault(h, set()).add(r["agent"])
+        ts = r.get("ts") or ""
+        if (r.get("ts") or "") >= since:
+            h_runs_24h[h] = h_runs_24h.get(h, 0) + 1
+            h_cost_24h[h] = h_cost_24h.get(h, 0.0) + float(r.get("cost_usd") or 0)
+            if r.get("is_error"):
+                h_err_24h[h] = h_err_24h.get(h, 0) + 1
+        if ts > (h_last.get(h) or ""):
+            h_last[h] = ts
+
+    status = fleet_status()
     per_agent = []
     # Every locally-known agent plus any agent names that appear in remote
     # (Beacon-relayed) runs, so remote agents surface in per_agent_24h too.
@@ -714,6 +732,11 @@ def metrics_envelope():
         "days": days,
         "daily_wakings_by_host": {h: [wak.get(h, {}).get(d, 0) for d in days] for h in sorted(wak)},
         "daily_cost_by_host": {h: [round(cost.get(h, {}).get(d, 0.0), 4) for d in days] for h in sorted(cost)},
+        "runs_24h_by_host": dict(h_runs_24h),
+        "cost_24h_by_host": {h: round(v, 4) for h, v in h_cost_24h.items()},
+        "error_runs_24h_by_host": dict(h_err_24h),
+        "last_wake_by_host": dict(h_last),
+        "agents_by_host": {h: sorted(v) for h, v in h_agents.items()},
         "per_agent_24h": per_agent,
         "fleet_status": status,
         "generated_at": now_iso(),

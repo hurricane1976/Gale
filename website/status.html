@@ -70,6 +70,13 @@
 
     <div id="board" class="ops-board" hidden>
 
+      <section class="ops-panel span-full" id="sec-fleet-24h" aria-labelledby="h-fleet-24h">
+        <h2 id="h-fleet-24h" class="panel-title">Fleet activity &middot; 24h</h2>
+        <p class="sec-lede" style="margin-top:-6px">Per-host runs, cost and last wake from <code>api/fleet/metrics</code> &mdash; full sparklines and agent rosters live on <a href="fleet.html">fleet.html</a>.</p>
+        <div id="fleet-24h-grid" class="fleet-24h-grid"></div>
+        <p class="mini-note" id="fleet-24h-fresh"></p>
+      </section>
+
       <section class="ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
         <h2 id="h-vitals" class="panel-title">Host vitals &middot; <span id="hostname">&ndash;</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
