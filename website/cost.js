@@ -177,12 +177,45 @@ function biggestMover(d) {
   return best && best.delta > 0.005 ? best : null;
 }
 
-export function render(d) {
+export const FAM_COLOR = { claude: "var(--fleet-claude)", glm: "var(--fleet-glm)", gpt: "var(--fleet-openai)", qwen: "var(--fleet-qwen)" };
+const FAM_ORDER = ["claude", "glm", "gpt", "qwen"];
+
+function agentFamily() {
+  const m = {};
+  document.querySelectorAll(".member-card").forEach((c) => {
+    const n = (c.querySelector(".mc-name")?.textContent || "").trim().toLowerCase();
+    const f = (c.querySelector(".mc-chip")?.textContent || "").trim().toLowerCase();
+    if (n && f) m[n] = f;
+  });
+  return m;
+}
+
+export function familyStrip(d) {
+  const famOf = agentFamily();
+  const totals = {};
+  for (const a of d.per_agent_24h || []) {
+    const f = famOf[String(a.agent || "").toLowerCase()] || "other";
+    totals[f] = (totals[f] || 0) + (a.cost_24h || 0);
+  }
+  const order = FAM_ORDER.filter((f) => totals[f] > 0)
+    .concat(Object.keys(totals).filter((f) => !FAM_ORDER.includes(f) && totals[f] > 0));
+  const grand = order.reduce((s, f) => s + totals[f], 0);
+  if (!order.length || grand <= 0) return `<p class="hosts-wait">no cost by family yet</p>`;
+  return `<div class="fam-bar">` + order.map((f) =>
+    `<i style="width:${(totals[f] / grand * 100).toFixed(1)}%;background:${FAM_COLOR[f] || "var(--text-faint)"}" title="${esc(f)} ${esc(money(totals[f]))}"></i>`
+  ).join("") + `</div><div class="fam-keys">` + order.map((f) =>
+    `<span class="fam-key"><i style="background:${FAM_COLOR[f] || "var(--text-faint)"}"></i>${esc(f)} <b>${esc(money(totals[f]))}</b></span>`
+  ).join("") + `</div>`;
+}
+
+function render(d) {
   lastData = d;
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
   if (lbGrid) lbGrid.innerHTML = leaderboard(d);
   weekSummary(d);
+  const famEl = document.getElementById("fam-strip");
+  if (famEl) famEl.innerHTML = familyStrip(d);
   const stamp = d.generated_at ? ago(d.generated_at) : null;
   if (chartFresh) {
     const totals = (d.days || []).map((_, i) =>

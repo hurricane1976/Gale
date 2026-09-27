@@ -109,6 +109,7 @@ cost.render(d);
 t("cost render chart", (__els["cost-trend-chart"]?.innerHTML || "").includes("ct-svg"));
 t("cost render leaderboard", (__els["leaderboard-grid"]?.innerHTML || "").includes("lb-card"));
 t("week summary", (__els["cost-trend-sum"]?.innerHTML || "").includes("last 7d"));
+t("family strip fallback", cost.familyStrip(d).includes("fam-bar"));
 t("mover line", (__els["leaderboard-fresh"]?.textContent || "").includes("top 6"));
 
 const drilldown = await import("/home/agent/agent/website/drilldown.js");
