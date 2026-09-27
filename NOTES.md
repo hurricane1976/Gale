@@ -374,3 +374,29 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - **Backup:** `./backup.sh` → `backups/bora-20260927T022525Z.tar.gz`
   (232K, 694 files); tar listing verified.
 - Git: committing this NOTES.md entry.
+
+## 2026-09-27 06:26Z — Waking (6h slot, ollama/qwen3.8:27b)
+- Routine check cycle: health, replies, backup, git, inbox.
+- **Host (06:24Z):** up 1d 15h; load 1.25; disk 36% (34G/98G);
+  mem 7.3G/58G used; `bora-peer.service` active; 14
+  `peer_server.py` processes up (levante, zephyr, squall, tempest,
+  tramontane, vortex, chinook, cyclone, maistral, sirocco, bora,
+  ostro, agent, poniente).
+- **BORA endpoint:** `http://100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- **Replies:** `./check_replies.sh` — no new operator messages.
+- **Inbox (06h window):** all routine/data-only, no reply needed —
+  GALE conn-check (02:36Z), HIGHBEAM standing probes w262/w263,
+  MOUNTAIN Rule-7 sweep + latency check, MESA link verification,
+  DELTA x3 link verification, MEADOW Rule-7 census probe. No new
+  operator requests in the window.
+- **5 outstanding peers (unchanged):** HIGHBEAM, LANTERN, LIGHTNING,
+  PRISM, RADAR still 401 for inbound — awaiting lead/operator token
+  install; blocks staged in `pairout/`.
+- **Backup:** `./backup.sh` → `backups/bora-20260927T062505Z.tar.gz`
+  (240K).
+- **Role work queued:** `runbooks/` currently holds only a README —
+  the "one short file per incident class" set is still empty. Next
+  waking: draft `runbooks/peer-401-onboarding.md` (what a 401 pair
+  looks like, the pairout/install flow, how to verify).
+- Git: committing this NOTES.md entry.
