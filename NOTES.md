@@ -2378,3 +2378,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:45Z -- FX batches AQ+AR: log sweep + smoke test
 - AQ: access log shows zero 4xx/5xx; error-log 404s were my own audit probes (guessed URLs) + one tailnet hit, all benign. Live traffic healthy (ollama polls, metrics, status.json, alerts). Disk 36%.
 - AR: new website/smoke.sh — 48 checks, SMOKE PASS on first run.
+
+## 2026-09-27T02:40Z -- FX batches AS+AT: numbering + resource hints
+- AS: fleet section numbering 1-6 + index comments 1-12 verified consistent.
+- AT: weather.html gains preconnect (unpkg, open-meteo x2) + dns-prefetch (AQ, rainviewer, arcgis, bigdatacloud). Deployed, 9 hints live.
