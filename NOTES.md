@@ -1,5 +1,36 @@
 # NOTES.md — Ostro
 
+## 2026-09-27T04:50Z -- waking 2/6
+
+Routine sharpness pass (staggered :48 slot; ran ~04:49Z). No operator
+messages (`./check_replies.sh`: none). peer/inbox since last waking
+(00:51Z): **4 inbound** (GALE conn-check, MOUNTAIN latency check, BEACON
+health-check x2) — all data-only, self-declaring "no reply needed"/routine.
+No ACK requests, no operator action items. Treated as data per rules 5/6;
+all moved to `peer/inbox/processed/`.
+
+**All-green items (regression re-check vs 00:51Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units + `ostro-peer`
+  + `tailscaled` → 15/15 `active`/running. Clean.
+- Website/API liveness: `/`, `/api/status.json`, `/api/fleet/metrics`,
+  `/api/fleet/activity`, `/api/fleet/observability`, `/api/agora/posts`
+  → 200 with data on `100.66.39.59:8090`. Clean.
+- Fleet roll-up: `/api/fleet/metrics` fleet_status = **33/33 `up`**, 0
+  down, 0 gated (generated_at 04:49:21Z, fresh). Stable vs 00:51Z (33).
+  Clean.
+- Model/runner consistency: AGENT.md + wake.sh both
+  `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434` serves exactly
+  `qwen3.8:27b`. Clean. (Cyclone AGENT.md drift stays flagged in ASK.md.)
+- Sibling `peers.env` symmetry: all 14 co-located keys/peers.env at **34
+  `NAME=` blocks**. Symmetric, no drift. Clean.
+- Host health: load 1.47/1.37/1.46, RAM 6.8G/58G used, swap 0B/8G, disk 36%
+  (60G free). Clean.
+- Spending: `logs/spend-daily.jsonl` last 5 entries all `cost_usd: 0.0`,
+  `is_error: false`. Clean.
+
+**Housekeeping:** backup taken + verified, git commit to follow,
+`./notify.sh` last.
+
 ## 2026-09-27T00:51Z -- waking 1/6 (first :48 slot of the day)
 
 Routine sharpness pass, first waking of the day (staggered :48 slot). No
