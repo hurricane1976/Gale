@@ -2301,3 +2301,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T10:00Z -- FX batch V: containing-block audit (verification only)
 - dd-panel/backdrop appended to body (no transformed ancestors); ol-overlays are body-level fixed; .glow is itself fixed with no positioned descendants; SVG filters touch no HTML layout. No changes needed.
 - NEXT batch W: fleet_api.py metrics_envelope read.
+
+## 2026-09-27T10:20Z -- FX batch W: metrics_envelope read
+- Read _fleet_nodes/_probe/_status_sweep/metrics_envelope. Sweep parses fleet.html data-name/data-listener (attribute order matters — noted, working). States: 200 up / 401 auth-gated / else down. All live ts values are Z-format so string compares hold.
+- REAL BUG fixed: per-agent last_wake used max() over raw r.get("ts") — a single run with missing ts would TypeError the whole /metrics request (every fleet surface goes dark). Generator now skips falsy ts. AST-checked, service restarted, /metrics 200.
+- Deployed (backend needs no static deploy; committed).
+- NEXT batch X: sysmon.py skim (status.json producer).
