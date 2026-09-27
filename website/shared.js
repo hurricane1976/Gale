@@ -764,6 +764,21 @@ function registerServiceWorker() {
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("sw registration failed", e));
+    // Force the active worker to update immediately rather than waiting on
+    // navigation heuristics (installed PWAs can sit on an old worker for
+    // days otherwise): check on every load, activate new versions at once.
+    navigator.serviceWorker.ready.then((reg) => {
+      reg.update().catch(() => {});
+      reg.addEventListener("updatefound", () => {
+        const w = reg.installing;
+        if (!w) return;
+        w.addEventListener("statechange", () => {
+          if (w.state === "installed" && navigator.serviceWorker.controller) {
+            w.postMessage("gale:skip-waiting");
+          }
+        });
+      });
+    });
     initPushBell();
   });
 }

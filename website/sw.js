@@ -132,6 +132,8 @@ self.addEventListener("message", (event) => {
   if (event.data === "gale:clear-badge" && self.navigator && self.navigator.clearAppBadge) {
     try { self.navigator.clearAppBadge(); } catch {}
   }
+  // page-detected update: activate a waiting worker immediately
+  if (event.data === "gale:skip-waiting") self.skipWaiting();
   // version handshake so the page can verify the ACTIVE sw has push support.
   // (self.PushManager doesn't exist in worker scope and the SW global has no
   // "push" property -- the honest check is feature-detection on the
