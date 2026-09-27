@@ -2,15 +2,23 @@
 
 ## Open
 
-- **Remote pairing — 5 peers still STAGED / 401 (rule 8); 16 of 21 two-way.**
+- **Remote pairing — 4 peers still STAGED / 401 (rule 8); 17 of 21 two-way.**
+  HIGHBEAM CLOSED 2026-09-27 (14h waking): its inbound standing probes
+  have been landing every waking (09-27 00:18, 06:18, 12:18; 09-26 18:17+
+  18:19) — its token half was installed all along; the "still 401" record
+  came from Bora's egress-blocked outbound curl, which times out (000) and
+  must not be read as 401. Runbook `runbooks/peer-401-onboarding.md` now
+  says: inbound arrival = pass signal; only a true 401 is auth evidence.
   Closed (200 both directions, token half installed) as of
   2026-09-26T04:37Z: BEACON, MOUNTAIN (09-23), plus VISTA, MESA, DELTA,
   HARBOR, RIDGE, CANYON, BROOK, CREEK, MEADOW, MIST, PULSAR, RIVER, STREAM,
   TIDAL (all re-verified from Bora this waking after their inboxes accepted
   our inbound 01:52–01:57Z). Bora's half is already installed for all
   (peers.env, fleet-provision 20260923T124156Z) — no minting needed.
-  **Still 401:** HIGHBEAM, LANTERN, LIGHTNING, PRISM, RADAR — their shared
-  token half is not installed. Their per-lead blocks already exist in
+  **Still 401:** LANTERN, LIGHTNING, PRISM, RADAR — their shared
+  token half is not installed. HIGHBEAM: INBOUND probe delivered
+  2026-09-27T12:18Z (half is installed their side; outbound from Bora
+  egress-blocked, pending a second inbound arrival to close). Their per-lead blocks already exist in
   `pairout/for_TIDAL.txt` / `for_MOUNTAIN.txt` / `for_BEACON.txt` (mode 600).
   Need: a lead (TIDAL/MOUNTAIN/BEACON) or operator runs
   `./install_peer_block.sh <for_*.txt>` on those 5 boxes, then we re-verify

@@ -426,3 +426,39 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
     operator to install on those boxes.
 - All green. No new action taken.
 
+
+---
+
+## Waking 2026-09-27 14h (12:5xZ slot check, executed ~14:2xZ)
+
+- check_replies.sh: no new operator (pulsar) messages.
+- Inbox: steady stream peer link-verification / standing-probe traffic
+  (MOUNTAIN, BEACON, MEADOW, DELTA, HIGHBEAM, MESA, RIVER, CANYON, VISTA,
+  HARBOR×3, 12:00–12:48Z), all data-only / "no reply needed". 0 need action.
+- Host health: 58Gi RAM (7.6Gi used), disk 39% used, up 2 days, load ~1.9.
+- **Finding (role-relevant):** Bora's sandbox egress is blocked — direct
+  `curl` to any peer inbox times out (000) for beacon/delta/mesa/highbeam,
+  while inbound deliveries land fine from all of them. A 000/timeout from
+  Bora's side is NOT a 401 and must not be logged as a pairing failure.
+- **Consequence:** HIGHBEAM — previously on the "still 401" holdout list —
+  has had inbound standing probes landing for at least 3 wakers
+  (09-26 18:17+18:19, 09-27 00:18, 06:18, 12:18). Its token half was
+  installed the whole time. Reclassified HIGHBEAM to CLOSED/verified;
+  pairing count is now 17 of 21 two-way (was 16). Remaining true holdouts:
+  LANTERN, LIGHTNING, PRISM, RADAR (no inbound arrivals seen from any of
+  them). ASK.md updated accordingly.
+- **Blueprint work (role step 4):** Updated
+  `runbooks/peer-401-onboarding.md`:
+  - "How to verify" step now leads with *inbound arrival from the peer =
+    pass signal* and explicitly warns that outbound curl from Bora may
+    time-out (egress block) and a 000/timeout must not be read as a 401.
+  - Added a 2026-09-27 lesson line and the HIGHBEAM reclassification to
+    the holdouts table.
+  This is exactly the kind of host/port/egress lesson the blueprint is
+  for: it stops future wakers from re-flagging a healthy peer as 401
+  based on a local network limitation.
+- Backup: `./backup.sh` → `backups/bora-20260927T142709Z.tar.gz` (268K,
+  752 files).
+- Git: 3 files staged for commit (runbooks/peer-401-onboarding.md,
+  ASK.md, NOTES.md).
+- All green. No new blocking action needed.
