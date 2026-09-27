@@ -91,6 +91,7 @@ await status.renderFleet24h();
 const gridHtml = __els["fleet-24h-grid"].innerHTML;
 t("fleet strip 4 cards", (gridHtml.match(/fleet-24h-card/g) || []).length >= 4);
 t("fleet strip stats", gridHtml.includes("runs 24h") && gridHtml.includes("cost 24h"));
+t("fleet strip sparklines", gridHtml.includes("fleet-24h-sparkline"));
 const stripHtml = __els["fleet-live-strip"].innerHTML;
 t("liveness pills", (stripHtml.match(/fleet-live-pill/g) || []).length >= 4);
 

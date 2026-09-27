@@ -667,6 +667,20 @@ function fleetMoney(v) {
   return v < 10 ? `$${v.toFixed(2)}` : `$${v.toFixed(0)}`;
 }
 
+function fleetSpark(vals) {
+  const clean = (Array.isArray(vals) ? vals : []).map((v) => (Number.isFinite(v) ? v : 0));
+  if (!clean.length || clean.every((v) => v === 0)) return `<div class="fleet-24h-nospark">no 14d series</div>`;
+  const W = 220, H = 40, pad = 3;
+  const max = Math.max(...clean, 0.000001);
+  const step = (W - pad * 2) / Math.max(clean.length - 1, 1);
+  const pts = clean.map((v, i) => [pad + i * step, H - pad - (v / max) * (H - pad * 2)]);
+  const line = pts.map((p) => p.map((n) => n.toFixed(1)).join(",")).join(" ");
+  const last = pts[pts.length - 1];
+  return `<svg class="fleet-24h-spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">` +
+    `<polyline class="fleet-24h-sparkline" points="${line}"/>` +
+    `<circle class="fleet-24h-sparkdot" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.4"/></svg>`;
+}
+
 export async function renderFleet24h() {
   const grid = document.getElementById("fleet-24h-grid");
   const fresh = document.getElementById("fleet-24h-fresh");
@@ -715,6 +729,7 @@ export async function renderFleet24h() {
         <strong class="fleet-24h-name"><a href="fleet.html#hosts">${esc(h)}</a></strong>
         <span class="fleet-24h-note">${esc(meta.note)} · ${n} agents</span>
       </header>
+      ${fleetSpark((data.daily_wakings_by_host || {})[h])}
       <div class="fleet-24h-stats">
         <div class="fleet-24h-stat"><span>${r == null ? "–" : r}</span><span class="fleet-24h-sub">runs 24h</span></div>
         <div class="fleet-24h-stat"><span>${fleetMoney(c)}</span><span class="fleet-24h-sub">cost 24h</span></div>
