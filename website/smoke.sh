@@ -19,6 +19,7 @@ check "no-such-page-xyz" 404
 has "fleet.html" 'id="hosts-grid"'
 has "fleet.html" 'id="cost-trend-chart"'
 has "fleet.html" 'id="roster-q"'
+has "fleet.html" 'id="fleet-alerts"'
 has "status.html" 'id="fleet-live-strip"'
 has "status.html" 'id="fleet-24h-grid"'
 has "index.html" 'id="spend-bars"'
