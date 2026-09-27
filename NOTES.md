@@ -2291,3 +2291,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - drilldown.js full read: clean — agentColor reads computed --mc vars (safe sink), focus/Escape/overflow handling correct, empty states covered.
 - Deployed.
 - NEXT batch U: main.js full read (last module).
+
+## 2026-09-27T09:40Z -- FX batch U: main.js read + sticky fix
+- main.js read clean (esc at boundaries, guarded renders, static fallback preserved).
+- REAL BUG found by reasoning about containing blocks: `.reveal { will-change: transform }` permanently creates a containing block, which breaks ALL sticky/fixed descendants — including the index wake scrub stage (.wake-stage sticky inside #stats.reveal) and potentially drawer heads. Removed will-change from .reveal in both themes (transition still composes fine). [data-magnet]/.card will-change left: no sticky descendants, harmless.
+- Deployed.
+- NEXT batch V: continue site QA loop.
