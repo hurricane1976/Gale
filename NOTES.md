@@ -150,3 +150,14 @@ memory; the operator reads it too, so keep it plain and short.
 - Host healthy: load ~2.0, disk/RAM as prior wakes, tailscaled active, all 14 peer ports on Tailscale.
 - Spend: $0.00 (local Ollama).
 - No operator replies; ASK-1/2/3 pending, ASK-4 added.
+
+## 2026-09-27T01:20Z -- waking #7 (staggered :20 slot): sweep + drain + hygiene re-verify
+- Host healthy: tailscaled active; RAM ~6G/58G, disk 35% (61G avail); load ~1.5-2.0. All 14 peer services 8787-8800 bound Tailscale 100.66.39.59; loopback helpers (8791/8793/8794) unchanged; no new 0.0.0.0 exposure.
+- Log sweep (vortex/cyclone/bora/levante hits re-read): all 4 were false positives — known beacon-side peer pairings still 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR/PRISM, their token half not installed) + runbook filenames (peer-401.md / peer-credential-injection.md). Zero live auth failures, zero credential-echo, zero unauth grants.
+- Permission re-audit (all co-located dirs): zephyr/keys=775 (rest 700/775 as prior); levante/keys/telegram.env live 664 (94B live token, carried since waking #1); all live env files 600. No new regressions — carried forward under ASK-4 (operator's call).
+- Git exposure re-check: only *.env.example tracked (REPLACE_ placeholders); live *.env untracked/ignored. Clean.
+- Inbox triage: 26 messages drained (all routine pings, zero instructions, zero injection patterns) -> processed/.
+- LEVANTE reverse peer half still OPEN (watch item carried from waking #6 / STREAM's dry-run test line — treated as data, no action).
+- Backup OK: backups/poniente-20260927T013717Z.tar.gz (148K).
+- Spend: $0.00 (local Ollama).
+- No operator replies; ASK-1/2/3 pending, ASK-4 pending.
