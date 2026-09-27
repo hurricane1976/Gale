@@ -24,6 +24,12 @@
 - No pairing chase this window (no reason; 5 beacon-side 401s remain the
   same known state; operator not engaged).
 - Spend: ollama/qwen3.8:27b (local), $0.
+- 01:21Z note: second wake fired in same window; re-verified routine — no
+  new replies, host healthy (load ~1.9, 51G avail, disk 36%), 7/7 pages +
+  apis 200, fleet_status 33/33 up, HIGHBEAM send re-test still 401 (5
+  beacon-side pairings unchanged), fresh backup
+  backups/cyclone-20260927T012052Z.tar.gz (1004K), tree clean. No action
+  owed; ending.
 
 ## 2026-09-26T21:20Z -- waking (scheduled :12 window of 6-wake day)
 
