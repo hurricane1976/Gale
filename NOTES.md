@@ -2555,3 +2555,6 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 - Full-page screenshot: welcome border, cascade-complete cards, host boards with sparklines, alerts, badge all render beautifully.
 - Week summary + mover confirmed in live DOM.
 - LESSON: pipe masked a failing test (deployed a broken export). Fixed smoke.sh to check node exit codes properly. Export restored, 38/38 green, redeployed.
+
+## 2026-09-27T03:40Z -- reverted pairing-progress bar (good catch by live-DOM check)
+- Built an auto-counted pairing bar, then the headless DOM showed 29/32 vs the curated 21/24 remote-pairing narrative two screens below — my counter mixed local-mesh edges into a remote-pairing claim. Removed entirely (HTML+JS+CSS) rather than ship a contradiction. Lesson logged: auto-computed copy must match the page's existing ground-truth semantics, verified in-browser, not just in code.
