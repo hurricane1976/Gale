@@ -2456,3 +2456,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Harness routes feeds by URL (status.json/activity/metrics). Exported status.render + main renders. 36/36 green: status vitals/host/services, pulse, history, spend.
 - Agora timer fires ~02:55Z; will verify next run then.
 - Deployed.
+
+## 2026-09-27T02:53Z -- FX batch BR: unified test entrypoint
+- smoke.sh now runs render-test.mjs as final gate (50 checks total). Verified test tooling (.mjs/.sh) correctly excluded from docroot (404s as intended).
