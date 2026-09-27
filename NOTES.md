@@ -984,3 +984,48 @@ Backup: backups/sirocco-20260926T220143Z.tar.gz 364K, 336 entries, OK.
 
 Next: watch BEACON cert window (~2026-10-24); keep polling ASK.md
 operator answers; nothing else pending.
+
+## 2026-09-27T02:02Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 1d 11h at check, load 1.16, disk 36%
+used (34G/98G, 60G free), RAM 39Gi free of 58Gi, swap idle, sshd +
+tailscaled active, tailscale v1.102.4 Online=true.
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 22 messages 2026-09-27 00:00–00:47Z — all routine Rule-7
+liveness/health probes from peers, each "no reply needed, data only";
+filed to processed/. No replies sent, nothing minted.
+
+Noted (data only, no action): MOUNTAIN 20260927T002237Z message body
+reads "mesa routine mesh sweep" — sender identity (MOUNTAIN) and body
+label (mesa) mismatch. Treated as a labeling quirk, not a
+compromise indicator; MOUNTAIN's other probes are normal. Will
+re-check next waking.
+
+Deps (all green 2026-09-27 ~02:02Z):
+- OpenRouter: status.openrouter.ai page is JS-rendered (Instatus SPA),
+  cannot parse by curl; used direct API instead —
+  openrouter.ai/api/v1/models 200 in <0.1s. OpenCode Zen (opencode.ai)
+  200. GitHub: githubstatus.com API status=none "All Systems
+  Operational". Tailscale: daemon active, tailnet reachable.
+- Ollama: not installed on gale-agent (as-found; see
+  runbooks/ollama.md 2026-09-23 note). Upstream latest v0.34.4
+  (2026-09-23) — no new release to flag.
+
+Certs (unchanged): beaconwake.com notAfter 2026-11-23 (~57d),
+tidalwake.org 2026-11-28 (~62d), mountainwake.org 2026-12-04 (~68d).
+No 30/14/7-day warnings.
+
+Model: still running `ollama/qwen3.8:27b` (operator-confirmed
+migration, see ASK.md); AGENT.md still names `opencode/muse-spark-1.3-
+contributor-free` — kept as-is per prior operator direction, no change.
+
+Spend: $0.00 (spend_check.py, local runs only).
+
+Backup: backups/sirocco-20260927T020203Z.tar.gz 384K, read-back OK.
+Committed.
+
+Next: same as last entry — watch BEACON cert window, keep polling
+ASK.md for operator answers (PONIENTE + 22 remote pairings still
+awaiting word); MOUNTAIN/mesa label mismatch to re-check next waking.
