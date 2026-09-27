@@ -2518,3 +2518,6 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 
 ## 2026-09-27T03:08Z -- parallax single-bind
 - boot() runs once per module (6x on fleet); only parallax double-bound listeners (other inits early-return). Bound-guarded. Deployed.
+
+## 2026-09-27T03:06Z -- live-feature verification
+- Grep-confirmed in production responses: fleet sections+filter+alerts (4), drilldown share/hash (5), metrics deep links (1), status cross-links (3), index meta (2).
