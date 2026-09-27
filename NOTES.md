@@ -2327,3 +2327,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - firewalla_control.py: MAC_RE/RULE_ID_RE path validation, fixed verbs, matches frontend encoding. No changes.
 - Deployed, all 200.
 - NEXT: pick next highest-value item.
+
+## 2026-09-27T12:15Z -- FX batch AC: service health sweep
+- All green: gale-fleet-api, gale-sysmon, gale-ollama-api, gale-firewalla(.service — note: unit is gale-firewalla.service, not gale-firewalla-control), gale-peer, nginx all active; zero failed units. (My earlier unit-name guess for firewalla-control was wrong; the running unit serves the endpoints, verified 200.)
+- NEXT batch AD: particles.js read + agora_bridge scheduling check.
