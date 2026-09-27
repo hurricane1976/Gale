@@ -14,9 +14,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 sudo mkdir -p /var/www/gale
 sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js /var/www/gale/
+# dist/ has content-hashed chunk filenames (esbuild code splitting) -- `cp -r`
+# into an existing dist/ *merges*, so a stale hashed chunk from a previous
+# build never gets removed. Replace the whole directory instead.
+sudo rm -rf /var/www/gale/dist
 sudo cp -r "$SCRIPT_DIR"/dist /var/www/gale/
 sudo cp "$SCRIPT_DIR"/robots.txt /var/www/gale/ 2>/dev/null || true
-for icon in favicon.ico apple-touch-icon.png apple-touch-icon-precomposed.png; do
+sudo cp "$SCRIPT_DIR"/manifest.json /var/www/gale/ 2>/dev/null || true
+for icon in favicon.ico apple-touch-icon.png apple-touch-icon-precomposed.png icon-192.png icon-512.png icon-512-maskable.png; do
   sudo cp "$SCRIPT_DIR/$icon" /var/www/gale/ 2>/dev/null || true
 done
 sudo cp -r "$SCRIPT_DIR"/assets /var/www/gale/

@@ -8,6 +8,7 @@
    Run `npm run build` before `./deploy.sh` -- deploy.sh does this for you.
    `npm run watch` rebuilds on save during development. */
 import * as esbuild from "esbuild";
+import { rmSync } from "node:fs";
 
 const ENTRY_POINTS = [
   "main.js",         // index.html
@@ -40,6 +41,11 @@ const options = {
   chunkNames: "chunks/[name]-[hash]",
   logLevel: "info",
 };
+
+// esbuild doesn't clean its outdir -- every content change to a shared
+// chunk (e.g. editing shared.js) gets a new content hash, and the old
+// hashed file just sits there orphaned forever otherwise.
+rmSync("dist", { recursive: true, force: true });
 
 if (watch) {
   const ctx = await esbuild.context(options);

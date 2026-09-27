@@ -527,10 +527,22 @@ export function refreshEffects() {
 }
 
 /* ---- shared boot for both pages ---- */
+function registerServiceWorker() {
+  // Guarded the same way as <agent-card>: render-test.mjs imports this
+  // module under plain Node, where `navigator` doesn't exist (or exists
+  // partially, without serviceWorker) -- reference it unconditionally and
+  // every page's render tests go down with it.
+  if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("sw registration failed", e));
+  });
+}
+
 export function boot() {
   initStormCanvas();
   initProgressFallback();
   initClocks();
   initHeroParallax();
   refreshEffects();
+  registerServiceWorker();
 }
