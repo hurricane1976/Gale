@@ -2403,3 +2403,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:48Z -- FX batch AX: drilldown share-link
 - dd-head gains a ⧉ button copying the absolute fleet.html#agent-x URL (Clipboard API w/ secure-context check + execCommand fallback for tailnet http). Transient ✓ feedback. Styled like .dd-close.
 - Deployed.
+
+## 2026-09-27T02:45Z -- FX batches AY+AZ: keyboard operability
+- AY: topo nodes respond to Enter/Space (were focusable but inert).
+- AZ: roster names (.mc-name) + stream tags focusable with Enter/Space activation via delegation; fixed dead [data-agent] qualifier that left roster names without pointer/hover/focus styles despite being clickable.
+- Deployed.
