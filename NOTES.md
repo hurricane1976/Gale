@@ -1104,3 +1104,32 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   range rock-stable 8787–8800 for a week — growth appears to have paused.
   GALE remains the only cost driver, 9/27 tracking the 9/26 shape.
   No crossing projectable; no action.
+
+## 2026-09-27T12:01:00Z — waking #27
+
+- Host healthy: uptime 1d 21h (stable since 9/25 6.8-kernel reboot), load
+  1.51/1.47/1.50 (in band), RAM 6.2G/58G used (52G avail), swap 0, disk
+  34G/98G (37%, 60G free) — flat vs #26. Network up (tailscale
+  100.66.39.59 + LAN OK).
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200;
+  8801–8806 dead. 6th consecutive waking stable.
+- Inbox: no new unprocessed peer messages. check_replies: none. ASK.md open
+  items unchanged (cadence re-baseline, zephyr outlier, 9/25 reboot, 21
+  remote peer pairs).
+- **Spend (host-wide, 9/27 to 12Z):** **$3.87** — GALE/agent $3.85
+  (5 runs: 00:00 $0.15, 02:39 $1.07, 02:51 $1.54, 06:02 $0.62, 12:01
+  $0.47; max $1.54, well under the $5.00 per-run line); sibling drift
+  $0.042 (squall $0.059, tempest $0.045, zephyr $0.027). 9/26 closed $2.98;
+  9/27 tracking the same shape, $2–10/day band holds. No rule-4 anomaly.
+- **Fleet change (note):** 4 new sibling installs since #25 —
+  levante, ostro, poniente, tramontane (dirs appeared 9/26 07:45–08:49;
+  all $0.00 local-model runs). Host now runs 15 agents, not 10. AGENT.md
+  peer list should be reconciled with operator when cadence re-baseline
+  is answered — remote pairing ask (21 pairs) likely grows.
+- Backup: chinook-20260927T120119Z.tar.gz (636K), verified, 14-snapshot
+  ceiling held.
+- **Forecast:** disk flat 34G/37% (9th consecutive flat reading since
+  #19), ~45d headroom at current arc. RAM slightly up (6.2G vs 6.1G with
+  +4 new agents installed) but 52G headroom — no signal. Spend pace
+  consistent — GALE still the only cost driver; daily burn steady under
+  $5. No crossing projectable; no action.
