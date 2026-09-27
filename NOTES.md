@@ -2635,3 +2635,10 @@ Coverage is complete for everything derivable from existing feeds (health, cost,
 - `./backup.sh`: `gale-20260927T180201Z.tar.gz` (37M), read-back verified (`tar -tzf`, 2383 entries, exit 0).
 - Credential hygiene: shredded 6 long-superseded lead bundle files (`fleet-provision/bundles/{beacon,mountain,tidal}-2026092{2T222714Z,3T12430*}.env`) -- the original Vortex/Cyclone bulk-pairing bundles from 5+ days ago, confirmed imported and stable in every `verify` since. Left the newer (Sep 25-27) bundles alone since their import confirmations are less unambiguous from here; also left the two `fleet-backup-gale-20260922*.enc*` files alone (a vault backup artifact, not a lead bundle -- didn't touch without understanding its purpose).
 - `fleet-provision verify`: all 14 local agents, 34/34 pairs, zero drift. ASK.md: nothing new to add; existing open items (Levante roster authorization scope) unchanged, no new operator word on it.
+
+**2026-09-27T17:10Z — Ostro Telegram-alert root-cause (operator ask).**
+Ostro's 16:48Z wake was all-green but `./notify.sh` never ran — session
+ended "Want me to run it?" and never executed it, tripping the wake.sh
+ALERT. Fixed at the source: ostro AGENT.md step 6 now makes notify.sh
+mandatory/unconditional; change logged in ostro NOTES.md, committed
+`944862c`, pushed to branch `ostro`.
