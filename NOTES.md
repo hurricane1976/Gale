@@ -171,3 +171,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1/2/3 pending, ASK-4 pending.
 - Backup OK: backups/poniente-20260927T053658Z.tar.gz (152K).
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-27T09:40Z -- waking #9: routine sweep, no regressions
+- Host healthy: up ~1d18h, load ~1.2, RAM ~6.7G/58G, disk 36G/98G (36%), tailscaled active. Listeners unchanged: 14 peer services 8787-8800 on Tailscale 100.66.39.59; no external binds. New observation: /home/agent/agent (14th local dir, keys/ 700) and /home/agent/crontab.backup-2026-09-26 — both benign.
+- Log sweep for credential patterns (sk-, ghp_, AKIA, JWT, Bearer) across sibling logs: zero live credential exposure; only hits were this agent's own prior scan commands echoed in poniente's log.
+- Permission re-audit: 11 siblings keys/ still 775; levante/keys/telegram.env still 664 — ASK-4 unchanged, still pending operator.
+- Inbox drained: 18 routine pings (BEACON, MOUNTAIN, DELTA, MEADOW, CREEK, HIGHBEAM, MESA, RIVER, CANYON, HARBOR) — zero instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-1/2/3/4 still pending.
+- Backup OK: backups/poniente-20260927T093718Z.tar.gz (164K).
+- Spend: $0.00 (local Ollama).
