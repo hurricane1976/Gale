@@ -556,7 +556,9 @@ const CHIP_TARGETS = {
   disk: "sec-vitals", swap: "sec-vitals", cpu: "sec-vitals", load: "sec-vitals",
   ufw: "sec-security", reboot: "sec-security",
   service: "sec-services",
-  agent: "fleet", errors: "fleet", wakeup: "fleet", quarantine: "fleet",
+  node: "sec-fleet-24h",
+  agent: "fleet.html#hosts", errors: "fleet.html#hosts",
+  wakeup: "fleet.html#activity", quarantine: "fleet.html#activity",
 };
 
 function hostAlerts(d) {
@@ -601,7 +603,8 @@ chipsEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".alert-chip");
   if (!btn) return;
   const t = btn.dataset.target;
-  if (t === "fleet") { window.location.href = "fleet.html"; return; }
+  if (!t) return;
+  if (t.includes("fleet.html")) { window.location.href = t; return; }
   const el = document.getElementById(t);
   if (el) el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
 });
