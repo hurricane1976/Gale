@@ -2,7 +2,7 @@
    Data: Open-Meteo forecast + geocoding + air quality (no key),
    NWS alerts (US only), RainViewer radar tiles on Leaflet.
    No build step, vanilla ES module. Units + location persist in localStorage. */
-import { boot } from "./shared.js";
+import { boot, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -87,7 +87,8 @@ function rememberRecent(p) {
 }
 
 function setLocation(p) {
-  loc = { name: p.name, lat: +p.lat, lon: +p.lon };
+  // strip angle brackets: name flows into a Leaflet tooltip (innerHTML sink)
+  loc = { name: String(p.name).replace(/[<>]/g, ""), lat: +p.lat, lon: +p.lon };
   store.set("gale-wx-loc", loc);
   rememberRecent(loc);
   renderPresets();
@@ -163,8 +164,6 @@ function initGeoButtons() {
         const { latitude, longitude } = pos.coords;
         let name = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
         try {
-          const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=&count=1&format=json`);
-          void r;
           const g = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`).then((x) => x.json());
           if (g.city || g.locality) name = [g.city || g.locality, g.principalSubdivision].filter(Boolean).join(", ");
         } catch { /* keep coords */ }
@@ -293,6 +292,7 @@ function renderDaily(f) {
       `<div class="wx-range"><i style="width:${rangeW(f, i)}%;left:${rangeL(f, i)}%"></i></div>`;
     el.appendChild(card);
   });
+  refreshEffects();
 }
 function rangeW(f, i) {
   const all = [...f.daily.temperature_2m_max, ...f.daily.temperature_2m_min];
