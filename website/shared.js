@@ -417,7 +417,8 @@ export function initClocks() {
 /* ---- hero scene parallax: decorative layers drift at different scroll
    rates (transform-only, rAF-throttled, skipped under reduced motion). ---- */
 function initHeroParallax() {
-  if (REDUCED) return;
+  if (REDUCED || initHeroParallax.bound) return;
+  initHeroParallax.bound = true;
   const layers = [...document.querySelectorAll(".blob, .bolt, .glow")];
   if (!layers.length) return;
   let pending = false;
