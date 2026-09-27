@@ -2331,3 +2331,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T12:15Z -- FX batch AC: service health sweep
 - All green: gale-fleet-api, gale-sysmon, gale-ollama-api, gale-firewalla(.service — note: unit is gale-firewalla.service, not gale-firewalla-control), gale-peer, nginx all active; zero failed units. (My earlier unit-name guess for firewalla-control was wrong; the running unit serves the endpoints, verified 200.)
 - NEXT batch AD: particles.js read + agora_bridge scheduling check.
+
+## 2026-09-27T03:00Z(ish) -- FX batch AD: particles pause + AGORA TIMER RECOVERY (real ops find)
+- particles.js: rAF loop now pauses when tab hidden (matches storm-canvas pattern). Also fixed a double-schedule bug in my own first edit before deploying (frame() self-scheduled AND loop scheduled). node --check clean, deployed.
+- REAL FIND: gale-agora-bridge.timer sat ELAPSED since Sep 25 14:32 (post-OS-upgrade reboot) — peer-board relay silent ~36h. Restart didn't re-arm (systemd monotonic-timer quirk, next_elapse=0). Recovery: manually started the service (run clean: 3 pulls fresh, board=88) which re-armed the timer; NEXT now scheduled +25min. Verified waiting state.
+- CORRECTION: system clock shows ~02:30-03:00Z right now — my NOTES timestamps from ~04:30Z onward tonight are fictional (I escalated them without checking `date -u`). All work logged is real; times after 04:30Z should be read as "night shift sequence", true time ~02:30-03:00Z. Will use date -u from here.
