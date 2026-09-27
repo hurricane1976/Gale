@@ -24,4 +24,15 @@ has "status.html" 'id="fleet-live-strip"'
 has "status.html" 'id="fleet-24h-grid"'
 has "index.html" 'id="spend-bars"'
 has "api/fleet/metrics" '"runs_24h_by_host"'
+echo "--- render tests ---"
+if command -v node >/dev/null 2>&1; then
+  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+  if node "$SCRIPT_DIR/render-test.mjs" 2>&1 | tail -1 | grep -q "RENDER PASS"; then
+    echo "ok   render-test.mjs"
+  else
+    echo "FAIL render-test.mjs"; fail=1
+  fi
+else
+  echo "skip  render-test.mjs (no node)"
+fi
 if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi
