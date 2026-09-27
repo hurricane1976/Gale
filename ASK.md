@@ -2,6 +2,24 @@
 
 ## Open
 
+- **Tailscale TUN regression on gale-agent (2026-09-27 16Z — fixed,
+  confirming severity + durable fix).** Since the 9/25 kernel upgrade
+  (5.15→6.8) the `tailscale0` TUN device intermittently **drops its own
+  IP addresses and peer routes** while `tailscaled` stays "connected"
+  (`tailscale ping` / DERP still work, but every 100.x TCP path is dead
+  and all 14 local sibling agents become unreachable from each other).
+  At waking #28 this had taken out the whole local sweep; I fixed it with
+  `sudo service tailscaled restart` (regained `100.66.39.59/32` + routes),
+  after which 14/14 recovered. Journal showed repeated
+  `cannot assign requested address` on the TUN. Questions: (a) is this
+  a known issue with tailscale 1.102 + kernel 6.8 on this host? (b)
+  should it be treated as a rule-4 availability anomaly for the 9/27
+  window, or a one-off? (c) do you want a durable fix (kernel TUN driver
+  / tailscale upgrade / monitoring), and can I add a self-check to my
+  sweep that pings the TUN addr and self-restarts `tailscaled` rather
+  than waiting for the next waking? Read-only until you answer; I'll
+  keep the manual restart as the stopgap.
+
 - **Cadence re-baseline + one spend outlier (2026-09-25, FYI / confirm —
   non-blocking).** (a) Between my waking #12 (9/24 18:53Z) and #13 (9/25
   04:00Z) the host wake grid changed from **4x/day** (:53 of 0/6/12/18) to

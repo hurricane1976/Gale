@@ -1133,3 +1133,75 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   +4 new agents installed) but 52G headroom — no signal. Spend pace
   consistent — GALE still the only cost driver; daily burn steady under
   $5. No crossing projectable; no action.
+
+## 2026-09-27T16:10:00Z — waking #28
+
+- Host healthy: uptime 2d 1h, load 1.69/1.50/1.49 (in band), RAM 8.1G/58G
+  used (50G avail), swap 0, disk 40G/98G (40%, 57G free) — up 6G vs #27,
+  consistent with the 4 new sibling installs landing since 9/26. 25 agent
+  dirs now visible host-side (was 15).
+- **Tailscale connectivity regression (ANOMALY — fixed during waking).**
+  At waking start all 14 local peer ports (100.66.39.59:8787–8800) were
+  timing out even though `ss` showed the python listeners up and
+  `tailscale ping` still reached remote peers. Diagnosis: `tailscale0` had
+  lost both its IPv4 and IPv6 addresses entirely and all 100.x peer routes
+  were gone from the main table — traffic leaked to the LAN gateway.
+  Journal: repeat `Reconfig(down): 2 delete addr failures … cannot assign
+  requested address` + `peerapi: listen tcp4 100.66.39.59:0: bind: cannot
+  assign requested address`; tailscale0 sitting in state UNKNOWN. First
+  seen after the 9/25 5.15→6.8 kernel upgrade (correlation, not proven
+  causation). `tailscale down`/`up` reconnected the daemon (peers listed,
+  ping OK) but did not restore the TUN addr.
+  **Fix applied (operator-grade action, logging):** kernel TUN addr test
+  OK, then `sudo service tailscaled restart` → tailscale0 regained
+  `inet 100.66.39.59/32` and per-peer routes reinstalled. Sweep back to
+  14/14. Flagged in ASK.md so the operator can confirm it's benign / wants
+  a durable fix (could be fleet-wide, not local to this host).
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200;
+  8801+ dead (no listeners). Stable post-fix; HIGHBEAM remote probe
+  responded in 40ms.
+- Inbox: 21 peer messages read (all routine sweeps 12:00–12:48Z, no operator
+  content), archived → 475 total in processed/. check_replies: none.
+- **Spend (9/27 to 16Z):** ledger entries all $0.00 (local-model runs); no
+  alerts fired by spend_check.py. No rule-4 anomaly.
+- Backup: chinook-20260927T161019Z.tar.gz (664K), 14-snapshot ceiling held.
+- **Forecast:** disk 40G/40%, ~35d headroom at current arc (up from
+  34G/37% with 4 new agents; still well inside line). Load/RAM in band.
+  Tailscale TUN regression is the day's only capacity/availability event —
+  self-healed via daemon restart; will re-verify at next waking. No
+  crossing projected.
+
+## 2026-09-27T20:10:00Z — waking #29
+
+- Host healthy: uptime 2d 5h, load 1.88/2.05/2.10 (slightly warm vs
+  #28's 1.69 1-min; all within band), RAM 9.0G/58G used (49G avail),
+  swap 0B, disk 38G/98G (41%, 56G free) — used space dipped 2G vs #28
+  while pct ticked to 41% (df rounding across the 40G mark; no real
+  regression). 25 agent dirs host-side (unchanged since #26).
+- **Tailscale re-verify (follow-up to #28 ANOMALY):** tailscale0 still
+  holds `inet 100.66.39.59/32`, all peers active/direct on the 20:05Z
+  status check — TUN fix from #28 held 4h. Still flagged in ASK.md for
+  operator confirmation (correlated with 9/25 kernel upgrade; could be
+  fleet-wide).
+- **Peer sweep:** 21 inbox probes landed 18:00–18:46Z (MOUNTAIN ×8,
+  MEADOW ×4, HARBOR ×2, BEACON ×2, DELTA, MESA, CANYON, RIVER,
+  HIGHBEAM) — all routine Rule-7 / link-verification / census / latency
+  checks, zero operator content, zero replies needed. 21 archived → 496
+  total in processed/. check_replies: none.
+- **Peer message cadence note (capacity signal):** 21 messages in the
+  46-min window is ~50% higher than prior sweep batches (~12–14). MOUNTAIN
+  and MEADOW are each re-probing 3×/4× within 90s of each other — looks
+  like peer-side sweep retry loops rather than a fleet-wide surge.
+  Watching; if it persists 2+ wakenings, worth an operator nudge about
+  peer sweep dedup.
+- Spend: spend_check.py silent (no alerts, no new ledger entries this
+  window). 9/27 running total $3.87 as of #27; run-rate holds in the
+  $2–10/day band. No rule-4 anomaly.
+- Backup: chinook-20260927T200946Z.tar.gz (668K), verified, 14-snapshot
+  ceiling held.
+- **Forecast:** disk 38G/41%, ~33d headroom at current arc — flat
+  baseline for the 10th consecutive waking (the 4 new agents at #26-28
+  added ~6G one-time; arc since is flat). RAM 9.0G used, 49G headroom.
+  Load band-warm but inside line. Peer-message volume is the only
+  upward-trending metric; not a capacity driver, logged for the
+  operator-attention log. No crossing projectable; no action required.
