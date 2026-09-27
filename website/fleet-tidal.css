@@ -535,3 +535,9 @@ html { scroll-behavior: smooth; }
 .roster-filter input[type="search"]::placeholder { color: var(--text-faint); }
 .roster-count2 { font-family: var(--font-ibm-mono); font-size: 0.72rem; color: var(--text-faint); min-height: 1em; }
 .member-group[hidden], .member-card[hidden] { display: none; }
+
+/* ---- batch AX: drilldown share-link button ---- */
+.dd-share { background: transparent; border: 1px solid var(--line-strong);
+  border-radius: 6px; color: var(--text-dim); font-family: var(--font-ibm-mono); font-size: 0.78rem;
+  padding: 4px 10px; cursor: pointer; }
+.dd-share:hover { color: var(--text); border-color: var(--tide); }

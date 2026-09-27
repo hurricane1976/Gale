@@ -159,6 +159,7 @@ function render(agent) {
     <div class="dd-head">
       <span class="dd-dot" style="background:${color}"></span>
       <div><span class="dd-name">${esc(agent.agent || "?")}</span>${host ? `<span class="dd-sub">${esc(host)}</span>` : ""}</div>
+      <button type="button" class="dd-share" data-share="${esc(agent.agent || "")}" aria-label="Copy link to this agent">⧉</button>
       <button type="button" class="dd-close" aria-label="Close">✕</button>
     </div>
     <div class="dd-body">${stats}${spark}${runsHtml}</div>`;
@@ -188,7 +189,33 @@ function closeDrilldown() {
 
 let lastTrigger = null;
 
-panel.addEventListener("click", (e) => { if (e.target.closest(".dd-close")) closeDrilldown(); });
+panel.addEventListener("click", (e) => {
+  if (e.target.closest(".dd-close")) closeDrilldown();
+  const share = e.target.closest(".dd-share");
+  if (share) {
+    const url = `${location.origin}${location.pathname}#agent-${encodeURIComponent(share.dataset.share || "")}`;
+    const done = () => {
+      const old = share.textContent;
+      share.textContent = "✓";
+      setTimeout(() => { share.textContent = old; }, 1200);
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(done, () => fallbackCopy(url, done));
+    else fallbackCopy(url, done);
+  }
+});
+function fallbackCopy(text, done) {
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    done();
+  } catch { /* clipboard unavailable */ }
+}
 backdrop.addEventListener("click", closeDrilldown);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && panel.classList.contains("open")) closeDrilldown(); });
 
