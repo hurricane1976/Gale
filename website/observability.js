@@ -120,7 +120,7 @@ function renderLanes(d) {
         background:${famColor(r.model_family)}" title="${esc(`${a} w${r.waking_count} — $${(r.cost_usd || 0).toFixed(4)}`)}"></span>`;
     }).join("");
     return `<div class="obs-lane">
-      <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}">${esc(a || "?")}</span>
+      <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(a || "")}">${esc(a || "?")}</a></span>
       <span class="obs-lane-track">${dots}</span>
       <span class="obs-lane-count">${ar.length} runs</span>
     </div>`;
@@ -138,7 +138,7 @@ function renderExplorer(d) {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
     return `<tr${r.is_error ? ' class="err-row"' : ""}>
       <td>${esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
-      <td><span style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}">${esc(r.agent || "?")}</span></td>
+      <td><span style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(r.agent || "")}">${esc(r.agent || "?")}</a></span></td>
       <td>w${r.waking_count}</td>
       <td>${esc(r.model || "?")}<span class="obs-fam" style="background:${famColor(r.model_family)}"></span></td>
       <td>${dur}</td>

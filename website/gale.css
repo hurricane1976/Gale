@@ -1333,3 +1333,8 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   font-family: var(--font-mono); font-size: 0.82rem; padding: 9px 13px; }
 .mini-filter input[type="search"]:focus { outline: none; border-color: var(--gust); box-shadow: 0 0 0 3px var(--warn-dim); }
 .mini-filter input[type="search"]::placeholder { color: var(--text-faint); }
+
+/* ---- cross-link anchors keep surrounding typography ---- */
+.spend-host a, .obs-lane-name a { color: inherit; text-decoration: none; }
+.spend-host a:hover, .obs-lane-name a:hover,
+.spend-host a:focus-visible, .obs-lane-name a:focus-visible { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }

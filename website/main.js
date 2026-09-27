@@ -169,7 +169,7 @@ export async function renderSpend() {
     bars.innerHTML = totals.length
       ? totals.map(([h, v]) => `
         <div class="spend-row">
-          <span class="spend-host">${esc(h)}</span>
+          <span class="spend-host"><a href="metrics.html">${esc(h)}</a></span>
           <span class="spend-track"><i style="width:${(v / max * 100).toFixed(1)}%;background:${HOST_COLOR[h] || "var(--flag)"}"></i></span>
           <span class="spend-val">$${v.toFixed(2)}</span>
         </div>`).join("")
