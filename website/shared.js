@@ -824,7 +824,10 @@ async function initPushBell() {
           navigator.serviceWorker.controller.postMessage("gale:ping", [ch.port2]);
         });
         const t = document.getElementById("push-test");
-        if (t) t.title = `sw ${pong.version} · push handler: ${pong.push ? "yes" : "MISSING"}`;
+        if (t) {
+          // visible, not just tooltip: sw version + handler presence
+          t.textContent = `test (sw ${pong.version} ${pong.push ? "✓" : "✗ no push handler"})`;
+        }
         console.log(`sw: ${pong.version}, push handler: ${pong.push ? "yes" : "MISSING — close and reopen the app"}`);
       }
     };
