@@ -156,7 +156,7 @@ function render(agent) {
   panel.innerHTML = `
     <div class="dd-head">
       <span class="dd-dot" style="background:${color}"></span>
-      <div><span class="dd-name">${esc(agent.agent)}</span>${host ? `<span class="dd-sub">${esc(host)}</span>` : ""}</div>
+      <div><span class="dd-name">${esc(agent.agent || "?")}</span>${host ? `<span class="dd-sub">${esc(host)}</span>` : ""}</div>
       <button type="button" class="dd-close" aria-label="Close">✕</button>
     </div>
     <div class="dd-body">${stats}${spark}${runsHtml}</div>`;

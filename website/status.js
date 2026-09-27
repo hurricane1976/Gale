@@ -69,11 +69,11 @@ function renderVitals(d) {
 function renderHostInfo(d) {
   const h = d.host;
   document.getElementById("host-info").innerHTML = [
-    ["OS", esc(h.os)],
-    ["Kernel", esc(h.kernel)],
-    ["Arch", esc(h.arch)],
-    ["Hostname", esc(h.hostname)],
-    ["Boot time", esc(h.boot_time)],
+    ["OS", esc(h.os || "–")],
+    ["Kernel", esc(h.kernel || "–")],
+    ["Arch", esc(h.arch || "–")],
+    ["Hostname", esc(h.hostname || "–")],
+    ["Boot time", esc(h.boot_time || "–")],
   ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
 }
 

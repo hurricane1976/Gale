@@ -75,7 +75,7 @@ function hostBoard(h, d) {
       <div class="hb-stat"><span class="hb-stat-l">${errs > 0 ? `${errs} err` : "0 err"}</span><span class="hb-stat-sub">errors</span></div>
       <div class="hb-stat"><span class="hb-stat-l">${last ? esc(fmtAgo(last)) : "–"}</span><span class="hb-stat-sub">last wake</span></div>
     </div>
-    <div class="hb-agents">${agents.map((a) => `<span class="hb-chip">${esc(a)}</span>`).join("")}<span class="hb-agents-n">${agents.length} agents</span></div>
+    <div class="hb-agents">${agents.map((a) => `<span class="hb-chip">${esc(a || "?")}</span>`).join("")}<span class="hb-agents-n">${agents.length} agents</span></div>
   </article>`;
 }
 

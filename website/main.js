@@ -181,7 +181,7 @@ async function renderSpend() {
     agents.innerHTML = top.length
       ? top.map((a) => `
         <li class="spend-agent-row">
-          <span class="spend-agent-name">${esc(a.agent)}</span>
+          <span class="spend-agent-name">${esc(a.agent || "?")}</span>
           <span class="spend-agent-runs">${a.runs_24h} run${a.runs_24h === 1 ? "" : "s"}</span>
           <span class="spend-agent-cost">$${a.cost_24h.toFixed(4)}</span>
         </li>`).join("")

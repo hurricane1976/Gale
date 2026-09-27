@@ -54,7 +54,7 @@ function renderStats(d) {
   const t = d.totals;
   const errs = d.runs.filter((r) => r.is_error).length;
   $("stats-grid").innerHTML = [
-    statCard("Runs", d.count, `since ${esc(d.instrumented_since)}`),
+    statCard("Runs", d.count, `since ${esc(d.instrumented_since || "–")}`),
     statCard("Total cost", `$${t.cost_usd.toFixed(4)}`, "all local runs"),
     statCard("Mean cost / run", `$${t.mean_cost_usd.toFixed(4)}`, d.count ? `across ${d.count} runs` : ""),
     statCard("Total tokens", fmtTok(t.total_tokens), "in + out + cache-read"),
@@ -120,7 +120,7 @@ function renderLanes(d) {
         background:${famColor(r.model_family)}" title="${esc(`${a} w${r.waking_count} — $${(r.cost_usd || 0).toFixed(4)}`)}"></span>`;
     }).join("");
     return `<div class="obs-lane">
-      <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}">${esc(a)}</span>
+      <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}">${esc(a || "?")}</span>
       <span class="obs-lane-track">${dots}</span>
       <span class="obs-lane-count">${ar.length} runs</span>
     </div>`;
@@ -131,16 +131,16 @@ function renderExplorer(d) {
   const sel = $("agent-filter");
   const agents = agentNames(d.totals);
   const cur = sel.value;
-  sel.innerHTML = `<option value="">all agents</option>` + agents.map((a) => `<option${a === cur ? " selected" : ""}>${esc(a)}</option>`).join("");
+  sel.innerHTML = `<option value="">all agents</option>` + agents.map((a) => `<option${a === cur ? " selected" : ""}>${esc(a || "?")}</option>`).join("");
   const rows = d.runs.filter((r) => !filter || r.agent === filter).slice().reverse();
   $("run-count").textContent = d.count;
   $("runs-table").querySelector("tbody").innerHTML = rows.map((r) => {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
     return `<tr${r.is_error ? ' class="err-row"' : ""}>
       <td>${esc(r.ts.slice(5, 16).replace("T", " "))}</td>
-      <td><span style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}">${esc(r.agent)}</span></td>
+      <td><span style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}">${esc(r.agent || "?")}</span></td>
       <td>w${r.waking_count}</td>
-      <td>${esc(r.model)}<span class="obs-fam" style="background:${famColor(r.model_family)}"></span></td>
+      <td>${esc(r.model || "?")}<span class="obs-fam" style="background:${famColor(r.model_family)}"></span></td>
       <td>${dur}</td>
       <td>${fmtTok(r.input_tokens)} / ${fmtTok(r.output_tokens)}</td>
       <td>$${(r.cost_usd || 0).toFixed(4)}</td>
@@ -155,7 +155,7 @@ function renderSilent(d) {
   const zeroTok = d.runs.filter((r) => !r.is_error && !r.output_tokens);
   const items = [];
   if (!errs.length) items.push(`<div class="silent-ok">No error runs in the local envelope. Shell-side guards also cover exit-0 sessions that never reported &mdash; those fire before this feed would see them.</div>`);
-  errs.forEach((r) => items.push(`<div class="silent-err"><strong>${esc(r.agent)} w${r.waking_count}</strong> at ${esc(r.ts)} &mdash; terminal reason: <code>${esc(r.terminal_reason || "?")}</code></div>`));
+  errs.forEach((r) => items.push(`<div class="silent-err"><strong>${esc(r.agent || "?")} w${r.waking_count}</strong> at ${esc(r.ts || "?")} &mdash; terminal reason: <code>${esc(r.terminal_reason || "?")}</code></div>`));
   if (zeroTok.length) items.push(`<div class="silent-warn">${zeroTok.length} run(s) finished without any output tokens &mdash; worth a look.</div>`);
   items.push(`<div class="mini-note">Checked against ${d.count} local runs &middot; refreshes every 30s &middot; errors here are terminal states visible in the artifacts; crashes that produced no artifact page as shell alerts instead.</div>`);
   $("silent").innerHTML = items.join("");

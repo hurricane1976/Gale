@@ -122,7 +122,7 @@ function renderStatus(d) {
     const lvl = state === "up" ? "ok" : state === "down" ? "crit" : "warn";
     html += `<div class="metrics-status-group"><h3 class="metrics-status-h" data-level="${lvl}">${esc(state)} <span>${list.length}</span></h3>
       <div class="metrics-status-nodes">${list.map(([n, st]) =>
-        `<span class="metrics-node" title="${esc(st.listener)} (HTTP ${st.code ?? "-"})">
+        `<span class="metrics-node" title="${esc(st.listener || "?")} (HTTP ${st.code ?? "-"})">
            <i class="obs-led" style="background:${lvl === "ok" ? "var(--ok)" : lvl === "crit" ? "var(--flag)" : "var(--warn)"}"></i>${esc(n)}
          </span>`).join("")}</div></div>`;
   });
