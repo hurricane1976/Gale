@@ -775,7 +775,8 @@ def alerts_envelope():
         if not state.startswith("up"):
             alerts.append({"sev": "crit", "kind": "node-down",
                            "text": f"{name} is down (listener {info.get('listener', '?')}, {state})"})
-    per_agent = metrics_envelope().get("per_agent_24h", [])
+    env = metrics_envelope()
+    per_agent = env.get("per_agent_24h", [])
     week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ")
     day_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
     for a in per_agent:
@@ -783,6 +784,20 @@ def alerts_envelope():
         if errs:
             alerts.append({"sev": "warn", "kind": "agent-errors",
                            "text": f"{a.get('agent', '?')}: {errs} failed waking(s) in the last 24h"})
+    day_costs = [0.0] * 14
+    for series in (env.get("daily_cost_by_host") or {}).values():
+        for i, v in enumerate((series or [])[:14]):
+            try:
+                day_costs[i] += float(v or 0)
+            except (TypeError, ValueError):
+                pass
+    if len(day_costs) >= 8:
+        cost24 = sum(a.get("cost_24h") or 0 for a in per_agent)
+        avg7 = sum(day_costs[-8:-1]) / 7
+        if avg7 >= 2.0 and cost24 >= 2.0 * avg7:
+            sev = "crit" if cost24 >= 4.0 * avg7 else "warn"
+            alerts.append({"sev": sev, "kind": "cost-spike",
+                           "text": f"fleet spend ${cost24:.2f} in 24h ({cost24 / avg7:.1f}x the 7d daily avg ${avg7:.2f})"})
     for a in per_agent:
         last = a.get("last_wake")
         if last and last < week_ago:

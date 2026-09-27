@@ -558,6 +558,7 @@ const CHIP_TARGETS = {
   service: "sec-services",
   node: "sec-fleet-24h",
   agent: "fleet.html#hosts", errors: "fleet.html#hosts",
+  cost: "fleet.html#cost-trend",
   wakeup: "fleet.html#activity", quarantine: "fleet.html#activity",
 };
 
