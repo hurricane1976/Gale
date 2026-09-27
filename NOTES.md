@@ -2211,3 +2211,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - New website/404.html (storm-themed, grad-text hero, nav chips, boots shared.js for canvas) + `error_page 404 /404.html` in sites-enabled/gale. Verified: missing URL -> 404 status + branded body (first test raced the reload; reloaded and re-verified).
 - New website/robots.txt (Disallow: / — tailnet-only dashboards) + deploy.sh copies it (was html/css/js/assets only).
 - NEXT batch G: ideas — stale-content audit (model-family mismatch index vs fleet?), dead CSS sweep, JS size diet.
+
+## 2026-09-27T04:30Z -- content discrepancy found (NO change made, needs operator)
+- index.html vs fleet.html disagree on tidal-host models: index lists Creek/Stream as DeepSeek (hero chips claim DeepSeek x2, GLM x13, no Mist) while fleet.html roster lists Creek/Stream as GLM + Mist as GPT (totals: GLM x15, GPT x5, DeepSeek x0). Fleet roster sums to 33 either way (5/15/5/8 vs claimed 5/13/5/8/2).
+- Checked api/fleet/observability for ground truth: covers ONLY the 12 gale-host agents (289 runs), zero rows for any tidal/beacon/mountain agent. No telemetry evidence either way. Leaving curated content untouched — operator please confirm: are Creek/Stream DeepSeek or GLM, and does Mist exist?
