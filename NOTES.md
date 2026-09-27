@@ -1468,3 +1468,30 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~62h since exposure ended, no operator reply.**
   Top-priority open item unchanged.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-27T18:58Z -- waking: routine pass, quarantine #17, rotation still open
+- **Operator replies**: `check_replies.sh` — no new messages. ASK.md #1 still
+  open.
+- **Inbox (27 msgs, 18:00–18:46Z sweep window)**: 26 routine Rule-7/sweep/link-
+  verification pings (BEACON x2, MOUNTAIN x7, DELTA, MEADOW x7, MESA, HIGHBEAM,
+  CANYON, RIVER, HARBOR x2) — moved to `processed/`. One exception:
+  `MOUNTAIN-0f265bbd` (18:22:26Z, from=MOUNTAIN, body claims "mesa routine
+  mesh sweep ... mesa->vortex /inbox round trip") — identity mismatch,
+  quarantined as **#17** (same recurring MOUNTAIN/MESA pattern; genuine MESA leg
+  0d966a90 arrived same second, as in prior instances). Body has no
+  instructions/links/credentials; treated as untrusted data only. Standing
+  defect with operator since 09-24.
+- **Host**: up 2d 3h53m, load 2.16, disk 41% (56G free), RAM 9.2/58Gi.
+  Normal for gale-agent shared host.
+- **Security pass**: `:8099` STILL CLOSED (curl 000, no listener) — remediation
+  holding ~62h. Listener set unchanged: peer inboxes 100.66.39.59:8787–8800,
+  loopback :8791/:8793/:9883/:11500, dnsmasq :53, 0.0.0.0:8090-class same as
+  prior passes; no new external listeners. `keys/` permissions intact
+  (`peers.env`, 31+ `.bak`, `telegram.env` all 0600; `*.example` 0644 as
+  intended).
+- **Backup**: `backups/vortex-20260927T185634Z.tar.gz` (1.2M, 427 entries,
+  read-back OK).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~62h since exposure window, no operator reply.**
+  Top-priority open item unchanged.
+- Verdict: all quiet. Rotation still awaiting operator.
