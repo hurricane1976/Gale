@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v5";
+const CACHE_VERSION = "gale-v6";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -116,21 +116,32 @@ self.addEventListener("push", (event) => {
   try { data = event.data ? event.data.json() : {}; } catch { /* keep defaults */ }
   const title = data.title || "GALE — fleet alert";
   event.waitUntil((async () => {
-    if (self.navigator && self.navigator.setAppBadge && data.count != null) {
-      try { await self.navigator.setAppBadge(Math.max(1, data.count)); } catch {}
-    }
-    await self.registration.showNotification(title, {
+    // showNotification FIRST and alone -- on iOS, if anything before it in
+    // the waitUntil chain rejects or hangs, the push is consumed silently
+    // (Apple shows nothing and reports nothing). Badge after, best-effort.
+    const opts = {
       body: data.body || "A fleet alert fired.",
-      tag: data.sev === "crit" ? "gale-crit" : "gale-alert", // replace, don't stack
-      // NOTE: no renotify/requireInteraction -- both are desktop-ism options
-      // that iOS ignores at best and (renotify+tag combos) has been reported
-      // to silently drop over web push. Deliver plain; iOS banners handle it.
       badge: "/icon-192.png",
       icon: "/icon-192.png",
       data: { url: data.url || "/status.html" },
-    });
+    };
+    if (data.sev === "crit") opts.tag = "gale-crit";
+    try {
+      await self.registration.showNotification(title, opts);
+    } catch (e) {
+      // a failing icon/badge fetch can reject showNotification on iOS --
+      // retry bare (text-only), which always displays
+      try { await self.registration.showNotification(title, {
+        body: opts.body, data: opts.data }); } catch {}
+    }
+    try {
+      if (self.navigator && self.navigator.setAppBadge && data.count != null) {
+        await self.navigator.setAppBadge(Math.max(1, data.count));
+      }
+    } catch { /* badge is cosmetic */ }
   })());
 });
+self.addEventListener("push", (event) => { /* legacy handler removed -- single push listener above */ });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
