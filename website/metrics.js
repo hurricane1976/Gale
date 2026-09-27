@@ -40,17 +40,41 @@ function statCard(label, value, sub, lvl = "ok", href = null) {
 }
 
 export function renderAgentCards(d) {
-  $("agent-grid").innerHTML = d.per_agent_24h.map((a) => {
+  const q = (agentQuery || "").trim().toLowerCase();
+  const rows = [...(d.per_agent_24h || [])]
+    .filter((a) => !q || String(a.agent || "").toLowerCase().includes(q))
+    .map((a) => {
     const lvl = a.error_runs_24h > 0 ? "warn" : "ok";
     return statCard(
       a.agent || "?",
       `${a.runs_24h} run${a.runs_24h === 1 ? "" : "s"}`,
-      `$${a.cost_24h.toFixed(4)} &middot; last wake ${a.last_wake ? esc(fmtAgo(a.last_wake)) : "&ndash;"}` +
+      `$${(a.cost_24h ?? 0).toFixed(4)} &middot; last wake ${a.last_wake ? esc(fmtAgo(a.last_wake)) : "&ndash;"}` +
       (a.error_runs_24h ? ` &middot; <strong>${a.error_runs_24h} error</strong>` : ""),
       lvl,
       a.agent ? `fleet.html#agent-${encodeURIComponent(a.agent)}` : null
     );
-  }).join("");
+  });
+  $("agent-grid").innerHTML = rows.join("") ||
+    `<p class="mini-note">No agents match “${esc(agentQuery)}”.</p>`;
+}
+
+let agentQuery = "";
+const agentQ = $("agent-q");
+if (agentQ) {
+  agentQ.addEventListener("input", () => {
+    agentQuery = agentQ.value;
+    if (DATA) renderAgentCards(DATA);
+  });
+  agentQ.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { agentQ.value = ""; agentQuery = ""; if (DATA) renderAgentCards(DATA); }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
+        !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) {
+      e.preventDefault();
+      agentQ.focus();
+    }
+  });
 }
 
 function stackedBars(series, labelFmt) {

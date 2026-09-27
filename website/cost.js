@@ -16,6 +16,8 @@ const legendEl = document.getElementById("cost-trend-legend");
 const chartFresh = document.getElementById("cost-trend-fresh");
 const lbGrid = document.getElementById("leaderboard-grid");
 const lbFresh = document.getElementById("leaderboard-fresh");
+let selectedHost = null;
+let lastData = null;
 
 export function money(v) {
   if (v == null || !isFinite(v)) return "–";
@@ -59,8 +61,9 @@ export function trendChart(d) {
   const lines = hosts.map((h) => {
     const pts = days.map((_, i) => `${X(i).toFixed(1)},${Y(byHost[h][i] || 0).toFixed(1)}`).join(" ");
     const last = days.length - 1;
-    return `<polyline class="ct-line" points="${pts}" style="--ch:${hue(h)}"><title>${esc(h)} 14d: ${money(byHost[h].reduce((s, v) => s + (v || 0), 0))}</title></polyline>` +
-      `<circle class="ct-dot" cx="${X(last).toFixed(1)}" cy="${Y(byHost[h][last] || 0).toFixed(1)}" r="3" style="--ch:${hue(h)}"/>`;
+    const dim = selectedHost && selectedHost !== h;
+    return `<polyline class="ct-line${dim ? " dim" : ""}" points="${pts}" style="--ch:${hue(h)}"><title>${esc(h)} 14d: ${money(byHost[h].reduce((s, v) => s + (v || 0), 0))}</title></polyline>` +
+      `<circle class="ct-dot${dim ? " dim" : ""}" cx="${X(last).toFixed(1)}" cy="${Y(byHost[h][last] || 0).toFixed(1)}" r="3" style="--ch:${hue(h)}"/>`;
   }).join("");
   const tPts = totals.map((t, i) => `${X(i).toFixed(1)},${Y(t).toFixed(1)}`).join(" ");
   const total = `<polyline class="ct-total" points="${tPts}"><title>${esc(`fleet total 14d: ${money(totals.reduce((s, v) => s + v, 0))}`)}</title></polyline>`;
@@ -74,8 +77,23 @@ function trendLegend(d) {
   );
   legendEl.innerHTML = hosts.map((h) => {
     const t = (byHost[h] || []).reduce((s, v) => s + (v || 0), 0);
-    return `<span class="ct-key"><i class="ct-swatch" style="background:${hue(h)}"></i>${esc(h)} <b>${esc(money(t))}</b></span>`;
+    const sel = selectedHost === h;
+    return `<button type="button" class="ct-key" data-host="${esc(h)}" aria-pressed="${sel ? "true" : "false"}" title="isolate ${esc(h)}">` +
+      `<i class="ct-swatch" style="background:${hue(h)}"></i>${esc(h)} <b>${esc(money(t))}</b></button>`;
   }).join("") + `<span class="ct-key ct-key-total"><i class="ct-swatch ct-swatch-total"></i>fleet total</span>`;
+}
+
+if (legendEl) {
+  legendEl.addEventListener("click", (e) => {
+    const btn = e.target.closest(".ct-key[data-host]");
+    if (!btn) return;
+    const h = btn.dataset.host;
+    selectedHost = selectedHost === h ? null : h;
+    if (chartEl && chartEl.dataset.loaded && lastData) {
+      chartEl.innerHTML = trendChart(lastData);
+      trendLegend(lastData);
+    }
+  });
 }
 
 function agentHostMap(d) {
@@ -156,6 +174,7 @@ function biggestMover(d) {
 }
 
 export function render(d) {
+  lastData = d;
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
   if (lbGrid) lbGrid.innerHTML = leaderboard(d);

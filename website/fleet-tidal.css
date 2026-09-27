@@ -585,3 +585,12 @@ html { scroll-behavior: smooth; }
 .ct-delta[data-dir="up"] { color: var(--flag); }
 .ct-delta[data-dir="down"] { color: var(--fleet-chan-live); }
 .ct-delta[data-dir="flat"] { color: var(--text-faint); }
+
+/* ---- selectable legend (isolate host) ---- */
+button.ct-key { background: none; border: 1px solid transparent; border-radius: 999px;
+  padding: 3px 10px; cursor: pointer; font: inherit; }
+button.ct-key:hover { border-color: var(--line-strong); }
+button.ct-key[aria-pressed="true"] { border-color: var(--tide); background: rgba(63, 199, 255, 0.08); }
+button.ct-key:focus-visible { outline: 2px solid var(--tide); outline-offset: 2px; }
+.ct-line.dim, .ct-dot.dim { opacity: 0.12; }
+.ct-line, .ct-dot { transition: opacity 0.3s; }

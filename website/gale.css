@@ -1325,3 +1325,11 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   50% { box-shadow: 0 0 0 6px rgba(232, 72, 44, 0); } }
 @media (prefers-reduced-motion: no-preference) {
   .alert-chip--crit { animation: chip-crit-pulse 2.2s ease-in-out infinite; } }
+
+/* ---- mini filter input (metrics agent grid) ---- */
+.mini-filter { margin: 0 0 14px; max-width: 380px; }
+.mini-filter input[type="search"] { width: 100%; background: var(--surface-2);
+  border: 1px solid var(--line-strong); border-radius: 8px; color: var(--text);
+  font-family: var(--font-mono); font-size: 0.82rem; padding: 9px 13px; }
+.mini-filter input[type="search"]:focus { outline: none; border-color: var(--gust); box-shadow: 0 0 0 3px var(--warn-dim); }
+.mini-filter input[type="search"]::placeholder { color: var(--text-faint); }
