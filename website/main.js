@@ -183,7 +183,7 @@ async function renderSpend() {
         <li class="spend-agent-row">
           <span class="spend-agent-name">${esc(a.agent || "?")}</span>
           <span class="spend-agent-runs">${a.runs_24h} run${a.runs_24h === 1 ? "" : "s"}</span>
-          <span class="spend-agent-cost">$${a.cost_24h.toFixed(4)}</span>
+          <span class="spend-agent-cost">$${(a.cost_24h ?? 0).toFixed(4)}</span>
         </li>`).join("")
       : `<li class="muted">no agent activity in the last 24h</li>`;
   } catch {
