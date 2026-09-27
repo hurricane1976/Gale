@@ -67,10 +67,16 @@ if (canvas && wrap && svg && !REDUCED) {
       ctx.arc(pt.x, pt.y, d.size, 0, Math.PI * 2);
       ctx.fill();
     }
-    requestAnimationFrame(frame);
   }
 
   syncSize();
   new ResizeObserver(syncSize).observe(wrap);
-  requestAnimationFrame(frame);
+  let rafId = 0, running = true;
+  const loop = (ts) => { if (!running) return; frame(ts); rafId = requestAnimationFrame(loop); };
+  document.addEventListener("visibilitychange", () => {
+    const visible = document.visibilityState === "visible";
+    if (visible && !running) { running = true; last = 0; rafId = requestAnimationFrame(loop); }
+    else if (!visible && running) { running = false; cancelAnimationFrame(rafId); }
+  });
+  rafId = requestAnimationFrame(loop);
 }
