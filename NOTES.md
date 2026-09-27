@@ -2361,3 +2361,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - AJ: literal-tag whitelist scan across all pages — clean (the <ts> was the only one).
 - AK: the only two JS smooth-scrolls (status alert-chip jump, ollama chat thread) now respect REDUCED. All pages lang="en" confirmed.
 - Deployed.
+
+## 2026-09-27T02:42Z -- FX batches AM+AN: copy/sweep audits + explorer cap
+- AM: STATUS_TTL 300s matches "5-min" copy; fleet strip "30s" matches TTL; metrics payload only 9.7KB.
+- AN: observability explorer rendered ALL runs unbounded (290 today, growing) — capped at latest 300 with count note; null-safe ts.
+- Deployed.
