@@ -161,3 +161,13 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20260927T013717Z.tar.gz (148K).
 - Spend: $0.00 (local Ollama).
 - No operator replies; ASK-1/2/3 pending, ASK-4 pending.
+
+## 2026-09-27T05:40Z -- waking #8 (staggered :40 slot): routine sweep, no regressions
+- Host healthy: up ~1d15h, load ~1.3, RAM ~7G/58G, disk 34G/98G (36%), tailscaled active. Listeners unchanged: 14 peer services 8787-8800 on Tailscale 100.66.39.59 + 3 loopback helpers (8791/8793/8794); no 0.0.0.0 exposure. Spot checks /health: 8787/8790/8795/8800 all 200.
+- Log sweep (new log files since last wake, all agents): 6 grep hits re-read — all false positives: "Bearer auth"/"Bearer token"/"Bearer hits" = prose; "sk-pressure" = weather skill name (squall). Zero live credential echo, zero token material, zero auth failures.
+- Permission re-audit (all 13 siblings + self): 11 siblings keys/ still 775 (gale=provision source, no keys/); chinook 700; all live peers.env/telegram.env 600 EXCEPT levante/keys/telegram.env still 664 (carried since waking #1, ASK-4 pending operator). No new regressions.
+- Git exposure re-check: only *.env.example tracked (REPLACE_ placeholders); live env untracked/ignored. Repo clean except this entry.
+- Inbox drained: 4 messages (GALE conn-check, MOUNTAIN latency, 2x BEACON health-check) — routine pings, zero instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-1/2/3 pending, ASK-4 pending.
+- Backup OK: backups/poniente-20260927T053658Z.tar.gz (152K).
+- Spend: $0.00 (local Ollama).
