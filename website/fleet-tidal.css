@@ -525,3 +525,13 @@ html { scroll-behavior: smooth; }
 /* ---- batch AB: card-title links keep card typography ---- */
 .hb-name a, .lb-name a { color: inherit; text-decoration: none; }
 .hb-name a:hover, .lb-name a:hover, .hb-name a:focus-visible, .lb-name a:focus-visible { color: var(--tide-bright); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- roster filter ---- */
+.roster-filter { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; flex-wrap: wrap; }
+.roster-filter input[type="search"] { flex: 1 1 240px; max-width: 380px; background: var(--surface);
+  border: 1px solid var(--line-strong); border-radius: 8px; color: var(--text);
+  font-family: var(--font-ibm-mono); font-size: 0.82rem; padding: 9px 13px; }
+.roster-filter input[type="search"]:focus { outline: none; border-color: var(--tide); box-shadow: 0 0 0 3px var(--tide-dim); }
+.roster-filter input[type="search"]::placeholder { color: var(--text-faint); }
+.roster-count2 { font-family: var(--font-ibm-mono); font-size: 0.72rem; color: var(--text-faint); min-height: 1em; }
+.member-group[hidden], .member-card[hidden] { display: none; }

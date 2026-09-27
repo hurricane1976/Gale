@@ -61,3 +61,28 @@ if (statusEl) {
    engine picks them up even though they carry no data-glow in markup). */
 document.querySelectorAll(".member-card:not([data-glow])").forEach((c) => c.setAttribute("data-glow", ""));
 refreshEffects();
+
+/* roster filter: match name, model chip, or role text; hide empty groups. */
+(function initRosterFilter() {
+  const q = document.getElementById("roster-q");
+  const count = document.getElementById("roster-count2");
+  if (!q) return;
+  const apply = () => {
+    const needle = q.value.trim().toLowerCase();
+    let shown = 0, total = 0;
+    document.querySelectorAll(".member-group").forEach((g) => {
+      let gShown = 0;
+      g.querySelectorAll(".member-card").forEach((c) => {
+        total += 1;
+        const hay = (c.textContent || "").toLowerCase();
+        const hit = !needle || hay.includes(needle);
+        c.hidden = !hit;
+        if (hit) { gShown += 1; shown += 1; }
+      });
+      g.hidden = gShown === 0;
+    });
+    if (count) count.textContent = needle ? `${shown}/${total} agents` : "";
+  };
+  q.addEventListener("input", apply);
+  q.addEventListener("keydown", (e) => { if (e.key === "Escape") { q.value = ""; apply(); } });
+})();
