@@ -21,6 +21,12 @@ credential-shaped strings before pushing; on a hit it SKIPS the push
 (fail-closed), logs "PRE-PUSH SECRET SCAN HIT", and Telegrams the operator.
 Patterns: AWS AKIA, PEM private-key headers, Slack xox*, GitHub gh*_,
 Telegram bot tokens (id:AA...), tskey-auth-, sk- keys, long Bearer strings.
+FP class (2026-09-27): the tracked-file credential grep now *hits its own
+pattern-definitions* — NOTES.md (entry describing the patterns),
+runbooks/offsite-commit-leak.md lines 22-23, and wake.sh's SECRET_PAT regex.
+Count the files, then check the matching lines: pattern-definition lines
+(lists/regexes) are clean; an actual token-shaped *value* anywhere else is
+the alert. Never print a matched value (rule 3) — print file:line only.
 
 ## Verification steps per waking (this class)
 

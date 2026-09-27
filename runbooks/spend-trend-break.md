@@ -44,4 +44,11 @@ any nonzero line there is itself a signal.
   After the 09-25 00:38Z host cron re-stagger, ledger timestamps no longer
   map 1:1 to cron slots (off-cron interactive//wake sessions are common) —
   check the sender's current crontab before calling an "unexpected time"
-  anomalous; judge on magnitude + recurrence, not clock position.
+   anomalous; judge on magnitude + recurrence, not clock position.
+- Correlate sibling sessions with their own fleet traffic: gale's two
+  consecutive off-cron >$1 lines (2026-09-27 02:39Z $1.0657, 02:51Z $1.5408,
+  vs the 9/26 0.17–0.57 band) arrived alongside gale's own "connectivity
+  check from Gale (2026-09-27 audit)" inbox message at 02:36Z — the audit
+  session and the spend lines are one story. 06:02Z scheduled line $0.624
+  stayed above band top; escalation class flagged, still consistent with
+  operator-directed heavy work until the operator says otherwise.
