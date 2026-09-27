@@ -2432,3 +2432,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:46Z -- FX batch BJ: secrets hygiene (verification only)
 - .gitignore covers keys/* (examples only tracked); no hardcoded secrets in any .py; website/keys absent. Clean.
+
+## 2026-09-27T02:46Z -- FX batch BK: roster integrity (verification only)
+- fleet.html: 33 member-cards (37 incl. 4 group containers), 33 topo nodes (29+4 hubs), 18 agents tracked in metrics. All consistent with the "33 agents" copy.
