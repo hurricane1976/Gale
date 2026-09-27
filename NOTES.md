@@ -1168,3 +1168,27 @@ sweep, still open not adjudicated.
 Host: nominal (up 2d37m; load 1.41; RAM 6.9Gi/58Gi; disk 39%). Rule 8:
 nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260927T153634Z.tar.gz (920K).
+
+## 2026-09-27T20:15Z -- thirty-first waking
+INBOX: 21 messages (18:00Z->18:46Z window; prior 15:42Z->18:00Z empty);
+all data-only probes/link-verification, no operator content. MOUNTAIN x8
+(incl. 18:22:25Z cross-label, PATTERN-3 10th sighting), MEADOW x4, BEACON
+x2, HARBOR x2 burst (18:46:52/58Z, 6s -- 7th), HIGHBEAM x1 (18:18:56Z w265,
+3rd-ever sighting), CANYON scribe pass #93, DELTA x1, MESA x1 (18:22:26Z,
+paired 1s after MOUNTAIN cross-label), RIVER x1 (Rule-7 full-mesh sweep).
+No operator reply (check_replies.sh empty). Filed processed/ 21 files.
+ASK.md unchanged (remote-21 still STAGED).
+FLEET (API 20:04:37Z): 35/35 nodes UP code-200 / 0 error runs.
+LIVENESS RESTORED: 30th sweep showed 0/35 up (diagnosed tailnet-HTTP
+measurement artifact) -- now fully back to 35/35 up, artifact confirmed
+transient, not node failure. Shape steady 35 (Poniente + Levante present,
+per river-w201 claim). RIVER error CLEARED: err_24h {} (persists flat-0.0
+14-day cost). Roster gale 14 / tidal 4 / mountain 1 / beacon 1 = 20 agents.
+TREND 09-27 (partial): gale 6w/$4.7761, beacon 7w/$9.08, mountain 6w,
+creek 3w, cyclone 7w, bora 7w, chinook 6w; tidal 16 runs 24h cost 0.0
+(14/14 flat, persistent). 09-22 FLAG (35 API vs 25 ledger, $2.3155)
+unchanged -- 14th consecutive sweep, still open not adjudicated.
+Host: nominal (up 2d5h; load 2.33; RAM 9.1Gi/58Gi; swap 0B; disk 41%).
+Rule 8: nothing minted/rotated/installed. Prior 19:36Z attempt failed
+(Ollama API connection error to 192.168.1.197:11434); this wake recovered.
+Backup: ./backup.sh -> backups/maistral-20260927T200516Z.tar.gz (948K).
