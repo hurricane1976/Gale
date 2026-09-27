@@ -1,0 +1,425 @@
+{
+  "metrics": {
+    "$id": "gale/fleet-metrics-v1",
+    "properties": {
+      "daily_cost_by_host": {
+        "additionalProperties": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "object"
+      },
+      "daily_wakings_by_host": {
+        "additionalProperties": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        "type": "object"
+      },
+      "days": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "fleet_status": {
+        "additionalProperties": {
+          "properties": {
+            "code": {
+              "type": "number"
+            },
+            "listener": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "listener",
+            "state",
+            "code"
+          ],
+          "type": "object"
+        },
+        "type": "object"
+      },
+      "generated_at": {
+        "type": "string"
+      },
+      "per_agent_24h": {
+        "items": {
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "cost_24h": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "daily_cost_14d": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "daily_wakings_14d": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "error_runs_24h": {
+              "type": "number"
+            },
+            "last_wake": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "runs_24h": {
+              "type": "number"
+            },
+            "total_wakings_14d": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "agent",
+            "runs_24h",
+            "error_runs_24h",
+            "daily_wakings_14d",
+            "daily_cost_14d",
+            "total_wakings_14d"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "days",
+      "per_agent_24h",
+      "fleet_status",
+      "generated_at",
+      "daily_wakings_by_host",
+      "daily_cost_by_host"
+    ],
+    "type": "object"
+  },
+  "observability": {
+    "$id": "gale/fleet-observability-v1",
+    "properties": {
+      "count": {
+        "type": "number"
+      },
+      "generated_at": {
+        "type": "string"
+      },
+      "instrumented_since": {
+        "type": "string"
+      },
+      "runs": {
+        "items": {
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "ts": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ts",
+            "agent"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "totals": {
+        "properties": {
+          "cost_usd": {
+            "type": "number"
+          },
+          "mean_cost_usd": {
+            "type": "number"
+          },
+          "total_tokens": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "cost_usd",
+          "mean_cost_usd"
+        ],
+        "type": "object"
+      }
+    },
+    "required": [
+      "totals",
+      "runs",
+      "count",
+      "generated_at"
+    ],
+    "type": "object"
+  },
+  "status": {
+    "$id": "gale/ops-status-v1",
+    "properties": {
+      "generated_at": {
+        "type": "string"
+      },
+      "host": {
+        "properties": {
+          "cpu_count": {
+            "type": "number"
+          },
+          "cpu_pct": {
+            "type": "number"
+          },
+          "cpu_per_core": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "disks": {
+            "items": {
+              "properties": {
+                "pct": {
+                  "type": "number"
+                },
+                "total_gb": {
+                  "type": "number"
+                },
+                "used_gb": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "pct",
+                "used_gb",
+                "total_gb"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "hostname": {
+            "type": "string"
+          },
+          "load": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "mem": {
+            "properties": {
+              "pct": {
+                "type": "number"
+              },
+              "total_mb": {
+                "type": "number"
+              },
+              "used_mb": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "pct",
+              "used_mb",
+              "total_mb"
+            ],
+            "type": "object"
+          },
+          "reboot_required": {
+            "type": "boolean"
+          },
+          "swap": {
+            "properties": {
+              "pct": {
+                "type": "number"
+              },
+              "used_mb": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "pct",
+              "used_mb"
+            ],
+            "type": "object"
+          },
+          "uptime_s": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "hostname",
+          "cpu_count",
+          "cpu_pct",
+          "uptime_s",
+          "reboot_required",
+          "load",
+          "mem",
+          "swap",
+          "disks",
+          "cpu_per_core"
+        ],
+        "type": "object"
+      },
+      "network": {
+        "properties": {
+          "interfaces": {
+            "items": {
+              "properties": {
+                "ip": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "type": "string"
+                },
+                "rx_mbps": {
+                  "type": "number"
+                },
+                "rx_total_gb": {
+                  "type": "number"
+                },
+                "tx_mbps": {
+                  "type": "number"
+                },
+                "tx_total_gb": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "name",
+                "ip",
+                "rx_mbps",
+                "tx_mbps",
+                "rx_total_gb",
+                "tx_total_gb"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "listening_ports": {
+            "items": {
+              "properties": {
+                "addrs": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "port": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                },
+                "proc": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "port",
+                "proc",
+                "addrs"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "interfaces",
+          "listening_ports"
+        ],
+        "type": "object"
+      },
+      "security": {
+        "properties": {
+          "ufw_active": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "services": {
+        "items": {
+          "properties": {
+            "since": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "state": {
+              "type": "string"
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "unit",
+            "state"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "targets": {
+        "items": {
+          "properties": {
+            "addr": {
+              "type": "string"
+            },
+            "health": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "kind",
+            "addr",
+            "health"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "host",
+      "services",
+      "targets",
+      "security",
+      "network"
+    ],
+    "type": "object"
+  }
+}

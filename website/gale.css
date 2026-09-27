@@ -498,6 +498,34 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .vital[data-level="crit"] .vital-value { color: var(--flag-soft); }
 .vital-sub { font-size: 0.78rem; color: var(--text-faint); }
 
+/* ---- ROADMAP #8: container queries + @scope ----
+   Panels are container-query roots, so the CARDS adapt to the space they
+   actually get -- a .vital inside a half-width firewalla panel compacts
+   itself even on a wide page, which the old page-level media queries could
+   never express. Supported Chromium/Safari/FF 110+. */
+.vitals-grid, .targets-grid, .stat-grid { container-type: inline-size; }
+
+@container (max-width: 560px) {
+  .vital { padding: 10px 12px; }
+  .vital-value { font-size: 1.3rem; }
+  .vital-label { font-size: 0.66rem; }
+}
+@container (max-width: 340px) {
+  .vital { padding: 10px 12px; gap: 4px; }
+  .vital-value { font-size: 1.15rem; }
+}
+@container (max-width: 640px) {
+  .target-card { padding: 10px 12px; }
+  .target-name { font-size: 0.95rem; }
+}
+
+/* @scope: the only nested place .mini-note appears inside a stats panel is
+   the fleet-24h card -- style it there without a .fleet-24h-card .mini-note
+   specificity fight (the problem the fleet retheme routed around). */
+@scope (.fleet-24h-card) {
+  .mini-note { margin: 8px 0 0; font-size: 0.74rem; opacity: 0.85; }
+}
+
 .meter { height: 5px; border-radius: 3px; background: var(--line); overflow: clip; }
 .meter i { display: block; height: 100%; border-radius: 3px; background: var(--ok); transition: width 0.6s var(--ease-out); }
 .meter[data-level="warn"] i { background: var(--warn); }

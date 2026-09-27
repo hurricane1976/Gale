@@ -56,6 +56,7 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import subprocess
 import sys
 import threading
@@ -107,8 +108,40 @@ RUNS_FALLBACK_MODEL = "unknown"
 FAMILY_RE = re.compile(r"claude|glm|gpt|gemini|deepseek|muse|kimi|qwen", re.I)
 
 
-def now_iso():
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+def now_iso():    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+# ---- W3C trace context (ROADMAP #7): the frontend sends a `traceparent`
+# header on every poll/push fetch; we carry it into structured span lines on
+# the journal (promtail ships the journal to Loki, so a waking cycle is
+# reconstructible in Grafana with `{unit="gale-fleet-api.service"} | json |
+# trace_id="..."`). Spans are one flat JSON line each -- OTel-shaped
+# (traceId/spanId/parent/kind/attrs), fire-and-forget, zero coupling to the
+# response path and no collector dependency; upgrading to real OTLP/Tempo
+# later means swapping emit_span for an OTLP exporter, nothing else changes.
+def new_span_id():
+    return secrets.token_hex(8)
+
+def parse_traceparent(header):
+    """W3C traceparent: 00-<32hex>-<16hex>-<2hex flags>. Returns
+    (trace_id, parent_span_id) or (None, None)."""
+    if not header:
+        return None, None
+    parts = header.strip().split("-")
+    if len(parts) != 4 or parts[0] != "00":
+        return None, None
+    trace_id, span_id = parts[1], parts[2]
+    if len(trace_id) != 32 or len(span_id) != 16 or trace_id == "0" * 32:
+        return None, None
+    return trace_id, span_id
+
+def emit_span(trace_id, span_id, parent_id, name, dur_ms, attrs=None):
+    """One structured span per stderr line -> journald -> promtail -> Loki."""
+    rec = {
+        "ts": now_iso(), "trace_id": trace_id, "span_id": span_id,
+        "parent_span_id": parent_id, "service": "gale-fleet-api",
+        "name": name, "dur_ms": round(dur_ms, 2), **(attrs or {}),
+    }
+    sys.stderr.write("SPAN " + json.dumps(rec) + "\n")
 
 
 def fname_ts(name):
@@ -1035,6 +1068,7 @@ class Handler(BaseHTTPRequestHandler):
         sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), fmt % args))
 
     def _send(self, code, obj):
+        self._last_code = code
         body = json.dumps(obj).encode()
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -1080,7 +1114,17 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError):
             pass
 
+    # Per-request span: one trace per HTTP request, parented by the
+    # frontend's traceparent when it sends one (ROADMAP #7). SSE streams
+    # are excluded -- they're long-lived; a "span" that lasts an hour is a
+    # log line, not a span.
     def do_GET(self):
+        started = time.time()
+        trace_id, parent_id = parse_traceparent(self.headers.get("traceparent"))
+        if not trace_id:
+            trace_id = secrets.token_hex(16)
+            parent_id = None
+        span_id = new_span_id()
         path = urlsplit(self.path).path
         try:
             if path in ("/health",):
@@ -1131,6 +1175,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(500, {"error": f"{type(e).__name__}: {e}"})
             except (BrokenPipeError, ConnectionResetError):
                 pass
+        finally:
+            emit_span(trace_id, span_id, parent_id, "GET " + path,
+                      (time.time() - started) * 1000,
+                      {"http.status_code": getattr(self, "_last_code", 0) or 200})
 
     def do_POST(self):
         path = urlsplit(self.path).path

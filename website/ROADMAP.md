@@ -19,33 +19,43 @@ modules, Python `http.server` backend, static multi-page HTML).
    status.js (alerts strip + fleet 24h cards) consume them, each keeping
    the old setInterval poll as an automatic fallback when the stream
    fails or EventSource is missing.)*
-3. **Islands architecture** — `tools/sync_roster.py` already treats the
-   Gale cluster as a generated "island" inside static HTML. Formalizing
-   that sitewide means near-zero JS shipped except where something is
-   actually dynamic.
-4. **Real Web Components design system (Shadow DOM)** — `<agent-card>`
-   (shared.js) is light-DOM and proves the concept. Encapsulating
-   stat-tiles/host-boards/topology-nodes the same way with Shadow DOM +
-   constructable stylesheets avoids CSS specificity fights like the ones
-   the fleet.html retheme had to route around.
-5. **WebGL/WebGPU topology diagram** — the 91-edge mesh is hand-computed
-   circular SVG (`tools/sync_roster.py`'s `gale_layout()`). A force-directed
-   layout (d3-force) rendered via PixiJS/regl would scale to hundreds of
-   nodes without hand-tuned geometry.
-6. **TypeScript + schema validation on the Python<->JS boundary** — the
-   Poniente/Levante bug was fundamentally a data-shape problem nobody
-   caught. Zod/JSON-Schema validation at the API boundary catches that
-   class of bug at build time.
-7. **OpenTelemetry traces into the new Grafana/Loki stack** — the
-   observability backend now exists; instrumenting `fleet_api.py` and the
-   frontend with real traces (not just logs) makes a "waking" cycle
-   traceable end-to-end.
-8. **CSS Container Queries + `@scope`** — component-level responsiveness
-   instead of page-level media queries.
-9. **Fine-grained reactive state (signals)** — every page's `render()`
-   re-stringifies and replaces `innerHTML` wholesale on every poll/push;
-   a small signals primitive would cut wasted re-renders on high-frequency
-   updates (SSE feed, live sparklines).
+3. **Islands architecture** — *(shipped 2026-09-27: fleet.html's two
+   generated regions — gale-mesh SVG block and the Gale-host member-card
+   group — are fenced with `<!-- island:... start/end -->` markers and
+   sync_roster.py swaps them in one bounded operation each, with the old
+   regexes as fallback for pages predating the markers.)*
+4. **Real Web Components design system (Shadow DOM)** — *(shipped
+   2026-09-27: `<gale-stat>` in shared.js — shadow root + one shared
+   constructable stylesheet, theme via inherited custom properties,
+   container-query responsive inside the shadow tree; observability.html's
+   stats panel renders through it via patchList.)*
+5. **WebGL/WebGPU topology diagram** — *(shipped 2026-09-27:
+   topology3d.js — force-directed WebGL view of the same roster, read from
+   the SVG's own markup so there's no second roster to drift; orbit-drag,
+   wheel zoom, hidden by default behind a "3d view" toggle, SVG remains
+   the default/print view.)*
+6. **TypeScript + schema validation on the Python<->JS boundary** —
+   *(shipped 2026-09-27 in two halves: runtime zod tripwire in
+   payloads.js (item 9 work), and tools/gen_schema.py +
+   payloads.schema.json + tools/check_schema.py — the committed JSON
+   Schema contract validated against LIVE responses in smoke.sh, so a
+   backend shape change fails the pipeline. A full TS migration of the
+   page scripts remains open as its own future effort.)*
+7. **OpenTelemetry traces into the new Grafana/Loki stack** — *(shipped
+   2026-09-27: W3C traceparent on every data fetch (tracedFetch in
+   shared.js); fleet_api.py parses it, emits one OTel-shaped JSON span per
+   request to the journal (promtail -> Loki) honoring the parent span;
+   verified end-to-end with curl. Query in Grafana:
+   `{unit="gale-fleet-api.service"} | json | trace_id="..."`. Upgrade path
+   to OTLP/Tempo = swap emit_span.)*
+8. **CSS Container Queries + `@scope`** — *(shipped 2026-09-27: stat/
+   target grids are container roots; cards compact by their own inline
+   size, not the page's; `@scope (.fleet-24h-card)` contains the
+   mini-note override.)*
+9. **Fine-grained reactive state (signals)** — *(shipped 2026-09-27:
+   signal/effect/bindText/bindHTML in shared.js — microtask-batched,
+   identity-diffed DOM writes; status.js's freshness pipeline (render,
+   SSE, 1s ticker, unreachable writers) now flows through one signal.)*
 10. **Lighthouse CI + axe-core gating `build.mjs`** — accessibility/perf
      regressions fail the build instead of shipping silently.
      *(shipped 2026-09-27: `tools/audit.mjs` + `npm run audit`, wired into

@@ -55,12 +55,12 @@ function renderStats(d) {
   const t = d.totals;
   const errs = d.runs.filter((r) => r.is_error).length;
   patchList($("stats-grid"), [
-    { key: "runs", html: statCard("Runs", d.count, `since ${esc(d.instrumented_since || "–")}`) },
-    { key: "cost", html: statCard("Total cost", `$${t.cost_usd.toFixed(4)}`, "all local runs") },
-    { key: "mean", html: statCard("Mean cost / run", `$${t.mean_cost_usd.toFixed(4)}`, d.count ? `across ${d.count} runs` : "") },
-    { key: "tokens", html: statCard("Total tokens", fmtTok(t.total_tokens), "in + out + cache-read") },
-    { key: "errors", html: statCard("Error runs", errs, errs ? "see silent-failure watch" : "none so far", errs ? "warn" : "ok") },
-    { key: "agents", html: statCard("Agents", agentNames(t).length, agentNames(t).map(esc).join(" &middot; ")) },
+    { key: "runs", html: `<gale-stat label="Runs" value="${esc(String(d.count))}" sub="since ${esc(d.instrumented_since || "–")}"></gale-stat>` },
+    { key: "cost", html: `<gale-stat label="Total cost" value="$${t.cost_usd.toFixed(4)}" sub="all local runs"></gale-stat>` },
+    { key: "mean", html: `<gale-stat label="Mean cost / run" value="$${t.mean_cost_usd.toFixed(4)}" sub="${esc(d.count ? `across ${d.count} runs` : "")}"></gale-stat>` },
+    { key: "tokens", html: `<gale-stat label="Total tokens" value="${fmtTok(t.total_tokens)}" sub="in + out + cache-read"></gale-stat>` },
+    { key: "errors", html: `<gale-stat label="Error runs" value="${esc(String(errs))}" level="${errs ? "warn" : "ok"}" sub="${errs ? "see silent-failure watch" : "none so far"}"></gale-stat>` },
+    { key: "agents", html: `<gale-stat label="Agents" value="${esc(String(agentNames(t).length))}" sub="${esc(agentNames(t).map(esc).join(" &middot; "))}"></gale-stat>` },
   ]);
 }
 
@@ -181,7 +181,7 @@ function renderAll() {
 
 async function load() {
   try {
-    const r = await fetch(FEED, { cache: "no-store" });
+    const r = await tracedFetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     DATA = validate(await r.json(), observabilityPayload);
     renderAll();

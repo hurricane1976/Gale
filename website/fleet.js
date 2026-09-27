@@ -98,3 +98,9 @@ refreshEffects();
     }
   });
 })();
+
+/* ---- 3D topology (ROADMAP #5): lazy import keeps the WebGL path out of
+   the initial bundle; the toggle/canvas simply don't light up if it fails. ---- */
+import("./topology3d.js")
+  .then((m) => m.initTopology3D())
+  .catch((e) => console.warn("topology3d unavailable", e));

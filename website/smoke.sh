@@ -38,6 +38,12 @@ else
 fi
 if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi
 
+# ROADMAP #6: payload contract check (Python side). Compares live responses
+# against the committed payloads.schema.json.
+if command -v python3 > /dev/null && python3 -c "import jsonschema" 2>/dev/null; then
+  python3 "$(dirname "$0")/tools/check_schema.py" "$BASE" || fail=1
+fi
+
 # ROADMAP #10: Lighthouse (axe-core a11y) gate. Opt out with SKIP_AUDIT=1
 # for quick loop iterations; it needs the system chromium.
 if [ "${SKIP_AUDIT:-0}" != "1" ] && command -v node > /dev/null && [ -x /usr/bin/chromium-browser ]; then

@@ -13,6 +13,7 @@ import { rmSync } from "node:fs";
 const ENTRY_POINTS = [
   "main.js",         // index.html
   "fleet.js",        // fleet.html (6 independent entries, one page)
+  "topology3d.js",   // fleet.html 3D view (lazy, WebGL)
   "activity.js",
   "cost.js",
   "drilldown.js",

@@ -11,6 +11,91 @@ export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
+/* ---- signals: fine-grained reactive state (ROADMAP #9). ----
+   `signal(v)` returns [get, set]; `effect(fn)` re-runs fn whenever any
+   signal read inside it changes. Notifications are batched to a
+   microtask, so N writes cause 1 re-run. Effects auto-dispose when the
+   element they bind to leaves the DOM (bind* helpers below).
+
+   Together with setHTML/setText/patchList this closes the wasted-work gap:
+   a render effect recomputes a cheap string and only touches the DOM when
+   the string actually differs. */
+const STACK = [];
+let flushQueued = false;
+const dirty = new Set();
+
+export function signal(value) {
+  const subs = new Set();
+  const get = () => {
+    const fx = STACK[STACK.length - 1];
+    if (fx) subs.add(fx);
+    return value;
+  };
+  const set = (next) => {
+    if (next === value) return;
+    value = next;
+    for (const fx of subs) dirty.add(fx);
+    if (!flushQueued) {
+      flushQueued = true;
+      queueMicrotask(flushEffects);
+    }
+  };
+  return [get, set];
+}
+
+function flushEffects() {
+  flushQueued = false;
+  const batch = [...dirty];
+  dirty.clear();
+  for (const fx of batch) {
+    if (fx.dead) continue;
+    fx.deps.forEach((s) => s.delete(fx));
+    fx.deps.clear();
+    STACK.push(fx);
+    try { fx.fn(); } catch (e) { console.warn("effect error", e); }
+    STACK.pop();
+  }
+}
+
+export function effect(fn) {
+  const fx = { fn, deps: new Set(), dead: false };
+  STACK.push(fx);
+  try { fx.fn(); } catch (e) { console.warn("effect error", e); }
+  STACK.pop();
+  return fx;
+}
+
+/* ---- W3C traceparent (ROADMAP #7): every data fetch carries a trace
+   header so a page load + its polls form one reconstructible trace
+   fleet_api.py spans into Loki. New root per page load, fresh child span
+   per request. ---- */
+const TRACE_ID = (crypto && crypto.getRandomValues)
+  ? [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, "0")).join("")
+  : String(Date.now()).padEnd(32, "0");
+
+export function tracedFetch(url, opts = {}) {
+  const spanId = (crypto && crypto.getRandomValues)
+    ? [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("")
+    : String(Math.random()).slice(2, 18).padEnd(16, "0");
+  const headers = new Headers(opts.headers || {});
+  headers.set("traceparent", `00-${TRACE_ID}-${spanId}-01`);
+  return fetch(url, { ...opts, headers });
+}
+
+/* Effect variants bound to an element: recompute via setText/setHTML (which
+   already no-op on identical content), and die when the element leaves the
+   DOM -- checked on every run, no observers needed. */
+export function bindText(el, fn) {
+  if (!el) return;
+  effect(() => { if (el.isConnected) setText(el, fn()); });
+}
+
+export function bindHTML(el, fn) {
+  if (!el) return;
+  effect(() => { if (el.isConnected) setHTML(el, fn()); });
+}
+
+
 /* ---- fine-grained DOM patching (ROADMAP #9)
    setHTML / setText: write-through-with-guards so unchanged SSE/poll payloads
    leave the DOM untouched (focus, scroll, hover state and DOM identity survive).
@@ -136,6 +221,62 @@ if (typeof HTMLElement !== "undefined") {
     }
   }
   if (!customElements.get("agent-card")) customElements.define("agent-card", AgentCard);
+}
+
+/* ---- <gale-stat>: encapsulated stat tile (ROADMAP #4). Same content as
+   statCard() markup but in a shadow root with its own constructable
+   stylesheet, so page CSS can't fight it and theme changes propagate via
+   inherited custom properties (--ok/--warn/--flag, --font-* resolve from
+   the page's :root). Attributes: label, value (HTML), sub, level, pct
+   (draws a .meter bar). One shared CSSStyleSheet for every instance. ---- */
+if (typeof HTMLElement !== "undefined") {
+  const GALE_STAT_SHEET = typeof CSSStyleSheet !== "undefined"
+    ? new CSSStyleSheet() : null;
+  if (GALE_STAT_SHEET) {
+    GALE_STAT_SHEET.replaceSync(`
+      :host { display: flex; flex-direction: column; gap: 6px;
+        border: 1px solid var(--line, rgba(160,185,230,.08));
+        border-radius: 12px; padding: 14px 16px; background: var(--surface-2, #1f2a47);
+        container-type: inline-size; }
+      .label { font-family: var(--font-mono, monospace); font-size: 0.72rem;
+        letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+      .value { font-family: var(--font-heading, inherit); font-size: 1.65rem;
+        font-weight: 600; line-height: 1; }
+      :host([level="warn"]) .value { color: var(--warn, #e0b45c); }
+      :host([level="crit"]) .value { color: var(--flag-soft, #6ea8f5); }
+      .sub { font-size: 0.78rem; color: var(--text-faint); }
+      .meter { height: 5px; border-radius: 3px; background: var(--line, rgba(160,185,230,.08)); overflow: clip; }
+      .meter i { display: block; height: 100%; border-radius: 3px; background: var(--ok, #4fd1a5);
+        transition: width .6s var(--ease-out, ease); }
+      @container (max-width: 560px) { .sub { font-size: 0.72rem; } .value { font-size: 1.3rem; } }
+    `);
+  }
+
+  class GaleStat extends HTMLElement {
+    static get observedAttributes() {
+      return ["label", "value", "sub", "level", "pct"];
+    }
+    connectedCallback() {
+      if (!this.shadowRoot) {
+        const root = this.attachShadow({ mode: "open" });
+        if (GALE_STAT_SHEET) root.adoptedStyleSheets = [GALE_STAT_SHEET];
+      }
+      this.render();
+    }
+    attributeChangedCallback() { if (this.isConnected) this.render(); }
+    render() {
+      const g = (n) => this.getAttribute(n) || "";
+      const pct = this.getAttribute("pct");
+      const level = g("level") || "ok";
+      if (g("level")) this.setAttribute("level", g("level"));
+      this.shadowRoot.innerHTML =
+        `<span class="label">${esc(g("label"))}</span>` +
+        `<span class="value">${g("value")}</span>` +
+        (pct != null && pct !== "" ? `<div class="meter"><i style="width:${clamp(+pct, 0, 100).toFixed(1)}%"></i></div>` : "") +
+        `<span class="sub">${esc(g("sub") || "")}</span>`;
+    }
+  }
+  if (!customElements.get("gale-stat")) customElements.define("gale-stat", GaleStat);
 }
 
 /* ---- storm canvas: DPR-aware, pauses when hidden, one static frame under

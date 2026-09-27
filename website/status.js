@@ -3,7 +3,7 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch } from "./shared.js";
 import { statusPayload, metricsPayload, validate } from "./payloads.js";
 
 boot();
@@ -501,10 +501,19 @@ document.getElementById("fw-body").addEventListener("click", (e) => {
   }
 });
 
-function setFresh(state, text) {
-  freshEl.dataset.state = state;
-  freshText.textContent = text;
-}
+/* Freshness is a signal, not a function: every writer (render, SSE, the
+   1s "Ns ago" ticker, the unreachable path) just sets state, and one
+   effect applies it to the DOM via setText's identity diffing. This is the
+   ROADMAP #9 integration point -- the 1s ticker used to rewrite
+   textContent unconditionally. */
+const [freshView, setFreshView] = signal({ state: "boot", text: "" });
+function setFresh(state, text) { setFreshView({ state, text }); }
+effect(() => {
+  const f = freshView();
+  if (!freshEl || !freshEl.isConnected) return;
+  freshEl.dataset.state = f.state;
+  setText(freshText, f.text);
+});
 
 function renderOllama(o) {
   const addrEl = document.getElementById("ollama-addr");
@@ -630,7 +639,7 @@ function mapFleetAlerts(env) {
 
 async function fleetAlerts() {
   try {
-    const res = await fetch("api/fleet/alerts", { cache: "no-store" });
+    const res = await tracedFetch("api/fleet/alerts", { cache: "no-store" });
     if (!res.ok) return [];
     return mapFleetAlerts(await res.json());
   } catch { return []; }
@@ -666,7 +675,7 @@ chipsEl.addEventListener("click", (e) => {
 async function tick() {
   let data = null;
   try {
-    const res = await fetch(FEED, { cache: "no-store" });
+    const res = await tracedFetch(FEED, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = validate(await res.json(), statusPayload);
     render(data);
@@ -696,7 +705,7 @@ async function fetchFleet24h() {
     return { data: fleetCache.data, err: fleetCache.err };
   }
   try {
-    const res = await fetch(FLEET_FEED, { cache: "no-store" });
+    const res = await tracedFetch(FLEET_FEED, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     fleetCache = { at: Date.now(), data: await res.json(), err: null };
   } catch (e) {

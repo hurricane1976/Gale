@@ -196,6 +196,23 @@ def build_gale_svg_and_cards(gale_agents):
 def patch_fleet_html(text, gale_agents, total_agents):
     nodes_html, lines_html, cards_html, n_gale = build_gale_svg_and_cards(gale_agents)
 
+    # 0) ISLAND REPLACEMENT (ROADMAP #3): the generated region is fenced
+    #    with <!-- island:gale-mesh start --> ... <!-- island:end -->, so
+    #    when the marker exists we swap the whole island in one bounded
+    #    operation instead of regex-scavenging the SVG for gale-shaped
+    #    <g>/<line> fragments. The legacy node/line regexes below remain as
+    #    the fallback path for pages that predate the markers.
+    island_re = re.compile(
+        r'(<!-- island:gale-mesh start -->\n).*?(<!-- island:end -->)',
+        re.S,
+    )
+    island_body = nodes_html + "\n" + lines_html + "\n"
+    if re.search(r'<!-- island:gale-mesh start -->', text):
+        text, n_marker = island_re.subn(r'\g<1>' + nodes_html + "\n" + lines_html + "\n" + r'\2',
+                                        text, count=1)
+    else:
+        n1 = n2 = None
+
     # 1) node block: from the Gale hub <g> through the last gale node <g>
     node_re = re.compile(
         r'<g class="topo-node topo-node--hub"[^>]*data-name="Gale".*?'
@@ -230,21 +247,40 @@ def patch_fleet_html(text, gale_agents, total_agents):
     # insert fresh mesh block right after the (freshly inserted) node block
     text, n2 = re.subn(re.escape(nodes_html + "\n"), nodes_html + "\n" + lines_html + "\n", text, count=1)
 
-    # 3) member-cards group for "Gale host". Bounded by a lookahead on the
-    #    next section heading rather than a non-greedy "</div></div>" --
-    #    every individual member-card *also* ends in "</div></div>", so a
-    #    non-greedy match stops at the first card instead of the group end.
-    mc_re = re.compile(
-        r'<div class="member-group reveal"><h3 class="member-group-h">Gale host '
-        r'<span>\d+ agents · gale-agent</span></h3><div class="member-cards">.*?</div></div>'
-        r'(?=\s*<h2 class="section-h" id="hosts">)',
+    # 3) member-cards group for "Gale host". MARKER PATH (ROADMAP #3): when
+    #    the island fence exists, swap everything between the markers in one
+    #    bounded operation -- no lookahead on the next section heading. The
+    #    legacy bounded regex below remains for pages predating markers.
+    cards_island_re = re.compile(
+        r'(<!-- island:gale-cards start -->\n).*?(<!-- island:end -->)',
         re.S,
     )
     new_group = (
         f'<div class="member-group reveal"><h3 class="member-group-h">Gale host '
         f'<span>{n_gale} agents · gale-agent</span></h3><div class="member-cards">{cards_html}</div></div>'
     )
-    text, n3 = mc_re.subn(new_group, text, count=1)
+    # 3) member-cards group for "Gale host". MARKER PATH (ROADMAP #3): when
+    #    the island fence exists, swap everything between the markers in one
+    #    bounded operation -- no lookahead on the next section heading. The
+    #    legacy bounded regex below remains for pages predating markers.
+    cards_island_re = re.compile(
+        r'(<!-- island:gale-cards start -->\n).*?(<!-- island:end -->)',
+        re.S,
+    )
+    new_group = (
+        f'<div class="member-group reveal"><h3 class="member-group-h">Gale host '
+        f'<span>{n_gale} agents · gale-agent</span></h3><div class="member-cards">{cards_html}</div></div>'
+    )
+    if re.search(r'<!-- island:gale-cards start -->', text):
+        text, n3 = cards_island_re.subn(r'\g<1>' + new_group + "\n" + r'\2', text, count=1)
+    else:
+        mc_re = re.compile(
+            r'<div class="member-group reveal"><h3 class="member-group-h">Gale host '
+            r'<span>\d+ agents · gale-agent</span></h3><div class="member-cards">.*?</div></div>'
+            r'(?=\s*<h2 class="section-h" id="hosts">)',
+            re.S,
+        )
+        text, n3 = mc_re.subn(new_group, text, count=1)
 
     # 4) count strings
     text = re.sub(r'GALE HOST · gale-agent · \d+ agents',
