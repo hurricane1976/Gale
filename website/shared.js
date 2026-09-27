@@ -414,7 +414,26 @@ export function initClocks() {
   setInterval(tick, 1000);
 }
 
-/* ---- hero scene parallax ---- */
+/* ---- hero scene parallax: decorative layers drift at different scroll
+   rates (transform-only, rAF-throttled, skipped under reduced motion). ---- */
+function initHeroParallax() {
+  if (REDUCED) return;
+  const layers = [...document.querySelectorAll(".blob, .bolt, .glow")];
+  if (!layers.length) return;
+  let pending = false;
+  const update = () => {
+    pending = false;
+    const y = window.scrollY;
+    if (y > window.innerHeight * 1.5) return;
+    layers.forEach((el, i) => {
+      const speed = 0.06 + (i % 3) * 0.05;
+      el.style.transform = `translate3d(0, ${(y * speed).toFixed(1)}px, 0)`;
+    });
+  };
+  window.addEventListener("scroll", () => { if (!pending) { pending = true; raf(update); } }, { passive: true });
+  update();
+}
+
 /* ---- magnetic buttons: pull toward the pointer, spring back on leave ---- */
 export function initMagnetic() {
   const magnets = document.querySelectorAll("[data-magnet]");
@@ -451,5 +470,6 @@ export function boot() {
   initStormCanvas();
   initProgressFallback();
   initClocks();
+  initHeroParallax();
   refreshEffects();
 }

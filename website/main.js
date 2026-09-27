@@ -6,6 +6,7 @@ boot();
 /* wire the shared effects engine to static markup: section reveals +
    count-up stat numbers (dynamic regions call refreshEffects themselves). */
 document.querySelectorAll(".block:not(#hero)").forEach((el) => el.classList.add("reveal"));
+document.querySelectorAll(".stat-card").forEach((el) => el.classList.add("tilt"));
 document.querySelectorAll(".stat-num").forEach((el) => {
   if (/^[\d,]+$/.test(el.textContent.trim())) el.setAttribute("data-countup", "");
 });
