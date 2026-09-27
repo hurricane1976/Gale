@@ -2419,3 +2419,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:43Z -- FX batch BF: dead Tailwind class
 - Removed min-w-[820px] from topo svg (no Tailwind loaded; .fleet-topo-wrap scrolls natively). Deployed, 0 matches live.
+
+## 2026-09-27T02:50Z -- FX batch BG: fleet alert strip
+- fleet.html never surfaced alerts (status.html had the strip since #1). Added compact strip after the lede: fetches api/fleet/alerts on the hosts 30s cycle (cached, keeps last good), shows up to 6 chips linking to status.html, hidden when clear. Verified 2 live alerts in feed (river errors warn, vortex quarantine info).
+- Deployed.
