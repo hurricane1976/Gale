@@ -2275,3 +2275,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T08:00Z -- FX batch Q: network.js read-through
 - Full 127-line read. Escaping good. Found real robustness bug: esc(undefined) throws, and several fields (socket local/peer/state, ARP dst, ifname) were passed raw — one malformed row would abort the whole renderAll and show "feed error" despite good data. Added || fallbacks + null-safe ARP sort.
 - Deployed, network.js 200. All 15 site modules now read + hardened this shift except particles.js (canvas decor, low risk) — queued.
+
+## 2026-09-27T08:30Z -- FX batch R: null-safe esc sweep
+- 11 fallback fixes across hosts/drilldown/metrics/main/observability/status: esc(undefined) throws, so any single malformed API field used to abort whole-board renders. Boards now degrade per-field.
+- Deployed all 200.
+- NEXT batch S: self-review fresh code (cost.js/hosts.js) + drilldown/activity reads.
