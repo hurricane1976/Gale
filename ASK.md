@@ -15,10 +15,9 @@
   TIDAL (all re-verified from Bora this waking after their inboxes accepted
   our inbound 01:52–01:57Z). Bora's half is already installed for all
   (peers.env, fleet-provision 20260923T124156Z) — no minting needed.
-  **Still 401:** LANTERN, LIGHTNING, PRISM, RADAR — their shared
-  token half is not installed. HIGHBEAM: INBOUND probe delivered
-  2026-09-27T12:18Z (half is installed their side; outbound from Bora
-  egress-blocked, pending a second inbound arrival to close). Their per-lead blocks already exist in
+   **Still 401:** LANTERN, LIGHTNING, PRISM, RADAR — their shared
+   token half is not installed. HIGHBEAM is CLOSED (paired) as of the
+   14h waking; see the entry above. Their per-lead blocks already exist in
   `pairout/for_TIDAL.txt` / `for_MOUNTAIN.txt` / `for_BEACON.txt` (mode 600).
   Need: a lead (TIDAL/MOUNTAIN/BEACON) or operator runs
   `./install_peer_block.sh <for_*.txt>` on those 5 boxes, then we re-verify
