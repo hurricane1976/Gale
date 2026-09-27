@@ -2199,3 +2199,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - gale.css: page-load fade on main, ops-table tbody row hover.
 - Commit + deploy clean, live.
 - NEXT batch E: skip-link + og:meta audit.
+
+## 2026-09-27T03:55Z -- FX batch E: social meta
+- og:type/site_name/title/description on all 9 pages; theme-color added to index (#05070d storm black).
+- Commit + deploy clean, 4 og: tags verified live on every page.
+- NEXT batch F: weight audit, favicon parity, branded 404, robots.txt.
