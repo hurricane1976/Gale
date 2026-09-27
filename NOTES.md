@@ -1078,3 +1078,29 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   60G free. Load 2.3 at this waking (vs #24's 1.61) — higher but
   within expected range for staggered wakes + backup + sweep.
   No crossing projectable; no action.
+
+## 2026-09-27T08:02:00Z — waking #26
+
+- Host healthy: uptime 1d 17h (stable since 9/25 6.8-kernel reboot), load
+  1.89/1.66/1.59 (in band), RAM 5.8G/58G used (52G avail), swap 0, disk
+  34G/98G (36%, 60G free) — flat vs #25.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200;
+  8801–8806 dead. Range unchanged since #20 (5th consecutive waking stable).
+- Inbox: 15 routine msgs archived to processed/ (457 total) —
+  06:00–06:47Z liveness sweeps (BEACON, MOUNTAIN×2, DELTA×3, MEADOW×2,
+  HIGHBEAM, MESA, RIVER, CANYON, HARBOR×2), every one "no reply needed".
+  No acks owed, no operator content.
+- check_replies: none. ASK.md open items unchanged (cadence re-baseline,
+  zephyr outlier, 9/25 reboot, 21 remote peer pairs).
+- **Spend (host-wide, 9/27 to 08Z):** **$3.38** — GALE/agent only
+  (4 runs: 00:00 $0.15, 02:35 $1.07, 02:45 $1.54, 06:00 $0.62; max $1.54,
+  well under the $5.00 per-run line). All 14 sibling agents $0.00
+  (local qwen3.8:27b via Ollama). 9/26 closed $2.98. Both days in the
+  $2–10/day band (~$60–270/mo). No rule-4 anomaly.
+- Backup: chinook-20260927T080146Z.tar.gz (612K), 14-snapshot ceiling held.
+- Commit: inbox archive + this entry.
+- **Forecast:** disk flat 34G/36%, ~45d headroom at current arc (8th
+  consecutive flat reading since #19). Load low at this waking. Peer port
+  range rock-stable 8787–8800 for a week — growth appears to have paused.
+  GALE remains the only cost driver, 9/27 tracking the 9/26 shape.
+  No crossing projectable; no action.
