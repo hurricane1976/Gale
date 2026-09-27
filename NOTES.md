@@ -2170,3 +2170,12 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Live numbers at build time: runs24 gale 76 / tidal 21 / mountain 10 / beacon 10; cost24 mountain $10.49 / beacon $6.59 / gale $3.09 / tidal $0.00; tidal 1 error; per-agent daily_cost_14d present for sparklines.
 - NEXT: commit all (#4/#5/#7), deploy, live-verify, then autonomous improvement pass.
 - VERIFIED 2026-09-27T01:25Z: commit 68747eb deployed; fleet.html serves cost.js (200, 7769B) + all 4 new IDs; status.html serves fleet-live-strip + fleet-24h-grid; /api/fleet/metrics keys ok. #4/#5/#7 live.
+
+## 2026-09-27T02:10Z -- FX batch A: shared effects engine wired site-wide
+- Problem: shared.js had a rich effects engine (reveals, count-ups, pointer glow/tilt, magnetic, clocks) that was ~90% unwired: 0x .reveal, 0x data-countup anywhere; data-glow only on index; fleet-tidal.css had no reveal/selection/scrollbar styles.
+- shared.js: initReveals/initCountUps/initPointerCards/initMagnetic made re-scan safe (persistent observers, dataset bound-guards); new exported refreshEffects(); boot() uses it.
+- fleet-tidal.css: reveal system (.js-guarded, slide-only), ::selection, thin scrollbars, smooth scroll + reduced-motion guard, scroll-margin-top 92px (sticky 76px header), focus-visible, card hover-lift + pointer-glow ::after (host-board/lb-card/member-card/cost-trend-wrap), live-dot pulse keyframes.
+- gale.css: .fleet-24h-card hover-lift + flag-tinted pointer glow, fleet dot pulse, reduced-motion guards.
+- Wiring: fleet.html 11x reveal; fleet.js marks .member-card data-glow; hosts/cost/status templates carry data-glow; refreshEffects() after every render (hosts, cost, status fleet strip, activity, drilldown, metrics); main.js wires .block reveals + numeric .stat-num count-ups; index.html gains js-class script; status.html 12x ops-panel reveals.
+- Commit 95e25a8, deploy clean, all 11 assets 200 live, reveal counts verified (fleet 11, index js 1, status 12).
+- NEXT: batch B — metrics/observability/network/agora/weather/ollama reveals + .vital glow; topnav sticky/scroll-margin check; hero parallax stub.
