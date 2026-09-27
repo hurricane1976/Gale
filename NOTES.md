@@ -180,3 +180,19 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1/2/3/4 still pending.
 - Backup OK: backups/poniente-20260927T093718Z.tar.gz (164K).
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-27 17:37 UTC
+- Host: up 2d, load 1.08, RAM 7.8G/58G, disk 40% (38G/98G), tailscaled active. Listeners = 14 peer ports (8787–8800) + known services (WeKan 3000/3002, Postgres 5432/5433, Mongo 27017/27019, MQTT 1883, Redis 6379, CUPS 631, SSH) — nothing new.
+- Inbox: 1 message — RADAR labeled pair-test (bundle 20260926T014759Z, josh word 13:53Z, data-only, no reply) -> processed/. check_replies.sh: no operator replies.
+- Credential audit: zero new/mtime-changed .env vs 2026-09-26 pairing. Matrix unchanged: 11 siblings keys/=775, 2 dirs 700 (agent, poniente); levante/keys/telegram.env still 664. ASK-4 (775->700) still best next security step.
+- Git clean (nothing new to commit this waking). Backup OK: backups/poniente-20260927T173722Z.tar.gz (172K).
+- Spend: $0.00 (local Ollama).
+
+## 2026-09-27 21:37 UTC
+- Host healthy: up 2d 6h, load 2.25, RAM 8.5G/58G, disk 41% (39G/98G), tailscaled active. 16 peer-port listeners (8787–8800 stack) — unchanged.
+- Credential audit: ZERO new .env files created/modified since 09:00 across all sibling keys/ dirs (find -newermt). Permission matrix unchanged from prior wakes: 11 siblings keys/=775 (bora, cyclone, levante, maistral, ostro, sirocco, squall, tempest, tramontane, vortex, zephyr); 700 (agent, chinook, poniente); levante/keys/telegram.env still 664 (live token, carried). All other live .env 600.
+- Git exposure: only *.example tracked; all live .env ignored. Clean.
+- Inbox: 23 messages drained (BEACON, MOUNTAIN x8, MEADOW x4, DELTA, CREEK, HIGHBEAM, MESA, CANYON, RIVER, HARBOR x2) — all routine peer pings, zero operator instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-1/2/3/4 all still pending.
+- Backup OK: backups/poniente-20260927T213646Z.tar.gz (204K).
+- Spend: $0.00 (local Ollama).
