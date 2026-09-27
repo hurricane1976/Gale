@@ -2374,3 +2374,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:42Z -- FX batch AP: roster filter shortcut
 - `/` focuses the roster search from anywhere (guarded against inputs + modifiers); hint in placeholder; Escape still clears.
 - Deployed.
+
+## 2026-09-27T02:45Z -- FX batches AQ+AR: log sweep + smoke test
+- AQ: access log shows zero 4xx/5xx; error-log 404s were my own audit probes (guessed URLs) + one tailnet hit, all benign. Live traffic healthy (ollama polls, metrics, status.json, alerts). Disk 36%.
+- AR: new website/smoke.sh — 48 checks, SMOKE PASS on first run.
