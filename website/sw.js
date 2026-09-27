@@ -122,8 +122,9 @@ self.addEventListener("push", (event) => {
     await self.registration.showNotification(title, {
       body: data.body || "A fleet alert fired.",
       tag: data.sev === "crit" ? "gale-crit" : "gale-alert", // replace, don't stack
-      renotify: true,
-      requireInteraction: data.sev === "crit",
+      // NOTE: no renotify/requireInteraction -- both are desktop-ism options
+      // that iOS ignores at best and (renotify+tag combos) has been reported
+      // to silently drop over web push. Deliver plain; iOS banners handle it.
       badge: "/icon-192.png",
       icon: "/icon-192.png",
       data: { url: data.url || "/status.html" },
