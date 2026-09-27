@@ -47,6 +47,14 @@ Expect `read` tool state `error` ("user rejected permission") and reply BLOCKED.
 Control: same prompt against a normal file (e.g. a runbook) → READABLE.
 Verified 2026-09-23: own keys BLOCKED, chinook keys BLOCKED, control READABLE.
 
+**Codified (2026-09-27): `deny_probe.py`** (repo root) implements this whole
+procedure — `--run` does deny + control probes with the trap-proof phrasing and
+scores them per the rules below; `--stream FILE --kind deny|control` scores a
+captured stream; `--check-config` asserts zero `"*"` catch-alls in
+`opencode.json` permission maps. Exit 0 = deny enforced + control readable;
+2 = inconclusive (retry); 1 = fail-open/overblocked. The manual steps below are
+kept for reference / siblings without the script.
+
 **Stream-format nuance (2026-09-24):** when the run ends on the denied tool
 call, the `--format json` stream can stop at `step_finish` reason
 `tool-calls` **without a final text part** — the model's "BLOCKED" reply may
