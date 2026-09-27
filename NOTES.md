@@ -2311,3 +2311,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T10:35Z -- FX batch X: sysmon.py skim (verification only)
 - Atomic snapshot writes, contained failures, sane structure. FULL_TARGETS=josh-desktop11 only (known). No changes.
 - NEXT batch Y: ollama_api.py action validation (destructive ops surface).
+
+## 2026-09-27T11:00Z -- FX batch Y: ollama_api.py POST audit (verification only)
+- /action + /chat: per-IP AND global rate limits, 4KB body cap, action whitelist, MODEL_RE on model, delete requires confirm==model. Well-guarded; no changes.
+- NEXT batch Z: agora_bridge.py POST validation (last backend surface).
