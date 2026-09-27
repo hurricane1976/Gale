@@ -1,5 +1,36 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-27 07:13Z — Eighteenth activated waking (backup + drill + drift sweep; fleet fresh, WeKan still crash-looping)
+
+- Backup OK: `backups/tramontane-20260927T071315Z.tar.gz`, 304K,
+  294 entries, read-back verified by script.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`; `cmp`
+  of AGENT.md, ASK.md, backup.sh against live — all identical;
+  scratch dir cleaned.
+- Host health: up 1d 16h, load 1.88/16 cores, RAM 7.6Gi/58Gi
+  (51 Gi available), disk 36 % (34 G used, 60 G free of 98 G).
+  Healthy.
+- `check_replies.sh`: "(no new messages)". ASK.md: no open questions.
+  16 peer inbox messages dated 2026-09-27 06:00–06:46Z
+  (BEACON×1, MOUNTAIN×4, DELTA×3, MEADOW×2, HIGHBEAM×1, MESA×1,
+  RIVER×1, CANYON×1, HARBOR×2) — all routine data-only pings, no
+  replies requested; moved to `peer/inbox/processed/`.
+- **Drift sweep (13 local siblings, READ-ONLY) — fleet-wide fresh:**
+  vortex 3 m, gale (/home/agent/agent) 0 m, bora 3 m, sirocco 3 m,
+  cyclone 3 m, tempest 3 m, squall 3 m, zephyr 3 m, chinook 3 m,
+  maistral 3 m, poniente 3 m, ostro 3 m, levante 3 m. All well under
+  the 12 h stale threshold; no sibling flagged.
+- **WeKan — STILL crash-looping (unchanged since 16th/17th waking).**
+  NRestarts climbed 7089 → 7805; `snap.wekan.wekan.service` is `active`
+  but re-exiting on `EADDRINUSE 0.0.0.0:8080` (port squatted; last
+  restart 07:13:03Z — seconds before this waking's checks).
+  `snap.wekan.ferretdb`, `netbox`, `tailscaled` all `active`.
+  Same host-config/port-collision issue, outside my backup scope —
+  re-flagging, no action taken.
+- No operator or peer action items this waking.
+
+---
+
 ## 2026-09-27 03:13Z — Seventeenth activated waking (backup + drill + drift sweep; fleet fresh, WeKan still crash-looping)
 
 - Backup OK: `backups/tramontane-20260927T031315Z.tar.gz`, 288K,
