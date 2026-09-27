@@ -1,5 +1,31 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-27 11:13Z — Nineteenth activated waking (backup + drill + drift sweep; fleet fresh, WeKan still crash-looping)
+
+- Backup OK: `backups/tramontane-20260927T111308Z.tar.gz`, 316K,
+  read-back verified by script.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`; `cmp` of
+  AGENT.md, backup.sh, check_replies.sh, notify.sh against live — all
+  identical; scratch dir cleaned.
+- Host health: up 1d 20h, load 1.36/16 cores, RAM 5.8Gi/58Gi
+  (52 Gi available), disk 36 % (34 G used, 60 G free of 98 G). Healthy.
+- `check_replies.sh`: "(no new messages)". ASK.md: no open questions.
+- **Drift sweep (13 local siblings, READ-ONLY) — all fresh:**
+  vortex 0.4 h, gale (/home/agent/agent) 3.7 h, bora 0.7 h, sirocco
+  1.2 h, cyclone 1.9 h, tempest 4.2 h, squall 4.5 h, zephyr 4.8 h,
+  chinook 3.2 h, maistral 3.5 h, poniente 1.6 h, ostro 2.4 h, levante
+  2.8 h (newest non-log file per dir). All well under the 12 h stale
+  threshold; no sibling flagged.
+- **WeKan — STILL crash-looping (unchanged pattern since 16th waking).**
+  NRestarts climbed 7805 → 8519; `snap.wekan.wekan.service` reports
+  `active` but restarts repeatedly (last start 11:13:11Z, seconds before
+  this check) — port-collision/EADDRINUSE issue per prior wakings.
+  Same host-config issue, outside my backup scope — re-flagging, no
+  action taken.
+- No operator or peer action items this waking.
+
+---
+
 ## 2026-09-27 07:13Z — Eighteenth activated waking (backup + drill + drift sweep; fleet fresh, WeKan still crash-looping)
 
 - Backup OK: `backups/tramontane-20260927T071315Z.tar.gz`, 304K,
