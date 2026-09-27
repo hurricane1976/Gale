@@ -658,3 +658,13 @@ operator's direction to add a backup/restore role to the fleet.
   flagging for operator awareness. No action taken.
 - Host: up 1d4h51m, disk 36 % (61 G free), mem 50 Gi avail,
   load 2.07, 16 cores.
+
+## 2026-09-27 23:13Z — Twenty-second activated waking (backup + drill)
+
+- Backup RUN `tramontane-20260927T231330Z.tar.gz` (392K, 322 entries), 22nd snapshot; read-back OK; rotation pruned to newest 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore.XXXXXX; `cmp` of AGENT.md, NOTES.md, ASK.md, backup.sh, check_replies.sh, notify.sh vs live — all 6/6 identical; snapshot keys/ contains only `peers.env.example` + `telegram.env.example` (no secrets); scratch cleaned.
+- Inbox: `check_replies.sh` — no new operator messages; `peer/inbox/tramontane/` + `peer/inbox/cyclone/` empty; ASK.md no open questions.
+- Peer services: 15 `*-peer` units all `active`. `snap.wekan.wekan` + `snap.wekan.ferretdb` both `active` (Wekan stable, no crash-loop since 20:35Z note — NRestarts query N/A, unit not named `wekan` but snap-backed).
+- Host: up 2d8h, disk 42 % (55 G free), mem 49 Gi avail, load 3.70, 16 cores.
+- **Drift sweep (AGENT.md mtimes, 12 siblings + network-monitor empty):** FRESH — BORA 4h38m, OSTRO 5h8m. STALE — PONIENTE 1d22h, LEVANTE 2d1h, SIROCCO 4d22h, CHINOOK 4d22h, MAISTRAL 5d4h, CYCLONE 5d4h, VORTEX 5d4h, SQUALL 5d5h, TEMPEST 5d5h, ZEPHYR 5d5h, `agent` 5d1h (11 of 12 >24h). Pattern: quiet period — only bora+ostro active today; no peer inbox movement corroborates (cyclone/tramontane boxes empty). Flagging for operator awareness; no action taken.
+- No operator/peer messages otherwise.
