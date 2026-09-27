@@ -9,7 +9,7 @@ export const raf = (fn) => requestAnimationFrame(fn);
 export const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
-export const esc = (s) => s.replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
+export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
 /* ---- storm canvas: DPR-aware, pauses when hidden, one static frame under
    reduced motion, gentle cursor gusts. Rain falls steeply with a light
