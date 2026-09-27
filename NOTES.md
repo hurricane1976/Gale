@@ -2443,3 +2443,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:48Z -- FX batch BM: render tests to 24 asserts
 - render-test.mjs now stubs fetch with the live envelope + per-id elements: covers renderFleet24h (4 cards, stats, 4 liveness pills) and metrics renderAgentCards (cards + deep links). 24/24 green. (Harness debugging also proved boot() runs clean under stubs.)
 - Deployed.
+
+## 2026-09-27T02:50Z -- FX batch BN: render entry-point coverage
+- Exported hosts.render + cost.render; harness asserts boards/chart/leaderboard full renders. RENDER PASS.
+- Deployed.
