@@ -2285,3 +2285,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Self-review of fresh code: miniSpark (cost.js), sparkline (hosts.js + drilldown.js) all did Math.max(...vals) — a single NaN poisons max and blanks the whole polyline. Added Number.isFinite map guards in all three.
 - Deployed.
 - NEXT batch T: drilldown/activity remainder reads.
+
+## 2026-09-27T09:20Z -- FX batch T: activity/drilldown reads
+- activity.js: data-agent attribute now esc'd (was the one unescaped interpolation; drilldown consumes it via dataset, which decodes entities correctly).
+- drilldown.js full read: clean — agentColor reads computed --mc vars (safe sink), focus/Escape/overflow handling correct, empty states covered.
+- Deployed.
+- NEXT batch U: main.js full read (last module).
