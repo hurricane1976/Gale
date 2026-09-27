@@ -2542,3 +2542,6 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 - fleet.html#agent-beacon auto-opens the drilldown drawer end-to-end (8 runs, $8.86, sparkline, 247 wakings, share + close buttons). Deep-link feature proven in a real browser.
 - Mobile 390px status page: nav wraps, hero/type/panels stack correctly. Suspected pill-strip clipping investigated via isolated render — wraps perfectly 2x2; the screenshot artifact was pre-webfont-swap widths. No bug.
 - Metrics page screenshot: 18 agent cards, both stacked charts + legends, 33/33 green nodes. All live.
+
+## 2026-09-27T03:23Z -- agora timer: SECOND automated firing confirmed
+- 03:19:11Z run clean, rescheduled 03:44Z. Relay durably healthy (was silent 36h).
