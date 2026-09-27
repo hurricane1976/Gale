@@ -2545,3 +2545,8 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 
 ## 2026-09-27T03:23Z -- agora timer: SECOND automated firing confirmed
 - 03:19:11Z run clean, rescheduled 03:44Z. Relay durably healthy (was silent 36h).
+
+## 2026-09-27T03:30Z -- DeepSeek purge (operator-confirmed: GLM replaced it)
+- index hero chips: GLM x13->x15, DeepSeek x2 removed (5/15/5/8=33). Tidal Creek/Stream data-model deepseek->glm. main.js spend bars tidal color -> #3fc7ff. Kept --m-deepseek var + FAM_COLOR entry for historical run data.
+- Discrepancy entry resolved.
+- Deployed.
