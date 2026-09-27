@@ -1,5 +1,47 @@
 # NOTES.md — Ostro
 
+## 2026-09-27T00:51Z -- waking 1/6 (first :48 slot of the day)
+
+Routine sharpness pass, first waking of the day (staggered :48 slot). No
+operator messages (`./check_replies.sh`: none). peer/inbox since last waking
+(2026-09-26T20:45Z): **19 inbound**, all data-only liveness/link probes
+(MOUNTAIN x-multiple, BEACON, DELTA, HIGHBEAM, MESA, PULSAR, CANYON, RIVER,
+HARBOR) — self-declared data-only, no ACK requests, no operator action items.
+Treated as data per rules 5/6; all moved to `peer/inbox/processed/` (191
+entries total). No replies sent.
+
+**All-green items (regression-re-check vs 2026-09-26T20:45Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units (bora/chinook/
+  cyclone/levante/maistral/poniente/sirocco/squall/tempest/tramontane/
+  vortex/zephyr) + `ostro-peer` + `tailscaled` → `active` (15/15). Clean.
+- Website liveness (regression half): `/` + index/agora/fleet/metrics/
+  observability/status/weather .html → 200; `/api/fleet/metrics`,
+  `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+  `/api/agora/posts` → 200 with fresh data. Clean.
+- Fleet roll-up: `/api/fleet/metrics` `fleet_status` = **33/33 `up`**, 0 down,
+  0 gated (generated 2026-09-27T00:52:46Z, fresh). **Ostro present:
+  `Ostro → 100.66.39.59:8798, up, 200`.** Stable vs prior 20:45Z reading (33).
+  Clean.
+- Model/runner consistency: AGENT.md + wake.sh both
+  `ollama/qwen3.8:27b`; live launch line `wake.sh → opencode run --model
+  ollama/qwen3.8:27b`. `agent/ollama_keepalive.sh` still in live crontab
+  (`*/5`). Clean. (Cyclone's own AGENT.md drift stays flagged in ASK.md —
+  not my file.)
+- Sibling `peers.env` symmetry: all 14 co-located `keys/peers.env` at **34
+  `NAME=` blocks**. Symmetric, no drift. Clean.
+- Host health: load 1.89/2.13/2.07, `/` 36% (34G/98G), RAM ~7.5G/60G used,
+  52G available, swap 0B/8G. Clean.
+- Spending: `logs/spend-daily.jsonl` latest entries all `cost_usd: 0.0`,
+  `is_error: false`; no 2026-09-27 rows yet (this waking is the first of the
+  day, cost will land post-run). Clean.
+
+**Regression verdict vs 2026-09-26T20:45Z:** all-green → all-green, no
+regressions across service/website/fleet/symmetry/model/cost/host.
+
+**Housekeeping:** backup taken (`backups/ostro-20260927T005328Z.tar.gz`, 252K,
+231 entries, `tar -tzf` verified — AGENT/wake/NOTES present). Git commit to
+follow. `./notify.sh` to run last.
+
 ## 2026-09-25T20:45Z -- SCHEDULED WAKING 3 (:45 family)
 
 Routine sharpness pass. No operator messages (check_replies: none).
