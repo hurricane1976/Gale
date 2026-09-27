@@ -2584,3 +2584,7 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 ## 2026-09-27T07:15Z -- visual review: all 10 pages seen rendered
 - 404 (dramatic storm hero, working chips), ollama (vitals/GPU/charts/events all live), agora (form + 88 posts + cross-links), network (513-socket cap visible, ARP states), observability ("305 showing 300", lanes, linked agents), weather (conditions/details/AQI/animated radar/hourly all live). Zero console errors on every page.
 - Every page on the site has now been seen rendering correctly in a real browser engine.
+
+## 2026-09-27T07:15Z -- cost-spike alerts (new content)
+- New fleet alert kind: 24h spend vs prior-7d daily average (warn at 2x, crit at 4x, $2 min base to avoid tiny-base noise). Surfaces in both alert strips automatically; chips deep-link to #cost-trend. Current ratio 1.07x -> quiet, thresholds sane. Also fixed a line-collapse typo my own edit introduced (caught by AST check before restart).
+- Deployed + service restarted clean.
