@@ -2451,3 +2451,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:55Z -- FX batch BO: drilldown/activity render tests
 - Exported drilldown.render + activity.render; harness captures body.appended panel. 33/33 green (incl. a harness-only location stub gap — production unaffected).
 - Deployed.
+
+## 2026-09-27T02:51Z -- FX batch BP: full-board render coverage
+- Harness routes feeds by URL (status.json/activity/metrics). Exported status.render + main renders. 36/36 green: status vitals/host/services, pulse, history, spend.
+- Agora timer fires ~02:55Z; will verify next run then.
+- Deployed.
