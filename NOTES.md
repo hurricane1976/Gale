@@ -2489,3 +2489,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - AU/AV: nginx Referrer-Policy no-referrer, nosniff, SAMEORIGIN — all live.
 - AW: button types + inline handlers + eval audits clean.
 - NOTE: another session is committing concurrently (Prism rotation docs); our files don't overlap. ASK.md modified by them — left untouched.
+
+## 2026-09-27T03:01Z -- capstone: esc() null-safe by construction
+- Root-fixed tonight's whole null-safety theme: esc(null/undefined) no longer throws (coerces via ?? + String; esc(0)==="0" preserved). Verified 6/6 unit + full render suite green. Earlier per-callsite fallbacks now redundant but harmless.
