@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "esbuild": "^0.24.0"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
   }
 }

@@ -1,6 +1,7 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, setHTML, setText, patchList } from "./shared.js";
+import { metricsPayload, validate } from "./payloads.js";
 
 boot();
 
@@ -45,17 +46,20 @@ export function renderAgentCards(d) {
     .filter((a) => !q || String(a.agent || "").toLowerCase().includes(q))
     .map((a) => {
     const lvl = a.error_runs_24h > 0 ? "warn" : "ok";
-    return statCard(
+    return {
+      key: `agent-${a.agent || "?"}`,
+      html: statCard(
       a.agent || "?",
       `${a.runs_24h} run${a.runs_24h === 1 ? "" : "s"}`,
       `$${(a.cost_24h ?? 0).toFixed(4)} &middot; last wake ${a.last_wake ? esc(fmtAgo(a.last_wake)) : "&ndash;"}` +
       (a.error_runs_24h ? ` &middot; <strong>${a.error_runs_24h} error</strong>` : ""),
       lvl,
       a.agent ? `fleet.html#agent-${encodeURIComponent(a.agent)}` : null
-    );
+    ),
+    }
   });
-  $("agent-grid").innerHTML = rows.join("") ||
-    `<p class="mini-note">No agents match “${esc(agentQuery)}”.</p>`;
+  patchList($("agent-grid"), rows.length ? rows :
+    [{ key: "empty", html: `<p class="mini-note">No agents match “${esc(agentQuery)}”.</p>` }]);
 }
 
 let agentQuery = "";
@@ -127,13 +131,15 @@ function stackedBars(series, labelFmt) {
 }
 
 function legend(containerId, hosts) {
-  $(containerId).innerHTML = hosts.map((h) =>
-    `<span><i class="obs-led" style="background:${hostColor(h)}"></i>${esc(h)}</span>`).join("");
+  patchList($(containerId), hosts.map((h) => ({
+    key: h,
+    html: `<span><i class="obs-led" style="background:${hostColor(h)}"></i>${esc(h)}</span>`,
+  })));
 }
 
 function renderStatus(d) {
   const entries = Object.entries(d.fleet_status || {});
-  $("sweep-count").textContent = entries.length;
+  setText($("sweep-count"), String(entries.length));
   const groups = {};
   entries.forEach(([name, st]) => {
     const dom = st.listener.split(".").slice(0, 3).join(".");
@@ -151,17 +157,17 @@ function renderStatus(d) {
            <i class="obs-led" style="background:${lvl === "ok" ? "var(--ok)" : lvl === "crit" ? "var(--flag)" : "var(--warn)"}"></i>${esc(n)}
          </span>`).join("")}</div></div>`;
   });
-  $("status-grid").innerHTML = html || `<p class="mini-note">No nodes parsed yet.</p>`;
-  $("status-note").textContent = `Liveness only — an HTTP 401 counts as up (auth-gated), matching the ops status page. ${entries.length} nodes from the fleet page's own listener data; no tokens probed.`;
+  setHTML($("status-grid"), html || `<p class="mini-note">No nodes parsed yet.</p>`);
+  setText($("status-note"), `Liveness only — an HTTP 401 counts as up (auth-gated), matching the ops status page. ${entries.length} nodes from the fleet page's own listener data; no tokens probed.`);
 }
 
 function renderAll() {
   if (!DATA) return;
   renderAgentCards(DATA);
   const hosts = Object.keys(DATA.daily_wakings_by_host);
-  $("wakings-chart").innerHTML = stackedBars(DATA.daily_wakings_by_host, (v) => String(Math.round(v)));
+  setHTML($("wakings-chart"), stackedBars(DATA.daily_wakings_by_host, (v) => String(Math.round(v))));
   legend("wakings-legend", hosts);
-  $("cost-chart").innerHTML = stackedBars(DATA.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`);
+  setHTML($("cost-chart"), stackedBars(DATA.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`));
   legend("cost-legend", Object.keys(DATA.daily_cost_by_host));
   renderStatus(DATA);
   refreshEffects();
@@ -172,7 +178,7 @@ async function load() {
   try {
     const r = await fetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    DATA = await r.json();
+    DATA = validate(await r.json(), metricsPayload);
     renderAll();
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);
@@ -196,7 +202,7 @@ if (typeof EventSource !== "undefined") {
   es.onmessage = (e) => {
     failures = 0;
     try {
-      DATA = JSON.parse(e.data);
+      DATA = validate(JSON.parse(e.data), metricsPayload);
       renderAll();
     } catch { /* malformed payload -- wait for the next push */ }
   };

@@ -3,7 +3,8 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp, refreshEffects, REDUCED } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList } from "./shared.js";
+import { statusPayload, metricsPayload, validate } from "./payloads.js";
 
 boot();
 
@@ -55,70 +56,77 @@ function renderVitals(d) {
   const diskLvl = level(disk.pct, 80, 93);
   const loadPct = (h.load[0] / h.cpu_count) * 100;
   const loadLvl = level(loadPct, 80, 100);
-  document.getElementById("hostname").textContent = h.hostname;
-  document.getElementById("vitals-grid").innerHTML = [
+  setText(document.getElementById("hostname"), h.hostname);
+  setHTML(document.getElementById("vitals-grid"), [
     vitalCard("CPU", `${h.cpu_pct}%`, `load ${h.load.join(" / ")}`, cpuLvl, h.cpu_pct),
     vitalCard("Memory", `${h.mem.pct}%`, `${(h.mem.used_mb / 1024).toFixed(1)} / ${(h.mem.total_mb / 1024).toFixed(1)} GB`, memLvl, h.mem.pct),
     vitalCard("Disk /", `${disk.pct}%`, `${disk.used_gb} / ${disk.total_gb} GB`, diskLvl, disk.pct),
     vitalCard("Swap", `${h.swap.pct}%`, `${(h.swap.used_mb / 1024).toFixed(2)} GB used`, h.swap.pct > 10 ? "warn" : "ok", h.swap.pct),
     vitalCard("Uptime", fmtUptime(h.uptime_s), h.reboot_required ? "reboot required" : "no reboot pending", h.reboot_required ? "warn" : "ok"),
     vitalCard("Load avg", h.load[0], `${h.cpu_count} cores &middot; 5m ${h.load[1]} &middot; 15m ${h.load[2]}`, loadLvl),
-  ].join("");
+  ].join(""));
 }
 
 function renderHostInfo(d) {
   const h = d.host;
-  document.getElementById("host-info").innerHTML = [
+  setHTML(document.getElementById("host-info"), [
     ["OS", esc(h.os || "–")],
     ["Kernel", esc(h.kernel || "–")],
     ["Arch", esc(h.arch || "–")],
     ["Hostname", esc(h.hostname || "–")],
     ["Boot time", esc(h.boot_time || "–")],
-  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(""));
 }
 
 function renderCores(d) {
   const h = d.host;
-  document.getElementById("cpu-count").textContent = h.cpu_count;
-  document.getElementById("core-grid").innerHTML = h.cpu_per_core
-    .map((p, i) => `<div class="core" data-level="${level(p)}" title="core ${i}: ${p}%">
+  setText(document.getElementById("cpu-count"), String(h.cpu_count));
+  patchList(document.getElementById("core-grid"), h.cpu_per_core
+    .map((p, i) => ({
+      key: `core-${i}`,
+      html: `<div class="core" data-level="${level(p)}" title="core ${i}: ${p}%">
         <i style="height:${clamp(p, 0, 100).toFixed(0)}%"></i>
-      </div>`)
-    .join("");
+      </div>`,
+    })));
 }
 
 function renderNetwork(d) {
   const n = d.network;
   const rows = n.interfaces
     .map(
-      (i) => `<tr>
+      (i) => ({
+        key: `if-${i.name}`,
+        html: `<tr>
       <td><code>${esc(i.name)}</code></td>
       <td><code>${esc(i.ip)}</code></td>
       <td>${i.rx_mbps.toFixed(2)} Mb/s</td>
       <td>${i.tx_mbps.toFixed(2)} Mb/s</td>
       <td>${i.rx_total_gb.toFixed(1)} / ${i.tx_total_gb.toFixed(1)} GB</td>
-    </tr>`
-    )
-    .join("");
-  document.querySelector("#net-table tbody").innerHTML = rows || `<tr><td colspan="5">no interfaces reported</td></tr>`;
+    </tr>`,
+      })
+    );
+  patchList(document.querySelector("#net-table tbody"), rows.length ? rows :
+    [{ key: "empty", html: `<tr><td colspan="5">no interfaces reported</td></tr>` }]);
   const ts = n.tailscale;
-  document.getElementById("tailscale-line").textContent = ts && ts.ok
+  setText(document.getElementById("tailscale-line"), ts && ts.ok
     ? `Tailscale: ${ts.backend_state} · self ${ts.self_ip} · ${ts.peers_online}/${ts.peers_total} tailnet peers online`
-    : "Tailscale: status unavailable";
+    : "Tailscale: status unavailable");
 }
 
 function renderServices(d) {
   const rows = d.services
     .map((s) => {
       const ok = s.state === "active";
-      return `<tr>
+      return {
+        key: `svc-${s.unit}`,
+        html: `<tr>
       <td><code>${esc(s.unit)}</code></td>
       <td><span class="pill" data-level="${ok ? "ok" : "crit"}">${esc(s.state)}</span></td>
       <td class="mono-dim">${esc(s.since || "&ndash;")}</td>
-    </tr>`;
-    })
-    .join("");
-  document.querySelector("#services-table tbody").innerHTML = rows;
+    </tr>`,
+      };
+    });
+  patchList(document.querySelector("#services-table tbody"), rows);
 }
 
 function renderSecurity(d) {
@@ -127,12 +135,12 @@ function renderSecurity(d) {
     v === null || v === undefined
       ? `<span class="pill" data-level="warn">unknown</span>`
       : `<span class="pill" data-level="${(warnIfTrue ? v : !v) ? "warn" : "ok"}">${v ? "yes" : "no"}</span>`;
-  document.getElementById("security-info").innerHTML = [
+  setHTML(document.getElementById("security-info"), [
     ["UFW firewall active", yn(s.ufw_active, false)],
     ["Reboot required", yn(s.reboot_required, true)],
     ["Unattended upgrades", `<span class="pill" data-level="${s.unattended_upgrades === "enabled" ? "ok" : "warn"}">${esc(s.unattended_upgrades)}</span>`],
     ["Sudoers drop-in present", yn(s.sudoers_dropin, false)],
-  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(""));
 }
 
 let portsExpanded = false;
@@ -140,15 +148,18 @@ function renderPorts(d) {
   const ports = d.network.listening_ports;
   const labeled = ports.filter((p) => p.label);
   const other = ports.filter((p) => !p.label);
-  const row = (p) => `<tr>
+  const row = (p) => ({
+    key: `port-${String(p.port)}`,
+    html: `<tr>
       <td><code>${esc(String(p.port))}</code></td>
       <td><code>${esc(p.proc)}</code></td>
       <td>${p.label ? `<span class="pill" data-level="ok">${esc(p.label)}</span>` : `<span class="mono-dim">&ndash;</span>`}</td>
       <td class="mono-dim">${p.addrs.map(esc).join(", ")}</td>
-    </tr>`;
+    </tr>`,
+  });
   const toggle = document.getElementById("ports-toggle");
   const shown = labeled.concat(portsExpanded ? other : []);
-  document.querySelector("#ports-table tbody").innerHTML = shown.map(row).join("");
+  patchList(document.querySelector("#ports-table tbody"), shown.map(row));
   if (other.length) {
     toggle.hidden = false;
     toggle.textContent = portsExpanded ? "Show fewer" : `+ ${other.length} other listening ports`;
@@ -161,29 +172,31 @@ function renderPorts(d) {
 const HEALTH_LEVEL = { up: "ok", auth: "info", error: "warn", down: "crit" };
 const HEALTH_LABEL = { up: "up", auth: "up (auth-gated)", error: "error", down: "down" };
 function renderTargets(d) {
-  document.getElementById("targets-grid").innerHTML = d.targets
+  patchList(document.getElementById("targets-grid"), d.targets
     .map((t) => {
       const lvl = HEALTH_LEVEL[t.health] || "warn";
       const lat = t.latency_ms != null ? `${t.latency_ms} ms` : "&ndash;";
-      return `<div class="target-card" data-level="${lvl}">
+      return {
+        key: `target-${t.name}`,
+        html: `<div class="target-card" data-level="${lvl}">
         <div class="target-top">
           <span class="target-name">${esc(t.name)}</span>
           <span class="pill" data-level="${lvl}">${esc(HEALTH_LABEL[t.health] || t.health)}</span>
         </div>
         <div class="mono-dim">${esc(t.addr)} &middot; ${esc(t.kind)}</div>
         <div class="mono-dim">latency ${lat}${t.reported_name ? ` &middot; reports as ${esc(t.reported_name)}` : ""}</div>
-      </div>`;
-    })
-    .join("");
+      </div>`,
+      };
+    }));
 }
 
 function renderFullHosts(list) {
   const grid = document.getElementById("full-hosts-grid");
   if (!list || !list.length) {
-    grid.innerHTML = `<p class="mini-note">No remote hosts configured &mdash; add one to FULL_TARGETS in sysmon.py.</p>`;
+    setHTML(grid, `<p class="mini-note">No remote hosts configured &mdash; add one to FULL_TARGETS in sysmon.py.</p>`);
     return;
   }
-  grid.innerHTML = list.map((t) => {
+  setHTML(grid, list.map((t) => {
     if (t.health !== "up" || !t.stats) {
       return `<div class="full-host-card" data-health="down">
         <div class="full-host-head">
@@ -247,7 +260,7 @@ function renderFullHosts(list) {
         </div>
       </div>
     </div>`;
-  }).join("");
+  }).join(""));
 }
 
 const FW_API = "api/firewalla";
@@ -277,15 +290,15 @@ function fwScopeLabel(r, devicesByMac) {
 
 async function fwAction(method, path, note) {
   const noteEl = document.getElementById("fw-action-note");
-  noteEl.textContent = `${note}...`;
+  setText(noteEl, `${note}...`);
   try {
     const res = await fetch(`${FW_API}/${path}`, { method, cache: "no-store" });
     const body = await res.json().catch(() => ({}));
     if (!res.ok || body.ok === false) throw new Error(body.error || `HTTP ${res.status}`);
-    noteEl.textContent = `${note} — done.`;
+    setText(noteEl, `${note} — done.`);
     await fwRefresh();
   } catch (e) {
-    noteEl.textContent = `Failed: ${e.message}`;
+    setText(noteEl, `Failed: ${e.message}`);
   }
 }
 
@@ -294,9 +307,9 @@ function renderFirewall(fw) {
   const body = document.getElementById("fw-body");
   if (!fw || !fw.ok) {
     unconfigured.hidden = false;
-    unconfigured.textContent = fw && fw.error && fw.error !== "not configured"
+    setText(unconfigured, fw && fw.error && fw.error !== "not configured"
       ? `Firewalla error: ${fw.error}`
-      : "Not configured — add keys/firewalla.env to enable.";
+      : "Not configured — add keys/firewalla.env to enable.");
     body.hidden = true;
     return;
   }
@@ -305,7 +318,7 @@ function renderFirewall(fw) {
   lastFw = fw;
 
   const box = fw.box || {};
-  document.getElementById("fw-box-name").textContent = box.name || "–";
+  setText(document.getElementById("fw-box-name"), box.name || "–");
 
   const devices = fw.devices || [];
   const rules = fw.rules || [];
@@ -313,12 +326,12 @@ function renderFirewall(fw) {
   const online = devices.filter((d) => d.online).length;
   const activeRules = rules.filter((r) => r.status === "active");
 
-  document.getElementById("fw-vitals").innerHTML = [
+  setHTML(document.getElementById("fw-vitals"), [
     vitalCard("Box", box.online ? "online" : "offline", `${esc(box.model || "")} · v${esc(box.version || "?")}`, box.online ? "ok" : "crit"),
     vitalCard("Devices", `${online}/${devices.length}`, "online / total", online === 0 && devices.length ? "warn" : "ok"),
     vitalCard("Rules", rules.length, `${activeRules.length} active`, "ok"),
     vitalCard("Alarms", box.alarmCount ?? 0, "open", (box.alarmCount || 0) > 0 ? "warn" : "ok"),
-  ].join("");
+  ].join(""));
 
   // active internet-block rules per device -- the exact shape the Block
   // button creates -- drive the per-row Block/Unblock toggle state.
@@ -328,8 +341,8 @@ function renderFirewall(fw) {
       .map((r) => (r.scope.value || "").toUpperCase())
   );
 
-  document.getElementById("fw-device-total").textContent = devices.length;
-  document.getElementById("fw-device-count").textContent = online;
+  setText(document.getElementById("fw-device-total"), String(devices.length));
+  setText(document.getElementById("fw-device-count"), String(online));
 
   const q = fwDeviceFilter.trim().toLowerCase();
   const filtered = q
@@ -337,28 +350,36 @@ function renderFirewall(fw) {
     : devices;
   const sorted = filtered.slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0));
 
-  document.querySelector("#fw-devices-table tbody").innerHTML = sorted.slice(0, 300).map((d) => {
+  const devRows = sorted.slice(0, 300).map((d) => {
     const mac = (d.mac || d.id || "").toUpperCase();
     const blocked = blockedMacs.has(mac);
-    return `<tr>
+    return {
+      key: `dev-${mac || d.ip || d.name}`,
+      html: `<tr>
       <td>${esc(d.name || "(unnamed)")}<br><span class="mono-dim">${esc(mac)}</span></td>
       <td><code>${esc(d.ip || "–")}</code></td>
       <td><span class="pill" data-level="${d.online ? "ok" : "warn"}">${d.online ? "online" : "offline"}</span>${blocked ? ' <span class="pill" data-level="crit">blocked</span>' : ""}</td>
       <td>${blocked
         ? `<button class="row-btn" data-fw-unblock="${esc(mac)}">Unblock</button>`
         : `<button class="row-btn" data-danger="true" data-fw-block="${esc(mac)}">Block</button>`}</td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="4">no devices match</td></tr>`;
+    </tr>`,
+    };
+  });
+  patchList(document.querySelector("#fw-devices-table tbody"), devRows.length ? devRows :
+    [{ key: "empty", html: `<tr><td colspan="4">no devices match</td></tr>` }]);
 
-  document.getElementById("fw-rule-count").textContent = rules.length;
-  document.querySelector("#fw-rules-table tbody").innerHTML = rules.map((r) => `<tr>
+  setText(document.getElementById("fw-rule-count"), String(rules.length));
+  patchList(document.querySelector("#fw-rules-table tbody"), rules.length ? rules.map((r) => ({
+    key: `rule-${r.id}`,
+    html: `<tr>
       <td>${esc(fwRuleLabel(r))}${r.action === "block" ? "" : ` <span class="mono-dim">(${esc(r.action)})</span>`}</td>
       <td class="mono-dim">${esc(fwScopeLabel(r, devicesByMac))}</td>
       <td><span class="pill" data-level="${r.status === "active" ? "ok" : "warn"}">${esc(r.status)}</span></td>
       <td>${r.status === "active"
         ? `<button class="row-btn" data-fw-pause="${esc(r.id)}">Pause</button>`
         : `<button class="row-btn" data-fw-resume="${esc(r.id)}">Resume</button>`}</td>
-    </tr>`).join("") || `<tr><td colspan="4">no rules</td></tr>`;
+    </tr>`,
+  })) : [{ key: "empty", html: `<tr><td colspan="4">no rules</td></tr>` }]);
 
   renderVpn(fw);
   renderFwLive(fw);
@@ -382,25 +403,28 @@ function renderFwLive(fw) {
   const body = document.getElementById("fw-live-body");
   if (!body) return;
   if (live.error) {
-    document.getElementById("fw-live-vitals").innerHTML = "";
-    document.getElementById("fw-live-note").textContent = `Live throughput unavailable: ${live.error}`;
+    setHTML(document.getElementById("fw-live-vitals"), "");
+    setText(document.getElementById("fw-live-note"), `Live throughput unavailable: ${live.error}`);
     return;
   }
-  document.getElementById("fw-live-vitals").innerHTML = [
+  setHTML(document.getElementById("fw-live-vitals"), [
     vitalCard("Download", fmtMbps(live.mbps_down || 0), `avg over ${(live.window_s || 900) / 60} min`, "ok"),
     vitalCard("Upload", fmtMbps(live.mbps_up || 0), `avg over ${(live.window_s || 900) / 60} min`, "ok"),
     vitalCard("Flows", `${live.truncated ? "≥ " : ""}${live.flows ?? 0}`, `opened in ${(live.window_s || 900) / 60} min`, "ok"),
     vitalCard("Throughput", fmtMbps(((live.mbps_down || 0) + (live.mbps_up || 0)) || 0), "combined", "ok"),
-  ].join("");
+  ].join(""));
   const talkers = live.top_talkers || [];
   const max = Math.max(...talkers.map((t) => t.bytes || 0), 1);
-  document.querySelector("#fw-talkers-table tbody").innerHTML = talkers.map((t) => `<tr>
+  patchList(document.querySelector("#fw-talkers-table tbody"), talkers.length ? talkers.map((t) => ({
+    key: `talker-${t.name}-${t.bytes || 0}`,
+    html: `<tr>
       <td>${esc(t.name)}</td>
       <td>${fmtBytes2(t.bytes || 0)}</td>
       <td style="width:42%"><div class="meter" data-level="ok"><i style="width:${((t.bytes || 0) / max * 100).toFixed(1)}%"></i></div></td>
-    </tr>`).join("") || `<tr><td colspan="3">no flow records in the last 2h</td></tr>`;
-  document.getElementById("fw-live-note").textContent =
-    "Derived from completed flow records via the Firewalla MSP API — the export lags realtime by a few minutes and busy windows get capped, so treat these as recent averages ('≥' = truncated), not a live interface counter. True per-interface counters would need the box's local API (see the VPN note).";
+    </tr>`,
+  })) : [{ key: "empty", html: `<tr><td colspan="3">no flow records in the last 2h</td></tr>` }]);
+  setText(document.getElementById("fw-live-note"),
+    "Derived from completed flow records via the Firewalla MSP API — the export lags realtime by a few minutes and busy windows get capped, so treat these as recent averages ('≥' = truncated), not a live interface counter. True per-interface counters would need the box's local API (see the VPN note).");
 }
 
 function fmtAgoEpoch(ts) {
@@ -421,25 +445,31 @@ function renderVpn(fw) {
   const body = document.getElementById("fw-vpn-body");
   const profiles = vpn.profiles || [];
   const tunnels = vpn.tunnels || [];
-  document.getElementById("fw-vpn-total").textContent = profiles.length;
-  document.getElementById("fw-vpn-online").textContent = vpn.profiles_online || 0;
+  setText(document.getElementById("fw-vpn-total"), String(profiles.length));
+  setText(document.getElementById("fw-vpn-online"), String(vpn.profiles_online || 0));
   const kindLabel = { "wireguard-peer": "WireGuard peer", "openvpn-profile": "OpenVPN" };
-  document.querySelector("#fw-vpn-table tbody").innerHTML = profiles.map((p) => `<tr>
+  patchList(document.querySelector("#fw-vpn-table tbody"), profiles.length ? profiles.map((p) => ({
+    key: `vpn-${p.name}`,
+    html: `<tr>
       <td>${esc(p.name)}</td>
       <td>${esc(kindLabel[p.kind] || p.kind)}</td>
       <td><span class="pill" data-level="${p.online ? "ok" : "warn"}">${p.online ? "connected" : "offline"}</span></td>
       <td><code>${esc(p.ip || "–")}</code></td>
       <td>&darr; ${fmtBytes(p.download_24h)} / &uarr; ${fmtBytes(p.upload_24h)}</td>
-    </tr>`).join("") || `<tr><td colspan="5">no VPN profiles on the box</td></tr>`;
-  document.querySelector("#fw-tunnel-table tbody").innerHTML = tunnels.map((t) => `<tr>
+    </tr>`,
+  })) : [{ key: "empty", html: `<tr><td colspan="5">no VPN profiles on the box</td></tr>` }]);
+  patchList(document.querySelector("#fw-tunnel-table tbody"), tunnels.length ? tunnels.map((t) => ({
+    key: `tun-${t.device}-${t.last_ts}`,
+    html: `<tr>
       <td>${esc(t.device)}</td>
       <td>${t.direction === "inbound" ? "&larr; inbound" : "&rarr; outbound"}</td>
       <td>${esc(t.protocol || "–")}</td>
       <td>${t.flows}</td>
       <td>${fmtBytes(t.bytes)}</td>
       <td>${fmtAgoEpoch(t.last_ts)}</td>
-    </tr>`).join("") || `<tr><td colspan="6">no tunnel flows in the last 24h</td></tr>`;
-  document.getElementById("fw-vpn-note").textContent = vpn.note || "";
+    </tr>`,
+  })) : [{ key: "empty", html: `<tr><td colspan="6">no tunnel flows in the last 24h</td></tr>` }]);
+  setText(document.getElementById("fw-vpn-note"), vpn.note || "");
 }
 
 async function fwRefresh() {
@@ -481,50 +511,56 @@ function renderOllama(o) {
   const downEl = document.getElementById("ollama-down");
   const bodyEl = document.getElementById("ollama-body");
   if (!o || !o.reachable) {
-    addrEl.textContent = "–";
+    setText(addrEl, "–");
     downEl.hidden = false;
     bodyEl.hidden = true;
     return;
   }
-  addrEl.textContent = `${o.addr} · v${o.version || "?"}`;
+  setText(addrEl, `${o.addr} · v${o.version || "?"}`);
   downEl.hidden = true;
   bodyEl.hidden = false;
 
   const loaded = o.loaded || [];
   const inv = o.inventory || [];
   const vramBytes = loaded.reduce((a, m) => a + (m.size_vram || 0), 0);
-  document.getElementById("ollama-vitals").innerHTML = [
+  setHTML(document.getElementById("ollama-vitals"), [
     vitalCard("Version", `v${esc(o.version)}`, esc(o.addr)),
     vitalCard("Loaded models", String(loaded.length), "resident in VRAM now"),
     vitalCard("VRAM committed", fmtBytes2(vramBytes), `${loaded.length} model${loaded.length === 1 ? "" : "s"} loaded`),
     vitalCard("Models available", String(inv.length), "inventory (/api/tags)"),
-  ].join("");
+  ].join(""));
 
-  document.getElementById("ollama-loaded-count").textContent = loaded.length;
-  document.querySelector("#ollama-loaded-table tbody").innerHTML =
-    loaded.map((m) => `<tr>
+  setText(document.getElementById("ollama-loaded-count"), String(loaded.length));
+  patchList(document.querySelector("#ollama-loaded-table tbody"),
+    loaded.length ? loaded.map((m) => ({
+      key: `ol-${m.name}`,
+      html: `<tr>
       <td><code>${esc(m.name)}</code></td>
       <td class="mono-dim">${esc(m.params || "&ndash;")}</td>
       <td class="mono-dim">${esc(m.quant || "&ndash;")}</td>
       <td>${esc(m.vram_human || (m.size_vram ? fmtBytes2(m.size_vram) : "&ndash;"))}</td>
       <td class="mono-dim">${m.context ? m.context.toLocaleString() : "&ndash;"}</td>
       <td class="mono-dim">${m.expires_minutes == null ? "&ndash;" : `${m.expires_minutes}m`}</td>
-    </tr>`).join("") || `<tr><td colspan="6" class="mono-dim">nothing loaded</td></tr>`;
+    </tr>`,
+    })) : [{ key: "empty", html: `<tr><td colspan="6" class="mono-dim">nothing loaded</td></tr>` }]);
 
-  document.getElementById("ollama-inv-count").textContent = inv.length;
-  document.querySelector("#ollama-inv-table tbody").innerHTML =
-    inv.map((m) => `<tr>
+  setText(document.getElementById("ollama-inv-count"), String(inv.length));
+  patchList(document.querySelector("#ollama-inv-table tbody"),
+    inv.map((m) => ({
+      key: `inv-${m.name}`,
+      html: `<tr>
       <td><code>${esc(m.name)}</code></td>
       <td class="mono-dim">${esc(m.params || "&ndash;")}</td>
       <td class="mono-dim">${esc(m.quant || "&ndash;")}</td>
       <td>${esc(m.size_human || "&ndash;")}</td>
       <td class="mono-dim">${(m.caps || []).join(", ") || "&ndash;"}</td>
-    </tr>`).join("");
+    </tr>`,
+    })));
 }
 
 export function render(d) {
   board.hidden = false;
-  document.getElementById("interval").textContent = d.collector_interval_s;
+  setText(document.getElementById("interval"), String(d.collector_interval_s));
   pollMs = Math.max(5000, (d.collector_interval_s || 15) * 1000);
   if (pollTimer) { clearInterval(pollTimer); pollTimer = setInterval(tick, pollMs); }
   renderVitals(d);
@@ -609,12 +645,12 @@ function renderAlertStrip(all) {
   all.sort((x, y) => (SEV_ORDER[x.sev] ?? 9) - (SEV_ORDER[y.sev] ?? 9));
   if (!all.length) { stripEl.hidden = true; return; }
   stripEl.hidden = false;
-  chipsEl.innerHTML = all.map((a) =>
+  setHTML(chipsEl, all.map((a) =>
     `<button type="button" class="alert-chip alert-chip--${esc(a.sev)}" data-target="${esc(CHIP_TARGETS[a.kind] || "")}" data-kind="${esc(a.kind)}" title="${esc(a.kind)}">
       <i class="alert-dot" aria-hidden="true"></i>
       <span class="alert-text">${esc(a.text)}</span>
     </button>`
-  ).join("");
+  ).join(""));
 }
 
 chipsEl.addEventListener("click", (e) => {
@@ -632,7 +668,7 @@ async function tick() {
   try {
     const res = await fetch(FEED, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    data = await res.json();
+    data = validate(await res.json(), statusPayload);
     render(data);
     lastStatus = data;
   } catch (e) {
@@ -704,8 +740,8 @@ export async function renderFleet24h() {
   if (!grid) return;
   const { data, err } = await fetchFleet24h();
   if (!data) {
-    grid.innerHTML = `<p class="mini-note" style="grid-column:1/-1;color:var(--warn)">fleet metrics unreachable (${esc(err || "unknown")}) — see fleet.html</p>`;
-    if (fresh) fresh.textContent = "";
+    setHTML(grid, `<p class="mini-note" style="grid-column:1/-1;color:var(--warn)">fleet metrics unreachable (${esc(err || "unknown")}) — see fleet.html</p>`);
+    if (fresh) setText(fresh, "");
     return;
   }
   const runs = data.runs_24h_by_host || {};
@@ -728,19 +764,19 @@ export async function renderFleet24h() {
       else if (st && st.state === "down") perHost[h].down += 1;
       else perHost[h].up += 1;
     });
-    strip.innerHTML = FLEET_ORDER.map((h) => {
+    setHTML(strip, FLEET_ORDER.map((h) => {
       const p = perHost[h], n = (agents[h] || []).length;
       const lvl = p.down > 0 ? "crit" : p.total === 0 ? "idle" : p.up >= n && n > 0 ? "ok" : "warn";
       const label = p.total === 0 ? `${n} agents · no sweep yet` : `${p.up}/${Math.max(p.total, n)} up`;
       return `<span class="fleet-live-pill" data-level="${lvl}" title="${esc(h)}: ${esc(label)}">` +
         `<i class="fleet-live-dot" aria-hidden="true"></i>${esc(h)} <b>${esc(label)}</b></span>`;
-    }).join("");
+    }).join(""));
   }
-  grid.innerHTML = FLEET_ORDER.map((h) => {
+  patchList(grid, FLEET_ORDER.map((h) => {
     const meta = FLEET_META[h] || { hue: "var(--text-faint)", note: "" };
     const r = runs[h] ?? null, c = cost[h] ?? null, e = errs[h] || 0;
     const agg = last[h] || null, n = (agents[h] || []).length;
-    return `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
+    const html = `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
       <header class="fleet-24h-head">
         <span class="fleet-24h-dot" aria-hidden="true"></span>
         <strong class="fleet-24h-name"><a href="fleet.html#hosts">${esc(h)}</a></strong>
@@ -754,10 +790,11 @@ export async function renderFleet24h() {
         <div class="fleet-24h-stat"><span>${agg ? esc(fleetAgo(agg)) : "–"}</span><span class="fleet-24h-sub">last wake</span></div>
       </div>
     </article>`;
-  }).join("");
+    return { key: `fleet24-${h}`, html };
+  }));
   if (fresh) {
     const gen = data.generated_at ? ` · metrics generated ${fleetAgo(data.generated_at)}` : "";
-    fresh.textContent = `live · poll fallback every 30s${gen}`;
+    setText(fresh, `live · poll fallback every 30s${gen}`);
   }
   refreshEffects();
 }
@@ -798,7 +835,7 @@ if (typeof EventSource !== "undefined") {
   esFleet.onmessage = (e) => {
     fleetFailures = 0;
     try {
-      fleetCache = { at: Date.now(), data: JSON.parse(e.data), err: null };
+      fleetCache = { at: Date.now(), data: validate(JSON.parse(e.data), metricsPayload), err: null };
       renderFleet24h();
     } catch { /* malformed payload -- wait for the next push */ }
   };

@@ -1,7 +1,8 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp, refreshEffects } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList } from "./shared.js";
+import { observabilityPayload, validate } from "./payloads.js";
 
 boot();
 
@@ -53,20 +54,20 @@ function agentNames(t) {
 function renderStats(d) {
   const t = d.totals;
   const errs = d.runs.filter((r) => r.is_error).length;
-  $("stats-grid").innerHTML = [
-    statCard("Runs", d.count, `since ${esc(d.instrumented_since || "–")}`),
-    statCard("Total cost", `$${t.cost_usd.toFixed(4)}`, "all local runs"),
-    statCard("Mean cost / run", `$${t.mean_cost_usd.toFixed(4)}`, d.count ? `across ${d.count} runs` : ""),
-    statCard("Total tokens", fmtTok(t.total_tokens), "in + out + cache-read"),
-    statCard("Error runs", errs, errs ? "see silent-failure watch" : "none so far", errs ? "warn" : "ok"),
-    statCard("Agents", agentNames(t).length, agentNames(t).map(esc).join(" &middot; ")),
-  ].join("");
+  patchList($("stats-grid"), [
+    { key: "runs", html: statCard("Runs", d.count, `since ${esc(d.instrumented_since || "–")}`) },
+    { key: "cost", html: statCard("Total cost", `$${t.cost_usd.toFixed(4)}`, "all local runs") },
+    { key: "mean", html: statCard("Mean cost / run", `$${t.mean_cost_usd.toFixed(4)}`, d.count ? `across ${d.count} runs` : "") },
+    { key: "tokens", html: statCard("Total tokens", fmtTok(t.total_tokens), "in + out + cache-read") },
+    { key: "errors", html: statCard("Error runs", errs, errs ? "see silent-failure watch" : "none so far", errs ? "warn" : "ok") },
+    { key: "agents", html: statCard("Agents", agentNames(t).length, agentNames(t).map(esc).join(" &middot; ")) },
+  ]);
 }
 
 function renderCostChart(d) {
   const runs = d.runs;
   const wrap = $("cost-chart");
-  if (!runs.length) { wrap.innerHTML = `<p class="mini-note">No runs yet.</p>`; return; }
+  if (!runs.length) { setHTML(wrap, `<p class="mini-note">No runs yet.</p>`); return; }
   const W = Math.max(320, Math.min(runs.length * 34, 1600));
   const H = 180;
   const pad = { t: 16, r: 12, b: 34, l: 44 };
@@ -95,22 +96,22 @@ function renderCostChart(d) {
   }).join("");
   const first = esc(runs[0].ts.slice(5, 16).replace("T", " "));
   const last = esc(runs[runs.length - 1].ts.slice(5, 16).replace("T", " "));
-  wrap.innerHTML = `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Cost per run">
+  setHTML(wrap, `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Cost per run">
     ${ticks}${bars}${spark}
     <text x="${pad.l}" y="${H - 6}" class="obs-tick">${first}</text>
     <text x="${W - pad.r}" y="${H - 6}" text-anchor="end" class="obs-tick">${last}</text>
-  </svg></div>`;
+  </svg></div>`);
 }
 
 function renderLanes(d) {
   const runs = d.runs;
   const el = $("lanes");
-  if (!runs.length) { el.innerHTML = `<p class="mini-note">No runs yet.</p>`; return; }
+  if (!runs.length) { setHTML(el, `<p class="mini-note">No runs yet.</p>`); return; }
   const t0 = new Date(runs[0].ts).getTime();
   const t1 = Math.max(...runs.map((r) => new Date(r.ts).getTime()));
   const span = Math.max(t1 - t0, 1);
   const agents = agentNames(d.totals);
-  el.innerHTML = agents.map((a) => {
+  patchList(el, agents.map((a) => {
     const ar = runs.filter((r) => r.agent === a);
     const maxCost = Math.max(...runs.map((r) => r.cost_usd || 0), 0.0001);
     const dots = ar.map((r) => {
@@ -119,24 +120,29 @@ function renderLanes(d) {
       return `<span class="lane-dot" style="left:${x.toFixed(2)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;
         background:${famColor(r.model_family)}" title="${esc(`${a} w${r.waking_count} — $${(r.cost_usd || 0).toFixed(4)}`)}"></span>`;
     }).join("");
-    return `<div class="obs-lane">
-      <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(a || "")}">${esc(a || "?")}</a></span>
-      <span class="obs-lane-track">${dots}</span>
-      <span class="obs-lane-count">${ar.length} runs</span>
-    </div>`;
-  }).join("");
+    return {
+      key: `lane-${a || "?"}`,
+      html: `<div class="obs-lane">
+        <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(a || "")}">${esc(a || "?")}</a></span>
+        <span class="obs-lane-track">${dots}</span>
+        <span class="obs-lane-count">${ar.length} runs</span>
+      </div>`,
+    };
+  }));
 }
 
 function renderExplorer(d) {
   const sel = $("agent-filter");
   const agents = agentNames(d.totals);
   const cur = sel.value;
-  sel.innerHTML = `<option value="">all agents</option>` + agents.map((a) => `<option${a === cur ? " selected" : ""}>${esc(a || "?")}</option>`).join("");
+  setHTML(sel, `<option value="">all agents</option>` + agents.map((a) => `<option${a === cur ? " selected" : ""}>${esc(a || "?")}</option>`).join(""));
   const rows = d.runs.filter((r) => !filter || r.agent === filter).slice().reverse().slice(0, 300);
-  $("run-count").textContent = rows.length < d.count ? `${d.count} (showing ${rows.length})` : d.count;
-  $("runs-table").querySelector("tbody").innerHTML = rows.map((r) => {
+  setText($("run-count"), rows.length < d.count ? `${d.count} (showing ${rows.length})` : String(d.count));
+  patchList($("runs-table").querySelector("tbody"), rows.length ? rows.map((r) => {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
-    return `<tr${r.is_error ? ' class="err-row"' : ""}>
+    return {
+      key: `run-${r.ts}-${r.agent}`,
+      html: `<tr${r.is_error ? ' class="err-row"' : ""}>
       <td>${esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
       <td><span class="obs-lane-name" style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(r.agent || "")}">${esc(r.agent || "?")}</a></span></td>
       <td>w${r.waking_count}</td>
@@ -146,8 +152,9 @@ function renderExplorer(d) {
       <td>$${(r.cost_usd || 0).toFixed(4)}</td>
       <td>${r.turns ?? "&ndash;"}</td>
       <td>${r.is_error ? '<span class="tag-err">error</span>' : "ok"}</td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="9" class="mini-note">No runs match.</td></tr>`;
+    </tr>`,
+    };
+  }) : [{ key: "empty", html: `<tr><td colspan="9" class="mini-note">No runs match.</td></tr>` }]);
 }
 
 function renderSilent(d) {
@@ -158,7 +165,7 @@ function renderSilent(d) {
   errs.forEach((r) => items.push(`<div class="silent-err"><strong>${esc(r.agent || "?")} w${r.waking_count}</strong> at ${esc(r.ts || "?")} &mdash; terminal reason: <code>${esc(r.terminal_reason || "?")}</code></div>`));
   if (zeroTok.length) items.push(`<div class="silent-warn">${zeroTok.length} run(s) finished without any output tokens &mdash; worth a look.</div>`);
   items.push(`<div class="mini-note">Checked against ${d.count} local runs &middot; live &middot; errors here are terminal states visible in the artifacts; crashes that produced no artifact page as shell alerts instead.</div>`);
-  $("silent").innerHTML = items.join("");
+  setHTML($("silent"), items.join(""));
 }
 
 function renderAll() {
@@ -176,7 +183,7 @@ async function load() {
   try {
     const r = await fetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    DATA = await r.json();
+    DATA = validate(await r.json(), observabilityPayload);
     renderAll();
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);
@@ -205,7 +212,7 @@ if (typeof EventSource !== "undefined") {
   es.onmessage = (e) => {
     failures = 0;
     try {
-      DATA = JSON.parse(e.data);
+      DATA = validate(JSON.parse(e.data), observabilityPayload);
       renderAll();
     } catch { /* malformed payload -- wait for the next push */ }
   };

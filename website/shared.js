@@ -11,6 +11,92 @@ export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
+/* ---- fine-grained DOM patching (ROADMAP #9)
+   setHTML / setText: write-through-with-guards so unchanged SSE/poll payloads
+   leave the DOM untouched (focus, scroll, hover state and DOM identity survive).
+   patchList: reconcile a keyed list of pre-rendered HTML rows: insert only new
+   keys, update only rows whose markup changed (via innerHTML on a temp
+   element, then replaceChild to keep the keyed node map honest), remove only
+   gone keys, and re-order survivors in place. Falls back to a plain
+   innerHTML write when the element is a test stub with no live DOM, so
+   render-test.mjs keeps working under plain Node. */
+
+const LAST_HTML = new WeakMap();
+
+export function setHTML(el, html) {
+  if (!el) return false;
+  const next = String(html ?? "");
+  if (LAST_HTML.get(el) === next) return false;
+  LAST_HTML.set(el, next);
+  el.innerHTML = next;
+  return true;
+}
+
+export function setText(el, text) {
+  if (!el) return false;
+  const next = String(text ?? "");
+  if (el.textContent === next) return false;
+  el.textContent = next;
+  return true;
+}
+
+/* Contract: item.html must be a single root element (a <tr>, a <div> row,
+   an <option>, ...). A <template> parses content in a context-free fragment
+   (unlike a <div> holder, which would strip <tr>/<td>/<option> tags). */
+function nodeFromHtml(html) {
+  const tpl = document.createElement("template");
+  tpl.innerHTML = html;
+  const node = tpl.content && tpl.content.firstElementChild;
+  if (node) node.__galeHtml = html;
+  return node;
+}
+
+export function patchList(el, items) {
+  const list = (Array.isArray(items) ? items : []).map((it) => ({
+    key: String((it && it.key) ?? ""),
+    html: String((it && it.html) ?? ""),
+  }));
+  if (!el) return { added: 0, changed: 0, removed: 0 };
+  /* render-test.mjs stubs (mkEl) have no appendChild — keep the
+     innerHTML-as-string contract exactly as the pages always wrote it. */
+  if (typeof el.appendChild !== "function") {
+    el.innerHTML = list.map((it) => it.html).join("");
+    return { added: list.length, changed: list.length, removed: 0 };
+  }
+  let nodes = el.__galeNodes;
+  if (!nodes) {
+    nodes = new Map();
+    el.__galeNodes = nodes;
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+  let added = 0, changed = 0, removed = 0;
+  const seen = new Set();
+  for (const it of list) {
+    seen.add(it.key);
+    const node = nodes.get(it.key);
+    if (!node) {
+      const fresh = nodeFromHtml(it.html);
+      nodes.set(it.key, fresh);
+      if (fresh) { el.appendChild(fresh); added++; }
+    } else if (node.__galeHtml !== it.html) {
+      const fresh = nodeFromHtml(it.html);
+      nodes.set(it.key, fresh);
+      if (fresh) { el.replaceChild(fresh, node); changed++; }
+    }
+  }
+  for (const [key, node] of [...nodes.entries()]) {
+    if (!seen.has(key)) {
+      nodes.delete(key);
+      if (node.parentNode) node.parentNode.removeChild(node);
+      removed++;
+    }
+  }
+  list.forEach((it, i) => {
+    if (it.key && el.children[i] !== nodes.get(it.key)) el.appendChild(nodes.get(it.key));
+  });
+  return { added, changed, removed };
+}
+
 /* ---- <agent-card>: one fleet member card. Light DOM on purpose (no shadow
    root) so the existing .member-card/.mc-* rules in gale.css/fleet-tidal.css
    style it unchanged -- this upgrades the *tag*, not the styling contract.
