@@ -2240,3 +2240,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Verified fleet.html edge classes: only chan-live (58x) + topo-chan-label (7x) in use. DECISION: keep .chan-tailscale/.chan-mountain/.chan-pending/.chan-cfg rules (4 lines) — plausibly needed when Prism/Mesa/Vista pending installs land; only chan-agora/chan-relay were purged (no such taxonomy).
 - Journals section (2026-09-23 entries) deliberately left static: archival content, no live feed exists, fabricating entries would be worse.
 - NEXT: full-site verification sweep + morning summary.
+
+## 2026-09-27T06:30Z -- full-site sweep ALL GREEN + morning summary
+- Pages: 10/10 200. JS: 15/15 200. CSS: 2/2 200. Feeds: 9/9 200. node --check: all clean.
+- NIGHT'S WORK (13 commits): #4 cost trend + #7 leaderboard + #5 liveness strip (68747eb); section numbering + live badge (1424f78); FX-A effects engine re-scan-safe + reveals/glow/pulse/fleet CSS (95e25a8); FX-B all-pages reveals + vital glow + anchors; FX-C parallax/tilt/shimmer; FX-D page fade + sparkline draw-in + table hover; FX-E og meta; FX-F gzip css/js (74% smaller) + favicon parity + branded 404 + robots; FX-G dead-CSS purge (-17% gale.css); FX-H a11y names; FX-I og:image; FX-K live commit history; FX-L copy fix.
+- NEEDS OPERATOR: (1) tidal model discrepancy — index says Creek/Stream are DeepSeek, fleet roster says GLM (no telemetry ground truth; observability covers gale host only); (2) OpenRouter auto-failover question — answered: not natively supported, recommended chunkTimeout + whitelist.
+- NEXT batch M: status.js full read-through (firewall POST actions = highest-risk code).
