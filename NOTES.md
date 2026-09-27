@@ -2426,3 +2426,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:45Z -- FX batch BH: smoke 49 checks green
 - Full suite re-run after all recent work: SMOKE PASS. Added fleet-alerts marker (49 checks).
+
+## 2026-09-27T02:48Z -- FX batch BI: hidden-vs-display audit
+- Audited every hidden element: only status #board.ops-board had a display rule overriding hidden (pre-JS board flash). All others (plain divs, buttons, guarded overlays, .wrap/.wx-results/.ol-pullbar without display) fine. One-rule fix, deployed.
