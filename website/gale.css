@@ -1306,3 +1306,6 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .table-scroll { overflow-x: auto; }
 .table-scroll > table { min-width: 520px; }
 .fw-table-scroll { overflow-x: auto; }
+
+/* ---- batch BI: hidden must win over panel grid display ---- */
+.ops-board[hidden] { display: none; }
