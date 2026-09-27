@@ -2515,3 +2515,6 @@ PERF/SEO/ROBUSTNESS: gzip css/js (74% smaller), dead-CSS purge (-17%), og meta +
 OPS FINDS: agora-bridge timer dead 36h post-upgrade — recovered + verified self-firing (NEXT 03:21Z observed firing 02:54Z). No failed units, disk 36%, zero real 4xx/5xx.
 
 NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no telemetry ground truth, your call; (2) OpenRouter auto-failover — not supported natively, use chunkTimeout+whitelist (details in chat); (3) nothing pushed — commits local only, say the word.
+
+## 2026-09-27T03:08Z -- parallax single-bind
+- boot() runs once per module (6x on fleet); only parallax double-bound listeners (other inits early-return). Bound-guarded. Deployed.
