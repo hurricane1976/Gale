@@ -1,4 +1,4 @@
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 boot();
 
 const $ = (id) => document.getElementById(id);
@@ -102,6 +102,7 @@ function renderAll() {
   renderIfaces(DATA);
   renderArp(DATA);
   renderSocks(DATA);
+  refreshEffects();
   setFresh("live", `live &middot; ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
 

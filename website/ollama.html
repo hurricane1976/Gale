@@ -66,17 +66,17 @@
 
     <div id="board" hidden>
 
-      <section class="ops-panel span-full" aria-labelledby="h-vitals">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-vitals">
         <h2 class="panel-title" id="h-vitals">Headline <span>live from the server's own API</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-gpu">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-gpu">
         <h2 class="panel-title" id="h-gpu">GPU hardware <span>RTX 4090 &middot; josh-desktop11 collector &middot; cached 30s</span></h2>
         <div class="gpu-wrap" id="gpu-wrap"><div class="gpu-empty" id="gpu-empty">waiting for first gpu reading&hellip;</div></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-charts">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-charts">
         <h2 class="panel-title" id="h-charts">VRAM &amp; API latency <span>sampled every 30s &middot; gaps = server unreachable</span></h2>
         <div class="ol-charts">
           <div class="obs-chartwrap" id="vram-chart"></div>
@@ -84,17 +84,17 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-residency">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-residency">
         <h2 class="panel-title" id="h-residency">Residency <span>which models sat in VRAM &middot; 24h window</span></h2>
         <div id="lanes" class="obs-lanes"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-events">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-events">
         <h2 class="panel-title" id="h-events">Model &amp; server events <span>load / unload / down-up transitions</span></h2>
         <div id="events" class="ol-events"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-models">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-models">
         <h2 class="panel-title" id="h-models">Installed models <span><span id="model-count">&ndash;</span> models &middot; <span id="disk-total">&ndash;</span> on disk</span></h2>
         <div class="fw-table-scroll">
           <table class="ops-table" id="models-table">
@@ -114,7 +114,7 @@
         <p id="action-note" class="mini-note" role="status"></p>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-playground">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-playground">
         <h2 class="panel-title" id="h-playground">Prompt playground <span>non-streaming &middot; replies counted server-side</span></h2>
         <div class="ol-chat-grid">
           <div class="ol-chat-side">
@@ -147,7 +147,7 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-wired">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-wired">
         <h2 class="panel-title" id="h-wired">How this is wired</h2>
         <div class="obs-wired">
           <p><code>ollama_api.py</code> (systemd <code>gale-ollama-api.service</code>, 127.0.0.1:8794 behind

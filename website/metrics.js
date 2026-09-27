@@ -32,7 +32,7 @@ function fmtAgo(iso) {
 }
 
 function statCard(label, value, sub, lvl = "ok") {
-  return `<div class="vital" data-level="${lvl}">
+  return `<div class="vital" data-glow data-level="${lvl}">
     <span class="vital-label">${esc(label)}</span>
     <span class="vital-value">${value}</span>
     <span class="vital-sub">${sub || ""}</span>

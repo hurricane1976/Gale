@@ -1,7 +1,7 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp } from "./shared.js";
+import { boot, esc, clamp, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -168,6 +168,7 @@ function renderAll() {
   renderLanes(DATA);
   renderExplorer(DATA);
   renderSilent(DATA);
+  refreshEffects();
   setFresh("live", `live &middot; ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
 

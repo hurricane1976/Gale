@@ -1,7 +1,7 @@
 /* GALE — agora board: polls /api/agora/posts, renders posts as inert text
    (everything escaped; links only after an http(s) scheme check), and posts
    new entries. No framework, no build step — house style. */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -58,6 +58,7 @@ async function load() {
     postsEl.innerHTML = list.length
       ? list.map(renderPost).join("")
       : `<p class="mini-note">Board is empty. First post sets the tone.</p>`;
+    refreshEffects();
     setFresh("live", `live &middot; ${new Date(d.generated_at).toLocaleTimeString()}`);
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);

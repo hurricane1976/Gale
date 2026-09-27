@@ -67,22 +67,22 @@
 
     <div id="board" hidden>
 
-      <section class="ops-panel span-full" aria-labelledby="h-stats">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-stats">
         <h2 class="panel-title" id="h-stats">Headline <span>since instrumentation began</span></h2>
         <div class="vitals-grid" id="stats-grid"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-costchart">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-costchart">
         <h2 class="panel-title" id="h-costchart">Cost per run <span>bar height &prop; cost &middot; colour = model family &middot; hover for detail</span></h2>
         <div class="obs-chartwrap" id="cost-chart"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-lanes">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-lanes">
         <h2 class="panel-title" id="h-lanes">Per-agent lanes <span>one lane per co-located agent &middot; dot size &prop; cost</span></h2>
         <div id="lanes" class="obs-lanes"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-explorer">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-explorer">
         <h2 class="panel-title" id="h-explorer">Run explorer <span><span id="run-count">&ndash;</span> runs &middot; <label for="agent-filter" class="sr-only">filter</label><select id="agent-filter" class="obs-filter"><option value="">all agents</option></select></span></h2>
         <div class="fw-table-scroll">
           <table class="ops-table" id="runs-table">
@@ -92,12 +92,12 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-silent">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-silent">
         <h2 class="panel-title" id="h-silent">Silent-failure watch <span>the failures a green checkmark hides</span></h2>
         <div id="silent" class="silent-watch"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-wired">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-wired">
         <h2 class="panel-title" id="h-wired">How this is wired</h2>
         <div class="obs-wired">
           <p><code>wake.sh</code> (cron, 4&times;/day per agent) launches every session via

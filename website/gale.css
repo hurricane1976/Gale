@@ -1581,3 +1581,18 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 @media (prefers-reduced-motion: reduce) {
   .fleet-24h-card, .fleet-24h-card:hover { transform: none; transition: none; }
   .fleet-24h-dot, .fleet-live-dot { animation: none; } }
+
+/* ---- batch B: anchor offset for sticky topnav + vital card glow ---- */
+[id] { scroll-margin-top: 84px; }
+.vital { position: relative; overflow: clip;
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1), border-color 0.3s, box-shadow 0.3s; }
+.vital:hover { transform: translateY(-2px); border-color: var(--line-strong);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+.vital::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none; opacity: 0;
+  background: radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--flag) 12%, transparent), transparent 70%);
+  transition: opacity 0.35s; }
+.vital:hover::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .vital, .vital:hover { transform: none; transition: none; } }

@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { boot, esc, clamp } from "./shared.js";
+import { boot, esc, clamp, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -81,7 +81,7 @@ async function postAction(body) {
 
 /* ---------------- vitals ---------------- */
 function statCard(label, value, sub, lvl = "ok") {
-  return `<div class="vital" data-level="${lvl}">
+  return `<div class="vital" data-glow data-level="${lvl}">
     <span class="vital-label">${esc(label)}</span>
     <span class="vital-value">${value}</span>
     <span class="vital-sub">${sub || ""}</span>
@@ -101,6 +101,7 @@ function renderVitals() {
     statCard("API latency", s && s.latency_ms != null ? `${s.latency_ms} ms` : "–", h ? `p50 ${h.latency_ms.p50 ?? "–"} · p95 ${h.latency_ms.p95 ?? "–"} ms (24h)` : ""),
     statCard("Uptime", h && h.uptime_pct != null ? `${h.uptime_pct}%` : "–", h ? `${h.count} samples · ${h.hours}h window` : ""),
   ].join("");
+  refreshEffects();
 }
 
 function heat(v, warn, crit) {

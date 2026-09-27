@@ -66,12 +66,12 @@
 
     <div id="board" hidden>
 
-      <section class="ops-panel span-full" aria-labelledby="h-stats">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-stats">
         <h2 class="panel-title" id="h-stats">Headline <span>point-in-time snapshot &middot; refreshes every 30s</span></h2>
         <div class="vitals-grid" id="stats-grid"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-ifaces">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-ifaces">
         <h2 class="panel-title" id="h-ifaces">Interfaces <span><span id="iface-count">&ndash;</span> interfaces &middot; from <code>ip -br addr</code></span></h2>
         <div class="fw-table-scroll">
           <table class="ops-table" id="ifaces-table">
@@ -81,7 +81,7 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-arp">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-arp">
         <h2 class="panel-title" id="h-arp">ARP table <span><span id="arp-count">&ndash;</span> entries &middot; from <code>ip neigh</code></span></h2>
         <div class="fw-table-scroll">
           <table class="ops-table" id="arp-table">
@@ -91,7 +91,7 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-socks">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-socks">
         <h2 class="panel-title" id="h-socks">Sockets <span><span id="sock-count">&ndash;</span> rows &middot; <label for="sock-filter" class="sr-only">filter</label><select id="sock-filter" class="obs-filter"><option value="">all</option><option value="tcp">tcp</option><option value="udp">udp</option></select> &middot; from <code>ss -p</code></span></h2>
         <div class="fw-table-scroll">
           <table class="ops-table" id="socks-table">
@@ -101,7 +101,7 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-wired">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-wired">
         <h2 class="panel-title" id="h-wired">How this is wired</h2>
         <div class="obs-wired">
           <p><code>fleet_api.py</code> (systemd <code>gale-fleet-api.service</code>) shells out to
