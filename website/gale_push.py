@@ -231,6 +231,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlsplit(self.path).path
+        if path == "/receipt":
+            # sw-side push receipt: did the device's service worker even see
+            # the push event? Separates "delivery to device" from "SW ran".
+            payload = self._read_json()
+            if payload:
+                log(f"PUSH RECEIPT: {payload}")
+            return self._send(200, {"ok": True})
         if path == "/diag":
             # device-side sw diagnostic from the page (best-effort, no auth
             # beyond tailnet locality): version + push-handler flag.

@@ -112,10 +112,19 @@ self.addEventListener("fetch", (event) => {
 /* ---- Web Push (gale_push.py): fleet crit alerts reach the lock screen;
    the payload's count badges the app icon (Badging API, where supported). ---- */
 self.addEventListener("push", (event) => {
+  // receipt beacon: did the SW even SEE the push? (fire-and-forget fetch,
+  // must not block or fail the waitUntil chain)
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch { /* keep defaults */ }
   const title = data.title || "GALE — fleet alert";
   event.waitUntil((async () => {
+    try {
+      await fetch("api/push/receipt", { method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seen: true, title,
+          has_body: !!data.body, sev: data.sev || null,
+          ts: new Date().toISOString() }) });
+    } catch { /* beacon is best-effort */ }
     // showNotification FIRST and alone -- on iOS, if anything before it in
     // the waitUntil chain rejects or hangs, the push is consumed silently
     // (Apple shows nothing and reports nothing). Badge after, best-effort.
