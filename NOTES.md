@@ -2320,3 +2320,10 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - agora_post: type checks, control-char strip, length caps, http(s) scheme check, per-IP (5/10min) + global rate limits, duplicate suppression, bounded store, atomic save, IP stripped from reads. Exemplary; no changes.
 - All backend surfaces audited this shift (fleet metrics, ollama actions, agora, sysmon producer). No open issues.
 - NEXT batch AA: cross-page agent drilldown deep links (metrics -> fleet#agent-x) + firewalla_control skim.
+
+## 2026-09-27T12:00Z -- FX batches AA+AB: cross-page deep links + firewalla audit
+- AA: metrics agent cards link to fleet.html#agent-<name>; drilldown opens panel from hash on load. Fixed a.agent null-label while there.
+- AB: hashchange listener (same-page #agent links from leaderboard work); host-board names -> #hosts; status fleet names -> fleet.html#hosts; card-title link typography CSS in both themes.
+- firewalla_control.py: MAC_RE/RULE_ID_RE path validation, fixed verbs, matches frontend encoding. No changes.
+- Deployed, all 200.
+- NEXT: pick next highest-value item.
