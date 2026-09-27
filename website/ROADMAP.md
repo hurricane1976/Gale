@@ -8,10 +8,14 @@ modules, Python `http.server` backend, static multi-page HTML).
 
 1. **PWA (service worker + manifest)** — installable, offline-capable
    shell, real push notifications to a device instead of routing
-   everything through Telegram. *(shipped 2026-09-27: manifest.json,
-   sw.js, icons, registration in shared.js -- but see item 11: it won't
-   actually register in a real browser until that's done, since the site
-   is served over plain http:// on the tailnet IP, not a secure context.)*
+   everything through Telegram. *(shipped 2026-09-27, finished today:
+   manifest, sw.js, icons, registration — and with item 11's https origin
+   live, the full stack now works end-to-end on iOS 27: installed Home-
+   Screen app, VAPID web push to the lock screen (pywebpush-backed
+   sender in gale_push.py after a hand-rolled RFC8291 impl proved
+   undecryptable-by-Safari), app-icon badging via the Badging API, sw
+   receipt/diag telemetry, self-service test endpoint. See
+   gale_push.service + /api/push/*.)*
 2. **Extend SSE/WebSockets to every live panel** — *(shipped 2026-09-27:
    fleet_api.py now serves /metrics/stream, /alerts/stream and
    /observability/stream via a shared `_serve_sse` helper (pushes on
@@ -72,7 +76,7 @@ modules, Python `http.server` backend, static multi-page HTML).
     gale-agent.<tailnet>.ts.net`); nginx then needs a TLS listener using
     it. *(shipped 2026-09-27: operator enabled MagicDNS + HTTPS on
     tail2f1671.ts.net; `tailscale cert` issued a Let's Encrypt cert for
-    `gale-agent.tail2f1671.ts.net`, nginx serves it on port 8443 —
-    https://gale-agent.tail2f1671.ts.net:8443/ — alongside the plain-http
+    `gale-agent.tail2f1671.ts.net`, nginx serves it on ports 443 + 8443 —
+    https://gale-agent.tail2f1671.ts.net/ — alongside the plain-http
     8090 listener. Cert renews via tailscale; cert/key live in
     /etc/nginx/ssl/.)*
