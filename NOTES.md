@@ -2408,3 +2408,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - AY: topo nodes respond to Enter/Space (were focusable but inert).
 - AZ: roster names (.mc-name) + stream tags focusable with Enter/Space activation via delegation; fixed dead [data-agent] qualifier that left roster names without pointer/hover/focus styles despite being clickable.
 - Deployed.
+
+## 2026-09-27T02:42Z -- FX batches BA+BB: button types + inline handlers
+- BA: single form on site (agora) has typed submit; every other button carries explicit type. No implicit-submission risk.
+- BB: zero javascript:/inline-handler attributes anywhere — CSP-ready if ever wanted.
