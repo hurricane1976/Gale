@@ -2502,3 +2502,16 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T03:08Z -- alert chip deep-links (real gap)
 - node-down chips (the most critical kind) had NO target (kind map missed "node") — clicks did nothing. Now: node -> sec-fleet-24h liveness strip; agent/errors -> fleet.html#hosts; wakeup/quarantine -> fleet.html#activity. Handler routes cross-page hrefs vs same-page scroll.
 - Deployed.
+
+## MORNING BRIEF (interim, updated 03:03Z) -- what the night shift shipped
+Site: http://100.66.39.59:8090/ — all 10 pages, 17 JS, 2 CSS, 9 feeds green (smoke.sh 51 checks + render-test 36 asserts, both passing).
+
+DASHBOARD PLAN (all 7 done): #1 alert strip, #2 per-host boards + status strip, #3 day timeline, #4 cost trend, #5 liveness strip, #6 drill-down, #7 leaderboard. Plus: dynamic live badge, roster filter (/ shortcut), fleet alert strip, cross-page deep links (metrics->drilldown, chips->sections), drilldown share-link.
+
+EFFECTS: shared engine re-scan-safe; reveals/glow/countup/tilt/parallax/magnetic site-wide; page fade; sparkline draw-in; dot pulses; card hovers; loading shimmer; all reduced-motion-safe.
+
+PERF/SEO/ROBUSTNESS: gzip css/js (74% smaller), dead-CSS purge (-17%), og meta + og:image, favicon set (killed 54 iPhone 404s), branded 404, robots.txt, resource hints, nginx security headers, table scroll wrappers, focus traps, keyboard operability, null-safe renders everywhere, esc() hardened at root, render caps, 16/16 JS modules read, all backends audited.
+
+OPS FINDS: agora-bridge timer dead 36h post-upgrade — recovered + verified self-firing (NEXT 03:21Z observed firing 02:54Z). No failed units, disk 36%, zero real 4xx/5xx.
+
+NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no telemetry ground truth, your call; (2) OpenRouter auto-failover — not supported natively, use chunkTimeout+whitelist (details in chat); (3) nothing pushed — commits local only, say the word.
