@@ -2566,3 +2566,8 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 - Cost-trend legend keys are now real buttons (aria-pressed, keyboard free): click isolates that host's line, click again clears. Dim transition on lines/dots.
 - Metrics agent grid gains a filter input (/ shortcut, Escape clears), same pattern as roster filter. Plus null-safe cost in agent cards.
 - Both verified in live production DOM. Deployed.
+
+## 2026-09-27T04:12Z -- xlink round 2 + 4th timer firing
+- Spend host names -> metrics.html; observability lane + table agent names -> fleet drilldown deep links. Typography-preserving anchor CSS.
+- Agora timer fired 04:09Z clean (4th consecutive). Relay settled.
+- Deployed.
