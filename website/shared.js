@@ -336,6 +336,8 @@ export function initCountUps() {
       prefix + v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + suffix;
     const t0 = performance.now();
     const dur = 1150;
+    // backstop: guarantee the exact static value even if rAF stalls
+    setTimeout(() => { el.textContent = raw; }, dur + 500);
     const step = (t) => {
       const p = clamp((t - t0) / dur);
       const eased = 1 - Math.pow(1 - p, 4);
