@@ -2429,3 +2429,6 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 
 ## 2026-09-27T02:48Z -- FX batch BI: hidden-vs-display audit
 - Audited every hidden element: only status #board.ops-board had a display rule overriding hidden (pre-JS board flash). All others (plain divs, buttons, guarded overlays, .wrap/.wx-results/.ol-pullbar without display) fine. One-rule fix, deployed.
+
+## 2026-09-27T02:46Z -- FX batch BJ: secrets hygiene (verification only)
+- .gitignore covers keys/* (examples only tracked); no hardcoded secrets in any .py; website/keys absent. Clean.
