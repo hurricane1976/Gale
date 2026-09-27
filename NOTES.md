@@ -2193,3 +2193,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - fleet-tidal.css: .hosts-wait skeleton shimmer (subtle tide-tinted sweep, reduced-motion off).
 - Commit + deploy clean, shared.js/main.js/fleet-tidal.css all 200 live.
 - NEXT batch D: sparkline draw-in animation, page-load fade, ops-table row hovers.
+
+## 2026-09-27T03:30Z -- FX batch D: page fade, sparkline draw-in, table hover
+- fleet-tidal.css: page-load fade on .fleet-main, SVG draw-in (dashoffset) for host/cost/leaderboard/drilldown polylines (no-preference only, .ct-total dashed look preserved).
+- gale.css: page-load fade on main, ops-table tbody row hover.
+- Commit + deploy clean, live.
+- NEXT batch E: skip-link + og:meta audit.
