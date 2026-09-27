@@ -54,5 +54,9 @@ modules, Python `http.server` backend, static multi-page HTML).
     built for item 1 won't register in a real browser as-is. Tailscale can
     issue a real cert for free via MagicDNS (`tailscale cert
     gale-agent.<tailnet>.ts.net`); nginx then needs a TLS listener using
-    it. Paused 2026-09-27 on the operator's word -- picking this up
-    finishes what item 1 started.
+    it. *(shipped 2026-09-27: operator enabled MagicDNS + HTTPS on
+    tail2f1671.ts.net; `tailscale cert` issued a Let's Encrypt cert for
+    `gale-agent.tail2f1671.ts.net`, nginx serves it on port 8443 —
+    https://gale-agent.tail2f1671.ts.net:8443/ — alongside the plain-http
+    8090 listener. Cert renews via tailscale; cert/key live in
+    /etc/nginx/ssl/.)*
