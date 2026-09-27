@@ -72,13 +72,23 @@ WEBSITE = os.path.join(ROOT, "website")
 API_DIR = "/var/www/gale-api"
 AGORA_PATH = os.path.join(API_DIR, "agora-posts.json")
 
-# (display name, repo dirname) for the twelve co-located agents. Every repo
+# (display name, repo dirname) for the fourteen co-located agents. Every repo
 # lives at /home/agent/<dirname> -- gale's dirname is "agent".
 AGENTS = [
-    ("gale", "agent"), ("zephyr", "zephyr"), ("squall", "squall"), ("tempest", "tempest"),
-    ("vortex", "vortex"), ("chinook", "chinook"), ("cyclone", "cyclone"),
-    ("maistral", "maistral"), ("sirocco", "sirocco"), ("bora", "bora"),
-    ("tramontane", "tramontane"), ("ostro", "ostro"),
+    ("gale", "agent"),
+    ("zephyr", "zephyr"),
+    ("squall", "squall"),
+    ("tempest", "tempest"),
+    ("vortex", "vortex"),
+    ("chinook", "chinook"),
+    ("cyclone", "cyclone"),
+    ("maistral", "maistral"),
+    ("sirocco", "sirocco"),
+    ("bora", "bora"),
+    ("tramontane", "tramontane"),
+    ("ostro", "ostro"),
+    ("poniente", "poniente"),
+    ("levante", "levante"),
 ]
 HOME_BASE = os.path.dirname(ROOT)  # /home/agent
 HOST_NAME = "gale"
@@ -1018,6 +1028,8 @@ def net_envelope():
 
 class Handler(BaseHTTPRequestHandler):
     server_version = "gale-fleet-api/1"
+    protocol_version = "HTTP/1.1"  # keep-alive by default; required for the
+                                    # SSE stream to hold its connection open
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[%s] %s\n" % (self.log_date_time_string(), fmt % args))
@@ -1034,6 +1046,40 @@ class Handler(BaseHTTPRequestHandler):
     def _client_ip(self):
         return self.headers.get("X-Real-IP") or self.client_address[0]
 
+    def _serve_sse(self, core_fn, envelope_fn, poll_s=5, heartbeat_s=15, max_lifetime_s=3600):
+        """Generic SSE loop: pushes envelope_fn()'s JSON whenever core_fn()'s
+        value changes (core_fn must exclude anything that's always-fresh,
+        like a generated_at timestamp, or every poll would look "changed").
+        Sends a comment heartbeat on unchanged polls so intermediary proxies
+        (and dead-client detection) don't time the connection out. Exits
+        cleanly the moment a write fails (client gone) -- including a
+        disconnect during the handshake itself, e.g. a tab closed before
+        the response headers even went out."""
+        last_sig, started = None, time.time()
+        try:
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Accel-Buffering", "no")  # belt-and-suspenders vs nginx buffering
+            self.end_headers()
+            while time.time() - started < max_lifetime_s:
+                waited = 0.0
+                while waited < heartbeat_s:
+                    sig = json.dumps(core_fn(), sort_keys=True)
+                    if sig != last_sig:
+                        last_sig = sig
+                        body = json.dumps(envelope_fn())
+                        self.wfile.write(f"data: {body}\n\n".encode())
+                        self.wfile.flush()
+                        break
+                    time.sleep(poll_s)
+                    waited += poll_s
+                else:
+                    self.wfile.write(b": heartbeat\n\n")
+                    self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
     def do_GET(self):
         path = urlsplit(self.path).path
         try:
@@ -1041,6 +1087,11 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, {"ok": True, "generated_at": now_iso()})
             if path in ("/telemetry",):
                 return self._send(200, telemetry_envelope())
+            if path in ("/activity/stream",):
+                return self._serve_sse(
+                    activity_events,
+                    lambda: {"schema": "fleet-activity/v1", "events": activity_events(), "generated_at": now_iso()},
+                )
             if path in ("/activity",):
                 return self._send(200, {"schema": "fleet-activity/v1", "events": activity_events(),
                                         "generated_at": now_iso()})
@@ -1055,8 +1106,13 @@ class Handler(BaseHTTPRequestHandler):
             if path in ("/agora/posts", "/agora"):
                 return self._send(200, agora_read())
             return self._send(404, {"error": "not found"})
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # client gone -- nothing to report an error to
         except Exception as e:
-            return self._send(500, {"error": f"{type(e).__name__}: {e}"})
+            try:
+                self._send(500, {"error": f"{type(e).__name__}: {e}"})
+            except (BrokenPipeError, ConnectionResetError):
+                pass
 
     def do_POST(self):
         path = urlsplit(self.path).path

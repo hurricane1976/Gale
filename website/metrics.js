@@ -7,7 +7,7 @@ boot();
 const FEED = "api/fleet/metrics";
 const POLL_MS = 30000;
 const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "#8593f0" };
-const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tidal: "#3fc7ff", mountain: "#8593f0", beacon: "var(--m-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1" };
+const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tramontane: "var(--m-qwen)", ostro: "var(--m-qwen)", poniente: "var(--m-qwen)", levante: "var(--m-qwen)", tidal: "#3fc7ff", mountain: "#8593f0", beacon: "var(--m-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1", meadow: "var(--m-glm)", brook: "var(--m-gpt)", mist: "var(--m-gpt)", highbeam: "var(--m-glm)", lantern: "var(--m-glm)", lightning: "var(--m-glm)", radar: "var(--m-glm)", prism: "var(--m-gpt)", pulsar: "var(--m-claude)", canyon: "var(--m-glm)", ridge: "var(--m-glm)", harbor: "var(--m-glm)", delta: "var(--m-glm)", mesa: "var(--m-gpt)", vista: "var(--m-gpt)" };
 let DATA = null;
 
 const $ = (id) => document.getElementById(id);

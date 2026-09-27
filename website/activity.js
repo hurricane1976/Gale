@@ -7,7 +7,7 @@ boot();
 
 const FEED = "api/fleet/activity";
 const POLL_MS = 30000;
-const AGENT_COLOR = { gale: "var(--fleet-glm)", zephyr: "var(--tide)", squall: "var(--flag)", tempest: "var(--fleet-chan-live)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--fleet-openai)", maistral: "var(--fleet-claude)", sirocco: "var(--fleet-muse)", bora: "var(--fleet-qwen)", tidal: "var(--fleet-chan-tailscale)", mountain: "var(--fleet-chan-mountain)", beacon: "var(--fleet-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1" };
+const AGENT_COLOR = { gale: "var(--fleet-glm)", zephyr: "var(--tide)", squall: "var(--flag)", tempest: "var(--fleet-chan-live)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--fleet-openai)", maistral: "var(--fleet-claude)", sirocco: "var(--fleet-muse)", bora: "var(--fleet-qwen)", tramontane: "var(--fleet-qwen)", ostro: "var(--fleet-qwen)", poniente: "var(--fleet-qwen)", levante: "var(--fleet-qwen)", tidal: "var(--fleet-chan-tailscale)", mountain: "var(--fleet-chan-mountain)", beacon: "var(--fleet-claude)", river: "#4fd1a5", creek: "#e0b45c", stream: "#d98fd1", meadow: "var(--fleet-glm)", brook: "var(--fleet-openai)", mist: "var(--fleet-openai)", highbeam: "var(--fleet-glm)", lantern: "var(--fleet-glm)", lightning: "var(--fleet-glm)", radar: "var(--fleet-glm)", prism: "var(--fleet-openai)", pulsar: "var(--fleet-claude)", canyon: "var(--fleet-glm)", ridge: "var(--fleet-glm)", harbor: "var(--fleet-glm)", delta: "var(--fleet-glm)", mesa: "var(--fleet-openai)", vista: "var(--fleet-openai)" };
 const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
 const KIND_COLOR = { waking: "var(--tide)", backup: "var(--bolt)", peer: "var(--magenta)", "peer-flag": "var(--flag)", commit: "var(--fleet-claude)", agora: "var(--text-dim)", relay: "var(--fleet-gemini)" };
 
@@ -106,5 +106,34 @@ if (toggle) {
   });
 }
 
-await load();
-setInterval(load, POLL_MS);
+// Prefer a live push (SSE) over polling; fall back to the old setInterval
+// loop if EventSource doesn't exist (old browsers) or keeps failing (a
+// proxy that won't stream). The render-test harness has no EventSource
+// global, so it naturally exercises the polling path.
+function startPolling() {
+  load();
+  setInterval(load, POLL_MS);
+}
+
+if (typeof EventSource !== "undefined") {
+  let failures = 0;
+  let es = new EventSource(FEED + "/stream");
+  es.onmessage = (e) => {
+    failures = 0;
+    try {
+      render(JSON.parse(e.data));
+      refreshEffects();
+      setFresh(true);
+    } catch { /* malformed payload -- wait for the next push */ }
+  };
+  es.onerror = () => {
+    setFresh(false);
+    if (++failures >= 3) {
+      es.close();
+      startPolling();
+    }
+  };
+  await load(); // paint immediately instead of waiting for the first push
+} else {
+  await startPolling();
+}

@@ -4,18 +4,27 @@
    gale's own ground truth (4 hosts, 25 agents, 21/24 verified pairings).
    Scoped to the fleet page only — the rest of the site keeps gale.css. */
 
+/* Cross-document view transitions (see gale.css for the twin rule) --
+   same site-nav name so the header persists smoothly across a nav
+   to/from fleet.html instead of cross-fading. No-op below Chrome 126. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
 :root {
   /* Thunderstorm system: gale's storm palette mapped onto the Tidal layout
-     structure (operator retheme 2026-09-22 — "dark and dangerous"). Same
-     class semantics as the Tidal build; colours are the storm's now. */
+     structure (operator retheme 2026-09-22 — "dark and dangerous").
+     Re-themed 2026-09-27 to match gale.css's blue palette site-wide — same
+     class semantics as the Tidal build; token names kept, values now blue. */
   --bg-deep: #01040a; --bg: #02060d;
   --surface: #0a1626; --surface-2: #0e213b; --surface-3: #1b2338;
   --glass: rgba(16, 42, 77, 0.25); --glass-border: rgba(63, 199, 255, 0.15);
   --line: rgba(160, 185, 230, 0.09); --line-strong: rgba(160, 185, 230, 0.2);
   --text: #e8eaed; --text-dim: #a7b4c8; --text-faint: #6b7c94;
-  --amber: #ff8a3d; --amber-soft: #ffc48f; --amber-deep: #ff6a1f; --amber-dim: rgba(255, 138, 61, 0.35);
-  --bolt: #ffd23f; --bolt-bright: #ffe97a; --bolt-dim: rgba(255, 210, 63, 0.35);
-  --teal: #ffd23f; --teal-bright: #ffe97a; --teal-dim: rgba(255, 210, 63, 0.35);
+  --amber: #3178e8; --amber-soft: #6ea8f5; --amber-deep: #2a63c9; --amber-dim: rgba(49, 120, 232, 0.35);
+  --bolt: #7c8fe0; --bolt-bright: #9daaf5; --bolt-dim: rgba(124, 143, 224, 0.35);
+  --teal: #0fd8bd; --teal-bright: #5eeddb; --teal-dim: rgba(15, 216, 189, 0.3);
   --tide: #3fc7ff; --tide-bright: #7fd4ff; --tide-dim: rgba(63, 199, 255, 0.32);
   --magenta: #f06fb0; --slate: #a7b4c8; --blue: #3fc7ff; --blue-dim: rgba(63, 199, 255, 0.35);
   --purple: #8593f0; --purple-dim: rgba(133, 147, 240, 0.35);
@@ -93,10 +102,7 @@ body.fleet-tidal a { color: var(--tide-bright); text-decoration: none; }
 body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; color: var(--teal-bright); }
 
 /* ---- ambient background ---- */
-.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image: linear-gradient(rgba(160, 185, 230, 0.045) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(160, 185, 230, 0.045) 1px, transparent 1px);
-  background-size: 44px 44px; mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%); }
+.bg-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .glow { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
   .glow-1 { width: 560px; height: 560px; top: -180px; left: -120px; background: rgba(63, 199, 255, 0.15); }
   .glow-2 { width: 480px; height: 480px; top: 10%; right: -160px; background: rgba(133, 147, 240, 0.13); }
@@ -105,7 +111,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
   background: linear-gradient(90deg, var(--bolt), var(--purple), var(--blue)); }
 
 /* ---- header ---- */
-.fleet-header { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+.fleet-header { view-transition-name: site-nav; position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
   background: rgba(2, 4, 9, 0.75); border-bottom: 1px solid rgba(232, 234, 237, 0.08); }
 .fleet-nav { max-width: var(--wrap); margin: 0 auto; padding: 0 22px; width: 100%;
   display: flex; align-items: center; justify-content: space-between; height: 76px; }
@@ -145,18 +151,18 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 /* ---- welcome spotlight (Tidal's pattern) ---- */
 .welcome-spotlight { display: flex; justify-content: space-between; align-items: center;
   flex-wrap: wrap; gap: 16px; padding: 20px 24px; margin-bottom: 40px;
-  background: rgba(255, 210, 63, 0.04); border: 1px solid rgba(232, 234, 237, 0.08);
+  background: rgba(49, 120, 232, 0.04); border: 1px solid rgba(232, 234, 237, 0.08);
   border-left: 2.5px solid var(--amber); border-radius: var(--radius-md); }
 .welcome-chip { display: inline-block; margin-bottom: 4px; font-size: 0.68rem; font-family: var(--font-ibm-mono);
   text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 10px; border-radius: 4px; color: #fff; background: var(--amber); }
 .welcome-h { margin: 0 0 4px; font-weight: 600; color: var(--amber); font-family: var(--font-space-grotesk); }
 .welcome-p { margin: 0; font-size: 0.9rem; color: var(--text-dim); }
 .welcome-note { margin: 2px 0 0; font-size: 0.75rem; color: var(--text-faint); }
-.btn-amber { color: #1a0d00; background: linear-gradient(180deg, #ffd968, #ffc233); border: none; border-radius: 8px;
+.btn-amber { color: #eef4ff; background: linear-gradient(180deg, #6ea8f5, #3178e8); border: none; border-radius: 8px;
   padding: 10px 18px; font-family: var(--font-space-grotesk); font-weight: 500; font-size: 0.9rem;
   cursor: pointer; transition: transform 0.18s ease-out, box-shadow 0.25s ease; display: inline-block;
-  box-shadow: 0 2px 10px -4px rgba(255, 194, 51, 0.6); }
-.btn-amber:hover { box-shadow: 0 6px 22px -6px rgba(255, 194, 51, 0.85); }
+  box-shadow: 0 2px 10px -4px rgba(49, 120, 232, 0.6); }
+.btn-amber:hover { box-shadow: 0 6px 22px -6px rgba(49, 120, 232, 0.85); }
 .btn-amber:active { transform: scale(0.97); }
 
 /* ---- topology wrap ---- */
@@ -166,7 +172,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .fleet-topo-wrap .fleet-topo-svg { z-index: 2; width: 100%; height: auto; display: block; position: relative; }
 .fleet-aurora { z-index: 0; pointer-events: none; position: absolute; inset: -20%;
   background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(63, 199, 255, 0.16), rgba(133, 147, 240, 0.15),
-    rgba(255, 46, 196, 0.13), rgba(255, 210, 63, 0.13), rgba(255, 138, 61, 0.13), rgba(63, 199, 255, 0.16));
+    rgba(255, 46, 196, 0.13), rgba(15, 216, 189, 0.13), rgba(124, 143, 224, 0.13), rgba(63, 199, 255, 0.16));
   filter: blur(60px); opacity: 0.8; mix-blend-mode: screen;
   animation: 20s linear infinite fleet-aurora-spin, 14s ease-in-out infinite fleet-aurora-hue; }
 .fleet-particles { z-index: 1; pointer-events: none; opacity: 0.65; position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -311,7 +317,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .dd-head { display: flex; align-items: center; gap: 10px; padding: 14px 18px;
   border-bottom: 1px solid var(--line); background: var(--surface); z-index: 1; }
 .dd-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto;
-  box-shadow: 0 0 10px 1px rgba(255, 210, 63, 0.3); }
+  box-shadow: 0 0 10px 1px rgba(124, 143, 224, 0.3); }
 .dd-name { font-family: var(--font-space-grotesk); font-size: 1.05rem; letter-spacing: 0.02em; }
 .dd-sub { display: block; font-family: var(--font-ibm-mono); font-size: 0.68rem;
   letter-spacing: 0.1em; color: var(--text-faint); text-transform: uppercase; }
@@ -564,7 +570,7 @@ html { scroll-behavior: smooth; }
 .welcome-spotlight { position: relative; }
 .welcome-spotlight::before { content: ""; position: absolute; inset: -1px; border-radius: inherit;
   padding: 1.5px; pointer-events: none;
-  background: conic-gradient(from var(--wb-angle), transparent 0 68%, rgba(255, 194, 51, 0.9) 84%, transparent 100%);
+  background: conic-gradient(from var(--wb-angle), transparent 0 68%, rgba(49, 120, 232, 0.9) 84%, transparent 100%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude; }
 @media (prefers-reduced-motion: no-preference) {

@@ -1,0 +1,15 @@
+{
+  "name": "gale-website",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Gale's fleet website -- build step. Source stays plain ES modules with no framework; esbuild only bundles/minifies/code-splits them for production. render-test.mjs keeps testing the source files directly, not the bundle.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "test": "node render-test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}

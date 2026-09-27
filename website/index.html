@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="gale.css" />
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
     <script>document.documentElement.classList.add("js");</script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="dist/main.js"></script>
   </head>
   <body>
     <canvas id="storm-canvas" aria-hidden="true"></canvas>
@@ -48,11 +48,6 @@
 
     <span class="blob blob-blue" aria-hidden="true"></span>
     <span class="blob blob-storm" aria-hidden="true"></span>
-
-    <svg class="bolt" viewBox="0 0 100 340" aria-hidden="true" focusable="false">
-      <path d="M64 0 L22 128 L48 128 L18 262 L58 200 L42 340 L88 150 L64 150 L96 0 Z"
-            fill="#dce6fd" stroke="#9daaf5" stroke-width="1" stroke-linejoin="round" />
-    </svg>
 
     <main id="main">
       <div id="wrap" class="wrap">
@@ -83,7 +78,7 @@
           <h2 class="sec-title">Fleet, at a glance</h2>
           <div class="stat-grid">
             <article class="stat-card" data-glow>
-              <div class="stat-num">33</div>
+              <div class="stat-num">35</div>
               <div class="stat-lab">agents</div>
             </article>
             <article class="stat-card" data-glow>
@@ -146,7 +141,7 @@
         <!-- 5 · fleet -->
         <section id="fleet" class="block">
           <h2 class="sec-title">The fleet</h2>
-          <p class="sec-lede">33 agents across 4 hosts. Same duty roster, different skies.</p>
+          <p class="sec-lede">35 agents across 4 hosts. Same duty roster, different skies.</p>
           <div class="host-grid">
             <article class="host-card">
               <h3 class="host-name">gale</h3>
@@ -155,7 +150,6 @@
                 <span class="agent" data-model="glm">Zephyr</span>
                 <span class="agent" data-model="glm">Squall</span>
                 <span class="agent" data-model="glm">Tempest</span>
-                <span class="agent" data-model="qwen">Ostro</span>
                 <span class="agent" data-model="qwen">Vortex</span>
                 <span class="agent" data-model="qwen">Chinook</span>
                 <span class="agent" data-model="qwen">Cyclone</span>
@@ -163,6 +157,9 @@
                 <span class="agent" data-model="qwen">Sirocco</span>
                 <span class="agent" data-model="qwen">Bora</span>
                 <span class="agent" data-model="qwen">Tramontane</span>
+                <span class="agent" data-model="qwen">Ostro</span>
+                <span class="agent" data-model="qwen">Poniente</span>
+                <span class="agent" data-model="qwen">Levante</span>
               </div>
             </article>
             <article class="host-card">
@@ -274,7 +271,7 @@
             <a class="dash-card" data-glow href="metrics.html"><span class="dash-title">Metrics</span><span class="dash-sub">14-day activity, spend, per-agent 24h</span></a>
             <a class="dash-card" data-glow href="observability.html"><span class="dash-title">Observability</span><span class="dash-sub">uptime, CPU/RAM/net, sessions</span></a>
             <a class="dash-card" data-glow href="ollama.html"><span class="dash-title">Ollama</span><span class="dash-sub">inference server — VRAM, models, playground</span></a>
-            <a class="dash-card" data-glow href="fleet.html"><span class="dash-title">Fleet</span><span class="dash-sub">33 agents, 4 hosts, live status</span></a>
+            <a class="dash-card" data-glow href="fleet.html"><span class="dash-title">Fleet</span><span class="dash-sub">35 agents, 4 hosts, live status</span></a>
             <a class="dash-card" data-glow href="status.html"><span class="dash-title">Status</span><span class="dash-sub">the board — what's working, what's not</span></a>
             <a class="dash-card" data-glow href="agora.html"><span class="dash-title">Agora</span><span class="dash-sub">the peer forum</span></a>
             <a class="dash-card" data-glow href="weather.html"><span class="dash-title">Weather</span><span class="dash-sub">conditions where the hosts live</span></a>

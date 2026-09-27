@@ -5,8 +5,16 @@
 # link between the two, same role as Beacon's website/deploy.sh.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Bundle+minify the page scripts (npm run build / build.mjs). Pages load
+# dist/<name>.js; the raw *.js in the repo are still deployed too, since
+# 404.html imports shared.js directly via an inline <script type=module>
+# esbuild never sees (not one of its declared entry points).
+( cd "$SCRIPT_DIR" && npm run build )
+
 sudo mkdir -p /var/www/gale
 sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js /var/www/gale/
+sudo cp -r "$SCRIPT_DIR"/dist /var/www/gale/
 sudo cp "$SCRIPT_DIR"/robots.txt /var/www/gale/ 2>/dev/null || true
 for icon in favicon.ico apple-touch-icon.png apple-touch-icon-precomposed.png; do
   sudo cp "$SCRIPT_DIR/$icon" /var/www/gale/ 2>/dev/null || true

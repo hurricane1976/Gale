@@ -8,7 +8,7 @@ const FEED = "api/fleet/metrics";
 const POLL_MS = 30000;
 const HOST_ORDER = ["gale", "tidal", "mountain", "beacon"];
 const HOST_META = {
-  gale: { hue: "#ff8a3d", note: "fleet lead · 12 agents" },
+  gale: { hue: "#ff8a3d", note: "fleet lead · 14 agents" },
   tidal: { hue: "#3fc7ff", note: "tidalwake.org" },
   mountain: { hue: "#8593f0", note: "mountainwake.org" },
   beacon: { hue: "#ffc233", note: "beaconwake.com" },

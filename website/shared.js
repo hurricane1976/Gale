@@ -11,6 +11,47 @@ export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
+/* ---- <agent-card>: one fleet member card. Light DOM on purpose (no shadow
+   root) so the existing .member-card/.mc-* rules in gale.css/fleet-tidal.css
+   style it unchanged -- this upgrades the *tag*, not the styling contract.
+   Attributes: name, model, role, listener, state, color (a CSS color/var
+   for --mc), index (stagger position for --i), pending (boolean attr).
+   Usage: <agent-card name="Gale" model="Claude" role="..." listener="host:port"
+     state="hub · this page's vantage point" color="var(--fleet-claude)" index="0"></agent-card>
+
+   Guarded behind a HTMLElement check: render-test.mjs imports this module
+   under plain Node (no DOM), where HTMLElement doesn't exist -- `class X
+   extends HTMLElement` would throw at module-evaluation time, before any
+   test even runs, and take every page's render tests down with it. */
+if (typeof HTMLElement !== "undefined") {
+  class AgentCard extends HTMLElement {
+    static get observedAttributes() {
+      return ["name", "model", "role", "listener", "state", "color", "index", "pending"];
+    }
+    connectedCallback() { this.render(); }
+    attributeChangedCallback() { if (this.isConnected) this.render(); }
+    render() {
+      const name = this.getAttribute("name") || "";
+      const model = this.getAttribute("model") || "";
+      const role = this.getAttribute("role") || "";
+      const listener = this.getAttribute("listener") || "";
+      const state = this.getAttribute("state") || "";
+      const color = this.getAttribute("color") || "var(--text-dim)";
+      const index = this.getAttribute("index") || "0";
+      const pending = this.hasAttribute("pending");
+      this.classList.add("member-card");
+      this.style.setProperty("--mc", color);
+      this.style.setProperty("--i", index);
+      this.innerHTML =
+        `<div class="mc-top"><strong class="mc-name">${esc(name)}</strong><span class="mc-chip">${esc(model)}</span></div>` +
+        `<p class="mc-role">${esc(role)}</p>` +
+        `<div class="mc-meta"><code>${esc(listener)}</code></div>` +
+        `<div class="mc-state${pending ? " pending" : ""}">${esc(state)}</div>`;
+    }
+  }
+  if (!customElements.get("agent-card")) customElements.define("agent-card", AgentCard);
+}
+
 /* ---- storm canvas: DPR-aware, pauses when hidden, one static frame under
    reduced motion, gentle cursor gusts. Rain falls steeply with a light
    wind slant; drifting clouds in three depth bands (soft pre-rendered puff
