@@ -2169,3 +2169,4 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - #5 Fleet liveness strip (status.html): `<div id="fleet-live-strip">` at top of sec-fleet-24h; status.js renderFleet24h aggregates `fleet_status` per host (up/down via agents_by_host reverse map) into pills (`x/y up`, ok/warn/crit/idle); CSS `.fleet-live-*` appended to gale.css using --ok/--warn/--flag tokens. `node --check` clean.
 - Live numbers at build time: runs24 gale 76 / tidal 21 / mountain 10 / beacon 10; cost24 mountain $10.49 / beacon $6.59 / gale $3.09 / tidal $0.00; tidal 1 error; per-agent daily_cost_14d present for sparklines.
 - NEXT: commit all (#4/#5/#7), deploy, live-verify, then autonomous improvement pass.
+- VERIFIED 2026-09-27T01:25Z: commit 68747eb deployed; fleet.html serves cost.js (200, 7769B) + all 4 new IDs; status.html serves fleet-live-strip + fleet-24h-grid; /api/fleet/metrics keys ok. #4/#5/#7 live.
