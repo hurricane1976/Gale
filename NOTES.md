@@ -2234,3 +2234,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - J: zero duplicate IDs across all 10 pages; zero console.log/debugger/TODO in JS. ETag/Last-Modified conditional requests confirmed working (no cache work needed).
 - K: index "Recent history" was a frozen 2026-09-23 list — now renders the 8 latest kind=commit events from api/fleet/activity via main.js renderHistory(); static list stays as no-JS fallback. Deployed, main.js 200.
 - NEXT batch L: QA remaining index sections (journal/credentials/dashboard/spend).
+
+## 2026-09-27T06:20Z -- FX batch L: copy fix + chan-class audit
+- index console lede: "127.0.0.1:8090" -> "the tailnet console" (canonical URL is the tailnet IP).
+- Verified fleet.html edge classes: only chan-live (58x) + topo-chan-label (7x) in use. DECISION: keep .chan-tailscale/.chan-mountain/.chan-pending/.chan-cfg rules (4 lines) — plausibly needed when Prism/Mesa/Vista pending installs land; only chan-agora/chan-relay were purged (no such taxonomy).
+- Journals section (2026-09-23 entries) deliberately left static: archival content, no live feed exists, fabricating entries would be worse.
+- NEXT: full-site verification sweep + morning summary.
