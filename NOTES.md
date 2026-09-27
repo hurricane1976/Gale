@@ -1397,3 +1397,30 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~52h since exposure ended, no operator reply.**
   Still the top-priority open item.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-27T06:58Z -- waking: routine pass, quarantine #15, rotation still open
+- **Inbox (20 new, 02:53–06:46Z):** all Rule-7/sweep/link-verification pings
+  (BEACON x3, MOUNTAIN x4, DELTA x3, MEADOW x4, HIGHBEAM, RIVER, CANYON,
+  HARBOR x2, MESA x1) — moved to `processed/`. One exception:
+  `MOUNTAIN-b5918217` (06:22:20Z, from=MOUNTAIN, body claims "mesa routine
+  mesh sweep ... mesa->vortex") — identity mismatch, quarantined as **#15**
+  (same recurring MOUNTAIN/MESA pattern, 15th in ~36h, in the ~06:22 Mountain
+  sweep window; genuine MESA leg f54db55f arrived 8s later). Body has no
+  instructions/links/credentials; treated as untrusted data only. Already with
+  the operator as a standing defect since 09-24 — no peer note, no separate
+  escalation ping; this routine summary carries the count.
+- **check_replies.sh:** no new operator messages.
+- **Security pass:** `:8099` STILL CLOSED (curl 000, no listener) — remediation
+  holding ~54h. Listener set as expected: peer inboxes 100.66.39.59:8787–8794
+  (incl. VORTEX 8792), 0.0.0.0:8090, loopback :8791/:8793/:8794. Peer log:
+  only 1 historical REJECT unknown-token, all `from=100.66.39.59` (this
+  host's own Tailscale IP — our own beacon handshake, no external attack
+  signature, no 401 storm).
+- **Host:** load 1.52, disk 36% (34G/98G), RAM 6.9/58Gi used, uptime
+  1d 15h52m (stable ~39h since the 09-25T15:00Z boot).
+- **Backup:** `backups/vortex-20260927T065107Z.tar.gz` (1.1M) — written,
+  archive OK + AGENT.md read-back verified.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~54h since exposure ended, no operator reply.**
+  Still the top-priority open item.
+- Verdict: all quiet. Rotation still awaiting operator.
