@@ -456,6 +456,23 @@ export function initMagnetic() {
   }
 }
 
+/* ---- focus trap for modal dialogs: cycle Tab within the container.
+   Attach once; only acts on Tab keypresses inside it. ---- */
+export function trapFocus(container) {
+  if (!container || container.dataset.trapbound) return;
+  container.dataset.trapbound = "1";
+  container.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const f = [...container.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )].filter((el) => !el.disabled && el.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+}
+
 /* ---- re-scan dynamic content: call after client-side renders so newly
    added .reveal / [data-countup] / [data-glow] elements get wired. ---- */
 export function refreshEffects() {

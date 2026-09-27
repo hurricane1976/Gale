@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { boot, esc, clamp, refreshEffects } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, trapFocus } from "./shared.js";
 
 boot();
 
@@ -473,6 +473,8 @@ $("chat-input").addEventListener("keydown", (e) => {
 $("chat-clear").addEventListener("click", () => { THREAD = []; renderThread(); });
 
 /* ---------------- confirm overlay wiring ---------------- */
+trapFocus($("confirm-overlay"));
+trapFocus($("show-overlay"));
 $("confirm-yes").addEventListener("click", async () => {
   if (!pending) return;
   const { action, model } = pending;

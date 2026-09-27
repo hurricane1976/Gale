@@ -1,7 +1,7 @@
 /* GALE — agent drill-down: click a member card or timeline tag to open a
    side panel with 24h stats, a 14-day sparkline, and recent runs.
    Data: /api/fleet/metrics (per_agent_24h) + /api/fleet/observability (runs). */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, trapFocus } from "./shared.js";
 
 boot();
 
@@ -20,6 +20,7 @@ panel.setAttribute("role", "dialog");
 panel.setAttribute("aria-modal", "true");
 panel.setAttribute("aria-label", "Agent details");
 document.body.append(backdrop, panel);
+trapFocus(panel);
 
 function fresh(envelope) {
   return state.cacheT > Date.now() - TTL_MS && envelope;
@@ -182,7 +183,10 @@ function closeDrilldown() {
   backdrop.classList.remove("open");
   panel.classList.remove("open");
   document.body.style.overflow = "";
+  if (lastTrigger && lastTrigger.isConnected) { lastTrigger.focus(); lastTrigger = null; }
 }
+
+let lastTrigger = null;
 
 panel.addEventListener("click", (e) => { if (e.target.closest(".dd-close")) closeDrilldown(); });
 backdrop.addEventListener("click", closeDrilldown);
@@ -215,6 +219,7 @@ document.addEventListener("click", async (e) => {
   }
   if (!name) return;
   tagEl.style.cursor = "pointer";
+  lastTrigger = tagEl;
   await getData();
   if (!findAgent(name)) {
     const tmp = document.createElement("div");
