@@ -180,5 +180,34 @@ async function load() {
 }
 
 document.getElementById("board").hidden = false;
-await load();
-setInterval(load, POLL_MS);
+
+// Prefer a live push (SSE) over polling; fall back to the old setInterval
+// loop if EventSource doesn't exist (old browsers) or keeps failing (a
+// proxy that won't stream). The render-test harness has no EventSource
+// global, so it naturally exercises the polling path.
+function startPolling() {
+  load();
+  setInterval(load, POLL_MS);
+}
+
+if (typeof EventSource !== "undefined") {
+  let failures = 0;
+  let es = new EventSource(FEED + "/stream");
+  es.onmessage = (e) => {
+    failures = 0;
+    try {
+      DATA = JSON.parse(e.data);
+      renderAll();
+    } catch { /* malformed payload -- wait for the next push */ }
+  };
+  es.onerror = () => {
+    setFresh("error", "feed error: stream unavailable");
+    if (++failures >= 3) {
+      es.close();
+      startPolling();
+    }
+  };
+  await load(); // paint immediately instead of waiting for the first push
+} else {
+  await startPolling();
+}

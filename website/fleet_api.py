@@ -1097,10 +1097,28 @@ class Handler(BaseHTTPRequestHandler):
                                         "generated_at": now_iso()})
             if path in ("/metrics",):
                 return self._send(200, metrics_envelope())
+            if path in ("/metrics/stream",):
+                return self._serve_sse(
+                    lambda: {k: v for k, v in metrics_envelope().items() if k != "generated_at"},
+                    metrics_envelope,
+                    poll_s=20, heartbeat_s=15,
+                )
             if path in ("/alerts",):
                 return self._send(200, alerts_envelope())
+            if path in ("/alerts/stream",):
+                return self._serve_sse(
+                    lambda: {k: v for k, v in alerts_envelope().items() if k != "generated_at"},
+                    alerts_envelope,
+                    poll_s=20, heartbeat_s=15,
+                )
             if path in ("/observability",):
                 return self._send(200, observability_envelope())
+            if path in ("/observability/stream",):
+                return self._serve_sse(
+                    lambda: {k: v for k, v in observability_envelope().items() if k != "generated_at"},
+                    observability_envelope,
+                    poll_s=20, heartbeat_s=15,
+                )
             if path in ("/net",):
                 return self._send(200, net_envelope())
             if path in ("/agora/posts", "/agora"):

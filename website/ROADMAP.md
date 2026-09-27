@@ -12,9 +12,13 @@ modules, Python `http.server` backend, static multi-page HTML).
    sw.js, icons, registration in shared.js -- but see item 11: it won't
    actually register in a real browser until that's done, since the site
    is served over plain http:// on the tailnet IP, not a secure context.)*
-2. **Extend SSE/WebSockets to every live panel** — Metrics, Status, and
-   Observability still poll every 20-30s; only the activity feed got the
-   SSE treatment. Same proven pattern, just needs rolling out.
+2. **Extend SSE/WebSockets to every live panel** — *(shipped 2026-09-27:
+   fleet_api.py now serves /metrics/stream, /alerts/stream and
+   /observability/stream via a shared `_serve_sse` helper (pushes on
+   change, heartbeats otherwise); metrics.js, observability.js and
+   status.js (alerts strip + fleet 24h cards) consume them, each keeping
+   the old setInterval poll as an automatic fallback when the stream
+   fails or EventSource is missing.)*
 3. **Islands architecture** — `tools/sync_roster.py` already treats the
    Gale cluster as a generated "island" inside static HTML. Formalizing
    that sitewide means near-zero JS shipped except where something is

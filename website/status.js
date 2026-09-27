@@ -579,13 +579,30 @@ function hostAlerts(d) {
   return a;
 }
 
+// Last alerts array pushed via SSE (null = no push yet, so tick() fetches).
+let liveFleetAlerts = null;
+// Last successful status board payload, so the SSE push path can recompute
+// host-derived alerts without re-fetching.
+let lastStatus = null;
+
+function mapFleetAlerts(env) {
+  return ((env && env.alerts) || []).map((x) => ({
+    ...x,
+    kind: String(x.kind || "").split("-")[0] || "fleet",
+  }));
+}
+
 async function fleetAlerts() {
   try {
     const res = await fetch("api/fleet/alerts", { cache: "no-store" });
     if (!res.ok) return [];
-    const j = await res.json();
-    return (j.alerts || []).map((x) => ({ ...x, kind: String(x.kind || "").split("-")[0] || "fleet" }));
+    return mapFleetAlerts(await res.json());
   } catch { return []; }
+}
+
+function refreshStrip(fleetArr, statusData) {
+  const host = statusData ? hostAlerts(statusData) : [];
+  renderAlertStrip([...fleetArr, ...host]);
 }
 
 function renderAlertStrip(all) {
@@ -617,12 +634,12 @@ async function tick() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = await res.json();
     render(data);
+    lastStatus = data;
   } catch (e) {
     setFresh("down", `collector unreachable (${e.message})`);
   }
-  const host = data ? hostAlerts(data) : [];
-  const fleet = data ? await fleetAlerts() : [];
-  renderAlertStrip([...fleet, ...host]);
+  const fleet = data ? (liveFleetAlerts || (await fleetAlerts())) : [];
+  refreshStrip(fleet, data);
   renderFleet24h();
 }
 
@@ -740,7 +757,7 @@ export async function renderFleet24h() {
   }).join("");
   if (fresh) {
     const gen = data.generated_at ? ` · metrics generated ${fleetAgo(data.generated_at)}` : "";
-    fresh.textContent = `refreshes every 30s${gen}`;
+    fresh.textContent = `live · poll fallback every 30s${gen}`;
   }
   refreshEffects();
 }
@@ -753,3 +770,39 @@ pollTimer = setInterval(tick, pollMs);
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") tick();
 });
+
+// Additive live-push layer: the 30s tick() above stays the safety net (a
+// proxy that won't stream, or the render-test harness which has no
+// EventSource global, still gets fresh data every tick). A push only
+// refreshes the parts it covers; on repeated stream errors we close the
+// source and let polling carry the page.
+if (typeof EventSource !== "undefined") {
+  let alertsFailures = 0;
+  const esAlerts = new EventSource("api/fleet/alerts/stream");
+  esAlerts.onmessage = (e) => {
+    alertsFailures = 0;
+    try {
+      liveFleetAlerts = mapFleetAlerts(JSON.parse(e.data));
+      refreshStrip(liveFleetAlerts, lastStatus);
+    } catch { /* malformed payload -- wait for the next push */ }
+  };
+  esAlerts.onerror = () => {
+    if (++alertsFailures >= 3) {
+      esAlerts.close();
+      liveFleetAlerts = null; // tick() re-fetches via HTTP from here on
+    }
+  };
+
+  let fleetFailures = 0;
+  const esFleet = new EventSource("api/fleet/metrics/stream");
+  esFleet.onmessage = (e) => {
+    fleetFailures = 0;
+    try {
+      fleetCache = { at: Date.now(), data: JSON.parse(e.data), err: null };
+      renderFleet24h();
+    } catch { /* malformed payload -- wait for the next push */ }
+  };
+  esFleet.onerror = () => {
+    if (++fleetFailures >= 3) esFleet.close(); // polling keeps the cards fresh
+  };
+}

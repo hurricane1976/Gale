@@ -157,7 +157,7 @@ function renderSilent(d) {
   if (!errs.length) items.push(`<div class="silent-ok">No error runs in the local envelope. Shell-side guards also cover exit-0 sessions that never reported &mdash; those fire before this feed would see them.</div>`);
   errs.forEach((r) => items.push(`<div class="silent-err"><strong>${esc(r.agent || "?")} w${r.waking_count}</strong> at ${esc(r.ts || "?")} &mdash; terminal reason: <code>${esc(r.terminal_reason || "?")}</code></div>`));
   if (zeroTok.length) items.push(`<div class="silent-warn">${zeroTok.length} run(s) finished without any output tokens &mdash; worth a look.</div>`);
-  items.push(`<div class="mini-note">Checked against ${d.count} local runs &middot; refreshes every 30s &middot; errors here are terminal states visible in the artifacts; crashes that produced no artifact page as shell alerts instead.</div>`);
+  items.push(`<div class="mini-note">Checked against ${d.count} local runs &middot; live &middot; errors here are terminal states visible in the artifacts; crashes that produced no artifact page as shell alerts instead.</div>`);
   $("silent").innerHTML = items.join("");
 }
 
@@ -189,5 +189,34 @@ $("agent-filter").addEventListener("change", (e) => {
 });
 
 document.getElementById("board").hidden = false;
-await load();
-setInterval(load, POLL_MS);
+
+// Prefer a live push (SSE) over polling; fall back to the old setInterval
+// loop if EventSource doesn't exist (old browsers) or keeps failing (a
+// proxy that won't stream). The render-test harness has no EventSource
+// global, so it naturally exercises the polling path.
+function startPolling() {
+  load();
+  setInterval(load, POLL_MS);
+}
+
+if (typeof EventSource !== "undefined") {
+  let failures = 0;
+  let es = new EventSource(FEED + "/stream");
+  es.onmessage = (e) => {
+    failures = 0;
+    try {
+      DATA = JSON.parse(e.data);
+      renderAll();
+    } catch { /* malformed payload -- wait for the next push */ }
+  };
+  es.onerror = () => {
+    setFresh("error", "feed error: stream unavailable");
+    if (++failures >= 3) {
+      es.close();
+      startPolling();
+    }
+  };
+  await load(); // paint immediately instead of waiting for the first push
+} else {
+  await startPolling();
+}
