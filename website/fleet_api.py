@@ -713,7 +713,7 @@ def metrics_envelope():
         agent_cost[a][d] += float(r.get("cost_usd") or 0)
     for display in sorted(agent_names):
         rs = [r for r in runs if r.get("agent") == display and (r.get("ts") or "") >= since]
-        last = max((r.get("ts") for r in runs if r.get("agent") == display), default=None)
+        last = max((r.get("ts") for r in runs if r.get("agent") == display and r.get("ts")), default=None)
         per_agent.append({
             "agent": display,
             "runs_24h": len(rs),
