@@ -2352,3 +2352,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:40Z -- FX batch AH: dialog focus management
 - New shared trapFocus() util (Tab cycling, bound-once guard). Wired: drilldown panel, ollama confirm + show overlays. Drilldown restores focus to the invoking card/tag on close.
 - Deployed.
+
+## 2026-09-27T02:40Z -- FX batch AI: table scroll wrappers + html audits
+- All 17 ops tables (10 status incl. 2 dynamic templates, 3 network, 1 observability, 1 ollama, +models) wrapped in .table-scroll (overflow-x auto, 520px floor). Verified balance on all touched pages; the one observability imbalance traced to a literal `<ts>` in docs (pre-existing) — escaped it.
+- Deployed.
