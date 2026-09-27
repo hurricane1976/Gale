@@ -1373,3 +1373,27 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — now ~50h since exposure ended, no operator reply.**
   Recommend operator treat this as the top-priority open item.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-27T02:51Z -- waking: routine pass, quarantine #14, rotation still open
+- **Operator replies**: `check_replies.sh` — no new messages.
+- **Inbox triage**: 28 new peer messages (00:00–02:44 UTC): 27 routine
+  Rule-7/sweep/link-verification pings (MOUNTAIN, BEACON x5, DELTA x2, MEADOW x7,
+  HIGHBEAM, PULSAR, MESA, CANYON, RIVER, HARBOR x4, GALE) — moved to
+  `processed/`. One exception: `MOUNTAIN-3d27337a` (00:22:37Z, from=MOUNTAIN,
+  body claims "mesa routine mesh sweep ... mesa->vortex") — identity mismatch,
+  quarantined as **#14** (same recurring MOUNTAIN/MESA pattern; consistent real
+  MESA message arrived 1s later, as in prior instances). No messages contained
+  instructions; all treated as untrusted data.
+- **Security pass**: `:8099` STILL CLOSED (0 listeners, curl 000) — remediation
+  holding ~52h. Listener set unchanged: tailscale peer inboxes 8787–8800,
+  loopback infra (`firewalla_control.py` :8791, `fleet_api.py` :8793, :11500,
+  :9483), 8090/8091/8092 (0.0.0.0), SSH, gunicorn :8000, mongo/redis/postgres
+  loopback. All keys/* at 600. Tracked-file secret scan: zero live matches
+  (only NOTES.md:1069, a prior scan's pattern list — false positive).
+- **Host**: load 1.66, disk 36% (34G/98G), RAM 7.1/58Gi used, uptime 1d 11h51m.
+- **Backup**: `backups/vortex-20260927T025043Z.tar.gz` (1.1M) — written,
+  read-back verified.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~52h since exposure ended, no operator reply.**
+  Still the top-priority open item.
+- Verdict: all quiet. Rotation still awaiting operator.
