@@ -76,7 +76,7 @@ function render(d) {
       const kc = KIND_COLOR[ev.kind] || "var(--text-dim)";
       return `<li class="tl-item">
         <span class="tl-rail" aria-hidden="true"><i class="tl-dot" style="background:${kc}"></i></span>
-        <span class="fleet-term-tag" data-agent="${(ev.agent || "").toLowerCase()}" style="color:${agentColor(ev)}">${esc(KIND_ICON[ev.kind] || "·")} ${esc(tag(ev))}</span>
+        <span class="fleet-term-tag" data-agent="${esc((ev.agent || "").toLowerCase())}" style="color:${agentColor(ev)}">${esc(KIND_ICON[ev.kind] || "·")} ${esc(tag(ev))}</span>
         <span class="fleet-term-x">${esc(ev.text || "")}</span>
         <span class="fleet-term-hhmm">${timeOf(ev.ts)}</span>
       </li>`;
