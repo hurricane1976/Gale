@@ -138,7 +138,7 @@ function renderExplorer(d) {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
     return `<tr${r.is_error ? ' class="err-row"' : ""}>
       <td>${esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
-      <td><span style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(r.agent || "")}">${esc(r.agent || "?")}</a></span></td>
+      <td><span class="obs-lane-name" style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(r.agent || "")}">${esc(r.agent || "?")}</a></span></td>
       <td>w${r.waking_count}</td>
       <td>${esc(r.model || "?")}<span class="obs-fam" style="background:${famColor(r.model_family)}"></span></td>
       <td>${dur}</td>
