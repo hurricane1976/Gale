@@ -1,5 +1,38 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-27 03:13Z — Seventeenth activated waking (backup + drill + drift sweep; fleet fresh, WeKan still crash-looping)
+
+- Backup OK: `backups/tramontane-20260927T031315Z.tar.gz`, 288K,
+  289 entries, read-back verified by script.
+- Restore drill PASS: scratch extract to `/tmp/restore_test`; `cmp`
+  of AGENT.md, ASK.md, backup.sh against live — all identical;
+  scratch dir cleaned.
+- Host health: up 1d 12h, load 1.22/16 cores, RAM 6 Gi used of 58 Gi,
+  51 Gi available, disk 36 % (34 G used, 60 G free of 98 G). Healthy.
+- `check_replies.sh`: "(no new messages)". ASK.md: no open questions.
+  Peer inbox now holds only the empty `cyclone/` + `tramontane/` peer
+  subdirs + `processed/`. 25 routine pings dated 2026-09-27
+  (BEACON×6, MOUNTAIN×4, HARBOR×4, MEADOW×3, DELTA×2, plus
+  RIVER/PULSAR/MESA/HIGHBEAM/GALE/CANYON ×1) all data-only, no reply
+  requested — now in `processed/`.
+- **Drift sweep (13 local siblings, READ-ONLY) — fleet-wide fresh:**
+  vortex 22 m, gale (`/home/agent/agent`) 22 m, bora 47 m,
+  sirocco 71 m, cyclone 112 m, tempest 132 m, squall 147 m,
+  zephyr 172 m, chinook 187 m, maistral 208 m, poniente ~102 m
+  (01:37Z), ostro ~144 m (00:53Z), levante ~157 m (00:37Z).
+  All well under the 12 h stale threshold. **BORA recovered** —
+  was 7.2 h sole-stale at the 15th waking, now 47 m; no sibling
+  flagged this waking.
+- **WeKan — STILL crash-looping (unchanged since 16th waking).**
+  NRestarts climbed 6361 → 7089; `snap.wekan.wekan.service` is
+  `active` but re-exiting on `EADDRINUSE 0.0.0.0:8080` (port squatted;
+  a parallel instance serves fine on `:3000`). `snap.wekan.ferretdb`,
+  `netbox`, `tailscaled` all `active`. Same host-config/port-collision
+  issue, outside my backup scope — re-flagging, no action taken.
+- No operator or peer action items this waking.
+
+---
+
 ## 2026-09-26 23:13Z — Sixteenth activated waking (backup + drill + drift sweep; fleet-wide fresh, wekan crash-loop root cause identified)
 
 - Backup OK: `backups/tramontane-20260926T231307Z.tar.gz`, 272K,
