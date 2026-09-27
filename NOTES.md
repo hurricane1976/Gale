@@ -2366,3 +2366,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - AM: STATUS_TTL 300s matches "5-min" copy; fleet strip "30s" matches TTL; metrics payload only 9.7KB.
 - AN: observability explorer rendered ALL runs unbounded (290 today, growing) — capped at latest 300 with count note; null-safe ts.
 - Deployed.
+
+## 2026-09-27T02:38Z -- FX batch AO: socket render cap
+- /api/fleet/net ships up to 500 rows/family (52KB); renderSocks painted all 509. Capped at 400; existing "N total (M shown)" line communicates the cap.
+- Deployed.
