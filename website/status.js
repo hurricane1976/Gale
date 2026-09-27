@@ -3,7 +3,7 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp, refreshEffects } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, REDUCED } from "./shared.js";
 
 boot();
 
@@ -603,7 +603,7 @@ chipsEl.addEventListener("click", (e) => {
   const t = btn.dataset.target;
   if (t === "fleet") { window.location.href = "fleet.html"; return; }
   const el = document.getElementById(t);
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (el) el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
 });
 
 async function tick() {

@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { boot, esc, clamp, refreshEffects, trapFocus } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, trapFocus, REDUCED } from "./shared.js";
 
 boot();
 
@@ -329,7 +329,7 @@ $("models-table").addEventListener("click", async (e) => {
     const sel = $("chat-model");
     if ([...sel.options].some((o) => o.value === model)) sel.value = model;
     $("chat-input").focus();
-    $("chat-thread").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    $("chat-thread").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "nearest" });
     return;
   }
   askConfirm(act, model);
