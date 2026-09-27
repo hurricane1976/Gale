@@ -17,6 +17,16 @@ const PAGES = [
 
 const ICON_PAGE = "→", ICON_SECTION = "§", ICON_AGENT = "◆";
 
+/* kiosk toggle: only shown when not already in kiosk mode */
+function kioskItem(items) {
+  if (new URLSearchParams(location.search).has("kiosk")) return;
+  items.push({
+    icon: "▦", label: "Start kiosk mode",
+    hint: "fullscreen auto-rotating wall display",
+    go: () => { location.href = `status.html?kiosk=20`; },
+  });
+}
+
 function collectItems() {
   const items = PAGES.map(([label, href, hint]) => ({
     icon: ICON_PAGE, label, hint: hint || href, go: () => { location.href = href; },
@@ -51,6 +61,7 @@ function collectItems() {
       },
     });
   }
+  kioskItem(items);
   return items;
 }
 

@@ -764,7 +764,74 @@ function registerServiceWorker() {
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("sw registration failed", e));
+    initPushBell();
   });
+}
+
+/* ---- push enablement (gale_push.py): a small bell next to the brand.
+   Hidden until the SW + push APIs exist on a secure context; when
+   subscribed it turns solid and shows subscription state. Badge clears
+   while any page is visible. ---- */
+async function initPushBell() {
+  if (!("PushManager" in window) || !navigator.serviceWorker) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const mk = () => {
+      if (document.getElementById("push-bell")) return;
+      const bell = document.createElement("button");
+      bell.id = "push-bell";
+      bell.type = "button";
+      bell.className = "mini-toggle push-bell";
+      bell.textContent = "🔔 alerts off";
+      bell.setAttribute("aria-pressed", "false");
+      bell.style.cssText = "position:fixed;bottom:14px;right:14px;z-index:60;padding:8px 12px;min-height:32px";
+      bell.addEventListener("click", togglePush);
+      document.body.appendChild(bell);
+    };
+    const paint = async () => {
+      const sub = await reg.pushManager.getSubscription().catch(() => null);
+      const bell = document.getElementById("push-bell");
+      if (bell) {
+        bell.textContent = sub ? "🔔 alerts on" : "🔔 alerts off";
+        bell.setAttribute("aria-pressed", String(!!sub));
+      }
+    };
+    async function togglePush() {
+      const sub = await reg.pushManager.getSubscription().catch(() => null);
+      if (sub) {
+        await fetch("api/push/unsubscribe", { method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {});
+        await sub.unsubscribe().catch(() => {});
+        paint();
+        return;
+      }
+      const perm = await Notification.requestPermission();
+      if (perm !== "granted") return;
+      const res = await fetch("api/push/vapid-key").then((r) => r.json());
+      const newSub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: res.public,
+      });
+      await fetch("api/push/subscribe", { method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSub.toJSON()) });
+      paint();
+    }
+    mk();
+    paint();
+    // badge mirrors open crit alerts while the page is visible
+    if (navigator.setAppBadge || navigator.clearAppBadge) {
+      const clear = () => {
+        navigator.clearAppBadge && navigator.clearAppBadge().catch(() => {});
+        navigator.serviceWorker.controller &&
+          navigator.serviceWorker.controller.postMessage("gale:clear-badge");
+      };
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") clear();
+      });
+    }
+  } catch { /* push is enhancement-only; never break boot */ }
 }
 
 export function boot() {
@@ -775,6 +842,9 @@ export function boot() {
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
     import("./palette.js").then((m) => m.initPalette()).catch(() => {});
+    if (new URLSearchParams(location.search).has("kiosk")) {
+      import("./kiosk.js").then((m) => m.initKiosk()).catch(() => {});
+    }
   }
   initHeroParallax();
   refreshEffects();

@@ -89,3 +89,47 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+/* ---- Web Push (gale_push.py): fleet crit alerts reach the lock screen;
+   the payload's count badges the app icon (Badging API, where supported). ---- */
+self.addEventListener("push", (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch { /* keep defaults */ }
+  const title = data.title || "GALE — fleet alert";
+  event.waitUntil((async () => {
+    if (self.navigator && self.navigator.setAppBadge && data.count != null) {
+      try { await self.navigator.setAppBadge(Math.max(1, data.count)); } catch {}
+    }
+    await self.registration.showNotification(title, {
+      body: data.body || "A fleet alert fired.",
+      tag: data.sev === "crit" ? "gale-crit" : "gale-alert", // replace, don't stack
+      renotify: true,
+      requireInteraction: data.sev === "crit",
+      badge: "/icon-192.png",
+      icon: "/icon-192.png",
+      data: { url: data.url || "/status.html" },
+    });
+  })());
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || "/status.html";
+  event.waitUntil((async () => {
+    const clientList = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const client of clientList) {
+      if (new URL(client.url).origin === self.location.origin && "focus" in client) {
+        client.navigate(url).catch(() => {});
+        return client.focus();
+      }
+    }
+    return self.clients.openWindow(url);
+  })());
+});
+
+/* Badge clears when the operator is actually looking at the site */
+self.addEventListener("message", (event) => {
+  if (event.data === "gale:clear-badge" && self.navigator && self.navigator.clearAppBadge) {
+    try { self.navigator.clearAppBadge(); } catch {}
+  }
+});

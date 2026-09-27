@@ -609,3 +609,13 @@ button.ct-key:focus-visible { outline: 2px solid var(--tide); outline-offset: 2p
 .fam-key { font-family: var(--font-ibm-mono); font-size: 0.7rem; color: var(--text-dim); display: inline-flex; align-items: center; gap: 6px; text-transform: lowercase; }
 .fam-key i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 .fam-key b { color: var(--text); font-weight: 500; }
+.reveal { transition: transform 0.7s cubic-bezier(.22,1,.36,1); }
+
+/* ROADMAP-modern #2: scroll-driven reveal where supported -- replaces the
+   IO class-toggle for these elements; others keep the IO path */
+@supports (animation-timeline: view()) {
+  .js .reveal { transform: none; transition: none; animation: sd-reveal auto both;
+    animation-timeline: view(); animation-range: entry 5% entry 55%; }
+}
+@keyframes sd-reveal { from { transform: translateY(20px); opacity: 0.4; }
+  to { transform: none; opacity: 1; } }

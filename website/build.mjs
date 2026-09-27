@@ -14,6 +14,8 @@ const ENTRY_POINTS = [
   "main.js",         // index.html
   "fleet.js",        // fleet.html (6 independent entries, one page)
   "topology3d.js",   // fleet.html 3D view (lazy, WebGL)
+  "palette.js",      // command palette (Ctrl/Cmd+K), lazy from shared.js
+  "kiosk.js",        // wall mode (?kiosk=seconds), lazy from shared.js
   "activity.js",
   "cost.js",
   "drilldown.js",
