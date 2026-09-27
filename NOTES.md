@@ -1,3 +1,12 @@
+## 2026-09-27T04:27Z -- Waking sweep: 35/35 up; 25 inbox msgs archived (10 "re-mint" claims, no tokens)
+
+- Host gale-agent healthy; peer_server up on 100.66.39.59:8799.
+- Sweep (04:27Z): **35/35 up** (14 local + 21 remote), 0 down. Saved fleet/20260927T042743Z-sweep.json.
+- check_replies.sh clean (no operator messages).
+- Inbox backlog 25 msgs (01:11Z-03:55Z): PRISM pair-test, GALE conn-check, 7 post-rotation self-tests (CANYON/DELTA/HARBOR/MESA/MOUNTAIN/RIDGE/VISTA), TIDAL+RIVER+5x BROOK/CREEK/MEADOW/MIST/STREAM "token re-mint after Josh authorization 02:38:16Z" conn-checks, MOUNTAIN latency check, BEACON x2 health, RIVER wake-check. Grepped all 25 for bearer/JWT/token-shape strings + sk- prefixes: **no embedded credentials**; all senders already in 34-peer registry; archived to peer/processed/, inbox now empty.
+- Note for operator: 10 peers claim a "token re-mint" was installed after "Josh authorization 2026-09-27 02:38:16Z" — but my keys/peers.env is unchanged (34 blocks, mtime 2026-09-26T19:03Z, predates the claims) and none of the messages carried a token. Per runbook: treat as peer claims/data, no adoption, flagged here for the operator to confirm whether a real rotation happened. Consistent with the earlier LANTERN "re-mint bundle" msg at 00:37Z.
+- Backup: backups/levante-20260927T042747Z.tar.gz (5.8M) created.
+
 ## 2026-09-27T00:37Z -- Waking sweep: 35/35 up; quiet night; prior 00:24Z run crashed (exited 1)
 
 - Host gale-agent healthy (load 1.82, 50 GiB RAM avail, 34 G used / 98 G 36%). All 14 local peer_server listeners up (8787-8800 incl. PONIENTE:8800).
