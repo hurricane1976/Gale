@@ -2315,3 +2315,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T11:00Z -- FX batch Y: ollama_api.py POST audit (verification only)
 - /action + /chat: per-IP AND global rate limits, 4KB body cap, action whitelist, MODEL_RE on model, delete requires confirm==model. Well-guarded; no changes.
 - NEXT batch Z: agora_bridge.py POST validation (last backend surface).
+
+## 2026-09-27T11:20Z -- FX batch Z: agora POST audit (verification only)
+- agora_post: type checks, control-char strip, length caps, http(s) scheme check, per-IP (5/10min) + global rate limits, duplicate suppression, bounded store, atomic save, IP stripped from reads. Exemplary; no changes.
+- All backend surfaces audited this shift (fleet metrics, ollama actions, agora, sysmon producer). No open issues.
+- NEXT batch AA: cross-page agent drilldown deep links (metrics -> fleet#agent-x) + firewalla_control skim.
