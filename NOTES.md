@@ -2370,3 +2370,7 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 ## 2026-09-27T02:38Z -- FX batch AO: socket render cap
 - /api/fleet/net ships up to 500 rows/family (52KB); renderSocks painted all 509. Capped at 400; existing "N total (M shown)" line communicates the cap.
 - Deployed.
+
+## 2026-09-27T02:42Z -- FX batch AP: roster filter shortcut
+- `/` focuses the roster search from anywhere (guarded against inputs + modifiers); hint in placeholder; Escape still clears.
+- Deployed.
