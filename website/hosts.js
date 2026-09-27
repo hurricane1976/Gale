@@ -16,6 +16,34 @@ const HOST_META = {
 
 const grid = document.getElementById("hosts-grid");
 const fresh = document.getElementById("hosts-fresh");
+const alertBox = document.getElementById("fleet-alerts");
+let alertCache = { at: 0, items: null };
+
+async function fetchAlerts() {
+  if (Date.now() - alertCache.at < POLL_MS && alertCache.items) return alertCache.items;
+  try {
+    const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+    alertCache = { at: Date.now(), items: d.alerts || [] };
+  } catch {
+    alertCache = { at: Date.now(), items: alertCache.items || [] };
+  }
+  return alertCache.items;
+}
+
+function renderAlerts(items) {
+  if (!alertBox) return;
+  const crit = items.filter((a) => a.sev === "crit").length;
+  if (!items.length) { alertBox.hidden = true; alertBox.innerHTML = ""; return; }
+  alertBox.hidden = false;
+  alertBox.innerHTML =
+    `<span class="fleet-alerts-h">${crit ? `${crit} critical` : `${items.length} notice${items.length === 1 ? "" : "s"}`}</span>` +
+    items.slice(0, 6).map((a) =>
+      `<a class="fleet-alert-chip" data-sev="${esc(a.sev || "warn")}" href="status.html" title="${esc(a.kind || "fleet")}">${esc(a.text || "")}</a>`
+    ).join("") +
+    (items.length > 6 ? `<span class="fleet-alerts-more">+${items.length - 6} more on status →</span>` : "");
+}
 
 function fmtAgo(iso) {
   const s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
@@ -113,6 +141,7 @@ async function tick() {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     render(d);
+    renderAlerts(await fetchAlerts());
     grid.dataset.loaded = "1";
   } catch (e) {
     setErr(e.message);

@@ -541,3 +541,14 @@ html { scroll-behavior: smooth; }
   border-radius: 6px; color: var(--text-dim); font-family: var(--font-ibm-mono); font-size: 0.78rem;
   padding: 4px 10px; cursor: pointer; }
 .dd-share:hover { color: var(--text); border-color: var(--tide); }
+
+/* ---- fleet alert strip (mirrors status.html alert strip, links there) ---- */
+.fleet-alerts { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 26px; }
+.fleet-alerts[hidden] { display: none; }
+.fleet-alerts-h { font-family: var(--font-ibm-mono); font-size: 0.7rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--flag); }
+.fleet-alert-chip { font-size: 0.8rem; padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--text-dim); }
+.fleet-alert-chip:hover { color: var(--text); border-color: var(--tide); }
+.fleet-alert-chip[data-sev="crit"] { border-color: var(--flag); color: var(--text); }
+.fleet-alerts-more { font-family: var(--font-ibm-mono); font-size: 0.7rem; color: var(--text-faint); }
