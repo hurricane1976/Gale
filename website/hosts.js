@@ -108,7 +108,7 @@ export function hostBoard(h, d) {
   </article>`;
 }
 
-function render(d) {
+export function render(d) {
   const hosts = HOST_ORDER.filter((h) =>
     (d.runs_24h_by_host || {})[h] != null ||
     (d.agents_by_host || {})[h] ||

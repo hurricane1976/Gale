@@ -88,5 +88,13 @@ const agentHtml = __els["agent-grid"].innerHTML;
 t("agent cards render", agentHtml.includes("vital"));
 t("agent deep links", agentHtml.includes("fleet.html#agent-"));
 
+hosts.render(d);
+const hostsHtml = [__els["hosts-grid"]?.innerHTML || ""].join("");
+t("hosts render boards", (hostsHtml.match(/host-board/g) || []).length >= 4);
+
+cost.render(d);
+t("cost render chart", (__els["cost-trend-chart"]?.innerHTML || "").includes("ct-svg"));
+t("cost render leaderboard", (__els["leaderboard-grid"]?.innerHTML || "").includes("lb-card"));
+
 console.log(fail === 0 ? "RENDER PASS" : "RENDER FAIL");
 process.exit(fail === 0 ? 0 : 1);

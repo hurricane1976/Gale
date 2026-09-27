@@ -122,7 +122,7 @@ export function leaderboard(d) {
   }).join("");
 }
 
-function render(d) {
+export function render(d) {
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
   if (lbGrid) lbGrid.innerHTML = leaderboard(d);
