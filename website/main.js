@@ -1,7 +1,15 @@
 /* GALE — home: wake-cycle scrub, live pulse feed, spend & quota. */
-import { boot, clamp, esc, raf, REDUCED } from "./shared.js";
+import { boot, clamp, esc, raf, REDUCED, refreshEffects } from "./shared.js";
 
 boot();
+
+/* wire the shared effects engine to static markup: section reveals +
+   count-up stat numbers (dynamic regions call refreshEffects themselves). */
+document.querySelectorAll(".block:not(#hero)").forEach((el) => el.classList.add("reveal"));
+document.querySelectorAll(".stat-num").forEach((el) => {
+  if (/^[\d,]+$/.test(el.textContent.trim())) el.setAttribute("data-countup", "");
+});
+refreshEffects();
 
 /* ---- wake cycle: scroll-scrubbed orbit. The four steps live in the HTML
    (#wake-steps); JS reads them out and drives the sticky SVG stage. ---- */

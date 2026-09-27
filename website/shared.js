@@ -275,23 +275,27 @@ export function initStormCanvas() {
   rafId = raf(tick);
 }
 
-/* ---- reveal: slide-only, one-shot IntersectionObserver ---- */
+/* ---- reveal: slide-only, one-shot IntersectionObserver.
+   Re-scan safe: call again after client-side renders (see refreshEffects). ---- */
+let revealIO = null;
 export function initReveals() {
-  const els = document.querySelectorAll(".reveal");
+  const els = document.querySelectorAll(".reveal:not(.in-view)");
   if (!els.length) return;
   if (REDUCED || !("IntersectionObserver" in window)) {
     els.forEach((el) => el.classList.add("in-view"));
     return;
   }
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) { e.target.classList.add("in-view"); io.unobserve(e.target); }
-      }
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-  );
-  els.forEach((el) => io.observe(el));
+  if (!revealIO) {
+    revealIO = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) { e.target.classList.add("in-view"); revealIO.unobserve(e.target); }
+        }
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+  }
+  els.forEach((el) => revealIO.observe(el));
 }
 
 /* ---- scroll progress: CSS scroll-timeline first; JS only when unsupported ---- */
@@ -311,12 +315,16 @@ export function initProgressFallback() {
   update();
 }
 
-/* ---- count-up numbers (reads the static value, keeps prefix/suffix) ---- */
+/* ---- count-up numbers (reads the static value, keeps prefix/suffix).
+   Re-scan safe: already-animated elements are marked and skipped. ---- */
+let countIO = null;
 export function initCountUps() {
   if (REDUCED) return;
-  const els = document.querySelectorAll("[data-countup]");
+  const els = document.querySelectorAll("[data-countup]:not([data-countbound])");
   if (!els.length) return;
   const run = (el) => {
+    if (el.dataset.countbound) return;
+    el.dataset.countbound = "1";
     const raw = el.textContent.trim();
     const m = raw.match(/^([^\d,.-]*)([\d,]+(?:\.\d+)?)(.*)$/);
     if (!m) return;
@@ -337,21 +345,25 @@ export function initCountUps() {
     raf(step);
   };
   if (!("IntersectionObserver" in window)) return els.forEach(run);
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) { io.unobserve(e.target); run(e.target); }
-      }
-    },
-    { threshold: 0.5 }
-  );
-  els.forEach((el) => io.observe(el));
+  if (!countIO) {
+    countIO = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) { countIO.unobserve(e.target); run(e.target); }
+        }
+      },
+      { threshold: 0.5 }
+    );
+  }
+  els.forEach((el) => countIO.observe(el));
 }
 
-/* ---- pointer glow + 3D tilt on cards ---- */
+/* ---- pointer glow + 3D tilt on cards.
+   Re-scan safe: already-bound cards are marked and skipped. ---- */
 export function initPointerCards() {
   if (!FINE || REDUCED) return;
-  document.querySelectorAll("[data-glow]").forEach((card) => {
+  document.querySelectorAll("[data-glow]:not([data-glowbound])").forEach((card) => {
+    card.dataset.glowbound = "1";
     let rafId = 0;
     const move = (e) => {
       if (rafId) return;
@@ -408,6 +420,8 @@ export function initMagnetic() {
   const magnets = document.querySelectorAll("[data-magnet]");
   if (!magnets.length || !FINE || REDUCED) return;
   for (const el of magnets) {
+    if (el.dataset.magnetbound) continue;
+    el.dataset.magnetbound = "1";
     const strength = parseFloat(el.dataset.magnet) || 0.25;
     el.addEventListener("pointermove", (e) => {
       const r = el.getBoundingClientRect();
@@ -423,13 +437,19 @@ export function initMagnetic() {
   }
 }
 
-/* ---- shared boot for both pages ---- */
-export function boot() {
-  initStormCanvas();
+/* ---- re-scan dynamic content: call after client-side renders so newly
+   added .reveal / [data-countup] / [data-glow] elements get wired. ---- */
+export function refreshEffects() {
   initReveals();
-  initProgressFallback();
   initCountUps();
   initPointerCards();
   initMagnetic();
+}
+
+/* ---- shared boot for both pages ---- */
+export function boot() {
+  initStormCanvas();
+  initProgressFallback();
   initClocks();
+  refreshEffects();
 }

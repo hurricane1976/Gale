@@ -1,7 +1,7 @@
 /* GALE — fleet cost trend + agent cost leaderboard: polls api/fleet/metrics,
    renders a 14-day per-host cost chart with fleet-total line, and a top-6
    agent cost leaderboard with per-agent cost sparklines. */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -109,7 +109,7 @@ function leaderboard(d) {
     const series = Array.isArray(a.daily_cost_14d) && a.daily_cost_14d.some((v) => v > 0)
       ? a.daily_cost_14d
       : (a.daily_wakings_14d || []);
-    return `<article class="lb-card" data-level="${errs > 0 ? "warn" : "ok"}" style="--lc:${hue(h)}">` +
+    return `<article class="lb-card" data-glow data-level="${errs > 0 ? "warn" : "ok"}" style="--lc:${hue(h)}">` +
       `<header class="lb-head"><span class="lb-rank">#${i + 1}</span>` +
       `<h3 class="lb-name">${esc(a.agent || "?")}</h3>` +
       (h ? `<span class="lb-host">${esc(h)}</span>` : "") +
@@ -132,6 +132,7 @@ function render(d) {
     chartFresh.textContent = stamp ? `updated ${stamp} · 14d fleet ${money(totals.reduce((s, v) => s + v, 0))}` : "";
   }
   if (lbFresh) lbFresh.textContent = stamp ? `updated ${stamp} · top ${LEAD_N} by 24h cost` : "";
+  refreshEffects();
 }
 
 function setErr(msg) {

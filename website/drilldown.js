@@ -1,7 +1,7 @@
 /* GALE — agent drill-down: click a member card or timeline tag to open a
    side panel with 24h stats, a 14-day sparkline, and recent runs.
    Data: /api/fleet/metrics (per_agent_24h) + /api/fleet/observability (runs). */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -169,6 +169,7 @@ function openDrilldown(name) {
   const agent = findAgent(name);
   if (!agent) return;
   render(agent);
+  refreshEffects();
   backdrop.classList.add("open");
   panel.classList.add("open");
   panel.querySelector(".dd-close").focus();

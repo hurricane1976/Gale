@@ -1,7 +1,7 @@
 /* GALE — fleet activity stream: polls /api/fleet/activity, renders the last
    N real events oldest-first in a terminal-style panel (Beacon's pattern).
    Pause toggle stops re-rendering but never stops fetching. */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -90,6 +90,7 @@ async function load() {
     const r = await fetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     render(await r.json());
+    refreshEffects();
     setFresh(true);
   } catch {
     setFresh(false);

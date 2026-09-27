@@ -3,7 +3,7 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp } from "./shared.js";
+import { boot, esc, clamp, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -704,7 +704,7 @@ async function renderFleet24h() {
     const meta = FLEET_META[h] || { hue: "var(--text-faint)", note: "" };
     const r = runs[h] ?? null, c = cost[h] ?? null, e = errs[h] || 0;
     const agg = last[h] || null, n = (agents[h] || []).length;
-    return `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-host="${esc(h)}" style="--fh:${meta.hue}">
+    return `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
       <header class="fleet-24h-head">
         <span class="fleet-24h-dot" aria-hidden="true"></span>
         <strong class="fleet-24h-name">${esc(h)}</strong>
@@ -722,6 +722,7 @@ async function renderFleet24h() {
     const gen = data.generated_at ? ` · metrics generated ${fleetAgo(data.generated_at)}` : "";
     fresh.textContent = `refreshes every 30s${gen}`;
   }
+  refreshEffects();
 }
 
 // keep the "Ns ago" freshness line moving between polls

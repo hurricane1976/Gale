@@ -1563,3 +1563,21 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .fleet-live-pill[data-level="ok"] .fleet-live-dot { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
 .fleet-live-pill[data-level="warn"] .fleet-live-dot { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
 .fleet-live-pill[data-level="crit"] .fleet-live-dot { background: var(--flag); box-shadow: 0 0 6px var(--flag); }
+
+/* ---- fleet cards: hover lift + pointer glow + live pulse ---- */
+.fleet-24h-card { position: relative; overflow: clip;
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1), border-color 0.3s, box-shadow 0.3s; }
+.fleet-24h-card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35); }
+.fleet-24h-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none; opacity: 0;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--flag) 12%, transparent), transparent 70%);
+  transition: opacity 0.35s; }
+.fleet-24h-card:hover::after { opacity: 1; }
+@keyframes fleet-dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79, 174, 122, 0.45); }
+  50% { box-shadow: 0 0 0 5px rgba(79, 174, 122, 0); } }
+.fleet-24h-dot, .fleet-live-dot { animation: fleet-dot-pulse 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .fleet-24h-card, .fleet-24h-card:hover { transform: none; transition: none; }
+  .fleet-24h-dot, .fleet-live-dot { animation: none; } }

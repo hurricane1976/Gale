@@ -1,7 +1,7 @@
 /* GALE — fleet topology page (Tidal system rebuild): detail strip driven by
    data-* attributes in the markup. Static SVG does the topology; this only
    wires hover/tap/keyboard detail and the mesh status line feed. */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -56,3 +56,8 @@ if (statusEl) {
     })
     .catch(() => { /* keep the static fallback */ });
 }
+
+/* pointer glow on the static roster cards (wired here so the shared
+   engine picks them up even though they carry no data-glow in markup). */
+document.querySelectorAll(".member-card:not([data-glow])").forEach((c) => c.setAttribute("data-glow", ""));
+refreshEffects();

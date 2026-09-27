@@ -1,6 +1,6 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -139,6 +139,7 @@ function renderAll() {
   $("cost-chart").innerHTML = stackedBars(DATA.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`);
   legend("cost-legend", Object.keys(DATA.daily_cost_by_host));
   renderStatus(DATA);
+  refreshEffects();
   setFresh("live", `live &middot; ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
 

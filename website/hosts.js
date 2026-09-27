@@ -1,6 +1,6 @@
 /* GALE — per-host fleet boards: polls /api/fleet/metrics, renders one
    board per host (14-day sparkline, 24h stats, agent roster). */
-import { boot, esc } from "./shared.js";
+import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
@@ -61,7 +61,7 @@ function hostBoard(h, d) {
   const last = (d.last_wake_by_host || {})[h] || null;
   const agents = (d.agents_by_host || {})[h] || [];
   const lvl = errs > 0 ? "warn" : series.length ? "ok" : "idle";
-  return `<article class="host-board" data-host="${esc(h)}" data-level="${lvl}" style="--hb:${meta.hue}">
+  return `<article class="host-board" data-glow data-host="${esc(h)}" data-level="${lvl}" style="--hb:${meta.hue}">
     <header class="hb-head">
       <span class="hb-dot" aria-hidden="true"></span>
       <h3 class="hb-name">${esc(h)}</h3>
@@ -87,6 +87,7 @@ function render(d) {
   ).concat(Object.keys(d.agents_by_host || {}).filter((h) => !HOST_ORDER.includes(h)));
   grid.innerHTML = hosts.map((h) => hostBoard(h, d)).join("");
   if (fresh) fresh.textContent = d.generated_at ? `updated ${esc(fmtAgo(d.generated_at))}` : "";
+  refreshEffects();
   const badge = document.querySelector(".fleet-live-badge");
   if (badge) {
     const agents = Object.values(d.agents_by_host || {}).reduce((s, a) => s + (a || []).length, 0);

@@ -465,3 +465,45 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .lb-spark-dot { fill: var(--lc, var(--teal)); }
 .lb-spark-empty { color: var(--text-faint); font-family: var(--font-ibm-mono); font-size: 0.72rem; padding: 6px 0; }
 .lb-meta { display: flex; justify-content: space-between; font-family: var(--font-ibm-mono); font-size: 0.68rem; color: var(--text-faint); border-top: 1px solid var(--line); padding-top: 8px; }
+
+/* ---- effects system: reveal, selection, scrollbar, glow, pulse ---- */
+html { scroll-behavior: smooth; }
+::selection { background: rgba(63, 199, 255, 0.35); color: #fff; }
+* { scrollbar-width: thin; scrollbar-color: #2a3a55 transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: #2a3a55; border-radius: 8px; border: 2px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-track { background: transparent; }
+[id] { scroll-margin-top: 92px; }
+:focus-visible { outline: 2px solid var(--tide); outline-offset: 2px; border-radius: 4px; }
+
+/* reveal: slide-only, additive (.js guard keeps no-JS fully visible) */
+.reveal { transition: transform 0.7s cubic-bezier(.22,1,.36,1); will-change: transform; }
+.js .reveal { transform: translateY(20px); }
+.js .reveal.in-view { transform: none; }
+
+/* pointer glow (JS drives --mx/--my) + hover lift on telemetry cards */
+.host-board, .lb-card, .member-card, .cost-trend-wrap { position: relative;
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1), border-color 0.3s, box-shadow 0.3s; }
+.host-board:hover, .lb-card:hover { transform: translateY(-3px); border-color: var(--line-strong);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); }
+.member-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+.host-board::after, .lb-card::after, .member-card::after, .cost-trend-wrap::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(63, 199, 255, 0.13), transparent 70%);
+  transition: opacity 0.35s; }
+.host-board:hover::after, .lb-card:hover::after, .member-card:hover::after, .cost-trend-wrap:hover::after { opacity: 1; }
+
+/* live-dot pulse */
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(63, 199, 255, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(63, 199, 255, 0); } }
+.hb-dot, .fleet-live-badge .dot { animation: dot-pulse 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { transition: none; }
+  .js .reveal { transform: none; }
+  .host-board, .lb-card, .member-card { transition: none; }
+  .host-board:hover, .lb-card:hover, .member-card:hover { transform: none; }
+  .hb-dot, .fleet-live-badge .dot { animation: none; } }

@@ -70,7 +70,7 @@
 
     <div id="board" class="ops-board" hidden>
 
-      <section class="ops-panel span-full" id="sec-fleet-24h" aria-labelledby="h-fleet-24h">
+      <section class="reveal ops-panel span-full" id="sec-fleet-24h" aria-labelledby="h-fleet-24h">
         <h2 id="h-fleet-24h" class="panel-title">Fleet activity &middot; 24h</h2>
         <p class="sec-lede" style="margin-top:-6px">Per-host runs, cost and last wake from <code>api/fleet/metrics</code> &mdash; full sparklines and agent rosters live on <a href="fleet.html">fleet.html</a>.</p>
         <div id="fleet-live-strip" class="fleet-live-strip" role="status" aria-live="polite"></div>
@@ -78,22 +78,22 @@
         <p class="mini-note" id="fleet-24h-fresh"></p>
       </section>
 
-      <section class="ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
+      <section class="reveal ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
         <h2 id="h-vitals" class="panel-title">Host vitals &middot; <span id="hostname">&ndash;</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
       </section>
 
-      <section class="ops-panel" aria-labelledby="h-host">
+      <section class="reveal ops-panel" aria-labelledby="h-host">
         <h2 id="h-host" class="panel-title">System</h2>
         <dl class="kv-list" id="host-info"></dl>
       </section>
 
-      <section class="ops-panel" aria-labelledby="h-cpu">
+      <section class="reveal ops-panel" aria-labelledby="h-cpu">
         <h2 id="h-cpu" class="panel-title">CPU &middot; <span id="cpu-count">&ndash;</span> cores</h2>
         <div class="core-grid" id="core-grid"></div>
       </section>
 
-      <section class="ops-panel" aria-labelledby="h-net">
+      <section class="reveal ops-panel" aria-labelledby="h-net">
         <h2 id="h-net" class="panel-title">Network interfaces</h2>
         <table class="ops-table" id="net-table">
           <thead><tr><th>Interface</th><th>Address</th><th>Rx</th><th>Tx</th><th>Total</th></tr></thead>
@@ -102,7 +102,7 @@
         <p class="mini-note" id="tailscale-line"></p>
       </section>
 
-      <section class="ops-panel" id="sec-services" aria-labelledby="h-services">
+      <section class="reveal ops-panel" id="sec-services" aria-labelledby="h-services">
         <h2 id="h-services" class="panel-title">Services</h2>
         <table class="ops-table" id="services-table">
           <thead><tr><th>Unit</th><th>State</th><th>Active since</th></tr></thead>
@@ -110,12 +110,12 @@
         </table>
       </section>
 
-      <section class="ops-panel" id="sec-security" aria-labelledby="h-security">
+      <section class="reveal ops-panel" id="sec-security" aria-labelledby="h-security">
         <h2 id="h-security" class="panel-title">Security posture</h2>
         <dl class="kv-list" id="security-info"></dl>
       </section>
 
-      <section class="ops-panel" aria-labelledby="h-ports">
+      <section class="reveal ops-panel" aria-labelledby="h-ports">
         <h2 id="h-ports" class="panel-title">Listening ports</h2>
         <table class="ops-table" id="ports-table">
           <thead><tr><th>Port</th><th>Process</th><th>Fleet role</th><th>Address</th></tr></thead>
@@ -124,13 +124,13 @@
         <button class="mini-toggle" id="ports-toggle" type="button" hidden></button>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-fullhosts">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-fullhosts">
         <h2 id="h-fullhosts" class="panel-title">Remote hosts</h2>
         <p class="sec-lede" style="margin-top:-6px">Full host stats from other machines running their own collector (<code>remote/&lt;platform&gt;/collector.py</code>) &mdash; unlike &ldquo;Monitored systems&rdquo; below, these get the same vitals/network/services treatment as <code>gale-agent</code> itself, just sourced from that machine's own collector instead of a local psutil call.</p>
         <div id="full-hosts-grid" class="full-hosts-grid"></div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-ollama">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-ollama">
         <h2 id="h-ollama" class="panel-title">Ollama &middot; <span id="ollama-addr">&ndash;</span></h2>
         <p class="sec-lede" style="margin-top:-6px" id="ollama-down" hidden>Unreachable</p>
         <div id="ollama-body">
@@ -165,7 +165,7 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-firewall">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-firewall">
         <h2 id="h-firewall" class="panel-title">Firewalla &middot; <span id="fw-box-name">&ndash;</span></h2>
         <p class="sec-lede" style="margin-top:-6px" id="fw-unconfigured" hidden>Not configured &mdash; add <code>keys/firewalla.env</code> to enable.</p>
         <div id="fw-body">
@@ -233,7 +233,7 @@
         </div>
       </section>
 
-      <section class="ops-panel span-full" aria-labelledby="h-targets">
+      <section class="reveal ops-panel span-full" aria-labelledby="h-targets">
         <h2 id="h-targets" class="panel-title">Monitored systems</h2>
         <p class="sec-lede" style="margin-top:-6px">Each card is one HTTP health check against that system&rsquo;s own <code>/health</code> endpoint &mdash; liveness only, no credentials sent. Extensible: see &ldquo;add a system&rdquo; below.</p>
         <div class="targets-grid" id="targets-grid"></div>
