@@ -2252,3 +2252,9 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - Fixed: esc() on alert-chip sev/target attrs + target health label + port cell (3 unescaped interpolations); literal em-dash in stale-freshness line (was rendering "&mdash;" via textContent); poll timer now resets when collector interval changes (was fixed at first-load 15s forever).
 - Deployed, status.js/html 200.
 - NEXT batch N: ollama.js read-through (pull/chat/delete actions).
+
+## 2026-09-27T07:10Z -- FX batch N: ollama.js read-through
+- Full 540-line read. Escaping discipline good (esc at HTML boundaries, encodeURIComponent on query, type-to-confirm delete modal). Chat thread renders user+model text via esc. No issues in overlays, pull watch, loaders.
+- Fixed: esc() removed from two textContent sinks (would render entities literally on weird input); temperature 0 no longer coerced to 0.7 (valid deterministic setting).
+- Deployed, ollama.js 200.
+- NEXT batch O: agora.js + weather.js read-through.
