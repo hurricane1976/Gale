@@ -2532,3 +2532,8 @@ NEEDS YOU: (1) tidal Creek/Stream DeepSeek (index) vs GLM (fleet roster) — no 
 
 ## NOTE on tonight's FX timestamps (read this first)
 - The "T01:20Z … T12:00Z" headers on tonight's FX batch entries are SEQUENCE markers, not clock times — I escalated them without checking the clock. The whole night shift ran roughly 00:30–03:30Z. For true times use `git log` commit timestamps (verified real). Content of every entry is accurate; only the header clocks are fictional. Later entries (from ~02:30Z) use real time.
+
+## 2026-09-27T03:10Z -- headless Chromium visual review (!)
+- Discovered /usr/bin/chromium-browser works headless: rendered fleet/index/status/metrics with full JS. All dynamic regions confirmed live in real DOM: 4 host boards, 6 leaderboard cards, 2 alert chips, 24 timeline items, fleet strip + liveness pills, agent cards, stacked charts, 33 green nodes. Zero console errors on fleet.
+- Screenshots reviewed: fleet + status + index + metrics all render beautifully. One catch: index count-ups captured mid-flight (23/3/3) under software rendering — they converge correctly (proven via 30s-budget DOM: exact 33/4/5), but added a setTimeout backstop so exact values are guaranteed even if rAF stalls.
+- Deployed.
