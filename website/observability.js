@@ -169,7 +169,7 @@ function renderAll() {
   renderExplorer(DATA);
   renderSilent(DATA);
   refreshEffects();
-  setFresh("live", `live &middot; ${new Date(DATA.generated_at).toLocaleTimeString()}`);
+  setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
 
 async function load() {

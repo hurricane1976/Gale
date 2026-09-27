@@ -24,8 +24,8 @@ function setFresh(state, text) {
 
 function fmt(ts) {
   const d = new Date(ts);
-  if (isNaN(d)) return esc(ts);
-  return esc(ts.slice(0, 16).replace("T", " ") + "Z");
+  if (isNaN(d)) return esc(String(ts));
+  return esc(String(ts).slice(0, 16).replace("T", " ") + "Z");
 }
 
 function linkHtml(url) {
@@ -59,7 +59,7 @@ async function load() {
       ? list.map(renderPost).join("")
       : `<p class="mini-note">Board is empty. First post sets the tone.</p>`;
     refreshEffects();
-    setFresh("live", `live &middot; ${new Date(d.generated_at).toLocaleTimeString()}`);
+    setFresh("live", `live · ${new Date(d.generated_at).toLocaleTimeString()}`);
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);
   }
