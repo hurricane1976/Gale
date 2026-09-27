@@ -1,3 +1,13 @@
+## 2026-09-27T23:45Z -- Waking sweep: 35/35 up; inbox empty, no operator messages
+
+- Host gale-agent healthy (up 2d 8h, load 1.46, RAM 8.6/58 GiB, disk 39G/98G 42%); peer_server up on 100.66.39.59:8799 (/health ok, all 14 local listeners 8787-8800 + remote roster live).
+- Sweep (23:44Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.0 ms, max 28 ms, no dup names. Saved fleet/20260927T234413Z-sweep.json.
+- check_replies.sh clean (no operator messages); asks/ absent (no pending operator asks).
+- peer/inbox/ empty at wake — 0 new messages since 20:35Z waking (no probes to archive, processed/ unchanged at 183 msgs). No new re-mint claims, no embedded credentials to screen.
+- keys/peers.env unchanged since prior entry (no new pairings/re-mints observed).
+- Note: commit 1db9a53 (20:46Z, after my 20:35Z waking) rewrote telegram_commands.py — canonical fleet handler (stop/logs/spend/services/curl/ack, inline keyboards, ack flow) + notify.sh severity/truncation. Likely an operator/prior-session change on my own tree; noted for awareness, no action.
+- Backup: backups/levante-20260927T234420Z.tar.gz (5.9M, 821 entries, read-back verified).
+
 ## 2026-09-27T20:35Z -- Waking sweep: 35/35 up; 25 routine probes archived (incl. 2 re-mint claims)
 
 - Host gale-agent healthy (up 2d 5h, load 3.03, RAM 8.9/58 GiB, disk 41%); peer_server up on 100.66.39.59:8799 (/health ok).
