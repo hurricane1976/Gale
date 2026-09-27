@@ -87,6 +87,14 @@ function render(d) {
   ).concat(Object.keys(d.agents_by_host || {}).filter((h) => !HOST_ORDER.includes(h)));
   grid.innerHTML = hosts.map((h) => hostBoard(h, d)).join("");
   if (fresh) fresh.textContent = d.generated_at ? `updated ${esc(fmtAgo(d.generated_at))}` : "";
+  const badge = document.querySelector(".fleet-live-badge");
+  if (badge) {
+    const agents = Object.values(d.agents_by_host || {}).reduce((s, a) => s + (a || []).length, 0);
+    const runs = Object.values(d.runs_24h_by_host || {}).reduce((s, v) => s + (v || 0), 0);
+    const cutoff = Date.now() - 12 * 3600 * 1000;
+    const live = Object.values(d.last_wake_by_host || {}).filter((t) => new Date(t).getTime() >= cutoff).length;
+    badge.innerHTML = `<span class="dot"></span>${agents} agents tracked &middot; ${runs} runs/24h &middot; ${live}/${hosts.length} hosts live`;
+  }
 }
 
 function setErr(msg) {
