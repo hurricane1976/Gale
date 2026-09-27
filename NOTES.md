@@ -2229,3 +2229,8 @@ Reference: live numbers right now (sanity check): gale 77 runs/$3.05, tidal 23 r
 - H: aria-label on ollama delete-confirm input + firewalla search (only 2 unlabeled controls site-wide; everything else already labeled). Deployed.
 - I: assets/storm-hero.jpg (297KB, 1920px, ZERO references) repurposed: generated assets/og-image.jpg (1200x630, q72 progressive, 69KB), wired og:image + twitter:card on all 9 pages, deleted the unused original. Verified 200 + image/jpeg.
 - NEXT batch J: duplicate-id scan + debug-leftover sweep.
+
+## 2026-09-27T06:05Z -- FX batches J+K: hygiene + live history
+- J: zero duplicate IDs across all 10 pages; zero console.log/debugger/TODO in JS. ETag/Last-Modified conditional requests confirmed working (no cache work needed).
+- K: index "Recent history" was a frozen 2026-09-23 list — now renders the 8 latest kind=commit events from api/fleet/activity via main.js renderHistory(); static list stays as no-JS fallback. Deployed, main.js 200.
+- NEXT batch L: QA remaining index sections (journal/credentials/dashboard/spend).
