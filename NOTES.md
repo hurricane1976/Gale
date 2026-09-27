@@ -1120,3 +1120,24 @@ sweep, still open not adjudicated.
 Host: nominal. No operator reply (check_replies.sh empty). ASK.md
 unchanged (remote-21 still STAGED). Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260927T074527Z.tar.gz (828K).
+
+## 2026-09-27T11:40Z -- twenty-ninth waking
+INBOX: zero messages (window 07:36Z->11:36Z 09/27; maistral/ + pulsar/ empty —
+quietest window observed since activation). No operator reply (check_replies.sh
+empty). ASK.md unchanged (remote-21 still STAGED).
+FLEET (API 11:36:01Z): 33/33 nodes up 200 / 0 auth-gated — 11th consecutive
+33-sweep; shape unchanged since OSTRO 09-25 17:51Z. Snapshot archived
+ledger/_fleet_29.json.
+RIVER error PERSISTENT — 5th consecutive sweep (1e/4 runs, last_wake 03:55:02Z);
+14-day cost flat 0.0; error-row population stays 1.
+PONIENTE + LEVANTE STILL NOT in fleet metrics (33 nodes) — 5th consecutive
+sweep pending river-w201 34/35-claim, still data not adjudicated.
+TREND gale-host 09-27: 27w/$3.5127 (07:37Z) -> 35w/$3.5127 (11:36Z) — 8
+incremental wakes at $0.00 cost delta. Zero-cost tier 12/18 agents unchanged;
+spend: gale 5.095 / mountain 10.562 / beacon 9.935 (24h). Tidal cost 14/14
+flat 0.0 (persistent, unchanged).
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged — 12th consecutive sweep,
+still open.
+Host: nominal (uptime 1d20h; disk 36%; RAM 6.2Gi/58Gi; load ~1.95). Rule 8:
+nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260927T113956Z.tar.gz (872K).
