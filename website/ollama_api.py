@@ -143,6 +143,20 @@ def fetch_lines(path, body, timeout, on_line, stop_check=None):
 
 
 # --------------------------------------------------------------------------
+# Diagnostics error ring (ROADMAP-ollama #10): recent upstream failures,
+# distinguishable from plain down-events (which the sampler already tracks
+# as server_down). Surfaced at GET /errors, rendered as a tail panel.
+ERRLOG = deque(maxlen=100)
+ERRLOG_LOCK = threading.Lock()
+
+
+def note_error(kind, detail):
+    with ERRLOG_LOCK:
+        ERRLOG.appendleft({"ts": now_iso(), "kind": kind,
+                           "detail": str(detail)[:500]})
+
+
+# --------------------------------------------------------------------------
 # Rate limiting -- sliding window, per IP, plus global caps
 
 class RateLimiter:
@@ -482,7 +496,79 @@ def action_unload(model):
                              timeout=60)
     if status == 200:
         return 200, {"ok": True, "action": "unload", "model": model}
+    note_error("unload", (obj or {}).get("error", f"HTTP {status}"))
     return 502, {"ok": False, "error": (obj or {}).get("error", "upstream error")}
+
+
+KEEPALIVE_RE = re.compile(r"^-?\d+(ms|s|m|h)?$")
+BENCH_TIMEOUT_S = 600          # 27B on CPU: load alone can take minutes
+KEEPALIVE_TIMEOUT_S = 300
+
+
+def action_keepalive(model, keep_alive):
+    """Pin (-1), set a TTL ("2h", 3600, ...) or effectively unpin (a short
+    TTL) by loading the model with that keep_alive. Loading IS the warm-up
+    (ROADMAP-ollama #4): after this, a scheduled waking pays no load cost."""
+    if isinstance(keep_alive, str) and keep_alive.lower() in ("pin", "forever"):
+        keep_alive = -1
+    if isinstance(keep_alive, (int, float)) and not isinstance(keep_alive, bool):
+        ka = int(keep_alive)
+        if ka != -1 and not (1 <= ka <= 7 * 86400):
+            return 400, {"ok": False, "error": "numeric keep_alive must be -1 or 1..604800 seconds"}
+    elif isinstance(keep_alive, str):
+        if not KEEPALIVE_RE.match(keep_alive) or keep_alive not in ("-1",) and (
+                keep_alive.endswith(("ms", "s", "m", "h")) is False):
+            # bare numbers as strings are seconds; duration strings must carry a unit
+            try:
+                ka = int(keep_alive)
+                if ka != -1 and not (1 <= ka <= 7 * 86400):
+                    return 400, {"ok": False, "error": "keep_alive out of range"}
+            except ValueError:
+                return 400, {"ok": False, "error": "keep_alive must be -1, seconds, or like '30m'/'2h'"}
+    else:
+        return 400, {"ok": False, "error": "keep_alive must be -1, seconds, or like '30m'/'2h'"}
+    status, obj = fetch_json("/api/chat", method="POST",
+                             body={"model": model, "messages": [], "keep_alive": keep_alive},
+                             timeout=KEEPALIVE_TIMEOUT_S)
+    if status == 200:
+        return 200, {"ok": True, "action": "keep_alive", "model": model,
+                     "keep_alive": keep_alive}
+    note_error("keep_alive", (obj or {}).get("error", f"HTTP {status}"))
+    return 502, {"ok": False, "error": (obj or {}).get("error", "upstream error")}
+
+
+def action_unload_all():
+    snap = SNAP.get(build_snapshot)
+    if not snap.get("reachable"):
+        return 502, {"ok": False, "error": "Ollama unreachable"}
+    resident = [m["name"] for m in snap.get("models", []) if m.get("resident")]
+    results = []
+    for name in resident:
+        code, resp = action_unload(name)
+        results.append({"model": name, "ok": bool(resp.get("ok")),
+                        "error": resp.get("error")})
+    return 200, {"ok": all(r["ok"] for r in results), "action": "unload_all",
+                 "unloaded": len(resident), "results": results}
+
+
+BENCH_PROMPT = "In one or two sentences: what is a force-directed graph layout?"
+
+
+def action_benchmark(model):
+    """One measured 64-token generation (ROADMAP-ollama #9). The stats
+    breakdown (load vs prompt-eval vs eval tok/s) is what tells you the
+    server fell back to CPU (eval tok/s collapses) vs an actual hang."""
+    status, obj = fetch_json("/api/generate", method="POST",
+                             body={"model": model, "prompt": BENCH_PROMPT,
+                                   "stream": False,
+                                   "options": {"num_predict": 64}},
+                             timeout=BENCH_TIMEOUT_S)
+    if status != 200 or not isinstance(obj, dict):
+        note_error("benchmark", (obj or {}).get("error", f"HTTP {status}"))
+        return 502, {"ok": False, "error": (obj or {}).get("error", "upstream error")}
+    return 200, {"ok": True, "action": "benchmark", "model": model,
+                 "stats": chat_stats(obj),
+                 "done_reason": obj.get("done_reason")}
 
 
 def action_delete(model, confirm):
@@ -504,47 +590,101 @@ def action_pull(model):
     return 202, {"ok": True, "action": "pull", "model": model, "state": "running"}
 
 
-def chat_proxy(payload):
+# Chat option ranges -- shared by /chat and /chat/stream (ROADMAP-ollama
+# #3): num_ctx matters most since the server loads a default ctx that may
+# be far below what the model supports.
+CHAT_OPTS = {
+    "temperature": (0.0, 2.0, float),
+    "top_p": (0.0, 1.0, float),
+    "top_k": (1, 200, int),
+    "repeat_penalty": (0.0, 2.0, float),
+    "num_ctx": (512, 262144, int),
+    "num_predict": (1, MAX_NUM_PREDICT, int),
+    "seed": (0, 2**31 - 1, int),
+}
+
+
+def parse_chat_options(opts):
+    """Returns (options_dict, error_or_None). Unknown keys ignored."""
+    out = {}
+    if not isinstance(opts, dict):
+        return out, None
+    for key, (lo, hi, cast) in CHAT_OPTS.items():
+        if key not in opts or opts[key] is None or opts[key] == "":
+            continue
+        try:
+            val = cast(opts[key])
+        except (TypeError, ValueError):
+            return None, f"{key} must be a number"
+        if not (lo <= val <= hi):
+            return None, f"{key} must be between {lo} and {hi}"
+        out[key] = val
+    return out, None
+
+
+def validate_chat_payload(payload):
+    """Returns (model, messages, options, error_response_or_None)."""
     model = payload.get("model")
     messages = payload.get("messages")
+    if not isinstance(model, str) or not MODEL_RE.match(model):
+        return None, None, None, (400, {"ok": False, "error": "invalid model name"})
     if not isinstance(messages, list) or not messages:
-        return 400, {"ok": False, "error": "messages must be a non-empty list"}
+        return None, None, None, (400, {"ok": False, "error": "messages must be a non-empty list"})
     if len(messages) > MAX_MESSAGES:
-        return 400, {"ok": False, "error": f"max {MAX_MESSAGES} messages"}
+        return None, None, None, (400, {"ok": False, "error": f"max {MAX_MESSAGES} messages"})
     cleaned = []
     for m in messages:
         if not isinstance(m, dict):
-            return 400, {"ok": False, "error": "each message must be an object"}
+            return None, None, None, (400, {"ok": False, "error": "each message must be an object"})
         role, content = m.get("role"), m.get("content")
         if role not in ("system", "user", "assistant"):
-            return 400, {"ok": False, "error": "role must be system|user|assistant"}
+            return None, None, None, (400, {"ok": False, "error": "role must be system|user|assistant"})
         if not isinstance(content, str):
-            return 400, {"ok": False, "error": "message content must be a string"}
+            return None, None, None, (400, {"ok": False, "error": "message content must be a string"})
         if len(content) > MAX_MESSAGE_CHARS:
-            return 400, {"ok": False, "error": f"message content capped at {MAX_MESSAGE_CHARS} chars"}
+            return None, None, None, (400, {"ok": False, "error": f"message content capped at {MAX_MESSAGE_CHARS} chars"})
         cleaned.append({"role": role, "content": content})
+    options, err = parse_chat_options(payload.get("options") or {})
+    if err:
+        return None, None, None, (400, {"ok": False, "error": err})
     snap = SNAP.get(build_snapshot)
     if not snap.get("reachable"):
-        return 502, {"ok": False, "error": "Ollama unreachable"}
+        note_error("chat", "Ollama unreachable")
+        return None, None, None, (502, {"ok": False, "error": "Ollama unreachable"})
     if not any(m["name"] == model for m in snap["models"]):
-        return 400, {"ok": False, "error": f"model {model} is not installed"}
-    opts = payload.get("options") or {}
-    options = {}
-    if "temperature" in opts:
-        try:
-            options["temperature"] = max(0.0, min(2.0, float(opts["temperature"])))
-        except (TypeError, ValueError):
-            return 400, {"ok": False, "error": "temperature must be a number"}
-    if "num_predict" in opts and opts["num_predict"] is not None:
-        try:
-            options["num_predict"] = max(1, min(MAX_NUM_PREDICT, int(opts["num_predict"])))
-        except (TypeError, ValueError):
-            return 400, {"ok": False, "error": "num_predict must be an integer"}
+        return None, None, None, (400, {"ok": False, "error": f"model {model} is not installed"})
+    return model, cleaned, options, None
+
+
+def chat_stats(obj, t0=None):
+    st = {
+        "prompt_eval_count": obj.get("prompt_eval_count"),
+        "eval_count": obj.get("eval_count"),
+        "eval_duration_ns": obj.get("eval_duration"),
+        "prompt_eval_duration_ns": obj.get("prompt_eval_duration"),
+        "total_duration_ns": obj.get("total_duration"),
+        "load_duration_ns": obj.get("load_duration"),
+    }
+    try:
+        if st["eval_count"] and st["eval_duration_ns"]:
+            st["eval_tok_s"] = round(st["eval_count"] / (st["eval_duration_ns"] / 1e9), 2)
+        if st["prompt_eval_count"] and st["prompt_eval_duration_ns"]:
+            st["prompt_eval_tok_s"] = round(st["prompt_eval_count"] / (st["prompt_eval_duration_ns"] / 1e9), 2)
+    except (TypeError, ZeroDivisionError):
+        pass
+    return st
+
+
+def chat_proxy(payload):
+    model, cleaned, options, err = validate_chat_payload(payload)
+    if err:
+        return err
     body = {"model": model, "messages": cleaned, "stream": False}
     if options:
         body["options"] = options
     status, obj = fetch_json("/api/chat", method="POST", body=body, timeout=CHAT_TIMEOUT_S)
     if status != 200 or not isinstance(obj, dict):
+        note_error("chat", (obj or {}).get("error", f"HTTP {status}"))
         return 502, {"ok": False, "error": (obj or {}).get("error", "upstream error")}
     msg = obj.get("message", {})
     return 200, {
@@ -552,14 +692,7 @@ def chat_proxy(payload):
         "message": {"role": msg.get("role", "assistant"),
                     "content": msg.get("content", "")},
         "done_reason": obj.get("done_reason"),
-        "stats": {
-            "prompt_eval_count": obj.get("prompt_eval_count"),
-            "eval_count": obj.get("eval_count"),
-            "eval_duration_ns": obj.get("eval_duration"),
-            "prompt_eval_duration_ns": obj.get("prompt_eval_duration"),
-            "total_duration_ns": obj.get("total_duration"),
-            "load_duration_ns": obj.get("load_duration"),
-        },
+        "stats": chat_stats(obj),
     }
 
 
@@ -657,21 +790,117 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/pull/status":
                 with PULL_LOCK:
                     return self._send(200, dict(PULL))
+            if path == "/errors":
+                with ERRLOG_LOCK:
+                    return self._send(200, {"ok": True, "errors": list(ERRLOG)[:50],
+                                            "generated_at": now_iso()})
+            if path == "/snapshot/stream":
+                return self._serve_snapshot_sse()
             return self._send(404, {"error": "not found"})
         except Exception as e:
             return self._send(500, {"error": f"{type(e).__name__}: {e}"})
 
+    def _serve_snapshot_sse(self):
+        """Live snapshot pushes (fleet_api's _serve_sse pattern): emit when
+        the snapshot's interesting content changes, heartbeat otherwise.
+        Excludes generated_at/latency from the signature so natural jitter
+        doesn't count as a change."""
+        def core():
+            s = SNAP.get(build_snapshot)
+            return {k: v for k, v in s.items() if k not in ("generated_at", "latency_ms")}
+        last_sig, started = None, time.time()
+        try:
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Accel-Buffering", "no")
+            self.end_headers()
+            while time.time() - started < 3600:
+                waited = 0.0
+                while waited < 15:
+                    sig = json.dumps(core(), sort_keys=True)
+                    if sig != last_sig:
+                        last_sig = sig
+                        body = json.dumps(SNAP.get(build_snapshot))
+                        self.wfile.write(f"data: {body}\n\n".encode())
+                        self.wfile.flush()
+                        break
+                    time.sleep(5)
+                    waited += 5
+                else:
+                    self.wfile.write(b": heartbeat\n\n")
+                    self.wfile.flush()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+
     def do_POST(self):
         path = urlsplit(self.path).path
         try:
-            if path == "/chat":
+            if path in ("/chat", "/chat/stream"):
                 if self._rate_limited("chat"):
                     return
                 payload = self._read_json()
                 if payload is None:
                     return self._send(400, {"ok": False, "error": "JSON body up to 4096 bytes required"})
-                code, resp = chat_proxy(payload)
-                return self._send(code, resp)
+                model, cleaned, options, err = validate_chat_payload(payload)
+                if err:
+                    return self._send(err[0], err[1])
+                body = {"model": model, "messages": cleaned}
+                if options:
+                    body["options"] = options
+                if path == "/chat":
+                    body["stream"] = False
+                    status, obj = fetch_json("/api/chat", method="POST", body=body, timeout=CHAT_TIMEOUT_S)
+                    if status != 200 or not isinstance(obj, dict):
+                        note_error("chat", (obj or {}).get("error", f"HTTP {status}"))
+                        return self._send(502, {"ok": False, "error": (obj or {}).get("error", "upstream error")})
+                    msg = obj.get("message", {})
+                    return self._send(200, {
+                        "ok": True,
+                        "message": {"role": msg.get("role", "assistant"),
+                                    "content": msg.get("content", ""),
+                                    "thinking": msg.get("thinking", "")},
+                        "done_reason": obj.get("done_reason"),
+                        "stats": chat_stats(obj),
+                    })
+                # /chat/stream: token-by-token SSE proxy of Ollama's NDJSON
+                # stream (ROADMAP-ollama #1) -- a 27B on CPU can take minutes;
+                # token deltas + a live tok/s beat dead silence.
+                body["stream"] = True
+                try:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+                    self.send_header("Cache-Control", "no-store")
+                    self.send_header("X-Accel-Buffering", "no")
+                    self.end_headers()
+                except (BrokenPipeError, ConnectionResetError):
+                    return
+                t0 = time.monotonic()
+
+                def emit(obj):
+                    self.wfile.write(("data: " + json.dumps(obj) + "\n\n").encode())
+                    self.wfile.flush()
+
+                def on_line(rec):
+                    if rec.get("error"):
+                        emit({"error": rec["error"]})
+                        return
+                    msg = rec.get("message") or {}
+                    chunk = {"content": msg.get("content", ""),
+                             "thinking": msg.get("thinking", ""),
+                             "done": bool(rec.get("done"))}
+                    if rec.get("done"):
+                        chunk["stats"] = chat_stats(rec)
+                        chunk["done_reason"] = rec.get("done_reason")
+                    emit(chunk)
+
+                ok = fetch_lines("/api/chat", body, CHAT_TIMEOUT_S * 4, on_line)
+                try:
+                    emit({"done": True, "ok": bool(ok),
+                          "wall_ms": round((time.monotonic() - t0) * 1000)})
+                except (BrokenPipeError, ConnectionResetError):
+                    pass
+                return
             if path == "/action":
                 if self._rate_limited("action"):
                     return
@@ -680,19 +909,29 @@ class Handler(BaseHTTPRequestHandler):
                     return self._send(400, {"ok": False, "error": "JSON body up to 4096 bytes required"})
                 action = payload.get("action")
                 model = payload.get("model")
-                if action not in ("unload", "pull", "delete"):
-                    return self._send(400, {"ok": False, "error": "action must be unload|pull|delete"})
+                if action == "unload_all":
+                    code, resp = action_unload_all()
+                    return self._send(code, resp)
+                if action not in ("unload", "pull", "delete", "keep_alive", "benchmark"):
+                    return self._send(400, {"ok": False, "error": "action must be unload|pull|delete|keep_alive|benchmark|unload_all"})
                 if not isinstance(model, str) or not MODEL_RE.match(model):
                     return self._send(400, {"ok": False, "error": "invalid model name"})
                 if action == "unload":
                     code, resp = action_unload(model)
                 elif action == "delete":
                     code, resp = action_delete(model, payload.get("confirm"))
+                elif action == "keep_alive":
+                    code, resp = action_keepalive(model, payload.get("keep_alive"))
+                elif action == "benchmark":
+                    code, resp = action_benchmark(model)
                 else:
                     code, resp = action_pull(model)
                 return self._send(code, resp)
             return self._send(404, {"error": "not found"})
+        except (BrokenPipeError, ConnectionResetError):
+            pass
         except Exception as e:
+            note_error("api", f"{type(e).__name__}: {e}")
             return self._send(500, {"error": f"{type(e).__name__}: {e}"})
 
 

@@ -605,6 +605,7 @@ const CHIP_TARGETS = {
   agent: "fleet.html#hosts", errors: "fleet.html#hosts",
   cost: "fleet.html#cost-trend",
   wakeup: "fleet.html#activity", quarantine: "fleet.html#activity",
+  ollama: "ollama.html",
 };
 
 function hostAlerts(d) {
@@ -621,6 +622,10 @@ function hostAlerts(d) {
   for (const sv of d.services || []) {
     if (sv.state !== "active") a.push({ sev: "crit", kind: "service", text: `${sv.unit} ${sv.state}` });
   }
+  // ollama down/up (the collector probes /api/version; "up but slow" is the
+  // ollama page's diagnostics panel's job — this is binary reachability)
+  const o = d.ollama || {};
+  if (o.reachable === false) a.push({ sev: "crit", kind: "ollama", text: "ollama unreachable" });
   return a;
 }
 

@@ -100,8 +100,63 @@ function renderVitals() {
     statCard("Installed", models.length, models.length ? `${fmtGB(s.disk_bytes)} on disk` : "none"),
     statCard("API latency", s && s.latency_ms != null ? `${s.latency_ms} ms` : "–", h ? `p50 ${h.latency_ms.p50 ?? "–"} · p95 ${h.latency_ms.p95 ?? "–"} ms (24h)` : ""),
     statCard("Uptime", h && h.uptime_pct != null ? `${h.uptime_pct}%` : "–", h ? `${h.count} samples · ${h.hours}h window` : ""),
+    `<button id="unload-all" class="btn ol-btn ol-btn-xs" type="button" ${resident.length ? "" : "disabled"}>Unload all resident</button>`,
   ].join("");
   refreshEffects();
+}
+
+/* ---------------- diagnostics (ROADMAP-ollama #6/#7) ----------------
+   Latency percentiles + failure streak + time-since-last-success from the
+   30s sampler history, plus a 24h availability strip. This is the "is it
+   hung or just slow" panel. */
+function renderDiagnostics() {
+  const h = HIST;
+  const grid = $("diag-grid");
+  if (!grid) return;
+  if (!h || !h.series || !h.series.length) {
+    grid.innerHTML = `<p class="mini-note">no samples yet — the sampler fills in every 30s.</p>`;
+    return;
+  }
+  const s = h.series;
+  const lat = s.filter((x) => x.reachable).map((x) => x.latency_ms).sort((a, b) => a - b);
+  const pct = (p) => lat.length ? lat[Math.min(lat.length - 1, Math.round(p * (lat.length - 1)))] : null;
+  // consecutive failures from the end of the sample window
+  let streak = 0;
+  for (let i = s.length - 1; i >= 0 && !s[i].reachable; i--) streak++;
+  const lastOk = [...s].reverse().find((x) => x.reachable);
+  const lastOkAgo = lastOk ? fmtAgo(lastOk.ts) : "never";
+  const maxLat = lat.length ? lat[lat.length - 1] : null;
+  grid.innerHTML = [
+    statCard("Latency p50", pct(0.5) != null ? `${pct(0.5)} ms` : "–", "24h median /api/version"),
+    statCard("Latency p95", pct(0.95) != null ? `${pct(0.95)} ms` : "–", maxLat != null ? `max ${maxLat} ms` : ""),
+    statCard("Failure streak", streak ? `${streak} samples (${(streak * 0.5).toFixed(1)}m)` : "none", streak >= 4 ? "server looks DOWN now" : "consecutive unreachable samples", streak >= 4 ? "crit" : "ok"),
+    statCard("Last success", lastOkAgo, lastOk ? `at ${esc(lastOk.ts.slice(11, 19))}Z · v${esc(lastOk.version || "?")}` : "", streak ? "warn" : "ok"),
+    statCard("Availability", h.uptime_pct != null ? `${h.uptime_pct}%` : "–", `${h.count} samples over ${h.hours}h`, h.uptime_pct != null && h.uptime_pct < 95 ? "warn" : "ok"),
+  ].join("");
+  // 24h availability strip: 96 buckets of 15 minutes
+  const strip = $("uptime-strip");
+  const nowMs = Date.now();
+  const BUCKETS = 96, SPAN = 24 * 3600 * 1000, bw = SPAN / BUCKETS;
+  const cells = Array.from({ length: BUCKETS }, () => ({ ok: 0, down: 0 }));
+  for (const x of s) {
+    const age = nowMs - new Date(x.ts).getTime();
+    const idx = BUCKETS - 1 - Math.floor(Math.max(0, Math.min(SPAN - 1, age)) / bw);
+    if (x.reachable) cells[idx].ok++; else cells[idx].down++;
+  }
+  strip.innerHTML = cells.map((c) => {
+    const total = c.ok + c.down;
+    const lvl = !total ? "empty" : c.down === 0 ? "ok" : c.ok === 0 ? "crit" : "warn";
+    return `<i class="up-cell up-${lvl}" title="${lvl}${total ? ` · ${c.ok}/${total} ok` : " · no data"}"></i>`;
+  }).join("");
+}
+
+function fmtAgo(ts) {
+  const s = Math.max(0, Math.round((Date.now() - new Date(ts).getTime()) / 1000));
+  if (!isFinite(s)) return "–";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
 }
 
 function heat(v, warn, crit) {
@@ -300,7 +355,10 @@ function renderModels() {
     const acts = [
       `<button class="btn ol-btn ol-btn-xs" data-act="show" data-model="${esc(m.name)}">Show</button>`,
       `<button class="btn ol-btn ol-btn-xs" data-act="play" data-model="${esc(m.name)}">Playground</button>`,
-      m.resident ? `<button class="btn ol-btn ol-btn-xs" data-act="unload" data-model="${esc(m.name)}">Unload</button>` : "",
+      m.resident
+        ? `<button class="btn ol-btn ol-btn-xs" data-act="unload" data-model="${esc(m.name)}">Unload</button>`
+        : `<button class="btn ol-btn ol-btn-xs" data-act="keep_alive" data-model="${esc(m.name)}" title="load now and hold in VRAM (keep_alive -1)">Load+pin</button>`,
+      `<button class="btn ol-btn ol-btn-xs" data-act="benchmark" data-model="${esc(m.name)}" title="measured 64-token generation: load vs prompt-eval vs eval tok/s">Bench</button>`,
       `<button class="btn ol-btn ol-btn-xs ol-btn-danger" data-act="delete" data-model="${esc(m.name)}">Delete</button>`,
     ].filter(Boolean).join(" ");
     return `<tr>
@@ -328,11 +386,49 @@ $("models-table").addEventListener("click", async (e) => {
   if (act === "play") {
     const sel = $("chat-model");
     if ([...sel.options].some((o) => o.value === model)) sel.value = model;
+    loadPreset();
     $("chat-input").focus();
     $("chat-thread").scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "nearest" });
     return;
   }
+  if (act === "benchmark") {
+    BUSY = true;
+    note(`benchmarking ${model} (loads if needed, 64 tokens, up to a few minutes on CPU)…`);
+    const res = await postAction({ action: "benchmark", model });
+    BUSY = false;
+    if (!res.ok) { note(`benchmark failed: ${res.error}`, "err"); return; }
+    const st = res.stats || {};
+    note([
+      st.load_duration_ns ? `load ${(st.load_duration_ns / 1e9).toFixed(1)}s` : null,
+      st.prompt_eval_tok_s ? `prompt ${st.prompt_eval_tok_s} tok/s` : null,
+      st.eval_tok_s ? `eval ${st.eval_tok_s} tok/s (${st.eval_count} tok)` : null,
+      st.total_duration_ns ? `total ${(st.total_duration_ns / 1e9).toFixed(1)}s` : null,
+    ].filter(Boolean).join(" · ") || "benchmark done", "ok");
+    return;
+  }
+  if (act === "keep_alive") {
+    // non-destructive (loads + pins) -- no confirm dialog needed
+    BUSY = true;
+    note(`loading ${model} and pinning in VRAM (keep_alive -1)…`);
+    const res = await postAction({ action: "keep_alive", model, keep_alive: -1 });
+    BUSY = false;
+    if (res.ok) note(`${model} loaded + pinned`, "ok");
+    else note(`keep_alive failed: ${res.error}`, "err");
+    await loadSnap();
+    return;
+  }
   askConfirm(act, model);
+});
+
+$("vitals-grid").addEventListener("click", async (e) => {
+  if (!e.target.closest("#unload-all") || BUSY) return;
+  BUSY = true;
+  note("unloading all resident models…");
+  const res = await postAction({ action: "unload_all" });
+  BUSY = false;
+  if (res.ok) note(`unloaded ${res.unloaded} model(s)`, "ok");
+  else note(`unload_all failed: ${res.error}`, "err");
+  await loadSnap();
 });
 
 /* ---------------- show drawer ---------------- */
@@ -414,13 +510,75 @@ function refreshChatModelSelect() {
 function renderThread() {
   const el = $("chat-thread");
   if (!THREAD.length) { el.innerHTML = `<p class="mini-note">Send a message to start the thread.</p>`; return; }
-  el.innerHTML = THREAD.map((m, i) => {
+  el.innerHTML = THREAD.map((m) => {
     if (m.role === "user") return `<div class="ol-bubble ol-bubble-user"><span class="ol-who">you</span>${esc(m.content)}</div>`;
+    const think = m.thinking ? `<details class="ol-think"><summary>reasoning</summary><div>${esc(m.thinking)}${m.streaming && !m.content ? '<span class="ol-cursor">▍</span>' : ""}</div></details>` : "";
     const st = m.stats ? `<span class="ol-stats">${esc(m.stats)}</span>` : "";
-    return `<div class="ol-bubble ol-bubble-ai"><span class="ol-who">${esc(m.model || "assistant")}</span>${esc(m.content)}${st}</div>`;
+    return `<div class="ol-bubble ol-bubble-ai"><span class="ol-who">${esc(m.model || "assistant")}</span>${think}${esc(m.content)}${m.streaming && m.content ? '<span class="ol-cursor">▍</span>' : ""}${st}</div>`;
   }).join("");
   el.scrollTop = el.scrollHeight;
 }
+
+function chatStatsLine(st, doneReason, wallMs) {
+  if (!st) return null;
+  const outTok = st.eval_count, secs = (st.eval_duration_ns || 0) / 1e9;
+  const tps = outTok && secs ? `${(outTok / secs).toFixed(1)} tok/s` : null;
+  const bits = [
+    doneReason && doneReason !== "stop" ? `stopped: ${doneReason}` : null,
+    st.prompt_eval_count != null ? `${st.prompt_eval_count} in` : null,
+    outTok != null ? `${outTok} out` : null,
+    tps,
+    wallMs != null ? `${(wallMs / 1000).toFixed(1)}s` : (st.total_duration_ns ? `${(st.total_duration_ns / 1e9).toFixed(1)}s` : null),
+  ].filter(Boolean).join(" · ");
+  return bits || null;
+}
+
+/* Chat options: temperature/max-tokens are first-class inputs; the rest
+   live in the details drawer. Non-empty values only; presets per model in
+   localStorage. */
+function collectChatOptions() {
+  const num = (id) => {
+    const v = $(id).value.trim();
+    return v === "" ? null : parseFloat(v);
+  };
+  const opts = {};
+  const pairs = [
+    ["temperature", "chat-temp"], ["num_predict", "chat-numpred"],
+    ["top_p", "chat-topp"], ["top_k", "chat-topk"],
+    ["repeat_penalty", "chat-repp"], ["num_ctx", "chat-numctx"],
+    ["seed", "chat-seed"],
+  ];
+  for (const [key, id] of pairs) {
+    const v = num(id);
+    if (v != null && Number.isFinite(v)) opts[key] = v;
+  }
+  return opts;
+}
+
+const PRESET_KEY = (model) => `gale-ollama-preset:${model}`;
+
+function loadPreset() {
+  const model = $("chat-model").value;
+  let p = null;
+  try { p = JSON.parse(localStorage.getItem(PRESET_KEY(model)) || "null"); } catch { /* ignore */ }
+  const map = { temperature: "chat-temp", num_predict: "chat-numpred", top_p: "chat-topp",
+    top_k: "chat-topk", repeat_penalty: "chat-repp", num_ctx: "chat-numctx", seed: "chat-seed" };
+  for (const [key, id] of Object.entries(map)) $(id).value = p && p[key] != null ? p[key] : "";
+  $("preset-note").textContent = p ? `preset loaded for ${model}` : "";
+}
+
+$("chat-save-preset").addEventListener("click", () => {
+  const model = $("chat-model").value;
+  if (!model) return;
+  localStorage.setItem(PRESET_KEY(model), JSON.stringify(collectChatOptions()));
+  $("preset-note").textContent = `preset saved for ${model}`;
+});
+$("chat-clear-preset").addEventListener("click", () => {
+  const model = $("chat-model").value;
+  localStorage.removeItem(PRESET_KEY(model));
+  $("preset-note").textContent = "preset cleared";
+});
+$("chat-model").addEventListener("change", loadPreset);
 
 async function sendChat() {
   if (BUSY) return;
@@ -432,38 +590,64 @@ async function sendChat() {
   $("chat-send").disabled = true;
   input.value = "";
   THREAD.push({ role: "user", content: text });
+  const reply = { role: "assistant", content: "", thinking: "", model, streaming: true };
+  THREAD.push(reply);
   renderThread();
   const messages = [];
   const sys = $("chat-system").value.trim();
   if (sys) messages.push({ role: "system", content: sys });
-  for (const m of THREAD) messages.push({ role: m.role, content: m.content });
+  for (const m of THREAD) {
+    if (m === reply) continue;
+    messages.push({ role: m.role, content: m.content });
+  }
+  let tick = null;
   try {
-    const r = await fetch("api/ollama/chat", {
+    const r = await fetch("api/ollama/chat/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model, messages, options: {
-        temperature: Number.isFinite(parseFloat($("chat-temp").value)) ? parseFloat($("chat-temp").value) : 0.7,
-        num_predict: parseInt($("chat-numpred").value, 10) || 512,
-      } }),
+      body: JSON.stringify({ model, messages, options: collectChatOptions() }),
     });
-    const d = await r.json();
-    if (!d.ok) throw new Error(d.error || `HTTP ${r.status}`);
-    const st = d.stats || {};
-    const outTok = st.eval_count, secs = (st.eval_duration_ns || 0) / 1e9;
-    const tps = outTok && secs ? `${(outTok / secs).toFixed(1)} tok/s` : null;
-    const bits = [
-      d.done_reason && d.done_reason !== "stop" ? `stopped: ${d.done_reason}` : null,
-      st.prompt_eval_count != null ? `${st.prompt_eval_count} in` : null,
-      outTok != null ? `${outTok} out` : null,
-      tps,
-      st.total_duration_ns ? `${(st.total_duration_ns / 1e9).toFixed(1)}s` : null,
-    ].filter(Boolean).join(" · ");
-    THREAD.push({ role: "assistant", content: (d.message && d.message.content) || "", model, stats: bits || null });
+    if (!r.ok || !r.body) {
+      const d = await r.json().catch(() => ({}));
+      throw new Error(d.error || `HTTP ${r.status}`);
+    }
+    const reader = r.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "";
+    const paint = () => { renderThread(); tick = null; };
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let idx;
+      while ((idx = buf.indexOf("\n\n")) !== -1) {
+        const frame = buf.slice(0, idx);
+        buf = buf.slice(idx + 2);
+        if (!frame.startsWith("data: ")) continue;
+        let ev;
+        try { ev = JSON.parse(frame.slice(6)); } catch { continue; }
+        if (ev.error) throw new Error(ev.error);
+        if (ev.content) reply.content += ev.content;
+        if (ev.thinking) reply.thinking += ev.thinking;
+        if (ev.done && ev.stats) {
+          reply.streaming = false;
+          reply.stats = chatStatsLine(ev.stats, ev.done_reason, ev.wall_ms) || null;
+          paint();
+          continue;
+        }
+        // throttle repaints to ~30/s while streaming
+        if (!tick) tick = setTimeout(paint, 33);
+      }
+    }
+    reply.streaming = false;
+    renderThread();
   } catch (e) {
-    THREAD.push({ role: "assistant", content: `⚠ ${String(e.message || e)}`, model, stats: "failed" });
+    reply.streaming = false;
+    reply.content = reply.content || `⚠ ${String(e.message || e)}`;
+    reply.stats = "failed";
+    renderThread();
   }
   BUSY = false;
   $("chat-send").disabled = false;
-  renderThread();
 }
 
 $("chat-send").addEventListener("click", sendChat);
@@ -517,11 +701,26 @@ async function loadHist() {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     HIST = await r.json();
     renderVitals();
+    renderDiagnostics();
     renderVramChart();
     renderLatencyChart();
     renderLanes();
     renderEvents();
   } catch { /* snapshot poll will surface feed errors */ }
+}
+
+/* ---------------- upstream error log (ROADMAP-ollama #10) ---------------- */
+async function loadErrlog() {
+  const el = $("errlog");
+  if (!el) return;
+  try {
+    const r = await fetch("api/ollama/errors", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d = await r.json();
+    el.innerHTML = (d.errors || []).length
+      ? d.errors.map((e) => `<div class="silent-err"><strong>${esc(e.kind)}</strong> at ${esc(e.ts)} &mdash; <code>${esc(e.detail)}</code></div>`).join("")
+      : `<p class="mini-note">No upstream errors recorded.</p>`;
+  } catch { /* transient */ }
 }
 
 async function loadGpu() {
@@ -537,6 +736,30 @@ async function loadGpu() {
 
 document.getElementById("board").hidden = false;
 await Promise.all([loadSnap(), loadHist(), loadGpu()]);
+loadPreset();
+loadErrlog();
 setInterval(loadSnap, POLL_SNAP_MS);
 setInterval(loadHist, POLL_HIST_MS);
 setInterval(loadGpu, 15000);
+setInterval(loadErrlog, 30000);
+
+/* Live push (fleet SSE pattern): snapshot deltas arrive the moment they
+   change; the 10s poll above stays as the fallback (no EventSource / proxy
+   that won't stream). A stream that errors 3x closes for good. */
+if (typeof EventSource !== "undefined") {
+  let sseFailures = 0;
+  const es = new EventSource("api/ollama/snapshot/stream");
+  es.onmessage = (e) => {
+    sseFailures = 0;
+    try {
+      SNAP = JSON.parse(e.data);
+      $("srv-url").textContent = SNAP.url || "192.168.1.197:11434";
+      renderVitals();
+      renderModels();
+      if (HIST) renderLanes();
+      setFresh(SNAP.reachable ? "live" : "stale",
+        SNAP.reachable ? `live · v${SNAP.version} · ${SNAP.latency_ms} ms` : "server unreachable");
+    } catch { /* malformed push -- next poll corrects */ }
+  };
+  es.onerror = () => { if (++sseFailures >= 3) es.close(); };
+}

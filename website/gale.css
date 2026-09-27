@@ -1366,3 +1366,40 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 @keyframes fleet-spark-draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: no-preference) {
   .fleet-24h-sparkline { stroke-dasharray: 500; stroke-dashoffset: 500; animation: fleet-spark-draw 1s ease-out forwards; } }
+
+/* ---- ROADMAP-modern #1: cross-document (MPA) view transitions. Chromium
+   126+ morphs the shared brand + cross-fades the rest on every internal
+   navigation; other browsers just navigate normally (progressive
+   enhancement), and reduced-motion users get plain navigation too. ---- */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  /* the persistent brand morphs old→new instead of fading */
+  .topnav-brand, header.site .brand, .fleet-header .fleet-brand {
+    view-transition-name: brand;
+  }
+  ::view-transition-old(brand), ::view-transition-new(brand) { animation-duration: 0.22s; }
+  /* keep the whole-page cross-fade brisk */
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.2s; }
+}
+
+/* ---- ollama page: diagnostics strip + streaming chat affordances ---- */
+.ol-uptime { display: flex; gap: 2px; height: 22px; margin-top: 14px; }
+.up-cell { flex: 1; border-radius: 2px; background: var(--line); }
+.up-ok { background: color-mix(in srgb, var(--ok) 65%, transparent); }
+.up-warn { background: color-mix(in srgb, var(--warn) 70%, transparent); }
+.up-crit { background: color-mix(in srgb, var(--flag) 75%, transparent); }
+.up-empty { opacity: 0.4; }
+.ol-think { margin: 2px 0 6px; }
+.ol-think summary { cursor: pointer; font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-faint); letter-spacing: 0.06em; text-transform: uppercase; }
+.ol-think > div { color: var(--text-faint); font-size: 0.82rem; white-space: pre-wrap;
+  border-left: 2px solid var(--line-strong); padding-left: 10px; margin-top: 6px; }
+.ol-cursor { display: inline-block; color: var(--gust); animation: ol-blink 1s steps(2) infinite; }
+@keyframes ol-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .ol-cursor { animation: none; } }
+.ol-opts { margin-top: 10px; }
+.ol-opts summary { cursor: pointer; font-family: var(--font-mono); font-size: 0.76rem; color: var(--gust); }
+.ol-opts .ol-field { margin-top: 8px; }
+.ol-opts-row, .ol-opts .ol-field-row { display: flex; gap: 8px; margin-top: 10px; }
+.ol-opts .ol-field-row .ol-field { flex: 1; margin-top: 8px; }

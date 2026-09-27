@@ -22,6 +22,9 @@
   <link rel="stylesheet" href="gale.css" />
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="dist/ollama.js"></script>
+  <script type="speculationrules">
+    {"current": [{"where": {"href_matches": "/*.html"}, "eagerness": "moderate"}]}
+  </script>
 </head>
 <body class="ops-body">
 <div class="grain" aria-hidden="true"></div>
@@ -101,6 +104,13 @@
         <div id="events" class="ol-events"></div>
       </section>
 
+      <section class="reveal ops-panel span-full" aria-labelledby="h-diag">
+        <h2 class="panel-title" id="h-diag">Diagnostics <span>when it hangs &mdash; latency profile, failure streak, 24h availability</span></h2>
+        <div class="vitals-grid" id="diag-grid"></div>
+        <div class="ol-uptime" id="uptime-strip" role="img" aria-label="24 hour availability strip"></div>
+        <p class="mini-note" id="diag-note">Each cell = 15 min of samples. Green = all reachable, amber = partial, red = server unreachable for the whole bucket.</p>
+      </section>
+
       <section class="reveal ops-panel span-full" aria-labelledby="h-models">
         <h2 class="panel-title" id="h-models">Installed models <span><span id="model-count">&ndash;</span> models &middot; <span id="disk-total">&ndash;</span> on disk</span></h2>
         <div class="fw-table-scroll">
@@ -122,7 +132,7 @@
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-playground">
-        <h2 class="panel-title" id="h-playground">Prompt playground <span>non-streaming &middot; replies counted server-side</span></h2>
+        <h2 class="panel-title" id="h-playground">Prompt playground <span>token-streaming &middot; thinking models show reasoning dimmed</span></h2>
         <div class="ol-chat-grid">
           <div class="ol-chat-side">
             <label class="ol-field"><span>model</span>
@@ -138,7 +148,25 @@
               <label class="ol-field"><span>max tokens</span>
                 <input id="chat-numpred" type="number" min="1" max="2048" value="512" />
               </label>
-            </div>
+            </details>
+            <details class="ol-opts">
+              <summary>more inference options</summary>
+              <div class="ol-field-row">
+                <label class="ol-field"><span>top_p</span><input id="chat-topp" type="number" min="0" max="1" step="0.05" placeholder="0.9" /></label>
+                <label class="ol-field"><span>top_k</span><input id="chat-topk" type="number" min="1" max="200" step="1" placeholder="40" /></label>
+              </div>
+              <div class="ol-field-row">
+                <label class="ol-field"><span>repeat_penalty</span><input id="chat-repp" type="number" min="0" max="2" step="0.05" placeholder="1.1" /></label>
+                <label class="ol-field"><span>seed</span><input id="chat-seed" type="number" min="0" step="1" placeholder="random" /></label>
+              </div>
+              <label class="ol-field"><span>num_ctx <em>(load-time context width)</em></span>
+                <input id="chat-numctx" type="number" min="512" max="262144" step="512" placeholder="server default" /></label>
+              <div class="ol-field-row">
+                <button id="chat-save-preset" class="btn ol-btn ol-btn-xs" type="button">Save preset for this model</button>
+                <button id="chat-clear-preset" class="btn ol-btn ol-btn-xs" type="button">Clear preset</button>
+              </div>
+              <p class="mini-note" id="preset-note"></p>
+            </details>
             <button id="chat-clear" class="btn ol-btn" type="button">Clear thread</button>
             <p class="mini-note">Replies carry token counts &mdash; the only per-request token metrics Ollama exposes (callers see their own; the server keeps no global counters, so fleet traffic isn't itemized here).</p>
           </div>
@@ -152,6 +180,11 @@
             </div>
           </div>
         </div>
+      </section>
+
+      <section class="reveal ops-panel span-full" aria-labelledby="h-errlog">
+        <h2 class="panel-title" id="h-errlog">Upstream error log <span>the proxy's recent failures &mdash; &ldquo;up but erroring&rdquo; vs &ldquo;down&rdquo;</span></h2>
+        <div id="errlog" class="ol-events"><p class="mini-note">No upstream errors recorded.</p></div>
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-wired">
