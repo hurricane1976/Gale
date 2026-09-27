@@ -141,7 +141,7 @@ function renderPorts(d) {
   const labeled = ports.filter((p) => p.label);
   const other = ports.filter((p) => !p.label);
   const row = (p) => `<tr>
-      <td><code>${p.port}</code></td>
+      <td><code>${esc(String(p.port))}</code></td>
       <td><code>${esc(p.proc)}</code></td>
       <td>${p.label ? `<span class="pill" data-level="ok">${esc(p.label)}</span>` : `<span class="mono-dim">&ndash;</span>`}</td>
       <td class="mono-dim">${p.addrs.map(esc).join(", ")}</td>
@@ -168,7 +168,7 @@ function renderTargets(d) {
       return `<div class="target-card" data-level="${lvl}">
         <div class="target-top">
           <span class="target-name">${esc(t.name)}</span>
-          <span class="pill" data-level="${lvl}">${HEALTH_LABEL[t.health] || t.health}</span>
+          <span class="pill" data-level="${lvl}">${esc(HEALTH_LABEL[t.health] || t.health)}</span>
         </div>
         <div class="mono-dim">${esc(t.addr)} &middot; ${esc(t.kind)}</div>
         <div class="mono-dim">latency ${lat}${t.reported_name ? ` &middot; reports as ${esc(t.reported_name)}` : ""}</div>
@@ -526,6 +526,7 @@ function render(d) {
   board.hidden = false;
   document.getElementById("interval").textContent = d.collector_interval_s;
   pollMs = Math.max(5000, (d.collector_interval_s || 15) * 1000);
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = setInterval(tick, pollMs); }
   renderVitals(d);
   renderHostInfo(d);
   renderCores(d);
@@ -544,7 +545,7 @@ let lastGeneratedAt = null;
 function updateFreshness(generatedAt) {
   lastGeneratedAt = generatedAt;
   const ageS = (Date.now() - new Date(generatedAt).getTime()) / 1000;
-  if (ageS > pollMs / 1000 * 4) setFresh("stale", `stale &mdash; last update ${fmtAgo(generatedAt)}`);
+  if (ageS > pollMs / 1000 * 4) setFresh("stale", `stale — last update ${fmtAgo(generatedAt)}`);
   else setFresh("live", `updated ${fmtAgo(generatedAt)}`);
 }
 
@@ -589,7 +590,7 @@ function renderAlertStrip(all) {
   if (!all.length) { stripEl.hidden = true; return; }
   stripEl.hidden = false;
   chipsEl.innerHTML = all.map((a) =>
-    `<button type="button" class="alert-chip alert-chip--${a.sev}" data-target="${CHIP_TARGETS[a.kind] || ""}" data-kind="${esc(a.kind)}" title="${esc(a.kind)}">
+    `<button type="button" class="alert-chip alert-chip--${esc(a.sev)}" data-target="${esc(CHIP_TARGETS[a.kind] || "")}" data-kind="${esc(a.kind)}" title="${esc(a.kind)}">
       <i class="alert-dot" aria-hidden="true"></i>
       <span class="alert-text">${esc(a.text)}</span>
     </button>`
