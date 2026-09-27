@@ -831,12 +831,15 @@ async function initPushBell() {
       if (test) test.hidden = !sub;
       // diagnostic: confirm the ACTIVE service worker actually has the push
       // handler (a stale pre-push sw would silently swallow deliveries)
-      if (navigator.serviceWorker.controller) {
+      // ping the ACTIVE worker via the registration (not .controller, which
+      // is null on the first load after a SW activates — that race produced
+      // a misleading "sw ? ✗" right after every update)
+      if (reg.active) {
         const pong = await new Promise((resolve) => {
           const ch = new MessageChannel();
           ch.port1.onmessage = (e) => resolve(e.data || {});
           setTimeout(() => resolve({ version: "?", push: false }), 1500);
-          navigator.serviceWorker.controller.postMessage("gale:ping", [ch.port2]);
+          reg.active.postMessage("gale:ping", [ch.port2]);
         });
         const t = document.getElementById("push-test");
         if (t) {
