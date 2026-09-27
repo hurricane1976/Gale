@@ -197,6 +197,7 @@ async function openFromHash() {
   if (findAgent(name)) openDrilldown(name);
 }
 openFromHash();
+window.addEventListener("hashchange", openFromHash);
 
 async function tryOpen(name) {
   openDrilldown(name);

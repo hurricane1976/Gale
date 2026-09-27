@@ -112,7 +112,7 @@ function leaderboard(d) {
       : (a.daily_wakings_14d || []);
     return `<article class="lb-card" data-glow data-level="${errs > 0 ? "warn" : "ok"}" style="--lc:${hue(h)}">` +
       `<header class="lb-head"><span class="lb-rank">#${i + 1}</span>` +
-      `<h3 class="lb-name">${esc(a.agent || "?")}</h3>` +
+      `<h3 class="lb-name"><a href="#agent-${encodeURIComponent(a.agent || "")}">${esc(a.agent || "?")}</a></h3>` +
       (h ? `<span class="lb-host">${esc(h)}</span>` : "") +
       (errs > 0 ? `<span class="lb-err">${errs} err</span>` : "") + `</header>` +
       `<div class="lb-cost">${esc(money(a.cost_24h))}<span class="lb-cost-sub">24h</span></div>` +

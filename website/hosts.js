@@ -65,7 +65,7 @@ function hostBoard(h, d) {
   return `<article class="host-board" data-glow data-host="${esc(h)}" data-level="${lvl}" style="--hb:${meta.hue}">
     <header class="hb-head">
       <span class="hb-dot" aria-hidden="true"></span>
-      <h3 class="hb-name">${esc(h)}</h3>
+      <h3 class="hb-name"><a href="#hosts">${esc(h)}</a></h3>
       <span class="hb-note">${esc(meta.note)}</span>
       <span class="hb-lvl">${errs > 0 ? `${errs} error${errs === 1 ? "" : "s"}` : series.length ? "active" : "quiet"}</span>
     </header>

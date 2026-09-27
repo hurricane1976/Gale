@@ -1317,3 +1317,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .ops-table tbody tr { transition: background-color 0.2s; }
 .ops-table tbody tr:hover { background-color: rgba(160, 185, 230, 0.05); }
 @media (prefers-reduced-motion: reduce) { .js main { animation: none; } }
+
+/* ---- batch AB: card-title link keeps card typography ---- */
+.fleet-24h-name a { color: inherit; text-decoration: none; }
+.fleet-24h-name a:hover, .fleet-24h-name a:focus-visible { color: var(--gust); text-decoration: underline; text-underline-offset: 3px; }

@@ -708,7 +708,7 @@ async function renderFleet24h() {
     return `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
       <header class="fleet-24h-head">
         <span class="fleet-24h-dot" aria-hidden="true"></span>
-        <strong class="fleet-24h-name">${esc(h)}</strong>
+        <strong class="fleet-24h-name"><a href="fleet.html#hosts">${esc(h)}</a></strong>
         <span class="fleet-24h-note">${esc(meta.note)} · ${n} agents</span>
       </header>
       <div class="fleet-24h-stats">

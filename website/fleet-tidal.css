@@ -521,3 +521,7 @@ html { scroll-behavior: smooth; }
   .hb-spark-line, .ct-line, .lb-spark-line, .dd-spark polyline {
     stroke-dasharray: 700; stroke-dashoffset: 700; animation: spark-draw 1.1s ease-out forwards; } }
 @media (prefers-reduced-motion: reduce) { .js .fleet-main { animation: none; } }
+
+/* ---- batch AB: card-title links keep card typography ---- */
+.hb-name a, .lb-name a { color: inherit; text-decoration: none; }
+.hb-name a:hover, .lb-name a:hover, .hb-name a:focus-visible, .lb-name a:focus-visible { color: var(--tide-bright); text-decoration: underline; text-underline-offset: 3px; }
