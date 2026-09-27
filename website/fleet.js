@@ -39,6 +39,9 @@ topo.querySelectorAll(".topo-node").forEach((node) => {
   node.addEventListener("focus", () => showNode(node));
   node.addEventListener("blur", showDefault);
   node.addEventListener("click", () => showNode(node));
+  node.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showNode(node); }
+  });
 });
 
 /* live mesh status line: from the fleet activity feed, with the static
