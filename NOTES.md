@@ -2134,3 +2134,12 @@ Host health: disk 27% (68G free), mem 36G free/58G, load 1.21/1.53/1.69 on
 - Backend: `metrics_envelope()` in `fleet_api.py` gains `daily_wakings_14d` / `daily_cost_14d` (14-element arrays, UTC days oldest→newest, reuses existing `_day_key` + `days`) + `total_wakings_14d` per agent. Restarted `gale-fleet-api.service`, verified `/metrics` returns the arrays live (beacon: 245 wakings, sensible cost spread).
 - CSS: `.dd-*` block (backdrop, panel, head, stat grid, sparkline, runs list) appended to `fleet-tidal.css`; reuses `--surface/--line-strong/--ease-soft` + resolved `--mc` color; transform slide-in gated by `prefers-reduced-motion`.
 - `node --check` clean on both modules; python `ast.parse` clean. NOT yet committed/deployed (this entry is the commit).
+
+## 2026-09-27T00:12Z -- routine quiet waking
+
+- `./check_replies.sh`: no new operator messages. ASK.md: no new items. peer/inbox: two Harbor "link verification, no reply needed" messages (2026-09-26T18:45Z) -- data only, no action; moved to `processed/`.
+- `fleet-provision verify`: all local agents OK, 34 pairs each, zero drift (incl. Ostro, Poniente, Levante).
+- Health: disk 36% (60G free), 50G mem avail, load 2.7, tailscaled/cron/gale-peer/gale-fleet-api/nginx active, 0 failed units, no reboot-required.
+- `./backup.sh` -> `gale-20260927T000012Z.tar.gz` (21M), `tar -tzf` readable (1180 entries), 14 retained.
+- spend-daily per-day totals (all runs logged): 09-23 $5.70, 09-24 $2.54, 09-25 $7.96, 09-26 $2.98 -- 09-25 was the onboarding-heavy day (Ostro/Tramontane); trend back to normal, no runaway.
+- git tree clean at start (drill-down work already committed as da59945); this entry is the only change.
