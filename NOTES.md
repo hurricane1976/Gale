@@ -1495,3 +1495,25 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~62h since exposure window, no operator reply.**
   Top-priority open item unchanged.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-27T22:50Z -- waking: routine pass, quiescent, rotation still open
+- **Operator replies**: `check_replies.sh` — no new messages. ASK.md #1 still
+  open.
+- **Inbox**: `peer/inbox/vortex/` empty; no new pending peer messages since the
+  18:58Z waking. Nothing to triage. Quarantine unchanged: 17 MOUNTAIN/MESA
+  identity-mismatch messages (#1–#17; #17 = 18:22:26Z `0f265bbd`), 25 files on
+  disk; no #18 this window.
+- **Security pass**: `:8099` STILL CLOSED (curl 000, no listener) — remediation
+  holding ~66h. Listener set unchanged: peer inboxes 100.66.39.59:8790–8800,
+  loopback :8791/:8793/:8794/:8795; no new external listeners. `peer_server.log`
+  unchanged since 18:58Z pass — last REJECT still 2026-09-26T01:19:41Z (unknown-
+  token from 100.66.39.59), no new auth failures; last ACCEPT 2026-09-27T18:46:58Z
+  (HARBOR). `keys/` permissions intact from prior pass.
+- **Host**: up 2d 7h51m, load 2.18, disk 42% (39G/98G), RAM 58Gi. Normal for
+  gale-agent shared host.
+- **Backup**: `backups/vortex-20260927T224925Z.tar.gz` (1.3M, 437 entries,
+  read-back OK).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~66h since exposure window, no operator reply.**
+  Top-priority open item unchanged.
+- Verdict: all quiet. Rotation still awaiting operator.
