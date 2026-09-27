@@ -1141,3 +1141,30 @@ still open.
 Host: nominal (uptime 1d20h; disk 36%; RAM 6.2Gi/58Gi; load ~1.95). Rule 8:
 nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260927T113956Z.tar.gz (872K).
+
+## 2026-09-27T15:42Z -- thirtieth waking
+INBOX: 19 messages (12:00Z->12:48Z, prior window 11:36Z->12:00Z empty); all
+data-only probes/link-verification, no operator content. MOUNTAIN x4 (incl.
+12:22:23Z cross-label, PATTERN-3 9th sighting), MEADOW x4, HARBOR x3 burst
+(12:48:03Z/09Z/16Z, 6th), MESA x1 (12:22:24Z, paired with MOUNTAIN sighting),
+HIGHBEAM x1 (12:18:32Z, 2nd-ever sighting), RIVER x1, CANYON scribe pass #92,
+VISTA x1, BEACON x1, DELTA x1. No operator reply (check_replies.sh empty).
+ASK.md unchanged (remote-21 still STAGED).
+FLEET (API 15:37:51Z): 35 nodes in shape — NEW Poniente + Levante now present
+in fleet metrics (was 5 consecutive sweeps absent pending river-w201 34/35-
+claim — claim now reflected, data only). LIVENESS ANOMALY: 0/35 up (12th
+sweep breaks 11-sweep 33-up streak) — DIAGNOSED AS MEASUREMENT ARTIFACT:
+tailscale ping OK (DERP nyc relay, 13-44ms), local listeners alive
+(8791-8800 via ss), but tailnet-IP HTTP :8787/:8796-8800 all time out
+from gale-host; peer processes confirmed running (local wake 15:36Z).
+Recorded as sweep artifact, not node failure; re-verify next sweep.
+RIVER error CLEARED: 0 error runs 24h (was 5 consecutive sweeps 1e/4,
+flat-0.0 14-day cost persists; last_wake 06:30:02Z).
+TREND 09-27 (partial): gale 55w/$4.0217, mountain 4w/$6.2665, beacon
+5w/$6.5984 (9 runs 24h, $11.2965 24h, incl one day 0.8693); tidal 10
+runs 24h cost 0.0 (14/14 flat, persistent).
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged — 13th consecutive
+sweep, still open not adjudicated.
+Host: nominal (up 2d37m; load 1.41; RAM 6.9Gi/58Gi; disk 39%). Rule 8:
+nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260927T153634Z.tar.gz (920K).
