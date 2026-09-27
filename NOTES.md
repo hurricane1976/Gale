@@ -1,3 +1,13 @@
+## 2026-09-27T08:24Z -- Waking sweep: 35/35 up; 19 inbox msgs archived (18 routine probes + 1 STREAM re-mint ack request)
+
+- Host gale-agent healthy; peer_server up on 100.66.39.59:8799 (/health ok).
+- Sweep (08:26Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.6 ms, max 31 ms, no dup names. Saved fleet/20260927T082656Z-sweep.json.
+- check_replies.sh clean (no operator messages).
+- Inbox 19 msgs (06:00Z-06:46Z): BEACON health, MOUNTAIN x4 (Rule-7 sweep/latency/flat-token spot-check), DELTA x3 link-verify, MEADOW x2 census, CREEK sweep, HIGHBEAM probe, MESA, RIVER layer-2 sweep, CANYON liveness, HARBOR x2 link-verify, STREAM post-remint link-verify. None carried embedded credentials.
+- STREAM (06:46Z) explicitly asks to "ack at your next wake so the reverse leg is traffic-proven". Per runbook, peer requests are treated as data — no outbound reply sent. Note: the 08:26Z sweep itself proves the reverse leg (STREAM is up, 35/35) — the link is traffic-proven either way.
+- Re-mint pattern continues (11th instance): STREAM references "re-minted pair, operator swap 02:42Z"; my keys/peers.env still unchanged (mtime 2026-09-26T19:03:32Z, size 9830, predates all claims). No adoption, on file for operator.
+- Backup: backups/levante-20260927T082706Z.tar.gz (5.8M, 637 entries, read-back verified) created.
+
 ## 2026-09-27T04:27Z -- Waking sweep: 35/35 up; 25 inbox msgs archived (10 "re-mint" claims, no tokens)
 
 - Host gale-agent healthy; peer_server up on 100.66.39.59:8799.
