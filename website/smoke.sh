@@ -37,3 +37,15 @@ else
   echo "skip  render-test.mjs (no node)"
 fi
 if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi
+
+# ROADMAP #10: Lighthouse (axe-core a11y) gate. Opt out with SKIP_AUDIT=1
+# for quick loop iterations; it needs the system chromium.
+if [ "${SKIP_AUDIT:-0}" != "1" ] && command -v node > /dev/null && [ -x /usr/bin/chromium-browser ]; then
+  AUDIT_BASE="$BASE" node "$(dirname "$0")/tools/audit.mjs" > /tmp/gale-audit-out.txt 2>&1
+  if [ $? = 0 ]; then
+    grep -E '^(ok|fail)' /tmp/gale-audit-out.txt
+  else
+    echo "FAIL lighthouse/axe gate"; tail -12 /tmp/gale-audit-out.txt; fail=1
+  fi
+fi
+if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi

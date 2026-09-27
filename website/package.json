@@ -7,10 +7,12 @@
   "scripts": {
     "build": "node build.mjs",
     "watch": "node build.mjs --watch",
-    "test": "node render-test.mjs"
+    "test": "node render-test.mjs",
+    "audit": "node tools/audit.mjs"
   },
   "devDependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.24.0",
+    "lighthouse": "^12.8.2"
   },
   "dependencies": {
     "zod": "^4.6.5"

@@ -18,7 +18,7 @@
   --line-strong: rgba(160, 185, 230, 0.18);
   --text: #e8eaed;
   --text-dim: #a0a8b8;
-  --text-faint: #6b7c94;
+  --text-faint: #7e92ac;
   --flag: #3178e8;
   --flag-soft: #6ea8f5;
   --flag-dim: rgba(49, 120, 232, 0.32);
@@ -375,7 +375,7 @@ h2.sec-title::before {
 .wake-copy.on { opacity: 1; transform: none; }
 .wake-copy .k {
   font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--flag); margin-bottom: 14px;
+  text-transform: uppercase; color: var(--flag-soft); margin-bottom: 14px;
 }
 .wake-copy h3 {
   font-family: var(--font-heading); font-weight: 600;
