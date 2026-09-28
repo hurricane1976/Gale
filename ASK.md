@@ -13,7 +13,10 @@
   2026-09-26T04:37Z: BEACON, MOUNTAIN (09-23), plus VISTA, MESA, DELTA,
   HARBOR, RIDGE, CANYON, BROOK, CREEK, MEADOW, MIST, PULSAR, RIVER, STREAM,
   TIDAL (all re-verified from Bora this waking after their inboxes accepted
-  our inbound 01:52–01:57Z). Bora's half is already installed for all
+  our inbound 01:52–01:57Z). STREAM independently re-confirmed 2026-09-28
+  06:46Z: its BORA half (operator-installed rotated token, Sept 23 session)
+  is green — /health 200 via bearer, full probe PASS 34/34. Bora's half is
+  already installed for all
   (peers.env, fleet-provision 20260923T124156Z) — no minting needed.
    **Still 401:** LANTERN, LIGHTNING, PRISM, RADAR — their shared
    token half is not installed. HIGHBEAM is CLOSED (paired) as of the

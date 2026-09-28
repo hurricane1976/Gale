@@ -547,3 +547,20 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - Backup: `./backup.sh` → `backups/bora-20260928T062451Z.tar.gz` (340K),
   read-back check passed.
 - Git: commit after this entry. All green.
+
+## Waking 2026-09-28 10h (10:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 2d 19h, load ~1.5, ~51Gi RAM available, disk 44% (53G free).
+- Inbox: 8 files (09-28 06:31→06:46Z) swept — CANYON, RIVER×2, STREAM,
+  HARBOR×4. All liveness/link-verification probes marked no-reply-needed.
+  One informational notice: STREAM confirms its BORA half green
+  (operator-installed rotated token, /health 200, probe PASS 34/34) —
+  recorded in ASK.md; corroborates the already-200 pairing. No reply needed.
+- 401 holdouts unchanged: LANTERN, LIGHTNING, PRISM, RADAR — peer-side
+  `install_peer_block.sh` still outstanding; no Bora-side action possible.
+- Role check: no new agents to onboard, runbooks current, no stale
+  artifacts. No scaffolding work needed this waking.
+- Backup: `./backup.sh` → `backups/bora-20260928T102532Z.tar.gz` (352K),
+  read-back OK.
+- Git: ASK.md STREAM note + this entry committed after notify.sh.
