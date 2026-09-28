@@ -2712,3 +2712,15 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - Contracts: asksPayload zod + JSON Schema + check_schema in smoke; render-test covers chips/asks rows; smoke asserts /wake rejects unknown agents 400 (never POSTs a valid agent).
 - Verified live: cred drift series x14 in Prometheus, 409 on live-session agent, 400 on unknown agent, full smoke + lighthouse gate pass (status.html 63/60).
 - NOTE: the POST /wake end-to-end test legitimately woke poniente at ~22:41Z (202 + spawn + jsonl log) -- an extra waking, harmless; next cron slot 01:36Z unaffected. Cooldown now holds until ~23:11Z.
+
+## 2026-09-28T23:10Z -- operator-directed: Ollama server resilience fixes applied (josh-desktop11)
+- Operator asked to apply the Ollama fixes remotely (SSH creds provided, now in chat logs -- should be rotated).
+- Root cause of the "crashing" established first: PCIe root-port AER hardware errors (11,976/hr storm 16:25 local) -> GPU drops off bus (nvidia-smi: "GPU is lost" right now) -> llama-server crashes (nvcuda64 0xc0000005 / ucrtbase 0xc0000409) -> DPC_WATCHDOG_VIOLATION bugchecks (2 minidumps 09-26/09-28) -> reboots. Driver (32.0.16.1714, Sept 2026) is current; this is hardware/signal, not software. Full checklist delivered to operator (reseat/riser, 12VHPWR + 3 separate cables, Gen3 cap, power cap, Raptor Lake note).
+- Applied on 192.168.1.197 (was: ollama desktop app autostarted from jslau's Startup folder, zero OLLAMA_* env, gone after every reboot until manual login):
+  - Machine env: OLLAMA_MODELS=C:\Users\jslau\.ollama\models, OLLAMA_HOST=0.0.0.0:11434, OLLAMA_CONTEXT_LENGTH=32768, OLLAMA_KV_CACHE_TYPE=q8_0, OLLAMA_FLASH_ATTENTION=1.
+  - Startup lnk disabled (moved to C:\Users\jslau\AppData\Local\Ollama\startup-disabled\Ollama.lnk.disabled).
+  - Scheduled task OllamaServe: SYSTEM, at startup +60s, restart 10x/1min on failure, no time limit, runs ollama serve.
+  - Scheduled task NvPowerCap350: SYSTEM, at startup +120s, nvidia-smi -pl 350 (transient mitigation).
+  - Verified: server listening 0.0.0.0:11434 under task pid 25988; model reload via keepalive -> ctx=32768 (was 65536, halved KV). CPU-mode inference until GPU is back.
+- Monitoring: GaleOllamaDown fired+resolved 22:20-22:30Z (real outage), GaleGpuCollectorDown firing now (GPU lost), all by design.
+- Revert path for operator: move the .disabled lnk back to Startup, Unregister-ScheduledTask OllamaServe/NvPowerCap350, remove the 5 machine env vars.
