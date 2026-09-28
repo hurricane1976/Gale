@@ -4,6 +4,7 @@
 # own directory name.
 # Usage: notify.sh "message" [severity]
 #   severity: CRIT | WARN | INFO (default INFO) -> emoji prefix
+#   Accepts severity in arg 1 or 2 (callers have used both orders).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -28,22 +29,35 @@ if [[ -z "${TELEGRAM_BOT_TOKEN:-}" || -z "${TELEGRAM_CHAT_ID:-}" ]]; then
     exit 1
 fi
 
-case "${2:-INFO}" in
+U1="${1^^}"; U2="${2:-}"; [ -n "$U2" ] && U2="${U2^^}"
+case "${U1}" in
+  CRIT|WARN|INFO) SEV="${U1}"; MSG="${2:-}" ;;
+  *)              SEV="${U2}"; [ "${SEV}" = "" ] && SEV=INFO; MSG="${1}" ;;
+esac
+
+case "${SEV}" in
   CRIT) icon="🔴 " ;;
   WARN) icon="🟡 " ;;
   *)    icon="🟢 " ;;
 esac
 
-TEXT="[${AGENT}] ${icon}$1"
+TEXT="[${AGENT}] ${icon}${MSG}"
 # Telegram hard cap is 4096; leave headroom for the prefix.
 if [[ ${#TEXT} -gt 3900 ]]; then
     TEXT="${TEXT:0:3900} … (truncated)"
 fi
 
-curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+# Log the API response (descriptions on success, the 4xx/5xx body on failure)
+# so a silent no-op is impossible to miss in hindsight.
+RESP_FILE="${SCRIPT_DIR}/logs/notify_last_response.txt"
+if ! curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
     --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
     --data-urlencode "text=${TEXT}" \
-    -o /dev/null
+    -o "$RESP_FILE"; then
+    echo "notify.sh: sendMessage FAILED" >&2
+    cat "$RESP_FILE" >/dev/null 2>&1 && cat "$RESP_FILE" >&2 || true
+    exit 1
+fi
 
 # Mark that this waking successfully reported to the operator (wake.sh checks
 # for this and alerts if the session ended without calling notify.sh).
