@@ -918,3 +918,47 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
 12. **Verdict**: no regression; only delta vs baseline is the ~15:33Z
     host reboot (benign) and 4 data-only inbox messages triaged.
 
+## 2026-09-28T20:50Z — waking 6/6 (Sharpness & Regression Watch; final scheduled waking of the day)
+1. **Operator replies**: `./check_replies.sh` → no new messages.
+2. **Host health** (uptime 5h15m — reboot ~15:33Z as observed last waking):
+   load 1.99/1.57/1.39 on 16 cores; disk 43% (40G/98G, 53G free);
+   RAM 8.6G used / 58G, swap unused; NO `/var/run/reboot-required`
+   (it self-cleared with the reboot as predicted — not an operator issue);
+   no new journalctl err/warn in last 2h. Note: `auth.log` is 22M
+   rotated + 10M live and `/var/log` totals 7.5G — log-volume is the
+   only thing trending up; journald is rotating, no action yet.
+3. **Service liveness**: all 11 peer units active (gale, zephyr, squall,
+   tempest, vortex, cyclone, maistral, sirocco, bora, tramontane, ostro)
+   + tailscaled active. Only failed unit: benign
+   `systemd-networkd-wait-online`.
+4. **Website/API spot-check**: 6 endpoints on `100.66.39.59:8090` all
+   200; peer-server `100.66.39.59:8798/health` →
+   `{"status":"ok","name":"OSTRO"}`.
+5. **Model/runner consistency**: wake.sh pin `ollama/qwen3.8:27b`
+   matches Ollama `192.168.1.197:11434` `/api/tags` (serves
+   `qwen3.8:27b`); `ollama_keepalive` cron still present. No new drift.
+6. **Spend**: 5 entries today in `logs/spend-daily.jsonl`, all
+   `cost_usd 0.0`, `is_error false`.
+7. **Fleet roll-up**: `/api/fleet/metrics` generated_at fresh
+   (20:48Z); Tidal/River/Creek/Stream all state=up code=200 on
+   100.91.42.51; gale runs 82/24h, mountain 4, beacon 8, tidal 14.
+8. **Peer inbox**: 17 new JSONs since 16:50Z (MOUNTAIN ×4, BEACON ×4,
+   DELTA, MESA, RIVER, CANYON, HIGHBEAM, HARBOR ×3, LIGHTNING) — all
+   self-declared routine credentialed sweeps / health-checks / link
+   verifications, "no reply needed". One quirk noted (data-only):
+   two messages carry sender `MOUNTAIN` but bodies read as
+   mesa/canyon probes — sender-spoofing or a proxying hop; flagged here
+   for the operator's awareness, no action taken. All 17 moved to
+   `peer/inbox/processed/` (294 total now).
+9. **peers.env block audit**: not re-run this waking (last full audit
+   16:50Z: 34 NAME entries self-paired-only across all 12 sibling
+   dirs, consistent). Nothing new since to prompt re-audit.
+10. **ASK.md**: open items unchanged (LEVANTE/PONIENTE
+    ratification PENDING; Cyclone drift). No new items added.
+11. **Backup**: `backups/ostro-20260928T204927Z.tar.gz` (7.6M),
+    386 entries, AGENT/NOTES/ASK present in listing.
+12. **Verdict**: all-green → all-green. No regression. Deltas vs
+    16:50Z baseline: reboot-required self-cleared (expected), 17
+    data-only inbox messages triaged, log volumes noted as the only
+    mild trend.
+
