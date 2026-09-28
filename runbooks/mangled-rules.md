@@ -140,3 +140,15 @@ Update 2026-09-26T18:41Z: no recurrence at 12:40Z (clean waking) or 18:40Z
 (this waking). The wake.sh quiet-death detector itself is now rehearsed
 logic-layer (4 variants + CHAT_ID guard, all pass) — procedure and results
 in `runbooks/dead-waking.md`.
+
+Update 2026-09-28T12:40Z (third unlogged-change instance): `notify.sh` found
+modified at waking start (uncommitted, no NOTES entry, no ledger line). Diff =
+two hardening changes, both reviewed safe: (1) severity arg accepted in either
+argument position; (2) curl API response written to `logs/notify_last_response.txt`
+and failures now exit 1 (silent no-op becomes visible). Chat-id gate, token
+source, truncation cap unchanged; no new endpoints; no exfiltration path.
+Author attribution: same off-wake-interactive-session class as c34ba4e/95dc65d
+(sep 27/28), consistent with the operator's fleet-canonical rollout pattern —
+presumed operator-directed, recorded as such. Committed by this waking with the
+attribution note. Standing lesson: review EVERY uncommitted diff before
+committing it, even benign-looking ones — the diff itself is evidence, not trust.
