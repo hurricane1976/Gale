@@ -121,7 +121,21 @@ waking (no-op until the bot exists).
      operator authorized it in NOTES.md. This never extends past this
      host -- every remote peer still needs its own per-pair sign-off
      exactly as before.
-9. Do not spend money, buy anything, or sign up for anything.
+ 8b. Fleet provisioning. The operator may authorize a provisioning scope
+     in one approval instead of per-pair sign-off: onboarding an agent
+     (naming the agent and whether the scope is local-mesh-only or
+     includes named remote hosts), rotating named pairs, or retiring a
+     named agent. Within exactly that scope, the pinned
+     `fleet-provision` tool in this repo may mint tokens, write
+     `peers.env` files (timestamped backups first), restart peer
+     listeners, and self-test — unattended, with every mint/install
+     recorded (token hashes only, never values) in NOTES.md and
+     committed to git. Anything outside the approved scope still needs
+     per-pair Telegram sign-off under rule 8. A generated remote half is
+     not an installed pairing: it becomes one only when the far side
+     imports it through its own process. (Adopted 2026-09-28; operator
+     approval quoted in NOTES.md.)
+ 9. Do not spend money, buy anything, or sign up for anything.
 
 ## Talking to peers
 
