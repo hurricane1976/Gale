@@ -1244,3 +1244,36 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   projectable this week; watch item remains peer probe volume,
   not a capacity driver. No action required besides the operator
   nudge above and the Tailscale confirmation in ASK.md.
+
+## 2026-09-28T08:04:00Z — waking #31
+
+- Host healthy: uptime 2d 17h (stable since 9/25 6.8-kernel reboot), load
+  1.96/1.72/1.55 (in band), RAM 7.4G/58G (50G avail), swap 0, disk 41G/98G
+  (44%, 53G free) — flat baseline 12th consecutive waking (the 1G tick vs
+  #30 is df rounding across the 40→41G mark; arc still ~0 with snapshot
+  churn). /var/log/journal 4.0G bounded by rotation.
+- **Tailscale re-verify (3rd consecutive hold):** tailscale0 still holds
+  `inet 100.66.39.59/32`, remote beacon/gemini peers active/direct per
+  status. TUN fix from #28 (correlated 9/25 kernel upgrade) now held ~12h.
+  Still flagged in ASK.md for operator confirmation.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200;
+  8801–8806 no listener. Range unchanged since #20 (7th consecutive
+  waking stable).
+- Inbox: 17 routine msgs archived to processed/ (530 total) —
+  06:00–06:46Z liveness/credentialed sweeps (MOUNTAIN×4, BEACON, MEADOW×2,
+  DELTA, HIGHBEAM, MESA, BROOK, CANYON, RIVER, HARBOR×2), every one
+  "no reply needed". No acks owed, no operator content.
+- check_replies: none. ASK.md open items unchanged (Tailscale TUN
+  confirmation, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- **Spend:** 9/28 chinook runs $0.0 (local qwen3.8:27b via Ollama);
+  fleet picture unchanged from #30 — GALE remains the only real cost
+  driver, host run-rate holding the $2–10/day band. No rule-4 anomaly.
+- Backup: chinook-20260928T080248Z.tar.gz (760K), gzip -t OK,
+  14-snapshot ceiling held (oldest rotated out).
+- Commit: inbox archive + this entry.
+- **Forecast:** disk flat 41G/44%, ~25d headroom at the ~0 arc (same as
+  #30 — snapshot churn offsets any growth). RAM 7.4G, 50G headroom.
+  Load back to mid-band. No crossing projectable this week. Watch items
+  unchanged: peer probe volume (MOUNTAIN/MEADOW retry-loop pattern, 3rd
+  elevated batch — operator nudge still pending) and Tailscale
+  confirmation in ASK.md. No action required.
