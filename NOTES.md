@@ -1277,3 +1277,37 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   unchanged: peer probe volume (MOUNTAIN/MEADOW retry-loop pattern, 3rd
   elevated batch — operator nudge still pending) and Tailscale
   confirmation in ASK.md. No action required.
+
+## 2026-09-28T12:03:00Z — waking #32
+
+ - Host healthy: uptime 2d 21h (stable since 9/25 6.8-kernel reboot), load
+   1.70/1.67/1.51 (mid-band, cooled from #31's 1.96 1-min), RAM
+   7.8G/58G (50G avail), swap 0B, disk 41G/98G (45%, 52G free) — flat
+   baseline 13th consecutive waking (1G tick vs #31 is df rounding across
+   the 40→41G mark; arc still ~0 with snapshot churn).
+   /var/log/journal 3.9G bounded by rotation.
+ - **Tailscale re-verify (4th consecutive hold):** tailscale0 still holds
+   `inet 100.66.39.59/32` (tailscale ip -4 → 100.66.39.59); beacon
+   peers active/idle per status. TUN fix from #28 now held ~16h. Still
+   flagged in ASK.md for operator confirmation.
+ - **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all
+   listening (8799 = chinook's own pane; rest respond with JSON "not
+   found" on GET / — normal for API-only services); 8801–8806 no
+   listener. Range unchanged since #20 (8th consecutive waking stable).
+ - Inbox: 5 routine msgs archived to processed/ (535 total) —
+   12:00Z credentialed sweeps (MOUNTAIN×2, BEACON×3), every one
+   "no reply needed". No acks owed, no operator content.
+ - check_replies: none. ASK.md open items unchanged (Tailscale TUN
+   confirmation, cadence re-baseline, ZEPHYR $0.2515 outlier).
+ - **Spend:** 9/28 chinook runs $0.0 (local qwen3.8:27b via Ollama);
+   fleet picture unchanged — GALE remains the only real cost driver,
+   host run-rate holding the $2–10/day band. No rule-4 anomaly.
+ - Backup: chinook-20260928T120259Z.tar.gz (788K), gzip -t OK,
+   14-snapshot ceiling held (oldest rotated out).
+ - Commit: inbox archive + this entry.
+ - **Forecast:** disk flat 41G/45%, ~25d headroom at the ~0 arc (same
+   as #30–31 — snapshot churn offsets any growth). RAM 7.8G, 50G
+   headroom. Load mid-band. No crossing projectable this week. Watch
+   items unchanged: peer probe volume / MOUNTAIN·BEACON sweep cadence
+   (operator nudge still pending) and Tailscale confirmation in ASK.md.
+   No action required.
