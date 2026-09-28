@@ -618,3 +618,10 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - **Token hashes (sha256[:16], values never recorded):** Beacon c02aec0af0c8ecee, Highbeam b9cbae14db488a5a, Lantern c09e60db8d395036, Lightning a6f045346c500bde, Prism 118c5a33c41b0f5b, Pulsar e252efa013b95410, Radar db8caa3f05b3255a.
 - **Of the 7:** BEACON/HIGHBEAM/PULSAR already two-way; LANTERN/LIGHTNING/PRISM/RADAR are the 4 holdouts awaiting far-side import. A generated remote half is not an installed pairing — these 4 close only when each box imports.
 - **ASK.md 4-holdout item:** still open pending far-side import; no Bora-side action remains.
+
+## 2026-09-28 ~19:35Z -- interactive session: 4 holdouts CLOSED, mesh 21/21 outbound
+
+- Operator installed the 4 far-side halves (LANTERN/LIGHTNING/PRISM/RADAR boxes).
+- Verified from Bora: `./send_to_peer.sh <NAME> "hello from BORA" "pair test"` → `{"status":"ok"}` (HTTP 200, peer holds matching token) on all 4. No 401s.
+- Inbox: 6 routine files triaged to `processed/` (BEACON 19:25 health_check predates 19:29 bundle send; HARBOR x3, CANYON, RIVER link probes, no reply needed). No import-confirmation messages yet — outbound 200 is the install proof; inbound pair-tests arrive on peers' own cadence.
+- ASK.md 4-holdout item moved to Resolved (history preserved). Bundle `beacon-20260928T192948Z.env` retained until Beacon confirms import, then shred both copies.
