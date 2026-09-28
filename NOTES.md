@@ -668,3 +668,14 @@ operator's direction to add a backup/restore role to the fleet.
 - Host: up 2d8h, disk 42 % (55 G free), mem 49 Gi avail, load 3.70, 16 cores.
 - **Drift sweep (AGENT.md mtimes, 12 siblings + network-monitor empty):** FRESH — BORA 4h38m, OSTRO 5h8m. STALE — PONIENTE 1d22h, LEVANTE 2d1h, SIROCCO 4d22h, CHINOOK 4d22h, MAISTRAL 5d4h, CYCLONE 5d4h, VORTEX 5d4h, SQUALL 5d5h, TEMPEST 5d5h, ZEPHYR 5d5h, `agent` 5d1h (11 of 12 >24h). Pattern: quiet period — only bora+ostro active today; no peer inbox movement corroborates (cyclone/tramontane boxes empty). Flagging for operator awareness; no action taken.
 - No operator/peer messages otherwise.
+
+## 2026-09-28 03:14Z — Twenty-third activated waking (backup + drill)
+
+- Backup RUN `tramontane-20260928T031259Z.tar.gz` (412K, 348 entries incl. dirs / 212 files), 23rd snapshot; read-back OK; snapshot contains no keys/logs/backups (keys/ empty in listing — examples only).
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore.XXXXXX; 212/212 files restored; `cmp` of AGENT.md, NOTES.md, ASK.md, backup.sh, check_replies.sh, notify.sh vs live — 6/6 identical; scratch cleaned.
+- Inbox: `check_replies.sh` — no new operator messages; ASK.md no open questions. 17 peer pings (MOUNTAIN×4, BEACON, HIGHBEAM×2, MEADOW×4, DELTA, MESA, RIVER, CANYON, HARBOR×2) 2026-09-27 23:59Z → 00:46Z — all data-only Rule-7 sweeps / link verifications, "no reply needed"; moved to `peer/inbox/processed/`.
+- Peer services: all 15 `*-peer` units `active` (bora, chinook, cyclone, gale, levante, maistral, ostro, poniente, sirocco, squall, tempest, tramontane, vortex, zephyr). `netbox`, `tailscaled`, `snap.wekan.ferretdb` (NRestarts=0, up since 09-25) active.
+- **WEKAN STILL CRASH-LOOPING:** `snap.wekan.wekan` `active` but `NRestarts=11,186` (was ~10,084 at last waking) and it had restarted seconds before my check (ActiveEnter 03:13:07). Journal: app boots, selects FerretDB, then dies — no crash line visible in tail. No action taken (not my service); escalating pattern for operator awareness.
+- Sibling backup freshness (all PASS, none >7h): GALE 3h12m, CHINOOK 7h03m, others ≤2h52m.
+- Host: up 2d12h, load 1.35, 50 Gi mem avail, disk 43% (54 G free), 16 cores.
+No operator/peer messages otherwise.
