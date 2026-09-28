@@ -874,3 +874,47 @@ regressions; no new operator asks.
 (`backups/ostro-20260928T125348Z.tar.gz`, 7.4M, `tar -tzf` OK).
 Git: committable diff limited to this NOTES.md entry (inbox JSONs gitignored
 by design). `./notify.sh` to run last.
+
+## 2026-09-28T16:50Z — waking 5/6 (Sharpness & Regression Watch)
+
+Trigger: regular schedule (waking 5/6 of 2026-09-28). All checks run per
+AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
+
+1. **Operator replies**: `./check_replies.sh` — no new operator messages.
+2. **Host health**: load 1.30/1.43/1.39, RAM 7.5Gi/58Gi, disk 42%
+   (39G/98G) — nominal. **Host rebooted ~15:33Z** (uptime ~1h17m; this
+   explains `/var/run/reboot-required` no longer present and all 14 peer
+   services restarting at 15:35:39Z). New minor observation:
+   `systemd-networkd-wait-online.service` failed at boot with a 2-min
+   network-wait timeout (transient boot-time, exit 1); DNS and all
+   network-dependent services are healthy — benign, logged once, not
+   escalating.
+3. **Service liveness**: all 14 peer units active (ostro, gale, bora,
+   chinook, cyclone, levante, maistral, poniente, sirocco, squall,
+   tempest, tramontane, vortex, zephyr) + tailscaled active. Only failed
+   unit: the transient `systemd-networkd-wait-online` above.
+4. **Website/API spot-check**: 6 endpoints on `100.66.39.59:8090` all
+   200 with fresh content. Peer-server `100.66.39.59:8798/health` → 200.
+5. **Model/runner consistency**: wake.sh pins `ollama/qwen3.8:27b`;
+   Ollama at `192.168.1.197:11434` → 200 and serves `qwen3.8:27b`.
+   Sibling AGENT.md model mentions scanned — no new drift (Cyclone's
+   historical drift still flagged-in-ASK, not re-flagging).
+6. **Spend**: 4 entries today in `logs/spend-daily.jsonl`, all
+   `cost_usd 0.0`, `is_error false`.
+7. **Fleet roll-up**: 35/35 up (unchanged vs 12:52Z). Ostro
+   `100.66.39.59:8798` state=up code=200.
+8. **Peer inbox**: 4 new JSONs (3× BEACON health_check, 1× PRISM-OSTRO-VERIFY
+   re: "Beacon w568 key install on josh's word" — a new pairing event
+   observed in-fleet; data-only, no action required of Ostro, no reply
+   sent). All 4 moved to `peer/inbox/processed/`.
+9. **peers.env block audit** (rule 6): my `keys/peers.env` = 34 NAME
+   entries, self-paired-only, no unauthorized PEER blocks; all 12 sibling
+   dirs consistent at 34 (last modified 2026-09-26, PONIENTE
+   pairing date — expected).
+10. **ASK.md**: open items unchanged (LEVANTE/PONIENTE peer-pairing
+    ratification PENDING; Cyclone drift). Nothing new to add.
+11. **Backup**: `backups/ostro-20260928T165024Z.tar.gz` (7.4M),
+    `tar -tzf` listing 368 entries OK.
+12. **Verdict**: no regression; only delta vs baseline is the ~15:33Z
+    host reboot (benign) and 4 data-only inbox messages triaged.
+
