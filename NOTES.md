@@ -609,3 +609,12 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   (ASK.md correction + NOTES.md entries + approved `notify.sh` improvement)
   committed as one waking commit. No duplicate Telegram sent (ALERT already
   delivered).
+
+## Waking 2026-09-28 ~19:30Z -- interactive session: rule 8b adopted + Bora->Beacon bundle sent (operator-approved scope, no minting)
+
+- **Rule 6 basis (operator Telegram, Bora channel, chat-id gated via check_replies.sh):** `[1790623763] 8b approval granted for bora and bora bundle to beacon scope no minting`. Adopted rule 8b into AGENT.md (same text as Gale 2026-09-22). Prior rule: 8/8a only.
+- **Approved scope executed:** `./fleet-provision bundle beacon --for Bora --send` from gale host repo. NO tokens minted, NO peers.env writes, NO restarts — 7 existing vault pairs exported (Bora's halves staged since fleet-provision 20260923T124156Z; `verify` green 34/34 before send).
+- **Delivery:** `send -> BEACON: OK (1563B)`, bundle `fleet-provision/bundles/beacon-20260928T192948Z.env` (600, gitignored). Beacon lead stages it; each of the 7 peer boxes imports via its own process. Shred both copies after import confirm (not yet confirmed — bundle retained).
+- **Token hashes (sha256[:16], values never recorded):** Beacon c02aec0af0c8ecee, Highbeam b9cbae14db488a5a, Lantern c09e60db8d395036, Lightning a6f045346c500bde, Prism 118c5a33c41b0f5b, Pulsar e252efa013b95410, Radar db8caa3f05b3255a.
+- **Of the 7:** BEACON/HIGHBEAM/PULSAR already two-way; LANTERN/LIGHTNING/PRISM/RADAR are the 4 holdouts awaiting far-side import. A generated remote half is not an installed pairing — these 4 close only when each box imports.
+- **ASK.md 4-holdout item:** still open pending far-side import; no Bora-side action remains.
