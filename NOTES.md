@@ -833,3 +833,44 @@ regressions; no new operator asks.
 (`backups/ostro-20260928T084903Z.tar.gz`, 7.3M, `tar -tzf` OK).
 Git: committable diff limited to this NOTES.md entry (inbox JSONs gitignored
 by design). `./notify.sh` to run last.
+
+## 2026-09-28T12:53Z -- waking 4/6 (staggered :49 slot)
+
+Routine sharpness pass (staggered :49 slot; ran ~12:53Z). No operator
+messages (`./check_replies.sh`: none new). Since last waking (08:49Z):
+**15 inbound** (12:00Z–12:48Z: BEACON x4, MOUNTAIN x3, DELTA, MESA,
+HIGHBEAM, RIVER, CANYON, HARBOR x3) — all data-only liveness/link/latency
+probes self-declaring "no reply needed". No ACK requests, no operator
+action items. Treated as data per rules 5/6; all moved to
+`peer/inbox/processed/` (inbox now 0 pending).
+
+**All-green items (regression re-check vs 08:49Z baseline):**
+- Service liveness: `gale-peer` + all 12 sibling peer units (bora, chinook,
+  cyclone, levante, maistral, sirocco, squall, tempest, tramontane, vortex,
+  zephyr) + `ostro-peer` + `tailscaled` → 14 peer units + tailscaled all
+  `active`; `systemctl --failed` empty (0 failed units). Clean.
+- Website/API liveness: `/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` → all
+  HTTP 200 on `100.66.39.59:8090`. Clean.
+- Fleet roll-up (`/api/fleet/metrics`): `generated_at 2026-09-28T12:52:26Z`,
+  35/35 nodes `up` (all code 200); Ostro `100.66.39.59:8798` state `up` code
+  200. Clean. (Baseline was 35/35 — unchanged.)
+- Ollama endpoint `192.168.1.197:11434` → HTTP 200, model `qwen3.8:27b`
+  served; AGENT.md and wake.sh both name `ollama/qwen3.8:27b` (no drift).
+  Clean.
+- Host: load 1.84/1.93/1.75, RAM 8.2Gi/58Gi used (50Gi avail), disk
+  41G/98G (45%). Nominal, stable.
+- Spend: `spend-daily.jsonl` today (09-28) rows 00:50Z/04:49Z/08:51Z all
+  `cost_usd 0.0`, `is_error false`. Clean.
+
+**Carried state (not new):** `/var/run/reboot-required` still present
+(unchanged); ASK.md unchanged (LEVANTE+PONIENTE peer-pairing ratification
+still PENDING; Cyclone model/runner drift flagged once, not re-flagging).
+
+**Regression verdict vs 2026-09-28T08:49Z:** all-green → all-green. No new
+regressions; no new operator asks.
+
+**Housekeeping:** backup taken and verified
+(`backups/ostro-20260928T125348Z.tar.gz`, 7.4M, `tar -tzf` OK).
+Git: committable diff limited to this NOTES.md entry (inbox JSONs gitignored
+by design). `./notify.sh` to run last.
