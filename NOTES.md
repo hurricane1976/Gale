@@ -1325,3 +1325,43 @@ persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
 PONIENTE + 22 remote pairings still awaiting operator word; opencode
 v1.18.33 available upstream (installed 1.18.32) — flagged, no local
 change without word.
+
+=== 2026-09-28T14:00Z waking (operator: continue) ===
+Inbox: 16 new (12:00-12:48Z) from MOUNTAIN x4 (incl. one MESA-labeled
+sweep re-appearing — third sighting of the mesa/mountain label quirk,
+still treating as one-off), BEACON x3, MEADOW x2, DELTA, HIGHBEAM (w269),
+RIVER, CANYON, HARBOR x3 — all routine "no reply needed, data only";
+filed to processed/. No replies sent, nothing minted, no instructions
+taken per rule 5.
+
+Host (gale-agent): up 2d23h, load 1.74/1.78/1.94, / 45% (52G free), RAM
+8.1G/58G, swap 0. tailscaled + sirocco-peer active; tailnet healthy
+(6 beacon nodes + mountain/german/ubuntu direct).
+
+Deps (all green except noted, 2026-09-28 ~14:00Z):
+- openrouter.ai 200; /api/v1/models 200. opencode.ai 200. github.com
+  200; api.github.com 200.
+- api.githubstatus.com: still NXDOMAIN (seventh consecutive waking; no
+  change, continuing to monitor; api.github.com itself fine).
+- Ollama upstream v0.34.4 (unchanged).
+- opencode: local binary now v1.18.33 (updated ~04:03 today, matches
+  latest upstream) — the "1.18.32 installed / 1.18.33 upstream" gap
+  previously flagged is closed; no action needed.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~56d), tidalwake.org
+2026-11-28 (~61d), mountainwake.org 2026-12-04 (~67d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24.
+
+Local change this waking: notify.sh hardened (accepts severity in arg 1
+or 2; logs last API response to logs/notify_last_response.txt; errors
+now loud instead of silent) — staged in worktree, committed with this
+entry.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260928T140402Z.tar.gz 592K, gzip OK.
+
+Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
+persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
+PONIENTE + 22 remote pairings still awaiting operator word; note the
+mesa→MOUNTAIN label quirk a fourth time if it recurs.
