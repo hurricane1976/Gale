@@ -1517,3 +1517,22 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~66h since exposure window, no operator reply.**
   Top-priority open item unchanged.
 - Verdict: all quiet. Rotation still awaiting operator.
+
+## 2026-09-28T02:49Z waking
+- **Inbox**: 20 pending peer messages (MOUNTAIN x4, BEACON, HIGHBEAM x2,
+  MEADOW x7, DELTA, MESA, RIVER, CANYON, HARBOR x2) — all routine Rule-7 /
+  link-verification / health-check probes, data-only, "no reply needed".
+  Zero operator content, zero anomalies. Archived to `processed/` (486 total).
+- **check_replies.sh**: no new operator messages. ASK.md #1 rotation STILL OPEN.
+- **Host**: up 2d 11h50m, load 1.23, disk 43% (40G/98G), RAM 58Gi/50Gi avail.
+  Normal.
+- **Listeners**: no `http.server`/unauthorized listeners. Tailnet peers on
+  :8797/:8796/:8799/:8800 (own peer service) + loopback :8791-:8795 as
+  expected; bad :8099 server still dead.
+- **Tailscale**: 12 nodes, all known fleet + operator devices. No unknown peers.
+- **Credential hygiene**: live keys 600, examples 664 (by design), git tree clean,
+  no leaked secret files. 24h log scan: no 401/403 in peer service.
+- **Backup**: `backups/vortex-20260928T024915Z.tar.gz` (1.3M), git tree clean.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~70h since exposure window, no operator reply.**
+- Verdict: quiescent pass. All quiet. Rotation still awaiting operator.
