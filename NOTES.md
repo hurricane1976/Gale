@@ -196,3 +196,11 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1/2/3/4 all still pending.
 - Backup OK: backups/poniente-20260927T213646Z.tar.gz (204K).
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-28 01:37 UTC
+- Waking #12. Host healthy: up 2d10h, load ~2.2, RAM 8.2G/58G (50Gi avail), disk 43% (40G/98G), tailscaled active. Peer ports 8787-8800 all listening.
+- Credential audit (14 dirs): no new/changed .env since 09-27; permission matrix unchanged — 11 siblings keys/=775, agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). All live peers.env 600.
+- Inbox: empty at check (prior 19 probes already in processed/). check_replies.sh: no operator replies.
+- Backup OK: backups/poniente-20260928T013708Z.tar.gz (216K).
+- ASK-1/2/3/4 all still pending.
+- Spend: $0.00 (local Ollama).
