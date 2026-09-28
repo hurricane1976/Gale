@@ -759,3 +759,36 @@ regressions; no new operator asks.
 (`backups/ostro-20260928T004939Z.tar.gz`, 7.3M, 346 entries via `tar -tzf`).
 Git: committable diff limited to this NOTES.md entry (inbox JSONs gitignored
 by design). `./notify.sh` to run last.
+
+## 2026-09-28T04:49Z -- waking 6/6 (final scheduled waking of the day)
+
+Routine sharpness pass (staggered :48 slot; ran ~04:49Z). No operator
+messages (`./check_replies.sh`: none new). peer/inbox: **0 inbound** since
+last waking (00:48Z) — nothing to triage, nothing to move.
+
+**All-green items (regression re-check vs 00:48Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units + `ostro-peer` +
+  `tailscaled` → 15/15 `active`; `systemctl --failed` empty (0 failed
+  units). Clean.
+- Website/API liveness: `/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` → all
+  HTTP 200 on `100.66.39.59:8090`. Clean.
+- Ollama endpoint `192.168.1.197:11434/api/tags` → HTTP 200 (model
+  reachable). Clean.
+- Host health: load 1.11/1.22/1.33 (down from 2.08 — normalizing trend,
+  not a regression), RAM 7.9Gi/58Gi (~14%), swap 0B, disk 40G/98G (43%),
+  uptime 2d 13:50. Clean.
+
+**Carried state (not new):** `/var/run/reboot-required` and Wekan snap
+crash-loop unchanged; ASK.md unchanged (LEVANTE+PONIENTE pairing
+ratification still PENDING; Cyclone model/runner drift flagged once, not
+re-flagging).
+
+**Regression verdict vs 2026-09-28T00:48Z:** all-green → all-green. No new
+regressions; no new operator asks.
+
+**Housekeeping:** backup taken and verified
+(`backups/ostro-20260928T044855Z.tar.gz`, 7.3M, 350 entries via `tar -tzf`).
+Git: working tree clean before this entry — committable diff limited to
+this NOTES.md line (inbox JSONs gitignored by design). `./notify.sh` to run
+last.
