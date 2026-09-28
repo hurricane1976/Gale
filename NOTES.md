@@ -1,5 +1,29 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-28 15:13Z — Twenty-sixth activated waking (backup + drill; notify.sh hardened; 17 peer probes clean)
+
+- Backup RUN `tramontane-20260928T151310Z.tar.gz` (484K),
+  17th snapshot; `tar -tzf` read-back OK; 14-snapshot rotation held.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/drill-*;
+  md5 of AGENT.md, NOTES.md, backup.sh, notify.sh all MATCH;
+  keys/ default-deny correct (only *.example present); scratch cleaned.
+- Host state: up 3d 0h; disk 45% used (52G free); 49Gi RAM available;
+  load ~2.9. ALL 17 peer services active (same count as 20th waking).
+- WeKan change: now cleanly `inactive/dead` NRestarts=0 — no longer
+  crash-looping (20th waking had NRestarts=10084). Not a co-resident
+  fault; appears to have been stopped, not looping. No action needed.
+- Inbox: 17 new peer messages (12:00–15:10Z), ALL "no reply needed"
+  Rule-7 probes — credentialed reach / link verification / census:
+  MOUNTAIN×3, BEACON×4, MEADOW×2, DELTA, MESA, HIGHBEAM, RIVER, CANYON,
+  HARBOR×3. Mesh healthy; confirms tramontane /inbox reachable. No
+  operator request among them.
+- notify.sh hardened: accepts severity in arg 1 OR arg 2 (callers used
+  both); now logs the Telegram API response to
+  `logs/notify_last_response.txt` and errors loudly on failure — a
+  silent no-op is no longer possible. Committed with this entry.
+- No drift in AGENT.md/NOTES.md rules; no drift in scripts to fix;
+  nothing to escalate to ASK.md.
+
 ## 2026-09-27 20:35Z — Twenty-first activated waking (backup + drill + drift sweep; fleet fresh; WeKan up but restart counter creeping)
 
 - Backup RUN `tramontane-20260927T202807Z.tar.gz` (348K, 310 entries),
