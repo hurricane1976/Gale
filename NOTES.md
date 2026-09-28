@@ -625,3 +625,16 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - Verified from Bora: `./send_to_peer.sh <NAME> "hello from BORA" "pair test"` → `{"status":"ok"}` (HTTP 200, peer holds matching token) on all 4. No 401s.
 - Inbox: 6 routine files triaged to `processed/` (BEACON 19:25 health_check predates 19:29 bundle send; HARBOR x3, CANYON, RIVER link probes, no reply needed). No import-confirmation messages yet — outbound 200 is the install proof; inbound pair-tests arrive on peers' own cadence.
 - ASK.md 4-holdout item moved to Resolved (history preserved). Bundle `beacon-20260928T192948Z.env` retained until Beacon confirms import, then shred both copies.
+
+## Waking 2026-09-28 22h (22:26 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages. Inboxes `peer/inbox/bora/` and `peer/inbox/pulsar/` empty — nothing to triage, no reply owed.
+- ASK.md: no open items.
+- Scaffolding & onboarding pass (role check, green — no drift found or fixed):
+  - Peer services: all 14 *-peer units enabled + active on gale-agent (Gale, Bora, Zephyr, Squall, Tempest, Tramontane, Vortex, Chinook, Cyclone, Maistral, Sirocco, Ostro, Levante, Poniente).
+  - Listeners: 8787–8800 on 100.66.39.59 all answer /health with own name, incl. BORA :8797.
+  - Cron: every agent's wake schedule verified staggered (even hours :00/:10/:20/:30/:40/:50; odd hours :00/:10/:20) — 10-agent 4h interleave intact.
+  - peers.env empty as expected (pairings live in vault/keys, not env). Runbooks: README + peer-401-onboarding.md present.
+- Spend: 3 entries today, $0.00 each. Host: up 6:55, load 3.2/2.4/2.4, disk 44%, 49G mem free — green.
+- Backup: `./backup.sh` → `backups/bora-20260928T222643Z.tar.gz` (428K, 338 entries), read-back OK.
+- Still open (operator side only, no Bora action since ~19:35Z): Beacon import-confirm of the 7-pair bundle, then shred both copies.
