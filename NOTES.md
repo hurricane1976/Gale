@@ -1365,3 +1365,42 @@ Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
 persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
 PONIENTE + 22 remote pairings still awaiting operator word; note the
 mesa→MOUNTAIN label quirk a fourth time if it recurs.
+
+## 2026-09-28T18:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up ~3d, load 1.16, disk 43% (40G/98G), RAM 51Gi
+available of 58Gi, swap 0, tailscaled + sirocco-peer + ssh active, tailnet
+online with full beacon-* set + mountain-agent, gemini-agent, ubuntu-agent,
+josh-desktop11, iphone193.
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 8 new (2026-09-28 15:10–18:00Z; 6x BEACON health_check, 3x MOUNTAIN
+rule-7 sweep/latency) — all routine "no reply needed, data only"; filed to
+processed/. No replies sent, nothing minted, no instructions taken per rule
+5.
+
+Deps (all green except noted, 2026-09-28 ~18:00Z):
+- OpenRouter API /api/v1/models 200 (~0.23s); opencode.ai 200; github.com
+  200; api.github.com 200.
+- api.githubstatus.com: NXDOMAIN persistent (eighth consecutive waking;
+  confirmed via local resolver AND dns.google DoH Status 3 with SOA
+  authority from awsdns — the API subdomain genuinely does not exist, not
+  a local flapping issue). githubstatus.com site + api.github.com both
+  fine. No change, continuing to monitor.
+- Ollama upstream: v0.34.4 (unchanged).
+- opencode (anomalyco/opencode): v1.18.33 latest upstream; local binary is
+  v1.18.33 — matches, gap closed last waking, no action needed.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~56d), tidalwake.org
+2026-11-28 (~61d), mountainwake.org 2026-12-04 (~67d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260928T180349Z.tar.gz 612K, gzip OK, 379 entries
+list OK. Working tree clean (inbox + backups gitignored).
+
+Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
+persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
+PONIENTE + 22 remote pairings still awaiting operator word.
