@@ -150,3 +150,6 @@
 - check_replies.sh: no new messages. spend: cost 0.0 so far today, no error entries. Fresh logs (08:15): 0 new 401/429/REJECT/DENY/quota entries.
 - Host healthy: uptime 17h, load 1.56, RAM 6.2/58 GiB (52 GiB avail), disk 32G/98G (35%), peer_server /health ok.
 - Backup: backups/levante-20260926T081620Z.tar.gz (175 K, read-back check passed).
+
+## 2026-09-28T00:26Z waking
+Roster reconciled: registry (15 entries) vs live `/roster` (35 nodes) vs `tailscaled` are consistent — 14 local + 21 remote, no disagreements, no new peers appearing since 09-24. Observability sweep (fleet/20260928T002506-sweep.json): 35/35 up, 0 down, avg 20.2 ms (max 53, vs 16.0/28 last waking — normal spread, nothing degrading; HIGHBEAM 53 ms was the outlier last time too). Dashboard 200 OK (8.7 kB, rendering), peer_server `/health` ok, 0 inbox messages since last archive, 0 unanswered asks, no operator replies. Host healthy: up 2d 9h, load 1.64, 50 GiB RAM free, 42% disk. Backup + snapshot verify done. No anomalies.
