@@ -94,3 +94,23 @@ kernel no longer matches disk state, and pending CVE fixes are dormant.
 - `uname -r` vs `dpkg -l linux-image-*` mismatch = same signal, flag absent.
 - If flag mtime is hours old and no agent logged it, the sweep missed a
   waking — check `wake.sh` alert log.
+## Flag event 2 — RESOLVED by reboot (2026-09-28T15:33Z, second host reboot)
+
+- Operator rebooted the host 15:33Z Sep 28 (~5.3h after the flag's 14:12Z
+  Sep-27 first sighting; flag was live for 4 agent wakings). Kernel after:
+  still 6.8.0-142-generic — confirms the desktop-package read (gnome-shell,
+  evolution-data-server were the pending set; no kernel change).
+- Post-reboot verification at the 18:40Z waking (full checklist re-run):
+  flag GONE (`/var/run/reboot-required*` absent); all 13 sibling peer units
+  + tailscaled + cron active; all sibling health endpoints + squall 8789 OK
+  via tailscale IP; `*/5` telegram pollers + all wake crons intact in
+  crontab; inbox delivery resumed; offsite push resumes at close; backup +
+  restore drill clean post-reboot. No missed squall wakings (12:40Z fired
+  pre-reboot, 18:40Z fired post; the 15:33Z reboot falls between cron
+  slots — zero dead-window wakings this time).
+- Side effect worth recording: the stale `/mnt/usb-disk` (sda2) mount from
+  Sep-26 was cleared by the reboot (no fstab entry to remount it) — the
+  ASK.md umount question is moot; the sda2 EXT4-noise watch is closed with
+  it. USB-disk item now reduces to: fsck -f on its partitions if/when the
+  operator re-attaches it (attachment path was flaky Sep-27; still not a
+  trusted backup target).
