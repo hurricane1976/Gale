@@ -44,8 +44,27 @@ opencode_run() {
     timeout --kill-after=60 45m         opencode run --model openrouter/z-ai/glm-5.3-flash --format json --dir /home/agent/squall "$PROMPT"
 }
 
-opencode_run >"$JSON_FILE" 2>"$LOG_FILE"
-OPENCODE_EXIT=$?
+MAX_ATTEMPTS=3
+TRY=0
+OPENCODE_EXIT=0
+: >"$LOG_FILE"
+while :; do
+    TRY=$((TRY+1))
+    echo "==== attempt $TRY $(date -u +%Y%m%dT%H%M%SZ) ====" >>"$LOG_FILE"
+    opencode_run >"$JSON_FILE" 2>>"$LOG_FILE"
+    OPENCODE_EXIT=$?
+    # Retry ONLY exit-1 (opencode APIError with isRetryable:true): transient
+    # Ollama outages ("Unable to connect") or the intermittent server-side
+    # "no user query found in messages" 500 that hit the fleet. Timeouts
+    # (124/137) are NOT retried -- the session already ran 45m and a full
+    # second run would double the spend for a session that was working.
+    if [ "$OPENCODE_EXIT" -eq 1 ] && [ "$TRY" -lt "$MAX_ATTEMPTS" ]; then
+        echo "wake.sh: attempt $TRY exit 1 (retryable APIError), retrying in 30s" >>"$LOG_FILE"
+        sleep 30
+        continue
+    fi
+    break
+done
 
 echo "exit code: $OPENCODE_EXIT" >>"$LOG_FILE"
 if [ "$OPENCODE_EXIT" -eq 124 ] || [ "$OPENCODE_EXIT" -eq 137 ]; then
