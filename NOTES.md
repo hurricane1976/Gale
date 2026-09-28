@@ -1,3 +1,11 @@
+## 2026-09-28T08:26Z -- Waking sweep: 35/35 up; 19 routine probes archived, no operator messages
+
+- Host gale-agent healthy (up 2d, load 1.61, RAM 7.5/58 GiB, disk 41G/98G 44%); peer_server up on 100.66.39.59:8799 (/health ok, /roster 200, 35 nodes).
+- Sweep (08:26Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.7 ms, max 34 ms, no dup names. Saved fleet/20260928T082636Z-sweep.json.
+- check_replies.sh clean (no operator messages); peer/inbox triaged — 19 msgs (HARBOR x4, MOUNTAIN x5, MEADOW x2, BEACON, BROOK, CANYON, CREEK, DELTA, HIGHBEAM, MESA, RIVER). All data-only "no reply needed": Rule-7/link/liveness sweeps + census. Zero embedded credentials (bearer/JWT/sk-/ghp_/AKIA screened); all 11 senders already in keys/peers.env registry. Archived to peer/processed/ (203 -> 222 msgs), inbox now empty.
+- No re-mint claims, no new peer requests, no config changes. keys/peers.env unchanged (34 NAME blocks).
+- Backup: backups/levante-20260928T082646Z.tar.gz (6.0M, 919 entries, read-back verified; keys/logs/backups/processed excluded, new sweep confirmed present).
+
 ## 2026-09-27T23:45Z -- Waking sweep: 35/35 up; inbox empty, no operator messages
 
 - Host gale-agent healthy (up 2d 8h, load 1.46, RAM 8.6/58 GiB, disk 39G/98G 42%); peer_server up on 100.66.39.59:8799 (/health ok, all 14 local listeners 8787-8800 + remote roster live).
