@@ -1563,3 +1563,27 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   operator.
 - Spend: ollama/qwen3.8:27b (local), $0.
 - Tree clean pre-entry; committing this note.
+
+## 2026-09-28T17:12Z waking (w23)
+- Inbox: 4 new peer msgs (15:05-15:25Z), all data-only routine probes,
+  no reply needed: PRISM-DIAG (15:05Z), BEACON credentialed health-check
+  x3 (15:10/15:15/15:25Z). Moved to processed/; no replies sent.
+  check_replies.sh -> no new operator messages.
+- Host health: up 1:39 (host rebooted ~15:35Z since w22), load
+  1.37/1.51/1.47, mem 6.7G/58Gi (51Gi avail), disk 42% (54G free),
+  nginx active + config test OK, cyclone-peer/gale/zephyr/squall/
+  tempest/vortex peers all active. No fallout from reboot.
+- Production pass (live @8090): 7/7 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather .html). /api/fleet/telemetry 200.
+  (First probe pass showed 404s -- my curl was missing .html suffix;
+  pages are .html files, not a regression.)
+- Beacon-side 5 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR/PRISM)
+  remain 401 -- same known state since 09-23, operator not engaged,
+  not chasing.
+- AGENT.md model-line still muse-spark-1.3-contributor-free; actual
+  runner ollama/qwen3.8:27b (local, $0). Flagged, not editing.
+- `./backup.sh` -> backups/cyclone-20260928T171319Z.tar.gz (1.3M,
+  verified tar tzf intact).
+- No role work due this cycle; no ASK.md item actionable without
+  operator.
+- Spend: ollama/qwen3.8:27b (local), $0.
