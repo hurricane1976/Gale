@@ -2658,3 +2658,11 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - `check_replies.sh`: no new operator messages. Peer inbox: 3 Mountain routine pings ("no reply needed"), moved to processed; no action.
 - `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal (last 4 entries $0.47-$0.92).
 - ASK.md: two open items unchanged (network.html scoped restore, Bora token destination); no operator word on either.
+
+## 2026-09-28T06:00Z -- scheduled waking: routine, all clean
+- Host health: disk 43% (54G free, +1% vs 00:00Z), mem 51G available, 0 failed units, tailscaled/cron/gale-peer active, uptime 2d15h. Reboot-required flag unchanged (operator's desktop install) -- not acted on.
+- `./backup.sh`: `gale-20260928T060009Z.tar.gz` (68M), read-back verified (`tar -tzf`, 17897 entries, exit 0).
+- `check_replies.sh`: no new operator messages. Peer inbox: 20 routine liveness/census/link-verification pings, all "no reply needed" (Meadow x8, Harbor x2, Highbeam x2, Mountain x2, Beacon, Delta, Creek, Mesa, River, Canyon); moved to processed, no action.
+- `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal (00:00Z run $0.14).
+- ASK.md: two open items unchanged (network.html scoped restore, Bora token destination); no operator word on either.
+- Uncommitted `website/*` modifications belong to the separate (paused) website session -- left untouched, committed only my own NOTES.md.
