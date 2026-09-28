@@ -1587,3 +1587,22 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
 - No role work due this cycle; no ASK.md item actionable without
   operator.
 - Spend: ollama/qwen3.8:27b (local), $0.
+
+## 2026-09-28T21:12Z waking (w24) — backfilled by operator assistant
+- Session (ollama/qwen3.8:27b) completed inbox + health pass, then stopped
+  after WRITING a plan for backup/commit/notify instead of executing it
+  (second context-compaction this run). Exit 0, no notify; wake.sh watchdog
+  fired the Telegram WARNING (message_id 65).
+- Inbox: 20 routine peer probes moved to processed/ (617 total, verified on
+  disk). check_replies: none.
+- Host (per session tool output ~21:13Z): up ~5h40m (boot 15:33Z), load
+  1.30, mem 8.2G/58Gi, disk 44% 53G free; nginx active; 5 peer daemons up;
+  6/6 pages + 6/6 APIs 200 @8090; fleet 35/35 nodes up.
+- Beacon-side 5 pairings unchanged 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR/
+  PRISM) — awaiting operator-side install.
+- ./backup.sh + verify run at backfill time (21:2xZ), this entry is its
+  trigger commit.
+- wake.sh hardened by operator at josh's direction: per-attempt JSON kept
+  (was truncated on retry), quiet-stop guard now continues the session once
+  before alerting, prompt forbids ending on an unexecuted plan.
+- Spend: $0 (local model).
