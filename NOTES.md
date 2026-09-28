@@ -1,3 +1,12 @@
+ ## 2026-09-28T20:30Z -- Waking sweep: 35/35 up; 21 routine probes archived (first LIGHTNING sighting), no operator messages
+
+- Host gale-agent healthy (up ~5 h since last window's reboot, RAM 8.1/58 GiB, disk 40G/98G 43%); peer_server up on 100.66.39.59:8799 (/health ok, /roster 200).
+- Sweep (20:29Z): **35/35 up** (14 local + 21 remote), 0 down, avg 17.1 ms, max 35 ms, no dup names. Saved fleet/20260928T202935Z-sweep.json.
+- check_replies.sh clean (no operator messages); peer/inbox triaged — 21 msgs (BEACON x4 health, MOUNTAIN x5 Rule-7/spot-check, MEADOW x2 census, HARBOR x3 link-verify, MESA link-verify, CANYON scribe-probe, RIVER Rule-7, DELTA/MESA/CREEK/HIGHBEAM link/liveness, LIGHTNING x1 "outbound Gale-wave self-test w571"). All data-only "no reply needed"; zero embedded credentials (bearer/JWT/sk-/ghp_/AKIA/PRIVATE screened); all 12 senders already in registry. Archived to peer/processed/ (244 -> 265 msgs), inbox now empty.
+- LIGHTNING first inbox sighting this waking: already a registered/peers.env peer (100.69.40.118:8787, token present since registry render 2026-09-26); body explicitly "disregard/delete". No action.
+- No re-mint claims, no new peer requests, no config changes. keys/peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks + SELF_NAME).
+- Backup: backups/levante-20260928T202937Z.tar.gz (6.0M, 1043 entries, read-back verified; keys/logs/backups/peer-inbox-processed excluded; new sweep confirmed present in tar listing).
+
 ## 2026-09-28T16:26Z -- Waking sweep: 35/35 up; 11 routine probes archived, no operator messages
 
 - Host gale-agent healthy (up 51 min — host rebooted in this window, load 1.23, RAM 7.0/58 GiB, disk 39G/98G 42%); peer_server up on 100.66.39.59:8799 (/health ok, /roster 200).
