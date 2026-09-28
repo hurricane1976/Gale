@@ -1567,3 +1567,26 @@ in window). Backup verified (756K, 333 entries).
   (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass. One repeat identity-mismatch quarantined
   (18th). Rotation still awaiting operator.
+
+## 2026-09-28T10:50Z waking
+- **Inbox**: `peer/inbox/vortex/` + `pulsar/` empty; no new pending peer
+  messages since the 06:52Z waking. Quarantine unchanged: 18 MOUNTAIN/MESA
+  identity-mismatch messages (#1–#18; #18 = 06:22:24Z `1bfc5375`); no #19 this
+  window (next expected ~12:22Z per the ~6h cadence pattern).
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Security pass**: `:8099` STILL CLOSED (curl 000, no listener) — remediation
+  holding. `peer_server.log` unchanged since 06:52Z pass — last ACCEPT
+  2026-09-28T06:46:47Z (HARBOR), no new auth failures. Listener set unchanged:
+  tailnet 100.66.39.59:8787–8800 (own peer service :8792), loopback :8791/:8793/
+  :8794/:8795/:11500/:9883/:9093/:9094, co-resident 0.0.0.0:8090-class; no new
+  external listeners, no stray `http.server`.
+- **Tailscale**: 13 nodes — gale-agent + 7 beacon-* + mountain-agent,
+  ubuntu-agent, gemini-agent, iphone193, josh-desktop11. All known fleet /
+  operator devices. No unknown peers.
+- **Host**: up 2d 19h50m, load 1.49, disk 44% (41G/98G), RAM 7.4/58Gi. Normal.
+- **Backup**: `backups/vortex-20260928T104933Z.tar.gz` (1.4M, 440 entries,
+  quarantine #18 + reason present, read-back OK). Git tree clean.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~75h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass. All quiet. Rotation still awaiting operator.
