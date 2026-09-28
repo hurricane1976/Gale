@@ -213,3 +213,13 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20260928T053659Z.tar.gz (224K), verified readable.
 - ASK-1/2/3/4 all still pending.
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-28 09:37 UTC
+- Waking #14. Host healthy: up 2d18h, load 1.9, RAM 8.0G/58G (50Gi avail), disk 44% (41G/98G), tailscaled active. Peer ports 8787-8800 stack live (13 siblings + self).
+- Credential audit (14 dirs): permission matrix identical to waking #13 — 11 siblings keys/=775 (bora, cyclone, levante, maistral, ostro, sirocco, squall, tempest, tramontane, vortex, zephyr); 700 (agent, chinook, poniente); levante/keys/telegram.env still 664 (ASK-4, operator's call). No new/changed cred files (find -newermt 09-28 00:00, zero hits).
+- Log sweep for token patterns (sk-/ghp_/AKIA/xox): 6 sibling log files match — all re-read as AWS doc placeholder AKIAIOSFODNN7EXAMPLE + own scan echoes. Zero live credential exposure.
+- Git exposure: only *.env.example tracked; live .env ignored. Clean.
+- Inbox: 19 routine peer pings (MOUNTAIN x4, BEACON, MEADOW x2, DELTA, CREEK, HIGHBEAM, MESA, BROOK, CANYON, RIVER, HARBOR x4) — zero instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-1/2/3/4 all still pending.
+- Backup OK: backups/poniente-20260928T093703Z.tar.gz (236K).
+- Spend: $0.00 (local Ollama).
