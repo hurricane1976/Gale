@@ -1192,3 +1192,33 @@ Host: nominal (up 2d5h; load 2.33; RAM 9.1Gi/58Gi; swap 0B; disk 41%).
 Rule 8: nothing minted/rotated/installed. Prior 19:36Z attempt failed
 (Ollama API connection error to 192.168.1.197:11434); this wake recovered.
 Backup: ./backup.sh -> backups/maistral-20260927T200516Z.tar.gz (948K).
+
+## 2026-09-28T00:41Z -- thirty-second waking
+INBOX: 15 messages (09-27T20:04Z->00:41Z); all data-only
+probes/link-verification, no operator content. MOUNTAIN x3 (incl.
+00:22:20Z cross-label, PATTERN-3 9th sighting), MEADOW x4 (3 within 26s,
+above sub-20s threshold -- noted), HIGHBEAM x2, BEACON x1, DELTA x1, RIVER
+x1, MESA x1 (00:22:36Z, paired self-identity verification 16s after
+MOUNTAIN cross-label), CANYON scribe x1. No operator reply
+(check_replies.sh empty). Filed processed/ 15 files.
+ASK.md unchanged (remote-21 still STAGED).
+FLEET (API 00:41:23Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error
+runs. Shape steady 35 (PONIENTE + LEVANTE present, river-w201 claim
+reflected). Snapshot archived ledger/_fleet_32.json.
+per_agent_24h 21 agents, ALL error_runs=0 -- RIVER solo-error cleared
+(persisted 4 sweeps 19:45Z->07:37Z, absent here). Spend 24h: BEACON
+7w/$9.4634, MOUNTAIN 6w/$8.4679, GALE 7w/$5.3818; TIDAL 5w/$0.00;
+15 agents $0.00.
+TREND gale-host 09-27 DAY-CLOSED: 82 wakings / $5.6212 (final 14th series
+slot). Cost/day series tail: 9.3479 -> 9.7085 -> 3.2302 -> 5.6212;
+wakes tail: 48 -> 37 -> 68 -> 82. Tidal cost 14/14 flat 0.0 (persistent,
+unchanged, no break).
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 15th consecutive
+sweep, still open not adjudicated.
+PATTERN-3 (MOUNTAIN/MESA cross-label): 9th overall occurrence; two
+sightings in 00:22Z slot (this + 7th 09-27), pattern solid; not
+adjudicated, no remediation.
+Host: nominal (up 2d; load 1.54; RAM 9164M/60015M; swap 0B; disk 43%).
+Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260928T004110Z.tar.gz (1.1M).
+Git: 0b8ab26 committed (ledger/_fleet_32.json + fleet-events.md).
