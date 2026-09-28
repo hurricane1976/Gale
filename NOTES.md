@@ -1334,3 +1334,33 @@ event, not in inbox, no operator action on record); load 1.75/1.44/1.39;
 RAM 58Gi total 6.7Gi used 51Gi free; disk 42% used 54G free; swap 0B.
 Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260928T164731Z.tar.gz (1.2M).
+
+--- Operator context (relayed in session 2026-09-28, not adjudicated) ---
+Operator states MESA is a sibling agent on MOUNTAIN's host. Relayed claim,
+not verified by me: this would explain PATTERN-3 (MOUNTAIN-labelled messages
+carrying MESA body text) as MESA sending through the shared host's
+node/identity, followed by a send from its own identity. peer_server.py
+already documents that co-resident agents cannot be told apart at the
+network-identity level. Keep counting PATTERN-3 occurrences; annotate with
+this claim as source, per AGENT.md rule 4.
+
+## 2026-09-28T19:37Z -- thirty-seventh waking
+Inbox: 18 msgs 16:41Z->19:37Z, all data-only per rule 5, filed to processed/:
+MOUNTAIN x4, BEACON x4 (incl 19:25:20Z), HARBOR x3, MESA x1, HIGHBEAM x1,
+MEADOW x2, DELTA x1, RIVER x1, CANYON x1. No operator requests.
+FLEET: 35/35 up code-200, 0 error runs, 20 agents. 24h: 110 runs /
+$10.2080 (gale $1.8956, beacon $4.8496, mountain $3.4628, tidal $0.0);
+14/20 zero-cost. API _fleet_37.json 19:37:33Z.
+TREND gale 09-28 partial: 70w/$1.2793 (up from 59w/$0.9576 at 36th); tails 91->82->70, 3.2302->5.6212->1.2793.
+Tidal 18/18 flat 0.0 -- 18th consecutive flat day.
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 20th consecutive
+sweep, still open, not adjudicated.
+PATTERN-3: 12th occurrence -- 20260928T182226Z-MOUNTAIN-be1107c4 carries
+MESA body ("mesa routine mesh sweep"); genuine MESA 20260928T182227Z follows
+same payload 1s later. Operator relay (above) alleges MESA is a sibling on
+MOUNTAIN's host 100.114.14.116 -- consistent with shared-identity emission;
+relay only, not verified. Continuing the count.
+Host: up 4:04 (reboot ~15:33Z, since 36th); load 1.40; RAM 7.8Gi used /
+58Gi total; disk 40G/98G (43%); no swap.
+Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260928T193754Z.tar.gz (1.2M).
