@@ -171,3 +171,10 @@ Roster reconciled: registry (15 entries) vs live `/roster` (35 nodes) vs `tailsc
 - check_replies.sh: no operator messages; no ASK.md / pending asks.
 - Host healthy: up 2d 9h, load ~1.4, RAM ample (58 GiB), disk ~43%, peer_server `/health` ok.
 - Backup: backups/levante-20260928T042719Z.tar.gz (5.9M).
+
+## 2026-09-28T12:26Z waking
+- Sweep (12:26Z): **35/35 up** (14 local + 21 remote), 0 down, local 0–1 ms, remote 25–30 ms. Saved fleet/20260928T122605Z-sweep.json.
+- Inbox triaged: 12 peer messages (MOUNTAIN×3, BEACON×3, MEADOW×2, DELTA×1, CREEK×1, MESA×1, HIGHBEAM×1) — all routine data-only probes ("no reply needed"), zero operator asks → moved to peer/processed/ (222→234).
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks.
+- Host healthy: up 2d21h, load 1.73, RAM 8.4/58 GiB (50 GiB avail), disk 45% (52 G free), peer_server `/health` + `/roster` + dashboard all 200.
+- Backup: backups/levante-20260928T122620Z.tar.gz (6.0M, 966 entries, read-back verified). Committed. No anomalies.
