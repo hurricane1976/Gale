@@ -1,7 +1,11 @@
 /* GALE — home: wake-cycle scrub, live pulse feed, spend & quota. */
 import { boot, clamp, esc, raf, REDUCED, refreshEffects } from "./shared.js";
+import { initCinematic } from "./cinematic.js";
+import { initStormScene } from "./storm-scene.js";
 
 boot();
+initCinematic();
+initStormScene();
 
 /* wire the shared effects engine to static markup: section reveals +
    count-up stat numbers (dynamic regions call refreshEffects themselves). */
@@ -130,6 +134,7 @@ export async function renderLivePulse() {
         <span class="pulse-ago">${esc(fmtAgo(ev.ts))}</span>
       </li>`).join("");
     renderHistory(d);
+    renderWakeDots(d.events || []);
   } catch {
     feed.innerHTML = `<li class="pulse-row muted">feed unreachable — mesh offline or 8090 down</li>`;
   }
@@ -149,6 +154,29 @@ export function renderHistory(d) {
   }).join("");
 }
 renderLivePulse();
+
+/* ---- wake-activity dot strip (#4): last 24h bucketed by hour; a filled
+   dot means at least one mesh event that hour. Same activity feed, no new
+   requests. ---- */
+export function renderWakeDots(events) {
+  const box = document.getElementById("wake-dots");
+  if (!box) return;
+  const nowH = Math.floor(Date.now() / 3600e3);
+  const counts = new Array(24).fill(0);
+  for (const ev of events) {
+    const t = new Date(ev.ts || 0).getTime();
+    if (!Number.isFinite(t)) continue;
+    const h = Math.floor(t / 3600e3);
+    const back = nowH - h;
+    if (back >= 0 && back < 24) counts[23 - back] += 1;
+  }
+  const max = Math.max(...counts, 1);
+  box.innerHTML = counts.map((c, i) => {
+    const lvl = c === 0 ? "" : c >= max && max > 2 ? "hot" : "on";
+    const hr = new Date((nowH - (23 - i)) * 3600e3).getHours();
+    return `<i class="wake-dot${lvl ? ` ${lvl}` : ""}" title="${hr}:00 — ${c} event${c === 1 ? "" : "s"}"></i>`;
+  }).join("") + `<span class="wake-dots-label">24h wake activity · ${events.length} events</span>`;
+}
 
 /* ---- §12 spend & quota: cost by host + busiest agents, last 24h ---- */
 const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "var(--m-qwen)" };
@@ -174,6 +202,18 @@ export async function renderSpend() {
           <span class="spend-val">$${v.toFixed(2)}</span>
         </div>`).join("")
       : `<span class="muted">no cost data yet</span>`;
+
+    // 14-day fleet spend trend (#4): daily totals across hosts into the
+    // shared sparkline, day labels for the hover readout.
+    const spark = document.getElementById("spend-spark");
+    if (spark && typeof spark.update === "function" && Array.isArray(d.days)) {
+      const perDay = d.days.map((_, i) =>
+        Object.values(d.daily_cost_by_host || {}).reduce((s, srs) => s + (srs[i] || 0), 0));
+      spark.update([perDay], [{ color: "#ffc233", fill: "rgba(255,194,51,.14)", width: 1.8 }], {
+        labels: d.days.map((day) => day.slice(5)),
+        tipFmt: (i, vals, label) => `${label || ""} · fleet $${(vals[0] || 0).toFixed(2)}`,
+      });
+    }
 
     const top = [...(d.per_agent_24h || [])]
       .sort((a, b) => b.cost_24h - a.cost_24h)

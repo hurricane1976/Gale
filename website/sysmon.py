@@ -24,10 +24,12 @@ since it's a cloud API call, not a local one. Admin actions on that data
 (pause/resume/block) are a separate always-on service, firewalla_control.py
 -- this collector never writes.
 """
+import hashlib
 import json
 import os
 import re
 import socket
+import stat
 import subprocess
 import sys
 import time
@@ -46,6 +48,31 @@ from firewalla import FirewallaClient, FirewallaError
 
 OUT_PATH = "/var/www/gale-api/status.json"
 INTERVAL_S = 15
+
+# ---- derived history stores (all under the agent-owned gale-api dir) ----
+# Three small rolling datasets the dashboard renders:
+#   disk-history.jsonl              -> capacity forecast (item: predictive disk)
+#   firewalla-talkers-history.jsonl -> 24h top-talker chart (sampled flows)
+#   uptime-history.json             -> 90-day worst-health-per-day ledger
+# Sampling cadences are deliberately much slower than the 15s snapshot loop:
+# disk growth is meaningful at hours, not seconds; talkers align with the
+# Firewalla cloud-API cycle (which itself runs ~11 min, see below).
+API_DIR = "/var/www/gale-api"
+# node_exporter textfile bridge (item 11): sysmon's JSON-only signals
+# (hwmon temps, NVMe wear, PSI stalls, OOM count, service states, TLS
+# runway, backup age) as Prometheus metrics. The exporter snap watches
+# this dir (flags file sets --collector.textfile.directory here); the dir
+# is chown'd agent:agent so the collector needs no extra privileges.
+TEXTFILE_DIR = "/var/snap/node-exporter/common"
+TEXTFILE_PATH = os.path.join(TEXTFILE_DIR, "gale.prom")
+DISK_HISTORY_PATH = os.path.join(API_DIR, "disk-history.jsonl")
+TALKERS_HISTORY_PATH = os.path.join(API_DIR, "firewalla-talkers-history.jsonl")
+UPTIME_HISTORY_PATH = os.path.join(API_DIR, "uptime-history.json")
+DISK_SAMPLE_EVERY_S = 600        # one row per mount per 10 min
+TALKERS_SAMPLE_EVERY_S = 660     # one row per firewalla poll cycle (no dupes)
+HISTORY_KEEP_DAYS = 30           # disk + talkers retention
+UPTIME_DAYS = 90                 # uptime ledger window
+DISK_FORECAST_DAYS = 14          # regression window for days-to-full
 
 # Peer-fleet health targets. "local" = co-located on this host (same OS/
 # network stats as Gale itself, just a different agent+port); "remote" =
@@ -289,13 +316,255 @@ def collect_tailscale():
     }
 
 
+def collect_hygiene():
+    """Item 10 (hygiene): TLS cert days-left (the PWA/push stack depends on
+    the tailscale cert) + Tramontane last-good-backup age. Both read-only,
+    both None when unreadable -- never a snapshot failure."""
+    import glob as _glob
+    cert_days, cert_path = None, None
+    for crt in sorted(_glob.glob("/etc/nginx/ssl/*.crt")):
+        out = run(["openssl", "x509", "-in", crt, "-noout", "-enddate"], timeout=5)
+        m = re.match(r"notAfter=(.*)", out or "")
+        if not m:
+            continue
+        try:
+            exp = datetime.strptime(m.group(1).strip(), "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+            days = (exp - datetime.now(timezone.utc)).total_seconds() / 86400
+            if cert_days is None or days < cert_days:
+                cert_days, cert_path = round(days, 1), crt
+        except ValueError:
+            continue
+    backup_age_h, backup_name = None, None
+    try:
+        newest, newest_t = None, 0.0
+        for root, _ds, fs in os.walk("/home/agent/tramontane/backups"):
+            for fn in fs:
+                p = os.path.join(root, fn)
+                try:
+                    mt = os.path.getmtime(p)
+                except OSError:
+                    continue
+                if mt > newest_t:
+                    newest, newest_t = p, mt
+        if newest:
+            backup_age_h = round((time.time() - newest_t) / 3600, 1)
+            backup_name = os.path.basename(newest)
+    except OSError:
+        pass
+    drill, drill_age_h = None, None
+    try:
+        with open(os.path.join(API_DIR, "restore-drill.json")) as f:
+            drill = json.load(f)
+        ts = datetime.strptime((drill.get("ts") or "")[:19],
+                               "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+        drill_age_h = round((datetime.now(timezone.utc) - ts).total_seconds() / 3600, 1)
+    except (OSError, ValueError, TypeError, AttributeError):
+        drill = None
+    return {"cert_days_left": cert_days, "cert_path": cert_path,
+            "backup_age_h": backup_age_h, "backup_name": backup_name,
+            "drill_ok": drill.get("ok") if isinstance(drill, dict) else None,
+            "drill_age_h": drill_age_h,
+            "drill_backup": drill.get("backup") if isinstance(drill, dict) else None}
+
+
+_KLOG_UNKNOWN = object()
+_KLOG_SRC = _KLOG_UNKNOWN
+
+
+def collect_kernel():
+    """Item 9 (kernel-distress watch): PSI pressure stalls, cpufreq
+    cur/max ratio (thermal-throttle sysfs is driver-specific and absent
+    here), and kernel err+ ring via journalctl -k (raw dmesg is
+    restricted for unprivileged users). All best-effort; missing sources
+    are None, never failures."""
+    import glob as _glob
+    pressure = {}
+    for res in ("cpu", "memory", "io"):
+        try:
+            with open(f"/proc/pressure/{res}") as f:
+                for line in f:
+                    parts = line.split()
+                    if not parts:
+                        continue
+                    for p in parts[1:]:
+                        if "=" in p:
+                            k, v = p.split("=", 1)
+                            if k.startswith("avg"):
+                                try:
+                                    pressure[f"{res}_{parts[0]}_{k}"] = round(float(v), 2)
+                                except ValueError:
+                                    pass
+        except OSError:
+            pass
+    # throttle counters where the driver exposes them (summed, by kind)
+    throttles = {}
+    for p in _glob.glob("/sys/devices/system/cpu/cpu[0-9]*/thermal_throttle/*_throttle_count"):
+        kind = os.path.basename(p).replace("_throttle_count", "")
+        try:
+            with open(p) as f:
+                throttles[kind] = throttles.get(kind, 0) + int(f.read().strip())
+        except (OSError, ValueError):
+            pass
+    # freq headroom across policies (cur/max); a hot box parks near max
+    # while throttling *down* under thermal load -- low ratio at high
+    # temp corroborates throttling when counters are absent.
+    freq_ratio = None
+    try:
+        ratios = []
+        for pol in _glob.glob("/sys/devices/system/cpu/cpufreq/policy*"):
+            with open(os.path.join(pol, "scaling_cur_freq")) as f:
+                cur = float(f.read().strip())
+            with open(os.path.join(pol, "scaling_max_freq")) as f:
+                mx = float(f.read().strip())
+            if mx > 0:
+                ratios.append(cur / mx)
+        if ratios:
+            freq_ratio = round(sum(ratios) / len(ratios), 2)
+    except OSError:
+        pass
+    global _KLOG_SRC
+    if _KLOG_SRC is _KLOG_UNKNOWN:
+        # raw dmesg is restricted for unprivileged users (rc != 0), the
+        # journal usually isn't; probe once, cache -- neither changes
+        # without a reboot or an ACL edit.
+        _KLOG_SRC = None
+        for cmd in (["journalctl", "-k", "-n1", "--no-pager"],
+                    ["dmesg", "-n", "1"]):
+            try:
+                r = subprocess.run(cmd, capture_output=True, timeout=5)
+                if r.returncode == 0:
+                    _KLOG_SRC = cmd[0]
+                    break
+            except Exception:
+                continue
+    klog = ""
+    if _KLOG_SRC == "journalctl":
+        klog = run(["journalctl", "-k", "--since", "24 hours ago", "-p", "err",
+                    "--no-pager", "-o", "cat"], timeout=8)
+    elif _KLOG_SRC == "dmesg":
+        klog = run(["dmesg", "--level=err,crit,alert,emerg", "--nopager"], timeout=5)
+    oom_kills = len(re.findall(r"Out of memory|Killed process|oom-killer", klog or ""))
+    err_lines = [ln.strip()[:160] for ln in (klog or "").splitlines() if ln.strip()][-5:]
+    return {"pressure": pressure or None, "throttles": throttles or None,
+            "freq_ratio": freq_ratio, "oom_kills_24h": oom_kills,
+            "klog_err_24h": len(err_lines), "klog_tail": err_lines,
+            "klog_src": _KLOG_SRC}
+
+
 def collect_services():
+    # Item 10 (service health dashboard): besides active/since, capture
+    # restart counts + current memory so the dashboard can show flapping
+    # units and RSS growth. One `systemctl show` call per unit, all
+    # best-effort -- a missing property is None, never a failure.
     out = []
     for unit in SERVICES:
         active = run(["systemctl", "is-active", unit]) or "unknown"
-        since = run(["systemctl", "show", unit, "--property=ActiveEnterTimestamp", "--value"])
-        out.append({"unit": unit, "state": active, "since": since})
+        show = run(["systemctl", "show", unit,
+                    "--property=ActiveEnterTimestamp,NRestarts,MemoryCurrent,SubState"])
+        props = {}
+        for line in show.splitlines():
+            if "=" in line:
+                k, v = line.split("=", 1)
+                props[k] = v
+        try:
+            n_restarts = int(props.get("NRestarts", ""))
+        except (ValueError, TypeError):
+            n_restarts = None
+        try:
+            mem_raw = props.get("MemoryCurrent", "")
+            mem_bytes = int(mem_raw) if mem_raw not in ("", "[not set]") else None
+            if mem_bytes == 18446744073709551615:  # systemd "infinity" sentinel
+                mem_bytes = None
+        except (ValueError, TypeError):
+            mem_bytes = None
+        out.append({"unit": unit, "state": active,
+                    "since": props.get("ActiveEnterTimestamp", "") or None,
+                    "sub": props.get("SubState", "") or None,
+                    "n_restarts": n_restarts,
+                    "memory_bytes": mem_bytes})
     return out
+
+
+def collect_hardware():
+    """Item 7 (hardware telemetry surface): thermal zones, hwmon sensors
+    (temps + fan RPM), and NVMe SMART (temp/wear/spare) -- all best-effort
+    sysfs reads plus one bounded smartctl call. Never raises; a missing
+    sensor class is an empty list, not an error."""
+    import glob as _glob
+    zones = []
+    for temp_path in sorted(_glob.glob("/sys/class/thermal/thermal_zone*/temp")):
+        zone = temp_path.split("/")[-2]
+        type_path = temp_path.replace("/temp", "/type")
+        try:
+            with open(type_path) as f:
+                ztype = f.read().strip()
+        except OSError:
+            ztype = zone
+        try:
+            with open(temp_path) as f:
+                raw = f.read().strip()
+            # sysfs thermal reports millidegrees; some drivers report degrees
+            mv = float(raw)
+            c = mv / 1000.0 if mv > 1000 else mv
+            zones.append({"zone": zone, "type": ztype, "temp_c": round(c, 1)})
+        except (OSError, ValueError):
+            continue
+    sensors, fans = [], []
+    for name_path in sorted(_glob.glob("/sys/class/hwmon/hwmon*/name")):
+        hw = name_path.split("/")[-2]
+        try:
+            with open(name_path) as f:
+                chip = f.read().strip()
+        except OSError:
+            chip = hw
+        base = os.path.dirname(name_path)
+        for tp in sorted(_glob.glob(os.path.join(base, "temp*_input"))):
+            label = ""
+            lab_path = tp.replace("_input", "_label")
+            try:
+                with open(lab_path) as f:
+                    label = f.read().strip()
+            except OSError:
+                pass
+            try:
+                with open(tp) as f:
+                    mv = float(f.read().strip())
+                c = mv / 1000.0 if mv > 1000 else mv
+                sensors.append({"chip": chip, "label": label or os.path.basename(tp),
+                                "temp_c": round(c, 1)})
+            except (OSError, ValueError):
+                continue
+        for fp in sorted(_glob.glob(os.path.join(base, "fan*_input"))):
+            try:
+                with open(fp) as f:
+                    rpm = int(float(f.read().strip()))
+                sensors_fan = {"chip": chip, "fan": os.path.basename(fp), "rpm": rpm}
+                fans.append(sensors_fan)
+            except (OSError, ValueError):
+                continue
+    nvme = None
+    smart_raw = run(["smartctl", "-A", "-j", "/dev/nvme0n1"], timeout=4)
+    if smart_raw:
+        try:
+            sj = json.loads(smart_raw)
+            nv = (sj.get("nvme_smart_health_information_log") or {})
+            nvme = {"device": "/dev/nvme0n1",
+                    "temp_c": nv.get("temperature"),
+                    "spare_pct": nv.get("available_spare"),
+                    "used_pct": nv.get("percentage_used"),
+                    "data_units_read": nv.get("data_units_read"),
+                    "power_on_hours": nv.get("power_on_hours")}
+        except (json.JSONDecodeError, AttributeError):
+            nvme = None
+    hottest = None
+    for s in sensors:
+        if isinstance(s.get("temp_c"), (int, float)) and (hottest is None or s["temp_c"] > hottest):
+            hottest = s["temp_c"]
+    for z in zones:
+        if hottest is None or z["temp_c"] > hottest:
+            hottest = z["temp_c"]
+    return {"thermal_zones": zones, "sensors": sensors, "fans": fans,
+            "nvme": nvme, "hottest_c": hottest}
 
 
 def collect_security():
@@ -308,6 +577,66 @@ def collect_security():
         "unattended_upgrades": unattended or "unknown",
         "reboot_required": os.path.exists("/var/run/reboot-required"),
     }
+
+
+DRIFT_BASELINE = os.path.join(API_DIR, "sudoers.sha256")
+
+# Secret files that must stay owner-only. (path, may_be_missing)
+_SECRET_FILES = [
+    ("/etc/nginx/ssl/gale-agent.tail2f1671.ts.net.key", False),
+    ("/etc/alertmanager/telegram_bot_token", False),
+    ("/home/agent/agent/keys/telegram.env", False),
+    ("/home/agent/agent/keys/firewalla.env", False),
+    ("/home/agent/agent/keys/github_deploy_key", False),
+    ("/home/agent/agent/keys/peers.env", False),
+]
+
+
+def collect_drift():
+    """Item 19 (secret/config drift): sudoers drop-in content change vs a
+    hash baseline (auto-established, warn on drift), owner-only permission
+    audit on secret files (crit on exposure), Telegram token age (warn at
+    1y -- rotation reminder, no invented policy beyond that)."""
+    sudoers_changed, sudoers_hash = None, None
+    try:
+        with open("/etc/sudoers.d/99-agent", "rb") as f:
+            sudoers_hash = hashlib.sha256(f.read()).hexdigest()[:16]
+    except OSError:
+        # agent can't always read sudoers.d directly; same box allows
+        # passwordless sudo for its monitoring commands (ss, ufw).
+        blob = run(["sudo", "-n", "cat", "/etc/sudoers.d/99-agent"], timeout=3)
+        if blob:
+            sudoers_hash = hashlib.sha256(blob.encode()).hexdigest()[:16]
+    if sudoers_hash:
+        try:
+            with open(DRIFT_BASELINE) as f:
+                baseline = f.read().strip()
+        except OSError:
+            baseline = None
+        if baseline is None:
+            try:
+                with open(DRIFT_BASELINE, "w") as f:
+                    f.write(sudoers_hash)
+            except OSError:
+                pass
+        else:
+            sudoers_changed = (baseline != sudoers_hash)
+    perm_issues = []
+    for path, _ in _SECRET_FILES:
+        try:
+            st = os.stat(path)
+        except OSError:
+            continue
+        mode = stat.S_IMODE(st.st_mode)
+        if mode & 0o077:
+            perm_issues.append(f"{path} mode {oct(mode)}")
+    token_age_d = None
+    try:
+        token_age_d = round((time.time() - os.path.getmtime("/home/agent/agent/keys/telegram.env")) / 86400, 1)
+    except OSError:
+        pass
+    return {"sudoers_changed": sudoers_changed, "perm_issues": perm_issues,
+            "token_age_d": token_age_d}
 
 
 def probe_target(t):
@@ -557,7 +886,10 @@ def collect_ollama():
                 try:
                     d = datetime.fromisoformat(str(exp).replace("Z", "+00:00"))
                     secs = (d - datetime.now(timezone.utc)).total_seconds()
-                    exp_iso = max(0, int(secs // 60))
+                    mins = int(secs // 60)
+                    # keep_alive=-1 models report a far-future expiry (~292y);
+                    # rendering "153722852m" is noise -- show open-ended as None
+                    exp_iso = mins if 0 <= mins < 60 * 24 * 30 else None
                 except ValueError:
                     pass
             data["loaded"].append({
@@ -596,17 +928,29 @@ def collect_ollama():
 
 
 def snapshot():
+    now = time.time()
+    host = collect_host()
+    sample_capacity_history(now, host)
+    fw = collect_firewalla()
+    sample_talkers_history(fw, now)
+    targets = collect_targets()
+    full_targets = collect_full_targets()
     return {
         "generated_at": iso_now(),
         "collector_interval_s": INTERVAL_S,
-        "host": collect_host(),
+        "host": {**host, "disk_forecast": disk_forecast()},
+        "hardware": collect_hardware(),
+        "kernel": collect_kernel(),
+        "hygiene": collect_hygiene(),
+        "drift": collect_drift(),
         "network": collect_network(),
         "services": collect_services(),
         "security": collect_security(),
-        "targets": collect_targets(),
-        "firewalla": collect_firewalla(),
+        "targets": targets,
+        "firewalla": {**fw, "talkers_history": talkers_history()},
         "ollama": collect_ollama(),
-        "full_targets": collect_full_targets(),
+        "full_targets": full_targets,
+        "uptime_history": uptime_history(targets, full_targets),
     }
 
 
@@ -619,13 +963,319 @@ def write_atomic(path, data):
     os.replace(tmp, path)
 
 
+def _prom_esc(s):
+    return str(s or "?").replace("\\", r"\\").replace('"', r"\"").replace("\n", " ")
+
+
+def write_textfile(snap):
+    """Render the JSON snapshot's sysmon-unique signals as Prometheus
+    exposition format. Best-effort: a failed write leaves the previous
+    .prom in place (and absent(gale_box_hottest_celsius) pages on it)."""
+    try:
+        L = []
+        hw = snap.get("hardware") or {}
+        for z in hw.get("thermal_zones") or []:
+            if isinstance(z.get("temp_c"), (int, float)):
+                L.append(f'gale_thermal_zone_celsius{{zone="{_prom_esc(z.get("zone"))}",type="{_prom_esc(z.get("type"))}"}} {z["temp_c"]}')
+        for s in hw.get("sensors") or []:
+            if isinstance(s.get("temp_c"), (int, float)):
+                L.append(f'gale_hwmon_temp_celsius{{chip="{_prom_esc(s.get("chip"))}",label="{_prom_esc(s.get("label"))}"}} {s["temp_c"]}')
+        for f in hw.get("fans") or []:
+            L.append(f'gale_hwmon_fan_rpm{{chip="{_prom_esc(f.get("chip"))}",fan="{_prom_esc(f.get("fan"))}"}} {f.get("rpm", 0)}')
+        if isinstance(hw.get("hottest_c"), (int, float)):
+            L.append(f"gale_box_hottest_celsius {hw['hottest_c']}")
+        nv = hw.get("nvme") or {}
+        for k, m in (("used_pct", "gale_nvme_used_percent"), ("spare_pct", "gale_nvme_spare_percent"),
+                     ("temp_c", "gale_nvme_temp_celsius"), ("power_on_hours", "gale_nvme_power_on_hours")):
+            if isinstance(nv.get(k), (int, float)):
+                L.append(f"{m} {nv[k]}")
+        for sv in snap.get("services") or []:
+            u = _prom_esc(sv.get("unit"))
+            L.append(f'gale_service_up{{unit="{u}"}} {1 if sv.get("state") == "active" else 0}')
+            if isinstance(sv.get("n_restarts"), int):
+                L.append(f'gale_service_restarts{{unit="{u}"}} {sv["n_restarts"]}')
+        k = snap.get("kernel") or {}
+        for pk, pv in (k.get("pressure") or {}).items():
+            # cpu_some_avg10 -> resource="cpu" mode="some" window="avg10"
+            m = re.match(r"(\w+)_(some|full)_(avg\d+)", pk)
+            if m and isinstance(pv, (int, float)):
+                L.append(f'gale_pressure_stall_ratio{{resource="{m.group(1)}",mode="{m.group(2)}",window="{m.group(3)}"}} {pv / 100}')
+        L.append(f"gale_oom_kills_24h {k.get('oom_kills_24h') or 0}")
+        L.append(f"gale_klog_err_24h {k.get('klog_err_24h') or 0}")
+        hy = snap.get("hygiene") or {}
+        if isinstance(hy.get("cert_days_left"), (int, float)):
+            L.append(f"gale_tls_cert_days_left {hy['cert_days_left']}")
+        if isinstance(hy.get("backup_age_h"), (int, float)):
+            L.append(f"gale_backup_age_hours {hy['backup_age_h']}")
+        L.append(f"gale_textfile_generated_unixtime {int(time.time())}")
+        fams = {}
+        for ln in L:
+            fams.setdefault(ln.split("{")[0].split(" ")[0], []).append(ln)
+        body = "".join(
+            f"# HELP {m} Gale sysmon bridge signal (sysmon.write_textfile)\n"
+            f"# TYPE {m} gauge\n" + "\n".join(ls) + "\n"
+            for m, ls in sorted(fams.items()))
+        tmp = f"{TEXTFILE_PATH}.tmp-{os.getpid()}"
+        with open(tmp, "w") as f:
+            f.write(body)
+        os.replace(tmp, TEXTFILE_PATH)
+    except OSError as e:
+        sys.stderr.write(f"sysmon: textfile write failed: {e!r}\n")
+
+
+# ---- history plumbing ------------------------------------------------------
+
+_prune_state = {"t": 0.0}
+
+
+def append_jsonl(path, row, keep_days=HISTORY_KEEP_DAYS):
+    """Append one JSON row; lazily (hourly) rewrite the file without rows
+    older than keep_days. A missing/corrupt file just starts over -- history
+    is advisory, never worth failing a snapshot over."""
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "a") as f:
+            f.write(json.dumps(row, separators=(",", ":")) + "\n")
+        now = time.time()
+        if now - _prune_state["t"] > 3600:
+            _prune_state["t"] = now
+            cutoff = now - keep_days * 86400
+            try:
+                with open(path) as f:
+                    rows = [ln for ln in f.read().splitlines() if ln]
+                kept, drop = [], False
+                for ln in rows:
+                    try:
+                        if json.loads(ln).get("ts_e", 0) < cutoff:
+                            drop = True
+                            continue
+                    except (json.JSONDecodeError, AttributeError, TypeError):
+                        drop = True
+                        continue
+                    kept.append(ln)
+                if drop:
+                    tmp = f"{path}.tmp-{os.getpid()}"
+                    with open(tmp, "w") as f:
+                        f.write("\n".join(kept) + ("\n" if kept else ""))
+                    os.replace(tmp, path)
+            except OSError:
+                pass
+    except OSError as e:
+        sys.stderr.write(f"sysmon: history append failed ({path}): {e!r}\n")
+
+
+def read_jsonl(path, max_rows=6000):
+    out = []
+    try:
+        with open(path) as f:
+            for ln in f:
+                ln = ln.strip()
+                if not ln:
+                    continue
+                try:
+                    out.append(json.loads(ln))
+                except json.JSONDecodeError:
+                    continue
+    except OSError:
+        pass
+    return out[-max_rows:]
+
+
+# ---- predictive disk capacity (ROADMAP item: disk growth forecast) ---------
+
+_disk_sampled = {"t": 0.0}
+
+
+def sample_capacity_history(now, host):
+    """Item 9-ext: disks + RAM + swap share one history file and one
+    regression (disk_forecast groups by mount, so mem/swap get days-to-full
+    for free). RAM % includes reclaimable cache, so its slope is usually
+    ~0 -> reported steady; only a real leak trips the honesty gate."""
+    if now - _disk_sampled["t"] < DISK_SAMPLE_EVERY_S:
+        return
+    _disk_sampled["t"] = now
+    for d in host.get("disks") or []:
+        append_jsonl(DISK_HISTORY_PATH, {
+            "ts": iso_now(), "ts_e": now, "mount": d["mount"],
+            "used_gb": d["used_gb"], "pct": d["pct"],
+        })
+    m = host.get("mem") or {}
+    if isinstance(m.get("pct"), (int, float)):
+        append_jsonl(DISK_HISTORY_PATH, {
+            "ts": iso_now(), "ts_e": now, "mount": "mem",
+            "used_gb": round((m.get("used_mb") or 0) / 1024, 2), "pct": m["pct"],
+        })
+    s = host.get("swap") or {}
+    if isinstance(s.get("pct"), (int, float)):
+        append_jsonl(DISK_HISTORY_PATH, {
+            "ts": iso_now(), "ts_e": now, "mount": "swap",
+            "used_gb": round((s.get("used_mb") or 0) / 1024, 2), "pct": s["pct"],
+        })
+
+
+def sample_disk_history(now):
+    # Back-compat shim: snapshot() now samples with host data in hand.
+    if now - _disk_sampled["t"] < DISK_SAMPLE_EVERY_S:
+        return
+    _disk_sampled["t"] = now
+    for d in collect_disks():
+        append_jsonl(DISK_HISTORY_PATH, {
+            "ts": iso_now(), "ts_e": now, "mount": d["mount"],
+            "used_gb": d["used_gb"], "pct": d["pct"],
+        })
+
+
+def disk_forecast():
+    """Least-squares slope of used-% over the last DISK_FORECAST_DAYS days per
+    mount -> 'days until full' at the observed rate. Slope below 0.05 %-pt/day
+    (i.e. < ~1.5%/month) is reported as steady rather than a fake-precise
+    400-day ETA; forecasts need >= 3 days of samples to mean anything."""
+    by_mount = {}
+    for row in read_jsonl(DISK_HISTORY_PATH):
+        by_mount.setdefault(row.get("mount") or "?", []).append(row)
+    out = []
+    now = time.time()
+    for mount, rows in sorted(by_mount.items()):
+        recent = [r for r in rows if now - r.get("ts_e", 0) <= DISK_FORECAST_DAYS * 86400
+                  and isinstance(r.get("pct"), (int, float))]
+        if len(recent) < 2:
+            continue
+        t0 = recent[0]["ts_e"]
+        xs = [(r["ts_e"] - t0) / 86400 for r in recent]
+        ys = [r["pct"] for r in recent]
+        n = len(xs)
+        mx, my = sum(xs) / n, sum(ys) / n
+        denom = sum((x - mx) ** 2 for x in xs)
+        slope = (sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / denom) if denom > 1e-9 else 0.0
+        pct_now = ys[-1]
+        days = ((100.0 - pct_now) / slope) if slope > 0.05 else None
+        out.append({
+            "mount": mount,
+            "pct": pct_now,
+            "slope_pct_per_day": round(slope, 3),
+            "days_to_full": round(days, 1) if days is not None and 0 < days < 3650 else None,
+            "samples": n,
+            "span_days": round(xs[-1] - xs[0], 1) if n > 1 else 0.0,
+        })
+    return out
+
+
+# ---- firewalla top-talker history (24h stacked chart) ----------------------
+
+_talkers_sampled = {"fw_t": None}
+
+
+def sample_talkers_history(fw, now):
+    """One row per Firewalla poll cycle (the collector caches fw data between
+    cycles, so keying on the cache timestamp avoids duplicate rows)."""
+    if not (fw and fw.get("ok")):
+        return
+    fw_t = _fw_cache["t"]
+    if fw_t == _talkers_sampled["fw_t"]:
+        return
+    _talkers_sampled["fw_t"] = fw_t
+    talkers = ((fw.get("live") or {}).get("top_talkers")) or []
+    if talkers:
+        append_jsonl(TALKERS_HISTORY_PATH, {
+            "ts": iso_now(), "ts_e": now,
+            "talkers": [{"name": t.get("name") or "?", "bytes": int(t.get("bytes") or 0)}
+                        for t in talkers],
+        })
+
+
+def talkers_history():
+    """Aggregate the last 24h of talker samples into 2h buckets (top 8 devices
+    by 24h total, everything else folded into 'other') for a stacked chart,
+    plus per-device 24h totals for the legend."""
+    rows = read_jsonl(TALKERS_HISTORY_PATH)
+    now = time.time()
+    recent = [r for r in rows if now - r.get("ts_e", 0) <= 86400]
+    totals = {}
+    bucket_map = {}
+    for r in recent:
+        for t in r.get("talkers") or []:
+            name, b = t.get("name") or "?", int(t.get("bytes") or 0)
+            totals[name] = totals.get(name, 0) + b
+            bkt = int(r["ts_e"] // 7200)
+            bucket_map.setdefault(bkt, {}).setdefault(name, 0)
+            bucket_map[bkt][name] += b
+    top = [n for n, _ in sorted(totals.items(), key=lambda kv: -kv[1])[:8]]
+    buckets = []
+    for bkt in sorted(bucket_map):
+        devs = bucket_map[bkt]
+        named = {n: devs.get(n, 0) for n in top if devs.get(n)}
+        other = sum(v for k, v in devs.items() if k not in top)
+        if other:
+            named["other"] = other
+        buckets.append({"ts": bkt * 7200, "devices": named})
+    return {
+        "window_hours": 24,
+        "bucket_hours": 2,
+        "buckets": buckets,
+        "totals_24h": [[n, totals[n]] for n, _ in sorted(totals.items(), key=lambda kv: -kv[1])[:10]],
+        "samples": len(recent),
+    }
+
+
+# ---- 90-day uptime ledger ---------------------------------------------------
+
+_UPTIME_SEV = {"up": 0, "auth": 1, "error": 2, "down": 3}
+_SEV_UPTIME = {0: "up", 1: "auth", 2: "down", 3: "down"}
+
+
+def uptime_history(targets, full_targets):
+    """Fold today's worst health per target into a 90-day rolling ledger.
+    'auth' counts as reachable-but-gated (its own shade); error/down collapse
+    to 'down'. Reads/writes a tiny JSON file each snapshot -- fine at 15s for
+    a <10KB file."""
+    today = iso_now()[:10]
+    try:
+        with open(UPTIME_HISTORY_PATH) as f:
+            led = json.load(f)
+    except (OSError, json.JSONDecodeError, ValueError):
+        led = {"targets": {}}
+    targets_led = led.setdefault("targets", {})
+    for t in targets + full_targets:
+        name, health = t.get("name") or "?", t.get("health") or "down"
+        day = targets_led.setdefault(name, {})
+        sev = _UPTIME_SEV.get(health, 3)
+        if health == "auth":
+            cur = day.get(today)
+            day[today] = cur if isinstance(cur, int) and cur >= 1 else 1
+        else:
+            day[today] = max(int(day.get(today, 0) or 0), sev)
+    # roll the window
+    cutoff = (datetime.now(timezone.utc).date().toordinal() - UPTIME_DAYS + 1)
+    for name in list(targets_led):
+        day = targets_led[name]
+        for d in [k for k in day if len(k) == 10
+                  and datetime.strptime(k, "%Y-%m-%d").date().toordinal() < cutoff]:
+            del day[d]
+    led["updated"] = iso_now()
+    try:
+        tmp = f"{UPTIME_HISTORY_PATH}.tmp-{os.getpid()}"
+        with open(tmp, "w") as f:
+            json.dump(led, f)
+        os.replace(tmp, UPTIME_HISTORY_PATH)
+    except OSError as e:
+        sys.stderr.write(f"sysmon: uptime ledger write failed: {e!r}\n")
+    # shape for the dashboard: aligned per-target arrays over the window
+    dates = [datetime.fromordinal(cutoff + i).date().isoformat() for i in range(UPTIME_DAYS)]
+    out = {"days": dates, "targets": {}}
+    for name, day in sorted(targets_led.items()):
+        out["targets"][name] = [day.get(d) for d in dates]
+    return out
+
+
 def main():
     once = "--once" in sys.argv
     # prime the network-rate calculation so the first real sample has a delta
     collect_network()
     while True:
         try:
-            write_atomic(OUT_PATH, snapshot())
+            snap = snapshot()
+            write_atomic(OUT_PATH, snap)
+            write_textfile(snap)
         except Exception as e:
             sys.stderr.write(f"sysmon: snapshot failed: {e!r}\n")
         if once:

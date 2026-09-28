@@ -17,6 +17,7 @@ ENDPOINTS = {
     "metrics": "/api/fleet/metrics",
     "observability": "/api/fleet/observability",
     "status": "/api/status.json",
+    "wakes": "/api/fleet/wakes",
 }
 
 

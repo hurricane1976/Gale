@@ -619,3 +619,20 @@ button.ct-key:focus-visible { outline: 2px solid var(--tide); outline-offset: 2p
 }
 @keyframes sd-reveal { from { transform: translateY(20px); opacity: 0.4; }
   to { transform: none; opacity: 1; } }
+
+/* ---- print (improvements #1, tidal fork mirror): same light re-skin for
+   fleet.html, which loads only this stylesheet. */
+@media print {
+  :root {
+    color-scheme: light;
+    --bg: #fff; --bg-deep: #fff; --surface: #fff; --surface-2: #f4f6fa;
+    --glass: transparent; --glass-border: #bbb;
+    --line: #bbb; --line-strong: #888;
+    --text: #111; --text-dim: #333; --text-faint: #444;
+  }
+  body::before, body::after, .glow-1, .glow-2, .grain, .fleet-aurora,
+  .fleet-particles, .fleet-topo-canvas, #kiosk-bar, .site-links { display: none !important; }
+  body { background: #fff !important; }
+  .card, .member-card, .fleet-24h-card { break-inside: avoid; box-shadow: none !important; }
+  a { color: #111 !important; }
+}

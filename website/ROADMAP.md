@@ -80,3 +80,35 @@ modules, Python `http.server` backend, static multi-page HTML).
     https://gale-agent.tail2f1671.ts.net/ — alongside the plain-http
     8090 listener. Cert renews via tailscale; cert/key live in
     /etc/nginx/ssl/.)*
+12. **Cinematic layer (Apple + ILM)** — *(shipped 2026-09-28:
+    cinematic.css/js — multi-layer parallax, scroll-scrubbed hero,
+    chapter dots, card spotlight, pulse marquee, calm/storm wipe;
+    wired via main.js + shared.js dynamic hook; respects
+    reduced-motion/contrast/saver/print.)*
+13. **Reliability console + monitoring pack** — *(shipped 2026-09-28:
+    reliability.html/js — SLO/error-budget cards, synthetics grid, RUM
+    vitals, cost forecast, backup freshness; rum.js RUM collector;
+    tools/synthetics.sh blackbox checks → api/synthetics.json;
+    monitoring/gale.rules.yml Prometheus alerts;     monitoring/grafana-golden.json
+    Golden Signals + SLO dashboard.)*
+14. **SliderRevolution wave-2 effects** — *(shipped 2026-09-28:
+    back-to-top progress ring, hero stagger choreography, liquid-morph
+    blob, glassmorphism panels, hover-reveal card details, click ripples,
+    hand-drawn section underlines, progress shimmer, host filmstrip
+    reverse marquee, SVG wave divider; all reduced-motion/saver/
+    contrast/print guarded.)*
+15. **Site-wide rollout + wave 3** — *(shipped 2026-09-28: cinematic.css
+    linked on all 11 pages; back-to-top + letterbox bars auto-created by
+    JS so every page gets them markup-free; spotlight extended to
+    .vital/.target-card/.fleet-24h-card/.ops-panel; wave 3 — state-morphing
+    dots, stop-motion film flicker, cinemagraph breathing hero, press-C
+    letterbox; all guarded.)*
+16. **Finish-the-list wave** — *(shipped 2026-09-28: hero DOF blur +
+    lightning-synced ambient flash (--flash 1→0 from storm canvas);
+    sticky section titles; horizontal snap+drag fleet gallery (narrow);
+    dead-link repair — metrics fleet.html#agent-X anchors now resolve;
+    palette previews (live ↵ preview footer) + roster fallback fetch +
+    cross-page agent jumps + Reliability page; monitoring wired for real —
+    gale-slo.yml 9 rules live in Prometheus, synth textfile bridge
+    (gale_synth_* queryable), */5 cron, Gale-reliability dashboard
+    provisioned in Grafana.)*

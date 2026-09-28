@@ -1,6 +1,6 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch } from "./shared.js";
+import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton } from "./shared.js";
 import { metricsPayload, validate } from "./payloads.js";
 
 boot();
@@ -12,6 +12,10 @@ const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(
 let DATA = null;
 
 const $ = (id) => document.getElementById(id);
+
+// skeleton screens (#6): shimmer until the first fetch renders
+skeleton($("wakings-chart"), 1, 150);
+skeleton($("cost-chart"), 1, 150);
 
 function setFresh(state, text) {
   const el = $("freshness");
@@ -137,6 +141,19 @@ function legend(containerId, hosts) {
   })));
 }
 
+/* Day-total crosshair (#2): the per-bar <title>s already name host values;
+   this adds the day total readout, reading x/day straight from the rendered
+   DOM so chart geometry stays in one place (stackedBars). */
+function tipDayTotals(elId, days) {
+  const svg = $(elId) && $(elId).querySelector("svg");
+  if (!svg) return;
+  const tops = [...svg.querySelectorAll("text.obs-tick-top")];
+  if (!tops.length) return;
+  chartTooltip(svg,
+    tops.map((t) => ({ x: parseFloat(t.getAttribute("x")) || 0 })),
+    (i) => `${(days && days[i]) || ""} · total ${tops[i].textContent}`.trim());
+}
+
 function renderStatus(d) {
   const entries = Object.entries(d.fleet_status || {});
   setText($("sweep-count"), String(entries.length));
@@ -169,6 +186,8 @@ function renderAll() {
   legend("wakings-legend", hosts);
   setHTML($("cost-chart"), stackedBars(DATA.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`));
   legend("cost-legend", Object.keys(DATA.daily_cost_by_host));
+  tipDayTotals("wakings-chart", DATA.days);
+  tipDayTotals("cost-chart", DATA.days);
   renderStatus(DATA);
   refreshEffects();
   setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);

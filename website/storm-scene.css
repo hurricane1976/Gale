@@ -1,0 +1,119 @@
+/* GALE — storm-mountain night hero (mountainwake-inspired, storm-themed).
+   Full-viewport hero: layered night ridges + moon glow + realistic storm
+   clouds + valley fog, canvas behind, content pinned to the bottom like
+   mountainwake's front door. Additive: no-JS shows the fallback SVG ridges,
+   reduced-motion/saver/contrast/print retire the canvas. */
+
+#hero.hero-storm {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: clip;
+  isolation: isolate;
+  padding-block: 0;
+  /* full-bleed: escape #wrap's max-width so the storm scene spans the
+     viewport instead of floating as a band with hard vertical edges */
+  max-width: none;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+#storm-scene {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: -3;
+}
+.hero-storm .storm-fallback {
+  position: absolute; inset: 0; z-index: -3;
+  width: 100%; height: 100%;
+}
+.js .hero-storm .storm-fallback { display: none; }
+html[data-saver="1"] #storm-scene { display: none !important; }
+html[data-saver="1"] .hero-storm .storm-fallback { display: block !important; }
+
+.hero-storm .storm-vignette {
+  position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(5,7,13,0.25) 0%, rgba(5,7,13,0) 38%, rgba(5,7,13,0) 55%, var(--bg-deep) 98%),
+    radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(2,4,10,0.55) 100%);
+}
+.hero-storm .storm-scrim {
+  position: absolute; inset: auto 0 0 0; height: 62%; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(5,7,13,0.55) 60%, rgba(5,7,13,0.78));
+}
+
+.hero-storm .hero-inner {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 36px);
+  padding-bottom: clamp(84px, 13vh, 132px);
+  padding-top: clamp(120px, 18vh, 190px);
+  text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+}
+.hero-storm .hero-title {
+  font-size: clamp(4.5rem, 16vw, 11rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  margin-bottom: 30px;
+  text-shadow: 0 4px 60px rgba(0,0,0,0.6);
+}
+.hero-storm .lede {
+  /* the storm plate is always night: keep light-on-dark text even when
+     the page tokens say light theme */
+  color: #c2ccdf;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.65);
+}
+.hero-storm .eyebrow {
+  color: #8ab4f8;
+  border-color: rgba(110, 168, 245, 0.5);
+  background: rgba(40, 80, 160, 0.16);
+}
+.hero-storm .meta { color: #93a2bf; }
+.hero-storm .chips .chip,
+.hero-storm .meta {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.hero-storm .chips .chip {
+  background: color-mix(in srgb, currentColor 12%, rgba(13, 19, 34, 0.72));
+  border-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+.hero-storm .scroll-cue {
+  position: absolute; left: 50%; bottom: 22px; translate: -50% 0; z-index: 2;
+  display: inline-flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--text-dim); font-family: var(--font-mono); font-size: 0.68rem;
+  letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none;
+  opacity: 0.75; transition: opacity 0.2s;
+}
+.hero-storm .scroll-cue:hover { opacity: 1; color: var(--text); }
+.hero-storm .scroll-cue svg { width: 22px; height: 34px; }
+.hero-storm .scroll-cue .cue-dot {
+  animation: cue-drop 1.9s ease-in-out infinite; transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes cue-drop {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(8px); opacity: 0.35; }
+}
+
+/* keep existing hero scrub working on the new inner wrapper */
+#hero.hero-storm .hero-inner > * {
+  transform: translate3d(0, calc(var(--hero-p, 0) * 34px), 0);
+  opacity: calc(1 - var(--hero-p, 0) * 0.75);
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-storm .scroll-cue .cue-dot { animation: none; }
+  #hero.hero-storm .hero-inner > * { transform: none; opacity: 1; }
+}
+html[data-contrast="high"] .hero-storm .storm-vignette,
+html[data-contrast="high"] .hero-storm .storm-scrim { display: none; }
+html[data-contrast="high"] .hero-storm .hero-inner { text-shadow: none; }
+@media print {
+  #storm-scene, .hero-storm .storm-vignette, .hero-storm .storm-scrim,
+  .hero-storm .scroll-cue { display: none !important; }
+  #hero.hero-storm { min-height: auto; }
+}

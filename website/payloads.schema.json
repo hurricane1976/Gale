@@ -146,6 +146,74 @@
       },
       "totals": {
         "properties": {
+          "agents": {
+            "items": {
+              "properties": {
+                "agent": {
+                  "type": "string"
+                },
+                "burn_tok_per_h": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "cost_usd": {
+                  "type": "number"
+                },
+                "errors": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "last_ts": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "mean_cost_usd": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "p50_ms": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "p95_ms": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "runs": {
+                  "type": "number"
+                },
+                "tokens_24h": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "total_tokens": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "agent",
+                "runs",
+                "cost_usd",
+                "total_tokens"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "cost_usd": {
             "type": "number"
           },
@@ -174,6 +242,9 @@
   "status": {
     "$id": "gale/ops-status-v1",
     "properties": {
+      "drift": {
+        "type": "object"
+      },
       "generated_at": {
         "type": "string"
       },
@@ -189,6 +260,9 @@
             "items": {
               "type": "number"
             },
+            "type": "array"
+          },
+          "disk_forecast": {
             "type": "array"
           },
           "disks": {
@@ -212,6 +286,9 @@
               "type": "object"
             },
             "type": "array"
+          },
+          "hardware": {
+            "type": "object"
           },
           "hostname": {
             "type": "string"
@@ -275,6 +352,12 @@
           "disks",
           "cpu_per_core"
         ],
+        "type": "object"
+      },
+      "hygiene": {
+        "type": "object"
+      },
+      "kernel": {
         "type": "object"
       },
       "network": {
@@ -365,6 +448,18 @@
       "services": {
         "items": {
           "properties": {
+            "memory_bytes": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "n_restarts": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
             "since": {
               "type": [
                 "string",
@@ -373,6 +468,12 @@
             },
             "state": {
               "type": "string"
+            },
+            "sub": {
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "unit": {
               "type": "string"
@@ -419,6 +520,63 @@
       "targets",
       "security",
       "network"
+    ],
+    "type": "object"
+  },
+  "wakes": {
+    "$id": "gale/fleet-wakes-v1",
+    "properties": {
+      "count": {
+        "type": "number"
+      },
+      "generated_at": {
+        "type": "string"
+      },
+      "runs": {
+        "items": {
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "cost_usd": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "duration_ms": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "is_error": {
+              "type": "boolean"
+            },
+            "ts": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "agent",
+            "ts",
+            "is_error",
+            "duration_ms",
+            "cost_usd"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "schema": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "schema",
+      "count",
+      "runs",
+      "generated_at"
     ],
     "type": "object"
   }

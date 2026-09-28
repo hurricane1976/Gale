@@ -1,0 +1,225 @@
+{
+ "title": "Gale backend",
+ "uid": "gale-backend",
+ "timezone": "browser",
+ "schemaVersion": 41,
+ "version": 1,
+ "refresh": "30s",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "panels": [
+  {
+   "id": 1,
+   "type": "timeseries",
+   "title": "Journal volume by unit",
+   "datasource": {
+    "type": "loki",
+    "uid": "dfzj5vd2b2yv4b"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 0
+   },
+   "targets": [
+    {
+     "expr": "sum by (unit) (count_over_time({unit=~\"gale-.*\"}[1m]))",
+     "refId": "A",
+     "legendFormat": "{{unit}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   }
+  },
+  {
+   "id": 2,
+   "type": "timeseries",
+   "title": "Error-pattern rate",
+   "datasource": {
+    "type": "loki",
+    "uid": "dfzj5vd2b2yv4b"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 0
+   },
+   "targets": [
+    {
+     "expr": "sum by (unit) (rate({unit=~\"gale-.*\"} |~ \"(?i)(error|exception|traceback|failed)\" [5m]))",
+     "refId": "A",
+     "legendFormat": "{{unit}}"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "custom": {
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   }
+  },
+  {
+   "id": 3,
+   "type": "timeseries",
+   "title": "fleet-api span p95",
+   "datasource": {
+    "type": "loki",
+    "uid": "dfzj5vd2b2yv4b"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 8
+   },
+   "targets": [
+    {
+     "expr": "quantile_over_time(0.95, {unit=\"gale-fleet-api.service\"} |= \"SPAN\" | regexp \"dur_ms\\\\\\\": (?P<dur>[0-9.]+)\" | unwrap dur [5m])",
+     "refId": "A"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ms",
+     "custom": {
+      "fillOpacity": 10
+     }
+    },
+    "overrides": []
+   }
+  },
+  {
+   "id": 4,
+   "type": "table",
+   "title": "Firing alerts",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "ffzj5vd0pnawwd"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 8
+   },
+   "targets": [
+    {
+     "expr": "ALERTS{alertstate=\"firing\"}",
+     "refId": "A",
+     "format": "table",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {},
+    "overrides": []
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "includeByName": {
+       "alertname": true,
+       "severity": true,
+       "Value": true
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "type": "timeseries",
+   "title": "Inference GPU (josh-desktop11, textfile bridge)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "ffzj5vd0pnawwd"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 16
+   },
+   "targets": [
+    {
+     "expr": "gale_gpu_util_pct",
+     "refId": "A",
+     "legendFormat": "GPU {{gpu}} util %"
+    },
+    {
+     "expr": "gale_gpu_temp_c",
+     "refId": "B",
+     "legendFormat": "GPU {{gpu}} temp C"
+    },
+    {
+     "expr": "gale_gpu_vram_used_ratio * 100",
+     "refId": "C",
+     "legendFormat": "GPU {{gpu}} vram %"
+    },
+    {
+     "expr": "gale_ollama_up",
+     "refId": "D",
+     "legendFormat": "ollama up"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short"
+    },
+    "overrides": []
+   }
+  },
+  {
+   "id": 6,
+   "type": "stat",
+   "title": "Wake SLO (gale_wake.prom)",
+   "datasource": {
+    "type": "prometheus",
+    "uid": "ffzj5vd0pnawwd"
+   },
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 16
+   },
+   "targets": [
+    {
+     "expr": "sum(gale_wake_missed)",
+     "refId": "A",
+     "legendFormat": "missed wakes",
+     "instant": true
+    },
+    {
+     "expr": "max(gale_wake_live_session_seconds) / 3600",
+     "refId": "B",
+     "legendFormat": "oldest live session h",
+     "instant": true
+    },
+    {
+     "expr": "gale_wake_errors_24h > 0",
+     "refId": "C",
+     "legendFormat": "{{agent}} errors 24h",
+     "instant": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {},
+    "overrides": []
+   }
+  }
+ ]
+}

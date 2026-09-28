@@ -49,9 +49,68 @@ function kioskBanner(secondsLeft) {
   });
 }
 
+function isBig() {
+  return new URLSearchParams(location.search).has("big");
+}
+
+/* Big-number wall board (?kiosk&big): a full-viewport 2x2 overlay of the
+   four glanceable vitals, fed from the same feeds the dense pages use
+   (fleet_status, status.json hardware, per-agent cost_24h, /alerts crits).
+   Rotation, Esc and the banner keep working underneath; the overlay
+   re-inits on every stop since kiosk navigates page-to-page. */
+async function bigBoardData() {
+  const out = { fleet: "–", temp: "–", tempLvl: "", spend: "–", crit: "0", critLvl: "ok" };
+  try {
+    const m = await fetch("api/fleet/metrics", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    if (m) {
+      const entries = Object.entries(m.fleet_status || {});
+      const up = entries.filter(([, st]) => (st.state || "").startsWith("up")).length;
+      out.fleet = `${up}/${entries.length}`;
+      out.spend = "$" + (m.per_agent_24h || []).reduce((s, a) => s + (a.cost_24h || 0), 0).toFixed(2);
+    }
+  } catch { /* keep dashes */ }
+  try {
+    const s = await fetch("api/status.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    const hot = s && s.hardware ? s.hardware.hottest_c : null;
+    if (hot != null) {
+      out.temp = `${hot.toFixed(0)}°`;
+      out.tempLvl = hot >= 90 ? "crit" : hot >= 80 ? "warn" : "ok";
+    }
+  } catch { /* keep dashes */ }
+  try {
+    const a = await fetch("api/fleet/alerts", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    const crits = ((a && a.alerts) || []).filter((x) => x.sev === "crit").length;
+    out.crit = String(crits);
+    out.critLvl = crits ? "crit" : "ok";
+  } catch { /* keep zero */ }
+  return out;
+}
+
+function initBigBoard() {
+  let el = document.getElementById("kiosk-big");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "kiosk-big";
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-label", "kiosk wall board: fleet, temperature, spend, critical alerts");
+    document.body.appendChild(el);
+  }
+  const paint = async () => {
+    const d = await bigBoardData();
+    const cell = (label, val, lvl) =>
+      `<div class="kiosk-big-cell" data-level="${lvl || ""}"><span class="kiosk-big-label">${label}</span><span class="kiosk-big-val">${val}</span></div>`;
+    el.innerHTML =
+      cell("fleet up", d.fleet, "") + cell("hottest", d.temp, d.tempLvl) +
+      cell("24h spend", d.spend, "") + cell("crit alerts", d.crit, d.critLvl);
+  };
+  paint();
+  setInterval(() => { if (!document.hidden) paint(); }, 15000);
+}
+
 export function initKiosk() {
   if (!isKiosk()) return;
   if (kiosk) return;
+  if (isBig()) initBigBoard();
   const dwell = kioskDwell();
   let left = dwell;
 

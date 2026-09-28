@@ -3,13 +3,15 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch } from "./shared.js";
-import { statusPayload, metricsPayload, validate } from "./payloads.js";
+import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost } from "./shared.js";
+import { statusPayload, metricsPayload, wakesPayload, validate } from "./payloads.js";
 
 boot();
 
 const FEED = "api/status.json";
 const board = document.getElementById("board");
+// skeleton screens (#6): shimmer until the first fetch renders
+skeleton(document.getElementById("vitals-grid"), 4, 84);
 const freshEl = document.getElementById("freshness");
 const freshText = document.getElementById("freshness-text");
 let pollMs = 15000;
@@ -39,8 +41,35 @@ function bar(pct, lvl) {
   return `<div class="meter" data-level="${lvl}"><i style="width:${clamp(pct, 0, 100).toFixed(1)}%"></i></div>`;
 }
 
+/* Vital-card render wrapper (ROADMAP "animated tickers"): setHTML replaces
+   every card node, so previous values are captured per label BEFORE the
+   rewrite, then tweened on the fresh nodes. Non-numeric values (uptime,
+   version strings) just set through. A card whose threshold level crossed
+   ok -> warn/crit gets a one-shot pulse ring. */
+const VITAL_NUM = /^(\D*?)(-?\d+(?:\.\d+)?)(\D*)$/s;
+
+function renderVitalCards(grid, cardsHtml) {
+  const prev = new Map();
+  for (const card of grid.querySelectorAll(".vital")) {
+    const val = card.querySelector(".vital-value");
+    const m = val && String(val.textContent).match(VITAL_NUM);
+    if (m) prev.set(card.dataset.vlabel, { num: parseFloat(m[2]), lvl: card.dataset.level });
+  }
+  setHTML(grid, cardsHtml);
+  for (const card of grid.querySelectorAll(".vital")) {
+    const val = card.querySelector(".vital-value");
+    if (!val) continue;
+    const p = prev.get(card.dataset.vlabel);
+    tweenText(val, val.textContent, { from: p ? p.num : null });
+    if (p && p.lvl !== card.dataset.level && card.dataset.level !== "ok") {
+      card.classList.add("vital-pulse");
+      card.addEventListener("animationend", () => card.classList.remove("vital-pulse"), { once: true });
+    }
+  }
+}
+
 function vitalCard(label, value, sub, lvl, pct) {
-  return `<div class="vital" data-level="${lvl || "ok"}">
+  return `<div class="vital" data-level="${lvl || "ok"}" data-vlabel="${esc(label)}">
     <span class="vital-label">${esc(label)}</span>
     <span class="vital-value">${value}</span>
     ${pct != null ? bar(pct, lvl) : ""}
@@ -57,7 +86,7 @@ function renderVitals(d) {
   const loadPct = (h.load[0] / h.cpu_count) * 100;
   const loadLvl = level(loadPct, 80, 100);
   setText(document.getElementById("hostname"), h.hostname);
-  setHTML(document.getElementById("vitals-grid"), [
+  renderVitalCards(document.getElementById("vitals-grid"), [
     vitalCard("CPU", `${h.cpu_pct}%`, `load ${h.load.join(" / ")}`, cpuLvl, h.cpu_pct),
     vitalCard("Memory", `${h.mem.pct}%`, `${(h.mem.used_mb / 1024).toFixed(1)} / ${(h.mem.total_mb / 1024).toFixed(1)} GB`, memLvl, h.mem.pct),
     vitalCard("Disk /", `${disk.pct}%`, `${disk.used_gb} / ${disk.total_gb} GB`, diskLvl, disk.pct),
@@ -75,7 +104,22 @@ function renderHostInfo(d) {
     ["Arch", esc(h.arch || "–")],
     ["Hostname", esc(h.hostname || "–")],
     ["Boot time", esc(h.boot_time || "–")],
+    ["CPU pressure", esc(kernelLine(d, "cpu"))],
+    ["IO pressure", esc(kernelLine(d, "io"))],
+    ["OOM kills 24h", esc(kernelOom(d))],
   ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(""));
+}
+/* Kernel one-liners (#9): PSI avg10 or a dash when the collector predates
+   the field / the source is missing. */
+function kernelLine(d, res) {
+  const p = (d.kernel && d.kernel.pressure) || {};
+  const v = p[`${res}_some_avg10`];
+  return v == null ? "–" : `${v.toFixed(2)}% stall (avg10)`;
+}
+function kernelOom(d) {
+  const k = d.kernel;
+  if (!k) return "–";
+  return k.oom_kills_24h > 0 ? `${k.oom_kills_24h} (see strip)` : "0";
 }
 
 function renderCores(d) {
@@ -113,15 +157,21 @@ function renderNetwork(d) {
     : "Tailscale: status unavailable");
 }
 
+const fmtMem = (b) => b == null ? "–"
+  : b >= 1073741824 ? `${(b / 1073741824).toFixed(2)} GB`
+  : b >= 1048576 ? `${(b / 1048576).toFixed(0)} MB` : `${Math.round(b / 1024)} KB`;
 function renderServices(d) {
   const rows = d.services
     .map((s) => {
       const ok = s.state === "active";
+      const flapping = (s.n_restarts ?? 0) > 2;
       return {
         key: `svc-${s.unit}`,
         html: `<tr>
       <td><code>${esc(s.unit)}</code></td>
       <td><span class="pill" data-level="${ok ? "ok" : "crit"}">${esc(s.state)}</span></td>
+      <td class="mono-dim"${flapping ? ' style="color:var(--warn)"' : ""}>${s.n_restarts ?? "–"}</td>
+      <td class="mono-dim">${fmtMem(s.memory_bytes)}</td>
       <td class="mono-dim">${esc(s.since || "&ndash;")}</td>
     </tr>`,
       };
@@ -129,6 +179,59 @@ function renderServices(d) {
   patchList(document.querySelector("#services-table tbody"), rows);
 }
 
+/* Hardware telemetry (improvements #7): thermal zones + hwmon temps/fans
+   from sysmon collect_hardware(). Missing block = collector predates the
+   field; render a one-row note instead of failing the board. */
+const tempLevel = (c) => c >= 85 ? "crit" : c >= 70 ? "warn" : "ok";
+function renderHardware(d) {
+  const hw = d.hardware;
+  const tbody = document.querySelector("#hardware-table tbody");
+  if (!hw) {
+    setText(document.getElementById("hardware-hottest"), "unavailable");
+    patchList(tbody, [{ key: "na", html: `<tr><td colspan="2">hardware telemetry unavailable (collector update pending)</td></tr>` }]);
+    setText(document.getElementById("hardware-nvme"), "");
+    return;
+  }
+  const rows = [];
+  for (const z of hw.thermal_zones || []) {
+    rows.push({ key: `tz-${z.zone}`, html: `<tr><td><code>${esc(z.type || z.zone)}</code></td><td><span class="pill" data-level="${tempLevel(z.temp_c)}">${z.temp_c.toFixed(1)} °C</span></td></tr>` });
+  }
+  for (const s of hw.sensors || []) {
+    rows.push({ key: `hw-${s.chip}-${s.label}`, html: `<tr><td><code>${esc(s.chip)}${s.label ? ` · ${esc(s.label)}` : ""}</code></td><td><span class="pill" data-level="${tempLevel(s.temp_c)}">${s.temp_c.toFixed(1)} °C</span></td></tr>` });
+  }
+  for (const f of hw.fans || []) {
+    rows.push({ key: `fan-${f.chip}-${f.fan}`, html: `<tr><td><code>${esc(f.chip)} · ${esc(f.fan)}</code></td><td class="mono-dim">${f.rpm} RPM</td></tr>` });
+  }
+  patchList(tbody, rows.length ? rows :
+    [{ key: "empty", html: `<tr><td colspan="2">no sensors reported</td></tr>` }]);
+  const hot = hw.hottest_c;
+  setText(document.getElementById("hardware-hottest"),
+    hot != null ? `hottest ${hot.toFixed(1)} °C` : "no temp sensors");
+  const nv = hw.nvme;
+  setText(document.getElementById("hardware-nvme"), nv
+    ? `NVMe ${nv.temp_c != null ? `${nv.temp_c} °C · ` : ""}used ${nv.used_pct ?? "–"}% · spare ${nv.spare_pct ?? "–"}%${nv.power_on_hours != null ? ` · ${nv.power_on_hours} power-on h` : ""}`
+    : "");
+}
+/* Hygiene panel (#10): TLS cert runway + backup age. Dashes when the
+   collector predates the field or the source is unreadable. */
+function renderHygiene(d) {
+  const el = document.getElementById("hygiene-info");
+  if (!el) return;
+  const h = d.hygiene || {};
+  const cert = h.cert_days_left == null ? "–"
+    : `${Math.floor(h.cert_days_left)}d left (${esc(h.cert_path ? h.cert_path.split("/").pop() : "cert")})`;
+  const bak = h.backup_age_h == null ? "–"
+    : h.backup_age_h < 1 ? `${Math.round(h.backup_age_h * 60)}m ago` :
+      h.backup_age_h < 48 ? `${h.backup_age_h.toFixed(1)}h ago` : `${(h.backup_age_h / 24).toFixed(1)}d ago`;
+  const drill = h.drill_ok == null ? "–"
+    : h.drill_ok ? `ok ${h.drill_age_h != null ? `· ${h.drill_age_h < 48 ? h.drill_age_h.toFixed(0) + "h" : (h.drill_age_h / 24).toFixed(1) + "d"} ago` : ""}`.trim()
+    : "FAILED (see agora)";
+  setHTML(el, [
+    ["TLS cert", cert],
+    ["Last backup", h.backup_name ? `${bak} · <code>${esc(h.backup_name)}</code>` : bak],
+    ["Restore drill", drill],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(""));
+}
 function renderSecurity(d) {
   const s = d.security;
   const yn = (v, warnIfTrue) =>
@@ -140,7 +243,21 @@ function renderSecurity(d) {
     ["Reboot required", yn(s.reboot_required, true)],
     ["Unattended upgrades", `<span class="pill" data-level="${s.unattended_upgrades === "enabled" ? "ok" : "warn"}">${esc(s.unattended_upgrades)}</span>`],
     ["Sudoers drop-in present", yn(s.sudoers_dropin, false)],
+    ["Sudoers unchanged", driftState(d)],
+    ["Secrets locked down", driftPerms(d)],
   ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join(""));
+}
+/* Drift readouts (#19): reuse the pill language of the panel. */
+function driftState(d) {
+  const c = (d.drift || {}).sudoers_changed;
+  return c == null ? `<span class="pill" data-level="warn">unknown</span>`
+    : `<span class="pill" data-level="${c ? "warn" : "ok"}">${c ? "CHANGED" : "unchanged"}</span>`;
+}
+function driftPerms(d) {
+  const issues = (d.drift || {}).perm_issues || [];
+  return issues.length
+    ? `<span class="pill" data-level="crit">${issues.length} exposed</span>`
+    : `<span class="pill" data-level="ok">locked down</span>`;
 }
 
 let portsExpanded = false;
@@ -326,7 +443,7 @@ function renderFirewall(fw) {
   const online = devices.filter((d) => d.online).length;
   const activeRules = rules.filter((r) => r.status === "active");
 
-  setHTML(document.getElementById("fw-vitals"), [
+  renderVitalCards(document.getElementById("fw-vitals"), [
     vitalCard("Box", box.online ? "online" : "offline", `${esc(box.model || "")} · v${esc(box.version || "?")}`, box.online ? "ok" : "crit"),
     vitalCard("Devices", `${online}/${devices.length}`, "online / total", online === 0 && devices.length ? "warn" : "ok"),
     vitalCard("Rules", rules.length, `${activeRules.length} active`, "ok"),
@@ -398,6 +515,40 @@ function fmtBytes2(n) {
   return `${n} B`;
 }
 
+/* Top talkers · 24h (item: bandwidth history): sysmon samples the MSP
+   flow-based talkers once per Firewalla cycle into a JSONL, aggregates
+   24h into 2h buckets, and ships {buckets, totals_24h} on fw.talkers_history.
+   Stacked as cumulative series (gale-sparkline draws overlays, so stacking
+   is done by summing the series bottom-up before handing them over). */
+const TALKER_PALETTE = ["#ff8a3d", "#3fc7ff", "#8593f0", "#ffc233", "#4fd1a5", "#e8482c", "#b58cff", "#7fd1ff"];
+
+function renderTalkersHistory(th) {
+  const chart = document.getElementById("fw-talkers-chart");
+  const noteEl = document.getElementById("fw-talkers-note");
+  if (!chart || !noteEl) return;
+  const buckets = (th && th.buckets) || [];
+  const totals = (th && th.totals_24h) || [];
+  if (!buckets.length || !totals.length) {
+    chart.update && chart.update([[]]);
+    setText(noteEl, "gathering talker history — one sample per firewalla poll (~11 min)");
+    return;
+  }
+  const topNames = totals.slice(0, 8).map(([n]) => n);
+  const series = topNames.map((name) => buckets.map((b) => (b.devices[name] || 0) / 1e9));
+  /* stack: cumulative from the bottom series up */
+  const stacked = series.map((_, si) => buckets.map((_, bi) =>
+    series.reduce((acc, s, sj) => (sj <= si ? acc + s[bi] : acc), 0)));
+  if (typeof chart.update !== "function") return; /* test-stub element */
+  chart.update(stacked, topNames.map((n, i) => ({
+    color: TALKER_PALETTE[i % TALKER_PALETTE.length],
+    fill: `color-mix(in srgb, ${TALKER_PALETTE[i % TALKER_PALETTE.length]} 22%, transparent)`,
+    width: 1,
+  })));
+  setHTML(noteEl, totals.slice(0, 8).map(([n, b], i) =>
+    `<span style="color:${TALKER_PALETTE[i % TALKER_PALETTE.length]}">&#9632;</span> ${esc(n)} ${fmtBytes(b)}`).join(" · ")
+    + ` &middot; ${buckets.length} buckets @ ${th.bucket_hours}h`);
+}
+
 function renderFwLive(fw) {
   const live = fw.live || {};
   const body = document.getElementById("fw-live-body");
@@ -407,7 +558,7 @@ function renderFwLive(fw) {
     setText(document.getElementById("fw-live-note"), `Live throughput unavailable: ${live.error}`);
     return;
   }
-  setHTML(document.getElementById("fw-live-vitals"), [
+  renderVitalCards(document.getElementById("fw-live-vitals"), [
     vitalCard("Download", fmtMbps(live.mbps_down || 0), `avg over ${(live.window_s || 900) / 60} min`, "ok"),
     vitalCard("Upload", fmtMbps(live.mbps_up || 0), `avg over ${(live.window_s || 900) / 60} min`, "ok"),
     vitalCard("Flows", `${live.truncated ? "≥ " : ""}${live.flows ?? 0}`, `opened in ${(live.window_s || 900) / 60} min`, "ok"),
@@ -423,6 +574,7 @@ function renderFwLive(fw) {
       <td style="width:42%"><div class="meter" data-level="ok"><i style="width:${((t.bytes || 0) / max * 100).toFixed(1)}%"></i></div></td>
     </tr>`,
   })) : [{ key: "empty", html: `<tr><td colspan="3">no flow records in the last 2h</td></tr>` }]);
+  renderTalkersHistory(fw.talkers_history);
   setText(document.getElementById("fw-live-note"),
     "Derived from completed flow records via the Firewalla MSP API — the export lags realtime by a few minutes and busy windows get capped, so treat these as recent averages ('≥' = truncated), not a live interface counter. True per-interface counters would need the box's local API (see the VPN note).");
 }
@@ -532,7 +684,7 @@ function renderOllama(o) {
   const loaded = o.loaded || [];
   const inv = o.inventory || [];
   const vramBytes = loaded.reduce((a, m) => a + (m.size_vram || 0), 0);
-  setHTML(document.getElementById("ollama-vitals"), [
+  renderVitalCards(document.getElementById("ollama-vitals"), [
     vitalCard("Version", `v${esc(o.version)}`, esc(o.addr)),
     vitalCard("Loaded models", String(loaded.length), "resident in VRAM now"),
     vitalCard("VRAM committed", fmtBytes2(vramBytes), `${loaded.length} model${loaded.length === 1 ? "" : "s"} loaded`),
@@ -561,29 +713,39 @@ function renderOllama(o) {
       <td><code>${esc(m.name)}</code></td>
       <td class="mono-dim">${esc(m.params || "&ndash;")}</td>
       <td class="mono-dim">${esc(m.quant || "&ndash;")}</td>
-      <td>${esc(m.size_human || "&ndash;")}</td>
+      <td class="mono-dim">${esc(m.size_human || "&ndash;")}</td>
       <td class="mono-dim">${(m.caps || []).join(", ") || "&ndash;"}</td>
     </tr>`,
     })));
+  refreshOllamaGpu(o);
 }
 
 export function render(d) {
+  // Data morph (#6): value changes cross-fade via View Transition; identical
+  // pixels animate nothing, so steady ticks stay quiet. Timer/poll setup
+  // stays outside the transition (not DOM content).
   board.hidden = false;
   setText(document.getElementById("interval"), String(d.collector_interval_s));
   pollMs = Math.max(5000, (d.collector_interval_s || 15) * 1000);
   if (pollTimer) { clearInterval(pollTimer); pollTimer = setInterval(tick, pollMs); }
-  renderVitals(d);
-  renderHostInfo(d);
-  renderCores(d);
-  renderNetwork(d);
+  morph(() => {
+    renderVitals(d);
+    renderHostInfo(d);
+    renderCores(d);
+    renderHardware(d);
+    renderNetwork(d);
   renderServices(d);
   renderSecurity(d);
-  renderPorts(d);
-  renderTargets(d);
-  renderFullHosts(d.full_targets);
-  renderFirewall(d.firewalla);
-  renderOllama(d.ollama);
-  updateFreshness(d.generated_at);
+  renderHygiene(d);
+    renderPorts(d);
+    renderTargets(d);
+    renderFullHosts(d.full_targets);
+    renderUptime(d.uptime_history);
+    renderFirewall(d.firewalla);
+    renderOllama(d.ollama);
+    renderDiskForecast(d);
+    updateFreshness(d.generated_at);
+  });
 }
 
 let lastGeneratedAt = null;
@@ -600,7 +762,7 @@ const chipsEl = document.getElementById("alert-chips");
 const CHIP_TARGETS = {
   disk: "sec-vitals", swap: "sec-vitals", cpu: "sec-vitals", load: "sec-vitals",
   ufw: "sec-security", reboot: "sec-security",
-  service: "sec-services",
+  service: "sec-services", temp: "sec-hardware", cert: "sec-hygiene", backup: "sec-hygiene",
   node: "sec-fleet-24h",
   agent: "fleet.html#hosts", errors: "fleet.html#hosts",
   cost: "fleet.html#cost-trend",
@@ -615,10 +777,74 @@ function hostAlerts(d) {
     const lvl = level(dk.pct, 80, 93);
     if (lvl !== "ok") a.push({ sev: lvl, kind: "disk", text: `disk ${dk.mount} at ${Math.round(dk.pct)}%` });
   }
+  /* predictive disk forecast (item: capacity forecasting) — same honesty
+     gate as the note: a 2-sample regression can claim "full in 4d" from
+     noise, so no alert until >= 3 samples spanning >= 3 days. */
+  for (const f of h.disk_forecast || []) {
+    if (f.days_to_full == null) continue;
+    if (f.samples < 3 || (f.span_days || 0) < 3) continue;
+    const sev = f.days_to_full < 7 ? "crit" : f.days_to_full < 30 ? "warn" : null;
+    if (sev) a.push({ sev, kind: "disk", text: `${f.mount === "mem" ? "RAM" : f.mount === "swap" ? "swap" : "disk " + f.mount} full in ~${Math.round(f.days_to_full)}d` });
+  }
   if (h.swap && h.swap.pct >= 10) a.push({ sev: "warn", kind: "swap", text: `swap ${Math.round(h.swap.pct)}% used` });
+  /* hardware alerts (#7/#10): hottest sensor + NVMe wear feed the same
+     strip as everything else -- one pipeline, no side channels. */
+  const hw = d.hardware || {};
+  if (hw.hottest_c != null) {
+    if (hw.hottest_c >= 90) a.push({ sev: "crit", kind: "temp", text: `hottest sensor ${hw.hottest_c.toFixed(0)} °C` });
+    else if (hw.hottest_c >= 80) a.push({ sev: "warn", kind: "temp", text: `hottest sensor ${hw.hottest_c.toFixed(0)} °C` });
+  }
+  if (hw.nvme && hw.nvme.used_pct != null && hw.nvme.used_pct >= 80) {
+    a.push({ sev: hw.nvme.used_pct >= 90 ? "crit" : "warn", kind: "disk",
+             text: `NVMe wear ${hw.nvme.used_pct}% used` });
+  }
+  for (const sv of d.services || []) {
+    if ((sv.n_restarts ?? 0) > 5) a.push({ sev: "warn", kind: "service", text: `${sv.unit} restarted ${sv.n_restarts}x` });
+  }
+  /* kernel distress (#9): OOM is crit, sustained pressure stalls warn,
+     fresh kernel err lines warn with the newest first. */
+  const k = d.kernel || {};
+  if ((k.oom_kills_24h || 0) > 0) a.push({ sev: "crit", kind: "kernel", text: `OOM killer fired ${k.oom_kills_24h}x in 24h` });
+  const p = k.pressure || {};
+  for (const [res, th] of [["cpu", 30], ["memory", 30], ["io", 50]]) {
+    const v = p[`${res}_some_avg10`];
+    if (v != null && v >= th) a.push({ sev: "warn", kind: "kernel", text: `${res} pressure stall ${v.toFixed(1)}% (avg10)` });
+  }
+  if ((k.klog_err_24h || 0) > 0) {
+    const tail = (k.klog_tail || []).slice(-1)[0];
+    a.push({ sev: "warn", kind: "kernel", text: `${k.klog_err_24h} kernel err in 24h${tail ? `: ${tail.slice(0, 100)}` : ""}` });
+  }
+  /* hygiene (#10): cert runway 21d warn / 7d crit; backup silence 48h
+     warn / 7d crit. Quiet boxes stay quiet -- both read "ok" today. */
+  const hy = d.hygiene || {};
+  if (hy.cert_days_left != null) {
+    if (hy.cert_days_left < 7) a.push({ sev: "crit", kind: "cert", text: `TLS cert expires in ${Math.floor(hy.cert_days_left)}d` });
+    else if (hy.cert_days_left < 21) a.push({ sev: "warn", kind: "cert", text: `TLS cert expires in ${Math.floor(hy.cert_days_left)}d` });
+  }
+  if (hy.backup_age_h != null) {
+    if (hy.backup_age_h > 168) a.push({ sev: "crit", kind: "backup", text: `no backup in ${(hy.backup_age_h / 24).toFixed(1)}d` });
+    else if (hy.backup_age_h > 48) a.push({ sev: "warn", kind: "backup", text: `no backup in ${hy.backup_age_h.toFixed(0)}h` });
+  }
+  /* restore drill (#15): failed drill is crit; silence is warn/crit on the
+     monthly cadence (45d/90d). No drill file yet = no alert (grace). */
+  if (hy.drill_ok === false) a.push({ sev: "crit", kind: "backup", text: "restore drill FAILED (see agora)" });
+  else if (hy.drill_age_h != null) {
+    if (hy.drill_age_h > 2160) a.push({ sev: "crit", kind: "backup", text: `no restore drill in ${(hy.drill_age_h / 24).toFixed(0)}d` });
+    else if (hy.drill_age_h > 1080) a.push({ sev: "warn", kind: "backup", text: `no restore drill in ${(hy.drill_age_h / 24).toFixed(0)}d` });
+  }
   const s = d.security || {};
   if (s.ufw_active === false) a.push({ sev: "warn", kind: "ufw", text: "ufw firewall inactive" });
   if (s.reboot_required) a.push({ sev: "warn", kind: "reboot", text: "reboot required" });
+  /* secret/config drift (#19): exposure is crit, sudoers change + token
+     age are warn (both can be legit -- the chip tells you to look). */
+  const dr = d.drift || {};
+  for (const issue of dr.perm_issues || []) {
+    a.push({ sev: "crit", kind: "drift", text: `secret exposed: ${issue}` });
+  }
+  if (dr.sudoers_changed) a.push({ sev: "warn", kind: "drift", text: "sudoers drop-in changed since baseline" });
+  if (dr.token_age_d != null && dr.token_age_d > 365) {
+    a.push({ sev: "warn", kind: "drift", text: `telegram token age ${Math.floor(dr.token_age_d)}d -- rotate?` });
+  }
   for (const sv of d.services || []) {
     if (sv.state !== "active") a.push({ sev: "crit", kind: "service", text: `${sv.unit} ${sv.state}` });
   }
@@ -650,26 +876,181 @@ async function fleetAlerts() {
   } catch { return []; }
 }
 
+let lastStripAlerts = [];
 function refreshStrip(fleetArr, statusData) {
   const host = statusData ? hostAlerts(statusData) : [];
-  renderAlertStrip([...fleetArr, ...host]);
+  const all = [...fleetArr, ...host];
+  lastStripAlerts = all;
+  morph(() => renderAlertStrip(all, statusData));
+  /* ambient fleet health (ROADMAP "ambient theming"): html[data-fleet-health]
+     drives the page tint; setAmbientHealth repaints the favicon with a
+     status dot. Every alert on the strip participates. */
+  setAmbientHealth(all.some((a) => a.sev === "crit") ? "crit"
+    : all.some((a) => a.sev === "warn") ? "warn" : "ok");
+  /* telemetry-coupled storm (#1): box load/temp drives bolt rate + rain */
+  try { if (statusData && statusData.host) setStormIntensity(stormLevelFromHost(statusData.host)); } catch {}
 }
 
+/* Incident bundle (#20): one-click post-mortem starter -- current strip
+   alerts, the live snapshot's load-bearing sections, and Loki deep links
+   (Grafana login required) for the journal slices a static file can't
+   carry. Charts travel via screenshot/print-PDF (print stylesheet). */
+function downloadIncidentBundle() {
+  const d = lastStatus;
+  if (!d) return;
+  const now = new Date();
+  const from = new Date(now.getTime() - 6 * 3600e3).toISOString();
+  const errQ = `{unit=~"gale-.*"} |~ "(?i)(error|exception|traceback|failed)"`;
+  const bundle = {
+    exported_at: now.toISOString(),
+    page: String(location.href),
+    alerts: lastStripAlerts,
+    host: d.host,
+    hardware: d.hardware,
+    kernel: d.kernel,
+    hygiene: d.hygiene,
+    drift: d.drift,
+    services: d.services,
+    targets: d.targets,
+    loki_queries: {
+      errors_6h: errQ,
+      fleet_api_spans_6h: `{unit="gale-fleet-api.service"} |= "SPAN"`,
+    },
+    loki_explore: `http://100.66.39.59:3001/explore?left=${encodeURIComponent(JSON.stringify({ datasource: "Loki", queries: [{ expr: errQ }], range: { from, to: now.toISOString() } }))}`,
+    note: "Grafana login required for Loki links. Journal slices: journalctl -u gale-fleet-api --since '6 hours ago'.",
+  };
+  const blob = new Blob([JSON.stringify(bundle, null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `gale-incident-${now.toISOString().slice(0, 19).replace(/[:T]/g, "-")}.json`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+}
+const bundleBtn = document.getElementById("incident-bundle");
+if (bundleBtn) bundleBtn.addEventListener("click", downloadIncidentBundle);
+
+/* Alert chips are reconciled by key (kind+text), not innerHTML-swapped:
+   unchanged chips keep their DOM node, so the entrance animation only
+   plays for genuinely new alerts. New arrivals get a sticky stagger index
+   (--i) for the slide-in and, when crit, a one-shot radiating ring from
+   the dot -- while the steady-state crit glow keeps looping untouched.
+
+   Acknowledgement (item: interactive alert acks): each chip carries a small
+   mute control; acking mutes that key (kind:text) for 4h via the fleet API
+   (alert-acks.json, shared across devices/tabs). Muted chips stay visible
+   but dimmed and unpulsed, sorted last; clicking one un-mutes it. */
+const CHIP_KEY = (a) => `${a.sev}:${a.kind}:${a.text}`;
+const ACK_KEY = (a) => `${a.kind}:${a.text}`;
+/* sticky arrival order: a chip's index (and therefore its markup) is
+   assigned once when it first appears and kept until it resolves -- so
+   the HTTP tick and SSE push racing at boot can't rewrite the same chip
+   mid-animation. chipSeen tracks which keys were already in the DOM so
+   only genuinely new chips get the (time-limited) .chip-new marker that
+   drives the staggered entrance + dot radiate. */
+const chipOrder = new Map();
+const chipSeen = new Set();
+const CHIP_NEW_TTL = 2600; /* chip-in (0.35s + stagger) + dot-radiate (2 x 1.1s) */
+const ACK_HOURS = 4;
+/* acks: key -> until epoch ms, loaded from api/fleet/acks at boot */
+const acks = new Map();
+let lastAlerts = [];
+
+function ackFetch() {
+  return tracedFetch("api/fleet/alerts/acks", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .catch(() => null);
+}
+
+async function loadAcks() {
+  const d = await ackFetch();
+  if (d && Array.isArray(d.acks)) {
+    acks.clear();
+    for (const a of d.acks) acks.set(a.key, a.until * 1000);
+    if (lastAlerts.length) renderAlertStrip(lastAlerts, lastStatus);
+  }
+}
+
+async function setAck(key, hours) {
+  try {
+    const res = await tracedFetch("api/fleet/alerts/acks", {
+      method: "POST", cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key, hours }),
+    });
+    if (!res.ok) return;
+    if (hours === 0) acks.delete(key);
+    else acks.set(key, Date.now() + hours * 3600e3);
+    if (lastAlerts.length) renderAlertStrip(lastAlerts, lastStatus);
+  } catch { /* offline -- next tick re-renders unacked */ }
+}
+
+const isAcked = (a) => {
+  const until = acks.get(ACK_KEY(a));
+  return until != null && until > Date.now();
+};
+
 function renderAlertStrip(all) {
-  all.sort((x, y) => (SEV_ORDER[x.sev] ?? 9) - (SEV_ORDER[y.sev] ?? 9));
-  if (!all.length) { stripEl.hidden = true; return; }
+  lastAlerts = all;
+  all.sort((x, y) => (SEV_ORDER[x.sev] ?? 9) - (SEV_ORDER[y.sev] ?? 9)
+    || Number(isAcked(x)) - Number(isAcked(y))); /* muted chips sink */
+  if (!all.length) { stripEl.hidden = true; chipOrder.clear(); chipSeen.clear(); return; }
   stripEl.hidden = false;
-  setHTML(chipsEl, all.map((a) =>
-    `<button type="button" class="alert-chip alert-chip--${esc(a.sev)}" data-target="${esc(CHIP_TARGETS[a.kind] || "")}" data-kind="${esc(a.kind)}" title="${esc(a.kind)}">
+  const fresh = [];
+  for (const a of all) {
+    const key = CHIP_KEY(a);
+    if (!chipOrder.has(key)) chipOrder.set(key, chipOrder.size);
+    if (!chipSeen.has(key)) fresh.push(key);
+  }
+  patchList(chipsEl, all.map((a) => {
+    const key = CHIP_KEY(a);
+    const ackKey = ACK_KEY(a);
+    const muted = isAcked(a);
+    return {
+      key,
+      html: `<button type="button" class="alert-chip alert-chip--${esc(a.sev)}${muted ? " acked" : ""}" data-target="${esc(CHIP_TARGETS[a.kind] || "")}" data-kind="${esc(a.kind)}" data-ackkey="${esc(ackKey)}" title="${esc(a.kind)}${muted ? " (muted — click to un-mute)" : ""}" style="--i:${chipOrder.get(key)}">
       <i class="alert-dot" aria-hidden="true"></i>
       <span class="alert-text">${esc(a.text)}</span>
-    </button>`
-  ).join(""));
+      ${muted ? "" : `<b class="chip-ack" data-ackkey="${esc(ackKey)}" title="Mute for ${ACK_HOURS}h" aria-label="Mute this alert">&times;</b>`}
+    </button>`,
+    };
+  }));
+  /* patchList reorders survivors in place, so container children line up
+     with `all` one-to-one: flag this render's fresh arrivals for the
+     staggered entrance + dot radiate, then drop the marker after the
+     animations have run. */
+  const kids = chipsEl.children ? [...chipsEl.children] : [];
+  all.forEach((a, idx) => {
+    const key = CHIP_KEY(a);
+    const btn = kids[idx];
+    if (!btn || !fresh.includes(key)) return;
+    if (!btn.classList.contains("chip-new")) {
+      btn.classList.add("chip-new");
+      setTimeout(() => btn.classList.remove("chip-new"), CHIP_NEW_TTL);
+    }
+  });
+  for (const a of all) chipSeen.add(CHIP_KEY(a));
+  /* muted summary */
+  const mutedEl = document.getElementById("alert-muted-note");
+  if (mutedEl) {
+    const muted = all.filter(isAcked);
+    if (muted.length) {
+      const soon = Math.min(...muted.map((a) => (acks.get(ACK_KEY(a)) - Date.now()) / 3600e3));
+      setText(mutedEl, `${muted.length} muted${muted.length === 1 ? "" : "s"} · ~${soon < 1 ? Math.max(1, Math.round(soon * 60)) + "m" : Math.round(soon) + "h"} left · click a muted chip to un-mute`);
+      mutedEl.hidden = false;
+    } else {
+      mutedEl.hidden = true;
+      setText(mutedEl, "");
+    }
+  }
 }
 
 chipsEl.addEventListener("click", (e) => {
+  const ackBtn = e.target.closest(".chip-ack");
+  if (ackBtn) { setAck(ackBtn.dataset.ackkey, ACK_HOURS); return; }
   const btn = e.target.closest(".alert-chip");
   if (!btn) return;
+  if (btn.classList.contains("acked")) { setAck(btn.dataset.ackkey, 0); return; }
   const t = btn.dataset.target;
   if (!t) return;
   if (t.includes("fleet.html")) { window.location.href = t; return; }
@@ -677,6 +1058,7 @@ chipsEl.addEventListener("click", (e) => {
   if (el) el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
 });
 
+let heatKicked = false;
 async function tick() {
   let data = null;
   try {
@@ -691,6 +1073,171 @@ async function tick() {
   const fleet = data ? (liveFleetAlerts || (await fleetAlerts())) : [];
   refreshStrip(fleet, data);
   renderFleet24h();
+  // heatmap is history, not above-the-fold: first fetch stays off the
+  // critical paint path (idle callback, 3s ceiling), later ticks poll it
+  const kick = () => renderWakeHeatmap();
+  if (typeof requestIdleCallback === "function") {
+    if (!heatKicked) { heatKicked = true; requestIdleCallback(kick, { timeout: 3000 }); }
+    else kick();
+  } else if (!heatKicked) { heatKicked = true; setTimeout(kick, 1500); }
+  else kick();
+}
+
+/* ---- predictive disk capacity (item: forecast) ----
+   sysmon folds a least-squares slope of disk-used-% (10-min samples, 14d
+   window) into status.json. Show an honest one-liner per mount; skip
+   mounts with too little history yet. */
+function renderDiskForecast(d) {
+  const el = document.getElementById("disk-forecast-note");
+  if (!el) return;
+  const list = (d.host && d.host.disk_forecast) || [];
+  if (!list.length) { setText(el, ""); return; }
+  const label = (m) => m === "mem" ? "RAM" : m === "swap" ? "swap" : `disk ${m}`;
+  setText(el, "Capacity forecast: " + list.map((f) => {
+    if (f.samples < 3 || (f.span_days || 0) < 3) {
+      return `${label(f.mount)}: gathering history (${f.samples} samples)`;
+    }
+    if (f.days_to_full == null) {
+      return `${label(f.mount)} steady (${f.slope_pct_per_day >= 0 ? "+" : ""}${f.slope_pct_per_day}%/day)`;
+    }
+    return `${label(f.mount)} +${f.slope_pct_per_day}%/day &rarr; full in ~${Math.round(f.days_to_full)}d`;
+  }).join(" · "));
+}
+
+/* ---- 90-day uptime ledger (item: SLA view) ----
+   sysmon folds worst-daily health per target into uptime-history.json and
+   ships the aligned arrays in status.json. GitHub-style: one cell per day,
+   green all-up, amber auth-gated, red down/error, hollow = no data. */
+const UPTIME_SEV_CLASS = ["up", "auth", "down", "down"];
+const UPTIME_SEV_NAME = ["up", "auth-gated", "down", "down"];
+
+function renderUptime(u) {
+  const grid = document.getElementById("uptime-grid");
+  const note = document.getElementById("uptime-note");
+  if (!grid) return;
+  if (!u || !Array.isArray(u.days) || !u.targets) {
+    setHTML(grid, `<p class="mini-note">No uptime history yet — the ledger fills as gale-sysmon runs.</p>`);
+    return;
+  }
+  const days = u.days;
+  const rows = Object.entries(u.targets).map(([name, vals]) => {
+    const cells = (vals || []).map((sev, i) =>
+      `<i class="uptime-cell" data-sev="${sev == null ? "nodata" : UPTIME_SEV_CLASS[sev] || "down"}" title="${days[i]}: ${sev == null ? "no data" : UPTIME_SEV_NAME[sev] || "down"}"></i>`).join("");
+    const known = (vals || []).filter((v) => v != null);
+    const up = known.filter((v) => v === 0).length;
+    const pct = known.length ? Math.round((up / known.length) * 100) : null;
+    return {
+      key: `up-${name}`,
+      html: `<div class="uptime-row" data-sev="${pct == null ? "nodata" : pct === 100 ? "ok" : "warn"}">
+        <span class="uptime-name">${esc(name)}</span>
+        <span class="uptime-cells">${cells}</span>
+        <span class="uptime-pct">${pct == null ? "–" : pct + "%"}</span>
+      </div>`,
+    };
+  });
+  patchList(grid, rows.length ? rows : [{ key: "empty", html: `<p class="mini-note">no targets recorded yet</p>` }]);
+  if (note) setText(note, `${days.length}-day window · worst health seen each day (a target that blipped for one 15s probe shows red for that day) · ledger: uptime-history.json`);
+}
+
+/* ---- ollama GPU · 24h (item: inference dashboard) ----
+   The ollama admin service samples /api/ps + nvidia-smi every 30s into
+   ollama-history.jsonl and serves /api/ollama/history?hours=24. Chart:
+   GPU util (inference proxy — Ollama exposes no server-wide tok/s),
+   temperature, and VRAM headroom. Nulls carry forward so gaps don't dip. */
+const GPU_HISTORY_TTL = 60e3;
+const gpuHistoryCache = { at: 0, data: null };
+
+async function fetchGpuHistory() {
+  if (gpuHistoryCache.data && Date.now() - gpuHistoryCache.at < GPU_HISTORY_TTL) {
+    return gpuHistoryCache.data;
+  }
+  try {
+    const res = await tracedFetch("api/ollama/history?hours=24", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    gpuHistoryCache.at = Date.now();
+    gpuHistoryCache.data = await res.json();
+  } catch (e) {
+    gpuHistoryCache.at = Date.now();
+    gpuHistoryCache.data = null;
+  }
+  return gpuHistoryCache.data;
+}
+
+const GPU_PALETTE = { util: "#4fd1a5", temp: "#e0b45c", vram: "#8593f0" };
+
+/* downsample to ~160 buckets before drawing: the 30s sampler yields ~2900
+   points over 24h, which renders as vertical noise at any chart width.
+   util takes the per-bucket MAX (a burst inside the bucket is the signal),
+   temp/vram take the LAST (slowly-drifting gauges). */
+function downsampleSeries(vals, target = 160, agg = "max") {
+  if (vals.length <= target) return vals;
+  const out = [];
+  const size = vals.length / target;
+  for (let i = 0; i < target; i++) {
+    const start = Math.floor(i * size), end = Math.max(start + 1, Math.floor((i + 1) * size));
+    let acc = null;
+    for (let j = start; j < end && j < vals.length; j++) {
+      const v = vals[j];
+      if (v == null) continue;
+      acc = acc == null ? v : agg === "max" ? Math.max(acc, v) : v;
+    }
+    out.push(acc);
+  }
+  return out;
+}
+
+function renderGpuChart(hist, o) {
+  const chart = document.getElementById("ollama-gpu-chart");
+  const noteEl = document.getElementById("ollama-gpu-note");
+  if (!chart || !noteEl) return;
+  const series = hist && Array.isArray(hist.series) ? hist.series : [];
+  const gpuOf = (s) => (s && s.gpu && s.gpu.ok && Array.isArray(s.gpu.gpus) ? s.gpu.gpus[0] : null);
+  const pick = (fn) => {
+    const out = [];
+    let lastV = null;
+    for (const s of series) {
+      const v = fn(s);
+      lastV = v == null ? lastV : v; /* nulls carry forward: gaps don't dip */
+      out.push(lastV);
+    }
+    return out;
+  };
+  const util = pick((s) => { const g = gpuOf(s); return g ? Math.round(g.util_pct ?? 0) : null; });
+  const temp = pick((s) => { const g = gpuOf(s); return g ? g.temp_c : null; });
+  const vram = pick((s) => { const g = gpuOf(s); return g && g.mem_total_mb ? Math.round((g.mem_used_mb / g.mem_total_mb) * 100) : null; });
+  if (!series.length || util.every((v) => v == null)) {
+    chart.update && chart.update([[]]);
+    setText(noteEl, "no GPU history yet — the ollama sampler fills this as it runs");
+    return;
+  }
+  if (typeof chart.update !== "function") return; /* test-stub element */
+  // hover labels (#2): timestamps downsampled on the same stride as the
+  // value series so indices stay aligned.
+  const nts = series.map((s) => s.ts);
+  const size = Math.max(1, Math.floor(nts.length / 160));
+  const labels = [];
+  for (let i = 0; i < nts.length; i += size) {
+    const cell = nts.slice(i, i + size);
+    labels.push(cell[cell.length - 1]);
+  }
+  const fmtTs = (ts) => { try { return new Date(ts).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }); } catch { return ""; } };
+  chart.update([downsampleSeries(util, 160, "max"), downsampleSeries(temp, 160, "last"), downsampleSeries(vram, 160, "last")], [
+    { color: GPU_PALETTE.util, fill: `color-mix(in srgb, ${GPU_PALETTE.util} 16%, transparent)`, width: 1.6 },
+    { color: GPU_PALETTE.temp, width: 1.1 },
+    { color: GPU_PALETTE.vram, width: 1.1, dash: "3 3" },
+  ], {
+    labels: labels.map(fmtTs),
+    tipFmt: (i, vals, label) =>
+      `${label || ""} · util ${vals[0] == null ? "–" : Math.round(vals[0]) + "%"} · ${vals[1] == null ? "–" : vals[1] + "°C"} · VRAM ${vals[2] == null ? "–" : Math.round(vals[2]) + "%"}`.trim(),
+  });
+  const gpu = series.length ? gpuOf(series[series.length - 1]) : null;
+  const name = gpu ? (gpu.name || "GPU").replace(/^NVIDIA /, "") : "GPU";
+  setText(noteEl, `${esc(name)} · ${o && o.version ? "ollama v" + esc(o.version) + " · " : ""}util % (area, inference proxy) · temp °C · VRAM % (dashed) · ${hist.uptime_pct != null ? hist.uptime_pct + "% reachability, " : ""}${hist.count} samples @ ${hist.sample_every_s}s`);
+}
+
+async function refreshOllamaGpu(o) {
+  const hist = await fetchGpuHistory();
+  renderGpuChart(hist, o);
 }
 
 /* ---- fleet activity (24h) — polls api/fleet/metrics, one card per host ---- */
@@ -748,6 +1295,29 @@ function fleetSpark(vals) {
     `<circle class="fleet-24h-sparkdot" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.4"/></svg>`;
 }
 
+/* Fleet-24h cards render in two layers: a STABLE skeleton per host
+   (reconciled by patchList — the node, and the <gale-sparkline> inside it,
+   survive across polls), then per-card slots (numbers, sparkline series)
+   updated imperatively. Numbers tween via tweenText, the sparkline morphs
+   via the component's update(), so a poll looks like the data breathing
+   rather than cards re-flashing. */
+function fleetCardSkeleton(h, meta) {
+  return `<article class="fleet-24h-card" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
+      <header class="fleet-24h-head">
+        <span class="fleet-24h-dot" aria-hidden="true"></span>
+        <strong class="fleet-24h-name"><a href="fleet.html#hosts">${esc(h)}</a></strong>
+        <span class="fleet-24h-note">${esc(meta.note)} · <span data-slot="agents">&ndash;</span> agents</span>
+      </header>
+      <gale-sparkline class="fleet-24h-spark" view-box="0 0 220 40"></gale-sparkline>
+      <div class="fleet-24h-stats">
+        <div class="fleet-24h-stat"><span data-slot="runs">&ndash;</span><span class="fleet-24h-sub">runs 24h</span></div>
+        <div class="fleet-24h-stat"><span data-slot="cost">&ndash;</span><span class="fleet-24h-sub">cost 24h</span></div>
+        <div class="fleet-24h-stat" data-slot="errwrap"><span data-slot="err">&ndash;</span><span class="fleet-24h-sub">errors</span></div>
+        <div class="fleet-24h-stat"><span data-slot="wake">&ndash;</span><span class="fleet-24h-sub">last wake</span></div>
+      </div>
+    </article>`;
+}
+
 export async function renderFleet24h() {
   const grid = document.getElementById("fleet-24h-grid");
   const fresh = document.getElementById("fleet-24h-fresh");
@@ -788,27 +1358,155 @@ export async function renderFleet24h() {
   }
   patchList(grid, FLEET_ORDER.map((h) => {
     const meta = FLEET_META[h] || { hue: "var(--text-faint)", note: "" };
+    return { key: `fleet24-${h}`, html: fleetCardSkeleton(h, meta) };
+  }));
+  /* patchList guarantees child order == FLEET_ORDER here (no removals
+     between), so slot lookups can zip children against the order list. */
+  const kids = grid.children ? [...grid.children] : [];
+  FLEET_ORDER.forEach((h, idx) => {
+    const card = kids[idx];
+    if (!card || card.dataset.host !== h) return;
+    const meta = FLEET_META[h] || { hue: "var(--text-faint)", note: "" };
     const r = runs[h] ?? null, c = cost[h] ?? null, e = errs[h] || 0;
     const agg = last[h] || null, n = (agents[h] || []).length;
-    const html = `<article class="fleet-24h-card${e > 0 ? " has-err" : ""}" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
-      <header class="fleet-24h-head">
-        <span class="fleet-24h-dot" aria-hidden="true"></span>
-        <strong class="fleet-24h-name"><a href="fleet.html#hosts">${esc(h)}</a></strong>
-        <span class="fleet-24h-note">${esc(meta.note)} · ${n} agents</span>
-      </header>
-      ${fleetSpark((data.daily_wakings_by_host || {})[h])}
-      <div class="fleet-24h-stats">
-        <div class="fleet-24h-stat"><span>${r == null ? "–" : r}</span><span class="fleet-24h-sub">runs 24h</span></div>
-        <div class="fleet-24h-stat"><span>${fleetMoney(c)}</span><span class="fleet-24h-sub">cost 24h</span></div>
-        <div class="fleet-24h-stat${e > 0 ? " err" : ""}"><span>${e > 0 ? `${e} err` : "0 err"}</span><span class="fleet-24h-sub">errors</span></div>
-        <div class="fleet-24h-stat"><span>${agg ? esc(fleetAgo(agg)) : "–"}</span><span class="fleet-24h-sub">last wake</span></div>
-      </div>
-    </article>`;
-    return { key: `fleet24-${h}`, html };
-  }));
+    const slot = (k) => card.querySelector(`[data-slot="${k}"]`);
+    setText(slot("agents"), String(n));
+    tweenText(slot("runs"), r == null ? "–" : String(r));
+    tweenText(slot("cost"), fleetMoney(c));
+    setText(slot("err"), e > 0 ? `${e} err` : "0 err");
+    const errwrap = slot("errwrap");
+    if (errwrap) errwrap.classList.toggle("err", e > 0);
+    card.classList.toggle("has-err", e > 0);
+    setText(slot("wake"), agg ? fleetAgo(agg) : "–");
+    const spark = card.querySelector("gale-sparkline");
+    if (spark && spark.update) {
+      const daily = (data.daily_wakings_by_host || {})[h];
+      const vals = (Array.isArray(daily) ? daily : []).map((v) => (Number.isFinite(v) ? v : 0));
+      if (vals.length && !vals.every((v) => v === 0)) {
+        spark.update([vals], [{ color: meta.hue, fill: `color-mix(in srgb, ${meta.hue} 16%, transparent)` }]);
+      }
+    }
+  });
   if (fresh) {
     const gen = data.generated_at ? ` · metrics generated ${fleetAgo(data.generated_at)}` : "";
     setText(fresh, `live · poll fallback every 30s${gen}`);
+  }
+  refreshEffects();
+}
+
+/* ---- wake cadence heatmap (14d) — api/fleet/wakes ----
+   One cell per 6h UTC slot per local agent (00/06/12/18), 14 days wide.
+   Green = woke (four depth steps by session minutes), red = a run ended
+   is_error, faint = no run in that slot. Data is the compact /wakes slice
+   of fleet_api's runs roll-up (runs-history.jsonl folds in, so rotation
+   doesn't punch holes in the grid). Missed-wake ALERTING is deliberately
+   not inferred here -- crontab cadence + grace math lives in
+   tools/wake_bridge.py (gale_wake.prom); this panel shows raw history. */
+const HEAT_FEED = "api/fleet/wakes";
+const HEAT_TTL = 120e3;
+const HEAT_DAYS = 14;
+const HEAT_SLOTS = HEAT_DAYS * 4;
+const HEAT_AGENTS = ["gale", "zephyr", "squall", "tempest", "vortex", "chinook",
+  "cyclone", "maistral", "sirocco", "bora", "tramontane", "ostro", "poniente", "levante"];
+const SLOT_MS = 6 * 3600e3;
+let heatCache = { at: 0, data: null, err: null };
+
+async function fetchWakes() {
+  if (Date.now() - heatCache.at < HEAT_TTL && (heatCache.data || heatCache.err)) {
+    return { data: heatCache.data, err: heatCache.err };
+  }
+  try {
+    const res = await tracedFetch(HEAT_FEED, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const env = validate(await res.json(), wakesPayload);
+    heatCache = { at: Date.now(), data: env, err: null };
+  } catch (e) {
+    heatCache = { at: Date.now(), data: null, err: String(e.message || e) };
+  }
+  return { data: heatCache.data, err: heatCache.err };
+}
+
+function heatSlot(iso, nowSlot) {
+  const idx = Math.floor(new Date(iso).getTime() / SLOT_MS);
+  if (!Number.isFinite(idx)) return -1;
+  return idx > nowSlot ? -1 : idx; // future/garbage ts -> drop, not clamp
+}
+
+export async function renderWakeHeatmap() {
+  const grid = document.getElementById("wake-heat-grid");
+  const note = document.getElementById("wake-heat-note");
+  if (!grid) return;
+  const { data, err } = await fetchWakes();
+  if (!data) {
+    setHTML(grid, `<p class="mini-note" style="color:var(--warn)">wake telemetry unreachable (${esc(err || "unknown")}) — heatmap paused, retries each tick</p>`);
+    if (note) setText(note, "");
+    return;
+  }
+  const now = Date.now();
+  const nowSlot = Math.floor(now / SLOT_MS);
+  const firstSlot = nowSlot - (HEAT_SLOTS - 1);
+  // bucket runs: {agent -> {slot -> {runs, errs, mins, cost}}}
+  const cells = {};
+  const lastBy = {};
+  for (const r of data.runs || []) {
+    const a = String(r.agent || "").toLowerCase();
+    if (!HEAT_AGENTS.includes(a)) continue;
+    const t = r.ts ? new Date(r.ts).getTime() : NaN;
+    if (!Number.isFinite(t)) continue;
+    const s = heatSlot(r.ts, nowSlot);
+    if (s < firstSlot) continue;
+    const b = (cells[a] = cells[a] || {});
+    const c = (b[s] = b[s] || { runs: 0, errs: 0, mins: 0, cost: 0 });
+    c.runs += 1;
+    if (r.is_error) c.errs += 1;
+    if (Number.isFinite(r.duration_ms)) c.mins += r.duration_ms / 60000;
+    if (Number.isFinite(r.cost_usd)) c.cost += r.cost_usd;
+    if (!lastBy[a] || t > lastBy[a].t) lastBy[a] = { t, r };
+  }
+  const slotLabel = (s) => {
+    const d = new Date(s * SLOT_MS);
+    return `${d.toISOString().slice(0, 10)} ${String(d.getUTCHours()).padStart(2, "0")}:00 UTC`;
+  };
+  const rows = HEAT_AGENTS.map((a) => {
+    const b = cells[a] || {};
+    const total = Object.values(b).reduce((n, c) => n + c.runs, 0);
+    const errs = Object.values(b).reduce((n, c) => n + c.errs, 0);
+    const last = lastBy[a];
+    // Row html is deliberately time-independent (patchList diffs on it):
+    // a per-tick "5m ago" here would replace all 56 cells every 15s tick.
+    // The "last wake" text lives in a data-slot span, updated imperatively.
+    let cellsHtml = "";
+    for (let s = firstSlot; s <= nowSlot; s++) {
+      const c = b[s];
+      if (!c) {
+        cellsHtml += `<i class="wake-heat-cell" data-sev="none" title="${esc(a)} · ${esc(slotLabel(s))}: no wake recorded"></i>`;
+        continue;
+      }
+      const sev = c.errs > 0 ? "err" : "ok";
+      const lvl = c.mins >= 45 ? 4 : c.mins >= 25 ? 3 : c.mins >= 10 ? 2 : 1;
+      const dur = c.mins >= 1 ? `${Math.round(c.mins)}m total` : "duration n/a";
+      cellsHtml += `<i class="wake-heat-cell" data-sev="${sev}" data-int="${lvl}" title="${esc(a)} · ${esc(slotLabel(s))}: ${c.runs} run${c.runs > 1 ? "s" : ""}, ${dur}${c.errs ? `, ${c.errs} ended in error` : ""}${c.cost ? `, $${c.cost.toFixed(2)}` : ""}"></i>`;
+    }
+    const aria = `${a}: ${total} wakes in ${HEAT_DAYS}d${errs ? `, ${errs} in error` : ""}`;
+    return {
+      key: `heat-${a}`,
+      lastIso: last ? last.r.ts : null,
+      html: `<div class="wake-heat-row" role="img" aria-label="${esc(aria)}" data-agent="${esc(a)}" data-sev="${!last ? "miss" : errs ? "err" : "ok"}">
+        <a class="wake-heat-name" href="fleet.html#agent-${esc(a)}">${esc(a)}</a>
+        <span class="wake-heat-cells" aria-hidden="true">${cellsHtml}</span>
+        <span class="wake-heat-sum"><b>${total}</b>&thinsp;/14d · <span data-slot="last">&ndash;</span>${errs ? ` · <span class="wake-heat-errs">${errs} err</span>` : ""}</span>
+      </div>`,
+    };
+  });
+  patchList(grid, rows);
+  // cheap per-tick updates: "last wake" text only, no cell re-renders
+  for (const row of rows) {
+    const node = grid.querySelector(`.wake-heat-row[data-agent="${row.key.slice(5)}"] [data-slot="last"]`);
+    if (node) setText(node, row.lastIso ? fleetAgo(row.lastIso) : "never");
+  }
+  if (note) {
+    const gen = data.generated_at ? ` · roll-up generated ${fleetAgo(data.generated_at)}` : "";
+    setText(note, `${HEAT_SLOTS} slots × 6h (UTC-aligned) · ${HEAT_AGENTS.length} local agents${gen} · data: api/fleet/wakes (runs-history roll-up) · alerts: gale_wake.prom (GaleWakeMissed/GaleWakeSessionStuck)`);
   }
   refreshEffects();
 }
@@ -817,6 +1515,7 @@ export async function renderFleet24h() {
 setInterval(() => { if (lastGeneratedAt) updateFreshness(lastGeneratedAt); }, 1000);
 
 tick();
+loadAcks();
 pollTimer = setInterval(tick, pollMs);
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") tick();

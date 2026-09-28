@@ -1,0 +1,74 @@
+{
+  "title": "Gale box hardware",
+  "uid": "gale-hardware",
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Hottest sensor",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [{ "expr": "max(node_hwmon_temp_celsius)", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "celsius", "thresholds": { "mode": "absolute", "steps": [{ "value": 0, "color": "green" }, { "value": 80, "color": "yellow" }, { "value": 90, "color": "red" }] } }, "overrides": [] }
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Sensor temperatures",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 18, "x": 6, "y": 0 },
+      "targets": [{ "expr": "node_hwmon_temp_celsius", "refId": "A", "legendFormat": "{{chip}} {{sensor_label}}" }],
+      "fieldConfig": { "defaults": { "unit": "celsius", "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 3, "type": "stat", "title": "Disk / used",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 4 },
+      "targets": [{ "expr": "(1 - node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"}) * 100", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "percent", "thresholds": { "mode": "absolute", "steps": [{ "value": 0, "color": "green" }, { "value": 85, "color": "yellow" }, { "value": 93, "color": "red" }] } }, "overrides": [] }
+    },
+    {
+      "id": 4, "type": "stat", "title": "NVMe wear used",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
+      "targets": [{ "expr": "gale_nvme_used_percent", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "percent", "noValue": "no smart data", "thresholds": { "mode": "absolute", "steps": [{ "value": 0, "color": "green" }, { "value": 80, "color": "yellow" }, { "value": 90, "color": "red" }] } }, "overrides": [] }
+    },
+    {
+      "id": 5, "type": "stat", "title": "TLS cert runway",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 8 },
+      "targets": [{ "expr": "gale_tls_cert_days_left", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "d", "thresholds": { "mode": "absolute", "steps": [{ "value": 0, "color": "red" }, { "value": 7, "color": "yellow" }, { "value": 21, "color": "green" }] } }, "overrides": [] }
+    },
+    {
+      "id": 6, "type": "stat", "title": "Backup age",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 8 },
+      "targets": [{ "expr": "gale_backup_age_hours", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "h", "thresholds": { "mode": "absolute", "steps": [{ "value": 0, "color": "green" }, { "value": 48, "color": "yellow" }, { "value": 168, "color": "red" }] } }, "overrides": [] }
+    },
+    {
+      "id": 7, "type": "stat", "title": "Units up",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 8 },
+      "targets": [{ "expr": "sum(gale_service_up)", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "Load per core",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [{ "expr": "node_load15 / count(count(node_cpu_seconds_total) by (cpu))", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 9, "type": "timeseries", "title": "Pressure stalls",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "targets": [{ "expr": "gale_pressure_stall_ratio", "refId": "A", "legendFormat": "{{resource}} {{mode}} {{window}}" }],
+      "fieldConfig": { "defaults": { "unit": "percentunit", "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    }
+  ]
+}

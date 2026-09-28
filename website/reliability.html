@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reliability — SLOs, synthetics, forecasts | Gale</title>
+  <meta name="description" content="Gale reliability console: SLOs and error budgets, synthetic checks, RUM web-vitals, cost forecasts, backup freshness." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#02060d" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="dist/reliability.js"></script>
+  <script src="rum.js" defer></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<div class="cine-vignette" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">GALE</a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Dashboard</a>
+    <a href="fleet.html">Fleet topology</a>
+    <a href="status.html">Ops status</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="reliability.html" aria-current="page">Reliability</a>
+    <a href="network.html">Network</a>
+  </nav>
+</div></header>
+<main id="main" class="ops-main">
+  <div class="ops-head"><div>
+    <span class="eyebrow"><span class="dot"></span>SLOs · burn-rate · RUM · synthetics</span>
+    <h1 class="ops-title grad-text">Reliability console</h1>
+    <p class="lede" style="margin-bottom:0">Error budgets, synthetic green, real-user vitals, cost forecast, backup freshness. Reads the same live feeds — no new backend contract. Synthetics via <code>tools/synthetics.sh</code>.</p>
+  </div></div>
+  <noscript><p class="block" style="color:var(--text-dim)">Needs JavaScript. Raw feeds: <code>/api/fleet/metrics</code>, <code>/api/fleet/activity</code>, <code>/api/status.json</code>.</p></noscript>
+  <div class="ops-board">
+    <section class="ops-panel span-full"><h2 class="panel-title">SLOs &amp; error budgets</h2><div class="vitals-grid" id="slo-grid"></div></section>
+    <section class="ops-panel"><h2 class="panel-title">Synthetics <span id="synth-fresh"></span></h2><div class="targets-grid" id="synth-grid"></div></section>
+    <section class="ops-panel"><h2 class="panel-title">RUM · this browser</h2><div class="vitals-grid" id="rum-grid"></div><p class="mini-note">LCP ≤2500ms · INP ≤200ms · CLS ≤0.1. Collector: <code>rum.js</code>.</p></section>
+    <section class="ops-panel"><h2 class="panel-title">Cost forecast</h2><p id="forecast" class="mono-dim">loading…</p><p class="mini-note">7-day average → 30-day projection from <code>/api/fleet/metrics</code>.</p></section>
+    <section class="ops-panel"><h2 class="panel-title">Backup freshness</h2><div id="backup-proof"></div></section>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,333 @@
+/* GALE — cinematic layer (Apple + ILM inspired, additive).
+   Loaded after gale.css on index.html. Everything here is progressive
+   enhancement: no-JS still shows all content, reduced-motion collapses
+   every animation, high-contrast + data-saver + print retire the FX. */
+
+:root {
+  --cine-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --cine-flare: rgba(190, 214, 255, 0.55);
+  --cine-ray: rgba(125, 211, 252, 0.10);
+  --cine-ember: rgba(255, 170, 80, 0.5);
+}
+
+/* ---- fixed cinematic atmosphere: vignette + god rays + flare ---- */
+.cine-vignette {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(2, 4, 10, 0.55) 100%);
+}
+.cine-rays {
+  position: fixed; inset: -10% -20% auto -20%; height: 70vh; z-index: 0; pointer-events: none;
+  background:
+    conic-gradient(from 168deg at 18% -6%, transparent 0deg, var(--cine-ray) 6deg, transparent 12deg),
+    conic-gradient(from 172deg at 30% -8%, transparent 0deg, var(--cine-ray) 5deg, transparent 11deg),
+    conic-gradient(from 12deg at 82% -6%, transparent 0deg, var(--cine-ray) 6deg, transparent 13deg);
+  mix-blend-mode: screen; opacity: 0.7;
+}
+.lens-flare {
+  position: absolute; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(circle, var(--cine-flare) 0%, transparent 65%);
+  mix-blend-mode: screen;
+}
+.lens-flare.f1 { width: 340px; height: 340px; left: 6%; top: -120px; opacity: 0.35; }
+.lens-flare.f2 { width: 120px; height: 120px; left: 22%; top: 40px; opacity: 0.5; }
+.lens-flare.streak {
+  width: 60vw; height: 2px; border-radius: 2px; left: 20%; top: 90px;
+  background: linear-gradient(90deg, transparent, rgba(200, 225, 255, 0.5) 30%, rgba(255, 255, 255, 0.75) 50%, rgba(200, 225, 255, 0.5) 70%, transparent);
+  opacity: 0.5;
+}
+
+/* ---- hero: Apple-scale type + ILM depth ---- */
+#hero { position: relative; overflow: clip; perspective: 900px; }
+#hero .hero-title {
+  font-size: clamp(3.4rem, 13vw, 7.5rem);
+  letter-spacing: -0.035em; line-height: 0.98;
+  transform: translate3d(0, calc(var(--hero-p, 0) * 60px), 0) scale(calc(1 - var(--hero-p, 0) * 0.06));
+  opacity: calc(1 - var(--hero-p, 0) * 0.55);
+  filter: blur(calc(var(--hero-p, 0) * 7px)) brightness(calc(1 - var(--hero-p, 0) * 0.18));
+  will-change: transform, opacity, filter;
+}
+#hero .lede, #hero .chips, #hero .meta, #hero .eyebrow {
+  transform: translate3d(0, calc(var(--hero-p, 0) * 34px), 0);
+  opacity: calc(1 - var(--hero-p, 0) * 0.75);
+  filter: blur(calc(var(--hero-p, 0) * 4px));
+  will-change: transform, opacity, filter;
+}
+/* lightning-synced flash (shared.js sets --flash 1→0 on each bolt) */
+.blob { opacity: calc(0.45 + var(--storm-level, 0.35) * 0.7 + var(--flash, 0) * 0.3); }
+.cine-rays, .lens-flare { filter: brightness(calc(1 + var(--flash, 0) * 1.4)); }
+/* sticky section titles: Apple-style pinned chapter headers */
+main .block > h2.sec-title {
+  position: sticky; top: 64px; z-index: 5;
+  margin-inline: -10px; padding: 8px 10px; border-radius: 10px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg-deep) 82%, transparent), color-mix(in srgb, var(--bg-deep) 55%, transparent));
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+/* horizontal fleet gallery: snap strip + drag on narrow screens */
+@media (max-width: 900px) {
+  #fleet .host-grid {
+    grid-template-columns: none; grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 340px);
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-bottom: 10px; scrollbar-width: thin;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 34px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 34px), transparent);
+  }
+  #fleet .host-card { scroll-snap-align: start; }
+  #fleet .host-grid.dragging { scroll-snap-type: none; cursor: grabbing; }
+}
+/* line mask-reveal on load: from-only keyframes, no-JS safe */
+.js .cine-line { display: block; overflow: hidden; }
+.js .cine-line > span { display: block; transform: translateY(110%); animation: cine-rise 1.1s var(--cine-ease) forwards; animation-delay: calc(var(--li, 0) * 120ms + 150ms); }
+@keyframes cine-rise { to { transform: none; } }
+/* sheen sweep across the gradient headline, Apple-keynote style */
+.js .grad-text { position: relative; }
+.js .grad-text::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.55) 50%, transparent 58%);
+  background-size: 280% 100%; mix-blend-mode: overlay;
+  animation: cine-sheen 7s ease-in-out infinite;
+}
+@keyframes cine-sheen { 0%, 55% { background-position: 120% 0; } 90%, 100% { background-position: -120% 0; } }
+
+/* multi-layer parallax hooks: JS writes translate3d, speed from data-parallax */
+[data-parallax] { will-change: transform; }
+@media (prefers-reduced-motion: no-preference) {
+  html.cine-smooth { scroll-behavior: smooth; }
+}
+
+/* ---- chapter dots: Apple AirPods-style section nav ---- */
+.chapter-nav {
+  position: fixed; right: 18px; top: 50%; translate: 0 -50%; z-index: 55;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.chapter-nav a {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--line-strong); border: 1px solid transparent;
+  transition: transform 0.25s var(--cine-ease), background 0.25s;
+}
+.chapter-nav a[aria-current="true"] { background: var(--gust); transform: scale(1.5); box-shadow: 0 0 10px var(--gust-dim); }
+@media (max-width: 1100px) { .chapter-nav { display: none; } }
+
+/* ---- live pulse marquee: Apple-TV infinite ticker ---- */
+.marquee { overflow: clip; border: 1px solid var(--glass-border); border-radius: 14px; background: var(--surface); }
+.marquee-track { display: flex; gap: 0; width: max-content; animation: marquee-x 46s linear infinite; }
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+@keyframes marquee-x { to { transform: translateX(-50%); } }
+.marquee-item {
+  display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
+  padding: 12px 26px; border-right: 1px solid var(--line);
+  font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim);
+}
+.marquee-item b { color: var(--flag-soft); font-weight: 600; }
+
+/* ---- bento spotlight + glare: Apple product-card hover ---- */
+.stat-card, .rule-card, .proj-card, .dash-card, .host-card,
+.vital, .target-card, .fleet-24h-card, .ops-panel {
+  --spot-x: 50%; --spot-y: 50%;
+}
+.stat-card::before, .rule-card::before, .proj-card::before,
+.dash-card::before, .host-card::before,
+.vital::before, .target-card::before, .fleet-24h-card::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(260px circle at var(--spot-x) var(--spot-y),
+    rgba(255, 255, 255, 0.09), transparent 65%);
+  opacity: 0; transition: opacity 0.3s;
+}
+.stat-card:hover::before, .rule-card:hover::before, .proj-card:hover::before,
+.dash-card:hover::before, .host-card:hover::before,
+.vital:hover::before, .target-card:hover::before, .fleet-24h-card:hover::before { opacity: 1; }
+.vital, .target-card, .fleet-24h-card, .ops-panel { position: relative; overflow: clip; }
+
+/* ---- ILM breakdown wipe: calm vs storm grade ---- */
+.wipe { position: relative; overflow: clip; border-radius: 14px; border: 1px solid var(--glass-border); }
+.wipe-layer { padding: 22px 24px; }
+.wipe-after {
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(49, 120, 232, 0.16), rgba(15, 216, 189, 0.10)), var(--surface-2);
+  clip-path: inset(0 0 0 var(--wipe, 50%));
+}
+.wipe-handle {
+  position: absolute; top: 0; bottom: 0; left: var(--wipe, 50%); width: 2px;
+  background: var(--gust); box-shadow: 0 0 12px var(--gust-dim); cursor: ew-resize;
+}
+.wipe-handle::after {
+  content: "◂ ▸"; position: absolute; top: 50%; left: 50%; translate: -50% -50%;
+  font-size: 0.7rem; color: var(--text); background: var(--surface);
+  border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+}
+.wipe-range { position: absolute; inset: 0; opacity: 0; cursor: ew-resize; width: 100%; }
+
+/* ---- scroll-velocity ember drift (JS sets --cine-v) ---- */
+.cine-embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: calc(0.25 + var(--cine-v, 0) * 0.6); }
+
+/* ---- wave 2 (SliderRevolution-inspired, all guarded) ---- */
+
+/* back-to-top with progress ring */
+#to-top {
+  position: fixed; right: 18px; bottom: 18px; z-index: 60;
+  width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center;
+  color: var(--text); background: var(--surface-2); border: 1px solid var(--line-strong);
+  opacity: 0; translate: 0 12px; pointer-events: none;
+  transition: opacity 0.3s var(--cine-ease), translate 0.3s var(--cine-ease);
+}
+#to-top.show { opacity: 1; translate: none; pointer-events: auto; }
+#to-top svg { width: 26px; height: 26px; transform: rotate(-90deg); }
+#to-top .tt-bg { stroke: var(--line-strong); fill: none; stroke-width: 3; }
+#to-top .tt-fg { stroke: var(--gust); fill: none; stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 100; stroke-dashoffset: var(--tt-off, 100); }
+#to-top:hover { border-color: var(--gust); }
+#to-top:active { transform: scale(0.92); }
+
+/* hero entrance choreography: staggered rise */
+.js #hero .eyebrow { animation: cine-stagger 0.9s var(--cine-ease) both; animation-delay: 0.05s; }
+.js #hero .lede { animation: cine-stagger 0.9s var(--cine-ease) both; animation-delay: 0.45s; }
+.js #hero .chips { animation: cine-stagger 0.9s var(--cine-ease) both; animation-delay: 0.6s; }
+.js #hero .meta { animation: cine-stagger 0.9s var(--cine-ease) both; animation-delay: 0.72s; }
+@keyframes cine-stagger { from { opacity: 0; transform: translateY(18px); } }
+
+/* liquid morph blob behind hero (liquid-motion effect) */
+.cine-liquid {
+  position: absolute; width: min(560px, 80vw); aspect-ratio: 1; z-index: -1;
+  right: -120px; top: -80px; opacity: 0.5; pointer-events: none;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(125, 211, 252, 0.35), transparent 60%),
+    radial-gradient(circle at 65% 65%, rgba(139, 156, 212, 0.4), transparent 62%),
+    radial-gradient(circle at 50% 50%, rgba(49, 120, 232, 0.3), transparent 70%);
+  filter: blur(40px);
+  animation: liquid-morph 14s ease-in-out infinite alternate;
+}
+@keyframes liquid-morph {
+  0% { border-radius: 58% 42% 55% 45% / 50% 58% 42% 50%; transform: rotate(0deg) scale(1); }
+  50% { border-radius: 45% 55% 42% 58% / 58% 42% 58% 42%; transform: rotate(40deg) scale(1.08); }
+  100% { border-radius: 52% 48% 60% 40% / 42% 55% 45% 58%; transform: rotate(-30deg) scale(0.96); }
+}
+
+/* glassmorphism utility (frosted panels) */
+.glass-panel {
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid var(--glass-border);
+}
+
+/* hover reveal: hidden detail slides in on hover/focus */
+.dash-card .dash-more, .proj-card .proj-more, .rule-card .rule-more {
+  max-height: 0; opacity: 0; overflow: hidden;
+  font-size: 0.8rem; color: var(--text-faint);
+  transform: translateY(6px);
+  transition: max-height 0.35s var(--cine-ease), opacity 0.3s, transform 0.35s var(--cine-ease);
+}
+.dash-card:hover .dash-more, .dash-card:focus-visible .dash-more,
+.proj-card:hover .proj-more, .proj-card:focus-visible .proj-more,
+.rule-card:hover .rule-more, .rule-card:focus-visible .rule-more {
+  max-height: 4em; opacity: 1; transform: none;
+}
+
+/* faux-3D press microinteraction + click ripple */
+.btn, .dash-card, .chip { position: relative; }
+.btn:active, .chip:active { transform: scale(0.96); }
+.cine-ripple {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45), transparent 65%);
+  transform: translate(-50%, -50%) scale(0); opacity: 0.8;
+  animation: ripple-out 0.55s var(--cine-ease) forwards;
+}
+@keyframes ripple-out { to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
+
+/* hand-drawn animated underline for section titles */
+h2.sec-title .u-draw {
+  background: linear-gradient(90deg, var(--flag), var(--gust)) left bottom / 0% 2px no-repeat;
+  transition: background-size 0.6s var(--cine-ease);
+  padding-bottom: 2px;
+}
+.in-view h2.sec-title .u-draw, h2.sec-title:hover .u-draw { background-size: 100% 2px; }
+
+/* progress bar glow + shimmer (preloader feel) */
+#progress { box-shadow: 0 0 12px color-mix(in srgb, var(--gust) 60%, transparent); }
+#progress::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  background-size: 40% 100%; animation: progress-shimmer 2.4s linear infinite;
+}
+@keyframes progress-shimmer { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+
+/* host filmstrip: reverse marquee (filmstrip addon feel) */
+.filmstrip { overflow: clip; border-block: 1px solid var(--line); padding-block: 10px; }
+.filmstrip-track { display: flex; gap: 12px; width: max-content; animation: marquee-x 60s linear infinite reverse; }
+.filmstrip:hover .filmstrip-track { animation-play-state: paused; }
+.filmstrip-cell {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim);
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; white-space: nowrap;
+  background: var(--surface);
+}
+
+/* animated SVG wave divider */
+.cine-wave { display: block; width: 100%; height: 70px; margin: 0; opacity: 0.9; }
+.cine-wave path { fill: color-mix(in srgb, var(--flag) 22%, transparent); animation: wave-slide 9s ease-in-out infinite alternate; }
+@keyframes wave-slide { from { transform: translateX(-2%); } to { transform: translateX(2%); } }
+
+/* ---- wave 3: dot morph, stop-motion film, cinemagraph hero, letterbox ---- */
+
+/* 3a · SVG/dot morph: dots change SHAPE by state, not just color */
+.chapter-nav a { transition: transform 0.25s var(--cine-ease), background 0.25s, width 0.3s var(--cine-ease), border-radius 0.3s var(--cine-ease); }
+.chapter-nav a[aria-current="true"] { width: 22px; border-radius: 6px; }
+.freshness-dot { transition: border-radius 0.35s var(--cine-ease), background 0.3s, box-shadow 0.3s; }
+.freshness[data-state="stale"] .freshness-dot { border-radius: 3px; }
+.freshness[data-state="down"] .freshness-dot { border-radius: 50% 50% 50% 4px; }
+.wake-dot { transition: border-radius 0.3s var(--cine-ease), background 0.3s; }
+.wake-dot.hot { border-radius: 3px; }
+.alert-dot { transition: border-radius 0.3s var(--cine-ease); }
+.alert-chip.acked .alert-dot { border-radius: 2px; }
+
+/* 3b · stop-motion film feel: stepped vintage flicker */
+@media (prefers-reduced-motion: no-preference) {
+  .lens-flare.streak { animation: film-flicker 1.8s steps(3) infinite; }
+  .wake-dot.on { animation: wake-blink 2.4s steps(2) infinite; }
+}
+@keyframes film-flicker { 0%, 100% { opacity: 0.5; } 33% { opacity: 0.4; } 66% { opacity: 0.56; } }
+@keyframes wake-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+/* 3c · cinemagraph hero: everything still except one breathing light */
+#hero .eyebrow .dot { animation: cine-breath 4.5s ease-in-out infinite; }
+@keyframes cine-breath { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.7); opacity: 0.65; } }
+
+/* 3d · on-demand letterbox (press C): cinema bars slide in */
+.cine-bar {
+  position: fixed; left: 0; right: 0; height: 7vh; min-height: 44px; z-index: 70;
+  background: #000; transform: scaleY(0); transition: transform 0.5s var(--cine-ease);
+  pointer-events: none;
+}
+.cine-bar.top { top: 0; transform-origin: top; }
+.cine-bar.bottom { bottom: 0; transform-origin: bottom; }
+html.cine-letterbox .cine-bar { transform: none; }
+
+/* wave-3 guards */
+@media (prefers-reduced-motion: reduce) {
+  .lens-flare.streak, .wake-dot.on, #hero .eyebrow .dot { animation: none !important; }
+  .cine-bar { display: none; }
+}
+html[data-saver="1"] .cine-bar { display: none !important; }
+@media print { .cine-bar { display: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .cine-liquid, #progress::after, .filmstrip-track, .cine-wave path,
+  .js #hero .eyebrow, .js #hero .lede, .js #hero .chips, .js #hero .meta { animation: none !important; }
+  .dash-card .dash-more, .proj-card .proj-more, .rule-card .rule-more { max-height: none; opacity: 1; transform: none; }
+}
+html[data-saver="1"] .cine-liquid, html[data-saver="1"] .cine-wave,
+html[data-saver="1"] #to-top { display: none !important; }
+html[data-contrast="high"] .cine-liquid, html[data-contrast="high"] .cine-wave { display: none !important; }
+@media print { .cine-liquid, .cine-wave, #to-top, .filmstrip { display: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .js .cine-line > span, .js .grad-text::after { animation: none !important; }
+  .js .cine-line > span { transform: none; }
+  #hero .hero-title, #hero .lede, #hero .chips, #hero .meta, #hero .eyebrow { transform: none; opacity: 1; filter: none; }
+  main .block > h2.sec-title { position: static; }
+}
+html[data-contrast="high"] .cine-rays, html[data-contrast="high"] .lens-flare,
+html[data-contrast="high"] .cine-vignette, html[data-contrast="high"] .cine-embers { display: none !important; }
+html[data-saver="1"] .cine-rays, html[data-saver="1"] .lens-flare,
+html[data-saver="1"] .cine-vignette, html[data-saver="1"] .cine-embers,
+html[data-saver="1"] .chapter-nav { display: none !important; }
+@media print { .cine-rays, .lens-flare, .cine-vignette, .cine-embers, .chapter-nav, .marquee { display: none !important; } }

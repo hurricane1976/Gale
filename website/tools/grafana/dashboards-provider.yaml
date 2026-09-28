@@ -1,0 +1,16 @@
+# gale file-provisioned dashboards (improvements #14). Deploy with the
+# dashboard JSONs to /var/lib/grafana/dashboards/gale/ + this file to
+# /etc/grafana/provisioning/dashboards/gale.yaml. No restart needed --
+# Grafana polls provisioned paths. Datasource UIDs below are this box's
+# (Prometheus ffzj5vd0pnawwd, Loki dfzj5vd2b2yv4b); re-check if the
+# datasources are ever recreated.
+apiVersion: 1
+providers:
+  - name: gale
+    folder: Gale
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards/gale

@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v6";
+const CACHE_VERSION = "gale-v8";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -74,11 +74,14 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // JS chunks (and the module graph generally): NETWORK-FIRST. These files
-  // are tiny and this is a live dashboard -- a stale chunk can silently
-  // break or mislead (a stale sw.js chunk once made push delivery look
-  // broken for an hour). Cache stays as the offline fallback only.
-  if (url.pathname.startsWith("/dist/") || url.pathname.endsWith(".js")) {
+  // JS chunks + stylesheets: NETWORK-FIRST. These files are tiny and this
+  // is a live dashboard -- a stale chunk can silently break or mislead (a
+  // stale sw.js chunk once made push delivery look broken for an hour), and
+  // a stale stylesheet layouts new markup wrong for a whole reload cycle
+  // (observed: new sparkline panels rendered unstyled until the SWR caught
+  // up on the SECOND load). Cache stays as the offline fallback only.
+  if (url.pathname.startsWith("/dist/") || url.pathname.endsWith(".js")
+      || url.pathname.endsWith(".css")) {
     event.respondWith(
       fetch(request)
         .then((res) => {

@@ -25,6 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="dist/status.js"></script>
   <script type="speculationrules">
@@ -79,8 +80,11 @@
     </noscript>
 
     <section id="alert-strip" class="alert-strip" role="alert" aria-live="polite" aria-labelledby="h-alerts" hidden>
-      <h2 id="h-alerts" class="alert-strip-head">Needs attention</h2>
+      <h2 id="h-alerts" class="alert-strip-head">Needs attention
+        <button type="button" class="mini-toggle" id="incident-bundle" title="Download alerts + snapshot + log links as one JSON file">⤓ incident bundle</button>
+      </h2>
       <div class="alert-chips" id="alert-chips"></div>
+      <p class="mini-note" id="alert-muted-note" hidden></p>
     </section>
 
     <div id="board" class="ops-board" hidden>
@@ -93,9 +97,17 @@
         <p class="mini-note" id="fleet-24h-fresh"></p>
       </section>
 
+      <section class="reveal ops-panel span-full" id="sec-wake-heat" aria-labelledby="h-wake-heat">
+        <h2 id="h-wake-heat" class="panel-title">Wake cadence &middot; 14 days</h2>
+        <p class="sec-lede" style="margin-top:-6px">One cell per 6h slot per local agent, folded from the wake-run roll-up behind <code>api/fleet/telemetry</code> (survives log rotation via <code>runs-history.jsonl</code>). Green = woke (deeper = longer session), red = a run ended in error, faint = no wake in that slot. Missed-wake alerting lives in <code>gale_wake.prom</code> (<code>tools/wake_bridge.py</code> &rarr; <code>gale-wake.rules.yml</code>); this board shows the raw history.</p>
+        <div id="wake-heat-grid" class="wake-heat-grid"></div>
+        <p class="mini-note" id="wake-heat-note"></p>
+      </section>
+
       <section class="reveal ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
         <h2 id="h-vitals" class="panel-title">Host vitals &middot; <span id="hostname">&ndash;</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
+        <p class="mini-note" id="disk-forecast-note"></p>
       </section>
 
       <section class="reveal ops-panel" aria-labelledby="h-host">
@@ -106,6 +118,15 @@
       <section class="reveal ops-panel" aria-labelledby="h-cpu">
         <h2 id="h-cpu" class="panel-title">CPU &middot; <span id="cpu-count">&ndash;</span> cores</h2>
         <div class="core-grid" id="core-grid"></div>
+      </section>
+
+      <section class="reveal ops-panel" id="sec-hardware" aria-labelledby="h-hardware">
+        <h2 id="h-hardware" class="panel-title">Hardware &middot; <span id="hardware-hottest">&ndash;</span></h2>
+        <div class="table-scroll"><table class="ops-table" id="hardware-table">
+          <thead><tr><th>Sensor</th><th>Reading</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+        <p class="mini-note" id="hardware-nvme"></p>
       </section>
 
       <section class="reveal ops-panel" aria-labelledby="h-net">
@@ -120,7 +141,7 @@
       <section class="reveal ops-panel" id="sec-services" aria-labelledby="h-services">
         <h2 id="h-services" class="panel-title">Services</h2>
         <div class="table-scroll"><table class="ops-table" id="services-table">
-          <thead><tr><th>Unit</th><th>State</th><th>Active since</th></tr></thead>
+          <thead><tr><th>Unit</th><th>State</th><th>Restarts</th><th>Memory</th><th>Active since</th></tr></thead>
           <tbody></tbody>
         </table></div>
       </section>
@@ -128,6 +149,11 @@
       <section class="reveal ops-panel" id="sec-security" aria-labelledby="h-security">
         <h2 id="h-security" class="panel-title">Security posture</h2>
         <dl class="kv-list" id="security-info"></dl>
+      </section>
+
+      <section class="reveal ops-panel" id="sec-hygiene" aria-labelledby="h-hygiene">
+        <h2 id="h-hygiene" class="panel-title">Hygiene</h2>
+        <dl class="kv-list" id="hygiene-info"></dl>
       </section>
 
       <section class="reveal ops-panel" aria-labelledby="h-ports">
@@ -150,6 +176,11 @@
         <p class="sec-lede" style="margin-top:-6px" id="ollama-down" hidden>Unreachable</p>
         <div id="ollama-body">
           <div class="vitals-grid" id="ollama-vitals"></div>
+          <div class="spark-block">
+            <h4 class="fw-subtitle" style="font-size:0.85rem">GPU &middot; 24h <span style="color:var(--text-faint);font-weight:400">&middot; utilization (inference proxy) + temperature + VRAM headroom</span></h4>
+            <div class="spark-canvas"><gale-sparkline id="ollama-gpu-chart" view-box="0 0 600 90"></gale-sparkline></div>
+            <p class="mini-note" id="ollama-gpu-note"></p>
+          </div>
           <div class="fw-cols">
             <div>
               <h3 class="fw-subtitle">Loaded models (<span id="ollama-loaded-count">0</span>)</h3>
@@ -212,6 +243,9 @@
         <div id="fw-live-body" style="margin-top:26px">
           <h3 class="fw-subtitle">Live network throughput <span style="color:var(--text-faint);font-weight:400">&middot; derived from flow records, last 15 min &middot; approximate</span></h3>
           <div class="vitals-grid" id="fw-live-vitals"></div>
+          <h4 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers &middot; 24h <span style="color:var(--text-faint);font-weight:400">&middot; sampled flow totals</span></h4>
+          <div class="spark-canvas talkers-canvas"><gale-sparkline id="fw-talkers-chart" view-box="0 0 600 90"></gale-sparkline></div>
+          <p class="mini-note" id="fw-talkers-note"></p>
           <h4 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers (last 2h)</h4>
           <div class="fw-table-scroll">
             <div class="table-scroll"><table class="ops-table" id="fw-talkers-table">
@@ -261,6 +295,13 @@
 ]</code></pre>
           <p>Any target works as long as <code>GET http://ADDR/health</code> returns 2xx within ~2.5s. All four local agents and every peer&rsquo;s <code>peer_server.py</code> already expose this.</p>
         </details>
+      </section>
+
+      <section class="reveal ops-panel span-full" aria-labelledby="h-uptime">
+        <h2 id="h-uptime" class="panel-title">Uptime &middot; 90 days</h2>
+        <p class="sec-lede" style="margin-top:-6px">Worst health seen each day per target, folded from the 15s collector probes into a rolling 90-day window (<code>uptime-history.json</code>, written by <code>gale-sysmon</code>). Green = healthy all day, grey = no data, amber = auth-gated, red = errors/down.</p>
+        <div id="uptime-grid"></div>
+        <p class="mini-note" id="uptime-note"></p>
       </section>
 
     </div>

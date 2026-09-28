@@ -2694,3 +2694,12 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal ($0.14-0.18/run).
 - ASK.md: two open items unchanged (network.html scoped restore, Bora token destination).
 - Uncommitted `website/*` changes belong to the separate website session -- untouched; committing only NOTES.md.
+
+## 2026-09-28T22:30Z -- operator-directed working session (website + monitoring)
+- Operator asked for options, picked three, said "start it" then "commit". Built and deployed:
+  - **GPU/Ollama exporter**: `website/tools/gpu_bridge.py` (cron */5, textfile `gale_gpu.prom`) + `website/monitoring/gale-gpu.rules.yml` (GaleOllamaDown critical, GpuHot, VramNearFull, collector-down, bridge-stale). Grafana panel on gale-backend.
+  - **Wake SLO**: `website/tools/wake_bridge.py` (cron */5, textfile `gale_wake.prom`: crontab cadence + fleet_api runs + live /proc session ages) + `website/monitoring/gale-wake.rules.yml` (GaleWakeMissed, SessionStuck >2h, Errors>2/24h, bridge-stale). Fills the gap gale-hardware.yml deliberately left ("wake cadence lives in fleet_api runs, not Prom").
+  - **14d wake heatmap**: status.html panel; rows = 14 local agents, 56 slots x 6h UTC; new compact `api/fleet/wakes` route (51KB vs 1MB telemetry, gz 6.8KB) + zod payload + JSON-schema contract + render-test/smoke assertions. Row html time-independent so patchList doesn't churn 840 cells per tick.
+- Deployed: rules -> /var/snap/prometheus/common/rules/ (SIGHUP reload; lifecycle API disabled), gale-backend.json -> grafana provisioned path, site via deploy.sh (2 releases). Crontab +2 lines. All verified live in Prometheus (14 agent wake series + GPU series), gale-gpu/gale-wake rule groups loaded.
+- Audit caveat: status.html lighthouse perf flickers 58-63 vs gate 60 under current load (GPU pegged by 3 wake sessions). A/B vs pre-change deploy snapshot 20260928T213241Z on :8091 = 58 baseline -- pre-existing, not the heatmap. Other pages pass.
+- Commit now includes the paused website session's uncommitted wave (cinematic/reliability/monitoring pack) alongside this session's work, per operator instruction.

@@ -45,10 +45,16 @@ const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/flee
 const actData = JSON.parse(actRaw);
 const statRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/status.json').toString();
 const statData = JSON.parse(statRaw);
+const telRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/telemetry').toString();
+const telData = JSON.parse(telRaw);
+const wakesRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/wakes').toString();
+const wakesData = JSON.parse(wakesRaw);
 // stub network: route each feed to its live payload
 globalThis.fetch = async (url) => {
   const u = String(url);
   const body = u.includes("status.json") ? statData
+    : u.includes("wakes") ? wakesData
+    : u.includes("telemetry") ? telData
     : (u.includes("/activity") || u.includes("agora/posts")) ? actData : d;
   return { ok: true, status: 200, json: async () => body };
 };
@@ -91,9 +97,15 @@ await status.renderFleet24h();
 const gridHtml = __els["fleet-24h-grid"].innerHTML;
 t("fleet strip 4 cards", (gridHtml.match(/fleet-24h-card/g) || []).length >= 4);
 t("fleet strip stats", gridHtml.includes("runs 24h") && gridHtml.includes("cost 24h"));
-t("fleet strip sparklines", gridHtml.includes("fleet-24h-sparkline"));
+t("fleet strip sparklines", gridHtml.includes("gale-sparkline") && gridHtml.includes("fleet-24h-spark"));
 const stripHtml = __els["fleet-live-strip"].innerHTML;
 t("liveness pills", (stripHtml.match(/fleet-live-pill/g) || []).length >= 4);
+
+await status.renderWakeHeatmap();
+const heatHtml = __els["wake-heat-grid"].innerHTML;
+t("wake heatmap 14 rows", (heatHtml.match(/wake-heat-row/g) || []).length >= 14, `got ${(heatHtml.match(/wake-heat-row/g) || []).length}`);
+t("wake heatmap 56 cells/row", (heatHtml.match(/wake-heat-cell/g) || []).length >= 14 * 56, `got ${(heatHtml.match(/wake-heat-cell/g) || []).length}`);
+t("wake heatmap tooltips", heatHtml.includes("UTC") && heatHtml.includes("run"));
 
 const metrics = await import("/home/agent/agent/website/metrics.js");
 metrics.renderAgentCards(d);

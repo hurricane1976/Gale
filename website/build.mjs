@@ -12,8 +12,11 @@ import { rmSync } from "node:fs";
 
 const ENTRY_POINTS = [
   "main.js",         // index.html
+  "storm-scene.js",  // index.html hero night-mountain scene
+  "cinematic.js",    // Apple/ILM cinematic layer (bundled via main.js, standalone too)
   "fleet.js",        // fleet.html (6 independent entries, one page)
   "topology3d.js",   // fleet.html 3D view (lazy, WebGL)
+  "glsky.js",        // ambient WebGPU sky (lazy from shared.js boot)
   "palette.js",      // command palette (Ctrl/Cmd+K), lazy from shared.js
   "kiosk.js",        // wall mode (?kiosk=seconds), lazy from shared.js
   "activity.js",
@@ -28,6 +31,7 @@ const ENTRY_POINTS = [
   "weather.js",       // weather.html
   "agora.js",        // agora.html
   "ollama.js",       // ollama.html
+  "reliability.js",  // reliability.html
 ];
 
 const watch = process.argv.includes("--watch");

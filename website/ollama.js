@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { boot, esc, clamp, refreshEffects, trapFocus, REDUCED } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, trapFocus, REDUCED, chartTooltip, skeleton } from "./shared.js";
 
 boot();
 
@@ -22,6 +22,9 @@ let pending = null;          // {action, model, typed}
 let showOpenFor = null;
 
 const $ = (id) => document.getElementById(id);
+
+// skeleton screens (#6): shimmer until the first fetch renders
+skeleton($("gpu-wrap"), 2, 90);
 
 function setFresh(state, text) {
   const el = $("freshness");
@@ -178,6 +181,68 @@ function gpuBar(label, pct, sub) {
     <div class="gpu-bar-head"><span class="gpu-label">${esc(label)}</span><span class="gpu-sub">${sub || ""}</span></div>
     <div class="gpu-track ${level ? `gpu-bar-${level}` : ""}"><i style="width:${w.toFixed(1)}%"></i></div>
   </div>`;
+}
+
+/* Thermal ribbon + VRAM headroom (#4): 24h junction-temp history as a
+   color-graded ribbon on a FIXED 20-100C scale (stable across renders),
+   bucketed to <=120 cells (max temp per bucket -- spikes are the signal),
+   with dashed rules at the same 78/88C thresholds the tiles use via
+   heat(). VRAM headroom gauge reads 100 - latest used %. Crosshair via
+   the shared helper; nulls carry forward so sampler gaps don't dip. */
+const THERM_LO = 20, THERM_HI = 100;
+function thermColor(t) {
+  return t == null ? "var(--text-faint)" : t >= 88 ? "var(--flag)" : t >= 78 ? "var(--warn)" : "var(--ok)";
+}
+function renderThermal() {
+  const box = $("gpu-thermal");
+  if (!box) return;
+  const series = (HIST && HIST.series) || [];
+  const rows = series.map((s) => ({
+    ts: s.ts,
+    t: s.gpu && s.gpu.ok && Array.isArray(s.gpu.gpus) && s.gpu.gpus[0] ? s.gpu.gpus[0].temp_c : null,
+    v: s.gpu && s.gpu.ok && Array.isArray(s.gpu.gpus) && s.gpu.gpus[0] && s.gpu.gpus[0].mem_total_mb
+      ? Math.round((s.gpu.gpus[0].mem_used_mb / s.gpu.gpus[0].mem_total_mb) * 100) : null,
+  }));
+  let lastT = null, lastV = null;
+  for (const r of rows) {
+    if (r.t != null) lastT = r.t;
+    if (r.v != null) lastV = r.v;
+    if (r.t == null) r.t = lastT;
+    if (r.v == null) r.v = lastV;
+  }
+  if (!rows.length || rows.every((r) => r.t == null)) {
+    box.innerHTML = `<p class="mini-note">thermal ribbon: no GPU temperature history yet</p>`;
+    return;
+  }
+  const N = 120;
+  const size = Math.max(1, Math.floor(rows.length / N));
+  const buckets = [];
+  for (let i = 0; i < rows.length; i += size) {
+    const cell = rows.slice(i, i + size);
+    const ct = cell.map((r) => r.t).filter((v) => v != null);
+    buckets.push({ ts: cell[0].ts, t: ct.length ? Math.max(...ct) : null, v: cell[cell.length - 1].v });
+  }
+  const W = 600, H = 46, bw = W / buckets.length;
+  const Y = (t) => H - 4 - ((Math.min(THERM_HI, Math.max(THERM_LO, t)) - THERM_LO) / (THERM_HI - THERM_LO)) * (H - 8);
+  const rects = buckets.map((b, i) =>
+    `<rect x="${(i * bw).toFixed(1)}" y="0" width="${Math.max(1, bw - 0.6).toFixed(1)}" height="${H}" fill="${thermColor(b.t)}" opacity="${b.t == null ? 0.25 : 0.85}"/>`).join("");
+  const rule = (t, label) =>
+    `<line x1="0" y1="${Y(t).toFixed(1)}" x2="${W}" y2="${Y(t).toFixed(1)}" stroke="var(--text-dim)" stroke-width="1" stroke-dasharray="4 3"/>` +
+    `<text x="${W - 2}" y="${(Y(t) - 3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text-dim)">${label}</text>`;
+  const head = lastV == null ? null : 100 - lastV;
+  const headCls = head != null && head < 10 ? "warn" : "";
+  box.innerHTML =
+    `<div style="position:relative"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="24 hour temperature ribbon, dashed rules at 78 and 88 degrees">` +
+    rects + rule(78, "78°") + rule(88, "88°") + `</svg></div>` +
+    (head == null ? "" :
+      `<div class="gpu-bar"><div class="gpu-bar-head"><span class="gpu-label">VRAM headroom</span><span class="gpu-sub">${head.toFixed(0)}% free</span></div>` +
+      `<div class="gpu-track ${headCls ? `gpu-bar-${headCls}` : ""}"><i style="width:${head.toFixed(1)}%"></i></div></div>`);
+  const svg = box.querySelector("svg");
+  chartTooltip(svg, buckets.map((b, i) => ({ x: i * bw + bw / 2 })), (i) => {
+    const b = buckets[i];
+    const when = b.ts ? new Date(b.ts).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) : "";
+    return `${when} · ${b.t == null ? "no data" : b.t.toFixed(0) + "°C"} · VRAM ${b.v ?? "?"}%`;
+  });
 }
 
 function renderGpu(g) {
@@ -767,6 +832,7 @@ async function loadHist() {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     HIST = await r.json();
     renderVitals();
+    renderThermal();
     renderDiagnostics();
     renderVramChart();
     renderLatencyChart();

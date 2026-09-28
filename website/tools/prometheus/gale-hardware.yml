@@ -1,0 +1,128 @@
+# gale-hardware.yml -- headless (no-browser-open) alert rules for gale-agent.
+# Thresholds mirror the status-board strip (status.js hostAlerts) on purpose:
+# the strip is the human view, these are the 3am pager. Anything that has no
+# Prometheus metric stays browser-side and says so below (not silently).
+#
+# Deploy: copy to /var/snap/prometheus/common/rules/ (rule_files globs
+# *.yml) then reload prometheus. Alertmanager already routes default +
+# critical to the webhook receiver, whose log fleet_api.py folds back into
+# /alerts -- so these surface on the board AND via push/Telegram.
+groups:
+  - name: gale-hardware
+    rules:
+      - alert: BoxTempWarn
+        expr: max(node_hwmon_temp_celsius) > 80
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "hottest box sensor over 80C"
+          description: "max hwmon temp: {{ $value | printf \"%.1f\" }}C for 5m"
+
+      - alert: BoxTempCrit
+        expr: max(node_hwmon_temp_celsius) > 90
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: "hottest box sensor over 90C"
+          description: "max hwmon temp: {{ $value | printf \"%.1f\" }}C for 5m"
+
+      - alert: RootDiskFillingFast
+        expr: predict_linear(node_filesystem_avail_bytes{mountpoint="/"}[2d], 7 * 86400) < 0
+        for: 30m
+        labels: { severity: warning }
+        annotations:
+          summary: "/ on pace to fill within 7 days"
+          description: "linear projection of avail bytes hits zero inside a week"
+
+      - alert: FilesystemReadOnly
+        expr: node_filesystem_readonly == 1
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: "a filesystem turned read-only"
+          description: "{{ $labels.mountpoint }} ({{ $labels.device }}) is read-only"
+
+      - alert: SustainedHighLoad
+        expr: node_load15 / count(count(node_cpu_seconds_total) by (cpu)) > 2
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          summary: "15-min load over 2x core count"
+          description: "load15 per core: {{ $value | printf \"%.2f\" }} for 15m"
+
+      # --- sysmon textfile bridge (gale_* from sysmon.write_textfile) ---
+      - alert: NvmeWearHigh
+        expr: gale_nvme_used_percent > 80
+        for: 30m
+        labels: { severity: warning }
+        annotations:
+          summary: "NVMe wear over 80% used"
+          description: "percentage_used: {{ $value | printf \"%.0f\" }}% (smartctl)"
+
+      - alert: FleetServiceDown
+        expr: gale_service_up == 0
+        for: 5m
+        labels: { severity: critical }
+        annotations:
+          summary: "systemd unit {{ $labels.unit }} not active"
+          description: "{{ $labels.unit }} state != active for 5m"
+
+      - alert: ServiceFlapping
+        expr: increase(gale_service_restarts[1h]) > 3
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.unit }} restarted >3x in an hour"
+          description: "flapping unit -- check the journal"
+
+      - alert: OomKillerFired
+        expr: gale_oom_kills_24h > 0
+        for: 10m
+        labels: { severity: critical }
+        annotations:
+          summary: "OOM killer fired in the last 24h"
+          description: "{{ $value | printf \"%.0f\" }} OOM kills -- check dmesg/journal"
+
+      - alert: TlsCertExpiring
+        expr: gale_tls_cert_days_left < 21
+        for: 1h
+        labels: { severity: warning }
+        annotations:
+          summary: "TLS cert expires in {{ $value | printf \"%.0f\" }} days"
+          description: "tailscale cert runway under 21d -- renew before push/PWA breaks"
+
+      - alert: TlsCertCritical
+        expr: gale_tls_cert_days_left < 7
+        for: 1h
+        labels: { severity: critical }
+        annotations:
+          summary: "TLS cert expires in {{ $value | printf \"%.0f\" }} days"
+          description: "renew now -- HTTPS listeners go dark at expiry"
+
+      - alert: BackupStale
+        expr: gale_backup_age_hours > 48
+        for: 1h
+        labels: { severity: warning }
+        annotations:
+          summary: "no Tramontane backup in {{ $value | printf \"%.0f\" }}h"
+          description: "last good backup aging -- check the backup job"
+
+      - alert: BackupMissing
+        expr: gale_backup_age_hours > 168
+        for: 1h
+        labels: { severity: critical }
+        annotations:
+          summary: "no Tramontane backup in a week"
+          description: "backups silent 7d+ -- data at risk"
+
+      - alert: GaleBridgeStale
+        expr: absent(gale_box_hottest_celsius) == 1
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "sysmon textfile bridge stopped updating"
+          description: "no gale_* metrics for 10m -- sysmon or the bridge writer is down"
+
+# Deliberately NOT here (no exporter metric -- they live in sysmon/strip):
+#   agent missed-wake      (wake cadence lives in fleet_api runs, not Prom)
+#   mem/swap days-to-full  (browser-side regression; RAM % is cache-noisy)

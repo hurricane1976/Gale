@@ -1,0 +1,75 @@
+{
+  "title": "Gale reliability",
+  "uid": "gale-reliability",
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Peer listeners up",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "targets": [{ "expr": "sum(gale_service_up{unit=~\".+-peer\"})", "refId": "A", "legendFormat": "up" }],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 2, "type": "stat", "title": "Backup age (h)",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "targets": [{ "expr": "gale_backup_age_hours", "refId": "A" }],
+      "fieldConfig": { "defaults": { "thresholds": { "mode": "absolute", "steps": [{ "value": 0, "color": "green" }, { "value": 24, "color": "yellow" }, { "value": 36, "color": "red" }] } }, "overrides": [] }
+    },
+    {
+      "id": 3, "type": "stat", "title": "TLS days left",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "targets": [{ "expr": "gale_tls_cert_days_left", "refId": "A" }],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 4, "type": "stat", "title": "Synthetic green",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "targets": [{ "expr": "gale_synth_green_ratio", "refId": "A", "legendFormat": "green" }],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Synthetic latency by check",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "targets": [{ "expr": "gale_synth_ms", "refId": "A", "legendFormat": "{{check}}" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 6, "type": "timeseries", "title": "Box hottest sensor °C",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "targets": [{ "expr": "gale_box_hottest_celsius", "refId": "A" }],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 7, "type": "timeseries", "title": "Host saturation",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "targets": [
+        { "expr": "100 * (1 - rate(node_cpu_seconds_total{mode=\"idle\"}[5m]))", "refId": "A", "legendFormat": "cpu %" },
+        { "expr": "100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))", "refId": "B", "legendFormat": "mem %" },
+        { "expr": "100 * (1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"}))", "refId": "C", "legendFormat": "disk / %" }
+      ],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "PSI stalls + OOM + klog errors",
+      "datasource": { "type": "prometheus", "uid": "ffzj5vd0pnawwd" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "targets": [
+        { "expr": "gale_pressure_stall_ratio{window=\"avg60\"}", "refId": "A", "legendFormat": "{{resource}}-{{mode}}" },
+        { "expr": "gale_oom_kills_24h", "refId": "B", "legendFormat": "oom 24h" },
+        { "expr": "gale_klog_err_24h", "refId": "C", "legendFormat": "klog err 24h" }
+      ],
+      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 10 } }, "overrides": [] }
+    }
+  ]
+}

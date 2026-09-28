@@ -76,6 +76,17 @@ SCHEMAS = {
                     "cost_usd": NUM,
                     "mean_cost_usd": NUM,
                     "total_tokens": NUM,
+                    "agents": {"type": "array", "items": {
+                        "type": "object",
+                        "required": ["agent", "runs", "cost_usd", "total_tokens"],
+                        "properties": {
+                            "agent": STR, "runs": NUM, "cost_usd": NUM,
+                            "mean_cost_usd": NUMNULL, "total_tokens": NUM,
+                            "last_ts": STRNULL, "p50_ms": NUMNULL,
+                            "p95_ms": NUMNULL, "errors": NUMNULL,
+                            "tokens_24h": NUMNULL, "burn_tok_per_h": NUMNULL,
+                        },
+                    }},
                 },
             },
             "runs": {"type": "array", "items": {
@@ -113,11 +124,18 @@ SCHEMAS = {
                     "disks": {"type": "array", "items": {
                         "type": "object", "required": ["pct", "used_gb", "total_gb"],
                         "properties": {"pct": NUM, "used_gb": NUM, "total_gb": NUM}}},
+                    # capacity forecast (sysmon disk-history regression) +
+                    # hardware telemetry (thermal/hwmon/NVMe); shapes owned
+                    # by the renderer, optional so old collectors still pass
+                    "disk_forecast": {"type": "array"},
+                    "hardware": {"type": "object"},
                 },
             },
             "services": {"type": "array", "items": {
                 "type": "object", "required": ["unit", "state"],
-                "properties": {"unit": STR, "state": STR, "since": STRNULL},
+                "properties": {"unit": STR, "state": STR, "since": STRNULL,
+                               "sub": STRNULL, "n_restarts": NUMNULL,
+                               "memory_bytes": NUMNULL},
             }},
             "targets": {"type": "array", "items": {
                 "type": "object", "required": ["name", "kind", "addr", "health"],
@@ -125,6 +143,13 @@ SCHEMAS = {
             }},
             "security": {"type": "object",
                          "properties": {"ufw_active": {"type": "boolean"}}},
+            # kernel distress (PSI pressure, OOM count, klog tail);
+            # renderer-owned shape, optional for old collectors
+            "kernel": {"type": "object"},
+            # hygiene (TLS cert runway, backup age); same deal
+            "hygiene": {"type": "object"},
+            # secret/config drift; same deal
+            "drift": {"type": "object"},
             "network": {
                 "type": "object",
                 "required": ["interfaces", "listening_ports"],
@@ -141,8 +166,30 @@ SCHEMAS = {
                         "properties": {"port": {"type": ["number", "string"]},
                                        "proc": STRNULL, "addrs": {"type": "array", "items": STR}},
                     }},
+                 },
+             },
+             "generated_at": STR,
+         },
+     },
+
+    # /api/fleet/wakes: compact local wake history for the status-board
+    # cadence heatmap (status.js renderWakeHeatmap + payloads.js
+    # wakesPayload -- same contract, third leg of the tripwire)
+    "wakes": {
+        "$id": "gale/fleet-wakes-v1",
+        "type": "object",
+        "required": ["schema", "count", "runs", "generated_at"],
+        "properties": {
+            "schema": STR,
+            "count": NUM,
+            "runs": {"type": "array", "items": {
+                "type": "object",
+                "required": ["agent", "ts", "is_error", "duration_ms", "cost_usd"],
+                "properties": {
+                    "agent": STR, "ts": STR, "is_error": {"type": "boolean"},
+                    "duration_ms": NUMNULL, "cost_usd": NUMNULL,
                 },
-            },
+            }},
             "generated_at": STR,
         },
     },

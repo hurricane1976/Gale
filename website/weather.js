@@ -2,7 +2,7 @@
    Data: Open-Meteo forecast + geocoding + air quality (no key),
    NWS alerts (US only), RainViewer radar tiles on Leaflet.
    No build step, vanilla ES module. Units + location persist in localStorage. */
-import { boot, refreshEffects } from "./shared.js";
+import { boot, refreshEffects, setStormIntensity, clamp, chartTooltip } from "./shared.js";
 
 boot();
 
@@ -230,6 +230,18 @@ function renderCurrent(f) {
   $("d-cloud").textContent = `${c.cloud_cover}%`;
   $("d-sunrise").textContent = fmtTime(d.sunrise[0]);
   $("d-sunset").textContent = fmtTime(d.sunset[0]);
+
+  /* weather-reactive storm (#3): live wind/precip/cloud drive the ambient
+     canvas -- rain slant from wind, density from precip probability +
+     cloud cover, bolt rate boosted by gusts and thunderstorm codes. */
+  try {
+    const precip = c.precipitation > 0 ? 1 : (d.precipitation_probability_max?.[0] ?? 0) / 100;
+    const cloud = (c.cloud_cover ?? 0) / 100;
+    const gustBoost = clamp(((c.wind_gusts_10m ?? 0) - 20) / 60, 0, 0.35);
+    const stormCode = [65, 82, 95, 96, 99].includes(c.weather_code) ? 0.25 : 0;
+    setStormIntensity(clamp(precip * 0.45 + cloud * 0.3 + gustBoost + stormCode + 0.08, 0.05, 1),
+      { windKmh: c.wind_speed_10m ?? 0 });
+  } catch {}
 }
 
 function renderHourly(f) {
@@ -259,6 +271,13 @@ function renderHourly(f) {
       return `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="#ffd23f"/>`;
     }).join("");
 
+  chartTooltip($("wx-hourly-chart"),
+    slice.map((h, i) => ({ x: X(i) })),
+    (i) => {
+      const h = slice[i];
+      const dt = new Date(h.tm).toLocaleString([], { weekday: "short", hour: "numeric" });
+      return `${dt} · ${Math.round(temps[i])}° · ${wmo(h.code)[0]} · 💧${h.pp}%`;
+    });
   slice.forEach((h, i) => {
     const dt = new Date(h.tm);
     const cell = document.createElement("div");

@@ -1,4 +1,4 @@
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, chartTooltip, skeleton } from "./shared.js";
 boot();
 
 const $ = (id) => document.getElementById(id);
@@ -7,6 +7,9 @@ const POLL_MS = 30000;
 
 let DATA = null;
 let sockFilter = "";
+
+// skeleton screens (#6): shimmer until the first fetch renders
+skeleton($("stats-grid"), 3, 64);
 
 const STATE_COLOR = {
   established: "var(--ok)",
@@ -96,6 +99,63 @@ function renderSocks(d) {
   }).join("") || `<tr><td colspan="5" class="mini-note">No socket rows match.</td></tr>`;
 }
 
+/* Rolling throughput chart (#3): per-interface rx/tx Mb/s already computed
+   by the status collector (sysmon rates from /proc counters, 15s cadence);
+   this page samples them on its own 30s poll into a ring buffer and draws
+   one SVG area chart for the busiest interface (tailscale0 preferred --
+   that's the mesh traffic that matters here). Session-only history. */
+const TPUT_N = 20;
+const tputBuf = [];
+let tputIface = null;
+function sampleThroughput() {
+  return fetch("api/status.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => {
+      const ifs = ((d && d.network && d.network.interfaces) || [])
+        .filter((i) => (i.rx_mbps || 0) + (i.tx_mbps || 0) >= 0);
+      if (!ifs.length) return;
+      const pick = ifs.find((i) => /tailscale/i.test(i.name || "")) ||
+        ifs.slice().sort((a, b) => ((b.rx_mbps || 0) + (b.tx_mbps || 0)) - ((a.rx_mbps || 0) + (a.tx_mbps || 0)))[0];
+      tputIface = pick.name;
+      tputBuf.push({ t: Date.now(), rx: pick.rx_mbps || 0, tx: pick.tx_mbps || 0 });
+      if (tputBuf.length > TPUT_N) tputBuf.splice(0, tputBuf.length - TPUT_N);
+      renderThroughput();
+    })
+    .catch(() => { /* chart stays at last sample */ });
+}
+function renderThroughput() {
+  const box = $("tput-chart");
+  if (!box) return;
+  $("tput-iface").textContent = tputIface
+    ? `${tputIface} · rx + tx Mb/s · last ${tputBuf.length} samples` : "measuring…";
+  if (tputBuf.length < 2) {
+    box.innerHTML = `<p class="mini-note">collecting samples…</p>`;
+    return;
+  }
+  const W = 640, H = 120, PT = 8, PB = 16;
+  const peak = Math.max(0.1, ...tputBuf.map((s) => s.rx + s.tx));
+  const X = (i) => (i / (TPUT_N - 1)) * (W - 8) + 4;
+  const off = TPUT_N - tputBuf.length;
+  const Y = (v) => PT + (1 - v / peak) * (H - PT - PB);
+  const line = (key, color) => {
+    const pts = tputBuf.map((s, i) => `${X(off + i).toFixed(1)},${Y(s[key]).toFixed(1)}`).join(" ");
+    return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.8"/>` +
+      `<polygon points="8,${H - PB} ${pts} ${(W - 8).toFixed(1)},${H - PB}" fill="${color}22"/>`;
+  };
+  const last = tputBuf[tputBuf.length - 1];
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="throughput, peak ${peak.toFixed(2)} megabits per second">` +
+    `<line x1="4" y1="${Y(peak / 2)}" x2="${W - 4}" y2="${Y(peak / 2)}" stroke="var(--line)" stroke-width="1"/>` +
+    `<text x="${W - 4}" y="${Y(peak) + 10}" text-anchor="end" font-size="9" fill="var(--text-faint)">peak ${peak.toFixed(2)}</text>` +
+    line("rx", "#22e6ff") + line("tx", "#39ff8f") +
+    `<g font-size="10" fill="var(--text-dim)"><circle cx="10" cy="12" r="3" fill="#22e6ff"/><text x="17" y="15">rx ${last.rx.toFixed(2)}</text>` +
+    `<circle cx="110" cy="12" r="3" fill="#39ff8f"/><text x="117" y="15">tx ${last.tx.toFixed(2)}</text></g></svg>`;
+  const svg = box.querySelector("svg");
+  chartTooltip(svg, tputBuf.map((s, i) => ({ x: X(off + i) })), (i) => {
+    const s = tputBuf[i];
+    return `${new Date(s.t).toLocaleTimeString()} · rx ${s.rx.toFixed(2)} / tx ${s.tx.toFixed(2)} Mb/s`;
+  });
+}
+
 function renderAll() {
   if (!DATA) return;
   renderStats(DATA);
@@ -115,6 +175,7 @@ async function load() {
   } catch (e) {
     setFresh("error", `feed error: ${String(e.message || e)}`);
   }
+  sampleThroughput();
 }
 
 $("sock-filter").addEventListener("change", (e) => {

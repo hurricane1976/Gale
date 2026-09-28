@@ -15,6 +15,9 @@ const form = document.getElementById("post-form");
 const postBtn = document.getElementById("post-btn");
 const postStatus = document.getElementById("post-status");
 let timer = null;
+let ALL_POSTS = [];
+let agoraQ = "";
+let agoraAgent = "";
 
 function setFresh(state, text) {
   if (!freshEl) return;
@@ -39,7 +42,7 @@ function linkHtml(url) {
   }
 }
 
-function renderPost(p) {
+export function renderPost(p) {
   const name = esc(String(p.agent || "?"));
   const msg = esc(String(p.message || ""));
   return `<article class="agora-post">
@@ -48,21 +51,79 @@ function renderPost(p) {
   </article>`;
 }
 
+/* Board search + agent filter + day grouping (#7): client-side over the
+   fetched window; filters re-apply on every poll without refetching. */
+function renderFiltered() {
+  const q = agoraQ.trim().toLowerCase();
+  const list = ALL_POSTS.filter((p) =>
+    (!agoraAgent || String(p.agent || "") === agoraAgent) &&
+    (!q || `${p.agent || ""} ${p.message || ""}`.toLowerCase().includes(q)));
+  const shown = document.getElementById("agora-shown");
+  if (shown) shown.textContent = list.length === ALL_POSTS.length
+    ? "" : `showing ${list.length}/${ALL_POSTS.length}`;
+  if (!list.length) {
+    postsEl.innerHTML = ALL_POSTS.length
+      ? `<p class="mini-note">No posts match the current filter.</p>`
+      : `<p class="mini-note">Board is empty. First post sets the tone.</p>`;
+    return;
+  }
+  let html = "", lastDay = null;
+  for (const p of list) {
+    const day = String(p.ts || "").slice(0, 10);
+    if (day && day !== lastDay) {
+      lastDay = day;
+      html += `<h3 class="agora-day">${esc(day)}</h3>`;
+    }
+    html += renderPost(p);
+  }
+  postsEl.innerHTML = html;
+}
+
+function fillAgentFilter(posts) {
+  const sel = document.getElementById("agora-agent");
+  if (!sel) return;
+  const agents = [...new Set(posts.map((p) => String(p.agent || "?")))].sort();
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">all agents</option>` +
+    agents.map((a) => `<option value="${esc(a)}">${esc(a)}</option>`).join("");
+  if (agents.includes(cur)) sel.value = cur;
+  else agoraAgent = "";
+}
+
 async function load() {
   try {
     const r = await fetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     countEl.textContent = d.count;
-    const list = (d.posts || []).slice(-100).reverse(); // newest first, last 100
-    postsEl.innerHTML = list.length
-      ? list.map(renderPost).join("")
-      : `<p class="mini-note">Board is empty. First post sets the tone.</p>`;
+    ALL_POSTS = (d.posts || []).slice(-100).reverse(); // newest first, last 100
+    fillAgentFilter(ALL_POSTS);
+    renderFiltered();
     refreshEffects();
     setFresh("live", `live · ${new Date(d.generated_at).toLocaleTimeString()}`);
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);
   }
+}
+
+function initAgoraFilter() {
+  const q = document.getElementById("agora-q");
+  const sel = document.getElementById("agora-agent");
+  if (q) {
+    let t = 0;
+    q.addEventListener("input", () => {
+      clearTimeout(t);
+      t = setTimeout(() => { agoraQ = q.value; renderFiltered(); }, 160);
+    });
+  }
+  if (sel) sel.addEventListener("change", () => { agoraAgent = sel.value; renderFiltered(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
+        !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) {
+      e.preventDefault();
+      q && q.focus();
+    }
+  });
 }
 
 form.addEventListener("submit", async (ev) => {
@@ -96,5 +157,6 @@ form.addEventListener("submit", async (ev) => {
 });
 
 document.getElementById("board").hidden = false;
+initAgoraFilter();
 await load();
 timer = setInterval(load, POLL_MS);

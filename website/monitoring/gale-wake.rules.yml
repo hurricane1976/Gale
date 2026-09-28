@@ -1,0 +1,45 @@
+# gale-wake.rules.yml -- agent wake-cadence SLO alerts.
+# All expressions use the tools/wake_bridge.py textfile bridge
+# (gale_wake.prom): crontab cadence + fleet_api run history + live
+# session ages. gale-hardware.yml deliberately left missed-wakes out
+# ("wake cadence lives in fleet_api runs, not Prom") -- this file is the
+# fix for exactly that gap. Severity: warning = board only (a missed wake
+# self-heals on the next cron slot); nothing here pages Telegram unless
+# the bridge itself dies, which GaleWakeBridgeStale covers as warning.
+# Deploy: copy to /var/snap/prometheus/common/rules/gale-wake.rules.yml,
+# then POST 127.0.0.1:9090/-/reload and check /api/v1/rules.
+groups:
+  - name: gale-wake
+    interval: 30s
+    rules:
+      - alert: GaleWakeMissed
+        expr: gale_wake_missed == 1
+        for: 20m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.agent }} missed its wake window"
+          description: "no run for {{ $value | printf \"%.1f\" }}x the scheduled interval -- check crontab + wake.sh"
+
+      - alert: GaleWakeSessionStuck
+        expr: gale_wake_live_session_seconds > 7200
+        for: 10m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.agent }} wake session running >2h"
+          description: "typical wakings finish in minutes -- this one looks hung (check logs/ + ps)"
+
+      - alert: GaleWakeErrors
+        expr: gale_wake_errors_24h > 2
+        for: 30m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.agent }} had {{ $value }} error runs in 24h"
+          description: "repeated run failures -- check the agent's logs/*.json terminal_reason"
+
+      - alert: GaleWakeBridgeStale
+        expr: time() - gale_wake_bridge_unixtime > 900
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "wake_bridge stopped updating (15m+)"
+          description: "gale_wake.prom stale -- cron entry dead or bridge erroring (see journal)"

@@ -24,6 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="fleet-tidal.css" />
+  <link rel="stylesheet" href="cinematic.css" />
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="dist/fleet.js"></script>
   <script type="module" src="dist/particles.js"></script>
@@ -327,6 +328,7 @@
       </div>
       <div id="topo-detail" class="topo-detail" role="status" aria-live="polite">hover or tap a node for its host, model, role, listener, and gale-side pairing state</div>
       <p class="mesh-status" id="mesh-status" role="status" aria-live="polite">last verified state (fleet-provision verify, 2026-09-27): all 14 gale-host agents (Gale + Zephyr, Squall, Tempest, Vortex, Cyclone, Maistral, Sirocco, Chinook, Tramontane, Bora, Ostro, Poniente, Levante) two-way confirmed, full local mesh, zero drift; 21/24 gale-side remote pairings two-way (pending installs: Prism, Mesa, Vista); lead trunks to Tidal/Beacon/Mountain verified two-way.</p>
+      <p class="mesh-status mono-dim" id="mesh-flow" role="status">packet flow: measuring tailnet throughput…</p>
 
       <noscript><p class="section-p">This diagram is fully visible without JavaScript — hover detail, particles and the live status line need JS.</p></noscript>
 

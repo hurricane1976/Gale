@@ -1,0 +1,54 @@
+# Gale SLO / golden-signal alert rules — all expressions use REAL signals:
+# node_exporter (job "node"), sysmon's textfile bridge gale.prom, and the
+# synthetics bridge gale_synth.prom (tools/synthetics.sh).
+# Deploy: copy to /var/snap/prometheus/common/rules/gale-slo.yml, then
+# POST 127.0.0.1:9090/-/reload and check /api/v1/rules.
+groups:
+  - name: gale-slo
+    interval: 30s
+    rules:
+      - alert: GalePeerDown
+        expr: gale_service_up{unit=~".+-peer"} == 0
+        for: 3m
+        labels: { severity: crit }
+        annotations: { summary: "Peer listener down: {{ $labels.unit }}" }
+      - alert: GaleInfraDown
+        expr: gale_service_up{unit=~"nginx|tailscaled|cron"} == 0
+        for: 3m
+        labels: { severity: crit }
+        annotations: { summary: "Infra unit down: {{ $labels.unit }}" }
+      - alert: GaleBackupStale
+        expr: gale_backup_age_hours > 36
+        for: 0m
+        labels: { severity: crit }
+        annotations: { summary: "No verified backup in {{ $value }}h" }
+      - alert: GaleSynthFailing
+        expr: gale_synth_green_ratio < 1
+        for: 10m
+        labels: { severity: warn }
+        annotations: { summary: "Synthetic checks failing (green {{ $value }})" }
+      - alert: GaleSynthStale
+        expr: time() - gale_synth_run_unixtime > 900
+        for: 0m
+        labels: { severity: warn }
+        annotations: { summary: "No synthetic run in 15m — cron bridge down?" }
+      - alert: GaleTLSSoon
+        expr: gale_tls_cert_days_left < 14
+        for: 1h
+        labels: { severity: warn }
+        annotations: { summary: "TLS cert expires in {{ $value }}d" }
+      - alert: GaleHot
+        expr: gale_box_hottest_celsius > 85
+        for: 15m
+        labels: { severity: warn }
+        annotations: { summary: "Box hottest sensor {{ $value }}°C" }
+      - alert: GaleOom
+        expr: gale_oom_kills_24h > 0
+        for: 0m
+        labels: { severity: warn }
+        annotations: { summary: "OOM kills in last 24h: {{ $value }}" }
+      - alert: GaleHighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
+        for: 10m
+        labels: { severity: warn }
+        annotations: { summary: "/ is over 85% full on gale-agent" }

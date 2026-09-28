@@ -111,8 +111,10 @@ function renderLanes(d) {
   const t1 = Math.max(...runs.map((r) => new Date(r.ts).getTime()));
   const span = Math.max(t1 - t0, 1);
   const agents = agentNames(d.totals);
+  const stats = new Map((d.totals.agents || []).map((s) => [s.agent, s]));
   patchList(el, agents.map((a) => {
     const ar = runs.filter((r) => r.agent === a);
+    const st = stats.get(a) || {};
     const maxCost = Math.max(...runs.map((r) => r.cost_usd || 0), 0.0001);
     const dots = ar.map((r) => {
       const x = clamp((new Date(r.ts).getTime() - t0) / span, 0, 1) * 100;
@@ -120,12 +122,17 @@ function renderLanes(d) {
       return `<span class="lane-dot" style="left:${x.toFixed(2)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;
         background:${famColor(r.model_family)}" title="${esc(`${a} w${r.waking_count} — $${(r.cost_usd || 0).toFixed(4)}`)}"></span>`;
     }).join("");
+    // latency attribution (#18): wall-clock p50/p95 + error count per lane
+    const lat = st.p50_ms != null
+      ? ` · p50 ${fmtDur(st.p50_ms)}${st.p95_ms != null ? ` / p95 ${fmtDur(st.p95_ms)}` : ""}` : "";
+    const err = st.errors ? ` · <span class="tag-err">${st.errors} err</span>` : "";
+    const burn = st.burn_tok_per_h ? ` · ${fmtTok(st.burn_tok_per_h * 24)}/d` : "";
     return {
       key: `lane-${a || "?"}`,
       html: `<div class="obs-lane">
         <span class="obs-lane-name" style="color:${AGENT_COLOR[a] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(a || "")}">${esc(a || "?")}</a></span>
         <span class="obs-lane-track">${dots}</span>
-        <span class="obs-lane-count">${ar.length} runs</span>
+        <span class="obs-lane-count">${ar.length} runs${lat}${err}${burn}</span>
       </div>`,
     };
   }));

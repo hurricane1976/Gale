@@ -13,6 +13,7 @@ const PAGES = [
   ["Agora", "agora.html", "peer message board"],
   ["Weather", "weather.html", "radar · forecast"],
   ["Network", "network.html", "interfaces · firewalla"],
+  ["Reliability", "reliability.html", "SLOs · synthetics · RUM · forecasts"],
 ];
 
 const ICON_PAGE = "→", ICON_SECTION = "§", ICON_AGENT = "◆";
@@ -25,9 +26,61 @@ function kioskItem(items) {
     hint: "fullscreen auto-rotating wall display",
     go: () => { location.href = `status.html?kiosk=20`; },
   });
+  items.push({
+    icon: "▦", label: "Start kiosk wall board",
+    hint: "big-number glanceable vitals (?kiosk&big)",
+    go: () => { location.href = `status.html?kiosk=20&big`; },
+  });
 }
 
-function collectItems() {
+const escP = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* ops actions (#9): display toggles that click the real buttons (single
+   source of truth stays in shared.js), a push self-test, and live alert
+   acks. Dynamic labels are escaped at render -- alert text is data. */
+async function opsItems(items) {
+  const click = (id, label, hint) => {
+    if (!document.getElementById(id)) return;
+    items.push({ icon: "◐", label, hint, go: () => document.getElementById(id).click() });
+  };
+  click("contrast-toggle", "Toggle high-contrast mode", "auto from prefers-contrast otherwise");
+  click("saver-toggle", "Toggle reduced-data mode", "kills canvases, reloads to apply");
+  click("theme-toggle", "Toggle light / dark theme", "bottom-right button");
+  items.push({
+    icon: "🔔", label: "Send push self-test",
+    hint: "POST api/push/test — lock-screen ping if subscribed",
+    go: async () => {
+      try {
+        const r = await fetch("api/push/test", { method: "POST" });
+        alert(r.ok ? "push test sent — check the lock screen" : `push test failed (HTTP ${r.status})`);
+      } catch { alert("push test failed — backend unreachable"); }
+    },
+  });
+  try {
+    const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+    if (!r.ok) return;
+    const d = await r.json();
+    for (const a of (d.alerts || []).filter((x) => x.sev === "crit" || x.sev === "warn").slice(0, 8)) {
+      const key = `${a.kind}:${a.text}`;
+      items.push({
+        icon: a.sev === "crit" ? "🟥" : "🟨",
+        label: `Ack 4h: ${a.text}`.slice(0, 80),
+        hint: `${a.sev} · ${a.kind} · mutes 4h`,
+        go: async () => {
+          try {
+            await fetch("api/fleet/alerts/acks", {
+              method: "POST", headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ key, hours: 4 }),
+            });
+          } catch { /* ack is best-effort; strip re-fetches anyway */ }
+        },
+      });
+    }
+  } catch { /* alerts feed down -- nav items still work */ }
+}
+
+async function collectItems() {
   const items = PAGES.map(([label, href, hint]) => ({
     icon: ICON_PAGE, label, hint: hint || href, go: () => { location.href = href; },
   }));
@@ -46,22 +99,48 @@ function collectItems() {
 
   // agents present in the DOM (fleet topology + member cards)
   const seen = new Set();
+  const agentGo = (name, g) => () => {
+    if (g && g.isConnected) {
+      if (g.id) return document.getElementById(g.id)?.scrollIntoView({ behavior: "smooth" });
+      g.scrollIntoView({ behavior: "smooth", block: "center" });
+      g.classList.add("palette-flash");
+      setTimeout(() => g.classList.remove("palette-flash"), 1600);
+      return;
+    }
+    // cross-page jump: fleet.html resolves #agent-<name> via the
+    // cinematic layer (initAgentAnchors), case-insensitive
+    location.href = `fleet.html#agent-${encodeURIComponent(name)}`;
+  };
   for (const g of document.querySelectorAll(".topo-node[data-name], agent-card[name]")) {
     const name = g.getAttribute("data-name") || g.getAttribute("name");
-    if (!name || seen.has(name)) continue;
-    seen.add(name);
+    if (!name || seen.has(name.toLowerCase())) continue;
+    seen.add(name.toLowerCase());
     items.push({
       icon: ICON_AGENT, label: name,
-      hint: (g.getAttribute("data-role-desc") || g.getAttribute("role") || "agent").slice(0, 60),
-      go: () => {
-        if (g.id) return document.getElementById(g.id)?.scrollIntoView({ behavior: "smooth" });
-        g.scrollIntoView({ behavior: "smooth", block: "center" });
-        g.classList.add("palette-flash");
-        setTimeout(() => g.classList.remove("palette-flash"), 1600);
-      },
+      hint: `${(g.getAttribute("data-role-desc") || g.getAttribute("role") || "agent").slice(0, 44)} · fleet.html#agent-${name}`,
+      go: agentGo(name, g),
     });
   }
+  // roster fallback: on pages without the topology in the DOM, fetch the
+  // fleet roster once (parsed from fleet.html's own markup — no second
+  // roster to drift) so every agent stays jumpable from anywhere.
+  if (!seen.size) {
+    try {
+      const html = await fetch("fleet.html", { cache: "force-cache" }).then((r) => (r.ok ? r.text() : ""));
+      for (const m of html.matchAll(/data-name="([^"]+)"/g)) {
+        const name = m[1];
+        if (!name || seen.has(name.toLowerCase())) continue;
+        seen.add(name.toLowerCase());
+        items.push({
+          icon: ICON_AGENT, label: name,
+          hint: `fleet.html#agent-${name}`,
+          go: agentGo(name, null),
+        });
+      }
+    } catch { /* offline — page/section items still work */ }
+  }
   kioskItem(items);
+  await opsItems(items);
   items.push({
     icon: "◐", label: "Toggle light / dark theme",
     hint: "or the ☀️/🌙 button, bottom-right",
@@ -92,6 +171,8 @@ export function initPalette() {
 
   const input = dlg.querySelector("#palette-input");
   const list = dlg.querySelector("#palette-list");
+  const foot = dlg.querySelector(".palette-foot");
+  const FOOT_KEYS = `<kbd>↑↓</kbd> navigate · <kbd>↵</kbd> open · <kbd>esc</kbd> close`;
   let items = [];
   let filtered = [];
   let active = 0;
@@ -117,10 +198,15 @@ export function initPalette() {
     active = Math.min(active, Math.max(filtered.length - 1, 0));
     list.innerHTML = filtered.map((it, i) => `
       <li role="option" data-i="${i}" aria-selected="${i === active}" class="${i === active ? "on" : ""}">
-        <span class="palette-icon" aria-hidden="true">${it.icon}</span>
-        <span class="palette-label">${it.label}</span>
-        <span class="palette-hint">${it.hint || ""}</span>
+        <span class="palette-icon" aria-hidden="true">${escP(it.icon)}</span>
+        <span class="palette-label">${escP(it.label)}</span>
+        <span class="palette-hint">${escP(it.hint || "")}</span>
       </li>`).join("") || `<li class="palette-none">no matches</li>`;
+    // preview pane: what ↵ will do with the highlighted row
+    const cur = filtered[active];
+    foot.innerHTML = cur
+      ? `${FOOT_KEYS} — <span class="palette-icon" aria-hidden="true">${escP(cur.icon)}</span> ${escP(cur.label)} · ${escP(cur.hint || "")}`
+      : FOOT_KEYS;
   };
 
   const choose = (i) => {
@@ -131,12 +217,16 @@ export function initPalette() {
   };
 
   const open = () => {
-    items = collectItems();
     input.value = "";
     active = 0;
     render();
     dlg.showModal();
     input.focus();
+    collectItems().then((fresh) => {
+      if (!dlg.open) return;
+      items = fresh;
+      render();
+    });
   };
 
   document.addEventListener("keydown", (e) => {

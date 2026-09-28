@@ -25,6 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="dist/network.js"></script>
   <script type="speculationrules">
@@ -84,6 +85,12 @@
       <section class="reveal ops-panel span-full" aria-labelledby="h-stats">
         <h2 class="panel-title" id="h-stats">Headline <span>point-in-time snapshot &middot; refreshes every 30s</span></h2>
         <div class="vitals-grid" id="stats-grid"></div>
+      </section>
+
+      <section class="reveal ops-panel span-full" aria-labelledby="h-tput">
+        <h2 class="panel-title" id="h-tput">Throughput <span id="tput-iface">measuring…</span></h2>
+        <div id="tput-chart" role="img" aria-label="rolling receive/transmit throughput chart"></div>
+        <p class="mini-note">Rolling ~10 min window, sampled from the status collector's per-interface rates (rx+tx Mb/s). Resets on page load.</p>
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-ifaces">

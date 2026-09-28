@@ -1,0 +1,40 @@
+# gale-backend.yml -- Loki ruler alerts on the Python backends' journals.
+# Fires into Alertmanager (ruler.alertmanager_url), which routes to the
+# webhook receiver, whose log fleet_api.py folds back into /alerts --
+# the same board + push path as everything else.
+#
+# Deliberately traffic-conditional (zero traffic = no alert, never a
+# false page): error-spike and p95 only evaluate when lines exist. There
+# is intentionally NO telemetry-silence rule -- spans are request-driven
+# and an empty overnight board is healthy, not an incident.
+#
+# Deploy: copy to /var/lib/loki/rules/fake/gale-backend.yml (no restart;
+# the ruler polls the dir). Validate LogQL first via /loki/api/v1/query.
+groups:
+  - name: gale-backend
+    interval: 1m
+    rules:
+      - alert: BackendErrorSpike
+        expr: |
+          sum by (unit) (
+            rate({unit=~"gale-fleet-api.service|gale-ollama-api.service|gale-push.service|gale-sysmon.service"} |~ "(?i)(error|exception|traceback|failed)" [5m])
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "error-log spike on {{ $labels.unit }}"
+          description: "journal error-pattern rate over 0.05/s for 5m"
+
+      - alert: FleetApiSlowP95
+        expr: |
+          quantile_over_time(0.95,
+            {unit="gale-fleet-api.service"} |= "SPAN"
+            | regexp "dur_ms\\\": (?P<dur>[0-9.]+)" | unwrap dur [10m]
+          ) > 2000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "fleet-api p95 over 2s"
+          description: "request span p95 {{ $value | printf \"%.0f\" }}ms over 10m"
