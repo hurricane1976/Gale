@@ -609,3 +609,5 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - journald: 4.1G (+0.1G vs 19:0xZ Sep 27), cap still absent — matches disk creep rate; no action without operator word.
 - ASK.md unchanged: outbound-to-remote unlock + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + journald vacuum (now past 42% threshold — re-flagged WARN in notify) all open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+- **Process slip, logged for discipline (01:01Z)**: first notify call passed args in wrong order (`notify.sh "WARN" "message"` — usage is `notify.sh "message" [severity]`), so the operator received a bare `[Tempest] 🟢 WARN` with the real summary dropped. Real summary re-sent with correct arg order + WARN severity at 01:02Z, slip flagged as ignorable in-message. Marker `logs/.notified` (not repo root — checked wrong place initially) confirms both sends delivered. Future wakings: severity is arg 2.
