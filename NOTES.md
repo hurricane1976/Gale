@@ -1311,3 +1311,48 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
    items unchanged: peer probe volume / MOUNTAIN·BEACON sweep cadence
    (operator nudge still pending) and Tailscale confirmation in ASK.md.
    No action required.
+
+## 2026-09-28T16:01:00Z — waking #33
+- **Host:** rebooted at 15:33 UTC this morning (~28 min uptime at check).
+   `last reboot`: previous boot Sun 9/27 19:19Z → Mon 9/28 15:33Z. No
+   unattended-upgrade entries on 9/28 (last real upgrades were 9/25
+   curl/expat); apt history last 9/27 15:45; no OOM or crash markers in
+   previous boot's journal (clean-ish shutdown sequence with a few
+   service stops: gale-fleet-api, gale-ollama-api, gale-push,
+   promtail, loki). Cause likely operator or scheduler; not visible to
+   me. Flagging as watch item, no action without confirmation.
+- **Tailscale:** still healthy post-reboot — tailscale0 has
+   `inet 100.66.39.59/32`, `tailscale ip -4` → 100.66.39.59. This is
+   the 5th consecutive verify that the TUN fix holds (now ~20h+ post
+   #28 fix, across a reboot). ASK.md item still open.
+- **Peer sweep:** 14/14 up (8787–8800 all listening; 8799 = chinook's
+   own pane; 8801–8806 no listener). 9th consecutive stable range.
+- **Spend:** chinook local runs still $0.0 (qwen3.8:27b via Ollama),
+   today's log shows 4 runs all zero. GALE still the real cost driver;
+   no rule-4 anomaly.
+- **Load/RAM/Disk:** uptime 27 min, load 2.26/2.20/1.65 (mid, post
+   reboot spike settling), RAM 7.0G/58G (51G avail), disk 39G/98G
+   (42%, 54G free) — disk dropped 2G vs #32's 41G (expected after
+   reboot; /tmp + journal rotation), arc still ~0. /var/log/journal
+   4.1G bounded by rotation.
+- **Inbox:** 14 routine pings archived (535→549) — MEADOW×2, DELTA,
+   MOUNTAIN, MESA, HIGHBEAM, RIVER, CANYON, HARBOR×3, BEACON×2.
+   All "no reply needed" probes. No acks owed, no operator content.
+   (BEACON's 3rd message at 15:25Z — 8 min before host reboot — still
+   a normal sweep ping; correlation noted, no anomaly.)
+- **check_replies:** none. ASK.md open items unchanged (Tailscale TUN
+   confirmation, cadence 4×→6×, ZEPHYR $0.2515 spend outlier).
+- **Backup:** chinook-20260928T160106Z.tar.gz (824K), tar -tzf OK,
+   14-snapshot ceiling maintained.
+- **Commit:** include inbox archive + uncommitted `notify.sh`
+   robustness fix (accepts severity in arg 1 OR arg 2, was arg 2 only
+   — ports the fix we flagged in prior waking where a severity keyword
+   as arg 1 silently suppressed notify).
+- **New watch items:**
+   1. Post-reboot Tailscale hold (5th verify, now across reboot —
+      stronger evidence the fix is persistent; still ask operator).
+   2. Reboot at 15:33Z — operator confirmation pending (was this
+      planned, a kernel update, or a crash?).
+- **Forecast:** disk 39G/42% with ~30d headroom at ~0 arc. RAM 7.0G,
+   51G headroom. Load mid-band (post-reboot settle). No crossing
+   projectable this week. No action required.
