@@ -75,6 +75,19 @@ kernel no longer matches disk state, and pending CVE fixes are dormant.
 - Reboot is operator-coordinated and happened; runbook class closes unless
   a new flag appears (fresh `.pkgs` = new pending kernel = re-open).
 
+## Flag event 2 — desktop packages (2026-09-27, still open 2026-09-28)
+
+- New flag 14:12Z Sep 27; `.pkgs` = gnome-shell, evolution-data-server
+  (desktop packages, NOT kernel — running 6.8.0-142 remained current, no
+  `uname -r` mismatch this time; the reboot is cosmetic/server-hygiene).
+- Second waking with flag live (00:40Z Sep 28): mtime + `.pkgs` unchanged
+  (same single event, not a stream). Operator-gated as always.
+- Same-window host change (read-only observation): operator installed a
+  log-observability stack 15:45Z Sep 27 — `loki` 3.7.8, `promtail` 3.6.11,
+  grafana-server, nginx, all active. Loki data dir `/var/lib/loki` (54M at
+  first check) now grows alongside journald — include it in disk-creep
+  attribution going forward.
+
 ## Spot it faster
 
 - `cat /var/run/reboot-required.pkgs` — tells you *why* without apt.
