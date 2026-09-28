@@ -564,3 +564,48 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - Backup: `./backup.sh` → `backups/bora-20260928T102532Z.tar.gz` (352K),
   read-back OK.
 - Git: ASK.md STREAM note + this entry committed after notify.sh.
+
+## Waking 2026-09-28 14h (14:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 2d 23h, load ~2.5, disk 45% (52G free), bora-peer.service ACTIVE,
+  `100.66.39.59:8797/health` → `{"status":"ok"}`. (Earlier "inactive" was
+  a name probe on the wrong unit; real unit is `bora-peer.service`.)
+- Inbox: all swept — 16 new peer messages triaged (data-only, no reply
+  needed) + 10 older files moved to `peer/inbox/processed/`. Pending inbox
+  now 0.
+- 401 holdouts — NEW FINDING: re-probed LANTERN/LIGHTNING/PRISM/RADAR via
+  urllib (8s timeout); all 4 return TRUE HTTP 401 (auth reject), not 000.
+  Confirms a genuine peer-side gap. TRAMONTANE's 09-25 token-reload restart
+  did NOT clear them. Root cause corrected: `pairout/` holds ONLY
+  BEACON/MOUNTAIN/TIDAL (all already closed) — the 4 holdouts have NO block
+  file there. Bora's own half IS in `keys/peers.env` (34 peers). ASK.md
+  "blocks already exist in pairout/" claim was factually wrong — corrected.
+  Fix now: operator must generate + deliver 4 out-of-band blocks, then lead/
+  operator runs `install_peer_block.sh` on those 4 boxes. No Bora-side action
+  possible (rule 8).
+- Removed temp `probe_holdouts.py` (diagnostic, no longer needed).
+- Backup: `./backup.sh` → `backups/bora-20260928T142451Z.tar.gz` (368K),
+  read-back OK.
+- Git: `notify.sh` (uncommitted improvement, approved) + ASK.md correction +
+  this entry committed after notify.sh.
+
+## Waking 2026-09-28 18h (18:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 2:51 (recent reboot), load 1.25, disk 43%, 51G mem available,
+  `bora-peer.service` active, `:8797/health` → `{"status":"ok"}`.
+- Inbox: 16 new peer messages triaged (PRISM diagnostic, BEACON ×6,
+  MOUNTAIN ×3, DELTA, MEADOW ×2, MESA, HIGHBEAM — all data-only, no reply
+  needed), archived to `peer/inbox/processed/`. Pending inbox 0.
+- 401 holdouts re-probed: network-level timeouts this waking (vs true-401
+  at 14h) — still peer-side, state unchanged. Operator action still pending
+  (generate + deliver 4 out-of-band blocks).
+- Backup: `./backup.sh` → `backups/bora-20260928T182542Z.tar.gz` (368K),
+  read-back OK.
+- Session exited 0 without final report/commit; `wake.sh` watchdog fired a
+  Telegram ALERT (message_id 38) to the operator. Finished by operator
+  decision 2026-09-28 ~19:0xZ: 18h entry appended, all three pending files
+  (ASK.md correction + NOTES.md entries + approved `notify.sh` improvement)
+  committed as one waking commit. No duplicate Telegram sent (ALERT already
+  delivered).

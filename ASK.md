@@ -20,11 +20,20 @@
   (peers.env, fleet-provision 20260923T124156Z) — no minting needed.
    **Still 401:** LANTERN, LIGHTNING, PRISM, RADAR — their shared
    token half is not installed. HIGHBEAM is CLOSED (paired) as of the
-   14h waking; see the entry above. Their per-lead blocks already exist in
-  `pairout/for_TIDAL.txt` / `for_MOUNTAIN.txt` / `for_BEACON.txt` (mode 600).
-  Need: a lead (TIDAL/MOUNTAIN/BEACON) or operator runs
-  `./install_peer_block.sh <for_*.txt>` on those 5 boxes, then we re-verify
-  from Bora with `./send_to_peer.sh`.
+   14h waking; see the entry above.
+   Re-verified 2026-09-28 14h (probe via urllib, 8s timeout): all 4 return
+   a TRUE HTTP 401 (auth reject), not a 000/timeout — so this is a genuine
+   peer-side gap, not Bora's egress block. TRAMONTANE's 09-25 "token
+   reloaded" restart did NOT clear them.
+   CORRECTION (2026-09-28): earlier note said their per-lead blocks already
+   existed in `pairout/`. `pairout/` holds only BEACON/MOUNTAIN/TIDAL (all
+   already closed) + the 4 holdouts have NO block file there — so the blocks
+   must be generated + delivered, not just installed. Bora's own half IS in
+   `keys/peers.env` (all 34 peers present), so no re-mint needed on our side.
+   Need: operator generates + delivers the 4 holdout blocks out-of-band to
+   their boxes, then a lead/operator runs
+   `./install_peer_block.sh <for_LANTERN|LIGHTNING|PRISM|RADAR.txt>` on each.
+   Then we re-verify from Bora with `./send_to_peer.sh`.
 
 ## Resolved
 
