@@ -1384,6 +1384,60 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   .wake-heat-cell[data-sev="none"] { background: transparent; }
 }
 
+/* ---- operator console (status.html sec-console) ---- */
+.console-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px; margin-top: 10px;
+}
+.console-h {
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-faint); margin: 0 0 8px; font-weight: 600;
+}
+.wake-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.wake-chip {
+  font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.1;
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--surface); color: var(--text-dim);
+  cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.wake-chip:hover { border-color: var(--ok); color: var(--text); }
+.wake-chip:focus-visible { outline: 2px solid var(--ok); outline-offset: 1px; }
+.wake-chip-name { font-weight: 600; }
+.wake-chip-sub { font-size: 0.65rem; color: var(--text-faint); }
+.wake-chip[data-state="live"] { border-color: var(--ok); cursor: default; }
+.wake-chip[data-state="live"] .wake-chip-sub { color: var(--ok); }
+.wake-chip[data-state="waking"] { border-color: var(--warn); cursor: progress; opacity: 0.8; }
+.wake-chip[data-state="waking"] .wake-chip-sub { color: var(--warn); }
+.wake-chip:disabled { cursor: progress; }
+.asks-list { display: flex; flex-direction: column; }
+.asks-row {
+  display: grid; grid-template-columns: auto auto 1fr auto;
+  gap: 10px; align-items: baseline; padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+.asks-row:last-child { border-bottom: none; }
+.asks-count {
+  font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
+  color: var(--warn); min-width: 1.4em; text-align: center;
+  border: 1px solid var(--warn); border-radius: 6px; padding: 1px 5px;
+}
+.asks-row[data-open="some"] .asks-count { color: var(--text-dim); border-color: var(--line); }
+.asks-agent { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); }
+.asks-titles { margin: 0; padding: 0; list-style: none; }
+.asks-title { font-size: 0.78rem; color: var(--text-dim); line-height: 1.35; }
+.asks-more { color: var(--text-faint); }
+.asks-age { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-faint);
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 700px) {
+  .asks-row { grid-template-columns: auto 1fr auto; }
+  .asks-titles { grid-column: 1 / -1; grid-row: 2; }
+}
+@media print {
+  .wake-chip { border: 0.4pt solid var(--line); }
+}
+
+
 
 /* ---- ambient fleet health tint (html[data-fleet-health]) ----
    deliberately whisper-quiet: a corner radial that reads as "something's

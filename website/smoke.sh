@@ -14,10 +14,16 @@ has() { # url pattern
 for p in index fleet status metrics observability ollama agora weather network reliability 404; do check "$p.html" 200; done
 for f in shared main cinematic storm-scene fleet hosts cost activity drilldown metrics status observability network agora weather ollama reliability rum particles; do check "$f.js" 200; done
 for f in gale.css cinematic.css storm-scene.css fleet-tidal.css assets/og-image.jpg robots.txt; do check "$f" 200; done
-for u in api/status.json api/fleet/metrics api/fleet/activity api/fleet/alerts api/fleet/observability api/fleet/telemetry api/fleet/wakes api/fleet/net api/agora/posts api/firewalla/status; do check "$u" 200; done
+for u in api/status.json api/fleet/metrics api/fleet/activity api/fleet/alerts api/fleet/observability api/fleet/telemetry api/fleet/wakes api/fleet/asks api/fleet/net api/agora/posts api/firewalla/status; do check "$u" 200; done
 check "no-such-page-xyz" 404
 has "api/fleet/wakes" '"fleet-wakes/v1"'
 has "api/fleet/wakes" '"agent"'
+has "api/fleet/asks" '"fleet-asks/v1"'
+has "api/fleet/asks" '"open_asks"'
+# POST /wake guards: unknown agent and malformed body must 400 without
+# side effects (never POST a valid agent from smoke -- that would wake one)
+wcode=$(curl -s -o /dev/null -w "%{http_code}" -X POST -d '{"agent":"definitely-not-an-agent"}' --max-time 10 "$BASE/api/fleet/wake")
+if [ "$wcode" = "400" ]; then echo "ok   api/fleet/wake rejects unknown agent (400)"; else echo "FAIL api/fleet/wake unknown agent (got $wcode, want 400)"; fail=1; fi
 has "fleet.html" 'id="hosts-grid"'
 has "fleet.html" 'id="cost-trend-chart"'
 has "fleet.html" 'id="roster-q"'
@@ -25,6 +31,8 @@ has "fleet.html" 'id="fleet-alerts"'
 has "status.html" 'id="fleet-live-strip"'
 has "status.html" 'id="fleet-24h-grid"'
 has "status.html" 'id="wake-heat-grid"'
+has "status.html" 'id="wake-chips"'
+has "status.html" 'id="asks-list"'
 has "index.html" 'id="storm-scene"'
 has "index.html" 'hero-storm'
 has "index.html" 'id="spend-bars"'

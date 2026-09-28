@@ -4,7 +4,7 @@
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
 import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost } from "./shared.js";
-import { statusPayload, metricsPayload, wakesPayload, validate } from "./payloads.js";
+import { statusPayload, metricsPayload, wakesPayload, asksPayload, validate } from "./payloads.js";
 
 boot();
 
@@ -1074,8 +1074,9 @@ async function tick() {
   refreshStrip(fleet, data);
   renderFleet24h();
   // heatmap is history, not above-the-fold: first fetch stays off the
-  // critical paint path (idle callback, 3s ceiling), later ticks poll it
-  const kick = () => renderWakeHeatmap();
+  // critical paint path (idle callback, 3s ceiling), later ticks poll it.
+  // The console panel rides along on the same schedule.
+  const kick = () => { renderWakeHeatmap(); renderWakeConsole(); };
   if (typeof requestIdleCallback === "function") {
     if (!heatKicked) { heatKicked = true; requestIdleCallback(kick, { timeout: 3000 }); }
     else kick();
@@ -1510,6 +1511,127 @@ export async function renderWakeHeatmap() {
   }
   refreshEffects();
 }
+
+/* ---- operator console: manual wake + ask queue ----
+   Wake chips POST api/fleet/wake (agent allowlist, live-session + flock
+   single-instance checks, 30min per-agent cooldown, 6/hour cap server
+   side -- the button only mirrors those verdicts). Asks render counts +
+   titles from api/fleet/asks; bodies stay in the agents' ASK.md files by
+   the fleet's own redaction rule. */
+const ASKS_TTL = 120e3;
+let asksCache = { at: 0, data: null, err: null };
+const wakeBusy = new Set();
+
+async function fetchAsks() {
+  if (Date.now() - asksCache.at < ASKS_TTL && (asksCache.data || asksCache.err)) {
+    return { data: asksCache.data, err: asksCache.err };
+  }
+  try {
+    const res = await tracedFetch("api/fleet/asks", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    asksCache = { at: Date.now(), data: validate(await res.json(), asksPayload), err: null };
+  } catch (e) {
+    asksCache = { at: Date.now(), data: null, err: String(e.message || e) };
+  }
+  return { data: asksCache.data, err: asksCache.err };
+}
+
+export async function renderWakeConsole() {
+  const chips = document.getElementById("wake-chips");
+  const note = document.getElementById("wake-note");
+  const asksList = document.getElementById("asks-list");
+  if (!chips) return;
+  const live = (heatCache.data && heatCache.data.live) || {};
+  const rows = HEAT_AGENTS.map((a) => {
+    const isLive = (live[a] || 0) > 5 || wakeBusy.has(a);
+    const state = wakeBusy.has(a) ? "waking" : isLive ? "live" : "idle";
+    const sub = wakeBusy.has(a) ? "waking&hellip;" : isLive ? "running" : "wake";
+    return {
+      key: `chip-${a}`,
+      html: `<button type="button" class="wake-chip" data-agent="${esc(a)}" data-state="${state}"` +
+        ` title="manually wake ${esc(a)} (wake.sh + its own guards)"${wakeBusy.has(a) ? " disabled" : ""}>` +
+        `<span class="wake-chip-name">${esc(a)}</span><span class="wake-chip-sub">${sub}</span></button>`,
+    };
+  });
+  patchList(chips, rows);
+  if (note && !note.textContent) {
+    setText(note, "click to trigger the agent's own wake.sh · cooldown 30min/agent, 6/hour fleet-wide");
+  }
+  const { data, err } = await fetchAsks();
+  if (!asksList) return;
+  if (!data) {
+    setHTML(asksList, `<p class="mini-note" style="color:var(--warn)">ask queue unreachable (${esc(err || "unknown")})</p>`);
+    return;
+  }
+  const waiting = data.agents.filter((a) => a.open_asks > 0);
+  const askRows = waiting.map((a) => {
+    const titles = (a.headings || []).slice(0, 3).map((h) =>
+      `<li class="asks-title">${esc(h)}</li>`).join("");
+    const more = (a.headings || []).length > 3
+      ? `<li class="asks-title asks-more">+${a.headings.length - 3} more&hellip;</li>` : "";
+    return {
+      key: `ask-${a.agent}`,
+      html: `<div class="asks-row" data-open="${a.open_asks > 2 ? "many" : "some"}">
+        <span class="asks-count">${a.open_asks}</span>
+        <span class="asks-agent">${esc(a.agent)}</span>
+        <ul class="asks-titles">${titles}${more}</ul>
+        <span class="asks-age">${esc(fleetAgo(a.mtime))}</span>
+      </div>`,
+    };
+  });
+  patchList(asksList, askRows.length ? askRows
+    : [{ key: "ask-none", html: `<p class="mini-note">no agent reports open asks</p>` }]);
+  const asksNote = document.getElementById("asks-note");
+  if (asksNote) {
+    setText(asksNote, `${data.total_open} open across ${waiting.length} agents · newest ${data.agents[0] ? fleetAgo(data.agents[0].mtime) : "–"} · bodies stay in ASK.md (fleet redaction rule)`);
+  }
+  refreshEffects();
+}
+
+// one delegated listener for all wake chips (patchList replaces nodes;
+// delegation survives that, per-node listeners would not). res is scoped
+// outside try so the finally block can read the status.
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".wake-chip");
+  if (!btn || btn.disabled) return;
+  const agent = btn.dataset.agent;
+  if (!agent || wakeBusy.has(agent)) return;
+  const note = document.getElementById("wake-note");
+  wakeBusy.add(agent);
+  renderWakeConsole();
+  let res = null;
+  (async () => {
+    try {
+      res = await tracedFetch("api/fleet/wake", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agent }),
+        cache: "no-store",
+      });
+      const body = await res.json().catch(() => ({}));
+      if (res.status === 202) {
+        heatCache.at = 0; // refetch liveness on the next tick
+        if (note) setText(note, `${agent}: waking now (pid ${body.pid || "?"}) — session will show live within a minute`);
+      } else if (res.status === 409) {
+        if (note) setText(note, `${agent}: ${body.error || "already running"}`);
+        heatCache.at = 0;
+      } else if (note) {
+        setText(note, `${agent}: ${body.error || `HTTP ${res.status}`}`);
+      }
+    } catch (err) {
+      if (note) setText(note, `${agent}: request failed (${String(err.message || err)})`);
+    } finally {
+      // after a 202, leave "waking" pinned until the live map confirms;
+      // every other verdict clears immediately
+      const wait = res && res.status === 202 ? 90000 : 3000;
+      setTimeout(() => {
+        if (heatCache.data) heatCache.at = 0;
+        wakeBusy.delete(agent);
+        renderWakeConsole();
+      }, wait);
+    }
+  })();
+});
 
 // keep the "Ns ago" freshness line moving between polls
 setInterval(() => { if (lastGeneratedAt) updateFreshness(lastGeneratedAt); }, 1000);

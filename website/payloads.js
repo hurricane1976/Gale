@@ -52,6 +52,18 @@ export const wakesPayload = z.object({
   generated_at: z.string(),
 });
 
+export const asksPayload = z.object({
+  schema: z.string(),
+  total_open: z.number(),
+  agents: z.array(z.object({
+    agent: z.string(),
+    mtime: z.string(),
+    open_asks: z.number(),
+    headings: z.array(z.string()),
+  })),
+  generated_at: z.string(),
+});
+
 export const observabilityPayload = z.object({
   totals: z.object({
     cost_usd: z.number(),

@@ -104,6 +104,23 @@
         <p class="mini-note" id="wake-heat-note"></p>
       </section>
 
+      <section class="reveal ops-panel span-full" id="sec-console" aria-labelledby="h-console">
+        <h2 id="h-console" class="panel-title">Operator console</h2>
+        <p class="sec-lede" style="margin-top:-6px">Manual wake triggers and the live ask queue. A manual wake runs the agent's own <code>wake.sh</code> &mdash; same script, guards and 45m timeout the cron slot uses; flock + cooldown stop doubles, and every trigger lands in <code>wake-manual.jsonl</code>. Ask <em>bodies</em> stay in the agents' <code>ASK.md</code> files on purpose (index.html redacts them; this shows counts and titles only).</p>
+        <div class="console-grid">
+          <div class="console-block">
+            <h3 class="console-h">Wake now</h3>
+            <div id="wake-chips" class="wake-chips" role="group" aria-label="manual wake triggers"></div>
+            <p class="mini-note" id="wake-note" role="status" aria-live="polite"></p>
+          </div>
+          <div class="console-block">
+            <h3 class="console-h">Open asks &middot; who is waiting</h3>
+            <div id="asks-list" class="asks-list"></div>
+            <p class="mini-note" id="asks-note"></p>
+          </div>
+        </div>
+      </section>
+
       <section class="reveal ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
         <h2 id="h-vitals" class="panel-title">Host vitals &middot; <span id="hostname">&ndash;</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>

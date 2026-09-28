@@ -1,4 +1,54 @@
 {
+  "asks": {
+    "$id": "gale/fleet-asks-v1",
+    "properties": {
+      "agents": {
+        "items": {
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "headings": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "mtime": {
+              "type": "string"
+            },
+            "open_asks": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "agent",
+            "mtime",
+            "open_asks",
+            "headings"
+          ],
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "generated_at": {
+        "type": "string"
+      },
+      "schema": {
+        "type": "string"
+      },
+      "total_open": {
+        "type": "number"
+      }
+    },
+    "required": [
+      "schema",
+      "total_open",
+      "agents",
+      "generated_at"
+    ],
+    "type": "object"
+  },
   "metrics": {
     "$id": "gale/fleet-metrics-v1",
     "properties": {

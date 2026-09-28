@@ -49,11 +49,14 @@ const telRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/flee
 const telData = JSON.parse(telRaw);
 const wakesRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/wakes').toString();
 const wakesData = JSON.parse(wakesRaw);
+const asksRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/asks').toString();
+const asksData = JSON.parse(asksRaw);
 // stub network: route each feed to its live payload
 globalThis.fetch = async (url) => {
   const u = String(url);
   const body = u.includes("status.json") ? statData
     : u.includes("wakes") ? wakesData
+    : u.includes("asks") ? asksData
     : u.includes("telemetry") ? telData
     : (u.includes("/activity") || u.includes("agora/posts")) ? actData : d;
   return { ok: true, status: 200, json: async () => body };
@@ -106,6 +109,13 @@ const heatHtml = __els["wake-heat-grid"].innerHTML;
 t("wake heatmap 14 rows", (heatHtml.match(/wake-heat-row/g) || []).length >= 14, `got ${(heatHtml.match(/wake-heat-row/g) || []).length}`);
 t("wake heatmap 56 cells/row", (heatHtml.match(/wake-heat-cell/g) || []).length >= 14 * 56, `got ${(heatHtml.match(/wake-heat-cell/g) || []).length}`);
 t("wake heatmap tooltips", heatHtml.includes("UTC") && heatHtml.includes("run"));
+
+await status.renderWakeConsole();
+const chipsHtml = __els["wake-chips"].innerHTML;
+t("wake chips 14", (chipsHtml.match(/wake-chip"/g) || []).length >= 14, `got ${(chipsHtml.match(/wake-chip"/g) || []).length}`);
+t("wake chips live-aware", chipsHtml.includes('data-state="live"') || chipsHtml.includes('data-state="idle"'));
+const asksHtml = __els["asks-list"].innerHTML;
+t("asks rows render", asksHtml.includes("asks-row") && asksHtml.includes("asks-count"), asksHtml.slice(0, 120));
 
 const metrics = await import("/home/agent/agent/website/metrics.js");
 metrics.renderAgentCards(d);

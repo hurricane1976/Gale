@@ -2703,3 +2703,12 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - Deployed: rules -> /var/snap/prometheus/common/rules/ (SIGHUP reload; lifecycle API disabled), gale-backend.json -> grafana provisioned path, site via deploy.sh (2 releases). Crontab +2 lines. All verified live in Prometheus (14 agent wake series + GPU series), gale-gpu/gale-wake rule groups loaded.
 - Audit caveat: status.html lighthouse perf flickers 58-63 vs gate 60 under current load (GPU pegged by 3 wake sessions). A/B vs pre-change deploy snapshot 20260928T213241Z on :8091 = 58 baseline -- pre-existing, not the heatmap. Other pages pass.
 - Commit now includes the paused website session's uncommitted wave (cinematic/reliability/monitoring pack) alongside this session's work, per operator instruction.
+
+## 2026-09-28T22:45Z -- operator-directed build: operator console + cred-drift bridge
+- Operator said "continue build". Shipped the next three from the options list:
+  - **Permission-drift bridge**: `website/tools/cred_bridge.py` (cron */5, textfile `gale_cred.prom`) + `gale-cred.rules.yml` (GaleCredDrift/GaleCredEnvChanged/GaleCredDirGone). Drift is measured against a SEEDED baseline (cred-baseline.json, sudoers.sha256 pattern), not absolute ideals -- levante's known 664 is in the baseline, so no false page. Verified: chmod 666 test -> drift 1, restore -> 0. Modes/mtimes only, .env contents never read.
+  - **Operator console** (status.html panel): manual wake chips (POST api/fleet/wake -- allowlist, live-session + flock single-instance checks, 30min/agent cooldown, 6/h global cap, logged to wake-manual.jsonl) + live ask queue (counts + titles only; bodies stay in ASK.md per the fleet's redaction rule; index.html keeps its redacted count by design).
+  - fleet_api: GET /asks (tolerant parser for both ASK.md formats: gale's ## Open bullets, siblings' dated ASK-N sections; 60s->120s cache) + POST /wake + `live` map on /wakes.
+- Contracts: asksPayload zod + JSON Schema + check_schema in smoke; render-test covers chips/asks rows; smoke asserts /wake rejects unknown agents 400 (never POSTs a valid agent).
+- Verified live: cred drift series x14 in Prometheus, 409 on live-session agent, 400 on unknown agent, full smoke + lighthouse gate pass (status.html 63/60).
+- NOTE: the POST /wake end-to-end test legitimately woke poniente at ~22:41Z (202 + spawn + jsonl log) -- an extra waking, harmless; next cron slot 01:36Z unaffected. Cooldown now holds until ~23:11Z.

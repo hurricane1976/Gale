@@ -1,0 +1,36 @@
+# gale-cred.rules.yml -- keys/ permission-drift alerts.
+# All expressions use the tools/cred_bridge.py textfile bridge
+# (gale_cred.prom): drift is measured against the SEEDED BASELINE
+# (/var/www/gale-api/cred-baseline.json), not absolute ideals -- the
+# accepted matrix (11 sibling dirs at 775, levante's telegram.env at 664
+# pending ASK-4) is operator policy, and only CHANGE pages. After an
+# intentional change: python3 tools/cred_bridge.py --reseed.
+# Deploy: copy to /var/snap/prometheus/common/rules/gale-cred.rules.yml,
+# then reload prometheus (SIGHUP; the lifecycle API is disabled).
+groups:
+  - name: gale-cred
+    interval: 30s
+    rules:
+      - alert: GaleCredDrift
+        expr: gale_cred_drift == 1
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.agent }} keys/ drifted from baseline"
+          description: "dir/file modes or the file set changed vs cred-baseline.json -- verify it was intentional, then --reseed"
+
+      - alert: GaleCredEnvChanged
+        expr: gale_cred_changed == 1
+        for: 0m
+        labels: { severity: warning }
+        annotations:
+          summary: "live .env changed on disk: {{ $labels.agent }}/{{ $labels.file }}"
+          description: "mtime moved since the last bridge run -- verify the rotation/edit was expected"
+
+      - alert: GaleCredDirGone
+        expr: gale_cred_dirs_scanned < 14
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          summary: "only {{ $value }} keys/ dirs visible (was 14)"
+          description: "a sibling's keys/ dir vanished or became unreadable -- audit before assuming cleanup"

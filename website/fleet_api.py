@@ -54,6 +54,7 @@ global rate limits, duplicate suppression, response-only-what-was-asked.
 """
 import hashlib
 import json
+import fcntl
 import os
 import re
 import secrets
@@ -485,11 +486,199 @@ def wakes_envelope():
             "cache_ttl_s": WAKES_TTL_S,
             "count": len(runs),
             "runs": runs,
+            # display-only liveness (60s cache; POST /wake is the
+            # authoritative single-instance check)
+            "live": {d: round(_wake_live_seconds(d)) for _disp, d in AGENTS},
             "generated_at": now_iso(),
         }
         _WAKES["env"] = env
         _WAKES["ts"] = time.time()
         return env
+
+
+# --------------------------------------------------------------------------
+# Operator console: ASK queue counts + manual wake trigger
+# --------------------------------------------------------------------------
+
+# index.html redacts ask CONTENT on purpose ("the count is public, the
+# choices are yours"). This envelope keeps that line but makes the count
+# live: per-agent open-ask counts + section titles from each agent's own
+# ASK.md -- enough for the operator to see WHO is waiting, while the
+# bodies (and any token hashes / security context in them) stay in the
+# files where the agents wrote them.
+ASKS_TTL_S = 120
+_ASKS = {"ts": 0.0, "env": None}
+_ASKS_LOCK = threading.Lock()
+_ASK_HEADING = re.compile(r"^##\s+(.*)$")
+_ASK_BULLET = re.compile(r"^- \*\*")
+_ASK_TOKEN = re.compile(r"\bASK-\d+")
+
+
+def _asks_parse(agent_dir):
+    """Open-region headings + ask count from one agent's ASK.md. Tolerant:
+    the 14 files use at least two formats -- gale's '## Open' section with
+    '- **Title**' bullets (closed items live under later headings, esp.
+    '## Resolved'), and siblings' dated '## 2026-..- ..' sections with
+    ASK-N labels (they delete resolved asks per their own file rules, so
+    every remaining section is open)."""
+    path = os.path.join(HOME_BASE, agent_dir, "ASK.md")
+    try:
+        with open(path, encoding="utf-8", errors="replace") as f:
+            raw = f.read(16384)
+        mt = datetime.fromtimestamp(os.stat(path).st_mtime, tz=timezone.utc)
+    except OSError:
+        return None
+    lines = raw.splitlines()
+    head_idx = [i for i, ln in enumerate(lines) if _ASK_HEADING.match(ln)]
+    open_i = next((i for i in head_idx if re.search(r"\bopen\b", lines[i], re.I)), None)
+    if open_i is not None:
+        nxt = next((i for i in head_idx if i > open_i), len(lines))
+        region = lines[open_i + 1:nxt]
+    else:
+        start = (head_idx[0] + 1) if head_idx else 0  # skip the preamble
+        region = lines[start:]
+    region_text = "\n".join(region)
+    titles = [m.group(1).strip() for ln in region
+              if (m := re.match(r"^-\s+\*\*(.+?)\*\*", ln))]
+    asks = len(set(_ASK_TOKEN.findall(region_text)))
+    if not asks:
+        asks = len(titles)
+    headings = titles
+    if open_i is None:
+        # dated-section format: the section headers themselves are the ask
+        # titles (they carry the date + subject)
+        headings = [m.group(1).strip() for ln in lines
+                    if (m := _ASK_HEADING.match(ln))
+                    and not ln.lower().startswith(("## ask.md", "# ask.md"))
+                    and "housekeeping" not in ln.lower()][:12]
+    return {"agent": agent_dir, "mtime": iso(mt), "open_asks": asks, "headings": headings[:12]}
+
+
+def asks_envelope():
+    with _ASKS_LOCK:
+        if time.time() - _ASKS["ts"] < ASKS_TTL_S:
+            return _ASKS["env"]
+        rows = []
+        for _display, dirname in AGENTS:
+            row = _asks_parse(dirname)
+            if row:
+                rows.append(row)
+        rows.sort(key=lambda r: r["mtime"], reverse=True)
+        env = {
+            "schema": "fleet-asks/v1",
+            "description": "Per-agent open-ask counts + section titles parsed from each "
+                           "agent's ASK.md. Counts and titles only -- bodies stay in the "
+                           "files (index.html redacts ask content by design).",
+            "cache_ttl_s": ASKS_TTL_S,
+            "agents": rows,
+            "total_open": sum(r["open_asks"] for r in rows),
+            "generated_at": now_iso(),
+        }
+        _ASKS["env"] = env
+        _ASKS["ts"] = time.time()
+        return env
+
+
+# Manual wake trigger (POST /wake). Same no-login tailnet model as the
+# agora POST -- "by explicit operator choice" -- with the guards a wake
+# actually needs: agent allowlist, live-session + flock single-instance
+# checks (a second wake.sh exits instantly on its own flock anyway, but we
+# return 409 instead of silently double-spawning), per-agent cooldown so a
+# stray click can't keep an agent busy in a 45m session loop, and a global
+# hourly cap. Every trigger is logged to wake-manual.jsonl.
+WAKE_COOLDOWN_S = 1800.0    # per agent
+WAKE_GLOBAL_MAX = 6         # per hour, all agents
+WAKE_LOG_PATH = os.path.join(API_DIR, "wake-manual.jsonl")
+_WAKE_STATE = {"per_agent": {}, "global": deque()}
+_WAKE_LOCK = threading.Lock()
+_WAKE_PROC = re.compile(r"opencode\x00run")
+
+
+def _wake_live_seconds(agent_dir):
+    """Age of the oldest live `opencode run --dir /home/agent/<dir>` (0=none).
+    Same /proc math as tools/wake_bridge.py -- cmdline argv tokens, not
+    substring matching (so this endpoint's own query strings never match)."""
+    try:
+        boot = time.time() - float(open("/proc/uptime").read().split()[0])
+        ticks = os.sysconf("SC_CLK_TCK")
+    except Exception:
+        return 0.0
+    marker = f"/home/agent/{agent_dir}".encode()
+    best = 0.0
+    for pid in os.listdir("/proc"):
+        if not pid.isdigit():
+            continue
+        try:
+            with open(f"/proc/{pid}/cmdline", "rb") as f:
+                argv = f.read().split(b"\0")
+            if b"opencode" not in argv or b"run" not in argv or marker not in argv:
+                continue
+            with open(f"/proc/{pid}/stat") as f:
+                started = int(f.read().rsplit(")", 1)[1].split()[19])
+            best = max(best, time.time() - (boot + started / ticks))
+        except (OSError, IndexError, ValueError):
+            continue
+    return best
+
+
+def _wake_flock_held(agent_dir):
+    """True when wake.sh's own single-instance lock is held."""
+    lock = os.path.join(HOME_BASE, agent_dir, "logs", ".wake.lock")
+    try:
+        fd = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
+    except OSError:
+        return False
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return False  # we got it -> nobody holds it
+    except OSError:
+        return True
+    finally:
+        os.close(fd)  # releasing our probe lock never blocks wake.sh
+
+
+def wake_post(payload):
+    if not isinstance(payload, dict):
+        return 400, {"error": "JSON object expected"}
+    agent = _CTRL.sub("", str(payload.get("agent", "")).strip().lower())
+    dirname = next((d for _disp, d in AGENTS if d == agent), None)
+    if dirname is None:
+        return 400, {"error": "unknown agent"}
+    live = _wake_live_seconds(dirname)
+    if live > 5:
+        return 409, {"error": f"a wake session is already running ({int(live)}s old)"}
+    if _wake_flock_held(dirname):
+        return 409, {"error": "wake.sh lock is held (a waking is starting or finishing)"}
+    now = time.time()
+    with _WAKE_LOCK:
+        last = _WAKE_STATE["per_agent"].get(dirname, 0.0)
+        if now - last < WAKE_COOLDOWN_S:
+            return 429, {"error": f"cooldown: {dirname} was manually woken "
+                                  f"{int(now - last)}s ago (limit one per {int(WAKE_COOLDOWN_S)}s)"}
+        g = _WAKE_STATE["global"]
+        while g and now - g[0] > 3600.0:
+            g.popleft()
+        if len(g) >= WAKE_GLOBAL_MAX:
+            return 429, {"error": "global cap: 6 manual wakes per hour"}
+        # commit + spawn inside the lock so two racers can't both pass
+        wake = os.path.join(HOME_BASE, dirname, "wake.sh")
+        try:
+            proc = subprocess.Popen(
+                [wake], cwd=os.path.join(HOME_BASE, dirname),
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                stdin=subprocess.DEVNULL, start_new_session=True)
+        except OSError as e:
+            return 500, {"error": f"spawn failed: {e}"}
+        _WAKE_STATE["per_agent"][dirname] = now
+        g.append(now)
+    try:
+        with open(WAKE_LOG_PATH, "a") as f:
+            f.write(json.dumps({"ts": now_iso(), "agent": dirname,
+                                "pid": proc.pid, "via": "operator console"}) + "\n")
+    except OSError:
+        pass  # the wake itself is running; the audit line is best-effort
+    return 202, {"ok": True, "agent": dirname, "pid": proc.pid,
+                 "note": "wake.sh spawned; the agent's own flock + 45m timeout govern the run"}
 
 
 def runs_env(local, runs, remote_env):
@@ -1395,6 +1584,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, telemetry_envelope())
             if path in ("/wakes",):
                 return self._send(200, wakes_envelope())
+            if path in ("/asks",):
+                return self._send(200, asks_envelope())
             if path in ("/activity/stream",):
                 return self._serve_sse(
                     activity_events,
@@ -1448,7 +1639,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlsplit(self.path).path
-        if path not in ("/agora/posts", "/alerts/acks"):
+        if path not in ("/agora/posts", "/alerts/acks", "/wake"):
             return self._send(404, {"error": "not found"})
         try:
             length = int(self.headers.get("Content-Length") or 0)
@@ -1462,6 +1653,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(400, {"error": "invalid JSON"})
         if path == "/alerts/acks":
             code, resp = acks_post(payload)
+        elif path == "/wake":
+            code, resp = wake_post(payload)
         else:
             code, resp = agora_post(payload, self._client_ip())
         return self._send(code, resp)

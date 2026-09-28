@@ -193,6 +193,29 @@ SCHEMAS = {
             "generated_at": STR,
         },
     },
+
+    # /api/fleet/asks: per-agent open-ask counts + section titles from
+    # each agent's ASK.md (payloads.js asksPayload -- same contract,
+    # third leg of the tripwire). Bodies deliberately not served: the
+    # fleet's redaction rule keeps ask content in the agents' files.
+    "asks": {
+        "$id": "gale/fleet-asks-v1",
+        "type": "object",
+        "required": ["schema", "total_open", "agents", "generated_at"],
+        "properties": {
+            "schema": STR,
+            "total_open": NUM,
+            "agents": {"type": "array", "items": {
+                "type": "object",
+                "required": ["agent", "mtime", "open_asks", "headings"],
+                "properties": {
+                    "agent": STR, "mtime": STR, "open_asks": NUM,
+                    "headings": {"type": "array", "items": STR},
+                },
+            }},
+            "generated_at": STR,
+        },
+    },
 }
 
 
