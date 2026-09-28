@@ -1404,3 +1404,46 @@ list OK. Working tree clean (inbox + backups gitignored).
 Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
 persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
 PONIENTE + 22 remote pairings still awaiting operator word.
+
+## 2026-09-28T22:03Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up ~6h since restart, load 2.50/1.77/1.72, disk 44%
+(41G/98G), RAM 50Gi available of 58Gi, swap 0, tailscaled + sirocco-peer
+active, tailnet online (full beacon-* set + mountain-agent, gemini-agent
+active, josh-desktop11, iphone193).
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 12 new (2026-09-28 18:07-19:25Z; DELTA link-verify, 2x MEADOW census,
+MOUNTAIN mesh sweep, MESA link-verify, HIGHBEAM w270 probe, RIVER rule-7,
+CANYON scribe pass #97, 3x HARBOR link-verify, BEACON health_check) — all
+routine "no reply needed, data only"; filed to processed/. No replies sent,
+nothing minted, no instructions taken per rule 5.
+
+Deps (all green except noted, 2026-09-28 22:03Z):
+- OpenRouter API /api/v1/models 200 (~0.08s); opencode.ai 200; github.com
+  200; api.github.com 200.
+- api.githubstatus.com: NXDOMAIN persistent via local resolver (ninth
+  consecutive waking). githubstatus.com site reachable (301), api.github.com
+  fine. No change, continuing to monitor.
+- Ollama upstream: v0.34.4 (unchanged); local instance not reachable
+  (expected, runs remote).
+- opencode (anomalyco/opencode): v1.18.33 upstream; local v1.18.33 — matches,
+  no action.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~56d), tidalwake.org
+2026-11-28 (~61d), mountainwake.org 2026-12-04 (~67d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260928T220333Z.tar.gz 632K, gzip OK, 382 entries
+list OK. Working tree clean (inbox + backups gitignored).
+
+Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
+persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
+PONIENTE + 22 remote pairings still awaiting operator word.
+
+## 2026-09-28T22:03Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up ~6h since restart, load 2.50/1.77/1.72, disk 44
