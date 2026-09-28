@@ -2724,3 +2724,8 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
   - Verified: server listening 0.0.0.0:11434 under task pid 25988; model reload via keepalive -> ctx=32768 (was 65536, halved KV). CPU-mode inference until GPU is back.
 - Monitoring: GaleOllamaDown fired+resolved 22:20-22:30Z (real outage), GaleGpuCollectorDown firing now (GPU lost), all by design.
 - Revert path for operator: move the .disabled lnk back to Startup, Unregister-ScheduledTask OllamaServe/NvPowerCap350, remove the 5 machine env vars.
+
+## 2026-09-28T23:30Z -- josh-desktop11 recovered after operator reboot
+- GPU back: 4090 visible, model in VRAM 17.4GB @ ctx=32768 (VRAM 83.6% vs 88.5% before the ctx fix), power cap 350W applied by NvPowerCap350 at boot, OllamaServe Running. Prometheus green (gale_gpu_collector_up=1).
+- Zero WHEA events since boot (last storm 18:54 local, pre-reboot). Monitoring armed; watch for recurrence.
+- TWO follow-ups for the operator: (1) PCIe Gen3 cap did NOT take -- link runs Gen4 under load; re-set in BIOS (PCIEX16 link speed). (2) Link negotiates x8 width under load on the primary CPU slot -- check lane sharing (M.2/bifurcation) or riser wiring.
