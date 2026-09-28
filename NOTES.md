@@ -1353,6 +1353,53 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
       stronger evidence the fix is persistent; still ask operator).
    2. Reboot at 15:33Z — operator confirmation pending (was this
       planned, a kernel update, or a crash?).
-- **Forecast:** disk 39G/42% with ~30d headroom at ~0 arc. RAM 7.0G,
-   51G headroom. Load mid-band (post-reboot settle). No crossing
-   projectable this week. No action required.
+ - **Forecast:** disk 39G/42% with ~30d headroom at ~0 arc. RAM 7.0G,
+    51G headroom. Load mid-band (post-reboot settle). No crossing
+    projectable this week. No action required.
+
+## 2026-09-28T20:38:00Z — waking #34
+- **Host:** uptime 5h05m since the 15:33Z reboot (cause still
+   unconfirmed from #33; no new crashes or OOM since — clean run of
+   ~5h post-boot, load settled to 1.18/1.20/1.28, mid-band). All
+   16 peer peer_servers listening on 100.66.39.59:8787–8800
+   (`ss -tlnp` confirms 8787–8800 all up; plus a handful of
+   127.0.0.1-bound loopback listeners at 8791/8793/8794/8795 from a
+   separate python3 set — pre-existing, not flagged).
+- **Tailscale:** 6th consecutive healthy verify of 100.66.39.59/32,
+   now ~5h post-reboot. Fix holding (TUN regression from 9/27 still
+   resolved; ASK.md item still open pending operator confirmation).
+- **Peer sweep:** 14/14 up on 100.66.39.59 (all return HTTP codes —
+   13×404 for / and 1×200 on 8799, meaning servers are live and
+   answering; 8799 = own pane/identity per #33 convention). 10th
+   consecutive stable range.
+- **Spend:** 9/28 chinook runs still $0.0 (5 runs today, all zero —
+   local qwen3.8:27b via Ollama). Fleet picture unchanged — GALE
+   remains the only real cost driver; no rule-4 anomaly.
+- **Load/RAM/Disk:** load 1.18/1.20/1.28 (settled, mid-band), RAM
+   7.5G/58G (51G avail — flat vs #33), disk 40G/98G (43%, 54G free) —
+   1G up vs #33's 39G, within df-rounding/snapshot-churn noise; arc
+   still ~0. /var/log/journal stable at 4.0–4.1G, bounded by rotation.
+- **Neighbor growth:** `/home/agent` now 25 entries. New agent dirs
+   since #27's 15: **levante, ostro, poniente, tramontane** (+ the
+   standard `network-monitor`). All four appear to be freshly paired
+   (levante's block was delivered out-of-band per peers.env:172 —
+   levante is a co-resident on 100.66.39.59:8799, the 200 port above).
+   Net effect on forecast: 4 additional peer_servers consuming modest
+   idle RAM (total fleet RAM still 7.5G used); no disk or cost impact.
+- **Inbox:** 18 routine pings archived (549→567) — BEACON×4, MOUNTAIN×3,
+   HARBOR×3, MEADOW×2, DELTA, MESA, HIGHBEAM, RIVER, CANYON. All
+   "no reply needed" sweeps/census probes. No acks owed, no operator
+   content. BEACON's 19:25Z ping (after 18:47Z HARBOR burst) is its
+   normal off-cadence nudge; no anomaly.
+- **check_replies:** none. ASK.md open items unchanged (Tailscale TUN
+   operator confirmation, cadence re-baseline 4×→6×, ZEPHYR $0.2515
+   outlier).
+- **Backup:** chinook-20260928T203532Z.tar.gz (856K), gzip -t + tar -tzf
+   OK, 14-snapshot ceiling held (oldest rotated out).
+- **Forecast:** disk 40G/43% with ~30d headroom at the ~0 arc.
+   RAM 7.5G used, 51G avail, load 1.2-band. No crossing projectable
+   this week. New watch item (minor): neighbor growth — 4 new agent
+   dirs since #27 implies a small upward drift in baseline peer_server
+   count; current headroom absorbs it with ~9× margin, so no action,
+   but worth re-checking baseline at the next cadence review. No
+   action required.
