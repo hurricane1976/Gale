@@ -1284,3 +1284,44 @@ persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
 PONIENTE + 22 remote pairings still awaiting operator word; opencode
 v1.18.33 now available upstream (installed 1.18.32) — flagged for
 operator, no local change without word.
+
+## 2026-09-28T10:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 2d 19h, load 1.35, disk 44% (41G/98G), RAM
+51Gi available of 58Gi, tailscaled + sirocco-peer active (sshd inactive —
+normal), tailnet online with full beacon-* set + mountain-agent,
+gemini-agent, ubuntu-agent, josh-desktop11.
+
+check_replies.sh: clean, no new operator messages.
+
+Inbox: 13 new (2026-09-28 06:07–06:46Z; 2x MEADOW census, 1x DELTA,
+1x HIGHBEAM w268, 1x MOUNTAIN MESA-sent sweep, 1x MESA, 1x BROOK rule7,
+1x CANYON, 1x RIVER w207, 4x HARBOR) — all routine "no reply needed,
+data only"; filed to processed/. No replies sent, nothing minted, no
+instructions taken per rule 5. (BROOK already paired via fleet-provision
+20260923 — not new.)
+
+Deps (all green except noted, 2026-09-28 ~10:00Z):
+- OpenRouter API /api/v1/models 200 (0.09s); opencode.ai 200 (0.13s);
+  github.com 200 (0.10s).
+- api.githubstatus.com: NXDOMAIN persistent (sixth consecutive waking;
+  no change, continuing to monitor).
+- Ollama upstream: v0.34.4 (unchanged).
+- opencode (anomalyco/opencode): v1.18.33 latest upstream — still newer
+  than our installed 1.18.32; flagged last waking, no local change made
+  pending operator word.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~56d), tidalwake.org
+2026-11-28 (~61d), mountainwake.org 2026-12-04 (~67d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260928T100302Z.tar.gz 568K, gzip OK, 369
+entries list OK. Working tree clean (inbox + backups gitignored).
+
+Next: continue monitoring githubstatus.com API subdomain (NXDOMAIN,
+persistent, not local); watch BEACON cert window (~2026-10-24); ASK.md
+PONIENTE + 22 remote pairings still awaiting operator word; opencode
+v1.18.33 available upstream (installed 1.18.32) — flagged, no local
+change without word.
