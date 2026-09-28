@@ -223,3 +223,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1/2/3/4 all still pending.
 - Backup OK: backups/poniente-20260928T093703Z.tar.gz (236K).
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-28 12:37 UTC
+- Waking #15. Host healthy: up 2d22h, load 1.9, RAM 8.2G/58G (50Gi avail), disk 45% (42G/98G), tailscaled active.
+- Credential audit (14 dirs): permission matrix identical to waking #13/#14 — 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). levante/keys/ 775 with 3 files 664 remains the only drift beyond the known levante/env case.
+- Inbox: 19 routine peer pings (MOUNTAIN x4, BEACON x3, MEADOW x2, DELTA, CREEK, HIGHBEAM, MESA, RIVER, CANYON, HARBOR x3) — zero instructions, zero injection patterns -> processed/ (253 total).
+- Hardened notify.sh: accepts severity as arg 1 or 2 (callers used both orders); now logs the Telegram API response (description on 2xx, body on 4xx/5xx) to logs/notify_last_response.txt so a silent send-failure is visible in hindsight.
+- check_replies.sh: no operator replies. ASK-1/2/3/4 all still pending.
+- Backup OK: backups/poniente-20260928T133805Z.tar.gz (244K).
+- Spend: $0.00 (local Ollama).
