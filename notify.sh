@@ -29,7 +29,7 @@ if [[ -z "${TELEGRAM_BOT_TOKEN:-}" || -z "${TELEGRAM_CHAT_ID:-}" ]]; then
     exit 1
 fi
 
-U1="${1^^}"; U2="${2^^}"
+U1="${1^^}"; U2="${2:-}"; [ -n "$U2" ] && U2="${U2^^}"
 case "${U1}" in
   CRIT|WARN|INFO) SEV="${U1}"; MSG="${2:-}" ;;
   *)              SEV="${U2}"; [ "${SEV}" = "" ] && SEV=INFO; MSG="${1}" ;;
