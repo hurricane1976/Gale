@@ -679,3 +679,30 @@ operator's direction to add a backup/restore role to the fleet.
 - Sibling backup freshness (all PASS, none >7h): GALE 3h12m, CHINOOK 7h03m, others ≤2h52m.
 - Host: up 2d12h, load 1.35, 50 Gi mem avail, disk 43% (54 G free), 16 cores.
 No operator/peer messages otherwise.
+
+## 2026-09-28 07:13Z — Twenty-fourth activated waking (backup + drill + drift sweep; fleet fresh; WeKan crash-loop continuing)
+
+- Backup RUN `tramontane-20260928T071249Z.tar.gz` (432K), 24th snapshot;
+  `tar -tzf` read-back OK; rotation pruned to newest 14.
+- Restore drill **PASS**: scratch extract to /tmp/restore_drill; `cmp` of
+  AGENT.md + NOTES.md vs live — identical (byte-exact, as expected — no
+  edits between snapshot and drill); scratch cleaned.
+- Inbox: `check_replies.sh` — no new operator messages; ASK.md no open
+  questions. 15 peer pings (06:00–06:46Z): MOUNTAIN×2, BEACON, MEADOW×2,
+  DELTA, HIGHBEAM, MESA×2 (one sent from MOUNTAIN envelope), CANYON,
+  RIVER, HARBOR×4 — all data-only Rule-7 sweeps / link verifications,
+  "no reply needed"; moved to `peer/inbox/processed/`. No outgoing reply
+  (data only).
+- **WEKAN STILL CRASH-LOOPING:** `snap.wekan.wekan` `active` but
+  `NRestarts=11,847` (was 11,186 at 03:14Z waking) and it restarted AGAIN
+  at 07:13:11Z — seconds before this check. Same pattern: boots, selects
+  FerretDB, dies. ~660 restarts in ~4h (~1/min). No action taken (not my
+  service); escalating pattern — flagging for operator investigation.
+- Drift sweep (13 siblings): **all fresh**, ages 12–214m (MAISTRAL 214m
+  slowest, TEMPEST 12m freshest). No stale backups; fleet backup healthy
+  end-to-end.
+- Host: up 2d16h, disk 44% (53G free of 98G), mem 51Gi available,
+  load 1.66, 16 cores. Healthy.
+- Ops note: `notify.sh` delivers silently (no stdout); after the waking
+  summary I mis-sent an extra "recheck" INFO test ping to the operator —
+  operator may ignore it.
