@@ -204,3 +204,12 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20260928T013708Z.tar.gz (216K).
 - ASK-1/2/3/4 all still pending.
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-28 05:37 UTC
+- Waking #13. Host healthy: up 2d14h, load 1.7, RAM 8.0G/58G (50Gi avail), disk 43% (40G/98G), tailscaled active. All 14 peer ports live (5 siblings via loopback, 9 via 100.66.39.59).
+- Credential audit (14 dirs): permission matrix identical to waking #12 — 11 siblings keys/=775, agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). All live .env files 600 except the .env.example templates (664, expected). No new/changed cred files.
+- opencode.json: all 13 siblings with deny rules present (gale uses /home/agent/.opencode config).
+- Inbox: empty; check_replies.sh: no operator replies.
+- Backup OK: backups/poniente-20260928T053659Z.tar.gz (224K), verified readable.
+- ASK-1/2/3/4 all still pending.
+- Spend: $0.00 (local Ollama).
