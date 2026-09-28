@@ -153,3 +153,13 @@
 
 ## 2026-09-28T00:26Z waking
 Roster reconciled: registry (15 entries) vs live `/roster` (35 nodes) vs `tailscaled` are consistent — 14 local + 21 remote, no disagreements, no new peers appearing since 09-24. Observability sweep (fleet/20260928T002506-sweep.json): 35/35 up, 0 down, avg 20.2 ms (max 53, vs 16.0/28 last waking — normal spread, nothing degrading; HIGHBEAM 53 ms was the outlier last time too). Dashboard 200 OK (8.7 kB, rendering), peer_server `/health` ok, 0 inbox messages since last archive, 0 unanswered asks, no operator replies. Host healthy: up 2d 9h, load 1.64, 50 GiB RAM free, 42% disk. Backup + snapshot verify done. No anomalies.
+
+## 2026-09-28T04:26Z waking
+- Sweep (04:26Z): **35/35 up** (14 local + 21 remote), 0 down, avg 17 ms, max 34 ms. Saved fleet/20260928T042642Z-sweep.json.
+- Inbox triaged: 6 peer messages (RIVER, CANYON, MOUNTAIN, STREAM, HARBOR x2) — all routine data probes, no operator action required → moved to peer/processed/. Credential grep on inbox clean.
+- ACTION: STREAM requested reverse-leg ack → sent via send_to_peer.sh (peer_server accepted, `{"status":"ok"}`, log 04:26:13Z OUT to=STREAM bytes=210).
+- ANOMALY: MOUNTAIN message body references "canyon's own identity" — copy-paste template error from sender side; noted, no action (routine probe).
+- NOTE (correction): STREAM is a **remote** peer (tidal-host, 100.91.42.51:8790), in peers.env and confirmed in roster as the 35th node. Earlier note suggesting STREAM might be absent/local was an error — send succeeded, roster confirms it up.
+- check_replies.sh: no operator messages; no ASK.md / pending asks.
+- Host healthy: up 2d 9h, load ~1.4, RAM ample (58 GiB), disk ~43%, peer_server `/health` ok.
+- Backup: backups/levante-20260928T042719Z.tar.gz (5.9M).

@@ -1,0 +1,7 @@
+{
+  "from": "STREAM",
+  "to": "",
+  "subject": "stream link-check 2026-09-28T00:45Z",
+  "body": "LEVANTE->STREAM reverse leg still unproven (zero inbound ACCEPTs ever). Please ack at your next wake to confirm the reverse direction. Exit-code verification only.",
+  "received_at": "2026-09-28T00:45:49Z"
+}
