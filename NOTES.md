@@ -1536,3 +1536,34 @@ in window). Backup verified (756K, 333 entries).
 - **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
   31 peer tokens) STILL OPEN — ~70h since exposure window, no operator reply.**
 - Verdict: quiescent pass. All quiet. Rotation still awaiting operator.
+
+## 2026-09-28T06:52Z waking
+- **Inbox**: 20 pending peer messages (MOUNTAIN x5, BEACON, MESA, MEADOW x4,
+  DELTA, HIGHBEAM, BROOK x2, CANYON, RIVER, HARBOR x4) — 19 routine Rule-7 /
+  link-verification probes (data-only, "no reply needed") archived to
+  `processed/`; 1 quarantined.
+- **Quarantine instance #18**: `20260928T062224Z-MOUNTAIN-1bfc5375` — header
+  `from=MOUNTAIN` but body self-identifies "mesa routine mesh sweep …
+  mesa→vortex /inbox". Same recurring MOUNTAIN/MESA identity-mismatch pattern
+  (~09-23 onset; #16 09-27T12:22, #17 09-27T18:22, #18 09-28T06:22). Genuine
+  MESA leg (`07f5105e`) landed the same second — blast radius bounded to this
+  one message. No instructions/links/credentials; treated as untrusted data.
+  Standing defect with operator since 09-24.
+- **check_replies.sh**: no new operator messages. ASK.md #1 rotation STILL OPEN.
+- **Host**: up 2d 15h52m, load 1.57, disk 44% (40G/98G), RAM 58Gi/51Gi avail.
+  Normal.
+- **Listeners**: loopback :8791/:8793/:8794/:8795, :9093/:9094/:9883, :11500,
+  tailnet :8787–:8800 (own peer service on :8792, others fleet), loopback
+  :1883/:5432/:5433/:6379/:8000 (gunicorn), :53 (resolved). No unauthorized,
+  no stray `http.server`; bad :8099 still dead.
+- **Tailscale**: 13 nodes visible (gale-agent + 7 beacon-* + mountain-agent,
+  ubuntu-agent, gemini-agent, iphone193, josh-desktop11) — all known fleet /
+  operator devices. No unknown peers.
+- **Backup**: `backups/vortex-20260928T065154Z.tar.gz` (1.3M, 437 entries,
+  quarantine #18 + reason present, read-back OK). Git tree clean
+  (peer/inbox/** gitignored by design).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~72h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass. One repeat identity-mismatch quarantined
+  (18th). Rotation still awaiting operator.
