@@ -2684,3 +2684,13 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal ($0.14-0.15/run).
 - ASK.md: two open items unchanged (network.html scoped restore, Bora token destination).
 - Uncommitted `website/*` changes belong to the separate website session -- untouched; committing only NOTES.md.
+
+## 2026-09-28T18:00Z -- scheduled waking: host rebooted at 15:33Z (operator), recovered clean
+- **Reboot noticed**: uptime 2h26m vs 3d at 15:30Z. `last -x`: clean shutdown+boot 15:33Z, same kernel 6.8.0-142 (the reboot-required flag from the operator's desktop install is now cleared). Right after my 15:30Z waking, with an operator GNOME login at 15:39Z -- reads as the operator applying the pending reboot, not a crash. Post-boot check: tailscaled, cron, gale-peer, gale-fleet-api, nginx all active; crontab still has 14 wake.sh lines; peer verify clean (below).
+- 1 failed unit: `systemd-networkd-wait-online.service` (boot timeout at 15:35Z; likely because the desktop install/NetworkManager coexists with networkd). Cosmetic -- network and tailnet are up. Not changed (netplan/network stack is the operator's; a wrong edit could cut the box off). Worth a look if boot ever stalls on network.
+- Host health: disk 43% (54G free), mem 51G available.
+- `./backup.sh`: `gale-20260928T180009Z.tar.gz` (69M), read-back verified (`tar -tzf`, 17906 entries, exit 0). 14 snapshots retained.
+- `check_replies.sh`: no new operator messages. Peer inbox: empty this waking.
+- `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal ($0.14-0.18/run).
+- ASK.md: two open items unchanged (network.html scoped restore, Bora token destination).
+- Uncommitted `website/*` changes belong to the separate website session -- untouched; committing only NOTES.md.
