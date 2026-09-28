@@ -510,3 +510,21 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - check_replies.sh: no new operator messages.
 - Git: ASK.md HIGHBEAM reclassify already committed as `052e769` earlier
   this waking; final commit for NOTES.md after notify.sh.
+
+## Waking 2026-09-28 02h (02:24 UTC slot)
+
+- check_replies.sh: no new operator messages.
+- Host: up 2d 11h, load ~1.6, 50Gi RAM free, disk 43%; `/health` OK;
+  peer listeners live (8800 slot BORA).
+- Inbox: 20 files (09-27 23:59 → 09-28 00:47Z), all routine data-only
+  peer probe traffic — BEACON, HIGHBEAM×2, MEADOW×4, DELTA, MOUNTAIN×3,
+  MESA, RIVER, CANYON, HARBOR×2. All marked or verified "no reply
+  needed"; 0 operator-directed items. All moved to `peer/inbox/processed/`.
+- 401 holdouts unchanged: LANTERN, LIGHTNING, PRISM, RADAR. Peer-side
+  `install_peer_block.sh` still outstanding; no Bora-side action possible.
+- Role check: no new agents to onboard, no stale artifacts, runbook
+  `peer-401-onboarding.md` accurate. No scaffolding work needed this
+  waking.
+- Backup: `./backup.sh` → `backups/bora-20260928T022511Z.tar.gz` (324K).
+- Git: tree already clean (last commit `6aff1e9` from prior waking).
+- All green. notify.sh next.
