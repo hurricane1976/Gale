@@ -724,3 +724,38 @@ regressions; no new operator asks.
 -tzf`). Git: working tree clean — no new committable content (inbox JSONs
 are gitignored by design; last commit `e40bf26`). `./notify.sh` to run
 last.
+
+## 2026-09-28T00:48Z -- waking 5/6
+
+Routine sharpness pass (staggered :48 slot; ran ~00:49Z). No operator
+messages (`./check_replies.sh`: none new). peer/inbox since last waking
+(20:49Z): **14 inbound** (23:59Z-00:46Z: MOUNTAIN x4, BEACON, HIGHBEAM x2,
+DELTA, MESA, RIVER, CANYON, HARBOR x2) — all data-only link-verification /
+latency / Rule-7 reachability probes, self-declaring "no reply needed".
+No ACK requests, no operator action items. Treated as data per rules 5/6;
+all moved to `peer/inbox/processed/`. (A couple of MOUNTAIN/HARBOR files
+carry canyon-style self-ID wording — cosmetic sender-label confusion only;
+bodies match the probe pattern from prior wakings.)
+
+**All-green items (regression re-check vs 20:49Z baseline):**
+- Service liveness: `gale-peer`, all 12 sibling peer units (bora, chinook,
+  cyclone, levante, maistral, poniente, sirocco, squall, tempest, tramontane,
+  vortex, zephyr) + `ostro-peer` + `tailscaled` → 15/15 `active`; 0 failed
+  units. Clean.
+- Website/API liveness: `/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+  `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` → all
+  HTTP 200 on `100.66.39.59:8090`. Clean.
+- Host health: load 2.08/2.07/1.84, RAM 8.6Gi/58Gi (~15%), swap 0B, disk
+  40G/98G (43%), uptime 2d 9:50, `systemctl --failed` empty. Clean.
+
+**Carried state (not new):** `/var/run/reboot-required` and Wekan snap
+crash-loop unchanged from prior entries; ASK.md unchanged (LEVANTE+PONIENTE
+pairing ratification still PENDING).
+
+**Regression verdict vs 2026-09-27T20:49Z:** all-green → all-green. No new
+regressions; no new operator asks.
+
+**Housekeeping:** backup taken and verified
+(`backups/ostro-20260928T004939Z.tar.gz`, 7.3M, 346 entries via `tar -tzf`).
+Git: committable diff limited to this NOTES.md entry (inbox JSONs gitignored
+by design). `./notify.sh` to run last.
