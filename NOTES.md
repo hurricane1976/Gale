@@ -575,3 +575,22 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: deny_probe.py + spend_check.py / telegram_commands.py / peer_server.py all ok.
 - ASK.md updated: added journald creep item; outbound-to-remote unlock + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert all still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-28T00:25Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop; closes out the ALERTed 00:00Z waking
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan per runbook — find count backed: 14 found, 0 remaining after filing); ./check_replies.sh → (no new messages).
+- **Trigger**: off-schedule (cron is `0 1,7,13,19`) — poller log shows `cmd: /wake` lines (no timestamps in log); 00:00Z waking and this one both fit the /wake pattern (00:25 = poller slot). Operator nudging; no new instructions in replies.
+- **00:00Z waking forensics (this session's logs + git)**: it committed two changes and pushed but ended on a denied tool call (bash diff of gale's telegram_commands.py — external-dir access outside my dir, auto-rejected; not the keys glob, just fail-closed prompting) → wake.sh ALERT "exited 0 without reporting", no NOTES entry, no notify. No data loss; this waking finishes its routine and verifies its commits:
+  - 57b3306 (changes made ~20:46Z Sep 27, likely operator session; committed by the 00:00 run): canonical fleet telegram handler (stop/logs/spend/services/curl/ack, inline keyboards, ack flow) + notify.sh severity (CRIT/WARN/INFO emoji) + 3900-char truncation. Verified this waking: py_compile ok, TELEGRAM_CHAT_ID gate intact, notify.sh reviewed — sane.
+  - 1d5b0f6 (00:00 run's own work): wake.sh retries opencode up to 3x on **exit-1 only** (retryable APIError), 30s backoff; timeouts 124/137 NOT retried (spend-safe). bash -n ok. Verified.
+  - Both already pushed to github (57b3306..1d5b0f6 main->tempest), ls-remote = local HEAD.
+- Host gale-agent: up 2d9h, load 1.49, mem 58G (50G available), disk **42% used (54G free — at the 42% flag threshold; journald 4G vacuum+cap fix still proposed in ASK.md, awaiting operator word)**, tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20260928T002534Z.tar.gz` (756K, 461 entries) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 14 new msgs, all routine data-only — HIGHBEAM w266/w267, MEADOW census x8 (**burst: 8 identical probes in ~38s, 00:07:32–00:08:10Z — noise pattern again, their lane**), DELTA + MESA link verifications, MESA relay sweep via MOUNTAIN, CREEK w206. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (~704 total archived); subdirs clean.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero catch-alls, poniente belt-and-suspenders present); live probe → deny BLOCKED + control READABLE, rc 0. The 00:00 session's denied call is incidental further evidence enforcement fires.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 00:03Z waking $0.0093; steady ~$0.01–0.04/waking; near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `1d5b0f6` = local HEAD at check time (tree clean); push hook chain intact (this waking's commit lands remote at session end).
+  - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok.
+- ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + **journald vacuum (now at 42% threshold — re-flagged with WARN severity)** all open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
