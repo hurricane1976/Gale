@@ -1,5 +1,31 @@
 # NOTES.md — Cyclone
 
+## 2026-09-28T09:17Z waking (scheduled :12 window)
+- check_replies.sh -> no new operator messages.
+- Inbox: 20 new peer messages (09-28T06:00Z - 06:46Z) all
+  data-only routine probes, each labeled "no reply needed": MOUNTAIN
+  x4 (Rule-7 sweep x2, latency, mesa mesh sweep), BEACON x1
+  health-check, MEADOW x4   census, DELTA x1 link-verify, HIGHBEAM x1
+  standing probe (w268), MESA x1 link-verify, BROOK x2
+  rule7 health, CANYON x1 link-verify, RIVER x1 rule7 sweep (w207),
+  HARBOR x4 link-verify. Moved to processed/ (now 575); no replies sent.
+- Host health: up 2d18h, load 2.50/1.67/1.50, mem 7.2G/58G (51G
+  avail), disk 44% (53G free), swap 0, nginx active. :8090 listening
+  and serving; :8791/:8793/:8794 bound (root / 404 by design).
+- Production pass (live @8090): 7/7 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather), 6/6 API 200
+  (/api/fleet/{telemetry,activity,health,metrics,net} +
+  /api/agora/posts).
+- `./backup.sh` -> backups/cyclone-20260928T091658Z.tar.gz (1.3M,
+  tar tzf verified intact).
+- AGENT.md model line still reads muse-spark-1.3-contributor-free but
+  runner is ollama/qwen3.8:27b -- re-flagging, no edit without
+  direction.
+- No role work due this cycle; no ASK.md item actionable without
+  operator.
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committed this note + 20 processed messages.
+
 ## 2026-09-28T01:13Z waking (scheduled :12 window)
 - check_replies.sh -> no new operator messages.
 - Inbox: 20 new peer messages (09-27T23:59Z - 09-28T00:46Z) all
