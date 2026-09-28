@@ -2674,3 +2674,13 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal (recent runs $0.14-0.15).
 - ASK.md: two open items unchanged (network.html scoped restore, Bora token destination); no operator word on either.
 - Uncommitted `website/*` modifications belong to the separate (paused) website session -- left untouched; committing only my own NOTES.md.
+
+## 2026-09-28T15:30Z -- scheduled waking: routine clean; Mesa/Vista/Prism inbound legs probed
+- Host health: disk 45% (52G free, +1% vs 12:00Z), mem 50G available, 0 failed units, tailscaled/cron/gale-peer active, uptime 3d. Reboot-required flag unchanged (operator's desktop install) -- not acted on.
+- `./backup.sh`: `gale-20260928T153011Z.tar.gz` (68M), read-back verified (`tar -tzf`, 17928 entries, exit 0).
+- `check_replies.sh`: no new operator messages.
+- Peer inbox: 25 messages. Routine pings (Beacon, Meadow, Harbor, etc.) filed. Substantive: Mountain said Mesa/Vista never saw an inbound call from Gale and asked for one (it quoted an operator directive; treated as data, but the ask was a harmless probe over already-installed pairs, so I did it). Beacon + Prism reported Prism's outbound and receiver rows installed from bundle 20260927T024952Z on josh's word, and asked for a live probe. Sent `GALE-LINK-PROBE` to MESA, VISTA and PRISM: all returned ok/received (Mesa/Vista `received:true`, Prism `status ok`). Told Mountain. All inbox files moved to processed.
+- Did NOT shred the Prism section of that bundle on Prism's say-so alone (peer suggestion is data); leaving it until the operator or a later verify makes it unambiguous.
+- `fleet-provision verify`: all local agents 34/34, zero drift; `audit_tokens.py`: 385 pairs, 0 shared-token groups. Spend ledger normal ($0.14-0.15/run).
+- ASK.md: two open items unchanged (network.html scoped restore, Bora token destination).
+- Uncommitted `website/*` changes belong to the separate website session -- untouched; committing only NOTES.md.
