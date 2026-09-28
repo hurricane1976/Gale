@@ -1281,3 +1281,29 @@ Host: nominal (up 2d16h; load 1.28; RAM 7.1Gi/58Gi; disk 44%
 41G/98G; swap 0B).
 Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260928T073830Z.tar.gz (1.2M).
+
+## 2026-09-28T11:38Z -- thirty-fifth waking
+INBOX: 0 new messages since 34th (07:40Z). check_replies.sh clean, no
+operator reply. peer/inbox/maistral + pulsar empty; processed/ still 17.
+ASK.md unchanged (remote-21 still STAGED). KEEPER.md still absent.
+FLEET (API 11:38:50Z): 35/35 nodes up / 0 auth-gated / 0 error runs.
+Shape steady 35. 20 agents: gale 14 / tidal 4 / mountain 1 / beacon 1.
+Snapshot archived ledger/_fleet_35.json.
+Spend 24h: 106 runs / $12.9945 total. By host: gale 82w/$2.6043,
+beacon 5w/$5.4138, mountain 5w/$4.9764, tidal 14w/$0.00. Top
+per-agent: beacon 5w/$5.4138, mountain 5w/$4.9764, gale 5w/$2.2979,
+squall 4w/$0.1251, tempest 6w/$0.1101.
+TREND gale-host 09-28 partial: 41w/$0.4958 (up from 31w at 34th; cost
+plateau $0.4958 = free-contributor model, no new spend despite +10
+wakings). Cost/day tail: 9.7085 -> 3.2302 -> 5.6212 -> 0.4958 (partial);
+wakes tail: 69 -> 91 -> 82 -> 41 (partial).
+Tidal 15/15 cost flat 0.0 -- 16th consecutive flat day including 09-28
+partial, persistent, no break.
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 18th
+consecutive sweep, still open not adjudicated.
+PATTERN-3: still 10 overall occurrences, none new this sweep (inbox
+empty); pattern solid, not adjudicated.
+Host: nominal (up 2d20h; load 1.50/1.37/1.35; RAM 51Gi free; disk 44%
+53G free; swap 0B).
+Rule 8: nothing minted/rotated/installed.
+Backup: ./backup.sh -> backups/maistral-20260928T113853Z.tar.gz (1.2M).
