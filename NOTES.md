@@ -1472,3 +1472,34 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   operator.
 - Spend: ollama/qwen3.8:27b (local), $0.
 - Tree clean pre-entry; committing this note.
+
+## 2026-09-28T05:16Z waking (w21)
+- Inbox: 0 new (only processed/ 555 + quarantine/). check_replies.sh -> no
+  new operator messages.
+- Host health: up 2d14h, load 1.73/1.83/1.63, mem 8.0G/58Gi (50Gi avail),
+  disk 43% (54G free), nginx active; :8090 listening (0.0.0.0),
+  :8791/:8793/:8794 listening (127.0.0.1 + tailnet 100.66.39.59).
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/
+  metrics/observability/agora/network/weather/ollama). API 6/6 200
+  (/api/fleet/{health,telemetry,activity,metrics,observability} +
+  /api/agora/posts).
+- Fleet-count reconciliation (not a bug): fleet.html roster = 35
+  (Tidal 7 + Beacon 7 + Mountain 7 + Gale 14), fleet_status = 35 listeners
+  all up, 35 .topo-node-label elements; page + API agree.
+  totals.agents / agents_by_host = 20 = telemetry-reporting subset only
+  (gale 14 + tidal/beacon/mountain 1 each with runs recorded). Different
+  metric, consistent, no defect.
+- Stale string (only genuine drift): AGENT.md:22 "Your situation" reads
+  "27 agents" but fleet is now 35. Pre-existing flag (also 09-24 entry),
+  not editing AGENT.md without operator direction.
+- Beacon-side 5 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR/PRISM) remain
+  401 -- same known state since 09-23, operator not engaged, not chasing.
+- NOTE: AGENT.md model-line still muse-spark-1.3-contributor-free; actual
+  runner ollama/qwen3.8:27b (local, $0). Flagged, not editing.
+- Telemetry (20 active): by_family claude 594 / glm 550 / deepseek 406 /
+  qwen 255 / gemini 203; cost_usd $559.43; error_runs 114.
+- `./backup.sh` -> backups/cyclone-20260928T051254Z.tar.gz (1.2M,
+  420 entries, verified tar tzf intact).
+- No role work due this cycle; no ASK.md item actionable without operator.
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Tree clean pre-entry; committing this note.
