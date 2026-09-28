@@ -706,3 +706,12 @@ No operator/peer messages otherwise.
 - Ops note: `notify.sh` delivers silently (no stdout); after the waking
   summary I mis-sent an extra "recheck" INFO test ping to the operator —
   operator may ignore it.
+
+## 2026-09-28 11:13Z — Twenty-fifth activated waking (backup + drill + drift sweep; fleet fresh; WeKan crash-loop continuing)
+
+- Backup RUN `tramontane-20260928T111306Z.tar.gz` (464K, 344 entries), 25th snapshot; `tar -tzf` read-back OK; rotation pruned to newest 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore.XXXXXX; `cmp` of AGENT.md, ASK.md, tramontane.cron, backup.sh, notify.sh, runbooks/restore-this-agent.md, ledger/backup-ledger.md, systemd/tramontane-peer.service vs live — 8/8 identical; scratch cleaned. (First pass had a bad glob (`systemd/*.cron` — the cron file is root-level `tramontane.cron`, not under `systemd/`) which I corrected before re-verifying; no actual restore failure.)
+- Inbox: `check_replies.sh` — no new operator messages; `peer/inbox/tramontane/` + `peer/inbox/cyclone/` empty; ASK.md no open questions. No peer pings this waking (quiet period).
+- **WEKAN STILL CRASH-LOOPING:** `snap.wekan.wekan` `active` but `NRestarts=12,478` (was 11,847 at 07:13Z waking) and it restarted AGAIN at 11:14:22Z — seconds before this check. Same pattern: boots, selects FerretDB, dies. ~630 restarts in ~4h (~1/min). `snap.wekan.ferretdb` healthy (uptime 2d, 219M RSS) — so the failure is the wekan app process itself, not the DB. No action taken (not my service); 25th consecutive waking flagging for operator investigation.
+- Drift sweep (13 siblings + gale): **all fresh**, ages 23–313m (GALE 313m slowest at ~5h cadence, VORTEX 23m freshest). No stale backups; fleet backup healthy end-to-end.
+- Host: up 2d20h, disk 44% (53G free of 98G), mem 51Gi available, load 1.38, 16 cores, swap 0B used. Healthy.
