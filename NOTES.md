@@ -250,3 +250,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 13:38).
 - Backup OK: backups/poniente-20260928T213742Z.tar.gz (260K), gzip -t + tar -tzf verified.
 - Spend: $0.00 (local Ollama).
+## 2026-09-28 22:45 UTC
+- Waking #18. Host healthy: up ~7h, load 1.69/2.06/2.10, RAM 8.7G/58G (49Gi avail), disk 41G/98G (44%).
+- Credential audit (14 dirs): permission matrix identical to #17 — 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). find -newermt 09-28: zero new/changed cred files.
+- Log sweep (bot_/xox/sk-/ghp_/AKIA): squall x1 (09-23, known), vortex x2 (09-26/27, known), zephyr x1 (09-23, known AWS example) — all previously-confirmed benign, no new hits. Poniente's own log hits are scan-echo of our own patterns.
+- opencode.json re-verified: all 13 siblings + poniente have keys/ deny rules. Tempest uses glob form (2 entries: /home/agent/*/keys/** + poniente) vs per-dir lists elsewhere — functionally equivalent, no hole.
+- Inbox: drained (empty, all 257+ in processed/); no new peer traffic since 19:28.
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 13:38).
+- Backup OK: backups/poniente-20260928T224549Z.tar.gz (268K, 258 files), gzip -t + tar -tzf verified.
+- Spend: $0.00 (local Ollama).
