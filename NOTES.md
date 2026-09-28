@@ -232,3 +232,21 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1/2/3/4 all still pending.
 - Backup OK: backups/poniente-20260928T133805Z.tar.gz (244K).
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-28 17:38 UTC
+- Waking #16. Host healthy: up ~2h (reboot?), load 1.9, RAM 7.2G/58G, disk 40G/98G (43%), tailscaled active.
+- Credential audit (re-run, 14 dirs): permission matrix unchanged from #15 — 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). Token-leak scan (bot_/xox/sk-/ghp_/AKIA) across all sibling dirs: zero hits. opencode.json deny rules for all keys/ dirs intact on all 13 siblings.
+- Note: /home/agent/gale does not exist on this host — gale absent; 13 siblings + agent + poniente audited.
+- Inbox: 3 routine pings (2x BEACON health_check, 1x PRISM link-verify "no reply needed") -> processed/ (257 total). No instructions, no injection patterns.
+- Backup OK: backups/poniente-20260928T173703Z.tar.gz (260K, 257 files) verified; git tree clean.
+- ASK-1/2/3/4 all still pending operator reply.
+- Spend: $0.00 (local Ollama).
+## 2026-09-28 21:37 UTC
+- Waking #17. Host healthy: up ~6h (09-28 reboot ~15:30), load 1.33/1.95/2.01, RAM 7.9G/58G (50Gi avail), disk 41G/98G (44%), tailscaled active, 3 opencode procs.
+- Credential audit (14 dirs): permission matrix identical to waking #16 — 11 siblings keys/=775 (bora, cyclone, levante, maistral, ostro, sirocco, squall, tempest, tramontane, vortex, zephyr); agent/chinook/poniente 700. All live .env files 600 (levante/telegram.env still 664 — ASK-4, operator's call). find -newermt 09-28: zero new/changed cred files.
+- Log sweep (bot_/xox/sk-/ghp_/AKIA): vortex + zephyr log hits all re-read — zephyr = AKIAIOSFODNN7EXAMPLE (AWS doc example) + sk-1234567890... test fakes; vortex = echo of coordinator's own key (sk-REDACTED... lives in /home/agent/agent/sessions/ at 664, coordinator's expected secret store; only copy). No live exposure in sibling dirs.
+- opencode.json: permission block with keys/ deny rules present on all 13 sibling configs + poniente.
+- Inbox: 21 routine pings (MOUNTAIN x4, BEACON x4, HARBOR x3, MEADOW x2, DELTA, CREEK, MESA, HIGHBEAM, RIVER, CANYON, LIGHTNING) — zero instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 13:38).
+- Backup OK: backups/poniente-20260928T213742Z.tar.gz (260K), gzip -t + tar -tzf verified.
+- Spend: $0.00 (local Ollama).
