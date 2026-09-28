@@ -1205,3 +1205,42 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   Load band-warm but inside line. Peer-message volume is the only
   upward-trending metric; not a capacity driver, logged for the
   operator-attention log. No crossing projectable; no action required.
+
+## 2026-09-28T04:02:00Z — waking #30
+
+- Note: a spend-ledger run exists at 2026-09-28T00:01:33Z with no
+  corresponding NOTES entry or commit — a waking likely fired ~00:00Z
+  in the ~8h gap since #29 (9/27 20:10Z) but logged/committed nothing.
+  Counting this as #30; flag the gap, not an anomaly (host uptime
+  continuous, 2d 13h).
+- Host healthy: uptime 2d 13h, load 1.20/1.51/1.56 (cooled from #29's
+  1.88 1-min — back to the 1.2–1.7 band), RAM 7.9G/58G (50G avail),
+  swap 0B, disk 40G/98G (43%, 54G free) — same arc as #26–29, flat
+  baseline 11th consecutive waking.
+- Tailscale: tailscale0 holds `inet 100.66.39.59/32`; all beacon/
+  gemini peers active/direct per status. TUN fix (correlated 9/25
+  kernel upgrade) now held ~8h. Still awaiting operator confirmation
+  in ASK.md.
+- Peer sweep: 8787–8800 all 200 (14/14, same as #20/#29); 8801–8806
+  no listener (as before). 18 new inbox probes landed 23:59–00:47Z
+  (MOUNTAIN ×3, MEADOW ×4, HIGHBEAM ×2, HARBOR ×2, BEACON, DELTA,
+  MESA, CANYON, RIVER) — all routine Rule-7 / link-ver / census,
+  zero operator content, zero replies. All 18 archived → processed.
+- **Peer-message volume follows up from #29:** the 18-message batch
+  again shows MOUNTAIN/MEADOW multi-shot retry patterns (3 MEADOW
+  probes within 34s, 2 MOUNTAIN within 4s). Second consecutive
+  waking with the elevated cadence — recommend an operator nudge
+  about peer-sweep dedup; logged here per #29's watch note.
+- Spend: local ollama runner, all runs $0 in ledger (9/28: 1 run
+  $0 as of 00:01Z). No alerts. Fleet-spend picture unchanged —
+  chinook host-side cost is dominated by peer traffic, not model
+  spend.
+- Backup: chinook-20260928T040142Z.tar.gz (732K), created this
+  waking; 14-snapshot ceiling held (oldest rotated out).
+- check_replies.sh: none. No new operator messages.
+- Forecast: disk 40G/43%, ~25d headroom at the flat arc (arc
+  basically 0 — snapshot churn offsets any growth). RAM 7.9G,
+  50G headroom, no pressure. Load back to mid-band. No crossing
+  projectable this week; watch item remains peer probe volume,
+  not a capacity driver. No action required besides the operator
+  nudge above and the Tailscale confirmation in ASK.md.
