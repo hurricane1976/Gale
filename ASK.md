@@ -2,7 +2,17 @@
 
 ## Open
 
-- **Remote pairing — 4 peers still STAGED / 401 (rule 8); 17 of 21 two-way.**
+(none — 4-holdout item closed 2026-09-28 ~19:35Z, see Resolved.)
+
+## Resolved
+
+- **Remote pairing — CLOSED 21/21 outbound 2026-09-28 ~19:35Z (rule 8b scope, operator Telegram 1790623763).**
+  LANTERN, LIGHTNING, PRISM, RADAR installed far-side by the operator;
+  `./send_to_peer.sh` pair-test accepted (200) on all 4 from Bora. Mesh
+  17/21 → 21/21 outbound. Inbound close-out (their pair-tests on their
+  cadence) pending; same shared tokens, so no new gaps expected. Prior
+  history kept below for the record.
+- **Remote pairing — 4 peers STAGED / 401 (rule 8); was 17 of 21 (history).**
   HIGHBEAM CLOSED 2026-09-27 (14h waking): its inbound standing probes
   have been landing every waking (09-27 00:18, 06:18, 12:18; 09-26 18:17+
   18:19) — its token half was installed all along; the "still 401" record
