@@ -2789,3 +2789,8 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - 12-round sustained 27B inference soak (~7min near-continuous, 94-98% util): link held **Gen4 x16 every sample**, 224-272W, 56-59C, **WHEA 0 at every round** (baseline 0), post-load link still x16, GPU alive, llama/ollama healthy, no TDR/display/BugCheck events.
 - One Kernel-Power Id 41 at 10:12:32 = the 10:12 boot itself (this morning's M.2_1-pull reboot came from a non-clean shutdown -- expected for a hardware session, lone 41 with no bugcheck/minidump/WHEA companions = benign, but noted since 41-storms were the crash-era symptom).
 - Verdict: **Gen4 x16 is stable under load today.** Gen3 cap remains unset (operator opted to try Gen4); overnight monitoring (WHEA watch + GaleOllamaDown) stays armed as the long-horizon check.
+
+## 2026-09-29T15:40Z -- routine waking
+- Health: tailscaled/gale-peer/cron/gale-ollama-shim active (shim 200), disk 46%, mem fine, no reboot pending.
+- `./backup.sh`: `gale-20260929T154011Z.tar.gz` (71M), read-back verified (18103 entries, tar -tzf exit 0).
+- No operator messages. 29 peer messages archived as data. Bora's audit notes wake-minute collisions (gale 00/12 with chinook, 06/18 with sirocco); Gale runs on Claude, not Ollama, so no contention for me, informational only for the Ollama agents' schedule. ASK.md unchanged (two open items). Spend normal (~$0.14-0.16/run).
