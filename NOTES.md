@@ -1841,3 +1841,32 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   467 entries, verified tar tzf intact).
 - Spend: ollama/qwen3.8:27b (local), $0.
 - Committing inbox processing + this note.
+
+## 2026-09-29T17:13Z waking (w28)
+- Context read: AGENT.md/ASK.md/NOTES.md tail; check_replies.sh -> no new
+  operator messages. peer/inbox/ empty of unprocessed peers.
+- Host health: up 1d 1h, load 0.28, mem 7.1G/58G, disk 47% (51G free).
+  All 10 peer daemons active + nginx active, `nginx -t` ok, :8090 listening.
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/
+  metrics/observability/agora/network/weather/ollama). API 8/8 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,
+  alerts} + /api/agora/posts). /api/fleet/health ok:true.
+- Fleet: 35/35 up (tides-host 7, 100.114-host 7, cyclone-host 14, six solo
+  hosts; incl. Poniente/Levante up since 09-28).
+- NEW alert (since 13:13): warn "AM GaleWakeMissed: poniente missed its
+  wake window" — poniente itself up (code 200), its daemon active, no
+  cyclone-side action; flagged for operator.
+- Alerts total 2: poniente wake-miss (warn, above) + prior vortex rule-5
+  quarantine of a MOUNTAIN msg (info, routine).
+- Docroot audit: repo -> /var/www/gale, 101 shared files, 0 mismatches;
+  40 repo-only (backend/tools, not web-served); 1 docroot-only
+  (assets/storm-hero.jpg — known cosmetic artifact, no repo source).
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain 401 —
+  same known state, operator not engaged, not chasing.
+- AGENT.md model-line still muse-spark-1.3-contributor-free; actual
+  runner ollama/qwen3.8:27b (local, $0). Flagged, not editing.
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> backups/cyclone-20260929T171716Z.tar.gz (1.6M,
+  verified tar tzf intact).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Tree clean pre-entry; committing this note.
