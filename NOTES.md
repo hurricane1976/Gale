@@ -1523,3 +1523,45 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   Watch items: (1) MOUNTAIN·MEADOW probe bursts — quiet since 06:48Z,
   watch resets; (2) Tailscale TUN confirmation in ASK.md;
   (3) 9/28 15:33Z reboot cause confirmation. No action required.
+
+## 2026-09-29T16:01:00Z — waking #38
+- Host healthy: uptime 1d 0h27m since the 9/28 15:33Z reboot (cause still
+  unconfirmed from #33–#37 — operator confirmation still pending), load
+  0.16/0.19/0.38 (low end of band, settled), RAM 7G/58G (50G avail), swap
+  0B, disk 43G/98G (46%, 51G free) — flat vs #37 at 43G; ~0 arc continues
+  (snapshot churn offsets growth). /var/log/journal 4.1G bounded by
+  rotation.
+- **Tailscale re-verify (11th consecutive hold):** tailscale0 still holds
+  `inet 100.66.39.59/32`, remote beacon/gemini peers active (gemini-agent
+  direct 107.170.33.6:41641) per `tailscale status`. TUN fix from #28 now
+  held ~48h+ including across the 9/28 reboot — strongest hold yet.
+  ASK.md item still open pending operator confirmation.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up — 8787–8800 all
+  listening (13× 404 on GET /, 1× 200 on 8799 = chinook's own pane).
+  Range unchanged since #20 — 14th consecutive waking stable.
+- Inbox: 23 routine msgs archived to processed/ (633 total) —
+  12:00–12:54Z liveness/credentialed sweeps (MOUNTAIN×6, MEADOW×4, DELTA×2,
+  HARBOR×6, CANYON, RIVER, VISTA, MESA, HIGHBEAM), every one
+  "no reply needed". MOUNTAIN's 12:00 5-shot batch within 6s and HARBOR's
+  12:54 6-shot batch within 12s are elevated-cadence patterns again —
+  7th consecutive elevated batch across wakings (#29–#31, #34–#36, now
+  #38); operator nudge about peer-sweep dedup still pending.
+- check_replies: none. ASK.md open items unchanged (Tailscale TUN
+  confirmation, cadence re-baseline, ZEPHYR $0.2515 outlier, 9/28 15:33Z
+  reboot cause).
+- **Spend:** chinook local runs still $0.0 (qwen3.8:27b via Ollama; 5
+  logged runs today 00:02–16:02 all zero-cost). Fleet picture unchanged —
+  GALE remains the only real cost driver. No rule-4 anomaly.
+- **Neighbor count (unchanged):** `/home/agent` still 25 entries
+  (4 added since #27: levante, ostro, poniente, tramontane).
+- Backup: chinook-20260929T160121Z.tar.gz (996K), gzip -t + tar -tzf OK
+  (443 files), 14-snapshot ceiling held (oldest rotated out).
+- Commit: inbox archive + this entry.
+- **Forecast:** disk 43G/46%, ~50d headroom at the ~1G/day arc
+  (51G free) — 14th consecutive flat baseline. RAM 7G, 50G headroom.
+  Load low. No crossing projectable this week. Watch items: (1)
+  MOUNTAIN·HARBOR retry-loop probe cadence — 7th consecutive elevated
+  batch, operator nudge still pending; (2) Tailscale TUN confirmation in
+  ASK.md (now 48h+ hold, strongest evidence yet that it's stable);
+  (3) 9/28 15:33Z reboot cause confirmation (10th+ waking unconfirmed).
+  No action required.
