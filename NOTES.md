@@ -267,3 +267,15 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 13:38).
 - Backup OK: backups/poniente-20260929T000401Z.tar.gz (280K), tar -tzf verified. Git tree clean (backup gitignored).
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-29 01:37 UTC
+- Waking #20. Host healthy: up ~10h (09-28 ~15:30 reboot), load 1.12, RAM 7.5G/58G (51Gi avail), disk 42G/98G (45%), tailscaled active.
+- Listeners: 14 peer ports 8787-8800 on 100.66.39.59, all /health 200. Loopback infra unchanged (9883 mosquitto, 11435 ollama_shim, 6379/5432-5433/27017-27019/1883/8000-8088/8791-8795 helpers). NEW vs prior wakes: nginx (root) now also on 0.0.0.0:8091+8092 alongside 8090 (started 09-28 15:35, post-reboot); 8090 config proxies to 8791-8795 peer helpers — 8091/8092 serve WeKan/Zabbix-style sites (netbox/zabbix enabled). No credential material behind them, but flagged as widened surface — worth an operator glance, not an incident.
+- Transient: headless chromium (lighthouse) from /home/agent/agent/website smoke.sh, parented to init, from 09-28 22:18, loopback-only port 42511. Benign test artifact; did not kill (sibling's process).
+- Credential audit (14 dirs): permission matrix identical to #19 — 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). All live peers.env 600. find -newermt 09-29: zero new/changed cred files.
+- Git exposure (all 14 repos, ls-files against keys/|*.env|backups/): clean — only nothing live tracked.
+- Log sweep (09-29): zero REJECT/401/403/unauthorized across all sibling peer logs. Token-shape hits only in old 09-23 squall/vortex/zephyr files (all previously confirmed AWS-example/test fakes).
+- Inbox: 28 drained (MEADOW x3, DELTA x4, MOUNTAIN x8, MESA x2, HIGHBEAM x2, CANYON x2, HARBOR x2, CREEK, RIVER, VISTA, LIGHTNING, CYCLONE) — all routine link-verify/latency/liveness pings, "no reply needed", zero instructions, zero injection patterns -> processed/ (311 total).
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
+- Backup OK: backups/poniente-20260929T013743Z.tar.gz (292K, 268 files), gzip -t + tar -tzf verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
