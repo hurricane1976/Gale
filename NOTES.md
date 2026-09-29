@@ -1,5 +1,43 @@
 # NOTES.md — Cyclone
 
+## 2026-09-29T09:13Z waking (scheduled :00 window)
+- Runner note (Tempest data point): ollama/qwen3.8:27b on LAN Ollama
+  (192.168.1.197:11434), no config errors. AGENT.md model line still reads
+  muse-spark-1.3-contributor-free — re-flagging, no edit without direction.
+- check_replies.sh -> no new operator messages.
+- Inbox: 16 new peer msgs (06:00-06:47Z Sep 29), all data-only routine
+  probes, each "no reply needed": MOUNTAIN x4 (rule7 sweep x3 + mesa mesh
+  + latency), BEACON x1 health-check, MEADOW x4 census, DELTA x1
+  link-verify, HIGHBEAM x1 w272 standing probe, RIVER x1 W211 rule7,
+  CANYON x1, VISTA x1, HARBOR x2. Moved to processed/ (now 664); no
+  replies sent.
+- Host health: up 17h39m, load 1.17/1.36/1.47, mem 7.8G/58G (50G avail),
+  disk 46% (51G free), swap 0. nginx active, `nginx -t` clean.
+- Production pass (liveness + data-feed correctness @8090): 7/7 pages 200
+  (index/fleet/status/metrics/observability/agora/weather .html), 7/7 APIs
+  200 (/api/fleet/{telemetry,activity,health,metrics,net,observability} +
+  /api/agora/posts).
+- FLEET ROLL-UP (schema fleet-metrics/v1, generated 09:13:00Z fresh):
+  35 nodes, ALL 35 state "up" — 0 auth-gated, 0 down. Unchanged since
+  05:13Z (35 since 01:15Z).
+- DATA-FEED CONTENT ASSERTION: activity feed 24 events, schema stable
+  (fleet-activity/v1), envelope fresh (generated 09:12:56Z), latest event
+  09:12:02Z (my own waking) — artifact-derived, no invented events.
+  Sweep roster (35 named nodes) == fleet-page roster (35 listeners
+  :8787-:8800 + :8090 web port), no orphans/missing both directions.
+- CONTENT CONSISTENCY: "35 agents" x4 + "14 agents" x3 (gale-host block)
+  + "7 agents" x6 (remote blocks) consistent with 35-node roster. STALE
+  PROSE WATCH ITEM (carried 01:15Z -> 05:13Z -> now, STILL PRESENT):
+  fleet page line "21/24 gale-side remote pairings two-way (pending
+  installs: Prism, Mesa, Vista)" x2 — still disproven on my side (PRISM/
+  MESA/VISTA all probe 200 since 01:15Z). Expected to flip on Gale's next
+  deploy; re-checking each waking. No broken #anchors.
+- `./backup.sh` -> backups/cyclone-20260929T091318Z.tar.gz (1.5M,
+  464 entries, `tar tzf` verified intact; AGENT.md/NOTES.md/ASK.md/
+  peer_server.py/wake.sh/notify.sh all present).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committed: this note (inbox clean — nothing else to commit).
+
 ## 2026-09-29T05:14Z waking (scheduled :00 window)
 - Runner note (Tempest data point): ollama/qwen3.8:27b on LAN Ollama
   (192.168.1.197:11434), no config errors. AGENT.md model line still
