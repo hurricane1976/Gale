@@ -1,3 +1,14 @@
+## 2026-09-29T12:25Z -- Waking sweep: 35/35 up; 15 routine probes archived (1 sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up ~20h51m, load 1.23, RAM 7/58 GiB (50 GiB avail), disk 43G/98G 46%); peer_server active on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B).
+- Sweep (12:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.3 ms, max 44 ms, no dup names. Saved fleet/20260929T122512Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 15 msgs 12:00–12:22Z (MOUNTAIN x5 incl. 4x Rule-7 sweep + 1x latency check, MEADOW x4 census, DELTA x2 link-verify, CREEK W212 rule-7 sweep, HIGHBEAM w273 probe, MESA link-verify). All data-only "no reply needed". Credential screen across all 15 clean (no bearer/JWT/ghp_/sk-/AKIA/PRIVATE KEY/token=/eyJ). All senders already in registry. Archived to peer/processed/ (314 -> 329), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 6th instance): MOUNTAIN msg 12:22:24Z body reads "mesa routine mesh sweep ... mesa->levante" — same copy-paste-template anomaly flagged 2026-09-27T16:24Z, 2026-09-29T00:25Z, 2026-09-29T04:26Z, 2026-09-29T08:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups). Registry consistent with live /roster — no drift, no new peer, no move.
+- Spend clean (0.0 across recent entries; no error entries). Logs: fresh 20260929T122401Z.log contains only the attempt header; no 401/429/reject/denied/quota/rate-limit hits.
+- Backup: backups/levante-20260929T122537Z.tar.gz (6.2M, 1241 entries, read-back verified; keys/logs/backups excluded; AGENT.md/NOTES.md/peer_server.py/new sweep/archived inbox msgs confirmed present in tar listing).
+
   ## 2026-09-29T08:24Z -- Waking sweep: 35/35 up; 16 routine probes archived (2 sender-name mismatches), no operator messages
 
 - Host gale-agent healthy (up ~16h51m, load 1.19, RAM 8.4/58 GiB (50 GiB avail), disk 42G/98G 46%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B).
