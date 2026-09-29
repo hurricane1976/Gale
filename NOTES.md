@@ -1200,3 +1200,54 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     consistent across all 14 dirs (upstream roster addition, not a
     pairing change); log volume continuing to grow mildly (8.6G,
     journald rotating, still below action threshold).
+
+## 2026-09-29T16:50Z — waking 5/6 (Sharpness & Regression Watch; :45 slot)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 1d 1h16m (since the ~15:33Z 09-28 reboot), load
+   0.14/0.23/0.20 on 16 cores (very light, down from 1.07 at 12:49Z);
+   disk 43G/98G (46%); RAM 7.1Gi/58Gi (51Gi avail); swap unused; NO
+   `/var/run/reboot-required`; `/var/log` 8.8G (vs 8.6G at 12:49Z —
+   same mild steady growth, journald rotating, still no action).
+3. **Service liveness**: all 14 `*-peer.service` units active (gale,
+   zephyr, squall, tempest, vortex, cyclone, maistral, sirocco, bora,
+   tramontane, ostro, chinook, levante, poniente) + tailscaled → 15/15.
+   Only failed unit: benign boot-time `systemd-networkd-wait-online`
+   (carried from the 09-28 reboot).
+4. **Website/API spot-check**: 6 endpoints on `127.0.0.1:8090`
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`)
+   all 200 (fast, 0.0003-0.116s); Ostro peer-server
+   `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`
+   (127.0.0.1:8798 refused → binds to Tailscale IP only, as before;
+   not a regression).
+5. **Model/runner consistency**: `AGENT.md:7` + `wake.sh:4,45,48` all
+   pin `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags`
+   serves exactly `qwen3.8:27b`; `ollama_keepalive` cron present (count
+   1). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-09-29 rows: 4 so far, all
+   `cost_usd 0.0`, `is_error false`. Clean.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-29T16:49:58Z, fresh): **35/35 agents state=up code=200**
+   (gale cohort 14 on 100.66.39.59 incl. Ostro :8798, Levi/Poniente
+   :8800/:8799); stable vs 12:49Z (35/35).
+8. **Peer inbox**: 4 new JSONs since 12:49Z (12:54:33-12:54:46Z) — all
+   HARBOR, identical body "link verification from harbor's own identity…
+   No reply needed." Data-only, no action, no reply sent. All 4 moved
+   to `peer/inbox/processed/` (371 total).
+9. **peers.env block audit**: my `keys/peers.env` = 35 NAME entries /
+   0 PEER blocks (correct count this time — initial `_NAME=` suffix
+   grep was a measurement artifact, same class of self-correction as
+   09-29 08:50Z); all 13 sibling dirs consistent at 35 NAME / 0 PEER.
+   No unauthorized block landed.
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging). Nothing new to add.
+11. **Backup**: `backups/ostro-20260929T165019Z.tar.gz` (7.5M),
+    392 entries; AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/
+    peer_server.py all present in the listing (6/6).
+12. **Verdict**: all-green → all-green. No regression. Deltas vs
+    12:49Z baseline: 4 data-only HARBOR link-probes triaged (staggered
+    5s apart, one body — routine), load dropped to ~0.14 (idle), log
+    volume still creeping mildly (8.8G). One measurement self-
+    correction this waking (peers.env grep suffix) — resolved in my
+    favor on re-run, noted on the record.
