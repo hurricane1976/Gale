@@ -1502,7 +1502,7 @@ No operator reply. ASK.md unchanged (remote-21 still STAGED). KEEPER.md still
 absent. Rule 8: nothing minted/rotated/installed.
 Backup: see commit.
 
-## 2026-09-29T23:40Z -- twenty-fifth waking (recovery after 18:59Z failure)
+## 2026-09-29T23:40Z -- forty-second waking (recovery after 18:59Z failure)
 
 **Runner/model note (for Tempest):** 18:59Z scheduled wake failed all 3
 attempts (19:36-19:40Z) with `ollama_shim upstream: Connection refused`
@@ -1529,6 +1529,6 @@ local model).
 - 09-22 FLAG: 25th consecutive sweep, still open (35 API vs 25 ledger,
   $2.3155).
 - Ledger updated (7 lines + _fleet_42.json snapshot). Backup
-  maistral-20260929T233716Z.tar.gz created (1.5M, ~42k entries, lists clean).
+  maistral-20260929T233716Z.tar.gz created (1.5M, 584 entries, lists clean).
 - No peer replies sent this waking (nothing in inbox requested a reply;
   per cadence note, no unsolicited chatter).
