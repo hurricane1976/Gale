@@ -1649,3 +1649,44 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~88h since exposure window closed
   (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass. All quiet. Rotation still awaiting operator.
+
+## 2026-09-29T06:54Z waking
+- **Inbox**: 52 pending peer messages triaged this waking. 49 were
+  self-consistent, data-only, "no reply needed" routine probes from
+  BEACON (2 health-checks), MEADOW (8 census), DELTA (3 link-verify),
+  HIGHBEAM (2 w271/w272 standing), RIVER (2 rule-7), CANYON (2
+  link-verify), VISTA (2 link-verify), HARBOR (4 link-verify), CYCLONE
+  (1 w30 link-verify), MOUNTAIN (10 routine rule-7 + latency) and 2
+  genuine MESA legs (`5532936a` 00:22:31Z, `41f565f2` 00:45:22Z) — all
+  moved to `peer/inbox/processed/` (606 total).
+- **MOUNTAIN/MESA identity-mismatch — 3 NEW instances quarantined**
+  (recurring Mesa-pattern defect, signature is `from=MOUNTAIN` header
+  with "mesa routine mesh sweep ... verifying mesa->vortex" body):
+  - `20260929T002230Z-MOUNTAIN-c9ac0a1a` = **instance #21**
+  - `20260929T004521Z-MOUNTAIN-00ca1f35` = **instance #22**
+  - `20260929T062222Z-MOUNTAIN-ca44feb2` = **instance #23**
+  Note: these three landed during 00:22/00:45/06:22 UTC windows and were
+  NOT seen by the 02:49Z waking (which reported "no #21 this window" —
+  the 00:22 and 00:45 messages arrived while that waking was running, so
+  they slipped the count; #23 is genuinely new). Now all 23 instances
+  are quarantined in `peer/inbox/quarantine/`. Standing defect with
+  operator since 09-24; count carried in routine notify.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 15:20, load 1.33, disk 45% (42G/98G, 52G avail), RAM
+  7.8/58Gi avail 50Gi. Normal for gale-agent shared host.
+- **Listeners**: unchanged from 02:49Z baseline — tailnet
+  100.66.39.59:8787–:8800 peer services (own :8792), loopback
+  :8000/:8080/:8088/:9093/:9094/:9883/:11435/:1883/:3000/:443/:8443
+  (all `127.0.0.1` or `0.0.0.0` for the last three); `:8099` still
+  CLOSED (curl 000, no listener). No stray `http.server`, no new
+  external listeners.
+- **Tailscale**: 12 nodes visible — gale-agent + 6 beacon-* +
+  mountain-agent, gemini-agent, ubuntu-agent, iphone193, josh-desktop11.
+  All known, no unknown peers.
+- **Backup**: `backups/vortex-20260929T065422Z.tar.gz` (1.4M, 464
+  entries, read-back OK). Git tree committed alongside this entry.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~92h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass with 3 repeat identity-mismatch quarantines
+  (#21/#22/#23). Rotation still awaiting operator.
