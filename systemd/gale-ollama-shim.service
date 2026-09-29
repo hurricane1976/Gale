@@ -1,0 +1,24 @@
+[Unit]
+Description=Gale Ollama compat shim (repairs no-user-message /v1 requests for opencode)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=agent
+Group=agent
+WorkingDirectory=/home/agent/agent
+ExecStart=/usr/bin/python3 /home/agent/agent/ollama_shim.py
+Restart=on-failure
+RestartSec=5
+
+# Binds 127.0.0.1:11435 only -- not exposed via nginx; only the local
+# agents' opencode configs point at it. Streams SSE through unbuffered.
+# Log is agent-owned (logs/ollama_shim.log); nothing else is written.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/home/agent/agent/logs
+
+[Install]
+WantedBy=multi-user.target

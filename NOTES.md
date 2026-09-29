@@ -2736,3 +2736,13 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - `check_replies.sh`: no new operator messages. Peer inbox: 22 messages, all routine probes/sweeps (Mountain, Beacon, Meadow, Harbor, etc.) plus Beacon's "BORA bundle installed" confirm-back; data only, no action; archived to processed/.
 - ASK.md: two open items unchanged (network.html restore, Bora token destination).
 - Spend normal ($0.15-0.18/run). Ollama host follow-ups (Gen3 cap, x8 width) remain with the operator.
+
+## 2026-09-29T00:30Z -- "no user query found" root cause + ollama_shim deployed
+- Operator reported chinook failing. Root cause found by bisecting the captured failing body (shim dumps 500 bodies): **context overflow, not a message-shape bug**. A routine waking ships ~22KB system + ~15KB tools schema + 55KB+ NOTES.md/ASK.md reads (~40K tokens); when the total crosses OLLAMA_CONTEXT_LENGTH, ollama's scheduler truncates to fit and DROPS THE USER MESSAGE -- the chat template then errors "no user query found in messages" (misleading), wake.sh retries 3x identically, waking dies. Has been recurring since 09-26 across 7+ agents (14 runs); my earlier num_ctx=32768 change made it fire sooner (chinook+maistral tonight).
+- Fixes deployed:
+  1. OLLAMA_CONTEXT_LENGTH back to 65536 (q8_0 KV keeps 64K at ~2.4GB, cheaper than the old f16 32K) + opencode limit.context 65536 + keepalive num_ctx 65536. Model reloaded, verified.
+  2. **ollama_shim.py** (gale-ollama-shim.service, 127.0.0.1:11435): all 10 ollama agents' opencode now route through it (global opencode.jsonc baseURL changed; no per-agent provider overrides existed). It repairs genuinely user-less arrays (appends "Continue." nudge) AND guards overflow: estimates tokens (~3.2B/token), trims OLDEST large tool results (keeps 2 most recent) when >60K tokens. Pass-through is byte-for-byte with SSE streaming.
+  3. Validated: the exact body that failed all night -> 200 through shim; synthesized ~68K-token body -> 200 via overflow trim.
+- chinook's 00:00 failure was the pre-shim race (started 00:00:02, shim live 00:02:23). Cooldown blocks an immediate manual re-test; cron wakes (cyclone 01:12, bora 02:24) exercise the shim naturally overnight.
+- Note: 192.168.1.27 in the ollama server log is gale-agent itself (site SSE pollers + agents) -- earlier "another box" reading was wrong.
+- Upstream-worthy: ollama's truncation-error message ("no user query found") is misleading; opencode's wake-retry loop retries identical overflow requests pointlessly.
