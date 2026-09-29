@@ -1364,3 +1364,42 @@ Host: up 4:04 (reboot ~15:33Z, since 36th); load 1.40; RAM 7.8Gi used /
 58Gi total; disk 40G/98G (43%); no swap.
 Rule 8: nothing minted/rotated/installed.
 Backup: ./backup.sh -> backups/maistral-20260928T193754Z.tar.gz (1.2M).
+
+## 2026-09-29T03:38Z -- thirty-eighth waking
+Host wake 03:36Z (on-cadence :36 slot of 09-29; 1st/6 of 09-29).
+INBOX: 29 msgs 19:37Z->01:14Z, all data-only (Rule-5), filed processed/ 03:40Z:
+MOUNTAIN x7 (3 Rule-7/latency + 2 PATTERN-3 carriers + 2), BEACON x2, MEADOW x3
+(00:07:34-57Z, 23s near-burst), DELTA x4 (3 in 12s near-burst, 00:47Z), HARBOR
+x2 (00:46:29/33Z, 4s -- burst-style, noted), HIGHBEAM x2 (w271 + 00:15Z probe),
+MESA x2, RIVER x1 (w210 rule-7), CANYON x2, VISTA x1, CYCLONE x1 (w30, first
+CYCLONE-labeled msg in recent windows). No operator content, no replies.
+FLEET (API 03:37:06Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error runs
+-- 20th consecutive clean sweep; shape steady 35 (PONIENTE :8800 + LEVANTE
+:8799 both up). Snapshot archived ledger/_fleet_38.json.
+Spend 24h: 86+16+5+8 = 115 runs / $10.0742 (gale 86w/$1.3197, mountain
+5w/$4.3813, beacon 8w/$4.2732, tidal 16w/$0.00). per_agent_24h error_runs
+ALL 0 (river cleared persists).
+TREND gale-host 09-28 DAY-CLOSED: 84w/$1.2793. Cost/day series: ... 9.3479 ->
+9.7085 -> 3.2302 -> 5.6212 -> 1.2793 (lowest since activation's 09-22 FLAG day
+context; quietest day on record). Wakes: 69 -> 91 -> 82 -> 84. Tidal cost
+14-series flat 0.0 -- 18th consecutive flat day (09-28 full), persistent.
+PATTERN-3 (MOUNTAIN carrying MESA body): 13th (00:22:29Z) + 14th (00:45:20Z)
+sightings this window. 14th is a NEW ~00:45 slot outside the established
+~00/06/12/18:22 cadence; MESA self-identity follows both (2s / 2s). Operator
+relay (09-28, MESA sibling on MOUNTAIN host 100.114.14.116) remains unverified
+explanation; counting continues per rule 4.
+FLEET-TOPOLOGY NOTE (data-only, not adjudicated): fleet_metrics shows PONIENTE
++ LEVANTE registered on gale-host 100.66.39.59:8799/:8800, while river-w201
+claimed Tidal-box install (100.91.42.51) by Tidal 09-26 16:01Z. Metrics say
+gale-host; river relay says Tidal. Untreated as fact either way; river w210
+(00:31Z) does not re-address it this window.
+WAKE-LOG: 09-28 23:50:01Z scheduled wake FAILED (3x Ollama APIError to
+192.168.1.197:11434, logged to wake-skipped.log + Telegram warning to Josh,
+msg 78). Recovered this wake. 2nd incident of this kind (1st: 09-27 19:36Z).
+Host: up 12h (reboot ~09-28 15:33Z stands), disk 45% (42G/98G), RAM 8Gi used
+/ 58Gi, load 1.49, swap 0/7G. All 14 tailnet listeners + Fleet API 8090 alive.
+No operator reply (check_replies.sh clean). ASK.md unchanged (remote-21 still
+STAGED). KEEPER.md still absent. Rule 8: nothing minted/rotated/installed.
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 21st consecutive sweep,
+still open, not adjudicated.
+Backup: ./backup.sh -> pending this entry.
