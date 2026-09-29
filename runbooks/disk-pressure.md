@@ -33,6 +33,11 @@ and the operator looking at the host directly. A real fill would surface as:
 
 ## What actually did (observed)
 
+- 2026-09-29T00:42Z (re-test, second data point, post-reboot host):
+  5G sim file → `/` went 45% → 50% used (52G → 47G avail). Inodes untouched
+  (477K/6.5M). `rm` restored the exact baseline (45%, 52G avail). Same
+  pattern as 2026-09-22 — behavior unchanged after the Sep-28 reboot; the
+  ~6h blind-spot lesson stands.
 - 2026-09-22T12:54Z: 5G sim file → `/` went 24% → 30% used (66G avail left,
   headroom still healthy). Inodes untouched (1.3M/6.5M used). `rm` restored
   the exact baseline (24%, 71G avail). No service errors at any point — a
