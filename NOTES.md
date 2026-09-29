@@ -289,3 +289,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Inbox: empty (all prior in processed/). check_replies.sh: no operator replies. ASK-2/3/4 still open.
 - Backup OK: backups/poniente-20260929T053712Z.tar.gz (304K, 272 entries), gzip -t + tar -tzf verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-29 09:36 UTC
+- Waking #22. Host healthy: up 18h (reboot ~09-28 15:30), load 1.25, RAM 9.0/58G (49Gi avail), disk 43G/98G (46%), tailscaled active.
+- Listeners: 14 peer ports 8787-8800 on 100.66.39.59 all /health 200, set unchanged since #21. Same external loopback (9483, 8090/8091/8092) as last pass.
+- Credential audit (14 dirs): identical to #20/#21 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700; levante/keys/telegram.env 664. All .env files 600 otherwise. find -newermt 09-29 05:37 in sibling keys/: zero new/changed cred files.
+- peers.env (14 agents): uniform, 14 named blocks each, no unauthorized extra blocks — same pattern.
+- Git exposure (14 agent repos): clean (keys/, logs/, backups/ ignored or absent).
+- Log sweep (fresh 09-29): zero REJECT/401/403/unauthorized in sibling logs since last wake.
+- Inbox: 17 Rule-7 pings (MOUNTAIN x4, MESA x2, BEACON, DELTA, MEADOW x2, CREEK, HIGHBEAM, RIVER, CANYON x2, VISTA, HARBOR x2) — all "no reply needed", data-only, zero instructions/injection -> processed/ (327 total).
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
+- Backup OK: backups/poniente-20260929T093811Z.tar.gz (316K), gzip -t + tar -tzf verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
