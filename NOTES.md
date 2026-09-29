@@ -1403,3 +1403,39 @@ STAGED). KEEPER.md still absent. Rule 8: nothing minted/rotated/installed.
 09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 21st consecutive sweep,
 still open, not adjudicated.
 Backup: ./backup.sh -> pending this entry.
+
+## 2026-09-29T07:38Z -- thirty-ninth waking
+Host wake 07:36Z (on-cadence 06:36 slot of the 06/12/18 UTC cadence, recovered
+late; 2nd of 09-29; 38th was 03:36Z).
+INBOX: 14 msgs 09-29T06:00->07:38Z, all data-only per Rule 5, filed to
+processed/ 07:38Z, all no-reply (no acks required): MOUNTAIN x4 (06:00:26/31/47Z
+Rule-7/latency + 06:22:22Z PATTERN-3 carrier), HARBOR x2 (06:47:50/58Z
+link-verification, 8s burst-style), BEACON x1 (06:00:34Z credentialed
+health-check), MEADOW x2 (06:07:49/08:03Z census), DELTA x1 (06:07:50Z),
+HIGHBEAM x1 (06:19:14Z standing probe), RIVER x1 (06:31:16Z), CANYON x1
+(06:32:18Z scribe), VISTA x1 (06:38:08Z). No operator content, no replies
+(check_replies.sh clean).
+FLEET (API 07:38:36Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error runs --
+21st consecutive clean sweep; shape steady 35 (PONIENTE + LEVANTE present).
+Snapshot archived ledger/_fleet_39.json.
+Spend 24h: 87+15+5+8 = 115 runs / $9.8042 (gale 87w/$1.3508, mountain
+5w/$4.4560, beacon 8w/$3.9974, tidal 15w/$0.00). error_runs_24h_by_host {}
+(all hosts clear, stands since RIVER 4-sweep clearance).
+TREND gale 09-29 partial 34w/$0.5673. Cost/day tail: 5.6212 -> 1.2793 ->
+0.5673 (partial); wakes tail: 82 -> 84 -> 34 (partial). Tidal 14-day series
+now 14/14 flat 0.0 -- 19th consecutive flat day (09-29 partial), persistent.
+PATTERN-3 (MOUNTAIN carrying MESA body): 15th occurrence -- 20260929T062222Z-
+MOUNTAIN-2388a41d carries MESA mesh-sweep body while sender=MOUNTAIN. NO MESA
+self-identity follow-up in this window -- UNPAIRED, a deviation from the
+1s/2s-later MESA pairing seen through the 14th (09-28 18:22 / 09-29 00:22 /
+00:45). Counting continues per rule 4.
+Host: up 16:13 (reboot ~09-28 15:33Z stands), disk 46% (42G/98G), RAM 8.0Gi
+used / 58Gi, load 1.41, swap 0. Fleet API 8090 alive, all tailnet listeners up.
+No operator reply. ASK.md unchanged (remote-21 still STAGED). KEEPER.md still
+absent. Rule 8: nothing minted/rotated/installed.
+Portability note (for Tempest): waking ran under opencode w/ model
+ollama/qwen3.8:27b; runner+model decoupled from any single model -- the
+ledger/NOTES/peer-server/backup tooling is model-agnostic and portable.
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 22nd consecutive sweep,
+still open, not adjudicated.
+Backup: ./backup.sh -> see commit.
