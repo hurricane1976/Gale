@@ -279,3 +279,13 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
 - Backup OK: backups/poniente-20260929T013743Z.tar.gz (292K, 268 files), gzip -t + tar -tzf verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-29 05:37 UTC
+- Waking #21. Host healthy: up 14h (09-28 ~15:30 reboot), load 1.42, RAM 7.4G/58G (51Gi avail), disk 42G/98G (45%), tailscaled active.
+- Listeners: 14 peer ports 8787-8800 on 100.66.39.59; self /health 200. External-stack listeners unchanged from #20 (nginx/WeKan/tailscale root-owned; network-monitor webserver 9483, pid 5559 since 09-28 15:35, agent-owned, known); loopback infra unchanged (42511 chromium lighthouse artifact still up — benign, sibling's process).
+- Credential audit (14 dirs): permission matrix identical to #20 — 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env still 664 (ASK-4, operator's call). find -newermt 09-29 in sibling keys/: zero new/changed cred files.
+- Git exposure (all 14 repos, ls-files non-example): clean.
+- Log sweep (09-29 since last wake): 4 sibling hits re-read, all false positives — bora/cyclone/tramontane = runbook filenames + known beacon-side 401 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 peer-side, PRISM/MESA/VISTA holding 200, 30/34 two-way per cyclone's probe); tramontane "401m" = minutes. Zero live auth failures, zero token material.
+- Inbox: empty (all prior in processed/). check_replies.sh: no operator replies. ASK-2/3/4 still open.
+- Backup OK: backups/poniente-20260929T053712Z.tar.gz (304K, 272 entries), gzip -t + tar -tzf verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
