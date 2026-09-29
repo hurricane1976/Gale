@@ -117,7 +117,9 @@ _remote_cache = {}
 # instead of psutil calls made here. LAN-only today (private 192.168.x.x),
 # not tailnet -- reachable because gale-agent itself has a LAN NIC (eno1).
 FULL_TARGETS = [
-    {"name": "josh-desktop11", "addr": "192.168.1.197:8792", "platform": "windows"},
+    # josh-desktop11 (Windows) died and was reimaged as josh-linux (Zorin OS,
+    # same hardware/IP, same 4090) -- see remote/linux-desktop/collector.py
+    {"name": "josh-linux", "addr": "192.168.1.197:8792", "platform": "linux-desktop"},
 ]
 FULL_TARGET_TIMEOUT_S = 3.0
 

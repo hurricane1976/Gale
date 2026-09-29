@@ -1,0 +1,14 @@
+[Unit]
+Description=Gale ops dashboard stats collector (josh-linux)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/gale-collector/collector.py
+Restart=always
+RestartSec=5
+# root so listening-port process attribution and ufw status work
+User=root
+
+[Install]
+WantedBy=multi-user.target
