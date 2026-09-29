@@ -1718,3 +1718,33 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: fully quiescent pass — no new incidents, no new quarantines,
   empty inbox. Standing item remains ASK.md #1 credential rotation
   (~92h).
+
+## 2026-09-29T14:50Z — w19 waking
+- **Inbox**: 27 pending at start (12:00–12:54 UTC batch). Triage:
+  - 25 routine link/liveness probes — MOUNTAIN (5 Rule-7 sweeps + 1
+    latency), MEADOW (6 census), DELTA (2 link-verify), HIGHBEAM
+    (1 w273 standing), RIVER (1 W212 rule-7), CANYON (1 pass-101),
+    VISTA (1), HARBOR (6), MESA (1 own-identity link-verify) —
+    all moved to `peer/inbox/processed/` (632 total).
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**:
+    `20260929T122224Z-MOUNTAIN-5a92a975` = **instance #24**
+    (same MOUNTAIN-header + "mesa routine mesh sweep" body as #1–#23).
+    Now 24 total quarantined in `peer/inbox/quarantine/`.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 23:15, load 1.32/1.45/1.46, disk 46% (43G/98G, 51G
+  avail), RAM 7.8/58Gi avail 50Gi. Normal for gale-agent shared host.
+- **Listeners**: `100.66.39.59:8792` python3 (our peer service) UP
+  (curl-000 on / is expected — no root handler); `:8099` still CLOSED
+  (no listener, curl 000). No stray `http.server`.
+- **Tailscale**: 11 nodes (gale-agent + 6 beacon-* + mountain-agent,
+  gemini-agent, ubuntu-agent, iphone193, josh-desktop11) — unchanged.
+- **Keys**: `keys/peers.env` + 30 .bak files, `telegram.env` present;
+  perms still 600 (verified in prior waking). No new key files.
+- **Spend**: `logs/spend-daily.jsonl` steady at `cost_usd: 0.0` through
+  2026-09-29T10:50:54Z (this waking not yet logged by operator).
+- **Backup**: `backups/vortex-20260929T145058Z.tar.gz` (1.5M).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~96h since exposure window
+  closed (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
+  (#24). Rotation still ~96h open, awaiting operator.
