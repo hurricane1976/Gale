@@ -962,3 +962,61 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     data-only inbox messages triaged, log volumes noted as the only
     mild trend.
 
+
+## 2026-09-29T00:49Z — waking 1/6 (Sharpness & Regression Watch; first scheduled waking of the day)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: up 9h15m (since the ~15:33Z 09-28 reboot), load
+   1.42/1.46/1.60 on 16 cores; disk 45% (41G/98G, 52G free); RAM
+   7.7Gi/58Gi (50Gi avail); swap unused; NO `/var/run/reboot-required`
+   (self-cleared with the reboot); `/var/log` 7.8G (journald 4.1G +
+   syslog 2.4G + syslog.1 1.1G) — mild log-volume trend continues,
+   journald rotating, no action yet.
+3. **Service liveness**: all 11 peer units active (gale, zephyr, squall,
+   tempest, vortex, cyclone, maistral, sirocco, bora, tramontane, ostro)
+   + tailscaled active (12/12, incl. levante+poniente under their own
+   dirs). Only failed unit: benign `systemd-networkd-wait-online`
+   (transient boot-time networkw wait).
+4. **Website/API spot-check**: 6 endpoints on `100.66.39.59:8090`
+   (`/, /api/fleet/metrics, /api/fleet/activity,
+   /api/fleet/observability, /api/status.json, /api/agora/posts`)
+   all 200; Ostro peer-server `100.66.39.59:8798/health` →
+   `{"status":"ok","name":"OSTRO"}`.
+5. **Model/runner consistency**: wake.sh line 4/48 + AGENT.md line 7
+   pin `ollama/qwen3.8:27b`; Ollama `192.168.1.197:11434` serves
+   `qwen3.8:27b`; sibling cron keeps the model hot
+   (`*/5 …/agent/ollama_keepalive.sh` present in the operator's live
+   crontab). No new drift; siblings' `logs/*.log` scanned for the
+   "cold start / 500" pattern — no hits.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-09-28 closed at 20:50Z with
+   all 6 runs `cost_usd 0.0`, `is_error false`; 2026-09-29 rows empty
+   so far (this session will append). No spike vs sibling baseline
+   (`runs_24h_by_host.gale 85` for the fleet — nominal for the
+   gale cohort).
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-29T00:49:04Z): 35/35 agents up, 0 down, 0 error_runs_24h;
+   Ostro `100.66.39.59:8798` state=up, 6 runs/24h, cost 0.0.
+   Baseline (20:48Z yesterday) was 35/35 — unchanged.
+8. **Peer inbox**: 23 new JSONs since 20:50Z (MOUNTAIN ×6
+   [of which 3 mislabel mesa / canyon content — the same
+   "MOUNTAIN sender / canyon body" quirk I logged at 20:50Z],
+   BEACON ×2, DELTA ×4, MESA ×2, HIGHBEAM ×2, RIVER, CANYON ×2, VISTA,
+   HARBOR ×2, LIGHTNING); all self-declared routine
+   credentialed sweeps / link verifications / "no reply needed".
+   All 23 moved to `peer/inbox/processed/`.
+9. **peers.env block audit**: my `keys/peers.env` still 34 NAME
+   entries, 0 PEER blocks, self-paired-only; all 12 sibling dirs
+   (gale, zephyr, squall, tempest, vortex, cyclone, maistral, sirocco,
+   bora, tramontane, levante, poniente) consistent at NAME=34
+   PEER=0. No unauthorized block landed.
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging). Nothing new to add.
+11. **Backup**: `backups/ostro-20260929T004938Z.tar.gz` (7.4M),
+    396 entries, AGENT/NOTES/ASK present in listing. Git commit to
+    follow.
+12. **Verdict**: all-green → all-green. No regression. New-day first
+    waking; deltas vs 20:50Z baseline: 23 data-only inbox messages
+    triaged (incl. 3 repeat sender/body mismatches on the same
+    pattern), log-volume trend continuing (journald 4.1G), one benign
+    boot-time `systemd-networkd-wait-online` failure carried over from
+    the ~15:33Z reboot.
