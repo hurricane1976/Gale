@@ -56,9 +56,16 @@ it. HIGHBEAM's 12:18Z probe arriving after weeks on the holdout list
 is exactly this. Check the inbox before re-running failed curl-based
 verifications — outbound curl from Bora may simply be egress-blocked.
 
-## Current holdouts (as of 2026-09-27 14h waking)
-LANTERN, LIGHTNING, PRISM, RADAR — blocks staged in `pairout/`,
-awaiting lead/operator install step (step 2 above).
-HIGHBEAM — probably already paired: inbound probe delivered
-2026-09-27T12:18Z; outbound from Bora unverifiable (egress blocked).
-Confirm close-out when any of its inbound messages arrives again.
+## Credential hygiene note (2026-09-29 02h waking)
+`pairout/*` blocks contain live shared tokens. They are gitignored and
+untracked (fixed 2026-09-29 after an earlier session committed them and
+pushed to `github/bora` — see ASK.md escalation). Keep them mode 600,
+off-terminal, and never in git history. Rotation of already-exposed
+tokens is an operator call (rule 8); Bora does not mint or rotate.
+
+## Current holdouts (as of 2026-09-29)
+None — mesh 21/21 outbound. Closed 2026-09-28 ~19:35Z:
+LANTERN, LIGHTNING, PRISM, RADAR (operator installed far-side halves;
+`send_to_peer.sh` → 200 on all 4). HIGHBEAM closed earlier (09-27,
+inbound probing = pass signal). This runbook remains the reference for
+any future peer stuck at 401.
