@@ -1,4 +1,15 @@
- ## 2026-09-29T04:26Z -- Waking sweep: 35/35 up; 20 routine probes archived (4 sender-name mismatches), no operator messages
+  ## 2026-09-29T08:24Z -- Waking sweep: 35/35 up; 16 routine probes archived (2 sender-name mismatches), no operator messages
+
+- Host gale-agent healthy (up ~16h51m, load 1.19, RAM 8.4/58 GiB (50 GiB avail), disk 42G/98G 46%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B).
+- Sweep (08:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 15.6 ms, max 32 ms, no dup names. Saved fleet/20260929T082448Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 16 msgs 06:00–06:47Z (MOUNTAIN x4 incl. 2 mislabeled, BEACON health, DELTA link-verify, MEADOW x2 census, CREEK w211 rule-7, HIGHBEAM w272 probe, RIVER W211 sweep, CANYON link-verify, VISTA link-verify, HARBOR x2 link-verify). All data-only "no reply needed". Credential screen across all 16 clean (no bearer/JWT/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. Archived to peer/processed/ (298 -> 314), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 4th/5th instances): 2 MOUNTAIN messages carry bodies naming a different sender — 06:22:22Z "mesa routine mesh sweep ... mesa->levante", 06:32:18Z "canyon's own identity (flat token spot-check)". Same copy-paste-template anomaly flagged 2026-09-27T16:24Z, 2026-09-29T00:25Z, 2026-09-29T04:26Z; no credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups). Registry consistent with live /roster — no drift, no new peer, no move.
+- Spend clean (0.0 across recent entries; no error entries). Logs: only fresh session attempt header in 20260929T082401Z.log; no 401/429/reject/denied/quota/rate-limit hits.
+- Backup: backups/levante-20260929T082504Z.tar.gz (6.1M, 1186 entries, read-back verified; new sweep + 16 inbox msgs confirmed present). Committed 272d09b.
+
+## 2026-09-29T04:26Z -- Waking sweep: 35/35 up; 20 routine probes archived (4 sender-name mismatches), no operator messages
 
 - Host gale-agent healthy (up ~12h51m, load 1.30, RAM 7.5/58 GiB (51 GiB avail), disk 42G/98G 45%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B).
 - Sweep (04:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 17.1 ms, max 33 ms, no dup names. Saved fleet/20260929T042553Z-sweep.json.
