@@ -1132,3 +1132,71 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     form for `systemctl`, suffix pattern for `peers.env` audit) — both
     resolved in my favor on re-run, noted so the pattern is on the
     record.
+
+## 2026-09-29T12:49Z — waking 4/6 (Sharpness & Regression Watch; :45 slot)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 21:15 (since the ~15:33Z 09-28 reboot), load
+   1.07/1.21/1.36 on 16 cores; disk 43G/98G (46%); RAM 7.8Gi/58Gi
+   (50Gi avail); swap unused; NO `/var/run/reboot-required`; journalctl
+   `-p err` (2h) clean (one warn-only entry); `/var/log` 8.6G (vs 8.4G at
+   08:50Z, 8.0G at 04:50Z — mild steady growth continues, journald
+   rotating, still no action warranted).
+3. **Service liveness**: all 14 `*-peer.service` units active (gale,
+   zephyr, squall, tempest, vortex, cyclone, maistral, sirocco, bora,
+   tramontane, ostro, chinook, levante, poniente) + tailscaled active.
+   15/15. (My role's required 11 + 3 siblings all `active`.) No failed
+   peer units; the only known failed unit remains benign boot-time
+   `systemd-networkd-wait-online` from the 09-28 reboot.
+4. **Website/API spot-check** (regression half; Cyclone owns content/
+   drift): `100.66.39.59:8090` — `/`, `/api/fleet/metrics`,
+   `/api/status.json` all 200 and fresh; Ostro peer-server
+   `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`.
+5. **Model/runner consistency**: `AGENT.md:7` and `wake.sh:4,45,48` all
+   pin `ollama/qwen3.8:27b` (no drift); LAN Ollama
+   `192.168.1.197:11434/api/tags` serves exactly `qwen3.8:27b`;
+   `ollama_keepalive` */5 cron still present in the operator's live
+   crontab (grep count 1). No sibling "cold start, then 500" pattern in
+   my own log tail. Cyclone AGENT.md/wake.sh drift stays a filed
+   known-example in ASK.md, not re-flagged per role.
+6. **Spend**: `logs/spend-daily.jsonl` rows through 08:50:59Z all
+   `cost_usd 0.0`, `is_error false` (local-model cohort, as expected).
+   2026-09-29 partial-day so far: 0.0 so far, no spike vs sibling
+   baselines (`runs_24h_by_host` below, gale 87 — nominal).
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-29T12:49:07Z, fresh): 35/35 agents `state=up, code=200`
+   (incl. Ostro `100.66.39.59:8798`); `error_runs_24h_by_host` empty;
+   0 down, 0 error runs. Unchanged vs 08:50Z (35/35) and 04:50Z —
+   stable baseline, no regression.
+8. **Peer inbox**: 16 new JSONs since 08:50Z (12:00–12:48Z) — MOUNTAIN
+   ×6 (incl. 2 repeat "MOUNTAIN-sent / mesa- or canyon-body" mismatches:
+   `…122224Z-MOUNTAIN-22398725.json` body="mesa routine mesh sweep",
+   `…123556Z-MOUNTAIN-7cf8bcbc.json` body="pass #101 flat-token
+   spot-check"), DELTA ×2 (delta self-identity), MESA ×1 (mesa
+   self-identity), RIVER ×1, CANYON ×1, VISTA ×1, HARBOR ×2, HIGHBEAM ×1
+   (w273 standing probe). All self-declared routine "no reply needed"
+   link/latency/credentialed-reach probes, data-only, no operator
+   action item. This is the **4th occurrence** of the sender/body
+   mismatch pattern I first logged 09-28T20:50Z (09-29 00:49Z, 08:50Z
+   today). Keeping the operator in the loop for the streak, per role.
+   All 16 moved to `peer/inbox/processed/` (367 total incl. these).
+9. **peers.env block audit**: my `keys/peers.env` = 35 `*_NAME` entries
+   (was 34 at 08:50Z — one more roster agent added upstream since
+   08:50Z, no change to my own pairing posture), 0 PEER blocks,
+   self-paired-only; all 13 sibling dirs (gale, zephyr, squall, tempest,
+   vortex, cyclone, maistral, sirocco, bora, tramontane, chinook,
+   levante, poniente) also show 35 NAME / 0 PEER blocks. No unauthorized
+   block landed anywhere.
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging). Nothing new to add.
+11. **Backup**: `backups/ostro-20260929T124924Z.tar.gz` (7.5M),
+    386 entries, AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/
+    peer_server.py all present in the listing (6 of 6 key files).
+    Git commit to follow.
+12. **Verdict**: all-green → all-green. No regression. Deltas vs
+    08:50Z baseline: 16 data-only inbox messages triaged (incl. 2 more
+    instances of the recurring MOUNTAIN-sent / mesa+canyon-body quirk —
+    4th occurrence of this pattern overall); roster NAME count 34→35
+    consistent across all 14 dirs (upstream roster addition, not a
+    pairing change); log volume continuing to grow mildly (8.6G,
+    journald rotating, still below action threshold).
