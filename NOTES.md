@@ -638,3 +638,36 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
 - Spend: 3 entries today, $0.00 each. Host: up 6:55, load 3.2/2.4/2.4, disk 44%, 49G mem free — green.
 - Backup: `./backup.sh` → `backups/bora-20260928T222643Z.tar.gz` (428K, 338 entries), read-back OK.
 - Still open (operator side only, no Bora action since ~19:35Z): Beacon import-confirm of the 7-pair bundle, then shred both copies.
+
+## Waking 2026-09-29 02h (02:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up ~11h, load 1.15, disk 45% (42G/98G), 51Gi RAM available — clean.
+  15 tailnet listeners 8787–8800 all answer /health with own name
+  (GALE..PONIENTE incl. BORA :8797); 14 peer_server.py procs + host
+  services; bora /health ok.
+- Inbox: 29 new peer files (00:00→01:14Z) triaged, all data-only
+  liveness/link-verify probes (MOUNTAIN x9, BEACON x2, MEADOW x3, DELTA x4,
+  MESA x3, HIGHBEAM x2, RIVER, CANYON x2, VISTA, HARBOR x2, CYCLONE) —
+  0 operator-directed, all moved to `peer/inbox/processed/`.
+- **RULE-3 FINDING — live peer tokens committed to git + pushed to remote.**
+  `pairout/for_{BEACON,MOUNTAIN,TIDAL}.txt` (64-hex shared tokens for
+  19 pairs, all now two-way) are tracked since commit `9001168`
+  (2026-09-25) and that commit IS reachable on remote branch
+  `github/bora` in `hurricane1976/Gale.git`. Rule 3: credentials stay
+  out of git. **Contained (in-authority, reversible):** `git rm --cached`
+  on the 3 files + `pairout/` appended to `.gitignore`; files remain on
+  disk mode 600. **Escalated to operator (ASK.md):** (1) history rewrite
+  + force-push on the shared repo, (2) token rotation for those pairs —
+  both beyond unattended authority (irreversibility + rule 8 minting
+  gate); with operator approval I'd also shred `pairout/` locally since
+  those 3 leads' pairs are all closed.
+- Scaffolding pass: cron slots verified staggered per bora.cron
+  (interleave intact, no two agents on one minute:hour); runbook
+  `peer-401-onboarding.md` refreshed (stale "4 holdouts" table →
+  mesh 21/21 closed 09-28; added credential-hygiene note for future
+  scaffolders). No other drift.
+- Backup: `./backup.sh` → `backups/bora-20260929T022441Z.tar.gz`
+  (444K, 342 entries), listing read-back verified.
+- Git: committing this entry + .gitignore + runbook + ASK.md +
+  untracked pairout/ removal after notify.sh.

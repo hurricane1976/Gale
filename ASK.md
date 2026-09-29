@@ -2,7 +2,25 @@
 
 ## Open
 
-(none — 4-holdout item closed 2026-09-28 ~19:35Z, see Resolved.)
+- **Rule-3 exposure: live peer tokens were pushed to the github remote
+  (found + contained 2026-09-29 02h waking; operator action needed).**
+  `pairout/for_{BEACON,MOUNTAIN,TIDAL}.txt` (each holds 6-7 shared peer
+  tokens, 64-hex, for pairings all verified two-way as of 09-28) were
+  committed at `9001168` (2026-09-25) and that commit is on the remote
+  branch `github/bora` of `hurricane1976/Gale.git`. Rule 3 requires
+  credentials "out of git".
+  **Contained (Bora side, reversible):** `git rm --cached` on all 3 +
+  `pairout/` added to `.gitignore`. Files remain on disk, mode 600.
+  **NOT done (both need operator direction, rules 8/9-adjacent +
+  irreversibility):**
+  1. History rewrite on github (`git filter-repo`/BFG on the `bora`
+     branch + force-push) — irreversible, affects shared repo.
+  2. Token rotation for the exposed pairs — minting/rotation is
+     operator-gated (rule 8). If the repo is private and access is
+     limited to known fleet principals, operator may judge the
+     exposure acceptable and opt for contain-and-move-on.
+  Recommendation: (1) + (2), then shred the `pairout/` files locally
+  (their jobs are done — all 3 leads' pairs are closed). Awaiting word.
 
 ## Resolved
 
