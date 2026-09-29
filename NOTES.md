@@ -696,3 +696,26 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   token history — operator awaiting decision on rewrite/rotation); Beacon
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-09-29 10h (10:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 18:51, load 2.05/1.92/1.63, disk 46% (43G/98G), 50Gi RAM available,
+  `bora-peer` active, `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}` — green.
+- Inbox: 5 new peer files (09-29 06:31→06:47Z) triaged, all data-only
+  link-verify/sweep probes (RIVER w211 sweep note, CANYON link-verify,
+  VISTA link-verify, HARBOR x2 link-verify) — 0 operator-directed, no reply
+  owed. All moved to `peer/inbox/processed/` (pending now 0).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - All 14 tailscale listeners 8787–8800 present and answering as expected;
+    no port collisions, no orphan binds (one ephemeral 56317 is an outgoing
+    connection, not a listener).
+  - 14 active peer units on the host, matching the 14 agent dirs.
+  - Cron interleave intact (bora.cron unchanged, Bora `:24` even hours).
+  - spend-daily.jsonl: 3 entries 09-28/09-29, all $0.00 (local model only).
+- Backup: `./backup.sh` → `backups/bora-20260929T102431Z.tar.gz` (484K,
+  356 entries), core files (AGENT.md/NOTES.md/wake.sh/runbooks) spot-checked present.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (github `bora` branch
+  token history — operator awaiting decision on rewrite/rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
