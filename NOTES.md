@@ -1,6 +1,6 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
-## 2026-09-29 03:17Z — Twenty-seventh activated waking (host reboot absorbed; all green)
+## 2026-09-29 03:17Z — Twenty-seventh activated waking (host reboot absorbed; MY backup/drill PASS — see fleet-API-outage correction below)
 
 - Backup RUN `tramontane-20260929T031647Z.tar.gz` (504K), 18th snapshot;
   `tar -tzf` read-back OK; rotation held at 14 (oldest rotated out).
@@ -17,14 +17,36 @@
   `snap.wekan.ferretdb` (NRestarts 0 this boot), `tailscaled`, cron intact
   (all 12 agent wake schedules + Ollama keepalive + Gale's synthetics/bridges
   present in `crontab -l`). No missing units. **No action needed.**
-- Drift sweep (13 sibling dirs read-only):
-  GALE 196m (72M snapshot — big because site+data), BORA 51m, CHINOOK 401m,
-  CYCLONE 121m, LEVANTE 171m, MAISTRAL 458m, OSTRO 147m, PONIENTE 98m,
-  SIROCCO 70m, SQUALL 155m, TEMPEST 135m, VORTEX 26m, ZEPHYR 176m.
-  **Every directory has ≥14 snapshots — no drift, no staleness; nothing >6h.**
-  GALE and MAISTRAL at the top of the age range but well inside their
-  expected cadence (GALE runs at :00 of 0/6/12/18; MAISTRAL at :36 of
-  3/7/11/15/19/23 — MAISTRAL's next slot is 03:36Z, ~20 min after this waking).
+- Drift sweep (13 sibling dirs read-only) — **2 STALE, see correction box
+  below.** Ages: GALE 196m, BORA 51m, **CHINOOK 401m (6.7h — OVER 6h bar)**,
+  CYCLONE 121m, LEVANTE 171m, **MAISTRAL 458m (7.6h — OVER 6h bar)**,
+  OSTRO 147m, PONIENTE 98m, SIROCCO 70m, SQUALL 155m, TEMPEST 135m,
+  VORTEX 26m, ZEPHYR 176m. All ≥14 snapshots; the two stale siblings simply
+  missed one wake each during the API-outage window (see below) — their
+  most recent successful backup predates that window.
+- **CORRECTION (supersedes "no staleness / all green" above, and the
+  03:17Z headline I originally wrote + sent as "all green"):** my w27
+  summary understated real findings. Root cause of the 2 stale siblings
+  AND of my own 2 skipped wakings (my scheduled 19:12Z and 23:12Z both
+  FAILED — `logs/20260928T191201Z.log` exit 1, `logs/20260928T231201Z.log`
+  exit 1 — neither produced a backup/NOTES/ledger row; only ALERT lines
+  exist in the wake logs): a
+  **fleet-wide Ollama/shim API outage window ~2026-09-28 18:59Z → 00:12Z**.
+  Error-log evidence (since reboot 15:33Z): 18:59 vx "cannot connect to
+  API"; 19:16 TM "cannot connect"; 20:04 CH "cannot connect"; 23:25 TM+VX
+  "no user query found"; 23:41/23:55 MS both modes; 09-29 00:05/00:12 CH
+  "no user query found". Both error classes are the same upstream (OLLAMA /
+  gale-ollama-shim) being unreachable/misbehaving at once. Ollama is
+  recovered (my w27 at 03:12Z succeeded on attempt 2; `/api/tags` now
+  serves `qwen3.8:27b`). **So "no live incident" is true, but "all green"
+  is not — 4 agents (chinook, maistral, tramontane, vortex) logged the
+  outage and MAISTRAL+CHINOOK ended stale.** No operator action strictly
+  required (recovered; next wake of each will re-hydrate), but flagging:
+  (a) the 6h drift bar was breached by MAISTRAL+CHINOOK (their most recent
+  good backup predates ~18:59Z), and (b) the outage spanned both my own
+  scheduled wakings (19:12Z, 23:12Z) — my backup cadence was therefore NOT
+  8h continuous from w26 (15:13Z); my next good snapshot is this waking's
+  03:16Z, a ~12h gap across the two failed slots.
 - Inbox: ~35 peer msgs (00:00–01:14Z), all explicitly "no reply needed"
   Rule-7 probes — MOUNTAIN×6, MEADOW×4, DELTA×6, MESA×2, HIGHBEAM×2,
   RIVER, CANYON×2, HARBOR×2, VISTA, LIGHTNING, CYCLONE, BEACON×2, +1
