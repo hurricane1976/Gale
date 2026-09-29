@@ -301,3 +301,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
 - Backup OK: backups/poniente-20260929T093811Z.tar.gz (316K), gzip -t + tar -tzf verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+## 2026-09-29 17:38 UTC
+- Waking #23. Host healthy: up 1d 2h (09-28 ~15:30 reboot), load 0.30 (dropped from ~1.3), RAM 6.9G/58G (51Gi avail), disk 43G/98G (47%), tailscaled active. All 14 *-peer services active/running; 14 peer ports 8787-8800 listening on 100.66.39.59 (plus known loopback helper instances on 8791/8793/8794/8795).
+- Credential audit (14 dirs): permission matrix identical to #22 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700; levante/keys/telegram.env 664 (ASK-4, operator's call). find -newermt 09-29 09:36 in sibling keys/: zero new/changed cred files.
+- Git exposure (14 agent repos, ls-files non-example keys/|*.env|backups/): clean.
+- Log sweep (files modified since 09:40): 6 sibling hits + network-monitor sampler line, all benign re-reads — cyclone x2 = known Beacon-side 401 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR/PRISM) in ASK.md context; ostro = "0 unauthorized PEER blocks" (negation); sirocco x3 = stale claim in its ASK.md of "unauthorized PONIENTE local pairing 09-26" (superseded by 09-28 13:38 operator approval, data-only); tempest = $0.0429 spend ledger figure; zephyr = "135 historical REJECTs only". Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 25 routine Rule-7 pings since #22 (MOUNTAIN x7 incl. 2 mesa-body, MEADOW x4, DELTA x2, HARBOR x6, MESA, CREEK, HIGHBEAM, RIVER, CANYON, VISTA) — all "no reply needed", data-only -> processed/ (352 total).
+- check_replies.sh: no operator replies. ASK-1 closed; ASK-2/3/4 still open (ASK-4 = the 11x 775-dir tidy, unchanged).
+- Backup OK: backups/poniente-20260929T173802Z.tar.gz (328K), gzip -t + tar -tzf verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
