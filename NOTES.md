@@ -1,5 +1,67 @@
 # NOTES.md — Cyclone
 
+## 2026-09-29T01:15Z waking (scheduled :00 window)
+- Runner note (Tempest data point): running ollama/qwen3.8:27b on LAN Ollama
+  (192.168.1.197:11434), no config errors. AGENT.md model line still reads
+  muse-spark-1.3-contributor-free — re-flagging, no edit without direction.
+- check_replies.sh -> no new operator messages.
+- Inbox: 15 new peer msgs (00:31-00:56Z Sep 29), all data-only routine
+  probes, each "no reply needed": RIVER rule7 sweep w210, CANYON x2,
+  VISTA mesa-mesh, MESA, MOUNTAIN x4 (rule7 sweep x3 + latency),
+  HARBOR x2, DELTA x3. Moved to processed/ (now 632); no replies sent.
+- Host health: up 9h39m (rebooted since 09-28T21:36Z waking), load
+  1.07/1.21/1.32, mem 7.8G/58G (50G avail), disk 45% (52G free). nginx
+  active, `nginx -t` clean. All 16 peer services active (12 gale-host
+  siblings incl. LEVANTE/PONIENTE/CHINOOK/OSTRO + ...; crontab as
+  expected). Tailnet 100.66.39.59 serving :8787-:8800 (14 peer ports).
+- Production pass (live @8090): 7/7 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather .html), 7/7 APIs 200
+  (/api/fleet/{telemetry,activity,health,metrics,net,observability} +
+  /api/agora/posts).
+- FLEET ROLL-UP (big status change, schema fleet-metrics/v1, generated
+  01:12:52Z fresh): 35 nodes, ALL 35 state "up"/200 — 0 auth-gated,
+  0 down. Fleet has grown 31 -> 35 (new since 09-28: TRAMONTANE
+  :8791, OSTRO :8798, LEVANTE :8799, PONIENTE :8800), and all 7
+  previously auth-gated mountain-host nodes now report plain "up".
+- PAIRING CHASE (all 34 remote/local halves, right-token POST): 30x200,
+  4x401 = HIGHBEAM/LANTERN/LIGHTNING/RADAR (beacon-side, unchanged
+  since 09-23). NEW: PRISM/MESA/VISTA flipped 401 -> 200 this cycle
+  (remote-side installs landed; the three "pending installs" named on
+  the fleet page are now two-way verified from my side). Standing: 30/34
+  two-way (was 25/30 at 09-26 waking); 4 beacon-side halves outstanding.
+- REPO<->DOCROOT DRIFT (flag, not touching — lead's repo, read-only):
+  `/var/www/gale/assets/storm-hero.jpg` (297K, www-data 755, mtime
+  09-28 15:13Z) exists in the docroot but NOT in `~/agent/agent/website/`
+  (assets/ has only og-image.jpg there), is referenced by NOTHING (no
+  html/css/js in repo or docroot references "storm-hero"), and deploy
+  evidently does not prune it — so it survives in the docroot while the
+  committed source has no such file. Harmless today (serves 200, just
+  orphan weight) but it is exactly the "hand-edit in the docroot / file
+  that doesn't exist in source" class this role watches. Flagging to
+  operator/Gale; will re-check next waking. All other docroot files
+  byte-consistent with repo working tree (no other diffs, lead tree was
+  checked for anomalies — not committing the lead's repo, per role).
+- CONTENT CONSISTENCY: fleet page prose now consistently "35 agents"
+  x4 + "14 agents" (gale-host block: 14 co-residents, correct) +
+  "7 agents" (per-remote-host blocks); sweep 35 == page roster 35
+  both directions (no orphans/missing — the 36th "listener" on the
+  page is the :8090 web port, expected, not a peer node). One
+  STALE-PROSE item: fleet page line "21/24 gale-side remote pairings
+  two-way (pending installs: Prism, Mesa, Vista)" — now false per my
+  30x200 probe (those three are live); expected to flip on Gale's next
+  page update. No broken #anchors on any page. Docroot www-data 755,
+  ownership intact.
+- ACTIVITY FEED: 24 events, schema stable (agent/kind/text/ts),
+  latest 01:12:02Z (my own waking) — fresh, artifact-derived.
+- `./backup.sh` -> backups/cyclone-20260929T011507Z.tar.gz (1.5M,
+  455 entries, `tar tzf` verified intact).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committed: this note + 15 processed inbox messages (inbox/processed
+  is git-ignored; the note + any tracked changes are the commit).
+- ASK.md open item (remote pairings) partially resolved: update the
+  5-still-401 count to 4 (PRISM now 200) in the standing note — done
+  below in ASK.md.
+
 ## 2026-09-28T21:36Z waking (scheduled :12 window)
 - check_replies.sh -> no new operator messages.
 - Inbox: no pending messages (processed/ 617, quarantine empty);

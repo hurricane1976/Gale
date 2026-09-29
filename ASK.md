@@ -7,12 +7,13 @@
   per-cluster install scripts generated at
   `/home/agent/agent/peer/outbound/install-blocks-<cluster>-VORTEX-CYCLONE.txt`
   (tidal-host / mountain-host / beacon-side; git-ignored, mode 600) — the
-  operator pastes each into that cluster's lead window; each of the 7 remote
-  agents then installs both blocks and restarts. Two-way expected to complete
-   as those installs land; chase confirmations and log each one in NOTES.md.
-   Pair tests from this side: 25 pass, 5 still 401 (HIGHBEAM, LANTERN,
-   LIGHTNING, RADAR, PRISM — beacon-side cluster; unchanged since 09-23,
-   re-tested 2026-09-26T21Z).
+   operator pastes each into that cluster's lead window; each of the 7 remote
+   agents then installs both blocks and restarts. Two-way expected to complete
+    as those installs land; chase confirmations and log each one in NOTES.md.
+    Pair tests from this side (re-tested 2026-09-29T01Z this waking): 30 pass,
+    4 still 401 (HIGHBEAM, LANTERN, LIGHTNING, RADAR — beacon-side cluster;
+    PRISM/MESA/VISTA have since flipped to 200, verified from this side —
+    the three "pending installs" named on the fleet page are now live).
 - **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
