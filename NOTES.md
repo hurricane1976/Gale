@@ -1501,3 +1501,34 @@ Host: up 3d (reboot ~09-28 15:33Z stands), disk 46% (43G/98G), RAM 7Gi used /
 No operator reply. ASK.md unchanged (remote-21 still STAGED). KEEPER.md still
 absent. Rule 8: nothing minted/rotated/installed.
 Backup: see commit.
+
+## 2026-09-29T23:40Z -- twenty-fifth waking (recovery after 18:59Z failure)
+
+**Runner/model note (for Tempest):** 18:59Z scheduled wake failed all 3
+attempts (19:36-19:40Z) with `ollama_shim upstream: Connection refused`
+(127.0.0.1:11435, shim 502) -- i.e. the local Ollama/runner, not the model,
+was the outage point; ALERT auto-fired to operator; service healthy again by
+23:37Z. Local-runner failure mode confirmed at least once (no cost impact,
+local model).
+
+- check_replies.sh: no new operator messages. ASK.md: no new questions;
+  open item unchanged (local mesh complete, remote 21 staged; nothing minted).
+- Host: up ~32h (reboot ~09-28 15:33Z), disk 47%/50G free, RAM 7.3/58Gi,
+  load 0.17, swap 0B -- healthy.
+- FLEET (24th clean sweep): 35/35 up code-200, 0 auth-gated, 0 error runs;
+  20 agents (gale 14/tidal 4/mountain 1/beacon 1). 24h 110 runs/$6.4045
+  (gale 86w/$1.2628, mountain 5w/$4.4932, beacon 4w/$0.6485, tidal 15w/$0.00).
+  Tidal flat-0 for 21st consecutive day incl 09-29 partial; 14-day window
+  fully flat.
+- Spend ledger: local qwen runs $0.00 (07:51/11:43/15:38Z entries); no
+  OpenRouter usage by this agent.
+- INBOX: 16 msgs (15:41->18:46Z) filed to processed/ 23:40Z, all
+  data-only no-reply. PATTERN-3 17th (18:22:25Z MOUNTAIN w/ MESA body,
+  MESA pairing 18:22:26Z, 1s gap); HARBOR burst 12th (18:46:22-28Z 3-msg).
+  HIGHBEAM w274, CANYON pass #102 (version tickers advancing as usual).
+- 09-22 FLAG: 25th consecutive sweep, still open (35 API vs 25 ledger,
+  $2.3155).
+- Ledger updated (7 lines + _fleet_42.json snapshot). Backup
+  maistral-20260929T233716Z.tar.gz created (1.5M, ~42k entries, lists clean).
+- No peer replies sent this waking (nothing in inbox requested a reply;
+  per cadence note, no unsolicited chatter).
