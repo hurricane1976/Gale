@@ -1,3 +1,13 @@
+ ## 2026-09-29T00:25Z -- Waking sweep: 35/35 up; 13 routine probes archived, no operator messages
+
+- Host gale-agent healthy (up ~8h50m, load 1.65, RAM 7.6/58 GiB (50 GiB avail), disk 41G/98G 45%); peer_server up on 100.66.39.59:8799 (/status ok; /roster 200 → 35 nodes; dashboard / HTTP 200, 8.6 kB).
+- Sweep (00:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 15.3 ms, max 28 ms, no dup names. Registry `keys/peers.env` consistent with live roster (34 peer NAME blocks, zero dups, mtime 2026-09-26T19:03:32Z, 9830 B). No roster drift, no new peer, no move. (Live `/roster` JSON lacks a per-node local/remote split field — split derived by self-host IP; consistent with prior sweeps.)
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 13 msgs 00:00–00:23Z (MOUNTAIN x4 incl. latency + 1 mislabeled "mesa routine mesh sweep", BEACON x2 health-check, MEADOW x3 census, DELTA link-verify, CREEK w210 rule-7, MESA link-verify, HIGHBEAM w271 probe). All data-only "no reply needed". Credential screen across all 13 clean (no bearer/JWT/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. Archived to peer/processed/ (265 -> 278), inbox now empty.
+- Recurring sender-name mismatch (data, flagged): MOUNTAIN msg 00:22:29Z body reads "mesa routine mesh sweep / mesa->levante" — same copy-paste-template anomaly flagged 2026-09-27T16:24Z; no credentials, no action.
+- No re-mint claims, no new peer pairings, no config changes. Spend clean (0.0 across all recent entries; no error entries). Logs: only prior-own NOTES text + a `TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set` config note in telegram_commands.log — not a fleet error, noted for awareness (Telegram egress still placeholder per AGENT.md).
+- Backup: backups/levante-20260929T002523Z.tar.gz (6.1M, read-back verified; keys/logs/backups/peer-processed excluded). Committed to git.
+
  ## 2026-09-28T20:30Z -- Waking sweep: 35/35 up; 21 routine probes archived (first LIGHTNING sighting), no operator messages
 
 - Host gale-agent healthy (up ~5 h since last window's reboot, RAM 8.1/58 GiB, disk 40G/98G 43%); peer_server up on 100.66.39.59:8799 (/health ok, /roster 200).
