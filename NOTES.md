@@ -2770,3 +2770,22 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - SSH = Bitvise SSH Server (not OpenSSH -- explains the Manual sshd service); set BvSshServer to Automatic.
 - Operator seen experimenting via shell history: user-scope OLLAMA_GPU_OVERHEAD=1GB, MAX_LOADED_MODELS=1, VULKAN=0, DEBUG=1 + manual "ollama app.exe" restart. CAUTION: my OllamaServe task runs as SYSTEM with machine-scope env (MODELS/HOST/CONTEXT_LENGTH=65536/KV_CACHE_TYPE=q8_0/FLASH_ATTENTION=1); user-scope vars do NOT reach the SYSTEM instance, and a manually restarted app instance competes for 11434 (its bind fails while the task serves). If the app tray errors, that's why -- the task owns the port now. Suggest moving their tuning vars to machine scope (setx /M) if they want them to apply to the serving instance.
 - diskpart seen in history: SSD swap (T700 -> M.2_2 for x16) likely imminent.
+
+## 2026-09-29T13:10Z -- josh-desktop11 post-SSD-swap PCIe lane re-check (operator-directed)
+- Operator moved SSDs and asked to re-run the diagnostics. Reconnected via sshpass (same creds; rotation still pending).
+- Hardware state: boot 09:57 local today (swap session). **0 WHEA-Logger events since boot** (last ever: 09-28 18:54 pre-reboot); 0 critical/error Kernel-Power/BugCheck/nvlddmkm/Display events; GPU present (no "GPU is lost"), qwen3.8:27b resident in VRAM (17.5GB @ ctx 65536), NvPowerCap350 applied (350W), llama-server + ollama serving.
+- **PCIe verdict: x8 width NOT fixed yet.** Under real load (96% util, ~250-270W, load request fired against 11434): link = **Gen4, x8** (max x16). Idle samples Gen1 x8 (normal power-save).
+- Registry PCI topology (live driver instances): GPU 4090 at (1,0,0) behind CPU PEG0 00:01.0 [8086:A70D]; **an SN850X now occupies (2,0,0) = CPU PEG1 00:01.1 [8086:A72D] = M.2_1**; other SN850X at (3,0,0) and (4,0,0); **T700 now at (114,0,0) = chipset/PCH = M.2_2 — the T700 move itself succeeded** (stale Enum entry confirms T700 was at bus 2 pre-swap). So an SN850X was swapped INTO M.2_1 and keeps the x16 slot bifurcated/sharing -> GPU still x8.
+- **Gen3 cap lost again**: link runs Gen4 under load (BIOS PCIEX16 cap not in effect after today's hardware session -- check whether BIOS settings persisted / CMOS was cleared).
+- Drives: 3x WD SN850X 4TB + Crucial T700 4TB all present, no disk errors. Temp file C:\gale\load.json created for the load test and removed after.
+- Next operator step (if x16 wanted): empty M.2_1 (move the SN850X there to another slot) and reboot; re-apply Gen3 cap in BIOS. Note: Gen4 x8 (~16GB/s) is not itself dangerous -- yesterday's AER storm was at Gen4+x8 BEFORE the reseat/cap; 0 WHEA so far today at Gen4+x8. Watch WHEA via same check.
+
+## 2026-09-29T13:40Z -- josh-desktop11 lane fix VERIFIED: x16 restored
+- Operator emptied M.2_1 (moved the SN850X) and rebooted 10:12 local. Re-ran the same checks: idle **Gen4 x16**; under real load (96% util, ~250-270W, 27B model inference): **Gen4 x16, stable** -- the x8 lane-share is GONE. WHEA since boot: 0. llama-server + ollama running, model resident (21.7GB), 350W cap on.
+- Open item: **Gen3 BIOS cap still not in effect** (link runs Gen4 under load; gen.max reads 4). Either the operator didn't set it or it didn't survive; suggest re-set PCIEX16 link speed = Gen3 in BIOS if they want the stability margin, else treat Gen4+x16 as the new watch baseline (0 WHEA today).
+- C:\\gale\\load.json used/removed again for the load test. Fleet impact: full x16 restores prior bandwidth headroom (Gen4 x16 ~32GB/s vs 16).
+
+## 2026-09-29T13:55Z -- josh-desktop11 Gen4 x16 stability soak: PASS
+- 12-round sustained 27B inference soak (~7min near-continuous, 94-98% util): link held **Gen4 x16 every sample**, 224-272W, 56-59C, **WHEA 0 at every round** (baseline 0), post-load link still x16, GPU alive, llama/ollama healthy, no TDR/display/BugCheck events.
+- One Kernel-Power Id 41 at 10:12:32 = the 10:12 boot itself (this morning's M.2_1-pull reboot came from a non-clean shutdown -- expected for a hardware session, lone 41 with no bugcheck/minidump/WHEA companions = benign, but noted since 41-storms were the crash-era symptom).
+- Verdict: **Gen4 x16 is stable under load today.** Gen3 cap remains unset (operator opted to try Gen4); overnight monitoring (WHEA watch + GaleOllamaDown) stays armed as the long-horizon check.
