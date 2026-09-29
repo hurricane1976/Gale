@@ -119,8 +119,11 @@ class Handler(BaseHTTPRequestHandler):
         # under budget. The model loses stale file dumps, keeps the thread.
         total_bytes = sum(len((m.get("content") or "")) for m in msgs if isinstance(m, dict))
         total_bytes += len(json.dumps(payload.get("tools") or []))
-        if total_bytes / 3.2 > 60000:
-            budget = 60000 * 3.2
+        # 2.6 bytes/token + 58K threshold: calibrated on the live failures --
+        # a 163KB body slipped past the original 3.2 B/t estimate and still
+        # overflowed 65536 real tokens (dumps 2026-09-29 11:36Z)
+        if total_bytes / 2.6 > 58000:
+            budget = 58000 * 2.6
             tool_idx = [i for i, m in enumerate(msgs)
                         if isinstance(m, dict) and m.get("role") == "tool"]
             protected = set(tool_idx[-2:])  # most recent tool results survive

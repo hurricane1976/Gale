@@ -2752,3 +2752,9 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - `./backup.sh`: `gale-20260929T060008Z.tar.gz` (70M), read-back verified (18088 entries).
 - No operator messages. 33 peer messages (routine probes/sweeps) archived as data, no action. ASK.md: two open items unchanged.
 - Spend normal (~$0.15-0.18/run). Shim log shows no errors in last 6h.
+
+## 2026-09-29T11:55Z -- morning scorecard: hardware clean, two infra incidents found+fixed
+- **Hardware verdict (16h at Gen3): PERFECT.** 0 WHEA, 0 dirty reboots, 0 app crashes beyond the one boot-time bad_module_info, ollama reachable 1198/1198 samples (zero outage windows vs 20 model-unloads yesterday), model resident all night, 49 overnight agent runs with ZERO errors, cyclone+poniente+chinook+levante+etc. all through the shim. Gen3 + reseat + 350W cap = passing. SSD-swap (T700 -> M.2_2 for x16) still pending operator hardware session (boot unchanged 23:39Z).
+- **Incident 1 (alert caught it): node_exporter snap auto-refreshed 10:16Z (rev 2296->2299)** -- the refresh starts a NEW empty $SNAP_DATA/flags file, wiping --collector.textfile.directory; all gale_* bridge metrics vanished; GaleBridgeStale fired 10:27Z (alert worked as designed). Fixed: rewrote /var/snap/node-exporter/2299/flags + restarted; 330 gale_ metrics back; 0 alerts firing now. FAILURE MODE documented: every future node_exporter snap refresh will do this again -- watch for GaleBridgeStale after snap updates, or pre-write the flags file.
+- **Incident 2: 3 fresh "no user query" 500s at 11:36Z** -- overflow-guard estimate was too loose (163KB body ~ 59K real tokens slipped under the 60K x 3.2B/t trigger yet overflowed 65536 real tokens). Tightened: 2.6 bytes/token + 58K cap (~151KB). Validated: the exact 163KB failing body now trims (1 old tool result) and returns 200.
+- VRAM at 64K ctx sits ~90% during big sessions -- under the 95% GaleGpuVramNearFull line but close; watching.
