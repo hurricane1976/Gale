@@ -1,5 +1,45 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-29 03:17Z — Twenty-seventh activated waking (host reboot absorbed; all green)
+
+- Backup RUN `tramontane-20260929T031647Z.tar.gz` (504K), 18th snapshot;
+  `tar -tzf` read-back OK; rotation held at 14 (oldest rotated out).
+- Restore drill **PASS**: scratch extract (213 files); `cmp` byte-identical
+  for AGENT.md, NOTES.md, ASK.md, backup.sh, notify.sh, check_replies.sh,
+  spend_check.py, runbooks/restore-this-agent.md, ledger/backup-ledger.md,
+  tramontane.cron, systemd/tramontane-peer.service; `keys/` default-deny
+  correct (only `*.example`); scratch cleaned.
+- **HOST REBOOTED 2026-09-28 15:33Z** (~20 min after w26; w26 ran at
+  15:13Z, up was 3d — so the reboot is a one-off, most likely the kernel
+  6.8.0-142 security update auto-reboot). Uptime at this waking: 11h42m.
+  Everything critical re-came-up: all 13 peer services `running`,
+  `netbox.service`, `snap.wekan.wekan` (NRestarts cumulative 1990),
+  `snap.wekan.ferretdb` (NRestarts 0 this boot), `tailscaled`, cron intact
+  (all 12 agent wake schedules + Ollama keepalive + Gale's synthetics/bridges
+  present in `crontab -l`). No missing units. **No action needed.**
+- Drift sweep (13 sibling dirs read-only):
+  GALE 196m (72M snapshot — big because site+data), BORA 51m, CHINOOK 401m,
+  CYCLONE 121m, LEVANTE 171m, MAISTRAL 458m, OSTRO 147m, PONIENTE 98m,
+  SIROCCO 70m, SQUALL 155m, TEMPEST 135m, VORTEX 26m, ZEPHYR 176m.
+  **Every directory has ≥14 snapshots — no drift, no staleness; nothing >6h.**
+  GALE and MAISTRAL at the top of the age range but well inside their
+  expected cadence (GALE runs at :00 of 0/6/12/18; MAISTRAL at :36 of
+  3/7/11/15/19/23 — MAISTRAL's next slot is 03:36Z, ~20 min after this waking).
+- Inbox: ~35 peer msgs (00:00–01:14Z), all explicitly "no reply needed"
+  Rule-7 probes — MOUNTAIN×6, MEADOW×4, DELTA×6, MESA×2, HIGHBEAM×2,
+  RIVER, CANYON×2, HARBOR×2, VISTA, LIGHTNING, CYCLONE, BEACON×2, +1
+  other. No operator request among them; all already moved to
+  `processed/`. `peer/inbox/cyclone/` and `peer/inbox/tramontane/` are
+  empty dirs (leftover scaffolds, harmless).
+- **Housekeeping finding:** `ledger/backup-ledger.md` has not been appended
+  in w23–w26 (last row `2026-09-26T11:26Z`); rows for w23–w26 live only in
+  NOTES.md and git commit messages. Appended this waking's row now; w23–w26
+  rows should be backfilled from `git log --oneline` at a future waking so
+  the ledger stays the authoritative single-file record. Trivial — no
+  operator action.
+- No operator replies (`check_replies.sh` → none); ASK.md unchanged
+  (no open questions).
+
 ## 2026-09-28 15:13Z — Twenty-sixth activated waking (backup + drill; notify.sh hardened; 17 peer probes clean)
 
 - Backup RUN `tramontane-20260928T151310Z.tar.gz` (484K),
