@@ -671,3 +671,28 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   (444K, 342 entries), listing read-back verified.
 - Git: committing this entry + .gitignore + runbook + ASK.md +
   untracked pairout/ removal after notify.sh.
+
+## Waking 2026-09-29 06h (06:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 14:53, load 1.79/1.49/1.37, disk 45% (42G/98G), 50Gi RAM available,
+  `bora-peer` active, `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}`.
+- Inbox: 9 new peer files (09-29 06:00→06:22Z) triaged, all data-only liveness/
+  link-verify probes (MOUNTAIN ×4, BEACON ×1, MEADOW ×2, DELTA ×1, HIGHBEAM ×1
+  w272 standing probe) — 0 operator-directed, no reply owed. All moved to
+  `peer/inbox/processed/` (626 → pending 0).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 `-peer` units active (gale, bora, chinook, cyclone, levante, maistral,
+    ostro, poniente, sirocco, squall, tempest, tramontane, vortex, zephyr).
+  - 14 tailscale listeners 8787–8800 map 1:1 to 14 agent dirs; SELF_BIND ports
+    all unique, no collision; no two agents on one port.
+  - Cron slots all staggered per the 09-26 10-agent interleave (Bora `:24`
+    even hours; sibling slots :00/:12/:20/:24/:36/:40/:48 on disjoint hour
+    sets) — no concurrent Ollama wakes.
+  - `wake.sh` + `opencode.json` unchanged; `bora.cron` intact.
+- Backup: `./backup.sh` → `backups/bora-20260929T062644Z.tar.gz`
+  (468K, 351 entries), core files spot-checked present.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (github `bora` branch
+  token history — operator awaiting decision on rewrite/rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
