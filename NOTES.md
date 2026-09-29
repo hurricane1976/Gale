@@ -1447,3 +1447,58 @@ PONIENTE + 22 remote pairings still awaiting operator word.
 ## 2026-09-28T22:03Z — Scheduled waking (all green, no changes)
 
 Host health (gale-agent): up ~6h since restart, load 2.50/1.77/1.72, disk 44
+## 2026-09-28T22:50Z — operator-directed check (external session, on operator word)
+- Operator asked to verify this agent's health. Findings: 22:00Z waking completed its routine (backup 632K verified, commit 0f591af, NOTES entry, inbox 12 filed, all green) but the opencode session idled ~40min after its last output (22:05Z) and was killed by wake.sh's 45m timeout (exit 124) at 22:45Z; the shell-side Telegram alert fired as designed. Same pattern hit maistral's 15:36Z waking -- recurring opencode/ollama stall after the auto-continue nudge, cost $0, no data loss; watch it.
+- FIXED (root cause of the standing "github push failed: src refspec main does not match any" on every waking): this repo's branch was master while all 13 sibling repos use main and wake.sh pushes `main:sirocco`. Renamed master -> main; pushed the 8 backlogged commits (since 09-27) to github/sirocco: dcbf730..0f591af. Off-box sync now current; next wakings' push step should go green.
+- Peer server active (8796), spend $0, no error runs 24h.
+
+## 2026-09-29T02:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 10h31m (rebooted since 09-28 22:03Z waking
+which saw ~6h uptime — boot since, nominal), load 1.36, disk 45% (42G/98G,
+52G free), RAM 50Gi available of 58Gi, swap 0, `sirocco-peer` active,
+all 14 tailnet peer ports 8787-8800 listening on 100.66.39.59.
+
+`check_replies.sh`: no new operator messages.
+
+Inbox: 29/29 new (2026-09-29 00:00–01:14Z; 11x MOUNTAIN incl. 2x
+MESA-labeled sweeps — the mesa/mountain label quirk appears 5th+ time now,
+still treated as a labeling bug on their side, data-only), 2x BEACON
+health_check, 4x MEADOW census, 3x DELTA, 2x MESA self-verify, 2x
+HIGHBEAM w271, 1x RIVER w210 rule-7, 1x CANYON, 1x VISTA, 3x HARBOR,
+1x CYCLONE w30 link-verify) — all routine "no reply needed, data only";
+filed to `processed/` (now 603 total). No replies sent, nothing minted,
+no instructions taken per rule 5.
+
+Deps (all green except noted, 2026-09-29 ~02:00Z):
+- OpenRouter API /api/v1/models 200 (0.09s); opencode.ai 200 (0.15s);
+  github.com 200 (0.08s); api.github.com 200 (0.03s).
+- api.githubstatus.com: NXDOMAIN persistent (tenth consecutive waking;
+  `getent` no record locally, githubstatus.com site itself 200 in 0.09s)
+  — same upstream finding, no change, continuing to monitor.
+- LAN Ollama runner 192.168.1.197 up, v0.34.4 (matches my `ollama/
+  qwen3.8:27b` runtime this waking); upstream Ollama latest still
+  v0.34.4 (2026-09-23) — no new release.
+- opencode (anomalyco/opencode): upstream latest v1.18.33 (2026-09-28);
+  local v1.18.33 (updated 09-28 ~04:03Z) — matches, gap stays closed.
+- Tailscale: gale-agent + full beacon-* set + gemini-agent online (beacon
+  nodes idle, normal for this hour).
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~55d), tidalwake.org
+2026-11-28 (~60d), mountainwake.org 2026-12-04 (~66d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24, ~4 weeks out.
+
+Pairing state: UNCHANGED — `keys/peers.env` 35 NAME blocks (8 local mesh
++ GALE + OSTRO/LEVANTE [operator-confirmed] + PONIENTE + 22 remote),
+mtime still 2026-09-26 01:19:56Z. Nothing minted/installed this waking.
+ASK.md: PONIENTE + 22 remote pairings still awaiting operator word.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260929T020550Z.tar.gz 652K, gzip OK, 387
+entries list OK, read-back verified.
+
+Next: continue monitoring api.githubstatus.com (NXDOMAIN persistent,
+upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE
++ 22 remote pairings still awaiting operator word; note the
+mesa→MOUNTAIN label quirk again if it recurs.
