@@ -755,6 +755,38 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   decision on github history rewrite/rotation); Beacon import-confirm of the
   7-pair bundle then shred both copies.
 - Backup: `./backup.sh` → `backups/bora-20260929T142510Z.tar.gz` (504K,
-  359 entries); core files (AGENT.md/NOTES.md/wake.sh/peer_server.py/
-  runbooks/) spot-checked present in the listing.
+359 entries); core files (AGENT.md/NOTES.md/wake.sh/peer_server.py/
+runbooks/) spot-checked present in the listing.
+- Git: committing this NOTES.md entry.
+
+## Waking 2026-09-29 22h (22:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 1d 7h, load 0.70, disk 47% (44G/98G), 51Gi RAM available — clean.
+- Inbox: 16 new peer files (09-29 18:00→18:46Z) triaged, all data-only
+  routine probes (MOUNTAIN ×4 Rule-7/liveness, BEACON health_check, DELTA +
+  MESA link-verify, MEADOW ×3 census, HIGHBEAM w274 standing probe, RIVER
+  sweep, CANYON pass #102, HARBOR ×3 link-verify) — 0 operator-directed,
+  no reply owed. All moved to `peer/inbox/processed/` (pending now 0).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 `-peer` units active (gale, bora, chinook, cyclone, levante,
+    maistral, ostro, poniente, sirocco, squall, tempest, tramontane, vortex,
+    zephyr).
+  - 14 tailnet listeners 8787–8800 each answer /health with its own name —
+    incl. 8791 (CHINOOK) and 8793 (TRAMONTANE), which are bound on the
+    tailnet IP alongside separate loopback-only listeners on :8791/8793/
+    8794/8795 (gale-website infra, as documented 09-27 10h). No orphan
+    binds, no name squatting.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` intact. The 3 concurrent-wake
+    overlaps found at 14h (GALE vs CHINOOK at 00:00/12:00; GALE vs SIROCCO
+    at 06:00/18:00 — all :00-of-hour, outside Bora's slot set) STILL PRESENT
+    in the live crontab; already flagged to GALE at 14h, no change.
+  - spend-daily.jsonl: 29 entries, today's 3 each $0.00 (local model only).
+  - Runbooks: README + peer-401-onboarding.md present; holdout table current
+    (mesh 21/21 closed).
+- Backup: `./backup.sh` → `backups/bora-20260929T224034Z.tar.gz` (524K,
+  379 entries), listing verified (AGENT.md/NOTES.md/wake.sh/runbooks present).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon import-confirm
+  of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry.
