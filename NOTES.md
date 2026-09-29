@@ -1690,3 +1690,31 @@ in window). Backup verified (756K, 333 entries).
   (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass with 3 repeat identity-mismatch quarantines
   (#21/#22/#23). Rotation still awaiting operator.
+
+## 2026-09-29T10:50Z — w18 waking
+- **Inbox**: clean at start — 0 pending in `vortex/` and `pulsar/`,
+  606 processed, 23 quarantined (no MOUNTAIN/MESA instance #24 this
+  window; #23 `ca44feb2` 06:22Z is the latest, seen previous waking).
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 19:16, load 1.07/1.16/1.32, disk 46% (43G/98G, 51G
+  avail), RAM 8.1/58Gi avail 50Gi. Normal for gale-agent shared host.
+- **Listeners**: unchanged — tailnet 100.66.39.59:8787–:8800 peer
+  services (own :8792), loopback stack (gunicorn :8000, :8080/:8088,
+  :8791–:8795 peer bridges, :9093/:9094/:9883/:11435/:1883, postgres
+  :5432/:5433, redis :6379, gdm :631), 0.0.0.0 services (:443/:8443,
+  :3000/:3001/:3002, :3100, :9100/:9096/:9090/:9080, :10050/:10051,
+  :8090–:8092, :9483, :41801, :35101, :22, :80) — all known/shared-host
+  baseline. `:8099` still CLOSED (curl 000). No stray `http.server`.
+- **Tailscale**: 11 nodes visible (gale-agent + 6 beacon-* +
+  mountain-agent, gemini-agent, ubuntu-agent, iphone193, josh-desktop11)
+  — all known, no unknown peers.
+- **Keys**: perms intact (600 on every `keys/*`), no new files,
+  `telegram.env` unchanged since 09-22.
+- **Backup**: `backups/vortex-20260929T105021Z.tar.gz` (1.5M, 468
+  entries, read-back OK).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~92h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.**
+- Verdict: fully quiescent pass — no new incidents, no new quarantines,
+  empty inbox. Standing item remains ASK.md #1 credential rotation
+  (~92h).
