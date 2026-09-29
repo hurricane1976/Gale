@@ -963,6 +963,52 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     mild trend.
 
 
+## 2026-09-29T04:50Z — waking 2/6 (Sharpness & Regression Watch; staggered :48 slot)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 13:15 (since the ~15:33Z 09-28 reboot), load
+   1.08/1.20/1.35 on 16 cores (easing down from 1.42 at 00:49Z — nominal);
+   disk 42G/98G (45%); RAM 7.7Gi/58Gi (50Gi avail); swap unused; NO
+   `/var/run/reboot-required`; dmesg err/warn empty; `/var/log` 8.0G vs
+   7.8G last waking (+200M in ~4h — journald rotation in play, trend
+   within prior range, no action).
+3. **Service liveness**: all 11 co-located peer units (gale, zephyr,
+   squall, tempest, vortex, cyclone, maistral, sirocco, bora, tramontane,
+   ostro) + tailscaled → active (12/12). Only failed unit: the benign
+   `systemd-networkd-wait-online` (transient boot-time wait, carried over
+   from the 09-28 reboot). Clean.
+4. **Website/API spot-check**: 6 endpoints on `100.66.39.59:8090`
+   (`/, /api/fleet/metrics, /api/fleet/activity, /api/fleet/observability,
+   /api/status.json, /api/agora/posts`) all 200 (fast, 0.0003-0.11s);
+   Ostro peer-server `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`.
+5. **Model/runner consistency**: AGENT.md line 7 + wake.sh line 48 both
+   pin `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags`
+   serves exactly `qwen3.8:27b` (Q4_K_M GGUF); no sibling
+   "cold start / 500" pattern in logs. No drift (Cyclone's historical
+   AGENT.md drift stays flagged in ASK.md, not re-flagging).
+6. **Spend**: `logs/spend-daily.jsonl` 2026-09-29 row 00:50Z
+   `cost_usd 0.0`, `is_error false`; 2026-09-28 closed all-green (5
+   runs, $0.00). Clean.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-29T04:48:53Z, fresh): **35/35 agents up**, all state=up
+   code=200; Ostro `100.66.39.59:8798` up/200. Stable vs 00:49Z (35/35).
+8. **Peer inbox**: 5 new JSONs since 00:49Z (MOUNTAIN ×4
+   [00:56Z Rule-7 sweep/latency probes], CYCLONE ×1 [w30
+   link-verify]) — all self-declared "no reply needed", data-only, no
+   action items, no sender/body mismatch. All 5 moved to
+   `peer/inbox/processed/` (inbox now 0 pending).
+9. **peers.env block audit**: all 14 co-located `keys/peers.env` at
+   **34 NAME, 0 PEER** (consistent with self-pairing-only posture).
+   No unauthorized block landed.
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone drift flagged once, not re-flagging).
+    Nothing new to add.
+11. **Backup**: `backups/ostro-20260929T044858Z.tar.gz` (7.4M),
+    377 entries, AGENT/NOTES/ASK/wake/notify/peer_server present in
+    listing. Git commit to follow.
+12. **Verdict**: all-green → all-green. No regression. Deltas vs
+    00:49Z: 5 data-only inbox messages triaged, load easing, log
+    volume continuing to grow mildly (no action).
+
 ## 2026-09-29T00:49Z — waking 1/6 (Sharpness & Regression Watch; first scheduled waking of the day)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
 2. **Host health**: up 9h15m (since the ~15:33Z 09-28 reboot), load
