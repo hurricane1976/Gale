@@ -1,5 +1,97 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-29 11:13Z — Twenty-ninth activated waking (W28 recovery + MY backup/drill PASS + ledger backfill COMPLETE — w12, w14, w15, w16, w17, w18, w19, w20, w21 all restored to the ledger; fleet 13/13 fresh; WeKan crash-loop now dead/inactive)
+
+- Backup RUN `tramontane-20260929T111543Z.tar.gz` (552K, 235 entries), 20th
+  snapshot for the day; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14 (oldest rotated out: 2026-09-26T231307Z-era).
+- Restore drill **PASS**: scratch extract 235 files to
+  /tmp/opencode/drill-*; `cmp` of AGENT.md, NOTES.md, ASK.md, backup.sh,
+  wake.sh, notify.sh, ledger/backup-ledger.md, peer_server.py,
+  spend_check.py, runbooks/restore-this-agent.md — all byte-identical to
+  live; `keys/` default-deny correct (only peers.env.example +
+  telegram.env.example — no live tokens); scratch dir cleaned.
+- **W28 recovery (this session's first act):** the 07:12Z w28 session
+  completed backup + drill + ledger w22–w26 backfill (row at 07:13Z) but
+  then exited at `reason=length` **before** (a) moving the 14 peer pings,
+  (b) backfilling w12 + w14–w21, (c) appending its NOTES.md entry,
+  (d) committing, (e) running `./notify.sh`. I picked each item up:
+  - 14 pings (06:00–06:47Z; MOUNTAIN×4, BEACON, MEADOW×2, DELTA, HIGHBEAM,
+    RIVER, CANYON, VISTA, HARBOR×2) — all "no reply needed" Rule-7 —
+    moved to `peer/inbox/processed/` now.
+  - w28's missing own NOTES.md entry — appended below in its own section.
+  - w12 + w14–w21 ledger rows reconstructed from the matching NOTES.md
+    entries (each row annotated `Backfilled w29 from NOTES.md` for
+    auditability); w12 tarball (2026-09-26T072619Z) + w14
+    (2026-09-26T152544Z) + w15 (2026-09-26T194920Z) tarballs are **outside
+    the 14-snapshot rotation** — noted in the ledger rows, rows are kept
+    for completeness. w16 through w21 tarballs ARE in the live rotation.
+  - `git add -A && git commit` — done (this entry's commit).
+  - `./notify.sh` — run at the end of this waking with a summary that
+    covers both w28 and w29 so the operator sees one coherent report
+    instead of the w28 ALERT-only line that wake.sh fired as a fallback.
+- **Ledger backfill now COMPLETE** (w27's TODO closed): w22, w23, w24,
+  w25, w26 (w28's session), w12, w14, w15, w16, w17, w18, w19, w20, w21
+  (this session). All rows cite their NOTES.md source.
+- `check_replies.sh`: `(no new messages)`. ASK.md: no open questions.
+- **Drift sweep (13 local siblings, READ-ONLY) — all fresh, no stale:**
+  gale (/home/agent/agent) 315m/5.3h, zephyr 295m, squall 275m, tempest
+  255m, maistral 204m, chinook 194m, levante 170m, ostro 145m, cyclone
+  122m, poniente 97m, sirocco 73m, bora 51m, vortex 25m. All 13 under
+  the 6h stale threshold (GALE slowest at 5.3h, on its 5h cadence —
+  normal).
+- **WeKan state change (flag, out of scope):** `snap.wekan.wekan` and
+  `snap.wekan.ferretdb` are now both `inactive (dead)`, NRestarts=0, no
+  journal churn — the EADDRINUSE crash-loop observed continuously 09-26→
+  09-29 (NRestarts climbing 6,361 → 12,478, then reboot-reset, then 2,683
+  at w28) has stopped. Most likely stopped by an operator during the
+  09-28 15:33Z reboot/maintenance window. I am not starting, stopping,
+  or configuring it — outside my backup scope. Flagging the change so
+  the operator knows the state moved from "crash-looping" to "off".
+- **`tramontane-peer.service`** — healthy (NRestarts=2, both the
+  pre-reboot bind retries already documented at w28; `active` since
+  09-28 15:35:39Z, self-healed). No action.
+- `notify.sh`: run at waking end. Host: up 19:42 (post-09-28 reboot),
+  disk 46% (51G free), 50Gi mem avail, load 1.46/16 cores. No operator
+  or peer action items this waking.
+
+## 2026-09-29 07:13Z — Twenty-eighth activated waking (backup + drill + ledger w22–w26 backfill; session interrupted at length-limit before inbox/NOTES/commit/notify — w29 finished these)
+
+- Backup RUN `tramontane-20260929T071232Z.tar.gz` (552K, 235 entries),
+  19th snapshot; `tar -tzf` read-back OK.
+- Restore drill **PASS**: scratch extract 235 files; `cmp` of AGENT.md,
+  NOTES.md, ASK.md, backup.sh, wake.sh, notify.sh, ledger/,
+  runbooks/ — all byte-identical; `keys/` default-deny verified
+  (peers.env.example + telegram.env.example only, no live tokens);
+  scratch cleaned.
+- **Ledger backfill w22–w26 COMPLETED this waking** (reconstructed from
+  NOTES.md + git log; w27's "backfill TODO" for these five was closed).
+  Discovered w12 + w14–w21 were ALSO missing (w27 only looked back to
+  the 13th waking) — left for w29 (see next section), which finished
+  them.
+- **INCOMPLETE steps (session hit `reason=length` at 53,046 tokens total
+  before exiting)**: inbox pings still un-moved; no own NOTES.md entry;
+  no commit; `./notify.sh` not run — wake.sh's ALERT fallback was the
+  only thing that reached the operator for this waking.
+  w29 (11:13Z) completed all four.
+- Inbox (un-moved until w29): 14 pings 06:00–06:47Z (MOUNTAIN×4, BEACON,
+  MEADOW×2, DELTA, HIGHBEAM, RIVER, CANYON, VISTA, HARBOR×2) — all
+  "no reply needed" Rule-7.
+- `check_replies.sh`: no new operator messages. ASK.md: no open
+  questions.
+- **WeKan crash-loop RECURRING** at check: NRestarts 1990 → 2,683
+  since w27 (~790 restarts in ~4h, ~3min cadence; restarted seconds
+  before the check). Pattern: boots, selects FerretDB backend, dies.
+  `snap.wekan.ferretdb` itself healthy (up since 09-25). Not my
+  service; re-flagged. (Superseded by w29 finding: both wekan units
+  now `inactive`/dead — see next section.)
+- **`tramontane-peer.service`** NRestarts=2 — 2 failed binds
+  09-28 15:35:29/34Z (OSError 99, tailscale IP not yet assigned
+  post-reboot), then healthy since 15:35:39Z via
+  `Restart=on-failure`; self-healed, no action needed.
+- Host: up 15h39m (post-09-28 reboot); disk 45% (52G free); 50Gi RAM
+  available; load 1.21; 16 cores.
+
 ## 2026-09-29 03:17Z — Twenty-seventh activated waking (host reboot absorbed; MY backup/drill PASS — see fleet-API-outage correction below)
 
 - Backup RUN `tramontane-20260929T031647Z.tar.gz` (504K), 18th snapshot;
