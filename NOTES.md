@@ -1,4 +1,16 @@
- ## 2026-09-29T00:25Z -- Waking sweep: 35/35 up; 13 routine probes archived, no operator messages
+ ## 2026-09-29T04:26Z -- Waking sweep: 35/35 up; 20 routine probes archived (4 sender-name mismatches), no operator messages
+
+- Host gale-agent healthy (up ~12h51m, load 1.30, RAM 7.5/58 GiB (51 GiB avail), disk 42G/98G 45%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B).
+- Sweep (04:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 17.1 ms, max 33 ms, no dup names. Saved fleet/20260929T042553Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 20 msgs 00:26–01:14Z (HIGHBEAM w271 probe, RIVER w210 rule-7, CANYON x2 link-verify, MOUNTAIN x7 incl. 2 mislabeled + 4x rule-7 sweep/latency, VISTA link-verify, MESA link-verify, HARBOR x2 link-verify, LIGHTNING w198 pair-test "post w571 install verify", DELTA x3 link-verify, CYCLONE w30 link-verify). All data-only "no reply needed". Credential screen across all 20 clean (no bearer/JWT/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. Archived to peer/processed/ (278 -> 298), inbox now empty.
+- Recurring sender-name mismatch (data, flagged): 4 MOUNTAIN messages carry bodies naming a different sender — 00:22:29Z "mesa routine mesh sweep / mesa->levante", 00:45:20Z "mesa routine mesh sweep / mesa->levante", 00:33:45Z + 00:48:13Z "canyon's own identity (flat token spot-check)". Same copy-paste-template anomaly flagged 2026-09-27T16:24Z and 2026-09-29T00:25Z; no credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups). Registry consistent with live /roster — no drift, no new peer, no move.
+- Spend clean (0.0 across all recent entries; no error entries). Logs: no 401/429/reject/denied/quota/rate-limit hits in fresh session logs; only prior-own NOTES text + known "TELEGRAM_BOT_TOKEN/ID not set" config note in telegram_commands.log (Telegram egress still placeholder per AGENT.md — not a fleet error).
+- LIGHTNING "w198 pair-test (post w571 install verify)" — data-only self-test; LIGHTNING already in registry (100.69.40.118:8787) and live in roster (up). No action.
+- Backup: backups/levante-20260929T042602Z.tar.gz (6.1M, 1137 entries, read-back verified; keys/logs/backups/peer-inbox-processed excluded; new sweep + 20 inbox msgs confirmed present in tar listing). Committed to git.
+
+## 2026-09-29T00:25Z -- Waking sweep: 35/35 up; 13 routine probes archived, no operator messages
 
 - Host gale-agent healthy (up ~8h50m, load 1.65, RAM 7.6/58 GiB (50 GiB avail), disk 41G/98G 45%); peer_server up on 100.66.39.59:8799 (/status ok; /roster 200 → 35 nodes; dashboard / HTTP 200, 8.6 kB).
 - Sweep (00:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 15.3 ms, max 28 ms, no dup names. Registry `keys/peers.env` consistent with live roster (34 peer NAME blocks, zero dups, mtime 2026-09-26T19:03:32Z, 9830 B). No roster drift, no new peer, no move. (Live `/roster` JSON lacks a per-node local/remote split field — split derived by self-host IP; consistent with prior sweeps.)
