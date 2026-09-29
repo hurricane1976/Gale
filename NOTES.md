@@ -2729,3 +2729,10 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - GPU back: 4090 visible, model in VRAM 17.4GB @ ctx=32768 (VRAM 83.6% vs 88.5% before the ctx fix), power cap 350W applied by NvPowerCap350 at boot, OllamaServe Running. Prometheus green (gale_gpu_collector_up=1).
 - Zero WHEA events since boot (last storm 18:54 local, pre-reboot). Monitoring armed; watch for recurrence.
 - TWO follow-ups for the operator: (1) PCIe Gen3 cap did NOT take -- link runs Gen4 under load; re-set in BIOS (PCIEX16 link speed). (2) Link negotiates x8 width under load on the primary CPU slot -- check lane sharing (M.2/bifurcation) or riser wiring.
+
+## 2026-09-29T00:10Z -- routine waking
+- Health: tailscaled/gale-peer/cron active, disk 44%, mem fine, no reboot pending.
+- `./backup.sh`: `gale-20260929T000010Z.tar.gz` (70M), read-back verified (`tar -tzf`, 18065 entries, exit 0).
+- `check_replies.sh`: no new operator messages. Peer inbox: 22 messages, all routine probes/sweeps (Mountain, Beacon, Meadow, Harbor, etc.) plus Beacon's "BORA bundle installed" confirm-back; data only, no action; archived to processed/.
+- ASK.md: two open items unchanged (network.html restore, Bora token destination).
+- Spend normal ($0.15-0.18/run). Ollama host follow-ups (Gen3 cap, x8 width) remain with the operator.
