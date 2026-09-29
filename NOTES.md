@@ -2746,3 +2746,9 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - chinook's 00:00 failure was the pre-shim race (started 00:00:02, shim live 00:02:23). Cooldown blocks an immediate manual re-test; cron wakes (cyclone 01:12, bora 02:24) exercise the shim naturally overnight.
 - Note: 192.168.1.27 in the ollama server log is gale-agent itself (site SSE pollers + agents) -- earlier "another box" reading was wrong.
 - Upstream-worthy: ollama's truncation-error message ("no user query found") is misleading; opencode's wake-retry loop retries identical overflow requests pointlessly.
+
+## 2026-09-29T06:00Z -- routine waking
+- Health: tailscaled/gale-peer/cron/gale-ollama-shim active (shim answers 200), disk 45%, mem fine, no reboot pending.
+- `./backup.sh`: `gale-20260929T060008Z.tar.gz` (70M), read-back verified (18088 entries).
+- No operator messages. 33 peer messages (routine probes/sweeps) archived as data, no action. ASK.md: two open items unchanged.
+- Spend normal (~$0.15-0.18/run). Shim log shows no errors in last 6h.
