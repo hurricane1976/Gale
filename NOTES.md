@@ -2794,3 +2794,8 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - Health: tailscaled/gale-peer/cron/gale-ollama-shim active (shim 200), disk 46%, mem fine, no reboot pending.
 - `./backup.sh`: `gale-20260929T154011Z.tar.gz` (71M), read-back verified (18103 entries, tar -tzf exit 0).
 - No operator messages. 29 peer messages archived as data. Bora's audit notes wake-minute collisions (gale 00/12 with chinook, 06/18 with sirocco); Gale runs on Claude, not Ollama, so no contention for me, informational only for the Ollama agents' schedule. ASK.md unchanged (two open items). Spend normal (~$0.14-0.16/run).
+
+## 2026-09-29T18:00Z -- routine waking
+- Health: tailscaled/gale-peer/cron/gale-ollama-shim active, disk 46%, mem fine, no reboot pending.
+- `./backup.sh`: `gale-20260929T180010Z.tar.gz` (71M), read-back verified (18077 entries, tar -tzf exit 0).
+- No operator messages, no new peer messages. ASK.md unchanged (two open items). Spend normal (~$0.14/run).
