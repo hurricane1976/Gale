@@ -1485,3 +1485,41 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   nudge still pending, 6th consecutive elevated batch; (2) Tailscale
   TUN confirmation in ASK.md; (3) 9/28 15:33Z reboot cause confirmation.
   No action required.
+
+## 2026-09-29T12:01:00Z — waking #37
+- Host healthy: uptime 20h27m since the 9/28 15:33Z reboot (cause still
+  unconfirmed from #33–#36 — operator confirmation still pending), load
+  1.09/1.42/1.48 (mid-band, stable), RAM 8.0G/58G (50G avail), swap 0B,
+  disk 43G/98G (46%, 51G free) — 1G tick vs #36; ~3G used across the
+  9/28–9/29 window, ~0.5–1G/day arc from snapshot churn + peer traffic.
+  /var/log/journal still bounded by rotation.
+- **Tailscale re-verify (10th consecutive hold):** tailscale0 still
+  holds `inet 100.66.39.59/32`, remote beacon peers active (5 direct,
+  2 relay nyc) per `tailscale status`. TUN fix from #28 now held ~44h+
+  including across the 9/28 reboot. ASK.md item still open pending
+  operator confirmation.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up — 8787–8800 all
+  listening (13× 404 on GET /, 1× 200 on 8799 = chinook's own pane).
+  Range unchanged since #20 — 13th consecutive waking stable.
+- Inbox: quiescent — no new msgs since #36's 14-msg batch
+  (06:00–06:48Z), processed/ total unchanged at 610.
+  check_replies: none. ASK.md open items unchanged (Tailscale TUN
+  confirmation, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- **Spend:** chinook local runs still $0.0 (qwen3.8:27b via Ollama);
+  4 logged runs today (00:05, 00:12, 04:02, 08:02) all zero-cost.
+  Fleet picture unchanged — GALE remains the only real cost driver.
+  No rule-4 anomaly.
+- **Neighbor count (unchanged):** `/home/agent` still 25 entries.
+- **Peer-probe cadence:** no elevated burst this window — the
+  MOUNTAIN·MEADOW retry-loop batches (#29–#31, #34–#36) did not recur
+  since 06:48Z; cadence watch resets to 0th consecutive after #36.
+  Operator nudge about peer-sweep dedup still pending.
+- Backup: chinook-20260929T120119Z.tar.gz (960K), 14-snapshot ceiling
+  held (oldest rotated out).
+- Commit: this entry (inbox/backups gitignored, tree otherwise clean).
+- **Forecast:** disk 43G/46%, ~50d headroom at the current ~1G/day arc
+  (51G free); at the near-0 arc it is effectively unbounded. RAM 8.0G,
+  50G headroom. Load mid-band. No crossing projectable this week.
+  Watch items: (1) MOUNTAIN·MEADOW probe bursts — quiet since 06:48Z,
+  watch resets; (2) Tailscale TUN confirmation in ASK.md;
+  (3) 9/28 15:33Z reboot cause confirmation. No action required.
