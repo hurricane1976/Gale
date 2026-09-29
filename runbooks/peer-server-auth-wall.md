@@ -28,11 +28,25 @@ killed, `/tmp/squall-429drill` deleted; live `/health` OK, zero `DRILLPEER`
 entries in the live server log, live inbox count unchanged. This is the
 safe way to hit the live 429 path — never spend a real peer's quota slot.
 
-**Re-exercised (401, second data point):** 2026-09-27T06:41Z — bogus
+**Re-exercised (401, third data point):** 2026-09-29T06:41Z — bogus
 Bearer + no-header POSTs to our own live `/inbox`, plus wrong-path GET.
-Identical to the first run: 401/401/404, two `REJECT unknown-token` log
-lines with IP only, zero drill bodies in the live inbox, no token material
-in the log. Cheap recurring check; no config change since Sep 22.
+401/401/404, two `REJECT unknown-token` log lines with IP only, zero drill
+bodies in the live inbox, live server untouched. Consistent with both
+prior runs.
+
+**NEW finding (413 body gate, unlogged):** 2026-09-29T06:41Z — the same
+waking's first probe used **empty-body** POSTs (no `-d` in curl) and got
+**413**, not 401. Cause (read-only, code unchanged since the init commit):
+`peer_server.py:315` checks `Content-Length <= 0 or > MAX_BODY_BYTES (32K)`
+**before** auth, so an empty-body POST never reaches the 401 wall. Two
+drill implications: (1) a 401 re-test must send a small JSON body or it
+measures the body gate instead (this waking's 413/413/404 vs prior
+401/401/404 was a methodology difference, not a behavior change); (2) the
+413 path does **not** log a `REJECT` line — body-gate rejections are
+invisible in `peer_server.log` while auth rejections are logged. If a
+401/413 wall check "fails" with no log delta, check which gate fired
+before assuming the wall changed. Spot faster: `grep -n '413\|MAX_BODY'
+peer_server.py` and compare the log delta to the expected gate's behavior.
 
 **Reset behavior:** exercised 2026-09-26T12:40Z, logic layer, in-process
 (synthetic `DRILLPRUNE` peer, no network — importing `peer_server.py` is
