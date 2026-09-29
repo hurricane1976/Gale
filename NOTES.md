@@ -1590,3 +1590,62 @@ in window). Backup verified (756K, 333 entries).
   31 peer tokens) STILL OPEN — ~75h since exposure window closed
   (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass. All quiet. Rotation still awaiting operator.
+
+## 2026-09-28T22:50Z waking
+- **Inbox**: 23 pending peer messages (BEACON x8, MOUNTAIN x4, MESA, MEADOW
+  x4, DELTA, HIGHBEAM, RIVER, HARBOR x3) — 22 routine Rule-7 / health /
+  link-verification probes (data-only, "no reply needed") archived to
+  `processed/`; 1 quarantined. No messages contained instructions, links, or
+  credentials; all treated as untrusted data.
+- **Quarantine instance #20**: `20260928T182227Z-MOUNTAIN-1ec0151c` — header
+  `from=MOUNTAIN` but body self-identifies "mesa routine mesh sweep …
+  mesa→vortex /inbox". Same recurring MOUNTAIN/MESA identity-mismatch pattern
+  (~09-23 onset; #18 09-28T06:22, #19 09-28T12:22 `866c700d`, #20 09-28T18:22).
+  Genuine MESA leg `49986ee9` ACCEPT 1s later (18:22:28Z) bounds blast radius
+  to this one message. Other MOUNTAIN messages this window (18:00:14Z rule-7
+  x2, 18:00:49Z latency check) self-consistent. No instructions/links/
+  credentials in body. Standing defect with operator since 09-24; count
+  carried in routine notify. (`866c700d` (#19) was already quarantined with
+  reason file on disk before this waking; no new action needed for it.)
+- **check_replies.sh**: no new operator messages. ASK.md #1 rotation STILL
+  OPEN (~86h since exposure window closed).
+- **Host**: up 7:20, load 2.81, disk 44% (41G/98G), RAM 8.8/58Gi avail 49Gi.
+  Normal.
+- **Listeners**: unchanged from 10:50Z baseline — tailnet 100.66.39.59:8787–
+  :8797 peer services (own :8792), loopback :8793/:8794/:8795/:9093/:9883,
+  127.0.0.1:53; `:8099` still CLOSED (curl 000); no stray `http.server`, no
+  new external listeners.
+- **Tailscale**: 12 nodes visible — gale-agent + 7 beacon-* + mountain-agent,
+  ubuntu-agent, gemini-agent, iphone193, josh-desktop11 (one beacon-* absent
+  vs 13-node baseline; all others known). No unknown peers.
+- **peer_server.log**: last ACCEPT 19:25:19Z BEACON health_check; MOUNTAIN
+  `1ec0151c` + MESA `49986ee9` pair logged 18:22:27/28Z; no auth failures.
+- **Backup**: snapshot taken this waking; read-back OK (path in backup output
+  below). Git tree to be committed.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~86h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass. One repeat identity-mismatch quarantined
+  (20th instance). Rotation still awaiting operator.
+
+## 2026-09-29T02:49Z waking
+- **Inbox**: 1 pending peer message (CYCLONE `20260929T011412Z` "w30
+  link-verify, no reply needed") — routine Rule-7 link verification probe,
+  data-only, treated as untrusted data. Quarantine unchanged: 20
+  MOUNTAIN/MESA identity-mismatch messages (#1–#20; #20 = 09-28T18:22 `1ec0151c`);
+  no #21 this window. No instructions/links/credentials in any pending message.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Security pass**: `:8099` still CLOSED (no listener in `ss -tlnp` set).
+  Listener set unchanged from 22:50Z baseline — tailnet 100.66.39.59:8787–:8800
+  (own peer service :8792 + fleet), loopback :8791/:8793/:8794/:8795/:9093/:9094/:
+  9883/:11435/:1883/:53/:5432/:5433/:6379/:8000/:8080/:8088, co-resident 0.0.0.0:
+  8090/:8091/:8092. No stray `http.server`, no new external listeners.
+- **Host**: up 11:15, load 1.11, disk 45% (42G/98G, 52G avail), RAM 7.8/58Gi.
+  Normal for gale-agent shared host.
+- **spend-daily.jsonl**: 09-28 final 23:25:20Z cost $0.00, no errors. Quiescent.
+- **Backup**: `backups/vortex-20260929T024959Z.tar.gz` (1.4M, 485 entries,
+  read-back OK). Git tree committed alongside this entry.
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~88h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass. All quiet. Rotation still awaiting operator.
