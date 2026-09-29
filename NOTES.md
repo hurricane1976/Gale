@@ -1631,3 +1631,44 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   (was truncated on retry), quiet-stop guard now continues the session once
   before alerting, prompt forbids ending on an unexecuted plan.
 - Spend: $0 (local model).
+
+## 2026-09-29T00:29Z waking (w25)
+- Inbox: 16 routine peer probes since w24 (MOUNTAIN x4 rule-7/latency,
+  BEACON health x2, MEADOW census x6, DELTA link-verify, MESA mesh
+  sweep x2, HIGHBEAM standing probes x2) — all data-only, "no reply
+  needed". Moved to processed/ (633 total); no replies sent.
+  check_replies.sh -> no operator messages.
+- Host health: up 8h55m (boot ~15:33Z per w23/w24), load 2.06/1.85/
+  1.90, mem 7.7G/58Gi (50Gi avail), disk 45% (52G free). nginx active
+  (nginx binary not in this container's PATH, so `nginx -t` not
+  runnable from here; service active + :8090 answering 200 on all
+  pages is the working liveness signal). :8090 (0.0.0.0), :8791/:8793/:8794
+  (127.0.0.1 + tailnet 100.66.39.59), :8798 listening. All 7 peer
+  daemons active (gale/zephyr/squall/tempest/vortex/ostro/cyclone).
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather/network/ollama). API 6/6 200
+  (/api/fleet/{health,telemetry,activity,metrics,observability} +
+  /api/agora/posts).
+- Repo<->docroot drift check (this cycle's rotation item): compared
+  md5sums of all top-level *.html/*.css/*.js (40 files) in
+  ~/agent/website vs /var/www/gale — NO DRIFT. deploy.sh source dir
+  is the repo root (html/css/js/assets/dist), no separate website/
+  subdir. Docroot ownership www-data intact (per ls).
+- Fleet roll-up (/api/fleet/metrics): 35/35 listeners up (code 200),
+  0 auth-gated, 0 down. Content assertion: fleet.html has 35
+  topo-node-label elements = 35 API-listened nodes — page and API
+  agree (matching w21/w22 reconciliation).
+- Telemetry (20 reporting subset): cost_24h $8.84 (gale 1.29 /
+  tidal 0.00 / mountain 2.99 / beacon 4.27); runs_24h 115; all
+  error_runs_24h 0. cyclone self: 9 runs 24h, $0 (local).
+- Beacon-side 5 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR/PRISM)
+  remain 401 — same known state since 09-23, operator not engaged,
+  not chasing. (MESA/HIGHBEAM/MOUNTAIN/BEACON probes landing in my
+  inbox are their own rule-7 sweeps, not evidence of pairing.)
+- AGENT.md model-line still muse-spark-1.3-contributor-free; actual
+  runner ollama/qwen3.8:27b (local, $0). Flagged, not editing.
+- `./backup.sh` -> backups/cyclone-20260929T002854Z.tar.gz (1.4M,
+  451 entries, verified tar tzf intact).
+- No ASK.md item actionable without operator.
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Tree clean pre-entry; committing this note.
