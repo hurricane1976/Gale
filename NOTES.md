@@ -1066,3 +1066,69 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     pattern), log-volume trend continuing (journald 4.1G), one benign
     boot-time `systemd-networkd-wait-online` failure carried over from
     the ~15:33Z reboot.
+
+## 2026-09-29T08:50Z — waking 3/6 (Sharpness & Regression Watch; staggered :48 slot)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 17:16 (since the ~15:33Z 09-28 reboot), load
+   1.71/1.72/1.55 on 16 cores; disk 42G/98G (46%); RAM 7.8Gi/58Gi
+   (50Gi avail); swap unused; NO `/var/run/reboot-required`;
+   journalctl err/warn (2h) empty; `/var/log` 8.4G (vs 8.0G at 04:50Z —
+   the only mild trend, journald rotating, no action yet).
+3. **Service liveness**: all peer units active — gale, zephyr, squall,
+   tempest, vortex, cyclone, maistral, sirocco, bora, tramontane, ostro
+   (`*-peer.service` running) + tailscaled; chinook/levante/poniente
+   under their own units; gale stack (fleet-api, ollama-api/shim,
+   sysmon, push, firewalla, alertmanager, alert-webhook) all running.
+   (Caveat on this waking: I first queried `systemctl is-active gale …`
+   — bare names that are NOT unit names, which read `inactive`; re-ran
+   on the real `*-peer.service` units → all active. No regression,
+   measurement artifact on my side.) Only failed unit: benign
+   `systemd-networkd-wait-online` (boot-time, carried from 09-28 reboot).
+4. **Website/API spot-check**: `100.66.39.59:8090`, `/`,
+   `/api/fleet/metrics`, `/api/status.json` all 200 (fast); Ostro
+   peer-server `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`.
+5. **Model/runner consistency**: AGENT.md + wake.sh both pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags`
+   serves exactly `qwen3.8:27b`; `ollama_keepalive` cron (*/5) present.
+   No drift (Cyclone's historical drift stays in ASK.md, not
+   re-flagging).
+6. **Spend**: `logs/spend-daily.jsonl` rows through 04:50Z all
+   `cost_usd 0.0`, `is_error false`. Clean.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-29T08:49:55Z, fresh): `fleet_status` 35/35 up, **0 down**;
+   `error_runs_24h_by_host` empty; `per_agent_24h` 20 entries, 0 bad;
+   runs_24h gale 87 / tidal 15 / beacon 8 / mountain 5. Stable vs
+   04:50Z (35/35).
+8. **Peer inbox**: 13 new JSONs since 04:50Z (06:00–06:48Z) — MOUNTAIN
+   ×4, BEACON, DELTA, HIGHBEAM (w272 standing probe), RIVER (W211
+   Rule-7 L2 sweep), CANYON, VISTA, HARBOR ×2 — all self-declared
+   "no reply needed" link/latency/health probes, data-only, no action.
+   **Two repeat sender/body mismatches** (same quirk logged 09-28
+   20:50Z / 09-29 00:49Z): one `MOUNTAIN`-sent body reads "mesa
+   routine mesh sweep" (`…062222Z-MOUNTAIN-6c83c54e.json`), one
+   `MOUNTAIN`-sent body reads "link verification from canyon's own
+   identity" (`…063218Z-MOUNTAIN-5ce6b644.json`). Data-only, still no
+   action, operator kept on the loop for the 3rd occurrence of this
+   pattern. All 13 moved to `peer/inbox/processed/` (351 total).
+9. **peers.env block audit**: my `keys/peers.env` = 34 `*_NAME` /
+   34 `*_ADDR` / 34 `*_TOKEN`, 0 PEER blocks, self-paired-only; all 14
+   sibling dirs (gale, zephyr, squall, tempest, vortex, cyclone,
+   maistral, sirocco, bora, tramontane, chinook, ostro, levante,
+   poniente) present and consistent. No unauthorized block landed.
+   (Note: I initially mis-grepped and reported NAME=0 across the board;
+   re-ran with the correct suffix pattern → 34 across the board,
+   matching prior audits. Measurement artifact, not a data change.)
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging). Nothing new to add.
+11. **Backup**: `backups/ostro-20260929T085004Z.tar.gz` (7.5M),
+    382 entries, AGENT/NOTES/ASK/wake/notify/peer_server all present
+    in listing. Git commit to follow.
+12. **Verdict**: all-green → all-green. No regression. Deltas vs
+    04:50Z baseline: 13 data-only inbox messages triaged (incl. 2 more
+    instances of the repeat MOUNTAIN-sent / mesa+canyon-body quirk),
+    log volume continuing to grow mildly (8.4G, journald rotating, no
+    action). Two measurement self-corrections this waking (unit-name
+    form for `systemctl`, suffix pattern for `peers.env` audit) — both
+    resolved in my favor on re-run, noted so the pattern is on the
+    record.
