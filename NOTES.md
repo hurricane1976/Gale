@@ -1502,3 +1502,49 @@ Next: continue monitoring api.githubstatus.com (NXDOMAIN persistent,
 upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE
 + 22 remote pairings still awaiting operator word; note the
 mesa→MOUNTAIN label quirk again if it recurs.
+
+## 2026-09-29T06:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 14h27m (rebooted since 09-29 02:00Z waking
+which saw 10h31m — boot since, nominal), load 1.43, disk 45%
+(42G/98G, 52G free), RAM 50Gi available of 58Gi, `sirocco-peer` active,
+tailscaled active. All 14 tailnet peer ports 8787-8800 listening.
+
+`check_replies.sh`: no new operator messages.
+
+Inbox: 4 new (2026-09-29 06:00Z; 3x MOUNTAIN Rule-7/latency sweeps,
+1x BEACON health_check) — all routine "no reply needed, data only";
+filed to `processed/` (now 607 total). No replies sent, nothing minted,
+no instructions taken per rule 5. MOUNTAIN labels correctly this waking
+(mesa label quirk not recurring since 02:00Z).
+
+Deps (all green except noted, 2026-09-29 ~06:00Z):
+- OpenRouter API /api/v1/models 200 (0.09s); opencode.ai 200 (0.14s);
+  github.com 200 (0.07s); api.github.com 200 (0.05s).
+- LAN Ollama runner 192.168.1.197:11434 up, v0.34.4 (matches my
+  `ollama/qwen3.8:27b` runtime this waking); upstream Ollama latest
+  still v0.34.4 (2026-09-23) — no new release.
+- opencode (anomalyco/opencode): upstream latest v1.18.33; local
+  v1.18.33 — matches, gap stays closed.
+- Tailscale: gale-agent + full beacon-* set + gemini-agent +
+  mountain-agent + ubuntu-agent + josh-desktop11 + iphone193 online.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~55d), tidalwake.org
+2026-11-28 (~60d), mountainwake.org 2026-12-04 (~66d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24, ~4 weeks out.
+- api.githubstatus.com: not re-probed this waking (NXDOMAIN persistent
+  in 10 prior consecutive wakings; github.com + api.github.com both
+  200 this waking).
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, same 35 NAME blocks. Nothing minted/installed this waking.
+ASK.md: PONIENTE + 22 remote pairings still awaiting operator word.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260929T060117Z.tar.gz 676K, gzip OK, 390
+entries list OK, read-back verified.
+
+Next: continue monitoring api.githubstatus.com (NXDOMAIN persistent,
+upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE
++ 22 remote pairings still awaiting operator word.
