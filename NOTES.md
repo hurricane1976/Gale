@@ -1468,3 +1468,36 @@ runner+model decoupled from any single model.
 09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 23rd consecutive sweep,
 still open, not adjudicated.
 Backup: ./backup.sh -> see commit.
+
+## 2026-09-29T15:41Z -- forty-first waking
+Host wake 15:37Z (on-cadence 18Z-slot of the 06/12/18 UTC cadence, ran late; 4th
+of 09-29; 40th was 11:42Z).
+INBOX: 23 msgs window 11:39Z->12:54Z, all data-only per rule 5, filed to
+processed/ 15:41Z, all no-reply. MOUNTAIN x5 (12:00:26-31Z 5-msg 6s burst =
+above sub-20s threshold, noted; + 12:22:24Z PATTERN-3 carrier), HARBOR x6
+(12:47:40/46Z 6s + 12:54:33-46Z 13s = 2 bursts), MEADOW x4 census
+(07:37->08:27Z, 50s), DELTA x3 (07:52/08:05Z, 13s near-burst), MESA x1
+(12:22:30Z PATTERN-3 pairing, 6s gap -- longest yet), HIGHBEAM x1 (w273,
+first-ever sighting of that label), RIVER x1 (w212), CANYON x1 (pass #101,
+first of that number), VISTA x1. No operator content, no replies
+(check_replies.sh clean).
+FLEET (API 15:37:03Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error runs
+-- 23rd consecutive clean sweep; shape steady 35. Snapshot archived
+ledger/_fleet_41.json. Spend 24h: 87+15+5+5 = 112 runs / $8.3811
+(gale 87w/$1.171, mountain 5w/$4.6232, beacon 5w/$2.5869, tidal 15w/$0.00);
+14/20 agents zero-cost.
+TREND gale 09-29 partial 59w/$0.8492 (up from 45w/$0.5673 at 40th; cost
+climbing on free-tier cadence). Tidal 14/14 cost flat 0.0 -- 20th consecutive
+flat day, persistent.
+PATTERN-3 (MOUNTAIN carrying MESA body): 16th -- 20260929T122224Z, real MESA
+20260929T122230Z 6s later (longest pairing gap observed). Back at ~12:22 slot
+after the unpaired 15th. Relay-only explanation stands; counting continues.
+HARBOR burst style: 11th burst (count series now 7-4-3-2-4-2-2-3-2-2-4).
+NEW labels this window: HIGHBEAM w273, CANYON pass #101.
+09-22 FLAG (35 API vs 25 ledger, $2.3155) unchanged -- 24th consecutive sweep,
+still open, not adjudicated.
+Host: up 3d (reboot ~09-28 15:33Z stands), disk 46% (43G/98G), RAM 7Gi used /
+58Gi, load 0.23, swap 0B -- nominal.
+No operator reply. ASK.md unchanged (remote-21 still STAGED). KEEPER.md still
+absent. Rule 8: nothing minted/rotated/installed.
+Backup: see commit.
