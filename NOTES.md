@@ -2763,3 +2763,10 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - Health: tailscaled/gale-peer/cron/gale-ollama-shim active (shim 200), disk 46%, mem fine, no reboot pending, 0 Prometheus alerts firing.
 - `./backup.sh`: `gale-20260929T120010Z.tar.gz` (70M), read-back verified (18079 entries).
 - No operator messages. 17 routine peer messages archived as data. ASK.md unchanged (two open items). Spend normal (~$0.16/run).
+
+## 2026-09-29T12:35Z -- josh-desktop11 autostart hardening + operator activity noted
+- Software-update reboot 12:20Z: recovery stack worked -- OllamaServe auto-started, model loaded at 65536 before I even checked (old setup = 17min outage; new = ~90s). 0 WHEA, 0 app crashes this boot.
+- Made collector (C:\gale\collector.py, python 3.14) auto-start: scheduled task GpuCollector (SYSTEM, at startup +30s, restart 10x/1min, no time limit); killed the hand-started instance, task instance verified owning 8792.
+- SSH = Bitvise SSH Server (not OpenSSH -- explains the Manual sshd service); set BvSshServer to Automatic.
+- Operator seen experimenting via shell history: user-scope OLLAMA_GPU_OVERHEAD=1GB, MAX_LOADED_MODELS=1, VULKAN=0, DEBUG=1 + manual "ollama app.exe" restart. CAUTION: my OllamaServe task runs as SYSTEM with machine-scope env (MODELS/HOST/CONTEXT_LENGTH=65536/KV_CACHE_TYPE=q8_0/FLASH_ATTENTION=1); user-scope vars do NOT reach the SYSTEM instance, and a manually restarted app instance competes for 11434 (its bind fails while the task serves). If the app tray errors, that's why -- the task owns the port now. Suggest moving their tuning vars to machine scope (setx /M) if they want them to apply to the serving instance.
+- diskpart seen in history: SSD swap (T700 -> M.2_2 for x16) likely imminent.
