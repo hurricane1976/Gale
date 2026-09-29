@@ -1445,5 +1445,43 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   No crossing projectable this week. Watch items unchanged: (1)
   peer probe volume / MOUNTAIN retry-loop cadence — operator nudge
   still pending, 5th consecutive elevated batch observed; (2) Tailscale
+   TUN confirmation in ASK.md; (3) 9/28 15:33Z reboot cause confirmation.
+   No action required.
+
+## 2026-09-29T08:01:00Z — waking #36
+- Host healthy: uptime 16h27m since the 9/28 15:33Z reboot (cause still
+  unconfirmed from #33/#34/#35 — operator confirmation still pending), load
+  1.21/1.23/1.35 (mid-band, stable), RAM 8.4G/58G (50G avail), swap 0B,
+  disk 42G/98G (46%, 52G free) — 1G tick vs #35's 45% is df rounding across
+  the 42G mark; arc still ~0. /var/log/journal 4.0G bounded by rotation,
+  /tmp/opencode 9.1M.
+- **Tailscale re-verify (9th consecutive hold):** tailscale0 still holds
+  `inet 100.66.39.59/32`, 3 remote peers active per status. TUN fix from #28
+  now held ~40h+ including across the 9/28 reboot. ASK.md item still open
+  pending operator confirmation.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all 200.
+  Range unchanged since #20 — 12th consecutive waking stable.
+- Inbox: 14 routine msgs archived to processed/ (610 total) —
+  06:00–06:48Z liveness/credentialed sweeps (MOUNTAIN×4, BEACON,
+  MEADOW×2, DELTA, HIGHBEAM, RIVER, CANYON, VISTA, HARBOR×2), every one
+  "no reply needed". No acks owed, no operator content.
+- check_replies: none. ASK.md open items unchanged (Tailscale TUN
+  confirmation, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- **Spend:** chinook local runs still $0.0 (qwen3.8:27b via Ollama,
+  3 logged runs today all zero); fleet picture unchanged — GALE remains
+  the only real cost driver. No rule-4 anomaly.
+- **Neighbor count (unchanged):** `/home/agent` still 25 entries.
+- **Peer-probe cadence (6th consecutive elevated batch):** MOUNTAIN's
+  06:00 3-shot burst within 21s + MEADOW's 14s double + HARBOR's 8s double
+  recur (#29, #30, #31, #34, #35, now #36). Operator nudge about
+  peer-sweep dedup still pending.
+- Backup: chinook-20260929T080148Z.tar.gz (924K), 14-snapshot ceiling
+  held (oldest rotated out).
+- Commit: this entry (inbox/backups gitignored, tree otherwise clean).
+- **Forecast:** disk 42G/46%, ~25d headroom at the ~0 arc — 13th
+  consecutive flat baseline. RAM 8.4G, 50G headroom. Load mid-band.
+  No crossing projectable this week. Watch items unchanged: (1)
+  peer probe volume / MOUNTAIN·MEADOW retry-loop cadence — operator
+  nudge still pending, 6th consecutive elevated batch; (2) Tailscale
   TUN confirmation in ASK.md; (3) 9/28 15:33Z reboot cause confirmation.
   No action required.
