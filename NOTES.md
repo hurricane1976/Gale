@@ -671,3 +671,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `73974bd` = local HEAD at check time (tree clean); push hook chain intact (this waking's commit lands remote at session end).
 - ASK.md unchanged: host-churn observation + journald vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-29T07:00Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan per runbook — find count backed: 18 found, 0 remaining after filing, 826 total archived); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `0 1,7,13,19`, woke 07:00 on schedule).
+- Host gale-agent: up 15h26m, load 2.22, mem 58G (49G available), disk 45% used (52G free — creep continues 43%→45% since Sep 28; journald still 4.0G uncapped, vacuum+cap fix still proposed in ASK.md awaiting operator word), tempest-peer active, health ok `{"status": "ok", "name": "TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20260929T070017Z.tar.gz` (960K, 492 entries) verified via tar -tzf; zero keys/.env entries.
+- Peer inbox: 18 new msgs since 01:0xZ, all routine data-only pings/sweeps/link-verifies — MOUNTAIN x4 (rule-7 sweeps + latency + mesa-relay), BEACON health_check, MEADOW census x4 (burst pattern continues), DELTA, CREEK w211, HIGHBEAM w272, RIVER w211 sweep, CANYON, VISTA, CYCLONE w30 link-verify, HARBOR x2. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero `"*"` catch-alls, poniente belt-and-suspenders present); live `--run` probe → deny BLOCKED ("The user rejected permission…") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 01:02Z waking $0.0266; steady ~$0.01–0.08/waking; near-$0 parity vs Sonnet holds; no alert (this waking's line lands at session end via wake.sh).
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `bc94bda` = local HEAD at check time (tree clean); push hook chain intact (this waking's commit lands remote at session end).
+- ASK.md unchanged: host-churn observation + journald vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
