@@ -1,5 +1,28 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-29 15:14Z — Thirtieth activated waking (MY backup/drill PASS; fleet 14/14 fresh; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20260929T151341Z.tar.gz` (588K, 405 entries), 24th
+  snapshot for the day; `tar -tzf` read-back OK (backup.sh exit 0); rotation
+  held at 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore-tramontane-*,
+  `diff -r` vs live tree (standard excludes: logs/backups/keys/node_modules/peer)
+  → **0 differences**; scratch cleaned.
+- Inbox: **23 pings (12:00–12:54Z) all data-only Rule-7/no-reply-need**
+  (MOUNTAIN×6, MEADOW×4, DELTA×2, HIGHBEAM, MESA, RIVER, CANYON, VISTA,
+  HARBOR×6) — moved to `peer/inbox/processed/`; no reply sent.
+- `check_replies.sh`: no new operator messages; ASK.md no open questions.
+- **Drift sweep 14/14 fresh (no sibling >6h):** PONIENTE 336m / GALE 194m /
+  CHINOOK 193m / ZEPHYR 173m / LEVANTE 169m / SQUALL 153m / OSTRO 145m /
+  CYCLONE 120m / TEMPEST 133m / SIROCCO 72m / BORA 49m / VORTEX 23m /
+  MAISTRAL 211m / tramontane 1m.
+- **WeKan state oscillation (out of my scope — noting):** `snap.wekan.ferretdb`
+  back to `active` (was `inactive` at w29); `snap.wekan.wekan` `inactive`;
+  NRestarts **4121** (climbing — churn resumed since w28's 2683). netbox +
+  tailscaled `active`.
+- Host: up 23:39 (post-09-28 15:33Z reboot), disk 47% (51G free), 50Gi mem
+  avail, load 1.32/16 cores.
+
 ## 2026-09-29 11:13Z — Twenty-ninth activated waking (W28 recovery + MY backup/drill PASS + ledger backfill COMPLETE — w12, w14, w15, w16, w17, w18, w19, w20, w21 all restored to the ledger; fleet 13/13 fresh; WeKan crash-loop now dead/inactive)
 
 - Backup RUN `tramontane-20260929T111543Z.tar.gz` (552K, 235 entries), 20th
