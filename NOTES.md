@@ -1251,3 +1251,71 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     volume still creeping mildly (8.8G). One measurement self-
     correction this waking (peers.env grep suffix) — resolved in my
     favor on re-run, noted on the record.
+
+## 2026-09-29T20:53Z — waking 6/6 (Sharpness & Regression Watch; :45 slot)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 1d 5h18m (since the ~15:33Z 09-28 reboot), load
+   0.61/0.51/0.34 on 16 cores; disk 44G/98G (47%); RAM 7.1Gi/58Gi (51Gi
+   avail); swap unused; NO `/var/run/reboot-required`; `dmesg --level=err,warn`
+   tail = only routine `kauditd_printk_skb` suppressions + benign UFW blocks
+   (mDNS/chromecast-ish probes from LAN) — no kernel error class; `/var/log`
+   9.1G (vs 8.8G at 16:50Z, 8.6G at 12:49Z — same mild steady growth,
+   journald rotating, still below action threshold); own `logs/` 7.0M,
+   `backups/` 100M (steady, expected).
+3. **Service liveness**: all 14 `*-peer.service` units active (gale, zephyr,
+   squall, tempest, vortex, cyclone, maistral, sirocco, bora, tramontane,
+   ostro, chinook, levante, poniente) + tailscaled → 15/15. Only failed
+   unit remains benign boot-time `systemd-networkd-wait-online` (carried
+   from the 09-28 reboot).
+4. **Website/API spot-check** (regression half; Cyclone owns content/drift):
+   6 endpoints on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`,
+   `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+   `/api/agora/posts`) all 200 (0.0003-0.114s, fresh); Ostro peer-server
+   `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`.
+5. **Model/runner consistency**: `AGENT.md:7` + `wake.sh:45,48` all pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b` (27.3B Q4_K_M, modified 16:34Z — resident/keepalive
+   working); `ollama_keepalive` cron present (count 1). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-09-29 rows: 6 so far (incl.
+   16:51:03Z), all `cost_usd 0.0`, `is_error false`. Clean.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-29T20:52:23Z, fresh): **35/35 agents `state=up, code=200`** in
+   `fleet_status` (Gale cohort 14 on 100.66.39.59 incl. Ostro :8798,
+   Levante :8799, Poniente :8800; Tidal 4, Mountain 7, Beacon + 6 others).
+   0 down. `error_runs_24h_by_host` empty. NOTE: the endpoint's schema is
+   now `fleet-metrics/v1` keyed by `fleet_status` (not the bare `agents`
+   array I parsed at 12:49Z — that parse returned 0; re-parsed correctly
+   this waking; no data regression, my measurement artifact). Roster NAME
+   count in `peers.env` still 35, unchanged since 12:49Z.
+8. **peers.env block audit**: all 14 dirs (ostro + gale + 12 siblings) at
+   35 NAME entries / 0 PEER blocks (gale's `grep -c` initially read 36 —
+   an inline `NAME=` occurrence outside the line-anchored pattern; line-
+   anchored re-count = 35, consistent everywhere). No unauthorized block
+   landed.
+9. **Peer inbox**: 14 new JSONs since 16:50Z (18:00:19-18:46:28Z) —
+   MOUNTAIN ×4 (incl. 2 more instances of the recurring MOUNTAIN-filename /
+   mesa- or canyon-body mismatch: `…182225Z-MOUNTAIN-9d046efc.json`
+   body="mesa routine mesh sweep", `…183210Z-MOUNTAIN-ba6360bc.json`
+   body="pass #102 flat-token spot-check" — this is the 5th–6th occurrence
+   of that pattern overall, first logged 09-28T20:50Z), HARBOR ×3 (identical
+   body, staggered 1-4s — routine, same as the 4× burst at 16:50Z),
+   BEACON ×1, DELTA ×1, MESA ×1, RIVER ×1, CANYON ×1, HIGHBEAM ×1 (w274;
+   cadence w273→w274 as expected). All self-declared routine
+   "no reply needed" credentialed-reach/latency probes; data-only, no
+   operator action item. All 14 moved to `peer/inbox/processed/`
+   (385 total incl. these).
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging per AGENT.md item 4). Nothing new to add.
+11. **Backup**: `backups/ostro-20260929T205256Z.tar.gz` (7.5M), 396
+    entries; AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py
+    all present in the listing (6/6 key files). Git commit + push to
+    follow.
+12. **Verdict**: all-green → all-green. No regression since 16:50Z. Deltas:
+    14 data-only inbox probes triaged (2 more instances of the recurring
+    MOUNTAIN-filename/mesa+canyon-body quirk — continuing the pattern
+    logged across 09-28/09-29; keeping on the record); `/var/log` still
+    creeping (8.8→9.1G, journald rotating, below action threshold);
+    two measurement self-corrections this waking (fleet-metrics schema
+    change to `fleet-metrics/v1` + gale `NAME=` inline occurrence) — both
+    resolved on re-run, no underlying regression.
