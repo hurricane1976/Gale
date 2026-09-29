@@ -1400,6 +1400,50 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
    RAM 7.5G used, 51G avail, load 1.2-band. No crossing projectable
    this week. New watch item (minor): neighbor growth — 4 new agent
    dirs since #27 implies a small upward drift in baseline peer_server
-   count; current headroom absorbs it with ~9× margin, so no action,
-   but worth re-checking baseline at the next cadence review. No
-   action required.
+    count; current headroom absorbs it with ~9× margin, so no action,
+    but worth re-checking baseline at the next cadence review. No
+    action required.
+
+## 2026-09-29T04:01:00Z — waking #35
+- Host healthy: uptime 12h27m since the 9/28 15:33Z reboot (cause still
+  unconfirmed from #33/#34 — operator confirmation still pending), load
+  1.29/1.21/1.29 (mid-band, stable), RAM 7.5G/58G (51G avail), swap 0B,
+  disk 42G/98G (45%, 52G free) — 2G up vs #34's 40G, consistent with
+  snapshot churn + overnight peer traffic; arc still ~0.
+  /var/log/journal bounded by rotation as before.
+- **Tailscale re-verify (8th consecutive hold):** tailscale0 still holds
+  `inet 100.66.39.59/32`; remote beacon peers active/direct per
+  `tailscale status`. TUN fix from #28 (correlated 9/25 kernel upgrade)
+  now held ~36h+ including across the 9/28 reboot. ASK.md item still
+  open pending operator confirmation.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up, 8787–8800 all
+  listening (13× 404 on GET / — API-only servers, 1× 200 on 8799 =
+  chinook's own pane); 8801 no listener. Range unchanged since #20 —
+  11th consecutive waking stable. `ss -tlnp` confirms the same 14
+  python3 peer_servers plus the pre-existing 127.0.0.1-bound loopbacks
+  at 8791/8793/8794/8795 (noted #34, unchanged).
+- Inbox: 29 routine msgs archived to processed/ (596 total) — 00:00–01:14Z
+  liveness/credentialed sweeps (MOUNTAIN×8, BEACON×2, MEADOW×3, DELTA×4,
+  MESA×2, HIGHBEAM×2, RIVER, CANYON×2, VISTA, HARBOR×2, CYCLONE), every
+  one "no reply needed". No acks owed, no operator content.
+  MOUNTAIN's 00:56Z 4-shot burst within 27s recurs — 5th consecutive
+  elevated probe-cadence batch (#29, #30, #31, #34, now #35); operator
+  nudge about peer-sweep dedup still pending.
+- check_replies: none. ASK.md open items unchanged (Tailscale TUN
+  confirmation, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- **Spend:** chinook local runs still $0.0 (qwen3.8:27b via Ollama);
+  fleet picture unchanged — GALE remains the only real cost driver.
+  No rule-4 anomaly.
+- **Neighbor growth (unchanged):** `/home/agent` still 25 entries incl.
+  the 4 added since #27 (levante, ostro, poniente, tramontane). Host
+  now runs 15 agents. Baseline peer_server count stable at 14 for this
+  waking; 9× RAM margin holds.
+- Backup: chinook-20260929T040148Z.tar.gz (892K), 14-snapshot ceiling
+  held (oldest rotated out).
+- **Forecast:** disk 42G/45%, ~25d headroom at the ~0 arc — 12th
+  consecutive flat baseline. RAM 7.5G, 51G headroom. Load mid-band.
+  No crossing projectable this week. Watch items unchanged: (1)
+  peer probe volume / MOUNTAIN retry-loop cadence — operator nudge
+  still pending, 5th consecutive elevated batch observed; (2) Tailscale
+  TUN confirmation in ASK.md; (3) 9/28 15:33Z reboot cause confirmation.
+  No action required.
