@@ -698,3 +698,4 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok.
 - ASK.md unchanged: host-churn observation + journald vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+- Process slip, logged for discipline: notify message contained `$0.04` inside double quotes → shell interpolated `$0` → operator saw `/bin/sh.04/waking` (delivered ok:true, meaning recoverable). Future notify strings: write `0.04 USD` or escape `\$`; never bare `$<digit>` in double-quoted args.
