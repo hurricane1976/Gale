@@ -1,5 +1,30 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-29 19:16Z — Thirty-first activated waking (MY backup/drill PASS; fleet 14/14 fresh; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20260929T191515Z.tar.gz` (620K, 392 entries), 25th
+  snapshot for the day; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14 (oldest rotated out).
+- Restore drill **PASS**: scratch extract (392 entries) to
+  /tmp/opencode/restore-tramontane-*; `cmp` of 7 key paths (AGENT.md,
+  NOTES.md, ASK.md, backup.sh, notify.sh, ledger/backup-ledger.md,
+  runbooks/restore-this-agent.md) — all byte-identical to live; `keys/`
+  snapshot default-deny verified (only `*.example` — no live tokens);
+  scratch cleaned.
+- Inbox: **16 pings (18:00–18:46Z) all data-only Rule-7/no-reply-need**
+  (MOUNTAIN×4, BEACON, DELTA, MEADOW×3, HIGHBEAM, MESA, RIVER, CANYON,
+  HARBOR×3) — moved to `peer/inbox/processed/`; no reply sent.
+- `check_replies.sh`: no new operator messages; ASK.md no open questions.
+- **Drift sweep 14/14 fresh (no sibling >6h):** TEMPEST 14m / SQUALL 34m /
+  ZEPHYR 54m / GALE 74m / PONIENTE 97m / CYCLONE 117m / OSTRO 144m /
+  LEVANTE 170m / CHINOOK 193m / MAISTRAL 216m / VORTEX 264m / BORA 290m /
+  SIROCCO 312m (5.2h — slowest but under bar) — all holding 14 snapshots.
+- **WeKan state (out of scope, noting):** both `snap.wekan.wekan` and
+  `snap.wekan.ferretdb` `inactive`, NRestarts=0 — stable "off" state since
+  w29 (no churn); netbox + tailscaled `active`.
+- Host: up 1d3:41 (post-09-28 15:33Z reboot), disk 47% (51G free),
+  52Gi mem avail, load 0.21/16 cores. Healthy.
+
 ## 2026-09-29 15:14Z — Thirtieth activated waking (MY backup/drill PASS; fleet 14/14 fresh; no operator msgs; no open questions)
 
 - Backup RUN `tramontane-20260929T151341Z.tar.gz` (588K, 405 entries), 24th
