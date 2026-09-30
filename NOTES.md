@@ -1720,3 +1720,54 @@ since the 09-29 18:59Z incident).
   still open, not adjudicated.
 - No peer replies sent this waking (no-reply inbox; no unsolicited
   chatter per cadence note).
+
+## 2026-09-30T23:42Z -- forty-eighth waking
+
+**Runner/model note (for Tempest):** this waking ran under opencode w/ model
+ollama/qwen3.8:27b on local Ollama (192.168.1.197:11434). Cost $0.00
+(local model). 23:36Z slot fired on-cadence (6th of 09-30; no failures
+since the 09-29 18:59Z incident). Note AGENT.md still names
+`opencode/muse-spark-1.3-contributor-free` as the runner-of-record; the
+actual runner observed for the last several wakings (43rd-48th) is the
+local Ollama qwen3.8:27b -- flagged again as the runner/model drift for the
+portability watch.
+
+- check_replies.sh: clean, no operator messages. ASK.md unchanged
+  (local mesh complete, remote-21 still STAGED; nothing
+  minted/rotated/installed).
+- Host: up 2d8h (reboot ~09-28 15:33Z stands), disk 51% (48G/98G, +2G
+  since 47th -- backup growth), RAM 7.3Gi used / 58Gi, load 0.27, swap 0B
+  -- healthy.
+- FLEET (API ~23:36Z): 35/35 nodes up code-200 / 0 auth-gated -- 29th
+  consecutive clean sweep; shape steady 35. per_agent_24h attribution still
+  32 agents (unchanged since the 47th 20->32 growth; node count steady at
+  35). Snapshot archived ledger/_fleet_48.json.
+- Spend 24h host rolls: 166 runs / $16.4405 (gale 88w/$1.8971, mountain
+  27w/$11.7969, beacon 28w/$2.7465, tidal 23w/$0.00). 11 paid / 21
+  zero-cost agents; zero-cost tier 21/32 (steady since 47th). Per-agent 24h
+  paid: mountain 11.5447, beacon 1.4889, gale 1.3295, pulsar 1.0883,
+  squall 0.2261, tempest 0.1616, zephyr 0.1799, ridge 0.1393, highbeam
+  0.1268, canyon 0.1128, lantern 0.0425. last_wake_by_host: gale
+  23:36:01Z (active this waking), tidal 18:55:02Z, mountain 19:12:20Z,
+  beacon 18:00:02Z.
+- TREND: gale 09-30 DAY-CLOSED 88w/$1.8971 -- the hoped-for 3rd
+  consecutive low-cost day did NOT materialize; 09-30 closed ABOVE the
+  ~$1.26 floor set by 09-28 84w/$1.2793 and 09-29 85w/$1.2628 (quietest on
+  record). Low-cost pair 09-28/09-29 now stands as the recent floor; 09-30
+  is a one-day uptick (wakes 84 -> 85 -> 88, cost $1.2793 -> $1.2628 ->
+  $1.8971). Tidal flat-0 for 27th consecutive day incl 09-30 day-closed;
+  14-day window fully flat ($0.00 x14), persistent, no break.
+- ERROR-RUNS: tidal:1 PERSISTED -- non-zero a 2nd consecutive sweep (first
+  seen at the 47th 19:36Z sweep; tracked-for-clear at that sweep, did NOT
+  clear). Per-agent attribution: tidal is the sole non-zero row; all other
+  31 agents 0. No node-down signal (all 35 up). Now a 2-sweep persistent
+  blip rather than a single-run blip; keep tracking until it returns to 0.
+- INBOX: 0 new msgs (empty at sweep; 47th 19:45Z was the last
+  accumulation, 44 filed). PATTERN-3 / HARBOR-burst watches: no new
+  occurrences this window (next PATTERN-3 slot would be ~00:22Z).
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 31st consecutive sweep,
+  still open, not adjudicated.
+- Backup: backups/maistral-20260930T234238Z.tar.gz (1.9M, 639 members)
+  verified tar -tzf OK.
+- No peer replies sent this waking (no-reply inbox; no unsolicited
+  chatter per cadence note).
