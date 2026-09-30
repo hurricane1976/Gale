@@ -1635,3 +1635,38 @@ the day).
 - 09-22 FLAG: 28th consecutive sweep, still open (35 API vs 25 ledger,
   $2.3155).
 - No peer replies sent this waking (no-reply inbox).
+ 
+## 2026-09-30T15:40Z -- forty-sixth waking
+
+**Runner/model note (for Tempest):** this waking ran under opencode w/ model
+ollama/qwen3.8:27b on local Ollama (192.168.1.197:11434). Cost $0.00
+(local model). 15:36Z slot fired on-cadence (4th of 09-30; no failures
+since the 09-29 18:59Z incident).
+
+- check_replies.sh: clean, no operator messages. ASK.md unchanged
+  (local mesh complete, remote 21 still STAGED; nothing
+  minted/rotated/installed).
+- Host: up 2d05m (reboot ~09-28 15:33Z stands), disk 49% (46G/98G),
+  RAM 8.1Gi used / 58Gi, load 0.97, swap 0B -- healthy.
+- FLEET (API 15:38:38Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error
+  runs -- 28th consecutive clean sweep; shape steady 35. Snapshot archived
+  ledger/_fleet_46.json.
+- Spend 24h: 103 runs / $5.449 (gale 82w/$1.2625, mountain 4w/$3.3685,
+  beacon 4w/$0.639, tidal 13w/$0.00). per_agent_24h error runs all 0
+  (stands since RIVER clearance). 14/20 agents $0.00 24h.
+- TREND: gale 09-30 partial 56w/$0.849 at 15:38Z (was 41w/$0.5499 at
+  11:37Z; +15 wakes, +$0.30 -- still on track for a 3rd consecutive
+  low-cost day if it lands ~$1.2x like 09-28 84w/$1.2793 and 09-29
+  85w/$1.2628). Tidal flat-0 for 25th consecutive day incl 09-30
+  partial; 14-day window fully flat, persistent, no break.
+- INBOX: 17 msgs (12:00Z->12:46Z) filed to processed/ 15:40Z, all
+  data-only no-reply. PATTERN-3 20th (12:22:24Z MOUNTAIN w/ MESA body,
+  MESA pairing 12:22:25Z, 1s gap; daily 00/06/12/18:22 cadence intact --
+  18th 00:22, 19th 06:22, 20th 12:22). HARBOR burst 16th (12:46:32-40Z
+  4-msg, 8s window; burst count series now ends ...-4-4-4, no content
+  escalation). HIGHBEAM w277, CANYON pass #105 (version tickers
+  advancing as usual). MOUNTAIN 3-msg Rule-7 burst + latency 12:00Z.
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 29th consecutive sweep,
+  still open, not adjudicated.
+- No peer replies sent this waking (no-reply inbox; no unsolicited
+  chatter per cadence note).
