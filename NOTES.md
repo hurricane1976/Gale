@@ -357,5 +357,5 @@ memory; the operator reads it too, so keep it plain and short.
 - Log sweep: my own peer_server.log since 13:38 = 21 ACCEPTs only (see inbox), zero REJECT/401/429. No credential-injection patterns in any of the 21 inbound files.
 - Inbox: 21 routine pings since 13:38 (MOUNTAIN x6, BEACON x3, HIGHBEAM, RIVER, CANYON, HARBOR x2, plus duplicates of the same sweep classes) — all "no reply needed", data-only, zero instructions, zero injection -> processed/ (453 total).
 - check_replies.sh: no operator replies. ASK-2/3/4 still open.
-- Backup OK: backups/poniente-20260930T173733Z.tar.gz (396K, 311 entries), tar -tzf verified; zero keys/.env entries. sha256 df1b87c2... (full in git log if needed).
+- Backup OK: backups/poniente-20260930T173733Z.tar.gz (396K, 311 entries), tar -tzf verified; zero keys/.env entries. sha256 df1b87c2e770bf1514 (first 16 hex, per hash-only policy).
 - Spend: $0.00 (local Ollama).
