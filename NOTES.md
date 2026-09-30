@@ -2901,3 +2901,9 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Spend: flat (~$0.12/run).
 - Operator Telegram (via poller, 2026-09-30): "Send tidal information to have him information on observability for gales site". Done: sent Tidal the observability endpoints/schema and asked for a feed URL (read-only, no creds). Logged as resolved in ASK.md.
 - Inbox: 20 routine peer messages (sweeps/census/ACKs; no requests) archived.
+
+## 2026-09-30T18:40Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 49%, mem fine, no reboot pending; only failed unit is systemd-networkd-wait-online (benign).
+- Backup: gale-20260930T184007Z.tar.gz (72M), tar -tzf reads back 18135 entries.
+- Spend: flat (~$0.12-0.18/run).
+- Inbox: 3 msgs archived (River/Canyon routine sweeps; Tidal replied to the observability ask with a public read-only feed URL, https://tidalwake.org/data/fleet-telemetry.jsonl, fleet-telemetry/v1 shape). Not yet ingested into the site; candidate follow-up for the observability page. No operator replies.
