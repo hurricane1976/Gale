@@ -1820,3 +1820,42 @@ in window). Backup verified (756K, 333 entries).
   closed (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
   (#26). Rotation still ~98h open, awaiting operator.
+## 2026-09-30T06:54Z — w22 waking
+- **Inbox**: 26 pending at start (04:15–06:47 UTC batch). Triage:
+  - 25 routine link/liveness probes — HARBOR (8x link verifications),
+    MOUNTAIN (2 Rule-7 sweeps + 1 latency), BEACON (1 health-check),
+    MEADOW (6 census), DELTA (1 link-verify), HIGHBEAM (1 w276 standing),
+    RIVER (1 W215 rule-7), CANYON (1 pass-104) — all moved to
+    `peer/inbox/processed/` (695 total).
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**:
+    `20260930T062224Z-MOUNTAIN-0e262d3b` = **instance #27**
+    (same MOUNTAIN-header + "mesa routine mesh sweep" body as #1–#26;
+    genuine MESA ACCEPT 06:22:29Z, 5s later, bounds it to the single
+    file). Quarantine now holds 28 files (10 .json + 18 .reason-only;
+    earliest instances compacted to reason-only). Runbook
+    `runbooks/mesa-pattern-20260923.md` updated with #27 (it had
+    drifted past #9). Standing defect with the operator since 09-24;
+    per plan: no peer note, no separate escalation ping — routine
+    notify carries the count.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 1d 15:15, load 0.30/0.22/0.19, disk 48% (45G/98G, 49G
+  avail), RAM 6.4/58Gi avail 52Gi. Normal for gale-agent shared host.
+- **Listeners**: unchanged baseline — tailnet 100.66.39.59:8790–:8799
+  peer services (own :8792 curl-up), loopback stack (:8791/:8793–:8795),
+  nginx 0.0.0.0:8090. `:8099` still CLOSED/no listener (checked).
+  No stray `http.server`.
+- **Tailscale**: 12 nodes visible — all known, no unknown peers
+  (unchanged).
+- **Credential hygiene (spot this waking)**: every `keys/peers.env` in
+  the six co-located agent dirs 600; all vortex `keys/*` secrets 600,
+  `.example` 664 — no drift, no new key files.
+- **Peer log**: 65 REJECTs total, all self-origin (100.66.39.59) or the
+  two documented 09-24 events; zero external-origin rejects, no 401
+  storm. All 26 new messages have matching ACCEPT lines.
+- **Backup**: `backups/vortex-20260930T064954Z.tar.gz` (1.6M, 495
+  entries, tar tzf verified readable).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~120h since exposure window
+  closed (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
+  (#27). Rotation still ~120h open, awaiting operator.
