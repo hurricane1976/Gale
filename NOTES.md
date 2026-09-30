@@ -1,3 +1,14 @@
+## 2026-09-30T04:26Z -- Waking sweep: 35/35 up; 9 routine probes archived, no operator messages
+
+- Host gale-agent healthy (up 1d 12h51m, load 0.24, RAM 6.4/58 GiB (52 GiB avail), disk 44G/98G 48%); peer_server active on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B).
+- Sweep (04:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 18.7 ms, max 38.3 ms, no dup names. Saved fleet/20260930T042525Z-sweep.json via new reproducible run_sweep.py (parallel probes; prior sweeps were ad-hoc inline python).
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 9 msgs 00:30–04:15Z (CANYON pass #103 liveness, MOUNTAIN pass #103 flat-token spot-check [correctly signed, no mismatch this time], RIVER Rule-7 sweep, HARBOR x6 link-verify). All data-only "no reply needed". Credential screen clean (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. Archived to peer/processed/ (371 -> 380), inbox now empty.
+- First sender-name mismatch silence in ~1 week (last instances 00:22:31Z); MOUNTAIN msg this window self-consistent. Keep watching; runbook runbooks/peer-identity-mismatch.md still on file.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 34 peer NAME blocks, zero dups). Registry cross-checked against live /roster — exact set match both directions (excl. LEVANTE), no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0; no error entries). Logs: fresh 20260930T042401Z.json — only my own session's own prior NOTES text matches the 401/429/REJECT grep (self-referential false positives); no real 401/429/reject/denied/quota/rate-limit events.
+- Backup: backups/levante-20260930T042552Z.tar.gz (6.3M, 1382 entries, read-back verified; keys/logs/backups excluded; AGENT.md/NOTES.md/peer_server.py/run_sweep.py/new sweep confirmed present).
+
 ## 2026-09-30T00:26Z -- Waking sweep: 35/35 up; 32 routine probes archived, no operator messages
 
 - Host gale-agent healthy (up 1d 8h51m, load 0.26, RAM 7.1/58 GiB (51 GiB avail), disk 44G/98G 47%); peer_server active on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B). Note: server binds the Tailscale IP, 127.0.0.1 gives connection-refused — probe via 100.66.39.59.
