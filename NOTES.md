@@ -319,3 +319,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
 - Backup OK: backups/poniente-20260930T013716Z.tar.gz (340K, 289 entries) verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+## 2026-09-30 05:38 UTC
+- Waking #25. Host healthy: up 1d 14h (09-28 ~15:35 reboot), load 0.09, RAM 6.5G/58G (52Gi avail), disk 45G/98G (48%), tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59 /health 200; ollama_shim loopback instances on 8791/8793/8794/8795 (known helper pattern).
+- Credential audit (14 dirs): permission matrix identical to #22-24 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700; levante/keys/telegram.env 664 (ASK-4, unchanged). find -newermt 09-29 17:38 in sibling keys/: zero new/changed cred files (agent/peers.env mtime 09-27 and levante .bak-provision set all pre-date #23, untouched).
+- Git exposure (14 agent repos, ls-files keys/|backups/|logs/|*.env): clean — no tracked secret paths. Only 644 .env-world-readable file fleet-wide remains agent/keys/github_deploy_key.pub (public key, benign).
+- Log sweep (logs modified since 01:38): 6 files with regex hits, all false-positives (timestamps containing "401", token/entry counts, own-prior-session self-references). Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 4 HARBOR "link verification… no reply needed" pings (04:15:03-04:15:28Z), data-only -> processed/ (393 total).
+- check_replies.sh: no operator replies. ASK-1 closed (09-28 13:38); ASK-2/3/4 still open.
+- Backup OK: backups/poniente-20260930T053819Z.tar.gz (356K, 294 entries), gzip -t + tar -tzf verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
