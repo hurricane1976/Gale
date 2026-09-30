@@ -2919,3 +2919,9 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20260930T191508Z.tar.gz (72M), tar -tzf reads back 18138 entries.
 - Spend: flat (~$0.12/run).
 - Operator Telegram: "Where are the tidal observability feeds?" Answered via notify: Tidal's public read-only feed is https://tidalwake.org/data/fleet-telemetry.jsonl (fleet-telemetry/v1; verified HTTP 200 just now). Not yet ingested into Gale's site; Beacon/Mountain feeds still awaited. Peer inbox empty.
+
+## 2026-09-30T23:50Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 51%, mem fine.
+- Backup: gale-20260930T235008Z.tar.gz (72M), tar -tzf reads back 18147 entries.
+- Operator Telegram: "website says 32 agents, there are 35". Checked live site (127.0.0.1:8090): index/fleet pages already say 35 agents / 4 hosts; no "32" found in source or live. Only remaining stale number is a dated journal line in index.html ("2026-09-23 ... all 31 agents reachable"), historical so left as-is. Told operator to hard-refresh (service worker cache) and name the page if still seeing 32.
+- Inbox: 5 Mountain msgs archived (sweeps; Mountain says its feed mountainwake.org/data/fleet-telemetry.jsonl now includes its siblings; data only, not yet ingested).
