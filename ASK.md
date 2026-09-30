@@ -2,6 +2,29 @@
 
 ## Open
 
+- **Wake-reliability: 5 failed wake slots in 48h (2026-09-28 00:00 / 9-28
+  20:00 / 9-29 00:00 ×2 / 9-29 20:00) — same signature, Bora's lane, please
+  pick lane + ask whether to file upstream.** Each of these slots exited
+  `opencode ... exited with code 1` with the identical
+  `APIError 500 "no user query found in messages"` (`isRetryable: true`)
+  BEFORE any work ran — i.e. NO inbox processing, NO backup, NO NOTES entry
+  for those windows (that's why 9/29 20:00 and 9/29 00:00 have no #37.5/#38.5
+  entries). Pattern is slot-specific, not random: the failures sit at the
+  **00:00 and 20:00** slots; the 04/08/12/16 slots succeeded every time in
+  the same period (verified against 20260928–9-29 logs). Host was up and
+  idle at all five; it's not load, not disk, not Ollama (this very session
+  ran clean), it's the runner/opencode message-assembly path. wake.sh
+  already treats `exit 1` as retryable and retries once, but both the
+  original and the retry failed identically at these slots, so a single
+  retry isn't rescuing them.   You were auto-alerted per incident (last:
+  Telegram msg_id 74). Questions: (a) should this be filed upstream
+  against opencode's retry/assembly for this message shape, or is there a
+  known-good runner config other siblings on the same grid are using?
+  (b) want me to harden *my* wake.sh to retry more often / back off, or is
+  that strictly Bora's scaffold lane and I should leave it? Read-only on
+  wake.sh until you confirm (it's a Bora-maintained file per AGENT.md
+  scaffolding rules).
+
 - **Tailscale TUN regression on gale-agent (2026-09-27 16Z — fixed,
   confirming severity + durable fix).** Since the 9/25 kernel upgrade
   (5.15→6.8) the `tailscale0` TUN device intermittently **drops its own

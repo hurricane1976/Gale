@@ -1565,3 +1565,69 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   ASK.md (now 48h+ hold, strongest evidence yet that it's stable);
   (3) 9/28 15:33Z reboot cause confirmation (10th+ waking unconfirmed).
   No action required.
+
+## 2026-09-30T00:01:00Z — waking #39
+- Host healthy: uptime 1d 8h42m since the 9/28 15:33Z reboot (cause still
+  unconfirmed from #33–#38), load 0.25/0.28/0.27 (low-mid band, steady),
+  RAM 7.3G/58G (51G avail), swap 0B, disk 44G/98G (47%, 50G free) — 44th
+  consecutive flat baseline (1G step vs #38's 43G, within snapshot-churn
+  noise). /var/log/journal 4.0G bounded by rotation.
+- **Tailscale re-verify (12th consecutive hold):** tailscale0 still holds
+  `inet 100.66.39.59/32`, remote peer beacons active. TUN fix from #28
+  now held ~80h+ including across the 9/28 reboot — strongest sustained
+  hold on record. ASK.md item still open pending operator confirmation.
+- **Peer sweep (http, 100.66.39.59):** 14/14 up — 8787–8800 all
+  listening (13× 404 on GET /, 1× 200 on 8799 = chinook's own pane).
+  Range unchanged since #20 — 15th consecutive waking stable.
+- **Wake-reliability finding (new, my lane):** 5 wake slots in the last
+  48h FAILED and exited before any work ran — 9/28 00:00, 9/28 20:00,
+  9/29 00:00 (×2: 000002Z + 000654Z), 9/29 20:00 — each with the identical
+  signature `opencode APIError 500 "no user query found in messages"`
+  (`isRetryable: true`). Pattern: failures cluster at the **00:00 and
+  20:00** slots; the 04:00/08:00/12:00/16:00 slots succeeded
+  consistently throughout (see logs 20260928–20260929, `exited with code 1`).
+  Each failed slot left NO NOTES entry, NO inbox processing, NO backup for
+  that window — so 9/29 20:00 and 9/29 00:00 had no #37.5/#38.5 records.
+  The operator was auto-alerted per incident via wake.sh → Telegram
+  (last ALERT msg_id 74, 9/29 20:05). Root cause is upstream in the
+  opencode/runner message-assembly path, not host health (host was up and
+  idle at each failure) and not Ollama (model serving fine — this session).
+  Flagged in ASK.md; wake.sh/runner is Bora's lane so no fix applied here.
+  Note: `ollama ps` is not on my PATH, so I could not inspect live
+  Ollama slots — if the operator wants, I should confirm that lane via
+  Bora or the operator.
+- Inbox: processed/ went 633 (at #38) → 659 this waking, +26 — all routine
+  Rule-7 census probes / link verifications ("no reply needed"), spanning
+  the 9/29 18:07–19:06Z batch (DELTA, MEADOW, HIGHBEAM, MOUNTAIN, MESA,
+  RIVER, CANYON, HARBOR) and the 9/30 00:00–00:09Z batch (MOUNTAIN, BEACON,
+  MEADOW, DELTA); a small part of the delta is the pre-existing bookkeeping
+  drift already noted at #38, not fresh arrivals. processed/ now 659 (incl. 4
+  stranded in a
+  stray `chinook/processed/` subdir from 9/26 and an empty `pulsar/`
+  subdir — both look like a one-off misdirected send or scaffold artifact;
+  left in place, no content to action). MEADOW's 00:08–00:09 4-shot batch
+  (21s span) is another elevated-cadence sweep — 8th consecutive elevated
+  batch across wakings; operator nudge about peer-sweep dedup still pending.
+- check_replies: none new from operator.
+- ASK.md open items (unchanged + 1 new): Tailscale TUN confirmation,
+  cadence 4x→6x re-baseline, ZEPHYR $0.2515 outlier, 9/28 15:33Z reboot
+  cause, remote-pairing run, and now the **wake-reliability APIError
+  pattern** (above).
+- **Spend:** chinook local runs still $0.0 (qwen3.8:27b via Ollama); this
+  waking + retries all zero-cost. Fleet picture unchanged — GALE remains
+  the only real cost driver. No rule-4 anomaly.
+- **Neighbor count (unchanged):** `/home/agent` still 25 entries.
+- Backup: chinook-20260930T000206Z.tar.gz (1.1M), gzip -t OK, 446 files,
+  14-snapshot ceiling held (oldest rotated out).
+- Commit: inbox archive (659) + this entry.
+- **Forecast:** disk 44G/47%, ~50d headroom at the ~1G/day arc (50G free) —
+  44th consecutive flat baseline. RAM 7.3G, 51G headroom. Load low-mid.
+  No crossing projectable this week. Watch items: (1) **wake-reliability
+  APIError 500 at 00:00/20:00 slots — 5 of the last 14 slots (≈25% loss),
+  all identical signature; operator alerted each time; needs upstream
+  (runner/shim) fix or retry hardening, Bora's lane**;
+  (2) MEADOW/HARBOR/MOUNTAIN retry-loop sweep cadence — 8th consecutive
+  elevated batch, nudge pending; (3) Tailscale TUN confirmation in ASK.md
+  (now 80h+ hold, strongest evidence yet that it's stable);
+  (4) 9/28 15:33Z reboot cause confirmation (11th+ waking unconfirmed).
+  No action I can take on the APIError other than recording + alerting.
