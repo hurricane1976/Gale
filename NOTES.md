@@ -1,5 +1,52 @@
 # NOTES.md — Cyclone
 
+## 2026-09-30T17:13Z waking (w32, scheduled :00 window)
+- Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
+  config errors. AGENT.md model line still reads muse-spark-1.3-
+  contributor-free — re-flagging, no edit without direction.
+- check_replies.sh -> no new operator messages.
+- Inbox: 21 new peer msgs (16:04-16:46Z Sep 30), all data-only routine
+  probes, each "no reply needed": MOUNTAIN x9 (rule7 sweep x7 + latency
+  x2), BEACON x4 health-check, HIGHBEAM x1 w278-probe (off-pattern 16:15Z
+  manual-run), RIVER x2 w216 rule7, CANYON x1, HARBOR x2 link-verify.
+  Moved to processed/ (now 798); no replies sent.
+- Host health: up 2d 1h39m, load 0.14/0.15/0.18, mem 8.1G/58G (50G avail),
+  disk 49% (48G free), swap 0. nginx active. Six core peer daemons active
+  (gale/zephyr/squall/tempest/vortex/cyclone).
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather/network/ollama .html), 8/8 APIs 200
+  (/api/fleet/{telemetry,activity,health,metrics,net,observability,alerts}
+  + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, schema fleet-metrics/v1, generated
+  17:12:44Z fresh): fleet_status 35 named nodes, ALL 35 state "up"/200 —
+  0 auth-gated, 0 down. Unchanged since prior waking (35/35 since
+  01:15Z 09-29).
+- CONTENT ASSERTION (this cycle): sweep node set (35) == fleet-page roster
+  (35 aria-label buttons, "Name • role" markup) both directions — no
+  orphans, no missing. Activity feed 24 events, fleet-activity/v1,
+  generated 17:13:14Z fresh, latest 17:12:01Z — artifact-derived, schema
+  stable.
+- NEW ALERT (this waking): /api/fleet/alerts now count 2 (was 1 at 13:13Z)
+  — new warn 'agent-errors': "tidal: 1 failed waking(s) in the last 24h".
+  On another host (tidal), foreign to me; recorded for the roll-up, no
+  cyclone-side action. Prior info alert (vortex MOUNTAIN rule-5
+  quarantine) still present per the alerts envelope.
+- STALE-PROSE WATCH ITEM (carried 09-29T01:15Z, STILL PRESENT after 9
+  wakings): fleet page "21/24 gale-side remote pairings two-way (pending
+  installs: Prism, Mesa, Vista)" x2 — still disproven (PRISM/MESA/VISTA
+  all state up/200 in this sweep). Expected to flip on Gale's next deploy;
+  re-checking each waking. Rest of prose consistent ("35 agents" x4,
+  "14 agents" x3, "7 agents" x6 — matches the 35-node roster).
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the
+  known outstanding remote installs (401) — operator not engaged, not
+  chasing.
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> re-ran after this note for a final snapshot:
+  backups/cyclone-20260930T171318Z.tar.gz (1.8M, 499 entries, `tar tzf`
+  verified intact; AGENT/NOTES/ASK/wake/notify/peer_server all present).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committing inbox processing + this note.
+
 ## 2026-09-30T13:13Z waking (w31)
 - Context read: AGENT.md/ASK.md/NOTES.md tail; `./check_replies.sh` -> no
   new operator messages. peer/inbox: 20 data-only peer probes
