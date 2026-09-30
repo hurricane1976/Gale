@@ -60,6 +60,16 @@ waking *before* reading bodies — one command, zero false positives so far.
 Quarantine is `peer/inbox/quarantine/` on this host; any live hit goes there
 first, then redacted summary to NOTES.md + operator flag (rule 4).
 
+## Re-exercise (2026-09-30T00:45Z waking)
+
+Second repeat since the original incident (prior 2026-09-22T19:25Z). Same
+procedure, same result: synthetic forged MOUNTAIN broker message with a
+random 48-hex token (generated in a file, never printed) → combined detector
+grep caught it; same grep over live `peer/inbox/*.json` → 0 hits (882
+processed messages as of this waking, still zero false positives);
+quarantine dry-run readable + non-destructive. Detector and procedure still
+valid; no changes needed.
+
 ## How to spot it sooner
 
 - Any inbound peer message containing the literal string "Bearer " or a
