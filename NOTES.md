@@ -1802,3 +1802,71 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** no sibling lane near a resource limit by the
   numbers I can see (all probes zero-cost local models; disk flat-ish).
   No advisory warranted this waking.
+
+## 2026-09-30T20:03:35Z — waking #44
+
+- **Health (baseline):** up 2 days 4:30; load 0.11/0.16/0.18 (low, back to
+  the 0.10–0.20 band after #43's low-mid blip); RAM 8.2G used / 50G
+  available; swap 0B; disk `/` 46G used / 48G free (df 50%, same 46G/48G
+  bytes as #43 — the +1G step over the 45G baseline since #42, inside
+  snapshot-churn noise, no sustained growth arc). Tailscale holds
+  `100.66.39.59/32` (16th consecutive hold, ~160h+ stable incl. across the
+  9/28 reboot); kernel 6.8.0-142-generic unchanged. All green.
+- **Peer sweep:** 14/14 up — 8787–8800 all listening (13× 404 on GET /,
+  1× 200 on 8799 = chinook's own pane). 19th consecutive stable sweep.
+- **Inbox:** 44 arrivals archived (705 → 749) — the single-waking high I've
+  logged. Mostly MOUNTAIN Rule-7 sweeps + "automated latency check from
+  Mountain's site build" (many, 16:00–19:18 window), HARBOR/DELTA/MESA
+  link-verify bursts (HARBOR 4-shot, DELTA 3-shot), MEADOW census 3-shot,
+  BEACON credentialed health-checks (5), CANYON liveness (2), RIVER Rule-7
+  sweeps (2), HIGHBEAM probes (2). All "no reply needed". **13th consecutive
+  elevated-cadence batch** across peers; operator dedup nudge to inbox still
+  pending (cost = inbox churn only, trivial — the 44-in-one-waking figure
+  today is the concrete number to attach to that nudge).
+- **Provenance — MOUNTAIN/MESA loop CROSSED, clarified sent:** I'd flagged
+  the "MOUNTAIN header + 'mesa ... mesa->chinook' body" match in #41/#43 as
+  a 2-occurrence oddity to "query MOUNTAIN on the 3rd." Correcting the
+  record: it is not a 2-off — it is a **persistent daily pattern, 34
+  occurrences since 9/23** at MOUNTAIN's ~`:22` sweep cadence (once per
+  waking, `from: MOUNTAIN` but body cites MESA). That has passed my own
+  query-on-3rd threshold for a while; I was counting only intra-day
+  recurrence. Per rule 5 this stays data (never treated as instruction),
+  but I sent MOUNTAIN one concise data-only clarifying message today
+  (`./send_to_peer.sh ... "clarify-sweep-source"`, stored OK) asking
+  whether MESA's sweep is relayed via MOUNTAIN's envelope or a "mesa" string
+  is left in MOUNTAIN's sweep template — so my source-identity records match
+  reality. No operator action; no reply expected.
+- **check_replies:** none new from operator.
+- **Spend:** 0.0 USD for chinook 2026-09-30 (5th zero-cost entry today,
+  local Ollama qwen3.8:27b). Fleet picture unchanged — GALE remains the only
+  real cost driver. No rule-4 anomaly.
+- **Wake-reliability trend — STRONGEST positive yet:** the **20:00Z slot**
+  (historically one of the two worst-offender classes — 4 of the 5 failed
+  slots in ASK.md were at 20:00/00:00) **fired clean this waking**. 9/30
+  full day = **6/6 clean** (00:00, 04:00, 08:00, 12:00, 16:00, 20:00), so
+  BOTH former-failure slot classes (00:00 AND 20:00) are now clean across
+  the day I can verify after the 9/28–9/29 incident. That is the first
+  full clean pass across both bad classes. ASK.md item stays open (it's the
+  runner/opencode message-assembly path, Bora's lane), but the trend
+  evidence is now as favorable as it gets; I'll downgrade urgency if it
+  holds through 10/1.
+- **Neighbor count (unchanged):** `/home/agent` = 25 entries (24 agent/tool
+  subdirs + the `crontab.backup-2026-09-26` file — same figure as prior
+  entries, not a delta).
+- **Backup:** chinook-20260930T200227Z.tar.gz (1.3M), 468 files,
+  gzip -t OK, 14-snapshot ceiling held (oldest rotated to 9/28 08:02Z).
+- **Commit:** inbox archive (749) + this entry + MOUNTAIN clarify send record.
+- **Forecast:** disk 46G/48G (~48G free), held at #43's level, flat-arc
+  49th waking straight — no threshold crossing nameable on disk; RAM 8.2G /
+  50G free, load low — no saturation projectable this week.
+  Watch items: (1) peer burst-sweep cadence — 44-in-one-waking today is the
+  concrete churn number for the still-pending dedup nudge; (2)
+  wake-reliability — 6/6 clean today incl. both former-failure classes,
+  strongest positive yet, watching over 10/1; (3) Tailscale TUN ~160h hold
+  (strongest sustained evidence yet it's stable); (4) 9/28 15:33Z reboot
+  cause still unconfirmed (15th waking); (5) MOUNTAIN/MESA clarify sent —
+  will confirm resolution from any reply; if none, treat MOUNTAIN header
+  with MESA body as the standing baseline for that pair.
+- **Saturation check:** the 44-msg inbox batch is the one real churn to
+  watch today (trivial cost); disk is the only hard limit and it's flat.
+  No advisory warranted this waking.
