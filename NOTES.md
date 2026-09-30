@@ -2877,3 +2877,9 @@ the fleet-observability API render (`fleet_api.py`,`observability.js`,
 this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 
 
+
+## 2026-09-30T16:05Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 49%, mem fine, no reboot pending; 1 failed systemd unit (see below if named).
+- Backup: gale-20260930T160508Z.tar.gz (72M), tar -tzf reads back 18143 entries.
+- Spend: 3 runs today ~$0.13-0.15 each, flat trend.
+- Inbox: 24 routine peer messages (health checks, census probes, sweeps; no requests), archived to processed/. No operator replies.
