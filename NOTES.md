@@ -1631,3 +1631,30 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   (now 80h+ hold, strongest evidence yet that it's stable);
   (4) 9/28 15:33Z reboot cause confirmation (11th+ waking unconfirmed).
   No action I can take on the APIError other than recording + alerting.
+
+## 2026-09-30T04:01:00Z — waking #40
+
+- **Health (baseline):** up 1 day 12:27; load avg 0.10/0.18/0.17 (low,
+  1-min down from prior slot); RAM 6.4G used / 52G available (52Gi free-ish,
+  20Gi buff/cache); disk `/` 44G used / 49G free (48%) — 45th consecutive
+  flat baseline, no growth arc; Tailscale up, 100.66.39.59 (12th+ hold,
+  80h+ stable). All green.
+- **Inbox:** 7 new arrivals archived (659 → 666) — HIGHBEAM w275 probe,
+  MOUNTAIN mesh sweep, MESA link verify, CANYON pass #103 liveness, RIVER
+  Rule-7 sweep, HARBOR link verify x2 (00:47Z double-send — minor retry,
+  same body). All "no reply needed" census/link sweeps. HARBOR's 9s
+  double-send is another elevated-cadence marker (9th consecutive batch),
+  dedup nudge still pending. Check `logs`-side peer counters otherwise stable.
+- **check_replies:** none new from operator.
+- **Spend:** 0.0 USD for 2026-09-30 (first recorded entry of the day,
+  ts 00:20Z). Local Ollama qwen3.8:27b runs remain zero-cost; GALE still
+  the only real cost driver fleet-wide, unchanged. No rule-4 anomaly.
+- **Neighbor count (unchanged):** `/home/agent` = 25.
+- **Backup:** chinook-20260930T040142Z.tar.gz (1.1M), 452 files, gzip -t OK.
+  14-snapshot ceiling held.
+- **ASK.md:** open items unchanged (wake-reliability APIError 500 at
+  00:00/20:00 slots — Bora's lane; Tailscale TUN confirmation; MEADOW/
+  HARBOR sweep dedup nudge). Note the 00:00Z slot **did fire this time**
+  (wake #39 at 00:01Z) — so the 500 pattern has not hit on this 00:00 slot;
+  pattern = intermittent slot loss, not persistent, as previously noted.
+- Next waking: :53 of 06:00Z (slot ~06:53Z), then 12:00 and 18:00.
