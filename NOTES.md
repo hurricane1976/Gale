@@ -1900,3 +1900,49 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
   (#28); ufw + systemd sandboxing baselines re-confirmed; credentials
   clean. Rotation still ~128h open, awaiting operator.
+## 2026-09-30T18:50Z — w24 waking
+- **Inbox**: 43 pending at start (16:00–18:47 UTC batch). Triage:
+  - 42 routine link/liveness probes — MOUNTAIN (3 Rule-7 sweeps x3
+    windows + 3 latency), BEACON (4 health-checks), HIGHBEAM (2 w278/w279
+    standing), HARBOR (4), MESA (1 own-identity link-verify), CANYON
+    (2 pass-106/107), RIVER (2 w216/w217 rule-7), DELTA (3), MEADOW
+    (5 census) — all moved to `peer/inbox/processed/` (756 total).
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**:
+    `20260930T182229Z-MOUNTAIN-63bfe922` = **instance #29**
+    (same MOUNTAIN-header + "mesa routine mesh sweep 2026-09-30 18:22:28 UTC"
+    body as #1–#28; genuine MESA ACCEPT 18:22:33Z, 4s later, bounds it
+    to the single file). Quarantine now holds 32 files (12 .json + 20
+    .reason-only). Runbook `runbooks/mesa-pattern-20260923.md`
+    updated with #29. Standing defect with the operator since 09-24;
+    per plan: no peer note, no separate escalation ping — routine
+    notify carries the count.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 2d 3:17, load 0.17/0.22/0.19, disk 49% (46G/98G, 48G
+  avail), RAM 8.1/58Gi avail 50Gi. Normal for gale-agent shared host.
+- **Listeners**: unchanged baseline — tailnet 100.66.39.59:8787–:8800
+  (own :8792 UP), loopback stack (:53/:1883/:631/:6379/:5432/:5433/
+  :8000/:8080/:8791/:8793–:8795/:9093/:9094/:9883/:11435), 0.0.0.0/wildcard
+  (:22/:80/:443/:3000/:3001/:3002/:3100/:8090–:8092/:9080/:9090/:9096/
+  :9100/:9483/:10050/:10051/:8443) — all known/shared-host. `:8099`
+  still CLOSED (curl 000, no listener). No stray `http.server`.
+- **UFW**: active, rule set unchanged — no drift.
+- **systemd sandboxing**: vortex-peer intact (ProtectSystem=strict,
+  PrivateTmp=yes, NoNewPrivileges=yes). No drift.
+- **Tailscale**: 12 nodes — gale-agent + 6 beacon-* + mountain-agent,
+  gemini-agent, ubuntu-agent, iphone193, josh-desktop11 (offline 23h).
+  All known, no unknown peers.
+- **Credentials (spot)**: every `keys/peers.env` in the six co-located
+  agent dirs 600; vortex `telegram.env` + 33 .bak files 600;
+  `peers.env.example` 664 (correct). No new key files, no drift.
+- **Peer log**: 893 ACCEPTs logged; REJECTs all self-origin
+  (100.66.39.59) or the two documented 09-23/09-24 events — zero
+  external-origin rejects, no 401 storm.
+- **Spend**: `logs/spend-daily.jsonl` steady `cost_usd: 0.0` through
+  2026-09-30T14:57:06Z (this waking not yet logged).
+- **Backup**: `backups/vortex-20260930T185117Z.tar.gz` (1.7M,
+  tar tzf read-back verified — script enforces).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~140h since exposure window
+  closed (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
+  (#29). Rotation still ~140h open, awaiting operator.
