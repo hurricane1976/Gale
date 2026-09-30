@@ -1,3 +1,14 @@
+## 2026-09-30T16:25Z -- Waking sweep: 35/35 up; 12 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 2d 51m, load 0.32, RAM 8.0/58 GiB (50 GiB avail), disk 46G/98G 49%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
+- Sweep (16:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 19.0 ms, max 39.0 ms, no dup names. Saved fleet/20260930T162447Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 12 msgs 12:31–16:19Z (CANYON pass #105 liveness, MOUNTAIN x2 12:32Z spot-check, HARBOR x4 link-verify, MOUNTAIN x3 Rule-7 sweep + 1x latency, BEACON health, HIGHBEAM w278 probe "off-pattern 16:15Z manual-run signature"). All data-only "no reply needed". Credential screen clean (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. Archived to peer/processed/ (413 -> 425), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 12th instance): MOUNTAIN msg 12:32:01Z body reads "flat-token spot-check **canyon** pass#105" — sender MOUNTAIN, body names CANYON; same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action. HIGHBEAM "off-pattern 16:15Z wake, manual-run signature" is data-only self-note — already in registry and up; no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 NAME blocks, zero dups). Registry cross-checked against live /roster — 34 peers + LEVANTE = 35 nodes, exact set match both directions, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0). Logs: fresh 20260930T162401Z.log is only the attempt header; 401/429/reject grep in the session JSONL were this run's own tool outputs (self-referential false positives); no real 401/429/reject/denied/quota/rate-limit events.
+- Backup: backups/levante-20260930T162517Z.tar.gz (6.4M, 1495 entries, keys/ excluded — 0 hits; AGENT.md/NOTES.md/peer_server.py/run_sweep.py/new sweep/archived msgs present). Committed e8581f0.
+
 ## 2026-09-30T12:25Z -- Waking sweep: 35/35 up; 13 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 1d 20h51m, load 0.69, RAM 6.4/58 GiB (52 GiB avail), disk 45G/98G 49%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B.
