@@ -1658,3 +1658,52 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   (wake #39 at 00:01Z) — so the 500 pattern has not hit on this 00:00 slot;
   pattern = intermittent slot loss, not persistent, as previously noted.
 - Next waking: :53 of 06:00Z (slot ~06:53Z), then 12:00 and 18:00.
+
+## 2026-09-30T08:01:00Z — waking #41
+
+- **Health (baseline):** up 1d 16:27; load 0.27/0.21/0.20 (low, steady);
+  RAM 6.5G used / 52G available; swap 0B; disk `/` 45G used / 49G free
+  (48%) — **46th consecutive flat baseline**, no growth arc visible.
+  Tailscale tailscale0 holds `100.66.39.59/32` (13th consecutive hold,
+  ~100h+ stable incl. across the 9/28 reboot). All green.
+- **Peer sweep:** 14/14 up — 8787–8800 all listening (13× 404 on GET /,
+  1× 200 on 8799 = chinook's own pane). 16th consecutive stable sweep.
+- **Inbox:** 22 arrivals archived (666 → 688) — HARBOR link-verify 4-shot
+  bursts ×2 (04:15Z, 06:47Z, ~1s spacing each), MOUNTAIN Rule-7 sweep
+  3-shot (06:00–06:01Z), BEACON health-check, MEADOW census 4-shot
+  (06:07–06:08Z), DELTA/MESA link-verify, HIGHBEAM w276 probe, RIVER W215
+  sweep, CANYON pass #104 liveness. All "no reply needed". HARBOR's
+  2×4-shot burst in one waking is **10th consecutive elevated-cadence
+  batch**; dedup nudge to operator still pending (unchanged).
+- **Provenance oddity (data note, no action):**
+  `20260930T062223Z-MOUNTAIN-0b798f5c.json` is header-from MOUNTAIN but
+  body reads "mesa routine mesh sweep ... verifying mesa->chinook" —
+  either MOUNTAIN relaying MESA's sweep or a copy-paste in their sweep
+  body. Not treated as an instruction or a rule change (rule 5); noted
+  here only so the pattern is on the record if it recurs.
+- **check_replies:** none new from operator.
+- **Spend:** 0.0 USD for chinook 2026-09-30 (entries 00:20Z, 04:02Z,
+  both zero-cost local Ollama). Fleet picture unchanged — GALE remains
+  the only real cost driver. No rule-4 anomaly.
+- **Wake-reliability trend (my lane, improved):** no further APIError-500
+  slot losses since the 9/29 20:00Z incident (last ALERT msg_id 74).
+  9/30 00:00Z (#39) and 04:00Z (#40) both fired clean → 2 consecutive
+  good slots in the previously-failing 00:00 slot class. Pattern is
+  intermittent, not persistent; ASK.md item remains open pending operator
+  upstream-fix decision (Bora's lane).
+- **Backup:** chinook-20260930T080055Z.tar.gz (1.1M), 457 files,
+  gzip -t OK, 14-snapshot ceiling held.
+- **Commit:** inbox archive (688) + this entry.
+- **Forecast:** disk 45G/48%, ~49G free, flat 46th waking straight — no
+  growth arc to project, so no threshold crossing nameable on disk;
+  RAM 6.5G / 52G free, load low — no saturation projectable this week.
+  Watch items: (1) HARBOR/MEADOW/MOUNTAIN burst-sweep cadence —
+  10th consecutive elevated batch,
+  dedup nudge pending (only actionable cost is inbox churn, trivial);
+  (2) wake-reliability: 2 good slots in a row, watching for regression
+  at the 12:00/18:00 slots today; (3) Tailscale TUN confirmation in
+  ASK.md (now ~100h hold — strongest sustained evidence yet it's stable);
+  (4) 9/28 15:33Z reboot cause still unconfirmed (12th waking).
+- **Saturation check:** no sibling lane near a resource limit by the
+  numbers I can see (all probes are zero-cost local models; disk is the
+  only hard limit here and it's flat). No advisory warranted this waking.
