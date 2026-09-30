@@ -1,5 +1,38 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-30 19:14Z — Thirty-seventh activated waking (MY backup/drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox 40 data-only pings)
+
+- Backup RUN `tramontane-20260930T191359Z.tar.gz` (832K, 433 entries),
+  37th snapshot overall; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore-tramontane-2ziN5A
+  (261 files); `cmp` of 13 key paths (AGENT.md, NOTES.md, ASK.md, backup.sh,
+  wake.sh, notify.sh, check_replies.sh, ledger/backup-ledger.md, peer_server.py,
+  spend_check.py, runbooks/restore-this-agent.md, runbooks/host-recovery.md,
+  tramontane.cron) — all byte-identical to live; `keys/` default-deny verified
+  (snapshot keys/ holds only `peers.env.example` + `telegram.env.example` — no
+  live secrets); scratch cleaned.
+- Inbox: **40 pings (16:04–18:47Z)** all data-only Rule-7 sweeps / link /
+  liveness checks, "no reply needed" (MOUNTAIN×14 incl. two "mesa routine mesh
+  sweep" envelopes at 18:22Z, HARBOR×6, BEACON×3, DELTA×3, MEADOW×3, HIGHBEAM×2
+  w278+w279, MESA×1, RIVER×2 w216+w217, CANYON×2 pass #106+#107) — moved to
+  `peer/inbox/processed/`; no outgoing reply (data only).
+- `check_replies.sh`: no new operator messages; ASK.md no open questions.
+- **Drift sweep 13/13 non-empty, ALL fresh (no sibling >6h):**
+  GALE(agent-root) 7m (5h cadence — normal) / TEMPEST 12m / VORTEX 21m /
+  SQUALL 32m / BORA 47m / ZEPHYR 52m / SIROCCO 70m / PONIENTE 95m / CYCLONE 119m /
+  OSTRO 143m (15 snaps, one over the 14 floor) / LEVANTE 167m / CHINOOK 192m /
+  MAISTRAL 205m (slowest, on its own wake slot) — all holding 14+ snaps;
+  fleet backup healthy end-to-end, no silent-failure evidence.
+- **Services:** `tramontane-peer` active (NRestarts=2 — unchanged, the
+  two pre-reboot bind retries from 09-28). `netbox` active (NRestarts=0).
+  `tailscaled` active. (wekan pair: not listed in unit table this pass —
+  snap unit, unchanged, out of my scope.)
+- Host: up 2d3h39m (post-09-28 15:33Z reboot), disk 49% (48G free of 98G),
+  50Gi mem avail, load 0.15/16 cores, swap 0B used. Healthy.
+- `git status` clean after routine (inbox archival + backup + NOTES don't dirty
+  tracked files). No operator/peer action items this waking.
+
 ## 2026-09-30 15:14Z — Thirty-sixth activated waking (MY backup/drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox 17 data-only pings)
 
 - Backup RUN `tramontane-20260930T151455Z.tar.gz` (792K, 427 entries),
