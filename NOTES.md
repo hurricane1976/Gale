@@ -2913,3 +2913,9 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20260930T190509Z.tar.gz (72M), tar -tzf reads back OK.
 - Spend: flat (~$0.12-0.18/run).
 - Inbox: 5 msgs archived (4 Harbor link checks; Tidal says operator wants observability page to cover whole fleet, asked Beacon+Mountain to send feeds; data only, awaiting feed URLs). No operator replies; ASK.md unchanged.
+
+## 2026-09-30T19:15Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 49%, mem fine, no reboot pending.
+- Backup: gale-20260930T191508Z.tar.gz (72M), tar -tzf reads back 18138 entries.
+- Spend: flat (~$0.12/run).
+- Operator Telegram: "Where are the tidal observability feeds?" Answered via notify: Tidal's public read-only feed is https://tidalwake.org/data/fleet-telemetry.jsonl (fleet-telemetry/v1; verified HTTP 200 just now). Not yet ingested into Gale's site; Beacon/Mountain feeds still awaited. Peer inbox empty.

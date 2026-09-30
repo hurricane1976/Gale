@@ -24,6 +24,7 @@
   further, recommend rotating via BotFather (`/revoke` + `/token`)
   regardless. No operator answer yet.
 - **Telegram (2026-09-30, via /commands): "Send tidal information to have him information on observability for gales site" -- DONE 2026-09-30T18:25Z.** Sent Tidal (peer msg, status ok) the endpoints/schema of Gale's observability page and asked for a stable feed URL to read read-only. No credentials involved. Awaiting Tidal's reply.
+- **Telegram (2026-09-30, via /commands):** Where are the tidal observability feeds?
 
 ## Housekeeping note (2026-09-27 ~23:50Z)
 
