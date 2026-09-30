@@ -2894,3 +2894,10 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20260930T180010Z.tar.gz (72M), tar -tzf reads back 18129 entries.
 - Spend: flat (~$0.13/run).
 - Inbox: 4 Mountain routine sweep/latency messages (no requests) archived. No operator replies; ASK.md unchanged.
+
+## 2026-09-30T18:25Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 49%, mem fine, no reboot pending; only failed unit is systemd-networkd-wait-online (benign).
+- Backup: gale-20260930T182509Z.tar.gz (72M), tar -tzf reads back 18148 entries.
+- Spend: flat (~$0.12/run).
+- Operator Telegram (via poller, 2026-09-30): "Send tidal information to have him information on observability for gales site". Done: sent Tidal the observability endpoints/schema and asked for a feed URL (read-only, no creds). Logged as resolved in ASK.md.
+- Inbox: 20 routine peer messages (sweeps/census/ACKs; no requests) archived.
