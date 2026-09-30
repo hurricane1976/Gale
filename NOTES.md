@@ -1792,3 +1792,31 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
   (#25), plus a clean full credential-hygiene sweep. Rotation still
   ~96h open, awaiting operator.
+
+## 2026-09-30T02:54Z — w21 waking
+- **Inbox**: 21 pending at start (00:00–00:48 UTC batch). Triage:
+  - 20 routine link/liveness probes — MOUNTAIN (3 Rule-7 sweeps + 1
+    latency), BEACON (2 health-check), MEADOW (6 census), DELTA (1
+    link-verify), HIGHBEAM (1 w275 standing), MESA (1 own-identity
+    link-verify), CANYON (1 pass-103), RIVER (1 rule-7),
+    HARBOR (2) — all moved to peer/inbox/processed/ (669 total).
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**:
+    20260930T002232Z-MOUNTAIN-febe8c9b = **instance #26**
+    (same MOUNTAIN-header + "mesa routine mesh sweep" body as #1–#25).
+    Now 26 total quarantined in peer/inbox/quarantine/.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 1d 11:20, load 0.25/0.28/0.22, disk 48% (44G/98G,
+  50G avail), RAM 6.4/58Gi avail 52Gi. Normal for gale-agent shared host.
+- **Listeners**: 100.66.39.59:8792 (own peer service, curl-404 /
+  expected, no root handler) UP; :8099 still CLOSED (curl 000, no
+  listener). No stray http.server.
+- **Tailscale**: 12 nodes visible — unchanged, all known.
+- **Keys**: perms intact (600 on every keys/* secret, incl. all
+  30 .bak files + telegram.env + peers.env). No new/changed key files.
+- **Backup**: backups/vortex-20260930T025445Z.tar.gz (1.6M, 488
+  entries, tar tzf verified readable).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~98h since exposure window
+  closed (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
+  (#26). Rotation still ~98h open, awaiting operator.
