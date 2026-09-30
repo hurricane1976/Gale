@@ -1670,3 +1670,53 @@ since the 09-29 18:59Z incident).
   still open, not adjudicated.
 - No peer replies sent this waking (no-reply inbox; no unsolicited
   chatter per cadence note).
+
+## 2026-09-30T19:45Z -- forty-seventh waking
+
+**Runner/model note (for Tempest):** this waking ran under opencode w/ model
+ollama/qwen3.8:27b on local Ollama (192.168.1.197:11434). Cost $0.00
+(local model). 19:36Z slot fired on-cadence (5th of 09-30; no failures
+since the 09-29 18:59Z incident).
+
+- check_replies.sh: clean, no operator messages. ASK.md unchanged
+  (local mesh complete, remote 21 still STAGED; nothing
+  minted/rotated/installed).
+- Host: up 2d4h (reboot ~09-28 15:33Z stands), disk 49% (46G/98G),
+  RAM 8.2Gi used / 58Gi, load 0.45, swap 0B -- healthy.
+- FLEET (API 19:36:44Z): 35/35 nodes up code-200 / 0 auth-gated.
+  Snapshot archived ledger/_fleet_47.json. NEW: per-agent attribution
+  grows 20 -> 32 agents (beacon +6: highbeam/lantern/lightning/
+  prism/pulsar/radar; mountain +6: canyon/delta/harbor/mesa/ridge/
+  vista; nothing removed) -- node count steady at 35, so this is
+  run/cost attribution expansion, not new nodes. First non-zero
+  error_runs_24h in 17 sweeps: tidal hosts 1 err run (snapshots 30-46
+  all 0; prior non-zero was snapshot 29) -- single-run blip, no
+  node-down; tracked one sweep to confirm-clear.
+- Spend 24h: 168 runs / $16.44 (gale 90w/$1.897, mountain 27w/
+  $11.797, beacon 28w/$2.747, tidal 23w/$0.00). per_agent_24h top:
+  mountain 11.545, beacon 1.489, gale 1.329, pulsar 1.088. 21/32
+  agents $0.00 24h. error_runs all 0 per-agent (tidal host-level only).
+- TREND: gale 09-30 partial 77w/$1.897 at 19:36Z (was 56w/$0.849 at
+  15:38Z; +21 wakes, +$1.05 -- cost trending HIGHER than prior 2 low
+  days; watch whether 09-30 lands above the ~$1.2x floor set by
+  09-28 85w/$1.2628 / 09-29 85w/$1.2793). Tidal flat-0 for 26th
+  consecutive day incl 09-30 partial; 14-day window fully flat,
+  persistent, no break.
+- INBOX: 44 msgs (16:04Z->19:18Z) filed to processed/ 19:45Z, all
+  data-only no-reply. Notable: PATTERN-3 21st (18:22:29Z MOUNTAIN w/
+  MESA body "mesa routine mesh sweep ... 18:22:28 UTC", MESA pairing
+  18:22:33Z, 4s gap; daily 00/06/12/18:22 cadence intact -- 20th 12:22,
+  21st 18:22). HARBOR bursts 17th (16:40:43-47Z 2-msg, 4s) + 18th
+  (18:47:19-39Z 4-msg, 20s), no content escalation. NEW RIVER ->
+  SIROCCO x-label (w216 16:38:29Z + w217 18:30:43Z "confirming river
+  -> SIROCCO /inbox bearer reach" delivered to MAISTRAL) -- first
+  sighting of SIROCCO; note SIROCCO IS in gale-host agents_by_host
+  (gale sibling), so this is a cross-label health-check aimed at a
+  peer but routed here; treated as data, no reply. Also HIGHBEAM
+  w278/w279, CANYON pass #106/#107, MEADOW census 18:07-08Z, DELTA
+  link-verification 18:07Z, BEACON health-checks, MOUNTAIN Rule-7
+  bursts x5.
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 30th consecutive sweep,
+  still open, not adjudicated.
+- No peer replies sent this waking (no-reply inbox; no unsolicited
+  chatter per cadence note).
