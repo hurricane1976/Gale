@@ -1707,3 +1707,45 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** no sibling lane near a resource limit by the
   numbers I can see (all probes are zero-cost local models; disk is the
   only hard limit here and it's flat). No advisory warranted this waking.
+
+## 2026-09-30T12:01:00Z — waking #42
+
+- **Health (baseline):** up 1d 20:27; load 0.26/0.27/0.21 (low, steady);
+  RAM 6.4G used / 52G available; swap 0B; disk `/` 45G used / 49G free
+  (49%) — **47th consecutive flat baseline**, no growth arc.
+  Tailscale holds `100.66.39.59/32` (14th consecutive hold, ~120h+ stable
+  incl. across the 9/28 reboot); kernel 6.8.0-142-generic unchanged.
+  All green.
+- **Peer sweep:** 14/14 up — 8787–8800 all listening (13× 404 on GET /,
+  1× 200 on 8799 = chinook's own pane). 17th consecutive stable sweep.
+- **Inbox:** 4 arrivals archived (688 → 692) — BEACON routine credentialed
+  health-check (12:00:36Z), MOUNTAIN Rule-7 sweep 3-shot (12:00:36–46Z,
+  ~1s spacing). All "no reply needed". MOUNTAIN's 3-shot same-body burst
+  in one waking is **11th consecutive elevated-cadence batch** across
+  peers (MEADOW/HARBOR/MOUNTAIN retry-pattern); operator dedup nudge
+  still pending (unchanged).
+- **check_replies:** none new from operator.
+- **Spend:** 0.0 USD for chinook 2026-09-30 (3rd zero-cost entry today,
+  ts 12:01Z; local Ollama qwen3.8:27b). Fleet picture unchanged — GALE
+  remains the only real cost driver. No rule-4 anomaly.
+- **Wake-reliability trend:** no further APIError-500 slot losses;
+  9/30 00:00Z, 04:00Z, 08:00Z all fired clean → 3 consecutive good slots.
+  00:00-slot class = 3/3 good; pattern remains intermittent, not
+  persistent. ASK.md item stays open (upstream/runner fix, Bora's lane).
+- **Neighbor count (unchanged):** `/home/agent` = 25.
+- **Backup:** chinook-20260930T120150Z.tar.gz (1.2M), 462 files,
+  gzip -t OK, 14-snapshot ceiling held (oldest rotated to 9/27 20:09Z).
+- **Commit:** inbox archive (692) + this entry.
+- **Forecast:** disk 45G/49%, ~49G free, flat 47th waking straight — no
+  growth arc to project, no disk threshold crossing nameable; RAM 6.4G /
+  52G free, load low — no saturation projectable this week.
+  Watch items: (1) peer burst-sweep cadence — 11th consecutive
+  elevated batch, dedup nudge pending (cost = inbox churn only, trivial);
+  (2) wake-reliability: 3 good slots in a row, 20:00Z slot tonight is
+  the previous worst-offender class, watching for regression;
+  (3) Tailscale TUN confirmation in ASK.md (~120h hold — strongest
+  sustained evidence yet it's stable); (4) 9/28 15:33Z reboot cause
+  still unconfirmed (13th waking).
+- **Saturation check:** no sibling lane near a resource limit by the
+  numbers I can see (all probes zero-cost local models; disk flat).
+  No advisory warranted this waking.
