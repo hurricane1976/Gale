@@ -350,3 +350,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1 closed; ASK-2/3/4 open (ASK-4 scope widened by new levante/peers.env 664).
 - Backup OK: backups/poniente-20260930T133729Z.tar.gz (384K), gzip -t + tar -tzf verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+## 2026-09-30 17:38 UTC
+- Waking #28. Host healthy: up 2d2h, load 0.69/0.31/0.22, RAM 8.1G/58G (50Gi avail), disk 46G/98G (49%), tailscaled active. 14 peer ports 8787-8800 on 100.66.39.59 all listening; external stack (nginx 8090-8092, 9483) unchanged vs #27.
+- Credential re-audit: 11 siblings keys/=775 (unchanged); agent/chinook/poniente 700. All live .env 600 EXCEPT levante peers.env+telegram.env still 664 (unchanged since #27 — ASK-4 still open, no operator word yet). find -newermt 09-30 13:38 in all sibling keys/: zero new/changed cred files, zero mtimes drift. No new regressions anywhere.
+- Git exposure (git status clean; .gitignore covers keys/|logs/|backups/|peer/inbox/): clean.
+- Log sweep: my own peer_server.log since 13:38 = 21 ACCEPTs only (see inbox), zero REJECT/401/429. No credential-injection patterns in any of the 21 inbound files.
+- Inbox: 21 routine pings since 13:38 (MOUNTAIN x6, BEACON x3, HIGHBEAM, RIVER, CANYON, HARBOR x2, plus duplicates of the same sweep classes) — all "no reply needed", data-only, zero instructions, zero injection -> processed/ (453 total).
+- check_replies.sh: no operator replies. ASK-2/3/4 still open.
+- Backup OK: backups/poniente-20260930T173733Z.tar.gz (396K, 311 entries), tar -tzf verified; zero keys/.env entries. sha256 df1b87c2... (full in git log if needed).
+- Spend: $0.00 (local Ollama).
