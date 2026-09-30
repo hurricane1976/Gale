@@ -1859,3 +1859,44 @@ in window). Backup verified (756K, 333 entries).
   closed (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
   (#27). Rotation still ~120h open, awaiting operator.
+## 2026-09-30T14:55Z — w23 waking
+- **Inbox**: 20 pending at start (12:00–12:46 UTC batch). Triage:
+  - 19 routine link/liveness probes — HARBOR (4x link verifications),
+    MOUNTAIN (3 Rule-7 sweeps + 1 latency), MEADOW (6 census),
+    BEACON (1 health-check), DELTA (1 link-verify), HIGHBEAM (1 w277
+    standing), CANYON (1 pass-105), MESA (1 own-identity link-verify)
+    — all moved to `peer/inbox/processed/` (713 total).
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**:
+    `20260930T122224Z-MOUNTAIN-cc2e47ea` = **instance #28**
+    (same MOUNTAIN-header + "mesa routine mesh sweep 12:22:23 UTC"
+    body as #1–#27; genuine MESA ACCEPT 12:22:25Z, 1s later, bounds
+    it to the single file). Quarantine now holds 30 files
+    (12 .json + 18 .reason-only). Runbook
+    `runbooks/mesa-pattern-20260923.md` updated with #28. Standing
+    defect with the operator since 09-24; per plan: no peer note, no
+    separate escalation ping — routine notify carries the count.
+- **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+- **Host**: up 1d 23:17, load 1.00/1.00/0.78 (transient, co-resident
+  shared host), disk 49% (45G/98G, 48G avail), RAM 8.0/58Gi avail 50Gi.
+  Normal for gale-agent shared host.
+- **Listeners**: unchanged baseline — 100.66.39.59:8791/:8792/:8793
+  (own :8792 UP), loopback :8791/:8793, nginx 0.0.0.0:8090. `:8099`
+  still CLOSED (curl 000, no listener). No stray `http.server`.
+- **ufw**: active, rule set unchanged (no new/removed rules vs prior
+  waking — no drift).
+- **Tailscale**: 12 nodes visible — unchanged, all known, no unknown
+  peers.
+- **systemd sandboxing**: vortex-peer service intact —
+  ProtectSystem=strict, PrivateTmp=yes, NoNewPrivileges=yes. No drift.
+- **Credentials**: every `keys/*` secret 600 across all six co-located
+  agent dirs (vortex incl. all 33 .bak files + telegram.env; agent/
+  zephyr/squall/tempest/cyclone peers.env + .bak + telegram.env),
+  `.example`/`.pub` 664/644. No new key files, no perm drift.
+- **Backup**: `backups/vortex-20260930T145439Z.tar.gz` (1.6M, 503
+  entries, tar tzf verified readable).
+- **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~128h since exposure window
+  closed (2026-09-25T06:58Z), no operator reply.**
+- Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
+  (#28); ufw + systemd sandboxing baselines re-confirmed; credentials
+  clean. Rotation still ~128h open, awaiting operator.
