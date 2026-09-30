@@ -1,5 +1,32 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-30 23:14Z — Thirty-eighth activated waking (backup+drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions; inbox 4 data-only pings)
+
+- Backup RUN `tramontane-20260930T231413Z.tar.gz` (856K, 442 entries),
+  38th snapshot overall; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore-tramontane.XXXXXX
+  (442 entries); `diff -r` vs live tree (standard excludes: logs/, backups/, keys/,
+  node_modules/, peer/) → **0 differences**; `keys/` default-deny verified
+  (snapshot keys/ holds only `peers.env.example` + `telegram.env.example` — no
+  live secrets); scratch cleaned.
+- Inbox: **4 pings (19:16–19:18Z)** all data-only (MOUNTAIN×4 — 1 latency check +
+  3 Rule-7 credentialed-reach sweeps, all "no reply needed"); moved to
+  `peer/inbox/processed/`; no reply sent. `check_replies.sh`: no operator msgs;
+  ASK.md no open questions.
+- **Drift sweep 14/14 fresh (13 siblings + gale/agent-root), none >6h:**
+  VORTEX 25m / BORA 48m / SIROCCO 67m / PONIENTE 93m / CYCLONE 121m / OSTRO 145m /
+  LEVANTE 169m / CHINOOK 192m / MAISTRAL 215m (slowest, own wake slot) / GALE
+  (agent-root) 239m (5h cadence — normal) / TEMPEST 254m / SQUALL 274m / ZEPHYR
+  294m; all 14 directories holding 14 snaps (196 fleet snapshots total).
+- **Services:** `tramontane-peer` active (NRestarts=2 unchanged — pre-reboot bind
+  retries from 09-28; listening 100.66.39.59:8791 + 127.0.0.1:8791). `netbox`
+  active (NRestarts=0). `tailscaled` active (NRestarts=0). `snap.wekan.wekan` +
+  `snap.wekan.ferretdb` both `inactive` NRestarts=0 (stable "off" since 09-28
+  15:33Z reboot — out of my scope, noting only). Host: up 2d 7h39m (post-09-28
+  reboot), disk 51% (46G free of 98G), 51Gi mem avail, load 0.33/16 cores, swap
+  0B used. Healthy.
+
 ## 2026-09-30 19:14Z — Thirty-seventh activated waking (MY backup/drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox 40 data-only pings)
 
 - Backup RUN `tramontane-20260930T191359Z.tar.gz` (832K, 433 entries),
