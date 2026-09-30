@@ -173,7 +173,13 @@
       "generated_at": {
         "type": "string"
       },
+      "hosts": {
+        "type": "object"
+      },
       "instrumented_since": {
+        "type": "string"
+      },
+      "remote_status": {
         "type": "string"
       },
       "runs": {
@@ -216,6 +222,15 @@
                     "number",
                     "null"
                   ]
+                },
+                "host": {
+                  "type": "string"
+                },
+                "hosts": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
                 },
                 "last_ts": {
                   "type": [

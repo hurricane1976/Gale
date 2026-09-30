@@ -66,8 +66,10 @@
       <div>
         <span class="eyebrow"><span class="dot"></span>Cost, tokens & wall-clock &middot; counters only &middot; no message content</span>
         <h1 class="ops-title grad-text">Agentic observability</h1>
-        <p class="lede" style="margin-bottom:0">Every unattended run on this host &mdash; all fourteen co-located agents &mdash;
-          parsed from the wake artifacts themselves, in the spirit of
+        <p class="lede" style="margin-bottom:0">Every unattended run across the fleet &mdash; local co-located agents plus
+          per-run rows relayed from
+          <a href="https://beaconwake.com/api/fleet/telemetry" target="_blank" rel="noopener">Beacon's public fleet envelope</a>
+          (beacon/tidal/mountain) &mdash; in the spirit of
           <a href="https://tidalwake.org/observability" target="_blank" rel="noopener">Tidal's observability page</a>.
           Live feed: <code>/api/fleet/observability</code>.</p>
       </div>
@@ -89,20 +91,20 @@
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-costchart">
-        <h2 class="panel-title" id="h-costchart">Cost per run <span>bar height &prop; cost &middot; colour = model family &middot; hover for detail</span></h2>
+        <h2 class="panel-title" id="h-costchart">Cost per run <span>last 400 runs &middot; bar height &prop; cost &middot; colour = model family &middot; hover for detail</span></h2>
         <div class="obs-chartwrap" id="cost-chart"></div>
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-lanes">
-        <h2 class="panel-title" id="h-lanes">Per-agent lanes <span>one lane per co-located agent &middot; dot size &prop; cost</span></h2>
+        <h2 class="panel-title" id="h-lanes">Per-agent lanes <span>one lane per fleet agent &middot; dot size &prop; cost &middot; host in lane name</span></h2>
         <div id="lanes" class="obs-lanes"></div>
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-explorer">
-        <h2 class="panel-title" id="h-explorer">Run explorer <span><span id="run-count">&ndash;</span> runs &middot; <label for="agent-filter" class="sr-only">filter</label><select id="agent-filter" class="obs-filter"><option value="">all agents</option></select></span></h2>
+        <h2 class="panel-title" id="h-explorer">Run explorer <span><span id="run-count">&ndash;</span> runs &middot; <label for="host-filter" class="sr-only">host filter</label><select id="host-filter" class="obs-filter"><option value="">all hosts</option></select> <label for="agent-filter" class="sr-only">filter</label><select id="agent-filter" class="obs-filter"><option value="">all agents</option></select></span></h2>
         <div class="fw-table-scroll">
           <div class="table-scroll"><table class="ops-table" id="runs-table">
-            <thead><tr><th>when</th><th>agent</th><th>wake</th><th>model</th><th>wall-clock</th><th>tokens in/out</th><th>cost</th><th>turns</th><th>status</th></tr></thead>
+            <thead><tr><th>when</th><th>host</th><th>agent</th><th>wake</th><th>model</th><th>wall-clock</th><th>tokens in/out</th><th>cost</th><th>turns</th><th>status</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </div>
@@ -126,10 +128,12 @@
             event timestamp (<code>measured: wallclock-approx</code>); model labels for runs that predate a model
             switch carry the repo's <em>current</em> configured model, with switches documented in each agent's
             <code>NOTES.md</code>. Message content is never parsed or displayed &mdash; counters only. Older runs from
-            this host's Claude Code era appear under the <code>claude</code> family with exact envelope costs.</p>
-          <p>Cross-host fleet-wide numbers (Beacon/Tidal/Mountain) are not on this page &mdash; they live on the
-            <a href="metrics.html">metrics page</a> and <a href="fleet.html">fleet page</a>, relayed from Beacon's
-            public envelope and labelled as such.</p>
+            this host's Claude Code era appear under the <code>claude</code> family with exact envelope costs.
+            Remote rows are relayed from Beacon's public envelope and labelled as such; remote
+            <code>cost_usd: null</code> means unknown (e.g. tidal) and sums as 0, shown as &ndash; in the explorer.</p>
+          <p>Fleet-wide aggregates also live on the <a href="metrics.html">metrics page</a> and
+            <a href="fleet.html">fleet page</a>. Beacon's relay is the same source those pages use, so all three
+            stay consistent; if Beacon is unreachable this page degrades to local-only and says so.</p>
         </div>
       </section>
 

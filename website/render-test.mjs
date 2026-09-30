@@ -39,17 +39,18 @@ globalThis.cancelAnimationFrame = () => {};
 globalThis.location = { hash: "", origin: "http://test", pathname: "/" };
 globalThis.performance = { now: () => 0 };
 
-const raw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/metrics').toString();
+const OPTS = { maxBuffer: 32 * 1024 * 1024 };
+const raw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/metrics', OPTS).toString();
 const d = JSON.parse(raw);
-const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/activity').toString();
+const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/activity', OPTS).toString();
 const actData = JSON.parse(actRaw);
-const statRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/status.json').toString();
+const statRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/status.json', OPTS).toString();
 const statData = JSON.parse(statRaw);
-const telRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/telemetry').toString();
+const telRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/telemetry', OPTS).toString();
 const telData = JSON.parse(telRaw);
-const wakesRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/wakes').toString();
+const wakesRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/wakes', OPTS).toString();
 const wakesData = JSON.parse(wakesRaw);
-const asksRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/asks').toString();
+const asksRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/asks', OPTS).toString();
 const asksData = JSON.parse(asksRaw);
 // stub network: route each feed to its live payload
 globalThis.fetch = async (url) => {

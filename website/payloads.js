@@ -83,6 +83,11 @@ export const observabilityPayload = z.object({
       errors: z.number().optional(),
       tokens_24h: z.number().optional(),
       burn_tok_per_h: z.number().optional(),
+      // fleet-wide lanes: host attribution per agent (first host + full
+      // list when one agent name spans hosts). Optional so old payloads
+      // still pass; renderers guard on their own.
+      host: z.string().optional(),
+      hosts: z.array(z.string()).optional(),
     })).optional(),
   }),
   runs: z.array(z.object({
@@ -91,10 +96,12 @@ export const observabilityPayload = z.object({
     // run-explorer + cost chart + lanes dereference these directly —
     // omitting them here strips them via zod (same bite as metrics
     // runs_24h_by_host and status os/kernel before).
-    waking_count: z.number().optional(),
-    model: z.string().optional(),
+    // cost_usd/waking_count are numOr: relayed rows carry null costs
+    // (unknown, e.g. tidal) and may omit waking_count.
+    waking_count: numOr.optional(),
+    model: strOr.optional(),
     model_family: z.string().optional(),
-    cost_usd: z.number().optional(),
+    cost_usd: numOr.optional(),
     cost_estimated: z.boolean().optional(),
     input_tokens: numOr.optional(),
     output_tokens: numOr.optional(),
@@ -111,6 +118,14 @@ export const observabilityPayload = z.object({
   count: z.number(),
   generated_at: z.string(),
   instrumented_since: z.string().optional(),
+  // fleet-wide envelope additions (all optional so local-only payloads
+  // still validate): per-host row counts + relay health.
+  hosts: z.record(z.string(), z.object({
+    status: z.string(),
+    rows: numOr.optional(),
+    source: z.string().optional(),
+  })).optional(),
+  remote_status: z.string().optional(),
 });
 
 export const statusPayload = z.object({

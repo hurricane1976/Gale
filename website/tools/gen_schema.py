@@ -85,6 +85,7 @@ SCHEMAS = {
                             "last_ts": STRNULL, "p50_ms": NUMNULL,
                             "p95_ms": NUMNULL, "errors": NUMNULL,
                             "tokens_24h": NUMNULL, "burn_tok_per_h": NUMNULL,
+                            "host": STR, "hosts": {"type": "array", "items": STR},
                         },
                     }},
                 },
@@ -97,6 +98,8 @@ SCHEMAS = {
             "count": NUM,
             "generated_at": STR,
             "instrumented_since": STR,
+            "hosts": {"type": "object"},
+            "remote_status": STR,
         },
     },
     "status": {

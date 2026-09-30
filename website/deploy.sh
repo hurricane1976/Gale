@@ -66,6 +66,20 @@ done
 sudo cp -r "$SCRIPT_DIR"/assets /var/www/gale/
 # files that no longer exist in the repo shouldn't linger in the docroot
 for stale in app.js style.css; do sudo rm -f "/var/www/gale/$stale"; done
+# Entry bundles are content-hashed (dist/main-<hash>.js) so a stale cached
+# entry can never import a deleted chunk -- the observability page-break fix.
+# build.mjs wrote the stable->hashed map to dist/.entry-manifest.json; the HTML
+# <script src> and sw.js SHELL_ASSETS still say the STABLE name (repo source
+# stays unbundled). Rewrite those refs in the DEPLOYED copy to the exact
+# hashed files that ship for this build. Runs before chown so the edits land
+# www-data-owned. If this fails, set -e aborts BEFORE the smoke gate, so a
+# half-rewritten docroot never gets served.
+if [ ! -f "$SCRIPT_DIR/dist/.entry-manifest.json" ]; then
+  echo "deploy: ERROR -- dist/.entry-manifest.json missing; build did not emit it" >&2
+  exit 1
+fi
+sudo /usr/bin/node "$SCRIPT_DIR/tools/rewrite-dist-refs.mjs" \
+  --root /var/www/gale --manifest "$SCRIPT_DIR/dist/.entry-manifest.json"
 sudo chown -R www-data:www-data /var/www/gale
 sudo chmod -R 755 /var/www/gale
 sudo nginx -t

@@ -713,15 +713,83 @@ def _pct(sorted_vals, p):
     return sorted_vals[i]
 
 
+def _normalize_remote_obs_row(r):
+    """Normalize one Beacon-relayed run row into the local observability row
+    shape. Counters only; never raises (returns None to skip bad rows)."""
+    try:
+        rr = dict(r)
+        agent = str(rr.get("agent") or "?").lower()
+        host = str(rr.get("host") or "?").lower()
+        ts = rr.get("ts") or ""
+        if not ts or not isinstance(ts, str):
+            return None
+        model = rr.get("model")
+        if model is not None:
+            model = str(model).lstrip("~")
+        fam = rr.get("model_family") or (model_family(model) if model else "other")
+        cost = rr.get("cost_usd")
+        try:
+            cost = None if cost is None else float(cost)
+        except (TypeError, ValueError):
+            cost = None
+        def _tok(v):
+            try:
+                return None if v is None else int(v)
+            except (TypeError, ValueError):
+                return None
+        def _num(v):
+            return v if isinstance(v, (int, float)) and v >= 0 else None
+        wc = rr.get("waking_count")
+        try:
+            wc = None if wc is None else int(wc)
+        except (TypeError, ValueError):
+            wc = None
+        turns = rr.get("turns")
+        try:
+            turns = None if turns is None else int(turns)
+        except (TypeError, ValueError):
+            turns = None
+        return {
+            "agent": agent,
+            "host": host,
+            "ts": ts,
+            "waking_count": wc,
+            "model": model,
+            "model_family": str(fam or "other").lower(),
+            "cost_usd": cost,
+            "cost_estimated": bool(rr.get("cost_estimated", False)),
+            "input_tokens": _tok(rr.get("input_tokens")),
+            "output_tokens": _tok(rr.get("output_tokens")),
+            "cache_read_tokens": _tok(rr.get("cache_read_tokens")),
+            "duration_ms": _num(rr.get("duration_ms")),
+            "measured": None,
+            "turns": turns,
+            "is_error": bool(rr.get("is_error")),
+            "terminal_reason": rr.get("terminal_reason"),
+            "source": "relayed from beacon's public telemetry",
+        }
+    except Exception:
+        return None
+
+
 def observability_envelope():
     local = local_runs_full()
+    remote_env = remote_envelope()
+    remote_rows = []
+    if remote_env:
+        for r in remote_env.get("runs", []):
+            nr = _normalize_remote_obs_row(r)
+            if nr:
+                remote_rows.append(nr)
+    runs = list(local) + remote_rows
+    runs.sort(key=lambda r: r.get("ts") or "")
     day_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
     agents = {}
-    for r in local:
+    for r in runs:
         a = agents.setdefault(r["agent"], {"agent": r["agent"], "runs": 0, "cost_usd": 0.0,
                                            "total_tokens": 0, "last_ts": None,
                                            "_durs": [], "errors": 0,
-                                           "tokens_24h": 0})
+                                           "tokens_24h": 0, "_hosts": set()})
         a["runs"] += 1
         a["cost_usd"] += float(r.get("cost_usd") or 0)
         toks = int(r.get("input_tokens") or 0) + int(r.get("output_tokens") or 0) \
@@ -735,30 +803,54 @@ def observability_envelope():
             a["tokens_24h"] += toks
         if a["last_ts"] is None or (r.get("ts") or "") > a["last_ts"]:
             a["last_ts"] = r.get("ts")
+        if r.get("host"):
+            a["_hosts"].add(str(r["host"]))
     alist = sorted(agents.values(), key=lambda a: a["agent"])
     total_cost = sum(a["cost_usd"] for a in alist)
     total_tokens = sum(a["total_tokens"] for a in alist)
-    count = len(local)
+    count = len(runs)
     out_agents = []
     for a in alist:
         ds = sorted(a.pop("_durs"))
+        hosts = sorted(a.pop("_hosts"))
         out_agents.append({**a, "cost_usd": round(a["cost_usd"], 4),
                            "mean_cost_usd": round(a["cost_usd"] / a["runs"], 6) if a["runs"] else 0,
                            "p50_ms": _pct(ds, 0.5), "p95_ms": _pct(ds, 0.95),
-                           "burn_tok_per_h": round(a["tokens_24h"] / 24.0, 1)})
+                           "burn_tok_per_h": round(a["tokens_24h"] / 24.0, 1),
+                           "host": hosts[0] if hosts else HOST_NAME,
+                           "hosts": hosts})
+    hosts_block = {HOST_NAME: {"status": "ok", "rows": len(local),
+                               "source": "local wake artifacts"}}
+    if remote_env:
+        for host, block in (remote_env.get("hosts") or {}).items():
+            hosts_block[host] = {
+                "status": block.get("status", "unknown"),
+                "rows": block.get("rows"),
+                "source": BEACON_TELEMETRY_URL + " (relayed public envelope)",
+            }
+    else:
+        for host in ("beacon", "tidal", "mountain"):
+            hosts_block[host] = {"status": "unreachable", "rows": None,
+                                 "source": BEACON_TELEMETRY_URL}
     return {
-        "description": "Telemetry from local co-located agent runs (gale-agent): parsed from each "
-                       "agent's own wake JSON artifacts. Wall-clock is approximate for opencode "
-                       "runs (file mtime minus first event); see the page's 'How this is wired'.",
+        "description": "Fleet-wide run telemetry: local co-located agent runs "
+                       "(gale-agent, parsed from each agent's own wake JSON artifacts) "
+                       "plus per-run rows relayed from Beacon's public fleet envelope "
+                       "(counters only, no credentials). Wall-clock is approximate for "
+                       "opencode runs (file mtime minus first event); remote costs may "
+                       "be null (unknown, e.g. tidal) and sum as 0; see the page's "
+                       "'How this is wired'.",
         "count": count,
         "instrumented_since": "2026-09-21",
+        "hosts": hosts_block,
+        "remote_status": "ok" if remote_env else "unreachable",
         "totals": {
             "cost_usd": round(total_cost, 4),
             "mean_cost_usd": round(total_cost / count, 6) if count else 0,
             "total_tokens": total_tokens,
             "agents": out_agents,
         },
-        "runs": local,
+        "runs": runs,
         "generated_at": now_iso(),
     }
 

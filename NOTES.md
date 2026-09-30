@@ -2813,4 +2813,67 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 ## 2026-09-30T12:00Z -- routine waking
 - Health: tailscaled/gale-peer/cron/gale-ollama-shim active, disk 49%, mem fine, no reboot pending.
 - `./backup.sh`: `gale-20260930T120013Z.tar.gz` (71M), read-back verified (18120 entries, tar -tzf exit 0).
+
+## 2026-09-30T~15:00Z -- observability page break: stale service-worker cache (not a data bug)
+Operator reported the fleet observability page still errors. Investigated the
+full client path and ruled OUT every data-side suspect, then found the real one.
+
+**Proven healthy (verified live):**
+- `/api/fleet/observability` 200 (2235 runs, 20 agents); payload passes the DEPLOYED chunk's `observabilityPayload` zod schema (validated the built chunk's schema[3] in Node against the live JSON — PASS).
+- SSE stream 200; captured a frame, decoded + schema-validated as the browser does — PASS. (An earlier "rejected: payload.days" was a false alarm — I'd grabbed `metricsPayload`, schema[0], from the chunk's export list.)
+- Access log: a second device (100.66.39.59) reloads clean, all 200s.
+
+**The bug:** one of the operator's browsers (100.95.19.86) kept `404`-ing `chunk-6U7PCMAK.js` at 14:18 AND 14:39 — i.e. still executing the OLD entry bundle that imports a chunk the 12:41 deploy deleted. It never re-fetched: `sw.js` returned `304` (bytes unchanged), so the browser kept the stale service-worker caches (`gale-v8-shell` holding the pre-fix HTML + old `dist/observability.js`, plus `gale-v8-runtime`). nginx `no-cache` on the entry can't beat this — the SW's network-first `fetch()` still gets a served-from-cache/unchanged response and re-serves the old graph.
+
+**Fix (the one the code itself documents, sw.js:14):** bump `CACHE_VERSION` `gale-v8` -> `gale-v9`. The v9 SW activates and `activate()` deletes any cache not starting with `gale-v9`, purging both poisoned `gale-v8-*` caches, then re-precaches the current shell. Deployed the new sw.js (new ETag `6abd2624`, `no-cache`) so the stuck browser gets a 200-not-304 and updates. source + deployed `sw.js`: `gale-v9`. (Earlier, kept: nginx `/dist/` no-cache + `/dist/chunks/` immutable; entry `?v=20260930-1241`.)
+
+**Verified end-to-end after fix:** observability.html -> `?v=` entry 200; its 3 imported chunks (AOTHORAK/GFE43QA3/XAWE4EAK) all 200; dead chunk `6U7PCMAK` referenced 0x server-side; sw live bytes == source (`gale-v9`; fresh ETag); data 200 + stream 200.
+
+**Follow-ups:** the other 21 stable-named entry bundles share this latent risk (a future deploy could break their cached copies) — nginx no-cache + this SW bump prevent new damage but don't retroactively fix already-cached entries on other pages; proper fix is content-hashed entry names in build.mjs. 15 missing agents still pending host-side feed publication. 8 website files now uncommitted (the 7 prior + sw.js) — not yet committed (await operator OK).
 - No operator messages. 23 routine peer messages archived as data, no action. ASK.md unchanged (two open items). Spend normal (~$0.14/run).
+
+## 2026-09-30T~15:50Z -- permanent fix: content-hashed entry bundles (the observability class of bug, killed)
+The v9 cache-bump above un-stuck the ONE operator browser, but all 21 entry
+bundles were still shipped under STABLE names (`dist/observability.js`, ...),
+so a future deploy could repeat exactly this break on any page (a cached entry
+importing a now-deleted chunk hard-darks). Operator approved the permanent fix.
+
+**Built now (deployed, verified live, SMOKE PASS):**
+- `build.mjs`: `entryNames: "[name]-[hash]"` + `metafile: true`; emits
+  `dist/.entry-manifest.json` mapping stable -> hashed (21 entries). The
+  manifest filter had to key on `info.entryPoint` (not `kind`, which esbuild
+  leaves `undefined` here) — caught because the manifest was silently empty.
+- `tools/rewrite-dist-refs.mjs` (new): runs on the DEPLOYED docroot after
+  `deploy.sh` copies it; rewrites the static `<script src>` refs in the *.html
+  and the `SHELL_ASSETS` names in `sw.js` from stable to the exact hashed files
+  that ship (strips any trailing `?v=` buster). Repo source stays pristine
+  (unbundled ES modules, stable names) — only the deployed copy is rewritten.
+  Idempotent; refuses to no-op silently; aborts `deploy.sh` (set -e) before the
+  smoke gate if it finds nothing to rewrite.
+- `deploy.sh`: invokes the rewriter (via `/usr/bin/node`, passwordless sudo)
+  right after the docroot copy, before `chown`. A pre-deploy docroot snapshot
+  + `./deploy.sh --rollback` remain the safety net; smoke runs after.
+- `sw.js`: `CACHE_VERSION` `gale-v8` -> `gale-v10` (final). The bump is what
+  forces every client to drop the old `gale-v8-*`/`gale-v9-*` caches whose
+  SHELL_CACHE still held the now-deleted STABLE entries + dead chunks, then
+  re-precache against the HASHED names. (v9 was the stopgap that fixed the one
+  browser; v10 is the one that ships with the hashed shell.)
+- `observability.html`: reverted the temporary `?v=20260930-1241` buster
+  (content-hashing supersedes it). `smoke.sh`: `has "dist/palette.js"` ->
+  `has "palette.js"` (raw file, still deployed top-level; `dist/palette.js` is
+  now hashed and would 404).
+
+**Verified live (100.66.39.59:8090):** all 15 page entries + every hash present
+serve **200**; the old stable names `dist/observability.js` / `dist/main.js` /
+`dist/palette.js` now **404** (the stale-cache poison can no longer resolve);
+`observability.html` loads `dist/observability-<hash>.js`; API + stream 200;
+deploy SMOKE PASS. Deployed `sw.js` = `gale-v10` with hashed `SHELL_ASSETS`.
+
+**Committed** (operator approved): the observability data/schema work (from the
+prior session) + this cache/hashing fix — `website/{build.mjs,deploy.sh,sw.js,
+observability.html,smoke.sh}`, new `website/tools/rewrite-dist-refs.mjs`, and
+the fleet-observability API render (`fleet_api.py`,`observability.js`,
+`payloads.js`,`payloads.schema.json`,`render-test.mjs`,`gen_schema.py`), plus
+this NOTES.md entry. 15 missing agents still pending host-side feed publication.
+
+
