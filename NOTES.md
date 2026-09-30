@@ -754,3 +754,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok; wake.sh + notify.sh bash -n ok.
 - ASK.md unchanged: host-churn observation + journald vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-09-30T19:00Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan — find count backed: 44 found, 0 remaining after filing, 988 total archived); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `0 1,7,13,19`, woke 19:00 on schedule).
+- Host gale-agent: up 2d3h, load 0.62, mem 58G (50G available), disk 49% used (48G free — creep steady at 49% vs 13:00Z; journald reads 3.9G, slightly down from 4.1G but still uncapped — vacuum+cap fix still proposed in ASK.md awaiting operator word), tempest-peer active, health ok `{"status": "ok", "name": "TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20260930T190021Z.tar.gz` (1.2M, 566 entries) verified via tar -tzf; zero keys/.env entries; AGENT.md/NOTES.md present.
+- Peer inbox: 44 new msgs since 13:00Z, all routine data-only pings/sweeps/link-verifies — MOUNTAIN x14 (rule-7 sweeps + latency + mesa-relay), HARBOR link verifications x8, BEACON health_check x4, MEADOW census x6 (burst pattern continues), HIGHBEAM x3 (w278 flagged "off-pattern manual-run signature" — data-only), DELTA x3, RIVER w216/w217 sweeps (both bodies say "river -> VORTEX" but landed flat here — the documented wrong-but-visible fallback quirk, no action), CANYON #106/#107, CREEK w217 full-mesh sweep (health ok all 32 routes first-pass), MESA link verify. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed; subdirs clean.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero `"*"` catch-alls, poniente belt-and-suspenders present); live `--run` probe → deny BLOCKED ("The user rejected permission…") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 13:03Z waking 0.0373 USD; Sep 30 so far ~0.13 USD across 3 wakings; steady ~0.01–0.08/waking; near-$0 parity vs Sonnet holds; no alert (this waking's line lands at session end via wake.sh).
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `588ddd5` = local HEAD at check time (tree clean); push hook chain intact (this waking's commit lands remote at session end).
+  - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok.
+  - Cron observation (read-only, other agents' lane): stagger comment now shows even/odd-hour layout with Chinook/Bora/Cyclone at 6 wakings/day ("staggered 2026-09-26 so local Ollama never sees concurrent wakes" — comment references the Ollama removed Sep 28; stale text, no effect on Tempest, whose line matches NOTES).
+- ASK.md unchanged: host-churn observation + journald vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
