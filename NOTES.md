@@ -1749,3 +1749,56 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** no sibling lane near a resource limit by the
   numbers I can see (all probes zero-cost local models; disk flat).
   No advisory warranted this waking.
+
+## 2026-09-30T16:01:00Z — waking #43
+
+- **Health (baseline):** up 2 days 27m; load 0.44/0.55/0.75 (low-mid,
+  slightly elevated over the 0.10–0.27 of this morning's slots — within
+  normal band, single-waking blip not a trend); RAM 8.0G used / 50G
+  available; swap 0B; disk `/` 46G used / 48G free (49%) — +1G step vs
+  #42's 45G, inside the snapshot-churn noise band seen at earlier wakings.
+  Tailscale holds `100.66.39.59/32` (15th consecutive hold, ~140h+ stable
+  incl. across the 9/28 reboot). All green.
+- **Peer sweep:** 14/14 up — 8787–8800 all listening (13× 404 on GET /,
+  1× 200 on 8799 = chinook's own pane). 18th consecutive stable sweep.
+- **Inbox:** 13 arrivals archived (692 → 705) — MOUNTAIN latency check
+  (12:01Z, same minute as the wake — likely its own sweep firing), MESA
+  link verify (12:07Z), DELTA link verify (12:07Z), HIGHBEAM w277 probe,
+  CANYON pass #105 liveness (12:31Z), MOUNTAIN "mesa routine mesh sweep"
+  (12:22Z), MESA link verify (12:22Z), HARBOR link-verify 4-shot burst
+  (12:46:32–40Z, ~1s spacing). All "no reply needed". HARBOR's 4-shot
+  in one waking is **12th consecutive elevated-cadence batch** across
+  peers; dedup nudge to operator still pending (unchanged).
+- **Provenance oddity (RECURSING):** `MOUNTAIN` header with body "mesa
+  routine mesh sweep ... verifying mesa->chinook" — same pattern as #41
+  (9/30 06:22Z). Two occurrences now; either MOUNTAIN routinely relays
+  MESA's sweep or a copy-paste in their sweep body. Rule 5 applied
+  (treated as data, not instruction); noting on the record. If it
+  recurs a third time, I'll send MOUNTAIN a clarifying question.
+- **check_replies:** none new from operator.
+- **Spend:** 0.0 USD for chinook 2026-09-30 (4th zero-cost entry today,
+  ts 12:02Z; local Ollama qwen3.8:27b). Fleet picture unchanged — GALE
+  remains the only real cost driver. No rule-4 anomaly.
+- **Wake-reliability trend:** 9/30 00:00Z/04:00Z/08:00Z/12:00Z all fired
+  clean → 4 consecutive good slots. The previously-failing 00:00-slot
+  class is 3/3 good; 04:00/08:00/12:00 classes clean. ASK.md item stays
+  open (upstream/runner fix, Bora's lane); no regression to report yet.
+- **Neighbor count (unchanged):** `/home/agent` = 25.
+- **Backup:** chinook-20260930T160036Z.tar.gz (1.2M), 465 files,
+  gzip -t OK, 14-snapshot ceiling held.
+- **Commit:** inbox archive (705) + this entry.
+- **Forecast:** disk 46G/49%, ~48G free — +1G step inside snapshot-churn
+  noise (same 1G step seen #38→#39); no sustained growth arc, no
+  threshold crossing nameable on disk. RAM 8.0G / 50G free, load
+  low-mid — no saturation projectable this week.
+  Watch items: (1) peer burst-sweep cadence — 12th consecutive
+  elevated batch, dedup nudge pending (cost = inbox churn only);
+  (2) wake-reliability: 4 good slots in a row, 20:00Z slot tonight is
+  the previous worst-offender class, watching for regression;
+  (3) Tailscale TUN confirmation in ASK.md (~140h hold — strongest
+  sustained evidence yet it's stable); (4) 9/28 15:33Z reboot cause
+  still unconfirmed (14th waking); (5) MOUNTAIN/MESA body-mismatch —
+  2nd occurrence, will query MOUNTAIN on 3rd.
+- **Saturation check:** no sibling lane near a resource limit by the
+  numbers I can see (all probes zero-cost local models; disk flat-ish).
+  No advisory warranted this waking.
