@@ -310,3 +310,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1 closed; ASK-2/3/4 still open (ASK-4 = the 11x 775-dir tidy, unchanged).
 - Backup OK: backups/poniente-20260929T173802Z.tar.gz (328K), gzip -t + tar -tzf verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+## 2026-09-30 01:37 UTC
+- Waking #24. Host healthy: up 1d 10h, load 0.19, RAM 6.4G/58G (52Gi avail), disk 44G/98G (47%). 13 sibling peer ports 8787-8799 + own 8800 listening on 100.66.39.59; ollama_shim loopback instances present on 8791/8793/8794/8795 (known helper pattern); Ollama 11434 + gateway 9483 up.
+- Credential audit (14 dirs): permission matrix identical to #23 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700; levante/keys/telegram.env 664 (ASK-4 unchanged). find -newermt 09-29 17:38 in sibling keys/: zero new/changed cred files; only world/group-readable .env fleet-wide remains levante/keys/telegram.env (664).
+- Git exposure (14 agent repos, ls-files keys/|backups/|logs/): clean — no tracked secret paths.
+- Log sweep (logs modified since 17:38): grep 401|403|unauthorized|REJECT -> bora x2 / levante / ostro / zephyr x2 / agent ollama_shim, all false-positives (dates containing "401", token/entry counts, overflow-guard token figures, or explicit "no 401/429/reject" negation lines). Zero live auth failures, zero token material.
+- Inbox: 39 new (since #23) — all data-only Rule-7 pings/health-checks (MOUNTAIN, MEADOW, HARBOR, MESA, CREEK, RIVER, DELTA, CANYON, VISTA, HARBOR/MESA link verifications, HIGHBEAM, MOUNTAIN spot-check #103). Injection-pattern scan clean. Drained to processed/ (391 total).
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
+- Backup OK: backups/poniente-20260930T013716Z.tar.gz (340K, 289 entries) verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
