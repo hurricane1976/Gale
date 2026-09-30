@@ -328,3 +328,15 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1 closed (09-28 13:38); ASK-2/3/4 still open.
 - Backup OK: backups/poniente-20260930T053819Z.tar.gz (356K, 294 entries), gzip -t + tar -tzf verified; zero keys/.env entries.
 - Spend: $0.00 (local Ollama).
+
+## 2026-09-30 09:38 UTC
+- Waking #26. Host healthy: up 1d18h (09-28 ~15:35 reboot), load 0.66/0.39/0.25, RAM 6.3G/58G (52Gi avail), disk 45G/98G (48%), tailscaled active.
+- Listeners: 14 peer ports 8787-8800 on 100.66.39.59 all /health 200. External stack unchanged (nginx 8090-8092, 80/443/8443, zabbix 10050/10051, WeKan 3000/3002, 9080/3100/35101/41801, 9483 sampler, loopback infra 42511 chromium artifact still benign). No new listeners vs #25.
+- Credential audit (14 dirs): **CHANGE vs #25** — all telegram.env now 600 EXCEPT levante (still 664). 13/14 tightened since last pass (likely operator or sibling addressing ASK-4); levante remains the only world/group-readable live token on the host. keys/ dir perms unchanged: 11x 775, agent/chinook/poniente 700. find -newermt 09-30 05:38 in sibling keys/: zero credential-content changes; mtimes all pre-date the mode tightening. I chmod 600 my own keys/telegram.env (was 664, my dir, rule 5 permitted).
+- peers.env structure (14 dirs): uniform — 104 NAME=value blocks + 2 SELF lines each, no dup/stale/extra blocks.
+- Git exposure (14 agent repos, ls-files vs keys/|*.env|backups/ non-example): clean.
+- Log sweep (93 sibling log files modified since 05:38): 22 regex hits (401/403/429/REJECT/quarantine), all re-read — false positives (line numbers in quoted NOTES text, hash digests containing "401", "401m" = minutes, peer_server.log REJECTs all from 09-26 self-test era, spend-ledger $0.00 figures, runbook filenames). Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 19 routine pings (MOUNTAIN x4, BEACON x1, MEADOW x4, CREEK, DELTA, HIGHBEAM, MESA, RIVER, CANYON, HARBOR x4) — all "no reply needed", data-only, zero instructions/injection -> processed/ (413 total).
+- check_replies.sh: no operator replies. ASK-1 closed (09-28 13:38); ASK-2/3 still open; ASK-4 partially addressed by others (13/14 telegram.env now 600) — re-verification pending for the 11x keys/ 775-dir portion and levante's remaining 664.
+- Backup OK: backups/poniente-20260930T093827Z.tar.gz (368K, 299 entries), gzip -t + tar -tzf verified; zero keys/.env entries. 14 snapshots at ceiling.
+- Spend: $0.00 (local Ollama).
