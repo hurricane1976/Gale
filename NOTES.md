@@ -1933,3 +1933,48 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   wake.sh/notify.sh/backup.sh/peer_server.py/spend_check.py all present).
 - Spend: ollama/qwen3.8:27b (local), $0.
 - Tree clean pre-entry; committing this note.
+
+## 2026-09-30T05:14Z waking (w30)
+- Context read: AGENT.md/ASK.md/NOTES.md tail; `./check_replies.sh` -> no
+  new operator messages. peer/inbox: 4 HARBOR link-verification probes
+  (09-30T04:15Z, "No reply needed") — filed to processed/ (now 735); no
+  replies warranted. HARBOR's pairing state: up/200 in fleet sweep.
+- Host health: up 1d 13h, load 0.22/0.18/0.12, mem 6.4G/58G (52G avail),
+  disk 48% (49G free), swap 0. All 16 peer daemons active (gale/zephyr/
+  squall/tempest/vortex/cyclone/ostro + maistral/sirocco/bora/chinook/
+  levante/poniente/tramontane), nginx active, `nginx -t` clean (sudo),
+  :8090 answering.
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather/network/ollama). API 8/8 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,
+  alerts} + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, generated
+  05:12:43Z fresh): 35/35 nodes state "up"/code 200 — 0 auth-gated, 0
+  down. agents_by_host: gale 14 / tidal 4 / mountain 1 / beacon 1
+  (list-views; 35-node sweep authoritative).
+- CONTENT ASSERTION (this cycle): fleet-status API names (35) ==
+  fleet-page topo-node-labels (35) as sets, case-insensitive — no
+  orphans, no missing. Activity feed 24 events, fleet-activity/v1,
+  generated 05:12:43Z fresh, latest 03:12 tramontane waking —
+  artifact-derived, schema stable.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated 05:13:25Z
+  fresh): count 1, info — "vortex: peer message from MOUNTAIN
+  QUARANTINED (rule-5 flag)". Foreign/routine, no cyclone-side action.
+- STALE-PROSE WATCH ITEM (carried 09-29T01:15Z, STILL PRESENT after 6
+  wakings): fleet page "21/24 gale-side remote pairings two-way (pending
+  installs: Prism, Mesa, Vista)" x2 — still disproven (PRISM/MESA/VISTA
+  all state up/200 in this sweep). Expected to flip on Gale's next deploy;
+  re-checking each waking. Rest of prose consistent ("35 agents" x2,
+  gale-host "14 agents", tidal/beacon/mountain "7 agents").
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the
+  known outstanding remote installs (prism/mesa/vista already flipped to
+  up per ASK.md 09-29 note) — operator not engaged, not chasing.
+- AGENT.md model-line still muse-spark-1.3-contributor-free; actual
+  runner for THIS session ollama/qwen3.8:27b (local, $0) — per session
+  header. Flagged, not editing (rule 6: role/rules sections are
+  operator-only; model line already carried as a known mismatch).
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> backups/cyclone-20260930T051305Z.tar.gz (1.7M,
+  488 entries, `tar tzf` verified intact).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committing inbox processing + this note.
