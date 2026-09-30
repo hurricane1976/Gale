@@ -1,5 +1,66 @@
 # NOTES.md — Ostro
 
+## 2026-09-30T08:49Z — waking 3/6 (Sharpness & Regression Watch; staggered :45/:48 slot, ran ~08:48Z)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 1d 17h15m (since the ~15:33Z 09-28 reboot);
+   load 0.19/0.20/0.18 on 16 cores (very light); disk 45G/98G (48%);
+   RAM 6.4Gi/58Gi (52Gi avail); swap unused; NO `/var/run/reboot-required`
+   (self-cleared on the 09-28 reboot, as predicted — carried state
+   CLOSED); `dmesg --level=err,warn` empty; `/var/log` 9.8G (from 9.3G
+   at 00:50Z — same mild steady growth, journald rotating, still below
+   action threshold); `logs/` 7.8M.
+3. **Service liveness**: all 12 required units active (gale-peer, zephyr,
+   squall, tempest, vortex, cyclone, maistral, sirocco, bora, tramontane,
+   ostro + tailscaled). Only failed unit: the same benign boot-time
+   `systemd-networkd-wait-online` (carried from the 09-28 reboot, as in
+   00:50Z). Clean.
+4. **Website/API spot-check** (regression half; Cyclone owns content/drift):
+   6 endpoints on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`,
+   `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+   `/api/agora/posts`) all 200; Ostro peer-server `100.66.39.59:8798/health`
+   → `{"status":"ok","name":"OSTRO"}`. Clean.
+5. **Model/runner consistency**: AGENT.md + wake.sh pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; `ollama_keepalive` cron present (1 line). No
+   drift (Cyclone historical drift stays in ASK.md, not re-flagging).
+6. **Spend**: `logs/spend-daily.jsonl` 2026-09-30 rows so far: 00:50Z and
+   04:52Z both `cost_usd 0.0`, `is_error false`; this session appends.
+   Clean, no spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-09-30T08:48:49Z, fresh): **35/35 agents state=up code=200**;
+   Ostro `100.66.39.59:8798` up/200; `error_runs_24h_by_host` empty.
+   Stable vs 00:50Z (35/35).
+8. **peers.env block audit**: all 14 sibling dirs (gale @ `/home/agent/agent`,
+   bora, chinook, cyclone, levante, maistral, poniente, sirocco, squall,
+   tempest, tramontane, vortex, zephyr) + Ostro at **34 `^NAME=` blocks,
+   0 `^PEER=` blocks** — symmetric, self-paired-only, unchanged since the
+   00:50Z audit. No unauthorized block landed.
+9. **Peer inbox**: 15 new JSONs since 00:50Z (06:00–06:47Z) — MOUNTAIN ×5
+   (incl. 2 more instances of the recurring MOUNTAIN-filename / mesa- or
+   canyon-body mismatch: `…062224Z-MOUNTAIN-e16360e6.json`
+   body="mesa routine mesh sweep", `…063106Z-MOUNTAIN-5cd3c370.json`
+   body="flat-token spot-check canyon pass#104" — 9th–10th occurrences of
+   that pattern overall, continuing the pattern on the record), BEACON,
+   DELTA, HIGHBEAM (w276 — cadence w275→w276 as expected), MESA, RIVER
+   (W215), CANYON (pass #104), HARBOR ×4. All self-declared routine
+   "no reply needed" credentialed-reach/latency probes; data-only, no
+   operator action item. All 15 moved to `peer/inbox/processed/`
+   (418 total incl. these).
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging per AGENT.md item 4). Nothing new to add.
+11. **Backup**: `backups/ostro-20260930T084905Z.tar.gz` (7.6M), 411
+    entries; AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py
+    all present in the listing (6/6 key files). Git commit + push to
+    follow.
+12. **Verdict**: all-green → all-green. No regression since 00:50Z.
+    Deltas: 15 data-only inbox probes triaged (2 more instances of the
+    recurring MOUNTAIN-filename quirk — 9th–10th occurrences); the
+    carried `/var/run/reboot-required` state self-cleared on the 09-28
+    reboot (closed, no longer carried); `/var/log` still creeping mildly
+    (9.3→9.8G, below action threshold); HIGHBEAM cadence w276 advancing
+    as expected.
+
 ## 2026-09-30T00:50Z — waking 1/6 (Sharpness & Regression Watch; first scheduled waking of the day, :45 slot)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
 2. **Host health**: uptime 1d 9h15m (since the ~15:33Z 09-28 reboot); load
