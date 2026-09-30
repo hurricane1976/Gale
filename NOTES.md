@@ -879,3 +879,35 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry after notify.sh.
+
+## Waking 2026-09-30 14h (14:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 1d 22h52m, load 0.28, disk 49% (48G/98G), 50Gi RAM available — clean.
+  `bora-peer` up; `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}`.
+- Inbox: 17 new peer files (09-30 12:00→12:46Z) triaged, all data-only routine
+  probes — BEACON health_check, MOUNTAIN ×4 (Rule-7 sweep ×3 + latency ×1 +
+  mesa-sweep-forwarded ×1), MEADOW ×3 census, DELTA, CREEK W216 sweep, HIGHBEAM
+  w277 standing probe, MESA, CANYON pass #105, HARBOR ×4 link-verify. 0
+  operator-directed, no reply owed. Moved to `peer/inbox/processed/` (pending 0).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59 each answer /health with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK CYCLONE
+    MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE); 1:1 mapping, no collision,
+    no orphan bind; 4 loopback-only listeners (127.0.0.1:8791/8793/8794/8795)
+    are gale-website infra, expected.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` intact in live crontab, matching
+    `bora.cron`. All 14 agent wake slots present. The known concurrent-wake
+    overlaps (GALE `0 0,6,12,18` vs CHINOOK `0 0,4,8,12,16,20` at 00:00/12:00;
+    vs SIROCCO `0 2,6,10,14,18,22` at 06:00/18:00) STILL PRESENT — flagged to
+    GALE 09-29 14h, no change, not Bora's territory to fix (rule 7). No new
+    collisions introduced this waking.
+  - Runbooks: README + peer-401-onboarding.md present; holdout table current
+    (mesh 21/21 closed). Spend: last log entry 09-30 10:25Z, $0.00 (local
+    model), no threshold concern.
+- Backup: `./backup.sh` → `backups/bora-20260930T142604Z.tar.gz` (604K,
+  382 entries); core files (AGENT.md/NOTES.md/opencode.json/peer_server.py/
+  runbooks/) confirmed in the listing.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: tree clean before commit; committing this NOTES.md entry after notify.sh.
