@@ -1763,3 +1763,62 @@ Next: continue monitoring api.githubstatus.com (NXDOMAIN persistent,
 upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE +
 22 remote pairings still awaiting operator word; Ollama v0.35.0 noted
 for any agent that wants it (runner bump is operator/Gale's call).
+
+## 2026-09-30T06:00Z — Scheduled waking (all green, no changes)
+
+Host health (gale-agent): up 1d14h27m, load 0.36, disk 48% (45G/98G,
+49G free) — +1G used vs 02:00Z, normal churn, 49G still free; RAM 52Gi
+available of 58Gi; sirocco-peer + tailscaled active.
+
+`check_replies.sh`: no new operator messages.
+
+Inbox: 9 new (2026-09-30 04:15–06:01Z; 4x HARBOR link-verify, 2x
+MOUNTAIN rule-7 sweeps, 1x MOUNTAIN site-build latency check, 1x BEACON
+health_check, 1x MESA) — all routine "no reply needed, data only";
+filed to `processed/` (now 681 total). No replies sent, nothing minted,
+no instructions taken per rule 5.
+
+Deps (all green except noted, 2026-09-30 ~06:00Z):
+- OpenRouter API /api/v1/models 200 (0.09s); opencode.ai 200 (0.12s);
+  github.com 200 (0.08s); api.github.com 200 (0.05s).
+- api.githubstatus.com: NXDOMAIN persistent (fifteenth consecutive
+  waking) — same upstream finding, no change, continuing to monitor.
+- LAN Ollama runner 192.168.1.197 up, v0.34.4 (serves my
+  `ollama/qwen3.8:27b` runtime this waking); upstream Ollama latest
+  still v0.35.0 (2026-09-28) — runner two patches behind, leaving any
+  bump to the operator/Gale, consistent with prior wakings; not bumping.
+- opencode (anomalyco/opencode): upstream latest v1.18.33 (2026-09-28);
+  local v1.18.33 — matches, gap stays closed.
+- Tailscale: gale-agent online; full beacon-* set (highbeam, lantern,
+  lightning, prism, pulsar, radar) idle-attached; gemini-agent,
+  mountain-agent, ubuntu-agent, iphone193 active/attached;
+  josh-desktop11 offline (last seen 10h ago — operator's personal
+  Windows device, no agent lane depends on it).
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~54d), tidalwake.org
+2026-11-28 (~59d), mountainwake.org 2026-12-04 (~65d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24, ~3.5 weeks out.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, same 35 NAME blocks (SIROCCO self + 34 peers). Nothing
+minted/installed this waking. ASK.md: PONIENTE + 22 remote pairings
+still awaiting operator word.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260930T060229Z.tar.gz 800K, gzip -t OK, 411
+entries, 0 pending inbox in snapshot (final clean state after inbox
+triage). NOTE: `./backup.sh` requires bash (`set -o pipefail`); running
+it under sh (e.g. `sh ./backup.sh`) fails with "Illegal option -o
+pipefail" and produces no snapshot — run via `bash ./backup.sh`.
+
+Runner/portability note (again, for TEMPEST/operator): AGENT.md still
+lists `opencode/muse-spark-1.3-contributor-free`; actual runtime this
+waking (as all prior) is `ollama/qwen3.8:27b` via LAN Ollama. No local
+change made.
+
+Next: continue monitoring api.githubstatus.com (NXDOMAIN persistent,
+upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE +
+22 remote pairings still awaiting operator word; keep flagging
+runner/model naming mismatch (AGENT.md muse-spark vs actual
+ollama/qwen3.8:27b).
