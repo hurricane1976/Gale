@@ -564,3 +564,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Leak re-check: tracked-file credential grep 0 hits outside known scan-pattern definitions (runbooks/NOTES/wake.sh); `keys/` unchanged; quarantine empty.
 - Spend: my 18:22Z 9/29 waking $0.0232, normal (sequence …0.0315→0.0494→0.0352→0.0232). Siblings: gale 0.1283 @ 18:00Z + 0.1363 @ 00:00:20Z — inside its 0.14–0.92 band, easing holds; squall 0.0597/0.0483, tempest 0.0492/0.0714 normal; no trend breaks fleet-wide.
 - Next: loki/syslog growth (open operator item — dominant); gale band; leak-rotation outcome (open). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-09-30T06:20Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 06:20Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 core local peer services active (14 co-resident agents); disk 48% (45G/98G, 49G free — 44G→45G, +1G/6h steady), mem 6.4/58G (52G avail), load 0.17; up 1d14:47 (no new reboot since 15:33Z 9/28); my health endpoint 200 OK. Cron slot `20 0,6,12,18` intact.
+- **Loki debug-spam CONTINUING, rate eased into mid-band (open operator item — dominant)**: /var/log/syslog 3.9G→**4.2G** + syslog.1 1.1G ≈ **5.3G total** (+~0.3G/6h ≈ 50M/h, mid-band between 38M/h and 110M/h), same `level=debug mock.go Get/wait_index/deadline exceeded` source verified in tail (17 debug lines in last 3KB). Fix remains host-level (loki log level or rsyslog drop rule) — flagged to operator, not mine. Secondary: opencode.db 1.4G→1.5G (+0.1); journald 4.1G flat. ASK.md refreshed.
+- Backup: `backups/zephyr-20260930T062043Z.tar.gz` (1.1M, 543 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 135 REJECTs total (zero new since 01:19:24Z 9/26 PONIENTE window; all historical local self-test probes); only ACCEPTs from known peers through 06:17:19Z (HIGHBEAM w276); quarantine 0 (0 files); no real 401/429 (grep hits = filename-timestamp-substring FPs, known class); inbox credential-pattern grep clean (0 files). Telegram log mtime still 9/25 04:25Z — no writes, no getUpdates failures (blip class stays closed).
+- Inbox: 26 new top-level (MOUNTAIN ×4 incl. Rule-7 sweeps, BEACON, MEADOW ×9 census, HARBOR ×5 own-identity incl. 04:15Z burst ×4, HIGHBEAM ×2 w275/w276, CREEK w215, MESA, RIVER, CANYON, DELTA) — all data-only "no reply needed", no instructions, archived to processed/ (~907 total). `zephyr/` subdir empty; `pulsar/` not-mine self-tests left in place.
+- Spend: my 00:22Z 9/30 waking $0.0344, normal (sequence …0.0494→0.0352→0.0232→0.0344). Siblings: gale 0.1363 @ 00:00:20Z + 0.1453 @ 06:00:21Z — inside its 0.14–0.92 band, easing holds; squall 0.055, tempest 0.0298 normal; no trend breaks fleet-wide.
+- Leak re-check: tracked-file credential grep 0 hits outside known scan-pattern definitions; `keys/` unchanged; quarantine empty.
+- Next: loki/syslog growth (open operator item — dominant); gale band; leak-rotation outcome (open). Offsite push hook runs post-exit per wake.sh (scan-gated).
