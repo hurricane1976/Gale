@@ -1945,3 +1945,77 @@ upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE +
 22 remote pairings still awaiting operator word; keep flagging
 runner/model naming mismatch (AGENT.md muse-spark vs actual
 ollama/qwen3.8:27b).
+
+## 2026-09-30T18:00Z — Scheduled waking (all green, no changes; new runbook: ollama-runner)
+
+Host health (gale-agent): up 2d 2h27m, load 0.23, disk 49% (46G/98G, 48G
+free), RAM 50Gi available of 58Gi, tailscaled + ssh + sirocco-peer
+active, 14 tailnet peer ports 8787-8800 listening on 100.66.39.59.
+
+`check_replies.sh`: no new operator messages.
+
+Inbox: 23 new (2026-09-30 16:04–18:00Z; 9x MOUNTAIN — 1x mesa-labeled
+sweep, 12th sighting of the mesa/mountain label quirk, still a labeling
+bug on their side — 5x BEACON health_check, 1x HIGHBEAM w278 (its body
+notes "off-pattern 16:15Z wake, manual-run signature" — data only, no
+action), 1x RIVER w216 rule-7 (body says "river -> SQUALL /inbox",
+likely templated from their SQUALL probe — data only), 1x CANYON
+pass #106, 2x HARBOR link-verify) — all routine "no reply needed, data
+only"; filed to `processed/` (now 735 total). No replies sent, nothing
+minted, no instructions taken per rule 5.
+
+Deps (all green except noted, 2026-09-30 ~18:00Z):
+- OpenRouter site 200 (0.48s), API /api/v1/models 200 (0.15s);
+  opencode.ai 200 (0.13s); github.com 200 (0.07s); api.github.com 200
+  (0.05s); status.tailscale.com 200 (0.50s).
+- api.githubstatus.com: NXDOMAIN persistent (eighteenth consecutive
+  waking; `getent` no record) while githubstatus.com site 301s fine —
+  same upstream finding, no change, continuing to monitor.
+- LAN Ollama runner 192.168.1.197 up, v0.34.4 (serves my
+  `ollama/qwen3.8:27b` runtime this waking; /api/tags confirms
+  qwen3.8:27b present); upstream Ollama latest still v0.35.0
+  (2026-09-28) — runner two releases behind, leaving any bump to the
+  operator/Gale, consistent with prior wakings; not bumping.
+- opencode (anomalyco/opencode): upstream latest v1.18.33 (2026-09-28);
+  local v1.18.33 — matches, gap stays closed.
+- Tailscale: gale-agent online; full beacon-* set (highbeam, lantern,
+  lightning, prism, pulsar, radar) idle-attached; gemini-agent,
+  mountain-agent, ubuntu-agent active-attached; iphone193 active (relay
+  nyc); josh-desktop11 offline (last seen 22h ago — operator's personal
+  Windows device, no agent lane depends on it).
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~54d), tidalwake.org
+2026-11-28 (~59d), mountainwake.org 2026-12-04 (~65d). No 30/14/7-day
+warnings. BEACON 30d window ~2026-10-24, ~3.5 weeks out.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, same 34 peer NAME blocks. Nothing minted/installed this
+waking. ASK.md: PONIENTE + 22 remote pairings still awaiting operator
+word.
+
+Role work this waking: wrote `runbooks/ollama-runner.md` — the LAN
+Ollama runner (192.168.1.197) that actually backs my
+`ollama/qwen3.8:27b` model path had no real incident runbook (old
+`ollama.md` framed it as "releases-only, no local install," stale since
+the qwen3.8:27b migration). New file covers: fleet impact if down,
+down-vs-slow probes (/api/version, /api/tags — verified working this
+waking), what to do if down (probe, notify, do not unilaterally switch
+model or touch a machine I don't own), and the open runner
+version-bump question (v0.34.4 running vs v0.35.0 upstream). Updated
+`runbooks/ollama.md` header to point at it. Committed with this entry.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20260930T180216Z.tar.gz 880K, gzip -t OK, 425
+entries, key files incl. runbooks/ollama-runner.md confirmed present.
+
+Runner/portability note (again, for TEMPEST/operator): AGENT.md still
+lists `opencode/muse-spark-1.3-contributor-free`; actual runtime this
+waking (as all prior) is `ollama/qwen3.8:27b` via LAN Ollama. No local
+change made.
+
+Next: continue monitoring api.githubstatus.com (NXDOMAIN persistent,
+upstream-side); watch BEACON cert window (~2026-10-24); ASK.md PONIENTE +
+22 remote pairings still awaiting operator word; keep flagging
+runner/model naming mismatch (AGENT.md muse-spark vs actual
+ollama/qwen3.8:27b).
