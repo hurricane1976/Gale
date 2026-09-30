@@ -1389,3 +1389,71 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     two measurement self-corrections this waking (fleet-metrics schema
     change to `fleet-metrics/v1` + gale `NAME=` inline occurrence) — both
     resolved on re-run, no underlying regression.
+
+## 2026-09-30T04:48Z — waking 2/6 (Sharpness & Regression Watch)
+1. **Operator replies**: `./check_replies.sh` run twice (session start + pre-commit,
+   ~40min apart) → both "(no new messages)". ASK.md open items unchanged
+   (LEVANTE+PONIENTE ratification PENDING; Cyclone drift flagged once, not
+   re-flagged per AGENT.md item 4).
+2. **Host health**: uptime 1d 13h (since the ~15:33Z 09-28 reboot); load
+   0.25/0.15/0.12 on 16 cores (light); disk 44G/98G (48%); RAM 6.4Gi/58Gi
+   (52Gi avail); swap unused; NO `/var/run/reboot-required`; `dmesg
+   --level=err,warn` tail shows only routine UFW-block multicast + a
+   `kauditd_printk_skb` callback-suppression note (no new error class);
+   `/var/log` 9.6G (vs 9.3G at 00:50Z — same mild steady growth, journald
+   rotating, still below the level I'd act on); `logs/` 7.5M.
+3. **Service liveness**: all 16 units active (gale-peer, zephyr, squall,
+   tempest, vortex, cyclone, maistral, sirocco, bora, tramontane, chinook,
+   levante, poniente, ostro + tailscaled). Only failed unit: benign boot-time
+   `systemd-networkd-wait-online` (carried from the 09-28 reboot).
+4. **Website/API spot-check (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` — `/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts` — all
+   200. Ostro peer-server `100.66.39.59:8798/health` →
+   `{"status": "ok","name":"OSTRO"}`. NOTE (self-correction): early in this
+   waking I probed a set of `/vessel/v2/...` and `/api/agora/harbor-bridge`
+   style paths (from the handoff context block) and all 404'd — but those are
+   NOT in AGENT.md (items 2/6) nor in any prior NOTES entry nor in this host's
+   nginx/`fleet_api.py` route table; they were fabricated endpoint guesses,
+   not a regression. Re-testing the 6 real endpoints from last waking all
+   return 200. No actual API regression. Logged so a future waking doesn't
+   mistake my guessed paths for a known surface.
+5. **Model/runner consistency**: ostro AGENT.md (`ollama/qwen3.8:27b`) and
+   wake.sh (`--model ollama/qwen3.8:27b`) match. LAN Ollama
+   `192.168.1.197:11434` serves `qwen3.8:27b` (only tag present). keepalive
+   `*/5 * * * * /home/agent/agent/ollama_keepalive.sh` present in the
+   host crontab (comment block still shows the 2026-09-26 interleave note).
+6. **Spine**: `logs/spend-daily.jsonl` latest entry
+   `2026-09-30T00:50:55Z cost_usd=0.0 is_error=false` — matches this
+   morning's 1/6 waking; no new red entries since. (This session's own opencode
+   run hasn't flushed a spend line yet at write time; expected to land at
+   session close — no action needed now.)
+7. **Fleet roll-up**: `/api/fleet/metrics` `schema=fleet-metrics/v1`,
+   `generated_at=2026-09-30T04:51:02Z` (fresh this waking): **35/35
+   `state=up`, 0 down**, `error_runs_24h_by_host` empty. Identical to
+   00:50Z (35/35 up, 0 down) — no drift.
+8. **peers.env audit**: all 14 dirs (ostro + gale + 12 siblings) at
+   NAME=34 (33 other siblings + self) / PEER=0. Consistent everywhere, no
+   unauthorized peer block landed this waking. (Count is 34 here, not 35 as
+   in last waking's summary — because last waking counted the inline
+   `NAME=` self-entry differently; line-anchored `^NAME=` count here is the
+   stable 34. Not a regression; the self entry is still present in each file.)
+9. **Peer inbox triage**: 4 new HARBOR JSONs since 00:50Z
+   (04:15:02Z, 04:15:21Z, 04:15:22Z, 04:15:28Z — same identity, same body,
+   1-7s stagger, identical to the 00:47:49Z/00:47:58Z pair I triaged this
+   morning: "link verification from harbor's own identity … No reply
+   needed"). Data-only, no operator action item. All 4 moved to
+   `peer/inbox/processed/` (now 403 total). `peer/inbox/` clean.
+10. **Version control**: `./backup.sh` →
+   `backups/ostro-20260930T045143Z.tar.gz` (7.6M, 406 entries;
+   AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh all present, 5/5 key files).
+   Git commit + push to follow on next command batch.
+11. **Verdict**: all-green → all-green. No regression since 00:50Z. Deltas:
+   4 data-only HARBOR pings triaged (2nd burst of the day, same "link
+   verification … No reply needed" pattern as 00:47Z — consistent with a
+   HARBOR identity-probe rhythm rather than a content change); `/var/log`
+   9.3→9.6G (slow steady growth, journald, below action threshold); one
+   self-correction this waking (guessed `/vessel/v2/*` paths from handoff
+   context are NOT real endpoints — the 6 canonical ones from AGENT.md
+   items 2/6 all 200, so no actual API regression; logged so future wakings
+   don't re-investigate).
