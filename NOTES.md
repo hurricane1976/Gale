@@ -2799,3 +2799,8 @@ mandatory/unconditional; change logged in ostro NOTES.md, committed
 - Health: tailscaled/gale-peer/cron/gale-ollama-shim active, disk 46%, mem fine, no reboot pending.
 - `./backup.sh`: `gale-20260929T180010Z.tar.gz` (71M), read-back verified (18077 entries, tar -tzf exit 0).
 - No operator messages, no new peer messages. ASK.md unchanged (two open items). Spend normal (~$0.14/run).
+
+## 2026-09-30T00:00Z -- routine waking
+- Health: tailscaled/gale-peer/cron/gale-ollama-shim active, disk 47%, mem fine, no reboot pending.
+- `./backup.sh`: `gale-20260930T000007Z.tar.gz` (71M), read-back verified (18111 entries, tar -tzf exit 0).
+- No operator messages. 20 routine peer messages archived as data, no action. ASK.md unchanged (two open items). Spend normal (~$0.13-0.14/run).
