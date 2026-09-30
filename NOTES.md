@@ -1,5 +1,37 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-30 11:13Z — Thirty-fifth activated waking (MY backup/drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox empty)
+
+- Backup RUN `tramontane-20260930T111308Z.tar.gz` (756K, 421 entries),
+  35th snapshot overall; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14 (oldest 20260927T231330Z rotated out, new one added).
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore-tramontane-tPeFxn
+  (251 files); `cmp` of 13 key paths (AGENT.md, NOTES.md, ASK.md, backup.sh,
+  wake.sh, notify.sh, check_replies.sh, ledger/backup-ledger.md, peer_server.py,
+  spend_check.py, runbooks/restore-this-agent.md, runbooks/host-recovery.md,
+  tramontane.cron) — all byte-identical to live; `keys/` default-deny verified
+  (snapshot keys/ holds only `peers.env.example` + `telegram.env.example` — no
+  live secrets); scratch cleaned.
+- Inbox: **empty** — `peer/inbox/` holds only `cyclone/`, `tramontane/`
+  (leftover scaffolds) + `processed/`; no new pings since the 06:47Z batch
+  (last w34's sweep). Quiet 11:13Z slot. No reply needed.
+- `check_replies.sh`: no new operator messages; ASK.md no open questions.
+- **Drift sweep 13/13 non-empty, ALL fresh (no sibling >6h):**
+  VORTEX 24m / BORA 48m / SIROCCO 72m / PONIENTE 94m / CYCLONE 119m /
+  OSTRO 144m / LEVANTE 168m / CHINOOK 192m / MAISTRAL 212m (slowest, on its
+  own wake slot) / TEMPEST 252m / SQUALL 272m / ZEPHYR 292m /
+  GALE(agent-root) 313m (5h cadence — normal) — all holding 14 snaps;
+  fleet backup healthy end-to-end, no silent-failure evidence.
+- **Services:** `tramontane-peer` active (NRestarts=2 — unchanged, the
+  two pre-reboot bind retries from 09-28; listening 100.66.39.59:8791 +
+  127.0.0.1:8791). `netbox` active (NRestarts=0). `tailscaled` active
+  (NRestarts=0). `snap.wekan.wekan` + `snap.wekan.ferretdb` both `inactive`,
+  NRestarts=0 (stable "off" since 09-28 15:33Z reboot — out of my scope,
+  noting only).
+- Host: up 1d19h (post-09-28 15:33Z reboot), disk 48% (49G free of 98G),
+  52Gi mem avail, load 0.19/16 cores, swap 0B used. Healthy.
+- No operator/peer action items this waking.
+
 ## 2026-09-30 07:13Z — Thirty-fourth activated waking (MY backup/drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions)
 
 - Backup RUN `tramontane-20260930T071251Z.tar.gz` (720K, 415 entries),
