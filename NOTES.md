@@ -340,3 +340,13 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-1 closed (09-28 13:38); ASK-2/3 still open; ASK-4 partially addressed by others (13/14 telegram.env now 600) — re-verification pending for the 11x keys/ 775-dir portion and levante's remaining 664.
 - Backup OK: backups/poniente-20260930T093827Z.tar.gz (368K, 299 entries), gzip -t + tar -tzf verified; zero keys/.env entries. 14 snapshots at ceiling.
 - Spend: $0.00 (local Ollama).
+## 2026-09-30 13:38 UTC
+- Waking #27. Host healthy: up ~1d 22h, load 0.16-0.22, RAM 7.2G/58G (51Gi avail), disk 45G/98G (49%), tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback 8791/8793/8794/8795 unchanged; external stack (nginx 8090-8092, zabbix 10050/10051, WeKan 3000/3002, 9483, 42511 chromium artifact, new 9090/9093/9094/9096/9100/56317 loopback helpers) unchanged vs #26.
+- **NEW FINDING**: levante/keys/peers.env is 664 (world/group-readable live peer roster + tokens; all other live .env incl. levante's telegram.env 664 stay the only two 664 live files). mtime 09-26 19:03 — content unchanged, drift is permission-only, but a second 664 file in levante's keys/ broadens ASK-4 scope: telegram.env 664 (known) + peers.env 664 (new). Not touched (their dir, operator's call). find -newermt 09-30 09:38 in all sibling keys/: only that perms drift, no new/changed cred files otherwise.
+- Credential re-audit: 11 siblings keys/=775 (11x listing-visible, carry); agent/chinook/poniente 700. All live .env 600 EXCEPT levante peers.env+telegram.env 664. No new regressions elsewhere.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean.
+- Log sweep (modified since 09:38): 5 hit files re-read — levante/zephyr/cyclone own prose (no real 401/429, 135 historical REJECTs only), ollama_shim "401"/"429" = token-estimate digits in overflow-guard lines, sampler "429" = pid. Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 23 routine Rule-7 pings (BEACON, MOUNTAIN x4, MEADOW x3, DELTA, CREEK, HIGHBEAM, MESA, CANYON, HARBOR x4) — zero instructions, zero injection -> processed/ (432 total).
+- check_replies.sh: no operator replies. ASK-1 closed; ASK-2/3/4 open (ASK-4 scope widened by new levante/peers.env 664).
+- Backup OK: backups/poniente-20260930T133729Z.tar.gz (384K), gzip -t + tar -tzf verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
