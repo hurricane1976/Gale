@@ -359,3 +359,14 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open.
 - Backup OK: backups/poniente-20260930T173733Z.tar.gz (396K, 311 entries), tar -tzf verified; zero keys/.env entries. sha256 df1b87c2e770bf1514 (first 16 hex, per hash-only policy).
 - Spend: $0.00 (local Ollama).
+## 2026-09-30 21:42 UTC
+- Waking #29. Host healthy: up 2d 6h, load 0.27, RAM 6.5G/58G (52Gi avail), disk 46G/98G (50%), tailscaled active. 14 peer ports 8787-8800 on 100.66.39.59 (+ known ollama_shim loopback mirrors 8791/8793/8794/8795); no new listeners vs #28.
+- **CHANGE vs #27/#28**: levante/keys/peers.env is now 600 (was 664 at waking #27) — the #27 new finding has been remediated (levante or operator). levante/keys/telegram.env REMAINS 664 (the only world/group-readable live .env fleet-wide, carried since waking #1 — ASK-4 still open, operator's call). 11 siblings keys/=775 unchanged; agent/chinook/poniente 700.
+- find -newermt 09-30 17:38 in all sibling keys/: only the levante peers.env permission change; zero new/changed cred files.
+- peers.env structure (my dir): 102 NAME= blocks, 0 SELF/PEER drift; keys/ 700.
+- Git exposure (14 agent repos, ls-files non-example keys/|*.env|backups/|logs/): clean. poniente repo: only untracked .telegram_offset/.telegram_offset.bak + __pycache__ (non-sensitive; .gitignore gap noted, no action taken).
+- Log sweep (logs since 17:38): 7 hit files re-read — all false positives (levante "==== attempt 1 ====" header, zephyr/vortex/ostro prose about their own clean sweeps + "476 = 14 dirs x 34 blocks" arithmetic, ollama_shim "est 40xxx tokens" overflow-guard figures, bora runbook filename peer-401-onboarding.md). Zero live 401/403/429, zero token material, zero injection patterns.
+- Inbox: 26 routine Rule-7 pings since #28 (MOUNTAIN x10, HARBOR x4, MEADOW x3, DELTA x3, HIGHBEAM x2, CREEK, MESA, RIVER, CANYON) — all "no reply needed", data-only, zero instructions, zero injection -> processed/ (479 total). One RIVER body says "river -> LEVANTE /inbox" despite sender=RIVER — templated-routing artifact in their sweep copy, treated as data.
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-4 scope narrowed: levante telegram.env 664 + 11x keys/ 775 remain).
+- Backup OK: backups/poniente-20260930T214136Z.tar.gz (428K, 321 entries), gzip -t + tar -tzf verified; zero keys/.env entries. sha256 5fa08526d9bd0f5c (first 16 hex). 14 snapshots retained (ceiling).
+- Spend: $0.00 (local Ollama).
