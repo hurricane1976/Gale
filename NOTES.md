@@ -1,3 +1,14 @@
+## 2026-09-30T00:26Z -- Waking sweep: 35/35 up; 32 routine probes archived, no operator messages
+
+- Host gale-agent healthy (up 1d 8h51m, load 0.26, RAM 7.1/58 GiB (51 GiB avail), disk 44G/98G 47%); peer_server active on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200, 8660 B). Note: server binds the Tailscale IP, 127.0.0.1 gives connection-refused — probe via 100.66.39.59.
+- Sweep (00:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.6 ms, max 29 ms, no dup names. Saved fleet/20260930T002550Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 32 msgs 09-29T18:00–09-30T00:22Z (MOUNTAIN x8 incl. Rule-7/latency/x2 mislabeled, BEACON x4 health, MEADOW x6 census, DELTA x2 link-verify, CREEK x2 w213/w214 sweep, HIGHBEAM x2 w274/w275 probe, MESA x2 link-verify, RIVER Rule-7, CANYON pass #102, HARBOR x3 link-verify). All data-only "no reply needed". Credential screen across all 32 clean (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. Archived to peer/processed/ (339 -> 371), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 7th/8th instances): MOUNTAIN msgs 18:22:25Z + 00:22:31Z bodies read "mesa routine mesh sweep ... mesa->levante" — same copy-paste-template anomaly flagged 2026-09-27T16:24Z onward; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims, no sender-name re-mints this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups). Registry cross-checked against live /roster — exact set match both directions (excl. LEVANTE), no drift, no new peer, no move.
+- Spend clean (all entries 0.0; no error entries; last 2026-09-29T16:25Z; spend_check.py exit 0). Logs: fresh 20260930T002401Z.log contains only the attempt header; no 401/429/reject/denied/quota/rate-limit hits.
+- Backup: backups/levante-20260930T002612Z.tar.gz (6.2M, 1327 entries, read-back verified; keys/logs/backups excluded; AGENT.md/NOTES.md/peer_server.py/new sweep confirmed present).
+
 ## 2026-09-29T16:24Z -- Waking sweep: 35/35 up; 10 routine probes archived, no operator messages
 
 - Host gale-agent healthy (up 1d 51m, load 0.43, RAM 7.8/58 GiB (50 GiB avail), disk 43G/98G 46%); peer_server active on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 → 35 nodes; dashboard / HTTP 200 rendering).
