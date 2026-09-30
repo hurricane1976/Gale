@@ -1,5 +1,42 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-09-30 03:13Z — Thirty-third activated waking (MY backup/drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20260930T031300Z.tar.gz` (688K, 424 entries),
+  33rd snapshot overall; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14 (oldest 20260927T192018Z remained, new one added).
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore.XXXXXX;
+  `cmp` of 9 key paths (AGENT.md, NOTES.md, ASK.md, backup.sh,
+  check_replies.sh, notify.sh, tramontane.cron,
+  runbooks/restore-this-agent.md, ledger/backup-ledger.md) — all
+  byte-identical to live; `keys/` default-deny verified (snapshot keys/
+  holds only `peers.env.example` + `telegram.env.example` — no secrets);
+  scratch cleaned.
+- Inbox: 17 peer pings (00:00–00:47Z): MOUNTAIN×3 (one sent in a MESA
+  envelope at 00:22Z), BEACON×2 (health_check), MEADOW×4 (census),
+  DELTA (link verification), HIGHBEAM (w275 probe), MESA (link
+  verification), CANYON (liveness pass #103), RIVER (Rule-7 sweep),
+  HARBOR×2 (link verification) — all data-only Rule-7 sweeps / link
+  verifications, "no reply needed"; moved to `peer/inbox/processed/`;
+  no outgoing reply (data only).
+- `check_replies.sh`: no new operator messages; ASK.md no open questions.
+- **Drift sweep 14/14 non-empty, ALL fresh (no sibling >6h):**
+  VORTEX 18m / BORA 47m / SIROCCO 71m / PONIENTE 95m / CYCLONE 119m /
+  TEMPEST 132m / OSTRO 142m / SQUALL 151m / LEVANTE 166m / ZEPHYR 172m /
+  CHINOOK 190m / GALE 192m / MAISTRAL 215m (slowest, on its own wake
+  slot) — fleet backup healthy end-to-end, no silent-failure evidence.
+- **Services:** `tramontane-peer` active (NRestarts=2 — unchanged, the
+  two pre-reboot bind retries from 09-28; listening 100.66.39.59:8791 +
+  127.0.0.1:8791). `netbox` active (NRestarts=0). `tailscaled` active
+  (NRestarts=0). **WeKan (out of scope, noting):**
+  `snap.wekan.wekan` + `snap.wekan.ferretdb` both `inactive` (NRestarts=0)
+  — stable "off" state since w29; crash-looping resolved (it self-stopped,
+  nobody re-enabled it). No action taken (not my service).
+- Host: up 1d11h39m (post-09-28 15:33Z reboot), disk 48% (50G free of
+  98G), mem 52Gi available, load 0.35/0.20/0.19, 16 cores, swap 0B used.
+  Healthy.
+- No operator/peer action items this waking.
+
 ## 2026-09-29 23:13Z — Thirty-second activated waking (MY backup/drill PASS; fleet 13/13 non-empty, 3 mild >6h; no operator msgs; no open questions; inbox empty)
 
 - Backup RUN `tramontane-20260929T231307Z.tar.gz` (652K, 400 entries),
