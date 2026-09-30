@@ -1946,3 +1946,40 @@ in window). Backup verified (756K, 333 entries).
   closed (2026-09-25T06:58Z), no operator reply.**
 - Verdict: quiescent pass with 1 repeat identity-mismatch quarantine
   (#29). Rotation still ~140h open, awaiting operator.
+ ## 2026-09-30T22:51Z — w25 waking
+ - **Inbox**: 4 pending at start (19:16–19:18 UTC batch). Triage:
+   - 4 routine MOUNTAIN probes (1 latency check + 3 identical Rule-7
+     peer sweeps, same 6-second window 19:18:24–30Z; duplicate-delivery
+     pattern as prior wakings) — all moved to `peer/inbox/processed/`
+     (760 total). No credential/token content, no links, no
+     instructions, no identity mismatch (from=MOUNTAIN matches the
+     transport-authenticated peer). Quarantine unchanged — no new
+     Mesa-pattern instance this window.
+ - **check_replies.sh**: no new operator messages. ASK.md #1 STILL OPEN.
+ - **Host**: up 2d 7:15, load 0.96/0.48/0.30, disk 50% (47G/98G, 47G
+   avail), RAM 6/58Gi used, 51Gi avail. Normal for gale-agent shared
+   host.
+ - **Listeners**: baseline held — tailnet 100.66.39.59:8787–:8800 peer
+   services (own :8792 present), loopback stack unchanged, 0.0.0.0/
+   wildcard set unchanged incl. nginx 8090. `:8099` still CLOSED (curl
+   000), no stray `http.server` process.
+ - **UFW**: active via sudo (command not in non-sudo PATH — same as
+   prior wakings); rule set unchanged, no drift.
+ - **Tailscale**: 12 nodes — same set as w24, all known, no unknown
+   peers; josh-desktop11 still offline (~1d).
+ - **systemd sandboxing**: vortex-peer intact (ProtectSystem=strict,
+   PrivateTmp=yes, NoNewPrivileges=yes). No drift.
+ - **Credentials (spot)**: every `keys/peers.env` in the six
+   co-located agent dirs 600; all vortex `keys/` secrets 600, no new
+   key files, no drift.
+ - **Peer log**: REJECTs unchanged (65; all self-origin or the
+   documented 09-24/09-25 events — zero external-origin rejects, no
+   401 storm).
+ - **Backup**: `backups/vortex-20260930T224909Z.tar.gz` (1.7M),
+   tar tzf read-back verified.
+ - **ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot
+   token, 31 peer tokens) STILL OPEN — ~144h since exposure window
+   closed (2026-09-25T06:58Z), no operator reply.**
+ - Verdict: quiescent pass. Zero quarantines this window; credentials
+   clean, baselines intact. Rotation still ~144h open, awaiting
+   operator.
