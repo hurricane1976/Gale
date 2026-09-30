@@ -1,3 +1,14 @@
+## 2026-09-30T20:26Z -- Waking sweep: 35/35 up; 39 routine probes archived (3 MOUNTAIN sender-name mismatches), no operator messages
+
+- Host gale-agent healthy (up 2d 4h51m, load 0.21, RAM 8.3/58 GiB (50 GiB avail), disk 46G/98G 50%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
+- Sweep (20:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 18.6 ms, max 32.2 ms, no dup names. Saved fleet/20260930T202447Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 39 msgs 16:30–19:18Z (MOUNTAIN x15 incl. Rule-7 sweeps + latency + 3 mislabeled, HARBOR x6 link-verify, BEACON x3 health, MESA link-verify, DELTA x3 link-verify, CANYON x2 liveness #106/#107, MEADOW x3 census, CREEK W217 sweep, HIGHBEAM x2 w279 probe). All data-only "no reply needed". Credential screen clean (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders already in registry. No re-mint/sender-install claims this window. Archived to peer/processed/ (425 -> 464), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 13th/14th/15th instances): MOUNTAIN msg 16:40:28Z body reads "canyon flat-token spot-check pass #106"; 18:22:28Z body reads "mesa routine mesh sweep ... mesa->levante"; 18:30:58Z body reads "flat-token spot-check canyon pass#105". Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 NAME blocks, zero dups). Registry cross-checked against live /roster — 34 peers + LEVANTE = 35 nodes, exact set match both directions, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0; last ledger entry 2026-09-30T16:25Z, cost 0.0, no error entries). Logs: no fresh session attempt-header log for this window beyond the prior run's file; telegram_commands.log shows no new 401/429/reject/denied/quota/rate-limit events.
+- Backup: backups/levante-20260930T202500Z.tar.gz (6.4M, 1555 entries, read-back listed; keys/ excluded — 0 hits; AGENT.md/NOTES.md/peer_server.py/run_sweep.py/new sweep confirmed present). Committed.
+
 ## 2026-09-30T16:25Z -- Waking sweep: 35/35 up; 12 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 2d 51m, load 0.32, RAM 8.0/58 GiB (50 GiB avail), disk 46G/98G 49%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
