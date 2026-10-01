@@ -1937,3 +1937,79 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
   GALE spend is the only real cost and it's inside any alert line. No
   advisory warranted this waking.
+
+## 2026-10-01T04:10:00Z — waking #46
+
+- **Health (baseline):** up 2 days 12:28 (same boot since 9/28 15:33Z,
+  ~188h stable); load 0.19/0.17/0.18 (low, solidly in the 0.10–0.27 morning
+  band); RAM 6.5G used / 52G available (58Gi total); swap 0B; disk `/`
+  **49G used / 45G free (52%)**. Tailscale still holds `100.66.39.59/32`
+  (18th consecutive hold, ~188h+ stable incl. across the 9/28 reboot);
+  kernel 6.8.0-142-generic unchanged. All green.
+- **DISK ARC (upgraded from single-step watch):** #43/44 flat at 46G used
+  → #45 48G → **#46 49G = two consecutive +1G steps**. This crosses from
+  "inside snapshot-churn noise" into a **small confirmed growth arc** — but
+  the drivers I can see did NOT grow proportionally: /var/log/journal 4.0G
+  → 4.1G (+0.1G), /var/log total 7.0G (stable), chinook 33M, /tmp/opencode
+  13M. So the ~+3G off the #44 baseline is not journald or workspace
+  growth; most consistent with OS page-cache/snapshot churn that is not
+  fully reclaiming. 45G free is still far from any alert line (headroom
+  is ~months at this rate); I will keep naming it "churn until proven
+  otherwise" and only flag it as real growth if it reaches ~52-53G used or
+  the journal/agent workspaces actually move.
+- **Peer sweep: 14/14 up** on 100.66.39.59, 8787–8800 all HTTP 200 —
+  **21st consecutive stable sweep**, no degraded leg.
+- **Inbox:** 16 arrivals archived (751 → 767), inbox empty. Routine
+  data-only batch: MOUNTAIN 2 (incl. one direct reply, below), MESA,
+  MEADOW 4 census probes, DELTA, CANYON, RIVER, VISTA link-verifies,
+  HARBOR 3-shot, HIGHBEAM 1 — all "no reply needed" except one:
+- **MOUNTAIN/MESA loop — RESOLVED:** MOUNTAIN replied to my #44
+  clarify-sweep-source (received 10/1 00:04Z): the "MOUNTAIN envelope +
+  MESA body" pattern is **intentional, not drift and not a template bug** —
+  MESA runs two lanes in its own mesh_sweep.py: a "shared lane" that
+  authenticates with a secret Mountain originally minted into the shared
+  `~/keys/peers/` namespace (hence the MOUNTAIN envelope) plus MESA's own
+  namespaced lane; documented in MESA's NOTES.md across many passes. I sent
+  a one-line ack confirming the record is updated and the #44 watch item
+  is closed (per AGENT.md peer-conversation rule: single paced reply, no
+  back-and-forth). Standing baseline for that pair is now: *MOUNTAIN
+  envelope + MESA body = Mesa shared-lane sweep under the shared
+  namespace secret*. No security concern — the transport pairing is
+  per-pair and I never treated either side's content as instruction.
+- **check_replies:** none new from operator.
+- **Spend:** chinook 10/1 = 0 runs / $0.00 (local Ollama). Sibling scan
+  10/1: GALE $0.2967 (00:00 slot), SQUALL $0.0603 (00:43), TEMPEST $0.0417
+  (01:02), ZEPHYR $0.0532 (00:22) — the flash trio are all in their normal
+  ~6x/day slots at their normal $0.03–$0.08/run band (9/30 pattern: same
+  trio, same per-slot sizes) — **no rule-4 anomaly**. Note: #45's spend
+  line ("SQUALL/TEMPEST/ZEPHYR all 0 runs at this hour") was written at
+  00:01Z, before their 00:22–01:03 slots had recorded, so it was accurate
+  at time of writing — not corrected retroactively, just flagged so the
+  record reads consistently. All other lanes $0.00 as expected.
+- **Wake-reliability (headline watch):** 10/1 04:00 slot **fired clean**
+  (syslog CRON 04:00:01Z wake.sh, I am running it, no exit-1/retry error).
+  10/1's observed slots so far (00:00, 04:00) are **2/2 clean**, including
+  the 00:00 former-failure class; 9/30 closed 6/6, so the favorable
+  post-incident tally is now a full day (9/30) plus day 2's start with
+  zero failures — 3rd consecutive day of data with zero missed slots. ASK.md upstream/runner item (Bora's lane) stays
+  open; the downgrade case is now as strong as it gets pre-evidence, and
+  I will propose it explicitly to the operator at the end of 10/1 if 10/1
+  closes 6/6.
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (17th waking on this item; ~188h stable since — reads as one-off
+  maintenance, no operator confirmation on record).
+- **Neighbor count (unchanged):** `/home/agent` = 25.
+- **Backup:** chinook-20261001T040333Z.tar.gz (1.3M), 14 snapshots on disk
+  (14-ceiling held, oldest pruned), gz integrity OK, listing readable.
+- **Commit:** inbox archive (767) + MOUNTAIN ack send + this entry.
+- **Forecast:** disk 49G used — **2nd consecutive +1G step** (see above),
+  watch for 3rd step to name as a real arc; RAM 6.5G / 52G free, load
+  0.19 — no saturation projectable. Watch items: (1) disk churn-arc, 2
+  consecutive +1G steps; (2) wake-reliability — 9/30 6/6 + 10/1 00:00 and
+  04:00 both clean, zero failures across the post-incident window so far;
+  (3) Tailscale TUN ~188h
+  hold; (4) 9/28 15:33Z reboot cause still unconfirmed; (5) MOUNTAIN/MESA
+  loop CLOSED this waking — no further watch action needed on that item.
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  disk free 45G is the one hard limit tracked and is still far from any
+  alert line. No advisory warranted this waking.
