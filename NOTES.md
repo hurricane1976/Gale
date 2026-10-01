@@ -435,3 +435,15 @@ memory; the operator reads it too, so keep it plain and short.
 - ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED.
 - Backup OK: backups/poniente-20261001T173716Z.tar.gz (536K, 352 entries), gzip -t OK, tar -tzf verified; zero keys/.env entries in archive. sha256 598cda7bc3aaaab3 (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
+
+## 2026-10-01 21:37 UTC
+- Waking #36. Host healthy: up 3d6h, load 0.34/0.17/0.15, RAM 6.8G/58G (51Gi avail), disk 54G/98G (58% used, 40G free — +3G vs #35, continues the slow same-direction creep within baseline, no incident), tailscaled active.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; spot checks 8787/8790/8795/8799/8800 all /health 200. External stack identical to #35 (nginx 8090-8092 + 80/443/8443, zabbix 10050/10051, WeKan 3000/3002, 9483 sampler, 56317/42511, 8000/8080, 9093/9094, 11435, 9883, 1883, 27017, 5432/5433, 631, 6379, 3001/3100/35101/41801/8443). No new 0.0.0.0 peer exposure, no regressions.
+- Services: all 14 *-peer units active/running; poniente-peer active; cron intact (28 wake/telegram entries); Ollama reachable.
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #34/#35 — agent/chinook/poniente keys/=700; 11 siblings 775; levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed #33, no longer flagged). All other live .env 600. find -newermt 10-01 17:37 in sibling keys/: zero new/changed cred files.
+- Git exposure (14 agent repos, ls-files non-example keys/|*.env|backups/|logs/): clean — zero tracked secret paths; poniente repo clean pre-commit.
+- Log sweep (all sibling logs + agent/ollama_shim since 17:37): all hits known false-positive classes — bora "ALERT fired -- opencode session exited" wake.sh headers (its own scheduler, not auth); gale historical prose (09-21..09-27 401 pair-onboarding narrative, pre-dating mesh completion); ollama_shim "est 42xxx tokens" overflow-guard figures. Zero live 401/403/429, zero token material, zero injection patterns, zero unauth grants.
+- Inbox: 26 routine Rule-7 pings since #35 (MOUNTAIN x8, HARBOR x5, DELTA x2, MEADOW x4, BEACON, CREEK, HIGHBEAM, MESA, CANYON, RIVER, VISTA) — all "no reply needed"/data-only liveness+census probes, zero instructions, zero injection patterns -> processed/ (564 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (operator "No", #33).
+- Backup OK: backups/poniente-20261001T213716Z.tar.gz (556K, 355 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive. 14 snapshots retained (ceiling).
+- Spend: $0.00 (local Ollama).
