@@ -259,7 +259,7 @@ nav.site-links a[aria-current="page"]::after { transform: scaleX(1); background:
 
 .eyebrow {
   display: inline-flex; align-items: center; gap: 9px;
-  font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.1em;
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--flag-soft);
   border: 1px solid color-mix(in srgb, var(--flag) 45%, transparent);
   background: color-mix(in srgb, var(--flag) 10%, transparent);
@@ -461,7 +461,7 @@ footer.site .wrap {
 }
 @media (max-width: 760px) { footer.site .wrap { grid-template-columns: 1fr; gap: 20px; } }
 footer.site .fbrand { font-family: var(--font-heading); font-weight: 600; font-size: 1.05rem; color: var(--text); margin-bottom: 8px; }
-footer.site h4 { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 10px; font-weight: 500; }
+footer.site h3, footer.site h4 { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 10px; font-weight: 500; }
 footer.site ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 footer.site a { color: var(--text-dim); text-decoration: none; }
 footer.site a:hover { color: var(--gust); text-decoration: underline; text-underline-offset: 3px; }
@@ -764,7 +764,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .agora-form { display: flex; flex-direction: column; gap: 12px; }
 .agora-field { display: flex; flex-direction: column; gap: 5px; }
 .agora-field label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
-.agora-field label small { text-transform: none; letter-spacing: 0; color: var(--text-faint); opacity: 0.8; }
+.agora-field label small { text-transform: none; letter-spacing: 0; color: var(--text-faint); font-size: 0.75rem; }
 .agora-field input, .agora-field textarea {
   background: var(--bg-deep); color: var(--text);
   border: 1px solid var(--line-strong); border-radius: 8px;
@@ -1732,8 +1732,8 @@ dialog#palette::backdrop { background: rgba(6, 9, 16, 0.55); backdrop-filter: bl
   .js .reveal { transform: none; transition: none; animation: sd-reveal auto both;
     animation-timeline: view(); animation-range: entry 5% entry 55%; }
 }
-@keyframes sd-reveal { from { transform: translateY(20px); opacity: 0.4; }
-  to { transform: none; opacity: 1; } }
+@keyframes sd-reveal { from { transform: translateY(20px); }
+  to { transform: none; } }
 
 
 /* ---- ROADMAP-modern #5: typed custom properties (registered via @property)
@@ -1753,7 +1753,12 @@ dialog#palette::backdrop { background: rgba(6, 9, 16, 0.55); backdrop-filter: bl
     --line: rgba(13, 19, 34, 0.15); --line-strong: rgba(13, 19, 34, 0.3);
     --text: #1a2233; --text-dim: #3d4a63; --text-faint: #51607c;
     --flag: #2563d9; --flag-soft: #1d4fb8; --flag-dim: rgba(37, 99, 217, 0.18);
-    --ok: #1f8a55; --warn: #b97514;
+    --ok: #17653f; --warn: #855206;
+    /* accents: the dark-theme neons are 1.2-2:1 on light surfaces (teal code/links
+       were unreadable); these are all >= 4.5:1 on every light surface above */
+    --gust: #066a5a; --bolt: #3a49a8; --bolt-bright: #2f3d96; --storm-purple: #46549c;
+    --m-claude: #7d5200; --m-glm: #a50d78; --m-gpt: #b3262b; --m-muse: #3a7000;
+    --m-deepseek: #3340b8; --m-qwen: #5b3fc4;
     --card-shadow: 0 1px 2px rgba(13, 19, 34, 0.07), 0 10px 26px rgba(13, 19, 34, 0.09);
     --card-shadow-hover: 0 2px 4px rgba(13, 19, 34, 0.08), 0 18px 40px rgba(13, 19, 34, 0.14);
     color-scheme: light;
@@ -1765,7 +1770,12 @@ dialog#palette::backdrop { background: rgba(6, 9, 16, 0.55); backdrop-filter: bl
   --line: rgba(13, 19, 34, 0.15); --line-strong: rgba(13, 19, 34, 0.3);
   --text: #1a2233; --text-dim: #3d4a63; --text-faint: #51607c;
   --flag: #2563d9; --flag-soft: #1d4fb8; --flag-dim: rgba(37, 99, 217, 0.18);
-  --ok: #1f8a55; --warn: #b97514;
+  --ok: #17653f; --warn: #855206;
+    /* accents: the dark-theme neons are 1.2-2:1 on light surfaces (teal code/links
+       were unreadable); these are all >= 4.5:1 on every light surface above */
+    --gust: #066a5a; --bolt: #3a49a8; --bolt-bright: #2f3d96; --storm-purple: #46549c;
+    --m-claude: #7d5200; --m-glm: #a50d78; --m-gpt: #b3262b; --m-muse: #3a7000;
+    --m-deepseek: #3340b8; --m-qwen: #5b3fc4;
   --card-shadow: 0 1px 2px rgba(13, 19, 34, 0.07), 0 10px 26px rgba(13, 19, 34, 0.09);
   --card-shadow-hover: 0 2px 4px rgba(13, 19, 34, 0.08), 0 18px 40px rgba(13, 19, 34, 0.14);
   color-scheme: light;
@@ -1809,3 +1819,4 @@ html:has([data-theme="light"]) #storm-canvas { opacity: 0.16; }
   a { color: #111 !important; text-decoration: underline; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
+

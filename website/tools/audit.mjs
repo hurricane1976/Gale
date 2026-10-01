@@ -57,7 +57,7 @@ try {
         if (!ok) failed = true;
         return `${cat} ${round(got)}/${Math.round(min * 100)}${ok ? "" : " FAIL"}`;
       });
-      console.log(`${failed ? "fail" : "ok"}   ${page} ~ ${scores.join(" · ")}`);
+      console.log(`${scores.some((x) => x.endsWith(" FAIL")) ? "fail" : "ok"}   ${page} ~ ${scores.join(" · ")}`);
     } catch (e) {
       console.log(`fail ${page}: lighthouse error: ${e.message}`);
       failed = true;

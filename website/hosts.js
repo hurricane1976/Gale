@@ -123,7 +123,10 @@ export function render(d) {
     const runs = Object.values(d.runs_24h_by_host || {}).reduce((s, v) => s + (v || 0), 0);
     const cutoff = Date.now() - 12 * 3600 * 1000;
     const live = Object.values(d.last_wake_by_host || {}).filter((t) => new Date(t).getTime() >= cutoff).length;
-    badge.innerHTML = `<span class="dot"></span>${agents} agents tracked &middot; ${runs} runs/24h &middot; ${live}/${hosts.length} hosts live`;
+    const roster = document.querySelectorAll("#members agent-card, .member-cards agent-card").length;
+    const total = Math.max(agents, roster);
+    const label = total > agents ? `${total} agents &middot; ${agents} reporting telemetry` : `${agents} agents tracked`;
+    badge.innerHTML = `<span class="dot"></span>${label} &middot; ${runs} runs/24h &middot; ${live}/${hosts.length} hosts live`;
   }
 }
 

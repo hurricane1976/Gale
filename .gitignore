@@ -14,3 +14,8 @@ website/firewalla.pause
 fleet-provision/vault/
 fleet-provision/bundles/
 fleet-provision/backup-passphrase
+
+# runtime / scratch (2026-10-01)
+website/.push_metrics.json
+website/tools/tmp/
+website/tools/visual-baseline/*.FAILED.png

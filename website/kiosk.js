@@ -142,3 +142,12 @@ export function initKiosk() {
     }
   });
 }
+
+/* Keep the wall display awake while kiosk mode is active (Screen Wake Lock;
+   released automatically on tab hide, so re-acquire on return). */
+if (isKiosk() && "wakeLock" in navigator) {
+  let lock = null;
+  const acquire = async () => { try { lock = await navigator.wakeLock.request("screen"); } catch { /* denied / unsupported */ } };
+  acquire();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") acquire(); });
+}

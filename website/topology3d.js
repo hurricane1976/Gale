@@ -22,12 +22,22 @@ void main() {
   v_color = a_color;
 }`;
 
+// u_mode 0 = hard-edged core disc; 1 = soft gaussian halo, drawn additively
+// (blendFunc ONE,ONE) so overlapping halos bloom into each other. A cheap
+// bloom: no framebuffers / blur passes, so it stays free on phones.
 const FRAG = `
 precision mediump float;
 varying vec3 v_color;
+uniform float u_mode;
 void main() {
   vec2 d = gl_PointCoord - vec2(0.5);
-  if (dot(d, d) > 0.25) discard;
+  float r2 = dot(d, d);
+  if (u_mode > 0.5) {
+    float a = exp(-r2 * 14.0) * 0.5;
+    gl_FragColor = vec4(v_color * a, a);
+    return;
+  }
+  if (r2 > 0.25) discard;
   gl_FragColor = vec4(v_color, 1.0);
 }`;
 
@@ -96,7 +106,10 @@ function program(gl, vs, fs) {
 export function initTopology3D() {
   const toggle = document.getElementById("topo-3d-toggle");
   const canvas = document.getElementById("topo-3d-canvas");
-  const svg = document.querySelector(".topo-svg");
+  // fleet.html's SVG is #topo.fleet-topo-svg since the Tidal-style rebuild; the old
+  // ".topo-svg" selector matched nothing, so this init silently returned and the
+  // 3D toggle did nothing. Accept either.
+  const svg = document.getElementById("topo") || document.querySelector(".fleet-topo-svg, .topo-svg");
   if (!toggle || !canvas || !svg) return;
 
   // roster from the SVG's own markup — one source of truth, zero drift
@@ -120,12 +133,27 @@ export function initTopology3D() {
 
   const byName = new Map(nodes.map((n, i) => [n.name.toLowerCase(), i]));
   const edges = [];
-  for (const line of document.querySelectorAll(".topo-svg line")) {
+  for (const line of svg.querySelectorAll("line")) {
     const t = (line.querySelector("title") || {}).textContent || "";
     const m = t.match(/^([A-Za-z]+)\s*(?:&amp;harr;|&harr;|↔)\s*([A-Za-z]+)/);
     if (!m) continue;
     const a = byName.get(m[1].toLowerCase()), b = byName.get(m[2].toLowerCase());
     if (a != null && b != null && a !== b) edges.push([a, b]);
+  }
+
+  // same-host links: only meshes whose <line>s carry a <title> were parsed above
+  // (the Gale host); link the remaining hosts' agents pairwise so every host
+  // reads as a connected island rather than loose dots.
+  {
+    const have = new Set(edges.map(([a, b]) => (a < b ? a + "," + b : b + "," + a)));
+    const byHost = new Map();
+    nodes.forEach((n, i) => { if (!byHost.has(n.host)) byHost.set(n.host, []); byHost.get(n.host).push(i); });
+    for (const idxs of byHost.values()) {
+      for (let x = 0; x < idxs.length; x++) for (let y = x + 1; y < idxs.length; y++) {
+        const a = idxs[x], b = idxs[y], k = a < b ? a + "," + b : b + "," + a;
+        if (!have.has(k)) { have.add(k); edges.push([a, b]); }
+      }
+    }
   }
 
   const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
@@ -167,9 +195,21 @@ export function initTopology3D() {
   // --- camera: orbit around origin ---
   let yaw = 0.6, pitch = 0.35, dist = 4.2;
   let dragging = false, lastX = 0, lastY = 0;
+  let fitLocked = false; // user zoomed: stop auto-fitting
+
+  // per-host gravity wells: edges are only parsed for the meshes that carry a
+  // <title>, so without this the unlinked hosts' nodes were shoved out of frame
+  // by the dense Gale cluster. Anchors sit on a ring so hosts read as islands.
+  const hostNames = [...new Set(nodes.map((n) => n.host))];
+  const anchors = hostNames.map((_, h) => {
+    const th = (h / hostNames.length) * Math.PI * 2 + 0.4;
+    return [Math.cos(th) * 1.5, (h % 2 ? 0.35 : -0.35), Math.sin(th) * 1.5];
+  });
+  const nodeAnchor = nodes.map((n) => anchors[hostNames.indexOf(n.host)]);
+  const VMAX = 0.06;
 
   const step = () => {
-    // forces: pair repulsion, spring links, mild centering, damping
+    // forces: pair repulsion, spring links, host gravity, damping, velocity clamp
     const N = nodes.length;
     for (let i = 0; i < N; i++) {
       const fx = [0, 0, 0];
@@ -181,12 +221,14 @@ export function initTopology3D() {
         const inv = 1 / Math.sqrt(d2);
         fx[0] += dx * inv * f; fx[1] += dy * inv * f; fx[2] += dz * inv * f;
       }
-      fx[1] -= pos[i * 3 + 1] * 0.002; // centering
-      fx[0] -= pos[i * 3] * 0.002;
-      fx[2] -= pos[i * 3 + 2] * 0.002;
-      vel[i * 3] = (vel[i * 3] + fx[0]) * 0.85;
-      vel[i * 3 + 1] = (vel[i * 3 + 1] + fx[1]) * 0.85;
-      vel[i * 3 + 2] = (vel[i * 3 + 2] + fx[2]) * 0.85;
+      const an = nodeAnchor[i];
+      fx[0] += (an[0] - pos[i * 3]) * 0.012 - pos[i * 3] * 0.001;
+      fx[1] += (an[1] - pos[i * 3 + 1]) * 0.012 - pos[i * 3 + 1] * 0.001;
+      fx[2] += (an[2] - pos[i * 3 + 2]) * 0.012 - pos[i * 3 + 2] * 0.001;
+      for (let c = 0; c < 3; c++) {
+        const v = (vel[i * 3 + c] + fx[c]) * 0.85;
+        vel[i * 3 + c] = Math.max(-VMAX, Math.min(VMAX, v));
+      }
       pos[i * 3] += vel[i * 3];
       pos[i * 3 + 1] += vel[i * 3 + 1];
       pos[i * 3 + 2] += vel[i * 3 + 2];
@@ -194,7 +236,11 @@ export function initTopology3D() {
     for (const [a, b] of edges) {
       const dx = pos[b * 3] - pos[a * 3], dy = pos[b * 3 + 1] - pos[a * 3 + 1], dz = pos[b * 3 + 2] - pos[a * 3 + 2];
       const d = Math.hypot(dx, dy, dz) || 1;
-      const f = (d - 0.9) * 0.01; // spring toward rest length 0.9
+      // intra-host links hold a cluster together; cross-host links (the 21 Gale
+      // peer spokes, lead trunks) are long soft springs so they don't drag
+      // remote hosts into Gale's cluster
+      const cross = nodes[a].host !== nodes[b].host;
+      const f = cross ? (d - 2.6) * 0.0006 : (d - 0.6) * 0.012;
       const ux = dx / d * f, uy = dy / d * f, uz = dz / d * f;
       vel[a * 3] += ux; vel[a * 3 + 1] += uy; vel[a * 3 + 2] += uz;
       vel[b * 3] -= ux; vel[b * 3 + 1] -= uy; vel[b * 3 + 2] -= uz;
@@ -221,6 +267,14 @@ export function initTopology3D() {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
+    // auto-fit: ease the orbit distance toward the cluster's real extent so the
+    // whole graph is always framed (layout size depends on roster/edge count)
+    if (!fitLocked) {
+      let maxR = 0;
+      for (let i = 0; i < nodes.length; i++) maxR = Math.max(maxR, Math.hypot(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]));
+      const want = Math.max(4.2, Math.min(30, maxR * 2.5));
+      dist += (want - dist) * 0.04;
+    }
     const eye = [
       dist * Math.cos(pitch) * Math.sin(yaw),
       dist * Math.sin(pitch),
@@ -268,7 +322,18 @@ export function initTopology3D() {
     gl.enableVertexAttribArray(na2);
     gl.vertexAttribPointer(na2, 3, gl.FLOAT, false, 0, 0);
     gl.uniformMatrix4fv(gl.getUniformLocation(np, "u_mvp"), false, m);
-    gl.uniform1f(gl.getUniformLocation(np, "u_size"), 10 * (devicePixelRatio || 1));
+    const dpr3 = devicePixelRatio || 1;
+    const uMode = gl.getUniformLocation(np, "u_mode");
+    const uSize = gl.getUniformLocation(np, "u_size");
+    // halo (additive, gently breathing) then crisp core on top
+    const breathe = REDUCED3D ? 1 : 1 + 0.12 * Math.sin(performance.now() / 700);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    gl.uniform1f(uMode, 1);
+    gl.uniform1f(uSize, 38 * dpr3 * breathe);
+    gl.drawArrays(gl.POINTS, 0, nodes.length);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.uniform1f(uMode, 0);
+    gl.uniform1f(uSize, 10 * dpr3);
     gl.drawArrays(gl.POINTS, 0, nodes.length);
 
     // flow dots (skip entirely under reduced motion)
@@ -299,7 +364,14 @@ export function initTopology3D() {
       gl.bufferData(gl.ARRAY_BUFFER, flowCol, gl.DYNAMIC_DRAW);
       gl.enableVertexAttribArray(na2);
       gl.vertexAttribPointer(na2, 3, gl.FLOAT, false, 0, 0);
-      gl.uniform1f(gl.getUniformLocation(np, "u_size"), 5 * (devicePixelRatio || 1));
+      // comet glow behind each flow dot, then the dot itself
+      gl.blendFunc(gl.ONE, gl.ONE);
+      gl.uniform1f(uMode, 1);
+      gl.uniform1f(uSize, 16 * dpr3);
+      gl.drawArrays(gl.POINTS, 0, edges.length * FLOW_DOTS);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.uniform1f(uMode, 0);
+      gl.uniform1f(uSize, 4 * dpr3);
       gl.drawArrays(gl.POINTS, 0, edges.length * FLOW_DOTS);
     }
   };
@@ -322,11 +394,17 @@ export function initTopology3D() {
   canvas.addEventListener("pointerup", () => { dragging = false; });
   canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
-    dist = Math.max(1.5, Math.min(12, dist + e.deltaY * 0.004));
+    fitLocked = true;
+    dist = Math.max(1.5, Math.min(30, dist + e.deltaY * 0.004));
   }, { passive: false });
 
   toggle.addEventListener("click", () => {
     const on = canvas.hidden;
+    // the canvas is absolutely positioned inside the wrapper, which only has
+    // height because the SVG is in flow -- pin it before taking the SVG out
+    const wrap3d = svg.parentElement;
+    if (on) wrap3d.style.minHeight = Math.max(360, Math.round(svg.getBoundingClientRect().height)) + "px";
+    else wrap3d.style.minHeight = "";
     canvas.hidden = !on;
     svg.style.display = on ? "none" : "";
     toggle.textContent = on ? "← svg view" : "3d view";

@@ -14,7 +14,8 @@
 
    Usage: rewrite-dist-refs.mjs --root /var/www/gale --manifest <path>
 */
-import { readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, copyFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join, basename } from "node:path";
 
 const argv = process.argv.slice(2);
@@ -59,10 +60,33 @@ for (const name of readdirSync(root)) {
   if (name.endsWith(".html") || name === "sw.js") files.push(join(root, name));
 }
 
+// Stylesheets: content-hash copies (gale.<hash>.css) so nginx can serve them
+// immutable instead of revalidating on every page view. The unhashed
+// originals stay in the docroot (404.html imports, smoke, old SW caches).
+const CSS = ["gale", "fleet-tidal", "cinematic", "storm-scene", "mobile", "fonts"];
+const cssMap = {};
+for (const n of CSS) {
+  const f = join(root, n + ".css");
+  if (!existsSync(f)) continue;
+  const h = createHash("sha256").update(readFileSync(f)).digest("hex").slice(0, 8);
+  copyFileSync(f, join(root, `${n}.${h}.css`));
+  cssMap[n] = `${n}.${h}.css`;
+}
+const rewriteCss = (text) => {
+  let changed = 0;
+  for (const [n, hashed] of Object.entries(cssMap)) {
+    const re = new RegExp(`(["'/])${esc(n)}\\.css(?=["'?])`, "g");
+    text = text.replace(re, (_m, pre) => { changed++; return pre + hashed; });
+  }
+  return { text, changed };
+};
+
 let total = 0, touched = [];
 for (const f of files) {
   const before = readFileSync(f, "utf8");
-  const { text: after, changed } = rewriteText(before);
+  const r1 = rewriteText(before);
+  const r2 = rewriteCss(r1.text);
+  const after = r2.text, changed = r1.changed + r2.changed;
   if (changed > 0 && after !== before) {
     writeFileSync(f, after);
     touched.push(`${basename(f)} (${changed} ref${changed > 1 ? "s" : ""})`);

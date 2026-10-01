@@ -361,7 +361,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .fleet-footer { border-top: 1px solid rgba(232, 234, 237, 0.08); padding: 34px 22px 60px; position: relative; z-index: 10; }
 .fleet-footer .cols { max-width: var(--wrap); margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 @media (max-width: 760px) { .fleet-footer .cols { grid-template-columns: 1fr; } }
-.fleet-footer h4 { font-family: var(--font-space-grotesk); margin: 0 0 10px; font-size: 0.95rem; }
+.fleet-footer h3, .fleet-footer h4 { font-family: var(--font-space-grotesk); margin: 0 0 10px; font-size: 0.95rem; }
 .fleet-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .fleet-footer a { color: var(--text-dim); font-size: 0.88rem; }
 .fleet-footer a:hover { color: var(--amber); }
@@ -617,8 +617,8 @@ button.ct-key:focus-visible { outline: 2px solid var(--tide); outline-offset: 2p
   .js .reveal { transform: none; transition: none; animation: sd-reveal auto both;
     animation-timeline: view(); animation-range: entry 5% entry 55%; }
 }
-@keyframes sd-reveal { from { transform: translateY(20px); opacity: 0.4; }
-  to { transform: none; opacity: 1; } }
+@keyframes sd-reveal { from { transform: translateY(20px); }
+  to { transform: none; } }
 
 /* ---- print (improvements #1, tidal fork mirror): same light re-skin for
    fleet.html, which loads only this stylesheet. */
@@ -636,3 +636,4 @@ button.ct-key:focus-visible { outline: 2px solid var(--tide); outline-offset: 2p
   .card, .member-card, .fleet-24h-card { break-inside: avoid; box-shadow: none !important; }
   a { color: #111 !important; }
 }
+

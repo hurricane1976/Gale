@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v10";
+const CACHE_VERSION = "gale-v13";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -24,7 +24,7 @@ const SHELL_ASSETS = [
   "/index.html", "/fleet.html", "/status.html", "/metrics.html",
   "/observability.html", "/ollama.html", "/agora.html", "/weather.html",
   "/network.html", "/404.html",
-  "/gale.css", "/fleet-tidal.css",
+  "/gale.css", "/fleet-tidal.css", "/mobile.css", "/cinematic.css", "/fonts.css", "/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2",
   "/dist/main.js", "/dist/fleet.js", "/dist/activity.js", "/dist/cost.js",
   "/dist/drilldown.js", "/dist/hosts.js", "/dist/particles.js",
   "/dist/metrics.js", "/dist/network.js", "/dist/observability.js",
@@ -137,7 +137,16 @@ self.addEventListener("push", (event) => {
       icon: "/icon-192.png",
       data: { url: data.url || "/status.html" },
     };
-    if (data.sev === "crit") opts.tag = "gale-crit";
+    if (data.sev === "crit") { opts.tag = "gale-crit"; opts.renotify = true; }
+    // action buttons (Android/desktop; iOS ignores them and just shows the
+    // tap target). Wake only when the push names an agent (server allowlist
+    // still decides). A runbook link is optional.
+    const actions = [{ action: "open", title: "Open" }];
+    if (data.agent) actions.push({ action: "wake", title: `Wake ${String(data.agent).slice(0, 18)}` });
+    if (data.runbook) actions.push({ action: "runbook", title: "Runbook" });
+    opts.actions = actions.slice(0, (self.Notification && Notification.maxActions) || 2);
+    opts.data.agent = data.agent || null;
+    opts.data.runbook = data.runbook || null;
     try {
       await self.registration.showNotification(title, opts);
     } catch (e) {
@@ -157,7 +166,13 @@ self.addEventListener("push", (event) => { /* legacy handler removed -- single p
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || "/status.html";
+  const nd = event.notification.data || {};
+  if (event.action === "wake" && nd.agent) {
+    // act without opening the app; queue for Background Sync if offline
+    event.waitUntil(queueWake(nd.agent, true));
+    return;
+  }
+  const url = (event.action === "runbook" && nd.runbook) || nd.url || "/status.html";
   event.waitUntil((async () => {
     const clientList = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
     for (const client of clientList) {
@@ -193,5 +208,53 @@ self.addEventListener("message", (event) => {
         }
       })
       .catch(() => {});
+  }
+});
+
+/* ---- Offline wake queue (Background Sync). A "wake agent" tapped with no
+   signal is stored in IndexedDB and replayed when connectivity returns --
+   but only within WAKE_TTL_MS, since waking an agent 3 hours late on a
+   stale tap would be a surprise. The server allowlist/flock still decides. */
+const WAKE_TTL_MS = 15 * 60 * 1000;
+const idb = () => new Promise((res, rej) => {
+  const r = indexedDB.open("gale-sw", 1);
+  r.onupgradeneeded = () => r.result.createObjectStore("wakeq", { autoIncrement: true });
+  r.onsuccess = () => res(r.result);
+  r.onerror = () => rej(r.error);
+});
+const tx = async (mode, fn) => {
+  const db = await idb();
+  return new Promise((res, rej) => {
+    const t = db.transaction("wakeq", mode);
+    const out = fn(t.objectStore("wakeq"));
+    t.oncomplete = () => res(out && out.result);
+    t.onerror = () => rej(t.error);
+  });
+};
+async function postWake(agent) {
+  const r = await fetch("/api/fleet/wake", { method: "POST",
+    headers: { "Content-Type": "application/json" }, body: JSON.stringify({ agent }) });
+  return r.status < 500;
+}
+async function queueWake(agent, tryNow) {
+  if (tryNow) { try { if (await postWake(agent)) return; } catch { /* offline: queue it */ } }
+  await tx("readwrite", (s) => s.add({ agent, at: Date.now() }));
+  if (self.registration.sync) { try { await self.registration.sync.register("gale-wake"); } catch {} }
+}
+async function drainWakeQueue() {
+  const items = await tx("readonly", (s) => s.getAll());
+  const keys = await tx("readonly", (s) => s.getAllKeys());
+  for (let i = 0; i < (items || []).length; i++) {
+    const it = items[i];
+    if (Date.now() - it.at <= WAKE_TTL_MS) { if (!(await postWake(it.agent))) throw new Error("retry"); }
+    await tx("readwrite", (s) => s.delete(keys[i]));
+  }
+}
+self.addEventListener("sync", (event) => {
+  if (event.tag === "gale-wake") event.waitUntil(drainWakeQueue());
+});
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "gale:queue-wake" && event.data.agent) {
+    event.waitUntil(queueWake(String(event.data.agent), false));
   }
 });

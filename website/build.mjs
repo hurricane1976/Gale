@@ -56,6 +56,8 @@ const options = {
    // rewrites the HTML/sw <script src> against the manifest this emits.
    entryNames: "[name]-[hash]",
    metafile: true,
+   // full zod is ~450 KB; the browser only needs the subset zod-lite.js implements
+   alias: { zod: "./zod-lite.js" },
    logLevel: "info",
 };
 

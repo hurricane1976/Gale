@@ -1,0 +1,31 @@
+# gale-roster.rules.yml -- roster completeness + drift (tools/roster_check.py,
+# textfile gale_roster.prom, cron */5). Catches the "35 agents on the page, 32
+# in telemetry" class of problem and page/roster/config model disagreements.
+# Deploy: copy to /var/snap/prometheus/common/rules/, POST 127.0.0.1:9090/-/reload.
+groups:
+  - name: gale-roster
+    interval: 60s
+    rules:
+      - alert: GaleAgentSilent
+        expr: gale_roster_silent == 1
+        for: 6h
+        labels: { severity: warning }
+        annotations:
+          summary: "{{ $labels.agent }} ({{ $labels.host }}) is on the roster but reports no runs"
+          description: "no runs in fleet telemetry (14d window) -- the host's relay may not be forwarding it, or the agent never woke"
+
+      - alert: GaleRosterDrift
+        expr: gale_roster_drift == 1
+        for: 30m
+        labels: { severity: warning }
+        annotations:
+          summary: "roster drift: {{ $labels.kind }} for {{ $labels.agent }}"
+          description: "page / roster.json / opencode.json / AGENT.md disagree -- run tools/roster_check.py --report"
+
+      - alert: GaleRosterCheckStale
+        expr: time() - gale_roster_check_unixtime > 1200
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "roster_check stopped updating (20m+)"
+          description: "gale_roster.prom stale -- cron entry dead or the script is erroring"

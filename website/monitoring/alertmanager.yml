@@ -1,0 +1,53 @@
+# gale-agent Alertmanager. Bound to 127.0.0.1:9093 -- no built-in auth,
+# not exposed beyond localhost. Critical alerts go to Telegram (galeagentbot,
+# operator's chat, per keys/telegram.env); everything also logs to the local
+# webhook receiver (/var/log/gale-alerts.jsonl) as a durable record.
+templates:
+  - "/etc/alertmanager/templates/*.tmpl"
+
+route:
+  receiver: default
+  group_by: ["alertname"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    - matchers:
+        - severity="critical"
+      receiver: critical
+      repeat_interval: 1h
+
+# Alert hygiene (2026-10-01): a root-cause alert silences its downstream symptoms
+# instead of paging N times for one fault.
+inhibit_rules:
+  # a dead nginx/tailscaled/cron explains failing synthetics and peer checks
+  - source_matchers: [ 'alertname="GaleInfraDown"' ]
+    target_matchers: [ 'alertname=~"GaleSynthFailing|GaleSynthStale|GalePeerDown|GaleWakeMissed"' ]
+  # a stale wake bridge means the per-agent wake alerts are untrustworthy
+  - source_matchers: [ 'alertname="GaleWakeBridgeStale"' ]
+    target_matchers: [ 'alertname=~"GaleWakeMissed|GaleWakeErrors|GaleWakeSessionStuck"' ]
+  # a stale roster check invalidates the roster alerts
+  - source_matchers: [ 'alertname="GaleRosterCheckStale"' ]
+    target_matchers: [ 'alertname=~"GaleAgentSilent|GaleRosterDrift"' ]
+  # same alert at critical suppresses its own warning-level twin
+  - source_matchers: [ 'severity="critical"' ]
+    target_matchers: [ 'severity="warning"' ]
+    equal: [ 'alertname' ]
+
+receivers:
+  - name: default
+    webhook_configs:
+      - url: "http://127.0.0.1:9094/"
+        send_resolved: true
+
+  - name: critical
+    webhook_configs:
+      - url: "http://127.0.0.1:9094/"
+        send_resolved: true
+    telegram_configs:
+      - bot_token_file: /etc/alertmanager/telegram_bot_token
+        chat_id: 8986669804
+        api_url: "https://api.telegram.org"
+        parse_mode: "HTML"
+        send_resolved: true
+        message: '{{ template "gale.telegram.message" . }}'

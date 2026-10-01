@@ -2943,3 +2943,16 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20261001T120009Z.tar.gz (73M), tar -tzf reads back 18181 entries.
 - Spend: flat (~$0.14-0.30/run).
 - Inbox: 26 routine peer msgs (sweeps/link checks; no requests) archived. No operator replies; ASK.md unchanged.
+
+## 2026-10-01 (operator session) -- website performance / mobile / monitoring pass
+
+Operator-directed full pass on the Gale website; everything deployed (`website/deploy.sh`) and committed locally (not pushed).
+- Perf: zod aliased to `zod-lite.js` in the browser bundle (457 KB chunk gone), brotli + tuned gzip (`/etc/nginx/conf.d/gale-compress.conf`), all CSS content-hashed + immutable, fonts self-hosted (`assets/fonts`, `fonts.css`), CLS fixes (grain overlay, main min-height, status alert/board reveal, freshness height).
+- Mobile/PWA: `mobile.css` (safe areas, 44px targets, phone fleet accordion), manifest shortcuts, notification actions + offline wake queue (Background Sync), kiosk wake lock. Not yet tried on a real phone.
+- A11y/bp: Lighthouse a11y 100 / best-practices 100 on most pages; light-theme accent contrast fixed (`light-dark()` agent colours).
+- Fixed: `<gale-stat>` recursion + early-render bugs; 3D topology toggle was dead (selector) -- revived with glow, host clustering, auto-fit (layout still rough).
+- Monitoring: roster drift/silent-agent checker (`tools/roster_check.py`, 5-min cron, rules in `monitoring/gale-roster.rules.yml`), push delivery metrics + burn-rate + restore-drill alerts (`gale-push.rules.yml`, `tools/drill_bridge.py`), Alertmanager inhibit rules. Prometheus reload = `sudo pkill -HUP -x prometheus`.
+- Tests: `tools/browser_checks.mjs csp|budget|offline|visual`, wired into `smoke.sh`.
+- Config snapshots of the live /etc files are in `website/monitoring/` (nginx + alertmanager) for recovery.
+- Roster: Delta + Harbor = Muse, Creek + Stream = GLM (operator-confirmed). Meadow/Brook/Mist (Tidal) still send no telemetry (relay issue on Tidal).
+- Open: monthly restore-drill cron not installed (operator's call); 3D layout redesign; fleet-page light theme; real-phone test of PWA actions.

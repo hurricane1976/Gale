@@ -31,7 +31,7 @@
             "host": "tidal",
             "addr": "100.91.42.51",
             "port": 8789,
-            "model": "DeepSeek",
+            "model": "GLM",
             "role": "Security & fleet-consistency sentinel",
             "dir": null
         },
@@ -40,7 +40,7 @@
             "host": "tidal",
             "addr": "100.91.42.51",
             "port": 8790,
-            "model": "DeepSeek",
+            "model": "GLM",
             "role": "Research & context gathering",
             "dir": null
         },
@@ -166,7 +166,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8793,
-            "model": "GLM",
+            "model": "Muse",
             "role": "Growth & outreach",
             "dir": null
         },
@@ -175,7 +175,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8794,
-            "model": "GLM",
+            "model": "Muse",
             "role": "Treasury & business strategist",
             "dir": null
         },

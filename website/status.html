@@ -7,7 +7,7 @@
   </script>
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ops Status — Gale</title>
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gale.agent" />
@@ -21,11 +21,12 @@
   <meta name="theme-color" content="#02060d" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="fonts.css" />
   <link rel="stylesheet" href="gale.css" />
   <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="dist/status.js"></script>
   <script type="speculationrules">
@@ -194,7 +195,7 @@
         <div id="ollama-body">
           <div class="vitals-grid" id="ollama-vitals"></div>
           <div class="spark-block">
-            <h4 class="fw-subtitle" style="font-size:0.85rem">GPU &middot; 24h <span style="color:var(--text-faint);font-weight:400">&middot; utilization (inference proxy) + temperature + VRAM headroom</span></h4>
+            <h3 class="fw-subtitle" style="font-size:0.85rem">GPU &middot; 24h <span style="color:var(--text-faint);font-weight:400">&middot; utilization (inference proxy) + temperature + VRAM headroom</span></h3>
             <div class="spark-canvas"><gale-sparkline id="ollama-gpu-chart" view-box="0 0 600 90"></gale-sparkline></div>
             <p class="mini-note" id="ollama-gpu-note"></p>
           </div>
@@ -239,7 +240,7 @@
               <input type="search" id="fw-device-search" class="fw-search" placeholder="Filter by name, IP, or MAC&hellip;" aria-label="Filter devices by name, IP, or MAC" />
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-devices-table">
-                  <thead><tr><th>Device</th><th>IP</th><th>Status</th><th></th></tr></thead>
+                  <thead><tr><th>Device</th><th>IP</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -248,7 +249,7 @@
               <h3 class="fw-subtitle">Rules (<span id="fw-rule-count">0</span>)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-rules-table">
-                  <thead><tr><th>Target</th><th>Scope</th><th>Status</th><th></th></tr></thead>
+                  <thead><tr><th>Target</th><th>Scope</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -260,13 +261,13 @@
         <div id="fw-live-body" style="margin-top:26px">
           <h3 class="fw-subtitle">Live network throughput <span style="color:var(--text-faint);font-weight:400">&middot; derived from flow records, last 15 min &middot; approximate</span></h3>
           <div class="vitals-grid" id="fw-live-vitals"></div>
-          <h4 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers &middot; 24h <span style="color:var(--text-faint);font-weight:400">&middot; sampled flow totals</span></h4>
+          <h3 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers &middot; 24h <span style="color:var(--text-faint);font-weight:400">&middot; sampled flow totals</span></h3>
           <div class="spark-canvas talkers-canvas"><gale-sparkline id="fw-talkers-chart" view-box="0 0 600 90"></gale-sparkline></div>
           <p class="mini-note" id="fw-talkers-note"></p>
-          <h4 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers (last 2h)</h4>
+          <h3 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers (last 2h)</h3>
           <div class="fw-table-scroll">
             <div class="table-scroll"><table class="ops-table" id="fw-talkers-table">
-              <thead><tr><th>Device</th><th>Traffic</th><th></th></tr></thead>
+              <thead><tr><th>Device</th><th>Traffic</th><th><span class="sr-only">Actions</span></th></tr></thead>
               <tbody></tbody>
             </table></div>
           </div>
@@ -277,7 +278,7 @@
           <h3 class="fw-subtitle">VPN status <span style="color:var(--text-faint);font-weight:400">&middot; box profiles + tunnel activity through the network</span></h3>
           <div class="fw-cols">
             <div>
-              <h4 class="fw-subtitle" style="font-size:0.85rem">VPN profiles on the box (<span id="fw-vpn-online">0</span> online / <span id="fw-vpn-total">0</span>)</h4>
+              <h3 class="fw-subtitle" style="font-size:0.85rem">VPN profiles on the box (<span id="fw-vpn-online">0</span> online / <span id="fw-vpn-total">0</span>)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-vpn-table">
                   <thead><tr><th>Profile</th><th>Type</th><th>Session</th><th>IP</th><th>Traffic 24h</th></tr></thead>
@@ -286,7 +287,7 @@
               </div>
             </div>
             <div>
-              <h4 class="fw-subtitle" style="font-size:0.85rem">VPN tunnel activity (24h, common ports 51820/1194)</h4>
+              <h3 class="fw-subtitle" style="font-size:0.85rem">VPN tunnel activity (24h, common ports 51820/1194)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-tunnel-table">
                   <thead><tr><th>Device</th><th>Direction</th><th>Proto</th><th>Flows</th><th>Bytes</th><th>Last seen</th></tr></thead>
@@ -331,7 +332,7 @@
         <p style="margin:0; max-width:34ch">Tailnet-only, no auth &mdash; same access model as the rest of this site. Never shows tokens or credentials. The Firewalla panel below can change live firewall rules (pause/resume/block) with the same no-login model as the rest of the page.</p>
       </div>
       <div>
-        <h4>Elsewhere</h4>
+        <h3>Elsewhere</h3>
         <ul>
           <li><a href="index.html">Gale dashboard</a></li>
           <li><a href="fleet.html">Fleet topology</a></li>
@@ -339,7 +340,7 @@
         </ul>
       </div>
       <div>
-        <h4>Method</h4>
+        <h3>Method</h3>
         <ul>
           <li><code>sysmon.py</code> &middot; systemd service, writes JSON every 15s</li>
           <li>static page, polls and renders client-side</li>

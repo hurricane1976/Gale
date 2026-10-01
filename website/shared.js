@@ -305,10 +305,15 @@ if (typeof HTMLElement !== "undefined") {
     }
     attributeChangedCallback() { if (this.isConnected) this.render(); }
     render() {
+      // upgrade order: attributeChangedCallback can fire before connectedCallback
+      // has attached the shadow root -- connectedCallback renders afterwards
+      if (!this.shadowRoot) return;
       const g = (n) => this.getAttribute(n) || "";
       const pct = this.getAttribute("pct");
-      const level = g("level") || "ok";
-      if (g("level")) this.setAttribute("level", g("level"));
+      // default the level attribute once. (Unconditionally calling setAttribute
+      // here re-fired attributeChangedCallback -> render -> setAttribute ...
+      // until "Maximum call stack size exceeded".)
+      if (!this.hasAttribute("level")) this.setAttribute("level", "ok");
       this.shadowRoot.innerHTML =
         `<span class="label">${esc(g("label"))}</span>` +
         `<span class="value">${g("value")}</span>` +
@@ -656,7 +661,7 @@ export function morph(fn) {
   try {
     if (!REDUCED && typeof document !== "undefined" && document.startViewTransition) {
       const t = document.startViewTransition(() => { fn(); });
-      if (t && t.finished) t.finished.catch(() => {});
+      if (t) for (const k of ["finished", "ready", "updateCallbackDone"]) if (t[k] && t[k].catch) t[k].catch(() => {});
       return;
     }
   } catch { /* fall through to plain call */ }

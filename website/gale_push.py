@@ -107,6 +107,64 @@ def vapid_auth(endpoint, pub_b64, priv_b64, subject):
     return f"vapid t={signing}.{b64u(jose_sig)}, k={pub_b64}"
 
 
+# ---- delivery metrics (textfile -> node-exporter -> Prometheus) -------------
+# "sent" = push service returned a code; "receipt" = the device's service worker
+# actually ran the push event and beaconed /receipt. sent - receipts over a
+# window is the real delivery-loss signal (iOS accepts with 201 then may drop).
+# Counters persist across restarts in a small JSON file.
+PUSH_PROM = os.environ.get("PUSH_TEXTFILE", "/var/snap/node-exporter/common/gale_push.prom")
+PUSH_STATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".push_metrics.json")
+_mlock = threading.Lock()
+try:
+    _m = json.load(open(PUSH_STATE))
+except Exception:
+    _m = {}
+_m.setdefault("sent", {}); _m.setdefault("receipts", 0)
+_m.setdefault("last_send", 0); _m.setdefault("last_receipt", 0)
+_m.setdefault("lat_sum", 0.0); _m.setdefault("lat_n", 0)
+
+
+def metrics_flush():
+    try:
+        subs = len(load_subs())
+    except Exception:
+        subs = 0
+    L = ["# TYPE gale_push_sent_total counter"]
+    L += [f'gale_push_sent_total{{code="{c}"}} {n}' for c, n in sorted(_m["sent"].items())]
+    L += ["# TYPE gale_push_receipts_total counter", f'gale_push_receipts_total {_m["receipts"]}',
+          "# TYPE gale_push_last_send_unixtime gauge", f'gale_push_last_send_unixtime {_m["last_send"]}',
+          "# TYPE gale_push_last_receipt_unixtime gauge", f'gale_push_last_receipt_unixtime {_m["last_receipt"]}',
+          "# TYPE gale_push_receipt_latency_seconds_sum counter", f'gale_push_receipt_latency_seconds_sum {_m["lat_sum"]:.3f}',
+          "# TYPE gale_push_receipt_latency_seconds_count counter", f'gale_push_receipt_latency_seconds_count {_m["lat_n"]}',
+          "# TYPE gale_push_subscriptions gauge", f"gale_push_subscriptions {subs}"]
+    try:
+        tmp = PUSH_PROM + ".tmp"
+        with open(tmp, "w") as f:
+            f.write("\n".join(L) + "\n")
+        os.replace(tmp, PUSH_PROM)
+        json.dump(_m, open(PUSH_STATE, "w"))
+    except OSError as e:
+        sys.stderr.write(f"push metrics write failed: {e}\n")
+
+
+def metrics_sent(code):
+    with _mlock:
+        _m["sent"][str(code)] = _m["sent"].get(str(code), 0) + 1
+        _m["last_send"] = int(time.time())
+        metrics_flush()
+
+
+def metrics_receipt():
+    with _mlock:
+        now = time.time()
+        _m["receipts"] += 1
+        if _m["last_send"] and 0 <= now - _m["last_send"] < 3600:   # latency vs most recent send
+            _m["lat_sum"] += now - _m["last_send"]; _m["lat_n"] += 1
+        _m["last_receipt"] = int(now)
+        metrics_flush()
+
+
+
 def push_one(sub, payload, vapid):
     """Encrypt+send one JSON payload via the reference pywebpush library.
     (A hand-rolled RFC 8291/8292 impl produced records Apple queued with
@@ -148,9 +206,11 @@ def push_one(sub, payload, vapid):
                           "exp": int(time.time()) + 12 * 3600},
             headers={"TTL": str(PUSH_TTL), "Urgency": "high"},
         )
+        metrics_sent(resp.status_code)
         return resp.status_code
     except Exception as e:
         code = getattr(getattr(e, "response", None), "status_code", 0)
+        metrics_sent(code or "err")
         log(f"push to {endpoint[:60]}… failed: {type(e).__name__}: {str(e)[:150]}")
         return code
 
@@ -179,6 +239,13 @@ def poll_and_push(vapid):
         log(f"{len(fresh)} new crit alert(s), but no subscriptions yet")
         return
     count = len(env.get("alerts") or [])
+    def _local_agent(a):
+        # the wake action only makes sense for agents that live on this host
+        # (fleet_api's wake allowlist rejects the rest anyway)
+        if a.get("kind") != "agent-missed-wake":
+            return None
+        w = (a.get("text") or "").split(" ", 1)[0].lower()
+        return w if w.isalpha() and os.path.isdir(f"/home/agent/{w}") else None
     worst = next(a for a in crits if alert_fingerprint(a) in fresh)
     body = json.dumps({
         "title": "GALE — fleet alert",
@@ -186,6 +253,10 @@ def poll_and_push(vapid):
         "sev": "crit",
         "count": count,
         "url": "/status.html",
+        # optional extras the service worker turns into action buttons
+        **({"agent": _local_agent(worst)} if _local_agent(worst) else {}),
+        **({"runbook": worst["runbook"]} if isinstance(worst.get("runbook"), str)
+           and worst["runbook"].startswith("/") else {}),
     }).encode()
     dead = []
     for sub in subs:
@@ -245,6 +316,8 @@ class Handler(BaseHTTPRequestHandler):
             payload = self._read_json()
             if payload:
                 log(f"PUSH RECEIPT: {payload}")
+                if payload.get("seen"):
+                    metrics_receipt()
             return self._send(200, {"ok": True})
         if path == "/diag":
             # device-side sw diagnostic from the page (best-effort, no auth

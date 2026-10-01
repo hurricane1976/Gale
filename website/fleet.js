@@ -199,3 +199,42 @@ refreshEffects();
 import("./topology3d.js")
   .then((m) => m.initTopology3D())
   .catch((e) => console.warn("topology3d unavailable", e));
+
+/* ---- phone view: host accordion built from the SVG's own data-* attributes
+   (same no-second-roster rule as topology3d.js). CSS shows it <=700px and
+   hides the wide map unless "show map" is tapped. ---- */
+(() => {
+  const wrap = topo.closest(".fleet-topo-wrap");
+  if (!wrap) return;
+  const groups = new Map();
+  topo.querySelectorAll(".topo-node").forEach((n) => {
+    const d = n.dataset;
+    if (!groups.has(d.host)) groups.set(d.host, []);
+    groups.get(d.host).push(d);
+  });
+  const root = document.createElement("div");
+  root.className = "fleet-mobile";
+  root.setAttribute("aria-label", "Fleet agents by host");
+  for (const [host, list] of groups) {
+    const det = document.createElement("details");
+    if (host && /gale/i.test(host)) det.open = true;
+    det.innerHTML = `<summary><span>${esc(host)}</span><span class="n">${list.length} agents</span></summary><ul>` +
+      list.map((d) => {
+        const pending = /pending/i.test(d.state || "");
+        return `<li class="${pending ? "pending" : ""}" style="--c:${MODEL_COLOR[d.model] || "var(--teal)"}">` +
+          `<span class="dot"></span><span class="nm">${esc(d.name)}<span class="role">${esc(d.roleDesc || "")}</span></span>` +
+          `<span class="mdl">${esc(d.model || "")}</span></li>`;
+      }).join("") + "</ul>";
+    root.appendChild(det);
+  }
+  const btn = document.createElement("button");
+  btn.type = "button"; btn.className = "fleet-map-toggle"; btn.textContent = "show topology map";
+  btn.setAttribute("aria-pressed", "false");
+  btn.addEventListener("click", () => {
+    const on = wrap.classList.toggle("show-map");
+    btn.textContent = on ? "hide topology map" : "show topology map";
+    btn.setAttribute("aria-pressed", String(on));
+  });
+  wrap.before(root);
+  wrap.before(btn);
+})();

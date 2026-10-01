@@ -1059,18 +1059,25 @@ chipsEl.addEventListener("click", (e) => {
 });
 
 let heatKicked = false;
+let firstPainted = false;
 async function tick() {
   let data = null;
+  let preFleet = null;
   try {
     const res = await tracedFetch(FEED, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = validate(await res.json(), statusPayload);
+    // First paint: have the alert feed in hand BEFORE revealing the board, so
+    // the "needs attention" strip and the board appear in the same frame.
+    // (Strip arriving after the board shoved the whole board down: CLS 0.18.)
+    if (!firstPainted) { try { preFleet = liveFleetAlerts || (await fleetAlerts()); } catch { preFleet = []; } }
     render(data);
+    firstPainted = true;
     lastStatus = data;
   } catch (e) {
     setFresh("down", `collector unreachable (${e.message})`);
   }
-  const fleet = data ? (liveFleetAlerts || (await fleetAlerts())) : [];
+  const fleet = data ? (preFleet || liveFleetAlerts || (await fleetAlerts())) : [];
   refreshStrip(fleet, data);
   renderFleet24h();
   // heatmap is history, not above-the-fold: first fetch stays off the
@@ -1610,6 +1617,7 @@ document.addEventListener("click", (e) => {
       });
       const body = await res.json().catch(() => ({}));
       if (res.status === 202) {
+        try { navigator.vibrate && navigator.vibrate(30); } catch { /* no haptics */ }
         heatCache.at = 0; // refetch liveness on the next tick
         if (note) setText(note, `${agent}: waking now (pid ${body.pid || "?"}) — session will show live within a minute`);
       } else if (res.status === 409) {
@@ -1619,7 +1627,13 @@ document.addEventListener("click", (e) => {
         setText(note, `${agent}: ${body.error || `HTTP ${res.status}`}`);
       }
     } catch (err) {
-      if (note) setText(note, `${agent}: request failed (${String(err.message || err)})`);
+      // offline: hand the tap to the service worker's Background Sync queue
+      // (15 min TTL) instead of dropping it
+      const sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+      if (sw && navigator.onLine === false) {
+        sw.postMessage({ type: "gale:queue-wake", agent });
+        if (note) setText(note, `${agent}: offline — wake queued, will send when the connection returns (15 min limit)`);
+      } else if (note) setText(note, `${agent}: request failed (${String(err.message || err)})`);
     } finally {
       // after a 202, leave "waking" pinned until the live map confirms;
       // every other verdict clears immediately

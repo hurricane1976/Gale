@@ -1,0 +1,98 @@
+/* GALE — mobile / PWA hardening. Linked on EVERY page (fleet.html does not load
+   gale.css, so this can't live there). */
+/* ==== Mobile / PWA hardening (2026-10-01) ================================
+   viewport-fit=cover is set on every page, so env(safe-area-inset-*) is real:
+   notch, Dynamic Island, home indicator and landscape side cutouts. */
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+header.site { padding-top: env(safe-area-inset-top); }
+.back-to-top, #kiosk-bar { bottom: max(18px, env(safe-area-inset-bottom)); }
+#kiosk-bar { padding-bottom: calc(6px + env(safe-area-inset-bottom)) !important; bottom: 0; }
+
+/* Touch: 44px minimum targets on coarse pointers (WCAG 2.5.8 / HIG). */
+@media (pointer: coarse) {
+  header.site nav a, .chip, .filter-chip, .wake-chip, button, summary,
+  .topo-chip, .fleet-filter button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  header.site nav a { display: inline-flex; align-items: center; }
+  /* hover-only affordances become always-visible: nothing may need a hover */
+  .card::after, .stat-card::after, .rule-card::after { opacity: 0.6; }
+}
+@media (hover: none) {
+  .card:hover, .stat-card:hover, .rule-card:hover, .proj-card:hover { transform: none; }
+}
+
+/* (content-visibility:auto on sections was tried and removed: placeholder heights
+   guessed wrong, so sections resized on render -> CLS 0.3-1.3 on status/observability.) */
+
+/* Data-saver / reduced-data: drop the decorative canvases. */
+@media (prefers-reduced-data: reduce) {
+  canvas#storm, canvas.particles, .cine-embers, #topo3d-wrap { display: none !important; }
+}
+
+/* Phone fleet view: host accordion replaces the 1680px-wide SVG, which
+   shrinks every node to a dot at 390px. The map is one tap away. */
+.fleet-mobile { display: none; }
+@media (max-width: 700px) {
+  .fleet-mobile { display: grid; gap: 10px; margin: 14px 0; }
+  .fleet-topo-wrap:not(.show-map) .fleet-topo-svg,
+  .fleet-topo-wrap:not(.show-map) #topo3d-wrap { display: none; }
+  .fleet-mobile details {
+    border: 1px solid var(--line, rgba(160,185,230,.14)); border-radius: 12px;
+    background: color-mix(in srgb, var(--surface, #111a2e) 82%, transparent);
+  }
+  .fleet-mobile summary {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    list-style: none; cursor: pointer; font-weight: 600;
+  }
+  .fleet-mobile summary::-webkit-details-marker { display: none; }
+  .fleet-mobile summary .n { margin-left: auto; color: var(--text-faint); font-weight: 400; font-size: .85em; }
+  .fleet-mobile ul { list-style: none; margin: 0; padding: 0 14px 10px; display: grid; gap: 2px; }
+  .fleet-mobile li { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid var(--line, rgba(160,185,230,.08)); }
+  .fleet-mobile .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--teal)); box-shadow: 0 0 8px var(--c, var(--teal)); }
+  .fleet-mobile li.pending .dot { background: transparent; border: 2px solid var(--warn, #e0b45c); box-shadow: none; }
+  .fleet-mobile .nm { font-weight: 600; } .fleet-mobile .role { display: block; color: var(--text-faint); font-size: .8em; font-weight: 400; }
+  .fleet-mobile .mdl { font-size: .8em; color: var(--text-faint); }
+  .fleet-map-toggle { min-height: 44px; width: 100%; }
+}
+@media (min-width: 701px) { .fleet-map-toggle { display: none; } }
+
+/* Floating controls (contrast / display / alerts) are absolutely positioned
+   with inline right-offsets that assume desktop width; on a phone they
+   overlap into one smear. Stack them in a compact column instead. */
+@media (max-width: 700px) {
+  #push-bell, #fx-theme, #contrast-toggle, #push-test {
+    right: max(10px, env(safe-area-inset-right)) !important;
+    left: auto !important;
+    font-size: .72rem;
+  }
+  #push-bell { bottom: max(12px, env(safe-area-inset-bottom)) !important; }
+  #fx-theme { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 48px) !important; }
+  #contrast-toggle { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 96px) !important; }
+  #push-test { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 144px) !important; }
+}
+
+/* CLS: pages start short (data panels empty) and grow to several screens once
+   the feeds arrive, which shoved the footer -- sitting inside the first
+   viewport -- down (observability CLS 0.23). Keep it below the fold until
+   content lands. The grain overlay is contained so viewport resizes
+   (scrollbar appearing) can't register as a full-viewport shift. */
+main { min-height: 100svh; }
+.grain {
+  /* fixed size from large-viewport units: inset:-50% tracked the visual viewport,
+     so a scrollbar appearing resized it and Lighthouse scored it as a shift */
+  inset: auto; top: -50lvh; left: -50lvw; width: 200lvw; height: 200lvh;
+  contain: layout paint;
+}
+
+/* CLS: the freshness line starts as "connecting…" (1 line) and becomes a longer
+   status that wraps to 2 lines on a phone, growing the header and shoving the
+   whole board down (ollama CLS 0.25). Reserve two lines up front. */
+@media (max-width: 700px) {
+  .ops-head .freshness { min-height: 3em; align-items: flex-start; }
+}
+

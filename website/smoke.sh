@@ -13,7 +13,7 @@ has() { # url pattern
 }
 for p in index fleet status metrics observability ollama agora weather network reliability 404; do check "$p.html" 200; done
 for f in shared main cinematic storm-scene fleet hosts cost activity drilldown metrics status observability network agora weather ollama reliability rum particles; do check "$f.js" 200; done
-for f in gale.css cinematic.css storm-scene.css fleet-tidal.css assets/og-image.jpg robots.txt; do check "$f" 200; done
+for f in gale.css fonts.css mobile.css cinematic.css storm-scene.css fleet-tidal.css assets/og-image.jpg robots.txt; do check "$f" 200; done
 for u in api/status.json api/fleet/metrics api/fleet/activity api/fleet/alerts api/fleet/observability api/fleet/telemetry api/fleet/wakes api/fleet/asks api/fleet/net api/agora/posts api/firewalla/status; do check "$u" 200; done
 check "no-such-page-xyz" 404
 has "api/fleet/wakes" '"fleet-wakes/v1"'
@@ -40,8 +40,8 @@ has "index.html" 'id="chapters"'
 has "index.html" 'id="pulse-marquee"'
 has "index.html" 'id="to-top"'
 has "index.html" 'filmstrip-track'
-has "fleet.html" 'cinematic.css'
-has "status.html" 'cinematic.css'
+has "fleet.html" 'cinematic\.[0-9a-f]\{8\}\.css'
+has "status.html" 'cinematic\.[0-9a-f]\{8\}\.css'
 has "palette.js" 'reliability'
 has "reliability.html" 'id="slo-grid"'
 has "api/fleet/metrics" '"runs_24h_by_host"'
@@ -56,6 +56,21 @@ if command -v node >/dev/null 2>&1; then
   fi
 else
   echo "skip  render-test.mjs (no node)"
+fi
+# Real-browser gates (puppeteer-core + snap chromium): JS errors / CSP violations,
+# per-page transfer budgets, offline SW shell. Visual regression is advisory
+# (live data + animation make pixel diffs noisy): it reports, never fails.
+# Skipped together with the Lighthouse gate (SKIP_AUDIT=1, e.g. deploy.sh).
+if [ "${SKIP_AUDIT:-0}" != "1" ] && command -v node > /dev/null && [ -x /snap/bin/chromium ]; then
+  for m in csp budget offline; do
+    if node "$(dirname "$0")/tools/browser_checks.mjs" $m > /tmp/gale-browser-$m.txt 2>&1; then
+      echo "ok   browser:$m ($(grep -c '^ok' /tmp/gale-browser-$m.txt) checks)"
+    else
+      echo "FAIL browser:$m"; grep -A3 '^FAIL' /tmp/gale-browser-$m.txt | head -12; fail=1
+    fi
+  done
+  node "$(dirname "$0")/tools/browser_checks.mjs" visual > /tmp/gale-browser-visual.txt 2>&1 || \
+    { echo "warn visual regression: $(grep -c '^FAIL' /tmp/gale-browser-visual.txt) page/viewport(s) differ (see tools/visual-baseline/*.FAILED.png)"; }
 fi
 if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi
 
@@ -74,6 +89,7 @@ if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi
 if command -v python3 > /dev/null && python3 -c "import jsonschema" 2>/dev/null; then
   python3 "$(dirname "$0")/tools/check_schema.py" "$BASE" || fail=1
 fi
+node "$(dirname "$0")/tools/check_zod_lite.mjs" || fail=1
 
 # ROADMAP #10: Lighthouse (axe-core a11y) gate. Opt out with SKIP_AUDIT=1
 # for quick loop iterations; it needs the system chromium.
