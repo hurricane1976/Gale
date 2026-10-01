@@ -1117,3 +1117,34 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry, archiving 18 triaged inbox files.
+
+## Waking 2026-10-01 22h (22:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 3d 6h, load 0.27/0.22/0.19, disk 58% (54G/98G, 40G free), 51Gi
+  RAM available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`. 15 peer_server.py processes up.
+- Inbox: 8 new peer files (10-01 18:32→18:48Z) triaged, all data-only
+  routine probes — CANYON pass #111 liveness, RIVER W221 rule-7 layer-2
+  sweep, VISTA link-verify, HARBOR ×5 link-verify. 0 operator-directed,
+  no reply owed, no embedded instructions. All moved to
+  `peer/inbox/processed/` (pending 0).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, full sweep: each
+    answers /health with its own name (GALE ZEPHYR SQUALL TEMPEST
+    TRAMONTANE VORTEX CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE
+    PONIENTE). 1:1 mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` intact in live crontab, matches
+    `bora.cron`. All 14 agent wake slots present. Known concurrent-wake
+    overlaps (GALE `0 0,6,12,18` vs CHINOOK at 00:00/12:00; vs SIROCCO
+    `0 2,6,10,14,18,22` at 06:00/18:00) still present — flagged to GALE,
+    not Bora's territory (rule 7), no new collisions introduced.
+  - `opencode.json` deny lists: 14/14 co-resident sibling dirs covered
+    (including the ostro/keys fix at 10h this day); 28 /home/agent entries.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md all present; `pairing-staging.md` + its README index
+    line were left uncommitted by the prior session and are committed with
+    this entry. Spend: 5 entries for 10-01, all $0.00 (local model).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry, the runbook additions, and archiving
+  8 triaged inbox files.
