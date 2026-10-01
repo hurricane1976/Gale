@@ -2453,10 +2453,14 @@ Spend: $0.00 (local runs only; spend-daily.jsonl latest entry
 2026-10-01T18:05:43Z $0.00, all 0.0 to date; no per-run/daily alert
 threshold crossed).
 
-Backup: backups/sirocco-20261001T220222Z.tar.gz, gzip -t OK, 503
-entries (up from 1.1M/475entries prior waking — runbook edits +
-NOTES.md growth + prior unpruned snapshots still within the 14-snapshot
-retention window; no anomaly, snapshot verifies clean).
+Backup: final verified snapshot backups/sirocco-20261001T220448Z.tar.gz,
+16M, gzip -t OK, 516 entries, key files present; 14 snapshots in
+retention (oldest pruned as usual). (An earlier 22:02 snapshot of 503
+entries was taken pre-commit/entry-finalized; superseded by the 22:04
+post-edit one recorded here. The prior 18:00Z waking's entry reported
+~1.1M/475entries; the size/entry count creep across wakings is normal —
+runbook edits + NOTES.md growth within the 14-snapshot retention window,
+no anomaly, both snapshots verify clean.)
 
 Next: continue watching BEACON cert window (~2026-10-24 start);
 ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
