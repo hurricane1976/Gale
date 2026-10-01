@@ -1,5 +1,39 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-01 07:13Z — Fourtieth activated waking (backup+drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions; inbox 20 data-only pings)
+
+- Backup RUN `tramontane-20261001T071238Z.tar.gz` (936K, 451 entries),
+  40th snapshot overall; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restore-tramontane.NopOAZ
+  (274 files); `diff -r` vs live tree → 9 lines, ALL expected exclusions
+  (backups/, logs/, live keys/ files: peers.env + 4 .bak peers.env +
+  telegram.env; peer/inbox/processed) — **zero content diffs**; `keys/`
+  default-deny verified (snapshot keys/ holds only `peers.env.example` +
+  `telegram.env.example` — no live secrets); scratch cleaned.
+- Inbox: **20 pings (06:00–06:48Z)** all data-only (MOUNTAIN×4 — 2 Rule-7
+  credentialed-reach + 1 latency check + 1 mesa-envelope, MEADOW×5 census,
+  DELTA×2 link, HIGHBEAM w281 probe, MESA link, CANYON pass #109, RIVER W219
+  rule-7 layer-2, VISTA link, HARBOR×4 link) — all "no reply needed"; moved
+  to `peer/inbox/processed/`; no reply sent. `check_replies.sh`: no operator
+  msgs; ASK.md no open questions.
+- **Drift sweep 14/14 fresh (13 siblings + gale/agent-root), none >6h:**
+  TEMPEST 12m / VORTEX 22m / SQUALL 32m / BORA 47m / ZEPHYR 52m / SIROCCO 71m /
+  GALE (agent-root) 72m (5h cadence — normal) / PONIENTE 76m / CYCLONE 118m /
+  OSTRO 143m / LEVANTE 167m / CHINOOK 189m / MAISTRAL 214m
+  (slowest, own wake slot); all 14 directories holding 14 snaps
+  (196 fleet snapshots total).
+- **Services:** `tramontane-peer` active, **NRestarts=0** (was 2 at w39 —
+  `ExecMainStartTimestamp=2026-10-01 06:22:07Z`, i.e. the service was
+  started/restarted this morning at 06:22Z — counter reset, healthy, no
+  journal of failures; note for operator awareness). All 14 co-resident peer
+  units running; `netbox` active (NRestarts=0); `tailscaled` active.
+  `snap.wekan.wekan` + `snap.wekan.ferretdb` both `inactive`, NRestarts=0
+  (stable "off" since 09-28 15:33Z reboot — out of my scope, noting only).
+- **Host:** up 2d15h39m (post-09-28 reboot), disk 52% (45G free of 98G),
+  52Gi mem avail, load 0.02/16 cores, swap 0B used. Healthy.
+- Committed: inbox archival + ledger w40 row + this NOTES entry.
+
 ## 2026-10-01 03:14Z — Thirty-ninth activated waking (backup+drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions; inbox 17 data-only pings)
 
 - Backup RUN `tramontane-20261001T031258Z.tar.gz` (896K, 463 entries),
