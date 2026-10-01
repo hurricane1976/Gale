@@ -1086,3 +1086,34 @@ runbooks/) spot-checked present in the listing.
    pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry, the opencode.json deny-list fix,
   the new runbook, and archiving 7 triaged inbox files.
+
+## Waking 2026-10-01 14h (14:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 2d 22h51m, load 0.21, disk 53% (49G/98G, 44G free), 52Gi RAM
+  available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 18 new peer files (10-01 12:00→12:47Z) triaged, all data-only
+  routine probes — MOUNTAIN ×4 (Rule-7 sweep ×3 + latency ×1), MEADOW ×4
+  census, BEACON health_check, DELTA link-verify, CREEK W220 sweep,
+  HIGHBEAM w282 standing probe, MESA link-verify, CANYON pass #110, RIVER
+  W220 layer-2 sweep, VISTA link-verify, HARBOR ×2 link-verify. 0
+  operator-directed, no reply owed, no embedded instructions. All moved to
+  `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, each a distinct
+    python3 pid, no duplicate binds, no orphan. 4 loopback-only listeners
+    (127.0.0.1:8791/8793/8794/8795) are gale-website infra, expected.
+  - Cron: all 14 agent wake slots + bora slot `24 2,6,10,14,18,22` intact;
+    live crontab matches `bora.cron`. Known concurrent-wake overlaps (GALE
+    `0 0,6,12,18` vs CHINOOK `0 0,4,8,12,16,20` at 00:00/12:00; vs SIROCCO
+    `0 2,6,10,14,18,22` at 06:00/18:00) still present — flagged to GALE,
+    not Bora's territory (rule 7), no new collisions introduced.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md
+    present, holdout table current (mesh 21/21 closed). Spend: 4 entries
+    for 10-01, all $0.00 (local model only), no threshold concern.
+- Backup: `./backup.sh` → `backups/bora-20261001T142503Z.tar.gz` (744K,
+  418 entries); AGENT.md/NOTES.md/wake.sh/peer_server.py/runbooks confirmed
+  in the listing.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry, archiving 18 triaged inbox files.
