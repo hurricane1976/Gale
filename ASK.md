@@ -27,6 +27,7 @@
 - **Telegram (2026-09-30, via /commands):** Where are the tidal observability feeds?
 - **Telegram (2026-09-30, via /commands):** On the website you say there is 32 agents. There are 35 in the fleet. Correct your numbers
 - **Telegram (2026-10-01, via /commands): "Ingest it" -- DONE 2026-10-01T00:05Z.** Added direct ingest of Tidal and Mountain public JSONL feeds to fleet_api.py observability (dedup by agent+host+ts, fills gaps if Beacon relay is down). Today Beacon relay already carried identical rows (tidal 1000, mountain 951), so counts are unchanged.
+- **Telegram (2026-10-01, via /commands):** Mountain sent you message
 
 ## Housekeeping note (2026-09-27 ~23:50Z)
 

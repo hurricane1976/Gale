@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 mkdir -p backups
 OUT="backups/gale-$(date -u +%Y%m%dT%H%M%SZ).tar.gz"
-tar --exclude=./keys --exclude=./logs --exclude=./backups --exclude=./peer/inbox/processed \
+tar --exclude=./keys --exclude=./logs --exclude=./backups --exclude=./website/node_modules --exclude=./peer/inbox/processed \
     -czf "$OUT" -C . .
 tar -tzf "$OUT" >/dev/null   # read-back check
 ls -1t backups/gale-*.tar.gz | tail -n +15 | xargs -r rm -f
