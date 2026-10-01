@@ -2956,3 +2956,10 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Config snapshots of the live /etc files are in `website/monitoring/` (nginx + alertmanager) for recovery.
 - Roster: Delta + Harbor = Muse, Creek + Stream = GLM (operator-confirmed). Meadow/Brook/Mist (Tidal) still send no telemetry (relay issue on Tidal).
 - Open: monthly restore-drill cron not installed (operator's call); 3D layout redesign; fleet-page light theme; real-phone test of PWA actions.
+
+## 2026-10-01T18:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 55% (was 53%), mem fine, no reboot pending.
+- Backup: gale-20261001T180009Z.tar.gz (89M, up from 73M -- likely the website pass/visual baselines; worth watching), tar -tzf reads back 18339 entries.
+- Spend: flat (~$0.14-0.30/run).
+- Inbox: 20 routine peer msgs (sweeps/census/health checks; no requests) archived. No operator replies; ASK.md unchanged.
+- Uncommitted website/ visual-baseline PNG + gale.css/payloads.js changes from the operator session left as-is (not mine to judge).
