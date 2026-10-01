@@ -1539,14 +1539,16 @@ function initDataSaver() {
 /* Nav status pulse: a small dot at the end of the site nav showing the worst open fleet alert
    (crit / warn / ok), linking to the ops board. Same /api/fleet/alerts the status page uses. */
 function initNavPulse() {
-  if (typeof document === "undefined" || document.getElementById("nav-pulse")) return;
-  const nav = document.querySelector(".site-links, .fleet-links, .topnav-links");
-  if (!nav) return;
-  const a = document.createElement("a");
-  a.id = "nav-pulse"; a.href = "status.html"; a.className = "nav-pulse"; a.dataset.level = "unknown";
-  a.setAttribute("aria-label", "Fleet health: checking");
-  a.innerHTML = '<span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">…</span>';
-  nav.appendChild(a);
+  if (typeof document === "undefined") return;
+  let a = document.getElementById("nav-pulse");
+  if (!a) { // page not yet re-synced with tools/sync_nav.py
+    const nav = document.querySelector(".site-links, .fleet-links, .topnav-links");
+    if (!nav) return;
+    a = document.createElement("a");
+    a.id = "nav-pulse"; a.href = "status.html"; a.className = "nav-pulse"; a.dataset.level = "unknown";
+    a.innerHTML = '<span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">…</span>';
+    nav.appendChild(a);
+  }
   const paint = async () => {
     try {
       const r = await fetch("api/fleet/alerts", { cache: "no-store" });

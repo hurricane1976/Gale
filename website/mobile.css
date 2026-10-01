@@ -194,3 +194,17 @@ html, body { overflow-x: clip; }
 #stats-grid { min-height: 112px; }
 #cost-chart { min-height: 220px; }
 #lanes { min-height: 260px; }
+/* reserve the pill's final width ("2 warnings" / "all clear") so its label arriving can't re-wrap the nav */
+.nav-pulse { min-width: 8.6em; justify-content: flex-start; box-sizing: border-box; }
+
+/* phones: the nav is ONE horizontally-scrolling row. Wrapping made its height depend on font
+   metrics, so the late webfont swap re-wrapped it and shoved the whole page down (CLS 0.31). */
+@media (max-width: 640px) {
+  .site-links, .fleet-links, .topnav-links {
+    flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; width: 100%;
+    -webkit-overflow-scrolling: touch; padding-bottom: 2px;
+  }
+  .site-links::-webkit-scrollbar, .fleet-links::-webkit-scrollbar, .topnav-links::-webkit-scrollbar { display: none; }
+  .site-links > *, .fleet-links > *, .topnav-links > * { flex: 0 0 auto; }
+  .topnav-links, .site-links { display: flex; gap: 4px 18px; }
+}

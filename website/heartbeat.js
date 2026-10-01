@@ -19,7 +19,18 @@ function level(status, h) {
   return "crit";
 }
 
-function card(host, info, last, h) {
+// 24 hourly cells (oldest -> newest) from the run rows: lit when the host logged a wake that hour
+function hourly(runs, host) {
+  const cells = new Array(24).fill(0), now = Date.now();
+  for (const r of runs) {
+    if (r.host !== host) continue;
+    const back = Math.floor((now - new Date(r.ts).getTime()) / 3.6e6);
+    if (back >= 0 && back < 24) cells[23 - back]++;
+  }
+  return cells;
+}
+
+function card(host, info, last, h, cells) {
   const lv = level(info && info.status, h);
   // seconds per beat: 1.1s when fresh up to 4s when stale (never animate faster than a calm pulse)
   const dur = Math.min(4, 1.1 + Math.max(0, h) * 0.18).toFixed(2);
@@ -29,6 +40,8 @@ function card(host, info, last, h) {
     <svg class="hb-ecg" viewBox="0 0 400 40" preserveAspectRatio="none" aria-hidden="true">
       <g class="hb-track"><path d="${BEAT}"/><path d="${BEAT}" transform="translate(200 0)"/><path d="${BEAT}" transform="translate(400 0)"/></g>
     </svg>
+    <div class="hb-24h" role="img" aria-label="${esc(host)} wakes per hour, last 24 hours: ${cells.reduce((a, b) => a + b, 0)} total">${cells.map((n, i) =>
+      `<i data-n="${Math.min(n, 3)}" title="${23 - i}h ago: ${n} run${n === 1 ? "" : "s"}"></i>`).join("")}</div>
     <div class="hb-meta"><span class="hb-rows" data-rows="${info ? info.rows : 0}">0</span> runs logged</div>
     <span class="sr-only">${esc(host)} ${lv === "ok" ? "healthy" : lv === "warn" ? "slow" : "overdue"}, last wake ${esc(fmtAge(h))}</span>
   </li>`;
@@ -43,7 +56,7 @@ export async function renderHeartbeat() {
     const d = await r.json();
     const lastBy = (d.totals && d.totals.last_wake_by_host) || {};
     const hosts = HOSTS.filter((h) => d.hosts && d.hosts[h]);
-    mount.innerHTML = hosts.map((h) => card(h, d.hosts[h], lastBy[h], ageH(lastBy[h]))).join("");
+    mount.innerHTML = hosts.map((h) => card(h, d.hosts[h], lastBy[h], ageH(lastBy[h]), hourly(d.runs || [], h))).join("");
     mount.closest("section")?.classList.add("hb-live");
     mount.querySelectorAll(".hb-rows").forEach((el) => {
       const n = Number(el.dataset.rows) || 0;
@@ -53,4 +66,16 @@ export async function renderHeartbeat() {
   } catch {
     mount.innerHTML = `<li class="hb-card" data-level="warn"><div class="hb-top"><strong class="hb-host">heartbeat unavailable</strong></div></li>`;
   }
+}
+
+/* below the fold and ~130 KB compressed (1.8 MB parsed): fetch only when the section nears the viewport */
+export function lazyHeartbeat() {
+  const sec = document.getElementById("heartbeat");
+  if (!sec) return;
+  const go = () => { renderHeartbeat(); setInterval(renderHeartbeat, 120000); };
+  if (typeof IntersectionObserver !== "function") return go();
+  const io = new IntersectionObserver((es) => {
+    if (es.some((e) => e.isIntersecting)) { io.disconnect(); go(); }
+  }, { rootMargin: "600px 0px" });
+  io.observe(sec);
 }

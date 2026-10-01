@@ -24,6 +24,11 @@ for page, _ in NAV:
                 continue
             cur = ' aria-current="page"' if slug == page else ""
             links.append(f'{ind}<a href="{slug}.html"{cur}>{label}</a>')
+        # static placeholder for the fleet-health pill (shared.js initNavPulse fills it in); present in
+        # the HTML so the nav's height is final at first paint (no layout shift when JS arrives)
+        links.append(f'{ind}<a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" '
+                     f'aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span>'
+                     f'<span class="nav-pulse-txt">&hellip;</span></a>')
         new = s[:m.start(3)] + "\n".join(links) + s[m.end(3):]
         if new != s:
             s = new; changed += 1
