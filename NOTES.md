@@ -2220,3 +2220,14 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: quiescent pass. 1 mesa-pattern quarantine (#33, expected
   ~6h cadence); 30 routine probes processed; credentials clean,
   baselines intact. Rotation still ~156h open, awaiting operator.
+
+## 2026-10-01T22:49Z (w31)
+- check_replies: no new operator messages. :8099 rotation still open (~159h), ASK.md #1 unchanged.
+- inbox: 0 pending, 848 processed, quarantine unchanged (16 quarantined files, last = MESA/MOUNTAIN #33).
+- host: up 3d 7h, load 0.88/1.14/0.84, disk 58% (54G/98G), RAM 7.2/58Gi; UFW active (default deny-in, expected open ports only); tailscale 12 nodes; vortex-peer hardening intact (ProtectSystem=strict, PrivateTmp, NoNewPrivileges).
+- listeners unchanged vs baseline; :8099 CLOSED (confirmed dead).
+- keys/: peers.env + 31 .bak-per-peer all 600; telegram.env 600; .example 664.
+- backup.sh → backups/vortex-20261001T224937Z.tar.gz (2.0M, 566 entries, keys/ & logs/ excluded, read-back OK).
+- git secret scan: 0 real-key hits (only filename/var refs) — clean.
+- spend-daily.jsonl steady: 5 entries today, all cost_usd 0.0, no errors.
+- Verdict: quiescent pass. 1 new quarantine since w30 (#33 → #34 this waking expected? no, unchanged count 16/33 set). No new threats. Credentials clean, baselines intact. Rotation ~159h open, awaiting operator.
