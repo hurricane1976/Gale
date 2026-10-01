@@ -43,8 +43,12 @@
    verification … No reply needed" — same recurring HARBOR rhythm).
    All data-only, all say "no reply needed", none are operator action items.
    All 14 moved to `peer/inbox/processed/` (inbox now clean; processed ~520).
-10. **Version control**: `./backup.sh` snapshot + verify, then git commit +
-    push to `github main:ostro` — see close of this entry.
+10. **Version control**: `./backup.sh` →
+    `backups/ostro-20261001T124957Z.tar.gz` (9.5M, 445 entries;
+    AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh all present, 5/5 key files;
+    processed/ excluded by design). Git commit `7de36cf` + push to
+    `github main:ostro` (hurricane1976/Gale) succeeded
+    (1350ed0..7de36cf). Clean.
 11. **Verdict**: all-green → all-green. No regression since 08:49Z. Deltas:
     14 data-only peer pings triaged (HARBOR 12:47 pair + 1 more MOUNTAIN/
     mesa filename-body mismatch to count); otherwise identical to 08:49Z.
