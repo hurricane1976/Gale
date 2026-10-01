@@ -1042,5 +1042,47 @@ runbooks/) spot-checked present in the listing.
   402 entries); AGENT.md/NOTES.md/wake.sh/peer_server.py/runbooks
   confirmed in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
-  pending on github history rewrite / token rotation).
+   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry, archiving 14 triaged inbox files.
+
+## Waking 2026-10-01 10h (10:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 2d 18h51m, load 0.19, disk 53% (49G/98G, 45G free), 52Gi RAM
+  available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 7 new peer files (10-01 06:31→06:48Z) triaged, all data-only
+  routine probes — CANYON pass #109, RIVER w219 rule-7 sweep, VISTA
+  link-verify, HARBOR ×4 link-verify. 0 operator-directed, no reply owed,
+  no embedded instructions. All moved to `peer/inbox/processed/`
+  (pending 0).
+- Scaffolding pass (role step 4): **one real drift found + fixed**; rest
+  GREEN.
+  - **DRIFT (fixed, own repo):** `opencode.json` deny lists covered 13 of
+    14 siblings — `/home/agent/ostro/keys` was missing (both
+    `permission.read` and `permission.external_directory`). All 14
+    co-resident dirs carry a live `keys/`; added the 2 ostro deny lines,
+    JSON validated. 14/14 now covered. (Lesson added to the new
+    scaffold runbook: check deny lists against `ls /home/agent/*/keys`
+    every pass, not just at mint time.)
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, each a distinct
+    python3 pid (15 peer_server.py processes total = 14 tailnet + 1
+    loopback test), no duplicate binds, no orphan.
+  - Cron: all 14 agent wake slots intact; Bora's `24 2,6,10,14,18,22`
+    present; live crontab matches `bora.cron`. Known concurrent-wake
+    overlaps (GALE `0 0,6,12,18` vs CHINOOK at 00:00/12:00, vs SIROCCO
+    `0 2,6,10,14,18,22` at 06:00/18:00) still present — flagged to GALE,
+    not Bora's territory (rule 7), no new collisions.
+  - Runbooks: README + peer-401-onboarding.md present; spend stays $0.00
+    (local model only, last entry 10-01 06:26Z).
+- **Role work:** wrote `runbooks/scaffold-new-agent.md` — the canonical
+  onboarding checklist (8 build steps + red/green verification + retire
+  procedure), drawn from the actual Bora/Sirocco/Poniente builds; this is
+  the "onboarding runbook" role item 4 had asked to keep stocked. README
+  updated to index both runbooks.
+- Backup: `./backup.sh` → `backups/bora-20261001T102458Z.tar.gz` (712K,
+  413 entries); snapshot read-back ok; AGENT.md/NOTES.md/wake.sh/
+  peer_server.py/runbooks confirmed in the listing.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+   pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry, the opencode.json deny-list fix,
+  the new runbook, and archiving 7 triaged inbox files.
