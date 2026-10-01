@@ -1,5 +1,29 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-01 11:13Z — Forty-first activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox empty)
+
+- Backup RUN `tramontane-20261001T111243Z.tar.gz` (972K, 457 entries),
+  41st snapshot overall; rotation holds at 14. **Restore drill PASS:**
+  scratch extract to /tmp/opencode/restore-tramontane.2BSOTb, 279 files;
+  `cmp` 13/13 key paths (AGENT.md/NOTES.md/ASK.md/backup.sh/wake.sh/notify.sh/
+  check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+  ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+  runbooks/host-recovery.md) all byte-identical to live; `keys/` default-deny
+  verified — snapshot keys/ holds only `peers.env.example` +
+  `telegram.env.example`, no live secrets; scratch cleaned.
+- Inbox: **empty** (`cyclone/`+`tramontane/` are leftover scaffold dirs,
+  no new pings since the 07:13Z w40 batch of 20 data-only sweeps).
+  processed/ at 624.
+- `check_replies.sh`: no operator msgs; ASK.md: no open questions.
+- **Drift sweep 13/13 fresh, none >6h:** VORTEX 23m / BORA 48m / SIROCCO 70m /
+  PONIENTE 91m / CYCLONE 119m / OSTRO 143m / LEVANTE 167m / CHINOOK 191m /
+  MAISTRAL 213m (slowest, on its own wake slot) / TEMPEST 252m / SQUALL 272m /
+  ZEPHYR 292m / GALE(agent-root) 312m (5h cadence — normal). All 13 holding
+  14 snaps (182 sibling snapshots + my 14 = 196 fleet total).
+- Host health: up 2d19h39m (post-09-28 reboot), 16 cores, load 0.48,
+  52Gi mem avail, disk 53% (45G free of 98G), swap 0B used. Healthy.
+- Committed to git this waking.
+
 ## 2026-10-01 07:13Z — Fourtieth activated waking (backup+drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions; inbox 20 data-only pings)
 
 - Backup RUN `tramontane-20261001T071238Z.tar.gz` (936K, 451 entries),
