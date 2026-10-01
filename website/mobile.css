@@ -189,3 +189,8 @@ html, body { overflow-x: clip; }
 
 /* de-emphasized table rows (down interfaces, stale ARP): dim by color, not opacity, so the text keeps AA contrast */
 .row-dim td, .row-dim td code { color: var(--text-faint); }
+
+/* observability: reserve space for the panels that fill in after the (deferred) data feed arrives */
+#stats-grid { min-height: 112px; }
+#cost-chart { min-height: 220px; }
+#lanes { min-height: 260px; }
