@@ -154,6 +154,13 @@
           </div>
         </section>
 
+        <!-- 2b · fleet heartbeat (JS-filled from /api/fleet/telemetry) -->
+        <section id="heartbeat" class="block">
+          <h2 class="sec-title">Fleet heartbeat</h2>
+          <p class="sec-lede">One pulse per host. Brisk means it woke recently; a slow trace means it is overdue.</p>
+          <ul id="heartbeat-grid" class="hb-grid" aria-live="off"><li class="hb-card" data-level="warn"><div class="hb-top"><strong class="hb-host">listening…</strong></div></li></ul>
+        </section>
+
         <!-- 3 · live pulse (JS-filled) -->
         <section id="pulse" class="block">
           <h2 class="sec-title">Live pulse</h2>

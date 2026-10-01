@@ -1820,3 +1820,31 @@ html:has([data-theme="light"]) #storm-canvas { opacity: 0.16; }
   .reveal { opacity: 1 !important; transform: none !important; }
 }
 
+
+/* ---- fleet heartbeat (heartbeat.js): one ECG trace per host ---- */
+.hb-grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.hb-card { --hb: var(--ok, #3fb68b); position: relative; overflow: hidden; padding: 14px 16px 12px;
+  border: 1px solid color-mix(in srgb, var(--hb) 35%, var(--line)); border-radius: 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--hb) 7%, transparent), transparent), var(--surface);
+  transition: transform .25s ease, box-shadow .25s ease; }
+.hb-card[data-level="warn"] { --hb: var(--warn, #e0a030); }
+.hb-card[data-level="crit"] { --hb: var(--flag, #e5534b); }
+.hb-card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -14px var(--hb); }
+.hb-top { display: flex; align-items: center; gap: 8px; }
+.hb-host { font-family: var(--font-heading); font-size: 1.05rem; text-transform: capitalize; }
+.hb-age { margin-left: auto; font-family: var(--font-mono); font-size: .72rem; color: var(--text-faint); }
+.hb-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--hb); box-shadow: 0 0 10px var(--hb); }
+.hb-ecg { display: block; width: 100%; height: 56px; margin: 8px 0 4px; overflow: hidden; }
+.hb-ecg path { fill: none; stroke: var(--hb); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round;
+  vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px var(--hb)); }
+.hb-meta { font-family: var(--font-mono); font-size: .72rem; color: var(--text-faint); }
+.hb-rows { color: var(--text); font-weight: 600; }
+/* the trace scrolls one beat-width per cycle; the cycle length is the host's pulse period */
+@media (prefers-reduced-motion: no-preference) {
+  .hb-track { animation: hb-scroll var(--hb-dur, 1.6s) linear infinite; }
+  .hb-dot { animation: hb-throb var(--hb-dur, 1.6s) ease-in-out infinite; }
+}
+@keyframes hb-scroll { to { transform: translateX(-200px); } }
+@keyframes hb-throb { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.35); } }
+html[data-saver="1"] .hb-track, html[data-saver="1"] .hb-dot { animation: none; }

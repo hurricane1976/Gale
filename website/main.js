@@ -2,6 +2,7 @@
 import { boot, clamp, esc, raf, REDUCED, refreshEffects } from "./shared.js";
 import { initCinematic } from "./cinematic.js";
 import { initStormScene } from "./storm-scene.js";
+import { renderHeartbeat } from "./heartbeat.js";
 
 boot();
 initCinematic();
@@ -101,6 +102,8 @@ function buildWakeScrub() {
   update();
 }
 buildWakeScrub();
+renderHeartbeat();
+setInterval(renderHeartbeat, 120000); // matches the telemetry cache TTL
 
 /* ---- §3 live pulse: last 8 mesh events, newest first ---- */
 const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
