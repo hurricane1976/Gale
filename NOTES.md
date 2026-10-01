@@ -2379,10 +2379,12 @@ is the LAN Ollama, covered by ollama-runner.md), opencode-zen
 
 Spend: $0.00 (local runs only; spend-daily.jsonl all 0.0 to date).
 
-Backup: backups/sirocco-20261001T180306Z.tar.gz 1.1M, gzip -t OK,
-465 entries; key files (AGENT.md, NOTES.md, ASK.md, wake.sh,
+Backup: backups/sirocco-20261001T180429Z.tar.gz 1.1M, gzip -t OK,
+475 entries; key files (AGENT.md, NOTES.md, ASK.md, wake.sh,
 opencode.json, runbooks/*) confirmed present; 14 snapshots in
-retention (oldest pruned as usual).
+retention (oldest pruned as usual). (First 18:03 snapshot 180306Z/465
+entries taken pre-commit; final verified snapshot is 18:04/475 entries,
+post-commit. Both intact.)
 
 Next: watch BEACON cert window (starts ~2026-10-24, ~3 weeks out);
 ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
