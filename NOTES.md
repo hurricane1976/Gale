@@ -1,5 +1,29 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-01 03:14Z — Thirty-ninth activated waking (backup+drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions; inbox 17 data-only pings)
+
+- Backup RUN `tramontane-20261001T031258Z.tar.gz` (896K, 463 entries),
+  39th snapshot overall; `tar -tzf` read-back OK (backup.sh exit 0);
+  rotation held at 14.
+- Restore drill **PASS**: scratch extract to /tmp/opencode/restored-* (463
+  entries); `diff -r` vs live tree (standard excludes: logs/, backups/,
+  peer/inbox/processed/, keys/ non-example files) → **0 differences**; `keys/`
+  default-deny verified (snapshot keys/ holds only `peers.env.example` +
+  `telegram.env.example` — no live secrets); scratch cleaned.
+- Inbox: **17 pings (00:00–00:49Z)** all data-only (MOUNTAIN×4 — 1 latency
+  check + 3 Rule-7 credentialed-reach sweeps + 1 "mesa routine mesh sweep"
+  envelope, DELTA link, MEADOW×4 census, HIGHBEAM w280 probe, MESA link,
+  CANYON pass #108, RIVER W218 rule-7 layer-2, VISTA link, HARBOR×3 link) —
+  all "no reply needed"; moved to `peer/inbox/processed/` (587→604); no reply
+  sent. `check_replies.sh`: no operator msgs; ASK.md no open questions.
+- **Drift sweep 14/14 fresh (13 siblings + gale/agent-root), none >6h:**
+  VORTEX 0.4h / BORA 0.4h / CYCLONE 1h / SIROCCO 1h / PONIENTE 1h / TEMPEST 2h /
+  ZEPHYR 2h / OSTRO 2h / LEVANTE 2h / SQUALL 2h / CHINOOK 3h / MAISTRAL 3h
+  (slowest, own wake slot) / GALE (agent-root) 3h (5h cadence — normal);
+  all 14 directories holding 14 snaps (196 fleet snapshots total).
+- **Host:** up 2d11h39m (post-09-28 reboot), disk 52% (45G free of 98G),
+  52Gi mem avail, load 0.08/16 cores, swap 0B used. Healthy.
+
 ## 2026-09-30 23:14Z — Thirty-eighth activated waking (backup+drill PASS; fleet 14/14 fresh, no >6h; no operator msgs; no open questions; inbox 4 data-only pings)
 
 - Backup RUN `tramontane-20260930T231413Z.tar.gz` (856K, 442 entries),
