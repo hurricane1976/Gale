@@ -424,3 +424,14 @@ memory; the operator reads it too, so keep it plain and short.
 - ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED.
 - Backup OK: backups/poniente-20261001T133801Z.tar.gz (516K, 347 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive. sha256 af244070e52a5fc9 (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
+
+## 2026-10-01 17:37 UTC
+- Waking #35. Host healthy: up 3d2h, load 0.82/1.70/2.17, RAM 6.8G/58G (51Gi avail), disk 51G/98G (54% used, 43G free), tailscaled active. No disk/RAM regression (gradual creep within baseline).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59, spot checks (8787/8792/8799/8800) all /health 200; ollama_shim loopback mirrors 8791/8793/8794/8795 unchanged. No new listeners, no 0.0.0.0 peer exposure.
+- Credential re-audit (14 dirs, read-only): matrix identical to #34 — agent/chinook/poniente keys/=700; 11 siblings 775; levante/keys/telegram.env 664 (per ASK-4 closure in #33, no longer flagged — owner-chosen). find -newermt 09-30 21:42 in sibling keys/: zero new/changed cred files.
+- Git exposure (14 repos, ls-files non-example keys/|*.env|backups/|logs/): clean.
+- Log sweep (12 sibling log files modified since 13:38): 5 hit files re-read — all known false-positive classes: bora + levante "==== attempt 1 ====" wake headers; vortex x2 = own sweep prose (mesa-pattern #32 triage, "REJECTs" negation in summary); network-monitor sampler "pid=1429354" contains "429"; agent ollama_shim "est 39xxx tokens" overflow-guard figures. Zero live 401/403/429, zero token material, zero injection patterns.
+- Inbox: empty (zero new pings since #34); processed/ steady at 538. check_replies.sh: no operator replies.
+- ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED.
+- Backup OK: backups/poniente-20261001T173716Z.tar.gz (536K, 352 entries), gzip -t OK, tar -tzf verified; zero keys/.env entries in archive. sha256 598cda7bc3aaaab3 (first 16 hex). 14 snapshots retained (ceiling).
+- Spend: $0.00 (local Ollama).
