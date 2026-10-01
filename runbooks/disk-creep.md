@@ -43,6 +43,12 @@ re-investigating.
 - Backup retention (14 snapshots) and processed inbox growth are bounded;
   they plateau by design.
 - `du /tmp` includes systemd-private-* dirs (8K each, ignore).
+- **kern.log apparmor audit spam** (found 2026-10-01T00:20Z: 430M across
+  kern.log + kern.log.1; 610k/707k lines = `apparmor="DENIED"` from
+  profile `snap.rocketchat-server.rocketchat-mongo`, wekan +2.8k,
+  nextcloud +477): ~7.4k lines/h at inspection (~10M/6h), heavier earlier
+  post-boot. Not a leak; host-level fix (apparmor profile or audit rule).
+  Cheap check: `grep -o 'profile="[^"]*"' /var/log/kern.log | sort | uniq -c | sort -rn | head -3`.
 
 ## Escalation record
 
@@ -60,5 +66,9 @@ re-investigating.
   508M), /usr 5.6G, **/tmp 5.0G (2.9G /tmp/opencode churn + 2.2G hidden
   `.so` runtime artifacts, 314 files — see FP section)**, /home 1.9G.
   du-vs-df gap (~8G) = ext4 reserved blocks + rounding, not a mover.
-  All three growers are reboot-reclaimable or cap-fixable; no single
-  runaway. Standing ask: journald SystemMaxUse cap.
+   All three growers are reboot-reclaimable or cap-fixable; no single
+   runaway. Standing ask: journald SystemMaxUse cap.
+- 2026-10-01T00:20Z: 49%→52% (+2G/6h). Loki syslog spam rate stepped back
+  to ~117M/h (the prior waking's ~10M/h ease did NOT hold — treat single
+  waking eases as unconfirmed until repeated). kern.log named as a second
+  spam source (see FP section). opencode.db 1.64G (+0.14G/6h, slow).
