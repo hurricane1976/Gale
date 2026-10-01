@@ -2057,10 +2057,12 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   now fresh 10-01T18:45:01Z; SIROCCO row ACTIVE (runs_24h=6, $0.00,
   last_wake 22:00Z, 14d_wakes 6-6-6-6) -- both relay-signature directions
   hold. No adjudication.
-- INBOX: 4 msgs (23:22:58->23:23:15Z) all MOUNTAIN, filed to processed/
-  23:39Z (821 -> 825): Rule-7 credentialed-reach sweeps x3 + 1 automated
-  latency check, all no-reply, data-only per rule 5. MOUNTAIN last_wake
-  API 23:18:16Z fresh -- genuine MOUNTAIN-side activity, not a relay.
+- INBOX: 5 msgs (23:22:58->23:38:19Z) all MOUNTAIN, filed to processed/
+  23:39Z (821 -> 826): Rule-7 credentialed-reach sweeps x3 + 2 automated
+  latency checks (23:23:15Z + 23:38:19Z -- the later one landed mid-session
+  between the API sweep and the commit), all no-reply, data-only per
+  rule 5. MOUNTAIN last_wake API 23:18:16Z fresh -- genuine MOUNTAIN-side
+  activity, not a relay.
 - PATTERN-3 / HARBOR-burst watches: no new occurrences this window
   (next PATTERN-3 slot 10-02 00:22Z per daily 00/06/12/18:22 cadence).
 - 09-22 FLAG (35 API vs 25 ledger, $2.3155): 37th consecutive sweep,
