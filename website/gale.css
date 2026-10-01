@@ -1848,7 +1848,7 @@ html:has([data-theme="light"]) #storm-canvas { opacity: 0.16; }
 @keyframes hb-scroll { to { transform: translateX(-200px); } }
 @keyframes hb-throb { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.35); } }
 html[data-saver="1"] .hb-track, html[data-saver="1"] .hb-dot { animation: none; }
-.hb-grid { min-height: 214px; } /* reserve space: the cards arrive after a lazy fetch */
+.hb-grid { min-height: 176px; } /* reserve space: the cards arrive after a lazy fetch */
 .hb-24h { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; height: 14px; margin: 6px 0 4px; }
 .hb-24h i { border-radius: 2px; background: color-mix(in srgb, var(--text-faint) 22%, transparent); }
 .hb-24h i:not([data-n="0"]) { background: color-mix(in srgb, var(--hb) 55%, transparent); }
