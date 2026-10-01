@@ -213,6 +213,8 @@ export const statusPayload = z.object({
   // sysmon + renderUptime
   uptime_history: z.unknown().optional(),
   generated_at: z.string().optional(),
+  // sysmon poll interval; status.js writes it into the lede (stripped once -> "undefineds")
+  collector_interval_s: numOr.optional(),
 });
 
 export function validate(payload, schema) {
