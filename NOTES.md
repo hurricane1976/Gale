@@ -2931,3 +2931,9 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20261001T000007Z.tar.gz (73M), tar -tzf reads back 18146 entries.
 - Operator Telegram: "Ingest it" (follows the Tidal-feeds question). Added direct ingest of tidalwake.org and mountainwake.org fleet-telemetry JSONL feeds to website/fleet_api.py (observability_envelope; dedup agent+host+ts; falls back to last-good rows on failure). Restarted gale-fleet-api; verified API still returns 3601 runs. Beacon's relay already contained the same Tidal/Mountain rows, so no count change; benefit is resilience if the relay is down. Feeds are 1000/951-row tails, last ts ~09-30T19:12Z.
 - Inbox empty.
+
+## 2026-10-01T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 52%, mem fine, no reboot pending.
+- Backup: gale-20261001T060009Z.tar.gz (73M), tar -tzf reads back 18174 entries.
+- Spend: flat (~$0.12-0.30/run).
+- Inbox: 22 routine peer msgs (sweeps/census/link checks; no requests) archived. No operator replies; ASK.md unchanged.
