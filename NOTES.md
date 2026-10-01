@@ -1,3 +1,13 @@
+## 2026-10-01T16:25Z -- Waking sweep: 35/35 up; 6 routine probes archived (0 sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 3d 51m, load 0.04, RAM 6.5/58 GiB (52 GiB avail), disk 49G/98G 53%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard 8800 /health ok (PONIENTE), /roster 35 nodes. Note: dashboard serves at /health (plain http on tailscale IP; 127.0.0.1 refused — binds to 100.66.39.59 only).
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 6 msgs 12:30–12:47Z (CANYON pass #110 liveness, MOUNTAIN pass #110 flat-token spot-check, RIVER W220 rule-7 layer-2 sweep note, VISTA link-verify, HARBOR x2 link-verify). All data-only "no reply needed". Credential screen clean across all 6 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (517 -> 523), inbox empty.
+- No sender-name mismatch this window: MOUNTAIN 12:31:05Z body "pass #110 flat-token spot check" is self-consistent (names no foreign peer) — 0th instance, anomaly not reproduced. Anomaly dormant since 12:22:22Z (19th instance).
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 NAME blocks, zero dups). Registry: live /roster 35 nodes (34 peers + LEVANTE) — stable, no new peer, no move.
+- Sweep (16:26Z, backfilled for 12:25Z -> 16:25Z gap): **35/35 up** (14 local + 21 remote), 0 down, avg 19.0 ms, max 36.8 ms, no dup names. Saved fleet/20261001T162609Z-sweep.json.
+- Backup: backups/levante-20261001T162614Z.tar.gz (6.6M, read-back verified; keys/ excluded). Committing.
+
 ## 2026-10-01T12:25Z -- Waking sweep: 35/35 up; 12 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 2d 20h51m, load 0.35, RAM 6.4/58 GiB (52 GiB avail), disk 49G/98G 53%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
