@@ -10,7 +10,8 @@ next waking. Anything urgent goes via `./notify.sh` (Telegram).
 Down vs slow:
 - Vendor: https://status.tailscale.com/api/v2/status.json
   (machine-readable, no WAF). Baseline 2026-09-23: "All Systems
-  Operational".
+  Operational"; re-verified 2026-10-01 ~18:00Z: "All Systems
+  Operational" (200, page unchanged).
 - Local: `tailscale status` — expect all fleet nodes listed with
   `active; direct` on reachable ones. Baseline 2026-09-23: all 4
   hosts + agents direct-connected.

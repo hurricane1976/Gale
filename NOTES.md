@@ -2312,3 +2312,79 @@ Next: continue monitoring BEACON cert window (~2026-10-24, ~3.5
 weeks out — will start explicit flagging once inside 30d); ASK.md
 PONIENTE + 22 remote pairings still awaiting operator word; keep
 flagging runner/model naming mismatch.
+
+## 2026-10-01T18:00Z — Scheduled waking (all green; githubstatus API host question closed)
+
+Host health (gale-agent): up 3d 2h, load 0.54 (light), disk 55%
+(51G/98G, 42G free — +1G since 14:00Z, normal churn), RAM 51Gi available
+of 58Gi, tailscaled + ssh + sirocco-peer active, all 14 tailnet peer
+ports 8787-8800 listening on 100.66.39.59 (plus localhost
+:8791/:8793/:8794/:8795 host services).
+
+`check_replies.sh`: no new operator messages. Inbox: empty (only
+processed/; 809 filed from prior waking, nothing new since 14:00Z).
+
+Deps (all green, 2026-10-01 ~18:03Z):
+- OpenRouter site 200 (0.15s), API /api/v1/models 200 (0.07s);
+  opencode.ai 200 (0.13s); github.com 200 (0.08s); api.github.com 200
+  (0.05s); status.tailscale.com 200 (0.51s), API reports "All Systems
+  Operational"; tailscale.com 200.
+- **githubstatus: RESOLVED. Probes this waking:
+  `www.githubstatus.com/api/v2/status.json` -> 200, "All Systems
+  Operational" (page updated 2026-10-01). `api.githubstatus.com` is
+  the dead host (NXDOMAIN, 20th+ consecutive waking, upstream-side).
+  `status.github.com` 301s to githubstatus.com (GitHub's current status
+  domain redirect). Updated `runbooks/github.md` to pin the working
+  www host, warn against the api.* host, and record the 2026-10-01
+  re-verify. The "continuous NXDOMAIN monitoring" item from prior
+  wakings is closed — githubstatus.com (all variants) is fine.**
+- LAN Ollama runner 192.168.1.197:11434 up, v0.35.0 (= upstream latest
+  v0.35.0, 2026-09-28); qwen3.8:27b present (modified 2026-09-29);
+  serves my runtime this waking (healthy, proven by this execution).
+  Gap to upstream zero.
+- opencode (anomalyco/opencode): upstream latest v1.18.34 (09-30) =
+  local v1.18.34; no new release to flag. Gap closed.
+- Tailscale: gale-agent online; full beacon-* set (highbeam, lantern,
+  lightning, prism, pulsar, radar) active; gemini-agent, mountain-agent,
+  ubuntu-agent active; josh-iphone18 + josh-linux attached;
+  josh-desktop11 absent (offline since ~1d ago — operator's personal
+  Windows device, no agent lane depends on it).
+
+Certs (unchanged): beaconwake.com -> 2026-11-23 (~52d),
+tidalwake.org -> 2026-11-28 (~57d), mountainwake.org -> 2026-12-04
+(~64d). No 30/14/7-day warnings. BEACON 30d window begins ~2026-10-24
+(~3 weeks out; will start explicit flagging once inside).
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 34 NAME blocks (verified by NAME= count). Nothing
+minted/installed this waking. ASK.md: PONIENTE + 22 remote pairings
+still awaiting operator word.
+
+Out-of-band change found in worktree (not mine): `AGENT.md` model line
+updated `opencode/muse-spark-1.3-contributor-free` ->
+`ollama/qwen3.8:27b` — matches the confirmed operator migration
+(resolved ASK item 2026-09-25) and the actual runtime this waking.
+Committed in this entry's commit for the audit trail, as-is, no other
+lines changed. Runner/portability note: with this update AGENT.md and
+reality now agree; the "muse-spark vs qwen" mismatch watch item from
+prior wakings is closed. Noted for TEMPEST.
+
+Role work this waking: close-out probes + `runbooks/tailscale.md`
+re-verify (status.api 200 "All Systems Operational") and
+`runbooks/github.md` corrected as above. Runbook suite:
+github, openrouter (note: this one still frames "Sirocco runs on
+Zen" — stale after the qwen migration; the actual runner dependency
+is the LAN Ollama, covered by ollama-runner.md), opencode-zen
+(similarly stale framing), ollama, ollama-runner, tailscale.
+
+Spend: $0.00 (local runs only; spend-daily.jsonl all 0.0 to date).
+
+Backup: backups/sirocco-20261001T180306Z.tar.gz 1.1M, gzip -t OK,
+465 entries; key files (AGENT.md, NOTES.md, ASK.md, wake.sh,
+opencode.json, runbooks/*) confirmed present; 14 snapshots in
+retention (oldest pruned as usual).
+
+Next: watch BEACON cert window (starts ~2026-10-24, ~3 weeks out);
+ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
+consider refreshing the stale "Sirocco runs on Zen" framing in
+openrouter.md / opencode-zen.md when there is a spare waking.
