@@ -2225,3 +2225,94 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   (~$1.90 host-to-date, all below the $5.00 per-run line). Disk is the lone
   re-opened watch (44G free, headroom in months). No advisory warranted this
   waking.
+
+## 2026-10-01T20:00:35Z — waking #50
+
+- **Health (baseline):** up 3 days 4:27 (same boot since 9/28 15:33Z, ~200h
+  stable); load 0.23/0.31/0.50 (low, in-band); RAM 6.8G used / 51G
+  available (58Gi total); swap 0B; disk `/` **53G used / 40G free (57%)** —
+  stepped up from #49 (50G/44G). Tailscale still holds `100.66.39.59/32`
+  (22nd consecutive hold, ~200h stable incl. across the 9/28 reboot).
+  kernel 6.8.0-142 unchanged. All green otherwise.
+- **DISK ARC — TRIP HIT, ESCALATING (driver identified):** #43/44 46G →
+  #45 48G → #46/#47/#48 49G (flat) → #49 50G → **#50 53G (past the 51G
+  trip set at #49)**. #49's condition was: "if 51G, escalate to a cleanup
+  recommendation (journal rotation tighten + /tmp sweep)". That trip is hit,
+  one step over. **Driver found: `/var/log/syslog` = 6.3G** (plus
+  `syslog.1` 1.0G) — the growth is plain syslog, NOT journald (journald is
+  4.1G, bounded rotation as always). /var/log total 12G. journald tightening
+  therefore will NOT fix this; the fix is standard rsyslog rotation
+  (`size`-based rotation + `maxsize`/`size` in /etc/rsyslog.d, or a logrotate
+  policy on /var/log/syslog* — currently evidently missing or misconfigured,
+  one active file at 6.3G with no rotation cap). **Gale's lane** (host log
+  config) — advising via send_to_peer + flagging in today's notify; I will
+  not touch rsyslog config myself (not my lane, rule 7). Free space still
+  40G = headroom in weeks-to-months at this rate, not an emergency — but the
+  2-3G/4-hour step at #49/#50 means this is the active disk driver and it
+  will keep stepping if unrotated.
+- **Peer sweep: 14/14 up** on 100.66.39.59, 8787–8800 `/health` all HTTP
+  200 — **25th consecutive stable sweep**, no degraded leg.
+- **Inbox:** 24 arrivals archived this cycle (803 → 827), inbox now empty.
+  Routine data-only batch, all "no reply needed", no acks owed, no operator
+  content: MOUNTAIN 4 (18:00:43/50/51/57 + 18:01:02Z, 18:01:09Z — Rule-7
+  credentialed-reach sweeps + latency check, one MESA-envelope body), BEACON
+  1 health-check (18:00:47Z), DELTA 2 link verifies (18:07:33/49Z), MEADOW
+  4 census (18:07:37 → 18:08:09Z), HIGHBEAM w283 (18:21:20Z), MESA 1
+  (18:22:29Z), CANYON pass #111 (18:32:40Z), RIVER W221 (18:33:12Z), VISTA
+  1 (18:38:31Z), HARBOR 5-shot burst (18:47:39 → 18:48:04Z, ~1-15s
+  spacing). **17th consecutive elevated-cadence batch** across peers — the
+  operator dedup nudge is still pending (dedup counter = 17 batches).
+- **check_replies:** none new from operator.
+- **Spend:** chinook 10/1 = 6 runs / **$0.00** (00:03, 04:06, 08:02, 12:04,
+  16:06, 20:01Z — local Ollama; this run records ~$0.00 at session end).
+  Full-host 10/1 final picture: GALE 4 runs **$0.7204** ($0.2967 + $0.1387 +
+  $0.1355 + $0.1504 — lead-sized, all inside its ~$0.13–0.30 per-slot band),
+  ZEPHYR 4 **$0.3178**, SQUALL 4 **$0.2553**, TEMPEST 4 **$0.1918** (the
+  flash trio, all inside their ~$0.04–0.12 per-run band); the remaining 10
+  lanes all $0.00 as expected. **Host 10/1 total ≈ $1.49** (GALE + flash
+  trio), all inside their own bands. **No rule-4 anomaly** (no per-run >
+  $5, no run-count jump vs cadence).
+- **Wake-reliability (headline watch — DAY CLOSED CLEAN):** 10/1 20:00
+  slot **fired clean** (this waking — the 20:00 former-failure class from
+  the 9/28–29 incident window). 10/1 closes **6/6** (00:00, 04:00, 08:00,
+  12:00, 16:00, 20:00), including both former-failure classes (00:00 AND
+  20:00). 9/30 also 6/6. **7th consecutive day-window with zero missed
+  slots** across the post-incident period. ASK.md upstream/runner item
+  (Bora's lane) stays open pending operator disposition; the downgrade case
+  is at its strongest (7 clean day-windows, both former-failure classes
+  repeatedly clean). Per #49 plan I am proposing to the operator in today's
+  notify: close the ASK.md incident-tracking, or keep it open pending
+  upstream confirmation — my call is the evidence supports closure as an
+  active-incident (leave the ASK.md note as resolved-history if they prefer
+  the conservative posture).
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (21st waking on this item; ~200h stable since — reads as one-off
+  maintenance, no operator confirmation on record).
+- **Neighbor count:** `/home/agent` = 7.6G total agent footprint (25
+  directories), unchanged.
+- **Backup:** chinook-20261001T200130Z.tar.gz (1.5M, 493 entries), gzip -t
+  OK, AGENT.md read-back clean; 14-snapshot ceiling held (oldest rotated
+  out).
+- **Commit:** inbox archive (827) + this entry.
+- **Forecast:** disk 53G/40G free — **growth-watch ESCALATED to active
+  recommendation** (driver = /var/log/syslog 6.3G unrotated, NOT journald
+  as #49's hypothesis guessed; journald is bounded and not the driver).
+  At the observed ~3G-per-since-#48 step, 40G free = ~1 month if unrotated,
+  but it will not self-heal — rotation config fix is the only stop. This is
+  a GALE-lane fix, not a CHINOOK one. RAM 6.8G / 51G free, load 0.23 — no
+  saturation projectable this week.
+  Watch items: (1) **disk — ESCALATED: /var/log/syslog 6.3G unrotated is
+  the active growth driver** — cleanup recommendation (rsyslog size-based
+  rotation) sent to GALE + flagged to operator today; re-check at #51 for
+  any further step or for the fix landing; (2) wake-reliability — 10/1
+  closed 6/6, 7th consecutive zero-failure day-window; closure proposal to
+  operator made in today's notify; (3) Tailscale TUN ~200h hold (strongest
+  sustained stability to date); (4) 9/28 15:33Z reboot cause still
+  unconfirmed; (5) 17th consecutive elevated peer batch — operator dedup
+  nudge still pending (dedup counter = 17 batches, HARBOR 5-shot burst this
+  waking is the largest yet).
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  GALE + flash trio spend is the only real cost, all inside their own bands
+  (host 10/1 ≈ $1.49, all below the $5.00 per-run line). **The disk driver
+  (unrotated syslog, GALE's host lane) is the first concrete saturation
+  item to act on** — advisory sent, not a throttle.
