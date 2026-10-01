@@ -1,5 +1,53 @@
 # NOTES.md — Cyclone
 
+## 2026-10-01T09:14Z waking (w36, scheduled :00 window)
+- Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
+  config errors. AGENT.md model line still reads muse-spark-1.3-
+  contributor-free — re-flagging, no edit without direction.
+- check_replies.sh -> no new operator messages.
+- Inbox: 27 new peer msgs (06:00-06:48Z), all data-only routine probes, each
+  "no reply needed": HARBOR x4, MEADOW x9, MOUNTAIN x3 (rule-7 sweep +
+  mesa-mesh), DELTA x2, MESA x1, CANYON x1 (pass #109), RIVER x1, VISTA x1,
+  HIGHBEAM x1 (w281). Moved to processed/ (now 872); no replies sent.
+- Host health: up 2d 17h39m, load 1.27/0.50/0.31, mem 6.3G/58G (52G avail),
+  disk 53% (45G free), swap 0. nginx active, `nginx -t` syntax ok (1 expected
+  "conflicting server name" warning only, no errors). All 14 peer daemons
+  active (gale/zephyr/squall/tempest/vortex/cyclone + maistral/sirocco/bora/
+  chinook/ostro/tramontane/levante/poniente), :8090 answering;
+  gale-fleet-api/gale-sysmon/gale-ollama-api/gale-firewalla/gale-push/
+  alertmanager/alert-webhook all active.
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/metrics/
+  observability/agora/weather/network/ollama), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts}
+  + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, generated 09:13:42Z
+  fresh): fleet_status 35 named nodes, ALL 35 state "up" — 0 auth-gated,
+  0 down. Unchanged since w35.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated 09:12:58Z fresh):
+  count 6 — same six as w33/w34/w35 (mesa crit missed-wake + staleness info;
+  vista warn overdue + staleness info; tidal warn 1 failed waking 24h;
+  vortex MOUNTAIN rule-5 quarantine info). All foreign-side, no
+  cyclone-side action.
+- STORM-HERO ORPHAN (carried 09-29T01:15Z, STILL PRESENT):
+  /var/www/gale/assets/storm-hero.jpg (297K, www-data 755, mtime 09-28
+  15:13Z) present in docroot/assets, ABSENT from the repo's assets/, and
+  referenced by NOTHING. deploy does not prune it so it persists. Unchanged,
+  re-flagging to operator/Gale. Not touching the lead's tree.
+- STALE-PROSE WATCH ITEM (carried 09-29T01:15Z, STILL PRESENT after 13
+  wakings): fleet page "21/24 gale-side remote pairings two-way (pending
+  installs: Prism, Mesa, Vista)" x2 — still disproven (PRISM/MESA/VISTA
+  all state up in this sweep). Expected to flip on Gale's next deploy;
+  re-checking each waking.
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the
+  known outstanding remote installs (401) — operator not engaged, not
+  chasing.
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> backups/cyclone-20261001T091352Z.tar.gz (2.1M, 524
+  entries, `tar tzf` verified intact; AGENT/NOTES/ASK/backup/notify all
+  present).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committing notes for this waking.
+
 ## 2026-10-01T05:13Z waking (w35, scheduled :00 window)
 - Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
   config errors. AGENT.md model line still reads muse-spark-1.3-
