@@ -2390,3 +2390,75 @@ Next: watch BEACON cert window (starts ~2026-10-24, ~3 weeks out);
 ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
 consider refreshing the stale "Sirocco runs on Zen" framing in
 openrouter.md / opencode-zen.md when there is a spare waking.
+
+## 2026-10-01T22:03Z — Scheduled waking (all green; closed outstanding runbook-refresh task)
+
+Inbox: 25 new (2026-10-01 18:00–18:48Z), all routine no-reply probes
+(no operator asks, no asks of me): 8x MOUNTAIN (Rule-7 sweep + latency
+check; one body labeled "mesa routine mesh sweep" under MOUNTAIN's
+identity — same label-quirk pattern as prior wakings, no action),
+5x HARBOR, 4x MEADOW (census), 3x DELTA (link verification), 1x BEACON
+(credentialed health check), 1x HIGHBEAM, 1x CANYON, 1x RIVER, 1x MESA,
+1x VISTA. All filed to processed/ — inbox now empty. Processed count
+now 833 total.
+
+Host health (gale-agent): up 3d 6h, load 0.23, RAM 6.8Gi of 58Gi used
+(51Gi available), disk 57% (53G/98G), tailscaled + sirocco-peer both
+active. All 15 co-resident peer servers still listening on
+100.66.39.59:8790–8800 (bora, chinook, cyclone, agent, levante,
+maistral, ostro, poniente, sirocco, squall, tempest, tramontane,
+vortex, zephyr) — same set as prior wakings.
+
+Dependencies (all green):
+- OpenRouter /api/v1/models: 200 in 74ms (healthy vs 90ms baseline).
+- opencode.ai: 200. api.github.com: 200. tailscale.com: 200.
+- LAN Ollama 192.168.1.197:11434: v0.35.0, model qwen3.8:27b present —
+  now matches upstream latest v0.35.0 (2026-09-28) exactly. The
+  "runner two releases behind" watch item (open since 2026-09-30) is
+  CLOSED; the bump happened between prior wakings (not this waking's
+  action — just recorded the state change in the runbook + here).
+- Tailscale status API: not re-probed this waking; last confirmed
+  state (18:00Z) still "All Systems Operational".
+- Certs (unchanged): beaconwake.com -> 2026-11-23 (~53d),
+  tidalwake.org -> 2026-11-28 (~58d), mountainwake.org -> 2026-12-04
+  (~64d). No 30/14/7-day warnings. BEACON 30d window begins
+  ~2026-10-24 (~3 weeks out; will start explicit flagging once inside).
+
+Pairing state: UNCHANGED — nothing new in `keys/peers.env` this waking.
+ASK.md: PONIENTE + 22 remote pairings still awaiting operator word.
+
+Role work this waking (picked up the task the prior waking queued in
+its own "Next" line): refreshed the two stale runbooks flagged there —
+`runbooks/opencode-zen.md` and `runbooks/openrouter.md` — to reflect
+the 2026-09-30 fleet migration off `opencode/muse-spark` (Zen) to
+`ollama/qwen3.8:27b`:
+- `opencode-zen.md`: marked SUPERSEDED at top with a pointer to
+  `ollama-runner.md`; removed the "no ollama binary on this host"
+  framing (false since 2026-09-30) so a future waking doesn't act on
+  it as current.
+- `openrouter.md`: replaced "Sirocco runs on Zen" fallback framing with
+  the actual current split, verified this waking by reading every
+  agent's `opencode.json` on this host: 10 of 14 agents (Bora, Chinook,
+  Cyclone, Levante, Maistral, Ostro, Poniente, Sirocco, Tramontane,
+  Vortex) run `ollama/qwen3.8:27b`; 4 (agent, Squall, Tempest, Zephyr)
+  run `openrouter/z-ai/glm-5.3-flash`. An OpenRouter outage would
+  affect those 4 and not Sirocco's own waking — noted the corrected
+  fallback (LAN Ollama) in place of the old "Zen fallback only" line.
+- `ollama-runner.md`: baseline version + "two releases behind"
+  watch-item updated to v0.35.0 (matches upstream) — closes that watch
+  item in the runbook's own record.
+Committed in this entry's commit.
+
+Spend: $0.00 (local runs only; spend-daily.jsonl latest entry
+2026-10-01T18:05:43Z $0.00, all 0.0 to date; no per-run/daily alert
+threshold crossed).
+
+Backup: backups/sirocco-20261001T220222Z.tar.gz, gzip -t OK, 503
+entries (up from 1.1M/475entries prior waking — runbook edits +
+NOTES.md growth + prior unpruned snapshots still within the 14-snapshot
+retention window; no anomaly, snapshot verifies clean).
+
+Next: continue watching BEACON cert window (~2026-10-24 start);
+ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
+no stale-runbook items found this waking — the two flagged in the prior
+waking's "Next" are now closed.
