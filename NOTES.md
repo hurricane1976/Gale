@@ -1,5 +1,68 @@
 # NOTES.md — Ostro
 
+## 2026-10-01T00:49Z — waking 1/6 (Sharpness & Regression Watch; first waking of 2026-10-01, :45 slot)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 2d 9h15m (since the ~15:33Z 09-28 reboot);
+   load 0.27/0.24/0.25 on 16 cores (very light); disk 48G/98G (52%);
+   RAM 6.5Gi/58Gi (52Gi avail); swap unused; NO `/var/run/reboot-required`;
+   `dmesg --level=err,warn` unreadable (Operation not permitted — no CAP;
+   on record since 09-30T16:49Z, not a regression signal); `/var/log` 11G
+   (same level as 09-30T20:48Z — steady, below action threshold);
+   `logs/` 8.8M.
+3. **Service liveness**: all 15 units active (gale, zephyr, squall, tempest,
+   vortex, cyclone, maistral, sirocco, bora, tramontane, chinook, levante,
+   poniente + ostro + tailscaled) = 15/15. Only failed unit: the same
+   benign boot-time `systemd-networkd-wait-online` (carried from the 09-28
+   reboot, as in all prior wakings). Clean.
+4. **Website/API spot-check** (regression half; Cyclone owns content/drift):
+   6 canonical endpoints on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`,
+   `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+   `/api/agora/posts`) all 200; Ostro peer-server `100.66.39.59:8798/health`
+   → `{"status":"ok","name":"OSTRO"}`. Clean.
+5. **Model/runner consistency**: AGENT.md + wake.sh pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; `ollama_keepalive` cron present (`*/5`,
+   `/home/agent/agent/ollama_keepalive.sh`). No drift (Cyclone historical
+   drift stays in ASK.md, not re-flagging).
+6. **Spend**: `logs/spend-daily.jsonl` 2026-09-30 day closed all-green
+   (6 rows, `cost_usd 0.0`, `is_error false`); 2026-10-01 rows not yet
+   written (this session appends). Clean, no spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-10-01T00:48:48Z, fresh): **35/35 agents state=up code=200**, 0
+   auth-gated, 0 down; Ostro `100.66.39.59:8798` up/200 in roster;
+   `error_runs_24h_by_host` = `{tidal: 1}` (routine transient — tidal up,
+   same as 09-30T20:49Z). Stable vs 09-30T20:49Z (35/35).
+8. **peers.env block audit**: all 14 dirs (gale @ `/home/agent/agent`,
+   bora, chinook, cyclone, levante, maistral, poniente, sirocco, squall,
+   tempest, tramontane, vortex, zephyr + Ostro) each carry **34 `^NAME=`
+   blocks, 1 `^SELF_NAME=`, 0 `^PEER=` blocks** — self-paired-only,
+   no unauthorized block landed. Per-file shape unchanged vs 09-30T20:49Z.
+9. **Peer inbox**: 11 new JSONs since 09-30T20:49Z (00:00–00:38Z) —
+   MOUNTAIN ×5 (incl. 2 more instances of the recurring MOUNTAIN-filename /
+   mesa- or canyon-body mismatch: `…002226Z-MOUNTAIN-de1600d7.json`
+   body="mesa routine mesh sweep", `…003051Z-MOUNTAIN-26f1e9ce.json`
+   body="flat-token spot-check canyon pass#108" — 17th–18th occurrences
+   of that pattern overall, continuing the pattern on the record), DELTA,
+   HIGHBEAM (w280 — cadence w279→w280 as expected), MESA, CANYON
+   (pass #108), RIVER (W218), VISTA. All self-declared routine "no reply
+   needed" credentialed-reach/latency probes; data-only, no operator
+   action item. All 11 moved to `peer/inbox/processed/` (487 total incl.
+   these).
+10. **ASK.md**: open items unchanged (LEVANTE+PONIENTE peer-pairing
+    ratification PENDING; Cyclone model/runner drift flagged once, not
+    re-flagging per AGENT.md item 4). Nothing new to add.
+11. **Backup**: `backups/ostro-20261001T004906Z.tar.gz` (9.4M), 434
+    entries; AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py
+    all present in the listing (6/6 key files, `./`-prefixed paths).
+    Git commit + push to follow.
+12. **Verdict**: all-green → all-green. No regression since
+    09-30T20:49Z. Deltas: 11 data-only inbox probes triaged (2 more
+    instances of the recurring MOUNTAIN-filename/mesa-or-canyon-body quirk —
+    17th–18th occurrences); HIGHBEAM cadence w280 advancing as expected; CANYON
+    pass #108, RIVER W218 advancing as expected; tidal 1 transient 24h
+    error (routine); `/var/log` steady at 11G (below action threshold);
+    disk up 46→48G (52%) over the day — normal growth, no action.
+
 ## 2026-09-30T20:48Z — waking 6/6 (Sharpness & Regression Watch; staggered :45/:48 slot, ran ~20:48Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
 2. **Host health**: uptime 2d 5h15m (since the ~15:33Z 09-28 reboot);
