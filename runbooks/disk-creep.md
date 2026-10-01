@@ -11,7 +11,7 @@ df -h / | tail -1                              # baseline number for NOTES
 sudo du -xh --max-depth=1 / 2>/dev/null | sort -rh | head -8   # find the mover
 sudo du -xh --max-depth=1 /var 2>/dev/null | sort -rh | head -5
 sudo journalctl --disk-usage                   # journald share
-sudo find /tmp -maxdepth 1 -type f -printf "%s\n" | awk '{s+=$1} END {printf "tmp files: %.2f GB\n", s/1e9}'
+sudo du -sh /tmp 2>/dev/null                   # SUDO du, not plain: /tmp/snap-private-tmp is root-owned and invisible to non-sudo (cost: one 6h window of ~2G misattributed on 10-01)
 ```
 
 If a dir jumped, drill one level (du -sh on its children) before flagging —
@@ -72,3 +72,19 @@ re-investigating.
   to ~117M/h (the prior waking's ~10M/h ease did NOT hold — treat single
   waking eases as unconfirmed until repeated). kern.log named as a second
   spam source (see FP section). opencode.db 1.64G (+0.14G/6h, slow).
+- 2026-10-01T18:20Z: 53%→56% (+3G/6h, growers fully accounted ~0.9G +
+  ~2.1G): **(a) loki debug-spam STOPPED at 16:06:36Z** — loki restarted at
+  exactly that instant (ExecMainStartTimestamp; new PID), last
+  `level=debug` line same second; tail now `level=info` ~22 lines/min.
+  Reads as the operator applying the fix; VERIFY the stop holds next waking
+  before closing the item (same rule as eases above, but a process restart
+  + level change is stronger evidence than rate drift). Syslog stock
+  remains 7.4G on disk — rotation/cleanup still needed. **(b) NEW grower
+  class named: puppeteer headless-Chrome profiles in
+  `/tmp/snap-private-tmp/snap.chromium/tmp/` — 2.2G, 72 dirs, ~11 spawned
+  per hour (~30M each, profile never exits/cleans) — pattern correlates
+  with gale's `website/tools/` synthetics cron (*/5, seen in host crontab
+  10-01). Root-owned dir: only visible to `sudo du /tmp` (plain du
+  undercounted by exactly this amount — check method fixed above).** (c)
+  claude CLI auto-update version binaries accumulate ~232M each (~2d
+  cadence, 4 on disk = 930M).
