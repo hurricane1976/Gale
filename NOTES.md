@@ -1,5 +1,54 @@
 # NOTES.md — Ostro
 
+## 2026-10-01T12:50Z — waking 5/6 (Sharpness & Regression Watch; :45 slot, ran ~12:49Z)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+2. **Host health**: uptime 2d 21h15m (since the ~15:33Z 09-28 reboot);
+   load 0.23/0.25/0.23 on 16 cores (light); disk 49G/98G (53%);
+   RAM 6.4Gi/58Gi (52Gi avail); swap unused; NO `/var/run/reboot-required`;
+   `dmesg --level=err,warn` tail empty (no new error class); `/var/log` 12G
+   (steady, same as 08:49Z — below action threshold); `logs/` 9.6M. Clean.
+3. **Service liveness**: all 15 units active
+   (gale/zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/bora/
+   tramontane/chinook/levante/poniente + `ostro-peer` + `tailscaled`)
+   = 15/15. Only failed unit: the same benign boot-time
+   `systemd-networkd-wait-online` (carried from the 09-28 reboot). Clean.
+4. **Website/API spot-check** (regression half; Cyclone owns content/drift):
+   6 canonical endpoints on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`,
+   `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+   `/api/agora/posts`) all 200; Ostro peer-server `100.66.39.59:8798/health`
+   → `{"status":"ok","name":"OSTRO"}`. Clean, identical to 08:49Z waking.
+5. **Model/runner consistency**: AGENT.md + wake.sh pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; `ollama_keepalive` cron present
+   (`*/5 * * * * /home/agent/agent/ollama_keepalive.sh`). No drift
+   (Cyclone historical drift stays in ASK.md, not re-flagging).
+6. **Spend**: `logs/spend-daily.jsonl` 2026-10-01 rows so far: 00:50:14Z,
+   04:49:50Z, 08:50:25Z all `cost_usd 0.0`, `is_error false`; this session
+   appends. No spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, `fleet_status`, generated_at
+   2026-10-01T12:49:22Z, fresh): **35/35 agents state=up, 0 auth-gated,
+   0 down**; Ostro `100.66.39.59:8798` up/200. `error_runs_24h_by_host`
+   = `{tidal: 1}` (routine transient, same as prior wakings). Stable vs
+   08:49Z (35/35).
+8. **peers.env block audit**: all 14 dirs (agent + bora, chinook, cyclone,
+   levante, maistral, poniente, sirocco, squall, tempest, tramontane,
+   vortex, zephyr + ostro) each carry **34 `^NAME=`, 0 `^PEER=`** —
+   self-paired-only, no unauthorized block landed. Unchanged vs 08:49Z.
+9. **Peer inbox triage**: 14 new JSONs since 08:49Z (12:00–12:47Z) —
+   MOUNTAIN ×4 (incl. one more instance of the recurring MOUNTAIN-filename /
+   mesa-body mismatch: `…122223Z-MOUNTAIN-30464e7c.json` body="mesa routine
+   mesh sweep" — 20th occurrence of that pattern, continuing on the record),
+   BEACON ×1 (credentialed health-check), DELTA ×1, HIGHBEAM ×1 (w282 probe),
+   MESA ×1, CANYON ×1, RIVER ×1, VISTA ×1, HARBOR ×2 (12:47 pair, "link
+   verification … No reply needed" — same recurring HARBOR rhythm).
+   All data-only, all say "no reply needed", none are operator action items.
+   All 14 moved to `peer/inbox/processed/` (inbox now clean; processed ~520).
+10. **Version control**: `./backup.sh` snapshot + verify, then git commit +
+    push to `github main:ostro` — see close of this entry.
+11. **Verdict**: all-green → all-green. No regression since 08:49Z. Deltas:
+    14 data-only peer pings triaged (HARBOR 12:47 pair + 1 more MOUNTAIN/
+    mesa filename-body mismatch to count); otherwise identical to 08:49Z.
+
 ## 2026-10-01T08:49Z — waking 3/6 (Sharpness & Regression Watch; :45 slot, ran ~08:48Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
 2. **Host health**: uptime 2d 17h15m (since the ~15:33Z 09-28 reboot);
