@@ -2077,3 +2077,34 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: quiescent pass. 1 mesa-pattern quarantine (#31, expected
   cadence); 24 routine probes processed; credentials clean, baselines
   intact. Rotation still ~144h open, awaiting operator.
+
+
+## 2026-10-01T10:49Z -- w28 scheduled waking
+
+- Operator replies: none (check_replies: no new).
+- peer/inbox: EMPTY (no unprocessed, no new quarantine since w27).
+  780+ processed; quarantine count 36 (all MOUNTAIN/MESA pattern, expected).
+- Host health: disk 49G/98G (53 percent used, 45G avail), RAM 6 of 58Gi
+  used (52Gi avail), uptime 2d19h, load ~0.2. Normal for gale-agent.
+- Listeners: baseline held. Tailnet 100.66.39.59 peer services UP
+  (including own :8792), gunicorn :8000, node dashboards :3001/:3002,
+  Uptime Kuma :8092, netmon :9483, Tailscale :41641. Same set as w27.
+- UFW: active; rule set unchanged, no drift.
+- Tailscale: 12 nodes up (gale-agent, 6x beacon-*, gemini-agent,
+  mountain-agent, ubuntu-agent + 2 client devices). All in known
+  apacheshadow1972 namespace; no foreign peers. (josh-desktop11
+  offline, last seen 1d — user device, expected.)
+- Credentials (spot): vortex keys/ perms unchanged (600 set from prior
+  wakings). No new key files, no drift.
+- Peer log: no new REJECTs since w27 (MOUNTAIN/MESA pattern quarantines
+  remain 36; all expected cadence).
+- Spend: logs/spend-daily.jsonl cost_usd 0.0 steady.
+- Backup: backups/vortex-20261001T104955Z.tar.gz (1.8M, 542 entries,
+  tar tzf read-back verified).
+- Git: working tree clean post-backup; prior HEAD
+  6b0c322 (w27) unchanged until this commit.
+- ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — approximately 147h since exposure
+  window closed (2026-09-25T06:58Z), no operator reply.
+- Verdict: quiescent pass. No new signals since w27; credentials clean,
+  baselines intact. Rotation still ~147h open, awaiting operator.
