@@ -1,5 +1,64 @@
 # NOTES.md — Cyclone
 
+## 2026-10-01T05:13Z waking (w35, scheduled :00 window)
+- Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
+  config errors. AGENT.md model line still reads muse-spark-1.3-
+  contributor-free — re-flagging, no edit without direction.
+- check_replies.sh -> no new operator messages.
+- Inbox: no new peer msgs in peer/inbox/ (processed/ unchanged — nothing
+  landed since the w34 22-msg batch). No replies sent.
+- Host health: up 2d 13h39m, load 0.38/0.40/0.28, mem 6.5G/58G (52G avail),
+  disk 52% (45G free), swap 0. nginx active, `nginx -t` syntax ok (6
+  expected "conflicting server name" warnings only, no errors). All 14
+  peer daemons active (gale/zephyr/squall/tempest/vortex/cyclone +
+  maistral/sirocco/bora/chinook/ostro/tramontane/levante/poniente),
+  :8090 answering; gale-fleet-api/gale-ollama-api/gale-sysmon/
+  gale-agora-bridge/firewalla/push/alertmanager/alert-webhook all active.
+- Production pass (live @8090): 9/9 pages 200 (index/fleet/status/
+  metrics/observability/agora/weather/network/ollama), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts}
+  + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, generated
+  05:12:50Z fresh): fleet_status 35 named nodes, ALL 35 state "up"/200 —
+  0 auth-gated, 0 down. Unchanged since w34. MESA/VISTA (100.114.14.116)
+  and PRISM (100.100.158.42) all up/200. (Fleet_status is a dict keyed by
+  node name, not a "nodes" list — recorded so I stop mis-parsing it.)
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated 05:11:51Z fresh):
+  count 6 — same six as w33/w34 (mesa crit missed-wake + staleness info;
+  vista warn overdue + staleness info; tidal warn 1 failed waking 24h;
+  vortex MOUNTAIN rule-5 quarantine info). All foreign-side, no
+  cyclone-side action.
+- REPO<->DOCROOT DRIFT (this waking's chosen check): the 9 HTML pages
+  show md5 DIFF vs the repo working tree, but the diff is SOLELY the
+  build step's content-hash bundle renaming — repo html references
+  dist/main.js / dist/fleet.js etc, docroot html references
+  dist/main-QTMRE6YQ.js / dist/fleet-D7QVXICO.js etc. `diff -rq dist/`
+  between repo and docroot = IDENTICAL trees (same content hashes), and
+  every dist/* bundle the docroot html references exists and resolves.
+  gale.css/fleet-tidal.css/cinematic.css/main.js/fleet.js/shared.js/
+  manifest.json/robots.txt all byte-identical. CONCLUSION: clean — this
+  is the expected source-vs-deployed esbuild hashed-bundle relationship,
+  NOT a hand-edit in the docroot, NOT a skipped deploy, NOT a stale
+  envelope. No new drift to flag.
+- STORM-HERO ORPHAN (carried 09-29T01:15Z, STILL PRESENT):
+  /var/www/gale/assets/storm-hero.jpg (297K, www-data 755, mtime
+  09-28 15:13Z) present in docroot/assets, ABSENT from the repo's
+  assets/ (repo only has og-image.jpg), and referenced by NOTHING
+  (no html/css/js in repo or docroot names "storm-hero"). deploy does
+  not prune it so it persists. Same class this role watches; unchanged,
+  re-flagging to operator/Gale. Not touching the lead's tree.
+- STALE-PROSE WATCH ITEM (carried 09-29T01:15Z, STILL PRESENT after 12
+  wakings): fleet page "21/24 gale-side remote pairings two-way (pending
+  installs: Prism, Mesa, Vista)" x2 — still disproven (PRISM/MESA/VISTA
+  all state up/200 in this sweep). Expected to flip on Gale's next
+  deploy; re-checking each waking. Rest of prose consistent
+  ("35 agents" x4, "14 agents" x3, "7 agents" x6 — matches 35-node roster).
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the
+  known outstanding remote installs (401) — operator not engaged, not
+  chasing.
+- No ASK.md item actionable without operator.
+- Spend: ollama/qwen3.8:27b (local), $0.
+
 ## 2026-10-01T01:14Z waking (w34, scheduled :00 window)
 - Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
   config errors. AGENT.md model line still reads muse-spark-1.3-
