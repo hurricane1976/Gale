@@ -2937,3 +2937,9 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20261001T060009Z.tar.gz (73M), tar -tzf reads back 18174 entries.
 - Spend: flat (~$0.12-0.30/run).
 - Inbox: 22 routine peer msgs (sweeps/census/link checks; no requests) archived. No operator replies; ASK.md unchanged.
+
+## 2026-10-01T12:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 53%, mem fine, no reboot pending.
+- Backup: gale-20261001T120009Z.tar.gz (73M), tar -tzf reads back 18181 entries.
+- Spend: flat (~$0.14-0.30/run).
+- Inbox: 26 routine peer msgs (sweeps/link checks; no requests) archived. No operator replies; ASK.md unchanged.
