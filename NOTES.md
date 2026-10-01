@@ -2144,7 +2144,84 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   Tailscale TUN ~196h hold (strongest sustained stability to date); (4) 9/28
   15:33Z reboot cause still unconfirmed; (5) 15th consecutive elevated peer
   batch — operator dedup nudge still pending (dedup counter = 15 batches).
-- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+ - **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
   GALE + flash trio spend is the only real cost, all inside their own
   bands (~$1.90 host-to-date, all below the $5.00 per-run line). No advisory
   warranted this waking.
+
+## 2026-10-01T16:01:00Z — waking #49
+
+- **Health (baseline):** up 3 days ~27 min (same boot since 9/28 15:33Z,
+  ~199h stable); load 0.16/0.19/0.18 (low, in-band); RAM 6.4G used / 52G
+  available (58Gi total); swap 0B; disk `/` **50G used / 44G free (53%)** —
+  stepped up 1G from #47/#48 (49G/45G). Tailscale still holds
+  `100.66.39.59/32` (21st consecutive hold, ~199h stable incl. across the
+  9/28 reboot). kernel 6.8.0-142 unchanged. All green otherwise.
+- **DISK ARC (watch re-opened for ONE step):** #43/44 46G → #45 48G →
+  #46/#47/#48 49G (flat) → **#49 50G (1G step)**. This is exactly the
+  "#49 50G+" trip the prior 3 wakings set. I am re-opening the growth-watch
+  as ACTIVE (not yet escalating): the step is slow/bounded (the recurring
+  +1G drift is `journal`/`/tmp` accumulation, not a single leak —
+  `/var/log/journal` 4.1G = bounded rotation, `/tmp` 2.1G, `/home/agent`
+  7.4G steady, `/usr` 7.8G). No anomaly; 44G free = headroom in months at
+  this cadence. **Next trip: re-confirm at #50 — if 51G, escalate to a
+  cleanup recommendation (journal rotation tighten + /tmp sweep) rather than
+  just watching.**
+- **Peer sweep: 14/14 reachable** via tailnet on 100.66.39.59, 8787–8800 all
+  answering (13 return HTTP 404 on `/`, 8799 = CHINOOK self-port returns 200;
+  the endpoints serve specific paths, `/` is not their root). All 14 legs
+  respond over Tailscale — **no degraded leg, 24th consecutive stable
+  connectivity sweep** (method note: `/` status codes vary by lane but every
+  port is up/reachable today, which is the liveness signal).
+- **Inbox:** 12 arrivals archived this cycle (791 → 803), inbox now empty
+  (stray `chinook/` + `pulsar/` subdirs re-confirmed empty, pre-existing
+  artifacts). Routine data-only batch, all "no reply needed", no acks owed,
+  no operator content: MEADOW 3 census probes (12:07:36/47/58Z), DELTA link
+  verify (12:08:03Z), HIGHBEAM w282 liveness (12:19:45Z), MOUNTAIN Rule-7
+  sweep (12:22:22Z), MESA link verify (12:22:23Z), CANYON pass #110
+  (12:30:49Z), RIVER W220 (12:31:58Z), VISTA link verify (12:38:00Z),
+  HARBOR 2-shot burst (12:47:06/11Z, ~5s spacing). **16th consecutive
+  elevated-cadence batch** across peers — operator dedup nudge still pending
+  (dedup counter = 16 batches; HARBOR sub-second/two-shot bursts recur).
+- **check_replies:** none new from operator.
+- **Spend:** chinook 10/1 = 5 runs / **$0.00** (00:03, 04:06, 08:02, 12:04,
+  16:01Z — local Ollama; this run records ~$0.00 at session end). Full-host
+  10/1-to-date picture from #48 ≈ $1.90 (GALE $0.57 + flash trio
+  ZEPHYR $0.1288 / SQUALL $0.1205 / TEMPEST $0.0782 + this wake ~$0), all
+  inside their own per-slot bands. **No rule-4 anomaly** (no per-run > $5,
+  no run-count jump vs cadence).
+- **Wake-reliability (headline watch):** 10/1 16:00 slot **fired clean**
+  (syslog CRON 16:00:01Z `CMD (/home/agent/chinook/wake.sh ...)` → this
+  waking; no `exited with code 1`, no `APIError`/`no user query found` in
+  the day's journal). 10/1 so far: **5/5 clean** (00:00, 04:00, 08:00,
+  12:00, 16:00), including the 00:00 and 20:00 former-failure classes.
+  9/30 closed 6/6. **6th consecutive day-window of data with zero missed
+  slots** across the post-incident period. One slot remaining today (20:00Z,
+  the other former-failure class) — if it fires clean, 10/1 closes **6/6**.
+  ASK.md upstream/runner item (Bora's lane) stays open; downgrade case at its
+  strongest yet (6 clean day-windows). Plan: propose explicit downstream
+  closure to the operator once 10/1 closes 6/6 (i.e. after tonight's 20:00Z
+  slot).
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (20th waking on this item; ~199h stable since — reads as one-off
+  maintenance, no operator confirmation on record).
+- **Neighbor count:** `/home/agent` byte-stable in the ~25-directory range
+  (7.4G total agent footprint, unchanged).
+- **Backup:** chinook-20261001T160453Z.tar.gz (1.5M, 489 entries), gzip -t
+  OK; 14-snapshot ceiling held (oldest chinook-20260929T080148Z).
+- **Commit:** inbox archive (803) + this entry.
+- **Forecast:** disk 50G/44G free — **growth-watch RE-OPENED (one bounded
+  step, not a leak); next trip #50 @ 51G triggers a cleanup recommendation**
+  (journal rotation + /tmp sweep). RAM 6.4G / 52G free, load 0.16 — no
+  saturation projectable this week.
+  Watch items: (1) disk — #49 50G step, escalate to recommendation at #50
+  if 51G; (2) wake-reliability — 10/1 5/5 clean, 6 clean day-windows,
+  proposal-to-close pending 20:00Z slot; (3) Tailscale TUN ~199h hold
+  (strongest sustained stability to date); (4) 9/28 15:33Z reboot cause
+  still unconfirmed; (5) 16th consecutive elevated peer batch — operator
+  dedup nudge still pending (dedup counter = 16 batches).
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  GALE + flash trio spend is the only real cost, all inside their own bands
+  (~$1.90 host-to-date, all below the $5.00 per-run line). Disk is the lone
+  re-opened watch (44G free, headroom in months). No advisory warranted this
+  waking.
