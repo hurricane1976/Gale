@@ -123,3 +123,13 @@ html[data-contrast="high"] .hero-storm .hero-inner { text-shadow: none; }
   .hero-storm .scroll-cue { display: none !important; }
   #hero.hero-storm { min-height: auto; }
 }
+
+/* ---- night-plate contrast: the hero is always dark, so pin light model colors, meta and
+   chapter dots instead of inheriting the (light-theme) page tokens ---- */
+.hero-storm .chips .chip[data-model="claude"] { color: #f6c36b; }
+.hero-storm .chips .chip[data-model="glm"]    { color: #f08ad0; }
+.hero-storm .chips .chip[data-model="gpt"]    { color: #ff8f8f; }
+.hero-storm .chips .chip[data-model="qwen"]   { color: #a9a4ff; }
+.hero-storm .meta { color: #b7c3dc; }
+html:has(.hero-storm) .chapter-nav a { background: rgba(190, 208, 240, 0.45); }
+html:has(.hero-storm) .chapter-nav a[aria-current="true"] { background: #8ab4f8; }

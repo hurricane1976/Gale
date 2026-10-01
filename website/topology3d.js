@@ -443,7 +443,7 @@ export function initTopology3D() {
     heatBar.id = "topo-heat";
     heatBar.setAttribute("role", "toolbar");
     heatBar.setAttribute("aria-label", "Heat overlay layer");
-    heatBar.style.cssText = "position:absolute;top:10px;right:110px;z-index:3;display:flex;gap:4px";
+    heatBar.style.cssText = "position:absolute;bottom:12px;left:12px;z-index:3;display:flex;flex-wrap:wrap;gap:6px";
     heatBar.innerHTML = Object.keys(LAYERS).map((k) =>
       `<button type="button" data-heat="${k}" class="mini-toggle" aria-pressed="false"
         style="padding:6px 10px;min-height:32px;font-size:0.7rem">${LAYERS[k] ? LAYERS[k].label : "no heat"}</button>`).join("");

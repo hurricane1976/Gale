@@ -107,3 +107,26 @@ body { padding-bottom: 56px; }
 @media print { #gale-dock { display: none !important; } }
 #gale-dock [hidden] { display: none !important; }
 #gale-dock #fx-theme { width: auto; }
+
+/* ---- full-bleed top nav: the 1080px-capped bar left lighter bands either side of it on
+   wide screens; the bar spans the viewport, its content stays on the wrap grid ---- */
+.topnav {
+  max-width: none;
+  padding-inline: max(clamp(20px, 4vw, 36px), calc((100% - var(--wrap)) / 2 + clamp(20px, 4vw, 36px)));
+}
+/* stacked data cards (network/status style pages) breathe */
+#board:not([hidden]):not(.ops-board) { display: grid; gap: 16px; }
+
+/* 3D topology heat selector: fleet.html does not load gale.css, so .mini-toggle was a bare grey
+   button; style it as dark glass, bottom-left so it can't cover the live-badge strip */
+#topo-heat .mini-toggle {
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.7rem; cursor: pointer;
+  color: #cfe0ff; background: rgba(10, 16, 30, 0.72); border: 1px solid rgba(138, 180, 248, 0.35);
+  border-radius: 999px; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+#topo-heat .mini-toggle[aria-pressed="true"] { background: rgba(60, 110, 200, 0.55); border-color: #8ab4f8; color: #fff; }
+#topo-3d-toggle {
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.72rem; cursor: pointer;
+  color: #cfe0ff; background: rgba(10, 16, 30, 0.72); border: 1px solid rgba(138, 180, 248, 0.35);
+  border-radius: 999px; padding: 6px 12px;
+}
