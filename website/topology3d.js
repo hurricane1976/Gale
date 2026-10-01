@@ -131,43 +131,44 @@ export function initTopology3D() {
   probe.remove();
   if (nodes.length < 2) return;
 
-  const byName = new Map(nodes.map((n, i) => [n.name.toLowerCase(), i]));
-  const edges = [];
-  for (const line of svg.querySelectorAll("line")) {
-    const t = (line.querySelector("title") || {}).textContent || "";
-    const m = t.match(/^([A-Za-z]+)\s*(?:&amp;harr;|&harr;|↔)\s*([A-Za-z]+)/);
-    if (!m) continue;
-    const a = byName.get(m[1].toLowerCase()), b = byName.get(m[2].toLowerCase());
-    if (a != null && b != null && a !== b) edges.push([a, b]);
-  }
-
-  // same-host links: only meshes whose <line>s carry a <title> were parsed above
-  // (the Gale host); link the remaining hosts' agents pairwise so every host
-  // reads as a connected island rather than loose dots.
-  {
-    const have = new Set(edges.map(([a, b]) => (a < b ? a + "," + b : b + "," + a)));
-    const byHost = new Map();
-    nodes.forEach((n, i) => { if (!byHost.has(n.host)) byHost.set(n.host, []); byHost.get(n.host).push(i); });
-    for (const idxs of byHost.values()) {
-      for (let x = 0; x < idxs.length; x++) for (let y = x + 1; y < idxs.length; y++) {
-        const a = idxs[x], b = idxs[y], k = a < b ? a + "," + b : b + "," + a;
-        if (!have.has(k)) { have.add(k); edges.push([a, b]); }
-      }
+  // layout model: each host is a pinned hub, its agents orbit it on a shell, and
+  // one trunk links every pair of hubs. (The old all-pairs mesh per host drew
+  // hundreds of crossing lines and read as noise.) Hubs live at pos[N..N+H).
+  const N = nodes.length;
+  const hostNames = [...new Set(nodes.map((n) => n.host))];
+  const H = hostNames.length;
+  const hostOf = nodes.map((n) => hostNames.indexOf(n.host));
+  const members = hostNames.map((_, h) => nodes.map((_n, i) => i).filter((i) => hostOf[i] === h));
+  const edges = []; // [a, b, kind]  kind 0 = hub spoke, 1 = host-to-host trunk
+  nodes.forEach((_, i) => edges.push([i, N + hostOf[i], 0]));
+  for (let x = 0; x < H; x++) for (let y = x + 1; y < H; y++) edges.push([N + x, N + y, 1]);
+  const hubColors = new Float32Array(H * 3);
+  members.forEach((idxs, h) => {
+    for (let c = 0; c < 3; c++) {
+      const avg = idxs.reduce((t, i) => t + nodes[i].color[c], 0) / Math.max(1, idxs.length);
+      hubColors[h * 3 + c] = Math.min(1, avg * 0.5 + 0.5); // lighter than its agents
     }
-  }
+  });
+  const SPOKE = [0.55, 0.66, 0.88, 0.26], TRUNK = [0.62, 0.82, 1.0, 0.6];
 
   const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
   if (!gl) { toggle.hidden = true; return; }
 
   // --- simulation state: sphere-seeded positions settle into clusters ---
   const rng = mulberry32(0x6a1e);
-  const pos = new Float32Array(nodes.length * 3);
-  const vel = new Float32Array(nodes.length * 3);
-  for (let i = 0; i < nodes.length; i++) {
-    const th = rng() * Math.PI * 2, ph = Math.acos(2 * rng() - 1), r = 1.2;
-    pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
-    pos[i * 3 + 1] = r * Math.cos(ph);
-    pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+  const pos = new Float32Array((N + H) * 3);
+  const vel = new Float32Array(N * 3);
+  const HUB_R = H > 1 ? 2.1 : 0;
+  for (let h = 0; h < H; h++) { // hubs on a (slightly flattened) fibonacci sphere
+    const y = H > 1 ? 1 - (2 * (h + 0.5)) / H : 0, r = Math.sqrt(1 - y * y), th = h * 2.399963;
+    pos.set([HUB_R * r * Math.cos(th), HUB_R * y * 0.9, HUB_R * r * Math.sin(th)], (N + h) * 3);
+  }
+  const shellR = members.map((m) => 0.45 + 0.1 * Math.sqrt(m.length));
+  for (let i = 0; i < N; i++) {
+    const h = hostOf[i], th = rng() * Math.PI * 2, ph = Math.acos(2 * rng() - 1);
+    pos[i * 3] = pos[(N + h) * 3] + shellR[h] * Math.sin(ph) * Math.cos(th);
+    pos[i * 3 + 1] = pos[(N + h) * 3 + 1] + shellR[h] * Math.cos(ph);
+    pos[i * 3 + 2] = pos[(N + h) * 3 + 2] + shellR[h] * Math.sin(ph) * Math.sin(th);
   }
 
   // --- buffers ---
@@ -176,14 +177,15 @@ export function initTopology3D() {
   const posBuf = gl.createBuffer();
   const colBuf = gl.createBuffer();
   const lineBuf = gl.createBuffer();
-  const lineData = new Float32Array(edges.length * 8); // 2 verts * (pos3+color4)
-  const nodeColors = new Float32Array(nodes.length * 3);
+  const lineData = new Float32Array(edges.length * 14); // 2 verts * (pos3+color4) = 7 floats/vert, matches the 28-byte stride
+  const nodeColors = new Float32Array((N + H) * 3);
   nodes.forEach((n, i) => nodeColors.set(n.color, i * 3));
+  nodeColors.set(hubColors, N * 3);
 
   /* live packet flow (#3): dots traverse each edge, count/speed follow
      measured tailscale throughput; edges touching a down node dim out.
      Skipped under reduced motion (static graph still renders). */
-  const FLOW_DOTS = 3;
+  const FLOW_DOTS = 2;
   const flowT = new Float32Array(edges.length * FLOW_DOTS);
   const flowPos = new Float32Array(edges.length * FLOW_DOTS * 3);
   const flowCol = new Float32Array(edges.length * FLOW_DOTS * 3);
@@ -197,53 +199,30 @@ export function initTopology3D() {
   let dragging = false, lastX = 0, lastY = 0;
   let fitLocked = false; // user zoomed: stop auto-fitting
 
-  // per-host gravity wells: edges are only parsed for the meshes that carry a
-  // <title>, so without this the unlinked hosts' nodes were shoved out of frame
-  // by the dense Gale cluster. Anchors sit on a ring so hosts read as islands.
-  const hostNames = [...new Set(nodes.map((n) => n.host))];
-  const anchors = hostNames.map((_, h) => {
-    const th = (h / hostNames.length) * Math.PI * 2 + 0.4;
-    return [Math.cos(th) * 1.5, (h % 2 ? 0.35 : -0.35), Math.sin(th) * 1.5];
-  });
-  const nodeAnchor = nodes.map((n) => anchors[hostNames.indexOf(n.host)]);
-  const VMAX = 0.06;
+  const VMAX = 0.05;
 
+  // agents repel their own host-mates and spring to a shell around the hub;
+  // hubs are pinned, so the layout is stable and the same on every load
   const step = () => {
-    // forces: pair repulsion, spring links, host gravity, damping, velocity clamp
-    const N = nodes.length;
-    for (let i = 0; i < N; i++) {
-      const fx = [0, 0, 0];
-      for (let j = 0; j < N; j++) {
-        if (i === j) continue;
-        const dx = pos[i * 3] - pos[j * 3], dy = pos[i * 3 + 1] - pos[j * 3 + 1], dz = pos[i * 3 + 2] - pos[j * 3 + 2];
-        const d2 = Math.max(dx * dx + dy * dy + dz * dz, 0.01);
-        const f = 0.02 / d2;
-        const inv = 1 / Math.sqrt(d2);
-        fx[0] += dx * inv * f; fx[1] += dy * inv * f; fx[2] += dz * inv * f;
+    for (let h = 0; h < H; h++) {
+      const hx = pos[(N + h) * 3], hy = pos[(N + h) * 3 + 1], hz = pos[(N + h) * 3 + 2];
+      for (const i of members[h]) {
+        const f = [0, 0, 0];
+        for (const j of members[h]) {
+          if (i === j) continue;
+          const dx = pos[i * 3] - pos[j * 3], dy = pos[i * 3 + 1] - pos[j * 3 + 1], dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+          const d2 = Math.max(dx * dx + dy * dy + dz * dz, 0.01);
+          const k = 0.003 / (d2 * Math.sqrt(d2));
+          f[0] += dx * k; f[1] += dy * k; f[2] += dz * k;
+        }
+        const ox = pos[i * 3] - hx, oy = pos[i * 3 + 1] - hy, oz = pos[i * 3 + 2] - hz;
+        const d = Math.hypot(ox, oy, oz) || 1, pull = (shellR[h] - d) * 0.1 / d;
+        f[0] += ox * pull; f[1] += oy * pull; f[2] += oz * pull;
+        for (let c = 0; c < 3; c++) {
+          vel[i * 3 + c] = Math.max(-VMAX, Math.min(VMAX, (vel[i * 3 + c] + f[c]) * 0.85));
+          pos[i * 3 + c] += vel[i * 3 + c];
+        }
       }
-      const an = nodeAnchor[i];
-      fx[0] += (an[0] - pos[i * 3]) * 0.012 - pos[i * 3] * 0.001;
-      fx[1] += (an[1] - pos[i * 3 + 1]) * 0.012 - pos[i * 3 + 1] * 0.001;
-      fx[2] += (an[2] - pos[i * 3 + 2]) * 0.012 - pos[i * 3 + 2] * 0.001;
-      for (let c = 0; c < 3; c++) {
-        const v = (vel[i * 3 + c] + fx[c]) * 0.85;
-        vel[i * 3 + c] = Math.max(-VMAX, Math.min(VMAX, v));
-      }
-      pos[i * 3] += vel[i * 3];
-      pos[i * 3 + 1] += vel[i * 3 + 1];
-      pos[i * 3 + 2] += vel[i * 3 + 2];
-    }
-    for (const [a, b] of edges) {
-      const dx = pos[b * 3] - pos[a * 3], dy = pos[b * 3 + 1] - pos[a * 3 + 1], dz = pos[b * 3 + 2] - pos[a * 3 + 2];
-      const d = Math.hypot(dx, dy, dz) || 1;
-      // intra-host links hold a cluster together; cross-host links (the 21 Gale
-      // peer spokes, lead trunks) are long soft springs so they don't drag
-      // remote hosts into Gale's cluster
-      const cross = nodes[a].host !== nodes[b].host;
-      const f = cross ? (d - 2.6) * 0.0006 : (d - 0.6) * 0.012;
-      const ux = dx / d * f, uy = dy / d * f, uz = dz / d * f;
-      vel[a * 3] += ux; vel[a * 3 + 1] += uy; vel[a * 3 + 2] += uz;
-      vel[b * 3] -= ux; vel[b * 3 + 1] -= uy; vel[b * 3 + 2] -= uz;
     }
   };
 
@@ -254,6 +233,21 @@ export function initTopology3D() {
       canvas.width = w * dpr; canvas.height = h * dpr;
     }
   };
+
+  // host labels: DOM text projected from each hub every frame (textContent only)
+  const labelBox = document.createElement("div");
+  labelBox.setAttribute("aria-hidden", "true");
+  labelBox.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2";
+  const labels = hostNames.map((h, i) => {
+    const el = document.createElement("span");
+    el.textContent = `${h || "host"} \u00b7 ${members[i].length}`;
+    el.style.cssText = "position:absolute;transform:translate(-50%,0);padding:2px 8px;border-radius:999px;" +
+      "font:600 0.7rem var(--font-mono,monospace);letter-spacing:.04em;white-space:nowrap;" +
+      "color:var(--text,#e8eaed);background:rgba(10,16,30,.55);border:1px solid rgba(160,185,230,.25)";
+    labelBox.appendChild(el);
+    return el;
+  });
+  if (canvas.parentElement) canvas.parentElement.appendChild(labelBox);
 
   let raf = 0;
   const draw = () => {
@@ -271,7 +265,7 @@ export function initTopology3D() {
     // whole graph is always framed (layout size depends on roster/edge count)
     if (!fitLocked) {
       let maxR = 0;
-      for (let i = 0; i < nodes.length; i++) maxR = Math.max(maxR, Math.hypot(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]));
+      for (let i = 0; i < N + H; i++) maxR = Math.max(maxR, Math.hypot(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]));
       const want = Math.max(4.2, Math.min(30, maxR * 2.5));
       dist += (want - dist) * 0.04;
     }
@@ -287,11 +281,14 @@ export function initTopology3D() {
 
     // lines
     let k = 0;
-    for (const [a, b] of edges) {
-      lineData.set([pos[a * 3], pos[a * 3 + 1], pos[a * 3 + 2], 0.25], k); k += 4;
-      lineData.set([pos[b * 3], pos[b * 3 + 1], pos[b * 3 + 2], 0.25], k); k += 4;
+    for (const [a, b, kind] of edges) {
+      const col = kind ? TRUNK : SPOKE;
+      const dimmed = !kind && live3d.down.has(nodes[a].listener);
+      for (const v of [a, b]) {
+        lineData.set([pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2], col[0], col[1], col[2], dimmed ? col[3] * 0.3 : col[3]], k);
+        k += 7;
+      }
     }
-    // also same-host grouping lines would go here (edges from host map)
     gl.useProgram(lineProg);
     gl.bindBuffer(gl.ARRAY_BUFFER, lineBuf);
     gl.bufferData(gl.ARRAY_BUFFER, lineData, gl.DYNAMIC_DRAW);
@@ -329,22 +326,26 @@ export function initTopology3D() {
     const breathe = REDUCED3D ? 1 : 1 + 0.12 * Math.sin(performance.now() / 700);
     gl.blendFunc(gl.ONE, gl.ONE);
     gl.uniform1f(uMode, 1);
-    gl.uniform1f(uSize, 38 * dpr3 * breathe);
-    gl.drawArrays(gl.POINTS, 0, nodes.length);
+    gl.uniform1f(uSize, 30 * dpr3 * breathe);
+    gl.drawArrays(gl.POINTS, 0, N);
+    gl.uniform1f(uSize, 70 * dpr3 * breathe); // hub bloom
+    gl.drawArrays(gl.POINTS, N, H);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.uniform1f(uMode, 0);
-    gl.uniform1f(uSize, 10 * dpr3);
-    gl.drawArrays(gl.POINTS, 0, nodes.length);
+    gl.uniform1f(uSize, 9 * dpr3);
+    gl.drawArrays(gl.POINTS, 0, N);
+    gl.uniform1f(uSize, 16 * dpr3);
+    gl.drawArrays(gl.POINTS, N, H);
 
     // flow dots (skip entirely under reduced motion)
     if (!REDUCED3D && edges.length) {
       const speed = 0.22 + Math.min(2.5, live3d.mbps / 2) * 0.22; // world units/s
       const dt = 1 / 60;
       for (let e = 0; e < edges.length; e++) {
-        const [a, b] = edges[e];
+        const [a, b, kind] = edges[e];
         const dx = pos[b * 3] - pos[a * 3], dy = pos[b * 3 + 1] - pos[a * 3 + 1], dz = pos[b * 3 + 2] - pos[a * 3 + 2];
         const len = Math.hypot(dx, dy, dz) || 1;
-        const dim = (live3d.down.has(nodes[a].listener) || live3d.down.has(nodes[b].listener)) ? 0.22 : 1;
+        const dim = !kind && live3d.down.has(nodes[a].listener) ? 0.22 : 1;
         for (let k = 0; k < FLOW_DOTS; k++) {
           const fi = e * FLOW_DOTS + k;
           flowT[fi] = (flowT[fi] + (speed * dt) / len) % 1;
@@ -353,7 +354,8 @@ export function initTopology3D() {
           flowPos[fi * 3] = pos[a * 3] + dx * t;
           flowPos[fi * 3 + 1] = pos[a * 3 + 1] + dy * t;
           flowPos[fi * 3 + 2] = pos[a * 3 + 2] + dz * t;
-          flowCol[fi * 3] = 0.13 * dim; flowCol[fi * 3 + 1] = 0.9 * dim; flowCol[fi * 3 + 2] = 1.0 * dim;
+          const glow = kind ? 1 : 0.6;
+          flowCol[fi * 3] = 0.13 * dim * glow; flowCol[fi * 3 + 1] = 0.9 * dim * glow; flowCol[fi * 3 + 2] = 1.0 * dim * glow;
         }
       }
       gl.bindBuffer(gl.ARRAY_BUFFER, flowBuf);
@@ -367,12 +369,22 @@ export function initTopology3D() {
       // comet glow behind each flow dot, then the dot itself
       gl.blendFunc(gl.ONE, gl.ONE);
       gl.uniform1f(uMode, 1);
-      gl.uniform1f(uSize, 16 * dpr3);
+      gl.uniform1f(uSize, 12 * dpr3);
       gl.drawArrays(gl.POINTS, 0, edges.length * FLOW_DOTS);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       gl.uniform1f(uMode, 0);
-      gl.uniform1f(uSize, 4 * dpr3);
+      gl.uniform1f(uSize, 3 * dpr3);
       gl.drawArrays(gl.POINTS, 0, edges.length * FLOW_DOTS);
+    }
+
+    labelBox.style.display = canvas.hidden ? "none" : "";
+    if (!canvas.hidden) {
+      const kx = canvas.clientWidth / gl.drawingBufferWidth, ky = canvas.clientHeight / gl.drawingBufferHeight;
+      labels.forEach((el, h) => {
+        const [sx, sy] = project(N + h, m);
+        el.style.left = `${sx * kx}px`;
+        el.style.top = `${sy * ky + 14}px`;
+      });
     }
   };
 
@@ -481,7 +493,7 @@ export function initTopology3D() {
 
   function applyHeat() {
     const layer = LAYERS[heatMode];
-    const colors = new Float32Array(nodes.length * 3);
+    const colors = new Float32Array((N + H) * 3);
     if (!layer || !heatStats) {
       nodes.forEach((n, i) => {
         const dim = live3d.down.has(n.listener) ? 0.3 : 1;
@@ -506,6 +518,7 @@ export function initTopology3D() {
         ], i * 3);
       });
     }
+    colors.set(hubColors, N * 3);
     gl.bindBuffer(gl.ARRAY_BUFFER, colBuf);
     gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
   }
