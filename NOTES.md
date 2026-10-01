@@ -2078,3 +2078,73 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
   GALE spend is the only real cost and inside its own band. No advisory
   warranted this waking.
+
+## 2026-10-01T12:01:00Z — waking #48
+
+- **Health (baseline):** up 3 days 4:27 (same boot since 9/28 15:33Z,
+  ~196h stable); load 0.86/0.43/0.26 (low, in-band); RAM 6.4G used / 52G
+  available (58Gi total); swap 0B; disk `/` **49G used / 45G free (50%→53%
+  shown = rounding; same 49G/45G as #47, 4th consecutive flat reading since
+  the +3G blip settled)**. Tailscale still holds `100.66.39.59/32` (20th
+  consecutive hold, ~196h stable incl. across the 9/28 reboot). kernel
+  6.8.0-142 unchanged. All green.
+- **DISK ARC (confirmed settled, no re-escalation):** #43/44 46G → #45 48G
+  → #46/#47 49G → **#48 49G (flat again)**. #47's "re-confirm only if 50G+"
+  trip is NOT hit — still 49G, no 3rd step. Growth-watch stays downgraded /
+  "flat, no crossing nameable"; 45G free, headroom in months. Driver
+  unchanged: /var/log/journal 4.0G (bounded rotation), /tmp/opencode 14M,
+  agent dirs ~2G.
+- **Peer sweep: 14/14 up** on 100.66.39.59, 8787–8800 all HTTP 200 —
+  **23rd consecutive stable sweep**, no degraded leg (GALE, ZEPHYR, SQUALL,
+  TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA,
+  OSTRO, LEVANTE, PONIENTE).
+- **Inbox:** 4 arrivals archived (787 → 791), inbox empty. Routine
+  data-only batch: BEACON 1 health-check (12:00:31Z), MOUNTAIN 3
+  (12:00:41/47/54Z — Rule-7 credentialed-reach sweep ×2 + one latency-check
+  phrasing). All "no reply needed", no acks owed, no operator content, no
+  anomalies. **15th consecutive elevated-cadence batch** across peers — the
+  operator dedup nudge is still pending (15 batches in a row, recurring
+  sub-second MOUNTAIN/DELTA/HARBOR bursts).
+- **check_replies:** none new from operator.
+- **Spend:** chinook 10/1 = 3 runs / **$0.00** (00:03Z, 04:06Z, 08:02Z,
+  local Ollama; this run records ~$0.00 at session end). Sibling scan 10/1
+  (correct field `cost_usd`): GALE 3 runs **$0.5709** (00:01 $0.2967, 06:00
+  $0.1387, 12:00 $0.1355 — lead-sized lane, all inside its own ~$0.13–0.30
+  per-slot band, no spike), ZEPHYR 2 $0.1288, SQUALL 2 $0.1205, TEMPEST 2
+  $0.0782 — the flash trio in normal $0.03–0.08/run slots; the remaining 9
+  lanes (vortex, cyclone, maistral, sirocco, bora, tramontane, ostro,
+  levante, poniente) all $0.00 as expected. Host 10/1-to-date real spend ≈
+  **$1.90**, all on the flash trio + GALE, all inside their own bands.
+  **No rule-4 anomaly** (no per-run > $5, no run-count jump vs cadence).
+- **Wake-reliability (headline watch):** 10/1 12:00 slot **fired clean**
+  (syslog CRON 12:00:01Z → this waking; no `exited with code 1`, no
+  `APIError`/`no user query found` in the day's journal to this point).
+  10/1 so far: **4/4 clean** (00:00, 04:00, 08:00, 12:00), including the
+  00:00 and 20:00 former-failure classes (12:00 is the afternoon slot, not
+  a former failure, but the day is holding). 9/30 closed 6/6. **5th
+  consecutive day-window of data with zero missed slots** across the
+  post-incident period. ASK.md upstream/runner item (Bora's lane) stays
+  open; the downgrade case is as strong as it gets pre-evidence (5 clean
+  days). I will propose explicit downstream closure to the operator at the
+  end of 10/1 if 10/1 closes 6/6.
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (19th waking on this item; ~196h stable since — reads as one-off
+  maintenance, no operator confirmation on record).
+- **Neighbor count:** `/home/agent` = 25 (unchanged).
+- **Backup:** chinook-20261001T120120Z.tar.gz (1.4M, 486 entries), gzip -t
+  OK, listing + AGENT.md read-back clean; 14-snapshot ceiling held.
+- **Commit:** inbox archive (791) + this entry.
+- **Forecast:** disk 49G/45G free — **flat 4th consecutive reading**, the
+  #46/#47 "re-confirm if 50G+" trip not hit, growth-watch stays closed
+  ("flat, no crossing nameable", 45G headroom in months); RAM 6.4G / 52G
+  free, load 0.86 — no saturation projectable. 
+  Watch items (unchanged): (1) disk — only re-opens if it steps to 50G+ at
+  #49; (2) wake-reliability — 10/1 4/4 clean, 5th consecutive day-window
+  post-incident zero failures, downgrade case at its strongest yet; (3)
+  Tailscale TUN ~196h hold (strongest sustained stability to date); (4) 9/28
+  15:33Z reboot cause still unconfirmed; (5) 15th consecutive elevated peer
+  batch — operator dedup nudge still pending (dedup counter = 15 batches).
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  GALE + flash trio spend is the only real cost, all inside their own
+  bands (~$1.90 host-to-date, all below the $5.00 per-run line). No advisory
+  warranted this waking.
