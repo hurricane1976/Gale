@@ -61,21 +61,6 @@ header.site { padding-top: env(safe-area-inset-top); }
 }
 @media (min-width: 701px) { .fleet-map-toggle { display: none; } }
 
-/* Floating controls (contrast / display / alerts) are absolutely positioned
-   with inline right-offsets that assume desktop width; on a phone they
-   overlap into one smear. Stack them in a compact column instead. */
-@media (max-width: 700px) {
-  #push-bell, #fx-theme, #contrast-toggle, #push-test {
-    right: max(10px, env(safe-area-inset-right)) !important;
-    left: auto !important;
-    font-size: .72rem;
-  }
-  #push-bell { bottom: max(12px, env(safe-area-inset-bottom)) !important; }
-  #fx-theme { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 48px) !important; }
-  #contrast-toggle { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 96px) !important; }
-  #push-test { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 144px) !important; }
-}
-
 /* CLS: pages start short (data panels empty) and grow to several screens once
    the feeds arrive, which shoved the footer -- sitting inside the first
    viewport -- down (observability CLS 0.23). Keep it below the fold until
@@ -96,3 +81,29 @@ main { min-height: 100svh; }
   .ops-head .freshness { min-height: 3em; align-items: flex-start; }
 }
 
+
+/* ---- control dock: saver / contrast / display / theme / alerts (shared.js dockAdd) ----
+   One fixed, wrapping row bottom-left (bottom-right holds back-to-top); replaces five
+   hard-coded `right:Npx` buttons that overlapped each other and the hero on phones. */
+#gale-dock {
+  position: fixed; z-index: 61; left: max(12px, env(safe-area-inset-left));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex; flex-wrap: wrap; gap: 6px; max-width: calc(100vw - 96px);
+  pointer-events: none;
+}
+#gale-dock > * { pointer-events: auto; position: relative; }
+#gale-dock .mini-toggle, #gale-dock summary.mini-toggle {
+  margin: 0; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  text-decoration: none; font-size: 0.74rem; line-height: 1.2;
+  color: var(--text, #e6edf7); background: color-mix(in srgb, var(--surface, #0e1726) 88%, transparent);
+  border: 1px solid var(--line-strong, #2a3a55); border-radius: 999px;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+#gale-dock .mini-toggle:hover, #gale-dock .mini-toggle[aria-pressed="true"] { border-color: var(--gust, #4aa3ff); }
+#gale-dock #fx-theme > div { left: 0; right: auto; bottom: 44px; }
+/* keep the last lines of every page reachable above the dock */
+body { padding-bottom: 56px; }
+@media (max-width: 640px) { body { padding-bottom: 96px; } }
+@media print { #gale-dock { display: none !important; } }
+#gale-dock [hidden] { display: none !important; }
+#gale-dock #fx-theme { width: auto; }

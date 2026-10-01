@@ -80,15 +80,8 @@ main .block > h2.sec-title {
 .js .cine-line { display: block; overflow: hidden; }
 .js .cine-line > span { display: block; transform: translateY(110%); animation: cine-rise 1.1s var(--cine-ease) forwards; animation-delay: calc(var(--li, 0) * 120ms + 150ms); }
 @keyframes cine-rise { to { transform: none; } }
-/* sheen sweep across the gradient headline, Apple-keynote style */
-.js .grad-text { position: relative; }
-.js .grad-text::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.55) 50%, transparent 58%);
-  background-size: 280% 100%; mix-blend-mode: overlay;
-  animation: cine-sheen 7s ease-in-out infinite;
-}
-@keyframes cine-sheen { 0%, 55% { background-position: 120% 0; } 90%, 100% { background-position: -120% 0; } }
+/* (the full-width ::after sheen sweep was removed: on block-level headings it painted a grey
+   rectangle past the end of the text instead of a sheen inside the glyphs) */
 
 /* multi-layer parallax hooks: JS writes translate3d, speed from data-parallax */
 [data-parallax] { will-change: transform; }

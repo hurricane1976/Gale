@@ -674,6 +674,20 @@ export function morph(fn) {
    surfaces, no blur layers, full-opacity text, ambient FX retired. The
    audit contrast gates keep passing because content tokens only get
    darker/lighter, never lower-contrast. ---- */
+/* one fixed, wrapping dock for the floating controls (saver/contrast/display/theme/alerts) so they
+   never overlap each other or page content; layout lives in mobile.css (#gale-dock) */
+function dockAdd(el) {
+  let dock = document.getElementById("gale-dock");
+  if (!dock) {
+    dock = document.createElement("div");
+    dock.id = "gale-dock";
+    dock.setAttribute("role", "group");
+    dock.setAttribute("aria-label", "Display and alert controls");
+    document.body.appendChild(dock);
+  }
+  dock.appendChild(el);
+}
+
 export function initContrastMode() {
   if (typeof document === "undefined" || !document.body || document.getElementById("contrast-toggle")) return;
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
@@ -690,7 +704,7 @@ export function initContrastMode() {
   btn.id = "contrast-toggle";
   btn.type = "button";
   btn.className = "mini-toggle";
-  btn.style.cssText = "position:fixed;bottom:14px;right:290px;z-index:61;padding:8px 12px;min-height:32px";
+  btn.style.cssText = "padding:8px 12px;min-height:32px";
   btn.addEventListener("click", () => {
     const high = document.documentElement.dataset.contrast === "high";
     manual = high ? null : true;
@@ -698,7 +712,7 @@ export function initContrastMode() {
     store.set("gale-contrast", manual);
     apply();
   });
-  document.body.appendChild(btn);
+  dockAdd(btn);
   if (mq && mq.addEventListener) mq.addEventListener("change", () => { if (manual == null) apply(); });
   apply();
 }
@@ -729,16 +743,16 @@ export function initThemeEngine() {
   apply(fx);
   const box = document.createElement("details");
   box.id = "fx-theme";
-  box.style.cssText = "position:fixed;bottom:14px;right:200px;z-index:61";
+  box.style.cssText = "";
   box.innerHTML = `<summary class="mini-toggle" style="list-style:none;cursor:pointer;padding:8px 12px;min-height:32px">🎨 display</summary>
-    <div class="card" style="position:absolute;bottom:44px;right:0;width:220px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+    <div class="card" style="position:absolute;bottom:44px;left:0;width:220px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
       <label style="font-size:.75rem;display:flex;gap:6px;align-items:center"><input type="checkbox" id="fx-auto"${auto ? " checked" : ""}> auto · time of day <span id="fx-tod" class="mono-dim"></span></label>
       <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient hue
         <input type="range" id="fx-hue" min="-40" max="40" step="1" value="${fx.hue}"></label>
       <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient glow
         <input type="range" id="fx-glow" min="40" max="160" step="5" value="${Math.round(fx.glow * 100)}"></label>
     </div>`;
-  document.body.appendChild(box);
+  dockAdd(box);
   const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"),
         autoBox = box.querySelector("#fx-auto"), tod = box.querySelector("#fx-tod");
   const paintTod = () => { if (tod) tod.textContent = auto ? `(${TOD(new Date().getHours()).name})` : ""; };
@@ -1348,16 +1362,16 @@ async function initPushBell() {
       bell.className = "mini-toggle push-bell";
       bell.textContent = "🔔 alerts off";
       bell.setAttribute("aria-pressed", "false");
-      bell.style.cssText = "position:fixed;bottom:14px;right:14px;z-index:60;padding:8px 12px;min-height:32px";
+      bell.style.cssText = "padding:8px 12px;min-height:32px";
       bell.addEventListener("click", togglePush);
-      document.body.appendChild(bell);
+      dockAdd(bell);
       const test = document.createElement("button");
       test.id = "push-test";
       test.type = "button";
       test.className = "mini-toggle";
       test.textContent = "test";
       test.hidden = true;
-      test.style.cssText = "position:fixed;bottom:14px;right:210px;z-index:60;padding:8px 12px;min-height:32px";
+      test.style.cssText = "padding:8px 12px;min-height:32px";
       test.addEventListener("click", async () => {
         test.disabled = true;
         try {
@@ -1367,7 +1381,7 @@ async function initPushBell() {
         } catch {}
         setTimeout(() => { test.disabled = false; }, 5000);
       });
-      document.body.appendChild(test);
+      dockAdd(test);
     };
     const paint = async () => {
       const sub = await reg.pushManager.getSubscription().catch(() => null);
@@ -1464,7 +1478,7 @@ export function initThemeToggle() {
   btn.id = "theme-toggle";
   btn.type = "button";
   btn.className = "mini-toggle";
-  btn.style.cssText = "position:fixed;bottom:14px;right:110px;z-index:61;padding:8px 12px;min-height:32px";
+  btn.style.cssText = "padding:8px 12px;min-height:32px";
   const label = () => {
     const cur = document.documentElement.dataset.theme ||
       (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
@@ -1479,7 +1493,7 @@ export function initThemeToggle() {
     try { localStorage.setItem("gale-theme", next); } catch {}
     label();
   });
-  document.body.appendChild(btn);
+  dockAdd(btn);
   label();
 }
 
@@ -1505,7 +1519,7 @@ function initDataSaver() {
   btn.id = "saver-toggle";
   btn.type = "button";
   btn.className = "mini-toggle";
-  btn.style.cssText = "position:fixed;bottom:14px;right:380px;z-index:61;padding:8px 12px;min-height:32px";
+  btn.style.cssText = "padding:8px 12px;min-height:32px";
   const paint = () => {
     const on = isDataSaver();
     btn.textContent = on ? "⏾ saver on" : "⏾ saver";
@@ -1518,7 +1532,7 @@ function initDataSaver() {
     } catch {}
     location.reload();
   });
-  document.body.appendChild(btn);
+  dockAdd(btn);
   paint();
 }
 

@@ -59,6 +59,12 @@ html[data-saver="1"] .hero-storm .storm-fallback { display: block !important; }
   margin-bottom: 30px;
   text-shadow: 0 4px 60px rgba(0,0,0,0.6);
 }
+/* the title's gradient is built from page tokens, which go dark in light theme: pin night tokens */
+.hero-storm .hero-title .grad-text {
+  background-image: linear-gradient(100deg, #eaf1ff 0%, #8ab4f8 38%, #cfe0ff 58%, #7fd1ff 82%, #eaf1ff 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text;
+}
 .hero-storm .lede {
   /* the storm plate is always night: keep light-on-dark text even when
      the page tokens say light theme */
