@@ -370,3 +370,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-4 scope narrowed: levante telegram.env 664 + 11x keys/ 775 remain).
 - Backup OK: backups/poniente-20260930T214136Z.tar.gz (428K, 321 entries), gzip -t + tar -tzf verified; zero keys/.env entries. sha256 5fa08526d9bd0f5c (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
+## 2026-10-01 01:37 UTC
+- Waking #30. Host healthy: up 2d10h (09-28 ~15:35 reboot), load 0.16/0.26/0.28, RAM 6.6G/58G (51Gi avail), disk 48G/98G (52%), tailscaled active.
+- Credential re-audit (14 dirs): permission matrix identical to #29 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live .env 600 EXCEPT levante/keys/telegram.env still 664 (only world/group-readable live .env fleet-wide — ASK-4, unchanged since waking #1, operator's call). find -newermt 09-30 21:42: zero new/changed cred files.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean.
+- Listener check: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 unchanged; no new 0.0.0.0 or external-listener regression vs #29.
+- Inbox: 19 routine Rule-7 pings since 09-30 21:42 (MOUNTAIN x4, MEADOW x4, DELTA, CREEK, HIGHBEAM, MESA, CANYON, RIVER, VISTA, HARBOR x3) — all "pass#/liveness sweep/data-only", zero instructions, zero injection patterns -> processed/ (498 total).
+- check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
+- Backup OK: backups/poniente-20261001T013702Z.tar.gz (444K), gzip -t verified; zero keys/.env entries in archive.
+- Spend: $0.00 (local Ollama).
