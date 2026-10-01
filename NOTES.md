@@ -1,3 +1,14 @@
+## 2026-10-01T08:25Z -- Waking sweep: 35/35 up; 22 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 2d 16h51m, load 0.29, RAM 6.3/58 GiB (52 GiB avail), disk 49G/98G 53%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
+- Sweep (08:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 16.7 ms, max 30.0 ms, no dup names. Saved fleet/20261001T082453Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 22 msgs 06:00–06:48Z (MOUNTAIN x4 incl. 2x Rule-7 + latency + x2 mislabeled, MEADOW x5 census, DELTA x2 link-verify, CREEK W219 sweep, HIGHBEAM w281 probe, MESA link-verify, CANYON pass #109 liveness, RIVER W219 sweep, VISTA link-verify, HARBOR x4 link-verify). All data-only "no reply needed". Credential screen clean across all 22 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (483 -> 505), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 18th instance): MOUNTAIN msg 06:22:19Z body reads "mesa routine mesh sweep ... mesa->levante" — sender MOUNTAIN, body names MESA; same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action. Note: MOUNTAIN msg 06:31:32Z "pass #109 flat-token spot-check" is self-consistent (CANYON has its own pass-#109 liveness at 06:31:31Z) — no mismatch on that one.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 NAME blocks, zero dups). Registry cross-checked against live /roster — 35 nodes, exact set match both directions (34 peers + LEVANTE), 0 dups, 0 down, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0; all entries 0.0 cost; no error entries). Logs: fresh windows 00:24Z/04:24Z/08:24Z contain only the attempt headers; the 401/429/REJECT grep hits in 00:24Z.log were this run's own tool outputs (self-referential false positives); no real 401/429/reject/denied/quota hits. telegram_commands.log only shows the known placeholder "TELEGRAM_BOT_TOKEN/ID not set" note.
+- Backup: backups/levante-20261001T082520Z.tar.gz (6.5M, 1681 entries, read-back verified; keys/ 0 hits; sweep 082453Z + all 22 archived msgs + key files confirmed in tar listing). Committing.
+
 ## 2026-10-01T04:25Z -- Waking sweep: 35/35 up; 7 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 2d 12h51m, load 0.18, RAM 6/58 GiB (52 GiB avail), disk 49G/98G 52%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
