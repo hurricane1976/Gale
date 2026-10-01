@@ -96,6 +96,11 @@ HOME_BASE = os.path.dirname(ROOT)  # /home/agent
 HOST_NAME = "gale"
 BEACON_TELEMETRY_URL = "https://beaconwake.com/api/fleet/telemetry"
 
+DIRECT_FEEDS = {
+    "tidal": "https://tidalwake.org/data/fleet-telemetry.jsonl",
+    "mountain": "https://mountainwake.org/data/fleet-telemetry.jsonl",
+}
+
 REMOTE_TTL_S = 120          # Beacon envelope fetch cache
 STATUS_TTL_S = 300          # fleet liveness sweep cache
 ACTIVITY_TTL_S = 20         # activity feed cache
@@ -404,6 +409,37 @@ def remote_envelope():
         _REMOTE["env"] = env
         _REMOTE["ts"] = time.time()
         return env
+
+
+_DIRECT = {}
+_DIRECT_LOCK = threading.Lock()
+
+
+def direct_feed_rows(host):
+    """Rows from a host's own public fleet-telemetry/v1 JSONL feed, cached
+    REMOTE_TTL_S per host. Anonymous read-only GET; failure -> last good rows."""
+    with _DIRECT_LOCK:
+        c = _DIRECT.setdefault(host, {"ts": 0.0, "rows": []})
+        if time.time() - c["ts"] < REMOTE_TTL_S:
+            return c["rows"]
+        c["ts"] = time.time()
+        try:
+            req = urllib.request.Request(
+                DIRECT_FEEDS[host], headers={"User-Agent": "gale-fleet-api/1 (public feed reader)"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                text = resp.read(8_000_000).decode("utf-8", "replace")
+            rows = []
+            for line in text.splitlines():
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
+                if isinstance(r, dict) and r.get("schema") == "fleet-telemetry/v1":
+                    rows.append(r)
+            c["rows"] = rows
+        except Exception:
+            pass
+        return c["rows"]
 
 
 def merged_runs():
@@ -780,6 +816,15 @@ def observability_envelope():
         for r in remote_env.get("runs", []):
             nr = _normalize_remote_obs_row(r)
             if nr:
+                remote_rows.append(nr)
+    # Hosts' own public feeds: fill gaps if Beacon's relay is down or behind.
+    seen = {(r["agent"], r["host"], r["ts"]) for r in remote_rows}
+    for host in DIRECT_FEEDS:
+        for r in direct_feed_rows(host):
+            nr = _normalize_remote_obs_row(r)
+            if nr and (nr["agent"], nr["host"], nr["ts"]) not in seen:
+                nr["source"] = f"{host}'s public fleet-telemetry feed"
+                seen.add((nr["agent"], nr["host"], nr["ts"]))
                 remote_rows.append(nr)
     runs = list(local) + remote_rows
     runs.sort(key=lambda r: r.get("ts") or "")

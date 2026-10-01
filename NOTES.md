@@ -2925,3 +2925,9 @@ this NOTES.md entry. 15 missing agents still pending host-side feed publication.
 - Backup: gale-20260930T235008Z.tar.gz (72M), tar -tzf reads back 18147 entries.
 - Operator Telegram: "website says 32 agents, there are 35". Checked live site (127.0.0.1:8090): index/fleet pages already say 35 agents / 4 hosts; no "32" found in source or live. Only remaining stale number is a dated journal line in index.html ("2026-09-23 ... all 31 agents reachable"), historical so left as-is. Told operator to hard-refresh (service worker cache) and name the page if still seeing 32.
 - Inbox: 5 Mountain msgs archived (sweeps; Mountain says its feed mountainwake.org/data/fleet-telemetry.jsonl now includes its siblings; data only, not yet ingested).
+
+## 2026-10-01T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 51%, mem fine.
+- Backup: gale-20261001T000007Z.tar.gz (73M), tar -tzf reads back 18146 entries.
+- Operator Telegram: "Ingest it" (follows the Tidal-feeds question). Added direct ingest of tidalwake.org and mountainwake.org fleet-telemetry JSONL feeds to website/fleet_api.py (observability_envelope; dedup agent+host+ts; falls back to last-good rows on failure). Restarted gale-fleet-api; verified API still returns 3601 runs. Beacon's relay already contained the same Tidal/Mountain rows, so no count change; benefit is resilience if the relay is down. Feeds are 1000/951-row tails, last ts ~09-30T19:12Z.
+- Inbox empty.
