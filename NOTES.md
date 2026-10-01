@@ -2013,3 +2013,68 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
   disk free 45G is the one hard limit tracked and is still far from any
   alert line. No advisory warranted this waking.
+
+## 2026-10-01T08:11:00Z — waking #47
+
+- **Health (baseline):** up 2 days 16:27 (same boot since 9/28 15:33Z,
+  ~192h stable); load 0.13/0.19/0.23 (low, in the 0.10–0.27 morning band);
+  RAM 6.4G used / 52G available (58Gi total); swap 0B; disk `/`
+  **49G used / 45G free (52%) — flat vs #46** (49G/45G). Tailscale still
+  holds `100.66.39.59/32` (19th consecutive hold, ~192h+ stable incl.
+  across the 9/28 reboot); kernel 6.8.0-142-generic unchanged. All green.
+- **DISK ARC (downgraded from growth-watch):** #43/44 flat at 46G → #45 48G
+  → #46 49G → **#47 49G (flat vs #46)**. Two +1G steps then a flat step =
+  the arc stopped, not continued. Most consistent with the OS-churn
+  interpretation named at #45/#46 (drivers unchanged: journald ~4G,
+  /tmp/opencode 13M, chinook 35M, agent dirs ~2G): a one-off 3G churn
+  blip that has now settled, not a sustained growth arc. Restoring the
+  "flat, no crossing nameable" claim; 45G free, headroom in months at any
+  rate. Re-confirm only if it steps to 50G+ at #48.
+- **Peer sweep: 14/14 up** on 100.66.39.59, 8787–8800 all HTTP 200 —
+  **22nd consecutive stable sweep**, no degraded leg.
+- **Inbox:** 21 arrivals archived (767 → 787), inbox empty (stray `chinook/`
+  + `pulsar/` subdirs confirmed empty, pre-existing artifacts). Routine
+  data-only batch: MOUNTAIN 3 (Rule-7 sweeps ×2 + latency check), MESA link
+  verify, MEADOW 4 census, DELTA 2, CANYON pass #109, RIVER W219, VISTA,
+  HIGHBEAM, HARBOR 4-shot burst (06:48Z, ~1s spacing). All "no reply
+  needed", no acks owed, no operator content. MOUNTAIN-envelope +
+  MESA-body (06:22Z) = the standing baseline closed at #46, NOT a 3rd
+  mismatch — treated as the documented shared-lane pattern. **14th
+  consecutive elevated-cadence batch** across peers; operator dedup nudge
+  still pending (21 in this waking, HARBOR 4-shot is the recurring burst).
+- **check_replies:** none new from operator.
+- **Spend:** chinook 10/1 = 2 runs / **$0.00** (00:03Z, 04:06Z, local
+  Ollama; this run records ~$0.00 at session end). Sibling scan 10/1:
+  GALE 2 runs **$0.4354** (~$0.22/run, lead-sized lane, inside its own
+  normal band), ZEPHYR 2 $0.1288, SQUALL 2 $0.1205, TEMPEST 2 $0.0782 —
+  the flash trio in their normal ~6x/day slots at normal $0.03–$0.08/run
+  band; all other lanes $0.00. **No rule-4 anomaly** (per-run costs and
+  run counts both within expected range for each lane). Fleet picture
+  unchanged: GALE = real cost driver, ollama lanes ~$0.
+- **Wake-reliability (headline watch):** 10/1 08:00 slot **fired clean**
+  (I am running it, no exit-1/retry error). 10/1 so far: **3/3 clean**
+  (00:00, 04:00, 08:00), including the 00:00 former-failure class; 9/30
+  closed 6/6. Zero failed slots across the full post-incident window
+  (9/30 + 10/1 morning) — 4th consecutive day with no failures. ASK.md
+  upstream/runner item (Bora's lane) stays open; the downgrade case is as
+  strong as the evidence currently allows.
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (18th waking on this item; ~192h stable since — reads as one-off
+  maintenance, no operator confirmation on record).
+- **Neighbor count (unchanged):** `/home/agent` = 25.
+- **Backup:** chinook-20261001T080112Z.tar.gz (1.4M, 481 entries), gzip -t
+  OK, listing readable; 14-snapshot ceiling held.
+- **Commit:** inbox archive (787) + this entry.
+- **Forecast:** disk 49G/45G free, **flat vs #46 — growth-watch downgraded
+  back to "flat, no crossing nameable"** (the +3G blip over the 9/30 46G
+  baseline settled at 49G in 2 steps, no 3rd step); RAM 6.4G / 52G free,
+  load 0.13 — no saturation projectable this week.
+  Watch items: (1) disk — re-confirm only if 50G+ at #48; (2)
+  wake-reliability — 10/1 3/3 clean, 4th consecutive day post-incident
+  with zero failures, downgrade case strengthens; (3) Tailscale TUN ~192h
+  hold (strongest sustained stability to date); (4) 9/28 15:33Z reboot
+  cause still unconfirmed; (5) HARBOR 4-shot bursts / 14th elevated batch
+  — dedup nudge still pending with dedup number = 21 this waking.
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  GALE spend is the only real cost and inside its own band. No advisory
+  warranted this waking.
