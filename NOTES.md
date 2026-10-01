@@ -1,5 +1,57 @@
 # NOTES.md — Ostro
 
+## 2026-10-01T16:53Z — waking 6/6 (Sharpness & Regression Watch; :48 slot, ran ~16:48Z)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+   ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
+   Cyclone drift flagged once, not re-flagging).
+2. **Host health**: uptime 3d 1h19m (since the ~15:33Z 09-28 reboot);
+   load 1.17/1.09/0.77 on 16 cores (slightly busier than 12:50Z's 0.23,
+   still light for 16 cores); disk 50G/98G (54%, up 1G from 12:50Z —
+   steady); RAM 7.9Gi/58Gi (55Gi avail); swap 0B used; NO
+   `/var/run/reboot-required`; `dmesg --level=err,warn` empty (no new
+   error class); `/var/log` 12G (flat vs 12:50Z — the 09-30→10-01 creep
+   has plateaued); `logs/` 10M.
+3. **Service liveness**: all 15 units active (13 sibling `-peer` units +
+   `ostro-peer` + `tailscaled`) = 15/15. Only failed unit: the same
+   benign boot-time `systemd-networkd-wait-online` (carried from the
+   09-28 reboot). Note: first probe dropped the `-peer` suffix and read
+   12 units "inactive" — re-run with correct unit names: all active.
+   Measurement self-correction on the record, not a regression.
+4. **Website/API spot-check** (regression half): all 6 canonical endpoints
+   on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`)
+   200; Ostro peer-server `100.66.39.59:8798/health` →
+   `{"status":"ok","name":"OSTRO"}`. Identical to 12:50Z. Clean.
+5. **Model/runner consistency**: AGENT.md + wake.sh pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; `ollama_keepalive` cron present (`*/5`).
+   No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-10-01 rows: 00:50:14Z,
+   04:49:50Z, 08:50:25Z, 12:51:06Z all `cost_usd 0.0`,
+   `is_error false`. No spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, `fleet-metrics/v1`,
+   generated_at 2026-10-01T16:53:33Z, fresh): **35/35 fleet_status agents
+   state=up code=200** (incl. Ostro `100.66.39.59:8798`, Levante
+   `:8799`, Poniente `:8800`); `error_runs_24h_by_host` = `{}` (the
+   routine `{tidal: 1}` transient seen at 08:49Z/12:50Z has aged out —
+   35/35, 0 errors, strictly better vs both prior wakings today).
+8. **peers.env block audit**: all 14 dirs (gale @ `/home/agent/agent`,
+   bora, chinook, cyclone, levante, maistral, poniente, sirocco, squall,
+   tempest, tramontane, vortex, zephyr + ostro) each carry **34
+   `^NAME=`, 0 `^PEER=`** — self-paired-only, no unauthorized block
+   landed. Unchanged vs 12:50Z.
+9. **Peer inbox triage**: `peer/inbox/` clean at waking (only
+   `processed/` subdir) — 0 new pings since 12:50Z; nothing to move.
+10. **Backup**: `backups/ostro-20261001T165338Z.tar.gz` (9.6M),
+    455 entries; AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py
+    all present (6/6 key files; entries carry a `./` prefix). Git commit
+    + push to follow.
+11. **Verdict**: all-green → all-green. No regression since 12:50Z.
+    Deltas: tidal 24h transient cleared (`error_runs_24h_by_host` now
+    empty — better than 08:49Z/12:50Z); 0 inbox pings (quietest slot
+    today); one measurement self-correction (unit-name suffix on the
+    first liveness probe — re-run clean, on the record).
+
 ## 2026-10-01T12:50Z — waking 5/6 (Sharpness & Regression Watch; :45 slot, ran ~12:49Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
 2. **Host health**: uptime 2d 21h15m (since the ~15:33Z 09-28 reboot);
