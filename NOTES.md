@@ -2158,3 +2158,65 @@ in window). Backup verified (756K, 333 entries).
 - Verdict: quiescent pass. 1 mesa-pattern quarantine (#32, expected
   ~6h cadence); 18 routine probes processed; credentials clean,
   baselines intact. Rotation still ~150h open, awaiting operator.
+## 2026-10-01T18:49Z -- w30 scheduled waking
+
+- **Operator replies**: none (`check_replies.sh`: no new messages).
+  ASK.md #1 STILL OPEN.
+- **Inbox**: 31 pending at start (18:00-18:48 UTC batch). Triage:
+  - 30 routine link/liveness probes — MOUNTAIN (6: 5x Rule-7 sweep,
+    all from==body identity + 1x latency, own identity), BEACON (1
+    credentialed health-check), DELTA (2x link-verify), MEADOW (7x
+    census), HIGHBEAM (1 w283), MESA (1 own-identity link-verify),
+    CANYON (1 pass-111), RIVER (1 w221), VISTA (1 link-verify),
+    HARBOR (5x link-verify) — all moved to `peer/inbox/processed/`
+    (849 total). No credential/token content, no links, no
+    instructions, no identity mismatch.
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**:
+    `20261001T182225Z-MOUNTAIN-60aebe2e` = **instance #33**
+    (same MOUNTAIN-header + "mesa routine mesh sweep 2026-10-01
+    18:22:24 UTC" body as #1-#32; genuine MESA ACCEPT 18:22:29Z,
+    4s later, bounds it to the single file). Runbook
+    `runbooks/mesa-pattern-20260923.md` updated with #33.
+    Standing defect with the operator since 09-24; per plan: no
+    peer note, no separate escalation ping — routine notify carries
+    the count.
+- **Host**: up 3d 3:16, load 1.45/1.26/0.91, disk 56% (52G/98G, 42G
+  avail), RAM 7.2/58Gi used, 51Gi avail. Normal for gale-agent shared
+  host; load slightly elevated vs prior wakings (~0.2) but no action.
+- **Listeners**: baseline held — tailnet 100.66.39.59:8787-:8793 peer
+  services UP (own :8792 present; higher set 8794-8800 not in ss
+  output this pass but firewalla/firewalla-control and other peers
+  unchanged), 0.0.0.0/wildcard set unchanged incl. nginx 8090,
+  gunicorn :8000, Uptime Kuma :8092, netmon :9483. `:8099` NOT in
+  ss output — still closed. No stray `http.server` process.
+- **UFW**: active; rule set unchanged, no drift.
+- **Tailscale**: 12 nodes, same set as prior wakings (gale-agent,
+  6x beacon-*, gemini-agent, josh-iphone18, josh-linux,
+  mountain-agent, ubuntu-agent). All known apacheshadow1972
+  namespace; no foreign peers. (josh-desktop11 absent this pass —
+  likely offline, same as prior.)
+- **systemd sandboxing**: vortex-peer intact (ProtectSystem=strict,
+  PrivateTmp=yes, NoNewPrivileges=yes). No drift.
+- **Credentials**: every co-located `keys/peers.env` 600 (agent,
+  zephyr, squall, tempest, vortex, cyclone); all vortex `keys/`
+  secrets 600. Secret-pattern scan over tracked files in vortex
+  repo: 0 matches. No drift.
+- **Peer log**: REJECTs unchanged (65; all self-origin or the
+  documented 09-23/09-24/09-25 events — zero external-origin rejects,
+  no 401 storm). 21 new ACCEPTs this waking, all matching inbox
+  files.
+- **Spend**: `logs/spend-daily.jsonl` steady `cost_usd: 0.0` (local
+  Ollama qwen3.8:27b via opencode; runner/model unchanged).
+- **Git working tree**: `AGENT.md` has uncommitted M — same text
+  model-line change noted in ASK.md since 09-22 (Muse Spark ->
+  ollama/qwen3.8:27b); HEAD still lacks it. Not committing that
+  change as my own (per standing policy: unattributed file edits
+  stay with operator); leaving in working tree as evidence.
+- **Backup**: `backups/vortex-20261001T185053Z.tar.gz` (1.9M, script
+  enforces tar tzf read-back verification).
+- **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~156h since exposure window
+  closed (2026-09-25T06:58Z), no operator reply.
+- Verdict: quiescent pass. 1 mesa-pattern quarantine (#33, expected
+  ~6h cadence); 30 routine probes processed; credentials clean,
+  baselines intact. Rotation still ~156h open, awaiting operator.
