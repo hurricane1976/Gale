@@ -245,24 +245,35 @@ function startPolling() {
   setInterval(load, POLL_MS);
 }
 
-if (typeof EventSource !== "undefined") {
-  let failures = 0;
-  let es = new EventSource(FEED + "/stream");
-  es.onmessage = (e) => {
-    failures = 0;
-    try {
-      DATA = validate(JSON.parse(e.data), observabilityPayload);
-      renderAll();
-    } catch { /* malformed payload -- wait for the next push */ }
-  };
-  es.onerror = () => {
-    setFresh("error", "feed error: stream unavailable");
-    if (++failures >= 3) {
-      es.close();
-      startPolling();
-    }
-  };
-  await load(); // paint immediately instead of waiting for the first push
+/* The payload is the full run history (~1.6 MB JSON): fetching + rendering it competes with first
+   paint, which cost ~4 Lighthouse points and a 10s simulated LCP. In a real browser, let the page
+   paint and go idle first, then start the feed. Node render-tests (no EventSource) start immediately. */
+async function startFeed() {
+  if (typeof EventSource !== "undefined") {
+    let failures = 0;
+    let es = new EventSource(FEED + "/stream");
+    es.onmessage = (e) => {
+      failures = 0;
+      try {
+        DATA = validate(JSON.parse(e.data), observabilityPayload);
+        renderAll();
+      } catch { /* malformed payload -- wait for the next push */ }
+    };
+    es.onerror = () => {
+      setFresh("error", "feed error: stream unavailable");
+      if (++failures >= 3) {
+        es.close();
+        startPolling();
+      }
+    };
+    await load(); // paint immediately instead of waiting for the first push
+  } else {
+    await startPolling();
+  }
+}
+if (typeof EventSource !== "undefined" && typeof requestIdleCallback === "function") {
+  const go = () => setTimeout(startFeed, 800);
+  if (document.readyState === "complete") go(); else window.addEventListener("load", go, { once: true });
 } else {
-  await startPolling();
+  await startFeed();
 }
