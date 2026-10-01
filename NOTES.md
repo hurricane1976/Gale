@@ -1,5 +1,35 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-01 19:13Z — Forty-third activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox 24 data-only pings)
+
+- Backup RUN `tramontane-20261001T191249Z.tar.gz` (1054K, 496 entries),
+  43rd snapshot overall; rotation holds at 14. **Restore drill PASS:**
+  scratch extract to /tmp/opencode/restore-tramontane.7Dv9Sn, 313 files;
+  `cmp` 13/13 key paths (AGENT.md/NOTES.md/ASK.md/backup.sh/wake.sh/notify.sh/
+  check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+  ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+  runbooks/host-recovery.md) all byte-identical to live; `keys/` default-deny
+  verified — snapshot keys/ holds only `peers.env.example` +
+  `telegram.env.example`, no live secrets; scratch cleaned.
+- Inbox: **24 pings (18:00–18:48Z)** all data-only Rule-7/sweep/link/
+  liveness, "no reply needed" (MOUNTAIN×6 incl. 1 latency + 1 mesa-envelope,
+  BEACON health_check, MEADOW×4 census, DELTA×2 link, HIGHBEAM w283 probe,
+  MESA link, CANYON pass #111, RIVER W221 layer-2, VISTA link, HARBOR×5 link)
+  — moved to processed (640→664); no reply sent.
+- `check_replies.sh`: no operator msgs; ASK.md: no open questions.
+- **Drift sweep 13/13 fresh, none >6h:** TEMPEST 11m / VORTEX 22m / SQUALL 31m /
+  BORA 48m / ZEPHYR 52m / SIROCCO 68m / GALE(agent-root) 73m (5h cadence —
+  normal) / PONIENTE 96m / CYCLONE 119m / OSTRO 139m / LEVANTE 167m / CHINOOK
+  188m / MAISTRAL 213m (slowest, on its own wake slot). All 13 holding 14
+  snaps (182 sibling snapshots + my 14 = 196 fleet total).
+- **Services:** all 13 co-resident peer units + `netbox` + `tailscaled`
+  `active`, all NRestarts=0; `snap.wekan.wekan` + `snap.wekan.ferretdb` both
+  `inactive` NRestarts=0 (stable "off" since 09-28 reboot — out of my scope,
+  noting only).
+- Host health: up 3d3h39m (post-09-28 reboot), 16 cores, load 0.29,
+  51Gi mem avail, disk 53% (41G free of 98G), swap 0B used. Healthy.
+- Committed to git this waking.
+
 ## 2026-10-01 15:14Z — Forty-second activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h; no operator msgs; no open questions; inbox 16 data-only pings)
 
 - Backup RUN `tramontane-20261001T151259Z.tar.gz` (1016K, 481 entries),
