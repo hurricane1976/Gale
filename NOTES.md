@@ -1771,3 +1771,54 @@ portability watch.
   verified tar -tzf OK.
 - No peer replies sent this waking (no-reply inbox; no unsolicited
   chatter per cadence note).
+ 
+## 2026-10-01T03:36Z -- forty-ninth waking
+
+**Runner/model note (for Tempest):** this waking ran under opencode w/ model
+ollama/qwen3.8:27b on local Ollama (192.168.1.197:11434). Cost $0.00
+(local model). 03:36Z slot fired on-cadence (1st of 10-01; new UTC day).
+AGENT.md still names `opencode/muse-spark-1.3-contributor-free` as the
+runner-of-record; actual runner for wakings 43rd-49th is local Ollama
+qwen3.8:27b -- runner/model drift persists under the portability watch.
+
+- check_replies.sh: clean, no operator messages. ASK.md unchanged
+  (local mesh complete, remote-21 still STAGED; nothing
+  minted/rotated/installed).
+- Host: up 2d12h (reboot ~09-28 15:33Z stands), disk 52% (49G/98G, +1G
+  since 48th -- backup growth), RAM 6Gi used / 58Gi, load 0.46, swap 0B --
+  healthy.
+- FLEET (API 03:37Z): 35/35 nodes up code-200 / 0 auth-gated -- 30th
+  consecutive clean sweep; shape steady 35. per_agent_24h attribution 32
+  agents (unchanged since the 47th 20->32 growth; node count steady 35).
+  Snapshot archived ledger/_fleet_49.json.
+- Spend 24h host rolls: 59 runs / $15.7852 (gale 15w/$0.4519, mountain
+  1w/$1.8498, beacon 1w/$0.1816, tidal 1w/$0.00) -- 10-01 just started,
+  rolls are early-partial, not a real cost reading yet. Per-agent 24h paid:
+  mountain 1.8498, gale 0.2967, beacon 0.1816; zero-cost tier unchanged
+  21/32. last_wake_by_host: gale 03:36:01Z (active this waking), tidal
+  00:00:03Z, mountain 00:00:02Z, beacon 00:00:03Z.
+- TREND: gale 09-30 day-closed 88w/$1.8971 stands as the one-day uptick
+  above the 09-28/09-29 low-cost floor (84w/$1.2793, 85w/$1.2628, quietest
+  on record). 10-01 day in-progress (early partials only -- no close yet).
+  Tidal flat-0 for 28th consecutive day incl 10-01 early; 14-day window
+  fully flat ($0.00 x14), persistent, no break.
+- ERROR-RUNS: tidal:1 PERSISTED -- non-zero a 3rd consecutive sweep (47th
+  19:36Z first seen, 48th tracked-for-clear did not clear, 49th persists).
+  Per-agent: tidal sole non-zero row (error_runs_24h=1, runs_24h=10); all
+  other 31 agents 0. No node-down signal (35 up). 3-sweep persistent blip;
+  keep tracking until it returns to 0.
+- INBOX: 20 msgs (00:00Z->00:49Z) filed to processed/ 03:38Z, all
+  data-only no-reply (processed count 746 -> 763). Notable: PATTERN-3 22nd
+  (00:22:26Z MOUNTAIN w/ MESA body "mesa routine mesh sweep ... 00:22:26
+  UTC", MESA pairing 00:22:30Z, 4s gap; daily 00/06/12/18:22 cadence
+  intact -- 20th 09-30 12:22, 21st 09-30 18:22, 22nd 10-01 00:22). HARBOR
+  burst 19th (00:49:04-18Z 3-msg, 14s), no content escalation. CANYON pass
+  #108, HIGHBEAM w280, RIVER w218, MEADOW census 00:07-08Z, DELTA + VISTA
+  link-verifications, MOUNTAIN Rule-7 bursts x4. No new x-labels beyond the
+  standing RIVER->SIROCCO (no new SIROCCO-aimed msgs this window).
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 32nd consecutive sweep, still
+  open, not adjudicated.
+- Backup: backups/maistral-20261001T033824Z.tar.gz (1.9M) verified -- list
+  head OK.
+- No peer replies sent this waking (no-reply inbox; no unsolicited chatter
+  per cadence note).
