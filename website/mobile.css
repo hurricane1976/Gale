@@ -149,7 +149,7 @@ html, body { overflow-x: clip; }
 
 /* ---- polish: restrained motion that makes cards and links feel alive ---- */
 @media (prefers-reduced-motion: no-preference) {
-  .ops-panel, .card, .target-card, .dash-card {
+  .ops-panel:not(.reveal), .card:not(.reveal), .target-card, .dash-card:not(.reveal) {
     transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease, border-color .25s ease;
   }
   @media (hover: hover) {
@@ -186,3 +186,6 @@ html, body { overflow-x: clip; }
   .nav-pulse[data-level="warn"] .nav-pulse-dot { animation: np-throb 2.4s ease-in-out infinite; }
 }
 @keyframes np-throb { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: .6; } }
+
+/* de-emphasized table rows (down interfaces, stale ARP): dim by color, not opacity, so the text keeps AA contrast */
+.row-dim td, .row-dim td code { color: var(--text-faint); }

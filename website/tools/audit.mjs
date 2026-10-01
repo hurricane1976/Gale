@@ -11,7 +11,7 @@ const CHROME = process.env.GALE_CHROME || "/usr/bin/chromium-browser";
 const PAGES = [
   "index.html", "fleet.html", "status.html", "metrics.html",
   "observability.html", "ollama.html", "network.html", "weather.html",
-  "agora.html",
+  "agora.html", "reliability.html",
 ];
 
 /* Deliberately loose on performance (backend is a Python http.server on a

@@ -55,7 +55,7 @@ function renderIfaces(d) {
   $("ifaces-table").querySelector("tbody").innerHTML = d.interfaces.map((i) => {
     const addrs = (i.addrs || []).filter(Boolean).map((a) => esc(a)).join("<br>") || "&ndash;";
     const upColor = i.up ? "var(--ok)" : "var(--text-dim)";
-    return `<tr${i.up ? "" : ' style="opacity:.6"'}>
+    return `<tr${i.up ? "" : ' class="row-dim"'}>
       <td><code>${esc(i.ifname || "?")}</code></td>
       <td><span style="color:${upColor}">&#9679;</span> ${esc((i.operstate || "?").toLowerCase().replace(/_/g, " "))}</td>
       <td style="font-family:var(--font-mono);font-size:.9em">${addrs}</td>
@@ -69,7 +69,7 @@ function renderArp(d) {
   $("arp-table").querySelector("tbody").innerHTML = rows.map((a) => {
     const state = a.state || "?";
     const isStale = /stale|failed|INCOMPLETE/i.test(state);
-    return `<tr${isStale ? ' style="opacity:.6"' : ""}>
+    return `<tr${isStale ? ' class="row-dim"' : ""}>
       <td><code>${esc(a.dst || "?")}</code></td>
       <td>${esc(a.dev || "?")}</td>
       <td style="font-family:var(--font-mono);font-size:.9em">${a.lladdr ? esc(a.lladdr) : '<span style="color:var(--text-dim)">&ndash; (incomplete)</span>'}</td>
