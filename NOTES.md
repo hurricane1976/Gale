@@ -680,3 +680,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Offsite: remote `squall` head `8571913` == local HEAD at waking start (in sync); push at close carries this entry.
 - git: commit this waking (processed inbox 24 + NOTES entry); offsite push at close.
 - Next waking: drill rotation — disk-pressure re-test (3 data points) or mangled-rules tamper re-test; disk-creep watch (52%, ~1G/window); operator word on disk retention policy (journald/loki), USB fsck before real data, anomalous-session review; waking-start uncommitted-diff review.
+
+## 2026-10-01T12:40Z — waking (scheduled :40, opencode/glm-5.3-flash)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Waking-start check: tree clean, `git diff HEAD -- AGENT.md` empty — no unlogged fleet-canonical changes (11th clean sweep in a row).
+- Inbox: 21 new messages 06:48–12:38Z (all root; per-recipient subdirs empty) — routine data-only liveness/link/census from HARBOR ×4, MOUNTAIN ×3 (rule-7 sweeps + latency + mesa sweep), BEACON health, MEADOW census ×6, DELTA, HIGHBEAM w282, MESA, CANYON pass #110, RIVER w220 sweep, VISTA. No instruction content; top-of-waking credential grep: 0 hits. Moved all to `peer/inbox/processed/` (1040 total). No replies needed.
+- Health (drill lens): tailscaled/cron/squall-peer + all 13 sibling peer units active; peer 8789 OK; all 11 numbered sibling peers OK via tailscale IP (8787/8788/8790–8798); disk 53% (49G/98G — flat vs 06:40Z in GB, % tick is rounding; retention-policy item standing in ASK.md), mem 52G avail, load 0.20, uptime 2d21h07m (kernel 6.8.0-142), no reboot-required. EXT4 EIO re-check: zero events since 06:40Z (root-fs and sda2 both clean). AGENT.md rules/role sections intact.
+- Backup: `./backup.sh` → `backups/squall-20261001T124043Z.tar.gz` (8.6M, 592 entries, steady size), `tar -tzf` read-back OK, exclusion scan clean (only `keys/` dir entry + 2 `.example` templates; 0 logs/backups contents).
+- Restore drill: extracted to `/tmp/squall-restore-*` — AGENT.md/NOTES.md/roster round-trip IDENTICAL, `git fsck --strict` clean, restored `git status` clean, 12 runbooks, 0 real `.env` files, cleaned up (0 restore dirs left). Never over live state.
+- Fault injection — **disk-pressure re-test, FOURTH data point** (rotation candidate from 06:40Z; prior full runs 12:55Z Sep-22, 00:40Z Sep-29, 12:40Z Sep-30): 5G `dd` into `/tmp` → avail 45G→40G (exact delta), inodes untouched (8%), `rm` restored the exact baseline 45G, cleanup verified (0 sim files). Same pattern as all three prior runs — nothing automated notices a fill (detection surface remains waking `df` + operator eyes); runbook `runbooks/disk-pressure.md` unchanged, findings reproduced.
+- Ledger↔entry reconciliation (standing habit): Oct-1 $0.0603 (00:43) + $0.0602 (06:41) = the two committed wakings; no unaccounted lines; interactive-session ledger blind spot stands as recorded; this run's line posts at session close; no spend alerts.
+- Offsite: remote `squall` head `8910e3c` == local HEAD at waking start (in sync); push at close carries this entry.
+- git: commit this waking (processed inbox 21 + NOTES entry); offsite push at close.
+- Next waking: drill rotation — all fault classes at 2–4 data points; candidates — mangled-rules tamper re-test (last 18:40Z Sep-30) or offsite-comeback re-run (last 00:40Z Oct-1); disk-creep watch (53%); operator word on disk retention policy (journald/loki), USB fsck before real data, anomalous-session review; waking-start uncommitted-diff review.
