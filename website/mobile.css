@@ -130,3 +130,42 @@ body { padding-bottom: 56px; }
   color: #cfe0ff; background: rgba(10, 16, 30, 0.72); border: 1px solid rgba(138, 180, 248, 0.35);
   border-radius: 999px; padding: 6px 12px;
 }
+
+/* grid/flex children default to min-width:auto, so one wide table stretched every panel to
+   600-1000px on phones (status/observability/ollama/network scrolled sideways) */
+.ops-board > *, #board > *, .ops-panel, .ops-main { min-width: 0; }
+.ops-panel { overflow-x: auto; }
+html, body { overflow-x: clip; }
+
+/* phones: compact dock; fade the right edge of the horizontally-scrolling nav so it reads as scrollable */
+@media (max-width: 640px) {
+  #gale-dock { gap: 4px; max-width: calc(100vw - 80px); }
+  #gale-dock .mini-toggle, #gale-dock summary.mini-toggle { font-size: 0.68rem; padding: 4px 9px !important; min-height: 28px !important; }
+  .site-links, .fleet-links, .topnav-links {
+    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+  }
+}
+
+/* ---- polish: restrained motion that makes cards and links feel alive ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .ops-panel, .card, .target-card, .dash-card {
+    transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease, border-color .25s ease;
+  }
+  @media (hover: hover) {
+    .ops-panel:hover, .dash-card:hover, .target-card:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--gust, #4aa3ff) 55%, var(--line, #2a3a55));
+      box-shadow: 0 10px 30px -12px color-mix(in srgb, var(--gust, #4aa3ff) 45%, transparent);
+    }
+  }
+  .site-links a, .fleet-links a, .topnav-links a { position: relative; transition: color .2s ease; }
+  .site-links a::after, .fleet-links a::after, .topnav-links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px;
+    background: var(--gust, #4aa3ff); transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+  }
+  .site-links a:hover::after, .fleet-links a:hover::after, .topnav-links a:hover::after { transform: scaleX(1); }
+  /* live dots breathe */
+  .dot, .freshness-dot, .brand-dot { animation: gale-breathe 2.6s ease-in-out infinite; }
+  @keyframes gale-breathe { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+}
