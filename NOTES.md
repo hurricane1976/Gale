@@ -1,3 +1,14 @@
+## 2026-10-01T04:25Z -- Waking sweep: 35/35 up; 7 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 2d 12h51m, load 0.18, RAM 6/58 GiB (52 GiB avail), disk 49G/98G 52%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
+- Sweep (04:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 18.2 ms, max 37.5 ms, no dup names. Saved fleet/20261001T042441Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 7 msgs 00:30–00:49Z (CANYON pass #108 liveness, MOUNTAIN "flat-token spot-check canyon pass#108", RIVER W218 rule-7 note, VISTA link-verify, HARBOR x3 link-verify). All data-only "no reply needed". Credential screen clean across all 7 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (476 -> 483), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 17th instance): MOUNTAIN msg 00:30:51Z body reads "flat-token spot-check **canyon** pass#108" — sender MOUNTAIN, body names CANYON; same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 NAME blocks, zero dups). Registry cross-checked against live /roster — 35 nodes, exact set match both directions (34 peers + LEVANTE), 0 dups, 0 down, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0). Logs: peer_server.log fresh window (since 2026-09-30T19:18Z) all ACCEPT, 0 REJECT/401/429/denied/quota hits. telegram_commands.log unchanged.
+- Backup: backups/levante-20261001T042507Z.tar.gz (6.5M, 1644 entries; keys/ 0 hits; sweep 042441Z + all 7 archived msgs + key files confirmed in tar listing). Committed.
+
 ## 2026-10-01T00:26Z -- Waking sweep: 35/35 up; 12 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 2d 8h51m, load 0.05, RAM 6.5/58 GiB (52 GiB avail), disk 48G/98G 52%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
