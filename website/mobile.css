@@ -169,3 +169,20 @@ html, body { overflow-x: clip; }
   .dot, .freshness-dot, .brand-dot { animation: gale-breathe 2.6s ease-in-out infinite; }
   @keyframes gale-breathe { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
 }
+
+/* ---- nav status pulse (shared.js initNavPulse) ---- */
+.nav-pulse { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono, monospace);
+  font-size: .72rem; padding: 3px 10px; border-radius: 999px; text-decoration: none; white-space: nowrap;
+  color: var(--text-dim, #9aa7bd); border: 1px solid var(--line-strong, #2a3a55); --np: var(--text-faint, #7d8aa3); }
+.nav-pulse[data-level="ok"] { --np: #2fa874; }
+.nav-pulse[data-level="warn"] { --np: #d9962b; }
+.nav-pulse[data-level="crit"] { --np: #e5484d; }
+.nav-pulse { border-color: color-mix(in srgb, var(--np) 45%, transparent); }
+.nav-pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--np); box-shadow: 0 0 8px var(--np); }
+.nav-pulse:hover { background: color-mix(in srgb, var(--np) 14%, transparent); }
+.site-links .nav-pulse::after, .fleet-links .nav-pulse::after, .topnav-links .nav-pulse::after { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .nav-pulse[data-level="crit"] .nav-pulse-dot { animation: np-throb 1.1s ease-in-out infinite; }
+  .nav-pulse[data-level="warn"] .nav-pulse-dot { animation: np-throb 2.4s ease-in-out infinite; }
+}
+@keyframes np-throb { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: .6; } }

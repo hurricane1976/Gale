@@ -1824,12 +1824,12 @@ html:has([data-theme="light"]) #storm-canvas { opacity: 0.16; }
 /* ---- fleet heartbeat (heartbeat.js): one ECG trace per host ---- */
 .hb-grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 14px;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-.hb-card { --hb: var(--ok, #3fb68b); position: relative; overflow: hidden; padding: 14px 16px 12px;
+.hb-card { --hb: #2fa874; position: relative; overflow: hidden; padding: 14px 16px 12px;
   border: 1px solid color-mix(in srgb, var(--hb) 35%, var(--line)); border-radius: 14px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--hb) 7%, transparent), transparent), var(--surface);
   transition: transform .25s ease, box-shadow .25s ease; }
-.hb-card[data-level="warn"] { --hb: var(--warn, #e0a030); }
-.hb-card[data-level="crit"] { --hb: var(--flag, #e5534b); }
+.hb-card[data-level="warn"] { --hb: #d9962b; }
+.hb-card[data-level="crit"] { --hb: #e5484d; }
 .hb-card:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -14px var(--hb); }
 .hb-top { display: flex; align-items: center; gap: 8px; }
 .hb-host { font-family: var(--font-heading); font-size: 1.05rem; text-transform: capitalize; }

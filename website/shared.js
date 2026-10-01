@@ -1536,6 +1536,39 @@ function initDataSaver() {
   paint();
 }
 
+/* Nav status pulse: a small dot at the end of the site nav showing the worst open fleet alert
+   (crit / warn / ok), linking to the ops board. Same /api/fleet/alerts the status page uses. */
+function initNavPulse() {
+  if (typeof document === "undefined" || document.getElementById("nav-pulse")) return;
+  const nav = document.querySelector(".site-links, .fleet-links, .topnav-links");
+  if (!nav) return;
+  const a = document.createElement("a");
+  a.id = "nav-pulse"; a.href = "status.html"; a.className = "nav-pulse"; a.dataset.level = "unknown";
+  a.setAttribute("aria-label", "Fleet health: checking");
+  a.innerHTML = '<span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">…</span>';
+  nav.appendChild(a);
+  const paint = async () => {
+    try {
+      const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      const d = await r.json();
+      const list = d.alerts || [];
+      const crit = list.filter((x) => x.sev === "crit").length, warn = list.filter((x) => x.sev === "warn").length;
+      const lv = crit ? "crit" : warn ? "warn" : "ok";
+      const txt = crit ? `${crit} critical` : warn ? `${warn} warning${warn > 1 ? "s" : ""}` : "all clear";
+      a.dataset.level = lv;
+      a.querySelector(".nav-pulse-txt").textContent = txt;
+      a.setAttribute("aria-label", `Fleet health: ${txt}. Open ops status.`);
+      a.title = list.slice(0, 5).map((x) => x.text).join("\n") || "no open alerts";
+    } catch {
+      a.dataset.level = "unknown";
+      a.querySelector(".nav-pulse-txt").textContent = "offline";
+    }
+  };
+  paint();
+  setInterval(paint, 60000);
+}
+
 export function boot() {
   // WebGPU ambient sky (improvements #2): progressive enhancement -- the
   // CSS blobs stay as the fallback when WebGPU is missing or fails.
@@ -1548,6 +1581,7 @@ export function boot() {
   // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
+    initNavPulse();
     initThemeToggle();
     initContrastMode();
     initDataSaver();
