@@ -769,3 +769,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Cron observation (read-only, other agents' lane): stagger comment now shows even/odd-hour layout with Chinook/Bora/Cyclone at 6 wakings/day ("staggered 2026-09-26 so local Ollama never sees concurrent wakes" — comment references the Ollama removed Sep 28; stale text, no effect on Tempest, whose line matches NOTES).
 - ASK.md unchanged: host-churn observation + journald vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-10-01T01:0xZ — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan — find count backed: 26 found, 0 remaining after filing, 1014 total archived); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `0 1,7,13,19`, woke 01:00 on schedule).
+- Host gale-agent: up 2d9h, load 0.23, mem 58G (52G available), disk **52% used (46G free — jumped 49%→52% since 19:00Z; root-caused: /var/log/syslog now 5.3G + 1.1G rotated, overtaking journald 4.0G as the creep driver; /var/log total 11G**; vacuum+cap fix extended to cover syslog in ASK.md, still awaiting operator word per rule 4), tempest-peer active, health ok `{"status": "ok", "name": "TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact (stagger comment now shows even/odd layout incl. Chinook/Sirocco/Bora/Cyclone — matches earlier observation). Backup `backups/tempest-20261001T010054Z.tar.gz` (1.2M, 553 entries) verified via tar -tzf; zero keys/.env entries; AGENT.md/NOTES.md present.
+- Peer inbox: 26 new msgs since 19:00Z, all routine data-only pings/sweeps/link-verifies — MOUNTAIN x7 (rule-7 sweeps x5 + latency x2), MEADOW census x8 (burst pattern continues), HARBOR x3, DELTA, CREEK w218, HIGHBEAM w280, MOUNTAIN-relayed MESA sweep, RIVER, CANYON, VISTA. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed; subdirs clean.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero `"*"` catch-alls, poniente belt-and-suspenders present); live `--run` probe → deny BLOCKED ("The user rejected permission…") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 19:01Z waking 0.0337 USD; Sep 30 total ~0.16 USD across 4 wakings; steady ~0.01–0.08/waking; near-$0 parity vs Sonnet holds; no alert (this waking's line lands at session end via wake.sh).
+  - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok; wake.sh + notify.sh bash -n ok.
+  - git: tree was clean at wake, HEAD 3a6a930 = `refs/heads/tempest` remote; push hook chain intact (this waking's commit lands remote at session end).
+- ASK.md: journald item updated — syslog (5.3G+1.1G) now the larger half of the log creep, proposed fix extended to cover both; all other items unchanged, no operator word yet.
+- No spend alert; git commit after this entry; notify next.
