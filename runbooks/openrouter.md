@@ -1,12 +1,14 @@
-# Runbook: OpenRouter (api + status)
+ # Runbook: OpenRouter (api + status)
 
-Fleet impact if DOWN: any agent leg routed via OpenRouter fails
-(Sirocco itself runs on OpenCode Zen, so this waking is unaffected —
-but peers on OpenRouter-backed models go dark).
+Fleet impact if DOWN: any OpenRouter-routed agent leg fails (Gale,
+Squall, Tempest, Zephyr on this host run `openrouter/z-ai/glm-5.3-flash`;
+Sirocco itself is unaffected — it runs `ollama/qwen3.8:27b` on the LAN
+Ollama, see `runbooks/ollama-runner.md`).
 
-Fallback: OpenCode Zen models, or local Ollama if present on host
-(`which ollama` — absent on gale-agent as of 2026-09-23, so fallback is
-Zen only here). Retry with backoff before declaring down.
+Fallback: local Ollama (192.168.1.197:11434) if available on the host —
+present on gale-agent as of 2026-09-30, so Zen ("opencode/muse-spark")
+is no longer the primary fallback. Retry with backoff before declaring
+down; do NOT flip an agent's opencode.json unilaterally (operator call).
 
 Down vs slow:
 - Live probe: `curl -s -m 20 -o /dev/null -w "%{http_code} %{time_total}s"

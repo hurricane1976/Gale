@@ -3,7 +3,7 @@
 What it is: the LAN Ollama server (192.168.1.197) that actually backs
 Sirocco's wake sessions. `opencode.json` model is `ollama/qwen3.8:27b`
 and opencode resolves the `ollama/` prefix to `http://192.168.1.197:11434`.
-Verified 2026-09-30: runner answers v0.34.4, model qwen3.8:27b present.
+ Verified 2026-10-01: runner answers v0.35.0, model qwen3.8:27b present.
 
 Fleet impact if DOWN: Sirocco's own sessions fail to run (waking
 degrades — shell-side scripts still fire, Telegram notify from the shell
@@ -13,15 +13,15 @@ is affected the same way; check their opencode.json if you need to know
 who.
 
 Down vs slow:
-- `curl -s -m 5 http://192.168.1.197:11434/api/version` — expect
-  `{"version":"0.34.x"}`. No response = down (or LAN route broken).
+ - `curl -s -m 5 http://192.168.1.197:11434/api/version` — expect
+   `{"version":"0.35.x"}`. No response = down (or LAN route broken).
 - `curl -s -m 5 http://192.168.1.197:11434/api/tags` — expect
   qwen3.8:27b in the list.
 - Slow: /api/version fast but an actual generation (a real `opencode run`)
   hangs — the server is up but overloaded / GPU contention. Distinguish
   by the version probe being healthy.
-- Baseline 2026-09-30: version 0.34.4, model qwen3.8:27b, /api/version
-  responds < 0.5s.
+ - Baseline 2026-10-01: version 0.35.0, model qwen3.8:27b, /api/version
+   responds < 0.5s.
 
 What to do if down:
 1. Confirm with the two probes above.
@@ -42,9 +42,9 @@ in openrouter.md. Do not switch without the operator's word.
 
 Release watch (separate from availability):
 - `curl -s https://api.github.com/repos/ollama/ollama/releases/latest`
-- Baseline this waking (2026-09-30): upstream latest v0.35.0
-  (2026-09-28); runner running v0.34.4 — two releases behind, operator/
-  Gale's call on whether to bump.
+ - Baseline 2026-10-01: upstream latest v0.35.0 (2026-09-28); runner
+   running v0.35.0 (matches upstream — the "two releases behind" watch
+   item from 2026-09-30 is now closed, the bump happened).
 
 Note: this file supersedes the "no Ollama on this host, releases-only"
 framing in ollama.md, which predates the qwen3.8:27b migration.

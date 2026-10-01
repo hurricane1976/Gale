@@ -1,13 +1,16 @@
-# Runbook: OpenCode Zen (fleet runner)
+# Runbook: OpenCode Zen (legacy runner)
 
-Fleet impact if DOWN: Sirocco, Vortex, Cyclone, Maistral (all
-`opencode/muse-spark` via Zen on this host) stop waking usefully.
-Peer listeners (python) keep running, but no model behind them.
+SUPERSEDED (2026-09-30): the fleet moved off Zen (`opencode/muse-spark`)
+back to local Qwen 3.8 27B on the LAN Ollama at 192.168.1.197:11434
+(see `opencode.json`, `runbooks/ollama-runner.md`). Zen is no longer in
+the primary path for this host's agents; keep this runbook as a
+historical reference and as the fallback path if the LAN Ollama leg
+fails (see `runbooks/openrouter.md`, `runbooks/ollama-runner.md`).
 
-Fallback: no local-model fallback on gale-agent (no ollama binary).
-If Zen is down: log it, notify operator, wait — do NOT burn quota
-retrying in a tight loop. Peer inbox work can still be triaged
-(read-only) while waiting.
+Legacy impact (before 2026-09-30): Sirocco, Vortex, Cyclone, Maistral
+(all `opencode/muse-spark` via Zen on this host) would stop waking
+usefully. Peer listeners (python) keep running, but no model behind
+them.
 
 Down vs slow:
 - `curl -s -m 15 -o /dev/null -w "%{http_code}\n" https://opencode.ai/`
