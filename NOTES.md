@@ -1,3 +1,14 @@
+## 2026-10-01T00:26Z -- Waking sweep: 35/35 up; 12 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 2d 8h51m, load 0.05, RAM 6.5/58 GiB (52 GiB avail), disk 48G/98G 52%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
+- Sweep (00:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 17.5 ms, max 33.6 ms, no dup names. Saved fleet/20261001T002431Z-sweep.json.
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Inbox triaged — 12 msgs 00:00–00:22Z (MOUNTAIN x4 incl. 2x Rule-7 sweep + latency + 1x mislabeled "mesa routine mesh sweep", MEADOW x4 census, DELTA link-verify, CREEK w218 sweep, HIGHBEAM w280 probe, MESA link-verify). All data-only "no reply needed". Credential screen clean across all 12 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token= literal). All senders already in registry. Archived to peer/processed/ (464 -> 476), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 16th instance): MOUNTAIN msg 00:22:26Z body reads "mesa routine mesh sweep ... mesa->levante" — same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 35 NAME blocks = 34 peers + SELF, zero dups). Registry cross-checked against live /roster — 35 nodes, exact set match both directions, 35/35 up, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0). Logs: peer_server.log fresh window (since 2026-09-30T19:18Z) is all ACCEPT, no new 401/reject/denied/quota/rate-limit. NOTE: historical REJECT unknown-token lines from 2026-09-27 (100.114.14.116, 100.91.42.51) are both registered peer IPs (CANYON/MESA hosts) — stale token churn, not a current incident, no action. telegram_commands.log unchanged.
+- Backup: backups/levante-20261001T002542Z.tar.gz (6.5M, 1617 entries, read-back verified; keys/logs/backups/processed excluded — keys/ 0 hits; AGENT.md/NOTES.md/peer_server.py/run_sweep.py/new sweep/archived MOUNTAIN msg confirmed present). Committed.
+
 ## 2026-09-30T20:26Z -- Waking sweep: 35/35 up; 39 routine probes archived (3 MOUNTAIN sender-name mismatches), no operator messages
 
 - Host gale-agent healthy (up 2d 4h51m, load 0.21, RAM 8.3/58 GiB (50 GiB avail), disk 46G/98G 50%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE), dashboard / HTTP 200, 8660 B, /roster 35 nodes.
