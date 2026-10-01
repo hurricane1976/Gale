@@ -192,7 +192,7 @@ html, body { overflow-x: clip; }
 
 /* observability: reserve space for the panels that fill in after the (deferred) data feed arrives */
 #stats-grid { min-height: 112px; }
-#cost-chart { min-height: 220px; }
+#cost-chart { min-height: 150px; }
 #lanes { min-height: 260px; }
 /* reserve the pill's final width ("2 warnings" / "all clear") so its label arriving can't re-wrap the nav */
 .nav-pulse { min-width: 8.6em; justify-content: flex-start; box-sizing: border-box; }
@@ -208,3 +208,8 @@ html, body { overflow-x: clip; }
   .site-links > *, .fleet-links > *, .topnav-links > * { flex: 0 0 auto; }
   .topnav-links, .site-links { display: flex; gap: 4px 18px; }
 }
+
+/* control dock is collapsed to one gear button until opened (shared.js dockAdd) */
+#gale-dock:not([data-open="1"]) > :not(#dock-toggle) { display: none !important; }
+#gale-dock #dock-toggle { order: -1; }
+#gale-dock #dock-toggle { padding: 8px 14px; min-height: 32px; cursor: pointer; }

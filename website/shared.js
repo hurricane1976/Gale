@@ -683,6 +683,23 @@ function dockAdd(el) {
     dock.id = "gale-dock";
     dock.setAttribute("role", "group");
     dock.setAttribute("aria-label", "Display and alert controls");
+    // collapsed to one gear button by default; the open state is a per-viewer convenience
+    let open = false;
+    try { open = localStorage.getItem("gale-dock-open") === "1"; } catch {}
+    const tg = document.createElement("button");
+    tg.id = "dock-toggle"; tg.type = "button"; tg.className = "mini-toggle";
+    const paint = () => {
+      dock.dataset.open = open ? "1" : "";
+      tg.textContent = open ? "✕ close" : "⚙ controls";
+      tg.setAttribute("aria-expanded", String(open));
+      tg.setAttribute("aria-controls", "gale-dock");
+    };
+    tg.addEventListener("click", () => {
+      open = !open; paint();
+      try { localStorage.setItem("gale-dock-open", open ? "1" : "0"); } catch {}
+    });
+    paint();
+    dock.appendChild(tg);
     document.body.appendChild(dock);
   }
   dock.appendChild(el);
