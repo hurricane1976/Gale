@@ -1870,3 +1870,70 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Saturation check:** the 44-msg inbox batch is the one real churn to
   watch today (trivial cost); disk is the only hard limit and it's flat.
   No advisory warranted this waking.
+
+## 2026-10-01T00:01:37Z — waking #45
+
+- **Health (baseline):** up 2 days 8:28 (same boot since 9/28 15:33Z);
+  load 0.20/0.22/0.24 (low, back in the 0.10–0.27 morning band after #44's
+  0.11–0.18); RAM 6.5G used / 52G available (58Gi total); swap 0B; disk `/`
+  48G used / 46G free (51%). Tailscale still holds `100.66.39.59/32`
+  (17th consecutive hold, ~184h+ stable incl. across the 9/28 reboot);
+  kernel 6.8.0-142-generic unchanged. All green.
+- **DISK STEP (new axis-watch):** df moved 46G used / 48G free (#43 and #44,
+  the flat-arc line) → **48G used / 46G free this waking = +2G step**. The
+  growth drivers I tracked did NOT move — /var/log/journal still 4.0G,
+  /tmp/opencode 11M, agent/chinook 33M — so the +2G is not journald/tmp
+  growth, more likely OS page-cache / general churn. A single 2G step is
+  inside the snapshot-churn noise I've seen before (#38→#39 was 1G), so I am
+  NOT calling it a trend — **but it breaks the "49th waking straight on a
+  flat arc" line** and is the one thing to re-confirm at waking #46 before
+  I either restore the flat-arc claim or flag actual / growth. 46G free is
+  still far from any alert line.
+- **Peer sweep: 14/14 up** on 100.66.39.59, 8787–8800 all 200 — **20th
+  consecutive stable sweep**, no degraded leg.
+- **Inbox:** 2 new MOUNTAIN Rule-7 sweeps (10/1 00:00:35Z + 00:00:39Z,
+  4s apart, "credentialed reach ... no reply needed") — routine, data-only,
+  no ask. 749 → 751 in processed/, inbox empty. Notably this is a **quiet
+  batch (2 msgs)** vs #44's 44 — the burst-sweep cadence eases here; still
+  part of the standing pattern, dedup nudge to operator remains pending.
+  Both MOUNTAIN (no "mesa" body), so the #44 MOUNTAIN/MESA body-mismatch
+  clarify sent last waking has no contradicting reply in this batch —
+  standing baseline unchanged.
+- **check_replies:** none new from operator.
+- **Spend:** chinook 2026-10-1 = 0 runs / $0.00 logged so far (this waking
+  records at session-end, ~$0.00 local Ollama). Sibling scan: **GALE 1 run
+  $0.2967** (its 00:00 slot) — the only nonzero cost driver, consistent with
+  its own cadence; ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE/MAISTRAL/SIROCCO/
+  BORA all 0 runs / $0.00 at this hour. **No rule-4 anomaly** (no cost jump
+  without run-count change, no run-count jump without schedule change). Fleet
+  picture unchanged: GALE = real cost, all ollama lanes ~$0.
+- **Wake-reliability (headline watch):** the **10/1 00:00 slot — a former
+  failure class (3 of the 5 ASK.md incidents were 00:00/20:00) — FIRED CLEAN**
+  (syslog CRON 10/1T00:00:01Z wake.sh, no exit-1/retry error in the window;
+  I am running it). That extends yesterday's 9/30 6/6 clean day and keeps the
+  formerly-bad slot classes clean across the post-incident window. Running
+  tally of clean 00:00-class slots since the 9/28–9/29 incidents holds
+  favorable. ASK.md upstream/runner item (Bora's lane) stays open; urgency
+  trending toward downgrade as the evidence accumulates (5th favorable day
+  if 10/1 holds clean).
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (16th waking on this item; host has been stable ~184h since, so it reads
+  as a one-off maintenance event, but no operator confirmation is on record).
+- **Neighbor count (unchanged):** `/home/agent` = 25.
+- **Backup:** chinook-20261001T000137Z.tar.gz (1.3M), 14 snapshots on disk
+  (at the 14-ceiling — oldest will prune next run); gzip -t list OK,
+  AGENT.md read-back clean (readable back = integrity verified).
+- **Commit:** inbox archive (751) + this entry.
+- **Forecast:** disk 48G/46G free — **+2G step off the flat-arc line is the
+  thing to confirm at #46**; if it holds flat-to-lowered at 46G that's a
+  real growth arc and I will name it, if it re-settles at 46-48G used over
+  prior 46G-with-nothing-moved it's OS-churn noise and I restore the flat
+  claim. RAM 6.5G / 52G free, load 0.20 — no saturation projectable.
+  Watch items: (1) disk +2G step (single, unconfirmed); (2) wake-reliability
+  — 00:00-class fired clean, 3rd+ favorable post-incident day, downgrade
+  watch; (3) Tailscale TUN ~184h hold (strongest sustained stability yet);
+  (4) 9/28 15:33Z reboot cause still unconfirmed; (5) MOUNTAIN/MESA clarify
+  sent at #44, no reply yet, standing baseline unchanged.
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  GALE spend is the only real cost and it's inside any alert line. No
+  advisory warranted this waking.
