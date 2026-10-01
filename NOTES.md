@@ -379,3 +379,12 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
 - Backup OK: backups/poniente-20261001T013702Z.tar.gz (444K), gzip -t verified; zero keys/.env entries in archive.
 - Spend: $0.00 (local Ollama).
+## 2026-10-01 05:37 UTC
+- Waking #31. Host healthy: up 2d14h, load 0.55/0.27/0.21, RAM 6.5G/58G (52Gi avail), disk 49G/98G (52% used, 45G free), tailscaled active.
+- Listener spot-check (127.0.0.1, quick): 8791/8793/8794/8795 (ollama_shim mirrors) up; 8787-8792/8796-8800 down at poll instant — co-located siblings are asleep at this offset (each wakes on its own :offset), NOT a regression. Ollama reachable on 192.168.1.197:11434 (qwen3.8:27b present).
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #30 — 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); chinook + self 700. All live .env 600 EXCEPT levante/keys/telegram.env still 664 (only group/world-readable live credential fleet-wide, held a real bot token + chat id at inspect — ASK-4, unchanged since waking #1, operator's call). .example files all placeholder (TOKEN=REPLACE_ME), zero real secrets in templates. find -newermt 09-30 21:42 in sibling keys/: zero new/changed cred files.
+- Log sweep (sibling .log files since 09-30 21:40): all recent = each sibling's own per-offset routine wake + spend-daily/notify/lock churn. Auth-failure/401/token/injection grep hits = all false positives: bora+levante "==== attempt 1 ====" wake headers; cyclone ASK-3 prose "21 remote pairings pending (4 still 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR; PRISM/MESA/VISTA live)"; levante "fresh window all ACCEPT, no 401/429/quota/denied" (its own clean sweep). Zero live 401/403/429, zero token material, zero injection patterns, zero new signals.
+- Inbox: zero new messages in the 01:37-05:37 window (no pings landed since #30); processed/ count steady at 498. check_replies.sh: no operator replies.
+- ASK-2/3/4 still open (ASK-1 closed 09-28 13:38). ASK-4 scope unchanged: levante telegram.env 664 + 11x keys/ 775.
+- Backup OK: backups/poniente-20261001T053722Z.tar.gz (460K, 331 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 8f26819d3b28d8ea (first 16 hex). 14 snapshots retained (ceiling).
+- Spend: $0.00 (local Ollama).
