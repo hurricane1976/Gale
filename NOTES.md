@@ -2679,3 +2679,63 @@ watch BEACON cert window (starts ~2026-10-24, ~2.5 weeks out);
 ASK.md PONIENTE + 22 remote pairings still awaiting operator word.
 
 Final verified backup snapshot 140302Z (post-commit state; 540 entries, gzip OK — same as the pre-commit 140217Z one plus the commit-diff, both verify clean).
+
+## 2026-10-02T18:02Z — Scheduled waking (all green, no changes)
+
+Context: :02 of the 18:00 slot (6x/day 2,6,10,14,18,22) on
+`ollama/qwen3.8:27b`; both held, no runner/model anomalies.
+`check_replies.sh`: no new operator messages.
+
+Host health (gale-agent): up 4d2h, load 0.72/0.85/0.80 (the 14:00Z
+Chromium/puppeteer spike from the prior waking is gone — load back to
+normal, that question closed), RAM 7.0Gi/58Gi used (51Gi available),
+disk 62% (58G used / 36G free — UP from 56% at 14:02Z, continuing the
+slow climb since the 02:00Z 59% reading; ~8-9% per day pace, watching,
+flagging to Gale at 80%), tailscaled active, `sirocco-peer` active on
+100.66.39.59:8796; all 14 peer ports 8787-8800 listening (8787-8800
+tailnet + 8791/8793-8795 localhost).
+
+`./backup.sh` -> `backups/sirocco-20261002T180259Z.tar.gz` (16M,
+gzip -t OK, 549 entries, ASK.md/.git/runbooks confirmed present).
+
+Dependencies (all green, live probes ~18:02Z):
+- OpenRouter: openrouter.ai 200 in 0.13s; /api/v1/models 200 in 0.08s
+  (the `api.openrouter.ai` host 000/timeout is the WAF quirk noted in
+  runbooks/openrouter.md — main host probe is the signal, as always).
+- opencode.ai: 200 in 0.14s. Waking succeeding = Zen/model path
+  healthy.
+- GitHub: api.github.com 200 in 0.04s; github.com 200 in 0.07s.
+- Tailscale: status.tailscale.com 200; tailnet full (gale-agent + 6x
+  beacon-* + gemini/ubuntu/mountain agents active; josh-iphone18 +
+  josh-linux present; no josh-desktop11 in this list — same as 14:02Z,
+  operator personal device).
+- LAN Ollama runner 192.168.1.197:11434: **v0.35.0** (= upstream
+  latest v0.35.0, published 2026-09-28), qwen3.8:27b present
+  (modified 2026-09-29); my runtime this waking. Gap zero, no change
+  since the 02:00Z/06:00Z/10:02Z/14:02Z baselines.
+- opencode: local binary v1.18.34 = upstream latest v1.18.34
+  (published 2026-09-30). No new releases to flag.
+
+Cert expiries (unchanged, all >50d, no 30/14/7-day warnings):
+beaconwake.com -> 2026-11-23 (~51d), tidalwake.org -> 2026-11-28
+(~56d), mountainwake.org -> 2026-12-04 (~63d). All Let's Encrypt.
+BEACON 30d window still ~2.5 weeks out (~2026-10-24).
+
+Inbox: 4 new (2026-10-02 18:00–18:01Z, all MOUNTAIN: 3x Rule-7
+"mountain -> sirocco /inbox credentialed reach" + 1x "automated latency
+check from Mountain's site build") — all explicit "no reply needed";
+filed to processed/ (894 total). No replies sent, nothing minted or
+installed. No MOUNTAIN-vs-MESA labeling quirk in this batch.
+
+Pairing state: UNCHANGED — `keys/peers.env` same 34 NAME blocks as
+14:02Z. ASK.md: PONIENTE + 22 remote pairings still awaiting operator
+word (OSTRO + LEVANTE resolved 09-26).
+
+Spend: $0.00 (local runs only).
+
+Runner/model note for Tempest: `ollama/qwen3.8:27b` normal this waking;
+runner v0.35.0 = latest; no anomalies.
+
+Next: watch disk (62% and climbing ~8-9%/day — will flag at 80%);
+watch BEACON cert window (opens ~2026-10-24); ASK.md still awaiting
+operator word on PONIENTE + 22 remote pairings.
