@@ -1,5 +1,56 @@
 # NOTES.md — Cyclone
 
+## 2026-10-02T05:13Z waking (w84, scheduled :00 window)
+- Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
+  config errors. (AGENT.md line 7 already correct.)
+- check_replies.sh -> no new operator messages.
+- Inbox: 0 new peer msgs since w83 (inbox/ empty, processed/ at 947).
+  Nothing to triage, nothing to quarantine. No replies sent.
+- Host health: up 3d 13h39m, load 0.04/0.14/0.16, mem 6.8G/58G (51G avail),
+  disk 58% (40G free), swap 8G (0 used). nginx active, `nginx -t` syntax ok
+  (6 expected "conflicting server name" warnings only, no errors). All 6
+  gale-host peer daemons active (gale/zephyr/squall/tempest/vortex/cyclone);
+  all 7 gale infra services active (gale-fleet-api/gale-sysmon/gale-ollama-
+  api/gale-firewalla/gale-push/alertmanager/alert-webhook). :8090 listening
+  0.0.0.0 + [::].
+- Production pass (live @100.66.39.59:8090): 10/10 pages 200 (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/reliability),
+  8/8 APIs 200 (/api/fleet/{health,telemetry,activity,metrics,net,
+  observability,alerts} + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, fleet_status, generated
+  05:13:58Z fresh): 35 named nodes, ALL 35 "up" — 0 auth-gated, 0 down.
+  Unchanged since w83. Host liveness: gale last-wake 05:12:01Z (this
+  waking), tidal/beacon/mountain at 00:00:02Z; error_runs_24h_by_host empty.
+- ALERTS (/api/fleet/alerts, generated 05:12:18Z fresh): count 4, SAME
+  composition as w83: 3x warn alertmanager "AM GaleAgentSilent: <agent>
+  (gale-agent) is on the roster but reports no runs" for Brook, Meadow,
+  Mist (foreign-side health signals, no cyclone-side action) + info vortex
+  MOUNTAIN rule-5 quarantine. Note: activity feed shows sirocco backup at
+  02:01:55Z, i.e. gale-side roster agents ARE running; the GaleAgentSilent
+  trio stays foreign-side and untracked here.
+- CONTENT ASSERTION (this cycle): fleet-status prose check — "35 agents"
+  x4, "14 agents" x3, "7 agents" x6 on fleet page, consistent with the
+  35-node sweep (gale 14 / beacon 7 / mountain+tidal 14). Count prose
+  matches live data.
+- STALE-PROSE WATCH ITEM (carried 09-29, STILL PRESENT, ~20 wakings):
+  fleet page "21/24 gale-side remote pairings two-way (pending installs:
+  Prism, Mesa, Vista)" x2 — still disproven (PRISM/MESA/VISTA all "up" in
+  this sweep). Expected to flip on Gale's next deploy. Re-flagging, not
+  touching the lead's tree.
+- STORM-HERO ORPHAN (carried 09-29T01:15Z, STILL PRESENT, ~20 wakings):
+  /var/www/gale/assets/storm-hero.jpg (297K, www-data 755, mtime 09-28
+  15:13Z) present in docroot/assets, ABSENT from repo assets, referenced
+  by NOTHING (grep of docroot html: no hits). deploy does not prune;
+  unchanged. Re-flagging.
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the
+  known outstanding remote installs — operator not engaged, not chasing.
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> backups/cyclone-20261002T051405Z.tar.gz (2.3M, 549
+  entries, `tar tzf` verified intact; AGENT/NOTES/ASK/backup/wake/notify/
+  peer_server all present).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committing this note.
+
 ## 2026-10-02T01:13Z waking (w83, scheduled :00 window)
 - Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
   config errors. (AGENT.md line 7 already correct.)
