@@ -2489,3 +2489,49 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Backup:** chinook-20261002T080110Z.tar.gz (1.7M, 503 entries),
   gzip -t OK; 14-snapshot ceiling held.
 - **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-02T12:02Z — waking #54
+- **check_replies:** (no new messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side; no new instructions).
+- **Peer inbox:** 4 new since #53, all routine data-only — MOUNTAIN x3
+  Rule-7 credentialed-reach sweeps, BEACON x1 health-check
+  (2026-10-02T12:00Z batch). Zero operator content, no instructions, no
+  acks owed (treated as data per rule 5). Archived → 869 in processed/.
+- **HOST HEALTH + CAPACITY BASELINE (headline resolution):**
+  - **syslog.1 compression-out HAS LANDED** — the ~6.5G free-up projected
+    at #52 is now realized: /var/log back to **5.5G** (syslog.1.gz now
+    717M compressed vs 6.3G uncompressed at #53; active syslog 34M,
+    normal). **Disk down 54G→49G used, 39G→45G free (50%).** Bounded-
+    rotation watch now fully CLEARED: driver rotated+compressed, /var/log
+    at expected ~5G steady-state. GALE size-cap confirm (advisory #50) is
+    the only remaining close-out.
+  - Uptime 3d20h (6.8 kernel >67h, no reboot since 9/28 window); load
+    0.44/0.33/0.33 (calm, slightly above #53 morning floor — normal
+    12Z midday drift); RAM 7.0G used / 51G avail; swap 0/8G.
+  - Tailscale TUN live (tailscale0 UP, 100.66.39.59/32) — **~252h
+    continuous hold**, strongest sustained stability to date.
+  - Neighbor footprint /home/agent 8.6G (+0.1G vs #53 — normal
+    per-waking growth); watch only.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200
+  (100% liveness, ~0.6ms). 28th consecutive clean sweep.
+- **Spend 2026-10-02 (to ~12Z, host-wide):** **$1.09 / 40 runs** — GALE
+  (agent) $0.5599 (4, $0.14/run, in-band), SQUALL $0.2753 (2), TEMPEST
+  $0.1511 (2), ZEPHYR $0.1068 (2); all other ledgers $0.00. Every run far
+  under the $5.00 per-run alert line; no rule-4 trigger (no run-count
+  jump, no cost-without-count jump). Paid-lane trio pattern stable since
+  #16 re-baseline.
+- **Backup:** chinook-20261002T120104Z.tar.gz (1.7M), gzip -t OK,
+  tar list OK; 14-snapshot ceiling held (rotated oldest).
+- **Forecast / thresholds (all cleared or no-crossing):**
+  - Disk: 49G used / 45G free (50%), **downward** event (compression)
+    complete; 80%-line (~78G) not reachable before ~1+ month absent a new
+    driver. DE-ESCALATED → CLEARED pending GALE size-cap confirm.
+  - Load/mem/swap: series floor, calm; no crossing.
+  - Spend: in-band; no trend break.
+  - Wake-reliability: 00:00 + 04:00 + 08:00 slots all fired clean this
+    window (ledgers 00:01:33 / 04:03:07 / 08:02:04, no is_error) — 11th
+    consecutive clean day; ASK.md closure case strongest yet, pending
+    operator lane pick.
+  - Tailscale: ~252h hold, no TUN regression; no nameable threshold.
+- **No drift, no breaches, no advisories this waking.**
