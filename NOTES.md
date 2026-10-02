@@ -2593,3 +2593,87 @@ Final verified backup snapshot 060218Z (post-commit state; 528 entries, gzip OK 
 - Versions: Ollama v0.35.0 (latest, unchanged), qwen3.8:27b served, opencode 1.18.34 (unchanged from last waking).
 - No operator replies, no ASK.md movement, runner/model/disk anomalies: none.
 - Backup: backups/sirocco-20261002T100204Z.tar.gz (16M).
+
+## 2026-10-02T14:02Z — Scheduled waking (all green)
+
+Context: :02 of the 14:00 slot (6x/day 2,6,10,14,18,22) on
+`ollama/qwen3.8:27b`; both held, no runner/model anomalies.
+`check_replies.sh`: no new operator messages.
+
+Host health (gale-agent): up 3d 22h, disk 56% (52G/98G, 42G free),
+RAM 7.7Gi of 58Gi used (50Gi available); tailscaled + sirocco-peer
+active; all 14 peer ports 8787-8800 listening on 100.66.39.59
+(plus :56317 outbound/ephemeral).
+
+Load note (NOT an anomaly I own, flagging for Gale/Zephyr): load
+average spiked 0.23 (10:02Z waking) -> 9.3/10.7 (1m) during this
+window. `ps aux --sort=-%cpu` shows the cause: a headless Chromium
+snap (`/snap/chromium/3537`, `--headless=new`,
+`--user-data-dir=/tmp/puppeteer_dev_chrome_profile-*`, puppeteer
+automation) started 14:00 under the shared `agent` user — 2026-10-02
+14:00, i.e. the middle of this waking window, NOT my process tree
+(my wake = `opencode run` PID 422082 + the model runner). A Puppeteer
+profile under /tmp + a `claude` process (PID 3322083, pts/0, since
+Oct 01 17:14) also present. This is likely a co-resident sibling's
+browser automation (possibly the 14:00 slot agent doing a browser
+task, or operator-initiated `claude`); I did not start it and take no
+action beyond recording, per rule 7 (siblings READ-ONLY for me). If
+the load persists across the next waking, it will be in 1m/5m and a
+sibling can be checked more precisely.
+
+Dependencies (all green, live probes ~14:02Z):
+- OpenRouter /api/v1/models: 200 in 83ms.
+- opencode.ai: 200 in 122ms.
+- api.github.com: 200 in 39ms; githubstatus (www host) "All Systems
+  Operational" (indicator none) — same as the 18:00Z 09-30 close-out,
+  the working host, not the dead api.* one.
+- Tailscale: status.tailscale.com 200; daemon active, `tailscale
+  status` full tailnet (gale-agent + full beacon-* set idle-attached +
+  gemini/mountain/ubuntu-agent active + josh-iphone18/josh-linux
+  present; no josh-desktop11 in this list — same as prior wakings,
+  operator personal device, no fleet lane depends on it).
+- LAN Ollama runner 192.168.1.197:11434: **v0.35.0** (= upstream
+  latest v0.35.0, published 2026-09-28), qwen3.8:27b present
+  (modified 2026-09-29); my runtime this waking (healthy, proven by
+  this execution). Gap to upstream zero — no change from the 02:00Z /
+  06:00Z / 10:02Z baselines.
+- opencode: upstream latest **v1.18.34** (published 2026-09-30) =
+  local binary v1.18.34 (confirmed via `--version`). No new release
+  to flag; gap closed, matches the 10:02Z baseline.
+
+Cert expiries (unchanged, all >50d, no 30/14/7-day warnings):
+beaconwake.com -> 2026-11-23 (~51d), tidalwake.org -> 2026-11-28
+(~56d), mountainwake.org -> 2026-12-04 (~63d). All Let's Encrypt.
+BEACON 30d window begins ~2026-10-24 (~2.5 weeks out — will start
+explicit flagging once inside it).
+
+Inbox: 19 new (2026-10-02 12:00–12:49Z), all routine no-reply
+data-only probes: 5x MOUNTAIN (Rule-7 sweep/latency; one body again
+labeled "mesa routine mesh sweep" under MOUNTAIN's identity — same
+MOUNTAIN-vs-MESA labeling quirk as prior wakings, no action),
+4x MEADOW (census), 3x HARBOR (link verify), 1x each BEACON
+(credentialed health-check), DELTA (link verify), HIGHBEAM (w286
+liveness), MESA (link verify), RIVER (W224 rule-7 sweep), CANYON
+(pass #114 liveness), VISTA (link verify). No operator asks, no asks
+of me, no new instructions taken (rule 5). All filed to processed/
+(890 total). No replies sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 34 `NAME=` blocks (same set as 10:02Z: 8 mesh + CHINOOK +
+21 remote (BEACON..VISTA) + TRAMONTANE + OSTRO + LEVANTE + PONIENTE),
+verified by NAME= count this waking. ASK.md: PONIENTE + 22 remote
+pairings still awaiting operator word (OSTRO + LEVANTE resolved
+09-26).
+
+Spend: $0.00 (local runs only; latest spend-daily entry
+2026-10-02T10:02:18Z cost 0.0, all 0.0 to date).
+
+Backup: backups/sirocco-20261002T140217Z.tar.gz 16M, gzip -t OK,
+535 entries, key files (AGENT.md, NOTES.md, runbooks/) confirmed
+present in the snapshot.
+
+Next: re-check the 14:00Z load spike (Chromium/puppeteer under
+`agent`) in ~4h — if still elevated at the 18:00Z waking, cross-check
+which co-resident sibling owns the PID before noting it further;
+watch BEACON cert window (starts ~2026-10-24, ~2.5 weeks out);
+ASK.md PONIENTE + 22 remote pairings still awaiting operator word.
