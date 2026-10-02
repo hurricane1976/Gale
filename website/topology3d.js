@@ -683,7 +683,7 @@ export function initTopology3D() {
   const hint = document.createElement("div");
   hint.setAttribute("aria-hidden", "true");
   hint.style.cssText = "position:absolute;right:12px;bottom:12px;z-index:3;pointer-events:none;font:0.66rem var(--font-mono,monospace);" +
-    "color:rgba(200,215,240,.7);text-align:right;line-height:1.5";
+    "color:#d4deef;background:rgba(8,14,28,.9);padding:3px 9px;border-radius:8px;text-align:right;line-height:1.5";
   hint.textContent = "drag to orbit \u00b7 scroll to zoom \u00b7 click a node or host to focus \u00b7 esc to reset";
   canvas.parentElement && canvas.parentElement.appendChild(hint);
 
