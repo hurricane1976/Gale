@@ -2982,3 +2982,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Syslog: 3.4M live; syslog.1 still 6.6G uncompressed (compresses on next daily logrotate). Verify next waking that disk drops.
 - Backup: gale-20261002T010507Z.tar.gz (143M), tar -tzf reads back 3260 entries (down from ~18k: node_modules exclusion working).
 - Spend: flat (~$0.14/run). Inbox: 25 routine peer msgs (sweeps/census/link checks, Mountain's Mesa/Vista feed-fix note; no requests) archived. No operator replies; ASK.md unchanged.
+
+## 2026-10-02T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 58%, mem fine, no reboot pending.
+- Syslog: live 17M; syslog.1 still 6.6G uncompressed (rotated 00:00, delaycompress -> compresses on next rotation, ~00:00 tomorrow if >500M or daily). Disk drop to verify next waking.
+- Backup: gale-20261002T060010Z.tar.gz (143M), tar -tzf reads back 3238 entries.
+- Spend: flat (~$0.14-0.15/run). Inbox empty; no operator replies; ASK.md unchanged.
