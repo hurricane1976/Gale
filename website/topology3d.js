@@ -104,7 +104,12 @@ function program(gl, vs, fs) {
   return p;
 }
 
-export function initTopology3D() {
+/* opts (all optional):
+     nodes:    [{name, host, model, listener, color:[r,g,b]}] roster instead of reading the DOM (status host map)
+     health:   hub colour/label follow host liveness (listener sweep) instead of the agents' average hue
+     autoOpen: open the 3D view on load (default: wide screens only; `true` also on phones)
+   Returns true once running. */
+export function initTopology3D(opts = {}) {
   const toggle = document.getElementById("topo-3d-toggle");
   const canvas = document.getElementById("topo-3d-canvas");
   // fleet.html's SVG is #topo.fleet-topo-svg since the Tidal-style rebuild; the old
@@ -124,7 +129,7 @@ export function initTopology3D() {
     const m = (getComputedStyle(probe).color.match(/\d+/g) || [136, 153, 170]).map(Number);
     return [m[0] / 255, m[1] / 255, m[2] / 255];
   };
-  let nodes = [...document.querySelectorAll(".topo-node")].map((g) => ({
+  let nodes = opts.nodes ? opts.nodes.slice() : [...document.querySelectorAll(".topo-node")].map((g) => ({
     name: g.dataset.name || "",
     host: g.dataset.host || "",
     model: g.getAttribute("data-model") || "",
@@ -197,7 +202,9 @@ export function initTopology3D() {
   /* live packet flow (#3): dots traverse each edge, count/speed follow
      measured tailscale throughput; edges touching a down node dim out.
      Skipped under reduced motion (static graph still renders). */
-  const FLOW_DOTS = 2;
+  // phones / coarse pointers: lighter render (fewer particles, 30 fps, capped DPR) so it stays smooth and cool
+  const LITE = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || innerWidth < 700;
+  const FLOW_DOTS = LITE ? 1 : 2;
   const flowT = new Float32Array(edges.length * FLOW_DOTS);
   const flowPos = new Float32Array(edges.length * FLOW_DOTS * 3);
   const flowCol = new Float32Array(edges.length * FLOW_DOTS * 3);
@@ -216,9 +223,10 @@ export function initTopology3D() {
   let fitLocked = false; // user zoomed: stop auto-fitting
   const cam = [0, 0, 0], camGoal = [0, 0, 0];      // orbit target (eases to a focused node)
   let focusIdx = -1, focusDist = 4.2, lastInteract = performance.now();
+  let pinchActive = false;
   const alertSev = new Uint8Array(N);              // 0 none, 1 warn, 2 crit (from /api/fleet/alerts)
   const alertText = new Map();                     // node index -> alert text
-  const starN = 260, starPos = new Float32Array(starN * 3), starCol = new Float32Array(starN * 3);
+  const starN = LITE ? 90 : 260, starPos = new Float32Array(starN * 3), starCol = new Float32Array(starN * 3);
   for (let i = 0; i < starN; i++) { // fixed world-space starfield: parallaxes as the camera orbits
     const th = rng() * Math.PI * 2, ph = Math.acos(2 * rng() - 1), r = 16 + rng() * 14, b = 0.12 + rng() * 0.3;
     starPos.set([r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)], i * 3);
@@ -262,7 +270,7 @@ export function initTopology3D() {
   }
 
   const resize = () => {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const dpr = Math.min(devicePixelRatio || 1, LITE ? 1.5 : 2);
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
       canvas.width = w * dpr; canvas.height = h * dpr;
@@ -284,10 +292,11 @@ export function initTopology3D() {
   });
   if (canvas.parentElement) canvas.parentElement.appendChild(labelBox);
 
-  let raf = 0;
+  let raf = 0, frameN = 0;
   const draw = () => {
     raf = requestAnimationFrame(draw);
     if (document.hidden) return;
+    if (LITE && (frameN++ & 1)) return; // 30 fps on phones
     step();
     resize();
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -351,7 +360,7 @@ export function initTopology3D() {
     gl.enableVertexAttribArray(na2);
     gl.vertexAttribPointer(na2, 3, gl.FLOAT, false, 0, 0);
     gl.uniformMatrix4fv(gl.getUniformLocation(np, "u_mvp"), false, m);
-    const dpr3 = devicePixelRatio || 1;
+    const dpr3 = Math.min(devicePixelRatio || 1, LITE ? 1.5 : 2);
     const uMode = gl.getUniformLocation(np, "u_mode");
     const uSize = gl.getUniformLocation(np, "u_size");
     const ns = gl.getAttribLocation(np, "a_scale");
@@ -475,7 +484,7 @@ export function initTopology3D() {
   // --- interaction ---
   canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
   canvas.addEventListener("pointermove", (e) => {
-    if (!dragging) return;
+    if (!dragging || pinchActive) return;
     yaw += (e.clientX - lastX) * 0.008;
     pitch = Math.max(-1.4, Math.min(1.4, pitch + (e.clientY - lastY) * 0.008));
     lastX = e.clientX; lastY = e.clientY;
@@ -596,6 +605,13 @@ export function initTopology3D() {
       });
     }
     colors.set(hubColors, N * 3);
+    if (opts.health) { // hub colour + label follow the listener sweep: green all up, amber partial, red none
+      hostNames.forEach((h, hi) => {
+        const up = members[hi].filter((i) => !live3d.down.has(nodes[i].listener)).length, tot = members[hi].length;
+        colors.set(up === tot ? [0.2, 0.85, 0.55] : up === 0 ? [1.0, 0.3, 0.33] : [1.0, 0.72, 0.2], (N + hi) * 3);
+        labels[hi].textContent = `${h || "host"} \u00b7 ${up}/${tot} up`;
+      });
+    }
     // size follows the metric too (0.8x .. 2.0x) so heavy agents read at a glance, not just by hue
     nodeScale.fill(1);
     if (layer && heatStats) {
@@ -684,7 +700,9 @@ export function initTopology3D() {
   hint.setAttribute("aria-hidden", "true");
   hint.style.cssText = "position:absolute;right:12px;bottom:12px;z-index:3;pointer-events:none;font:0.66rem var(--font-mono,monospace);" +
     "color:#d4deef;background:rgba(8,14,28,.9);padding:3px 9px;border-radius:8px;text-align:right;line-height:1.5";
-  hint.textContent = "drag to orbit \u00b7 scroll to zoom \u00b7 click a node or host to focus \u00b7 esc to reset";
+  hint.textContent = LITE ? "drag to orbit \u00b7 pinch to zoom \u00b7 tap a node"
+                          : "drag to orbit \u00b7 scroll to zoom \u00b7 click a node or host to focus \u00b7 esc to reset";
+  if (LITE) hint.style.cssText = hint.style.cssText.replace("right:12px;bottom:12px", "left:12px;top:10px") + ";font-size:.6rem";
   canvas.parentElement && canvas.parentElement.appendChild(hint);
 
   function focusOn(i) {
@@ -742,9 +760,37 @@ export function initTopology3D() {
   loadAlerts();
   setInterval(loadAlerts, 60000);
 
-  // open in 3D by default where it's cheap and expected: wide screens, motion allowed, not data-saver
+  /* touch: vertical swipes keep scrolling the page (pan-y), horizontal drags orbit, two fingers pinch-zoom */
+  if (LITE) canvas.style.touchAction = "pan-y";
+  const touches = new Map();
+  let pinchStart = 0, pinchDist0 = 0;
+  const tdist = () => { const [a, b] = [...touches.values()]; return Math.hypot(a.x - b.x, a.y - b.y) || 1; };
+  canvas.addEventListener("pointerdown", (e) => {
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 2) { pinchActive = true; pinchStart = tdist(); pinchDist0 = dist; fitLocked = true; }
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!touches.has(e.pointerId)) return;
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinchActive && touches.size === 2) {
+      dist = Math.max(1.5, Math.min(30, pinchDist0 * (pinchStart / tdist()))); // fingers apart = closer
+      lastInteract = performance.now();
+    }
+  });
+  const endTouch = (e) => {
+    touches.delete(e.pointerId);
+    if (touches.size < 2) pinchActive = false;
+    if (e.type === "pointercancel") dragging = false;
+  };
+  canvas.addEventListener("pointerup", endTouch);
+  canvas.addEventListener("pointercancel", endTouch);
+
+  // open in 3D by default where it's cheap and expected: wide screens (or when the page asks, e.g. the
+  // home/status maps, which run the lite renderer on phones), motion allowed, not data-saver
   const params = new URLSearchParams(location.search);
-  if (!REDUCED3D && innerWidth >= 700 && document.documentElement.dataset.saver !== "1" && !params.has("svg") && canvas.hidden) {
+  const want = opts.autoOpen !== undefined ? opts.autoOpen : innerWidth >= 700;
+  if (want && !REDUCED3D && document.documentElement.dataset.saver !== "1" && !params.has("svg") && canvas.hidden) {
     requestAnimationFrame(() => toggle.click());
   }
+  return true;
 }

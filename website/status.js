@@ -1692,3 +1692,23 @@ if (typeof EventSource !== "undefined") {
     if (++fleetFailures >= 3) esFleet.close(); // polling keeps the cards fresh
   };
 }
+
+
+/* host map (3D): loaded after the board has settled so it never competes with first paint. The panel is
+   in the HTML (so there is no layout jump when it opens); where it can't run (no WebGL, reduced motion,
+   data-saver) it is hidden straight away instead of flashing an empty frame. */
+try {
+  const sec = typeof document !== "undefined" && document.getElementById && document.getElementById("sec-hostmap");
+  if (sec) {
+    let gl = null;
+    try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+    const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const saver = !!(document.documentElement && document.documentElement.dataset && document.documentElement.dataset.saver === "1");
+    if (!gl || reduced || saver || typeof requestIdleCallback !== "function") {
+      sec.hidden = true;
+    } else {
+      const go = () => setTimeout(() => import("./hostmap.js").then((m) => m.initHostMap()).catch(() => { sec.hidden = true; }), 600);
+      if (document.readyState === "complete") go(); else window.addEventListener("load", go, { once: true });
+    }
+  }
+} catch { /* decoration only: never let the host map break the board */ }

@@ -122,7 +122,7 @@ lazyHeartbeat();
   const io = new IntersectionObserver((es) => {
     if (!es.some((e) => e.isIntersecting)) return;
     io.disconnect();
-    import("./topology3d.js").then((t) => t.initTopology3D()).catch(() => {});
+    import("./topology3d.js").then((t) => t.initTopology3D({ autoOpen: true })).catch(() => {});
   }, { rootMargin: "500px 0px" });
   io.observe(sec);
 })();

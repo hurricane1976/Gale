@@ -100,6 +100,15 @@
         <p class="mini-note" id="fleet-24h-fresh"></p>
       </section>
 
+      <section class="reveal ops-panel span-full" id="sec-hostmap" aria-labelledby="h-hostmap">
+        <h2 class="panel-title" id="h-hostmap">Host map <span>live 3D &middot; hub colour = host health &middot; amber/red halos = open alerts</span></h2>
+        <div class="fleet-3d fleet-3d-keep" id="host-topo">
+          <button id="topo-3d-toggle" type="button" hidden>3d view</button>
+          <div id="topo-home-stub" hidden></div>
+          <canvas id="topo-3d-canvas" hidden role="img" aria-label="Interactive 3D host map: each host is a hub that turns amber or red when its agents stop answering; agents orbit their host. Drag to orbit, pinch or scroll to zoom, tap a node to focus. Per-host health is also listed in the Fleet activity cards above."></canvas>
+        </div>
+      </section>
+
       <section class="reveal ops-panel span-full" id="sec-wake-heat" aria-labelledby="h-wake-heat">
         <h2 id="h-wake-heat" class="panel-title">Wake cadence &middot; 14 days</h2>
         <p class="sec-lede" style="margin-top:-6px">One cell per 6h slot per local agent, folded from the wake-run roll-up behind <code>api/fleet/telemetry</code> (survives log rotation via <code>runs-history.jsonl</code>). Green = woke (deeper = longer session), red = a run ended in error, faint = no wake in that slot. Missed-wake alerting lives in <code>gale_wake.prom</code> (<code>tools/wake_bridge.py</code> &rarr; <code>gale-wake.rules.yml</code>); this board shows the raw history.</p>
