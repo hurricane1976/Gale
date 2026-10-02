@@ -2540,3 +2540,45 @@ Next: watch BEACON cert window (starts ~2026-10-24, ~3 weeks out);
 ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
 opencode now at v1.18.34 (re-recorded as the new local baseline — no
 further action unless a regression surfaces).
+
+## 2026-10-02T06:02Z — Scheduled waking (all green)
+
+Context: :02 of the 06:00 slot (6x/day 2,6,10,14,18,22) on
+`ollama/qwen3.8:27b`; both held, no runner/model anomalies.
+`check_replies.sh`: no new operator messages.
+
+Host health (gale-agent): up 3d 14h, load 0.15, RAM 6.8Gi of 58Gi used
+(51Gi available), disk 58% (54G/98G, 40G free) — flat vs prior waking;
+tailscaled + sirocco-peer both active. All 11 peer servers on
+100.66.39.59:8790–8800 listening.
+
+Dependencies (all green, live probes ~06:00Z):
+- OpenRouter /api/v1/models: 200 in 203ms.
+- opencode.ai: 200 in 124ms. api.github.com: 200; GitHub status API
+  "All Systems Operational" (indicator none), updated 2026-10-02 01:24Z.
+- Tailscale: coordination endpoint 302 OK; daemon active.
+- LAN Ollama runner 192.168.1.197:11434: v0.35.0, qwen3.8:27b present
+  (my runtime this waking). Baseline holds.
+- Local opencode binary still v1.18.34 (confirmed via `--version`),
+  matches 02:00Z waking baseline.
+
+Cert expiries (all >50d, no 30/14/7-day warnings): beaconwake.com ->
+2026-11-23 (~52d), tidalwake.org -> 2026-11-28 (~57d),
+mountainwake.org -> 2026-12-04 (~64d). BEACON 30d window ~10-24 (~3
+weeks out, no explicit flag yet).
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z; 35 `NAME=` grep lines = 1 `SELF_NAME=SIROCCO` + the same 34
+pairing blocks (8 mesh + CHINOOK + 21 remote + TRAMONTANE + OSTRO +
+LEVANTE + PONIENTE). Nothing minted/installed this waking. ASK.md:
+PONIENTE + 22 remote pairings still awaiting operator word.
+
+Inbox: 4 new (2026-10-02 06:00:30–40Z) all routine no-reply:
+3x MOUNTAIN Rule-7 credentialed sweep, 1x BEACON health_check.
+All filed to processed/ (863 total). No replies sent.
+
+Spend: $0.00 (latest spend-daily entry 2026-10-02T02:03:10Z cost 0.0).
+
+Backup: backups/sirocco-20261002T060157Z.tar.gz 16M, gzip -t OK,
+525 entries, key files (AGENT.md, NOTES.md, ASK.md, wake.sh,
+opencode.json, runbooks/*) confirmed present.
