@@ -189,6 +189,8 @@ export function initTopology3D() {
   const flowT = new Float32Array(edges.length * FLOW_DOTS);
   const flowPos = new Float32Array(edges.length * FLOW_DOTS * 3);
   const flowCol = new Float32Array(edges.length * FLOW_DOTS * 3);
+  const ptBuf = gl.createBuffer(), ptColBuf = gl.createBuffer();
+  const alertPos = new Float32Array(N * 3), alertCol = new Float32Array(N * 3);
   const flowBuf = gl.createBuffer();
   const flowColBuf = gl.createBuffer();
   const live3d = { mbps: 0.5, down: new Set() };
@@ -198,6 +200,16 @@ export function initTopology3D() {
   let yaw = 0.6, pitch = 0.35, dist = 4.2;
   let dragging = false, lastX = 0, lastY = 0;
   let fitLocked = false; // user zoomed: stop auto-fitting
+  const cam = [0, 0, 0], camGoal = [0, 0, 0];      // orbit target (eases to a focused node)
+  let focusIdx = -1, focusDist = 4.2, lastInteract = performance.now();
+  const alertSev = new Uint8Array(N);              // 0 none, 1 warn, 2 crit (from /api/fleet/alerts)
+  const alertText = new Map();                     // node index -> alert text
+  const starN = 260, starPos = new Float32Array(starN * 3), starCol = new Float32Array(starN * 3);
+  for (let i = 0; i < starN; i++) { // fixed world-space starfield: parallaxes as the camera orbits
+    const th = rng() * Math.PI * 2, ph = Math.acos(2 * rng() - 1), r = 16 + rng() * 14, b = 0.12 + rng() * 0.3;
+    starPos.set([r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)], i * 3);
+    starCol.set([b * 0.8, b * 0.9, b], i * 3);
+  }
 
   const VMAX = 0.05;
 
@@ -225,6 +237,15 @@ export function initTopology3D() {
       }
     }
   };
+
+  function camMatrix() {
+    const eye = [
+      cam[0] + dist * Math.cos(pitch) * Math.sin(yaw),
+      cam[1] + dist * Math.sin(pitch),
+      cam[2] + dist * Math.cos(pitch) * Math.cos(yaw),
+    ];
+    return mul4(mat4Perspective(0.9, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 80), mat4LookAt(eye, cam, [0, 1, 0]));
+  }
 
   const resize = () => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -269,15 +290,12 @@ export function initTopology3D() {
       const want = Math.max(4.2, Math.min(30, maxR * 2.5));
       dist += (want - dist) * 0.04;
     }
-    const eye = [
-      dist * Math.cos(pitch) * Math.sin(yaw),
-      dist * Math.sin(pitch),
-      dist * Math.cos(pitch) * Math.cos(yaw),
-    ];
-    const mvp = mat4Perspective(0.9, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 50);
-    // fold lookAt into a single matrix (column-major multiply)
-    const view = mat4LookAt(eye, [0, 0, 0], [0, 1, 0]);
-    const m = mul4(mvp, view);
+    if (focusIdx >= 0) for (let c = 0; c < 3; c++) camGoal[c] = pos[focusIdx * 3 + c]; // follow the focused node
+    for (let c = 0; c < 3; c++) cam[c] += (camGoal[c] - cam[c]) * 0.08;
+    if (focusIdx >= 0) dist += (focusDist - dist) * 0.07;
+    // idle auto-orbit: a slow drift after a few seconds without input (never under reduced motion)
+    if (!REDUCED3D && !dragging && focusIdx < 0 && performance.now() - lastInteract > 4000) yaw += 0.0022;
+    const m = camMatrix();
 
     // lines
     let k = 0;
@@ -337,6 +355,38 @@ export function initTopology3D() {
     gl.uniform1f(uSize, 16 * dpr3);
     gl.drawArrays(gl.POINTS, N, H);
 
+    // starfield (behind everything it's drawn first in depth terms only visually: tiny dim cores)
+    const drawPts = (p, c, count, size, mode, additive) => {
+      if (!count) return;
+      gl.bindBuffer(gl.ARRAY_BUFFER, ptBuf); gl.bufferData(gl.ARRAY_BUFFER, p, gl.DYNAMIC_DRAW);
+      gl.enableVertexAttribArray(na); gl.vertexAttribPointer(na, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, ptColBuf); gl.bufferData(gl.ARRAY_BUFFER, c, gl.DYNAMIC_DRAW);
+      gl.enableVertexAttribArray(na2); gl.vertexAttribPointer(na2, 3, gl.FLOAT, false, 0, 0);
+      gl.blendFunc(additive ? gl.ONE : gl.SRC_ALPHA, additive ? gl.ONE : gl.ONE_MINUS_SRC_ALPHA);
+      gl.uniform1f(uMode, mode); gl.uniform1f(uSize, size); gl.drawArrays(gl.POINTS, 0, count);
+    };
+    drawPts(starPos, starCol, starN, 2 * dpr3, 0, false);
+    // alert halos: agents with an open warn/crit alert pulse amber/red (additive halo + tinted core)
+    const tNow = performance.now(), pulse = REDUCED3D ? 1 : 1 + 0.35 * Math.sin(tNow / 330);
+    let an = 0;
+    for (let i = 0; i < N; i++) {
+      if (!alertSev[i]) continue;
+      alertPos.set([pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]], an * 3);
+      alertCol.set(alertSev[i] === 2 ? [1.0, 0.27, 0.3] : [1.0, 0.68, 0.18], an * 3);
+      an++;
+    }
+    if (an) {
+      const ap = alertPos.subarray(0, an * 3), ac = alertCol.subarray(0, an * 3);
+      drawPts(ap, ac, an, 62 * dpr3 * pulse, 1, true);
+      drawPts(ap, ac, an, 12 * dpr3, 0, false);
+    }
+    // focus ring
+    if (focusIdx >= 0) {
+      const fp = new Float32Array([pos[focusIdx * 3], pos[focusIdx * 3 + 1], pos[focusIdx * 3 + 2]]);
+      drawPts(fp, new Float32Array([0.55, 0.75, 1.0]), 1, 96 * dpr3 * pulse, 1, true);
+      drawPts(fp, new Float32Array([1, 1, 1]), 1, (focusIdx >= N ? 20 : 12) * dpr3, 0, false);
+    }
+
     // flow dots (skip entirely under reduced motion)
     if (!REDUCED3D && edges.length) {
       const speed = 0.22 + Math.min(2.5, live3d.mbps / 2) * 0.22; // world units/s
@@ -385,6 +435,11 @@ export function initTopology3D() {
         el.style.left = `${sx * kx}px`;
         el.style.top = `${sy * ky + 14}px`;
       });
+      if (focusIdx >= 0) {
+        const [fx, fy] = project(focusIdx, m);
+        focusLabel.style.left = `${fx * kx}px`;
+        focusLabel.style.top = `${fy * ky - 46}px`;
+      }
     }
   };
 
@@ -556,29 +611,111 @@ export function initTopology3D() {
   canvas.addEventListener("pointermove", (e) => {
     if (dragging) { tip.hidden = true; return; }
     const rect = canvas.getBoundingClientRect();
-    const px = (e.clientX - rect.left) * (gl.drawingBufferWidth / rect.width);
-    const py = (e.clientY - rect.top) * (gl.drawingBufferHeight / rect.height);
-    const eye = [
-      dist * Math.cos(pitch) * Math.sin(yaw),
-      dist * Math.sin(pitch),
-      dist * Math.cos(pitch) * Math.cos(yaw),
-    ];
-    const view = mat4LookAt(eye, [0, 0, 0], [0, 1, 0]);
-    const m = mul4(mat4Perspective(0.9, gl.drawingBufferWidth / gl.drawingBufferHeight, 0.1, 50), view);
-    let best = -1, bestD = 24 * 24;
-    for (let i = 0; i < nodes.length; i++) {
-      const [sx, sy] = project(i, m);
-      const dx = sx - px, dy = sy - py;
-      if (dx * dx + dy * dy < bestD) { bestD = dx * dx + dy * dy; best = i; }
-    }
+    lastInteract = performance.now();
+    const best = pickAt(e.clientX, e.clientY, false);
+    canvas.style.cursor = best === -1 ? "grab" : "pointer";
     if (best === -1) { tip.hidden = true; return; }
     const n = nodes[best];
     const a = heatStats && heatStats.get(n.name.toLowerCase());
     const a2 = a ? `${a.runs_24h ?? "–"} runs · $${(a.cost_24h ?? 0).toFixed(2)} · ${a.error_runs_24h ?? 0} err` : "";
-    tip.innerHTML = `<strong>${esc3d(n.name)}</strong> · ${esc3d(n.model || "")}<br>${esc3d(n.host)}<br>${esc3d(n.listener)}${a2 ? `<br><span style="color:var(--text-faint,#6b7c94)">${esc3d(a2)}</span>` : ""}`;
+    const al = alertText.get(best);
+    tip.innerHTML = `<strong>${esc3d(n.name)}</strong> · ${esc3d(n.model || "")}<br>${esc3d(n.host)}<br>${esc3d(n.listener)}${a2 ? `<br><span style="color:var(--text-faint,#6b7c94)">${esc3d(a2)}</span>` : ""}${al ? `<br><span style="color:${alertSev[best] === 2 ? "#ff7b80" : "#ffb54a"}">\u25cf ${esc3d(al)}</span>` : ""}<br><span style="color:var(--text-faint,#6b7c94)">click to focus</span>`;
     tip.hidden = false;
     tip.style.left = `${Math.min(e.clientX - rect.left + 14, rect.width - 190)}px`;
     tip.style.top = `${Math.max(e.clientY - rect.top - 10, 4)}px`;
   });
   canvas.addEventListener("pointerleave", () => { tip.hidden = true; });
+
+  /* ---- picking, click-to-focus, alert halos, auto-open ---- */
+  // nearest node (or, with hubs=true, host hub) to a client point, by projected screen distance
+  function pickAt(clientX, clientY, hubs) {
+    const rect = canvas.getBoundingClientRect();
+    const px = (clientX - rect.left) * (gl.drawingBufferWidth / rect.width);
+    const py = (clientY - rect.top) * (gl.drawingBufferHeight / rect.height);
+    const m = camMatrix();
+    let best = -1, bestD = 24 * 24 * (devicePixelRatio > 1 ? 2.2 : 1);
+    const upto = hubs ? N + H : N;
+    for (let i = 0; i < upto; i++) {
+      const [sx, sy] = project(i, m);
+      const dx = sx - px, dy = sy - py, d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+
+  const focusLabel = document.createElement("div");
+  focusLabel.setAttribute("aria-live", "polite");
+  focusLabel.hidden = true;
+  focusLabel.style.cssText = "position:absolute;z-index:3;transform:translate(-50%,0);pointer-events:none;padding:4px 10px;" +
+    "border-radius:10px;font:600 0.74rem var(--font-mono,monospace);white-space:nowrap;color:#fff;" +
+    "background:rgba(20,40,90,.82);border:1px solid rgba(140,185,255,.6);box-shadow:0 0 18px rgba(110,168,245,.5)";
+  canvas.parentElement && canvas.parentElement.appendChild(focusLabel);
+
+  const hint = document.createElement("div");
+  hint.setAttribute("aria-hidden", "true");
+  hint.style.cssText = "position:absolute;right:12px;bottom:12px;z-index:3;pointer-events:none;font:0.66rem var(--font-mono,monospace);" +
+    "color:rgba(200,215,240,.7);text-align:right;line-height:1.5";
+  hint.textContent = "drag to orbit \u00b7 scroll to zoom \u00b7 click a node or host to focus \u00b7 esc to reset";
+  canvas.parentElement && canvas.parentElement.appendChild(hint);
+
+  function focusOn(i) {
+    if (i < 0) return clearFocus();
+    focusIdx = i;
+    fitLocked = true;
+    focusDist = i >= N ? 3.6 : 2.3;
+    lastInteract = performance.now();
+    const n = i < N ? nodes[i] : null;
+    const al = alertText.get(i);
+    focusLabel.textContent = i < N
+      ? `${n.name} \u00b7 ${n.model || "agent"} \u00b7 ${n.host}${al ? " \u00b7 \u25cf " + al : ""}`
+      : `${hostNames[i - N] || "host"} \u00b7 ${members[i - N].length} agents`;
+    focusLabel.hidden = false;
+    for (const g of svg.querySelectorAll(".topo-node")) g.classList.toggle("is-focus", i < N && g.dataset.name === n.name);
+  }
+  function clearFocus() {
+    focusIdx = -1; camGoal[0] = camGoal[1] = camGoal[2] = 0;
+    fitLocked = false; focusLabel.hidden = true;
+    for (const g of svg.querySelectorAll(".topo-node.is-focus")) g.classList.remove("is-focus");
+  }
+  const byName = (name) => nodes.findIndex((n) => n.name.toLowerCase() === String(name || "").toLowerCase());
+
+  let downX = 0, downY = 0;
+  canvas.addEventListener("pointerdown", (e) => { downX = e.clientX; downY = e.clientY; lastInteract = performance.now(); });
+  canvas.addEventListener("pointerup", (e) => {
+    if (Math.hypot(e.clientX - downX, e.clientY - downY) > 5) return; // that was a drag
+    focusOn(pickAt(e.clientX, e.clientY, true));
+  });
+  canvas.addEventListener("wheel", () => { lastInteract = performance.now(); }, { passive: true });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && focusIdx >= 0 && !canvas.hidden) clearFocus(); });
+  // other parts of the page (the nav alert panel) can focus an agent
+  window.addEventListener("gale:focus-agent", (e) => { const i = byName(e.detail && e.detail.agent); if (i >= 0) focusOn(i); });
+  window.addEventListener("gale:focus-clear", () => clearFocus());
+
+  // alert halos: any warn/crit alert text that names an agent lights that agent up
+  async function loadAlerts() {
+    try {
+      const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+      if (!r.ok) return;
+      const d = await r.json();
+      alertSev.fill(0); alertText.clear();
+      for (const a of d.alerts || []) {
+        const sev = a.sev === "crit" ? 2 : a.sev === "warn" ? 1 : 0;
+        if (!sev) continue;
+        nodes.forEach((n, i) => {
+          // (?<![-\w]) / (?![-\w]) so "gale-agent" or "GaleAgentSilent" don't match the agent "Gale"
+          if (new RegExp(`(?<![-\\w])${n.name.replace(/[^\w]/g, "")}(?![-\\w])`, "i").test(a.text || "") && sev >= alertSev[i]) {
+            alertSev[i] = sev; alertText.set(i, a.text);
+          }
+        });
+      }
+    } catch { /* decoration only */ }
+  }
+  loadAlerts();
+  setInterval(loadAlerts, 60000);
+
+  // open in 3D by default where it's cheap and expected: wide screens, motion allowed, not data-saver
+  const params = new URLSearchParams(location.search);
+  if (!REDUCED3D && innerWidth >= 700 && document.documentElement.dataset.saver !== "1" && !params.has("svg") && canvas.hidden) {
+    requestAnimationFrame(() => toggle.click());
+  }
 }

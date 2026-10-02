@@ -292,3 +292,7 @@ html, body { overflow-x: clip; }
 .fleet-live-pill[data-level="crit"] .fleet-live-dot { background: var(--crit); box-shadow: 0 0 6px var(--crit); }
 .vital.vital-pulse[data-level="crit"] { --vital-pulse-color: var(--crit-soft); }
 .fleet-alert-chip[data-sev="crit"] { border-color: var(--crit); }
+
+/* SVG topology: the agent focused from the nav alert panel (or a 3D click) glows */
+.topo-node.is-focus { filter: drop-shadow(0 0 10px #8ab4f8) drop-shadow(0 0 22px #4d8fe8); }
+.topo-node.is-focus circle { stroke: #fff; stroke-width: 3; }

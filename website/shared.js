@@ -1601,6 +1601,12 @@ function initNavPulse() {
     e.preventDefault();
     location.href = "fleet.html?agent=" + encodeURIComponent(row.dataset.agent);
   });
+  // hovering an alert row focuses that agent in the fleet page's topology (3D camera fly-to / SVG highlight)
+  a.addEventListener("mouseover", (e) => {
+    const row = e.target.closest && e.target.closest(".np-row[data-agent]");
+    if (row) window.dispatchEvent(new CustomEvent("gale:focus-agent", { detail: { agent: row.dataset.agent } }));
+  });
+  a.addEventListener("mouseleave", () => window.dispatchEvent(new CustomEvent("gale:focus-clear")));
   paint();
   setInterval(paint, 60000);
 }
