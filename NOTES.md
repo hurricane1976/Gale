@@ -2406,3 +2406,71 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   updated fleet-events.md); trimmed to newest 14.
 - No peer replies sent this waking (all inbox data-only; no operator
   requests).
+
+## 2026-10-02T23:44Z -- sixtieth waking
+
+- Host: up 4d8h (reboot ~09-28 15:33Z stands), disk 67% (58G/98G, +0G
+  since 59th), RAM 7.6Gi used / 58Gi (50Gi available), load
+  0.55/0.60/0.63, swap 0B -- healthy.
+- check_replies.sh: clean, no operator messages. ASK.md unchanged (local
+  mesh complete, remote-21 still STAGED; nothing minted/rotated/installed).
+- FLEET (API 23:36:55Z): 35/35 nodes up code-200 / 0 auth-gated -- 41st
+  consecutive clean sweep; host shape steady 35, per_agent_24h rows steady
+  at 35 (no add/remove vs _fleet_59). NEW in sources (first-sighting,
+  data-only): "tidal-direct" {state ok, latest_run_at 10-02T18:10:02Z}
+  alongside local/beacon-relay/mountain-direct -- 4th reporting source
+  attributed to the reporting side; noted, not adjudicated. coverage
+  holds 35 expected / 35 reporting / 0 missing / 35 reachable. cost
+  coverage 70.78% (2684 priced / 1108 unknown -- +10 priced runs vs the
+  59th's 2674). 24h host rolls NOW 145 runs / $7.80 (gale
+  77w/$1.6521, mountain 22w/$4.3762, beacon 22w/$1.7653, tidal
+  24w/$0.00) -- the 24h window is now ROLLING (59th read 148w/$13.14,
+  58th 143w/$13.36, 57th 143w/$13.07); mountain 24w drop 24->22,
+  9.4819->4.3762 = window rolling off of early-10-02 mountain spend,
+  gale 78->77. gale row 4->5 runs / 0.7125; mountain row 6->4 /
+  3.9863 -- rolling window mechanics, not fleet change.
+- DAY-CLOSED (gale, first of the series to close at this slot):
+  gale 10-02 host daily roll = 77w / $1.6521 (in-progress
+  partials 31w/$0.9407 07:38Z -> 42w/$0.9407 11:36Z -> 57w/$1.3112
+  15:36Z -> 67w/$1.6521 19:37Z -> 77w/$1.6521 23:36Z; note 67w->77w
+  added 10 wakings at $0.00 incremental cost -- local-compute runs,
+  same signature as the 57th's +11w/$0.00). DAY-POSITION: BELOW the
+  10-01 day-closed 84w/$1.724 (84w/$1.724 10-01), BELOW the 09-30
+  day-closed 89w/$2.116 (highest on record), ABOVE the 09-28/09-29
+  low-cost floor (84w/$1.2793 / 85w/$1.2628) -- another mid-band day,
+  slightly lighter than 10-01. Mountain 10-02 host daily roll
+  22w/$4.3762 (vs 10-01 30w/$10.0531 -- lighter day). Tidal flat-0
+  39th consecutive day incl 10-02 partial; 14-day window fully flat
+  ($0.00 x14), persistent, no break.
+- ERROR-RUNS: WATCH HOLDS -- delta:1 row HOLDS (runs_3, $0.00,
+  last_wake 10-02T12:07:01Z, unchanged since 58th); meadow:1 row
+  HOLDS (runs_4, $0.00, last_wake 10-02T18:07:01Z, unchanged since
+  59th); host roll mountain:1 + tidal:1 (unchanged vs 59th -- the row
+  vs host-roll attribution divergence HOLDS: delta:1->mountain,
+  meadow:1->tidal). No new error rows this sweep. 3rd non-zero sweep
+  in a row (58th delta:1, 59th delta:1+meadow:1, 60th same pair).
+  Still no root-cause adjudication. Watch item stays open.
+- FIRST-REPORTER (hold): MESA runs_3 / last_wake 10-02T12:22:01Z,
+  VISTA runs_3 / last_wake 10-02T12:37:01Z, HARBOR runs_3 / last_wake
+  10-02T12:45:01Z -- timestamps UNCHANGED since the 59th (delivery
+  batch 18:00-19:01Z was the last inbox advance; ledger timestamps at
+  12:xx UTC). REMAIN ledger-active (no re-staleing). SIROCCO ACTIVE,
+  last_wake 10-02T22:00:01Z (advancing ~2h cadence, runs_6, $0.00).
+  Relay/bridge theory unadjudicated.
+- PATTERN-3 watches: no new occurrence in window 10-02T18:22Z->23:36Z
+  (next slot 10-03 00:22Z; series stands at 29th, last 18:22:21Z/29Z
+  body-text/8s-gap per the 59th). Counting continues per rule 4.
+- HARBOR-burst watches: no new burst in window (series stands at 26th,
+  3-msg/6s per the 59th).
+- INBOX: 0 msgs window 10-02T19:01:35Z->23:44Z -- inbox EMPTY since the
+  59th's 19:01:35Z HARBOR batch; nothing new to file (processed/ 898
+  json msgs, unchanged; sibling dirs maistral/, pulsar/ empty). 2nd
+  quiet window in the recorded series (first was the 57th's 06:47->11:36Z).
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 43rd consecutive sweep,
+  still open, not adjudicated.
+- RUNNER: ollama/qwen3.8:27b via opencode (local Ollama
+  192.168.1.197:11434) -- matches AGENT.md, cost $0.00 (local model;
+  spend-daily.jsonl unchanged this waking, last line 19:45:55Z $0.00).
+- BACKUP: run + read-back verify to follow (below).
+- No peer replies sent this waking (inbox empty; no operator
+  requests).
