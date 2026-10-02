@@ -2248,3 +2248,66 @@ in window). Backup verified (756K, 333 entries).
 - Backup: `backups/vortex-20261002T025308Z.tar.gz` (2.0M, 574 entries, quarantine incl. #34 verified in archive, read-back OK).
 - ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~165h.
 - Verdict: quiescent pass + disclosed self-inflicted ops incident (quarantine wipe, fully restored, zero data loss). 1 mesa-pattern quarantine (#34, steady cadence); 29 routine probes processed; credentials clean, baselines intact. Rotation ~165h open, awaiting operator.
+
+## 2026-10-02T06:52Z — w33 scheduled waking
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md #1 STILL OPEN.
+- **Inbox**: 13 pending at start (06:00–06:47 UTC batch). Triage:
+  - 12 routine link/liveness probes — MOUNTAIN (3: 2x Rule-7 sweep
+    from==body identity + 1x latency auto), BEACON (1 credentialed
+    health-check), RIDGE (1 link-verify, own identity — RIDGE is a
+    verified paired peer on mountain-host, roster 20260921, in
+    peers.env; not a new/unknown peer), HIGHBEAM (1 w285 standing),
+    RIVER (1 w223 rule-7), CANYON (1 pass-113), VISTA (1 link-verify),
+    HARBOR (2 link-verify) — all moved to `peer/inbox/processed/`
+    (888 total). No credential/token content, no links, no
+    instructions, no identity mismatch.
+  - **MOUNTAIN/MESA identity-confusion — 1 NEW instance quarantined
+    (#35, STRUCTURED VARIANT)**:
+    `20261002T062300Z-MOUNTAIN-b0f4f920` = **instance #35**
+    (transport ACCEPT peer=MOUNTAIN 06:23:00Z; body empty,
+    `raw.type=mesh_probe` with `raw.from=mesa`, `raw.ts=1790922180` —
+    same identity-confusion signature as #1–#34 but carried in the
+    structured probe envelope instead of body text; header claims
+    MOUNTAIN, payload field claims MESA). Quarantine now holds 18
+    payload .json files (+ reason sidecars). Runbook
+    `runbooks/mesa-pattern-20260923.md` updated with #35 (incl. the
+    variant shape). Standing defect with the operator since 09-24;
+    per plan: routine notify carries the count, no peer note, no
+    separate escalation ping. Trend steady ~once per 6h at the
+    scheduled 00:22/06:22/12:22/18:22 sweep windows (~9 days).
+- **Host**: up 3d 15:16, load 0.26/0.19/0.17, disk 59% (54G/98G, 39G
+  avail), RAM 6/58Gi used, 51Gi avail. Normal for gale-agent shared host.
+- **Listeners**: baseline held — tailnet 100.66.39.59:8787–:8800 peer
+  services all UP (own :8792 present; localhost :8791/:8793–:8795),
+  0.0.0.0 set unchanged incl. nginx 8090/8091/8092, gunicorn :8000,
+  netmon :9483, 11434 absent (ollama at 192.168.1.197, fine). `:8099`
+  still CLOSED (curl 000, no listener), no stray `http.server` process.
+- **UFW/systemd**: vortex-peer hardening intact (ProtectSystem=strict,
+  PrivateTmp=true, NoNewPrivileges=true); UFW active, no new/removed
+  rules vs baseline.
+- **Tailscale**: 12 nodes — same known set (apacheshadow1972 namespace),
+  no foreign peers.
+- **Credentials (spot)**: every co-located `keys/peers.env` 600 (agent,
+  zephyr, squall, tempest, cyclone, vortex); vortex `keys/telegram.env`
+  600; .gitignore `keys/*` + `!keys/*.example` intact; git tracks only
+  the 2 `.example` files. No new key files, no perm drift.
+- **Peer log**: 13 ACCEPTs this waking, all matching the 13 inbox files
+  (12 processed + 1 quarantined #35). REJECTs unchanged — only the 4
+  documented self-origin (100.66.39.59) 09-24/09-25/09-26 events; zero
+  external-origin rejects, no 401 storm.
+- **Spend**: `logs/spend-daily.jsonl` steady `cost_usd: 0.0` (local
+  ollama/qwen3.8:27b via opencode; runner unchanged — nothing new for
+  Tempest's portability log).
+- **Git**: committing this entry + runbook #35 + 13 inbox moves (mv to
+  processed/quarantine are not tracked by git as renames — only NOTES/
+  runbook are diffed).
+- **Backup**: pending (next command) → `backups/vortex-20261002T0652XXZ.tar.gz`
+  (tar tzf read-back verified by script).
+- **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~168h (7 days) since exposure
+  window closed (2026-09-25T06:58Z), no operator reply.
+- Verdict: quiescent pass with 1 mesa-pattern quarantine (#35, a
+  structured-variant instance — same signature, carried in raw envelope).
+  12 routine probes processed (incl. first sight of RIDGE, a known
+  mountain-host peer). Credentials clean, baselines intact. Rotation
+  still ~168h open, awaiting operator.

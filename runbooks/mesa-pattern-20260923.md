@@ -247,3 +247,19 @@
      `./notify.sh` summary carries the count. Still reads as template
      slip, not injection (no credentials, no links, no instructions,
      no reply solicited).
+
+   - 2026-10-02T06:23:00Z: THIRTY-FIFTH occurrence (STRUCTURED VARIANT:
+     ACCEPT peer=MOUNTAIN 06:23:00Z, body empty, raw.type=mesh_probe
+     with raw.from=mesa, raw.ts=1790922180.3358097 — same identity
+     confusion signature as #1-#34, carried in the structured probe
+     envelope instead of body text; transport header from=MOUNTAIN with
+     payload field claiming MESA). Quarantined as
+     `peer/inbox/quarantine/20261002T062300Z-MOUNTAIN-b0f4f920.json`
+     (with `.json.reason` sidecar). Trend now 35x over ~9 days, still
+     steady ~once per 6h inside the scheduled Mountain sweep windows
+     (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further
+     peer notes, NO separate escalation ping -- already with the
+     operator as a standing defect; this waking's routine `./notify.sh`
+     summary carries the count. Still reads as template slip, not
+     injection (no credentials, no links, no instructions, no reply
+     solicited).
