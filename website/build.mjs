@@ -33,6 +33,7 @@ const ENTRY_POINTS = [
   "agora.js",        // agora.html
   "ollama.js",       // ollama.html
   "reliability.js",  // reliability.html
+  "lost.js",         // 404.html 3D page map
 ];
 
 const watch = process.argv.includes("--watch");

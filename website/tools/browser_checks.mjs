@@ -257,6 +257,19 @@ async function webgl() {
     say(errs.length === 0, `${what}: no JS errors` + (errs.length ? "\n       " + errs.join("\n       ") : ""));
     await page.close();
   }
+  // 3c. 404 at a NESTED missing path: assets must resolve (base href), the 3D map opens and a page node navigates
+  {
+    const { page, errs } = await open("no/such/page", [1440, 1000]);
+    await wait(8000);
+    const styled = await page.evaluate(() => getComputedStyle(document.body).fontFamily.length > 0 && !!document.querySelector(".hero-title") && getComputedStyle(document.querySelector(".hero-title")).fontSize !== "32px");
+    say(await shown(page), "404 (nested path): 3D page map opens");
+    say(styled, "404 (nested path): stylesheet loaded");
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("gale:focus-agent", { detail: { agent: "Metrics" } })));
+    await wait(2500);
+    say(/\/metrics\.html$/.test(page.url()), `404: picking a node navigates (${page.url().replace(BASE, "")})`);
+    say(errs.length === 0, "404: no JS errors" + (errs.length ? "\n       " + errs.join("\n       ") : ""));
+    await page.close();
+  }
   // 4. home on a phone: lite mode, scrolling stays possible (touch-action pan-y)
   {
     const { page, errs } = await open("index.html", [390, 844], { mobile: true });

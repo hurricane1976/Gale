@@ -780,6 +780,7 @@ export function initTopology3D(opts = {}) {
       : `${hostNames[i - N] || "host"} \u00b7 ${members[i - N].length} agents`;
     focusLabel.hidden = false;
     for (const g of svg.querySelectorAll(".topo-node")) g.classList.toggle("is-focus", i < N && g.dataset.name === n.name);
+    if (opts.onActivate && i < N) setTimeout(() => { if (focusIdx === i) opts.onActivate(nodes[i]); }, 900); // e.g. the 404 map navigates to the picked page
   }
   function clearFocus() {
     focusIdx = -1; camGoal[0] = camGoal[1] = camGoal[2] = 0;
