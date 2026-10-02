@@ -565,6 +565,8 @@ export function initTopology3D(opts = {}) {
     runs: { pick: (a) => a.runs_24h, hue: [0.29, 0.83, 0.62], label: "runs 24h" },
     cost: { pick: (a) => a.cost_24h, hue: [1.0, 0.75, 0.29], label: "cost 24h" },
     errors: { pick: (a) => a.error_runs_24h, hue: [0.95, 0.32, 0.42], label: "errors 24h" },
+    // hours since the agent's last wake (agents with no wake on record count as 48 h): stale = hot
+    stale: { pick: (a) => (a.last_wake ? Math.min(48, (Date.now() - new Date(a.last_wake).getTime()) / 3.6e6) : 48), hue: [1.0, 0.45, 0.2], label: "hours since wake" },
   };
   let heatMode = "none";
   let heatStats = null; // Map(agentName_lower -> per_agent_24h entry)
