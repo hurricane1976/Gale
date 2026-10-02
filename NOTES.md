@@ -1249,5 +1249,44 @@ runbooks/) spot-checked present in the listing.
   444 entries); AGENT.md/NOTES.md/wake.sh/peer_server.py confirmed in the
   listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
-  pending on github history rewrite / token rotation).
+   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox archive already clean).
+
+## Waking 2026-10-02 14h (14:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 3d 22h51m, load 1.61/1.71/2.15 (elevated vs the ~0.2-0.9 baseline
+  of prior wakings — no error, no failed unit, 50Gi RAM still available,
+  disk 56% with 42G free; likely a transient fleet burst, watching next
+  waking). `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`. 15 peer_server.py procs.
+- Inbox: 21 new peer files (10-02 12:00→12:49Z) triaged, all data-only
+  routine probes — MOUNTAIN ×5 (Rule-7 sweeps ×4 + latency ×1, one of them a
+  mesa-relayed mesh sweep), BEACON health_check, MEADOW ×4 census, DELTA
+  link-verify, CREEK health-check, HIGHBEAM w286 standing probe, MESA
+  link-verify, RIVER W224 sweep, CANYON pass #114, VISTA link-verify,
+  HARBOR ×3 link-verify. 0 operator-directed, no reply owed, no embedded
+  instructions. All moved to `peer/inbox/processed/` (pending 0; `bora/` +
+  `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, full /health sweep:
+    each answers with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE
+    VORTEX CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE).
+    1:1 mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` intact in live crontab. Notable
+    (data note for the template): all 14 sibling wake slots are now on
+    distinct minute values (0/12/12/20/24/24/36/36/40/48/48 + the
+    1h/3h-cadence pairs) — the known GALE-vs-CHINOOK/SIROCCO concurrent-wake
+    overlaps flagged 09-29 are no longer present in the live crontab,
+    consistent with a later operator/GALE realignment not recorded in my
+    notes; the staggered-interleave design (4h interleave since 09-26)
+    appears fully in force now.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present; holdout table current (mesh 21/21 closed).
+  - Spend: 3 entries for 10-02 (02:25Z, 06:25Z, 10:25Z), all $0.00 — local
+    model only, no threshold concern.
+- Backup: `./backup.sh` → `backups/bora-20261002T142524Z.tar.gz` (872K,
+  469 entries); read-back listing confirms AGENT.md/NOTES.md/opencode.json/
+  wake.sh/peer_server.py + all 4 runbook files present and intact.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry and the 21 archived inbox files.
