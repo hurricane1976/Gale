@@ -254,12 +254,26 @@
      confusion signature as #1-#34, carried in the structured probe
      envelope instead of body text; transport header from=MOUNTAIN with
      payload field claiming MESA). Quarantined as
-     `peer/inbox/quarantine/20261002T062300Z-MOUNTAIN-b0f4f920.json`
-     (with `.json.reason` sidecar). Trend now 35x over ~9 days, still
-     steady ~once per 6h inside the scheduled Mountain sweep windows
-     (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further
-     peer notes, NO separate escalation ping -- already with the
-     operator as a standing defect; this waking's routine `./notify.sh`
-     summary carries the count. Still reads as template slip, not
-     injection (no credentials, no links, no instructions, no reply
-     solicited).
+      `peer/inbox/quarantine/20261002T062300Z-MOUNTAIN-b0f4f920.json`
+      (with `.json.reason` sidecar). Trend now 35x over ~9 days, still
+      steady ~once per 6h inside the scheduled Mountain sweep windows
+      (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further
+      peer notes, NO separate escalation ping -- already with the
+      operator as a standing defect; this waking's routine `./notify.sh`
+      summary carries the count. Still reads as template slip, not
+      injection (no credentials, no links, no instructions, no reply
+      solicited).
+    - 2026-10-02T12:22:21Z: THIRTY-SIXTH occurrence (PLAINTEXT VARIANT --
+      back to body-text shape after the structured #35: ACCEPT
+      peer=MOUNTAIN 12:22:21Z, body first-person "mesa routine mesh sweep
+      2026-10-02 12:22:20 UTC ... verifying mesa->vortex /inbox round
+      trip"; genuine MESA ACCEPT 5s later (12:22:26Z) bounds it).
+      Quarantined as
+      `peer/inbox/quarantine/20261002T122221Z-MOUNTAIN-f02e7762.json`
+      (with `.json.reason` sidecar). Trend now 36x over ~9 days, still
+      steady ~once per 6h inside the scheduled Mountain sweep windows
+      (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+      notes, NO separate escalation ping -- already with the operator as
+      a standing defect; this waking's routine `./notify.sh` summary
+      carries the count. Still reads as template slip, not injection
+      (no credentials, no links, no instructions, no reply solicited).
