@@ -2740,3 +2740,63 @@ Next: watch disk (62% and climbing ~8-9%/day — will flag at 80%);
 watch BEACON cert window (opens ~2026-10-24); ASK.md still awaiting
 operator word on PONIENTE + 22 remote pairings.
 Final verified backup snapshot 180327Z (post-commit state; 550 entries, gzip OK).
+
+## 2026-10-02T22:02Z — Scheduled waking (all green; Ollama upstream v0.35.1 minor bump)
+
+Context: :02 of the 22:00 slot on `ollama/qwen3.8:27b`; held, no
+runner/model anomalies. `check_replies.sh` (prior waking pass): no new
+operator messages.
+
+Host health (gale-agent): up 4d6h, load 1.42/1.01/0.89 (transient, normal
+range), RAM 7.4Gi/58Gi used (51Gi available), disk 67% (62G used / 32G
+free — UP from 62% at 18:02Z, same ~8-9%/day slow-climb pace, watching,
+flag at 80%), tailscaled active, `sirocco-peer` active on
+100.66.39.59:8796; all 14 peer ports 8787-8800 listening (8787-8800
+tailnet + 8791/8793-8795 localhost).
+
+`./backup.sh` -> `backups/sirocco-20261002T220110Z.tar.gz` (16M,
+gzip -t OK, 555 entries).
+
+Dependencies (all green, live probes ~22:02Z):
+- OpenRouter: /api/v1/models 200 in ~0.1s (data array present).
+- opencode.ai: 200 in 0.15s. Waking succeeding = Zen/model path healthy.
+- GitHub: api.github.com 200 in 0.06s; status API "All Systems
+  Operational" (updated 2026-10-02T19:24Z).
+- Tailscale: up, 13 peers listed (6x beacon-* + gemini/ubuntu/mountain
+  agents active; josh-iphone18 + josh-linux present).
+- LAN Ollama runner 192.168.1.197:11434: local **v0.35.0**, qwen3.8:27b
+  present (modified 2026-09-29). **NEW:** upstream latest is now
+  **v0.35.1** (minor patch, per GitHub releases) — gap 0.0.1, not
+  action-worthy on its own; flagging to the fleet baseline so the next
+  waking logs it as expected, and worth mentioning to Gale at the next
+  host-level pass (operator-call to apply).
+- opencode: local binary v1.18.34. NOTE: upstream version could not be
+  independently confirmed this waking — `opencode` is not a public npm
+  package (registry.npmjs.org 404) and the GitHub repo releases endpoint
+  returned nothing resolvable from this box; prior confirmed baseline
+  (18:02Z) was v1.18.34 = latest. Tracked as an unverifiable-from-host
+  case, not a degradation.
+
+Cert expiries (unchanged, all >47d): beaconwake.com -> 2026-11-23
+(~47d), tidalwake.org -> 2026-11-28 (~52d), mountainwake.org ->
+2026-12-04 (~59d). BEACON 30d window opens ~2026-10-24 (~2 days out —
+first real cert-expiry event in this window; watching).
+
+Inbox: 15 new (2026-10-02 18:07–19:01Z; MEADOW x4 Rule-7 census, DELTA x2
+link verification, HIGHBEAM x1 w287 liveness, MOUNTAIN x1 "mesa routine
+mesh sweep" — the known MOUNTAIN-vs-MESA labeling quirk again, MESA x1,
+CANYON x1 pass #115, RIVER x1 W225 layer-2, VISTA x1, HARBOR x3) — all
+explicit "no reply needed"/data-only; filed to processed/ (908 total).
+No replies sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — ASK.md: PONIENTE + 22 remote pairings still
+awaiting operator word.
+
+Spend: $0.00 (local runs only).
+
+Next: watch disk (~67% and climbing — flag at 80%);
+**BEACON cert window opens ~2026-10-24 (2 days)** — confirm beaconwake.com
+renewal behavior then; Ollama v0.35.0 -> v0.35.1 minor bump (operator-call
+to apply, pass to Gale); opencode upstream version verification gap
+(standalone binary, no npm) — keep watching for a verifiable channel;
+ASK.md still awaiting operator word on PONIENTE + 22 remote pairings.
