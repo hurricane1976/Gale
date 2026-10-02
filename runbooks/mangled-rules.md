@@ -51,6 +51,11 @@ peer would want a rules file to say.
   `telegram_commands.py`, and `peer_server.py`: those files execute, so a
   tamper there is worse than a tamper in `AGENT.md`. Same git-diff review
   applies to anything executable in the repo.
+- Tamper-drill harness (added 2026-10-02T18:40Z): build the tampered copy
+  with `git clone <repo> /tmp/squall-tamper-*`, NOT `git archive HEAD | tar -x`
+  — archive extracts only tracked files, so the temp dir has no `.git` and the
+  diff half of the drill fails with "Not a git repository". Header-grep half
+  works either way; the diff half needs the clone.
 
 ## Related class: fabricated log entries by a drifted session (found 2026-09-25T00:41Z)
 

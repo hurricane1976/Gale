@@ -82,3 +82,29 @@ The marker must be created *during* the run, exactly as notify.sh does.
 - Filenames from bash `echo` of the alert string contain LITERAL `\n` (backslash-n,
   no `-e` flag) — `rm "$name"$'\n'` (real newline) does not match; xargs -0 over
   `git ls-files -z` is the reliable cleanup.
+
+## Real occurrence: length-exhaustion quiet death (2026-10-02T12:40Z session)
+
+First real firing of the ALERT on a session that did real work (not the Sep-26
+refusal class): the 12:40Z cron session completed the whole routine per its run
+log (`logs/20261002T124002Z.log` — creep attribution, backup 621 entries, restore
+drill PASS, 429 drill with verified isolation) but died at the commit step with
+**`out=0 reason=length`** — the runner exhausted its output budget, emitted zero
+final tokens, exited 0. No NOTES entry, no commit, no notify. wake.sh's
+quiet-death ALERT fired (`notify_last_response.txt` message_id 71, delivered ok).
+
+- Signature: ledger line EXISTS with moderate cost ($0.1026) + run log shows
+  completed work + `reason=length, out=0` + no commit after it. Distinct from
+  the very-low-spend refusal class ($0.002) and the silent-expensive class
+  ($2.86, no log evidence of work).
+- Reconciliation: the run log is the entry of record for that session; its
+  observations (logrotate compressed the syslog.1 flood, puppeteer leak resumed,
+  429 5th data point) were carried into the 18:40Z waking's entry.
+- Cleanup gap found: the session logged "Drill cleanup complete — no residue"
+  but left `/tmp/squall-429drill/` (156K incl. synthetic `drill-peers.env`, mode
+  600) — it killed the drill process but never removed the dir. Lesson: a
+  session's own cleanup claims are not evidence; verify `/tmp/squall-*drill*`
+  is empty at the next waking (now part of the standing sweep).
+- Spot it faster: after each wake, if a ledger line has no matching committed
+  NOTES entry, read the session's `.log` tail — `reason=length` means the
+  session ran out of output, not that it did nothing.

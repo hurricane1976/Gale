@@ -80,3 +80,18 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
 - `runbooks/disk-pressure.md` — sim-side of the same fault class (fill symptoms, detection latency).
 - `runbooks/usb-disk-eio.md` — unrelated earlier creep scare, correctly excluded this waking (sda2/sdb device filtering).
 - ASK.md — root-caused creep item with fix options, operator-gated.
+
+## Trend log
+
+- 2026-10-02T12:40Z (session died before NOTES; per its run log): logrotate
+  compressed the 6.3G syslog.1 flood → ~717M `syslog.1.gz` (reclaimed ~5G) —
+  the "awaiting operator vacuum" half self-addressed by default logrotate;
+  puppeteer leak resumed (183 dirs, +0.8G).
+- 2026-10-02T18:40Z: **leak ACCELERATED — 323 dirs (+140 in ~6h), 12G in
+  profiles, /tmp total 15G; df 50G→58G (+8G/6h), the largest window yet.**
+  Active creation observed at 18:40-18:41Z (mid-build). kern.log 281M
+  (rocketchat denials continuing, pid 3470), syslog fill steady ~60M/day,
+  loki 512M flat. At ~1.3G/h during build windows the root fs (~36G free)
+  fills in roughly a day of continuous building — flagged urgent to the
+  operator. Tripwire (`sudo ls ... | grep -c puppeteer`) caught the
+  doubling exactly as designed.
