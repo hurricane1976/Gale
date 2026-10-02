@@ -279,3 +279,16 @@ html, body { overflow-x: clip; }
   .fleet-main a { text-decoration: underline; }
   .fleet-main .grad-text { background: none !important; }
 }
+
+/* ---- critical = red. The theme's --flag/--flag-soft are the BRAND BLUE (gale.css), so every
+   data-level="crit" meter, pill, value and card rendered blue next to green/amber. Dedicated tokens: ---- */
+:root { --crit: #e5484d; --crit-soft: #ff8c90; --crit-dim: rgba(229, 72, 77, 0.32); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --crit: #c9252b; --crit-soft: #b01f25; --crit-dim: rgba(201, 37, 43, 0.22); } }
+:root[data-theme="light"] { --crit: #c9252b; --crit-soft: #b01f25; --crit-dim: rgba(201, 37, 43, 0.22); }
+.vital[data-level="crit"] .vital-value, .metrics-status-h[data-level="crit"], .kiosk-big-cell[data-level="crit"] .kiosk-big-val { color: var(--crit-soft); }
+.meter[data-level="crit"] i, .core[data-level="crit"] i { background: var(--crit); }
+.pill[data-level="crit"] { color: var(--crit-soft); background: color-mix(in srgb, var(--crit) 16%, transparent); border-color: var(--crit-dim); }
+.target-card[data-level="crit"] { border-left-color: var(--crit); }
+.fleet-live-pill[data-level="crit"] .fleet-live-dot { background: var(--crit); box-shadow: 0 0 6px var(--crit); }
+.vital.vital-pulse[data-level="crit"] { --vital-pulse-color: var(--crit-soft); }
+.fleet-alert-chip[data-sev="crit"] { border-color: var(--crit); }

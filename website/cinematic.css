@@ -324,3 +324,9 @@ html[data-saver="1"] .cine-rays, html[data-saver="1"] .lens-flare,
 html[data-saver="1"] .cine-vignette, html[data-saver="1"] .cine-embers,
 html[data-saver="1"] .chapter-nav { display: none !important; }
 @media print { .cine-rays, .lens-flare, .cine-vignette, .cine-embers, .chapter-nav, .marquee { display: none !important; } }
+
+/* "Two moods" comparison: the storm layer is clipped to the right of the handle, so its text sits on the
+   right edge (left-aligned it was invisible until the slider moved) */
+.wipe { margin-top: 18px; }
+.wipe-layer strong { display: block; margin-bottom: 4px; }
+.wipe-after { text-align: right; }

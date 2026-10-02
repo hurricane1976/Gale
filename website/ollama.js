@@ -225,15 +225,16 @@ function renderThermal() {
   const W = 600, H = 46, bw = W / buckets.length;
   const Y = (t) => H - 4 - ((Math.min(THERM_HI, Math.max(THERM_LO, t)) - THERM_LO) / (THERM_HI - THERM_LO)) * (H - 8);
   const rects = buckets.map((b, i) =>
-    `<rect x="${(i * bw).toFixed(1)}" y="0" width="${Math.max(1, bw - 0.6).toFixed(1)}" height="${H}" fill="${thermColor(b.t)}" opacity="${b.t == null ? 0.25 : 0.85}"/>`).join("");
+    `<rect x="${(i * bw).toFixed(1)}" y="0" width="${(bw + 0.5).toFixed(1)}" height="${H}" fill="${thermColor(b.t)}" opacity="${b.t == null ? 0.25 : 0.85}"/>`).join("");
   const rule = (t, label) =>
-    `<line x1="0" y1="${Y(t).toFixed(1)}" x2="${W}" y2="${Y(t).toFixed(1)}" stroke="var(--text-dim)" stroke-width="1" stroke-dasharray="4 3"/>` +
-    `<text x="${W - 2}" y="${(Y(t) - 3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text-dim)">${label}</text>`;
+    `<line x1="0" y1="${Y(t).toFixed(1)}" x2="${W}" y2="${Y(t).toFixed(1)}" stroke="var(--text-dim)" stroke-width="1" stroke-dasharray="6 5" vector-effect="non-scaling-stroke" opacity="0.7"/>` +
+    "";
   const head = lastV == null ? null : 100 - lastV;
   const headCls = head != null && head < 10 ? "warn" : "";
   box.innerHTML =
-    `<div style="position:relative"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="24 hour temperature ribbon, dashed rules at 78 and 88 degrees">` +
-    rects + rule(78, "78°") + rule(88, "88°") + `</svg></div>` +
+    `<div style="position:relative"><svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="border-radius:8px;display:block;height:34px" role="img" aria-label="24 hour temperature ribbon, dashed rules at 78 and 88 degrees">` +
+    rects + rule(78, "") + rule(88, "") + `</svg></div>` +
+    `<div class="gpu-sub" style="margin:4px 0 8px;display:flex;justify-content:space-between"><span>24h ago</span><span>dashed rules: 78° warm · 88° hot</span><span>now</span></div>` +
     (head == null ? "" :
       `<div class="gpu-bar"><div class="gpu-bar-head"><span class="gpu-label">VRAM headroom</span><span class="gpu-sub">${head.toFixed(0)}% free</span></div>` +
       `<div class="gpu-track ${headCls ? `gpu-bar-${headCls}` : ""}"><i style="width:${head.toFixed(1)}%"></i></div></div>`);

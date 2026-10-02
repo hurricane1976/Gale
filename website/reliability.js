@@ -12,6 +12,7 @@ const $ = (id) => document.getElementById(id);
 const FEEDS = {
   metrics: "api/fleet/metrics",
   activity: "api/fleet/activity",
+  wakes: "api/fleet/wakes",
   status: "api/status.json",
   observability: "api/fleet/observability",
   synthetics: "api/synthetics.json",
@@ -44,13 +45,36 @@ function sloCard(name, target, actual, detail) {
   </div>`;
 }
 
-/* Wake on-time SLO: 4 wakes/day expected; activity events with kind=waking
-   in the last 7d vs 28 expected. Approximation, honest about it. */
-function wakeSLO(events) {
+/* Wake on-time SLO: this host's wake cycle is every 6h (4/day), so the last 7 days are 28 UTC-aligned
+   6-hour slots. A slot is "on time" when it holds at least one Gale wake. Source: /api/fleet/wakes (the
+   14-day local wake history). The activity feed only holds the latest ~24 events (about an hour), so it
+   can't answer a 7-day question; it stays as a last-resort fallback. */
+const SLOT_MS = 6 * 3600e3, SLOTS = 28;
+function wakeSLO(wakes, events) {
+  const rows = (wakes && wakes.runs || []).filter((r) => r.agent === "gale");
+  if (rows.length) {
+    const nowSlot = Math.floor(Date.now() / SLOT_MS);
+    const covered = new Set();
+    for (const r of rows) {
+      const k = Math.floor(new Date(r.ts).getTime() / SLOT_MS);
+      if (nowSlot - k >= 1 && nowSlot - k <= SLOTS) covered.add(k); // completed slots only: the open slot isn't late yet
+    }
+    return { actual: (covered.size / SLOTS) * 100, detail: `${covered.size}/${SLOTS} six-hour slots had a wake` };
+  }
   const week = Date.now() - 7 * 86400e3;
-  const wakes = events.filter((e) => e.kind === "waking" && new Date(e.ts || 0).getTime() > week).length;
-  const expected = 28;
-  return { actual: clamp((wakes / expected) * 100, 0, 100), detail: `${wakes}/${expected} wakes observed` };
+  const n = events.filter((e) => e.kind === "waking" && new Date(e.ts || 0).getTime() > week).length;
+  return { actual: clamp((n / SLOTS) * 100, 0, 100), detail: `${n}/${SLOTS} wakes in the activity feed (wake history unavailable)` };
+}
+
+/* Cost pace SLO: share of the last 7 days at or under the $5/day pace line the forecast card warns about. */
+const COST_DAILY_LIMIT = 5;
+function costSLO(metrics) {
+  if (!metrics) return { actual: 50, detail: "spend feed unreachable" };
+  const perDay = (metrics.days || []).map((_, i) =>
+    Object.values(metrics.daily_cost_by_host || {}).reduce((s, srs) => s + (srs[i] || 0), 0)).slice(-7);
+  if (!perDay.length) return { actual: 50, detail: "no spend data" };
+  const ok = perDay.filter((c) => c <= COST_DAILY_LIMIT).length;
+  return { actual: (ok / perDay.length) * 100, detail: `${ok}/${perDay.length} days at or under $${COST_DAILY_LIMIT}/day` };
 }
 
 function apiSLO(synth) {
@@ -108,17 +132,19 @@ function renderForecast(metrics) {
 async function main() {
   renderRUM();
   setInterval(renderRUM, 10000);
-  let metrics = null, events = [], synth = null;
+  let metrics = null, events = [], synth = null, wakes = null;
   try { metrics = await get(FEEDS.metrics); events = metrics ? [] : []; } catch {}
   try { const a = await get(FEEDS.activity); events = a.events || []; } catch {}
+  try { wakes = await get(FEEDS.wakes); } catch {}
   try { synth = await get(FEEDS.synthetics); } catch {}
-  const w = wakeSLO(events);
+  const w = wakeSLO(wakes, events);
+  const cost = costSLO(metrics);
   const api = apiSLO(synth);
   setHTML($("slo-grid"), [
     sloCard("Wake on-time", 99.5, w.actual, w.detail + " · 7d window"),
     sloCard("Synthetic green", 99.9, api.actual, api.detail),
     sloCard("Observability freshness", 99.0, events.length ? 100 : 50, `${events.length} events in feed`),
-    sloCard("Cost pace", 95.0, metrics ? 99.0 : 50, metrics ? "spend feed reachable" : "spend feed unreachable"),
+    sloCard("Cost pace", 95.0, cost.actual, cost.detail),
   ].join(""));
   renderSynth(synth);
   if (metrics) renderForecast(metrics);

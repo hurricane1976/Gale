@@ -349,17 +349,23 @@
           </div>
         </section>
 
-        <!-- 12 · spend & quota (JS-filled) -->
-        <section id="spend" class="block">
-          <h2 class="sec-title">Spend &amp; quota</h2>
-          <p class="sec-lede">Cost by host and the busiest agents — reported before limits bite.</p>
-          <gale-sparkline id="spend-spark" view-box="0 0 600 70" aria-label="14-day fleet spend trend"></gale-sparkline>
+        <!-- 11b · the two looks (calm day grade vs storm night grade) -->
+        <section id="looks" class="block">
+          <h2 class="sec-title">Two moods</h2>
+          <p class="sec-lede">Drag to compare the calm day-shift look with the storm night grade used on the hero.</p>
           <div class="wipe" aria-label="ILM breakdown: calm versus storm grade">
             <div class="wipe-layer"><strong>Calm grade</strong> — day-shift ambient, content-first, low glow.</div>
             <div class="wipe-layer wipe-after"><strong>Storm grade</strong> — ILM night grade, volumetric rays, ember drift.</div>
             <div class="wipe-handle" aria-hidden="true"></div>
             <input class="wipe-range" type="range" min="0" max="100" value="50" aria-label="Reveal storm grade" />
           </div>
+        </section>
+
+        <!-- 12 · spend & quota (JS-filled) -->
+        <section id="spend" class="block">
+          <h2 class="sec-title">Spend &amp; quota</h2>
+          <p class="sec-lede">Cost by host and the busiest agents — reported before limits bite.</p>
+          <gale-sparkline id="spend-spark" view-box="0 0 600 70" aria-label="14-day fleet spend trend"></gale-sparkline>
           <div class="spend-bars" id="spend-bars"><span class="muted">loading spend…</span></div>
           <ul class="spend-agents" id="spend-agents"><li class="muted">loading per-agent…</li></ul>
         </section>
