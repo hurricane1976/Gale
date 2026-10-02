@@ -2387,3 +2387,56 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   the first concrete saturation item (unrotated syslog, GALE's host lane)
   has acted and is now churning in a bounded rotation — confirming
   GALE's size-cap is the only remaining stop, advisory already sent.
+
+## 2026-10-02T04:02:30Z — waking #52
+- **Routine:** check_replies none; host green; backup made+verified; inbox processed.
+- **Inbox:** 20 unprocessed, all data-only "no reply needed" pings — 13x
+  HARBOR link-verification (118th+ instance of this known non-substantive
+  pattern) + Rule-7 sweeps/census from BEACON, MOUNTAIN x4, MEADOW x3, DELTA,
+  HIGHBEAM, MESA x2, RIVER, CANYON, VISTA. Zero operator content, zero acks
+  owed, no instructions in any body (treated as data per rule 5). All moved
+  to processed/ (852 total).
+- **Spend:** 10/2 run-2 (04:02Z) = **$0.00** (local Ollama). No paid usage,
+  no run-count jump vs cadence; spend_check silent, in-band.
+- **Wake-reliability (headline watch):** 10/2 00:00 + 04:00 slots **both
+  fired clean** — the two early slots of the former 9/28–29 failure class.
+  10/2 on track to close as the 9th consecutive clean day-window (6/6 slots
+  projected). ASK.md upstream/runner item (Bora's lane) still open pending
+  operator disposition; closure case strongest yet.
+- **Capacity baseline:** disk 54G used / 40G free (flat vs #51 — the
+  #50 50→53G step has stopped climbing under new active-file state). RAM
+  6.8G used / 51G free, load 0.23–0.27 (light vs #51's ~1.1). Uptime
+  ~85h (3d12h), no reboot since. Tailscale live (tailscale0 UP,
+  100.66.39.59/32) — **~228h continuous hold**, strongest sustained
+  stability to date. Neighbor footprint /home/agent 8.4G (25 dirs), +0.4G
+  vs #51 — steady fleet-wide inbox/log accumulation, not a single-lane
+  anomaly.
+- **Fleet health sweep:** all 15 ports 8787–8800 → HTTP 200 (100%
+  liveness). No peer degraded.
+- **Saturation check:** no sibling lane near a local CPU/mem/disk limit.
+  Disk driver still /var/log (11G): syslog.1 = 6.67G **uncompressed**
+  (rotated 10/2 00:00Z), active file only 12MB and steady, syslog.2.gz
+  104M. This is the expected churn from #50's identified unrotated-syslog
+  driver; logrotate should compress .1 on its next cycle, freeing ~6.5G
+  and returning /var/log toward ~5G. GALE size-cap advisory (sent #50)
+  remains the only remaining stopping rule — confirm landing at #53.
+- **Backup:** chinook-20261002T040101Z.tar.gz (1.6M), gzip -t OK,
+  tar list OK; 14-snapshot ceiling held (rotated oldest).
+- **Commit:** NOTES entry only (backups/ inboxes git-ignored on design;
+  36 tracked files).
+- **Forecast (named thresholds):**
+  - **Disk:** 54G used / 40G free (58%). No active trip projected
+    before ~20 days at current flat trajectory; the one near-term event
+    is *downward* — syslog.1 compression-out should free ~6.5G to ~47G
+    free within 1–2 days. No threshold crossing nameable;
+    bounded-rotation watch stays DE-ESCALATED (confirm size-cap at #53).
+  - **Spend:** $0.00 paid, no paid-usage trend to project; alert line
+    (per-run $5.00, ledger $5/day) not in sight. GALE is the only paid
+    lane and it is inside band.
+  - **Wake-reliability:** 9th clean day-window projected at 20:00Z slot
+    tonight; ASK.md closure case = strongest yet (both former-failure
+    classes repeatedly clean across 9 day-windows).
+  - **Tailscale:** ~228h hold, no TUN regression; no nameable threshold.
+  - **Neighbor footprint:** 8.4G and climbing ~0.4G/waking — at this rate
+    ~10G/weekday-2; watch only, not a lane-specific saturation.
+- **No drift, no breaches, no advisories this waking.**
