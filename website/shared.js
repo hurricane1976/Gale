@@ -1588,8 +1588,16 @@ function initNavPulse() {
         if (hr.ok) {
           const hd = await hr.json();
           const ago = (iso) => { const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)); return m < 60 ? `${m}m ago` : m < 2880 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`; };
+          // 24 hourly cells (oldest -> newest): amber = alerts opened that hour, green = cleared only, grey = quiet
+          const cells = new Array(24).fill(null).map(() => ({ o: 0, c: 0 })), nowH = Math.floor(Date.now() / 3.6e6);
+          for (const e of hd.events || []) {
+            const back = nowH - Math.floor(new Date(e.ts).getTime() / 3.6e6);
+            if (back >= 0 && back < 24) cells[23 - back][e.event === "open" ? "o" : "c"]++;
+          }
+          const strip = '<span class="np-strip" role="img" aria-label="alert opens and clears per hour, last 24 hours">' + cells.map((c, i) =>
+            `<i data-k="${c.o ? "o" : c.c ? "c" : ""}" title="${23 - i}h ago: ${c.o} opened, ${c.c} cleared"></i>`).join("") + "</span>";
           const ev = (hd.events || []).slice(0, 5);
-          if (ev.length) histHTML = '<span class="np-hist-h">Recent changes</span>' + ev.map((e) =>
+          if (ev.length) histHTML = '<span class="np-hist-h">Recent changes</span>' + strip + ev.map((e) =>
             `<span class="np-hist" data-ev="${esc(e.event)}"><b>${e.event === "open" ? "opened" : "cleared"}</b> ${esc(ago(e.ts))} · ${esc(String(e.text || "").slice(0, 70))}</span>`).join("");
         }
       } catch { /* history is optional */ }

@@ -312,3 +312,6 @@ main:has(#cost-chart) #lanes { min-height: 260px; }
   #topo-heat::-webkit-scrollbar { display: none; }
   #topo-heat .mini-toggle { flex: 0 0 auto; padding: 4px 9px !important; min-height: 28px !important; font-size: .64rem !important; }
 }
+.np-strip { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; height: 10px; margin: 2px 0 4px; }
+.np-strip i { border-radius: 2px; background: color-mix(in srgb, var(--text-faint, #7d8aa3) 25%, transparent); }
+.np-strip i[data-k="o"] { background: #d9962b; } .np-strip i[data-k="c"] { background: #2fa874; }
