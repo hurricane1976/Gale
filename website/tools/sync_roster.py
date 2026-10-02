@@ -345,7 +345,7 @@ def patch_index_html(text, gale_agents, total_agents):
     hub, spokes, _ = gale_layout(gale_agents)
     ordered = [hub] + spokes
     chips = "\n".join(
-        f'                <span class="agent" data-model="{(a.get("model") or "").lower()}">{a["name"]}</span>'
+        f'                <a class="agent" data-model="{(a.get("model") or "").lower()}" href="fleet.html?agent={a["name"]}">{a["name"]}</a>'
         for a in ordered
     )
     chip_re = re.compile(
