@@ -215,6 +215,15 @@ export function initTopology3D(opts = {}) {
   const flowBuf = gl.createBuffer();
   const flowColBuf = gl.createBuffer();
   const live3d = { mbps: 0.5, down: new Set() };
+  /* ?simulate=tidal (whole host) or ?simulate=tidal:3,beacon:1 (first N agents) previews the outage
+     states (dimmed nodes, amber/red hubs, "x/y up" labels) without anything actually being down */
+  const simDown = new Set();
+  (new URLSearchParams(location.search).get("simulate") || "").toLowerCase().split(",").filter(Boolean).forEach((spec) => {
+    const [h, cnt] = spec.split(":");
+    const idx = nodes.map((n, i) => i).filter((i) => nodes[i].host.toLowerCase().replace(/ host$/, "") === h);
+    (cnt ? idx.slice(0, Number(cnt) || 0) : idx).forEach((i) => simDown.add(i));
+  });
+  const isDown = (i) => simDown.has(i) || (!!nodes[i].listener && live3d.down.has(nodes[i].listener));
   for (let i = 0; i < flowT.length; i++) flowT[i] = Math.random();
 
   // --- camera: orbit around origin ---
@@ -324,7 +333,7 @@ export function initTopology3D(opts = {}) {
     let k = 0;
     for (const [a, b, kind] of edges) {
       const col = kind ? TRUNK : SPOKE;
-      const dimmed = !kind && live3d.down.has(nodes[a].listener);
+      const dimmed = !kind && isDown(a);
       for (const v of [a, b]) {
         lineData.set([pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2], col[0], col[1], col[2], dimmed ? col[3] * 0.3 : col[3]], k);
         k += 7;
@@ -426,7 +435,7 @@ export function initTopology3D(opts = {}) {
         const [a, b, kind] = edges[e];
         const dx = pos[b * 3] - pos[a * 3], dy = pos[b * 3 + 1] - pos[a * 3 + 1], dz = pos[b * 3 + 2] - pos[a * 3 + 2];
         const len = Math.hypot(dx, dy, dz) || 1;
-        const dim = !kind && live3d.down.has(nodes[a].listener) ? 0.22 : 1;
+        const dim = !kind && isDown(a) ? 0.22 : 1;
         for (let k = 0; k < FLOW_DOTS; k++) {
           const fi = e * FLOW_DOTS + k;
           flowT[fi] = (flowT[fi] + (speed * dt) / len) % 1;
@@ -582,7 +591,7 @@ export function initTopology3D(opts = {}) {
     const colors = new Float32Array((N + H) * 3);
     if (!layer || !heatStats) {
       nodes.forEach((n, i) => {
-        const dim = live3d.down.has(n.listener) ? 0.3 : 1;
+        const dim = isDown(i) ? 0.3 : 1;
         colors.set([n.color[0] * dim, n.color[1] * dim, n.color[2] * dim], i * 3);
       });
     } else {
@@ -596,7 +605,7 @@ export function initTopology3D(opts = {}) {
         const t = 0.15 + 0.85 * (raw[i] / max);
         const base = n.color;
         // liveness dim (#3): down-sweep nodes sink in every heat mode
-        const dim = live3d.down.has(n.listener) ? 0.3 : 1;
+        const dim = isDown(i) ? 0.3 : 1;
         colors.set([
           (base[0] * (1 - t) + layer.hue[0] * t) * dim,
           (base[1] * (1 - t) + layer.hue[1] * t) * dim,
@@ -607,7 +616,7 @@ export function initTopology3D(opts = {}) {
     colors.set(hubColors, N * 3);
     if (opts.health) { // hub colour + label follow the listener sweep: green all up, amber partial, red none
       hostNames.forEach((h, hi) => {
-        const up = members[hi].filter((i) => !live3d.down.has(nodes[i].listener)).length, tot = members[hi].length;
+        const up = members[hi].filter((i) => !isDown(i)).length, tot = members[hi].length;
         colors.set(up === tot ? [0.2, 0.85, 0.55] : up === 0 ? [1.0, 0.3, 0.33] : [1.0, 0.72, 0.2], (N + hi) * 3);
         labels[hi].textContent = `${h || "host"} \u00b7 ${up}/${tot} up`;
       });
@@ -619,8 +628,9 @@ export function initTopology3D(opts = {}) {
       const max2 = Math.max(...raw2, 0.0001);
       raw2.forEach((v, i) => { nodeScale[i] = 0.8 + 1.2 * Math.sqrt(v / max2); });
     }
-    gl.bindBuffer(gl.ARRAY_BUFFER, colBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+    // the draw loop re-uploads nodeColors every frame, so the result must land there (uploading `colors`
+    // directly was overwritten on the next frame: heat hues, down-dimming and health hubs never stuck)
+    nodeColors.set(colors);
   }
 
   // refresh heat each time the 3d view opens + every 60s while open
