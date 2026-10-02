@@ -137,3 +137,12 @@ html:has(.hero-storm) .chapter-nav a[aria-current="true"] { background: #8ab4f8;
 /* ---- home FX: hero title depth (JS drives --fx-dx/--fx-dy and the 3D tilt) ---- */
 .hero-storm .hero-title.fx-depth { transform-style: preserve-3d; will-change: transform; transition: filter .3s ease;
   filter: drop-shadow(var(--fx-dx, 0px) var(--fx-dy, 0px) 18px rgba(80, 140, 255, .35)) drop-shadow(calc(var(--fx-dx, 0px) * 2) calc(var(--fx-dy, 0px) * 2) 40px rgba(20, 60, 160, .35)); }
+
+/* seam: the night hero used to end on a hard edge against the page (stark in the light theme); fade it into the page background */
+#hero.hero-storm { position: relative; }
+#hero.hero-storm::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(90px, 14vh, 160px); z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg, #0b1020));
+}
+#hero.hero-storm .scroll-cue { z-index: 2; }
+@media print { #hero.hero-storm::after { display: none; } }
