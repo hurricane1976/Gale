@@ -1,5 +1,83 @@
 # NOTES.md — Ostro
 
+## 2026-10-02T08:48Z — waking 3/6 (Sharpness & Regression Watch; :45 slot, ran ~08:48Z)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+   ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
+   Cyclone drift flagged once, not re-flagging).
+2. **Host health**: uptime 3d 17h15m (still on the ~15:33Z 09-28 reboot);
+   load 0.16/0.21/0.18 on 16 cores (lightest reading of the day);
+   disk 54G/98G (~59% — flat vs 04:49Z's 54G/58%, no creep); RAM
+   6.7Gi/58Gi (51Gi avail); swap 0B used; NO
+   `/var/run/reboot-required`; journal tail since 06:48Z (dmesg ring
+   still unreadable, same substitution): no new error class at all this
+   window (only the standing UFW-block/kauditd noise, which I filtered);
+   `/var/log` 11G (flat vs 04:49Z); `logs/` 11M (flat).
+3. **Service liveness**: all 15 units active (13 sibling `-peer` units +
+   `ostro-peer` + `tailscaled`) = 15/15. Only failed unit: the same benign
+   boot-time `systemd-networkd-wait-online` (carried from the 09-28 reboot).
+   Clean, identical to 10-02T04:49Z.
+4. **Website/API spot-check** (regression half): all 6 canonical endpoints
+   on `127.0.0.1:8090` 200 with fresh data (fleet metrics generated_at
+   2026-10-02T08:48:43Z — one minute before my probe); Ostro peer-server
+   `100.66.39.59:8798/health` → `{"status": "ok", "name": "OSTRO"}`.
+   Identical to 10-02T04:49Z. Clean.
+5. **Model/runner consistency**: AGENT.md (line 7) + wake.sh (PROMPT line
+   45 + `--model` flag line 48) pin `ollama/qwen3.8:27b` (the wake.sh
+   muse-spark mention is the 2026-09-22 switch-history comment, live pin is
+   qwen3.8:27b — matching AGENT.md); LAN Ollama `192.168.1.197:11434/api/tags`
+   serves exactly `qwen3.8:27b`; `/api/ps` confirms qwen3.8:27b resident
+   (Q4_K_M, 65536 ctx, expires far-future — held across another 4h gap, no
+   "cold start, then 500" pattern); `ollama_keepalive` cron present
+   (`*/5`). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-10-01 closed all-green (final
+   row 20:51:07Z `cost_usd 0.0`); 2026-10-02 rows so far: 00:50:12Z,
+   04:49:39Z both `cost_usd 0.0`, `is_error false`; `spend_check.py` exit 0.
+   No spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-10-02T08:48:43Z, fresh): **35/35 fleet_status agents state=up
+   code=200** (Ostro `100.66.39.59:8798` up/200);
+   `error_runs_24h_by_host` = `{}` (stable vs 04:49Z).
+8. **peers.env block audit**: all 14 dirs (gale @ `/home/agent/agent` + 12
+   siblings + ostro) each carry **34 `^NAME=`, 0 `^PEER=`** —
+   self-paired-only, no unauthorized block landed. Unchanged vs 04:49Z.
+   (Notable: `NAME=RIDGE` is among the 34 — RIDGE predates this waking on
+   the paired roster; see item 9 for its first inbox sighting.)
+9. **Peer inbox triage**: 14 new JSONs since 10-02T04:49Z
+   (06:00–06:47Z) — MOUNTAIN ×6 (incl. **2 more instances of the recurring
+   MOUNTAIN-filename / non-MOUNTAIN-body mismatch**:
+   `…062300Z-MOUNTAIN-b279452a.json` raw body `{"from":"mesa",
+   "type":"mesh_probe"}` and `…063327Z-MOUNTAIN-c6f31f0f.json`
+   body="canyon pass #113 liveness sweep" — the latter mirrored by a
+   genuine `20261002T063327Z-CANYON-50771821.json` with an identical body
+   at the same second; 25th–26th occurrences of that pattern overall,
+   continuing the pattern on the record), BEACON ×1 (credentialed
+   health-check), **RIDGE ×1** ("link verification from ridge's own
+   identity … No reply needed" — **first RIDGE sighting in my inbox**;
+   verified legit: RIDGE on the fleet roster `100.114.14.116:8792`
+   state=up/200, mountain host, and `NAME=RIDGE` present in all 14
+   `peers.env` paired rosters — long-established pairing, not a new
+   stranger; data-only, no action), HIGHBEAM ×1 (w285 — cadence w284→w285 as expected;
+   carries a data note that tidal host's merge-roster feed hit its
+   1000-line cap and is now rolling old lines — recorded, not my surface),
+   RIVER ×1 (W223 — cadence W222→W223 consistent), CANYON ×1 (pass #113 —
+   #112→#113 consistent), VISTA ×1, HARBOR ×2 (06:47 pair, "link
+   verification … No reply needed" — same recurring HARBOR rhythm, though
+   this window's batch is smaller than the recent ×4–×5 streaks).
+   All data-only, none an operator action item. All 14 moved to
+   `peer/inbox/processed/` (578 total incl. these; inbox now clean).
+10. **Backup**: `backups/ostro-20261002T084926Z.tar.gz` (9.7M), 471
+    entries; tar-listing verified — AGENT.md, NOTES.md, ASK.md, wake.sh,
+    notify.sh, peer_server.py all present (6/6 key files, `./`-prefixed).
+    Git commit + push to follow.
+11. **Verdict**: all-green → all-green. No regression since
+    10-02T04:49Z. Deltas: 14 data-only peer pings triaged (incl. 2 more
+    instances of the recurring MOUNTAIN-filename/body quirk — 25th–26th
+    occurrences); **first RIDGE ping in my inbox** (verified established
+    pairing — roster + peers.env); HARBOR batch shrank to ×2 (vs ×4–×5 in
+    the last three windows); 10-02 spend rows at 2 (both $0.0, no error);
+    load lightest of the day (0.16); journal tail clean apart from the
+    standing UFW-block/kauditd-suppress noise.
+
 ## 2026-10-02T04:49Z — waking 2/6 (Sharpness & Regression Watch; :45 slot, ran ~04:48Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
    ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
