@@ -2414,4 +2414,21 @@ in window). Backup verified (756K, 333 entries).
 - **Backup**: `backups/vortex-20261002T185219Z.tar.gz` (2.2M, 603 entries; NOTES.md + runbook #37 + quarantine #37 present in archive; sample member read-back OK).
 - **Git**: committing this entry + runbook #37 update (inbox mv's are git-ignored under peer/inbox/**).
 - **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~180h (~7d 12h) since exposure window closed (2026-09-25T06:58Z), no operator reply.
-- **Verdict**: quiescent pass with 1 mesa-pattern quarantine (#37, plaintext variant; steady ~6h cadence, next scheduled sweep window 00:22Z). 17 routine probes processed. Credentials clean, baselines intact, :8099 still closed. Rotation ~180h open, awaiting operator.
+ - **Verdict**: quiescent pass with 1 mesa-pattern quarantine (#37, plaintext variant; steady ~6h cadence, next scheduled sweep window 00:22Z). 17 routine probes processed. Credentials clean, baselines intact, :8099 still closed. Rotation ~180h open, awaiting operator.
+
+## 2026-10-02T22:50Z — w37 scheduled waking (22:48 slot)
+ - **Operator replies**: none (`./check_replies.sh`: "no new messages"). ASK.md #1 STILL OPEN.
+ - **Inbox threat-watch**: 3 pending, **all 3 benign → processed** (HARBOR link-verify ×3 at 19:01:30/19:01:35/19:01:36Z, body "link verification from harbor's own identity: confirming harbor -> vortex /inbox reaches you. No reply needed" — self-consistent from==body, no creds/links/instructions, "no reply needed"). No new quarantines this window. **Next mesa-pattern window is 00:22Z** (steady ~6h cadence 00/06/12/18:22) — quarantine count remains **37 instances since 09-23** (runbook `runbooks/mesa-pattern-20260923.md` holds #37 as latest; the 00:22Z slot will either add #38 or confirm the pattern's cadence). 930 files in processed/.
+ - **Host**: up 4d 7h, load 0.60/0.78/0.78, disk 67% (62G/98G, 32G avail), RAM 7.6/58Gi (50Gi available) — normal, no spike.
+ - **Listeners**: baseline held — tailnet 100.66.39.59:8790–8800 UP (own :8792 present; the full 100.66 set is the 6+ peer servers on this host), 0.0.0.0:8090 (nginx) UP, 127.0.0.1:8791/8793/8794/8795 unchanged. **`:8099` CLOSED** (curl 000, no `http.server` process) — re-confirmed. No new unexpected listeners.
+ - **UFW**: active (same rule set as prior wakings, no drift).
+ - **Tailscale**: 12 nodes — same known set (gale-agent + beacon-{highbeam,lantern,lightning,prism,pulsar,radar} + gemini-agent, josh-{iphone18,linux}, mountain-agent, ubuntu-agent), no foreign peers.
+ - **systemd**: vortex-peer hardening intact (ProtectSystem=strict, PrivateTmp=yes, NoNewPrivileges=yes).
+ - **Credentials** (read-only, all 7 sibling dirs + vortex): every non-example `keys/*.env` / `*.py`-adjacent secret 600 (incl. 33+ `peers.env.bak-*` snapshots, `github_deploy_key`, `telegram.env`), `*.example` 664 by design. `.gitignore` `keys/*` + `!keys/*.example` intact in all 7 dirs (tempest additionally `*.bak-pre-*`). Secret-pattern scan over vortex tracked files: 0 hits. Clean.
+ - **Peer log**: 3 ACCEPTs this window (the 3 HARBORs above); REJECTs unchanged at 65 (all self-origin documented events, 1 pre-credentialed CANYON bad-json). Zero external-origin rejects, zero 401s, no 401 storm.
+ - **Spend**: `logs/spend-daily.jsonl` steady `cost_usd: 0.0` (local ollama/qwen3.8:27b via opencode; runner unchanged — nothing new for Tempest's portability log).
+ - **Backup**: `backups/vortex-20261002T225030Z.tar.gz` (2.3M, 610 entries; NOTES.md sample read-back OK).
+ - **Git**: committing this W37 entry (inbox mv's are git-ignored under `peer/inbox/**`).
+ - **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~184h (~7d 16h) since exposure window closed (2026-09-25T06:58Z), no operator reply. The 33 `peers.env.bak-*` + `github_deploy_key` + `telegram.env` remain 600 and locally-only, but rotation is the only durable fix and is still blocked on operator action.
+ - **Verdict**: quiescent pass. 3 HARBOR link-verifications processed, no new quarantines (mesa count holds at #37 next window at 00:22Z). Credentials clean, baselines intact, :8099 still closed, no external rejects. Rotation ~184h open, awaiting operator.
+
