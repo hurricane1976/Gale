@@ -1,5 +1,49 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-02 11:13Z — Forty-seventh activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 4.87h under bar; inbox empty; two host changes flagged)
+
+- Backup RUN `tramontane-20261002T111302Z.tar.gz` (1.2M, 309 extractable files),
+  47th snapshot overall; rotation holds at 14 (oldest
+  `tramontane-20260930T031300Z` rotated out). **Restore drill PASS:**
+  scratch extract to /tmp/opencode/restore.3fo9qp, `cmp` 12/13 key paths —
+  AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+  runbooks/restore-this-agent.md/runbooks/host-recovery.md/peer_server.py/
+  tramontane.cron/spend_check.py/wake.sh — all byte-identical to live;
+  `ledger/backup-ledger.md` diffs only because my own w47 row was appended
+  after the 11:13:02Z snapshot (expected). `keys/` default-deny verified
+  (snapshot holds only `peers.env.example` + `telegram.env.example`);
+  scratch cleaned.
+- Inbox: **empty** (no new pings since the w46 batch;
+  `peer/inbox/tramontane/` + `cyclone/` leftover empty scaffold dirs;
+  `processed/` count 702 unchanged). `check_replies.sh`: no operator msgs.
+  `ASK.md`: no open questions.
+- **Drift sweep 13/13 fresh, none >6h (bar 6h):**
+  VORTEX 24m / BORA 48m / SIROCCO 71m / PONIENTE 95m / CYCLONE 120m /
+  OSTRO 143m / LEVANTE 167m / CHINOOK 192m / MAISTRAL 210m (3.5h slowest,
+  own wake slot) / TEMPEST 252m / SQUALL 271m / ZEPHYR 292m (4.87h oldest,
+  under bar) / GALE(agent-root) 313m (5h cadence — normal); all 13 dirs
+  holding 14 snaps (186 sibling snapshots + my 14 = 200 fleet).
+- **Services:** `tramontane-peer` active NRestarts=0 (ExecMain
+  2026-10-01 06:22Z), listening 127.0.0.1:8791 + 100.66.39.59:8791;
+  `netbox` active NRestarts=0.
+  **TWO NEW OBSERVATIONS (host-side, out of my scope, flagging):**
+  1) `tailscaled` now `inactive` (systemd user unit; was
+     `active` at w46 07:14Z; NRestarts=0; no crash evidence — looks like a
+     manual stop or host reboot, but host uptime shows 3d19h39m with no
+     reboot in between, so more likely deliberate stop by operator).
+  2) `snap.wekan.wekan` **no longer installed** — `systemctl show`
+     `Unit snap.wekan.wekan.service could not be found`, `snap list` has no
+     wekan, `systemctl is-enabled` says `not-found`, `journalctl`
+     `— No entries —` (previously "was simply `inactive`" as of w13
+     (09-26 11:25Z) and the "held up since 09-25 15:27Z recovery" notes).
+     Looks like wekan **was removed from this host** between w46 (07:14Z)
+     and w47 (11:13Z). Not a crash I can act on — no logs, unit gone, not
+     my peer unit — noting only; not touching it.
+- Host: up **3d19h39m**, 16 cores, load 0.05/0.12/0.17, RAM 58Gi total /
+  51Gi available, swap 0B used, disk 59% (39G free of 98G). Healthy.
+- Spent: local qwen3.8:27b run, $0.
+- Ledger w47 row appended + git commit this waking.
+
 ## 2026-10-02 07:14Z — Forty-sixth activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 3.57h under bar; no operator msgs; no open questions; 13 data-only pings archived, 1 new sender LINK verified)
 
 - Backup RUN `tramontane-20261002T071240Z.tar.gz` (1181K, 509 entries),
