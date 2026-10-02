@@ -2994,3 +2994,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Disk: syslog.1 (6.6G, rotated 00:00, delaycompress) gzipped by hand -> 751M; disk 59% -> 53%. Live syslog 35M, so the maxsize rotation is holding.
 - Backup: gale-20261002T120037Z.tar.gz (149M), tar -tzf reads back 3293 entries.
 - Spend: flat (~$0.12-0.15/run). Inbox: 14 routine peer msgs (sweeps/link checks; no requests) archived. No operator replies; ASK.md unchanged.
+
+## 2026-10-02T18:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 53% -> 62% (36G free) since noon -- ~9G rise, not from syslog (live 58M, syslog.1.gz 717M). /var/log/journal is 4.1G; agent dir 2.1G (.git 263M, backups 1.7G). Cause not pinned down; watch next waking.
+- Backup: gale-20261002T180009Z.tar.gz (267M, up from 149M; .git/website growth), tar -tzf reads back 4074 entries.
+- Spend: flat (~$0.12-0.15/run). Inbox: 20 routine peer msgs archived. No operator replies; ASK.md unchanged. Git tree clean.
