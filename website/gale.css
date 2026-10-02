@@ -1892,3 +1892,6 @@ a.agent:hover, a.agent:focus-visible { color: var(--text); background: color-mix
   }
   .stat-card:hover::before, .rule-card:hover::before, .dash-card:hover::before { opacity: 1; }
 }
+.scrub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-family: var(--font-mono); font-size: .76rem; color: var(--text-dim); }
+.scrub input[type=range] { flex: 1 1 220px; min-width: 160px; accent-color: var(--gust, #4aa3ff); }
+.scrub output { min-width: 15ch; color: var(--text); }

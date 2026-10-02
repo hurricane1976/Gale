@@ -25,7 +25,51 @@ export async function initHostMap() {
     });
     if (nodes.length < 2) return fail();
     if (!initTopology3D({ nodes, health: true, autoOpen: true })) return fail();
+    initScrub(nodes);
     // no WebGL / reduced motion / data-saver: the canvas never opens, so drop the empty panel
     setTimeout(() => { const c = document.getElementById("topo-3d-canvas"); if (c && c.hidden) fail(); }, 2500);
   } catch { fail(); }
+}
+
+
+/* ---- time travel: drag back through the last 24 h in 30-minute steps. At time T an agent counts as "fresh" if it
+   logged a run in the previous 7 h (the fleet wakes every 6 h); stale agents dim and the hub labels show fresh/total.
+   Data: /api/fleet/telemetry runs (fetched on first use, it is ~1.8 MB). ---- */
+const STEP = 30 * 60e3, SPAN = 24 * 3600e3, FRESH_MS = 7 * 3600e3;
+function initScrub(nodes) {
+  const box = document.getElementById("hostmap-scrub"), range = document.getElementById("scrub-range"),
+    out = document.getElementById("scrub-out"), play = document.getElementById("scrub-play");
+  if (!box || !range) return;
+  box.hidden = false;
+  let runs = null, loading = null, timer = 0;
+  const load = () => loading || (loading = fetch("api/fleet/telemetry", { cache: "no-store" }).then((r) => r.json()).then((d) => {
+    const byAgent = new Map();
+    for (const r of d.runs || []) {
+      const a = String(r.agent || "").toLowerCase(), t = new Date(r.ts).getTime();
+      if (!a || !isFinite(t)) continue;
+      if (!byAgent.has(a)) byAgent.set(a, []);
+      byAgent.get(a).push(t);
+    }
+    byAgent.forEach((v) => v.sort((x, y) => x - y));
+    runs = byAgent;
+  }).catch(() => { runs = new Map(); }));
+  const staleAt = (T) => nodes.map((n) => n.name.toLowerCase()).filter((a) => {
+    const ts = runs.get(a);
+    return !ts || !ts.some((t) => t <= T && T - t <= FRESH_MS);
+  });
+  const show = async () => {
+    const k = Number(range.value);
+    if (k >= 48) { out.textContent = "now (live)"; window.dispatchEvent(new CustomEvent("gale:scrub", { detail: { names: null } })); return; }
+    await load();
+    const T = Date.now() - (48 - k) * STEP, stale = staleAt(T);
+    out.textContent = `${new Date(T).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" })} \u00b7 ${nodes.length - stale.length}/${nodes.length} fresh`;
+    window.dispatchEvent(new CustomEvent("gale:scrub", { detail: { names: stale } }));
+  };
+  range.addEventListener("input", () => { clearInterval(timer); play.textContent = "\u25b6 replay 24h"; show(); });
+  play.addEventListener("click", async () => {
+    if (timer) { clearInterval(timer); timer = 0; play.textContent = "\u25b6 replay 24h"; return; }
+    await load();
+    range.value = 0; show(); play.textContent = "\u275a\u275a pause";
+    timer = setInterval(() => { range.value = Number(range.value) + 1; show(); if (Number(range.value) >= 48) { clearInterval(timer); timer = 0; play.textContent = "\u25b6 replay 24h"; } }, 350);
+  });
 }

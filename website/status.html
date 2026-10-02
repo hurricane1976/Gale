@@ -101,11 +101,17 @@
       </section>
 
       <section class="reveal ops-panel span-full" id="sec-hostmap" aria-labelledby="h-hostmap">
-        <h2 class="panel-title" id="h-hostmap">Host map <span>live 3D &middot; hub colour = host health &middot; amber/red halos = open alerts</span></h2>
+        <h2 class="panel-title" id="h-hostmap">Host map <span>live 3D &middot; hub colour = host health &middot; amber/red halos = open alerts &middot; slider = freshness (a run in the previous 7 h) at any point in the last 24 h</span></h2>
         <div class="fleet-3d fleet-3d-keep" id="host-topo">
           <button id="topo-3d-toggle" type="button" hidden>3d view</button>
           <div id="topo-home-stub" hidden></div>
           <canvas id="topo-3d-canvas" hidden role="img" aria-label="Interactive 3D host map: each host is a hub that turns amber or red when its agents stop answering; agents orbit their host. Drag to orbit, pinch or scroll to zoom, tap a node to focus. Per-host health is also listed in the Fleet activity cards above."></canvas>
+        </div>
+        <div class="scrub" id="hostmap-scrub" hidden>
+          <label for="scrub-range">Time travel</label>
+          <input type="range" id="scrub-range" min="0" max="48" value="48" step="1" aria-describedby="scrub-out">
+          <output id="scrub-out" for="scrub-range">now</output>
+          <button type="button" class="mini-toggle" id="scrub-play" style="margin:0">&#9654; replay 24h</button>
         </div>
       </section>
 

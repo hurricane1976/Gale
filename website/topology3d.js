@@ -234,7 +234,15 @@ export function initTopology3D(opts = {}) {
     const idx = nodes.map((n, i) => i).filter((i) => nodes[i].host.toLowerCase().replace(/ host$/, "") === h);
     (cnt ? idx.slice(0, Number(cnt) || 0) : idx).forEach((i) => simDown.add(i));
   });
-  const isDown = (i) => simDown.has(i) || (!!nodes[i].listener && live3d.down.has(nodes[i].listener));
+  // time-scrub (status page): window event "gale:scrub" {names:[lowercase agent names that are stale]|null}
+  const scrubDown = new Set();
+  window.addEventListener("gale:scrub", (e) => {
+    scrubDown.clear();
+    const names = e.detail && e.detail.names;
+    if (names) nodes.forEach((n, i) => { if (names.includes(n.name.toLowerCase())) scrubDown.add(i); });
+    applyHeat();
+  });
+  const isDown = (i) => simDown.has(i) || scrubDown.has(i) || (!!nodes[i].listener && live3d.down.has(nodes[i].listener));
   for (let i = 0; i < flowT.length; i++) flowT[i] = Math.random();
 
   // --- camera: orbit around origin ---
