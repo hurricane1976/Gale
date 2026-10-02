@@ -171,7 +171,7 @@ export function mountBars3D(canvas, opts = {}) {
     if (!userDist && bars.length) {
       const t = Math.tan(0.85 / 2), asp = w / h;
       const need = Math.max(((extent / 2) + 3.5) / (t * Math.min(asp, 2.4)), (topY * 0.9 + 2) / t);
-      dist += (need * (opts.fit || 1.3) - dist) * 0.08;
+      dist += (need * (opts.fit || 1.3) * (asp < 1 ? (opts.narrow || 0.62) : 1) - dist) * 0.08;
     }
     if (moving) dirty = true;
     if (dirty) { buildBoxes(); dirty = false; }

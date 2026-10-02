@@ -6,7 +6,7 @@ const HOST_HUE = { gale: [1.0, 0.54, 0.24], tidal: [0.22, 0.74, 0.97], mountain:
 const HOST_ORDER = ["gale", "beacon", "tidal", "mountain"];
 
 export function initLandscape3D(canvas) {
-  const view = mountBars3D(canvas, { yaw: 0.3, pitch: 0.75, fit: 2.5 });
+  const view = mountBars3D(canvas, { yaw: 0.3, pitch: 0.75, fit: 2.5, narrow: 0.36 });
   if (!view) return null;
   let mode = "cost";
   function update(d) {

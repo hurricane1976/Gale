@@ -9,7 +9,7 @@ let view = null;
 export function updateRuns3D(runs) {
   const canvas = document.getElementById("runs-3d");
   if (!canvas) return false;
-  if (!view) view = mountBars3D(canvas, { yaw: 0.3, pitch: 0.55, fit: 1.45 });
+  if (!view) view = mountBars3D(canvas, { yaw: 0.3, pitch: 0.55, fit: 1.45, narrow: 0.5 });
   if (!view) return false;
   const B = 3 * 3600e3, N = 24, now = Date.now(), cur = Math.floor(now / B);
   const fams = Object.keys(FAM).filter((f) => runs.some((r) => (r.model_family || "other") === f));

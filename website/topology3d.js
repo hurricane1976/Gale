@@ -764,7 +764,7 @@ export function initTopology3D(opts = {}) {
     "color:#d4deef;background:rgba(8,14,28,.9);padding:3px 9px;border-radius:8px;text-align:right;line-height:1.5";
   hint.textContent = LITE ? "drag to orbit \u00b7 pinch to zoom \u00b7 tap a node"
                           : "drag to orbit \u00b7 scroll to zoom \u00b7 click a node or host to focus \u00b7 esc to reset";
-  if (LITE) hint.style.cssText = hint.style.cssText.replace("right:12px;bottom:12px", "left:12px;top:10px") + ";font-size:.6rem";
+  if (LITE) hint.hidden = true; // touch users know the gestures; the hint only covered the map
   canvas.parentElement && canvas.parentElement.appendChild(hint);
 
   function focusOn(i) {

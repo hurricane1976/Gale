@@ -305,3 +305,10 @@ main:has(#cost-chart) #lanes { min-height: 260px; }
 /* observability: the partial-history note always occupies its line, so showing/hiding it never shifts the page */
 #partial-note { display: block !important; min-height: 1.4em; margin: 0 0 8px; font-size: .72rem; max-width: 46ch; }
 
+@media (max-width: 640px) { .bars3d { height: 340px; } #land-wrap { height: 380px; } }
+/* phones: the 3D heat selector is one scrolling row along the bottom so it can't cover the map */
+@media (max-width: 640px) {
+  #topo-heat { flex-wrap: nowrap !important; overflow-x: auto; right: 12px; scrollbar-width: none; }
+  #topo-heat::-webkit-scrollbar { display: none; }
+  #topo-heat .mini-toggle { flex: 0 0 auto; padding: 4px 9px !important; min-height: 28px !important; font-size: .64rem !important; }
+}
