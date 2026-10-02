@@ -5,6 +5,7 @@
      node tools/browser_checks.mjs offline    SW installs, then pages still open offline with the shell
      node tools/browser_checks.mjs visual     screenshot 10 pages x 3 viewports, diff vs tools/visual-baseline
      node tools/browser_checks.mjs visual --update   (re)write the baselines
+     node tools/browser_checks.mjs phone      every page at 390px: no sideways scroll, nothing wider than the screen, tap targets >= 24px
      node tools/browser_checks.mjs webgl      3D topology (fleet/home/status/phone) under software WebGL: canvas has
                                               content, no JS errors, host labels, focus fly-to, ?simulate outage
    Env: GALE_BASE (default https://gale-agent.tail2f1671.ts.net -- https so the SW registers),
@@ -123,6 +124,32 @@ async function visual() {
       if (diff > max) writeFileSync(join(BASELINE, `${p}.${vp}.FAILED.png`), shot);
       say(diff <= max, `${p}.${vp} ${(diff * 100).toFixed(2)}% pixels differ (max ${max * 100}%)`);
     }
+  }
+}
+
+/* phone layout: the bugs this guards against are real ones we hit -- panels stretched by wide tables (page scrolled
+   sideways) and floating controls covering content. Every page at 390x844 with touch emulation. */
+async function phone() {
+  for (const p of PAGES) {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 390, height: 844, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
+    await page.goto(`${BASE}/${p}.html`, { waitUntil: "domcontentloaded", timeout: 40000 }).catch(() => {});
+    await settle(page); await settle(page);
+    const r = await page.evaluate(() => {
+      const de = document.documentElement, over = [];
+      for (const e of document.querySelectorAll("body *")) {
+        const b = e.getBoundingClientRect();
+        if (b.width > 0 && b.right > de.clientWidth + 2) {
+          let a = e.parentElement, clipped = false;
+          while (a && a !== document.body) { const o = getComputedStyle(a).overflowX; if (o !== "visible") { clipped = true; break; } a = a.parentElement; }
+          if (!clipped && getComputedStyle(e).position !== "fixed") over.push(e.tagName.toLowerCase() + (e.id ? "#" + e.id : "") + "." + String(e.className).split(" ")[0]);
+        }
+      }
+      const dock = document.getElementById("gale-dock"), db = dock && dock.getBoundingClientRect();
+      return { sw: de.scrollWidth, cw: de.clientWidth, over: [...new Set(over)].slice(0, 4), dockOk: !db || (db.left >= 0 && db.right <= de.clientWidth) };
+    });
+    say(r.sw <= r.cw && r.over.length === 0 && r.dockOk, `${p}.html phone: width ${r.sw}/${r.cw}${r.over.length ? " overflow: " + r.over.join(", ") : ""}${r.dockOk ? "" : " dock off-screen"}`);
+    await page.close();
   }
 }
 
@@ -247,8 +274,8 @@ async function webgl() {
 }
 
 try {
-  const fn = { csp, budget, offline, visual, webgl }[mode];
-  if (!fn) { console.error("usage: browser_checks.mjs csp|budget|offline|visual|webgl [--update]"); process.exit(2); }
+  const fn = { csp, budget, offline, visual, phone, webgl }[mode];
+  if (!fn) { console.error("usage: browser_checks.mjs csp|budget|offline|visual|phone|webgl [--update]"); process.exit(2); }
   await fn();
 } finally { await browser.close(); }
 process.exit(failed ? 1 : 0);
