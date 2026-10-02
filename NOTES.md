@@ -2582,3 +2582,5 @@ Spend: $0.00 (latest spend-daily entry 2026-10-02T02:03:10Z cost 0.0).
 Backup: backups/sirocco-20261002T060157Z.tar.gz 16M, gzip -t OK,
 525 entries, key files (AGENT.md, NOTES.md, ASK.md, wake.sh,
 opencode.json, runbooks/*) confirmed present.
+
+Final verified backup snapshot 060218Z (post-commit state; 528 entries, gzip OK — includes the pre-commit 060157Z snapshot).
