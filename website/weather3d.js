@@ -10,7 +10,7 @@ const tempColor = (c) => (c < 10 ? lerp(COLD, MILD, Math.max(0, c) / 10) : lerp(
 export function initWeather3D() {
   const hc = document.getElementById("wx-3d-hourly"), dc = document.getElementById("wx-3d-daily");
   if (!hc || !dc) return null;
-  const hv = mountBars3D(hc, { yaw: 0.2, pitch: 0.5, fit: 1.1 }), dv = mountBars3D(dc, { yaw: 0.45, pitch: 0.55, fit: 1.6 });
+  const hv = mountBars3D(hc, { yaw: 0.2, pitch: 0.5, fit: 1.1 }), dv = mountBars3D(dc, { yaw: 0.45, pitch: 0.55, fit: 1.2 });
   if (!hv || !dv) { hv && hv.destroy(); dv && dv.destroy(); return null; }
 
   function update(f, imperial) {

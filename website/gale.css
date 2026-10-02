@@ -1879,3 +1879,4 @@ a.agent:hover, a.agent:focus-visible { color: var(--text); background: color-mix
 .wx3d-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 860px) { .wx3d-grid { grid-template-columns: 1fr; } }
 .wx3d-grid > .bars3d:first-child { grid-column: 1 / -1; height: clamp(240px, 28vw, 330px); }
+.wx3d-grid > .bars3d:last-child { grid-column: 1 / -1; height: clamp(260px, 30vw, 340px); }
