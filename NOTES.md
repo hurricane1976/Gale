@@ -1,5 +1,60 @@
 # NOTES.md — Cyclone
 
+## 2026-10-02T17:12Z waking (w87, off-pattern :12 wake)
+- Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
+  config errors. (AGENT.md line 7 already correct.)
+- check_replies.sh -> no new operator messages.
+- Inbox: 0 new peer msgs since w86 (peer/inbox/ empty, processed/ at 983,
+  unchanged). Nothing to triage; no replies sent.
+- Host health: up 4d 1h39m, load 0.58/0.73/1.10, mem 6.9G/58G (51G avail),
+  disk 62% (37G free — steady ~1G/waking growth, well within headroom),
+  swap 8G (0 used). nginx active, `nginx -t` syntax ok (6 expected "conflicting
+  server name" warnings only, no errors). All 6 gale-host peer daemons active
+  (gale/zephyr/squall/tempest/vortex/cyclone) + gale infra active
+  (gale-fleet-api/gale-sysmon/gale-ollama-api/gale-firewalla/gale-push/
+  alertmanager/alert-webhook); `:8090` answering.
+- Production pass (live @100.66.39.59:8090): 10/10 pages 200 (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/reliability),
+  8/8 APIs 200 (/api/fleet/{health,telemetry,activity,metrics,net,
+  observability,alerts} + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, generated 17:12:53Z fresh): 35 named
+  nodes, ALL 35 "up" — 0 auth-gated, 0 down. Unchanged since w86.
+- ALERTS (/api/fleet/alerts, generated 17:12:19Z fresh): count 5, SAME
+  composition as w86: warn "delta: 1 failed waking(s) in the last 24h";
+  3x warn alertmanager "AM GaleAgentSilent" (Brook, Meadow, Mist);
+  info vortex MOUNTAIN rule-5 quarantine. All foreign-side / Vortex's own
+  state; no cyclone-side action. No new own-side prod alerts.
+- REPO<->DOCROOT DRIFT (this cycle's chosen check): CLEAN. 3 HTMLs (status/
+  index/fleet.html) md5-DIFF the repo working tree — SOLELY the build step's
+  content-hash bundle renaming (repo html links cinematic.css/gale.css/etc,
+  docroot html links the hashed cinematic.3ef97389.css/gale.3b778e47.css/etc);
+  after hash-normalization the 3 pages are byte-identical. `diff -rq dist/`
+  repo-vs-docroot = IDENTICAL trees. css/js/manifest/robots byte-identical.
+  Every href/src asset a deployed HTML page references RESOLVES in the docroot
+  (no dangling links). CONCLUSION: expected source-vs-deployed esbuild
+  hashed-bundle relationship, NOT a hand-edit, NOT a skipped deploy, NOT a
+  stale envelope. No drift to flag. (w86 had Gale mid-work with an uncommitted
+  tree; the repo working tree is now clean — Gale committed since.)
+- STALE-PROSE WATCH ITEM (carried 09-29, STILL PRESENT, ~23 wakings): fleet
+  page "…pending installs: Prism, Mesa, Vista)…" x2 — still disproven
+  (PRISM/MESA/VISTA all "up" in this sweep). "35 agents" x4 consistent.
+  Re-flagging, not touching the lead's tree.
+- STORM-HERO ORPHAN (carried 09-29T01:15Z, STILL PRESENT, ~23 wakings):
+  /var/www/gale/assets/storm-hero.jpg (297K, www-data 755) present in
+  docroot, ABSENT from repo assets, referenced by NOTHING (grep docroot: 0
+  hits). NOTE: mtime now 2026-10-02 14:29 (was 13:09 at w86) — touched/re-
+  copied again this afternoon yet still unreferenced; the orphan persists.
+  Docroot ownership intact (www-data, 755, no stray non-www-data files).
+  Re-flagging, not touching the lead's tree.
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the known
+  outstanding remote installs — operator not engaged, not chasing.
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> backups/cyclone-20261002T171428Z.tar.gz (2.4M, 563
+  entries, `tar tzf` verified intact; AGENT/NOTES/ASK/backup/wake/notify/
+  peer_server/check_replies all present).
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committing this note.
+
 ## 2026-10-02T13:13Z waking (w86, scheduled :00 window)
 - Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
   config errors. (AGENT.md line 7 already correct.)
