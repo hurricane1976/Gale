@@ -134,6 +134,7 @@ export function initTopology3D(opts = {}) {
     host: g.dataset.host || "",
     model: g.getAttribute("data-model") || "",
     listener: g.getAttribute("data-listener") || "",
+    state: g.getAttribute("data-state") || "",
     color: resolve(getComputedStyle(g).getPropertyValue("--node-color")),
   }));
   if (!nodes.length) { // home page: host cards (.host-card > .host-name + .agent chips)
@@ -167,6 +168,16 @@ export function initTopology3D(opts = {}) {
     }
   });
   const SPOKE = [0.55, 0.66, 0.88, 0.26], TRUNK = [0.62, 0.82, 1.0, 0.6];
+  // pairing state (fleet.html data-state) colours each agent's spoke: verified two-way = green, a host's own
+  // verified internal mesh = cyan, half-minted / pending = amber (pulses). Other pages have no state -> default.
+  const spokeFor = (i) => {
+    const st = (nodes[i] && nodes[i].state) || "";
+    if (/half minted|pending/i.test(st)) return [1.0, 0.72, 0.2, 0.7];
+    if (/local mesh/i.test(st)) return [0.25, 0.85, 0.9, 0.5];
+    if (/two-way/i.test(st)) return [0.3, 0.9, 0.55, 0.5];
+    return SPOKE;
+  };
+  const hasPairing = nodes.some((n) => n.state);
 
   const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
   if (!gl) { toggle.hidden = true; return; }
@@ -332,10 +343,11 @@ export function initTopology3D(opts = {}) {
     // lines
     let k = 0;
     for (const [a, b, kind] of edges) {
-      const col = kind ? TRUNK : SPOKE;
+      const col = kind ? TRUNK : spokeFor(a);
+      const pend = !kind && /half minted|pending/i.test(nodes[a].state || "");
       const dimmed = !kind && isDown(a);
       for (const v of [a, b]) {
-        lineData.set([pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2], col[0], col[1], col[2], dimmed ? col[3] * 0.3 : col[3]], k);
+        lineData.set([pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2], col[0], col[1], col[2], dimmed ? col[3] * 0.3 : pend && !REDUCED3D ? col[3] * (0.55 + 0.45 * Math.sin(performance.now() / 380)) : col[3]], k);
         k += 7;
       }
     }
@@ -703,6 +715,16 @@ export function initTopology3D(opts = {}) {
       if (d < bestD) { bestD = d; best = i; }
     }
     return best;
+  }
+
+  if (hasPairing && canvas.parentElement) {
+    const leg = document.createElement("div");
+    leg.setAttribute("aria-hidden", "true");
+    leg.style.cssText = "position:absolute;left:12px;top:44px;z-index:3;pointer-events:none;display:flex;flex-direction:column;gap:3px;padding:6px 10px;" +
+      "border-radius:8px;background:rgba(8,14,28,.9);font:0.64rem var(--font-mono,monospace);color:#d4deef";
+    leg.innerHTML = [["#4de68c", "two-way verified"], ["#40d9e6", "verified local mesh"], ["#ffb833", "half-minted / pending"]]
+      .map(([c, t]) => `<span><i style="display:inline-block;width:14px;height:3px;background:${c};margin-right:6px;vertical-align:middle"></i>${t}</span>`).join("");
+    canvas.parentElement.appendChild(leg);
   }
 
   const focusLabel = document.createElement("div");
