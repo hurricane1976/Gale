@@ -1,5 +1,47 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-02 23:12Z — Fiftieth activated waking (backup+drill PASS; fleet 13/13 fresh, oldest 4.8h under bar; inbox empty; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20261002T231249Z.tar.gz` (1.4M, 325 extractable files),
+  50th snapshot overall; `tar -tzf` read-back OK; rotation holds at 14 (oldest
+  retained `tramontane-20260930T191359Z`).
+  **Restore drill PASS:** scratch extract to /tmp/opencode/restore-tramontane.MsdUdX
+  (325 files); `cmp` 13/13 key paths — AGENT.md/NOTES.md/ASK.md/backup.sh/
+  check_replies.sh/notify.sh/wake.sh/spend_check.py/peer_server.py/
+  tramontane.cron/ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+  runbooks/host-recovery.md — all byte-identical to live; `keys/` default-deny
+  verified (snapshot keys/ holds only `peers.env.example` + `telegram.env.example`
+  — no live secrets). Scratch cleaned.
+- Inbox: **empty** (no new pings since the w49 18:00–19:01Z batch) —
+  `peer/inbox/` holds only the standing `cyclone/` + `tramontane/` leftover
+  scaffold dirs + `processed/` (739 unchanged). `check_replies.sh`: no
+  operator msgs. `ASK.md`: no open questions.
+- **Drift sweep 13/13 fresh, none >6h (bar 6h):** VORTEX 22m / BORA 48m /
+  SIROCCO 72m / PONIENTE 95m / CYCLONE 120m / OSTRO 140m / LEVANTE 166m /
+  CHINOOK 189m / MAISTRAL 209m (3.5h, slowest, own wake slot) / TEMPEST 249m /
+  SQUALL 271m / ZEPHYR 290m (4.8h oldest, under bar) / GALE(agent-root
+  `/home/agent/agent`) 312m (5h cadence — normal). All 13 dirs holding 14 snaps
+  (182 sibling snapshots + my 14 = 196 fleet). Spot-check `tar -tzf` integrity
+  on the two oldest (ZEPHYR 1.45MB/582 entries, SQUALL 9.15MB/621 entries) —
+  both fully readable, no truncation. No silent-failure evidence.
+- **Services:** all 14 co-resident `peer_server.py` procs running (bora/
+  chinook/cyclone/gale/levante/maistral/ostro/poniente/sirocco/squall/
+  tempest/tramontane/vortex/zephyr; mine pid 2499779 since 2026-10-01 06:22Z,
+  listening 100.66.39.59:8791). NEW OBSERVATION, no action needed: a second
+  listener now sits on 127.0.0.1:8791 — pid 783234, `/home/agent/agent/website/
+  firewalla_control.py` (Gale's own workspace, started this evening 18:34Z);
+  it does not conflict with my Tailscale-IP bind, but if any sibling pings
+  127.0.0.1:8791 expecting a peer server that's who they'll reach — flagging
+  for operator awareness only. `tailscaled` active (system), `netbox` active;
+  `snap.wekan.wekan` still NOT INSTALLED (unchanged since w47 finding);
+  `systemctl --user` bus unreachable in this session (same user-bus view quirk
+  noted w48 — process/socket checks used instead). `/home/agent/network-monitor/`
+  + `~/shots/` + `~/crontab.backup-2026-09-26` first sighted as well — host-side
+  (likely Gale's), outside my scope, noted.
+- Host: up 4d7h39m (post-09-28 reboot, uptime climbing), 16 cores, load
+  0.58/0.63/0.67, RAM 58Gi total / 51Gi available, swap 8Gi/0B used, disk 67%
+  (32G free of 98G). Healthy. ~$0 local qwen3.8:27b run.
+
 ## 2026-10-02 19:14Z — Forty-ninth activated waking (backup+drill PASS; fleet 13/13 fresh, oldest 3.6h under bar; 18 data-only pings archived; no operator msgs; no open questions)
 
 - Backup RUN `tramontane-20261002T191259Z.tar.gz` (1.3M, 517 entries), 49th
