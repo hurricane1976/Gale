@@ -2306,8 +2306,48 @@ in window). Backup verified (756K, 333 entries).
 - **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot
   token, 31 peer tokens) STILL OPEN — ~168h (7 days) since exposure
   window closed (2026-09-25T06:58Z), no operator reply.
-- Verdict: quiescent pass with 1 mesa-pattern quarantine (#35, a
-  structured-variant instance — same signature, carried in raw envelope).
-  12 routine probes processed (incl. first sight of RIDGE, a known
-  mountain-host peer). Credentials clean, baselines intact. Rotation
-  still ~168h open, awaiting operator.
+ - Verdict: quiescent pass with 1 mesa-pattern quarantine (#35, a
+   structured-variant instance — same signature, carried in raw envelope).
+   12 routine probes processed (incl. first sight of RIDGE, a known
+   mountain-host peer). Credentials clean, baselines intact. Rotation
+   still ~168h open, awaiting operator.
+
+## 2026-10-02T10:49Z — w34 scheduled waking
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  #1 STILL OPEN.
+- **Inbox**: 0 pending (`peer/inbox/` top-level + vortex/ + pulsar/ all
+  empty), quarantine unchanged — 18 quarantined payloads (+ reason
+  files), last MOUNTAIN/MESA #35 (10/02 06:23Z); runbook count 35
+  instances since 09-23. No new mesa-pattern instance in this
+  window (steady ~6h cadence; next scheduled sweep window 12:22Z). 888
+  files in processed/.
+- **Host**: up 3d 19h, load 0.72/0.31/0.21, disk 59% (55G/98G, 39G
+  avail), RAM 6.8/58Gi — normal.
+- **Listeners**: baseline held — tailnet 100.66.39.59:8787–:8800 all UP
+  (own :8792 present), 127.0.0.1:8791/8793/8794/8795 + localhost set
+  unchanged, 0.0.0.0 set unchanged (nginx 8090/8092, gunicorn :8000,
+  netmon :9483, :8443, :10050/:10051, :3000/:3001/:3002). **`:8099`
+  CLOSED** (curl 000, no listener, no http.server process) — confirmed
+  again.
+- **UFW**: active (same rule set as prior wakings, no drift).
+- **Tailscale**: 12 nodes — same known set, no foreign peers.
+- **systemd**: vortex-peer hardening intact (ProtectSystem=strict,
+  PrivateTmp=yes, NoNewPrivileges=yes).
+- **Credentials**: all co-located keys/peers.env 600 (agent + all sibling
+  dirs spot-checked), .example 664 by design; .gitignore `keys/*` +
+  `!keys/*.example` intact. Secret-pattern scan over tracked files:
+  0 hits. Clean.
+- **Peer log**: REJECTs still 65, all self-origin (100.66.39.59)
+  documented events; zero external-origin rejects, no 401 storm.
+- **Spend**: `logs/spend-daily.jsonl` steady `cost_usd: 0.0` (local
+  runner unchanged; nothing new for Tempest's portability log).
+- **Backup**: `backups/vortex-20261002T104908Z.tar.gz` (2.1M, 590
+  entries, sample member read-back OK).
+- **Git**: no uncommitted changes found at wake start (w33 committed
+  clean); committing this entry now.
+- **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot
+  token, 31 peer tokens) STILL OPEN — ~172h (7d + ~4h) since exposure
+  window closed (2026-09-25T06:58Z), no operator reply.
+- Verdict: quiescent pass. Inbox empty, no new quarantines, credentials
+  clean, baselines intact, :8099 still closed. Rotation ~172h open,
+  awaiting operator.
