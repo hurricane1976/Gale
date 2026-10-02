@@ -2594,6 +2594,66 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
     12:02:08, no is_error) — 12th consecutive clean day-window;
     ASK.md closure case strongest yet, pending operator lane pick.
   - Tailscale: ~280h hold, no TUN regression; no nameable threshold.
-  - Neighbor footprint: /home/agent 8.9G (+0.3G vs #54 — normal
-    per-waking backup/inbox growth incl. agent/backup 1.5G); watch only.
+   - Neighbor footprint: /home/agent 8.9G (+0.3G vs #54 — normal
+     per-waking backup/inbox growth incl. agent/backup 1.5G); watch only.
+- **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-02T20:04Z — waking #56
+- **check_replies:** (no new messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side; no new instructions).
+- **Peer inbox:** 18 new since #55, all routine data-only pings — MOUNTAIN
+  x5 (4x Rule-7 credentialed-reach sweep + 1 site-build latency check),
+  MEADOW x3 census, DELTA x2 link-verify, HIGHBEAM w287, MESA link-verify,
+  CANYON pass #115, RIVER W225, VISTA link-verify, HARBOR 3-shot burst
+  (19:01:29/34/35Z, ~1-6s). Zero operator content, zero acks owed (treated
+  as data per rule 5). All moved to processed/ (902 total).
+- **HOST HEALTH:** uptime ~4d4h (same boot since 9/28 15:33Z, no reboot);
+  load 0.85/0.79/0.75 on 16 cores (~5%, calm — low-activity evening window);
+  RAM 6.9G used / 51G avail (58Gi total); swap 0/8G (unused); Tailscale TUN
+  live (tailscale0 UP, 100.66.39.59/32, peer roster intact) — no TUN
+  regression this boot.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health
+  (100% liveness). 29th consecutive alive sweep (carrying #55's count).
+- **CAPACITY / DISK:** disk **58G used / 36G free (62%)** — up from #55's
+  56G/38G/61%. The +2G step is benign infra, NOT a new runaway driver:
+  /var/lib/snapd **4.5G** (chromium 153 + aws-cli + core snap bases, settled
+  footprint), /tmp 2.6G (opencode working tree, churn), agent dirs ~2G.
+  /var/log now **5.5G** — syslog.1.gz **751M** (the 6.3G .1 fully
+  compressed out; #54's compress-in is the realized free-up) and active
+  syslog 65M (normal evening churn). So #55's 56G was the trough; we've
+  re-accumulated to the 58G steady-state. GROWTH WATCH RE-OPENED (was
+  CLEARED at #54) — but the 80% trip line (~78G used) is ~20G of headroom
+  away; no crossing nameable before ~several weeks absent a new driver
+  (a real snap refresh batch, a runaway .db, or /tmp churn would be the
+  named near-term events).
+- **Spend 2026-10-02 (to ~20Z, host-wide):** **$1.65 / 17 paid runs** — GALE
+  (agent) $0.7125 (5), SQUALL $0.4951 (4), TEMPEST $0.2702 (4), ZEPHYR
+  $0.1744 (4); CHINOOK + 9 other ledgers $0.00. Every run far under the
+  $5.00 per-run alert line; no rule-4 trigger (no run-count jump, no
+  cost-without-count jump). Paid-lane trio+1 pattern stable since #16
+  re-baseline.
+- **Wake-reliability (headline — DAY CLOSING CLEAN):** 10/2 00:00/04:00/
+  08:00/12:00/16:00 slots all fired clean (CHINOOK ledgers
+  00:00Z / 04:03:07 / 08:02:04 / 12:02:08 / 16:05:12, no is_error); this
+  20:00Z slot (#56) is the second former-failure class from the 9/28–29
+  incident window — **firing clean now**. 10/2 on track to close **6/6** =
+  **13th consecutive clean day-window**; ASK.md closure case strongest yet,
+  pending operator lane pick.
+- **Backup:** chinook-20261002T200324Z.tar.gz (1.9M), gzip -t OK;
+  14-snapshot ceiling held (rotated oldest).
+- **Forecast / thresholds:**
+  - Disk: 58G used / 36G free (62%). RE-ESCALATED from #54's CLEARED
+    trough (that 49G was post-compression; #55 56G / #56 58G = steady
+    re-accumulation). Named near-term events: (a) a genuine snapd refresh
+    batch (+1–3G), (b) /tmp churn past ~4G, (c) a runaway *.db/.jsonl.
+    80% line (~78G) not reachable before ~several weeks at flat
+    trajectory. Watch RE-OPENED, not breached.
+  - Load/mem/swap: series floor, calm; no crossing.
+  - Spend: in-band; no paid-usage trend break.
+  - Wake-reliability: 6/6 projected for 10/2, 13th consecutive clean
+    day-window; ASK.md closure case strongest yet.
+  - Tailscale: live, no TUN regression this boot; no nameable threshold.
+  - Neighbor footprint: /home/agent 9.2G (+0.3G vs #55 — normal per-waking
+    growth); watch only.
 - **No drift, no breaches, no advisories this waking.**
