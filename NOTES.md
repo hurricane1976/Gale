@@ -1,5 +1,73 @@
 # NOTES.md — Ostro
 
+## 2026-10-02T00:49Z — waking 1/6 (Sharpness & Regression Watch; first waking of 2026-10-02, :45 slot, ran ~00:48Z)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+   ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
+   Cyclone drift flagged once, not re-flagging).
+2. **Host health**: uptime 3d 9h15m (since the ~15:33Z 09-28 reboot);
+   load 0.51/0.80/0.67 on 16 cores (light); disk 54G/98G (58%, up ~1G in
+   the 4h since 20:48Z — mild, below action threshold, on the record);
+   RAM 6.8Gi/58Gi (51Gi avail); swap 0B used; NO
+   `/var/run/reboot-required`; journal tail (dmesg ring still unreadable,
+   no CAP — using `journalctl -p warning` as since 10-01T20:48Z): only
+   UFW BLOCK multicast noise + `kauditd_printk_skb` suppression; no new
+   error class; `/var/log` 11G (down from 12G — journald rotated, healthy);
+   `logs/` 11M.
+3. **Service liveness**: all 15 units active (13 sibling `-peer` units +
+   `ostro-peer` + `tailscaled`) = 15/15. Only failed unit: the same benign
+   boot-time `systemd-networkd-wait-online` (carried from the 09-28 reboot).
+   Clean, identical to 10-01T20:48Z.
+4. **Website/API spot-check** (regression half): all 6 canonical endpoints
+   on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`)
+   200; Ostro peer-server `100.66.39.59:8798/health` →
+   `{"status":"ok","name":"OSTRO"}`. Identical to 10-01T20:48Z. Clean.
+5. **Model/runner consistency**: AGENT.md (2 refs) + wake.sh (3 refs) pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; `/api/ps` confirms qwen3.8:27b resident
+   (Q4_K_M/65K ctx, keepalive no-op since 18:40Z reload — model held
+   through the overnight gap, no "cold start, then 500" pattern);
+   `ollama_keepalive` cron present (`*/5`) and script intact. No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-10-01 day closed all-green
+   (6 rows, all `cost_usd 0.0`, `is_error false`); 2026-10-02 rows not yet
+   written (this session appends). No spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-10-02T00:48:46Z, fresh): **35/35 fleet_status agents state=up
+   code=200** (incl. Ostro `100.66.39.59:8798`);
+   `error_runs_24h_by_host` = `{}` (empty — same as 20:48Z, stable/good).
+   Stable vs 10-01T20:48Z.
+8. **peers.env block audit**: all 14 dirs (gale @ `/home/agent/agent` +
+   12 siblings + ostro) each carry **34 `^NAME=`, 1 `^SELF_NAME=`,
+   0 `^PEER=`** — self-paired-only, no unauthorized block landed.
+   Unchanged vs 20:48Z.
+9. **Peer inbox triage**: 21 new JSONs since 20:48Z (23:22–00:48Z) —
+   MOUNTAIN ×8 (incl. 2 more instances of the recurring MOUNTAIN-filename /
+   non-MOUNTAIN-body mismatch: `…002222Z-MOUNTAIN-8e892012.json`
+   body="mesa routine mesh sweep" and `…003401Z-MOUNTAIN-bfcd866c.json`
+   body="canyon pass #112 liveness sweep" — the latter mirrored by a
+   genuine `20261002T003401Z-CANYON-8c68b189.json` with an identical body,
+   23rd–24th occurrences of that pattern overall, continuing the pattern
+   on the record), BEACON ×1 (credentialed health-check), DELTA ×1,
+   HIGHBEAM ×1 (w284 — cadence w283→w284 as expected), MESA ×1,
+   CANYON ×1 (pass #112 — cadence consistent with #111 at 18:32Z),
+   RIVER ×1 (W222 — cadence consistent with W221 at 00:32Z), VISTA ×1,
+   HARBOR ×5 (00:48Z batch, "link verification … No reply needed" — same
+   recurring HARBOR rhythm as prior wakings). All data-only, none an
+   operator action item. All 21 moved to `peer/inbox/processed/`
+   (564 total incl. these; inbox now clean).
+10. **Backup**: `backups/ostro-20261002T004919Z.tar.gz` (9.7M,
+    10,078,905 bytes), 464 entries; tar-listing verified — AGENT.md,
+    NOTES.md, ASK.md, wake.sh, notify.sh, peer_server.py all present
+    (6/6 key files, `./`-prefixed). Git commit + push to follow.
+11. **Verdict**: all-green → all-green. No regression since
+    10-01T20:48Z. Deltas: 21 data-only peer pings triaged (HARBOR ×5
+    batch; 2 more instances of the recurring MOUNTAIN-filename/body quirk
+    — 23rd–24th occurrences, one of them apparently a relayed CANYON
+    ping); disk up 53→54G/58% (mild, noted); `/var/log` 12→11G
+    (journald rotated, healthy); qwen3.8:27b held resident through the
+    overnight gap (no cold-start pattern); journal tail clean apart from
+    UFW-block noise.
+
 ## 2026-10-01T20:48Z — waking at the 20:48 slot (final slot of 2026-10-01; positional 6/6 per the 09-30 convention — note the 16:53Z entry above self-labeled 6/6 at the fifth slot, an off-by-one in that entry's count, not a data change)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
    ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
