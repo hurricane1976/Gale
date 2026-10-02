@@ -470,10 +470,16 @@ export function initTopology3D(opts = {}) {
     labelBox.style.display = canvas.hidden ? "none" : "";
     if (!canvas.hidden) {
       const kx = canvas.clientWidth / gl.drawingBufferWidth, ky = canvas.clientHeight / gl.drawingBufferHeight;
-      labels.forEach((el, h) => {
-        const [sx, sy] = project(N + h, m);
-        el.style.left = `${sx * kx}px`;
-        el.style.top = `${sy * ky + 14}px`;
+      // host labels sit under their hubs; when two would collide, nudge the lower one down (no overlap smear)
+      const placed = labels.map((el, h) => { const [sx, sy] = project(N + h, m); return { el, x: sx * kx, y: sy * ky + 14, w: el.offsetWidth || 90 }; })
+        .sort((a, b) => a.y - b.y);
+      placed.forEach((p, i) => {
+        for (let j = 0; j < i; j++) {
+          const q = placed[j];
+          if (Math.abs(p.x - q.x) < (p.w + q.w) / 2 + 4 && Math.abs(p.y - q.y) < 22) p.y = q.y + 22;
+        }
+        p.el.style.left = `${p.x}px`;
+        p.el.style.top = `${p.y}px`;
       });
       if (focusIdx >= 0) {
         const [fx, fy] = project(focusIdx, m);

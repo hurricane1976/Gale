@@ -1,7 +1,7 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch } from "./shared.js";
 import { observabilityPayload, validate } from "./payloads.js";
 
 boot();
@@ -213,11 +213,20 @@ function renderAll() {
   setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
 
-async function load() {
+let fullTimer = 0;
+async function load(first = false) {
   try {
-    const r = await tracedFetch(FEED, { cache: "no-store" });
+    // first paint: the newest 400 runs only (the full history is ~1.6 MB); the rest follows right after.
+    // Older backends ignore ?runs= and simply return everything.
+    const r = await tracedFetch(first && !DATA ? FEED + "?runs=400" : FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     DATA = validate(await r.json(), observabilityPayload);
+    const note = document.getElementById("partial-note");
+    if (note) {
+      note.hidden = !DATA.runs_truncated;
+      if (DATA.runs_truncated) note.textContent = `Showing the newest ${DATA.runs.length} of ${DATA.runs_total} runs while the full history loads; per-agent counts and totals below complete in a moment.`;
+    }
+    if (DATA.runs_truncated && !fullTimer) fullTimer = setTimeout(() => { fullTimer = 0; load(); }, 1200);
     renderAll();
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);
@@ -241,7 +250,7 @@ document.getElementById("board").hidden = false;
 // proxy that won't stream). The render-test harness has no EventSource
 // global, so it naturally exercises the polling path.
 function startPolling() {
-  load();
+  load(true);
   setInterval(load, POLL_MS);
 }
 
@@ -266,7 +275,7 @@ async function startFeed() {
         startPolling();
       }
     };
-    await load(); // paint immediately instead of waiting for the first push
+    await load(true); // paint immediately (newest runs first, full history right after) instead of waiting for the first push
   } else {
     await startPolling();
   }

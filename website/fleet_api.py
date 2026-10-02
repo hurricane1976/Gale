@@ -67,11 +67,11 @@ import urllib.request
 from collections import deque
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # /home/agent/agent
 WEBSITE = os.path.join(ROOT, "website")
-API_DIR = "/var/www/gale-api"
+API_DIR = os.environ.get("GALE_API_DIR", "/var/www/gale-api")  # env override: throwaway test instances
 AGORA_PATH = os.path.join(API_DIR, "agora-posts.json")
 
 # (display name, repo dirname) for the fourteen co-located agents. Every repo
@@ -900,6 +900,16 @@ def observability_envelope():
     }
 
 
+def observability_slice(limit):
+    """observability_envelope with only the newest `limit` runs (for a fast first paint). count/totals still
+    describe the whole history; runs_truncated/runs_total tell the client the list is partial."""
+    env = observability_envelope()
+    runs = env.get("runs") or []
+    if limit and 0 < limit < len(runs):
+        env = dict(env, runs=runs[-limit:], runs_truncated=True, runs_total=len(runs))
+    return env
+
+
 # --------------------------------------------------------------------------
 # Activity stream (artifacts only -- it invents nothing)
 # --------------------------------------------------------------------------
@@ -1194,6 +1204,80 @@ def _age_days(ts):
         return None
 
 
+# --------------------------------------------------------------------------
+# Alert history + known-issue notes. alerts_envelope() records every open/close transition of an alert
+# (key = kind|text) to one small JSON file in the agent-owned gale-api dir, so the nav panel can show
+# "what changed lately" and whether something flaps. Notes: /var/www/gale-api/alert-notes.json is a
+# hand-editable list [{"match": "<substring of alert text>", "note": "<why it's known / who fixes it>"}];
+# a matching alert gets a "note" field. Both are decoration: any failure here must never break /alerts.
+# --------------------------------------------------------------------------
+
+ALERT_HIST_PATH = os.path.join(API_DIR, "alert-history.json")
+ALERT_NOTES_PATH = os.path.join(API_DIR, "alert-notes.json")
+ALERT_HIST_MAX = 200
+_HIST_LOCK = threading.Lock()
+
+
+def _alert_key(a):
+    return f"{a.get('kind', '')}|{a.get('text', '')}"
+
+
+def _hist_load():
+    try:
+        with open(ALERT_HIST_PATH) as fh:
+            st = json.load(fh)
+        if isinstance(st, dict) and isinstance(st.get("open"), dict) and isinstance(st.get("events"), list):
+            return st
+    except Exception:
+        pass
+    return {"open": {}, "events": []}
+
+
+def alert_history_record(alerts):
+    """Diff the current alert set against the last recorded one; append open/close events."""
+    try:
+        now = now_iso()
+        cur = {_alert_key(a): a for a in alerts}
+        with _HIST_LOCK:
+            st = _hist_load()
+            events = []
+            for k, a in cur.items():
+                if k not in st["open"]:
+                    st["open"][k] = {"since": now, "sev": a.get("sev"), "kind": a.get("kind"), "text": a.get("text")}
+                    events.append({"ts": now, "event": "open", "sev": a.get("sev"), "kind": a.get("kind"), "text": a.get("text")})
+            for k in list(st["open"]):
+                if k not in cur:
+                    v = st["open"].pop(k)
+                    events.append({"ts": now, "event": "close", "sev": v.get("sev"), "kind": v.get("kind"),
+                                   "text": v.get("text"), "since": v.get("since")})
+            if events:
+                st["events"] = (st["events"] + events)[-ALERT_HIST_MAX:]
+                tmp = ALERT_HIST_PATH + ".tmp"
+                with open(tmp, "w") as fh:
+                    json.dump(st, fh, indent=1)
+                os.replace(tmp, ALERT_HIST_PATH)
+    except Exception as e:  # decoration only
+        sys.stderr.write(f"alert-history: {e}\n")
+
+
+def alert_history_envelope(limit=60):
+    with _HIST_LOCK:
+        st = _hist_load()
+    opened = [dict(v, key=k) for k, v in st["open"].items()]
+    opened.sort(key=lambda v: v.get("since") or "", reverse=True)
+    return {"schema": "fleet-alert-history/v1", "open": opened, "events": st["events"][-limit:][::-1],
+            "generated_at": now_iso()}
+
+
+def _alert_notes():
+    try:
+        with open(ALERT_NOTES_PATH) as fh:
+            notes = json.load(fh)
+        return [n for n in notes if isinstance(n, dict) and n.get("match") and n.get("note")]
+    except Exception:
+        return []
+
+
 def alerts_envelope():
     with _ALERTS_LOCK:
         if _ALERTS["data"] is not None and time.time() - _ALERTS["ts"] < ALERTS_TTL_S:
@@ -1271,6 +1355,13 @@ def alerts_envelope():
     alerts.extend(am_firing_alerts())
     alerts.sort(key=lambda a: _SEV_RANK.get(a.get("sev"), 9))
     alerts = alerts[:ALERTS_MAX]
+    notes = _alert_notes()
+    for a in alerts:
+        for n in notes:
+            if n["match"].lower() in (a.get("text") or "").lower():
+                a["note"] = str(n["note"])[:300]
+                break
+    alert_history_record(alerts)
     payload = {"schema": "fleet-alerts/v1", "count": len(alerts),
                "alerts": alerts, "generated_at": now_iso()}
     with _ALERTS_LOCK:
@@ -1741,6 +1832,8 @@ class Handler(BaseHTTPRequestHandler):
                 )
             if path in ("/alerts",):
                 return self._send(200, alerts_envelope())
+            if path in ("/alerts/history",):
+                return self._send(200, alert_history_envelope())
             if path in ("/alerts/acks",):
                 return self._send(200, acks_read())
             if path in ("/alerts/stream",):
@@ -1750,7 +1843,11 @@ class Handler(BaseHTTPRequestHandler):
                     poll_s=20, heartbeat_s=15,
                 )
             if path in ("/observability",):
-                return self._send(200, observability_envelope())
+                try:
+                    lim = int((parse_qs(urlsplit(self.path).query).get("runs") or ["0"])[0])
+                except ValueError:
+                    lim = 0
+                return self._send(200, observability_slice(max(0, min(lim, 5000))))
             if path in ("/observability/stream",):
                 return self._serve_sse(
                     lambda: {k: v for k, v in observability_envelope().items() if k != "generated_at"},
@@ -1820,7 +1917,7 @@ def main():
         print(json.dumps(telemetry_envelope(), indent=1))
         return
     os.makedirs(API_DIR, exist_ok=True)
-    srv = ThreadingHTTPServer(("127.0.0.1", 8793), Handler)
+    srv = ThreadingHTTPServer(("127.0.0.1", int(os.environ.get("GALE_FLEET_API_PORT", "8793"))), Handler)
     srv.daemon_threads = True
     sys.stderr.write(f"fleet_api listening on 127.0.0.1:8793 (started {now_iso()})\n")
     srv.serve_forever()

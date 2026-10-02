@@ -65,6 +65,9 @@ export const asksPayload = z.object({
 });
 
 export const observabilityPayload = z.object({
+  // set by /observability?runs=N (fast first paint): runs holds only the newest N of runs_total
+  runs_truncated: z.boolean().optional(),
+  runs_total: z.number().optional(),
   totals: z.object({
     cost_usd: z.number(),
     mean_cost_usd: z.number(),

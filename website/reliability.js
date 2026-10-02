@@ -66,6 +66,22 @@ function wakeSLO(wakes, events) {
   return { actual: clamp((n / SLOTS) * 100, 0, 100), detail: `${n}/${SLOTS} wakes in the activity feed (wake history unavailable)` };
 }
 
+/* Observability freshness SLO: of the last 24 completed hours, how many had at least one logged run from
+   any local agent (wake history), plus how old the newest activity-feed event is. Replaces a constant
+   "100% if the feed has any events". */
+function freshnessSLO(wakes, events) {
+  const rows = (wakes && wakes.runs) || [];
+  const now = Date.now(), HOUR = 3600e3, nowH = Math.floor(now / HOUR);
+  let newest = 0;
+  for (const e of events || []) newest = Math.max(newest, new Date(e.ts || 0).getTime() || 0);
+  const age = newest ? Math.max(0, Math.round((now - newest) / 60000)) : null;
+  const ageTxt = age == null ? "no live events" : age < 60 ? `newest event ${age}m ago` : `newest event ${Math.round(age / 60)}h ago`;
+  if (!rows.length) return { actual: events && events.length ? 100 : 50, detail: `${(events || []).length} events in feed · ${ageTxt}` };
+  const hours = new Set();
+  for (const r of rows) { const k = Math.floor(new Date(r.ts).getTime() / HOUR); if (nowH - k >= 1 && nowH - k <= 24) hours.add(k); }
+  return { actual: (hours.size / 24) * 100, detail: `${hours.size}/24 recent hours had logged runs · ${ageTxt}` };
+}
+
 /* Cost pace SLO: share of the last 7 days at or under the $5/day pace line the forecast card warns about. */
 const COST_DAILY_LIMIT = 5;
 function costSLO(metrics) {
@@ -139,11 +155,12 @@ async function main() {
   try { synth = await get(FEEDS.synthetics); } catch {}
   const w = wakeSLO(wakes, events);
   const cost = costSLO(metrics);
+  const fresh = freshnessSLO(wakes, events);
   const api = apiSLO(synth);
   setHTML($("slo-grid"), [
     sloCard("Wake on-time", 99.5, w.actual, w.detail + " · 7d window"),
     sloCard("Synthetic green", 99.9, api.actual, api.detail),
-    sloCard("Observability freshness", 99.0, events.length ? 100 : 50, `${events.length} events in feed`),
+    sloCard("Observability freshness", 99.0, fresh.actual, fresh.detail),
     sloCard("Cost pace", 95.0, cost.actual, cost.detail),
   ].join(""));
   renderSynth(synth);

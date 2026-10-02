@@ -297,3 +297,7 @@ html, body { overflow-x: clip; }
 .topo-node.is-focus { filter: drop-shadow(0 0 10px #8ab4f8) drop-shadow(0 0 22px #4d8fe8); }
 .topo-node.is-focus circle { stroke: #fff; stroke-width: 3; }
 #topo-heat .mini-toggle { text-decoration: none; margin: 0; }
+.np-note { display: block; margin-top: 2px; font-style: normal; font-size: .72rem; color: var(--text-faint, #51607c); }
+.np-hist-h { margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line, #dde3ee); font: 600 .66rem var(--font-mono, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint, #51607c); }
+.np-hist { font-size: .74rem; line-height: 1.35; color: var(--text-dim, #3d4a63); }
+.np-hist b { font-weight: 600; color: #d9962b; } .np-hist[data-ev="close"] b { color: #2fa874; }

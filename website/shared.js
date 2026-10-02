@@ -1581,15 +1581,27 @@ function initNavPulse() {
       // hover/focus panel (hidden on phones, where the pill just links to the ops board)
       let pop = a.querySelector(".nav-pulse-pop");
       if (!pop) { pop = document.createElement("span"); pop.className = "nav-pulse-pop"; pop.setAttribute("aria-hidden", "true"); a.appendChild(pop); }
+      // recent open/close transitions (backend /alerts/history; absent on older backends -> block omitted)
+      let histHTML = "";
+      try {
+        const hr = await fetch("api/fleet/alerts/history", { cache: "no-store" });
+        if (hr.ok) {
+          const hd = await hr.json();
+          const ago = (iso) => { const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)); return m < 60 ? `${m}m ago` : m < 2880 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`; };
+          const ev = (hd.events || []).slice(0, 5);
+          if (ev.length) histHTML = '<span class="np-hist-h">Recent changes</span>' + ev.map((e) =>
+            `<span class="np-hist" data-ev="${esc(e.event)}"><b>${e.event === "open" ? "opened" : "cleared"}</b> ${esc(ago(e.ts))} · ${esc(String(e.text || "").slice(0, 70))}</span>`).join("");
+        }
+      } catch { /* history is optional */ }
       const rank = { crit: 0, warn: 1 };
       const top = list.slice().sort((x, y) => (rank[x.sev] ?? 2) - (rank[y.sev] ?? 2)).slice(0, 6);
       // alert text -> agent name for the deep link ("AM GaleAgentSilent: Brook (...)", "mesa missed ...", "vista overdue ...")
       const who = (t) => { const m = /Silent:\s*([A-Za-z0-9_-]+)/.exec(t) || /^([a-z][a-z0-9_-]*)\s+(?:missed|overdue|last woke)/i.exec(t); return m ? m[1] : ""; };
       pop.innerHTML = (top.length
         ? top.map((x) => { const w = who(x.text);
-            return `<span class="np-row" data-sev="${esc(x.sev)}"${w ? ` data-agent="${esc(w)}" role="link"` : ""}><i></i>${esc(x.text)}</span>`; }).join("")
+            return `<span class="np-row" data-sev="${esc(x.sev)}"${w ? ` data-agent="${esc(w)}" role="link"` : ""}><i></i><span>${esc(x.text)}${x.note ? `<em class="np-note">${esc(x.note)}</em>` : ""}</span></span>`; }).join("")
         : '<span class="np-row" data-sev="ok"><i></i>No open alerts</span>') +
-        (list.length > top.length ? `<span class="np-more">+${list.length - top.length} more · open ops status</span>` : '<span class="np-more">open ops status →</span>');
+        (list.length > top.length ? `<span class="np-more">+${list.length - top.length} more · open ops status</span>` : '<span class="np-more">open ops status →</span>') + histHTML;
     } catch {
       a.dataset.level = "unknown";
       a.querySelector(".nav-pulse-txt").textContent = "offline";
