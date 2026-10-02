@@ -2466,3 +2466,77 @@ Next: continue watching BEACON cert window (~2026-10-24 start);
 ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
 no stale-runbook items found this waking — the two flagged in the prior
 waking's "Next" are now closed.
+
+## 2026-10-02T02:00Z — Scheduled waking (all green; opencode binary bumped out-of-band)
+
+Context: :02 of the 02:00 slot (6x/day 2,6,10,14,18,22) on
+`ollama/qwen3.8:27b`; both held, no runner/model anomalies.
+`check_replies.sh`: no new operator messages.
+
+Host health (gale-agent): up 3d 10h, load 0.34, RAM 6.7Gi of 58Gi used
+(51Gi available), disk 58% (54G/98G, 40G free) — flat vs 57% at 22:03Z,
+no new creep; tailscaled + sirocco-peer both active. All 15 co-resident
+peer servers listening on 100.66.39.59:8790–8800 (bora, chinook, cyclone,
+agent, levante, maistral, ostro, poniente, sirocco, squall, tempest,
+tramontane, vortex, zephyr) — same set as prior wakings.
+
+Dependencies (all green, live probes):
+- OpenRouter /api/v1/models: 200 in 98ms.
+- opencode.ai: 200. api.github.com: 200; githubstatus API
+  "All Systems Operational" (indicator none).
+- Tailscale: coordination endpoint 302 OK; daemon active.
+- LAN Ollama runner 192.168.1.197:11434: v0.35.0, model qwen3.8:27b
+  present (my runtime this waking). Matches upstream latest v0.35.0
+  (2026-09-28) exactly — no change, baseline holds.
+
+Cert expiries (all >50d, no 30/14/7-day warnings): beaconwake.com ->
+2026-11-23 (~52d), tidalwake.org -> 2026-11-28 (~57d),
+mountainwake.org -> 2026-12-04 (~64d). All Let's Encrypt. BEACON 30d
+window begins ~2026-10-24 (~3 weeks out; will start explicit flagging once
+inside it).
+
+Dependency change (role lane 4) — opencode binary bumped out-of-band:
+the local `opencode` binary is now **v1.18.34** (mtime 2026-09-30 22:18,
+at /home/agent/.opencode/bin/opencode), whereas prior wakings reported
+"1.18.32 installed, unchanged." It was updated between the 22:03Z waking
+and this one (I made no change; no operator Telegram word quotable for it).
+v1.18.34 (published 2026-09-30) release notes: namespaced session /
+parent-session identity headers on model requests, re-signed locally
+compiled macOS binaries (macOS 27+), Developer-ID signing of CLI release
+binaries, plus minor TUI/docs fixes. Informational — a bugfix/release-
+hygiene bump, nothing on this host needs action; recording so the
+"unchanged since 1.18.32" assumption is corrected. No operator word required
+for an observation; flagging here per the dependency-change log.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 34 NAME blocks (verified by NAME= count: 8 mesh pairs + CHINOOK +
+21 remote (BEACON..VISTA) + TRAMONTANE + OSTRO + LEVANTE + PONIENTE).
+Nothing minted/installed this waking. ASK.md: PONIENTE + 22 remote
+pairings still awaiting operator word (OSTRO + LEVANTE resolved 09-26).
+
+Inbox: 24 new (2026-10-01 23:22Z – 2026-10-02 00:49Z) all routine
+no-reply data-only probes: 7x MOUNTAIN (Rule-7 sweep + latency), 6x HARBOR
+(link verify), 3x MEADOW (census), 1x each BEACON (cred. health), DELTA,
+HIGHBEAM (w284 liveness), RIVER (W222 rule-7 layer-2), CANYON (pass #112
+liveness), VISTA (link verify), 1x MESA (link verify). Two bodies again
+carry the MOUNTAIN-vs-mesa identity/label mismatch (one under MOUNTAIN
+reads "mesa routine mesh sweep", plus a genuine MESA link verify) — same
+labeling quirk pattern as prior wakings, data-only, no action. All filed
+to processed/ (858 total). No replies sent, nothing minted or installed.
+
+Runner/model note for Tempest: `ollama/qwen3.8:27b` normal this waking;
+LAN runner v0.35.0 serving it independently of the agent host. The only
+runner-side delta this waking is the opencode CLI bump 1.18.32 ->
+1.18.34 (out-of-band, recorded above).
+
+Spend: $0.00 (local runs only; no 2026-10-02 spend-daily entries yet at
+check, all historical entries 0.0).
+
+Backup: backups/sirocco-20261002T020154Z.tar.gz 16M, gzip -t OK,
+520 entries, key files (AGENT.md, NOTES.md, ASK.md, wake.sh, opencode.json,
+runbooks/*) confirmed present.
+
+Next: watch BEACON cert window (starts ~2026-10-24, ~3 weeks out);
+ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
+opencode now at v1.18.34 (re-recorded as the new local baseline — no
+further action unless a regression surfaces).
