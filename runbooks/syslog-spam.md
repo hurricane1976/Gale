@@ -33,6 +33,48 @@ Also found during attribution (separate, minor): `/tmp` = 2.1G of hidden `.{16he
 4. Whatever is chosen, also set a deliberate `SystemMaxUse` for journald + a loki retention limit (the standing ASK.md item) — spam inflow makes retention caps load-bearing, not cosmetic.
 5. /tmp: either add a tmpfiles.d age rule for `/tmp/.*.so` or clear them at next quiet window (none open at last check); confirm no live session is holding one first (lsof).
 
+## Re-check 2026-10-02T00:40Z — rate dropped; attribution refined; NEW mover found
+
+Re-ran the spot-checks this waking. Three changes, all verified before updating:
+
+1. **Wekan snap is GONE** (`snap list` / `snap services` no longer list it; service
+   inactive). The early flood's dominant contributor (11,443 of ~13K lines in a
+   head sample of syslog.1 were `wekan.wekan`) no longer exists. Post-rotation
+   syslog fill rate is now ~75M/day (2.1M in 40 min after the 00:00Z rotation)
+   vs ~1.3G/day before — **the pre-rotation 1.3G/day was NOT all rocketchat**;
+   wekan spam + rocketchat denials together made up the old rate. Runbook's
+   original single-cause attribution was incomplete — refined here.
+2. **Rocketchat-mongo AppArmor denials CONTINUE unchanged** (~110/min; 4,426
+   DENIED events in the 40-min window after rotation; pid 3470, same FTDC
+   pattern). The fix options below are still open. kern.log still growing
+   (~244M, ≈88M/day) — the audit stream persists into kern.log + syslog.
+   logrotate rotated syslog at 00:00Z: the 6.3G flood is now `syslog.1`
+   (still on disk until retention kicks in — part of why the ASK retention
+   item is load-bearing).
+3. **NEW creep component, was invisible to non-sudo du**:
+   `/tmp/snap-private-tmp/snap.chromium/tmp/` = **4.9G of leaked
+   `puppeteer_dev_chrome_profile-*` dirs** (159 dirs, 81,800 files, uid agent).
+   These are abandoned puppeteer launches of the snap chromium (site-build
+   smoke/render/browser_checks runs leak their profile when a launch is
+   killed/abandoned instead of closed). Creation is bursty (~15–35 profiles/hr
+   during site-build hours, quiet otherwise; 87 created in the 18:40Z–00:40Z
+   window). **Lesson: `du -sh /tmp` as the agent user CANNOT see
+   /tmp/snap-private-tmp (root 700)** — the runbook's "/tmp 2.1G" figure
+   understated /tmp by 4.9G; with sudo /tmp is ~7.0G. Spot-check 2 above must
+   run with sudo or the chromium tmp component will be missed. This component,
+   not /var/log, was the bulk of the +2G/6h df move this window (syslog was
+   pre-rotated; kern.log only +22M).
+4. Minor new noise, not a creep driver: `/opt/alert-webhook/receiver.py`
+   (python3, service `gale-fleet-api`) logs SPAN/trace telemetry lines to
+   syslog (~675 lines/40 min ≈ 24K/day) — counted in syslog composition
+   alongside the audit lines (54% audit in the new syslog).
+
+Updated spot-check: `sudo du -sh /tmp/snap-private-tmp/snap.chromium/tmp` alongside
+the /var/log checks; `ls /tmp/snap-private-tmp/snap.chromium/tmp | grep -c puppeteer`
+is the profile-leak tripwire (0 before Sep-28, 159 now). Cleanup of leaked
+profiles is operator's call (they are agent-uid files; a tmpfiles.d age rule or a
+sweep at a quiet window after confirming no live puppeteer run owns them).
+
 ## Cross-references
 
 - `runbooks/disk-pressure.md` — sim-side of the same fault class (fill symptoms, detection latency).
