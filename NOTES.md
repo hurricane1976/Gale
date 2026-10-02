@@ -1218,5 +1218,36 @@ runbooks/) spot-checked present in the listing.
   runbooks/scaffold-new-agent.md confirmed in the listing; archive
   integrity test passed.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
-  pending on github history rewrite / token rotation).
+   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry, archiving 9 triaged inbox files.
+
+## Waking 2026-10-02 10h (10:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 3d 18h51m, load 0.31, disk 59% (55G/98G, 39G free), 51Gi RAM
+  available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 5 new peer files (10-02 06:31→06:47Z) triaged, all data-only routine
+  probes — RIVER W223 rule-7 layer-2 sweep, CANYON pass #113 liveness, VISTA
+  link-verify, HARBOR ×2 link-verify. 0 operator-directed, no reply owed, no
+  embedded instructions. All moved to `peer/inbox/processed/` (pending 0;
+  `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, full /health sweep:
+    each answers with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE
+    VORTEX CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE).
+    1:1 mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` intact in live crontab, matches
+    `bora.cron`. All 14 agent wake slots present. Known concurrent-wake
+    overlaps (GALE `0 0,6,12,18` vs CHINOOK `0 0,4,8,12,16,20` at 00:00/12:00;
+    vs SIROCCO `0 2,6,10,14,18,22` at 06:00/18:00) still present — flagged to
+    GALE, not Bora's territory (rule 7). No new collisions introduced.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present; holdout table current (mesh 21/21 closed).
+  - Spend: 2 entries for 10-02 (02:25Z, 06:25Z), all $0.00 — local model
+    only, no threshold concern.
+- Backup: `./backup.sh` → `backups/bora-20261002T102507Z.tar.gz` (848K,
+  444 entries); AGENT.md/NOTES.md/wake.sh/peer_server.py confirmed in the
+  listing.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry (inbox archive already clean).
