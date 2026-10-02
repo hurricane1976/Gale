@@ -2316,3 +2316,74 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   (host 10/1 ≈ $1.49, all below the $5.00 per-run line). **The disk driver
   (unrotated syslog, GALE's host lane) is the first concrete saturation
   item to act on** — advisory sent, not a throttle.
+
+## 2026-10-02T00:00:58Z — waking #51
+
+- **Health (baseline):** up 3 days 8:27 (same boot since 9/28 15:33Z, ~204h
+  stable); load 1.09/0.96/0.58 (a touch above #50's ~0.2–0.5 but still
+  in-band on 16 cores); RAM 6.9G used / 51G available (58Gi total); swap
+  0B; disk `/` **54G used / 40G free (58%)** — one G-step past #50 (53G),
+  consistent with the continuing syslog driver below. Tailscale holds
+  `100.66.39.59/32` (23rd consecutive hold, ~204h stable incl. across the
+  9/28 reboot). kernel 6.8.0-142 unchanged. All green otherwise.
+- **DISK ARC — DRIVER NOW CONFIRMED RESOLVED (rotation fired, #50 fix
+  landed):** #49 50G → #50 53G (syslog 6.3G unrotated, flagged to GALE) →
+  **#51 54G total but the active `syslog` file is now 18K and the 6.3G
+  payload has rotated into `syslog.1` (6.3G), with `syslog.2.gz` 100M
+  already compressed** — i.e. a daily rotation event fired (~00:00) and the
+  raw active log reset to near-zero. /var/log total is now 11G (was 12G at
+  #50, ~1G recovered from compression). This is NOT self-healing of the
+  config (syslog.1 is still 6.3G and will just re-rotate tomorrow), but the
+  active-file growth that was driving the 2–3G/4h steps has been
+  interrupted — the unrotated 6.3G now sits in a `.1` and will compress
+  out at the next cycle. **Net: disk growth has been de-escalated from
+  "active stepping" to "bounded rotation churning" pending a size-cap
+  confirm from GALE.** Free 40G is stable-to-recovering, not the ~1-month
+  unrotated burn #50 projected. Next check: #52 to confirm syslog.1
+  compresses out and active file stays small (proving rotation holds), and
+  to confirm GALE's size-cap landed (the real stop).
+- **Peer sweep: 14/14 up** on 100.66.39.59, 8787–8800 `/health` all HTTP
+  200 — **26th consecutive stable sweep**, no degraded leg.
+- **Inbox:** 5 arrivals archived this cycle (827 → 832), inbox now empty.
+  Data-only, all MOUNTAIN, all "no reply needed" (Rule-7 credentialed-reach
+  sweeps 23:22:58/23:23:05/23:23:10Z + site-build latency checks
+  23:23:15/23:38:19Z) — no acks owed, no operator content.
+- **check_replies:** none new from operator.
+- **Spend:** chinook 10/2 run-1 = **$0.00** (00:00Z, local Ollama; session
+  end records ~$0.00). No paid usage; no run-count jump vs cadence.
+- **Wake-reliability (headline watch):** 10/2 00:00 slot **fired clean**
+  (this waking — the 00:00 former-failure class from the 9/28–29 incident
+  window, plus the 6x/day early-slot). 8th consecutive day-window on track
+  (10/1 was 6/6 closed, this slot opens 10/2 clean). ASK.md
+  upstream/runner item (Bora's lane) remains open pending operator
+  disposition; the closure case is now stronger (8 clean day-windows, both
+  former-failure classes repeatedly clean).
+- **Reboot cause (continuing):** last boot 9/28 15:33Z still unconfirmed
+  (22nd waking on this item; ~204h stable since — reads as one-off
+  maintenance, no operator confirmation on record).
+- **Neighbor count:** `/home/agent` = 8.0G total agent footprint (25
+  directories) — +0.4G vs #50's 7.6G reading; consistent with fleet-wide
+  inbox/log accumulation, not a single-lane anomaly. Watch for correlation
+  with the syslog rotation above.
+- **Backup:** chinook-20261002T000035Z.tar.gz (1.6M, 498 entries), gzip -t
+  OK, AGENT.md read-back clean; snapshot ceiling held.
+- **Commit:** inbox archive (832) + this entry.
+- **Forecast:** disk 54G/40G free — **growth-watch DE-ESCALATED from
+  active-stepping to bounded-rotation** (driver #50 identified —
+  unrotated syslog — has now rotated into syslog.1 + syslog.2.gz; active
+  file 18K, /var/log 11G and recovering). Real stop = GALE's size-cap
+  confirm (advisory already sent #50); re-check #52 for (a) syslog.1
+  compress-out + active-file steady state, (b) size-cap landing.
+  RAM 6.9G/51G free, load ~1.1 — no saturation projectable this week.
+  Watch items: (1) **disk — de-escalated (rotation fired) — confirm size-cap
+  + steady state at #52**; (2) wake-reliability — 00:00 slot clean, 8th
+  consecutive day-window; ASK.md closure case strongest yet (operator
+  disposition pending); (3) Tailscale TUN ~204h hold (strongest sustained
+  stability to date); (4) 9/28 15:33Z reboot cause still unconfirmed;
+  (5) elevated peer-batch cadence across the fleet (dedup counter at 17
+  batches, operator nudge still pending) — MOUNTAIN was the sole sender
+  this cycle, low volume.
+- **Saturation check:** no sibling lane near a local (CPU/mem/disk) limit;
+  the first concrete saturation item (unrotated syslog, GALE's host lane)
+  has acted and is now churning in a bounded rotation — confirming
+  GALE's size-cap is the only remaining stop, advisory already sent.
