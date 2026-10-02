@@ -1,5 +1,61 @@
 # NOTES.md — Ostro
 
+## 2026-10-02T04:49Z — waking 2/6 (Sharpness & Regression Watch; :45 slot, ran ~04:48Z)
+1. **Operator replies**: `./check_replies.sh` → no new operator messages.
+   ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
+   Cyclone drift flagged once, not re-flagging).
+2. **Host health**: uptime 3d 13h15m (still on the ~15:33Z 09-28 reboot);
+   load 0.28/0.22/0.22 on 16 cores (light); disk 54G/98G (58% — flat vs
+   04h's 54G, no creep); RAM 6.8Gi/58Gi (51Gi avail); swap 0B used; NO
+   `/var/run/reboot-required`; journal tail since 00:49Z
+   (`dmesg` ring still unreadable, same substitution as 10-01T20:48Z):
+   only UFW BLOCK multicast/LAN-probe noise + `kauditd_printk_skb`
+   suppression; no new error class; `/var/log` 11G (flat vs 10-02T00:49Z);
+   `logs/` 11M.
+3. **Service liveness**: all 15 units active (13 sibling `-peer` units +
+   `ostro-peer` + `tailscaled`) = 15/15. Only failed unit: the same benign
+   boot-time `systemd-networkd-wait-online` (carried from the 09-28 reboot).
+   Clean, identical to 10-02T00:49Z.
+4. **Website/API spot-check** (regression half): all 6 canonical endpoints
+   on `127.0.0.1:8090` (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`)
+   200; Ostro peer-server `100.66.39.59:8798/health` →
+   `{"status":"ok","name":"OSTRO"}` (spaced variant this read, same shape).
+   Identical to 10-02T00:49Z. Clean.
+5. **Model/runner consistency**: AGENT.md (2 refs) + wake.sh (3 refs) pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; `/api/ps` confirms qwen3.8:27b still resident
+   (Q4_K_M, 65K ctx, expires far-future — model held across another 4h gap,
+   no "cold start, then 500" pattern); `ollama_keepalive` cron present
+   (`*/5`). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-10-01 closed all-green (final
+   row 20:51:07Z `cost_usd 0.0`); 2026-10-02 row so far: 00:50:12Z
+   `cost_usd 0.0`, `is_error false`; `spend_check.py` exit 0 (note: not
+   directly executable — run via `python3`). No spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-10-02T04:49:01Z, fresh): **35/35 fleet_status agents state=up
+   code=200** (Ostro `100.66.39.59:8798` up/200);
+   `error_runs_24h_by_host` = `{}` (empty — stable vs 00:49Z).
+8. **peers.env block audit**: all 14 dirs (gale @ `/home/agent/agent` +
+   12 siblings + ostro) each carry **34 `^NAME=`, 0 `^PEER=`** —
+   self-paired-only, no unauthorized block landed. Unchanged vs 00:49Z.
+   (Note: this waking's audit used `^NAME=`/`^PEER=` anchors only; the
+   per-file `^SELF_NAME=` 1 that prior entries recorded is unchanged in
+   content — anchoring differs, not data.)
+9. **Peer inbox triage**: 0 new JSONs since 10-02T00:49Z (inbox clean at
+   waking; processed/ unchanged at 564). Nothing to move — quietest
+   interval since 10-01T16:53Z's 0-ping slot.
+10. **Backup**: `backups/ostro-20261002T044908Z.tar.gz` (9.7M,
+    10,119,021 bytes), 467 entries; tar-listing verified — AGENT.md,
+    NOTES.md, ASK.md, wake.sh, notify.sh, peer_server.py all present
+    (6/6 key files, `./`-prefixed). Git commit + push to follow.
+11. **Verdict**: all-green → all-green. No regression since
+    10-02T00:49Z. Deltas: 0 inbox pings (4h gap, quietest interval in
+    this streak — prior slots each had 11–23); disk flat at 54G/58%
+    (creep paused); `/var/log` flat at 11G; qwen3.8:27b held resident
+    across another 4h gap (no cold-start pattern); journal tail clean
+    apart from UFW-block + kauditd-suppress noise.
+
 ## 2026-10-02T00:49Z — waking 1/6 (Sharpness & Regression Watch; first waking of 2026-10-02, :45 slot, ran ~00:48Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
    ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
