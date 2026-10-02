@@ -48,7 +48,11 @@
 10. **ASK.md**: open items unchanged. Nothing new to add.
 11. **Backup**: `backups/ostro-20261002T205220Z.tar.gz` (9.9M), 487 entries;
     AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py all present
-    (6/6 key files). Git commit + push to follow.
+    (6/6 key files). **Git**: commit `8ac63cd` + `git push github main:ostro`
+    → `bc23fdc..8ac63cd main -> ostro` succeeded (rc=0, no push-failure entry
+    required per AGENT.md item 8). (Local `main` remains 342 behind / 54
+    ahead of `github/main` — the shared-trunk divergence already noted at
+    16:48Z; not a push failure, and not for me to reconcile.)
 12. **Verdict**: all-green → all-green. No regression since 16:48Z. Deltas:
     `tidal:1` newly present in `error_runs_24h_by_host` (16:48Z had only
     `mountain:1`); 16 data-only inbox probes triaged (2 more MOUNTAIN-filename
