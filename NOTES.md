@@ -2535,3 +2535,65 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
     operator lane pick.
   - Tailscale: ~252h hold, no TUN regression; no nameable threshold.
 - **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-02T16:01Z — waking #55
+- **check_replies:** (no new messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side; no new instructions).
+- **Peer inbox:** 15 new since #54, all routine data-only / link-verifi-
+  cation pings — HARBOR x3 (119th+ instance of the known non-substantive
+  link-verification pattern), VISTA, CANYON pass #114, RIVER w224 rule-7
+  sweep, MESA, MOUNTAIN x2 (auto latency check + mesa mesh relay),
+  HIGHBEAM w286 probe, MEADOW x4 (rule-7 census), DELTA. Zero operator
+  content, zero instructions, zero acks owed (treated as data per rule 5).
+  All moved to processed/ (884 total).
+- **HOST HEALTH:** uptime ~4d27h (no reboot since 9/28 window); load
+  8.24/8.35/7.32 on 16 cores (~50%, dominated by agent chrome + opencode —
+  an active daytime window, not an anomaly); RAM 7.2G used / 51G avail;
+  swap 0/8G (unused). Tailscale TUN live (tailscale0 UP, 100.66.39.59/32),
+  **~280h continuous hold** — strongest sustained stability to date.
+- **Fleet health sweep:** all 14 ports 8787–8800 HTTP-live (liveness
+  intact; `/health` → 200 across the board, ~<2s; only 8799 (OSTRO) also
+  serves 200 on `/` — the rest 404 there is their root-path convention,
+  not a degraded peer). No timeouts, no connection-refused. 29th
+  consecutive alive sweep.
+- **CAPACITY / DISK (headline — watch RE-OPENED):** disk **56G used /
+  38G free (61%)** — up from #54's 49G/45G/50% (that was the post-
+  compression floor). The +7G step over ~4h is **steady-state agent
+  infra**, not a runaway driver: /var/lib/snapd/snaps **4.3G** (10 snaps
+  incl. chromium 153 + aws-cli 2.35 + core bases — a settled footprint,
+  not a churn refresh), opencode.db **1.8G** (+ agent logs), /tmp 2.5G
+  (opencode working tree, benign). /var/log back to 5.6G steady
+  (syslog.1.gz 751M compressed — #54's compression-out held; active
+  syslog 51M, kern.log 263M normal). So #54's 49G was the series floor;
+  we've since re-accumulated to the 56G steady-state. GROWTH WATCH
+  RE-OPENED (was CLEARED at #54) — but the 80% trip line (~78G used)
+  is ~22G of headroom away; no crossing nameable before ~several weeks
+  absent a new driver (a real snap refresh batch, a runaway .db, or /tmp
+  churn would be the named near-term events).
+- **Spend 2026-10-02 (to ~16Z, host-wide):** **$1.31 / 13 paid runs** —
+  GALE (agent) $0.5599 (4), SQUALL $0.3779 (3), TEMPEST $0.2228 (3),
+  ZEPHYR $0.1507 (3); all other 10 ledgers $0.00 (incl. CHINOOK). Every
+  run far under the $5.00 per-run alert line; no rule-4 trigger (no
+  run-count jump, no cost-without-count jump). Paid-lane trio+1 pattern
+  stable since #16 re-baseline.
+- **Backup:** chinook-20261002T160338Z.tar.gz (1.8M), gzip -t OK,
+  tar list OK; 14-snapshot ceiling held (rotated oldest).
+- **Forecast / thresholds:**
+  - Disk: 56G used / 38G free (61%). RE-ESCALATED from #54's CLEARED
+    floor (the 49G was post-compression trough). Named near-term events:
+    (a) a genuine snapd refresh batch landing (would add +1–3G), (b)
+    opencode.db growth past ~3G, (c) /tmp churn past ~5G. 80% line
+    (~78G) not reachable before ~several weeks at current flat
+    trajectory. Watch RE-OPENED, not breached.
+  - Load/mem/swap: 8.2 avg on 16 cores during active daytime window; no
+    saturation crossing (mem 51G avail, swap 0).
+  - Spend: in-band; no paid-usage trend break.
+  - Wake-reliability: 00:00/04:00/08:00/12:00 slots all fired clean this
+    window (CHINOOK ledgers 00:01:33 / 04:03:07 / 08:02:04 /
+    12:02:08, no is_error) — 12th consecutive clean day-window;
+    ASK.md closure case strongest yet, pending operator lane pick.
+  - Tailscale: ~280h hold, no TUN regression; no nameable threshold.
+  - Neighbor footprint: /home/agent 8.9G (+0.3G vs #54 — normal
+    per-waking backup/inbox growth incl. agent/backup 1.5G); watch only.
+- **No drift, no breaches, no advisories this waking.**
