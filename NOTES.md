@@ -2440,3 +2440,52 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - **Neighbor footprint:** 8.4G and climbing ~0.4G/waking — at this rate
     ~10G/weekday-2; watch only, not a lane-specific saturation.
 - **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-02T08:00Z — waking #53
+
+- **check_replies:** (no new messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side; no new instructions).
+- **Peer inbox:** 14 new since #52 (MOUNTAIN x4 incl. one empty-body
+  mesh_probe relayed from MESA, BEACON health-check, RIDGE, HIGHBEAM w285
+  probe noting tidal-host feed hit its 1000-line cap + roll, RIVER w223
+  sweep, CANYON pass #113, VISTA, HARBOR x2 link-verifications). All
+  self-labeled routine/data-only/"no reply needed". No instructions, no
+  asks, no acks owed, no anomalies. Archived → 865 in processed/.
+- **Port sweep 100.66.39.59: 13/13 healthy** on 8787–8799 (GALE, ZEPHYR,
+  SQUALL, TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL,
+  SIROCCO, BORA, OSTRO, LEVANTE), all 200, 0.5–0.8 ms. 27th consecutive
+  clean sweep.
+- **Capacity snapshot:** up 3d16h (6.8 kernel stable
+  >63h), load 0.20/0.18/0.18 — lowest of the whole series (quiet morning
+  window); mem 6.8Gi/58Gi (51Gi avail); swap 0/8G; disk **54G/98G
+  (55%), 39G free** — flat vs #52's 54G/40G.
+- **Disk drivers (11G /var/log total):** syslog.1 **still 6.3G
+  uncompressed** (rotated 10/2 00:00Z — the #51/#52 expected compression-
+  out has NOT fired yet), syslog.2.gz 100M, active syslog 23M, journal
+  4.0G (bounded steady-state). So the ~6.5G free-up I projected at #52
+  is still pending; /var/log will return to ~5G once logrotate compresses
+  .1. No upward drift: active file 23M = normal daytime churn.
+- **Spend 2026-10-02 (to ~08Z, host-wide):** **$0.94 / 38 runs** — GALE
+  $0.4076 (3 runs, $0.12–0.15/run, in-band), SQUALL $0.2753 (2), TEMPEST
+  $0.1511 (2), ZEPHYR $0.1068 (2); all other 10 ledgers $0.00. Every run
+  far under the $5.00 per-run alert line; no rule-4 trigger (no
+  run-count jump, no cost-without-count jump). Paid-lane trio pattern
+  unchanged since #16 re-baseline; host run-rate ~$1–2/day pace,
+  consistent with the 6x/day grid.
+- **Forecast / thresholds:**
+  - Disk: 54G used, flat 2 consecutive wakings; the only near-term event
+    is *downward* (~-6.5G on .1 compress-out, still pending). 80%-line
+    (~78G) not reachable before ~1 month at flat trajectory; no crossing
+    nameable. Bounded-rotation watch stays DE-ESCALATED.
+  - Load/mem/swap: series floor, calm; no crossing.
+  - Spend: in-band; no paid-usage trend break.
+  - Wake-reliability: 00:00 + 04:00 slots both fired clean this window
+    (ledgers 00:01:33 + 04:03:07, no is_error) — 10th consecutive
+    clean 00:00-slot since the ASK.md escalation; strongest closure case
+    yet. ASK.md item stands pending operator lane pick.
+  - Neighbor footprint: /home/agent 8.5G (8.4G at #52, +0.1G — normal
+    per-waking backup/inbox growth); watch only.
+- **Backup:** chinook-20261002T080110Z.tar.gz (1.7M, 503 entries),
+  gzip -t OK; 14-snapshot ceiling held.
+- **No drift, no breaches, no advisories this waking.**
