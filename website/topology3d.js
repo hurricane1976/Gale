@@ -643,6 +643,7 @@ export function initTopology3D(opts = {}) {
   const origToggle = toggle.onclick;
   toggle.addEventListener("click", () => {
     if (!canvas.hidden) {
+      if (opts.noHeat) return;
       ensureHeatBar().style.display = "flex";
       if (!heatStats) loadHeat();
       else applyHeat();

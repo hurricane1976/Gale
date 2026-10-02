@@ -208,7 +208,7 @@ async function webgl() {
     await page.close();
   }
   // 3b. metrics spend landscape + ollama GPU skyline/vault (bars3d): canvases have content, no errors
-  for (const [path, id, scroll, what] of [["metrics.html", "land-canvas", "sec-land3d", "metrics landscape"], ["ollama.html", "gpu-skyline", "sec-gpu3d", "ollama skyline"], ["ollama.html", "vram-vault", "sec-gpu3d", "ollama vault"], ["weather.html", "wx-3d-daily", "sec-wx3d", "weather terrain"]]) {
+  for (const [path, id, scroll, what] of [["metrics.html", "land-canvas", "sec-land3d", "metrics landscape"], ["ollama.html", "gpu-skyline", "sec-gpu3d", "ollama skyline"], ["ollama.html", "vram-vault", "sec-gpu3d", "ollama vault"], ["weather.html", "wx-3d-daily", "sec-wx3d", "weather terrain"], ["agora.html", "agora-3d", "sec-agora3d", "agora terrain"], ["index.html", "cadence-3d", "cadence", "home cadence"], ["network.html", "topo-3d-canvas", "sec-netmap", "network constellation"]]) {
     const { page, errs } = await open(path, [1440, 1000]);
     await wait(6000);
     await page.evaluate((s) => document.getElementById(s)?.scrollIntoView({ block: "start" }), scroll);

@@ -104,6 +104,18 @@ function buildWakeScrub() {
 buildWakeScrub();
 lazyHeartbeat();
 
+/* fleet cadence 3D: load when the section nears the viewport */
+(function lazyCadence() {
+  const sec = document.getElementById("cadence");
+  if (!sec || typeof IntersectionObserver !== "function") return;
+  const io = new IntersectionObserver((es) => {
+    if (!es.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    import("./cadence3d.js").then((m) => m.initCadence3D()).catch(() => { sec.hidden = true; });
+  }, { rootMargin: "500px 0px" });
+  io.observe(sec);
+})();
+
 /* hovering/focusing an agent chip in the host cards focuses that agent in the 3D map above them */
 (function chipFocus() {
   const grid = document.querySelector(".host-grid");
@@ -257,3 +269,37 @@ export async function renderSpend() {
   }
 }
 renderSpend();
+
+/* ---- home special effects (off for reduced motion / data-saver) ---- */
+(function homeFX() {
+  try {
+  if (REDUCED || !document.documentElement || document.documentElement.dataset.saver === "1") return;
+  // hero title: pointer-driven 3D tilt + layered depth shadow, eased
+  const hero = document.getElementById("hero"), title = hero && hero.querySelector(".hero-title");
+  if (title && matchMedia("(pointer: fine)").matches) {
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf2 = 0;
+    const tick = () => {
+      cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+      title.style.transform = `perspective(900px) rotateY(${(cx * 9).toFixed(2)}deg) rotateX(${(-cy * 6).toFixed(2)}deg)`;
+      title.style.setProperty("--fx-dx", `${(-cx * 14).toFixed(1)}px`);
+      title.style.setProperty("--fx-dy", `${(-cy * 10).toFixed(1)}px`);
+      raf2 = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.002 ? requestAnimationFrame(tick) : 0;
+    };
+    hero.addEventListener("pointermove", (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width - 0.5) * 2; ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+      if (!raf2) raf2 = requestAnimationFrame(tick);
+    });
+    hero.addEventListener("pointerleave", () => { tx = ty = 0; if (!raf2) raf2 = requestAnimationFrame(tick); });
+    title.classList.add("fx-depth");
+  }
+  // stat cards: pointer position drives a glow that follows the cursor around the card edge
+  document.querySelectorAll(".stat-card, .rule-card, .dash-card").forEach((el) => {
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--gx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--gy", `${e.clientY - r.top}px`);
+    }, { passive: true });
+  });
+  } catch { /* decoration only */ }
+})();

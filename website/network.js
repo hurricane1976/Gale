@@ -156,12 +156,27 @@ function renderThroughput() {
   });
 }
 
+
+/* lazy 3D: only where WebGL + motion are available; any failure just leaves the panel hidden */
+function webglOk() {
+  try { return !!document.createElement("canvas").getContext("webgl") && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) && document.documentElement.dataset.saver !== "1"; } catch { return false; }
+}
+let NETMAP = false;
+function maybeNetMap() {
+  if (NETMAP) return; NETMAP = true;
+  const sec = document.getElementById("sec-netmap");
+  if (!sec) return;
+  if (!webglOk()) { sec.hidden = true; return; }
+  import("./netmap3d.js").then((m) => m.initNetMap(DATA)).catch(() => { sec.hidden = true; });
+}
+
 function renderAll() {
   if (!DATA) return;
   renderStats(DATA);
   renderIfaces(DATA);
   renderArp(DATA);
   renderSocks(DATA);
+  try { maybeNetMap(); } catch { /* decoration */ }
   refreshEffects();
   setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }

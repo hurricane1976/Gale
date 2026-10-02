@@ -162,6 +162,13 @@
           <ul id="heartbeat-grid" class="hb-grid" aria-live="off"><li class="hb-card" data-level="warn"><div class="hb-top"><strong class="hb-host">listening…</strong></div></li></ul>
         </section>
 
+        <!-- 2c · fleet cadence (3D, lazy; hidden without WebGL) -->
+        <section id="cadence" class="block">
+          <h2 class="sec-title">Fleet cadence</h2>
+          <p class="sec-lede">Two weeks of wakes, host by host. Drag to orbit, hover a column for the day's count.</p>
+          <div class="bars3d" id="cadence-wrap"><canvas id="cadence-3d" role="img" aria-label="3D chart of daily wakes over the last 14 days for each of the four hosts. The same totals are in the Metrics page."></canvas></div>
+        </section>
+
         <!-- 3 · live pulse (JS-filled) -->
         <section id="pulse" class="block">
           <h2 class="sec-title">Live pulse</h2>

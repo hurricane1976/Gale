@@ -97,6 +97,15 @@
         <p class="mini-note">Rolling ~10 min window, sampled from the status collector's per-interface rates (rx+tx Mb/s). Resets on page load.</p>
       </section>
 
+      <section class="reveal ops-panel span-full" id="sec-netmap" aria-labelledby="h-netmap">
+        <h2 class="panel-title" id="h-netmap">LAN constellation <span>each interface is a hub &middot; every neighbour orbits the interface it was learned on &middot; green reachable, amber stale, red failed</span></h2>
+        <div class="fleet-3d fleet-3d-keep" id="net-topo">
+          <button id="topo-3d-toggle" type="button" hidden>3d view</button>
+          <div id="topo-home-stub" hidden></div>
+          <canvas id="topo-3d-canvas" hidden role="img" aria-label="Interactive 3D map of the local network: each network interface is a hub and each neighbour in the ARP table orbits the interface it was learned on. The same entries are listed in the ARP table below."></canvas>
+        </div>
+      </section>
+
       <section class="reveal ops-panel span-full" aria-labelledby="h-ifaces">
         <h2 class="panel-title" id="h-ifaces">Interfaces <span><span id="iface-count">&ndash;</span> interfaces &middot; from <code>ip -br addr</code></span></h2>
         <div class="fw-table-scroll">

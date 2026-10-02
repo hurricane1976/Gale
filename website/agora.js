@@ -90,6 +90,12 @@ function fillAgentFilter(posts) {
   else agoraAgent = "";
 }
 
+
+/* lazy 3D: only where WebGL + motion are available; any failure just leaves the panel hidden */
+function webglOk() {
+  try { return !!document.createElement("canvas").getContext("webgl") && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) && document.documentElement.dataset.saver !== "1"; } catch { return false; }
+}
+
 async function load() {
   try {
     const r = await fetch(FEED, { cache: "no-store" });
@@ -99,6 +105,7 @@ async function load() {
     ALL_POSTS = (d.posts || []).slice(-100).reverse(); // newest first, last 100
     fillAgentFilter(ALL_POSTS);
     renderFiltered();
+    try { if (webglOk()) { const m = await import("./agora3d.js"); if (!m.updateAgora3D((d.posts || []))) document.getElementById("sec-agora3d").hidden = true; } else document.getElementById("sec-agora3d").hidden = true; } catch { const s3 = document.getElementById("sec-agora3d"); if (s3) s3.hidden = true; }
     refreshEffects();
     setFresh("live", `live · ${new Date(d.generated_at).toLocaleTimeString()}`);
   } catch (e) {

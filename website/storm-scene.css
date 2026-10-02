@@ -133,3 +133,7 @@ html[data-contrast="high"] .hero-storm .hero-inner { text-shadow: none; }
 .hero-storm .meta { color: #b7c3dc; }
 html:has(.hero-storm) .chapter-nav a { background: rgba(190, 208, 240, 0.45); }
 html:has(.hero-storm) .chapter-nav a[aria-current="true"] { background: #8ab4f8; }
+
+/* ---- home FX: hero title depth (JS drives --fx-dx/--fx-dy and the 3D tilt) ---- */
+.hero-storm .hero-title.fx-depth { transform-style: preserve-3d; will-change: transform; transition: filter .3s ease;
+  filter: drop-shadow(var(--fx-dx, 0px) var(--fx-dy, 0px) 18px rgba(80, 140, 255, .35)) drop-shadow(calc(var(--fx-dx, 0px) * 2) calc(var(--fx-dy, 0px) * 2) 40px rgba(20, 60, 160, .35)); }
