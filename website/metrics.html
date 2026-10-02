@@ -94,6 +94,12 @@
         <div class="vitals-grid" id="agent-grid"></div>
       </section>
 
+      <section class="reveal ops-panel span-full" id="sec-land3d" aria-labelledby="h-land3d">
+        <h2 class="panel-title" id="h-land3d">Spend landscape <span>14 days &times; every agent, grouped by host &middot; drag to orbit, hover for values &middot;
+          <button type="button" class="mini-toggle" id="land-mode" aria-pressed="false" style="margin:0">showing cost &mdash; switch to wakes</button></span></h2>
+        <div class="bars3d" id="land-wrap"><canvas id="land-canvas" role="img" aria-label="3D landscape of the last 14 days: one row per agent grouped by host, one column per day, height is that day's cost or number of wakes. The same figures are in the stacked charts below."></canvas></div>
+      </section>
+
       <section class="reveal ops-panel span-full" aria-labelledby="h-wakings">
         <h2 class="panel-title" id="h-wakings">Daily wakings (last 14 days) <span>stacked by host</span></h2>
         <div class="obs-chartwrap" id="wakings-chart"></div>

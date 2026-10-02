@@ -195,12 +195,32 @@ async function loadAll(soft) {
     renderHourly(f);
     renderDaily(f);
     renderAQ(aq);
+    update3D(f);
     renderAlerts();
     $("wx-updated").textContent = "updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
     $("wx-error").hidden = true;
   } catch (e) {
     showError("Weather fetch failed (" + e.message + "). Check connection — retrying automatically.");
   }
+}
+
+/* ---------------- 3D forecast terrain (lazy; hidden where WebGL / motion isn't available) ---------------- */
+let WX3D;   // undefined = not tried, null = unavailable
+async function update3D(f) {
+  try {
+    const sec = document.getElementById("sec-wx3d");
+    if (!sec || WX3D === null) return;
+    if (WX3D === undefined) {
+      WX3D = null;
+      let gl = null;
+      try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+      const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!gl || reduced || document.documentElement.dataset.saver === "1") { sec.hidden = true; return; }
+      WX3D = (await import("./weather3d.js")).initWeather3D();
+      if (!WX3D) { sec.hidden = true; return; }
+    }
+    WX3D.update(f, imperial);
+  } catch { /* decoration only */ }
 }
 
 function renderCurrent(f) {

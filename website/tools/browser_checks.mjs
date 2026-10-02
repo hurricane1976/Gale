@@ -207,6 +207,29 @@ async function webgl() {
     say(errs.length === 0, "home: no JS errors" + (errs.length ? "\n       " + errs.join("\n       ") : ""));
     await page.close();
   }
+  // 3b. metrics spend landscape + ollama GPU skyline/vault (bars3d): canvases have content, no errors
+  for (const [path, id, scroll, what] of [["metrics.html", "land-canvas", "sec-land3d", "metrics landscape"], ["ollama.html", "gpu-skyline", "sec-gpu3d", "ollama skyline"], ["ollama.html", "vram-vault", "sec-gpu3d", "ollama vault"]]) {
+    const { page, errs } = await open(path, [1440, 1000]);
+    await wait(6000);
+    await page.evaluate((s) => document.getElementById(s)?.scrollIntoView({ block: "start" }), scroll);
+    await wait(7000);
+    const el = await page.$("#" + id);
+    let ok = false, detail = "missing";
+    if (el) {
+      const shot = await el.screenshot({ type: "png" });
+      const st = await page.evaluate(async (b64) => {
+        const img = await new Promise((r) => { const i = new Image(); i.onload = () => r(i); i.src = "data:image/png;base64," + b64; });
+        const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+        const g = c.getContext("2d"); g.drawImage(img, 0, 0); const d = g.getImageData(0, 0, c.width, c.height).data, set = new Set(); let lit = 0;
+        for (let i = 0; i < d.length; i += 4) if (d[i] + d[i + 1] + d[i + 2] > 150) { lit++; set.add((d[i] >> 5) + "," + (d[i + 1] >> 5) + "," + (d[i + 2] >> 5)); }
+        return { lit: lit / (d.length / 4), colours: set.size };
+      }, shot.toString("base64"));
+      ok = st.lit > 0.01 && st.colours >= 4; detail = `lit ${(st.lit * 100).toFixed(1)}%, ${st.colours} colours`;
+    }
+    say(ok, `${what}: canvas has content (${detail})`);
+    say(errs.length === 0, `${what}: no JS errors` + (errs.length ? "\n       " + errs.join("\n       ") : ""));
+    await page.close();
+  }
   // 4. home on a phone: lite mode, scrolling stays possible (touch-action pan-y)
   {
     const { page, errs } = await open("index.html", [390, 844], { mobile: true });

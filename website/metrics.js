@@ -178,6 +178,32 @@ function renderStatus(d) {
   setText($("status-note"), `Liveness only — an HTTP 401 counts as up (auth-gated), matching the ops status page. ${entries.length} nodes from the fleet page's own listener data; no tokens probed.`);
 }
 
+/* ---------------- 3D spend landscape (lazy; hidden where WebGL / motion isn't available) ---------------- */
+let LAND;               // undefined = not tried, null = unavailable, object = running
+async function update3D() { try { await update3DInner(); } catch { /* decoration only */ } }
+async function update3DInner() {
+  const sec = document.getElementById("sec-land3d");
+  if (!sec || LAND === null) return;
+  if (LAND === undefined) {
+    LAND = null;
+    let gl = null;
+    try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!gl || reduced || document.documentElement.dataset.saver === "1") { sec.hidden = true; return; }
+    try { LAND = (await import("./landscape3d.js")).initLandscape3D(document.getElementById("land-canvas")); } catch { LAND = null; }
+    if (!LAND) { sec.hidden = true; return; }
+    const btn = document.getElementById("land-mode");
+    btn.addEventListener("click", () => {
+      const wakes = btn.getAttribute("aria-pressed") !== "true";
+      btn.setAttribute("aria-pressed", String(wakes));
+      btn.textContent = wakes ? "showing wakes \u2014 switch to cost" : "showing cost \u2014 switch to wakes";
+      LAND.setMode(wakes ? "wakes" : "cost");
+      LAND.update(DATA);
+    });
+  }
+  LAND.update(DATA);
+}
+
 function renderAll() {
   if (!DATA) return;
   renderAgentCards(DATA);
@@ -189,6 +215,7 @@ function renderAll() {
   tipDayTotals("wakings-chart", DATA.days);
   tipDayTotals("cost-chart", DATA.days);
   renderStatus(DATA);
+  update3D();
   refreshEffects();
   setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }

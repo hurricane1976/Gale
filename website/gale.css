@@ -1868,3 +1868,14 @@ a.agent:hover, a.agent:focus-visible { color: var(--text); background: color-mix
 .fleet-3d:has(#topo-3d-canvas[hidden]) { display: none; }
 /* status host map keeps its (dark) frame visible while loading so the board doesn't jump when WebGL opens */
 .fleet-3d.fleet-3d-keep { display: block !important; height: clamp(300px, 40vw, 420px); margin: 10px 0 0; }
+
+/* shared 3D bar-field frame (bars3d.js): ollama GPU skyline + vault, metrics spend landscape */
+.bars3d { position: relative; height: clamp(280px, 38vw, 400px); border-radius: 14px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--gust, #4aa3ff) 28%, var(--line));
+  background: radial-gradient(120% 100% at 50% 0%, #131c33 0%, #070b16 72%); }
+.bars3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; cursor: grab; }
+.ol-3d-grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+@media (max-width: 760px) { .ol-3d-grid { grid-template-columns: 1fr; } }
+.wx3d-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 860px) { .wx3d-grid { grid-template-columns: 1fr; } }
+.wx3d-grid > .bars3d:first-child { grid-column: 1 / -1; height: clamp(240px, 28vw, 330px); }

@@ -201,6 +201,16 @@
       </div>
     </section>
 
+    <!-- Forecast terrain (3D, lazy; hidden without WebGL / with reduced motion) -->
+    <section class="reveal wrap" id="sec-wx3d" aria-label="Forecast terrain in 3D">
+      <h2 class="sec-title">Forecast terrain</h2>
+      <p class="sec-lede">The same forecast as a landscape: the next 48 hours (temperature and rain chance) and the 7-day outlook. Drag to orbit, hover for values.</p>
+      <div class="wx3d-grid">
+        <div class="bars3d"><canvas id="wx-3d-hourly" role="img" aria-label="3D chart of the next 48 hours: one column per hour for temperature, and a second row for rain chance. The same data is in the hourly chart above."></canvas></div>
+        <div class="bars3d"><canvas id="wx-3d-daily" role="img" aria-label="3D chart of the 7-day outlook: one column per day in five rows (high, low, rain chance, UV, wind). The same data is in the 7-day list below."></canvas></div>
+      </div>
+    </section>
+
     <!-- Daily -->
     <section class="reveal wrap" aria-label="7-day forecast">
       <h2 class="sec-title">7-day outlook</h2>

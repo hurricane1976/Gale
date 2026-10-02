@@ -15,6 +15,8 @@ const PALETTE = ["var(--m-qwen)", "var(--gust)", "var(--m-gpt)", "var(--bolt)", 
 
 let SNAP = null;
 let HIST = null;
+let GPU = null;
+let O3D;                   // undefined = not tried, null = unavailable (no WebGL), object = running
 let PULLING = false;
 let THREAD = [];
 let BUSY = false;
@@ -822,6 +824,7 @@ async function loadSnap() {
     renderVitals();
     renderModels();
     if (HIST) renderLanes();
+    update3D();
     setFresh(SNAP.reachable ? "live" : "stale", SNAP.reachable ? `live · v${SNAP.version} · ${SNAP.latency_ms} ms` : "server unreachable");
   } catch (e) {
     setFresh("error", `feed error: ${String(e.message || e)}`);
@@ -839,7 +842,78 @@ async function loadHist() {
     renderLatencyChart();
     renderLanes();
     renderEvents();
+    renderHealth();
+    update3D();
   } catch { /* snapshot poll will surface feed errors */ }
+}
+
+
+/* ---------------- health score & energy (computed from the 24h history) ----------------
+   Everything here is derived from fields the sampler already records (GPU power/util/temp/VRAM per 30s sample,
+   resident models, reachability, latency percentiles). Cost uses a flat assumed tariff -- an estimate. */
+const KWH_PRICE = 0.15;
+function renderHealth() {
+  const box = $("health-grid");
+  if (!box || !HIST) return;
+  const series = HIST.series || [];
+  let kwh = 0, peakW = 0, minW = Infinity, sumW = 0, nW = 0, active = 0, hotMin = 0, peakT = 0, resident = 0, nOk = 0;
+  for (let i = 0; i < series.length; i++) {
+    const s = series[i];
+    if (s.reachable === false) continue;
+    nOk++;
+    if ((s.resident || []).length) resident++;
+    const g = s.gpu && s.gpu.gpus && s.gpu.gpus[0];
+    if (!g) continue;
+    const dt = i + 1 < series.length ? Math.min(120, Math.max(1, (new Date(series[i + 1].ts) - new Date(s.ts)) / 1000)) : 30;
+    const w = g.power_w || 0;
+    kwh += (w * dt) / 3.6e6; peakW = Math.max(peakW, w); minW = Math.min(minW, w); sumW += w; nW++;
+    if ((g.util_pct || 0) >= 5) active++;
+    if ((g.temp_c || 0) >= 70) hotMin += dt / 60;
+    peakT = Math.max(peakT, g.temp_c || 0);
+  }
+  if (!nW) { box.innerHTML = ""; return; }
+  const duty = (active / nW) * 100, resPct = nOk ? (resident / nOk) * 100 : 0;
+  const lastG = GPU && GPU.gpus && GPU.gpus[0];
+  const freePct = lastG && lastG.mem_total_mb ? 100 - (lastG.mem_used_mb / lastG.mem_total_mb) * 100 : null;
+  const up = HIST.uptime_pct ?? 100, p95 = HIST.latency_ms && HIST.latency_ms.p95;
+  const f = {
+    availability: clamp(((up - 95) / 5), 0, 1) * 30,
+    latency: p95 == null ? 12 : p95 <= 25 ? 20 : p95 <= 100 ? 12 : 4,
+    headroom: freePct == null ? 10 : freePct >= 15 ? 20 : freePct >= 5 ? 10 : 0,
+    thermals: peakT < 75 ? 15 : peakT < 85 ? 8 : 0,
+    residency: resPct >= 90 ? 15 : resPct >= 50 ? 8 : 0,
+  };
+  const score = Math.round(Object.values(f).reduce((a, b) => a + b, 0));
+  const lvl = score >= 85 ? "ok" : score >= 65 ? "warn" : "crit";
+  box.innerHTML = [
+    statCard("Health score", `${score}<small> / 100</small>`, lvl === "ok" ? "all factors healthy" : "see the breakdown below", lvl),
+    statCard("Energy · 24h", `${kwh.toFixed(2)} kWh`, `\u2248 $${(kwh * KWH_PRICE).toFixed(2)} at $${KWH_PRICE.toFixed(2)}/kWh (estimate)`),
+    statCard("Power", `${(sumW / nW).toFixed(0)} W avg`, `peak ${peakW.toFixed(0)} W \u00b7 idle floor ${minW.toFixed(0)} W${lastG && lastG.power_limit_w ? ` \u00b7 limit ${lastG.power_limit_w} W` : ""}`),
+    statCard("Duty cycle", `${duty.toFixed(1)}%`, `time the GPU was working (\u2265 5% util) \u00b7 ${duty < 5 ? "mostly idle: a warm model costs little" : "busy"}`),
+    statCard("Thermals", `${peakT.toFixed(0)} \u00b0C peak`, hotMin ? `${hotMin.toFixed(0)} min at \u2265 70 \u00b0C` : "never above 70 \u00b0C", heat(peakT, 78, 88)),
+    statCard("Model residency", `${resPct.toFixed(0)}%`, resPct >= 90 ? "a model was loaded almost all day (no cold starts)" : "gaps mean cold starts on the next request", resPct >= 90 ? "ok" : "warn"),
+  ].join("");
+  const n = $("health-note");
+  if (n) n.textContent = `Score = availability ${f.availability.toFixed(0)}/30 \u00b7 latency p95 ${f.latency}/20 \u00b7 VRAM headroom ${f.headroom}/20 \u00b7 thermals ${f.thermals}/15 \u00b7 residency ${f.residency}/15.`;
+  refreshEffects();
+}
+
+/* ---------------- 3D (lazy): 24h skyline + live VRAM vault ---------------- */
+async function update3D() { try { await update3DInner(); } catch { /* decoration only */ } }
+async function update3DInner() {
+  const sec = $("sec-gpu3d");
+  if (!sec || O3D === null) return;
+  if (O3D === undefined) {
+    O3D = null;
+    const reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let gl = null;
+    try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+    if (!gl || reduced || document.documentElement.dataset.saver === "1") { sec.hidden = true; return; }
+    try { O3D = (await import("./ollama3d.js")).initOllama3D(); } catch { O3D = null; }
+    if (!O3D) { sec.hidden = true; return; }
+  }
+  if (HIST) O3D.updateSkyline(HIST);
+  if (GPU && SNAP) O3D.updateVault(SNAP, GPU);
 }
 
 /* ---------------- upstream error log (ROADMAP-ollama #10) ---------------- */
@@ -860,7 +934,9 @@ async function loadGpu() {
   try {
     const r = await fetch("api/ollama/gpu", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    renderGpu(await r.json());
+    GPU = await r.json();
+    renderGpu(GPU);
+    update3D();
   } catch {
     const box = $("gpu-wrap");
     if (box) box.innerHTML = '<div class="gpu-empty gpu-err">gpu feed unreachable</div>';
