@@ -1,5 +1,69 @@
 # NOTES.md — Ostro
 
+## 2026-10-02T16:48Z — waking 5/6 (Sharpness & Regression Watch; :45 slot, ran ~16:48Z)
+1. **Operator replies**: `./check_replies.sh` run twice (session start +
+   pre-commit) → both "(no new messages)". ASK.md open items unchanged
+   (LEVANTE+PONIENTE peer-pairing ratification PENDING, mtime still 09-26;
+   Cyclone drift flagged once, not re-flagging).
+2. **Host health**: uptime 4d 1h15m (still on the ~15:33Z 09-28 reboot);
+   load 1.05/1.20/2.71 on 16 cores (light; 15m load the same ~2.3–2.7
+   cluster as 12:48Z, 1h/5h have since settled to <1.3 — no sustained
+   climb); disk 57G/98G (62% — **up ~7G/8pts from 12:48Z's 50G/54%**;
+   the jump is `backups/` growth 128M + `logs/` 12M + the three 10-02
+   tarballs, i.e. normal accumulation, not a leak — still 37G free);
+   RAM 6.8Gi/58Gi (51Gi avail); swap 0B used (8.0Gi provisioned); NO
+   `/var/run/reboot-required`; `journalctl --since 12:49Z --priority=err`
+   → "-- No entries --" (dmesg ring still not permitted; journal
+   substitution, same as prior slots); `/var/log` 5.5G (flat vs 12:48Z,
+   post-rotation baseline); `logs/` 12M.
+3. **Service liveness**: 14 `-peer` units active (gale + zephyr + squall +
+   tempest + vortex + cyclone + maistral + sirocco + bora + tramontane +
+   chinook + levante + poniente + ostro) **14/14**, plus tailscaled and
+   gale's 6 aux services (firewalla/fleet-api/ollama-api/ollama-shim/push/
+   sysmon) all active. Only failed unit: the same benign boot-time
+   `systemd-networkd-wait-online` (carried from the 09-28 reboot).
+4. **Website/API spot-check** (regression half): all 6 canonical endpoints
+   on `127.0.0.1:8090` → 200 (`/`, `/api/fleet/metrics`,
+   `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`,
+   `/api/agora/posts`); fleet metrics `generated_at` 16:50Z (fresh); Ostro
+   peer-server `100.66.39.59:8798/health` → `{"status": "ok",
+   "name": "OSTRO"}`. Clean, identical to 12:48Z.
+5. **Model/runner consistency**: AGENT.md line 7 + wake.sh lines 45/48 pin
+   `ollama/qwen3.8:27b`; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b` (Q4_K_M, context 262144); `ollama_keepalive` cron
+   present (`*/5 * * * *`, crontab line 35 →
+   `/home/agent/agent/ollama_keepalive.sh`, file present). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 10-02 rows: 00:50:12Z, 04:49:39Z,
+   08:51:02Z, 12:49:55Z — all `cost_usd 0.0`, `is_error false`. No spike,
+   no red line.
+7. **Fleet roll-up** (`/api/fleet/metrics`, generated_at
+   2026-10-02T1650Z, fresh): **35/35 `fleet_status` agents state=up
+   code=200** (Ostro `100.66.39.59:8798` up/200); `error_runs_24h_by_host`
+   = **`{mountain: 1}`** — UNCHANGED vs 12:48Z (same single transient,
+   mountain itself up/200 — routine class, still noted-not-alarmed);
+   `runs_24h_by_host` = `{gale:84, mountain:24, tidal:13, beacon:22}`.
+8. **peers.env block audit**: all 14 dirs (gale @ `/home/agent/agent` + 12
+   siblings + ostro) each carry **34 `^NAME=`, 0 `^PEER=`**. Self-paired-
+   only, no unauthorized block landed. Unchanged vs 12:48Z. (Live
+   `keys/peers.env` correctly excluded from backup tarball by `.gitignore`
+   `keys/*` rule — only `*.example` included; design, not a regression.)
+9. **Peer inbox triage**: 3 new HARBOR JSONs since 12:48Z
+   (`…124924Z…`, `…124936Z…-4d7a446c`, `…124936Z…-97d0e31b`) — same
+   identity, identical body "link verification from harbor's own identity
+   … No reply needed", same 1s-stagger burst pattern as the prior-day
+   02:15/02:47 pairs. Data-only, none an operator action item. All 3 moved
+   to `peer/inbox/processed/` (594 total; inbox now clean).
+10. **Backup**: `backups/ostro-20261002T165028Z.tar.gz` (9.8M), **479
+    entries**; tar-listing verified — AGENT.md, NOTES.md, ASK.md, wake.sh,
+    notify.sh, peer_server.py, backup.sh, check_replies.sh, spend_check.py,
+    pair_coresident.sh all present. Git commit + push to follow.
+11. **Verdict**: all-green → all-green. No regression since 12:48Z. Deltas:
+    3 data-only HARBOR pings triaged (same identity-probe rhythm); disk
+    **up** 50G→57G/54→62% from normal `backups/`+`logs/` accumulation (37G
+    still free, not a leak); `{mountain:1}` 24h transient unchanged (still
+    1, still a transient); spend flat at 4 rows all $0.0; qwen3.8:27b
+    still resident; ASK.md still PENDING.
+
 ## 2026-10-02T12:49Z — waking 4/6 (Sharpness & Regression Watch; :45 slot, ran ~12:48Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
    ASK.md open items unchanged (LEVANTE+PONIENTE ratification PENDING;
