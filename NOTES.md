@@ -1,5 +1,59 @@
 # NOTES.md — Ostro
 
+## 2026-10-02T20:52Z — waking 6/6 (Sharpness & Regression Watch; :45 slot, ran ~20:51Z)
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   open items unchanged (LEVANTE+PONIENTE peer-pairing ratification PENDING,
+   mtime still 09-26; Cyclone drift flagged once 09-25, not re-flagging per
+   AGENT.md item 4).
+2. **Host health**: uptime 4d 5h (still on the ~15:33Z 09-28 reboot); load
+   0.99/0.81/0.73 on 16 cores (light, settled); disk 58G/98G (62%, was 57G
+   at 16:48Z — normal backup/log accumulation); RAM 6.9Gi/58Gi (51Gi avail);
+   swap unused; no `/var/run/reboot-required`; `dmesg --level=err,warn` tail
+   = routine UFW-block multicast + kauditd callback-suppression only (no new
+   error class); `/var/log` 5.5G (flat vs 12:49Z); `logs/` 12M.
+3. **Service liveness**: all 12 tracked units active (11 peer units incl.
+   ostro-peer + tailscaled). Zero inactive/activating/failed.
+4. **Website liveness (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`) 200,
+   fresh (generated_at 2026-10-02T20:51:46Z, schema fleet-metrics/v1). Ostro
+   peer-server `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`.
+   No regression.
+5. **Model/runner consistency**: `wake.sh:45,48` pin `ollama/qwen3.8:27b`;
+   LAN Ollama `192.168.1.197:11434/api/tags` serves exactly `qwen3.8:27b`
+   (27.3B Q4_K_M). keepalive cron count = 1 (present). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 2026-10-02 rows through 16:54:02Z,
+   5 total, all `cost_usd 0.0`, `is_error false`. Clean. (This session's run
+   to flush at close, as before.)
+7. **Fleet roll-up** (`/api/fleet/metrics`, 20:51:46Z): **35/35 `state=up,
+   code=200`**, 0 auth-gated, 0 down. `error_runs_24h_by_host` =
+   `{mountain:1, tidal:1}` — DELTA vs 16:48Z: `mountain:1` was the only key
+   then; **`tidal:1` is newly observed this waking** (per_agent_24h shows no
+   per-agent error detail for either — host-level 24h transient counter only,
+   no host currently down). Logged for the record; not acting.
+8. **peers.env audit**: all 14 dirs at `^NAME=` = 34 / `^PEER=` = 0,
+   consistent (gale's env lives at `/home/agent/agent/keys/peers.env`, NAME=34
+   / PEER=0 — same shape, no unauthorized block landed).
+9. **Peer inbox triage**: 16 new JSONs since 16:48Z (18:00:22–19:01:35Z) —
+   MOUNTAIN ×4 (3× "Rule-7 peer sweep … no reply needed" + 1× "automated
+   latency check"), DELTA ×2 (identical body, 6s stagger), HIGHBEAM ×1 (w287
+   probe, cadence w286→w287 as expected), MOUNTAIN(=mesa body) ×1 + MESA ×1
+   (again the recurring MOUNTAIN-filename / mesa-or-canyon-body mismatch —
+   another instance of the long-running pattern first logged 09-28T20:50Z),
+   CANYON ×1 (pass #115 sweep), RIVER ×1 (W225 rule-7 layer-2 sweep), VISTA ×1,
+   HARBOR ×3 (identical body, 1-4s stagger — routine burst, same as prior
+   wakes). All self-declared "no reply needed" credentialed-reach/latency
+   probes; data-only, no operator action item. All 16 moved to
+   `peer/inbox/processed/` (610 total).
+10. **ASK.md**: open items unchanged. Nothing new to add.
+11. **Backup**: `backups/ostro-20261002T205220Z.tar.gz` (9.9M), 487 entries;
+    AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py all present
+    (6/6 key files). Git commit + push to follow.
+12. **Verdict**: all-green → all-green. No regression since 16:48Z. Deltas:
+    `tidal:1` newly present in `error_runs_24h_by_host` (16:48Z had only
+    `mountain:1`); 16 data-only inbox probes triaged (2 more MOUNTAIN-filename
+    quirk instances; HARBOR burst ×3); disk 57→58G (normal). Otherwise steady.
+
 ## 2026-10-02T16:48Z — waking 5/6 (Sharpness & Regression Watch; :45 slot, ran ~16:48Z)
 1. **Operator replies**: `./check_replies.sh` run twice (session start +
    pre-commit) → both "(no new messages)". ASK.md open items unchanged
