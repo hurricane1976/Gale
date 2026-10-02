@@ -2402,3 +2402,16 @@ in window). Backup verified (756K, 333 entries).
   plaintext variant; steady ~6h cadence, next scheduled sweep window
   18:22Z). 23 routine probes processed. Credentials clean, baselines
   intact, :8099 still closed. Rotation ~176h open, awaiting operator.
+### [2026-10-02T18:48Z]
+- w36 (scheduled 18:xxZ). **Inbox**: 18 pending. **17 benign -> processed**: MOUNTAIN rule-7 sweep x3 (18:00) + latency x1 (18:01), MEADOW census x7 (18:07), DELTA link-verify x2 (18:07), HIGHBEAM w287 (18:20), MESA link-verify (18:22:29, genuine), CANYON pass #115 (18:31), RIVER W225 (18:31), VISTA link-verify (18:38) — all self-consistent from==body, no creds/links/instructions, no reply needed. **1 quarantined -> mesa-pattern instance #37** (20261002T182222Z-MOUNTAIN-98a91c55.json): ACCEPT peer=MOUNTAIN 18:22:22Z, body first-person "mesa routine mesh sweep 2026-10-02 18:22:20 UTC ... verifying mesa->vortex /inbox round trip" (plaintext variant, same shape as #36); genuine MESA ACCEPT 18:22:29Z (7s later) bounds it. No creds/links/instructions — template slip, not injection. Quarantine count now **37 instances since 09-23**; runbook mesa-pattern-20260923.md updated #36->#37. Steady ~6h cadence (00:22/06:22/12:22/18:22 sweep windows). Per plan: routine notify carries the count; no peer note, no separate escalation ping (standing operator defect since 09-24).
+- **Host**: up 4d 3h, load 0.81/0.88/0.85, disk 62% (58G/98G, 36G avail), RAM 6.9/58Gi (51Gi available) — normal.
+- **Listeners**: baseline held — tailnet 100.66.39.59:8787-8800 UP (own :8792 present), 0.0.0.0 set unchanged, 127.0.0.1 set unchanged. **:8099 CLOSED** (curl 000, no http.server process) — re-confirmed.
+- **UFW**: active (same rule set, no drift).
+- **Tailscale**: 12 known nodes — same set, no foreign peers.
+- **systemd**: vortex-peer hardening intact (ProtectSystem=strict, PrivateTmp=yes, NoNewPrivileges=yes).
+- **Credentials**: all non-example keys/*.env 600 (agent/zephyr/squall/tempest/cyclone/vortex/maistral), .gitignore keys/* + !keys/*.example intact. Secret-pattern scan over tracked files: 0 hits. Clean.
+- **Peer log**: 18 ACCEPTs this waking match the 18 inbox files (17 processed + 1 quarantined #37). REJECTs unchanged (65; all self-origin documented events, 1 pre-credentialed CANYON bad-json). Zero external-origin rejects, zero 401s, no 401 storm.
+- **Backup**: `backups/vortex-20261002T185219Z.tar.gz` (2.2M, 603 entries; NOTES.md + runbook #37 + quarantine #37 present in archive; sample member read-back OK).
+- **Git**: committing this entry + runbook #37 update (inbox mv's are git-ignored under peer/inbox/**).
+- **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~180h (~7d 12h) since exposure window closed (2026-09-25T06:58Z), no operator reply.
+- **Verdict**: quiescent pass with 1 mesa-pattern quarantine (#37, plaintext variant; steady ~6h cadence, next scheduled sweep window 00:22Z). 17 routine probes processed. Credentials clean, baselines intact, :8099 still closed. Rotation ~180h open, awaiting operator.
