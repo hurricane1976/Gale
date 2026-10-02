@@ -223,6 +223,8 @@ export function initTopology3D(opts = {}) {
   const scaleBuf = gl.createBuffer();
   const nodeScale = new Float32Array(N + H).fill(1); // heat modes grow busy/expensive agents (see applyHeat)
   const alertPos = new Float32Array(N * 3), alertCol = new Float32Array(N * 3);
+  const ripples = []; // {i, t0, c}
+  if (location.search.includes("debug3d")) window.__ripples = ripples; // test hook
   const flowBuf = gl.createBuffer();
   const flowColBuf = gl.createBuffer();
   const live3d = { mbps: 0.5, down: new Set() };
@@ -445,6 +447,17 @@ export function initTopology3D(opts = {}) {
       const fp = new Float32Array([pos[focusIdx * 3], pos[focusIdx * 3 + 1], pos[focusIdx * 3 + 2]]);
       drawPts(fp, new Float32Array([0.55, 0.75, 1.0]), 1, 96 * dpr3 * pulse, 1, true);
       drawPts(fp, new Float32Array([1, 1, 1]), 1, (focusIdx >= N ? 20 : 12) * dpr3, 0, false);
+    }
+
+    // live-activity ripples: an expanding, fading ring from the agent that just did something
+    if (ripples.length && !REDUCED3D) {
+      const nowT = performance.now();
+      for (let r = ripples.length - 1; r >= 0; r--) if (nowT - ripples[r].t0 > 2600) ripples.splice(r, 1);
+      for (const rp of ripples) {
+        const age = (nowT - rp.t0) / 2600, f = 1 - age;
+        const rpos = new Float32Array([pos[rp.i * 3], pos[rp.i * 3 + 1], pos[rp.i * 3 + 2]]);
+        drawPts(rpos, new Float32Array([rp.c[0] * f * 2.4, rp.c[1] * f * 2.4, rp.c[2] * f * 2.4]), 1, (30 + age * 190) * dpr3, 1, true);
+      }
     }
 
     // flow dots (skip entirely under reduced motion)
@@ -806,6 +819,31 @@ export function initTopology3D(opts = {}) {
   }
   loadAlerts();
   setInterval(loadAlerts, 60000);
+
+  /* live activity: poll the activity feed; every event newer than the last one seen ripples from its agent
+     (commit = cyan, waking = green, backup = blue, flag = red). Skipped when no node matches (e.g. the LAN map). */
+  if (!opts.noActivity && !opts.nodes) {
+    const KIND = { commit: [0.2, 0.9, 1.0], waking: [0.3, 1.0, 0.55], backup: [0.4, 0.6, 1.0], "peer-flag": [1.0, 0.35, 0.35], peer: [0.8, 0.6, 1.0], relay: [0.8, 0.6, 1.0] };
+    let seen = null;
+    const poll = async () => {
+      try {
+        if (canvas.hidden || document.hidden) return;
+        const r = await fetch("api/fleet/activity", { cache: "no-store" });
+        if (!r.ok) return;
+        const evs = ((await r.json()).events || []).slice().sort((a, b) => String(a.ts).localeCompare(String(b.ts)));
+        if (seen === null) { seen = evs.length ? evs[evs.length - 1].ts : ""; return; }   // first poll: just remember where we are
+        let n = 0;
+        for (const e of evs) {
+          if (String(e.ts) <= seen) continue;
+          const i = nodes.findIndex((x) => x.name.toLowerCase() === String(e.agent || "").toLowerCase());
+          if (i >= 0 && n++ < 6) ripples.push({ i, t0: performance.now() + n * 180, c: KIND[e.kind] || [0.8, 0.9, 1.0] });
+        }
+        if (evs.length) seen = evs[evs.length - 1].ts;
+      } catch { /* decoration only */ }
+    };
+    poll();
+    setInterval(poll, 15000);
+  }
 
   /* touch: vertical swipes keep scrolling the page (pan-y), horizontal drags orbit, two fingers pinch-zoom */
   if (LITE) canvas.style.touchAction = "pan-y";
