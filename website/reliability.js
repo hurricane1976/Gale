@@ -3,7 +3,7 @@
    same live feeds as the other pages (metrics / activity / status.json /
    observability) plus synthetics.json written by tools/synthetics.sh and
    the local RUM buffer from rum.js. No new backend contract. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, tracedFetch, skeleton } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, tracedFetch, skeleton, whenNear } from "./shared.js";
 
 boot();
 refreshEffects();
@@ -145,6 +145,23 @@ function renderForecast(metrics) {
   } catch { setText(box, "forecast unavailable"); }
 }
 
+/* lazy 3D error-budget towers (only with WebGL + motion; never breaks the page) */
+async function render3D(slos, metrics) {
+  try {
+    const sec = document.getElementById("sec-slo3d");
+    if (!sec) return;
+    let gl = null;
+    try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+    const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    if (!gl || reduced || (document.documentElement.dataset && document.documentElement.dataset.saver === "1")) { sec.hidden = true; return; }
+    const perDay = metrics ? (metrics.days || []).map((_, i) =>
+      Object.values(metrics.daily_cost_by_host || {}).reduce((s, srs) => s + (srs[i] || 0), 0)).slice(-7) : [];
+    await whenNear(sec);
+    const m = await import("./slo3d.js");
+    if (!m.updateSLO3D(slos, perDay, COST_DAILY_LIMIT)) sec.hidden = true;
+  } catch { /* decoration only */ }
+}
+
 async function main() {
   renderRUM();
   setInterval(renderRUM, 10000);
@@ -163,6 +180,12 @@ async function main() {
     sloCard("Observability freshness", 99.0, fresh.actual, fresh.detail),
     sloCard("Cost pace", 95.0, cost.actual, cost.detail),
   ].join(""));
+  render3D([
+    { name: "Wake on-time", short: "wakes", target: 99.5, actual: w.actual, detail: w.detail },
+    { name: "Synthetic green", short: "synthetics", target: 99.9, actual: api.actual, detail: api.detail },
+    { name: "Observability freshness", short: "freshness", target: 99.0, actual: fresh.actual, detail: fresh.detail },
+    { name: "Cost pace", short: "cost pace", target: 95.0, actual: cost.actual, detail: cost.detail },
+  ], metrics);
   renderSynth(synth);
   if (metrics) renderForecast(metrics);
   try {

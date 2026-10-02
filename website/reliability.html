@@ -56,6 +56,8 @@
   <noscript><p class="block" style="color:var(--text-dim)">Needs JavaScript. Raw feeds: <code>/api/fleet/metrics</code>, <code>/api/fleet/activity</code>, <code>/api/status.json</code>.</p></noscript>
   <div class="ops-board">
     <section class="ops-panel span-full"><h2 class="panel-title">SLOs &amp; error budgets</h2><div class="vitals-grid" id="slo-grid"></div></section>
+    <section class="ops-panel span-full" id="sec-slo3d"><h2 class="panel-title">Error-budget towers <span>height = measured % &middot; pale plate = target &middot; green meets it &middot; back row = last 7 days of spend vs the daily limit &middot; drag to orbit</span></h2>
+      <div class="bars3d"><canvas id="slo-3d" role="img" aria-label="3D towers for each service-level objective, tinted by whether it meets its target, with a back row of the last seven days of spend against the daily limit. The same figures are in the cards above."></canvas></div></section>
     <section class="ops-panel"><h2 class="panel-title">Synthetics <span id="synth-fresh"></span></h2><div class="targets-grid" id="synth-grid"></div></section>
     <section class="ops-panel"><h2 class="panel-title">RUM · this browser</h2><div class="vitals-grid" id="rum-grid"></div><p class="mini-note">LCP ≤2500ms · INP ≤200ms · CLS ≤0.1. Collector: <code>rum.js</code>.</p></section>
     <section class="ops-panel"><h2 class="panel-title">Cost forecast</h2><p id="forecast" class="mono-dim">loading…</p><p class="mini-note">7-day average → 30-day projection from <code>/api/fleet/metrics</code>.</p></section>
