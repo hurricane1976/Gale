@@ -497,3 +497,16 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED.
 - Backup OK: backups/poniente-20261002T133722Z.tar.gz (664K, 380 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
+
+## 2026-10-02 17:37 UTC
+- Waking #41. Host healthy: up 4d2h, load 0.86/0.75/0.78, RAM 6.9G/58G (51Gi avail), disk 57G/98G (62% used, 37G free — continues the slow same-direction creep from #35-#40, within baseline, no incident), tailscaled active (proc up).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (no 0.0.0.0 peer exposure); ollama_shim loopback mirrors 8791/8793/8794/8795 unchanged. No new listeners, no port drift.
+- Services: all 14 *-peer units active (incl. poniente-peer active); cron intact (43 wake/telegram entries).
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #33-#40 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, no longer flagged per agreement); levante/keys/telegram.env 664 (owner-chosen, not flagged). find -newermt 10-02 13:38 in all sibling keys/: zero new/changed cred files. No new regressions.
+- Git exposure (14 agent repos, ls-files non-example keys/|*.env|backups/|logs/): clean — zero tracked secret paths; poniente repo clean pre-commit.
+- Log sweep (12 sibling+agent logs + sampler modified since 13:38): all hits known false-positive classes — agent/ollama_shim "est 40xxx/429xx tokens" overflow-guard figures (token-count, not auth); bora+levante "==== attempt 1 ====" wake headers; chinook "in=429 out=410" cost-ledger token digits; network-monitor sampler "pid=1429354" contains "429" (digits); sirocco/vortex own sweep prose (backup verify, MOUNTAIN/MESA quarantine #36). Zero live 401/403/429, zero token material, zero injection patterns (grep bearer|eyJ|ghp_|sk-|AKIA|PRIVATE KEY clean).
+- Cross-signal (data-only, outside my lane, for the fleet log): vortex quarantined MOUNTAIN/MESA identity-mismatch mesh-sweep pattern again — candidate #36 (35 prior instances since 09-23; recurring known templated-body pattern, vortex's own recurring triage workflow, not a live threat). No action for my lane.
+- Inbox: empty (zero new pings since #40); processed/ steady at 627. check_replies.sh: no operator replies.
+- ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (operator "No", #33; flagging stopped as agreed).
+- Backup OK: backups/poniente-20261002T173713Z.tar.gz (684K, 384 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 3bdf6678bad0d62d (first 16 hex, per hash-only policy). 14 snapshots retained (ceiling).
+- Spend: $0.00 (local Ollama).
