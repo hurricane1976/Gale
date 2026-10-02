@@ -202,6 +202,24 @@ function renderSilent(d) {
   setHTML($("silent"), items.join(""));
 }
 
+/* lazy 3D spend city (hidden where WebGL / motion isn't available; never breaks the page) */
+let CITY;   // undefined = not tried, null = unavailable, else module
+async function updateCity() {
+  try {
+    const sec = document.getElementById("sec-runs3d");
+    if (!sec || CITY === null || !DATA) return;
+    if (CITY === undefined) {
+      CITY = null;
+      let gl = null;
+      try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+      const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      if (!gl || reduced || (document.documentElement.dataset && document.documentElement.dataset.saver === "1")) { sec.hidden = true; return; }
+      CITY = await import("./runs3d.js");
+    }
+    if (!CITY.updateRuns3D(DATA.runs || [])) sec.hidden = true;
+  } catch { /* decoration only */ }
+}
+
 function renderAll() {
   if (!DATA) return;
   renderStats(DATA);
@@ -209,6 +227,7 @@ function renderAll() {
   renderLanes(DATA);
   renderExplorer(DATA);
   renderSilent(DATA);
+  updateCity();
   refreshEffects();
   setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
