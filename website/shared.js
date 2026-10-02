@@ -1578,7 +1578,15 @@ function initNavPulse() {
       a.dataset.level = lv;
       a.querySelector(".nav-pulse-txt").textContent = txt;
       a.setAttribute("aria-label", `Fleet health: ${txt}. Open ops status.`);
-      a.title = list.slice(0, 5).map((x) => x.text).join("\n") || "no open alerts";
+      // hover/focus panel (hidden on phones, where the pill just links to the ops board)
+      let pop = a.querySelector(".nav-pulse-pop");
+      if (!pop) { pop = document.createElement("span"); pop.className = "nav-pulse-pop"; pop.setAttribute("aria-hidden", "true"); a.appendChild(pop); }
+      const rank = { crit: 0, warn: 1 };
+      const top = list.slice().sort((x, y) => (rank[x.sev] ?? 2) - (rank[y.sev] ?? 2)).slice(0, 6);
+      pop.innerHTML = (top.length
+        ? top.map((x) => `<span class="np-row" data-sev="${esc(x.sev)}"><i></i>${esc(x.text)}</span>`).join("")
+        : '<span class="np-row" data-sev="ok"><i></i>No open alerts</span>') +
+        (list.length > top.length ? `<span class="np-more">+${list.length - top.length} more · open ops status</span>` : '<span class="np-more">open ops status →</span>');
     } catch {
       a.dataset.level = "unknown";
       a.querySelector(".nav-pulse-txt").textContent = "offline";
