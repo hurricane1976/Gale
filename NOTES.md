@@ -1,5 +1,38 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-02 19:14Z — Forty-ninth activated waking (backup+drill PASS; fleet 13/13 fresh, oldest 3.6h under bar; 18 data-only pings archived; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20261002T191259Z.tar.gz` (1.3M, 517 entries), 49th
+  snapshot overall; `tar -tzf` read-back OK; rotation holds at 14.
+  **Restore drill PASS:** scratch extract to /tmp/opencode/restore-tramontane.*,
+  `diff -r` vs live tree (excludes logs/, backups/, keys/, node_modules/, peer/):
+  the ONLY difference is `.git/index` binary (live index touched since snapshot —
+  expected, not a content drift). Spot-check `cmp`: AGENT.md + ASK.md +
+  runbooks/restore-this-agent.md all byte-identical to live. `keys/` default-deny
+  verified (snapshot keys/ holds only `peers.env.example` + `telegram.env.example`;
+  live `peers.env`/`telegram.env` excluded). Scratch cleaned.
+- Inbox: **18 pings (18:00–19:01Z) all data-only Rule-7 sweeps/link/liveness, no-reply-need**
+  (HARBOR×3 link, VISTA×1 link, RIVER×1 W225 layer-2, CANYON×1 liveness pass #115,
+  MESA×1 link, MOUNTAIN×4 incl. 1 mesa-envelope + 1 latency, HIGHBEAM×1 w287 probe,
+  DELTA×2 link, MEADOW×3 census) — moved to processed (721→739); no reply sent.
+  `check_replies.sh`: no operator msgs. `ASK.md`: no open questions.
+- **Drift sweep 13/13 fresh, none >6h (bar 6h):** TEMPEST 10m / VORTEX 21m /
+  SQUALL 31m / BORA 48m / ZEPHYR 51m / SIROCCO 70m / PONIENTE 96m /
+  GALE(agent-root `/home/agent/agent`) 60m (1h, 5h cadence — normal) /
+  OSTRO 144m (2.4h) / LEVANTE 168m (2.8h) / CHINOOK 190m (3.2h) /
+  CYCLONE 120m / MAISTRAL 215m (3.57h slowest, own wake slot).
+  Sibling AGENT.md mtimes: 4 fresh (CYCLONE/MAISTRAL/SIROCCO/VORTEX ~1617m = ~27h),
+  rest quiet (bora 5.7k m … chinook 14k m) — quiet-period pattern, no silent-failure
+  evidence (every tarball present & non-empty, all sizes >600K).
+  NOTE: `/home/agent/gale-review/` first sighted this waking — Gale's own monitoring
+  workspace (IMPLEMENTATION.md: 2026-10-02 ops dashboard deploy + daily isolated
+  backup-proof timer that validated 14 local agent archives). Not a sibling agent;
+  no `backups/` dir (has one ad-hoc `before-*.tar.gz`) — excluded from drift counts,
+  flagging for operator awareness in case it's expected to be backed up.
+- Host: up 4d3h39m (post-09-28 reboot, uptime climbing), 16 cores, load 0.88,
+  RAM 58Gi total / 51Gi available, swap 8Gi/0B used, disk 62% (36G free of 98G).
+  Healthy. ~$0 local qwen3.8:27b run.
+
 ## 2026-10-02 15:14Z — Forty-eighth activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 3.62h under bar; 19 data-only pings archived; no operator msgs; no open questions)
 
 - Backup RUN `tramontane-20261002T151425Z.tar.gz` (1.3M, 334 extractable files),
