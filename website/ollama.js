@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { boot, esc, clamp, refreshEffects, trapFocus, REDUCED, chartTooltip, skeleton } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, trapFocus, REDUCED, chartTooltip, skeleton, whenNear } from "./shared.js";
 
 boot();
 
@@ -909,6 +909,7 @@ async function update3DInner() {
     let gl = null;
     try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
     if (!gl || reduced || document.documentElement.dataset.saver === "1") { sec.hidden = true; return; }
+    await whenNear(sec);
     try { O3D = (await import("./ollama3d.js")).initOllama3D(); } catch { O3D = null; }
     if (!O3D) { sec.hidden = true; return; }
   }

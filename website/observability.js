@@ -1,7 +1,7 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear } from "./shared.js";
 import { observabilityPayload, validate } from "./payloads.js";
 
 boot();
@@ -214,6 +214,7 @@ async function updateCity() {
       try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
       const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
       if (!gl || reduced || (document.documentElement.dataset && document.documentElement.dataset.saver === "1")) { sec.hidden = true; return; }
+      await whenNear(sec);
       CITY = await import("./runs3d.js");
     }
     if (!CITY.updateRuns3D(DATA.runs || [])) sec.hidden = true;
@@ -242,10 +243,15 @@ async function load(first = false) {
     DATA = validate(await r.json(), observabilityPayload);
     const note = document.getElementById("partial-note");
     if (note) {
-      note.hidden = !DATA.runs_truncated;
-      if (DATA.runs_truncated) note.textContent = `Showing the newest ${DATA.runs.length} of ${DATA.runs_total} runs while the full history loads; per-agent counts and totals below complete in a moment.`;
+      note.style.visibility = DATA.runs_truncated ? "visible" : "hidden";
+      if (DATA.runs_truncated) note.textContent = `Newest ${DATA.runs.length} of ${DATA.runs_total} runs shown; full history loading\u2026`;
     }
-    if (DATA.runs_truncated && !fullTimer) fullTimer = setTimeout(() => { fullTimer = 0; load(); }, 1200);
+    if (DATA.runs_truncated && !fullTimer) {
+      // the full history is ~1.6 MB: fetch it once the page has been quiet for a while, or as soon as the viewer scrolls/interacts
+      const go = () => { if (!fullTimer) return; clearTimeout(fullTimer); fullTimer = 0; load(); };
+      fullTimer = setTimeout(go, 8000);
+      ["scroll", "pointerdown", "keydown"].forEach((ev) => window.addEventListener(ev, go, { once: true, passive: true }));
+    }
     renderAll();
   } catch (e) {
     setFresh("error", `feed error: ${esc(String(e.message || e))}`);

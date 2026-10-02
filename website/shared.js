@@ -1631,6 +1631,16 @@ if (typeof window !== "undefined" && window.addEventListener) {
   });
 }
 
+/* resolves once `el` is within `margin` of the viewport (immediately without IntersectionObserver). Used so the
+   below-the-fold 3D panels don't create WebGL contexts / paint canvases during the initial load. */
+export function whenNear(el, margin = "400px 0px") {
+  return new Promise((res) => {
+    if (!el || typeof IntersectionObserver !== "function") return res();
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); res(); } }, { rootMargin: margin });
+    io.observe(el);
+  });
+}
+
 export function boot() {
   // WebGPU ambient sky (improvements #2): progressive enhancement -- the
   // CSS blobs stay as the fallback when WebGPU is missing or fails.

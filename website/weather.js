@@ -2,7 +2,7 @@
    Data: Open-Meteo forecast + geocoding + air quality (no key),
    NWS alerts (US only), RainViewer radar tiles on Leaflet.
    No build step, vanilla ES module. Units + location persist in localStorage. */
-import { boot, refreshEffects, setStormIntensity, clamp, chartTooltip } from "./shared.js";
+import { boot, refreshEffects, setStormIntensity, clamp, chartTooltip, whenNear } from "./shared.js";
 
 boot();
 
@@ -216,6 +216,7 @@ async function update3D(f) {
       try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
       const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (!gl || reduced || document.documentElement.dataset.saver === "1") { sec.hidden = true; return; }
+      await whenNear(sec);
       WX3D = (await import("./weather3d.js")).initWeather3D();
       if (!WX3D) { sec.hidden = true; return; }
     }

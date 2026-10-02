@@ -302,3 +302,6 @@ main:has(#cost-chart) #lanes { min-height: 260px; }
 .np-hist { font-size: .74rem; line-height: 1.35; color: var(--text-dim, #3d4a63); }
 .np-hist b { font-weight: 600; color: #d9962b; } .np-hist[data-ev="close"] b { color: #2fa874; }
 #land-wrap { height: clamp(320px, 44vw, 480px); }
+/* observability: the partial-history note always occupies its line, so showing/hiding it never shifts the page */
+#partial-note { display: block !important; min-height: 1.4em; margin: 0 0 8px; font-size: .72rem; max-width: 46ch; }
+

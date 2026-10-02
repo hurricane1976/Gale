@@ -1,6 +1,6 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton } from "./shared.js";
+import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear } from "./shared.js";
 import { metricsPayload, validate } from "./payloads.js";
 
 boot();
@@ -190,7 +190,8 @@ async function update3DInner() {
     try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!gl || reduced || document.documentElement.dataset.saver === "1") { sec.hidden = true; return; }
-    try { LAND = (await import("./landscape3d.js")).initLandscape3D(document.getElementById("land-canvas")); } catch { LAND = null; }
+    try { await whenNear(sec);
+    LAND = (await import("./landscape3d.js")).initLandscape3D(document.getElementById("land-canvas")); } catch { LAND = null; }
     if (!LAND) { sec.hidden = true; return; }
     const btn = document.getElementById("land-mode");
     btn.addEventListener("click", () => {
