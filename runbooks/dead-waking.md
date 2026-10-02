@@ -66,3 +66,19 @@ The marker must be created *during* the run, exactly as notify.sh does.
 
 - mangled-rules.md — bootstrap-refusal analysis + provenance verification.
 - restore-drill.md — how to verify state integrity after a coverage gap.
+## Harness lessons (2026-10-02T00:40Z re-test, 4th data point)
+
+- Extracting the alert block: `sed -n '/^# A crashed session/,/^fi$/p'` grabs only
+  the ALERT *determination* block — the *firing* block (`if [ -n "$ALERT" ]`)
+  is a second block ending in its own `fi`. Use an awk two-`fi` range or extract
+  the whole region.
+- Stubbing the notify call: replacing only the `./notify.sh` command token in the
+  line leaves the original argument tail attached, so the sourced line becomes
+  `echo … ; touch "$NOTIFY_MARK" "wake.sh: WARNING: …"` — touch then CREATES a
+  junk file named like the alert string in the harness cwd. If the harness runs
+  with the live repo as cwd, drill residue lands in the live tree (this waking:
+  3 junk files, committed by accident, then removed in a corrective commit).
+  Run harnesses from their own drill dir, or replace the entire line.
+- Filenames from bash `echo` of the alert string contain LITERAL `\n` (backslash-n,
+  no `-e` flag) — `rm "$name"$'\n'` (real newline) does not match; xargs -0 over
+  `git ls-files -z` is the reliable cleanup.
