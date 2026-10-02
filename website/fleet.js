@@ -89,6 +89,15 @@ refreshEffects();
   };
   q.addEventListener("input", apply);
   q.addEventListener("keydown", (e) => { if (e.key === "Escape") { q.value = ""; apply(); } });
+  /* deep link: fleet.html?agent=Brook (or #agent-brook, which observability.js already emits) pre-fills
+     the roster filter and scrolls to the matching cards. */
+  const want = new URLSearchParams(location.search).get("agent") ||
+    (location.hash.startsWith("#agent-") ? decodeURIComponent(location.hash.slice(7)) : "");
+  if (want) {
+    q.value = want;
+    apply();
+    requestAnimationFrame(() => q.closest("section, .member-group, div")?.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" }));
+  }
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
         !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) {

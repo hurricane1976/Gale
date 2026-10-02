@@ -1583,8 +1583,11 @@ function initNavPulse() {
       if (!pop) { pop = document.createElement("span"); pop.className = "nav-pulse-pop"; pop.setAttribute("aria-hidden", "true"); a.appendChild(pop); }
       const rank = { crit: 0, warn: 1 };
       const top = list.slice().sort((x, y) => (rank[x.sev] ?? 2) - (rank[y.sev] ?? 2)).slice(0, 6);
+      // alert text -> agent name for the deep link ("AM GaleAgentSilent: Brook (...)", "mesa missed ...", "vista overdue ...")
+      const who = (t) => { const m = /Silent:\s*([A-Za-z0-9_-]+)/.exec(t) || /^([a-z][a-z0-9_-]*)\s+(?:missed|overdue|last woke)/i.exec(t); return m ? m[1] : ""; };
       pop.innerHTML = (top.length
-        ? top.map((x) => `<span class="np-row" data-sev="${esc(x.sev)}"><i></i>${esc(x.text)}</span>`).join("")
+        ? top.map((x) => { const w = who(x.text);
+            return `<span class="np-row" data-sev="${esc(x.sev)}"${w ? ` data-agent="${esc(w)}" role="link"` : ""}><i></i>${esc(x.text)}</span>`; }).join("")
         : '<span class="np-row" data-sev="ok"><i></i>No open alerts</span>') +
         (list.length > top.length ? `<span class="np-more">+${list.length - top.length} more · open ops status</span>` : '<span class="np-more">open ops status →</span>');
     } catch {
@@ -1592,6 +1595,12 @@ function initNavPulse() {
       a.querySelector(".nav-pulse-txt").textContent = "offline";
     }
   };
+  a.addEventListener("click", (e) => { // rows deep-link to the agent on the fleet page; the pill itself goes to ops status
+    const row = e.target.closest && e.target.closest(".np-row[data-agent]");
+    if (!row) return;
+    e.preventDefault();
+    location.href = "fleet.html?agent=" + encodeURIComponent(row.dataset.agent);
+  });
   paint();
   setInterval(paint, 60000);
 }

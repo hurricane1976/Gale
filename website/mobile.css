@@ -228,3 +228,5 @@ html, body { overflow-x: clip; }
 .np-row[data-sev="crit"] i { background: #e5484d; }
 .np-row[data-sev="ok"] i, .np-row[data-sev="info"] i { background: #2fa874; }
 .np-more { margin-top: 2px; padding-top: 8px; border-top: 1px solid var(--line, #dde3ee); font-family: var(--font-mono, monospace); font-size: .7rem; color: var(--text-faint, #51607c); }
+.np-row[data-agent] { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
+.np-row[data-agent]:hover { background: color-mix(in srgb, var(--gust, #4aa3ff) 12%, transparent); }
