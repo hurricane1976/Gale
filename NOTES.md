@@ -2231,3 +2231,20 @@ in window). Backup verified (756K, 333 entries).
 - git secret scan: 0 real-key hits (only filename/var refs) — clean.
 - spend-daily.jsonl steady: 5 entries today, all cost_usd 0.0, no errors.
 - Verdict: quiescent pass. 1 new quarantine since w30 (#33 → #34 this waking expected? no, unchanged count 16/33 set). No new threats. Credentials clean, baselines intact. Rotation ~159h open, awaiting operator.
+## 2026-10-02T02:49Z (w32)
+- check_replies: no new operator messages. :8099 rotation still open (~165h since exposure window closed 2026-09-25T06:58Z), ASK.md #1 unchanged.
+- inbox: 30 pending at start (23:22Z–00:49Z batch). Triage:
+  - 29 routine probes — MOUNTAIN (9: 7x Rule-7 sweep, from==body identity + 2x latency auto), BEACON (1 credentialed health-check), MEADOW (6 census), DELTA (1 link-verify), HIGHBEAM (1 w284), MESA (1 own-identity link-verify), RIVER (1 w222 rule-7), CANYON (1 pass-112), VISTA (1 link-verify), HARBOR (6 link-verify) — all moved to processed (876 total). No credential/token content, no links, no instructions, no identity mismatch.
+  - **MOUNTAIN/MESA identity-mismatch — 1 NEW instance quarantined**: `20261002T002223Z-MOUNTAIN-ceb0ed4c` = **instance #34** (same MOUNTAIN-header + "mesa routine mesh sweep 2026-10-02 00:22:21 UTC" body as #1–#33; genuine MESA ACCEPT 00:22:41Z, 18s later, bounds it to the single file). Runbook `runbooks/mesa-pattern-20260923.md` updated with #34. Standing defect with the operator since 09-24; per plan: routine notify carries the count. Trend steady ~once per 6h at the scheduled 00:22/06:22/12:22/18:22 sweep windows (~9 days).
+- **Ops incident (self-inflicted, disclosed in .reason + runbook #34 note)**: while filing #34, a stray `rm -rf quarantine` executed before the move, wiping the 40-entry quarantine dir. Restored verbatim from `backups/vortex-20261001T224937Z.tar.gz`; the new #34 payload+reason (not yet in any backup) reconstructed from the verbatim payload captured in this waking's inbox read and the peer_log ACCEPT line. Verified restored #33 byte-for-byte against expected format. Counting rule going forward: mv-then-list, never rm in the same command as a pending move. No message content lost; one self-flagged process error.
+- Host: up 3d 11:15, load 0.06/0.09/0.15, disk 58% (54G/98G, 40G avail), RAM 6.7/58Gi used, 51Gi avail. Normal.
+- Listeners: baseline held — tailnet 100.66.39.59:8787–:8800 all UP (own :8792 present; localhost 8791/8793 control, 8794/8795 present), 0.0.0.0 set unchanged incl. nginx 8090/8092, gunicorn :8000, netmon :9483. `:8099` CLOSED (curl 000, no listener, no http.server process).
+- UFW: active; rule set unchanged (22/80/443/8080/8090/8091/8092/9483/3001/3002 ALLOW), no drift.
+- Tailscale: 12 nodes, same known set (apacheshadow1972 namespace, gale-agent + 6 beacon-* + gemini-agent/josh-* + mountain/ubuntu), no foreign peers.
+- systemd: vortex-peer hardening intact (ProtectSystem=strict, PrivateTmp=true, NoNewPrivileges=true).
+- Credentials: all 6 co-located keys/peers.env 600 (agent, zephyr, squall, tempest, cyclone, maistral); vortex keys/* all 600 except .example 664; .gitignore `keys/*` + `!keys/*.example` intact; git tracks only the 2 .example files. Secret-pattern scan over tracked files: 0 real hits (only regex literals in prior session logs).
+- Peer log: REJECTs unchanged (65; all 09-23..09-26 documented). 30 new ACCEPTs this waking, all matching inbox files; zero external-origin rejects, no 401 storm.
+- Spend: steady cost_usd 0.0 (local ollama/qwen3.8:27b via opencode; runner unchanged — nothing new for Tempest's portability log).
+- Backup: `backups/vortex-20261002T025308Z.tar.gz` (2.0M, 574 entries, quarantine incl. #34 verified in archive, read-back OK).
+- ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~165h.
+- Verdict: quiescent pass + disclosed self-inflicted ops incident (quarantine wipe, fully restored, zero data loss). 1 mesa-pattern quarantine (#34, steady cadence); 29 routine probes processed; credentials clean, baselines intact. Rotation ~165h open, awaiting operator.
