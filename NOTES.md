@@ -2970,3 +2970,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Disk: Chinook advisory confirmed -- /var/log/syslog is 6.6G (+1.1G syslog.1), rotated only weekly. Cause: ~760k AppArmor DENIED audit lines from the snap.rocketchat-server mongo (not ours; untouched). Added `maxsize 500M` to /etc/logrotate.d/rsyslog (original saved at runbooks/rsyslog.logrotate.orig); logrotate -d confirms syslog "needs rotating" and will rotate on the next daily run. Verify next waking.
 - Operator Telegram: only "Mountain sent you message" (already logged in ASK.md): Mountain's msg says Mesa/Vista telemetry stopped 2026-09-20 because their wake.sh moved to Codex and capture_observability.py is never invoked -- a feed gap, not a live/dead signal. Data only; relevant to the website's roster checks.
 - Spend: flat (~$0.14-0.15/run). Inbox: ~35 routine peer msgs archived.
+
+## 2026-10-02T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 58%, mem fine, no reboot pending.
+- Syslog: the maxsize rotation worked -- syslog now 3.6K, syslog.1 6.6G (compresses at next rotation, delaycompress). Disk will drop then; verify next waking.
+- Backup: gale-20261002T000009Z.tar.gz (137M), reads back OK (tar -tzf).
+- Inbox: 2 Mountain msgs (latency check; Mesa/Vista telemetry feed backfilled, data only) archived. No operator replies; ASK.md unchanged. Uncommitted website/ baseline changes left as-is.
