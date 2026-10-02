@@ -104,6 +104,29 @@ function buildWakeScrub() {
 buildWakeScrub();
 lazyHeartbeat();
 
+/* hovering/focusing an agent chip in the host cards focuses that agent in the 3D map above them */
+(function chipFocus() {
+  const grid = document.querySelector(".host-grid");
+  if (!grid) return;
+  const fire = (name) => window.dispatchEvent(new CustomEvent(name ? "gale:focus-agent" : "gale:focus-clear", { detail: { agent: name } }));
+  grid.addEventListener("mouseover", (e) => { const a = e.target.closest && e.target.closest("a.agent"); if (a) fire(a.textContent.trim()); });
+  grid.addEventListener("focusin", (e) => { const a = e.target.closest && e.target.closest("a.agent"); if (a) fire(a.textContent.trim()); });
+  grid.addEventListener("mouseleave", () => fire(""));
+  grid.addEventListener("focusout", () => fire(""));
+})();
+
+/* live 3D fleet map: load the WebGL module only when the fleet section nears the viewport */
+(function lazyFleet3D() {
+  const sec = document.getElementById("fleet"); // not #home-topo: it is display:none until WebGL opens
+  if (!document.getElementById("home-topo") || !sec || typeof IntersectionObserver !== "function" || REDUCED) return;
+  const io = new IntersectionObserver((es) => {
+    if (!es.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    import("./topology3d.js").then((t) => t.initTopology3D()).catch(() => {});
+  }, { rootMargin: "500px 0px" });
+  io.observe(sec);
+})();
+
 /* ---- §3 live pulse: last 8 mesh events, newest first ---- */
 const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
 

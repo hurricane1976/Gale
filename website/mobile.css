@@ -296,3 +296,4 @@ html, body { overflow-x: clip; }
 /* SVG topology: the agent focused from the nav alert panel (or a 3D click) glows */
 .topo-node.is-focus { filter: drop-shadow(0 0 10px #8ab4f8) drop-shadow(0 0 22px #4d8fe8); }
 .topo-node.is-focus circle { stroke: #fff; stroke-width: 3; }
+#topo-heat .mini-toggle { text-decoration: none; margin: 0; }

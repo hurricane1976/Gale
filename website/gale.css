@@ -1859,3 +1859,10 @@ html[data-saver="1"] .hb-track, html[data-saver="1"] .hb-dot { animation: none; 
 a.agent { text-decoration: none; transition: color .15s ease, border-color .15s ease, background .15s ease, transform .15s ease; }
 a.agent:hover, a.agent:focus-visible { color: var(--text); background: color-mix(in srgb, var(--mc, var(--gust)) 14%, transparent);
   border-color: color-mix(in srgb, var(--mc, var(--gust)) 70%, transparent); transform: translateY(-1px); }
+
+/* home: live 3D fleet map above the host cards (hidden on phones / reduced motion / when WebGL is unavailable) */
+.fleet-3d { position: relative; height: clamp(320px, 46vw, 460px); margin: 6px 0 22px; border-radius: 16px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--gust, #4aa3ff) 30%, var(--line));
+  background: radial-gradient(120% 100% at 50% 0%, #131c33 0%, #070b16 70%); box-shadow: var(--card-shadow); }
+.fleet-3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; touch-action: none; cursor: grab; }
+.fleet-3d:has(#topo-3d-canvas[hidden]) { display: none; }

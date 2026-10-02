@@ -13,12 +13,13 @@
 const NODE_VS = `
 attribute vec3 a_pos;
 attribute vec3 a_color;
+attribute float a_scale;
 uniform mat4 u_mvp;
 uniform float u_size;
 varying vec3 v_color;
 void main() {
   gl_Position = u_mvp * vec4(a_pos, 1.0);
-  gl_PointSize = u_size;
+  gl_PointSize = u_size * a_scale;
   v_color = a_color;
 }`;
 
@@ -109,7 +110,9 @@ export function initTopology3D() {
   // fleet.html's SVG is #topo.fleet-topo-svg since the Tidal-style rebuild; the old
   // ".topo-svg" selector matched nothing, so this init silently returned and the
   // 3D toggle did nothing. Accept either.
-  const svg = document.getElementById("topo") || document.querySelector(".fleet-topo-svg, .topo-svg");
+  // the home page has no SVG: a hidden stub stands in for it and the roster comes from its host cards
+  const svg = document.getElementById("topo") || document.querySelector(".fleet-topo-svg, .topo-svg") ||
+    document.getElementById("topo-home-stub");
   if (!toggle || !canvas || !svg) return;
 
   // roster from the SVG's own markup — one source of truth, zero drift
@@ -121,13 +124,22 @@ export function initTopology3D() {
     const m = (getComputedStyle(probe).color.match(/\d+/g) || [136, 153, 170]).map(Number);
     return [m[0] / 255, m[1] / 255, m[2] / 255];
   };
-  const nodes = [...document.querySelectorAll(".topo-node")].map((g) => ({
+  let nodes = [...document.querySelectorAll(".topo-node")].map((g) => ({
     name: g.dataset.name || "",
     host: g.dataset.host || "",
     model: g.getAttribute("data-model") || "",
     listener: g.getAttribute("data-listener") || "",
     color: resolve(getComputedStyle(g).getPropertyValue("--node-color")),
   }));
+  if (!nodes.length) { // home page: host cards (.host-card > .host-name + .agent chips)
+    nodes = [...document.querySelectorAll(".host-card")].flatMap((card) => {
+      const host = (card.querySelector(".host-name") || {}).textContent || "";
+      return [...card.querySelectorAll(".agent")].map((a) => ({
+        name: a.textContent.trim(), host: host.trim(), model: a.dataset.model || "", listener: "",
+        color: resolve(`var(--m-${a.dataset.model || "claude"}, #8899aa)`),
+      }));
+    });
+  }
   probe.remove();
   if (nodes.length < 2) return;
 
@@ -190,6 +202,8 @@ export function initTopology3D() {
   const flowPos = new Float32Array(edges.length * FLOW_DOTS * 3);
   const flowCol = new Float32Array(edges.length * FLOW_DOTS * 3);
   const ptBuf = gl.createBuffer(), ptColBuf = gl.createBuffer();
+  const scaleBuf = gl.createBuffer();
+  const nodeScale = new Float32Array(N + H).fill(1); // heat modes grow busy/expensive agents (see applyHeat)
   const alertPos = new Float32Array(N * 3), alertCol = new Float32Array(N * 3);
   const flowBuf = gl.createBuffer();
   const flowColBuf = gl.createBuffer();
@@ -264,7 +278,7 @@ export function initTopology3D() {
     el.textContent = `${h || "host"} \u00b7 ${members[i].length}`;
     el.style.cssText = "position:absolute;transform:translate(-50%,0);padding:2px 8px;border-radius:999px;" +
       "font:600 0.7rem var(--font-mono,monospace);letter-spacing:.04em;white-space:nowrap;" +
-      "color:var(--text,#e8eaed);background:rgba(10,16,30,.55);border:1px solid rgba(160,185,230,.25)";
+      "color:#e8eefc;background:rgba(10,16,30,.62);border:1px solid rgba(160,185,230,.3)";
     labelBox.appendChild(el);
     return el;
   });
@@ -340,6 +354,11 @@ export function initTopology3D() {
     const dpr3 = devicePixelRatio || 1;
     const uMode = gl.getUniformLocation(np, "u_mode");
     const uSize = gl.getUniformLocation(np, "u_size");
+    const ns = gl.getAttribLocation(np, "a_scale");
+    gl.bindBuffer(gl.ARRAY_BUFFER, scaleBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, nodeScale, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(ns);
+    gl.vertexAttribPointer(ns, 1, gl.FLOAT, false, 0, 0);
     // halo (additive, gently breathing) then crisp core on top
     const breathe = REDUCED3D ? 1 : 1 + 0.12 * Math.sin(performance.now() / 700);
     gl.blendFunc(gl.ONE, gl.ONE);
@@ -355,7 +374,10 @@ export function initTopology3D() {
     gl.uniform1f(uSize, 16 * dpr3);
     gl.drawArrays(gl.POINTS, N, H);
 
-    // starfield (behind everything it's drawn first in depth terms only visually: tiny dim cores)
+    // everything below (stars, alert halos, focus ring, flow dots) is unscaled: constant a_scale = 1
+    gl.disableVertexAttribArray(ns);
+    gl.vertexAttrib1f(ns, 1);
+    // starfield: tiny dim cores
     const drawPts = (p, c, count, size, mode, additive) => {
       if (!count) return;
       gl.bindBuffer(gl.ARRAY_BUFFER, ptBuf); gl.bufferData(gl.ARRAY_BUFFER, p, gl.DYNAMIC_DRAW);
@@ -574,6 +596,13 @@ export function initTopology3D() {
       });
     }
     colors.set(hubColors, N * 3);
+    // size follows the metric too (0.8x .. 2.0x) so heavy agents read at a glance, not just by hue
+    nodeScale.fill(1);
+    if (layer && heatStats) {
+      const raw2 = nodes.map((n) => { const a = heatStats.get(n.name.toLowerCase()); return a ? (layer.pick(a) || 0) : 0; });
+      const max2 = Math.max(...raw2, 0.0001);
+      raw2.forEach((v, i) => { nodeScale[i] = 0.8 + 1.2 * Math.sqrt(v / max2); });
+    }
     gl.bindBuffer(gl.ARRAY_BUFFER, colBuf);
     gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
   }
@@ -594,8 +623,8 @@ export function initTopology3D() {
   tip.id = "topo-3d-tip";
   tip.hidden = true;
   tip.style.cssText = "position:absolute;z-index:4;pointer-events:none;padding:6px 10px;" +
-    "background:var(--surface,#18213a);border:1px solid var(--line-strong,rgba(160,185,230,.2));" +
-    "border-radius:8px;font-family:var(--font-mono,monospace);font-size:0.72rem;color:var(--text,#e8eaed)";
+    "background:rgba(12,20,38,.94);border:1px solid rgba(160,185,230,.3);" +
+    "border-radius:8px;font-family:var(--font-mono,monospace);font-size:0.72rem;color:#e8eefc";
   canvas.parentElement && canvas.parentElement.appendChild(tip);
 
   // pick nearest node by projected screen distance

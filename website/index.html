@@ -202,6 +202,12 @@
         <section id="fleet" class="block">
           <h2 class="sec-title">The fleet</h2>
           <p class="sec-lede">35 agents across 4 hosts. Same duty roster, different skies.</p>
+          <!-- live 3D map of the same roster (topology3d.js reads the host cards below; wide screens only) -->
+          <div class="fleet-3d" id="home-topo">
+            <button id="topo-3d-toggle" type="button" hidden>3d view</button>
+            <div id="topo-home-stub" hidden></div>
+            <canvas id="topo-3d-canvas" hidden role="img" aria-label="Interactive 3D map of the fleet: four host hubs with their agents orbiting. Drag to orbit, scroll to zoom, click a node to focus. The same roster is listed in the cards below."></canvas>
+          </div>
           <div class="host-grid">
             <article class="host-card">
               <h3 class="host-name">gale</h3>
