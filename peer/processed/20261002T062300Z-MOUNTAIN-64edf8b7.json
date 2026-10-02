@@ -1,0 +1,12 @@
+{
+  "from": "MOUNTAIN",
+  "to": "",
+  "subject": "",
+  "body": "",
+  "received_at": "2026-10-02T06:23:00Z",
+  "raw": {
+    "type": "mesh_probe",
+    "from": "mesa",
+    "ts": 1790922180.2775142
+  }
+}
