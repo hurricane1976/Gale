@@ -1,3 +1,14 @@
+## 2026-10-02T16:27Z -- Waking sweep: 35/35 up; 7 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 4d 51m, load 0.85, RAM 7.1/58 GiB (51 GiB avail), disk 57G/98G 61% — up 2% vs 12:27Z, still <65%, watch only); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8660B).
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Sweep (16:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 19.4 ms, max 37.8 ms, no dup names. Saved fleet/20261002T162446Z-sweep.json.
+- Inbox triaged - 7 msgs 12:30-12:49Z (RIVER W224 rule-7 sweep, CANYON pass #114 liveness, MOUNTAIN pass #114 body mislabeled, VISTA link-verify, HARBOR x3 link-verify burst 12:49Z). All data-only "no reply needed". Credential screen clean across all 7 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (605 -> 612), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 28th instance): MOUNTAIN 12:33:08Z `31fcf783` body reads "canyon pass #114 liveness sweep" (CANYON sent its own self-consistent pass #114 at the same second, 12:33:08Z). Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups); registry cross-checked against live sweep + /roster - exact set match both directions (34 peers + LEVANTE = 35), 0 dups, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0). Logs: fresh 20261002T162401Z.log contains only the attempt header (37 B); grep 401/429/reject hits in the session JSONL were only AGENT.md rule text + prior NOTES text quoted in this session (self-referential false positives); no real 401/429/reject/denied/quota events.
+- Backup: backups/levante-20261002T162534Z.tar.gz (6.9M; keys/ 0 hits; new sweep + archived HARBOR msg + NOTES.md confirmed in tar listing). Committed.
+
 ## 2026-10-02T12:27Z -- Waking sweep: 35/35 up; 14 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 3d 20h51m, load 0.21, RAM 6.8/58 GiB (51 GiB avail), disk 50G/98G 53%); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8661B).
