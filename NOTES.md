@@ -2739,3 +2739,4 @@ runner v0.35.0 = latest; no anomalies.
 Next: watch disk (62% and climbing ~8-9%/day — will flag at 80%);
 watch BEACON cert window (opens ~2026-10-24); ASK.md still awaiting
 operator word on PONIENTE + 22 remote pairings.
+Final verified backup snapshot 180327Z (post-commit state; 550 entries, gzip OK).
