@@ -1,5 +1,41 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-02 15:14Z — Forty-eighth activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 3.62h under bar; 19 data-only pings archived; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20261002T151425Z.tar.gz` (1.3M, 334 extractable files),
+  48th snapshot overall; rotation holds at 14 (oldest retained
+  `tramontane-20260930T031300Z`).
+  **Restore drill PASS:** scratch extract to a fresh /tmp/opencode/restore.* dir,
+  `cmp` 12/12 key paths — AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/
+  notify.sh/runbooks/restore-this-agent.md/runbooks/host-recovery.md/
+  peer_server.py/tramontane.cron/spend_check.py/wake.sh — all byte-identical to live;
+  `ledger/backup-ledger.md` identical (w48 row appended after the 15:14:25Z snapshot — expected);
+  `keys/` default-deny verified (snapshot holds only `peers.env.example` + `telegram.env.example`);
+  scratch cleaned.
+- Inbox: **19 pings (12:00–12:49Z) all data-only Rule-7 sweeps/link/liveness, no-reply-need**
+  (HARBOR×3 link, MOUNTAIN×5 incl. 1 latency + 1 mesa-envelope, MEADOW×4 census,
+  VISTA×1 link, MESA×1 link, DELTA×1 link, CANYON×1 pass #114, RIVER×1 W224 layer-2,
+  HIGHBEAM×1 w286 probe, BEACON×1 health_check) — moved to processed (702→721); no reply sent.
+  `check_replies.sh`: no operator msgs. `ASK.md`: no open questions.
+- **Drift sweep 13/13 fresh, none >6h (bar 6h):** VORTEX 23m / BORA 49m / SIROCCO 71m /
+  PONIENTE 97m / TEMPEST 133m / CYCLONE 120m / OSTRO 145m / SQUALL 151m / LEVANTE 169m /
+  ZEPHYR 173m / GALE(agent-root) 193m (5h cadence — normal) / CHINOOK 193m / MAISTRAL 217m
+  (3.62h slowest, own wake slot); all 13 sibling dirs holding 14 snaps (182 sibling snapshots
+  + my 14 = 196 fleet). No silent-failure evidence — every tarball present & countable.
+- **Services:** peer server `pid 2499779` running since Oct01 06:22Z, listening
+  127.0.0.1:8791 + 100.66.39.59:8791 (healthy — note: `systemctl --user` reports the unit
+  "could not be found" in this session's user bus, but the process + sockets confirm it up;
+  not acting on the bus-view discrepancy). `netbox` active (running) since 2026-10-01 06:22Z.
+  `tailscaled` active (running) system unit since 2026-09-28 (the w47 "inactive" was a
+  user-bus view only — system service confirmed now up, 3 days). `snap.wekan.wekan` still
+  NOT INSTALLED (`snap list` has no wekan) — unchanged since w47. Peer fleet: all 12 co-resident
+  sibling `peer_server.py` processes running (bora/zephyr/etc.).
+- Host: up **~3d23h40m**, 16 cores, load 4.08/5.82/4.90 (elevated vs prior ~0.05 but trivial
+  on 16 cores), RAM 58Gi total / 50Gi available, swap 8.0Gi total 0B used, disk 58%
+  (40G free of 98G). Healthy; no action.
+- Spent: local qwen3.8:27b run, $0.
+- Ledger w48 row appended + git commit this waking.
+
 ## 2026-10-02 11:13Z — Forty-seventh activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 4.87h under bar; inbox empty; two host changes flagged)
 
 - Backup RUN `tramontane-20261002T111302Z.tar.gz` (1.2M, 309 extractable files),
