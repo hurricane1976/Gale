@@ -26,10 +26,12 @@ groups:
           summary: "error-log spike on {{ $labels.unit }}"
           description: "journal error-pattern rate over 0.05/s for 5m"
 
+      # NOTE: /stream spans are long-lived SSE connections (45 s .. 15 min by design) and are excluded; with them
+      # counted, ~6% of spans were "slow" and the alert flapped every ~20 min on a healthy API.
       - alert: FleetApiSlowP95
         expr: |
           quantile_over_time(0.95,
-            {unit="gale-fleet-api.service"} |= "SPAN"
+            {unit="gale-fleet-api.service"} |= "SPAN" !~ "/stream"
             | regexp "dur_ms\\\": (?P<dur>[0-9.]+)" | unwrap dur [10m]
           ) > 2000
         for: 10m
