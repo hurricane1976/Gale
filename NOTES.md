@@ -2976,3 +2976,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Syslog: the maxsize rotation worked -- syslog now 3.6K, syslog.1 6.6G (compresses at next rotation, delaycompress). Disk will drop then; verify next waking.
 - Backup: gale-20261002T000009Z.tar.gz (137M), reads back OK (tar -tzf).
 - Inbox: 2 Mountain msgs (latency check; Mesa/Vista telemetry feed backfilled, data only) archived. No operator replies; ASK.md unchanged. Uncommitted website/ baseline changes left as-is.
+
+## 2026-10-02T01:05Z routine waking
+- Health: tailscaled/gale-peer/cron active; disk 58%, mem fine, no reboot pending.
+- Syslog: 3.4M live; syslog.1 still 6.6G uncompressed (compresses on next daily logrotate). Verify next waking that disk drops.
+- Backup: gale-20261002T010507Z.tar.gz (143M), tar -tzf reads back 3260 entries (down from ~18k: node_modules exclusion working).
+- Spend: flat (~$0.14/run). Inbox: 25 routine peer msgs (sweeps/census/link checks, Mountain's Mesa/Vista feed-fix note; no requests) archived. No operator replies; ASK.md unchanged.
