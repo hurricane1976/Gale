@@ -230,3 +230,52 @@ html, body { overflow-x: clip; }
 .np-more { margin-top: 2px; padding-top: 8px; border-top: 1px solid var(--line, #dde3ee); font-family: var(--font-mono, monospace); font-size: .7rem; color: var(--text-faint, #51607c); }
 .np-row[data-agent] { cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; }
 .np-row[data-agent]:hover { background: color-mix(in srgb, var(--gust, #4aa3ff) 12%, transparent); }
+
+/* ==== print / save-as-PDF: ops pages become a clean, compact report ============================
+   The old rules made every panel break-inside:avoid, so tall panels jumped to a new sheet and left
+   half-empty pages (status.html printed to 16 pages). Panels now flow; only small items stay whole. */
+@media print {
+  @page { margin: 12mm 11mm; }
+  header.site, .fleet-header, .topnav, #gale-dock, #nav-pulse, .nav-pulse, #to-top, .back-to-top,
+  .chip-ack, .skip, .scroll-cue, .freshness, .mini-toggle, .push-bell, #progress { display: none !important; }
+  html, body { background: #fff !important; }
+  body { padding: 0 !important; }
+  .ops-main, .wrap, main { max-width: none !important; padding: 0 !important; margin: 0 !important; }
+  .ops-board, #board:not([hidden]) { display: block !important; }
+  .ops-panel, .card, .reveal {
+    break-inside: auto !important; overflow: visible !important; box-shadow: none !important; border-radius: 6px !important;
+    margin: 0 0 10pt !important; padding: 10pt 12pt !important; background: #fff !important; transform: none !important; opacity: 1 !important;
+  }
+  .panel-title, h2, h3 { break-after: avoid; }
+  tr, .target-card, .hb-card, .stat-card, .vital, gale-stat, .wake-row, .fleet-24h-card, li { break-inside: avoid; }
+  thead { display: table-header-group; }
+  /* the page prints on one light theme regardless of the screen theme */
+  * { text-shadow: none !important; }
+  .grad-text { -webkit-text-fill-color: currentColor !important; background: none !important; color: #111 !important; }
+  .ops-head { border-bottom: 1.5pt solid #111; margin-bottom: 10pt; padding-bottom: 6pt; }
+  .ops-head::after { content: "GALE ops report · printed " attr(data-printed); display: block; margin-top: 4pt;
+    font: 8pt/1.2 var(--font-mono, monospace); color: #444; }
+  /* show where links go: a printed page can't be clicked */
+  .ops-main p a[href^="http"]::after, .lede a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 7pt; color: #555; }
+}
+@media print {
+  body { font-size: 9.5pt !important; line-height: 1.35 !important; }
+  .ops-table th, .ops-table td { padding: 2.5pt 6pt 2.5pt 0 !important; font-size: 8.5pt !important; }
+  .ops-panel, .card { margin-bottom: 7pt !important; padding: 8pt 10pt !important; }
+  .lede, .mini-note { font-size: 8.5pt !important; }
+  h1, .ops-title { font-size: 18pt !important; margin: 4pt 0 !important; }
+  h2, .panel-title { font-size: 11pt !important; margin: 0 0 5pt !important; }
+}
+@media print {
+  /* night hero + dark fleet theme: print as dark-on-white */
+  #storm-scene, .storm-fallback, .storm-vignette, .storm-rays, .storm-scrim, .scroll-cue, .cine-wave, .blob { display: none !important; }
+  .hero-storm .lede, .hero-storm .meta, .hero-storm .meta li, .hero-storm .eyebrow, .hero-storm .hero-title,
+  .hero-storm .hero-title .grad-text { color: #111 !important; -webkit-text-fill-color: #111 !important; background: none !important; }
+  .hero-storm .chips .chip { color: #111 !important; background: #fff !important; border: 0.6pt solid #666 !important; }
+  .hero-storm .hero-inner { padding: 0 0 12pt !important; }
+  #hero.hero-storm { min-height: 0 !important; height: auto !important; }
+  .fleet-main, .fleet-main p, .fleet-main li, .fleet-main span, .fleet-main a, .fleet-main h1, .fleet-main h2, .fleet-main h3,
+  .fleet-main strong, .fleet-main td { color: #111 !important; -webkit-text-fill-color: #111 !important; }
+  .fleet-main a { text-decoration: underline; }
+  .fleet-main .grad-text { background: none !important; }
+}

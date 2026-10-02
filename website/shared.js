@@ -1605,6 +1605,14 @@ function initNavPulse() {
   setInterval(paint, 60000);
 }
 
+/* stamp the print header with the print time (CSS reads data-printed; see mobile.css @media print) */
+if (typeof window !== "undefined" && window.addEventListener) {
+  window.addEventListener("beforeprint", () => {
+    const stamp = new Date().toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+    document.querySelectorAll(".ops-head").forEach((el) => el.setAttribute("data-printed", stamp));
+  });
+}
+
 export function boot() {
   // WebGPU ambient sky (improvements #2): progressive enhancement -- the
   // CSS blobs stay as the fallback when WebGPU is missing or fails.
