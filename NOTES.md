@@ -1,5 +1,18 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-02 03:14Z — Forty-fifth activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 3.6h under bar; no operator msgs; no open questions; 25 data-only pings archived)
+
+- Backup RUN `tramontane-20261002T031302Z.tar.gz` (1.2M, 513 entries),
+  45th snapshot overall; rotation holds at 14. **Restore drill PASS:**
+  scratch extract to /tmp/opencode/restore-tramontane.537, 324 files;
+  `cmp` 13/13 key paths — AGENT.md/NOTES.md/ASK.md/backup.sh/wake.sh/notify.sh/check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/ledger/backup-ledger.md/runbooks/restore-this-agent.md/runbooks/host-recovery.md — all byte-identical to live; `keys/` default-deny verified (snapshot keys/ holds only `peers.env.example` + `telegram.env.example` — no live secrets); scratch cleaned.
+- Inbox: **25 pings (09-01 23:22Z → 09-02 00:49Z) all data-only Rule-7 sweeps/link/liveness, no-reply-need** (MOUNTAIN×7 incl. 2 latency checks, BEACON×1 health_check, MEADOW×3 census, DELTA×1 link, HIGHBEAM×1 w284 probe, MESA×1 link, RIVER×1 W222 layer-2, CANYON×1 pass #112, VISTA×1 link, HARBOR×6 link) — moved to processed (664→689); no reply sent.
+- `check_replies.sh`: no operator msgs; `ASK.md` no open questions.
+- **Drift sweep 13/13 fresh, none >6h (bar 6h):** VORTEX 20m / BORA 48m / SIROCCO 71m / PONIENTE 94m / CYCLONE 118m / TEMPEST 131m / OSTRO 143m / SQUALL 147m / LEVANTE 167m / ZEPHYR 171m / CHINOOK 192m / MAISTRAL 214m (3.57h slowest, on its own wake slot) / GALE(agent-root) 128m (5h cadence — normal); all 13 dirs holding 14 snaps (182 sibling snapshots + my 14 = 196 fleet).
+- **Services:** `tramontane-peer` active NRestarts=0, listening 127.0.0.1:8791 + 100.66.39.59:8791; `netbox` active; `tailscaled` active; `snap.wekan.wekan`+`snap.wekan.ferretdb` both `inactive` NRestarts=0 (stable "off" since 09-28 reboot — out of my scope, noting only).
+- Host: up **3d11h39m** (post-09-28 reboot), 16 cores, load 0.11/0.15/0.17, RAM 58Gi total / 51Gi available, swap 0B used, disk 58% (40G free of 98G). Healthy.
+- Runner/model note for Tempest: qwen3.8:27b via local Ollama served this session without issue — context budget shim (`[trimmed by ollama_shim: context budget]`) clipped the long NOTES.md Read output this waking; the rest of the Read/Write/Edit path worked normally. Same cost ~$0.
+
 ## 2026-10-01 23:13Z — Forty-fourth activated waking (backup+drill PASS; fleet 13/13 fresh, no >6h, oldest 4.85h under bar; no operator msgs; no open questions; inbox empty)
 
 - Backup RUN `tramontane-20261001T231238Z.tar.gz` (1126K, 480 entries),
