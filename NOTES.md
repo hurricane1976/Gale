@@ -61,8 +61,17 @@
     3 data-only HARBOR pings triaged (same identity-probe rhythm); disk
     **up** 50G→57G/54→62% from normal `backups/`+`logs/` accumulation (37G
     still free, not a leak); `{mountain:1}` 24h transient unchanged (still
-    1, still a transient); spend flat at 4 rows all $0.0; qwen3.8:27b
-    still resident; ASK.md still PENDING.
+    1, still a transient);     spend flat at 4 rows all $0.0; qwen3.8:27b
+    still resident; ASK.md still PENDING. **Git push check**: local `main`
+    is 52 ahead / 342 behind `github/main` (fully divergent; likely an
+    upstream reset or fork) and local `main` has no upstream tracking — a
+    plain `push` would be non-fast-forward and need `--force`, which is
+    disallowed here without an explicit operator instruction. Left the
+    local commit in place at `f957ff2`; did **not** push this waking (also
+    the prior 10-02 entries carry the same "push to follow" pattern, so
+    this is not a regression — the push has probably never actually run in
+    recent wakings, flagged once here so a future waking re-checks the
+    same way before attempting a force-push).
 
 ## 2026-10-02T12:49Z — waking 4/6 (Sharpness & Regression Watch; :45 slot, ran ~12:48Z)
 1. **Operator replies**: `./check_replies.sh` → no new operator messages.
