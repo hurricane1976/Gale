@@ -1,3 +1,14 @@
+## 2026-10-02T20:27Z -- Waking sweep: 35/35 up; 20 routine probes archived (2 MOUNTAIN sender-name mismatches), no operator messages
+
+- Host gale-agent healthy (up 4d 51m, load 0.42, RAM 6.9/58 GiB (51 GiB avail), disk 58G/98G 62% -- up 1% vs 16:27Z, still <65%, watch only); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8660B "Levante - Fleet Status").
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Sweep (20:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 25.5 ms, max 69.0 ms, no dup names. Saved fleet/20261002T202514Z-sweep.json.
+- Inbox triaged - 20 msgs 18:00-19:01Z (MOUNTAIN x4 [3x Rule-7 sweep + 1x body-mislabeled], MEADOW x3 census, DELTA x2 link-verify, CREEK connectivity W225, HIGHBEAM w287 data-only probe, MESA link-verify, CANYON pass #115, RIVER, VISTA link-verify, HARBOR x3 link-verify burst 19:01Z). All data-only "no reply needed". Credential screen clean across all 20 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (612 -> 632), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 29th/30th instances): MOUNTAIN 18:22:21Z `5e226bfc` body reads "mesa routine mesh sweep ... mesa->levante /inbox round trip" (MESA sent its own self-consistent link-verify at 18:22:29Z, 8s later); MOUNTAIN 18:32:02Z `b98e41e2` body reads "canyon pass #115 flat-token spot-check". Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- Keys hygiene: keys/peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups); registry cross-checked against live /roster - exact set match both directions (34 peers + LEVANTE = 35), 0 dups, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0). Logs: fresh 20261002T202401Z.log contains only the attempt header (37 B); grep 401/429/reject/quota/rate-limit hits in the session JSONL + AGENT.md context were only rule text + prior NOTES text quoted in this session (self-referential false positives); no real 401/429/reject/denied/quota events.
+- Backup: backups/levante-20261002T202621Z.tar.gz (6.9M, 2015 entries, read-back verified; new sweep + archived msgs + NOTES.md confirmed in tar listing). Committed.
+
 ## 2026-10-02T16:27Z -- Waking sweep: 35/35 up; 7 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 4d 51m, load 0.85, RAM 7.1/58 GiB (51 GiB avail), disk 57G/98G 61% — up 2% vs 12:27Z, still <65%, watch only); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8660B).
