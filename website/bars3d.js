@@ -241,6 +241,19 @@ export function mountBars3D(canvas, opts = {}) {
   canvas.addEventListener("pointerleave", onLeave); canvas.addEventListener("wheel", onWheel, { passive: false });
   const io = typeof IntersectionObserver === "function" ? new IntersectionObserver((es) => { visible = es.some((e) => e.isIntersecting); }, { rootMargin: "100px" }) : null;
   if (io) io.observe(canvas);
+  // keyboard: focus the canvas, arrows orbit, +/- zoom, Home resets (the view is otherwise mouse/touch only)
+  canvas.tabIndex = 0;
+  canvas.addEventListener("keydown", (e) => {
+    const k = e.key;
+    if (k === "ArrowLeft") yaw -= 0.12; else if (k === "ArrowRight") yaw += 0.12;
+    else if (k === "ArrowUp") pitch = Math.min(1.45, pitch + 0.08); else if (k === "ArrowDown") pitch = Math.max(0.08, pitch - 0.08);
+    else if (k === "+" || k === "=") { dist = Math.max(3, dist * 0.9); userDist = true; }
+    else if (k === "-" || k === "_") { dist = Math.min(120, dist * 1.1); userDist = true; }
+    else if (k === "Home") { yaw = opts.yaw ?? 0.5; pitch = opts.pitch ?? 0.5; userDist = false; }
+    else return;
+    e.preventDefault(); lastInteract = performance.now();
+  });
+  canvas.style.outlineOffset = "-3px";
   raf = requestAnimationFrame(frame);
 
   return {

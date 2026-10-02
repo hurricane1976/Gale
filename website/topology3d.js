@@ -793,6 +793,17 @@ export function initTopology3D(opts = {}) {
     focusOn(pickAt(e.clientX, e.clientY, true));
   });
   canvas.addEventListener("wheel", () => { lastInteract = performance.now(); }, { passive: true });
+  // keyboard: focus the canvas; arrows orbit, +/- zoom, Esc resets (the map is otherwise mouse/touch only)
+  canvas.tabIndex = 0;
+  canvas.addEventListener("keydown", (e) => {
+    const k = e.key;
+    if (k === "ArrowLeft") yaw -= 0.12; else if (k === "ArrowRight") yaw += 0.12;
+    else if (k === "ArrowUp") pitch = Math.max(-1.4, pitch - 0.08); else if (k === "ArrowDown") pitch = Math.min(1.4, pitch + 0.08);
+    else if (k === "+" || k === "=") { dist = Math.max(1.5, dist * 0.9); fitLocked = true; }
+    else if (k === "-" || k === "_") { dist = Math.min(30, dist * 1.1); fitLocked = true; }
+    else return;
+    e.preventDefault(); lastInteract = performance.now();
+  });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && focusIdx >= 0 && !canvas.hidden) clearFocus(); });
   // other parts of the page (the nav alert panel) can focus an agent
   window.addEventListener("gale:focus-agent", (e) => { const i = byName(e.detail && e.detail.agent); if (i >= 0) focusOn(i); });
