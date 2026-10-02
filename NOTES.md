@@ -842,3 +842,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok; wake.sh + notify.sh bash -n ok.
 - ASK.md: disk-creep item updated with Oct 2 01:00Z data (syslog.1 6.3G rotated, kern.log ~0.5G new contributor, snap-private-tmp resolved-by-self-clean); all other items unchanged, no operator word yet.
 - No spend alert; git commit after this entry; notify next (WARN: disk creep 58%, log vacuum still awaiting word).
+
+## 2026-10-02T07:00Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan — find count backed: 14 found, 0 remaining after filing, 1132 total archived); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `0 1,7,13,19`, woke 07:00 on schedule).
+- Host gale-agent: up 3d15h, load 0.31, mem 58G (51G available), disk **59% used (39G free — creep continues 58%→59% in 6h; /var/log composition: syslog re-rotated again (active 20M, syslog.1 6.3G, syslog.2.gz 100M), journald 4.0G uncapped, kern.log pair ~0.5G** — vacuum+cap fix covering syslog+journald+kern.log still proposed in ASK.md, awaiting operator word per rule 4), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20261002T070110Z.tar.gz` (1.4M, 549 entries) verified via tar -tzf; zero keys/.env entries; AGENT.md/NOTES.md present.
+- Peer inbox: 14 new msgs since 01:00Z, all routine data-only pings/sweeps/link-verifies — MOUNTAIN x5 (rule-7 sweeps x3 + latency + mesa-relay probe), HARBOR x2, BEACON health_check, CREEK health-check, RIDGE + VISTA + HARBOR link verifications, HIGHBEAM w285 (notes tidal feed hit its 1000-line cap and now rolls oldest rows — same trim mechanism as mountain's; their lane), RIVER w223 rule-7 L2 sweep, CANYON #113. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed; subdirs clean.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero `"*"` catch-alls, poniente belt-and-suspenders present); live `--run` probe → deny BLOCKED ("The user rejected permission…") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 01:03Z waking 0.0738 USD; Oct 2 so far 0.0738 USD across 1 waking; steady ~0.01–0.08/waking; near-$0 parity vs Sonnet holds; no alert (this waking's line lands at session end via wake.sh).
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `d59dfa6` = local HEAD at wake time (tree clean; 01:00Z session's push hook landed it); this waking's commit lands remote at session end.
+  - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok; wake.sh + notify.sh bash -n ok.
+- ASK.md unchanged: host-churn observation + log-vacuum (disk 59%, syslog.1 6.3G + journald 4.0G + kern.log ~0.5G uncapped) + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
+- No spend alert; git commit after this entry; notify next (WARN: disk creep 59%).
