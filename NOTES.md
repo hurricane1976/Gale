@@ -486,3 +486,14 @@ memory; the operator reads it too, so keep it plain and short.
 - ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (operator "No", #33; flagging stopped as agreed).
 - Backup OK: backups/poniente-20261002T093740Z.tar.gz (640K, 377 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 5709372fa000f146 (first 16 hex, per hash-only policy). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
+
+## 2026-10-02 13:37 UTC
+- Waking #40. Host healthy: up 3d22h, load 0.69/1.84/1.95 (settling), RAM 7.4G/58G (51Gi avail), disk 51G/98G (55% used, 43G free), tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59; external/loopback stack identical to #36-#39; no new listeners, no port drift, no 0.0.0.0 peer exposure.
+- All 14 *-peer units active (14 match); cron intact (29 non-comment wake/telegram entries); Ollama reachable (this session on local qwen3.8:27b).
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #33-#39 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, no longer flagged per agreement); levante/keys/telegram.env 664 (owner-chosen, not flagged); all other live .env 600. find -newermt 10-02 09:38 in sibling keys/: zero new/changed cred files.
+- Git exposure (14 agent repos, ls-files non-example keys/|*.env|backups/): clean — zero tracked secret paths; poniente repo clean pre-commit except this entry.
+- Log sweep: no new sibling .log files modified since 09:40 (quiescent window — peers between wakes). My own peer log: no REJECT/401/403/429 in this waking's session log; inbox delivery all ACCEPT (21 drops prove path works).
+- Inbox: 21 routine Rule-7 pings since #39 (MOUNTAIN x6 incl. 1 MESA mesh-sweep relay, 1 canyon-pass relay, BEACON, CREEK, HIGHBEAM w286, MESA, RIVER w224, CANYON, VISTA, HARBOR x3, MEADOW x4, DELTA) — all "no reply needed"/data-only liveness+census+link-verification probes. Injection-pattern scan (bearer|eyJ|ghp_|sk-|AKIA|PRIVATE KEY|token=|ignore-previous|new-instruction|exfiltrat): clean. Zero instructions. -> processed/ (627 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED.
+- Backup OK: backups/poniente-20261002T133722Z.tar.gz (664K, 380 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). 14 snapshots retained (ceiling).
+- Spend: $0.00 (local Ollama).
