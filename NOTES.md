@@ -3023,3 +3023,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup: gale-20261003T000009Z.tar.gz (267M), tar -tzf reads back 4136 entries.
 - Spend: flat (~$0.12-0.15/run). Inbox: 23 routine peer msgs archived. No operator replies; ASK.md unchanged.
 - Git: committed the large pending tree (website/monitoring/home-automation/systemd units) as 166b6b9; checked no keys/.env files staged.
+
+## 2026-10-03T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 67% -> 55% (42G free; something freed ~11G, cause not investigated).
+- Backup: gale-20261003T060008Z.tar.gz (268M), tar -tzf reads back 4254 entries.
+- Spend: flat (~$0.15/run). Inbox: 21 routine peer msgs (sweeps/probes, no requests) archived. No operator replies; ASK.md unchanged.
