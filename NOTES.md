@@ -2511,3 +2511,18 @@ in window). Backup verified (756K, 333 entries).
   - **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~204h (~8d 12h) since exposure window closed (2026-09-25T06:58Z), no operator reply. The `peers.env.bak-*` + `github_deploy_key` + `telegram.env` remain 600 and locally-only, but rotation is the only durable fix and is still blocked on operator action.
   - **Verdict**: quiescent pass with 1 mesa-pattern quarantine (#41, plaintext variant; 10-03 full-day cadence 00:22/06:22/12:22/18:22 all hit, next window 10-04 00:22Z). 18 routine probes processed. Credentials clean, baselines intact, :8099 still closed, no external rejects. Rotation ~204h (~8d 12h) open, awaiting operator.
 
+## 2026-10-03T22:48Z — w43 scheduled waking (22:48 slot)
+  - **Operator replies**: none (`./check_replies.sh`: no new operator messages this waking). ASK.md #1 STILL OPEN.
+  - **Inbox threat-watch**: **0 pending** since w42 (inbox/ + pulsar/ + vortex/ all empty; last activity 18:46:32Z HARBOR link-verify, processed in w42). No mesa-pattern sweep yet for the 22:22 window (next scheduled 10-04 00:22Z). Quarantine holds at **41 instances** (`peer/inbox/quarantine/` 24 .json + .reason pairs on disk since 09-23; nothing new this window).
+  - **Host**: up 5d 7h, load 0.89/0.68/0.65, disk 59% (55G/98G, 39G avail), RAM 8.0/58Gi (50Gi available) — normal, no spike.
+  - **Listeners**: baseline held — tailnet 100.66.39.59:8787–8800 UP (own :8792 present), 0.0.0.0 and 127.0.0.x sets unchanged. **`:8099` CLOSED** (curl HTTP 000, no `http.server` process) — re-confirmed. No new unexpected listeners.
+  - **UFW**: active (full rule set read via `sudo -n ufw status`; OpenSSH/80/443/8080/8090/8091/8092/9483/3001/3002/8123(tailnet+LAN) — no drift vs prior wakings).
+  - **Tailscale**: 12 online/known nodes — same known set (gale-agent, beacon-* ×6, gemini-agent, josh-iphone18, josh-linux, mountain-agent, ubuntu-agent), no foreign peers.
+  - **systemd**: vortex-peer active; ProtectSystem=strict, PrivateTmp=yes, NoNewPrivileges=yes intact.
+  - **Credentials** (read-only): every non-example `keys/*` 600 re-confirmed (incl. all `peers.env.bak-*` + `telegram.env`). `.gitignore` `keys/*` + `!keys/*.example` intact. Secret-pattern scan (ghp_/ghs_/github_pat_/AKIA/xox*/PRIVATE KEY) over non-backup files: only hits are this runbook-series' own scan-description transcripts in `./logs/*.json` session logs — **0 live-secret hits**. Clean.
+  - **Peer log**: **0 new ACCEPT/REJECT events since w42** (last ACCEPT 18:46:32Z HARBOR; REJECT total still 65, all self-origin 09-25..09-26 documented events). Zero external-origin rejects, zero 401s.
+  - **Backup**: `backups/vortex-20261003T225321Z.tar.gz` (2.7M, 662 entries, final snapshot taken after this entry lands; `tar -tzf` OK — keys/ contains only `peers.env.example` + `telegram.env.example`, 0 live-secret material; NOTES.md tail read-back OK).
+  - **Git**: committing this w43 entry (inbox/quarantine artifacts live on disk + backup, git-ignored under `peer/inbox/*` and `peer/logs/`, consistent with prior wakings).
+  - **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~208h (~8d 16h) since exposure window closed (2026-09-25T06:58Z), no operator reply. The `peers.env.bak-*` + `github_deploy_key` + `telegram.env` remain 600 and locally-only; rotation is the only durable fix and is still blocked on operator action.
+  - **Verdict**: fully quiescent pass — 0 pending, 0 new quarantines (mesa count holds #41; next sweep window 10-04 00:22Z), host/listeners/UFW/tailscale/systemd baselines all intact, credentials clean, :8099 still closed, no external rejects. Rotation ~208h (~8d 16h) open, awaiting operator.
+
