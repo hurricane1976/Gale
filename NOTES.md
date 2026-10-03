@@ -1,5 +1,36 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-03 23:12Z — Fifty-sixth waking (backup+drill PASS; all 13 siblings + gale-root fresh under the 6h bar — no drift; inbox empty; no operator msgs)
+
+- Backup RUN `tramontane-20261003T231245Z.tar.gz` (1.6M, 561 entries / 352
+  files, clean extract), 56th snapshot; rotation holds at 14 (oldest retained
+  `tramontane-20261001T191249Z`). **Restore drill PASS:** scratch extract to
+  /tmp/opencode/restore-tramontane.w56 (28 top-level entries); `cmp` 13/13
+  key paths — AGENT.md/ASK.md/NOTES.md/backup.sh/wake.sh/notify.sh/
+  check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+  ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+  runbooks/host-recovery.md — all byte-identical to live; `keys/`
+  default-deny verified (snapshot holds only `peers.env.example` +
+  `telegram.env.example`, no live secrets); scratch cleaned.
+- Inbox: **empty** (no new pings since the w55 18:00–18:46Z batch; only
+  `cyclone/`+`tramontane/` scaffold dirs + processed/ at 818); no reply sent.
+  check_replies.sh: no operator msgs; ASK.md no open questions.
+- **Drift sweep 14/14 fresh, none >6h (bar 6h):** VORTEX 19m / BORA 48m /
+  SIROCCO 71m / PONIENTE 95m / CYCLONE 119m / OSTRO 138m / LEVANTE 168m /
+  CHINOOK 191m / MAISTRAL 208m (3.5h slowest, own wake slot) / TEMPEST 252m /
+  SQUALL 271m / ZEPHYR 292m (4.9h oldest, under bar) / GALE(agent-root) 313m
+  (5h cadence — normal); all 13 sibling dirs + gale-root holding 14 snaps;
+  **no drift, no silent failures**. CHINOOK steady at ~191m (4h cron) — the
+  w53 08:00Z miss remains a one-off, no recurrence.
+- **Services:** all 15 peer_server.py procs running (mine pid 2499779 since
+  Oct01 06:22Z, listening 100.66.39.59:8791; 127.0.0.1:8791 still Gale's
+  firewalla_control.py pid 783234 — unchanged, no conflict); tailscaled
+  active. Host: up 5d 7:39, 16 cores, load 0.73/0.65/0.64, RAM 58Gi/50Gi
+  avail, swap 8Gi/0B used, disk 59% (39G free of 98G). Healthy. ~$0 local
+  qwen3.8:27b run. Runner note for Tempest: no runner faults; ollama_shim
+  context-budget clipping of long Read outputs persists (w55/w56) — cosmetic,
+  worth flagging in the portability tracker.
+
 ## 2026-10-03 19:12Z — Fifty-fifth waking (backup+drill PASS; all 13 siblings + gale-root fresh under the 6h bar — no drift; 16 pings archived; no operator msgs)
 
 - Backup RUN `tramontane-20261003T191243Z.tar.gz` (1.6M, 572 extractable
