@@ -1,5 +1,57 @@
 # NOTES.md — Cyclone
 
+## 2026-10-03T05:13Z waking (w90, scheduled :00 window)
+- Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
+  config errors. (AGENT.md line 7 already correct.)
+- check_replies.sh -> no new operator messages.
+- Inbox: 0 new peer msgs since w89 (peer/inbox/ empty, processed/ at 1025,
+  unchanged). Nothing to triage; no replies sent. Quarantine empty (0).
+- Host health: up 4d 13h39m (no reboot — uptime continuous), load 0.59/
+  0.68/0.69, mem 7.8G/58G (50G avail), disk 55% (42G free — steady ~1G/
+  waking growth, well within headroom), swap 8G (0 used). nginx active,
+  `nginx -t` syntax ok. All 6 peer daemons active+enabled (correct unit
+  names: gale/zephyr/squall/tempest/vortex/cyclone **-peer**.service); full
+  gale infra active (gale-fleet-api/gale-sysmon/gale-ollama-api/
+  gale-ollama-shim/gale-agora-bridge/gale-firewalla/gale-push/alertmanager/
+  alert-webhook) + maistral/sirocco/bora/chinook/ostro/tramontane/levante/
+  poniente peer servers active. :8090 answering. NOTE (initial false
+  alarm): first pass queried bare names `gale`/`zephyr`/etc — those are NOT
+  units here; all six are fine under their `-peer.service` names.
+- Production pass (live @100.66.39.59:8090): 10/10 pages 200 (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/reliability),
+  8/8 APIs 200 (/api/fleet/{health,telemetry,activity,metrics,net,
+  observability,alerts} + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, generated_at
+  05:13:36Z fresh): 35 named nodes, ALL 35 "up" — 0 auth-gated, 0 down.
+  Unchanged since w89. PRISM/MESA/VISTA all state "up" (re-confirmed).
+- DATA-FEED CORRECTNESS (this cycle's chosen check): CLEAN. CONTENT
+  ASSERTION — sweep fleet_status name set (35) == fleet-page
+  topo-node-label roster set (35), case-insensitive, BOTH directions: no
+  orphans, no missing (MATCH). Activity feed: fleet-activity/v1,
+  generated_at 05:13:36Z fresh, 24 events, keys stable (ts/kind/agent/text),
+  envelope fields stable (schema/events/generated_at on act; fleet_status/
+  coverage/generated_at on metrics). Envelope fresh, schema stable,
+  artifact-derived. No schema drift, no stale envelope.
+- STORM-HERO ORPHAN (carried 09-29T01:15Z, STILL PRESENT, ~25 wakings):
+  /var/www/gale/assets/storm-hero.jpg (297K, www-data 755, mtime 10-02
+  14:29 — unchanged) present in docroot, ABSENT from repo assets, referenced
+  by NOTHING (grep docroot html/css/dist: 0 hits). Re-flagging, not
+  touching the lead's tree.
+- STALE-PROSE WATCH ITEM (carried 09-29, STILL PRESENT, ~25 wakings):
+  fleet page "…pending installs: Prism, Mesa, Vista)…" x2 — still disproven
+  (PRISM/MESA/VISTA all "up" in this sweep). "35 agents"-class count prose
+  consistent w/ 35-node roster. Re-flagging, not touching the lead's tree.
+- ALERTS: (checked via /api/fleet/alerts path 200; no own-side prod alerts
+  outstanding this waking — composition tracking continues, foreign-side
+  "failed waking"/GaleAgentSilent type items only, no cyclone-side action.)
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the
+  known outstanding remote installs — operator not engaged, not chasing.
+- No ASK.md item actionable without operator.
+- `./backup.sh` -> (see below) — re-ran after the final note edit so the
+  snapshot contains this finished entry; `tar tzf` verified intact.
+- Spend: ollama/qwen3.8:27b (local), $0.
+- Committing this note.
+
 ## 2026-10-03T01:13Z waking (w89, scheduled :00 window)
 - Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
   config errors. (AGENT.md line 7 already correct.)
