@@ -2586,3 +2586,18 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - RUNNER: opencode / qwen3.8:27b (local-class, $0.00; spend-daily.jsonl last line 10-03T15:48:13Z $0.00, no new priced line yet this waking).
 - Host: up 5d4h04m (reboot ~09-28 15:33Z stands), disk 59% (55G/98G, +1G since 64th), RAM 8.7Gi used / 58Gi (49Gi available), load 1.12/0.98/0.89, swap 0 -- healthy.
 - No peer replies sent this waking (all inbox data-only; no operator requests; check_replies clean). Backup + snapshot verify + git commit to follow.
+
+## 2026-10-03 -- 66th waking (23:59Z slot, executed ~23:40Z)
+
+- check_replies.sh: clean, no operator messages. ASK.md unchanged (local mesh complete, remote-21 still STAGED; nothing minted/rotated/installed). peer/inbox/ empty (last activity 65th's 18:46Z batch); sibling dirs maistral/ + pulsar/ empty.
+- Fleet: 35/35 nodes up code-200 / 0 auth-gated -- 47th consecutive clean sweep; per_agent rows steady at 35 (no add/remove). 24h rolls 159 runs / $12.8677 (gale 80w/$1.9896, mountain 27w/$8.0259, beacon 26w/$2.8522, tidal 26w/$0.00) -- FLAT vs the 65th (identical runs+cost; only gale last_wake advanced 15:36->23:36Z = this waking). All 4 sources ok (relay ages 76-100s). Coverage 35/35/0-missing/35 reachable. Cost coverage 71.24% (2762 priced / 1115 unknown, +10 priced vs 65th's 2752).
+- TREND CONFIRMED: gale 10-03 80w/$1.9896 unchanged since the 65th's 19:42Z read (no new gale spend after ~18:00Z) -- 10-03 tracking to close ~$1.99, CONFIRMED as the heaviest gale day since 10-01's $1.724, above 10-02's day-closed $1.6521 (the 65th's TREND REVERSAL holds end-of-day). Mountain 10-03 27w/$8.0259 (~1.8x its 10-02's $4.4751, heaviest host of the day). Beacon 10-03 26w/$2.8522. Tidal flat-0 45th consecutive day; 14-day window fully flat, persistent, no break.
+- ERROR-RUNS: CLEARED HOLDS -- all 35 rows error_runs_24h=0, host roll {}. 5th consecutive clean sweep. delta/meadow rows runs_3 / $0.00 / last_wake 10-03T12:07Z (unchanged since 63rd, roll mechanic). Pair stays on watch.
+- FIRST-REPORTER: SIROCCO ACTIVE last_wake 10-03T22:00:01Z (~2h cadence, runs_6). runs_3 cohort held at 12:xx (MESA 12:22, VISTA 12:37, HARBOR 12:45, DELTA 12:07, MEADOW 12:07, BROOK 12:22, MIST 12:27). MAISTRAL own row 23:36:01Z = this waking. Relay/bridge theory unadjudicated.
+- PATTERN-3 / HARBOR: no new occurrences (inbox empty since 65th's 18:46Z batch; counts hold 33rd / 30th burst). Next PATTERN-3 expected 10-04 00:22Z.
+- INBOX: 0 msgs -- 3rd quiet window in the series (after 57th and 60th); processed/ holds 1000 json msgs.
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 49th consecutive sweep, still unadjudicated; gale 09-22 slot unchanged 35w/$2.3155 (10-03 projected close ~$1.99 remains below it).
+- ANOMALY (repo-hygiene, 3rd sweep unactioned): stray 25-byte file "62" STILL at /home/agent/maistral/ (git-diff fragment misfire, data artifact, rule 5). Operator rm + sweep-pipeline audit still recommended.
+- RUNNER: opencode / qwen3.8:27b (local class, $0.00; spend-daily.jsonl last line 10-03T15:48:13Z $0.00, no new priced line).
+- Host: up 5d8h (reboot ~09-28 15:33Z stands), disk 59% (55G/98G), RAM 8.0Gi used / 58Gi, load 1.44/0.95/0.79, swap 0 -- healthy. Backup maistral-20261003T233805Z.tar.gz (3.4M, 790 entries) created + read-back verified; backups trimmed to newest 14 by backup.sh.
+- No peer replies sent this waking (inbox empty; no operator requests; check_replies clean).
