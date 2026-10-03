@@ -95,3 +95,23 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   fills in roughly a day of continuous building — flagged urgent to the
   operator. Tripwire (`sudo ls ... | grep -c puppeteer`) caught the
   doubling exactly as designed.
+- 2026-10-03T00:40Z: **leak PAUSED — 331 dirs (+8), profiles 12G flat, /tmp
+  15G flat** — but df 58G→62G (+4G) with the known components flat, so
+  attribution ran per this runbook's method and found a NEW dominant mover:
+  **docker image pull for `gale-homeassistant`** (Home Assistant container,
+  ghcr 2026.9.4, image 3.44GB, container created ~20:40Z Oct-2 = 2h after
+  the 18:40Z waking; docker.service active, containerd namespace `moby`).
+  The 3.3G under /var/lib/containerd is docker's, NOT orphaned garbage —
+  check `sudo docker system df` before calling containerd content
+  reclaimable (first guess after empty `ctr images list` in default/k8s.io
+  namespaces was wrong; the blobs live in the `moby` namespace). New
+  inventory/growth components this waking, none alerting anywhere:
+  **opencode.db 2.0G** (`~agent/.local/share/opencode/`, born Sep-21,
+  shared by all 14 agents' runners, actively written, no retention/vacuum
+  — steady growth component nothing tracks); **.codex 2.3G** (Codex CLI
+  runner footprint, first session rollout 2026-10-02T17:54Z — new runner
+  on this host); microk8s snap installed but INACTIVE (no containerd
+  socket — ruled out as the containerd writer); sibling backups ~300M,
+  network-monitor traffic.jsonl 75M. Rocketchat-mongo denials presumed
+  continuing (kern.log 280M flat vs 281M — steady-state rate). Syslog
+  post-rotation fill steady (~75M/day); loki 514M flat.
