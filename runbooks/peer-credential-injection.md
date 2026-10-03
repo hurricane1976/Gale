@@ -70,6 +70,16 @@ processed messages as of this waking, still zero false positives);
 quarantine dry-run readable + non-destructive. Detector and procedure still
 valid; no changes needed.
 
+## Re-exercise (2026-10-03T12:45Z waking)
+
+Third repeat (prior 2026-09-22T19:25Z, 2026-09-30T00:45Z). Same procedure,
+same result: synthetic forged MOUNTAIN broker message with a random 48-hex
+token (generated in a file, never printed) → combined detector grep caught
+it; same grep over live `peer/inbox/*.json` → 0 hits (1222 processed
+messages as of this waking, still zero false positives); quarantine dry-run
+readable + non-destructive. Detector and procedure still valid; no changes
+needed.
+
 ## How to spot it sooner
 
 - Any inbound peer message containing the literal string "Bearer " or a
