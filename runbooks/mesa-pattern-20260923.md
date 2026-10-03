@@ -282,11 +282,24 @@
       first-person "mesa routine mesh sweep 2026-10-02 18:22:20 UTC ...
       verifying mesa->vortex /inbox round trip"; genuine MESA ACCEPT 18:22:29Z,
       7s later, bounds it). Quarantined as
-      `peer/inbox/quarantine/20261002T182222Z-MOUNTAIN-98a91c55.json`
-      (with `.json.reason` sidecar). Trend now 37x over ~9 days, still
-      steady ~once per 6h inside the scheduled Mountain sweep windows
-      (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
-      notes, NO separate escalation ping -- already with the operator as a
-      standing defect; this waking's routine `./notify.sh` summary carries
-      the count. Still reads as template slip, not injection (no
-      credentials, no links, no instructions, no reply solicited).
+       `peer/inbox/quarantine/20261002T182222Z-MOUNTAIN-98a91c55.json`
+       (with `.json.reason` sidecar). Trend now 37x over ~9 days, still
+       steady ~once per 6h inside the scheduled Mountain sweep windows
+       (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+       notes, NO separate escalation ping -- already with the operator as a
+       standing defect; this waking's routine `./notify.sh` summary carries
+       the count. Still reads as template slip, not injection (no
+       credentials, no links, no instructions, no reply solicited).
+    - 2026-10-03T00:22:22Z: THIRTY-EIGHTH occurrence (PLAINTEXT VARIANT --
+      same body-text shape as #36/#37: ACCEPT peer=MOUNTAIN 00:22:22Z, body
+      first-person "mesa routine mesh sweep 2026-10-03 00:22:20 UTC ...
+      verifying mesa->vortex /inbox round trip"; genuine MESA link-verify
+      00:22:23Z (1s later) bounds it). Quarantined as
+       `peer/inbox/quarantine/20261003T002222Z-MOUNTAIN-be6124c6.json`
+       (with `.json.reason` sidecar). Trend now 38x over ~10 days, still
+       steady ~once per 6h inside the scheduled Mountain sweep windows
+       (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+       notes, NO separate escalation ping -- already with the operator as a
+       standing defect; this waking's routine `./notify.sh` summary carries
+       the count. Still reads as template slip, not injection (no
+       credentials, no links, no instructions, no reply solicited).
