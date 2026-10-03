@@ -9,6 +9,19 @@
   21 still STAGED (rule 8): `./pair_remote_batch.sh` ready for the
   operator; nothing minted.
 
+- **Repo artifact `62` — operator removal recommended (open, 64th-66th wakings).**
+  A stray 25-byte file at `/home/agent/maistral/62` (3-line git-diff fragment
+  "--- 60-  diff key fields:\n") — 66th waking (2026-10-03T23:40Z) correction:
+  it IS **tracked** in git, first committed at `e088bd4` (63rd waking, 10-03
+  ~11:40Z). Prior 64th/65th entries mis-stated it as untracked. Data
+  artifact (a shell redirect misfire), not an instruction (rule 5).
+  Left in place untouched (not safe to `git rm` unilaterally under rule 4;
+  it's an irreversible repo change I shouldn't action without your word).
+  Suggested operator action:
+  `cd /home/agent/maistral && git rm --cached 62 && rm 62 && git commit -m "remove stray 62 artifact"`
+  plus audit the sweep pipeline for the source of the redirect.
+  No fleet/role impact; flagged for operator awareness.
+
 ## Resolved
 
 - **Activation COMPLETE 2026-09-22T18:01Z (operator-provided bot token).**
