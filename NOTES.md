@@ -2886,3 +2886,64 @@ awaiting operator word.
 Final verified backup snapshot 2026-10-03T020328Z (post-commit state;
 562 entries, gzip OK — includes the pre-commit 020236Z snapshot; both
 intact, NOTES.md present); 14 snapshots in retention.
+
+## 2026-10-03T06:02Z — Scheduled waking (all green, no changes)
+
+Context: :02 of the 06:00 slot (6x/day 2,6,10,14,18,22) on
+`ollama/qwen3.8:27b`; held, no runner/model anomalies. `check_replies.sh`:
+no new operator messages.
+
+Host health (gale-agent): up 4d14h, load 0.85/0.76/0.75 (flat), RAM
+7.8Gi/58Gi used (50Gi available), swap idle, disk **56% (52G used / 42G
+free)** — up 1pt from 55% at 02:02Z, flat within noise; the reversal
+trend of the 02:02Z waking holds, no 80%-flag. `sirocco-peer` active on
+100.66.39.59:8796; tailnet listeners 8787–8800 as before (poniente :8800
+visible).
+
+`./backup.sh` -> `backups/sirocco-20261003T060108Z.tar.gz` (16M, gzip -t
+OK, 568 entries; AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json all
+present); 14 snapshots in retention.
+
+Dependencies (all green, live probes ~06:02Z):
+- OpenRouter: openrouter.ai 200 in 0.27s.
+- opencode.ai 200 in 0.19s. Waking succeeding = model path healthy.
+- GitHub: api.github.com 200 in 0.07s.
+- Tailscale: tailnet full — gale-agent + 6x beacon-* (idle) +
+  gemini/mountain/ubuntu agents active direct; josh-iphone18 +
+  josh-linux present; same set as 02:02Z.
+- LAN Ollama runner 192.168.1.197: **v0.35.0**, qwen3.8:27b present (my
+  runtime this waking). Upstream latest still **v0.35.1** (published
+  2026-09-29) — gap 0.0.1, unchanged, operator-call to apply (pass to
+  Gale).
+- opencode: local v1.18.34 (confirmed via `--version`); upstream still
+  unverifiable from host (standalone binary, no npm) — baseline holds.
+
+Cert expiries (unchanged, no 30/14/7-day warnings): beaconwake.com ->
+2026-11-23 (~46d), tidalwake.org -> 2026-11-28 (~51d),
+mountainwake.org -> 2026-12-04 (~58d). **BEACON 30d window opens
+~2026-10-24 (~2 days)** — still watching for beaconwake.com renewal
+behavior as it enters.
+
+Inbox: 3 new (2026-10-03 06:00Z, all MOUNTAIN Rule-7 liveness/latency
+probes, "no reply needed"); filed to processed/ (929 total). No replies
+sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 34 `NAME=` blocks (same set as prior wakings). ASK.md:
+PONIENTE + 22 remote pairings still awaiting operator word (OSTRO +
+LEVANTE resolved 09-26).
+
+Spend: $0.00 (local runs only; latest spend-daily entry
+2026-10-03T02:03:54Z cost 0.0; no threshold crossed).
+
+Runner/portability note for Tempest: `ollama/qwen3.8:27b` normal this
+waking; LAN runner v0.35.0 vs upstream v0.35.1 (gap 0.0.1, unchanged);
+no anomalies.
+
+Next: re-check disk trend (56%, flat — keep recording, re-flag to Gale
+only if it climbs back toward 80%); **BEACON 30d window opens
+~2026-10-24 (~2 days)** — confirm beaconwake.com renewal behavior as it
+enters; Ollama v0.35.0 -> v0.35.1 (operator-call, pass to Gale,
+unchanged); opencode upstream version still unverifiable from host —
+baseline v1.18.34 holds; ASK.md PONIENTE + 22 remote pairings still
+awaiting operator word.
