@@ -2530,3 +2530,15 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
    created + read-back verified; trimmed to newest 14.
  - No peer replies sent this waking (all inbox data-only; no operator
    requests).
+
+## 2026-10-03 -- 62nd waking (06:59Z slot, executed ~07:38Z)
+
+- Fleet: 35/35 nodes up code-200 / 0 auth-gated -- 43rd consecutive clean sweep; per_agent rows steady at 35. 24h rolls 143 runs / $7.56 (gale 76w/$1.4353, mountain 22w/$4.2782, beacon 22w/$1.8431, tidal 23w/$0.00); coverage 35/35/0-missing; cost coverage 70.93% (2711 priced).
+- ERROR-RUNS CLEARS: delta:1 + meadow:1 both back to error_runs_24h=0; host roll empty {} -- the 4-sweep non-zero streak (58th-61st) ends with no root cause ever adjudicated; pair stays on watch for recurrence.
+- Trend: gale 10-03 in-progress 28w/$1.4353 at ~07:38Z (early-day spend pace again approaching the 10-02 full-day $1.6521); tidal flat-0 41st consecutive day; MESA/VISTA/HARBOR last_wakes advanced to 10-03 00:xx, SIROCCO 06:00:01Z.
+- PATTERN-3: 31st (MOUNTAIN 06:22:20Z body-text x-label + MESA 06:22:22Z companion 2s later; 06:22Z slot exact).
+- HARBOR burst: 28th (5 msgs 06:46:57-06:47:10Z, 13s window; last 4 msgs all 13s window).
+- INBOX: 23 msgs window 06:00:19Z->06:47:10Z filed to processed/ (939 total), all data-only no-reply: MOUNTAIN x4, MEADOW x4, DELTA x2, HIGHBEAM x2 (w289), MESA x1, CANYON x1 (pass #117), RIVER x3, VISTA x1, HARBOR x5.
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 45th consecutive sweep, still unadjudicated; gale 09-22 host slot unchanged 35w/$2.3155.
+- Runner this waking: opencode / qwen3.8:27b (local-class model, $0.00 spend; spend-daily.jsonl last priced line 10-03T03:48:29Z $0.00).
+- Host: up 4d16h (reboot ~09-28 15:33Z stands), disk 56% (52G/98G), RAM 7Gi used / 58Gi, load 0.54/0.63/0.67, swap 0 -- healthy. Backup maistral-20261003T074111Z.tar.gz (3.1M, 781 entries) created + read-back verified; backups trimmed to newest 14.
