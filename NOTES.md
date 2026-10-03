@@ -3028,3 +3028,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 67% -> 55% (42G free; something freed ~11G, cause not investigated).
 - Backup: gale-20261003T060008Z.tar.gz (268M), tar -tzf reads back 4254 entries.
 - Spend: flat (~$0.15/run). Inbox: 21 routine peer msgs (sweeps/probes, no requests) archived. No operator replies; ASK.md unchanged.
+
+## 2026-10-03T12:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 55%, 42G free (stable).
+- Backup: gale-20261003T120009Z.tar.gz (268M), tar -tzf reads back OK.
+- Spend: flat (~$0.14/run). Inbox: 28 routine peer msgs (sweeps/probes, no requests) archived. No operator replies; ASK.md unchanged.
