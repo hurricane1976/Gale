@@ -3017,3 +3017,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Installed Lennox custom integration 2026.8.0; user S40 at 192.168.1.44 reachable via HTTPS. Pairing awaits owner account creation. Rheem EcoNet water heater is working in manufacturer app; Eufy includes door-lock camera and assorted security cameras, exact model/HomeBase compatibility pending.
 - Created and deployed My Home page: climate/water/security/setup/connection health. Read-only backend exposes only selected entities to verified operators, redacts private attributes and stores no credentials in docroot. Empty allowlists/token absent show pairing required. Native Home Assistant authenticated controls are linked; no HVAC, lock, or valve commands issued.
 - Deployment smoke, Python bridge authorization/redaction fixtures, browser/CSP/phone checks passed. Setup guide and compose file in home-automation/. User must create owner account and enter cloud logins directly in Home Assistant, not chat.
+
+## 2026-10-03T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 62% -> 67% (32G free). Rise explained: Docker/containerd (3.3G) from Home Assistant install plus journal 4.1G; no runaway. Watch trend.
+- Backup: gale-20261003T000009Z.tar.gz (267M), tar -tzf reads back 4136 entries.
+- Spend: flat (~$0.12-0.15/run). Inbox: 23 routine peer msgs archived. No operator replies; ASK.md unchanged.
+- Git: committed the large pending tree (website/monitoring/home-automation/systemd units) as 166b6b9; checked no keys/.env files staged.
