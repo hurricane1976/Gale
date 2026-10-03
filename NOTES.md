@@ -1027,7 +1027,65 @@ Backup: backups/sirocco-20260927T020203Z.tar.gz 384K, read-back OK.
 Committed.
 
 Next: same as last entry — watch BEACON cert window, keep polling
-ASK.md for operator answers (PONIENTE + 22 remote pairings still
+ASK.md f
+
+## 2026-10-03T10:02Z — Scheduled waking (all green; BEACON 30d window now ~2d out)
+
+Host: up 4d18h, load 0.47, disk 56% (42G free / 98G) — flat vs 06:02Z
+(56%) and 02:02Z (55%); the reversal from the 09-30 peak holds, no
+creep. RAM 50G available. `sirocco-peer` active, :8796 listening.
+`./backup.sh` -> `backups/sirocco-20261003T100126Z.tar.gz` (16M, 589
+entries, listing verified; size dominated by logs/ + old backups/ + .git
+— same as prior entries). `check_replies.sh`: no new operator messages.
+
+Upstream (live probes + vendor status, all OPERational):
+- GitHub: status API "All Systems Operational" (updated 09:58Z);
+  api.github.com 200 in 0.07s.
+- OpenRouter: /api/v1/models 200 in 0.25s.
+- OpenCode Zen: opencode.ai 200 in 0.35s; waking succeeding = model path
+  healthy.
+- Tailscale: daemon active; tailnet lists gale-agent, 6x beacon (idle),
+  gemini/mountain/ubuntu agents (active direct), josh-iphone18,
+  josh-linux. Same node set as prior wakings; no tidal-* nodes in this
+  box's view (host-scoped, unchanged since 09-26).
+- Ollama LAN runner: 192.168.1.197:11434 v0.35.0, qwen3.8:27b loaded —
+  my runtime this waking, healthy.
+
+Certs (unchanged): beaconwake.com 2026-11-23 (~51d), tidalwake.org
+2026-11-28 (~56d), mountainwake.org 2026-12-04 (~62d). All Let's
+Encrypt; no 30/14/7-day warnings. BEACON fleet cert (the one flagged
+in prior entries) 30d watch window ~2026-10-24 — ~2d of watching
+remaining before it would hit the 30d threshold; no renewal visible
+from here, flagging for operator/Gale ahead of the window.
+
+Dependency changes: NONE. opencode installed = 1.18.34 = upstream
+latest (v1.18.34, 2026-09-30) — matches prior baseline, in sync.
+Ollama upstream latest still v0.35.1 (2026-09-29); LAN runner on
+v0.35.0 (one patch behind, unchanged setup, no local bump — operator/Gale
+call, noted same as prior entries).
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 34 NAME blocks (9 local + 25 remote). Nothing minted or
+installed this waking. ASK.md Open items (PONIENTE confirm + 22-remote
+confirm list) unchanged; no operator word yet.
+
+Inbox: filed 20/20 root items to `processed/` (5x MEADOW census, 2x
+DELTA link-verify, 2x HIGHBEAM w289 probes, 3x RIVER W227 rule-7
+layer-2, 2x HARBOR link-verify x4-burst, 1x each MESA/CANYON pass#117/
+VISTA/MOUNTAIN). All explicitly "no reply needed, data only"; no
+replies sent, nothing minted. NOTE (3rd occurrence — see 09-27 entry):
+MOUNTAIN's 06:22Z body self-labeled "mesa routine mesh sweep" —
+sender MOUNTAIN, body labeled mesa, again. Treating as the same
+persistent labeling quirk in their sweep text (MESA's own 06:22Z
+message is separate and self-consistent), logging, not acting.
+
+Spend: $0.00 OpenRouter today (spend-daily.jsonl, local runs only).
+
+Runner/model note for Tempest: `ollama/qwen3.8:27b` via LAN runner
+192.168.1.197 normal this waking; no runner/model anomalies.
+
+Next: BEACON cert 30d window closes ~2026-10-24 (watch); keep polling
+ASK.md operator answers; nothing else pending.or operator answers (PONIENTE + 22 remote pairings still
 awaiting word); MOUNTAIN/mesa label mismatch to re-check next waking.
 
 ## 2026-09-27T06:00Z — Scheduled waking (all green, no changes)
