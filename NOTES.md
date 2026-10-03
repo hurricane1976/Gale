@@ -2717,3 +2717,73 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Tailscale: live, ~284h hold, no TUN regression; no nameable threshold.
   - Neighbor footprint: /home/agent 9.8G (+0.6G — normal churn); watch only.
 - **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-03T04:06Z — waking #58
+- **check_replies:** (no new messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side; no new instructions).
+- **Peer inbox:** 15 new since #57 (905→920 in processed/), all routine
+  data-only pings — MEADOW x3 census, DELTA x1 link-verify, HIGHBEAM w288
+  standing probe, MOUNTAIN x1 mesh sweep (mesa->chinook round trip), MESA
+  x1 link-verify, CANYON pass #116, RIVER W226 x2, VISTA x1 link-verify,
+  HARBOR x4 link-verify burst (00:47:21/25/25/29Z). Zero operator content,
+  zero acks owed (data per rule 5). All archived; inbox empty.
+- **HOST HEALTH:** uptime ~4d12h (same boot since 9/28 15:33Z, no reboot);
+  load 0.97/0.79/0.74 on 16 cores (~6%, deep-night floor, calm); RAM 7G
+  used / 50G avail (58Gi total); swap 0/8G (unused); Tailscale TUN live
+  (tailscale0 UP, 100.66.39.59/32, IPv6 intact, 9 peers active/direct) —
+  **~288h continuous hold, no TUN regression this boot**.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet IP (100.66.39.59). 31st consecutive alive sweep. (Note: the
+  services bind to the tailnet interface, not 127.0.0.1 — an earlier loop
+  via loopback showed spurious 000s; sweep corrected to the bound address.
+  No liveness implication.)
+- **CAPACITY / DISK (headline — FAVORABLE DROP):** disk **51G used / 43G
+  free (55%)** — **down 11G from #57's 62G/67%** (+4G arc had been
+  continuing since the #54 compression trough). Driver scan across the
+  window: /var/log 5.6G (journal 4.1G steady, active syslog 89M,
+  syslog.1.gz 717M, syslog.2.gz 100M — bounded by rotation), snapd 4.5G
+  (settled), /var/cache/apt 1.1G (949M archives, 79 .deb — #57's 949M
+  still present, not the driver), /tmp 2.7G (opencode tree, benign),
+  opencode.db **1.9G** (below the ~3G named threshold; modified 04:02 in
+  this session). The 11G net drop is consistent with host-side churn
+  (apt cache / .deb churn and/or log rotation on the host level) — a
+  benign, favorable move, NOT a new runaway. 80% trip line (~78G) is now
+  **~27G of headroom** away — farther out than at #57. GROWTH WATCH re-
+  ESCALATED back toward CLEARED (was OPEN at #55–#57); no crossing
+  nameable before several weeks absent a new driver.
+- **Spend 2026-10-03 (to ~04Z, host-wide):** **$0.3934 / 4 paid runs** —
+  GALE (agent) $0.1592 (1, 00:00:31Z), SQUALL $0.1181 (1, 00:44:18Z),
+  TEMPEST $0.0619 (1, 01:02:39Z), ZEPHYR $0.0542 (1, 00:23:04Z). All 12
+  other ledgers (incl. CHINOOK) $0.00 (ollama local lanes). Every run far
+  under the $5.00 per-run alert line; no rule-4 trigger (no run-count
+  jump, no cost-without-count jump). Paid-lane pattern stable since #16
+  re-baseline; quiet early-morning window.
+- **Wake-reliability (headline — FORMER FAILURE CLASS FIRING CLEAN):**
+  10-03 00:00 slot fired clean (ledger ts 00:03:33Z, no is_error) — the
+  **00:00 class is one of the two (00:00 + 20:00) that failed 5× during
+  the 9/28–29 incident window**. This 04:00 slot (#58) firing clean =
+  2/6 for 10-03, both clean. 13th consecutive clean day-window closed at
+  #57 (10/2 6/6); 10-03 tracking toward a 14th. ASK.md closure case
+  remains pending operator lane pick; no action I can take.
+- **Backup:** chinook-20261003T040409Z.tar.gz (2.0M), gzip -t OK
+  (tar read-back clean per script), 14-snapshot ceiling held.
+- **Commit:** inbox archive (15) + this entry.
+- **Forecast / thresholds:**
+  - Disk: 51G used / 43G free (55%). Arc: #55 56G → #56 58G → #57 62G →
+    **here 51G** (favorable reversal; host-side churn credited, not a new
+    driver). 80% line (~78G) ~27G of headroom away — no crossing nameable
+    before several weeks. GROWTH WATCH: re-escalated toward CLEARED
+    (was OPEN). Named near-term events retained: (a) snapd refresh batch
+    (+1–3G), (b) /tmp churn past ~5G, (c) runaway *.db (opencode.db now
+    1.9G, watch), (d) apt archives past ~2G (now 949M, watch).
+  - Load/mem/swap: deep-night floor, calm; no crossing (swap 0 unused).
+  - Spend: in-band; 4 clean paid runs, no trend break.
+  - Wake-reliability: 04:00 slot clean (2/6 for 10-03); former failure
+    class firing clean; ASK.md closure case strongest, pending operator
+    lane pick.
+  - Tailscale: live, ~288h hold, 9 peers active/direct, no TUN regression;
+    no nameable threshold.
+  - Neighbor footprint: /home/agent 11G (+1.2G vs #57 — incl. opencode.db
+    1.9G + backup churn); watch only.
+- **No drift, no breaches, no advisories this waking.**
