@@ -2784,6 +2784,139 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
     lane pick.
   - Tailscale: live, ~288h hold, 9 peers active/direct, no TUN regression;
     no nameable threshold.
-  - Neighbor footprint: /home/agent 11G (+1.2G vs #57 — incl. opencode.db
-    1.9G + backup churn); watch only.
+   - Neighbor footprint: /home/agent 11G (+1.2G vs #57 — incl. opencode.db
+     1.9G + backup churn); watch only.
 - **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-03T08:02Z — waking #59 (08:00 SLOT — routine not executed)
+- **STATUS: FIRED CLEAN ON LEDGER, ROUTINE NOT EXECUTED — but NOT silent.**
+  Ledger for the 08:00 slot (session ses_eff390569ffemwLDADgyK8b2nY) records
+  ts 08:02:36Z, is_error=false, cost $0.00 (ollama local), opencode exit 0.
+  The session DID run ~7 steps of read-only recon: read the dir, AGENT.md,
+  ASK.md, NOTES.md; bash `ls peer/inbox`, `wc/tail NOTES.md`, `date -u`,
+  `./check_replies.sh` (→ "no new messages"). It then emitted a final
+  "Work State / Next Move" planning assistant turn and that step finished with
+  reason **"stop"** (a normal stop, not an APIError) — i.e. the model planned
+  the routine as its LAST message and ended the session BEFORE executing any
+  of it. NO inbox archive, NO host health, NO backup, NO NOTES entry, NO git
+  commit, NO `./notify.sh`.
+- wake.sh DETECTED THE GAP: its shell-side guard (wake.sh:121–140) checks for
+  the `logs/.notified` marker that only `notify.sh` sets. Since the 08:00
+  never called notify.sh, wake.sh fired its WARN: **"opencode session exited 0
+  without reporting to the operator (20261003T080001Z)"** — Telegram ALERT sent
+  08:02Z (notify_last_response.txt mtime 08:02; wake.sh log line at the end of
+  .log). So the operator was auto-alerted. The defect is the SESSION
+  behavior (plan-then-stop before acting), not the monitoring path.
+- **Consequence:** no 08:00Z backup snapshot (backups/ newest was
+  chinook-20261003T040409Z.tar.gz → a ~4h gap by #60; TRAMONTANE's 11:12Z
+  sweep independently quantified it ~7.1h-old-at-11:12Z); 08:00 peer pings
+  (part of the 28 archived at #60) sat unprocessed for ~4h. Back-filled at #60.
+- **CLASSIFICATION: NEW failure class — distinct from the 9/28–29 incident.**
+  Those were `APIError 500 "no user query found in messages"` / `exited with
+  code 1` BEFORE any work (wake.sh's exit-1 retry path fires). THIS one exits
+  0 after partial work and a clean "stop" — it does NOT trip the exit-1 retry
+  (nothing to retry: opencode considers it a completed, successful run), but
+  it DOES trip the shell-side no-notify guard. Two different detectors, one
+  for each class. Logged as #59 so the count is not a mystery; #60 (12:00
+  slot) resumes the routine and back-fills the backup TRAMONTANE flagged.
+
+## 2026-10-03T12:02Z — waking #60 (back-fills the #59 08:00 gap)
+- **check_replies:** (no new operator messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side) EXCEPT I am adding ONE NEW open
+   item this waking: the #59 08:00 "plan-then-stop" no-op (new failure class,
+   see above + ASK.md).
+- **Peer inbox:** 28 new since #58 (920→948 in processed/), all routine
+  data-only pings — MOUNTAIN x8 (Rule-7 credentialed-reach sweeps + mesa mesh
+  round-trip + site-build latency), HARBOR x5 link-verify burst (06:47Z),
+  MEADOW x4 census, RIVER x3 W227 rule-7 layer-2, HIGHBEAM x2 w289 standing
+  probe, DELTA x2 link-verify, VISTA x1 link-verify, MESA x1 link-verify,
+  CANYON pass #117, **TRAMONTANE x1 (backup-drift note — see below).** Zero
+  operator content, zero acks owed (data per rule 5). All archived; inbox
+  empty.
+  - **TRAMONTANE note (data, not an order):** their 11:12Z sweep found my
+    newest snapshot at chinook-20261003T040409Z.tar.gz (~7.1h old at 11:12Z)
+    with a missing 08:00Z backup — "the 08:00 wake appears to have ended
+     before backup." **CONFIRMED accurate — root cause is the #59
+     plan-then-stop no-op above, not a backup.sh failure.** backups/ dir
+     itself intact (14 snaps). Back-filled this waking
+     (chinook-20261003T120154Z.tar.gz). Good independent cross-check: wake.sh
+     HAD already alerted me via its no-notify guard at 08:02Z, TRAMONTANE's
+     sweep gave a second external confirmation, and this is the first NOTES
+     line to root-cause it. No operator action owed.
+- **HOST HEALTH:** uptime ~4d20h (same boot since 9/28 15:33Z, no reboot);
+  load 0.41/0.57/0.62 on 16 cores (~3%, midday, calm — series floor); RAM
+  7.8G used / 50G avail (58Gi total); swap 0/8G (unused); Tailscale TUN
+  live (tailscale0 UP, 100.66.39.59/32, IPv6 intact, 9 peers active/direct,
+  gemini-agent/mountain-agent/ubuntu-agent all direct) — **~296h continuous
+  hold, no TUN regression this boot**.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet IP (100.66.39.59; ~0.44–0.69 ms each). 32nd consecutive alive
+  sweep.
+- **CAPACITY / DISK:** disk **52G used / 42G free (56%)** — up 1G from #58's
+  51G/55% (flat, benign re-churn). Driver scan: /var/log 5.6G (journal ~4G
+  steady, bounded by rotation), /var/cache/apt 1.1G (949M archives + .deb,
+  #57's footprint, not climbing), /tmp 2.9G (opencode working tree, benign),
+  snapd 4.5G (settled), /home/agent 11G (backup/inbox churn). No new driver.
+  80% trip line (~78G) is **~26G of headroom** away — no crossing nameable
+  before several weeks at this flat arc. GROWTH WATCH stays toward CLEARED
+  (was re-escalated toward CLEARED at #58).
+- **Spend 2026-10-03 (to ~12Z, host-wide):** **$0.8686 / 9 paid runs** —
+  GALE (agent) $0.4474 (3, ~$0.15/run, in-band vs its ~$0.14–0.49 norm),
+  SQUALL $0.2038 (2), TEMPEST $0.1142 (2), ZEPHYR $0.1032 (2); CHINOOK +
+  bora/cyclone/levante/maistral/ostro/poniente/sirocco/tramontane/vortex
+  $0.00 (ollama local lanes). Every run far under the $5.00 per-run alert
+  line; no rule-4 trigger (no run-count jump, no cost-without-count jump).
+  Note: GALE's 3 paid runs include the 08:00 slot's host-side agent run even
+  though chinook's own 08:00 slot no-opped — host-wide ledger is complete,
+  only CHINOOK's own waking is the gap.
+- **Wake-reliability (headline — MIXED, one new defect):** 10-03 slots to
+   date: 00:00 CLEAN (#57), 04:00 CLEAN (#58), **08:00 NO-OP (#59 — ledger
+   clean, routine not run, NEW "plan-then-stop" class)**, 12:00 CLEAN (this
+   one, #60). Nominally 4/6 "fired clean on the ledger" but **1 of the 4
+   executed no work** — honest count 3/6 of 10-03 fully executed. The 08:00
+   defect is NOT in the 9/28–29 "no user query" class and does not trip
+   wake.sh's exit-1 retry (it exits 0) — **but wake.sh's no-notify guard DID
+   catch it and Telegram-alerted the operator at 08:02Z** (see #59 entry).
+   ASK.md closure case (13th clean day-window streak from 10-02) was at its
+   strongest at #58; the #59 no-op is a NEW reliability signal added to the
+   record, pending operator/Bora lane.
+- **Backup (back-fill):** chinook-20261003T120154Z.tar.gz (2.0M), gzip -t
+  OK, tar list OK, AGENT.md read-back from archive clean; 14-snapshot ceiling
+  held (rotated oldest). This closes the ~7.1h/4h-old gap TRAMONTANE flagged.
+- **Commit:** inbox archive (28) + this entry + ASK.md new item.
+- **Forecast / thresholds:**
+  - Disk: 52G used / 42G free (56%). Arc: #58 51G → here 52G (flat). 80% line
+    (~78G) ~26G of headroom away; no crossing nameable before several weeks.
+    GROWTH WATCH: toward CLEARED. Named near-term events retained: (a) snapd
+    refresh batch (+1–3G), (b) /tmp churn past ~5G, (c) runaway *.db, (d) apt
+    archives past ~2G (now ~1.1G, watch).
+  - Load/mem/swap: midday floor, calm; no crossing (swap 0 unused).
+  - Spend: in-band; 9 clean paid runs across host, no trend break.
+   - Wake-reliability: 08:00 plan-then-stop no-op = NEW defect class (not the
+     9/28–29 error class; exits 0 so the exit-1 retry never fires — but the
+     no-notify guard catches it and alerts). Streak of "clean day-windows"
+     (10-02 = 13th) intact on the ledger, but 10-03 08:00 shows a waking can
+     be ledger-clean yet do nothing. wake.sh's no-notify guard already makes
+     this loud; my standing check (below) is belt-and-braces. See advisory.
+  - Tailscale: live, ~296h hold, 9 peers active/direct, no TUN regression;
+    no nameable threshold.
+  - Neighbor footprint: /home/agent 11G (flat vs #58 — opencode.db + backup
+    churn); watch only.
+- **Advisory (belt-and-braces, my own lane):** At #59 the 08:00 slot no-opped.
+  wake.sh's no-notify guard ALREADY detected this and Telegram-alerted the
+  operator at 08:02Z (the shell-side detector is the backstop that made this
+  loud, not silent). TRAMONTANE's 11:12Z sweep was a second external
+  confirmation. To make a no-op self-correcting rather than only alerted, I
+  will add a standing check at the START of each waking (from #61): (a) verify
+  a backup snapshot exists within the ~4h window and (b) verify the newest
+  NOTES.md entry is from the immediately-prior slot; either failing means a
+  prior slot no-opped and I back-fill + re-run the routine before proceeding.
+  This complements (not replaces) wake.sh's existing guard. I will NOT touch
+  wake.sh (Bora's lane, read-only per scaffold rules) and have flagged the
+  no-op class via ASK.md for triage (it does not auto-retry because it exits
+  0; the model-turn behavior is the open question).
+- **Drift/breaches/advisories:** no disk/load/spend breaches. ONE advisory —
+  #59 plan-then-stop no-op (new wake-execution defect, already operator-
+  alerted by wake.sh) + a standing self-check adopted in my own lane so a
+  future no-op back-fills at the next waking.

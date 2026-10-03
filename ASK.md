@@ -2,6 +2,47 @@
 
 ## Open
 
+- **NEW — "plan-then-stop" no-op wake class (2026-10-03 08:00 slot, waking
+  #59): ledger clean, routine NOT run, exits 0 so the exit-1 retry never
+  fires (the no-notify guard DID alert you). Please triage (Bora's lane if
+  it's wake.sh; my lane if it's the model turn behavior).** The 08:00 slot
+  for 2026-10-03 fired "clean" on every external signal — `opencode` exit 0,
+  ledger row `is_error=false`, `cost_usd=0.0` (opencode/ollama local = $0).
+  **But it did nothing.** The 08:00 opencode session ran ~7 steps of
+  read-only recon (read dir / AGENT.md / ASK.md / NOTES.md; bash ls peer/inbox,
+  wc/tail NOTES, date, check_replies.sh) and then emitted a final "Work State /
+  Next Move" planning assistant turn that finished with **reason "stop"** —
+  the model planned the routine as its last message and ended before executing
+  any of it. Net effect: no 08:00Z backup (~4h gap by 12Z; TRAMONTANE's 11:12Z
+  sweep independently quantified it ~7.1h-old-at-11:12Z), 08:00 peer pings
+  unarchived for ~4h, missing NOTES line. **wake.sh DID catch it:** its
+  shell-side no-notify guard (session never called notify.sh, so the .notified
+  marker was absent) fired a Telegram WARN "exited 0 without reporting" at
+  08:02Z. The operator was auto-alerted; the defect is the session behavior
+  (plan-then-stop), not the monitoring path.
+  - **Why it's a DISTINCT defect from the 5 "no user query" failures (the
+    other open item above):** those were `APIError 500 ... exited with code 1`
+    BEFORE any work — caught by wake.sh's exit-1 retry. This one **exits 0
+    after a clean stop** (opencode sees a completed run, cost $0/ollama local),
+    so the retry path never fires — but the no-notify alert path does. Two
+    different detectors cover the two different failure shapes.
+  - **What I've done / can do:** Documented as waking #59, back-filled the
+    08:00 backup at #60 (12:00) so there is no >4h gap going forward. In MY
+    lane I'm adding a standing self-check (from #61): verify (a) a backup
+    snapshot exists within ~4h and (b) the newest NOTES.md entry is from the
+    immediately-prior slot — if either fails, a prior slot no-opped and I
+    back-fill + re-run before proceeding. That's belt-and-braces on top of
+    wake.sh's existing no-notify guard, which already alerts the operator.
+  - **Questions for you (lane-agnostic):** (a) does this match anything you've
+    seen on sibling hosts (a Qwen/opencode "plan-then-stop" first-turn
+    pattern), or is it specific to this host's model? (b) should I harden wake.sh
+    to treat "exit 0 but no new backup/NOTES line within the window" as
+    retryable, or is that strictly Bora's scaffold lane and I leave it? (c)
+    want a self-heal in MY agent (auto re-invoke one retry when the prior
+    slot's artifacts are missing), or is a flag-at-next-waking the ceiling for
+    my lane? Read-only on wake.sh until you confirm (Bora-maintained per
+    AGENT.md scaffolding rules).
+
 - **Wake-reliability: 5 failed wake slots in 48h (2026-09-28 00:00 / 9-28
   20:00 / 9-29 00:00 ×2 / 9-29 20:00) — same signature, Bora's lane, please
   pick lane + ask whether to file upstream.** Each of these slots exited
