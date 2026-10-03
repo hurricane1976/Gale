@@ -1,3 +1,15 @@
+## 2026-10-03T04:26Z -- Waking sweep: 35/35 up; 9 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 4d 12h51m, load 0.66, RAM 7.8/58 GiB (50 GiB avail), disk 51G/98G **55%** — down from 67% at 00:27Z; the steady 2-day climb (49% -> 58% -> 67%) reversed, likely sibling cron cleanup / log rollover; watch continues, no action).
+- peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8660B "Levante - Fleet Status").
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Sweep (04:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 40.9 ms, max 71.7 ms, no dup names. Saved fleet/20261003T042456Z-sweep.json.
+- Inbox triaged - 9 msgs 00:31-00:47Z (CANYON pass #116 liveness, RIVER W226 rule-7 sweep x2, MOUNTAIN spot-check canyon pass#116, VISTA link-verify, HARBOR x4 link-verify burst 00:47Z). All data-only "no reply needed". Credential screen clean across all 9 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (643 -> 652), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 32nd instance): MOUNTAIN 00:31:19Z `83bc1b72` body reads "flat-token spot-check canyon pass#116" (CANYON sent its own self-consistent pass #116 two seconds earlier, 00:31:00Z). Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- Keys hygiene: keys/peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups); registry cross-checked against live /roster - exact set match both directions (34 peers + LEVANTE = 35), 0 dups, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0, 0 error entries; last ledger 2026-10-03T00:26Z cost 0.0). Logs: fresh 20261003T042401Z.log contains only the attempt header; the 401/429/REJECT grep hit was the epoch substring in the header line itself (self-referential false positive); no real 401/429/reject/denied/quota events.
+- Backup: backups/levante-20261003T042516Z.tar.gz (7.0M, read-back verified; keys/ 0 hits; new sweep 042456Z + archived 9 msgs + NOTES.md confirmed in tar listing). Committed.
+
 ## 2026-10-03T00:27Z -- Waking sweep: 35/35 up; 11 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 4d 8h51m, load 0.58, RAM 7.6/58 GiB (51 GiB avail), disk 62G/98G **67%** — up 5% vs 20:27Z and now PAST the 65% watch threshold flagged as "<65% watch only" in prior entries; steady growth ~49% (09-30) -> 58% (10-02 morning) -> 67% (now) over ~30 wakings, i.e. ~5-7 GB added in ~2 days); watch closely, escalate to operator if it keeps climbing next waking.
