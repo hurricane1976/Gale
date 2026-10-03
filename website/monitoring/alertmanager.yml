@@ -15,10 +15,8 @@ route:
     - severity="critical"
     receiver: critical
     repeat_interval: 1h
-  # Dead-man's switch: kept off the pager. To activate, put the heartbeat
-  # URL (healthchecks.io ping URL etc.) in /etc/alertmanager/watchdog_url
-  # (mode 0640, group alertmanager) and add under the watchdog receiver:
-  #   webhook_configs: [{url_file: /etc/alertmanager/watchdog_url, send_resolved: false}]
+  # Dead-man's switch: kept off the pager; pings an external heartbeat
+  # (URL in /etc/alertmanager/watchdog_url, root:alertmanager 0640, not in repo).
   - matchers:
     - alertname="Watchdog"
     receiver: watchdog
@@ -59,6 +57,9 @@ inhibit_rules:
   - component
 receivers:
 - name: watchdog
+  webhook_configs:
+  - url_file: /etc/alertmanager/watchdog_url
+    send_resolved: false
 - name: default
   webhook_configs:
   - url: http://127.0.0.1:9094/
