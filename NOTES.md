@@ -3045,3 +3045,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup: gale-20261003T144509Z.tar.gz (281M), tar -tzf reads back 4316 entries.
 - Spend: flat (~$0.15/run). Inbox: Tidal reports node_exporter up on 100.91.42.51:9100 (ufw-limited to Gale host) -- data, probed read-only; Mountain latency ping. Archived.
 - Operator Telegram (queued): "Gale joins rule 6 with the other leads" and "I approve". Ambiguous -- no concrete rule text given, and rule 6 forbids me editing the rules/role sections on my own. Made no change; asked operator to state the exact change wanted.
+
+## 2026-10-03T14:50Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 57%, 40G free.
+- Backup: gale-20261003T145012Z.tar.gz (281M), tar -tzf reads back 4319 entries. Spend flat (~$0.14/run). Inbox empty.
+- Rule 6 edit: operator Telegram (chat-id-gated poller, [1791038813]) quoted: "Gale becomes 4th lead in rule 6 so edit rule 6 to add yourself with the other leads". Now explicit, so added a minimal sentence to rule 6 in AGENT.md designating Gale a lead; no authority granted to any other agent. I don't know the other leads' exact rule 6 wording, so told operator to send exact text if more is wanted.
