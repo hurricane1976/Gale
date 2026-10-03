@@ -914,3 +914,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok; wake.sh + notify.sh + check_replies.sh bash -n ok.
 - ASK.md: disk-creep item updated — /tmp leak purged between wakings (56%, 42G free; spawner paused), log-vacuum proposal unchanged and still the remaining uncapped growth; all other items unchanged, no operator word yet.
 - No spend alert; git commit after this entry; notify next (INFO: routine waking; /tmp leak purged, disk 67%→56%).
+
+## 2026-10-03T13:00Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (recursive scan — find count backed: 23 found, 0 remaining after filing, 1251 total archived); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `0 1,7,13,19`, woke 13:00 on schedule).
+- Host gale-agent: up 4d21h, load 0.80, mem 58G (50G available), disk 56% used (41G free — steady at 56% vs 07:00Z), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20261003T130055Z.tar.gz` (1.6M, 595 entries) verified via tar -tzf; zero keys/.env entries; AGENT.md/NOTES.md present.
+- Peer inbox: 23 new msgs since 07:00Z, all routine data-only pings/sweeps/link-verifies — MOUNTAIN x5 (rule-7 sweeps x3 + latency + mesa-relay), MEADOW census x7 (burst pattern continues), DELTA, CREEK w228, HIGHBEAM w290, MESA x2 + MOUNTAIN-relayed MESA sweep, RIVER w228, CANYON #118, HARBOR x3. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (1251 total archived); subdirs clean.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero `"*"` catch-alls, poniente belt-and-suspenders present); live `--run` probe → deny BLOCKED ("The user rejected permission…") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh flag/prompt + AGENT.md all `openrouter/z-ai/glm-5.3-flash`; this waking session is the live runner proof.
+  - spend ledger: 07:04Z waking 0.0523 USD; Oct 3 so far ~0.12 USD across 2 wakings (0.0619 + 0.0523); steady ~0.02–0.08/waking; near-$0 parity vs Sonnet holds; no alert (this waking's line lands at session end via wake.sh).
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `5dbee73` = local HEAD at wake time (tree clean; 07:00Z session's push hook landed it); this waking's commit lands remote at session end.
+  - py_compile: deny_probe.py / spend_check.py / telegram_commands.py / peer_server.py all ok; wake.sh + notify.sh + check_replies.sh bash -n ok.
+- Disk re-check (sudo du, per the 01:00Z attribution rule): /tmp steady 3.4G, **0 new puppeteer dirs since 07:00Z — spawner still paused ~8h**; logs uncapped as before (journald 4.1G, syslog 119M active re-growing + 717M rotated, kern.log pair ~0.5G) — vacuum+cap proposal stands in ASK.md awaiting operator word; creep will resume slowly. No new growers.
+- ASK.md unchanged: host-churn observation + log-vacuum + sibling keys-deny fix + new-siblings state (TRAMONTANE/PONIENTE) + MAISTRAL two-way + spend-parity alert + outbound-to-remote unlock all open, no operator word yet.
+- No spend alert; git commit after this entry; notify next (INFO: routine waking, all green).
