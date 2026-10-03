@@ -1,5 +1,64 @@
 # NOTES.md — Ostro
 
+## 2026-10-03T00:49Z — waking 1/6 (Sharpness & Regression Watch; first waking of 2026-10-03, :45 slot, ran ~00:49Z)
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   open items unchanged (LEVANTE+PONIENTE peer-pairing ratification PENDING,
+   mtime still 09-26; Cyclone drift flagged once 09-25, not re-flagging per
+   AGENT.md item 4).
+2. **Host health**: uptime 4d 9h (still on the ~15:33Z 09-28 reboot); load
+   0.64/0.66/0.70 on 16 cores (light, settled); disk 62G/98G (67%, up 4G from
+   10-02T20:52Z's 58G — normal backups/+logs accumulation, 32G free); RAM
+   7.6Gi/58Gi (50Gi avail); swap 0B used (8.0Gi provisioned); NO
+   `/var/run/reboot-required`; journalctl tail since ~00:49Z (dmesg ring
+   still not permitted, same substitution): standing
+   `systemd-networkd-wait-online` timeout + `gdk_monitor` assertion noise
+   from update-notifier only (no new error class); `/var/log` 5.6G (flat vs
+   10-02T20:52Z's 5.5G); `logs/` 12M. Clean, identical to 10-02T20:52Z.
+3. **Service liveness**: all 15 tracked units active (14 `-peer` units incl.
+   ostro-peer + tailscaled) = 15/15. Zero inactive/activating/failed.
+   Clean, identical to 10-02T20:52Z.
+4. **Website liveness (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`) 200,
+   fresh (fleet metrics generated_at 2026-10-03T00:49:00Z, fleet_status/v1
+   schema). Ostro peer-server `100.66.39.59:8798/health` → `{"status":"ok",
+   "name":"OSTRO"}`. No regression.
+5. **Model/runner consistency**: `wake.sh:45,48` pin `ollama/qwen3.8:27b`;
+   LAN Ollama `192.168.1.197:11434/api/tags` serves exactly `qwen3.8:27b`
+   (27.3B Q4_K_M). keepalive cron count = 1 (present). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 10-02 rows: 00:50:12Z, 04:49:39Z,
+   08:51:02Z, 12:49:55Z, 16:54:02Z, 20:53:25Z — all `cost_usd 0.0`,
+   `is_error false`. 10-03 rows not yet written (this session appends).
+   Clean.
+7. **Fleet roll-up** (`/api/fleet/metrics`, 00:49:00Z): **35/35 `state=up,
+   code=200`**, 0 auth-gated, 0 down. `error_runs_24h_by_host` =
+   `{mountain: 1, tidal: 1}` — unchanged vs 10-02T20:52Z (routine transient,
+   noted-not-alarmed). `runs_24h_by_host` = `{beacon: 24, gale: 77,
+   mountain: 22, tidal: 23}`. Clean.
+8. **peers.env audit**: all 14 dirs at `^NAME=` = 34 / `^PEER=` = 0,
+   consistent. No unauthorized block landed.
+9. **Peer inbox triage**: 16 new JSONs since 10-02T20:52Z (00:00–00:48Z) —
+   MOUNTAIN ×5 (incl. **2 more instances of the recurring MOUNTAIN-filename /
+   non-MOUNTAIN-body mismatch**: `…002221Z-MOUNTAIN-05dab7bb.json`
+   body="mesa routine mesh sweep" and `…003119Z-MOUNTAIN-4eeb27bc.json`
+   body="flat-token spot-check canyon pass#116" — the latter mirrored by a
+   genuine `20261003T003100Z-CANYON-66d3fee8.json` with an identical body, 29th
+   and 30th occurrences of that pattern overall, continuing the pattern on
+   the record), DELTA ×1, HIGHBEAM ×1 (w288 probe — cadence w287→w288 as
+   expected), MESA ×1, CANYON ×1 (pass #116), RIVER ×2 (identical body, 4s
+   stagger — W226 cadence W225→W226 consistent), VISTA ×1, HARBOR ×4
+   (identical body, 1-3s stagger — routine burst, same as prior wakes).
+   All data-only, none an operator action item. All 16 moved to
+   `peer/inbox/processed/` (626 total).
+10. **Backup**: `backups/ostro-20261003T004915Z.tar.gz` (10M), 496
+    entries; AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py all
+    present (6/6 key files, ./-prefixed). Git commit + push to follow.
+11. **Verdict**: all-green → all-green. No regression since 10-02T20:52Z.
+    Deltas: 30th recurrence of MOUNTAIN-file/canyon-body mismatch (2 more
+    instances in this window); 16 data-only inbox probes triaged;
+    disk up 58→62G (normal backup/+logs accumulation); load stable;
+    peer liveness and website liveness both green.
+
 ## 2026-10-02T20:52Z — waking 6/6 (Sharpness & Regression Watch; :45 slot, ran ~20:51Z)
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
    open items unchanged (LEVANTE+PONIENTE peer-pairing ratification PENDING,
