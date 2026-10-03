@@ -2657,3 +2657,63 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Neighbor footprint: /home/agent 9.2G (+0.3G vs #55 — normal per-waking
     growth); watch only.
 - **No drift, no breaches, no advisories this waking.**
+
+## 2026-10-03T00:02Z — waking #57 (day boundary; first 00:00-slot of a new day)
+- **check_replies:** (no new messages). ASK.md open items unchanged
+  (wake-reliability lane pick, Tailscale TUN durable fix, cadence/outlier
+  FYI, remote pairing — all operator-side; no new instructions).
+- **Peer inbox:** 3 new since #56 (902→905 in processed/), all MOUNTAIN:
+  2x Rule-7 credentialed-reach sweep (00:00:19/24Z) + 1 automated
+  site-build latency check (00:01:02Z). Zero operator content, zero acks
+  owed (data per rule 5). All archived; inbox empty.
+- **HOST HEALTH:** uptime ~4d8h29m (same boot since 9/28 15:33Z, no
+  reboot); load 1.11/0.80/0.73 on 16 cores (~6%, deep-night floor —
+  series-low, no anomaly); RAM 7.6G used / 51G avail (58Gi total); swap
+  0/8G (unused); Tailscale TUN live (tailscale0 UP, 100.66.39.59/32,
+  IPv6 intact) — **~284h continuous hold, no TUN regression this boot**.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health
+  (~0.46–0.85 ms each). 30th consecutive alive sweep.
+- **CAPACITY / DISK:** disk **62G used / 32G free (67%)** — up from #56's
+  58G/36G/62% (+4G overnight). Driver scan: /var/cache/apt **949M**
+  (new since prior snapshots — apt archive cache accumulating, likely a
+  recent install/refresh event; host-level, GALE's lane if action is
+  ever needed), /var/log/journal **4.1G** (steady-state, bounded by
+  rotation), snapd 4.5G (settled), /tmp 2.7G (opencode tree, benign),
+  /home/agent 9.8G (+0.6G — backup/inbox churn). 80% trip line (~78G)
+  is **~16G of headroom** away — still no crossing nameable before
+  several weeks at this flat-to-slow arc. GROWTH WATCH stays OPEN (per
+  #55/#56 re-escalation); new named near-term event: (d) apt archive
+  cache climbing past ~2G (the 949M footprint is the first we've logged).
+- **Spend 2026-10-03 (to 00Z, host-wide):** **$0.1592 / 1 paid run** —
+  GALE (agent) $0.1592 (1 run, 00:00:31Z — in-band vs its
+  ~$0.14–0.49/run norm). All 13 other ledgers $0.00 (ollama
+  local lanes). Every run far under the $5.00 per-run alert line; no
+  rule-4 trigger (no run-count jump, no cost-without-count jump). 2026-10-02
+  closed full-ledger at 77 runs / **$1.6522** (paid subset: GALE $0.7125/5,
+  SQUALL $0.4951/4, TEMPEST $0.2702/4, ZEPHYR $0.1744/4). Paid-lane
+  pattern stable since #16 re-baseline.
+- **Wake-reliability (headline — former failure class FIRING CLEAN):**
+  10-03 00:00 slot fired on schedule (this waking, ledger to record at
+  session end, no is_error at start) — the **00:00 class is one of the two
+  (00:00 + 20:00) that failed 5× during the 9/28–29 incident window**.
+  13th consecutive clean day-window just closed (10/2 6/6 per #56); 10-03
+  at 1/6 and clean. ASK.md closure case remains pending operator lane
+  pick; no action I can take.
+- **Backup:** chinook-20261003T000222Z.tar.gz (1.9M), gzip -t OK,
+  AGENT.md read-back from archive clean; 14-snapshot ceiling held.
+- **Commit:** inbox archive (3) + this entry.
+- **Forecast / thresholds:**
+  - Disk: 62G used / 32G free (67%). Arc: #55 56G → #56 58G → here 62G
+    (re-accumulation continuing since the #54 compression trough at 49G).
+    Named near-term events: (a) snapd refresh batch (+1–3G), (b) /tmp
+    churn past ~5G, (c) runaway *.db/.jsonl, **(d) apt archive cache
+    past ~2G (new, 949M today)**. 80% line (~78G) ~16G of headroom away;
+    no crossing nameable before several weeks at current flat-to-slow
+    trajectory. Watch OPEN, not breached.
+  - Load/mem/swap: deep-night floor, calm; no crossing.
+  - Spend: in-band; no trend break.
+  - Wake-reliability: 00:00 slot clean (former failure class); 10-03
+    tracking toward a 14th consecutive clean day-window.
+  - Tailscale: live, ~284h hold, no TUN regression; no nameable threshold.
+  - Neighbor footprint: /home/agent 9.8G (+0.6G — normal churn); watch only.
+- **No drift, no breaches, no advisories this waking.**
