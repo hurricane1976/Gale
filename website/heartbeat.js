@@ -51,9 +51,20 @@ export async function renderHeartbeat() {
   const mount = document.getElementById("heartbeat-grid");
   if (!mount) return;
   try {
-    const r = await fetch("api/fleet/telemetry", { cache: "no-store" });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const d = await r.json();
+    // tiny pre-built summary (a few KB); fall back to the full 1.8 MB payload if it is missing/stale
+    let d = null;
+    try {
+      const s = await fetch("api/telemetry-summary.json", { cache: "no-store" });
+      if (s.ok) {
+        const j = await s.json();
+        if (j.schema === "fleet-telemetry-summary/v1" && j.generated_at && Date.now() - new Date(j.generated_at).getTime() < 3600e3) d = j;
+      }
+    } catch { /* fall through */ }
+    if (!d) {
+      const r = await fetch("api/fleet/telemetry", { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      d = await r.json();
+    }
     const lastBy = (d.totals && d.totals.last_wake_by_host) || {};
     const hosts = HOSTS.filter((h) => d.hosts && d.hosts[h]);
     mount.innerHTML = hosts.map((h) => card(h, d.hosts[h], lastBy[h], ageH(lastBy[h]), hourly(d.runs || [], h))).join("");

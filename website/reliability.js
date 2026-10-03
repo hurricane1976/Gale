@@ -35,6 +35,35 @@ function render(data) {
   } else setText($("backup-inventory"), "Per-agent restore proof unavailable.");
   setText($("outcome-proof"), `${data.outcomes.verified_runs} verified successful tasks; ${data.outcomes.verification_unknown_runs} runs have no task verification. A successful process exit is not proof of completed work.`);
 }
+async function getJson(url) {
+  try {
+    const r = await tracedFetch(url, { cache: "no-store", signal: AbortSignal.timeout(10000) });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+const tile = (label, value, sub, lv) => `<div class="vital" data-level="${lv}"><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(value)}</span><span class="vital-sub">${esc(sub)}</span></div>`;
+async function coverage() {
+  const [exp, bk, pr, reg] = await Promise.all([getJson("api/exporter-coverage.json"), getJson("api/backup-proof.json"),
+    getJson("api/probes.json"), getJson("api/fleet/registry")]);
+  const tiles = [];
+  if (exp && Array.isArray(exp.nodes)) {
+    const n = exp.nodes.length, i = exp.nodes.filter((x) => x.instrumented).length;
+    tiles.push(tile("Host metrics (node_exporter)", `${i}/${n}`, "remote addresses scraped; others have no host-level alerts", i === n ? "ok" : i ? "warn" : "crit"));
+  } else tiles.push(tile("Host metrics (node_exporter)", "Unknown", "exporter-coverage feed unavailable", "unknown"));
+  if (pr && Array.isArray(pr.peers)) {
+    const up = pr.peers.filter((x) => x.ok).length, svc = pr.services.filter((x) => x.ok).length;
+    const fresh = Date.now() - new Date(pr.checked_at).getTime() < 900e3;
+    tiles.push(tile("Peer hosts reachable (direct TCP)", `${up}/${pr.peers.length}`, `independent of the Beacon relay · ${fresh ? "checked " + pr.checked_at : "STALE " + pr.checked_at}`, !fresh ? "unknown" : up === pr.peers.length ? "ok" : "crit"));
+    tiles.push(tile("Local services", `${svc}/${pr.services.length}`, pr.services.filter((x) => !x.ok).map((x) => x.name).join(", ") || "NetBox, Zabbix, Grafana, Kuma, Loki, Alertmanager all answering", !fresh ? "unknown" : svc === pr.services.length ? "ok" : "warn"));
+  } else tiles.push(tile("Direct probes", "Unknown", "probes feed unavailable", "unknown"));
+  if (bk && Array.isArray(bk.agents)) {
+    const ok = bk.agents.filter((a) => a.state === "passed").length;
+    const total = reg && Array.isArray(reg.agents) ? reg.agents.length : null;
+    tiles.push(tile("Backups restore-proven", total ? `${ok}/${total}` : `${ok}`, `Gale-hosted agents only (${bk.agents.length}); other hosts and off-box copies are not verified here`, ok === bk.agents.length && total && ok === total ? "ok" : "warn"));
+  } else tiles.push(tile("Backups restore-proven", "Unknown", "backup-proof feed unavailable", "unknown"));
+  setHTML($("mon-coverage"), tiles.join(""));
+  setHTML($("mon-coverage-detail"), exp && exp.nodes ? `<ul>${exp.nodes.map((x) => `<li>${esc(x.host)} ${esc(x.address)} · ${x.instrumented ? "node_exporter answering" : "no node_exporter"}</li>`).join("")}</ul>` : "");
+}
 function rum() {
   const samples = window.__galeRUM || [];
   setHTML($("rum-grid"), ["LCP", "INP", "CLS"].map((name) => {
@@ -59,5 +88,7 @@ async function refresh() {
   } finally { busy = false; rum(); }
 }
 refresh();
+coverage();
 setInterval(refresh, 30000);
+setInterval(coverage, 60000);
 setInterval(() => { if (last && freshness(last) !== "ok") render(last); rum(); }, 10000);
