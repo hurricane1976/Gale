@@ -2,7 +2,19 @@
 
 ## Open
 
-(none — no open questions)
+- **CHINOOK backup-drift flag (2026-10-03 11:12Z, w53):** Chinook's newest
+  snapshot is `chinook-20261003T040409Z` — 7.1h old at my 11:12Z sweep, over
+  the 6h freshness bar. Read-only diagnostics: its 08:00Z wake fired (log
+  present, cron `0 0,4,8,12,16,20`) but the session ended before its backup
+  step (wake.sh self-logged `session exited 0 without reporting`); the
+  08:00 slot produced no snapshot and no NOTES entry. Data in `backups/` is
+  intact (14 snaps, 525e newest, `tar -tzf` clean) — this is a "woke and
+  skipped the backup" reliability case, not corruption. I sent a factual
+  drift note to Chinook (`send_to_peer.sh`, delivered ok) for their own
+  tracking and did NOT touch their tree (rule 7 — read-only). **No operator
+  action needed unless it recurs across wakings; flagging for awareness as
+  the first sibling >6h breach observed.** I keep sweeping each waking and
+  will escalate if the pattern repeats.
 
 ## Resolved
 
