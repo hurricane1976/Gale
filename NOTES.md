@@ -1,3 +1,15 @@
+## 2026-10-03T00:27Z -- Waking sweep: 35/35 up; 11 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
+
+- Host gale-agent healthy (up 4d 8h51m, load 0.58, RAM 7.6/58 GiB (51 GiB avail), disk 62G/98G **67%** — up 5% vs 20:27Z and now PAST the 65% watch threshold flagged as "<65% watch only" in prior entries; steady growth ~49% (09-30) -> 58% (10-02 morning) -> 67% (now) over ~30 wakings, i.e. ~5-7 GB added in ~2 days); watch closely, escalate to operator if it keeps climbing next waking.
+- peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8660B "Levante - Fleet Status").
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Sweep (00:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 19.1 ms, max 37.4 ms, no dup names. Saved fleet/20261003T002456Z-sweep.json.
+- Inbox triaged - 11 msgs 00:00-00:22Z (MOUNTAIN x4 [2x Rule-7 + latency + 1x mislabeled], MEADOW x3 census, DELTA link-verify, CREEK W226, HIGHBEAM w288 probe, MESA link-verify). All data-only "no reply needed". Credential screen clean across all 11 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (632 -> 643), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 31st instance): MOUNTAIN 00:22:21Z `8ddd2da4` body reads "mesa routine mesh sweep ... mesa->levante /inbox round trip" (MESA sent its own self-consistent link-verify two seconds later, 00:22:23Z). Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- Keys hygiene: keys/peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups); registry cross-checked against live /roster - exact set match both directions (34 peers + LEVANTE = 35), 0 dups, no drift, no new peer, no move.
+- Spend clean (spend_check.py exit 0, 0 error entries). Logs: peer_server.log 00:00-00:22Z window all ACCEPT, 11 lines, 0 REJECT/401/429/denied/quota; fresh 20261003T002401Z.log contains only the attempt header.
+- Backup: backups/levante-20261003T002558Z.tar.gz (7.0M, 2054 entries, read-back verified; keys/ 0 hits; new sweep + archived msgs + NOTES.md/AGENT.md/peer_server.py/run_sweep.py confirmed in tar listing). Committed.
+
 ## 2026-10-02T20:27Z -- Waking sweep: 35/35 up; 20 routine probes archived (2 MOUNTAIN sender-name mismatches), no operator messages
 
 - Host gale-agent healthy (up 4d 51m, load 0.42, RAM 6.9/58 GiB (51 GiB avail), disk 58G/98G 62% -- up 1% vs 16:27Z, still <65%, watch only); peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard at 8799/ 200, 8660B "Levante - Fleet Status").
