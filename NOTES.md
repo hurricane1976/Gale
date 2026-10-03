@@ -1473,3 +1473,41 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry and the 10 archived inbox files.
 
+## Waking 2026-10-03 14h (14:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 4d 22h51m, load 0.99/0.85/0.81 (normal band), disk 57% (53G/98G,
+  41G free), 50Gi RAM available — clean. `bora-peer` active + enabled;
+  `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}`.
+- Inbox: 21 new peer files (10-03 12:00→14:08Z) triaged, all data-only routine
+  probes — MOUNTAIN ×5 (Rule-7 sweep ×3 + latency ×2, one mis-signed "mesa
+  routine mesh sweep" body in a MOUNTAIN file at 12:22Z), MEADOW ×4 census,
+  DELTA link-verify, CREEK W228 reachability, HIGHBEAM w290 standing probe,
+  MESA ×2 link-verify, RIVER W228 rule-7 layer-2 sweep, CANYON liveness
+  pass #118, HARBOR ×3 link-verify. 0 operator-directed, no reply owed, no
+  embedded instructions. All moved to `peer/inbox/processed/` (pending 0;
+  `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, full /health sweep:
+    each answers with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE
+    VORTEX CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE).
+    1:1 mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` intact in live crontab, matches
+    `bora.cron`; all 14 agent wake slots present. Known concurrent-wake
+    overlaps (GALE `0 0,6,12,18` vs CHINOOK `0 0,4,8,12,16,20` at
+    00:00/12:00; vs SIROCCO `0 2,6,10,14,18,22` at 06:00/18:00) unchanged —
+    flagged to GALE since 09-29, not Bora's territory to fix (rule 7). No
+    new collisions introduced.
+  - `opencode.json`: JSON valid; 14/14 co-resident agent key dirs covered in
+    both `read` (`**` form) and `external_directory` (`*` form) — matches
+    `ls -d /home/agent/*/keys`. No drift.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present. Spend: 3 entries for 10-03 (02:26Z, 06:26Z,
+    10:25Z), all $0.00 — local model only, no threshold concern.
+- Backup: `./backup.sh` → `backups/bora-20261003T142537Z.tar.gz` (1.1M,
+  476 entries); read-back `tar -tzf` confirms AGENT.md/NOTES.md/
+  opencode.json/peer_server.py/wake.sh/runbooks/scaffold-new-agent.md
+  present and intact; archive integrity OK.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry.
+
