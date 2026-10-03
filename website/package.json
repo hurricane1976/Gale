@@ -9,7 +9,8 @@
     "watch": "node build.mjs --watch",
     "test": "node render-test.mjs",
     "audit": "node tools/audit.mjs",
-    "check:browser": "node tools/browser_checks.mjs csp && node tools/browser_checks.mjs budget && node tools/browser_checks.mjs phone && node tools/browser_checks.mjs webgl && node tools/browser_checks.mjs visual"
+    "check:browser": "node tools/browser_checks.mjs csp && node tools/browser_checks.mjs budget && node tools/browser_checks.mjs phone && node tools/browser_checks.mjs webgl && node tools/browser_checks.mjs visual",
+    "test:monitoring": "python3 tools/test_monitoring.py && node tools/test_reliability.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",

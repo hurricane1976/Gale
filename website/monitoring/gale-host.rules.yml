@@ -1,0 +1,33 @@
+groups:
+- name: gale-host
+  rules:
+  - alert: NodeExporterDown
+    expr: up{job="node"} == 0
+    for: 5m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: node_exporter on gale-agent is down
+      description: Prometheus hasn't been able to scrape node_exporter for 5+ minutes.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: HighDiskUsage
+    expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: / is over 85% full on gale-agent
+      description: 'Root filesystem usage: {{ $value | printf "%.1f" }}%'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: HighMemoryUsage
+    expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: Memory usage over 90% on gale-agent
+      description: 'Available memory: {{ $value | printf "%.1f" }}% used'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html

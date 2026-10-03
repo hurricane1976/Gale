@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Operations — fleet incidents and reporting | Gale</title>
+  <meta name="description" content="Gale reliability console: SLOs and error budgets, synthetic checks, RUM web-vitals, cost forecasts, backup freshness." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#02060d" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="dist/operations.js"></script>
+  
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<div class="cine-vignette" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+      <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+    </svg>
+    GALE
+  </a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Home</a>
+    <a href="operations.html" aria-current="page">Operations</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="status.html">Status</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="ollama.html">Ollama</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
+    <a href="network.html">Network</a>
+    <a href="reliability.html">Reliability</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
+  </nav>
+</div></header>
+<main id="main" class="ops-main">
+  <div class="ops-head"><div><span class="eyebrow">Fleet operations</span><h1 class="ops-title">Operations</h1><p class="lede">Reporting coverage, active incidents, task progress, spend, and recovery evidence.</p></div></div>
+  <p id="ops-freshness" role="status">Loading fleet evidence…</p>
+  <div class="ops-board">
+    <section class="ops-panel span-full"><h2 class="panel-title">Fleet readiness</h2><div id="ops-summary" class="vitals-grid"></div></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">Active incidents</h2><p id="ops-access"></p><div id="ops-incidents"></div></section>
+    <section class="ops-panel"><h2 class="panel-title">Missing telemetry</h2><div id="ops-missing"></div></section>
+    <section class="ops-panel"><h2 class="panel-title">Collection health</h2><div id="ops-sources"></div></section>
+    <section class="ops-panel"><h2 class="panel-title">Spend & quota</h2><p id="ops-cost"></p><a href="ollama.html">Inference capacity</a></section>
+    <section class="ops-panel"><h2 class="panel-title">Recovery evidence</h2><div id="ops-backup"></div><a href="reliability.html">Full reliability report</a></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">Recent task lifecycle</h2><p>Gale instrumentation starts with the next scheduled wake. Older runs have no step traces.</p><div id="ops-tasks"></div><a href="observability.html">Explore runs</a></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">Remote host instrumentation</h2><div id="ops-exporters"></div></section>
+  </div>
+</main>
+</body>
+</html>

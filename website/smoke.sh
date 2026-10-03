@@ -11,19 +11,19 @@ check() { # url expected_code
 has() { # url pattern
   if curl -s --max-time 10 "$BASE/$1" | grep -q "$2"; then echo "ok   $1 ~ $2"; else echo "FAIL $1 missing /$2/"; fail=1; fi
 }
-for p in index fleet status metrics observability ollama agora weather network reliability 404; do check "$p.html" 200; done
-for f in shared main cinematic storm-scene fleet hosts cost activity drilldown metrics status observability network agora weather ollama reliability rum particles; do check "$f.js" 200; done
+for p in index fleet status metrics observability ollama agora weather network reliability operations runbooks 404; do check "$p.html" 200; done
+for f in shared main cinematic storm-scene fleet hosts cost activity drilldown metrics status observability network agora weather ollama reliability operations rum particles; do check "$f.js" 200; done
 for f in gale.css fonts.css mobile.css cinematic.css storm-scene.css fleet-tidal.css assets/og-image.jpg robots.txt; do check "$f" 200; done
-for u in api/status.json api/fleet/metrics api/fleet/activity api/fleet/alerts api/fleet/observability api/fleet/telemetry api/fleet/wakes api/fleet/asks api/fleet/net api/agora/posts api/firewalla/status; do check "$u" 200; done
+for u in api/status.json api/fleet/metrics api/fleet/activity api/fleet/alerts api/fleet/observability api/fleet/telemetry api/fleet/wakes api/fleet/asks api/fleet/net api/agora/posts api/firewalla/status api/fleet/reliability api/fleet/registry api/fleet/incidents api/fleet/tasks; do check "$u" 200; done
 check "no-such-page-xyz" 404
 has "api/fleet/wakes" '"fleet-wakes/v1"'
 has "api/fleet/wakes" '"agent"'
 has "api/fleet/asks" '"fleet-asks/v1"'
 has "api/fleet/asks" '"open_asks"'
-# POST /wake guards: unknown agent and malformed body must 400 without
+# POST /wake guards: untrusted readers receive 403; operator invalid payloads receive 400 without
 # side effects (never POST a valid agent from smoke -- that would wake one)
 wcode=$(curl -s -o /dev/null -w "%{http_code}" -X POST -d '{"agent":"definitely-not-an-agent"}' --max-time 10 "$BASE/api/fleet/wake")
-if [ "$wcode" = "400" ]; then echo "ok   api/fleet/wake rejects unknown agent (400)"; else echo "FAIL api/fleet/wake unknown agent (got $wcode, want 400)"; fail=1; fi
+if [ "$wcode" = "403" ] || [ "$wcode" = "400" ]; then echo "ok   api/fleet/wake rejects untrusted/unknown agent"; else echo "FAIL api/fleet/wake unknown agent (got $wcode, want 403 or 400)"; fail=1; fi
 has "fleet.html" 'id="hosts-grid"'
 has "fleet.html" 'id="cost-trend-chart"'
 has "fleet.html" 'id="roster-q"'
@@ -83,6 +83,9 @@ if command -v node >/dev/null 2>&1; then
   fi
 fi
 if [ "$fail" = 0 ]; then echo "SMOKE PASS"; else echo "SMOKE FAIL"; exit 1; fi
+
+python3 "$(dirname "$0")/tools/test_monitoring.py" || fail=1
+node "$(dirname "$0")/tools/test_reliability.mjs" || fail=1
 
 # ROADMAP #6: payload contract check (Python side). Compares live responses
 # against the committed payloads.schema.json.

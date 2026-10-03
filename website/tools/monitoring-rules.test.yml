@@ -1,0 +1,34 @@
+rule_files:
+- ../monitoring/gale-monitor.rules.yml
+evaluation_interval: 1m
+tests:
+- interval: 1m
+  input_series: []
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GaleMonitorBridgeStale
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        component: monitor
+        owner: gale
+        host: gale-agent
+      exp_annotations:
+        summary: Fleet monitoring bridge is stale or absent
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+- interval: 1m
+  input_series:
+  - series: gale_monitor_bridge_unixtime{host="gale-agent"}
+    values: 0+60x10
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: GaleMonitorBridgeStale
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_monitor_api_up{host="gale-agent"}
+    values: 0x5 1x5
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: GaleFleetApiDown
+    exp_alerts: []

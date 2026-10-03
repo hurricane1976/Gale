@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { boot, esc, clamp, refreshEffects, trapFocus, REDUCED, chartTooltip, skeleton, whenNear } from "./shared.js";
+import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, chartTooltip, skeleton, whenNear } from "./shared.js";
 
 boot();
 
@@ -74,7 +74,7 @@ function closeConfirm() { pending = null; $("confirm-overlay").hidden = true; }
 
 async function postAction(body) {
   try {
-    const r = await fetch("api/ollama/action", {
+    const r = await tracedFetch("api/ollama/action", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
@@ -506,7 +506,7 @@ async function openShow(model) {
   $("show-body").innerHTML = `<p class="mini-note">loading&hellip;</p>`;
   $("show-overlay").hidden = false;
   try {
-    const r = await fetch(`api/ollama/show?model=${encodeURIComponent(model)}`, { cache: "no-store" });
+    const r = await tracedFetch(`api/ollama/show?model=${encodeURIComponent(model)}`, { cache: "no-store" });
     const d = await r.json();
     if (showOpenFor !== model) return;
     if (!d.ok) { $("show-body").innerHTML = `<div class="silent-err">${esc(d.error || "error")}</div>`; return; }
@@ -547,7 +547,7 @@ function startPullWatch(model) {
   $("pull-progress").hidden = false;
   const tick = async () => {
     try {
-      const r = await fetch("api/ollama/pull/status", { cache: "no-store" });
+      const r = await tracedFetch("api/ollama/pull/status", { cache: "no-store" });
       const st = await r.json();
       if (st.model !== model && st.state !== "running") { stopPullWatch(); return; }
       const pct = st.pct != null ? st.pct : null;
@@ -670,7 +670,7 @@ async function sendChat() {
   }
   let tick = null;
   try {
-    const r = await fetch("api/ollama/chat/stream", {
+    const r = await tracedFetch("api/ollama/chat/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ model, messages, options: collectChatOptions() }),
     });
@@ -767,7 +767,7 @@ $("ab-run").addEventListener("click", async () => {
   const runOne = async (side, model) => {
     const t0 = Date.now();
     try {
-      const r = await fetch("api/ollama/chat", {
+      const r = await tracedFetch("api/ollama/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model, messages, options }),
       });
@@ -817,7 +817,7 @@ $("show-overlay").addEventListener("click", (e) => { if (e.target === e.currentT
 /* ---------------- loaders ---------------- */
 async function loadSnap() {
   try {
-    const r = await fetch(SNAP_URL, { cache: "no-store" });
+    const r = await tracedFetch(SNAP_URL, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     SNAP = await r.json();
     $("srv-url").textContent = SNAP.url || "192.168.1.197:11434";
@@ -832,7 +832,7 @@ async function loadSnap() {
 }
 async function loadHist() {
   try {
-    const r = await fetch(HIST_URL, { cache: "no-store" });
+    const r = await tracedFetch(HIST_URL, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     HIST = await r.json();
     renderVitals();
@@ -922,7 +922,7 @@ async function loadErrlog() {
   const el = $("errlog");
   if (!el) return;
   try {
-    const r = await fetch("api/ollama/errors", { cache: "no-store" });
+    const r = await tracedFetch("api/ollama/errors", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     el.innerHTML = (d.errors || []).length
@@ -933,7 +933,7 @@ async function loadErrlog() {
 
 async function loadGpu() {
   try {
-    const r = await fetch("api/ollama/gpu", { cache: "no-store" });
+    const r = await tracedFetch("api/ollama/gpu", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     GPU = await r.json();
     renderGpu(GPU);

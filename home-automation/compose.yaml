@@ -1,0 +1,15 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.9.4
+    container_name: gale-homeassistant
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      TZ: America/New_York
+    volumes:
+      - /var/lib/gale-homeassistant/config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

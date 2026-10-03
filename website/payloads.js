@@ -9,6 +9,10 @@ const numOr = z.union([z.number(), z.null()]);
 const strOr = z.union([z.string(), z.null()]);
 
 export const metricsPayload = z.object({
+  coverage: z.unknown().optional(),
+  sources: z.unknown().optional(),
+  cost_coverage: z.unknown().optional(),
+  cost_coverage_by_host: z.unknown().optional(),
   days: z.array(z.string()),
   per_agent_24h: z.array(z.object({
     agent: z.string(),
@@ -68,9 +72,12 @@ export const observabilityPayload = z.object({
   // set by /observability?runs=N (fast first paint): runs holds only the newest N of runs_total
   runs_truncated: z.boolean().optional(),
   runs_total: z.number().optional(),
+  coverage: z.unknown().optional(),
+  sources: z.unknown().optional(),
   totals: z.object({
+    cost_coverage: z.unknown().optional(),
     cost_usd: z.number(),
-    mean_cost_usd: z.number(),
+    mean_cost_usd: numOr,
     total_tokens: z.number().optional(),
     // per-agent lanes (#18 + latent lane-empty fix: zod strips undeclared
     // keys, so agents MUST be declared or the lanes render empty)
@@ -78,7 +85,7 @@ export const observabilityPayload = z.object({
       agent: z.string(),
       runs: z.number(),
       cost_usd: z.number(),
-      mean_cost_usd: z.number().optional(),
+      mean_cost_usd: numOr.optional(),
       total_tokens: z.number(),
       last_ts: strOr.optional(),
       p50_ms: numOr.optional(),
@@ -94,6 +101,10 @@ export const observabilityPayload = z.object({
     })).optional(),
   }),
   runs: z.array(z.object({
+    run_id: z.string().optional(),
+    task_id: z.string().optional(),
+    failure_class: strOr.optional(),
+    verification: z.string().optional(),
     ts: z.string(),
     agent: z.string(),
     // run-explorer + cost chart + lanes dereference these directly —

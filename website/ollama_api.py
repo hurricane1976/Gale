@@ -38,6 +38,7 @@ writes are the history JSONL (agent-owned /var/www/gale-api dir) and
 in-memory state. Every counter on the dashboard page is sourced from the
 server's own API or this sampler -- the page labels what is measured vs not.
 """
+from control_access import guarded, access
 import json
 import os
 import re
@@ -767,6 +768,8 @@ class Handler(BaseHTTPRequestHandler):
             return None
 
     def do_GET(self):
+        if urlsplit(self.path).path == "/access":
+            return self._send(200, access(self))
         parts = urlsplit(self.path)
         path, q = parts.path, parse_qs(parts.query)
         try:
@@ -833,6 +836,7 @@ class Handler(BaseHTTPRequestHandler):
         except (BrokenPipeError, ConnectionResetError):
             pass
 
+    @guarded()
     def do_POST(self):
         path = urlsplit(self.path).path
         try:

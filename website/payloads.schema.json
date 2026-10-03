@@ -283,7 +283,10 @@
             "type": "number"
           },
           "mean_cost_usd": {
-            "type": "number"
+            "type": [
+              "number",
+              "null"
+            ]
           },
           "total_tokens": {
             "type": "number"

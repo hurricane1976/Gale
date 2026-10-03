@@ -19,7 +19,7 @@ const BASE = process.env.GALE_BASE || "https://gale-agent.tail2f1671.ts.net";
 const CHROME = process.env.GALE_CHROME || "/snap/bin/chromium";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const BASELINE = join(HERE, "visual-baseline");
-const PAGES = ["index", "fleet", "status", "metrics", "observability", "ollama", "network", "weather", "agora", "reliability"];
+const PAGES = ["index", "fleet", "status", "metrics", "observability", "ollama", "network", "weather", "agora", "reliability", "operations", "home", "runbooks"];
 const VIEWPORTS = { phone: [390, 844], tablet: [820, 1180], desktop: [1440, 900] };
 // encoded (wire) byte budgets per page: [js, css, total]
 const BUDGET = { js: 160 * 1024, css: 60 * 1024, total: 420 * 1024 };

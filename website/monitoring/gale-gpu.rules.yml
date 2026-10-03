@@ -1,58 +1,65 @@
-# gale-gpu.rules.yml -- inference-stack alerts (Ollama server + GPU).
-# All expressions use the tools/gpu_bridge.py textfile bridge
-# (gale_gpu.prom, node_exporter textfile collector). Severity follows
-# gale-hardware.yml: warning = board only, critical = also Telegram/PWA
-# via Alertmanager's severity="critical" route.
-# Deploy: copy to /var/snap/prometheus/common/rules/gale-gpu.rules.yml,
-# then POST 127.0.0.1:9090/-/reload and check /api/v1/rules.
 groups:
-  - name: gale-gpu
-    interval: 30s
-    rules:
-      - alert: GaleOllamaDown
-        expr: gale_ollama_up == 0
-        for: 10m
-        labels: { severity: critical }
-        annotations:
-          summary: "LAN Ollama server unreachable for 10m"
-          description: "10 local agents run on ollama/qwen3.8:27b -- scheduled wakes will fail until it's back"
-
-      - alert: GaleOllamaModelUnloaded
-        expr: gale_ollama_model_loaded == 0
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "no model resident in Ollama for 15m"
-          description: "library still reachable but nothing loaded ({{ $value }} models) -- next wake eats a cold load"
-
-      - alert: GaleGpuCollectorDown
-        expr: gale_gpu_collector_up == 0
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "GPU collector (josh-desktop11 /gpu) unreachable"
-          description: "no VRAM/temp/util telemetry -- collector or the desktop is down"
-
-      - alert: GaleGpuHot
-        expr: gale_gpu_temp_c > 83
-        for: 5m
-        labels: { severity: warning }
-        annotations:
-          summary: "GPU {{ $labels.gpu }} over 83C for 5m"
-          description: "RTX 4090 throttles ~83C -- inference throughput degrades"
-
-      - alert: GaleGpuVramNearFull
-        expr: gale_gpu_vram_used_ratio > 0.95
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "GPU {{ $labels.gpu }} VRAM >95% for 15m"
-          description: "headroom shrinking -- a second model load would OOM the server"
-
-      - alert: GaleGpuBridgeStale
-        expr: time() - gale_gpu_bridge_unixtime > 900
-        for: 5m
-        labels: { severity: warning }
-        annotations:
-          summary: "gpu_bridge stopped updating (15m+)"
-          description: "gale_gpu.prom stale -- cron entry dead or bridge erroring (see journal)"
+- name: gale-gpu
+  interval: 30s
+  rules:
+  - alert: GaleOllamaDown
+    expr: gale_ollama_up == 0
+    for: 10m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: LAN Ollama server unreachable for 10m
+      description: 10 local agents run on ollama/qwen3.8:27b -- scheduled wakes will fail until it's back
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleOllamaModelUnloaded
+    expr: gale_ollama_model_loaded == 0
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: no model resident in Ollama for 15m
+      description: library still reachable but nothing loaded ({{ $value }} models) -- next wake eats a cold load
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleGpuCollectorDown
+    expr: gale_gpu_collector_up == 0
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: GPU collector (josh-desktop11 /gpu) unreachable
+      description: no VRAM/temp/util telemetry -- collector or the desktop is down
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleGpuHot
+    expr: gale_gpu_temp_c > 83
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: GPU {{ $labels.gpu }} over 83C for 5m
+      description: RTX 4090 throttles ~83C -- inference throughput degrades
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleGpuVramNearFull
+    expr: gale_gpu_vram_used_ratio > 0.95
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: GPU {{ $labels.gpu }} VRAM >95% for 15m
+      description: headroom shrinking -- a second model load would OOM the server
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleGpuBridgeStale
+    expr: (time() - gale_gpu_bridge_unixtime > 900) or absent(gale_gpu_bridge_unixtime)
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+      host: gale-agent
+    annotations:
+      summary: gpu_bridge stopped updating (15m+)
+      description: gale_gpu.prom stale -- cron entry dead or bridge erroring (see journal)
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html

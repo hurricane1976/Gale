@@ -1,206 +1,63 @@
-/* GALE — reliability dashboard: SLOs, burn-rate, RUM, synthetics,
-   cost forecast, backup proof, push funnel. Client-side only, reads the
-   same live feeds as the other pages (metrics / activity / status.json /
-   observability) plus synthetics.json written by tools/synthetics.sh and
-   the local RUM buffer from rum.js. No new backend contract. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, tracedFetch, skeleton, whenNear } from "./shared.js";
-
+import { boot, esc, setHTML, setText, tracedFetch } from "./shared.js";
+import { level, freshness } from "./reliability-state.js";
 boot();
-refreshEffects();
-
 const $ = (id) => document.getElementById(id);
-const FEEDS = {
-  metrics: "api/fleet/metrics",
-  activity: "api/fleet/activity",
-  wakes: "api/fleet/wakes",
-  status: "api/status.json",
-  observability: "api/fleet/observability",
-  synthetics: "api/synthetics.json",
-};
-
-skeleton($("slo-grid"), 4, 92);
-skeleton($("synth-grid"), 3, 64);
-
-async function get(url) {
-  const r = await tracedFetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.json();
+let busy = false, last = null;
+const money = (n) => Number.isFinite(n) ? `$${n.toFixed(2)}` : "unknown";
+function render(data) {
+  const feed = freshness(data);
+  setText($("reliability-freshness"), `Collected ${data.generated_at} · ${feed} · refresh every 30s`);
+  setHTML($("slo-grid"), data.slos.map((s) => {
+    const state = level(feed === "ok" ? s : { ...s, state: "stale" });
+    const value = state === "unknown" ? "Unknown" : `${s.actual.toFixed(2)}%`;
+    const budget = s.budget_remaining_pct == null ? "budget unavailable" : `budget remaining ${s.budget_remaining_pct.toFixed(1)}%`;
+    return `<div class="vital" data-level="${state}"><span class="vital-label">${esc(s.name)} · target ${s.target}%</span><span class="vital-value">${value}</span><span class="vital-sub">${esc(s.detail)} · ${budget}${s.coverage_pct != null ? ` · history coverage ${s.coverage_pct}%` : ""}</span></div>`;
+  }).join(""));
+  const c = data.coverage;
+  setHTML($("coverage-proof"), `<p>${c.reachable}/${c.expected} reachable · <strong>${c.reporting}/${c.expected} reporting</strong></p>` +
+    (c.missing.length ? `<ul>${c.missing.map((a) => `<li>${esc(a.agent)} · ${esc(a.host)} · listener ${esc(a.listener_state)} · owner ${esc(a.owner)}</li>`).join("")}</ul>` : "<p>All active agents report runs.</p>") +
+    `<p>Reporting means at least one historical run; freshness and scheduled progress are separate.</p>` +
+    `<ul>${Object.entries(data.sources).map(([name, s]) => `<li>${esc(name)}: ${esc(s.state)} · ${s.age_s ?? "unknown"}s since collection${s.latest_run_at ? ` · latest run ${esc(s.latest_run_at)}` : ""}</li>`).join("")}</ul>`);
+  const synth = data.synthetics, synthFeed = data.feeds.synthetics;
+  setHTML($("synth-grid"), synth?.checks?.length ? synth.checks.map((c) => {
+    const state = synthFeed.state === "ok" ? (c.ok ? "ok" : "crit") : "unknown";
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(c.name)}</span><span class="pill" data-level="${state}">${synthFeed.state !== "ok" ? esc(synthFeed.state) : c.ok ? `${c.ms}ms` : "FAIL"}</span></div><span class="mono-dim">${esc(c.url)} · ${esc(synth.checked_at)} · age ${synthFeed.age_s ?? "unknown"}s</span></div>`;
+  }).join("") : '<p class="mini-note">Synthetic feed unavailable. Availability is unknown.</p>');
+  const cost = data.cost;
+  setText($("forecast"), `Known spend ${money(cost.known_daily_average_usd)}/day → 30d ${money(cost.known_projection_30d_usd)}. Priced coverage ${cost.coverage_pct ?? "unknown"}%; ${cost.unknown_runs} unpriced runs. Daily limit ${money(cost.daily_limit_usd)}${cost.known_daily_average_usd > cost.daily_limit_usd ? " · above policy limit" : ""}. ${cost.pricing_basis}.`);
+  const b = data.backup, cfg = data.policy;
+  const backupState = b.collector.state !== "ok" || b.backup_age_h == null ? "unknown" : b.backup_age_h > cfg.backup_max_age_h ? "crit" : "ok";
+  const drillState = b.collector.state !== "ok" || b.drill_ok == null ? "unknown" : !b.drill_ok ? "crit" : b.drill_age_h == null || b.drill_age_h > cfg.restore_max_age_h ? "warn" : "ok";
+  setHTML($("backup-proof"), `<p data-level="${backupState}">Archive freshness: <strong>${esc(backupState)}</strong> · ${b.backup_age_h ?? "unknown"}h · ${esc(b.backup_name || "no archive")}</p><p>Archive timestamp is freshness evidence; it does not prove restore success.</p><p data-level="${drillState}">Restore proof: <strong>${esc(drillState)}</strong> · ${b.drill_ok == null ? "unknown" : b.drill_ok ? "passed" : "failed"} · ${b.drill_age_h ?? "unknown"}h old · ${esc(b.drill_backup || "no drill")}</p><p>Collector: ${esc(b.collector.state)} · ${esc(b.collector.collected_at || "unknown")}</p>`);
+  if (data.backup_inventory) {
+    const inv = data.backup_inventory;
+    setHTML($("backup-inventory"), `<p>Local proof collected ${esc(inv.generated_at)} · archive hash baseline; critical files restored in isolation.</p>` + inv.agents.map(a=>`<p>${esc(a.agent)} · ${esc(a.state)} · ${a.archive_age_h ?? "unknown"}h archive age · ${esc(a.archive || a.reason || "unknown")}</p>`).join(""));
+  } else setText($("backup-inventory"), "Per-agent restore proof unavailable.");
+  setText($("outcome-proof"), `${data.outcomes.verified_runs} verified successful tasks; ${data.outcomes.verification_unknown_runs} runs have no task verification. A successful process exit is not proof of completed work.`);
 }
-
-function lvl(pct, warn = 70, crit = 90) {
-  if (pct >= crit) return "crit";
-  if (pct >= warn) return "warn";
-  return "ok";
+function rum() {
+  const samples = window.__galeRUM || [];
+  setHTML($("rum-grid"), ["LCP", "INP", "CLS"].map((name) => {
+    const values = samples.filter((s) => s.metric === name).map((s) => s.value).sort((a, b) => a - b);
+    const p95 = values.length ? values[Math.min(values.length - 1, Math.floor(values.length * .95))] : null;
+    return `<div class="vital" data-level="${p95 == null ? "unknown" : "ok"}"><span class="vital-label">${name} p95 · this browser</span><span class="vital-value">${p95 ?? "Unknown"}</span><span class="vital-sub">${values.length} samples${name === "INP" ? " · event duration approximation" : ""}</span></div>`;
+  }).join(""));
 }
-
-function sloCard(name, target, actual, detail) {
-  const err = Math.max(0, 100 - actual);
-  const budget = Math.max(0, (actual - target) / (100 - target));
-  const state = actual >= target ? "ok" : budget > 0.5 ? "warn" : "crit";
-  return `<div class="vital" data-level="${state}">
-    <span class="vital-label">${esc(name)} · SLO ${target}%</span>
-    <span class="vital-value">${actual.toFixed(2)}%</span>
-    <div class="meter" data-level="${state}"><i style="width:${clamp(actual, 0, 100).toFixed(1)}%"></i></div>
-    <span class="vital-sub">${esc(detail)} · err ${err.toFixed(2)}%</span>
-  </div>`;
-}
-
-/* Wake on-time SLO: this host's wake cycle is every 6h (4/day), so the last 7 days are 28 UTC-aligned
-   6-hour slots. A slot is "on time" when it holds at least one Gale wake. Source: /api/fleet/wakes (the
-   14-day local wake history). The activity feed only holds the latest ~24 events (about an hour), so it
-   can't answer a 7-day question; it stays as a last-resort fallback. */
-const SLOT_MS = 6 * 3600e3, SLOTS = 28;
-function wakeSLO(wakes, events) {
-  const rows = (wakes && wakes.runs || []).filter((r) => r.agent === "gale");
-  if (rows.length) {
-    const nowSlot = Math.floor(Date.now() / SLOT_MS);
-    const covered = new Set();
-    for (const r of rows) {
-      const k = Math.floor(new Date(r.ts).getTime() / SLOT_MS);
-      if (nowSlot - k >= 1 && nowSlot - k <= SLOTS) covered.add(k); // completed slots only: the open slot isn't late yet
-    }
-    return { actual: (covered.size / SLOTS) * 100, detail: `${covered.size}/${SLOTS} six-hour slots had a wake` };
-  }
-  const week = Date.now() - 7 * 86400e3;
-  const n = events.filter((e) => e.kind === "waking" && new Date(e.ts || 0).getTime() > week).length;
-  return { actual: clamp((n / SLOTS) * 100, 0, 100), detail: `${n}/${SLOTS} wakes in the activity feed (wake history unavailable)` };
-}
-
-/* Observability freshness SLO: of the last 24 completed hours, how many had at least one logged run from
-   any local agent (wake history), plus how old the newest activity-feed event is. Replaces a constant
-   "100% if the feed has any events". */
-function freshnessSLO(wakes, events) {
-  const rows = (wakes && wakes.runs) || [];
-  const now = Date.now(), HOUR = 3600e3, nowH = Math.floor(now / HOUR);
-  let newest = 0;
-  for (const e of events || []) newest = Math.max(newest, new Date(e.ts || 0).getTime() || 0);
-  const age = newest ? Math.max(0, Math.round((now - newest) / 60000)) : null;
-  const ageTxt = age == null ? "no live events" : age < 60 ? `newest event ${age}m ago` : `newest event ${Math.round(age / 60)}h ago`;
-  if (!rows.length) return { actual: events && events.length ? 100 : 50, detail: `${(events || []).length} events in feed · ${ageTxt}` };
-  const hours = new Set();
-  for (const r of rows) { const k = Math.floor(new Date(r.ts).getTime() / HOUR); if (nowH - k >= 1 && nowH - k <= 24) hours.add(k); }
-  return { actual: (hours.size / 24) * 100, detail: `${hours.size}/24 recent hours had logged runs · ${ageTxt}` };
-}
-
-/* Cost pace SLO: share of the last 7 days at or under the $5/day pace line the forecast card warns about. */
-const COST_DAILY_LIMIT = 5;
-function costSLO(metrics) {
-  if (!metrics) return { actual: 50, detail: "spend feed unreachable" };
-  const perDay = (metrics.days || []).map((_, i) =>
-    Object.values(metrics.daily_cost_by_host || {}).reduce((s, srs) => s + (srs[i] || 0), 0)).slice(-7);
-  if (!perDay.length) return { actual: 50, detail: "no spend data" };
-  const ok = perDay.filter((c) => c <= COST_DAILY_LIMIT).length;
-  return { actual: (ok / perDay.length) * 100, detail: `${ok}/${perDay.length} days at or under $${COST_DAILY_LIMIT}/day` };
-}
-
-function apiSLO(synth) {
-  if (!synth || !synth.checks || !synth.checks.length) return { actual: 100, detail: "no synthetic run yet" };
-  const ok = synth.checks.filter((c) => c.ok).length;
-  return { actual: (ok / synth.checks.length) * 100, detail: `${ok}/${synth.checks.length} checks green` };
-}
-
-function renderRUM() {
-  const box = $("rum-grid");
-  if (!box) return;
-  const samples = (window.__galeRUM || []).slice(-40);
-  const pick = (m) => samples.filter((s) => s.metric === m).map((s) => s.value);
-  const stat = (arr) => {
-    if (!arr.length) return "–";
-    const p95 = arr.slice().sort((a, b) => a - b)[Math.floor(arr.length * 0.95)] ?? arr[arr.length - 1];
-    return `${p95}`;
-  };
-  const lcp = pick("LCP"), inp = pick("INP"), cls = pick("CLS");
-  setHTML(box, [
-    `<div class="vital" data-level="${(+stat(lcp) || 0) > 2500 ? "warn" : "ok"}"><span class="vital-label">LCP p95 (ms)</span><span class="vital-value">${esc(stat(lcp))}</span><span class="vital-sub">${lcp.length} samples · this browser</span></div>`,
-    `<div class="vital" data-level="${(+stat(inp) || 0) > 200 ? "warn" : "ok"}"><span class="vital-label">INP p95 (ms)</span><span class="vital-value">${esc(stat(inp))}</span><span class="vital-sub">${inp.length} samples</span></div>`,
-    `<div class="vital" data-level="${(+stat(cls) || 0) > 0.1 ? "warn" : "ok"}"><span class="vital-label">CLS p95</span><span class="vital-value">${esc(stat(cls))}</span><span class="vital-sub">${cls.length} samples · target ≤0.1</span></div>`,
-  ].join(""));
-}
-
-function renderSynth(s) {
-  const box = $("synth-grid");
-  if (!box) return;
-  if (!s || !Array.isArray(s.checks) || !s.checks.length) {
-    setHTML(box, `<p class="mini-note">No synthetic run yet — run <code>tools/synthetics.sh</code> (writes <code>api/synthetics.json</code>).</p>`);
-    return;
-  }
-  setHTML(box, s.checks.map((c) => `
-    <div class="target-card" data-level="${c.ok ? "ok" : "crit"}">
-      <div class="target-top"><span class="target-name">${esc(c.name)}</span>
-      <span class="pill" data-level="${c.ok ? "ok" : "crit"}">${c.ok ? `${c.ms}ms` : "FAIL"}</span></div>
-      <span class="mono-dim">${esc(c.url || "")} · ${esc(c.checked_at || "")}</span>
-    </div>`).join(""));
-}
-
-function renderForecast(metrics) {
-  const box = $("forecast");
-  if (!box) return;
+async function refresh() {
+  if (busy) return;
+  busy = true;
   try {
-    const perDay = (metrics.days || []).map((_, i) =>
-      Object.values(metrics.daily_cost_by_host || {}).reduce((s, srs) => s + (srs[i] || 0), 0));
-    const last7 = perDay.slice(-7);
-    const avg = last7.length ? last7.reduce((a, b) => a + b, 0) / last7.length : 0;
-    const proj30 = avg * 30;
-    setText(box, `7d avg $${avg.toFixed(2)}/day → 30d projection $${proj30.toFixed(2)}${avg > 5 ? " · over $5/day pace — check quota" : ""}`);
-  } catch { setText(box, "forecast unavailable"); }
+    const response = await tracedFetch("api/fleet/reliability", { cache: "no-store", signal: AbortSignal.timeout(25000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (data.schema !== "fleet-reliability/v1" || !Array.isArray(data.slos)) throw new Error("invalid reliability payload");
+    last = data; render(data);
+  } catch (e) {
+    if (last) render({ ...last, generated_at: "unknown" });
+    else setHTML($("slo-grid"), '<p class="mini-note">Reliability unknown — monitoring feed unavailable.</p>');
+    setText($("reliability-freshness"), `Feed unavailable: ${e.message}. Displayed data is stale.`);
+  } finally { busy = false; rum(); }
 }
-
-/* lazy 3D error-budget towers (only with WebGL + motion; never breaks the page) */
-async function render3D(slos, metrics) {
-  try {
-    const sec = document.getElementById("sec-slo3d");
-    if (!sec) return;
-    let gl = null;
-    try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
-    const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    if (!gl || reduced || (document.documentElement.dataset && document.documentElement.dataset.saver === "1")) { sec.hidden = true; return; }
-    const perDay = metrics ? (metrics.days || []).map((_, i) =>
-      Object.values(metrics.daily_cost_by_host || {}).reduce((s, srs) => s + (srs[i] || 0), 0)).slice(-7) : [];
-    await whenNear(sec);
-    const m = await import("./slo3d.js");
-    if (!m.updateSLO3D(slos, perDay, COST_DAILY_LIMIT)) sec.hidden = true;
-  } catch { /* decoration only */ }
-}
-
-async function main() {
-  renderRUM();
-  setInterval(renderRUM, 10000);
-  let metrics = null, events = [], synth = null, wakes = null;
-  try { metrics = await get(FEEDS.metrics); events = metrics ? [] : []; } catch {}
-  try { const a = await get(FEEDS.activity); events = a.events || []; } catch {}
-  try { wakes = await get(FEEDS.wakes); } catch {}
-  try { synth = await get(FEEDS.synthetics); } catch {}
-  const w = wakeSLO(wakes, events);
-  const cost = costSLO(metrics);
-  const fresh = freshnessSLO(wakes, events);
-  const api = apiSLO(synth);
-  setHTML($("slo-grid"), [
-    sloCard("Wake on-time", 99.5, w.actual, w.detail + " · 7d window"),
-    sloCard("Synthetic green", 99.9, api.actual, api.detail),
-    sloCard("Observability freshness", 99.0, fresh.actual, fresh.detail),
-    sloCard("Cost pace", 95.0, cost.actual, cost.detail),
-  ].join(""));
-  render3D([
-    { name: "Wake on-time", short: "wakes", target: 99.5, actual: w.actual, detail: w.detail },
-    { name: "Synthetic green", short: "synthetics", target: 99.9, actual: api.actual, detail: api.detail },
-    { name: "Observability freshness", short: "freshness", target: 99.0, actual: fresh.actual, detail: fresh.detail },
-    { name: "Cost pace", short: "cost pace", target: 95.0, actual: cost.actual, detail: cost.detail },
-  ], metrics);
-  renderSynth(synth);
-  if (metrics) renderForecast(metrics);
-  try {
-    const st = await get(FEEDS.status);
-    const h = st.host || {};
-    setHTML($("backup-proof"), `
-      <dl class="kv-list">
-        <dt>uptime</dt><dd>${esc(String(Math.floor((h.uptime_s || 0) / 3600)))}h</dd>
-        <dt>reboot</dt><dd>${h.reboot_required ? "pending" : "none"}</dd>
-        <dt>snapshot</dt><dd>${esc((st.collected_at || st.ts || "unknown").slice(0, 19))}</dd>
-      </dl>
-      <p class="mini-note">Full restore proof (hash-matched files in /tmp) ships from the wake log — this panel proves the collector is fresh; red means investigate before trusting backups.</p>`);
-  } catch {
-    setHTML($("backup-proof"), `<p class="mini-note">status.json unreachable — collector down or 8090 down.</p>`);
-  }
-  refreshEffects();
-}
-main();
+refresh();
+setInterval(refresh, 30000);
+setInterval(() => { if (last && freshness(last) !== "ok") render(last); rum(); }, 10000);

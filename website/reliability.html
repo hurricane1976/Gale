@@ -35,6 +35,7 @@
   </a>
   <nav class="site-links" aria-label="Site">
     <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
     <a href="fleet.html">Fleet</a>
     <a href="status.html">Status</a>
     <a href="metrics.html">Metrics</a>
@@ -51,17 +52,20 @@
   <div class="ops-head"><div>
     <span class="eyebrow"><span class="dot"></span>SLOs · burn-rate · RUM · synthetics</span>
     <h1 class="ops-title grad-text">Reliability console</h1>
-    <p class="lede" style="margin-bottom:0">Error budgets, synthetic green, real-user vitals, cost forecast, backup freshness. Reads the same live feeds — no new backend contract. Synthetics via <code>tools/synthetics.sh</code>.</p>
+    <p class="lede" style="margin-bottom:0">Error budgets, synthetic green, real-user vitals, cost forecast, backup freshness. Historical availability, source coverage, and recovery evidence from one shared policy. <a href="operations.html">Open operations</a>.</p>
   </div></div>
   <noscript><p class="block" style="color:var(--text-dim)">Needs JavaScript. Raw feeds: <code>/api/fleet/metrics</code>, <code>/api/fleet/activity</code>, <code>/api/status.json</code>.</p></noscript>
+  <p id="reliability-freshness" class="mini-note" role="status">Loading monitoring evidence…</p>
   <div class="ops-board">
+    <section class="ops-panel span-full"><h2 class="panel-title">Fleet reporting & source freshness</h2><div id="coverage-proof"></div></section>
     <section class="ops-panel span-full"><h2 class="panel-title">SLOs &amp; error budgets</h2><div class="vitals-grid" id="slo-grid"></div></section>
-    <section class="ops-panel span-full" id="sec-slo3d"><h2 class="panel-title">Error-budget towers <span>height = measured % &middot; pale plate = target &middot; green meets it &middot; back row = last 7 days of spend vs the daily limit &middot; drag to orbit</span></h2>
-      <div class="bars3d"><canvas id="slo-3d" role="img" aria-label="3D towers for each service-level objective, tinted by whether it meets its target, with a back row of the last seven days of spend against the daily limit. The same figures are in the cards above."></canvas></div></section>
+
     <section class="ops-panel"><h2 class="panel-title">Synthetics <span id="synth-fresh"></span></h2><div class="targets-grid" id="synth-grid"></div></section>
     <section class="ops-panel"><h2 class="panel-title">RUM · this browser</h2><div class="vitals-grid" id="rum-grid"></div><p class="mini-note">LCP ≤2500ms · INP ≤200ms · CLS ≤0.1. Collector: <code>rum.js</code>.</p></section>
     <section class="ops-panel"><h2 class="panel-title">Cost forecast</h2><p id="forecast" class="mono-dim">loading…</p><p class="mini-note">7-day average → 30-day projection from <code>/api/fleet/metrics</code>.</p></section>
     <section class="ops-panel"><h2 class="panel-title">Backup freshness</h2><div id="backup-proof"></div></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">Per-agent isolated restore proof</h2><div id="backup-inventory"></div></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">Task verification</h2><p id="outcome-proof">Loading…</p></section>
   </div>
 </main>
 </body>

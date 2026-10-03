@@ -2,7 +2,7 @@
 """Rewrite every page's site-nav link list from one canonical list (labels + order), so the
 ten pages can't drift apart. Idempotent. Run from the website dir; deploy.sh doesn't call it."""
 import re, sys
-NAV = [("index", "Home"), ("fleet", "Fleet"), ("status", "Status"), ("metrics", "Metrics"),
+NAV = [("index", "Home"), ("operations", "Operations"), ("fleet", "Fleet"), ("status", "Status"), ("metrics", "Metrics"),
        ("observability", "Observability"), ("ollama", "Ollama"), ("agora", "Agora"),
        ("weather", "Weather"), ("network", "Network"), ("reliability", "Reliability")]
 # container opening tag -> closing tag

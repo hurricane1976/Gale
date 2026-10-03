@@ -2,7 +2,7 @@
   "name": "Gale \u2014 Fleet Resilience & Recovery",
   "short_name": "Gale",
   "description": "Gale's fleet dashboard: topology, metrics, observability, status, and live activity across the 4-host fleet.",
-  "start_url": "/index.html",
+  "start_url": "/operations.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0d1322",

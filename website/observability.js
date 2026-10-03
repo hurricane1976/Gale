@@ -11,7 +11,9 @@ const POLL_MS = 30000;
 const FAM_COLOR = { claude: "var(--m-claude)", glm: "var(--m-glm)", gpt: "var(--m-gpt)", muse: "var(--m-muse)", gemini: "light-dark(#0a6288, #3fc7ff)", deepseek: "light-dark(#3846a6, #8593f0)" };
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tramontane: "var(--m-qwen)", ostro: "var(--m-qwen)", poniente: "var(--m-qwen)", levante: "var(--m-qwen)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)", beacon: "var(--m-claude)", river: "light-dark(#0f6a50, #4fd1a5)", creek: "light-dark(#76560c, #e0b45c)", stream: "light-dark(#8a2b80, #d98fd1)", meadow: "var(--m-glm)", brook: "var(--m-gpt)", mist: "var(--m-gpt)", highbeam: "var(--m-glm)", lantern: "var(--m-glm)", lightning: "var(--m-glm)", radar: "var(--m-glm)", prism: "var(--m-gpt)", pulsar: "var(--m-claude)", canyon: "var(--m-glm)", ridge: "var(--m-glm)", harbor: "var(--m-glm)", delta: "var(--m-glm)", mesa: "var(--m-gpt)", vista: "var(--m-gpt)" };
 let DATA = null;
-let filter = "";
+const query = new URLSearchParams(typeof location !== "undefined" ? location.search || "" : "");
+let filter = query.get("agent") || "";
+let failedOnly = query.get("failed") === "1", periodHours = 0, modelFilter = "";
 let hostFilter = "";
 
 const fmtCost = (c) => (c == null ? "&ndash;" : `$${c.toFixed(4)}`);
@@ -64,11 +66,13 @@ function renderStats(d) {
   const t = d.totals;
   const errs = d.runs.filter((r) => r.is_error).length;
   const hosts = hostNames(d);
-  const remote = d.remote_status === "unreachable" ? " · remote unreachable, local-only" : "";
+  const remote = d.remote_status !== "ok" ? " · partial source health" : "";
+  const coverage = t.cost_coverage;
+  if (d.coverage) setText($("coverage-note"), `${d.coverage.reachable}/${d.coverage.expected} reachable · ${d.coverage.reporting}/${d.coverage.expected} reporting · ${coverage?.unknown_runs ?? "unknown"} unpriced runs · cost coverage ${coverage?.coverage_pct ?? "unknown"}%`);
   patchList($("stats-grid"), [
     { key: "runs", html: `<gale-stat label="Runs" value="${esc(String(d.count))}" sub="since ${esc(d.instrumented_since || "–")}"></gale-stat>` },
     { key: "cost", html: `<gale-stat label="Total cost" value="$${t.cost_usd.toFixed(4)}" sub="fleet-wide known costs${remote}"></gale-stat>` },
-    { key: "mean", html: `<gale-stat label="Mean cost / run" value="$${t.mean_cost_usd.toFixed(4)}" sub="${esc(d.count ? `across ${d.count} runs` : "")}"></gale-stat>` },
+    { key: "mean", html: `<gale-stat label="Mean cost / run" value="${t.mean_cost_usd == null ? "Unknown" : `$${t.mean_cost_usd.toFixed(4)}`}" sub="${esc(coverage ? `across ${coverage.priced_runs} priced runs` : "known-price runs only")}"></gale-stat>` },
     { key: "tokens", html: `<gale-stat label="Total tokens" value="${fmtTok(t.total_tokens)}" sub="in + out + cache-read"></gale-stat>` },
     { key: "errors", html: `<gale-stat label="Error runs" value="${esc(String(errs))}" level="${errs ? "warn" : "ok"}" sub="${errs ? "see silent-failure watch" : "none so far"}"></gale-stat>` },
     { key: "agents", html: `<gale-stat label="Agents" value="${esc(String(agentNames(t).length))}" sub="${esc(hosts.join(" · "))}"></gale-stat>` },
@@ -164,18 +168,20 @@ function renderExplorer(d) {
   const hsel = $("host-filter");
   const agents = agentNames(d.totals);
   const hosts = hostNames(d);
-  const cur = sel.value;
+  const cur = filter || sel.value;
   const hcur = hsel ? hsel.value : "";
   setHTML(sel, `<option value="">all agents</option>` + agents.map((a) => `<option${a === cur ? " selected" : ""}>${esc(a || "?")}</option>`).join(""));
   if (hsel) setHTML(hsel, `<option value="">all hosts</option>` + hosts.map((h) => `<option${h === hcur ? " selected" : ""}>${esc(h || "?")}</option>`).join(""));
-  const rows = d.runs.filter((r) => (!filter || r.agent === filter) && (!hostFilter || (r.host || "") === hostFilter)).slice().reverse().slice(0, 300);
+  const models = [...new Set(d.runs.map(r=>r.model).filter(Boolean))].sort();
+  if ($("model-filter")) setHTML($("model-filter"), `<option value="">all models</option>` + models.map(m=>`<option${m===modelFilter?" selected":""}>${esc(m)}</option>`).join(""));
+  const rows = d.runs.filter((r) => (!filter || r.agent === filter) && (!hostFilter || (r.host || "") === hostFilter) && (!failedOnly || r.is_error) && (!modelFilter || r.model === modelFilter) && (!periodHours || Date.parse(r.ts) >= Date.now()-periodHours*3600e3)).slice().reverse().slice(0, 300);
   setText($("run-count"), rows.length < d.count ? `${d.count} (showing ${rows.length})` : String(d.count));
   patchList($("runs-table").querySelector("tbody"), rows.length ? rows.map((r) => {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
     return {
       key: `run-${r.ts}-${r.agent}-${r.host || "?"}`,
       html: `<tr${r.is_error ? ' class="err-row"' : ""}>
-      <td>${esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
+      <td>${r.run_id ? `<a href="?run=${encodeURIComponent(r.run_id)}" data-run="${esc(r.run_id)}">${esc((r.ts || "").slice(5, 16).replace("T", " "))}</a>` : esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
       <td>${esc(r.host || "?")}</td>
       <td><span class="obs-lane-name" style="color:${AGENT_COLOR[r.agent] || "var(--text-dim)"}"><a href="fleet.html#agent-${encodeURIComponent(r.agent || "")}">${esc(r.agent || "?")}</a></span></td>
       <td>${fmtWake(r.waking_count)}</td>
@@ -230,9 +236,29 @@ function renderAll() {
   renderSilent(DATA);
   updateCity();
   refreshEffects();
-  setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
+  setFresh(DATA.remote_status === "ok" ? "live" : "error", `${DATA.remote_status === "ok" ? "live" : "partial source health"} · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
+  if (query.get("run") && !detailLoaded) { detailLoaded = true; showDetail(query.get("run")); }
 }
 
+let detailLoaded = false;
+async function showDetail(id) {
+  const box = $("run-detail"); if (!box) return;
+  box.hidden = false;
+  setText(box, "Loading run evidence…");
+  try {
+    const response = await tracedFetch(`api/fleet/runs/detail?id=${encodeURIComponent(id)}`, {cache:"no-store"});
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const d = await response.json(), r = d.run;
+    setHTML(box, `<h3>${esc(r.agent)} · ${esc(r.host)} · ${esc(r.run_id)}</h3><p>Model ${esc(r.model || "unknown")} · terminal ${esc(r.terminal_reason || "unknown")} · failure class ${esc(r.failure_class || "none")} · task verification ${esc(r.verification || "unknown")}</p><p>Artifact start ${esc(r.ts)} · ${esc(r.source || "unknown")}</p>` +
+      (d.events.length ? `<ol>${d.events.map(e=>`<li>${esc(e.at)} · ${esc(e.event)}${e.tool?` · ${esc(e.tool)}`:""}${e.duration_ms!=null?` · ${e.duration_ms}ms`:""}</li>`).join("")}</ol>` : `<p>No step trace for this historical run. Local artifact logs remain on the owning host.</p>`) + `<a href="runbooks.html#tasks">Task runbook</a>`);
+  } catch(e) {setText(box, `Run evidence unavailable: ${e.message}`);}
+}
+document.addEventListener("click",e=>{const link=e.target.closest?.("[data-run]");if(link){e.preventDefault();showDetail(link.dataset.run);}});
+for(const id of ["failed-only","period-filter","model-filter"]) {
+  const el=$(id); if (!el) continue;
+  if(id==="failed-only")el.checked=failedOnly;
+  el.addEventListener("change",()=>{failedOnly=!!$("failed-only")?.checked;periodHours=Number($("period-filter")?.value || 0);modelFilter=$("model-filter")?.value || "";if(DATA)renderExplorer(DATA);});
+}
 let fullTimer = 0;
 async function load(first = false) {
   try {

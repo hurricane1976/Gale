@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily fleet restore proof
+
+[Timer]
+OnBootSec=5min
+OnCalendar=*-*-* 10:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

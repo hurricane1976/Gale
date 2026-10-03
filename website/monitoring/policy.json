@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "window_days": 7,
+  "synthetic_target_pct": 99.9,
+  "wake_target_pct": 99.5,
+  "execution_target_pct": 99.0,
+  "collector_target_pct": 99.0,
+  "wake_grace_s": 600,
+  "status_max_age_s": 120,
+  "synthetic_max_age_s": 900,
+  "source_max_age_s": 600,
+  "scrape_interval_s": 15,
+  "fleet_daily_limit_usd": 5,
+  "backup_max_age_h": 36,
+  "restore_max_age_h": 840,
+  "agent_daily_limits_usd": {},
+  "host_daily_limits_usd": {}
+}

@@ -52,29 +52,15 @@ def esc(v):
 
 def cron_cadence():
     """Parse this user's crontab for wake.sh lines -> {dir: hours_per_day}."""
-    out = {}
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from fleet_monitor import local_schedules
     try:
-        raw = subprocess.run(["crontab", "-l"], capture_output=True, text=True,
-                              timeout=10).stdout
+        schedules = local_schedules()
     except Exception as e:
-        sys.stderr.write(f"wake_bridge: crontab -l failed: {e!r}\n")
-        return out
-    for line in raw.splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "/wake.sh" not in line:
-            continue
-        parts = line.split()
-        if len(parts) < 6:
-            continue
-        hours = parts[1]
-        try:
-            n = len({int(h) for h in hours.split(",") if h.isdigit()})
-        except ValueError:
-            continue
-        m = re.search(r"/home/agent/([A-Za-z0-9_-]+)/wake\.sh", line)
-        if m and n > 0:
-            out[m.group(1)] = n
-    return out
+        sys.stderr.write(f"wake_bridge: scheduler unreadable: {type(e).__name__}\n")
+        return {}
+    return {"agent" if name == "gale" else name: len(s["seconds"])
+            for name, s in schedules.items() if s.get("seconds")}
 
 
 def fname_epoch(name):
@@ -179,7 +165,7 @@ def main():
         interval = 86400.0 / per_day
         arr = runs.get(name, [])
         last_age = min((now - run_epoch(r)) for r in arr) if arr else -1.0
-        last = min(arr, key=run_epoch) if arr else {}
+        last = max(arr, key=run_epoch) if arr else {}
         runs24 = sum(1 for r in arr if now - run_epoch(r) <= 86400)
         errs24 = sum(1 for r in arr if now - run_epoch(r) <= 86400 and r.get("is_error"))
         missed = 1 if (last_age < 0 or last_age > interval * GRACE_FACTOR) else 0

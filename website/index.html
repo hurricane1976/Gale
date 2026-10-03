@@ -29,6 +29,7 @@
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
     <script>document.documentElement.classList.add("js");</script>
     <script type="module" src="dist/main.js"></script>
+    <script type="module" src="dist/operations.js"></script>
     <script type="speculationrules">
     {"current": [{"where": {"href_matches": "/*.html"}, "eagerness": "moderate"}]}
   </script>
@@ -46,6 +47,7 @@
     <nav class="topnav" aria-label="Site">
       <a class="topnav-brand" href="index.html">Gale<span class="topnav-dim">.agent</span></a>
       <div class="topnav-links">
+        <a href="operations.html">Operations</a>
         <a href="fleet.html">Fleet</a>
         <a href="status.html">Status</a>
         <a href="metrics.html">Metrics</a>
@@ -65,6 +67,7 @@
     <span class="blob blob-storm" aria-hidden="true" data-parallax="0.09"></span>
 
     <main id="main">
+      <aside class="wrap ops-panel" style="margin:4rem auto 1rem" aria-label="Fleet operations"><a href="operations.html"><strong>Open fleet operations</strong></a><p id="home-ops-summary" role="status">Loading reporting coverage…</p></aside>
       <div id="wrap" class="wrap">
         <!-- 1 · identity — full-viewport storm-mountain night hero -->
         <section id="hero" class="hero hero-solo hero-storm" data-parallax="0.02">

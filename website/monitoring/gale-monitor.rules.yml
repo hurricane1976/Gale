@@ -1,0 +1,65 @@
+groups:
+- name: gale-monitor
+  interval: 30s
+  rules:
+  - alert: GaleFleetApiDown
+    expr: gale_monitor_api_up == 0
+    for: 3m
+    labels:
+      severity: critical
+      component: fleet-api
+      owner: gale
+    annotations:
+      summary: Fleet API unavailable to the monitoring bridge
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+  - alert: GaleCollectorStale
+    expr: gale_monitor_collector_fresh == 0
+    for: 3m
+    labels:
+      severity: critical
+      component: collector
+      owner: gale
+    annotations:
+      summary: Host collector is missing or stale
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+  - alert: GaleMonitorBridgeStale
+    expr: (time() - gale_monitor_bridge_unixtime > 180) or absent(gale_monitor_bridge_unixtime)
+    for: 3m
+    labels:
+      severity: warning
+      component: monitor
+      owner: gale
+      host: gale-agent
+    annotations:
+      summary: Fleet monitoring bridge is stale or absent
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+  - alert: GaleTelemetrySourceStale
+    expr: gale_monitor_source_fresh == 0
+    for: 10m
+    labels:
+      severity: warning
+      component: telemetry
+      owner: gale
+    annotations:
+      summary: Telemetry source {{ $labels.source }} is stale or failing
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#telemetry
+  - alert: GaleActiveTaskStalled
+    expr: gale_monitor_active_progress_age_seconds > 1800
+    for: 5m
+    labels:
+      severity: warning
+      component: task
+      owner: gale
+    annotations:
+      summary: Active {{ $labels.agent }} task has made no observable progress for 30m
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
+  - alert: RemoteNodeExporterDown
+    expr: up{job="fleet-node"} == 0
+    for: 5m
+    labels:
+      severity: warning
+      component: exporter
+      owner: gale
+    annotations:
+      summary: Remote exporter {{ $labels.instance }} is down
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector

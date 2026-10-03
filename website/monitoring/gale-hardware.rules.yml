@@ -1,0 +1,123 @@
+groups:
+- name: gale-hardware
+  rules:
+  - alert: BoxTempHigh
+    expr: max by (host) (node_hwmon_temp_celsius) > 80
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: hottest box sensor over 80C
+      description: 'max hwmon temp: {{ $value | printf "%.1f" }}C for 5m'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: BoxTempHigh
+    expr: max by (host) (node_hwmon_temp_celsius) > 90
+    for: 5m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: hottest box sensor over 90C
+      description: 'max hwmon temp: {{ $value | printf "%.1f" }}C for 5m'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: RootDiskFillingFast
+    expr: predict_linear(node_filesystem_avail_bytes{mountpoint="/"}[2d], 7 * 86400) < 0
+    for: 30m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: / on pace to fill within 7 days
+      description: linear projection of avail bytes hits zero inside a week
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: FilesystemReadOnly
+    expr: node_filesystem_readonly == 1
+    for: 5m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: a filesystem turned read-only
+      description: '{{ $labels.mountpoint }} ({{ $labels.device }}) is read-only'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: SustainedHighLoad
+    expr: node_load15 / on(instance) count by(instance) (count by(instance,cpu) (node_cpu_seconds_total)) > 2
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: 15-min load over 2x core count
+      description: 'load15 per core: {{ $value | printf "%.2f" }} for 15m'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: NvmeWearHigh
+    expr: gale_nvme_used_percent > 80
+    for: 30m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: NVMe wear over 80% used
+      description: 'percentage_used: {{ $value | printf "%.0f" }}% (smartctl)'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: ServiceFlapping
+    expr: increase(gale_service_restarts[1h]) > 3
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: '{{ $labels.unit }} restarted >3x in an hour'
+      description: flapping unit -- check the journal
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: OomKillerFired
+    expr: gale_oom_kills_24h > 0
+    for: 10m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: OOM killer fired in the last 24h
+      description: '{{ $value | printf "%.0f" }} OOM kills -- check dmesg/journal'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: TlsCertExpiring
+    expr: gale_tls_cert_days_left < 21
+    for: 1h
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: TLS cert expires in {{ $value | printf "%.0f" }} days
+      description: tailscale cert runway under 21d -- renew before push/PWA breaks
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: TlsCertExpiring
+    expr: gale_tls_cert_days_left < 7
+    for: 1h
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: TLS cert expires in {{ $value | printf "%.0f" }} days
+      description: renew now -- HTTPS listeners go dark at expiry
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleBackupStale
+    expr: gale_backup_age_hours > 168
+    for: 1h
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: no Tramontane backup in a week
+      description: backups silent 7d+ -- data at risk
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleBridgeStale
+    expr: absent(gale_box_hottest_celsius) == 1
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: sysmon textfile bridge stopped updating
+      description: no gale_* metrics for 10m -- sysmon or the bridge writer is down
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html

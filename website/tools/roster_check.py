@@ -120,7 +120,7 @@ def main():
         lines += ["# TYPE gale_roster_reporting_agents gauge",
                   f"gale_roster_reporting_agents {len([k for k in page if k in reporting])}"]
     lines.append("# TYPE gale_roster_silent gauge")
-    lines += [f'gale_roster_silent{{agent="{n}",host="{h}"}} 1' for n, h in silent]
+    lines += [f'gale_roster_silent{{agent="{n}",fleet_host="{h}"}} 1' for n, h in silent]
     lines.append("# TYPE gale_roster_drift gauge")
     drift = [f for f in findings if f[0] != "silent"]
     lines += [f'gale_roster_drift{{kind="{k}",agent="{a}"}} 1' for k, a, _ in drift]

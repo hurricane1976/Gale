@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh fleet host exporter discovery daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=300
+Unit=gale-exporter-discovery.service
+
+[Install]
+WantedBy=timers.target

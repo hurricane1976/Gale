@@ -32,7 +32,10 @@ let windMph = store.get("gale-wx-windmph", true);
 let radarFrames = [];
 let radarHost = "https://tilecache.rainviewer.com";
 let radarOverlay = null;
-let map = null, mapMarker = null;
+let map = null, mapMarker = null, warningOverlay = null;
+let radarSource = store.get("gale-wx-radar", "noaa"), radarRequest = 0, observationRequest = 0;
+const NOAA_RADAR = "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer";
+const NOAA_WARNINGS = "https://mapservices.weather.noaa.gov/eventdriven/services/WWA/watch_warn_adv/MapServer/WMSServer";
 let playTimer = null, frameIdx = 0;
 
 const WMO = {
@@ -93,8 +96,9 @@ function setLocation(p) {
   rememberRecent(loc);
   renderPresets();
   loadAll();
+  loadRadarFrames();
   if (map) { map.setView([loc.lat, loc.lon], 8); placeMarker(); }
-  $("wx-nws-link").href = `https://radar.weather.gov/station/KLWX/${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}`;
+  $("wx-nws-link").href = `https://radar.weather.gov/?settings=v1_${loc.lon}_${loc.lat}_8`;
 }
 
 let searchTimer = 0;
@@ -176,9 +180,12 @@ function initGeoButtons() {
 }
 
 /* ---------- forecast + AQ ---------- */
-let lastData = null;
+let lastData = null, forecastRequest = 0, alertRequest = 0;
 async function loadAll(soft) {
+  const request=++forecastRequest;
   $("wx-updated").textContent = "updating…";
+  loadObservations();
+  renderAlerts();
   const { lat, lon } = loc;
   const fUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
@@ -190,16 +197,17 @@ async function loadAll(soft) {
       fetch(fUrl).then((r) => { if (!r.ok) throw new Error("forecast " + r.status); return r.json(); }),
       fetch(aqUrl).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]);
+    if(request!==forecastRequest)return;
     lastData = { f, aq };
     renderCurrent(f);
     renderHourly(f);
     renderDaily(f);
     renderAQ(aq);
     update3D(f);
-    renderAlerts();
     $("wx-updated").textContent = "updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
     $("wx-error").hidden = true;
   } catch (e) {
+    if(request!==forecastRequest)return;
     showError("Weather fetch failed (" + e.message + "). Check connection — retrying automatically.");
   }
 }
@@ -358,7 +366,7 @@ function renderAQ(aq) {
   $("wx-aqi").textContent = v;
   $("wx-aqi").style.color = band[1];
   $("wx-aqi-label").innerHTML = `<strong>${band[0]}</strong>`;
-  $("wx-aqi-sub").textContent = `US AQI · ${new Date(c.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+  $("wx-aqi-sub").textContent = `Open-Meteo modeled US AQI · ${new Date(c.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
   $("d-pm25").textContent = c.pm2_5 != null ? `${c.pm2_5} µg/m³` : "—";
   $("d-pm10").textContent = c.pm10 != null ? `${c.pm10} µg/m³` : "—";
   $("d-o3").textContent = c.ozone != null ? `${c.ozone} µg/m³` : "—";
@@ -367,6 +375,7 @@ function renderAQ(aq) {
 
 /* ---------- NWS alerts (US only) ---------- */
 async function renderAlerts() {
+  const request=++alertRequest;
   const sec = $("wx-alerts-sec"), box = $("wx-alerts");
   box.innerHTML = ""; sec.hidden = true;
   if (Math.abs(loc.lat) > 90) return;
@@ -374,6 +383,7 @@ async function renderAlerts() {
     const r = await fetch(`https://api.weather.gov/alerts/active?point=${loc.lat.toFixed(4)},${loc.lon.toFixed(4)}`, { headers: { Accept: "application/geo+json" } });
     if (!r.ok) return; // non-US or no alerts endpoint
     const j = await r.json();
+    if(request!==alertRequest)return;
     const feats = j.features || [];
     if (!feats.length) return;
     sec.hidden = false;
@@ -420,6 +430,13 @@ function initMap() {
     $("wx-frame-label").textContent = "basemap tiles failing — try Satellite view";
   });
   placeMarker();
+  warningOverlay = L.tileLayer.wms(NOAA_WARNINGS, {layers:"0", format:"image/png", transparent:true, version:"1.3.0", attribution:"Warnings: NOAA / NWS", zIndex:20, opacity:0.7});
+  if ($("wx-warnings").checked) warningOverlay.addTo(map);
+  warningOverlay.on("tileerror",()=>$("wx-radar-status").textContent="NWS warning layer unavailable; check the alert list separately.");
+  $("wx-warnings").addEventListener("change",e=>e.target.checked?warningOverlay.addTo(map):warningOverlay.remove());
+  L.control.layers({"Dark":dark,"Satellite":satellite}).addTo(map);
+  $("wx-radar-source").value=radarSource;
+  $("wx-radar-source").addEventListener("change",e=>{radarSource=e.target.value;store.set("gale-wx-radar",radarSource);loadRadarFrames();});
   loadRadarFrames();
   // Re-assert size once layout/fonts settle (fixes grey 0-size init).
   setTimeout(() => map && map.invalidateSize(), 400);
@@ -435,46 +452,78 @@ function placeMarker() {
   mapMarker = L.marker([loc.lat, loc.lon]).addTo(map).bindTooltip(loc.name);
 }
 
-async function loadRadarFrames() {
-  try {
-    const j = await fetch("https://api.rainviewer.com/public/weather-maps.json").then((r) => r.json());
-    radarHost = j.host || radarHost;
-    const frames = [...(j.radar?.past || []), ...(j.radar?.nowcast || [])].slice(-12);
-    if (!frames.length) { $("wx-frame-label").textContent = "no radar frames published"; return; }
-    radarFrames = frames;
-    if (map && !radarOverlay) {
-      radarOverlay = L.tileLayer(`${radarHost}${frames[frames.length - 1].path}/256/{z}/{x}/{y}/2/1_1.png`, {
-        tileSize: 256, opacity: $("wx-opacity").value / 100, zIndex: 10,
-        // RainViewer serves 256px radar tiles only up to z7 ("Zoom Level Not
-        // Supported" error tiles beyond that) — Leaflet upscales from z7
-        // when the user zooms in further.
-        maxNativeZoom: 7, maxZoom: 18,
-      });
-      radarOverlay.on("tileerror", () => {
-        $("wx-frame-label").textContent = "radar tiles failing to load — retrying…";
-      });
-      radarOverlay.addTo(map);
-      const darkLayer = map._wxDark, satLayer = map._wxSat;
-      if (darkLayer && satLayer) {
-        L.control.layers({ "Dark": darkLayer, "Satellite": satLayer }, { "Precip radar": radarOverlay }).addTo(map);
-      }
-    }
-    const slider = $("wx-frame");
-    slider.max = Math.max(frames.length - 1, 0);
-    slider.value = Math.max(frames.length - 1, 0);
-    showFrame(+slider.value);
-  } catch {
-    $("wx-frame-label").textContent = "radar unavailable";
-  }
+async function jsonFetch(url) {
+  const r=await fetch(url,{signal:AbortSignal.timeout(15000)});
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  const data=await r.json();if(data.error)throw new Error("Provider unavailable");return data;
 }
-
+async function loadRadarFrames() {
+  const request=++radarRequest, selected=radarSource;
+  stopPlay();radarFrames=[];
+  if(radarOverlay){radarOverlay.remove();radarOverlay=null;}
+  $("wx-play").disabled=true;$("wx-frame").disabled=true;
+  $("wx-frame-label").textContent="Loading radar…";
+  try {
+    let frames;
+    if(selected==="noaa") {
+      const query=new URLSearchParams({f:"json",where:"1=1",geometry:`${loc.lon},${loc.lat}`,geometryType:"esriGeometryPoint",inSR:"4326",spatialRel:"esriSpatialRelIntersects",outFields:"objectid,idp_validtime",returnGeometry:"false",orderByFields:"idp_validtime DESC",resultRecordCount:"12"});
+      const j=await jsonFetch(`${NOAA_RADAR}/query?${query}`);
+      frames=(j.features||[]).map(f=>({time:f.attributes.idp_validtime/1000,id:f.attributes.objectid})).reverse();
+    }else{
+      const j=await jsonFetch("https://api.rainviewer.com/public/weather-maps.json");
+      radarHost=j.host||radarHost;frames=(j.radar?.past||[]).slice(-12);
+    }
+    if(request!==radarRequest)return;
+    if(!frames.length){$("wx-frame-label").textContent="No radar coverage here — try RainViewer.";$("wx-radar-status").textContent=`${selected==="noaa"?"NOAA / NWS":"RainViewer"}: no observed frames`;return;}
+    radarFrames=frames;
+    if(!map)return;
+    if(selected==="noaa"){
+      const NoaaTiles=L.TileLayer.extend({getTileUrl(coords){
+        const size=this.getTileSize(),nw=map.options.crs.project(map.unproject(L.point(coords.x*size.x,coords.y*size.y),coords.z)),se=map.options.crs.project(map.unproject(L.point((coords.x+1)*size.x,(coords.y+1)*size.y),coords.z));
+        const q=new URLSearchParams({f:"image",bbox:[nw.x,se.y,se.x,nw.y].join(","),bboxSR:"3857",imageSR:"3857",size:"256,256",format:"png32",transparent:"true",mosaicRule:JSON.stringify({mosaicMethod:"esriMosaicLockRaster",lockRasterIds:[this.options.rasterId]})});
+        return `${NOAA_RADAR}/exportImage?${q}`;
+      }});
+      radarOverlay=new NoaaTiles("",{rasterId:frames.at(-1).id,opacity:$("wx-opacity").value/100,zIndex:10,maxZoom:18,attribution:"Radar: NOAA / NWS"});
+    }else radarOverlay=L.tileLayer(`${radarHost}${frames.at(-1).path}/256/{z}/{x}/{y}/2/1_1.png`,{opacity:$("wx-opacity").value/100,zIndex:10,maxNativeZoom:7,maxZoom:18,attribution:"Radar: RainViewer"});
+    radarOverlay.on("tileerror",()=>$("wx-radar-status").textContent="Radar imagery unavailable — try the other source.");
+    radarOverlay.addTo(map);
+    $("wx-play").disabled=frames.length<2;$("wx-frame").disabled=false;
+    $("wx-frame").max=frames.length-1;showFrame(frames.length-1);
+    $("wx-radar-status").textContent=`${selected==="noaa"?"NOAA / NWS":"RainViewer"} · observed radar · frames collected ${new Date().toLocaleTimeString()} · warning polygons: current NWS feed`;
+  }catch(e){if(request===radarRequest){$("wx-frame-label").textContent="Radar unavailable — try the other source.";$("wx-radar-status").textContent=`${selected}: ${e.message}`;}}
+}
 function showFrame(i) {
-  if (!map || !radarFrames.length || !radarOverlay) return;
-  frameIdx = Math.max(0, Math.min(i, radarFrames.length - 1));
-  const f = radarFrames[frameIdx];
-  radarOverlay.setUrl(`${radarHost}${f.path}/256/{z}/{x}/{y}/2/1_1.png`);
-  $("wx-frame").value = frameIdx;
-  $("wx-frame-label").textContent = new Date(f.time * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + ` · ${frameIdx + 1}/${radarFrames.length}`;
+  if(!map||!radarFrames.length||!radarOverlay)return;
+  frameIdx=Math.max(0,Math.min(i,radarFrames.length-1));const f=radarFrames[frameIdx];
+  if(radarSource==="noaa"){radarOverlay.options.rasterId=f.id;radarOverlay.redraw();}
+  else radarOverlay.setUrl(`${radarHost}${f.path}/256/{z}/{x}/{y}/2/1_1.png`);
+  $("wx-frame").value=frameIdx;
+  const age=Math.round((Date.now()/1000-f.time)/60);
+  $("wx-frame-label").textContent=`${new Date(f.time*1000).toLocaleString()} · ${frameIdx+1}/${radarFrames.length} · ${age} min old${age>30?" · STALE":""}`;
+}
+async function loadObservations(){
+  const request=++observationRequest,{lat,lon}=loc;
+  $("wx-station").textContent="Loading measured conditions…";$("wx-airnow").textContent="Loading observed AQI…";
+  async function station(){
+    try{
+      const point=await jsonFetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lon.toFixed(4)}`);
+      const stations=await jsonFetch(point.properties.observationStations);
+      const nearby=(stations.features||[]).slice(0,3);
+      const observations=await Promise.allSettled(nearby.map(async s=>({station:s.properties,observation:(await jsonFetch(`https://api.weather.gov/stations/${encodeURIComponent(s.properties.stationIdentifier)}/observations/latest`)).properties})));
+      const valid=observations.filter(x=>x.status==="fulfilled"&&x.value.observation.timestamp&&x.value.observation.temperature?.value!=null).map(x=>x.value).sort((a,b)=>Date.parse(b.observation.timestamp)-Date.parse(a.observation.timestamp));
+      if(!valid.length)throw new Error("No recent station reading");
+      const {station,observation:o}=valid[0],age=(Date.now()-Date.parse(o.timestamp))/60000;
+      if(request===observationRequest)$("wx-station").textContent=`${station.name} (${station.stationIdentifier}) · ${t(o.temperature.value)}${tUnit()} · ${o.textDescription||""} · observed ${new Date(o.timestamp).toLocaleString()}${age>120?" · STALE":""}`;
+    }catch(e){if(request===observationRequest)$("wx-station").textContent="NWS station observations unavailable here. Global model forecast remains above.";}
+  }
+  async function air(){
+    try{
+      const d=await jsonFetch(`api/fleet/weather/airnow?lat=${lat}&lon=${lon}`);
+      if(request!==observationRequest)return;
+      $("wx-airnow").textContent=d.readings.length?d.readings.map(r=>`${r.area}, ${r.state} · ${r.distance_km} km away · ${r.pollutant} AQI ${r.aqi} (${r.category}) · observed ${new Date(r.observed_at).toLocaleString()}${r.stale||d.state==="stale"?" · STALE":""}`).join("; "):"No AirNow observation within 100 km, or provider unavailable. Model air quality remains above.";
+    }catch(e){if(request===observationRequest)$("wx-airnow").textContent="AirNow observations unavailable. Model air quality remains above.";}
+  }
+  await Promise.allSettled([station(),air()]);
 }
 
 function togglePlay() {

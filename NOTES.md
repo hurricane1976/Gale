@@ -2999,3 +2999,21 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 53% -> 62% (36G free) since noon -- ~9G rise, not from syslog (live 58M, syslog.1.gz 717M). /var/log/journal is 4.1G; agent dir 2.1G (.git 263M, backups 1.7G). Cause not pinned down; watch next waking.
 - Backup: gale-20261002T180009Z.tar.gz (267M, up from 149M; .git/website growth), tar -tzf reads back 4074 entries.
 - Spend: flat (~$0.12-0.15/run). Inbox: 20 routine peer msgs archived. No operator replies; ASK.md unchanged. Git tree clean.
+
+## 2026-10-02 operator-requested monitoring implementation
+- Notified Tidal first about Meadow/Brook/Mist missing telemetry. Tidal repaired export onboarding; Gale independently verified all 35 reachable and reporting, zero roster findings.
+- Deployed Operations dashboard, honest freshness/partial-cost SLIs, reconciled run feeds, actual local schedules, scoped standardized alerts, verified operator controls and audit/idempotency/leases, Gale task instrumentation, Loki event shipping, and local backup proof.
+- Installed minute monitoring bridge and daily backup/exporter discovery timers. Local archive critical-file restore checks passed 14/14; remote exporters 0/9, clearly marked unavailable. Remote watchdog and further host instrumentation remain host-side rollout requirements.
+- Smoke, rendering, schema, monitoring/control/runner, Prometheus fixtures and live 12-page browser checks passed. Implementation/validation/rollback notes: /home/agent/gale-review/IMPLEMENTATION.md.
+
+## 2026-10-02T20:58Z operator-requested weather sources
+- Deployed NOAA/NWS observed radar source alongside RainViewer, source selector, current NWS warning polygons, nearby NWS station observations, and observed AirNow reporting-area AQI.
+- AirNow public reportingarea.dat is cached server-side for ten minutes; only observation records are displayed, with reporting area/distance, pollutant/category and UTC-derived observation timestamps. No API key needed.
+- Source/timestamp/stale states are visible; NOAA without coverage prompts RainViewer. NWS and AirNow failures do not block global forecast data. Late location responses cannot overwrite the selected location.
+- Live NOAA radar and warning image responses, nearby station observations, Northern Virginia AQI, RainViewer switching, browser/CSP and phone-width checks passed. Deployment smoke passed; host IP and Tailscale weather page both returned HTTP 200.
+
+## 2026-10-02T21:11Z operator-requested home automation
+- User selected Gale host for Home Assistant; verified adequate resources, installed Ubuntu Docker Engine/Compose, and started pinned Home Assistant 2026.9.4 with private persistent config outside webroot. Restart policy enabled. LAN/tailnet rules allow port 8123; onboarding endpoints and LAN/Wi-Fi/tailnet web access verified.
+- Installed Lennox custom integration 2026.8.0; user S40 at 192.168.1.44 reachable via HTTPS. Pairing awaits owner account creation. Rheem EcoNet water heater is working in manufacturer app; Eufy includes door-lock camera and assorted security cameras, exact model/HomeBase compatibility pending.
+- Created and deployed My Home page: climate/water/security/setup/connection health. Read-only backend exposes only selected entities to verified operators, redacts private attributes and stores no credentials in docroot. Empty allowlists/token absent show pairing required. Native Home Assistant authenticated controls are linked; no HVAC, lock, or valve commands issued.
+- Deployment smoke, Python bridge authorization/redaction fixtures, browser/CSP/phone checks passed. Setup guide and compose file in home-automation/. User must create owner account and enter cloud logins directly in Home Assistant, not chat.

@@ -79,6 +79,7 @@ export function tracedFetch(url, opts = {}) {
     : String(Math.random()).slice(2, 18).padEnd(16, "0");
   const headers = new Headers(opts.headers || {});
   headers.set("traceparent", `00-${TRACE_ID}-${spanId}-01`);
+  if (opts.method && !["GET", "HEAD"].includes(opts.method.toUpperCase()) && !headers.has("Idempotency-Key")) headers.set("Idempotency-Key", crypto.randomUUID());
   return fetch(url, { ...opts, headers });
 }
 
@@ -1242,7 +1243,7 @@ export function initPointerCards() {
 }
 
 /* ---- UTC clock + next-wake countdown + cycle progress bar ---- */
-const WAKE_SECONDS = [3000, 24600, 46200, 67800]; // 00:50 06:50 12:50 18:50
+let WAKE_SECONDS = []; // fetched from the live scheduler; never guessed
 export function initClocks() {
   const timeEl = document.querySelector("[data-clock]");
   const nextEl = document.querySelector("[data-nextwake]");
@@ -1251,17 +1252,29 @@ export function initClocks() {
   const tick = () => {
     const now = new Date();
     timeEl.textContent = `${pad2(now.getUTCHours())}:${pad2(now.getUTCMinutes())}:${pad2(now.getUTCSeconds())}`;
+    if (!WAKE_SECONDS.length) { nextEl.textContent = "next wake: schedule unavailable"; return; }
     const nowSec = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
     let idx = WAKE_SECONDS.findIndex((s) => s > nowSec);
     let left, prev;
-    if (idx === -1) { idx = 0; left = WAKE_SECONDS[0] + 86400 - nowSec; prev = WAKE_SECONDS[3] - 86400; }
-    else { left = WAKE_SECONDS[idx] - nowSec; prev = idx === 0 ? WAKE_SECONDS[3] - 86400 : WAKE_SECONDS[idx - 1]; }
+    if (idx === -1) { idx = 0; left = WAKE_SECONDS[0] + 86400 - nowSec; prev = WAKE_SECONDS.at(-1) - 86400; }
+    else { left = WAKE_SECONDS[idx] - nowSec; prev = idx === 0 ? WAKE_SECONDS.at(-1) - 86400 : WAKE_SECONDS[idx - 1]; }
     const hh = Math.floor(left / 3600), mm = Math.floor((left % 3600) / 60), ss = left % 60;
     const wt = WAKE_SECONDS[idx];
     const hhmmss = `${pad2(Math.floor(wt / 3600))}:${pad2(Math.floor((wt % 3600) / 60))}:${pad2(wt % 60)}`;
     nextEl.textContent = `next wake ${hhmmss} UTC · in ${pad2(hh)}:${pad2(mm)}:${pad2(ss)}`;
     if (barEl) barEl.style.setProperty("--wake-fill", (clamp((nowSec - prev) / (WAKE_SECONDS[idx] - prev)) * 100).toFixed(1) + "%");
   };
+  const schedule = async () => {
+    try {
+      const r = await fetch("api/fleet/registry", { cache: "no-store", signal: AbortSignal.timeout(10000) });
+      if (!r.ok) throw new Error("schedule unavailable");
+      const d = await r.json();
+      WAKE_SECONDS = d.agents.find((a) => a.name === "gale")?.schedule?.seconds || [];
+    } catch { WAKE_SECONDS = []; }
+    tick();
+  };
+  schedule();
+  setInterval(schedule, 60000);
   tick();
   setInterval(tick, 1000);
 }
@@ -1676,4 +1689,28 @@ export function boot() {
   initHeroParallax();
   refreshEffects();
   registerServiceWorker();
+}
+
+
+/* Operator controls follow verified server capabilities, including newly rendered buttons. */
+if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
+  let writable = false;
+  const selector = "[data-fw-pause],[data-fw-resume],[data-fw-block],[data-fw-unblock],.wake-chip,[data-act],#pull-btn,#chat-send,#unload-all";
+  const applyAccess = () => {
+    if (writable) return;
+    for (const button of document.querySelectorAll(selector)) {
+      if (!button.disabled) button.disabled = true;
+      if (button.title !== "Read-only: use an authorized Tailscale user device") button.title = "Read-only: use an authorized Tailscale user device";
+    }
+  };
+  const observer = new MutationObserver(applyAccess);
+  observer.observe(document.documentElement, {childList:true,subtree:true});
+  applyAccess();
+  fetch("api/fleet/access", {cache:"no-store"}).then(r=>r.ok?r.json():null).then(a=>{
+    writable = !!a?.can_write;
+    if (writable) {
+      observer.disconnect();
+      for (const b of document.querySelectorAll(selector)) if (b.title === "Read-only: use an authorized Tailscale user device") {b.disabled=false;b.title="";}
+    }
+  }).catch(()=>{});
 }

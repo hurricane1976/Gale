@@ -4,7 +4,7 @@
 # reliability.html. Safe to run from cron every 2-5 min.
 # Usage: BASE=https://gale-agent.tail2f1671.ts.net bash tools/synthetics.sh
 set -u
-BASE="${BASE:-http://100.66.39.59:8090}"
+BASE="${BASE:-https://gale-agent.tail2f1671.ts.net}"
 OUT="${OUT:-/var/www/gale-api/synthetics.json}"
 TMP="$(mktemp)"
 now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -13,7 +13,9 @@ check() { # name path max_ms
   local url="$BASE/$path" code ms ok
   local start end
   start=$(date +%s%3N)
-  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$url" || echo 000)
+  code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$url")
+  [[ "$code" =~ ^[0-9]{3}$ ]] || code=000
+  code=$((10#$code))
   end=$(date +%s%3N); ms=$((end - start))
   ok="false"; [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && [ "$ms" -le "$maxms" ] && ok="true"
   printf '{"name":"%s","url":"%s","code":%s,"ms":%s,"ok":%s}\n' "$name" "$url" "$code" "$ms" "$ok"
@@ -25,13 +27,15 @@ check() { # name path max_ms
   check "status" "status.html" 2000; echo -n ","
   check "metrics-api" "api/fleet/metrics" 2000; echo -n ","
   check "activity-api" "api/fleet/activity" 2000; echo -n ","
-  check "status-json" "api/status.json" 2000
+  check "status-json" "api/status.json" 2000; echo -n ","
+  check "registry-api" "api/fleet/registry" 2000; echo -n ","
+  check "ollama-api" "api/ollama/snapshot" 3000
   echo ']}'
 } > "$TMP"
 # TLS runway (https base only): days until cert expiry, -1 when n/a
 if [[ "$BASE" == https* ]]; then
   host="$(printf '%s' "$BASE" | sed -e 's#https://##' -e 's#/.*##' -e 's#:.*##')"
-  exp=$(echo | openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+  exp=$(echo | timeout 10 openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
   if [ -n "$exp" ]; then
     days=$(( ($(date -d "$exp" +%s) - $(date +%s)) / 86400 ))
     python3 - "$TMP" "$days" <<'PY'

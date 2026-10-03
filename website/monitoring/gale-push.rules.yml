@@ -1,74 +1,89 @@
-# gale-push.rules.yml -- web-push delivery SLO + synthetic multi-window burn rate.
-# Metrics: gale_push.prom (written by gale_push.py), gale_synth_green_ratio (synthetics.sh).
-# Deploy: copy to /var/snap/prometheus/common/rules/, then SIGHUP prometheus
-# (the lifecycle API is disabled on this box).
 groups:
-  - name: gale-push
-    interval: 60s
-    rules:
-      - alert: GalePushNoReceipt
-        # push service accepted sends (2xx) but no device service worker beaconed
-        # a receipt: delivery is silently failing (iOS queues with 201 then drops).
-        expr: (increase(gale_push_sent_total{code=~"2.."}[6h]) > 0) and (increase(gale_push_receipts_total[6h]) == 0)
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "web pushes are accepted but no device confirms receipt (6h)"
-          description: "check the device: PWA installed? notification permission? sw version (api/push diag). Test: POST /api/push/test"
-
-      - alert: GalePushSendErrors
-        expr: increase(gale_push_sent_total{code!~"2.."}[1h]) > 2
-        for: 10m
-        labels: { severity: warning }
-        annotations:
-          summary: "push sends failing ({{ $value | printf \"%.0f\" }} non-2xx in 1h)"
-          description: "404/410 = dead subscription (auto-pruned); 0/err = pywebpush or network failure -- see journalctl -u gale-push"
-
-      - alert: GalePushNoSubscribers
-        expr: gale_push_subscriptions == 0
-        for: 1h
-        labels: { severity: warning }
-        annotations:
-          summary: "no devices are subscribed to push alerts"
-          description: "critical alerts only reach Telegram; re-enable the bell on the PWA"
-
-  # Multi-window, multi-burn-rate (SRE workbook ch.5) on the synthetics SLO, 99% target.
-  # Fast burn pages (Telegram), slow burn is board-only. Both windows must agree,
-  # which kills flapping and recovers quickly.
-  - name: gale-synth-burn
-    interval: 60s
-    rules:
-      - alert: GaleSynthFastBurn
-        expr: (1 - avg_over_time(gale_synth_green_ratio[1h])) > (14.4 * 0.01) and (1 - avg_over_time(gale_synth_green_ratio[5m])) > (14.4 * 0.01)
-        for: 2m
-        labels: { severity: critical }
-        annotations:
-          summary: "synthetic checks burning error budget 14x too fast"
-          description: "at this rate a 30-day 99% budget is gone in ~2 days -- check status.html synthetics grid"
-      - alert: GaleSynthSlowBurn
-        expr: (1 - avg_over_time(gale_synth_green_ratio[6h])) > (6 * 0.01) and (1 - avg_over_time(gale_synth_green_ratio[30m])) > (6 * 0.01)
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "synthetic checks steadily burning error budget (6x)"
-          description: "sustained partial failure -- not an outage, but the monthly budget will not last"
-
-  # Restore drills (tools/restore_drill.sh -> tools/drill_bridge.py). Backups that
-  # were never proven restorable are a hope, not a backup.
-  - name: gale-restore-drill
-    interval: 5m
-    rules:
-      - alert: GaleRestoreDrillFailed
-        expr: gale_restore_drill_ok == 0
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "last restore drill FAILED (or its verdict is unreadable)"
-          description: "see /var/www/gale-api/restore-drill.json; run tools/restore_drill.sh by hand"
-      - alert: GaleRestoreDrillStale
-        expr: gale_restore_drill_age_seconds > 35 * 86400
-        for: 1h
-        labels: { severity: warning }
-        annotations:
-          summary: "no restore drill in 35+ days"
-          description: "the monthly drill is not running -- header of tools/restore_drill.sh has the cron line (not currently installed)"
+- name: gale-push
+  interval: 60s
+  rules:
+  - alert: GalePushNoReceipt
+    expr: (increase(gale_push_sent_total{code=~"2.."}[6h]) > 0) and (increase(gale_push_receipts_total[6h])
+      == 0)
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: web pushes are accepted but no device confirms receipt (6h)
+      description: 'check the device: PWA installed? notification permission? sw version
+        (api/push diag). Test: POST /api/push/test'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GalePushSendErrors
+    expr: increase(gale_push_sent_total{code!~"2.."}[1h]) > 2
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: push sends failing ({{ $value | printf "%.0f" }} non-2xx in 1h)
+      description: 404/410 = dead subscription (auto-pruned); 0/err = pywebpush or
+        network failure -- see journalctl -u gale-push
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GalePushNoSubscribers
+    expr: gale_push_subscriptions == 0
+    for: 1h
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: no devices are subscribed to push alerts
+      description: critical alerts only reach Telegram; re-enable the bell on the
+        PWA
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- name: gale-synth-burn
+  interval: 60s
+  rules:
+  - alert: GaleSynthFastBurn
+    expr: (1 - avg_over_time(gale_synth_green_ratio[1h])) > (14.4 * 0.001000) and
+      (1 - avg_over_time(gale_synth_green_ratio[5m])) > (14.4 * 0.001000)
+    for: 2m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: synthetic checks burning error budget 14x too fast
+      description: 14.4x burn of the shared 99.9% target; inspect HTTPS synthetics
+        and source freshness.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleSynthSlowBurn
+    expr: (1 - avg_over_time(gale_synth_green_ratio[6h])) > (6 * 0.001000) and (1
+      - avg_over_time(gale_synth_green_ratio[30m])) > (6 * 0.001000)
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: synthetic checks steadily burning error budget (6x)
+      description: 6x burn of the shared 99.9% target over paired windows.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- name: gale-restore-drill
+  interval: 5m
+  rules:
+  - alert: GaleRestoreDrillFailed
+    expr: gale_restore_drill_ok == 0
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: last restore drill FAILED (or its verdict is unreadable)
+      description: see /var/www/gale-api/restore-drill.json; run tools/restore_drill.sh
+        by hand
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleRestoreDrillStale
+    expr: (gale_restore_drill_age_seconds > 35 * 86400) or absent(gale_restore_drill_age_seconds)
+    for: 1h
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: no restore drill in 35+ days
+      description: the monthly drill is not running -- header of tools/restore_drill.sh
+        has the cron line (not currently installed)
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html

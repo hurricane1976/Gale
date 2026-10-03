@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {level, freshness} from '../reliability-state.js';
+assert.equal(level({actual:null,target:99.9,state:'unknown'}),'unknown');
+assert.equal(level({actual:100,target:99.9,state:'stale'}),'unknown');
+assert.equal(level({actual:100,target:99.9,state:'degraded'}),'warn');
+assert.equal(level({actual:99,target:99.9,state:'ok'}),'crit');
+assert.equal(level({actual:100,target:99.9,state:'ok',budget_remaining_pct:100}),'ok');
+assert.equal(freshness({generated_at:'invalid'}),'unknown');
+assert.equal(freshness({generated_at:'2026-01-01T00:00:00Z'},Date.parse('2026-01-01T00:05:00Z')),'stale');
+console.log('Reliability missing/stale/budget presentation PASS');

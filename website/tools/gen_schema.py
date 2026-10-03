@@ -74,7 +74,7 @@ SCHEMAS = {
                 "required": ["cost_usd", "mean_cost_usd"],
                 "properties": {
                     "cost_usd": NUM,
-                    "mean_cost_usd": NUM,
+                    "mean_cost_usd": NUMNULL,
                     "total_tokens": NUM,
                     "agents": {"type": "array", "items": {
                         "type": "object",

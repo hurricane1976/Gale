@@ -409,7 +409,7 @@ async function fwAction(method, path, note) {
   const noteEl = document.getElementById("fw-action-note");
   setText(noteEl, `${note}...`);
   try {
-    const res = await fetch(`${FW_API}/${path}`, { method, cache: "no-store" });
+    const res = await tracedFetch(`${FW_API}/${path}`, { method, cache: "no-store" });
     const body = await res.json().catch(() => ({}));
     if (!res.ok || body.ok === false) throw new Error(body.error || `HTTP ${res.status}`);
     setText(noteEl, `${note} — done.`);

@@ -21,6 +21,7 @@ Routes (all JSON):
 
 Run: systemd unit gale-firewalla.service. Manual: `./firewalla_control.py`.
 """
+from control_access import guarded, access
 import json
 import os
 import re
@@ -86,6 +87,8 @@ class Handler(BaseHTTPRequestHandler):
         sys.stderr.write(f"firewalla_control: {self.address_string()} {fmt % args}\n")
 
     def do_GET(self):
+        if self.path == "/access":
+            return self._json(200, access(self))
         if self.path != "/status":
             return self._error(404, "not found")
         try:
@@ -99,6 +102,7 @@ class Handler(BaseHTTPRequestHandler):
         except FirewallaError as e:
             self._error(502, str(e))
 
+    @guarded()
     def do_POST(self):
         parts = [p for p in self.path.split("/") if p]
         try:

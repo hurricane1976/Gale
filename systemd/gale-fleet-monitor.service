@@ -1,0 +1,13 @@
+[Unit]
+Description=Gale headless fleet coverage and collection health metrics
+After=gale-fleet-api.service
+
+[Service]
+Type=oneshot
+User=agent
+Group=agent
+ExecStart=/usr/bin/python3 /home/agent/agent/website/tools/schedule_bridge.py
+ExecStart=/usr/bin/python3 /home/agent/agent/website/tools/fleet_bridge.py
+TimeoutStartSec=45
+ProtectSystem=strict
+ReadWritePaths=/var/snap/node-exporter/common /var/www/gale-api

@@ -60,6 +60,7 @@
       </a>
       <nav class="site-links" aria-label="Site">
         <a href="index.html">Home</a>
+        <a href="operations.html">Operations</a>
         <a href="fleet.html">Fleet</a>
         <a href="status.html">Status</a>
         <a href="metrics.html">Metrics</a>
@@ -76,11 +77,11 @@
 
   <main id="main" class="wx-main">
     <div class="wx-hero wrap">
-      <span class="eyebrow"><span class="dot"></span>Station weather &middot; live · no key needed</span>
+      <span class="eyebrow"><span class="dot"></span>Forecasts, radar &amp; observations · no key needed</span>
       <h1 class="wx-title grad-text">Weather tracker</h1>
       <p class="sec-lede" style="margin-bottom:0">Live conditions, hourly + 7-day outlook, animated radar, alerts and air quality.
         Defaults to <strong>Woodbridge, VA</strong> — search anywhere, use your GPS, or pick a preset.
-        Data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, NWS alerts, <a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer</a> radar.</p>
+        Data: NOAA/NWS, AirNow, <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>, NWS alerts, <a href="https://www.rainviewer.com" target="_blank" rel="noopener">RainViewer</a> radar.</p>
       <noscript><p class="sec-lede">This tracker needs JavaScript — forecasts render live from Open-Meteo in your browser.</p></noscript>
     </div>
 
@@ -175,19 +176,30 @@
       </div>
     </section>
 
+    <section class="reveal wrap" aria-label="Observed weather and air quality">
+      <h2 class="sec-title">Nearby observations</h2>
+      <div class="wx-details-grid">
+        <article class="card"><h3>Weather station · NWS</h3><p id="wx-station">Loading measured conditions…</p></article>
+        <article class="card"><h3>Observed air quality · AirNow</h3><p id="wx-airnow">Loading reporting-area observations…</p><p class="mini-note">Nearest reporting area within 100 km; preliminary AQI, not a reading at your exact location.</p></article>
+      </div>
+      <p class="mini-note">Forecast and current condition estimates above use Open-Meteo models. Station observations and AirNow readings below retain their observation times.</p>
+    </section>
+
     <!-- Radar -->
     <section class="reveal wrap block-narrow" aria-label="Weather radar">
       <h2 class="sec-title">Live radar</h2>
-      <p class="sec-lede">Animated precipitation radar (RainViewer) over an interactive map. Drag to pan, scroll to zoom. Hit play to loop the last ~2 hours.</p>
+      <p class="sec-lede">Choose NOAA radar for US locations or RainViewer for global coverage. Play recent observed frames; radar is not a forecast.</p>
       <div class="card wx-radar-card">
         <div id="wx-map" class="wx-map" role="application" aria-label="Interactive weather radar map"></div>
         <div class="wx-radar-bar">
+          <label>Radar source <select id="wx-radar-source"><option value="noaa">NOAA / NWS (US)</option><option value="rainviewer">RainViewer (global)</option></select></label>
+          <label><input id="wx-warnings" type="checkbox" checked /> NWS warning polygons</label>
           <button id="wx-play" class="btn primary" type="button">▶ Play loop</button>
           <input id="wx-frame" type="range" min="0" max="0" value="0" step="1" aria-label="Radar frame" />
           <span class="mono-dim" id="wx-frame-label">—</span>
           <label class="mono-dim wx-opacity">overlay <input id="wx-opacity" type="range" min="20" max="100" value="65" /></label>
         </div>
-        <p class="mini-note">Radar: RainViewer · Basemap © Esri. NWS reflection view also available: <a id="wx-nws-link" href="https://radar.weather.gov/" target="_blank" rel="noopener">open NWS radar ↗</a></p>
+        <p class="mini-note"><span id="wx-radar-status">Radar source loading…</span> · Basemap © Esri. Official radar: <a id="wx-nws-link" href="https://radar.weather.gov/" target="_blank" rel="noopener">open NWS radar ↗</a></p>
       </div>
     </section>
 

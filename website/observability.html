@@ -50,6 +50,7 @@
       </a>
       <nav class="site-links" aria-label="Site">
         <a href="index.html">Home</a>
+        <a href="operations.html">Operations</a>
         <a href="fleet.html">Fleet</a>
         <a href="status.html">Status</a>
         <a href="metrics.html">Metrics</a>
@@ -86,6 +87,7 @@
       <p class="block" style="color:var(--text-dim)">This page needs JavaScript to poll live data. Raw feed: <code>/api/fleet/observability</code>.</p>
     </noscript>
 
+    <p id="coverage-note" class="mini-note" role="status"></p>
     <p id="partial-note" class="mini-note">Loading the newest runs&hellip;</p>
     <div id="board" hidden>
 
@@ -112,6 +114,8 @@
       <section class="reveal ops-panel span-full" aria-labelledby="h-explorer">
         <h2 class="panel-title" id="h-explorer">Run explorer <span><span id="run-count">&ndash;</span> runs &middot; <label for="host-filter" class="sr-only">host filter</label><select id="host-filter" class="obs-filter"><option value="">all hosts</option></select> <label for="agent-filter" class="sr-only">filter</label><select id="agent-filter" class="obs-filter"><option value="">all agents</option></select></span></h2>
         <div class="fw-table-scroll">
+          <div class="mini-note"><label><input type="checkbox" id="failed-only"> Failed only</label> · <label>Period <select id="period-filter"><option value="0">all history</option><option value="24">24 hours</option><option value="168">7 days</option></select></label> · <label>Model <select id="model-filter"><option value="">all models</option></select></label></div>
+          <div id="run-detail" class="ops-panel" hidden></div>
           <div class="table-scroll"><table class="ops-table" id="runs-table">
             <thead><tr><th>when</th><th>host</th><th>agent</th><th>wake</th><th>model</th><th>wall-clock</th><th>tokens in/out</th><th>cost</th><th>turns</th><th>status</th></tr></thead>
             <tbody></tbody>

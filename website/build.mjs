@@ -32,6 +32,8 @@ const ENTRY_POINTS = [
   "weather.js",       // weather.html
   "agora.js",        // agora.html
   "ollama.js",       // ollama.html
+  "operations.js",
+  "home.js",
   "reliability.js",  // reliability.html
   "lost.js",         // 404.html 3D page map
 ];

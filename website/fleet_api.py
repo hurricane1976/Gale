@@ -52,6 +52,7 @@ The agora POST endpoint is an unauthenticated write surface by design
 length caps, control-char stripping, URL-scheme allowlist, per-IP and
 global rate limits, duplicate suppression, response-only-what-was-asked.
 """
+import math
 import hashlib
 import json
 import fcntl
@@ -65,6 +66,11 @@ import time
 import urllib.error
 import urllib.request
 from collections import deque
+import weather_data
+import home_automation
+import fleet_monitor as monitor
+from control_access import guarded, access
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
@@ -358,6 +364,9 @@ def local_runs():
                 if not row:
                     continue
                 r = dict(row)
+                meta = monitor.read_json(Path(path).with_suffix(".meta.json"))
+                if meta:
+                    r.update({k: meta[k] for k in ("model", "runtime", "task_id", "verification", "terminal_reason", "is_error") if k in meta})
                 r["ts"] = iso(fname_ts(n))
                 per_agent.append(r)
             per_agent.sort(key=lambda r: r["ts"])
@@ -387,7 +396,7 @@ def local_runs_full():
 # Remote (Beacon's public envelope) + fleet-wide helpers
 # --------------------------------------------------------------------------
 
-_REMOTE = {"ts": 0.0, "env": None, "err": None}
+_REMOTE = {"ts": 0.0, "env": None, "err": None, "last_success": 0.0}
 _REMOTE_LOCK = threading.Lock()
 
 
@@ -397,15 +406,18 @@ def remote_envelope():
     with _REMOTE_LOCK:
         if time.time() - _REMOTE["ts"] < REMOTE_TTL_S:
             return _REMOTE["env"]
-        env = None
+        env = _REMOTE["env"]
         try:
             req = urllib.request.Request(
                 BEACON_TELEMETRY_URL, headers={"User-Agent": "gale-fleet-api/1 (public envelope reader)"})
             with urllib.request.urlopen(req, timeout=10) as resp:
-                env = json.loads(resp.read().decode("utf-8"))
+                env = json.loads(resp.read(8_000_000).decode("utf-8"))
+                if not isinstance(env, dict) or not isinstance(env.get("runs"), list):
+                    raise ValueError("invalid relay envelope")
+            _REMOTE["last_success"] = time.time()
+            _REMOTE["err"] = None
         except Exception as e:
-            env = None
-            _REMOTE["err"] = str(e)[:200]
+            _REMOTE["err"] = type(e).__name__
         _REMOTE["env"] = env
         _REMOTE["ts"] = time.time()
         return env
@@ -419,7 +431,7 @@ def direct_feed_rows(host):
     """Rows from a host's own public fleet-telemetry/v1 JSONL feed, cached
     REMOTE_TTL_S per host. Anonymous read-only GET; failure -> last good rows."""
     with _DIRECT_LOCK:
-        c = _DIRECT.setdefault(host, {"ts": 0.0, "rows": []})
+        c = _DIRECT.setdefault(host, {"ts": 0.0, "rows": [], "last_success": 0.0, "err": None})
         if time.time() - c["ts"] < REMOTE_TTL_S:
             return c["rows"]
         c["ts"] = time.time()
@@ -436,22 +448,83 @@ def direct_feed_rows(host):
                     continue
                 if isinstance(r, dict) and r.get("schema") == "fleet-telemetry/v1":
                     rows.append(r)
+            if not rows:
+                raise ValueError("empty or invalid direct feed")
             c["rows"] = rows
-        except Exception:
-            pass
+            c["last_success"] = time.time()
+            c["err"] = None
+        except Exception as e:
+            c["err"] = type(e).__name__
         return c["rows"]
 
 
+_FLEET_CACHE = {"ts": 0.0, "rows": [], "local": [], "remote": None}
+_FLEET_LOCK = threading.Lock()
+
+# Last-good remote counters survive restarts, retaining their original collection ages.
+_SOURCE_CACHE_PATH = os.path.join(API_DIR, ".source-cache.json")
+_saved_sources = monitor.read_json(_SOURCE_CACHE_PATH) or {}
+for _key in ("env", "last_success", "latest_run_at"):
+    if _key in _saved_sources.get("relay", {}):
+        _REMOTE[_key] = _saved_sources["relay"][_key]
+for _host, _cache in _saved_sources.get("direct", {}).items():
+    if _host in DIRECT_FEEDS:
+        _DIRECT[_host] = {**_cache, "ts": 0, "err": None}
+
+
+
+def source_states():
+    now = time.time()
+    def state(cache):
+        last = cache.get("last_success", 0)
+        age = now - last if last else None
+        return {"state": "unknown" if age is None else "stale" if age > monitor.policy()["source_max_age_s"] else "degraded" if cache.get("err") else "ok",
+                "last_success": monitor.timestamp(last) if last else None,
+                "age_s": round(age) if age is not None else None,
+                "error": cache.get("err"), "latest_run_at": cache.get("latest_run_at")}
+    return {"local": {"state": "ok", "last_success": monitor.timestamp(_FLEET_CACHE["ts"]) if _FLEET_CACHE["ts"] else None},
+            "beacon-relay": state(_REMOTE), **{host + "-direct": state(c) for host, c in _DIRECT.items()}}
+
+
 def merged_runs():
-    local = local_runs()
-    runs = list(local)
-    remote_env = remote_envelope()
-    if remote_env:
-        for r in remote_env.get("runs", []):
-            rr = dict(r)
-            rr["source"] = "relayed from beacon's public telemetry"
-            runs.append(rr)
-    return local, runs, remote_env
+    """One reconciled run population for every fleet consumer."""
+    with _FLEET_LOCK:
+        if time.time() - _FLEET_CACHE["ts"] < ACTIVITY_TTL_S:
+            return _FLEET_CACHE["local"], _FLEET_CACHE["rows"], _FLEET_CACHE["remote"]
+        import concurrent.futures as cf
+        local = local_runs_full()
+        with cf.ThreadPoolExecutor(max_workers=3) as pool:
+            relay_future = pool.submit(remote_envelope)
+            futures = {host: pool.submit(direct_feed_rows, host) for host in DIRECT_FEEDS}
+            remote_env = relay_future.result()
+            direct = {host: future.result() for host, future in futures.items()}
+        by_id = {}
+        for raw in (remote_env or {}).get("runs", []):
+            row = _normalize_remote_obs_row(raw)
+            if row:
+                by_id[monitor.run_id(row)] = row
+        # Direct host records fill gaps and supersede older relay copies.
+        for host, rows in direct.items():
+            for raw in rows:
+                row = _normalize_remote_obs_row(raw)
+                if row and row["host"] == host:
+                    row["source"] = host + " direct telemetry"
+                    by_id[monitor.run_id(row)] = row
+            _DIRECT[host]["latest_run_at"] = max((r.get("ts") or "" for r in rows), default=None)
+        for row in local:
+            by_id[monitor.run_id(row)] = row
+        rows = sorted((monitor.decorate_run(r) for r in by_id.values()), key=lambda r: r.get("ts") or "")
+        _REMOTE["latest_run_at"] = max((r.get("ts") or "" for r in (remote_env or {}).get("runs", [])), default=None)
+        _FLEET_CACHE.update(ts=time.time(), rows=rows, local=local, remote=remote_env)
+        try:
+            saved = {"relay": {k: _REMOTE.get(k) for k in ("env", "last_success", "latest_run_at")}, "direct": _DIRECT}
+            temp = _SOURCE_CACHE_PATH + ".tmp"
+            with open(temp, "w") as stream:
+                json.dump(saved, stream)
+            os.replace(temp, _SOURCE_CACHE_PATH)
+        except OSError as exc:
+            sys.stderr.write("fleet source cache persistence failed: " + type(exc).__name__ + "\n")
+        return local, rows, remote_env
 
 
 def totals_from_runs(runs):
@@ -479,14 +552,7 @@ def totals_from_runs(runs):
 
 
 def telemetry_envelope():
-    local = local_runs_full()
-    runs = list(local)
-    remote_env = remote_envelope()
-    if remote_env:
-        for r in remote_env.get("runs", []):
-            rr = dict(r)
-            rr["source"] = "relayed from beacon's public telemetry"
-            runs.append(rr)
+    local, runs, remote_env = merged_runs()
     return runs_env(local, runs, remote_env)
 
 
@@ -510,7 +576,7 @@ def wakes_envelope():
                 "ts": r.get("ts"),
                 "is_error": bool(r.get("is_error")),
                 "duration_ms": r.get("duration_ms") if isinstance(r.get("duration_ms"), (int, float)) else None,
-                "cost_usd": round(float(r.get("cost_usd") or 0), 6),
+                "cost_usd": r.get("cost_usd"),
             }
             for r in local_runs_full()
         ]
@@ -757,7 +823,7 @@ def _normalize_remote_obs_row(r):
         agent = str(rr.get("agent") or "?").lower()
         host = str(rr.get("host") or "?").lower()
         ts = rr.get("ts") or ""
-        if not ts or not isinstance(ts, str):
+        if not ts or not isinstance(ts, str) or monitor.epoch(ts) is None:
             return None
         model = rr.get("model")
         if model is not None:
@@ -766,6 +832,8 @@ def _normalize_remote_obs_row(r):
         cost = rr.get("cost_usd")
         try:
             cost = None if cost is None else float(cost)
+            if cost is not None and (not math.isfinite(cost) or cost < 0):
+                cost = None
         except (TypeError, ValueError):
             cost = None
         def _tok(v):
@@ -803,31 +871,15 @@ def _normalize_remote_obs_row(r):
             "is_error": bool(rr.get("is_error")),
             "terminal_reason": rr.get("terminal_reason"),
             "source": "relayed from beacon's public telemetry",
+            "task_id": rr.get("task_id"),
+            "verification": rr.get("verification", "unknown"),
         }
     except Exception:
         return None
 
 
 def observability_envelope():
-    local = local_runs_full()
-    remote_env = remote_envelope()
-    remote_rows = []
-    if remote_env:
-        for r in remote_env.get("runs", []):
-            nr = _normalize_remote_obs_row(r)
-            if nr:
-                remote_rows.append(nr)
-    # Hosts' own public feeds: fill gaps if Beacon's relay is down or behind.
-    seen = {(r["agent"], r["host"], r["ts"]) for r in remote_rows}
-    for host in DIRECT_FEEDS:
-        for r in direct_feed_rows(host):
-            nr = _normalize_remote_obs_row(r)
-            if nr and (nr["agent"], nr["host"], nr["ts"]) not in seen:
-                nr["source"] = f"{host}'s public fleet-telemetry feed"
-                seen.add((nr["agent"], nr["host"], nr["ts"]))
-                remote_rows.append(nr)
-    runs = list(local) + remote_rows
-    runs.sort(key=lambda r: r.get("ts") or "")
+    local, runs, remote_env = merged_runs()
     day_ago = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
     agents = {}
     for r in runs:
@@ -859,7 +911,7 @@ def observability_envelope():
         ds = sorted(a.pop("_durs"))
         hosts = sorted(a.pop("_hosts"))
         out_agents.append({**a, "cost_usd": round(a["cost_usd"], 4),
-                           "mean_cost_usd": round(a["cost_usd"] / a["runs"], 6) if a["runs"] else 0,
+                           "mean_cost_usd": monitor.cost_summary([r for r in runs if r["agent"] == a["agent"]])["mean_known_usd"],
                            "p50_ms": _pct(ds, 0.5), "p95_ms": _pct(ds, 0.95),
                            "burn_tok_per_h": round(a["tokens_24h"] / 24.0, 1),
                            "host": hosts[0] if hosts else HOST_NAME,
@@ -888,10 +940,13 @@ def observability_envelope():
         "count": count,
         "instrumented_since": "2026-09-21",
         "hosts": hosts_block,
-        "remote_status": "ok" if remote_env else "unreachable",
+        "remote_status": "ok" if all(s["state"] == "ok" for s in source_states().values()) else "degraded",
+        "sources": source_states(),
+        "coverage": monitor.coverage(runs, fleet_status()),
         "totals": {
             "cost_usd": round(total_cost, 4),
-            "mean_cost_usd": round(total_cost / count, 6) if count else 0,
+            "mean_cost_usd": monitor.cost_summary(runs)["mean_known_usd"],
+            "cost_coverage": monitor.cost_summary(runs),
             "total_tokens": total_tokens,
             "agents": out_agents,
         },
@@ -1098,12 +1153,7 @@ def _day_key(ts):
 
 
 def metrics_envelope():
-    local = local_runs_full()
-    runs = list(local)
-    remote_env = remote_envelope()
-    if remote_env:
-        for r in remote_env.get("runs", []):
-            runs.append(dict(r))
+    local, runs, remote_env = merged_runs()
     days = [(datetime.now(timezone.utc) - timedelta(days=i)).strftime("%Y-%m-%d")
             for i in range(13, -1, -1)]
     # counts and costs per host/day
@@ -1162,7 +1212,8 @@ def metrics_envelope():
             "last_wake": last,
             "daily_wakings_14d": [agent_wak.get(display, {}).get(d, 0) for d in days],
             "daily_cost_14d": [round(agent_cost.get(display, {}).get(d, 0.0), 4) for d in days],
-            "total_wakings_14d": sum(agent_wak.get(display, {}).values()),
+            "total_wakings_14d": sum(agent_wak.get(display, {}).get(d, 0) for d in days),
+            "cost_coverage": monitor.cost_summary(rs),
         })
     return {
         "schema": "fleet-metrics/v1",
@@ -1179,6 +1230,10 @@ def metrics_envelope():
         "agents_by_host": {h: sorted(v) for h, v in h_agents.items()},
         "per_agent_24h": per_agent,
         "fleet_status": status,
+        "coverage": monitor.coverage(runs, status),
+        "sources": source_states(),
+        "cost_coverage": monitor.cost_summary(runs),
+        "cost_coverage_by_host": {h: monitor.cost_summary([r for r in runs if r.get("host") == h]) for h in sorted(wak)},
         "generated_at": now_iso(),
     }
 
@@ -1361,6 +1416,14 @@ def alerts_envelope():
             if n["match"].lower() in (a.get("text") or "").lower():
                 a["note"] = str(n["note"])[:300]
                 break
+    expected = monitor.registry()["agents"]
+    for a in alerts:
+        named = next((agent for agent in expected if re.search(r"\b" + re.escape(agent["name"]) + r"\b", a.get("text", "").lower())), None)
+        a.setdefault("agent", named["name"] if named else None)
+        a.setdefault("host", named["host"] if named else "gale")
+        a.setdefault("owner", named["owner"] if named else "gale")
+        a.setdefault("id", hashlib.sha256(f'{a["kind"]}|{a.get("host")}|{a.get("agent")}'.encode()).hexdigest()[:24])
+        a.setdefault("runbook", "runbooks.html#telemetry" if a["kind"] in ("agent-stale", "agent-missed-wake") else "runbooks.html#tasks")
     alert_history_record(alerts)
     payload = {"schema": "fleet-alerts/v1", "count": len(alerts),
                "alerts": alerts, "generated_at": now_iso()}
@@ -1436,7 +1499,10 @@ def am_firing_alerts(now=None):
         name = s["labels"].get("alertname") or fp
         summary = s["annotations"].get("summary") or s["annotations"].get("description") or ""
         text = f"AM {name}" + (f": {summary[:120]}" if summary else "")
-        out.append({"sev": sev, "kind": "alertmanager", "text": text})
+        out.append({"sev": sev, "kind": "alertmanager", "text": text, "id": fp,
+                    "host": s["labels"].get("fleet_host") or s["labels"].get("host"),
+                    "agent": s["labels"].get("agent"), "owner": s["labels"].get("owner", "gale"),
+                    "started_at": s.get("starts"), "runbook": s["annotations"].get("runbook_url", "runbooks.html")})
     return out
 
 
@@ -1631,7 +1697,7 @@ def acks_post(payload):
         live = [a for a in live if a.get("key") != key]  # hours=0 clears the ack
     else:
         live = [a for a in live if a.get("key") != key]
-        live.append({"key": key, "until": now + hours * 3600, "ts": now_iso()})
+        live.append({"key": key, "until": now + hours * 3600, "ts": now_iso(), "actor": payload.get("actor", "unknown"), "incident_id": payload.get("incident_id")})
     _acks_save({"acks": live})
     return 200, {"ok": True, "count": len(live)}
 
@@ -1806,6 +1872,34 @@ class Handler(BaseHTTPRequestHandler):
         span_id = new_span_id()
         path = urlsplit(self.path).path
         try:
+            if path == "/home/status":
+                code, result = home_automation.status(self, access)
+                return self._send(code, result)
+            if path == "/weather/airnow":
+                query = parse_qs(urlsplit(self.path).query)
+                try:
+                    result = weather_data.airnow(float(query.get("lat", [""])[0]), float(query.get("lon", [""])[0]))
+                except (ValueError, IndexError):
+                    return self._send(400, {"error": "Valid lat/lon required"})
+                return self._send(200, result)
+            if path == "/access":
+                return self._send(200, access(self))
+            if path == "/incidents":
+                incidents = alerts_envelope()
+                acknowledgements = acks_read()["acks"]
+                return self._send(200, {**incidents, "acknowledgements": acknowledgements, "access": access(self)})
+            if path == "/tasks":
+                return self._send(200, {"events": monitor.task_events(API_DIR), "generated_at": now_iso()})
+            if path == "/registry":
+                return self._send(200, monitor.registry())
+            if path == "/reliability":
+                _local, rows, _remote = merged_runs()
+                return self._send(200, monitor.reliability(rows, fleet_status(), source_states(), API_DIR))
+            if path == "/runs/detail":
+                ident = (parse_qs(urlsplit(self.path).query).get("id") or [""])[0]
+                _local, rows, _remote = merged_runs()
+                row = next((r for r in rows if r["run_id"] == ident), None)
+                return self._send(200 if row else 404, {"run": row, "events": monitor.task_events(API_DIR, ident), "runbook": "runbooks.html"})
             if path in ("/health",):
                 return self._send(200, {"ok": True, "generated_at": now_iso()})
             if path in ("/telemetry",):
@@ -1871,6 +1965,7 @@ class Handler(BaseHTTPRequestHandler):
                       (time.time() - started) * 1000,
                       {"http.status_code": getattr(self, "_last_code", 0) or 200})
 
+    @guarded({"/wake", "/alerts/acks"})
     def do_POST(self):
         path = urlsplit(self.path).path
         if path not in ("/agora/posts", "/alerts/acks", "/wake"):
@@ -1886,6 +1981,7 @@ class Handler(BaseHTTPRequestHandler):
         except Exception:
             return self._send(400, {"error": "invalid JSON"})
         if path == "/alerts/acks":
+            payload["actor"] = getattr(self, "_control_actor", "unknown")
             code, resp = acks_post(payload)
         elif path == "/wake":
             code, resp = wake_post(payload)
@@ -1893,6 +1989,7 @@ class Handler(BaseHTTPRequestHandler):
             code, resp = agora_post(payload, self._client_ip())
         return self._send(code, resp)
 
+    @guarded({"/agora/posts"})
     def do_DELETE(self):
         # Admin prune only; everything else 404s (same closed surface).
         path = urlsplit(self.path).path

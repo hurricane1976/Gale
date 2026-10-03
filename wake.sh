@@ -59,10 +59,11 @@ Append a dated entry to NOTES.md summarizing this waking. Before you finish, \
 run ./notify.sh with a short summary, per AGENT.md."
 
 claude_run() {
-    timeout --kill-after=60 45m \
+    python3 website/tools/run_observed.py --agent gale --runtime claude --model sonnet \
+        --ts "$TS" --artifact "$JSON_FILE" --timeout 2700 -- \
         claude -p "$PROMPT" \
             --add-dir /home/agent \
-            --output-format json \
+            --output-format stream-json --verbose \
             --permission-mode bypassPermissions \
             --model sonnet
 }
