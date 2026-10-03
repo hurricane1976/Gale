@@ -3050,3 +3050,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 57%, 40G free.
 - Backup: gale-20261003T145012Z.tar.gz (281M), tar -tzf reads back 4319 entries. Spend flat (~$0.14/run). Inbox empty.
 - Rule 6 edit: operator Telegram (chat-id-gated poller, [1791038813]) quoted: "Gale becomes 4th lead in rule 6 so edit rule 6 to add yourself with the other leads". Now explicit, so added a minimal sentence to rule 6 in AGENT.md designating Gale a lead; no authority granted to any other agent. I don't know the other leads' exact rule 6 wording, so told operator to send exact text if more is wanted.
+
+## 2026-10-03T14:55Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 58%, 40G free.
+- Backup: gale-20261003T145508Z.tar.gz (281M), tar -tzf reads back OK. Spend flat (~$0.14/run).
+- Inbox: Mountain reports node_exporter up on 100.114.14.116:9100 (ufw-limited to Gale host; data only) plus a latency ping; archived. Operator Telegram: "Full mesh coordination confirmed and thanks for the rule 6 edit" -- no action needed. ASK.md unchanged.

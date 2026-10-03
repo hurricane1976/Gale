@@ -31,7 +31,7 @@ async function refresh() {
     const b=data.backup;
     setHTML($("ops-backup"),`<p>Archive ${b.backup_age_h??"unknown"}h old · ${esc(b.backup_name||"unknown")}</p><p>Restore ${b.drill_ok==null?"unknown":b.drill_ok?"passed":"failed"} · ${b.drill_age_h??"unknown"}h old · collector ${esc(b.collector.state)}</p>`);
     setHTML($("ops-tasks"),tasks.events.length?tasks.events.slice(-15).reverse().map(e=>`<p><a href="observability.html?run=${encodeURIComponent(e.run_id)}">${esc(e.agent)} ${esc(e.event)}</a> · ${esc(e.at)}${e.tool?` · tool ${esc(e.tool)}`:""}</p>`).join(""):'<p>No instrumented task events yet.</p>');
-    setHTML($("ops-exporters"),exporters?exporters.nodes.map(e=>`<p>${esc(e.host)} · ${esc(e.address)} · ${e.instrumented?"host metrics enabled":"exporter unavailable; host setup required"}</p>`).join(""):'<p>Exporter coverage unknown.</p>');
+    setHTML($("ops-exporters"),exporters?exporters.nodes.map(e=>`<p>${esc(e.host)} · ${esc(e.address)} · ${e.alias_of?`same machine as ${esc(e.alias_of)} (${esc(e.machine)}), scraped once`:e.instrumented?`host metrics enabled${e.machine?` · ${esc(e.machine)}`:""}`:"exporter unavailable; host setup required"}</p>`).join(""):'<p>Exporter coverage unknown.</p>');
   } catch(e) {
     setText($("ops-freshness")||$("home-ops-summary"),`Monitoring unavailable: ${e.message}; previous values are stale.`);
     for(const id of ["ops-summary","ops-missing","ops-sources","ops-cost","ops-backup","ops-incidents","ops-tasks"]) if($(id)) { $(id).dataset.level="unknown"; setText($(id), "Unknown — monitoring feed unavailable."); }

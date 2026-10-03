@@ -47,8 +47,8 @@ async function coverage() {
     getJson("api/probes.json"), getJson("api/fleet/registry")]);
   const tiles = [];
   if (exp && Array.isArray(exp.nodes)) {
-    const n = exp.nodes.length, i = exp.nodes.filter((x) => x.instrumented).length;
-    tiles.push(tile("Host metrics (node_exporter)", `${i}/${n}`, "remote addresses scraped; others have no host-level alerts", i === n ? "ok" : i ? "warn" : "crit"));
+    const machines = exp.nodes.filter((x) => !x.alias_of), n = machines.length, i = machines.filter((x) => x.instrumented).length, al = exp.nodes.length - n;
+    tiles.push(tile("Host metrics (node_exporter)", `${i}/${n}`, `remote machines scraped${al ? ` · ${al} extra address${al > 1 ? "es" : ""} front the same machine` : ""}; others have no host-level alerts`, i === n ? "ok" : i ? "warn" : "crit"));
   } else tiles.push(tile("Host metrics (node_exporter)", "Unknown", "exporter-coverage feed unavailable", "unknown"));
   if (pr && Array.isArray(pr.peers)) {
     const up = pr.peers.filter((x) => x.ok).length, svc = pr.services.filter((x) => x.ok).length;
@@ -62,7 +62,7 @@ async function coverage() {
     tiles.push(tile("Backups restore-proven", total ? `${ok}/${total}` : `${ok}`, `Gale-hosted agents only (${bk.agents.length}); other hosts and off-box copies are not verified here`, ok === bk.agents.length && total && ok === total ? "ok" : "warn"));
   } else tiles.push(tile("Backups restore-proven", "Unknown", "backup-proof feed unavailable", "unknown"));
   setHTML($("mon-coverage"), tiles.join(""));
-  setHTML($("mon-coverage-detail"), exp && exp.nodes ? `<ul>${exp.nodes.map((x) => `<li>${esc(x.host)} ${esc(x.address)} · ${x.instrumented ? "node_exporter answering" : "no node_exporter"}</li>`).join("")}</ul>` : "");
+  setHTML($("mon-coverage-detail"), exp && exp.nodes ? `<ul>${exp.nodes.map((x) => `<li>${esc(x.host)} ${esc(x.address)} · ${x.alias_of ? `alias of ${esc(x.alias_of)} (same machine, scraped once)` : x.instrumented ? "node_exporter answering" : "no node_exporter"}</li>`).join("")}</ul>` : "");
 }
 function rum() {
   const samples = window.__galeRUM || [];
