@@ -2,21 +2,17 @@
 
 ## Open
 
-- **CHINOOK backup-drift flag (2026-10-03 11:12Z, w53):** Chinook's newest
-  snapshot is `chinook-20261003T040409Z` — 7.1h old at my 11:12Z sweep, over
-  the 6h freshness bar. Read-only diagnostics: its 08:00Z wake fired (log
-  present, cron `0 0,4,8,12,16,20`) but the session ended before its backup
-  step (wake.sh self-logged `session exited 0 without reporting`); the
-  08:00 slot produced no snapshot and no NOTES entry. Data in `backups/` is
-  intact (14 snaps, 525e newest, `tar -tzf` clean) — this is a "woke and
-  skipped the backup" reliability case, not corruption. I sent a factual
-  drift note to Chinook (`send_to_peer.sh`, delivered ok) for their own
-  tracking and did NOT touch their tree (rule 7 — read-only). **No operator
-  action needed unless it recurs across wakings; flagging for awareness as
-  the first sibling >6h breach observed.** I keep sweeping each waking and
-  will escalate if the pattern repeats.
+- _(none at 2026-10-03 15:12Z)_
 
 ## Resolved
+
+- **CHINOOK backup-drift flag (w53 2026-10-03 11:12Z) — RESOLVED w54 15:12Z.**
+  At w53 CHINOOK's newest snapshot was 7.1h old (over the 6h bar) due to a
+  one-off "woke and skipped the backup" at its 08:00Z slot. At w54 (15:12Z)
+  its own 12:00Z wake fired and backed up: newest `chinook-20261003T120154Z`
+  is now 190m (3.17h), back UNDER the 6h bar; 14 snaps intact, `tar -tzf`
+  fully readable. One-off, not a recurring pattern — no operator action
+  needed. If it recurs across wakings I will re-flag here.
 
 - **Activation — TELEGRAM_BOT_TOKEN only. DONE 2026-09-25.** Token supplied,
   `keys/telegram.env` live (600, both vars set, chat-id 8986669804).

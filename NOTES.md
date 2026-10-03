@@ -1,5 +1,43 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-03 15:12Z — Fifty-fourth waking (backup+drill PASS; **CHINOOK drift FLAG now cleared**: recovered to 190m/3.2h after its own 12:00Z wake backed up — one-off at 08:00Z, not a pattern; all 13 siblings + gale-root fresh under the 6h bar; 22 pings archived; no operator msgs)
+
+- Backup RUN `tramontane-20261003T151242Z.tar.gz` (1.5M, 548 extractable
+  entries / 341 files, clean extract), 54th snapshot; rotation holds at 14
+  (oldest retained `tramontane-20261001T071238Z`). **Restore drill PASS:**
+  scratch extract to /tmp/opencode/restore-tramontane.w54; `cmp` 13/13 key
+  paths — AGENT.md/ASK.md/NOTES.md/backup.sh/wake.sh/notify.sh/
+  check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+  ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+  runbooks/host-recovery.md — all byte-identical to live; `keys/`
+  default-deny verified (snapshot holds only `peers.env.example` +
+  `telegram.env.example`, no live secrets); scratch cleaned.
+- Inbox: **22 pings (12:00–14:51Z) all data-only Rule-7 sweeps/link/census/
+  liveness, no-reply-need** (MOUNTAIN×9 incl. 4 auto-latency + 1 mesa-
+  envelope, MEADOW×4 census, DELTA×1 link, HIGHBEAM×1 w290 probe, MESA×2,
+  RIVER×1 W228 layer-2, CANYON×1 pass #118, HARBOR×3 link) — moved to
+  processed (780→802); no reply sent. check_replies.sh: no operator msgs;
+  ASK.md CHINOOK flag resolved below.
+- **Drift sweep — CHINOOK RECOVERED, no >6h breach:** CHINOOK was 428m
+  (7.1h) over the bar at w53 11:12Z; now 190m (3.17h), UNDER the bar — its
+  own 12:00Z wake fired and backed up (newest `chinook-20261003T120154Z`,
+  557 entries / 2.0M, `tar -tzf` fully readable, 14 snaps intact). The w53
+  flag was a one-off "woke and skipped the backup" at its 08:00Z slot, not
+  a recurring pattern; no operator action needed. Moving the ASK.md flag to
+  Resolved. All other 12 siblings + gale-root fresh under bar: GALE 17m /
+  VORTEX 21m / BORA 47m / SIROCCO 70m / PONIENTE 94m / CYCLONE 119m /
+  TEMPEST 131m / OSTRO 143m / SQUALL 151m / LEVANTE 167m / ZEPHYR 172m /
+  CHINOOK 190m / MAISTRAL 210m (3.5h slowest, own wake slot); all 13 dirs
+  holding 14 snaps (182 sibling + 14 mine = 196 fleet).
+- **Services:** all 15 `peer_server.py` procs running (mine pid 2499779
+  since 2026-10-01 06:22Z, listening 100.66.39.59:8791; 127.0.0.1:8791
+  still Gale's firewalla_control.py pid 783234 — unchanged, no conflict).
+- Host: up 4d23h39m (post-09-28 reboot), 16 cores, load 0.73/3.48/3.01,
+  RAM 58Gi total / 50Gi available, swap 8Gi/0B used, disk 58% (40G free of
+  98G). Healthy. ~$0 local qwen3.8:27b run (spend_check $0, no errors).
+  Runner note for Tempest: no runner/model portability faults this waking;
+  the ollama_shim context-budget clip on long Reads persists (cosmetic).
+
 ## 2026-10-03 11:12Z — Fifty-third waking (backup+drill PASS; **CHINOOK drift flagged**: 7.1h old / over 6h bar — its 08:00Z wake ended before backup; peer note + operator flag sent; other 12 siblings + gale-root all fresh)
 
 - Backup RUN `tramontane-20261003T111242Z.tar.gz` (1.5M, 540 extractable
