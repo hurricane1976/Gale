@@ -1,5 +1,87 @@
 # NOTES.md — Ostro
 
+## 2026-10-03T16:52Z — waking 5/6 (Sharpness & Regression Watch; :45 slot, ran ~16:48Z)
+1. **Operator replies**: `./check_replies.sh` run at session start → "(no new
+   messages)". ASK.md open items unchanged since 12:50Z (LEVANTE+PONIENTE
+   peer-pairing ratification PENDING, still no operator sign-off recorded;
+   Cyclone drift flagged once 09-25, not re-flagging per AGENT.md item 4).
+2. **Host health**: uptime **5d 1h 15m** (still on the ~15:33Z 09-28 reboot —
+   crossed the 5-day mark this waking, no new reboot); load 0.74/0.73/0.68
+   (light, steady vs 12:50Z's 0.74/0.72/0.74); disk **54G/98G (58%, +2G vs
+   12:50Z's 52G/56%, 40G free)** — the +2G is this waking's 214M backup +
+   routine accumulation, well within the 40G-free margin; RAM 8.0Gi/58Gi
+   (50Gi avail, flat); swap 0B used (8.0Gi provisioned); NO
+   `/var/run/reboot-required`; `/var/log` 5.7G (flat vs 12:50Z's 5.6G);
+   `logs/` 14M; `backups/` 340M before this snapshot (3 snapshots at 214M
+   each post-08:50 pack-landing, consistent). Clean.
+3. **Service liveness**: all 15 tracked units active (14 `-peer` units incl.
+   ostro-peer + tailscaled) = 15/15. Zero failed peer units. `gale-agora-bridge`
+   remains `inactive (dead)` but `static` + timer-triggered (`TriggeredBy:
+   gale-agora-bridge.timer`, which is ● active) — this is its designed on-demand
+   mode, not a regression; identical posture to every prior waking. Clean.
+4. **Website liveness (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` 200 (lats 0.0003–0.145s); fleet metrics
+   `generated_at 2026-10-03T16:50:11Z` (fleet-metrics/v1, fresh, <2min old);
+   Ostro peer-server `100.66.39.59:8798/health` →
+   `{"status":"ok","name":"OSTRO"}`. No regression.
+5. **Model/runner consistency**: `wake.sh:45,48` pin `ollama/qwen3.8:27b`;
+   `AGENT.md:7` matches; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`. No drift, identical to 12:50Z.
+6. **Spend**: `logs/spend-daily.jsonl` 10-03 rows so far: 00:51:08Z,
+   04:50:10Z, 08:51:26Z, 12:51:07Z — all `cost_usd 0.0`, `is_error false`;
+   this session appends its own at close. No spike, consistent with
+   local-model baseline.
+7. **Fleet roll-up** (`/api/fleet/metrics`, 16:50:11Z): `coverage` 35/35
+   expected, 35 reporting, 0 missing, 35 reachable — clean, identical to
+   12:50Z. `runs_24h_by_host` = `{gale: 80, beacon: 32, mountain: 33, tidal: 33}`
+   (shifted from 12:50Z's `{beacon: 24, gale: 76, mountain: 22, tidal: 23}` as
+   each host completed their 12:00Z/14:00Z/16:00Z wakes over the 4h gap —
+   window rollover, expected; gale 76→80 and mountain 22→33 both reflect
+   completed scheduled wakings); `error_runs_24h_by_host` = `{}` (still empty,
+   stayed clean); `last_wake_by_host`: gale 16:48:01Z (this waking), mountain
+   14:50:48Z, beacon 14:50:03Z, tidal 15:00:02Z (all fresh within the ~2.5h
+   window). Clean.
+8. **peers.env audit**: all 14 sibling+ostro dirs at `^NAME=` = 34 /
+   `^PEER=` = 0, identical to 12:50Z (and every waking since 09-26). No
+   unauthorized block landed. (First-time correct audit this waking — prior
+   wakings cite the same path; count stable on the record.)
+9. **Peer inbox triage**: **4 new JSONs** since 12:50Z (14:08–14:51Z), ALL
+   MOUNTAIN, ALL identical body `"automated latency check from Mountain's site
+   build — no reply needed"`, ~3-5m apart (14:08:13Z, 14:38:49Z, 14:43:54Z,
+   14:51:53Z). This is a NEW sub-pattern on the record: previously the
+   MOUNTAIN-filename quirk was filename=MOUNTAIN + *other*-host body (mesa /
+   canyon); this waking's 4 are filename=MOUNTAIN with body naming **Mountain
+   itself** ("from Mountain's site build") — so the filename/body mismatch
+   pattern appears to have **resolved into a clean in-name automated probe**
+   (a benign re-purposing of the same MOUNTAIN sender slot, or a new
+   site-build latency checker that reuses MOUNTAIN's peer identity). Data-only,
+   no reply needed, no operator action. All 4 moved to
+   `peer/inbox/processed/` (665 total). `peer/inbox/` clean.
+10. **Backup**: `backups/ostro-20261003T165013Z.tar.gz` (214M), **528 entries**
+    (up from 516 at     12:50Z — +12 is this waking's 4 processed-inbox JSONs + the updated
+    NOTES.md + misc non-`logs/`-excluded artifacts; `logs/` and `backups/`
+    remain excluded per backup.sh design). AGENT.md/NOTES.md/ASK.md/wake.sh/
+    notify.sh/peer_server.py all present (6/6 key files). Read-back check
+    passed (tar -tzf succeeded). Size stable vs 12:50Z (214M ↔ 214M — includes
+    the 213M git pack per 12:50Z note). No regression.
+11. **Version control**: working tree clean before commit (inbox move + logs +
+    backups all gitignored per `.gitignore` — verified via
+    `git check-ignore -v`). `git push github main:ostro` expected to succeed as
+    fast-forward from `34c7dc8` (the 12:50Z commit) — the non-FF divergence
+    from the 10-02T16:48Z/10-03T08:50Z era did not recur at 12:50Z and does not
+    recur here (no force needed, no state loss).
+12. **Verdict**: all-green → all-green. **No regression since 12:50Z.**
+    Deltas: (a) 4 MOUNTAIN inbox probes triaged, and for the FIRST time the
+    filename/body match (both MOUNTAIN) — the recurring MOUNTAIN-filename
+    quirk (34 total prior instances per 12:50Z note) appears to have
+    self-corrected into a clean in-name automated latency probe from
+    "Mountain's site build"; worth watching next waking to confirm it's not
+    just a one-off; (b) `runs_24h_by_host` all four hosts advanced (window
+    rollover, expected); (c) disk +2G (backup accumulation, 40G free, normal);
+    (d) uptime crossed 5d (no new reboot, same 09-28 base);
+    (e) backup 516→528 entries (new artifacts, explained). ASK.md items
+    unchanged. No operator action needed.
+
 ## 2026-10-03T12:50Z — waking 4/6 (Sharpness & Regression Watch; :45 slot, ran ~12:48Z)
 1. **Operator replies**: `./check_replies.sh` run at session start → "(no new
    messages)". ASK.md open items unchanged since 08:50Z (LEVANTE+PONIENTE
