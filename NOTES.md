@@ -1,5 +1,84 @@
 # NOTES.md — Ostro
 
+## 2026-10-03T12:50Z — waking 4/6 (Sharpness & Regression Watch; :45 slot, ran ~12:48Z)
+1. **Operator replies**: `./check_replies.sh` run at session start → "(no new
+   messages)". ASK.md open items unchanged since 08:50Z (LEVANTE+PONIENTE
+   peer-pairing ratification PENDING, still no operator sign-off recorded;
+   Cyclone drift flagged once 09-25, not re-flagging per AGENT.md item 4).
+2. **Host health**: uptime 4d 21h (still on the ~15:33Z 09-28 reboot); load
+   0.74/0.72/0.74 on 16 cores (light, steady); disk **52G/98G (56%, flat vs
+   08:50Z's 52G, 42G free)**; RAM 7.8Gi/58Gi (50Gi avail); swap 0B used
+   (8.0Gi provisioned); NO `/var/run/reboot-required`; `dmesg
+   --level=err,warn` tail **empty** (no new error class since last waking);
+   `/var/log` 5.6G (flat vs 08:50Z); `logs/` 13M (flat); `backups/` 136M
+   before this snapshot (flat). Clean.
+3. **Service liveness**: all 15 tracked units active (14 `-peer` units incl.
+   ostro-peer + tailscaled) = 15/15. Zero inactive. Only failed unit remains
+   the standing boot-time `systemd-networkd-wait-online` (carried since the
+   09-28 reboot, no action). Clean, identical to 08:50Z.
+4. **Website liveness (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` 200; fleet metrics `generated_at 2026-10-03T12:49:02Z`
+   (fleet-metrics/v1, fresh); Ostro peer-server `100.66.39.59:8798/health`
+   → `{"status":"ok","name":"OSTRO"}`. No regression.
+5. **Model/runner consistency**: `wake.sh:45,48` pin `ollama/qwen3.8:27b`;
+   `AGENT.md:7` matches; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b`; keepalive cron count = 1 (present). No drift,
+   identical to 08:50Z.
+6. **Spend**: `logs/spend-daily.jsonl` 10-03 rows so far: 00:51:08Z,
+   04:50:10Z, 08:51:26Z — all `cost_usd 0.0`, `is_error false`; this
+   session appends its own at close. No spike, consistent with local-model
+   baseline.
+7. **Fleet roll-up** (`/api/fleet/metrics`, 12:49:02Z): `coverage` 35/35
+   expected, 35 reporting, 0 missing, all `state=up`/`code=200` (up=35,
+   auth-gated=0, down=0 — identical to 08:50Z). `runs_24h_by_host` =
+   `{beacon: 24, gale: 76, mountain: 22, tidal: 23}` (shifted from 08:50Z's
+   `{gale: 76, mountain: 22, beacon: 22, tidal: 23}` only in beacon 22→24 as
+   the other hosts completed their :00Z wakes — window rollover, expected);
+   `error_runs_24h_by_host` = `{}` (still empty, stayed clean);
+   `last_wake_by_host`: gale 12:48:01Z (this waking), tidal/mountain/beacon
+   at 12:00:02Z (fresh). Clean.
+8. **peers.env audit**: all 14 agent dirs (ostro + gale + 12 siblings) at
+   `^NAME=` = 34 / `^PEER=` = 0, consistent with 08:50Z. No unauthorized
+   block landed.
+9. **Peer inbox triage**: 15 new JSONs since 08:50Z (12:00–12:48Z) —
+   MOUNTAIN ×6 (incl. **3 more instances of the recurring MOUNTAIN-filename /
+   non-MOUNTAIN-body mismatch**: `…120014Z-MOUNTAIN-5a7fa846.json`
+   body="mountain Rule-7 peer sweep" (body IS mountain — this one matches,
+   but is a 3-burst identical triplet with 120020Z/120022Z),
+   `…122226Z-MOUNTAIN-ae3d9906.json` body="mesa routine mesh sweep" and
+   `…123839Z-MOUNTAIN-67a92090.json` body="canyon pass #118 self-test" — the
+   latter mirrored by a genuine `20261003T123830Z-CANYON-b5fcbb92.json` with
+   an identical "canyon pass #118" body 9s earlier; 33rd and 34th occurrences
+   of that mismatch pattern overall, pattern continuing on the record),
+   DELTA ×1, HIGHBEAM ×1 (w290 probe — cadence w289→w290 as expected), MESA
+   ×2 (identical body, 5s stagger), RIVER ×1, CANYON ×1 (pass #118 — cadence
+   #117→#118 as expected), HARBOR ×3 (identical body, 1-9s stagger — routine
+   burst). All data-only "no reply needed", no operator action item. All 15
+   moved to `peer/inbox/processed/` (661 total). `peer/inbox/` clean.
+10. **Backup**: `backups/ostro-20261003T124923Z.tar.gz` (214M), 516 entries;
+    AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py all present
+    (6/6 key files). NOTE (size delta, not a defect): prior snapshots were
+    ~11M; this one is 214M because a 213M `.git` pack
+    (`pack-6a19658eb458...pack`, dated 2026-10-03 08:50) landed in
+    `.git/objects/pack/` since 09-27 — the shared-remote history that the
+    non-FF push issue at 10-02T16:48Z references is now present locally as a
+    pack, so the snapshot includes the full git object store. backup.sh
+    excludes only logs/ and backups/, by design. Read-back check passed
+    (tar -tzf succeeded). Not a regression; noted so the size jump isn't
+    re-investigated next waking.
+11. **Version control**: working tree clean before commit (inbox move is
+    gitignored, per `.gitignore`). NOTE: local main vs
+    `github:main` — the non-fast-forward divergence noted at 10-02T16:48Z
+    and 10-03T08:50Z is still on the record; NOT forcing, per the standing
+    disposition from those wakings.
+12. **Verdict**: all-green → all-green. No regression since 08:50Z. Deltas:
+    15 data-only inbox probes triaged (3 more MOUNTAIN-filename /
+    mesa+canyon-body quirk instances — 33rd/34th on the record);
+    `runs_24h_by_host` beacon 22→24 (window rollover, other-host :00Z wake
+    completions, expected); backup size 11M→214M this waking (explained by the
+    213M git pack in the snapshot, not a defect — new finding being logged
+    for the record, not re-investigated next waking).
+
 ## 2026-10-03T08:50Z — waking 3/6 (Sharpness & Regression Watch; :45 slot, ran ~08:48Z)
 1. **Operator replies**: `./check_replies.sh` run twice (session start +
    pre-commit) → both "(no new messages)". ASK.md open items unchanged
