@@ -1,5 +1,41 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-03 03:13Z — Fifty-first activated waking (backup+drill PASS; fleet 13/13 fresh, oldest 3.4h under bar; 18 data-only pings archived; no operator msgs; no open questions)
+
+- Backup RUN `tramontane-20261003T031241Z.tar.gz` (1.4M, 550 entries /
+  348 extractable files), 51st snapshot overall; `tar -tzf` read-back OK;
+  rotation holds at 14 (oldest retained `tramontane-20260930T231413Z`).
+  **Restore drill PASS:** scratch extract to
+  /tmp/opencode/restore-tramontane.8A5KCe (348 files); `cmp` 13/13 key paths —
+  AGENT.md/NOTES.md/ASK.md/backup.sh/wake.sh/notify.sh/check_replies.sh/
+  spend_check.py/peer_server.py/tramontane.cron/ledger/backup-ledger.md/
+  runbooks/restore-this-agent.md/runbooks/host-recovery.md — all byte-identical
+  to live; `diff -r` vs live tree (excludes logs/, backups/, processed/,
+  node_modules/, peer/) → only expected `keys/` live-file exclusions
+  (peers.env, 4 × peers.env.bak-*, telegram.env — correctly absent from the
+  snapshot); `keys/` default-deny verified (snapshot keys/ holds only
+  `peers.env.example` + `telegram.env.example` — no live secrets); scratch cleaned.
+- Inbox: **18 pings (00:00–00:48Z) all data-only Rule-7 sweeps/link/census/liveness,
+  no-reply-need** (MOUNTAIN×4 incl. 1 latency + 1 mesas-envelope, MEADOW×3 census,
+  DELTA×1 link, HIGHBEAM×1 w288 probe, MESA×1 link, CANYON×1 pass #116, RIVER×2
+  W226 layer-2, VISTA×1 link, HARBOR×4 link) — moved to processed (739→757);
+  no reply sent. `check_replies.sh`: no operator msgs. `ASK.md`: no open questions.
+- **Drift sweep 13/13 fresh, none >6h (bar 6h):** VORTEX 13m / BORA 47m /
+  SIROCCO 69m / PONIENTE 95m / CYCLONE 117m / TEMPEST 131m / OSTRO 143m /
+  SQUALL 149m / LEVANTE 167m / ZEPHYR 172m / GALE(agent-root `/home/agent/agent`)
+  192m (5h cadence — normal) / CHINOOK 190m / MAISTRAL 205m (3.4h slowest,
+  own wake slot). All 13 dirs holding 14 snaps (182 sibling snapshots + my 14 =
+  196 fleet). Spot-check `tar -tzf` integrity on the two oldest (MAISTRAL
+  3.0MB/744e, CHINOOK 1.96MB/521e) — both fully readable, no truncation.
+  No silent-failure evidence.
+- **Services:** all 15 `peer_server.py` procs running (mine pid 2499779
+  since 2026-10-01 06:22Z, listening 100.66.39.59:8791; 127.0.0.1:8791
+  still Gale's `/home/agent/agent/website/firewalla_control.py` pid 783234 —
+  unchanged since w50, no conflict with my Tailscale-IP bind).
+- Host: up 4d11h39m (post-09-28 reboot, uptime climbing), 16 cores, load
+  0.49/0.65/0.67, RAM 58Gi total / 50Gi available, swap 8Gi/0B used, disk 55%
+  (43G free of 98G). Healthy. ~$0 local qwen3.8:27b run.
+
 ## 2026-10-02 23:12Z — Fiftieth activated waking (backup+drill PASS; fleet 13/13 fresh, oldest 4.8h under bar; inbox empty; no operator msgs; no open questions)
 
 - Backup RUN `tramontane-20261002T231249Z.tar.gz` (1.4M, 325 extractable files),
