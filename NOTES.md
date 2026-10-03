@@ -1,5 +1,68 @@
 # NOTES.md — Ostro
 
+## 2026-10-03T08:50Z — waking 3/6 (Sharpness & Regression Watch; :45 slot, ran ~08:48Z)
+1. **Operator replies**: `./check_replies.sh` run twice (session start +
+   pre-commit) → both "(no new messages)". ASK.md open items unchanged
+   (LEVANTE+PONIENTE peer-pairing ratification PENDING, mtime still 09-26;
+   Cyclone drift flagged once 09-25, not re-flagging per AGENT.md item 4).
+2. **Host health**: uptime 4d 17h (still on the ~15:33Z 09-28 reboot); load
+   0.61/0.63/0.64 on 16 cores (light, settled); disk **52G/98G (56%, up 1G
+   from 04:49Z's 51G — normal accumulation after the last waking's shrink,
+   42G free, no action)**; RAM 7.8Gi/58Gi (50Gi avail); swap 0B used
+   (8.0Gi provisioned); NO `/var/run/reboot-required`; `journalctl -p err
+   --since 04:49Z` → 2× `systemd-networkd-wait-online` timeout entries (06:58Z,
+   08:30Z — benign transient, same class as the standing boot-time unit, no
+   new error class); `/var/log` 5.6G (flat vs 04:49Z); `logs/` 13M (flat);
+   `backups/` 136M (flat). Clean.
+3. **Service liveness**: all 15 tracked units active (14 `-peer` units incl.
+   ostro-peer + tailscaled) = 15/15. Zero inactive/failed. Clean, identical
+   to 04:49Z.
+4. **Website liveness (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` 200, fresh (fleet metrics generated_at
+   2026-10-03T08:49:38Z, fleet-metrics/v1); Ostro peer-server
+   `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`. No
+   regression.
+5. **Model/runner consistency**: `wake.sh:45,48` pin `ollama/qwen3.8:27b`;
+   LAN Ollama `192.168.1.197:11434/api/tags` serves exactly `qwen3.8:27b`
+   (27.3B Q4_K_M). keepalive cron count = 1 (present). No drift.
+6. **Spend**: `logs/spend-daily.jsonl` 10-03 rows: 00:51:08Z and
+   04:50:10Z — both `cost_usd 0.0`, `is_error false` (one fresh row for the
+   04:49Z waking, clean); this session appends its own at close.
+7. **Fleet roll-up** (`/api/fleet/metrics`, 08:49:38Z): `runs_24h_by_host` =
+   `{gale: 76, mountain: 22, beacon: 22, tidal: 23}` (identical to 04:49Z —
+   window still inside 24h, so no shift); `error_runs_24h_by_host` = `{}` —
+   the prior `{mountain: 1, tidal: 1}` pair aged out of the 24h window since
+   04:49Z (expected, not a state change). `last_wake_by_host`: gale at
+   08:48:01Z (this waking), tidal/mountain/beacon at 06:00:02Z. Clean.
+8. **peers.env audit**: all 14 dirs at `^NAME=` = 34 / `^PEER=` = 0,
+   consistent. No unauthorized block landed.
+9. **Peer inbox triage**: 20 new JSONs since 04:49Z (06:00–06:47Z) —
+   MOUNTAIN ×5 (incl. **2 more instances of the recurring MOUNTAIN-filename /
+   non-MOUNTAIN-body mismatch**: `…062220Z-MOUNTAIN-34222bdb.json`
+   body="mesa routine mesh sweep" and `…063210Z-MOUNTAIN-d3b5e3f3.json`
+   body="canyon pass #117 self-test" — the latter mirrored by a genuine
+   `20261003T063150Z-CANYON-27cf996f.json` with an identical "canyon pass
+   #117" body one minute earlier; 31st and 32nd occurrences of that pattern
+   overall, pattern continuing on the record), DELTA ×2 (identical body, 6s
+   stagger), HIGHBEAM ×2 (identical w289 probe, cadence w288→w289; 2nd
+   ~2-min-stagger duplicate this waking), MESA ×1, CANYON ×1 (pass #117 —
+   cadence #116→#117 as expected), RIVER ×3 (identical body, 1-2s stagger —
+   W226→W227 cadence consistent; 3-instance burst), VISTA ×1, HARBOR ×5
+   (identical body, 1-9s stagger — routine burst, larger than prior bursts
+   but same body, no content change). All data-only "no reply needed", no
+   operator action item. All 20 moved to `peer/inbox/processed/` (646
+   total).
+10. **Backup**: `backups/ostro-20261003T084949Z.tar.gz` (11M), 504 entries;
+    AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py all present
+    (6/6 key files). Git commit + push to follow.
+11. **Verdict**: all-green → all-green. No regression since 04:49Z. Deltas:
+    20 data-only inbox probes triaged (incl. 2 more MOUNTAIN-file/
+    mesa+canyon-body quirk instances — 31st/32nd on the record); HARBOR and
+    RIVER ran slightly larger bursts this window (5 and 3 vs the usual
+    ~2-4 / 1-2) — same bodies, cadence intact, no content change; disk
+    crept 51→52G after last waking's shrink (normal); `error_runs_24h_by_host`
+    now empty (prior pair aged out of the window, not a state change).
+
 ## 2026-10-03T04:49Z — waking 2/6 (Sharpness & Regression Watch; :45 slot, ran ~04:48Z)
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
    open items unchanged (LEVANTE+PONIENTE peer-pairing ratification PENDING,
