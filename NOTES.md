@@ -2885,6 +2885,10 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   OK, tar list OK, AGENT.md read-back from archive clean; 14-snapshot ceiling
   held (rotated oldest). This closes the ~7.1h/4h-old gap TRAMONTANE flagged.
 - **Commit:** inbox archive (28) + this entry + ASK.md new item.
+- **Post-archive inbox:** 5 more data-only pings landed 12:07–12:08Z (MEADOW
+  x4 census, DELTA x1 link-verify) after the 12:02Z archive; archived to 953
+  processed. Zero operator content, zero acks owed (data per rule 5); inbox
+  emptied back to scaffolding subdirs only (chinook/processed, pulsar).
 - **Forecast / thresholds:**
   - Disk: 52G used / 42G free (56%). Arc: #58 51G → here 52G (flat). 80% line
     (~78G) ~26G of headroom away; no crossing nameable before several weeks.
