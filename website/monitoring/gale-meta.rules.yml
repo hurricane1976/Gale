@@ -1,0 +1,45 @@
+groups:
+- name: gale-meta
+  rules:
+  # Dead-man's switch: always firing. Alertmanager routes it to a heartbeat
+  # receiver (see alertmanager.yml); if the pings stop, Prometheus,
+  # Alertmanager or this whole host is down.
+  - alert: Watchdog
+    expr: vector(1)
+    labels:
+      severity: info
+      owner: gale
+    annotations:
+      summary: Always-firing dead-man's switch (heartbeat to an external checker)
+  - alert: PrometheusTsdbSizeHigh
+    expr: prometheus_tsdb_storage_blocks_bytes > 8e9
+    for: 30m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: 'Prometheus TSDB blocks are {{ $value | humanize1024 }}B'
+      description: default 15d retention with no size cap; set --storage.tsdb.retention.size in daemon_arguments or find the cardinality source.
+  - alert: PrometheusRuleEvaluationFailing
+    expr: increase(prometheus_rule_evaluation_failures_total[15m]) > 0
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: Prometheus rule evaluations are failing
+  - alert: PrometheusNotificationsFailing
+    expr: increase(prometheus_notifications_errors_total[15m]) > 0
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: Prometheus cannot deliver alerts to Alertmanager
+  - alert: PrometheusTsdbCompactionsFailing
+    expr: increase(prometheus_tsdb_compactions_failed_total[3h]) > 0
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: Prometheus TSDB compactions are failing

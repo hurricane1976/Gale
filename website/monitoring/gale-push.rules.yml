@@ -77,13 +77,13 @@ groups:
         by hand
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
   - alert: GaleRestoreDrillStale
-    expr: (gale_restore_drill_age_seconds > 35 * 86400) or absent(gale_restore_drill_age_seconds)
+    expr: (gale_restore_drill_age_seconds > 14 * 86400) or absent(gale_restore_drill_age_seconds)
     for: 1h
     labels:
       severity: warning
       owner: gale
     annotations:
-      summary: no restore drill in 35+ days
-      description: the monthly drill is not running -- header of tools/restore_drill.sh
-        has the cron line (not currently installed)
+      summary: no restore drill in 14+ days
+      description: the weekly drill is not running -- header of tools/restore_drill.sh
+        has the cron line
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html

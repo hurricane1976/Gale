@@ -12,7 +12,7 @@
   "scrape_interval_s": 15,
   "fleet_daily_limit_usd": 5,
   "backup_max_age_h": 36,
-  "restore_max_age_h": 840,
+  "restore_max_age_h": 336,
   "agent_daily_limits_usd": {},
   "host_daily_limits_usd": {}
 }

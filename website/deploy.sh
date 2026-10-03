@@ -83,6 +83,22 @@ sudo /usr/bin/node "$SCRIPT_DIR/tools/rewrite-dist-refs.mjs" \
 sudo chown -R www-data:www-data /var/www/gale
 sudo chmod -R 755 /var/www/gale
 sudo nginx -t
+# Best-effort 10 min Alertmanager silence for the synthetic-probe alerts so a
+# normal deploy blip (GaleSynthFailing fired 2026-10-02 18:31-18:40) does not
+# page. Never fails the deploy; it expires on its own.
+python3 - <<'PY' || true
+import json, urllib.request, datetime as d
+now = d.datetime.now(d.timezone.utc)
+body = {"matchers": [{"name": "alertname", "value": "GaleSynthFailing|GaleSynthStale", "isRegex": True, "isEqual": True}],
+        "startsAt": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "endsAt": (now + d.timedelta(minutes=10)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "createdBy": "deploy.sh", "comment": "website deploy window"}
+try:
+    urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:9093/api/v2/silences", json.dumps(body).encode(),
+                           {"Content-Type": "application/json"}), timeout=3)
+except Exception as e:
+    print("deploy: alert silence skipped:", e)
+PY
 sudo systemctl reload nginx
 # post-deploy gates: fast smoke (render + schema + xss, audit skipped for
 # speed -- full audit stays in CI/manual smoke runs). Failure restores the

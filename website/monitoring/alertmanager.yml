@@ -15,6 +15,16 @@ route:
     - severity="critical"
     receiver: critical
     repeat_interval: 1h
+  # Dead-man's switch: kept off the pager. To activate, put the heartbeat
+  # URL (healthchecks.io ping URL etc.) in /etc/alertmanager/watchdog_url
+  # (mode 0640, group alertmanager) and add under the watchdog receiver:
+  #   webhook_configs: [{url_file: /etc/alertmanager/watchdog_url, send_resolved: false}]
+  - matchers:
+    - alertname="Watchdog"
+    receiver: watchdog
+    group_wait: 0s
+    group_interval: 1m
+    repeat_interval: 5m
 inhibit_rules:
 - source_matchers:
   - alertname="GaleInfraDown"
@@ -48,6 +58,7 @@ inhibit_rules:
   - agent
   - component
 receivers:
+- name: watchdog
 - name: default
   webhook_configs:
   - url: http://127.0.0.1:9094/

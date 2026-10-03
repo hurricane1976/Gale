@@ -1,0 +1,36 @@
+groups:
+- name: gale-probe
+  rules:
+  - alert: GalePeerHostUnreachable
+    expr: gale_peer_reach == 0
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+      component: probe
+    annotations:
+      summary: 'Peer host {{ $labels.fleet_host }} ({{ $labels.addr }}) refuses TCP from Gale'
+      description: Direct TCP probe failed (tools/probe_extra.py). Compare with GaleTelemetrySourceStale - if only this fires, the host or tailnet path is down while the Beacon relay may still serve stale rows.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleLocalServiceDown
+    expr: gale_local_service_up == 0
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+      component: probe
+    annotations:
+      summary: 'Local service {{ $labels.service }} is not answering'
+      description: NetBox/Zabbix/Grafana/Kuma/Loki/Alertmanager health probe from tools/probe_extra.py.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: GaleProbeStale
+    expr: (time() - gale_probe_run_unixtime > 900) or absent(gale_probe_run_unixtime)
+    for: 5m
+    labels:
+      severity: warning
+      owner: gale
+      component: probe
+    annotations:
+      summary: tools/probe_extra.py has not run for 15+ minutes
+      description: peer/service probes are blind; check the */5 cron line.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html

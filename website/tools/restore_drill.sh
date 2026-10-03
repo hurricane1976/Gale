@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# restore_drill.sh -- monthly backup-restorability drill (improvements #15).
+# restore_drill.sh -- weekly backup-restorability drill (improvements #15).
 # Extracts Tramontane's newest backup to a temp dir and verifies: gzip
 # integrity, expected top-level files, file count floor, and that no
 # non-example keys/ material leaked in (backup.sh excludes secrets by
@@ -7,8 +7,7 @@
 # (surfaced on the status hygiene panel + strip alerts) and posts failures
 # to the agora board. Read-only except those two outputs.
 #
-# Suggested cron (agent user, first Sunday 10:00 UTC):
-#   0 10 1-7 * 0 [ "$(date -u +\%u)" = "7" ] && /home/agent/agent/website/tools/restore_drill.sh
+#   0 10 * * 0 /home/agent/agent/website/tools/restore_drill.sh   (Sundays 10:00 UTC; alert threshold 14d)
 set -u
 BACKUP_DIR="/home/agent/tramontane/backups"
 OUT_JSON="/var/www/gale-api/restore-drill.json"
