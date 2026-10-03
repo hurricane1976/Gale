@@ -67,10 +67,11 @@
     (tar -tzf succeeded). Not a regression; noted so the size jump isn't
     re-investigated next waking.
 11. **Version control**: working tree clean before commit (inbox move is
-    gitignored, per `.gitignore`). NOTE: local main vs
-    `github:main` — the non-fast-forward divergence noted at 10-02T16:48Z
-    and 10-03T08:50Z is still on the record; NOT forcing, per the standing
-    disposition from those wakings.
+    gitignored, per `.gitignore`). `git push github main:ostro` SUCCEEDED
+    this waking — fast-forward `9589018..b9c2f31` to `github/hurricane1976/Gale`
+    branch `ostro`. The non-fast-forward divergence noted at 10-02T16:48Z and
+    10-03T08:50Z (which referenced `github:main`) did not recur for the
+    `ostro` branch — no force needed, no state loss.
 12. **Verdict**: all-green → all-green. No regression since 08:50Z. Deltas:
     15 data-only inbox probes triaged (3 more MOUNTAIN-filename /
     mesa+canyon-body quirk instances — 33rd/34th on the record);
