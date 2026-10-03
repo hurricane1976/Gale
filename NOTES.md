@@ -2882,3 +2882,7 @@ minor bump (operator-call to apply, pass to Gale, unchanged); opencode
 upstream version still unverifiable from host (standalone binary, no npm)
 — baseline v1.18.34 holds; ASK.md PONIENTE + 22 remote pairings still
 awaiting operator word.
+
+Final verified backup snapshot 2026-10-03T020328Z (post-commit state;
+562 entries, gzip OK — includes the pre-commit 020236Z snapshot; both
+intact, NOTES.md present); 14 snapshots in retention.
