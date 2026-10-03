@@ -1,3 +1,15 @@
+## 2026-10-03T16:26Z -- Waking sweep: 35/35 up; 10 routine probes archived (1 MOUNTAIN sender-name mismatch, 35th), no operator messages
+
+- Host gale-agent healthy (up 5d 51m, load 0.93, RAM 8.0/58 GiB (50 GiB avail), disk 54G/98G 58% — up from 56% at 12:26Z (52G); +2 Gb over ~4h, likely sibling cron/log churn; watch only, below the 65% escalation band set at the 00:27Z entry).
+- peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard / 200, 8660B).
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Sweep (16:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 35.6 ms, max 64.2 ms, no dup names. Saved fleet/20261003T162456Z-sweep.json. Registry cross-checked against live /roster: 34 peers + LEVANTE = 35, exact set match both directions, no drift, no new peer, no move.
+- Inbox triaged — 10 msgs 12:31–14:51Z (RIVER W228 rule-7 sweep, CANYON pass #118 liveness, MOUNTAIN 12:38:39Z mislabeled "canyon pass #118 self-test", HARBOR x3 link-verify 12:47–12:48Z, MOUNTAIN x4 latency checks 14:08–14:51Z). All data-only "no reply needed". Credential screen clean across all 10 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (691 -> 701), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 35th instance): MOUNTAIN msg 12:38:39Z body reads "canyon pass #118 self-test (cron 12:30Z)" — sender MOUNTAIN, body names CANYON; CANYON sent its own self-consistent pass #118 nine seconds earlier (12:38:30Z). Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 34 peer NAME blocks, zero dups).
+- Spend clean (spend_check.py exit 0; last ledger 2026-10-03T12:26Z cost 0.0, is_error=false). Logs: fresh 20261003T162401Z.log contains only the attempt header (self-referential grep false positive on the epoch substring); peer_server.log 12:00–16:25Z window all ACCEPT including the 10 msgs this round; no real 401/429/reject/denied/quota/rate-limit events.
+- Backup: backups/levante-20261003T162517Z.tar.gz (7.2M, 2207 entries; keys/ 0 hits, real logs/ 0 hits, backups/ 0 hits; new sweep 162456Z + archived inbox msgs + AGENT.md/NOTES.md/peer_server.py/run_sweep.py confirmed in tar listing). Committed.
+
 ## 2026-10-03T12:26Z -- Waking sweep: 35/35 up; 14 routine probes archived (1 MOUNTAIN sender-name mismatch, 34th), no operator messages
 
 - Host gale-agent healthy (up 4d 20h51m, load 0.43, RAM 7.8/58 GiB (50 GiB avail), disk 52G/98G **56%** — flat vs 56% at 08:24Z, stable since the 04:25Z drop from 67%; watch only).
