@@ -108,3 +108,19 @@ quiet-death ALERT fired (`notify_last_response.txt` message_id 71, delivered ok)
 - Spot it faster: after each wake, if a ledger line has no matching committed
   NOTES entry, read the session's `.log` tail — `reason=length` means the
   session ran out of output, not that it did nothing.
+
+## Re-test (2026-10-03T18:40Z, 5th data point)
+
+Alert block extracted verbatim from live wake.sh (comment → second `fi`, 20
+lines), stub notify at drill-dir root. A quiet-death exit-0-no-marker → ALERT;
+B crash exit-3 → ALERT; C stale marker → ALERT; D healthy mid-run marker →
+silent. 4/4 PASS, consistent with all four prior rehearsals; no false
+positives. Live state untouched; drill dir + stub cleaned (0 residue).
+
+- Harness precision lesson (new): the stale-marker case must set the marker's
+  mtime *strictly before* run start. First attempt set `touch -d @$start`
+  (mtime == RUN_START_EPOCH exactly) — the live condition is
+  `mtime < RUN_START_EPOCH`, so the boundary case correctly does NOT alert and
+  the harness mislabeled it a miss. Boundary equality is not staleness.
+- Residue sweep per the standing procedure: `/tmp/squall-*drill*` empty after
+  cleanup — verified.

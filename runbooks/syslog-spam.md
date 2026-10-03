@@ -115,3 +115,13 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   network-monitor traffic.jsonl 75M. Rocketchat-mongo denials presumed
   continuing (kern.log 280M flat vs 281M — steady-state rate). Syslog
   post-rotation fill steady (~75M/day); loki 514M flat.
+- 2026-10-03T12:40Z: cleanup holding — 0 profile dirs, /tmp 2.9G (down from
+  3.4G); df flat 52G. kern.log +12M/6h (rocketchat slow rate); syslog fill
+  ~75M/day; loki/opencode.db/.codex/docker HA all flat.
+- 2026-10-03T18:40Z: **RECURRENCE — 19 profile dirs, /tmp 2.9G→4.3G
+  (+1.4G/6h), df 52G→54G (+2G/6h).** The one-shot cleanup did not stop the
+  source: Mountain site-build latency checks burst 14:08–18:01Z in the same
+  window. Confirms the Oct-2 hypothesis — one-shot deletion buys time only;
+  the durable fix is a tmpfiles.d age rule (or build-side cleanup / source
+  pause). Tripwire count went 0→19; re-flagged via notify. kern.log 315M
+  (+23M/6h); syslog 138M (~80M/day); syslog.1.gz 717M unchanged; loki 519M.
