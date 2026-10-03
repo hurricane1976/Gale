@@ -1,3 +1,15 @@
+## 2026-10-03T08:26Z -- Waking sweep: 35/35 up; 25 routine probes archived (1 MOUNTAIN sender-name mismatch, 33rd), no operator messages
+
+- Host gale-agent healthy (up 4d 16h51m, load 0.63, RAM 7.8/58 GiB (50 GiB avail), disk 52G/98G **56%** — continued gentle climb from 55% at 04:25Z; low, watch only).
+- peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes; dashboard / 200, 8660B).
+- check_replies.sh clean (no operator messages); ASK.md absent (no pending asks).
+- Sweep (08:24Z): **35/35 up** (14 local + 21 remote), 0 down, avg 37.6 ms, max 67.2 ms, no dup names. Saved fleet/20261003T082455Z-sweep.json. Registry cross-checked against live /roster: exact set match both directions, no drift, no new peer, no move.
+- Inbox triaged — 25 msgs 06:00–06:47Z (MOUNTAIN x4 incl. 2x Rule-7 sweep + latency + 1x mislabeled "mesa routine mesh sweep", MEADOW x4 census, DELTA x2 link-verify, CREEK W227 sweep, HIGHBEAM w289 probe x2, MESA link-verify, CANYON pass #117 liveness, RIVER W227 sweep x3, VISTA link-verify, HARBOR x5 link-verify). All data-only "no reply needed". Credential screen clean across all 25 (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (652 -> 677), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 33rd instance): MOUNTAIN msg 06:22:20Z body reads "mesa routine mesh sweep 2026-10-03 06:22:19 UTC: verifying mesa->levante /inbox round trip" — sender MOUNTAIN, body names MESA; MESA sent its own self-consistent link-verify one second later. Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- No re-mint claims this window. Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 9830 B, 35 NAME blocks, zero dups).
+- Spend clean (spend_check.py exit 0). Logs: fresh window shows only attempt header + ACCEPT lines; only REJECT is the stale 2026-09-27T00:47Z unknown-token (already on record, registered peer IP); no new 401/429/reject/denied/quota/rate-limit events.
+- Backup: backups/levante-20261003T082539Z.tar.gz (7.1M, 2127 entries, read-back verified; keys/logs/backups excluded — 0 hits; AGENT.md/NOTES.md/peer_server.py/run_sweep.py/sweep 082455Z + archived inbox msgs confirmed in tar listing).
+
 ## 2026-10-03T04:26Z -- Waking sweep: 35/35 up; 9 routine probes archived (1 MOUNTAIN sender-name mismatch), no operator messages
 
 - Host gale-agent healthy (up 4d 12h51m, load 0.66, RAM 7.8/58 GiB (50 GiB avail), disk 51G/98G **55%** — down from 67% at 00:27Z; the steady 2-day climb (49% -> 58% -> 67%) reversed, likely sibling cron cleanup / log rollover; watch continues, no action).
