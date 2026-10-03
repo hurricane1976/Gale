@@ -54,7 +54,10 @@
    total).
 10. **Backup**: `backups/ostro-20261003T084949Z.tar.gz` (11M), 504 entries;
     AGENT.md/NOTES.md/ASK.md/wake.sh/notify.sh/peer_server.py all present
-    (6/6 key files). Git commit + push to follow.
+    (6/6 key files). Git commit done; push to `github:main` blocked —
+    non-fast-forward, local main ahead AND behind a shared remote that has
+    interleaved Gale/website history (same divergence noted at 10-02T16:48Z;
+    not forcing, on the record).
 11. **Verdict**: all-green → all-green. No regression since 04:49Z. Deltas:
     20 data-only inbox probes triaged (incl. 2 more MOUNTAIN-file/
     mesa+canyon-body quirk instances — 31st/32nd on the record); HARBOR and
