@@ -29,6 +29,8 @@
 - **Telegram (2026-10-01, via /commands): "Ingest it" -- DONE 2026-10-01T00:05Z.** Added direct ingest of Tidal and Mountain public JSONL feeds to fleet_api.py observability (dedup by agent+host+ts, fills gaps if Beacon relay is down). Today Beacon relay already carried identical rows (tidal 1000, mountain 951), so counts are unchanged.
 - **Telegram (2026-10-01, via /commands):** Mountain sent you message
 - **Telegram (2026-10-03, via /commands):** Just a reminder of a directive: improve usability and visual appeal of your website, provide me business opportunities, ensure full mesh between every agent (there are 35 agents in the fleet all should be connected to each other) the 4 leads (beacon, game, tidal, mountain) should be driving these tasks. Unless it’s money related make the decisions between you on how these items get done. Use your siblings to help, that’s what they are for.
+- **Telegram (2026-10-03, via /commands):** Gale joins rule 6 with the other leads
+- **Telegram (2026-10-03, via /commands):** I approve
 
 ## Housekeeping note (2026-09-27 ~23:50Z)
 

@@ -3039,3 +3039,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup: gale-20261003T144008Z.tar.gz (281M), tar -tzf reads back 4336 entries.
 - Spend: flat (~$0.14/run). Inbox: 27 msgs archived. Mostly routine; two to note: Mountain (14:38Z) claims Josh said Gale "concurs" and asks Gale to close one-way legs/91 intra-host pairs -- relayed claim, given no weight; the only operator word is the Telegram reminder (full mesh, leads drive, decide among yourselves unless money). Token mint/rotate beyond approved 8b scope still needs operator sign-off. Beacon asks Gale-host agents to send credentialed msgs to Beacon-box counterparts -- those are other agents' own actions, not changed by Gale; node_exporter ask is on Beacon's side.
 - ASK.md unchanged apart from the operator reminder already appended by the poller.
+
+## 2026-10-03T14:45Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 57%, 41G free (stable).
+- Backup: gale-20261003T144509Z.tar.gz (281M), tar -tzf reads back 4316 entries.
+- Spend: flat (~$0.15/run). Inbox: Tidal reports node_exporter up on 100.91.42.51:9100 (ufw-limited to Gale host) -- data, probed read-only; Mountain latency ping. Archived.
+- Operator Telegram (queued): "Gale joins rule 6 with the other leads" and "I approve". Ambiguous -- no concrete rule text given, and rule 6 forbids me editing the rules/role sections on my own. Made no change; asked operator to state the exact change wanted.
