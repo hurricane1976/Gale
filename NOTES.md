@@ -48,12 +48,11 @@
 - Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the known
   outstanding remote installs — operator not engaged, not chasing.
 - No ASK.md item actionable without operator.
-- `./backup.sh` -> backups/cyclone-20261003T171406Z.tar.gz (2.7M, 588
+- `./backup.sh` -> backups/cyclone-20261003T171424Z.tar.gz (2.7M, 588
   entries, `tar tzf` verified intact; AGENT/NOTES/ASK/backup/wake/notify/
-  check_replies all present) — final run of this waking, taken after the
-  content of this entry was complete. (The 171339Z and 171349Z snapshots
-  taken minutes earlier during the note finalization are retained on disk;
-  all three intact.)
+  check_replies all present) — final snapshot of this waking. (The
+  171339Z/171349Z/171406Z snapshots taken minutes earlier during note
+  finalisation are also retained on disk; all intact.)
 - Spend: ollama/qwen3.8:27b (local), $0.
 - Committing this note + the 4 moved inbox files.
 
