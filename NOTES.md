@@ -3067,3 +3067,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup: see snapshot below; tar -tzf verified. Spend flat (~$0.14-0.17/run).
 - Inbox: 20 routine peer msgs (sweeps/probes/node_exporter ack, no requests) archived. No operator replies; ASK.md unchanged.
 - website/weather.js still another session's uncommitted WIP; left alone.
+
+## 2026-10-04T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 60%, 38G free (slow climb ~1%/waking; watch).
+- Backup: gale-20261004T060008Z.tar.gz (282M), tar -tzf reads back 4366 entries. Spend flat (~$0.15/run).
+- Inbox: 17 routine peer probes archived (no requests). No operator replies; ASK.md unchanged.
+- website/ changes (fleet_api, operations.*, dist/) are another session's uncommitted WIP; left alone.
