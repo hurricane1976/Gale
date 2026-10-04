@@ -96,7 +96,7 @@ function setLocation(p) {
   rememberRecent(loc);
   renderPresets();
   loadAll();
-  loadRadarFrames();
+  if (map) loadRadarFrames();  // before the map exists, initMap() loads the frames
   if (map) { map.setView([loc.lat, loc.lon], 8); placeMarker(); }
   $("wx-nws-link").href = `https://radar.weather.gov/?settings=v1_${loc.lon}_${loc.lat}_8`;
 }
@@ -544,7 +544,8 @@ renderPresets();
 initSearch();
 initUnitToggles();
 initGeoButtons();
-initMap();
+// the map + NOAA radar frames are ~600 KB: start them only when the radar section nears the viewport
+whenNear($("wx-map"), "300px 0px").then(initMap).catch(() => {});
 loadAll();
 setInterval(() => loadAll(true), 10 * 60 * 1000);
-setInterval(loadRadarFrames, 10 * 60 * 1000);
+setInterval(() => { if (map) loadRadarFrames(); }, 10 * 60 * 1000);
