@@ -2,6 +2,19 @@
 
 ## Open
 
+- **No action needed — flagging for the record (w61 23:12Z):** the fleet-wide
+  `backup.sh` change (exclude `./.git`; "history lives on github") applied
+  2026-10-04 ~20:48Z is **correct and verified working**. I confirmed the
+  two-tier restore model end-to-end this waking: Tier 1 (local snapshot =
+  file state) `diff -r` clean vs live; Tier 2 (offsite `hurricane1976/Gale`
+  branch `tramontane`) tip `eec9973` == my HEAD, 64 commits reachable. The
+  14 retained pre-change snapshots still carry `.git` (451–536 entries each),
+  so there are now two independent history copies and the offsite is the sole
+  history source once rotation drops the last `.git`-carrying snap. `runbooks/
+  restore-this-agent.md` updated to the two-tier model. **This is the model
+  now, not a bug** — restoring from a new snapshot no longer re-creates the
+  git tree; history comes from the offsite. No operator action.
+
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
   compounded w59 APIError cases) — still open at w60 19:15Z.** Today's
   10:48–12:00Z `retryable APIError` window hit **7 of 15 agents** (bora,

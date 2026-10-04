@@ -1,5 +1,53 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+ ## 2026-10-04 23:12Z — Sixty-first (61st) waking (backup+drill PASS under NEW two-tier model; **verified the fleet-wide `backup.sh` `.git`-exclusion is safe + restorable; offsite GitHub confirmed a true restore-able copy; runbook + ASK updated**)
+
+   - Backup RUN `tramontane-20261004T231959Z.tar.gz` (140K, 51 entries;
+     **0 `.git/` entries** — new `backup.sh` excludes it; `tar -tzf` clean;
+     rotation holds at 14). Security: snapshot holds only the two `*.example`
+     key templates, no live secrets.
+   - **Restore drill — both tiers PASS (this is the job):**
+     - Tier 1 file-state: extracted snapshot to `mktemp -d` scratch;
+       `diff -r` vs live (excl logs/backups/keys/peer/node_modules/.git) →
+       no tracked-file differences. PASS.
+     - Tier 2 git-history: isolated `git fetch github
+       +refs/heads/tramontane:refs/heads/tramontane-drill` (no live ref or
+       FETCH_HEAD touched) → tip `eec9973` **== local HEAD**, 64 commits
+       reachable. Offsite is a genuinely restorable copy of my current
+       history, not just a "ran" push. Cleaned up the isolated ref. PASS.
+   - **Fleet-wide change caught + verified (not a regression):** `backup.sh`
+     modified 20:48Z → `tar --exclude=./.git`, comment "`.git` excluded —
+     history lives on github". Byte-identical across every sibling (bora,
+     chinook, cyclone, levante, maistral, ostro, poniente, sirocco, squall,
+     tempest, vortex, zephyr) + Gale's `agent/` dir; all siblings also have
+     `github` remote → `hurricane1976/Gale`. `wake.sh:152` does
+     `git push github master:tramontane` after every wake → offsite is
+     automatic. Consistent with the operator's docs. **Not malicious, not
+     accidental, no operator action needed.**
+   - `.git` present in `.git/hooks/`? No — only `.sample` files. No new
+     remote, no hook injection. The 14 retained snapshots taken before 20:48Z
+     still contain `.git` (451–536 entries) → two independent history copies
+     right now; offsite becomes sole source after rotation drops the last
+     `.git`-carrying snap.
+   - Drift sweep (14 dirs): ALL under the 6h bar — zephyr 297m (slowest),
+     squall 276m, tempest 256m, sirocco 231m, chinook 227m, cyclone 212m,
+     maistral 185m, poniente 140m, bora 122m, gale-root 116m, levante 96m,
+     ostro 82m, vortex 60m. No silent failures, no drift.
+   - peer inbox: no unprocessed; `cyclone/`+`tramontane/` sibling dirs empty;
+     processed count 880 (unchanged since w60). No new operator msgs.
+   - `runbooks/restore-this-agent.md` rewritten for two-tier model: "What a
+     snapshot is" + new "Two tiers of state" section; roll-back steps now
+     branch on `[ -d "$TMP/.git" ]` (old-era cp vs new-era keep-live-.git +
+     fetch offsite); new "good looks like" entry records this waking's
+     two-tier PASS; "spotting a bad restore" warns against the exact failure
+     (treating missing `.git` as lost history, or `cp -a` dropping live
+     `.git`).
+   - ASK.md: added a no-action-needed entry recording the two-tier model as
+     the verified current norm (not a bug) so a future waking or the operator
+     reading it is not steered back into re-investigating it. Wake-harness
+     hardening remains the sole operator-facing open item.
+   - **Committed + notified.**
+
  ## 2026-10-04 19:15Z — Sixtieth (60th) waking (backup+drill PASS; **w59's 3-way drift MAISTRAL/CHINOOK/VORTEX fully self-recovered — fleet 14/14 under the 6h bar, no drift, no silent failures; 13 pings archived; no operator msgs; ASK.md drift flag → RESOLVED, wake.sh hardening is now the single open item)**
 
   - Backup RUN `tramontane-20261004T191239Z.tar.gz` (1.9M, 600 entries;
