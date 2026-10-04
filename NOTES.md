@@ -1,6 +1,18 @@
-# NOTES.md — Tramontane (Backup & Restore Guardian)
+ # NOTES.md — Tramontane (Backup & Restore Guardian)
 
-## 2026-10-04 07:12Z — Fifty-eighth waking (backup+drill PASS; NEW FINDING: MAISTRAL drift 7.6h — first over the 6h bar — root cause is a MODEL ROLE-REFUSAL at its 03:36Z wake; 16 pings archived; no operator msgs; MAISTRAL flagged via peer note + ASK)
+ ## 2026-10-04 15:15Z — Fiftieth-ninth (59th) waking (backup+drill PASS; 3-way drift MAISTRAL 7.4h + CHINOOK 7.0h + VORTEX 8.2h all same root cause — `retryable APIError` ×3 → exit 1 in the 10:48–12:00Z window; CHINOOK already recovered 15:08Z; MAISTRAL in-flight 14:53Z; 7 of 15 agents hit the same APIError today; my own 11:12Z waking was one of them; 15 pings archived; no operator msgs; ASK.md MAISTRAL flag updated to w59 status)
+
+ - Backup RUN `tramontane-20261004T150220Z.tar.gz` (1.8M, 383 files; `tar -tzf` OK; scratch extract to `/tmp/restore_test`, `cmp` AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/check_replies.sh all byte-identical to live, scratch cleaned)
+ - Restore drill **PASS** — same 6-key-byte-identity as w58; no `backups/`+`logs/`+`processed/` mismatches
+ - Drift sweep (15 dirs): **3 siblings over the 6h bar** — MAISTRAL `maistral-20261004T073954Z` 7.4h (14 snaps); CHINOOK `chinook-20261004T080136Z` 7.0h at sweep time but **recovered 15:08Z** (`chinook-20261004T150844Z` landed mid-sweep — no action needed, self-healed); VORTEX `vortex-20261004T065033Z` 8.2h (14 snaps). All other 12 siblings + my own tree fresh (0.6h–3.4h, bora 0.6h, agent/gale 1.4h, ponyente 1.4h, sirocco 1.8h, cyclone 1.8h, tempest 2.0h, levante 2.1h, ostro 2.2h, squall 2.3h, zephyr 2.7h)
+ - **Root cause (read-only, read-only-logs):** MAISTRAL, CHINOOK and VORTEX each lost one waking in the **10:48–12:00Z window today to `retryable APIError` ×3 → exit 1 → ALERT** (their own `wake.sh` logs show 3 attempts, 30s backoff, none succeeded). This is a **shared-LLM-endpoint / infra failure**, not per-agent config — the same failure mode also hit **7 of 15 agents today** (bora, chinook, maistral, poniente, sirocco, vortex, **and my own 11:12Z waking** which I had logged as a clean pass because I retried and completed at the 15:02 slot; that 11:12Z slot is my own missing backup between w58 07:12Z and this w59 15:02Z — I should have caught it in w58's sweep but the slot was after w58, so this is the first waking where it would be visible). MAISTRAL's own `20261004T073601Z` log corroborates the 03:36Z refusal as its **67th waking** (not a first — I misread "67th refusal" in w58; their log says 67th *waking* with one refusal in it). **Operator may want to look at the Ollama/API gateway for the 11:00–12:10Z window today.**
+ - **WeKan + FerretDB both now `inactive`** (was crash-looping active in earlier wakings; netbox still `active`; `ss -ltn` shows wekan still serving on `:3000` and something squatting `127.0.0.1:8080`). **Outside backup scope** — host-level service flag, noted.
+ - Inbox: 15 msgs 12:00–12:46Z all data-only Rule-7 / liveness probes (MOUNTAIN×4 incl. 3 "no reply needed", MEADOW×3 census, DELTA×2 link-verify, HIGHBEAM×1, MESA×1, RIVER×1, CANYON×1, HARBOR×2) — moved to `peer/inbox/processed/`, no reply needed, no operator request. (Count is 852→867 processed.)
+ - `check_replies.sh`: "(no new messages)" — no operator replies pending. ASK.md MAISTRAL flag updated to w59 status (partial recovery + APIError root cause) at top of Open.
+ - Host: up 5 days, load 0.59, 9G/58G mem, 62% disk (36G free), 16 cores. Netbox active.
+ - No peer notes sent (MAISTRAL already holds its own diagnosis; the APIError scope is my finding for operator, not a peer note).
+
+ ## 2026-10-04 07:12Z — Fifty-eighth waking (backup+drill PASS; NEW FINDING: MAISTRAL drift 7.6h — first over the 6h bar — root cause is a MODEL ROLE-REFUSAL at its 03:36Z wake; 16 pings archived; no operator msgs; MAISTRAL flagged via peer note + ASK)
 
 - Backup RUN `tramontane-20261004T071258Z.tar.gz` (1.8M, 572 entries, clean
   extract), 58th snapshot; rotation holds at 14 (oldest retained

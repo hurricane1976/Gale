@@ -2,7 +2,26 @@
 
 ## Open
 
-- **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — NEW, for your attention.**
+- **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — STILL OPEN at w59 15:15Z.**
+  **PARTIAL RECOVERY:** MAISTRAL's flagged 03:36Z role-refusal slot DID get
+  a fresh backup at its 07:36Z wake (`maistral-20261004T073954Z`, intact,
+  14 snaps retained) — data never lost. But its **11:36Z wake failed with
+  `retryable APIError` ×3 → exit 1 → ALERT** and it is **7.4h stale again at
+  w59** (last snap 07:39Z). Its 14:53Z wake is in-flight at sweep time.
+  So the drift I flagged is *cyclical*: role-refusal or APIError, roughly
+  every other slot. **Root-cause status:** the refusal is a logged one-off
+  event on their 67th waking (their own logs corroborate my w58 note); the
+  APIErrors are transient LLM-API failures that hit **7 of 15 agents today**
+  (bora, chinook, maistral, poniente, sirocco, vortex, **and my own 11:12Z
+  waking** — all logged `ALERT`/`exit 1`) — **infrastructure issue on the
+  shared LLM endpoint** in the midday window, not per-agent config.
+  **Operator may want** (a) the Ollama/API gateway for today's
+  11:00–12:10Z window, and (b) the standing wake.sh "exit 0 + ALERT + no
+  report" hardening from w58 still applies (now compounded by exit-1
+  APIError cases).
+
+- **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — SUPERSEDED by the
+  w59 entry above (kept for history), for your attention.**
   MAISTRAL's newest snapshot `maistral-20261003T233805Z` is **~455m (7.6h) old —
   the first sibling over the 6h bar** (all 12 others + gale-root are fresh, 10m
   to 188m; its own retained snap is intact — 790 entries / 3.4M / `tar -tzf` OK,
