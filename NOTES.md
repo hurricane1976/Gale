@@ -1,3 +1,16 @@
+## 2026-10-04T20:25Z -- Waking sweep: 35/35 up; 15 routine probes archived (2 MOUNTAIN sender-name mismatches, 44th/45th); disk 64% + backup-bloat root cause found (flagged to operator)
+
+- Host gale-agent healthy (up 6d 4h51m, load 0.74, RAM 8.7/58 GiB [49 GiB avail], disk 59G/98G **64%** -- up **3 pts** vs 61% at 12:51Z over ~7h, faster than the usual ~1%/4h peer-cron churn). Still **below** the 65% escalation band but trending to cross within 1-2 wakings. Driver traced (see flag below): my own backup directory, not host-wide growth.
+- peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 35 nodes all up; dashboard / 200, ~8.7 kB).
+- check_replies.sh: "(no new messages)"; ASK.md absent (no pending asks).
+- Sweep (20:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 36.6 ms, max 72.6 ms, no dup names. Saved fleet/20261004T202523Z-sweep.json. Registry cross-checked vs live /roster + keys/peers.env: roster 35 (34 peers + LEVANTE) = env 34 NAME blocks + LEVANTE, exact 2-way set match, 0 dups, 0 drift.
+- Inbox triaged -- 15 msgs 18:00-18:47Z (MOUNTAIN x4, MEADOW, DELTA, CREEK, HIGHBEAM, MESA, RIVER, CANYON, HARBOR). All routine rule-7 data-only liveness probes, explicit "no reply needed", zero operator asks -> moved to peer/processed/ (774 -> 789), inbox now empty.
+- Recurring sender-name mismatch (data, flagged, 44th/45th instances): MOUNTAIN 18:22:28Z body reads MESA identity text (sender MOUNTAIN); MOUNTAIN 18:35:38Z body names CANYON (sender MOUNTAIN). Same copy-paste-template class since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. Credential-pattern grep on all 15 clean (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). No credential, no registry change, no action.
+- Anomaly sweep: 0 new 401/429/reject/denied/quota/rate-limit in peer/logs/peer_server.log 12:54-20:24Z (ACCEPT lines only). Spend clean (spend_check.py exit 0; ledger flat cost 0.0, is_error=false, last 2026-10-04T16:26:54Z, no trend break). Keys hygiene: peers.env unchanged (mtime 2026-09-26T19:03:32Z, 34 NAME blocks, 0 dups).
+- **DISK ROOT CAUSE (my lane, flagged -- NOT auto-fixed):** backups/* jumped from ~7.5M to **217M** at the 16:25Z waking; backups/ is now **520M** (14-snapshot cap), levante/ total 760M. Chain: `.git` grew from small to **223M** (pack 214.89MiB). Cause: the repo now carries **15 sibling GitHub remote-tracking refs** (refs/remotes/github/{main,agent,bora,chinook,cyclone,levante,maistral,ostro,poniente,sirocco,squall,tempest,tramontane,vortex,zephyr}) whose history contains large blobs (sessions/2026-09-22-weather-agents-provisioning.json ~8MB x2 versions, website/tools/visual-baseline/index.desktop.png ~1.1MB across many commits). backup.sh **deliberately** tars `.git` (version-control is the safety net) and retains 14 snapshots, so each snapshot is now ~217M -> ~3GB backup leak. This is the dominant contributor to host disk creeping over the band since 10-02.
+- **Operator decision needed (I did not act -- destructive + touches shared fleet repo, rule 4 "only reverse with sign-off"):** (a) exclude `.git` from backup.sh to restore ~7M snapshots, OR (b) prune stale/unused sibling remote-tracking refs (`git remote prune github` / drop refs we don't track), OR (c) lower the 14-snapshot retention. Options (a)/(b) are the real fixes; (c) is a band-aid. Recommend (a) as the least-reversible-risk change (it only changes my own snapshot, not shared git history). Flagging now rather than at 65% because the driver is identified and self-inflicted.
+- Backup: backups/levante-20261004T202619Z.tar.gz (217M, 2442 entries; keys/ 0 hits; AGENT.md/NOTES.md/peer_server.py/run_sweep.py/202523Z-sweep + all 15 archived inbox msgs confirmed in tar listing; read-back verified). Committed.
+
 ## 2026-10-04T12:51Z -- Waking sweep: 35/35 up; 17 routine probes archived (2 MOUNTAIN sender-name mismatches, 42nd/43rd), no operator messages
 
 - Host gale-agent healthy (up 5d 21h, load 1.47, RAM 9.1/58 GiB (49 GiB avail), disk 57G/98G 61% -- up 1% vs 60% at 08:26Z (56G); +~1G over ~4h, steady sibling cron/log churn within the 53--67% band tracked since 10-02, still below the 65% escalation threshold; watch only).
@@ -569,3 +582,15 @@ Roster reconciled: registry (15 entries) vs live `/roster` (35 nodes) vs `tailsc
 - check_replies.sh: "(no new messages)"; no ASK.md, no pending asks.
 - Host healthy: up 2d21h, load 1.73, RAM 8.4/58 GiB (50 GiB avail), disk 45% (52 G free), peer_server `/health` + `/roster` + dashboard all 200.
 - Backup: backups/levante-20260928T122620Z.tar.gz (6.0M, 966 entries, read-back verified). Committed. No anomalies.
+
+## 2026-10-04 16:25 UTC (scheduled waking)
+- Wake triggered by schedule (16:15 slot + offset). No operator messages (check_replies.sh: none). peer/inbox empty; processed=774.
+- Host: up 6d 52m, load 0.65/0.83/0.82. Disk 57G/98G (62%). RAM 8.6G used / 58G.
+- Fleet sweep: 35/35 UP (was 35/35 last waking), 14 local + 21 remote, avg 36.7ms, max 64.3ms, no dups. Snapshot fleet/20261004T162541Z-sweep.json.
+- Roster reconciliation: /roster has 35 entries (34 peers + LEVANTE self), matches keys/peers.env (34 peers) exactly — no drift.
+- Telemetry API: /health ok, /roster 200 (note: bound to Tailscale IP 100.66.39.59, curl localhost:8799 gives 000 — expected).
+- Logs: no new mismatch/unknown-sender/anomaly lines since last entry (MOUNTAIN sender-name issue remains resolved-pending-confirmation as of 12:51Z note).
+- Spend ledger: $0.00/run (local Ollama), within thresholds, no alert.
+- Backup: backups/levante-20261004T162544Z.tar.gz created (217M — larger than prior ~7M primarily from .git objects dir, 1545 entries, plus peer/ 780 entries; listing verified readable, no corruption).
+- Git: committed fleet sweep snapshot (4ec841c). backups/ git-ignored as usual.
+
