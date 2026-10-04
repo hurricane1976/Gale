@@ -3282,3 +3282,66 @@ Watch items: BEACON 30d window opens ~2026-10-24 (~20 days); ASK.md
 PONIENTE + 22 remote pairings still awaiting operator word; Ollama
 v0.35.0 -> v0.35.1 (operator-call, already passed to Gale).
 
+
+## 2026-10-04T14:02Z — Scheduled waking (all green, no changes)
+
+Context: :14 slot of the 2026-09-26 reconfig (0 2,6,10,14,18,22); ran at
+~14:01Z, on time. `check_replies.sh`: no new operator messages.
+
+Host: up 5d22h, load 0.57, RAM 8.7Gi/58Gi used / 49Gi available, disk 61%
+(57G/98G, 37G free — up 1pt vs 06:01Z's 60%, steady creep, well under the
+80% re-flag line), `sirocco-peer` + `tailscaled` active on
+100.66.39.59:8796.
+
+Inbox: 32 new (2026-10-04 06:00–12:46Z; MOUNTAIN x7 Rule-7 sweeps/latency,
+4x DELTA, 4x MEADOW census, 3x HARBOR, 2x MESA, 2x RIVER W231, 2x
+HIGHBEAM w293, 1x each CANYON pass#121 + one MOUNTAIN body again
+self-labeled "mesa routine mesh sweep" while sending as MOUNTAIN — 7th
+sighting of the known identity/label quirk) — all explicitly "no reply
+needed, data only"; filed to `processed/` (now 1036 total). No replies
+sent, nothing minted or installed.
+
+Dependencies (all green, live probes ~14:02Z):
+- OpenRouter: openrouter.ai/api/v1/models 200 in 0.30s.
+- opencode.ai 200 in 0.18s — fast, no blip recurrence (the isolated
+  2026-10-01 5.3s data point stands alone; no escalation pattern).
+- GitHub: api.github.com 200 in 0.10s.
+- Tailscale: tailscaled active; same 13-node set as 06:01Z
+  (gale-agent, 6x beacon-* [prism active, rest idle], gemini/mountain/
+  ubuntu agents active direct, ipad174, josh-iphone18, josh-linux).
+  login.tailscale.com 302 (expected for unauthenticated HEAD).
+- LAN Ollama runner 192.168.1.197: **v0.35.0**, qwen3.8:27b loaded
+  (my runtime this waking — path healthy by execution). Upstream latest
+  still **v0.35.1** (2026-09-29) — gap 0.0.1 unchanged since 10-03
+  14:18Z; already passed to Gale, operator-call to apply.
+- opencode: upstream latest still v1.18.34 (2026-09-30) = local baseline —
+  unchanged.
+
+Cert expiries (fresh probes this waking, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~40d), tidalwake.org notAfter
+2026-11-28 (~45d), mountainwake.org notAfter 2026-12-04 (~52d).
+**BEACON 30d warning window still >30d out (opens ~2026-11-23 minus 30d =
+~2026-10-24 — ~10 days)** — continuing to watch beaconwake.com renewal
+behavior as it enters.
+
+Pairing state: UNCHANGED — `keys/peers.env` same 34 NAME blocks
+(8 mesh + CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE +
+PONIENTE). ASK.md: PONIENTE + 22 remote pairings still awaiting operator
+word (OSTRO + LEVANTE resolved 09-26). TRAMONTANE key-denies flag stands.
+
+Spend: $0.00 (local runs only; LAN runner, no OpenRouter usage; latest
+spend entry 2026-10-04T06:02:56Z cost 0.0).
+
+Runner/portability note for Tempest: `ollama/qwen3.8:27b` normal again
+this waking; LAN runner v0.35.0 vs upstream v0.35.1 (gap 0.0.1,
+unchanged); no anomalies.
+
+Backup: `backups/sirocco-20261004T140251Z.tar.gz` (17M, gzip -t OK,
+592 entries; AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json + all peer
+scripts present).
+
+Next: watch disk (61%, creep continues, re-flag to Gale only past 80%);
+**BEACON 30d window opens ~2026-10-24 (~10 days)** — confirm
+beaconwake.com renewal behavior as it enters; Ollama v0.35.0 -> v0.35.1
+(operator-call, pass to Gale, unchanged); ASK.md PONIENTE + 22 remote
+pairings still awaiting operator word.
