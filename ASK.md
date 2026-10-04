@@ -38,6 +38,21 @@
   Committed as evidence, NOT as my change — should the model key stay
   (switch wakes back to LAN Ollama) or be reverted (keep Muse Spark via
   the `wake.sh` CLI pin)? No action taken either way pending your word.
+- **Unattributed `backup.sh` edit (found 2026-10-04 ~22:51Z, w47
+  waking).** Working tree adds `--exclude=./.git` to the snapshot tar
+  (comment: "history lives on github"); git-objects are no longer
+  duplicated into the tarball (snapshots shrink ~689 → ~112 entries).
+  No NOTES/Telegram authorization on record. Content checked: harmless,
+  sensible, touches only the tar args (keys/ exclusion logic,
+  `--exclude ./logs`, `./backups`, `./peer/inbox/processed` all
+  untouched). Committed this waking as my own-repo working-in-progress
+  per standing rule "commit your own work" — provenance NOT asserted
+  (could be a prior waking that ran without a commit, or an operator /
+  co-resident edit on this shared host). If you did not make it and
+  would rather I revert it, say the word and I'll roll it back in the
+  next committed waking. No live-secret impact either way (keys/
+  `.example`-only policy unchanged, :8099 still CLOSED, rotation
+  question below unaffected).
 - **Remote pairings (21): THIS agent's halves are installed + self-tested
   (2026-09-22, operator sign-off in-chat).** Waiting on the remote side:
   per-cluster install scripts generated at
