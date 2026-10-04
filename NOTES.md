@@ -3110,3 +3110,64 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   health/sweep/backup all healthy, NOTES updated.
 addendum 00:05Z: inbox had 2 further late pings (CANYON 00:00:28Z census,
 ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
+## 2026-10-04T04:04Z — waking #64
+- **Self-check (standing, from #61):** (a) backup within ~4h? YES — #63
+  chinook-20261004T000307Z.tar.gz (~4h00m before this slot). (b) newest
+  NOTES entry = immediately-prior slot? YES (#63 + 00:05Z addendum). Both
+  pass → no prior-slot no-op, no back-fill owed. 4th clean use in a row
+  (since #61 adoption); the #59 plan-then-stop defect class has not
+  reappeared.
+- **check_replies:** (no new operator messages). ASK.md open items
+  unchanged (plan-then-stop triage, wake-reliability lane pick, Tailscale
+  TUN durable fix, cadence/outlier FYI, remote pairing). Nothing new to
+  add.
+- **Peer inbox (13 pings, 10-04 00:07–00:46Z):** all data-only/no-reply —
+  DELTA x3 (link-verify), MEADOW x2 (census), HIGHBEAM x1 (w292 standing
+  probe), MOUNTAIN x1 (mesa mesh sweep — mislabeled by sender, same pattern
+  as #62), MESA x1 (link-verify), CANYON x1 (liveness pass #120), RIVER x1
+  (W230 rule-7 layer-2), HARBOR x3 (link-verify). Zero operator content,
+  zero acks owed (data per rule 5). All archived; inbox empty.
+  processed/ count 987 → 998.
+- **HOST HEALTH:** uptime 5d12h29m (same boot since 9/28 15:33Z, no
+  reboot); load 0.51/1.17/1.40 on 16 cores (~3%, pre-dawn floor — series
+  low end); RAM 8.8G used / 49G avail (58Gi total); swap 0/8G (unused);
+  Tailscale live, 100.66.39.59/32 (prism active/direct, beacon fleet
+  idle) — **~326h continuous hold, no TUN regression this boot**.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. 36th consecutive alive sweep.
+- **CAPACITY / DISK:** disk **55G used / 38G free (60%)** — flat vs
+  #63's 55G/59% (rounding/churn within noise). Neighbor footprint
+  /home/agent 14G (+1G churn vs 13G — inbox processed 987→998 + logs);
+  /var/log 5.4G (journal bounded); apt cache 1.1G (under ~2G watch line);
+  /tmp 3.2G (under ~5G watch line); snapd 4.5G (settled). 80% trip line
+  (~78G) is **~23G of headroom** away — no crossing nameable before
+  several weeks at this flat arc. GROWTH WATCH: toward CLEARED.
+- **Spend 2026-10-04 (host-wide, to ~04Z):** **$0.1527 / 1 paid run**
+  (GALE 00:00Z, ~$0.15). All 13 other agent ledgers (incl. chinook) show
+  their 04:00-slot rows at $0.00 (ollama lanes) or 0 rows — bora/levante/
+  vortex/tramontane/sirocco/ostro/poniente/zephyr/squall/tempest/
+  cyclone/maistral all $0.00. No per-run ($5.00) or daily ($15.00)
+  trigger. In-band vs 10-03's $1.99/20 runs.
+- **Wake-reliability (all slots clean):** 10-03 full day CLEAN except the
+  #59 08:00 no-op (back-filled, operator-alerted, triage still open in
+  ASK.md). 10-04 00:00 CLEAN (#63), 10-04 04:00 CLEAN (this, #64). 8
+  most recent ledger slots clean in a row. #59 remains the sole open
+  triage item (operator lane).
+- **Backup:** chinook-20261004T040430Z.tar.gz (2.4M), gzip -t OK, 553
+  entries, ./AGENT.md read-back clean; **14-snapshot ceiling held**
+  (oldest rotated out → 14 in backups/). No drift.
+- **Commit:** inbox archive (13) + this entry + sweep/health.
+- **Forecast / thresholds:**
+  - Disk: 55G / 38G free (60%), flat arc (#57–#64: 62→51→52→54→55→55→55).
+    80% line ~23G headroom. GROWTH WATCH toward CLEARED. Watch list
+    unchanged: (a) snapd refresh +1–3G, (b) /tmp past ~5G (now 3.2G),
+    (c) opencode.db runaway, (d) apt archives past ~2G (now 1.1G).
+  - Load/mem/swap: pre-dawn floor, calm, swap unused; no crossing.
+  - Spend: in-band; 10-04 fresh at $0.15 / 1 run (GALE); trend flat.
+  - Wake-reliability: 8 clean slots in a row; #59 no-op remains the sole
+    open item awaiting operator triage (plan-then-stop, exits 0).
+  - Tailscale: live, ~326h hold, no TUN regression; no nameable threshold.
+  - Neighbor footprint: /home/agent 14G (+1G churn); watch, benign.
+- **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
+  advisory. Routine completed cleanly: self-check pass, replies checked,
+  13 pings archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
