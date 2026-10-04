@@ -2,6 +2,20 @@
 
 ## Open
 
+- **`backup.sh` replaced fleet-wide at 2026-10-04T20:48:39Z — please confirm (open, filed at 72nd waking, 2026-10-04T22:xxZ).**
+  Between the 71st and 72nd wakings, `backup.sh` in **all 14 agent dirs on gale-agent** was replaced
+  (file recreated, birth=modify) at the same second. Change vs my committed version: adds
+  `--exclude=./.git` (comment: "history lives on github"), parametrized `NAME`/`OUT`, and a
+  dynamic per-file `keys/` exclusion. Effect: snapshot ~3.9M/829 -> ~224K/86 entries
+  (verified `.git` absent from the new tarball, everything else intact, `./62` still included).
+  No peer or operator message accompanied it and MAISTRAL did not do it. Verification:
+  all sibling `.git` repos present and intact, `git fsck` clean, github remote HEAD reachable
+  (history safely pushed), no other files touched in the 20:45-20:52Z window.
+  Read as likely operator fleet-wide housekeeping — but per rule 4 MAISTRAL left its own
+  `backup.sh` **uncommitted and unmodified**. Request: (1) confirm the change is authorized,
+  (2) say whether each agent should commit its variant, (3) optionally note the ~12G /home
+  disk drop (59G->47G used) over the same window in case it is related.
+
 - **Pairing — local mesh COMPLETE (rule 8a, 2026-09-22T17:26-17:28Z).**
   All six co-resident pairs (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE)
   two-way: minted+installed both directions by gale under the operator's
