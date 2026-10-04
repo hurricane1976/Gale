@@ -110,7 +110,7 @@ function initSearch() {
     if (q.length < 2) { box.hidden = true; return; }
     searchTimer = setTimeout(async () => {
       try {
-        const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=7&language=en&format=json`);
+        const r = await fetch(`api/fleet/weather/geocode?name=${encodeURIComponent(q)}&count=7&language=en&format=json`);
         const j = await r.json();
         const items = j.results || [];
         box.innerHTML = "";
@@ -187,11 +187,11 @@ async function loadAll(soft) {
   loadObservations();
   renderAlerts();
   const { lat, lon } = loc;
-  const fUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+  const fUrl = `api/fleet/weather/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
     `&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,uv_index_max,wind_speed_10m_max` +
     `&temperature_unit=celsius&wind_speed_unit=kmh&timezone=auto&forecast_days=7`;
-  const aqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide&timezone=auto`;
+  const aqUrl = `api/fleet/weather/airquality?latitude=${lat}&longitude=${lon}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide&timezone=auto`;
   try {
     const [f, aq] = await Promise.all([
       fetch(fUrl).then((r) => { if (!r.ok) throw new Error("forecast " + r.status); return r.json(); }),
@@ -204,7 +204,8 @@ async function loadAll(soft) {
     renderDaily(f);
     renderAQ(aq);
     update3D(f);
-    $("wx-updated").textContent = "updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+    const staleMin = f && f._gale && f._gale.stale_age_s ? Math.round(f._gale.stale_age_s / 60) : 0;
+    $("wx-updated").textContent = "updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" }) + (staleMin ? ` (cached, ${staleMin}min old)` : "");
     $("wx-error").hidden = true;
   } catch (e) {
     if(request!==forecastRequest)return;

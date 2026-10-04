@@ -67,6 +67,7 @@ import urllib.error
 import urllib.request
 from collections import deque
 import weather_data
+import weather_proxy
 import home_automation
 import fleet_monitor as monitor
 from control_access import guarded, access
@@ -2058,6 +2059,16 @@ class Handler(BaseHTTPRequestHandler):
                 except (ValueError, IndexError):
                     return self._send(400, {"error": "Valid lat/lon required"})
                 return self._send(200, result)
+            if path in ("/weather/forecast", "/weather/airquality", "/weather/geocode"):
+                # cached open-meteo proxy: one upstream fetch serves every
+                # visitor; stale-on-error keeps the board alive through
+                # upstream outages (see weather_proxy.py).
+                kind = path.rsplit("/", 1)[1]
+                query = {k: v[0] for k, v in parse_qs(urlsplit(self.path).query).items() if v}
+                status, obj, stale_s = weather_proxy.fetch(kind, query)
+                if status == 200 and isinstance(obj, dict) and stale_s:
+                    obj = {**obj, "_gale": {"stale_age_s": stale_s}}
+                return self._send(status, obj)
             if path == "/access":
                 return self._send(200, access(self))
             if path == "/incidents":

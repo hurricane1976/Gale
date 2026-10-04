@@ -5,6 +5,7 @@ import json
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import unittest
 from contextlib import ExitStack
@@ -17,6 +18,7 @@ import fleet_monitor as monitor
 import control_access as controls
 import fleet_api as fleet
 import ollama_api
+import weather_proxy
 import yaml
 
 
@@ -376,6 +378,78 @@ class GenProbeTests(unittest.TestCase):
             frag = ollama_api._gen_probe('qwen3.8:27b')
         self.assertIsNone(frag['gen_ok'])
         self.assertNotIn('gen_err', frag)
+
+
+class WeatherProxyTests(unittest.TestCase):
+    def setUp(self):
+        weather_proxy._cache.clear()
+        weather_proxy._inflight.clear()
+
+    def test_unknown_kind_rejected_without_network(self):
+        with patch.object(weather_proxy, '_http', side_effect=AssertionError('no network expected')):
+            status, obj, _ = weather_proxy.fetch('nope', {'latitude': 1})
+        self.assertEqual(status, 400)
+
+    def test_params_allowlisted_and_coordinates_quantized(self):
+        seen = {}
+        def fake_http(url, timeout):
+            seen['url'] = url
+            return 200, {'ok': True}
+        with patch.object(weather_proxy, '_http', side_effect=fake_http):
+            weather_proxy.fetch('forecast', {'latitude': 47.6062, 'longitude': -122.3321,
+                                             'current': 'temperature_2m', 'evil': 'x',
+                                             'timezone': 'auto'})
+        self.assertIn('latitude=47.61', seen['url'])
+        self.assertIn('longitude=-122.33', seen['url'])
+        self.assertNotIn('evil', seen['url'])
+        self.assertIn('current=temperature_2m', seen['url'])
+        # second query differing in the 4th decimal hits the same cache entry
+        calls = []
+        def counting(url, timeout):
+            calls.append(url)
+            return 200, {'ok': True}
+        with patch.object(weather_proxy, '_http', side_effect=counting):
+            status, obj, stale = weather_proxy.fetch('forecast', {'latitude': 47.6069, 'longitude': -122.3326,
+                                                                  'current': 'temperature_2m', 'timezone': 'auto'})
+        self.assertEqual(status, 200)
+        self.assertEqual(stale, 0)
+        self.assertEqual(len(calls), 0)          # served from cache, no second upstream hit
+
+    def test_stale_beats_503_after_upstream_fails(self):
+        with patch.object(weather_proxy, '_http', return_value=(200, {'generationtime_ms': 1})):
+            status, obj, stale = weather_proxy.fetch('forecast', {'latitude': 1, 'longitude': 2})
+        self.assertEqual((status, stale), (200, 0))
+        # TTL passes (fetch records its own now; monkeypatch time), upstream dies
+        with patch.object(weather_proxy, '_http', return_value=(0, {'error': 'URLError: down'})), \
+             patch.object(weather_proxy.time, 'time', return_value=weather_proxy.time.time() + 9999):
+            status, obj, stale = weather_proxy.fetch('forecast', {'latitude': 1, 'longitude': 2})
+        self.assertEqual(status, 200)
+        self.assertGreater(stale, 0)
+        self.assertIn('generationtime_ms', obj)
+
+    def test_no_cache_and_dead_upstream_is_502(self):
+        with patch.object(weather_proxy, '_http', return_value=(0, {'error': 'URLError: refused'})):
+            status, obj, stale = weather_proxy.fetch('airquality', {'latitude': 1, 'longitude': 2})
+        self.assertEqual(status, 502)
+        self.assertIn('error', obj)
+        self.assertIsNone(stale)
+
+    def test_single_flight_shares_one_upstream_fetch(self):
+        calls = []
+        started = threading.Event()
+        def slow_http(url, timeout):
+            calls.append(url)
+            started.set()
+            time.sleep(0.15)
+            return 200, {'ok': True}
+        with patch.object(weather_proxy, '_http', side_effect=slow_http):
+            def go():
+                weather_proxy.fetch('geocode', {'name': 'seattle', 'count': 7})
+            t1 = threading.Thread(target=go); t1.start()
+            self.assertTrue(started.wait(2))
+            t2 = threading.Thread(target=go); t2.start()
+            t1.join(3); t2.join(3)
+        self.assertEqual(len(calls), 1)          # second caller shared the first's fetch
 
 
 if __name__ == '__main__':
