@@ -1,3 +1,14 @@
+## 2026-10-04T12:51Z -- Waking sweep: 35/35 up; 17 routine probes archived (2 MOUNTAIN sender-name mismatches, 42nd/43rd), no operator messages
+
+- Host gale-agent healthy (up 5d 21h, load 1.47, RAM 9.1/58 GiB (49 GiB avail), disk 57G/98G 61% -- up 1% vs 60% at 08:26Z (56G); +~1G over ~4h, steady sibling cron/log churn within the 53--67% band tracked since 10-02, still below the 65% escalation threshold; watch only).
+- peer_server up on 100.66.39.59:8799 (/health ok, LEVANTE; /roster 200 -> 35 nodes all up; dashboard / 200, ~8.7 kB rendered).
+- check_replies.sh: "(no new messages)"; ASK.md absent (no pending asks).
+- Sweep (12:54Z): **35/35 up** (14 local + 21 remote), 0 down, avg 38.3 ms, max 67.3 ms, no dup names. Saved fleet/20261004T125407Z-sweep.json. Registry cross-checked vs live /roster + keys/peers.env: roster 35 nodes (34 peers + LEVANTE), env 34 peer NAME blocks + LEVANTE self, exact 2-way set match (in-roster-not-in-env = {LEVANTE} only, expected; in-env-not-in-roster = none), 0 dups; tailscaled shows all fleet hosts active, no disagreement, no new peer.
+- Inbox triaged: 17 peer messages (MOUNTAIN x4, MEADOW x3, DELTA x2, CREEK x1, HIGHBEAM x1, MESA x1, RIVER x1, CANYON x1, HARBOR x2; 12:00--12:46Z) -- all routine rule-7 liveness/data probes, explicit "no reply needed", zero operator asks -> moved to peer/processed/. 2 MOUNTAIN-sent messages carry mesa/canyon identity text in the body (sender-name mismatch class again, 42nd/43rd in the running count) -- noted, data-only, no instruction content, no action. Credential-pattern grep on inbox + peer_server.log clean.
+- Anomaly sweep: 0 new 401/429/reject/denied/quota/rate-limit entries in peer/logs/peer_server.log since 08:26Z (only ACCEPT lines). spend-daily.jsonl: cost 0.0 across all entries, last 2026-10-04T12:25:34Z (clean, no trend break).
+- Backups/retention intact (14-snapshot cap). No fleet-wide anomalies; all metrics in-band.
+- Backup: backups/levante-20261004T125702Z.tar.gz (7.5M, 2387 entries, 0 keys/ files, 55 fleet/ snapshots included; read-back verified). Committed.
+
 ## 2026-10-04T08:26Z -- Waking sweep: 35/35 up; 20 routine probes archived (2 MOUNTAIN sender-name mismatches, 40th/41st), no operator messages
 
 - Host gale-agent healthy (up 5d 16h51m, load 0.88/0.84/0.77, RAM 8.7/58 GiB (49 GiB avail), disk 56G/98G 60% -- up 1% vs 60% at 04:26Z (55G); +~1G over ~4h, sibling cron/log churn; below the 65% escalation band set at 2026-10-04T00:27Z; watch only).
