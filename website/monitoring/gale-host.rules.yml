@@ -31,3 +31,33 @@ groups:
       summary: Memory usage over 90% on gale-agent
       description: 'Available memory: {{ $value | printf "%.1f" }}% used'
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: FleetNodeHighDiskUsage
+    expr: (1 - (node_filesystem_avail_bytes{job="fleet-node",mountpoint="/"} / node_filesystem_size_bytes{job="fleet-node",mountpoint="/"})) * 100 > 85
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: / is over 85% full on {{ $labels.fleet_host }}
+      description: 'Root filesystem on {{ $labels.fleet_host }} ({{ $labels.machine }}): {{ $value | printf "%.1f" }}%'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: FleetNodeHighMemoryUsage
+    expr: (1 - (node_memory_MemAvailable_bytes{job="fleet-node"} / node_memory_MemTotal_bytes{job="fleet-node"})) * 100 > 90
+    for: 10m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: Memory usage over 90% on {{ $labels.fleet_host }}
+      description: '{{ $labels.fleet_host }} ({{ $labels.machine }}): {{ $value | printf "%.1f" }}% used'
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+  - alert: FleetNodeAbsent
+    expr: absent_over_time(node_filesystem_size_bytes{job="fleet-node"}[5m]) > 0
+    for: 15m
+    labels:
+      severity: warning
+      owner: gale
+    annotations:
+      summary: no fleet node exporter is reporting at all
+      description: Every node_exporter in the fleet-node job has vanished from Prometheus -- discovery stopped or all hosts unreachable.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
