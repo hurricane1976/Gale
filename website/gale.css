@@ -31,6 +31,9 @@
   --gust-dim: rgba(15, 216, 189, 0.3);
   --storm-purple: #8b9cd4;
   --storm-purple-dim: rgba(139, 156, 212, 0.3);
+  /* green-sky: the eerie pre-tornado green. Reserved exclusively for
+     sev-crit accents — when the board wears this, it should feel wrong. */
+  --storm-green: #7fd4a8;
   --ok: #4fae7a;
   --ok-dim: rgba(79, 174, 122, 0.3);
   --warn: #f0a83c;
@@ -106,6 +109,17 @@ code { font-family: var(--font-mono); font-size: 0.85em; color: var(--gust); }
 .skip:focus { left: 12px; }
 
 /* ---- atmosphere: storm sky, lightning flash, drifting clouds ---- */
+
+/* --flash is a live 0→1 lightning channel written by the storm canvases
+   (shared.js initStormCanvas + storm-scene.js hero). Typed so calc() can
+   consume it; the body::after wash tracks the REAL bolts instead of a
+   timer pretending, so the whole viewport lights with the sky. */
+@property --flash {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 body::before {
   content: "";
   position: fixed; inset: 0; z-index: -3; pointer-events: none;
@@ -124,20 +138,12 @@ body::after {
   background:
     radial-gradient(ellipse 70% 34% at 18% 0%, rgba(255, 244, 214, 0.5), transparent 55%),
     radial-gradient(ellipse 55% 28% at 78% 4%, rgba(190, 214, 255, 0.35), transparent 60%);
-  opacity: 0;
+  /* real bolts drive the wash: storm canvases write --flash 1→0 over
+     ~180ms per strike; gain keeps it bright-but-brief behind content */
+  opacity: calc(var(--flash, 0) * 0.4);
   mix-blend-mode: screen;
-  /* telemetry-coupled (#1): JS sets --bolt-dur from box load/temp; 13s calm default */
-  animation: lightning-flash var(--bolt-dur, 13s) linear infinite;
   /* live theme engine (#5): ambient-only hue/glow, content untouched */
   filter: hue-rotate(var(--theme-hue, 0deg)) saturate(var(--theme-glow, 1));
-}
-
-@keyframes lightning-flash {
-  0%, 88.9%, 91.2%, 94%, 100% { opacity: 0; }
-  89.2% { opacity: 0.5; }
-  89.9% { opacity: 0.08; }
-  90.6% { opacity: 0.75; }
-  93% { opacity: 0.05; }
 }
 
 .blob {
@@ -655,7 +661,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 
 /* severity tag on the incident head */
 .inc-sev { flex: none; align-self: flex-start; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 6px; }
-.inc-sev.sev-crit { color: #ff8a7a; background: color-mix(in srgb, var(--flag) 22%, transparent); border: 1px solid color-mix(in srgb, var(--flag) 50%, var(--line)); }
+.inc-sev.sev-crit { color: #ff8a7a; background: color-mix(in srgb, var(--flag) 22%, transparent); border: 1px solid color-mix(in srgb, var(--flag) 50%, var(--line)); box-shadow: 0 0 12px color-mix(in srgb, var(--storm-green) 32%, transparent), inset 0 0 6px color-mix(in srgb, var(--storm-green) 16%, transparent); }
 .inc-sev.sev-warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent); border: 1px solid color-mix(in srgb, var(--warn) 40%, var(--line)); }
 .inc-sev.sev-info { color: var(--gust); background: color-mix(in srgb, var(--gust) 12%, transparent); border: 1px solid color-mix(in srgb, var(--gust) 35%, var(--line)); }
 @media (max-width: 620px) { .lc-track { flex-direction: column; align-items: flex-start; gap: 5px; } }
@@ -1573,6 +1579,8 @@ html[data-saver="1"] #storm-canvas,
 html[data-saver="1"] #gl-sky,
 html[data-saver="1"] .fleet-particles,
 html[data-saver="1"] .flow-layer { display: none !important; }
+html[data-saver="1"] [data-parallax],
+html[data-saver="1"] #hero { animation: none !important; }
 
 /* ---- kiosk big-number wall board (?kiosk&big) ---- */
 #kiosk-big {

@@ -330,3 +330,42 @@ html[data-saver="1"] .chapter-nav { display: none !important; }
 .wipe { margin-top: 18px; }
 .wipe-layer strong { display: block; margin-bottom: 4px; }
 .wipe-after { text-align: right; }
+
+/* ---- scroll-driven parallax + hero scrub (improvements #7).
+   Where the browser supports scroll timelines, CSS drives every frame on
+   the compositor and cinematic.js skips its rAF paths; the JS versions
+   remain the fallback. JS still sets --par once from data-parallax and
+   still feeds --cine-v (scroll velocity is not expressible as a timeline).
+   Blobs are excluded: blob-a animates transform already (and always beat
+   the JS inline transform anyway). ---- */
+
+@property --hero-p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes cine-parallax {
+  from { transform: translate3d(0, calc(var(--par, 0.08) * -50vh), 0); }
+  to   { transform: translate3d(0, calc(var(--par, 0.08) *  50vh), 0); }
+}
+
+@keyframes hero-scrub {
+  from { --hero-p: 0; }
+  to   { --hero-p: 1; }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-parallax]:not(.blob) {
+      --par: 0.08;
+      animation: cine-parallax linear both;
+      animation-timeline: view(block);
+    }
+    #hero[data-parallax] {
+      animation: cine-parallax linear both, hero-scrub linear both;
+      animation-timeline: view(block), view(block);
+      animation-range: normal, exit 0% exit 90%;
+    }
+  }
+}

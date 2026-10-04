@@ -82,16 +82,9 @@ body.fleet-tidal::after {
   background:
     radial-gradient(ellipse 70% 34% at 18% 0%, rgba(255, 244, 214, 0.5), transparent 55%),
     radial-gradient(ellipse 55% 28% at 78% 4%, rgba(190, 214, 255, 0.35), transparent 60%);
-  opacity: 0;
+  /* real bolts drive the wash (see gale.css @property --flash) */
+  opacity: calc(var(--flash, 0) * 0.4);
   mix-blend-mode: screen;
-  animation: lightning-flash 13s linear infinite;
-}
-@keyframes lightning-flash {
-  0%, 88.9%, 91.2%, 94%, 100% { opacity: 0; }
-  89.2% { opacity: 0.5; }
-  89.9% { opacity: 0.08; }
-  90.6% { opacity: 0.75; }
-  93% { opacity: 0.05; }
 }
 body.fleet-tidal {
   background: var(--bg); color: var(--text);
@@ -207,7 +200,8 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .chan-live { stroke: var(--fleet-chan-live); stroke-width: 2.4px; opacity: 0.95; }
 .chan-pending { stroke: var(--fleet-chan-pending); stroke-width: 1.6px; opacity: 0.85; }
 .chan-cfg { stroke: var(--fleet-chan-cfg); stroke-width: 1.1; stroke-dasharray: 4 6; opacity: 0.35; }
-.tide-current-wash { mix-blend-mode: screen; animation: 5s linear infinite tide-current-flow; }
+.tide-current-wash { mix-blend-mode: screen; animation: 5s linear infinite tide-current-flow; /* static turbulence displacement: organic current edges; the dash flow provides the motion, so the filter rasterizes once instead of every frame */
+  filter: url(#tideWobble); }
 .tide-current-stop-a { animation: 10s ease-in-out infinite tide-current-cycle; }
 .tide-current-stop-b { animation: 10s ease-in-out -3.3s infinite tide-current-cycle; }
 .tide-current-stop-c { animation: 10s ease-in-out -6.6s infinite tide-current-cycle; }
@@ -637,3 +631,9 @@ button.ct-key:focus-visible { outline: 2px solid var(--tide); outline-offset: 2p
   a { color: #111 !important; }
 }
 
+
+/* turbulence wobble retires with motion too (filter re-raster is the cost) */
+@media (prefers-reduced-motion: reduce) {
+  .tide-current-wash { filter: none !important; }
+}
+html[data-saver="1"] .tide-current-wash { filter: none !important; }

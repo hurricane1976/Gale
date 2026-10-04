@@ -6,6 +6,10 @@ import { REDUCED, raf, clamp } from "./shared.js";
 
 const FINE = typeof window !== "undefined" && window.matchMedia
   ? window.matchMedia("(pointer: fine)").matches : false;
+/* scroll-timeline support: when true, CSS owns the per-frame parallax and
+   hero scrub (cinematic.css @supports block); JS keeps only setup + velocity */
+const CSS_SCROLL = typeof CSS !== "undefined" && CSS.supports &&
+  CSS.supports("animation-timeline: view()") && CSS.supports("animation-range: exit 0% exit 90%");
 
 function isSaver() {
   try {
@@ -18,6 +22,11 @@ function isSaver() {
 function initParallax() {
   const els = [...document.querySelectorAll("[data-parallax]")];
   if (!els.length || REDUCED || isSaver()) return;
+  if (CSS_SCROLL) {
+    // one-time setup only: CSS animates from --par on the view timeline
+    for (const el of els) el.style.setProperty("--par", String(parseFloat(el.dataset.parallax) || 0.08));
+    return;
+  }
   let pending = false;
   const vh = () => window.innerHeight || 800;
   const update = () => {
@@ -47,7 +56,9 @@ function initHeroScrub() {
     pending = false;
     const h = hero.offsetHeight || 600;
     const p = clamp(window.scrollY / Math.max(1, h * 0.9), 0, 1);
-    try { hero.style && hero.style.setProperty && hero.style.setProperty("--hero-p", p.toFixed(3)); } catch {}
+    if (!CSS_SCROLL) {
+      try { hero.style && hero.style.setProperty && hero.style.setProperty("--hero-p", p.toFixed(3)); } catch {}
+    }
     // scroll velocity -> ember intensity (decays each frame anyway)
     const v = clamp(Math.abs(window.scrollY - (update._y || 0)) / 120, 0, 1);
     update._y = window.scrollY;
