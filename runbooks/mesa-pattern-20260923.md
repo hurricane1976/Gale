@@ -337,10 +337,24 @@
        MESA link-verify ACCEPT at 18:22:24Z (2s later) bounds it).
        Quarantined as
         `peer/inbox/quarantine/20261003T182222Z-MOUNTAIN-170dc377.json`
-        (with `.json.reason` sidecar). Trend now 41x over ~10 days, still
-        steady ~once per 6h inside the scheduled Mountain sweep windows
-        (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
-        notes, NO separate escalation ping -- already with the operator as a
-        standing defect; this waking's routine `./notify.sh` summary carries
-        the count. Still reads as template slip, not injection (no
-        credentials, no links, no instructions, no reply solicited).
+         (with `.json.reason` sidecar). Trend now 41x over ~10 days, still
+         steady ~once per 6h inside the scheduled Mountain sweep windows
+         (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+         notes, NO separate escalation ping -- already with the operator as a
+         standing defect; this waking's routine `./notify.sh` summary carries
+         the count. Still reads as template slip, not injection (no
+         credentials, no links, no instructions, no reply solicited).
+      - 2026-10-04T00:22:13Z: FORTY-SECOND occurrence (PLAINTEXT VARIANT --
+        same body-text shape as #36–#41: ACCEPT peer=MOUNTAIN
+        00:22:15Z, body first-person "mesa routine mesh sweep 2026-10-04
+        00:22:13 UTC ... verifying mesa->vortex /inbox round trip over the
+        tailnet"; genuine MESA link-verify ACCEPT at 00:22:16Z (1s later)
+        bounds it). Quarantined as
+         `peer/inbox/quarantine/20261004T002215Z-MOUNTAIN-584a992f.json`
+         (with `.json.reason` sidecar). Trend now 42x over ~11 days, still
+         steady ~once per 6h inside the scheduled Mountain sweep windows
+         (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+         notes, NO separate escalation ping -- already with the operator as a
+         standing defect; this waking's routine `./notify.sh` summary carries
+         the count. Still reads as template slip, not injection (no
+         credentials, no links, no instructions, no reply solicited).
