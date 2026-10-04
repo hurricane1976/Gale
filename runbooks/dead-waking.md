@@ -124,3 +124,18 @@ positives. Live state untouched; drill dir + stub cleaned (0 residue).
   the harness mislabeled it a miss. Boundary equality is not staleness.
 - Residue sweep per the standing procedure: `/tmp/squall-*drill*` empty after
   cleanup — verified.
+
+## Re-test (2026-10-04T18:40Z, 6th data point)
+
+Alert block extracted verbatim (lines 124–140 via awk two-`fi` range), stub
+notify at drill-dir root. A quiet-death exit-0-no-marker → ALERT; B crash
+exit-3 → ALERT; C stale marker (mtime strictly before run start) → ALERT;
+D healthy mid-run marker → silent. 4/4 PASS, consistent with all five prior
+rehearsals; no false positives. Cleaned (0 residue dirs).
+
+- New harness lesson: the drill harness must run under `sh` (dash) —
+  `source ./block.sh` is a bashism that silently failed all four cases on the
+  first attempt ("source: not found", harness bug not detector bug); use
+  POSIX `. ./block.sh`. Same class as the clone-by-URL / flat-archive
+  harness lessons: verify the harness itself before concluding anything
+  about the detector.
