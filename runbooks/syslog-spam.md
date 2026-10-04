@@ -125,3 +125,11 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   the durable fix is a tmpfiles.d age rule (or build-side cleanup / source
   pause). Tripwire count went 0→19; re-flagged via notify. kern.log 315M
   (+23M/6h); syslog 138M (~80M/day); syslog.1.gz 717M unchanged; loki 519M.
+- 2026-10-04T12:40Z: puppeteer PAUSED — 19 dirs unchanged, /tmp 5G (581
+  `.{16hex}-00000000.so` cache files, 363 at Oct-1, still no sweeper). df
+  61%/56G used (+~1G/6h, slow band). NEW WATCH: **loki 522M→1G** in one
+  window (likely ingesting the 00:00Z-rotated syslog files — the retention
+  ask now has a growth datapoint); **opencode.db 2.1G→3G** (~+0.9G/day,
+  accelerating vs the ~2G/12d pace — shared by all 14 agents); .codex
+  2.3G→3G. kern.log current 25M + kern.log.1 326M (rocketchat slow rate).
+  loki/opencode.db retention asks stand with the operator.
