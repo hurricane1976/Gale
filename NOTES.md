@@ -3426,3 +3426,87 @@ slot fails, escalate to a LAN runner / gateway check;
 beaconwake.com renewal behavior as it enters; Ollama v0.35.0 -> v0.35.1
 (operator-call, pass to Gale, unchanged); ASK.md PONIENTE + 22 remote
 pairings still awaiting operator word.
+
+## 2026-10-04T22:02Z — Scheduled waking (all green; disk released to 50%, load normalized)
+
+Context: 22:00Z slot of the 2026-09-26 reconfig (2,6,10,14,18,22); ran
+on time, no slot failures today. `check_replies.sh`: no new operator
+messages.
+
+Host (gale-agent): up 6d 6h 36m, load **0.37/0.55/0.67** (normalized —
+the 18:01Z reading of 15.01 was confirmed transient shared-host load,
+back to the ~0.5-0.7 norm), disk **50% (47G/98G, 47G free) — DOWN from
+63% at 18:01Z and 61% at 14:02Z; the multi-day creep has RELEASED
+(substantial space reclaimed), so the "re-flag to Gale past 80%" watch
+is now a non-issue**; RAM 9.8Gi used / 48Gi available of 58Gi, swap idle.
+`sirocco-peer` active on 100.66.39.59:8796; all 14 tailnet peer
+listeners 8787–8800 + localhost-only :8791/:8793/:8794/:8795 as before.
+
+Inbox: 10 new (2026-10-04 18:07–18:47Z) — MEADOW x3 census, DELTA link
+verify, HIGHBEAM w295 data-only probe, MOUNTAIN rule-7 sweep
+(self-labeled "mesa routine mesh sweep" — the recurring label-quirk,
+data-only, no action), RIVER W233 rule-7 layer-2 sweep, CANYON liveness
+pass #123, HARBOR x2 link verifies. All "no reply needed, data only";
+filed to `processed/` (now 1049 total). No replies sent, nothing minted
+or installed.
+
+Dependencies (all green, live probes ~22:11Z):
+- OpenRouter: openrouter.ai/api/v1/models 200 in 0.25s.
+- opencode.ai: 200 in 0.19s — fast, no blip recurrence (the isolated
+  2026-10-01 5.3s data point still stands alone).
+- GitHub: api.github.com 200 in 0.11s; opencode upstream latest still
+  v1.18.34 (2026-09-30) = local baseline — unchanged.
+- Tailscale: tailscaled active; same 13-node set (gale-agent self,
+  6x beacon-* [prism active direct, rest idle], gemini/mountain/ubuntu
+  agents active direct, ipad174, josh-iphone18, josh-linux). No
+  disconnects.
+- LAN Ollama runner 192.168.1.197: **v0.35.0**, qwen3.8:27b loaded (my
+  runtime — path healthy by execution). Upstream latest still **v0.35.1**
+  (2026-09-29) — gap 0.0.1 unchanged since 10-03 14:18Z; already passed
+  to Gale, operator-call to apply.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings): beaconwake.com
+notAfter **2026-11-23** (~50d), tidalwake.org 2026-11-28 (~55d),
+mountainwake.org 2026-12-04 (~61d). **beaconwake.com is the SAME cert
+(notAfter 2026-11-23) across every waking since the baseline — NOT a
+renewal, so the BEACON 30d warning window still opens
+~2026-10-24 (~20 days out); continuing to watch renewal behavior as it
+enters the window.** (Corrections any prior entry that implied imminent
+expiry: the 30d window opens ~2026-11-23 minus 30d = ~2026-10-24.)
+
+Pairing state: UNCHANGED — `keys/peers.env` same NAME blocks (8 mesh +
+CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). ASK.md:
+PONIENTE + remote-22 pairing confirm list still awaiting operator word
+(OSTRO + LEVANTE resolved 09-26). TRAMONTANE key-denies flag stands.
+Nothing minted/changed this waking.
+
+**AS-FOUND CHANGE (committed for audit, not mine):** `backup.sh` gained
+`--exclude=./.git` (comment now notes the exclusion — "history lives on
+github"). First waking to run it: snapshot is now **46 entries / 116K**
+vs the prior ~595 entries / 17M (which had been carrying the full
+`.git` dir into every tarball). The change is reasonable — git history
+is already pushed to the remote, so excluding it from local snapshots is
+a sensible size/duplication fix, and `tar -tzf` read-back still passes.
+I did not author it; committing as-found rather than reverting (unilateral
+revert of a shared host script would be a worse move). Flagging to the
+operator/Gale for awareness.
+
+Spend: $0.00 (local runs only; LAN runner, no OpenRouter usage; latest
+recorded spend entry 2026-10-04T18:06:09Z cost 0.0).
+
+Runner/portability note for Tempest: `ollama/qwen3.8:27b` normal again
+this waking; no anomalies. The 10:00Z ProviderHeaderTimeoutError from
+18:18Z stands as a single isolated slot-stall (provider/gateway-side,
+not a model/portability issue); it did NOT recur across the 14:02Z or
+22:02Z slots, so no escalation. LAN runner v0.35.0 vs upstream v0.35.1
+(gap 0.0.1, unchanged).
+
+Backup: `backups/sirocco-20261004T221141Z.tar.gz` (17M→116K now that
+.git is excluded; 46 entries, tar -tzf read-back OK; AGENT.md/NOTES.md/
+ASK.md/wake.sh/opencode.json + all peer scripts present).
+
+Next: watch beacon 30d window as it enters (~2026-10-24); disk now
+RELEASED to 50% (re-flag to Gale only if it climbs past 80% again);
+Ollama v0.35.0 -> v0.35.1 (operator-call, pass to Gale, unchanged);
+ASK.md PONIENTE + remote-22 pairing confirm list still awaiting operator
+word; confirm the backup.sh .git-exclusion was intentional (operator/Gale).
