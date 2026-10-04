@@ -3171,3 +3171,67 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
   advisory. Routine completed cleanly: self-check pass, replies checked,
   13 pings archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
+## 2026-10-04T08:01Z — waking #65
+- **Self-check (standing, from #61):** (a) backup within ~4h? YES — #64
+  chinook-20261004T040430Z.tar.gz (~4h00m before this slot). (b) newest
+  NOTES entry = immediately-prior slot? YES (#64). Both pass → no prior-slot
+  no-op, no back-fill owed. 5th clean use in a row (since #61 adoption);
+  the #59 plan-then-stop defect class has not reappeared.
+- **check_replies:** (no new operator messages). ASK.md open items
+  unchanged (plan-then-stop triage, wake-reliability lane pick, Tailscale
+  TUN durable fix, cadence/outlier FYI, remote pairing). Nothing new to
+  add.
+- **Peer inbox (18 pings, 10-04 06:00–06:46Z):** all data-only/no-reply —
+  MOUNTAIN x4 (2× Rule-7 credentialed reach, 1× site-build latency, 1× mesa
+  mesh sweep mislabeled by sender, same pattern as #62), DELTA x5
+  (link-verify), MEADOW x3 (census probes), HIGHBEAM x1 (w293 standing
+  probe), MESA x1 (link-verify), RIVER x2 (W231 rule-7 layer-2), CANYON
+  x1 (liveness pass #121, 06:30Z cron), HARBOR x2 (link-verify). Zero
+  operator content, zero acks owed (data per rule 5). All archived; inbox
+  empty. processed/ count 998 → 1016.
+- **HOST HEALTH:** uptime 5d16h28m (same boot since 9/28 15:33Z, no
+  reboot); load 0.66/0.73/0.80 on 16 cores (~4%, early-morning floor —
+  series low end); RAM 8.7G used / 49G avail (58Gi total); swap 0/8G
+  (unused); Tailscale live, 100.66.39.59/32 (fleet peers idle — beacon
+  legs healthy) — **~334h continuous hold, no TUN regression this boot**.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. 37th consecutive alive sweep.
+- **CAPACITY / DISK:** disk **56G used / 38G free (60%)** — flat vs
+  #64's 55G/38G free (+1G within noise/churn). Neighbor footprint
+  /home/agent 14G (flat vs #64); /var/log 5.4G (journal bounded, flat);
+  /tmp 3.3G (under ~5G watch line); apt archives 949M (under ~2G watch
+  line, down from 1.1G — apt self-cleared); snap 480M + /var/snap churn
+  (settled). 80% trip line (~78G) is **~22G of headroom** away — no
+  crossing nameable before several weeks at this flat arc. GROWTH WATCH:
+  toward CLEARED.
+- **Spend 2026-10-04 (host-wide, to ~08Z):** **~$1.32 / 8 paid runs** —
+  GALE 2 runs $0.3086, SQUALL 2 $0.1827, TEMPEST 2 $0.1918, ZEPHYR 2
+  $0.1359; every other agent ledger (incl. chinook, bora, cyclone,
+  levante, maistral, ostro, poniente, sirocco, tramontane, vortex) at
+  $0.00 (ollama lanes). Per-run max ~$0.19 — no $5.00 per-run or $15.00
+  daily trigger. In-band vs 10-03's $1.99/20 runs.
+- **Wake-reliability (all slots clean):** 10-03 full day CLEAN except the
+  #59 08:00 no-op (back-filled, operator-alerted, triage still open in
+  ASK.md). 10-04 00:00 CLEAN (#63), 04:00 CLEAN (#64), 08:00 CLEAN (this,
+  #65). 9 most recent ledger slots clean in a row. #59 remains the sole
+  open triage item (operator lane).
+- **Backup:** chinook-20261004T080136Z.tar.gz (2.5M), gzip -t OK, 557
+  entries, ./NOTES.md read-back clean; **14-snapshot ceiling held**
+  (oldest rotated out). No drift.
+- **Commit:** inbox archive (18) + this entry.
+- **Forecast / thresholds:**
+  - Disk: 56G / 38G free (60%). Arc #57–#65: 62→51→52→54→55→55→56 (flat
+    arc, single noise step). 80% line ~22G headroom. GROWTH WATCH toward
+    CLEARED. Watch list unchanged: (a) snapd refresh +1–3G, (b) /tmp
+    past ~5G (now 3.3G), (c) opencode.db runaway (watch), (d) apt archives
+    past ~2G (now 949M — under line).
+  - Load/mem/swap: early-morning floor, calm, swap unused; no crossing.
+  - Spend: in-band; 10-04 ~$1.32 / 8 runs by 08Z; trend flat, per-run
+    max $0.19 well under alert lines.
+  - Wake-reliability: 9 clean slots in a row; #59 no-op remains the sole
+    open triage item awaiting operator (plan-then-stop, exits 0).
+  - Tailscale: live, ~334h hold, no TUN regression; no nameable threshold.
+  - Neighbor footprint: /home/agent 14G flat; watch, benign.
+- **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
+  advisory. Routine completed cleanly: self-check pass, replies checked,
+  18 pings archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
