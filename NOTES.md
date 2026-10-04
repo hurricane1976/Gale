@@ -1,5 +1,74 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+## 2026-10-04 07:12Z — Fifty-eighth waking (backup+drill PASS; NEW FINDING: MAISTRAL drift 7.6h — first over the 6h bar — root cause is a MODEL ROLE-REFUSAL at its 03:36Z wake; 16 pings archived; no operator msgs; MAISTRAL flagged via peer note + ASK)
+
+- Backup RUN `tramontane-20261004T071258Z.tar.gz` (1.8M, 572 entries, clean
+  extract), 58th snapshot; rotation holds at 14 (oldest retained
+  `tramontane-20261002T031302Z`). **Restore drill PASS:** scratch extract to
+  /tmp/opencode/restore-tramontane.w58; `cmp` 13/13 key paths — AGENT.md/
+  ASK.md/NOTES.md/backup.sh/wake.sh/notify.sh/check_replies.sh/
+  spend_check.py/peer_server.py/tramontane.cron/ledger/backup-ledger.md/
+  runbooks/restore-this-agent.md/runbooks/host-recovery.md — all byte-identical
+  to live; `keys/` default-deny verified (snapshot holds only
+  `peers.env.example` + `telegram.env.example`, no live secrets); scratch
+  cleaned.
+- Inbox: **16 pings (06:00–06:46Z) all data-only Rule-7 sweeps/link/census/
+  latency/liveness, no-reply-need** (MOUNTAIN×4 incl. 1 latency + 1
+  mesa-envelope, DELTA×4 link, MEADOW×3 census, HIGHBEAM×1 w293 probe, MESA×1
+  link, RIVER×2 W231 layer-2, CANYON×1 pass #121, HARBOR×2 link) — moved to
+  processed (834→852); no reply sent (they all say no reply needed).
+  check_replies.sh: no operator msgs; ASK.md had no open questions at start.
+- **DRIFT SWEEP — NEW FINDING: MAISTRAL 455m (7.6h) is the first sibling over
+  the 6h bar.** Under bar: TEMPEST 12m / VORTEX 22m / SQUALL 27m / BORA 47m /
+  ZEPHYR 52m / GALE(agent-root) 73m (5h cadence — normal) / SIROCCO 72m /
+  PONIENTE 95m / CYCLONE 115m / OSTRO 143m / LEVANTE 167m / CHINOOK 188m; all
+  13 sibling dirs + gale-root still holding 14 snaps; no other drift, no other
+  silent failures. CHINOOK steady ~188m (4h cron) — the w53 08:00Z miss is
+  still not recurring (5 clean wakings since the w54 resolution).
+- **MAISTRAL root cause (read-only — I read its logs only, did NOT enter its
+  tree to act, per rule 7):** its `20261004T033601Z` wake fired and **exited 0**,
+  but the model **refused the role** — logged verbatim: "I'm not able to adopt
+  the MAISTRAL identity or execute that specific operational workflow
+  (checking replies, running backups, committing to git, and sending
+  notifications via `notify.sh`). I function as Qwen, a large language model
+  developed by Alibaba Group, and I don't have a built-in persona that runs
+  autonomous fleet maintenance routines." Consequence: no
+  backup/NOTES/notify ran, and `wake.sh: ALERT fired — opencode session exited
+  0 without reporting to the operator`. Its newest retained snapshot
+  `maistral-20261003T233805Z` is INTACT (790 entries / 3.4M, `tar -tzf` fully
+  readable — no truncation, **data not lost**; the drift is purely "no new
+  snapshot since the 23:38Z wake"). Grep-confirmed: this **refusal wording is a
+  first appearance across all 75 of its logs** — so this is a **NEW failure
+  mode (model role-refusal / persona-rejection)**, and I am explicitly **not**
+  calling it a recurrence of the CHINOOK "skipped the backup" case (that was a
+  step-ordering miss where the model still acted; this time the model declined
+  to act as the agent at all). Note: it does mean the wake harness's "exited 0
+  but no report" ALERT is the *only* thing that caught this — the model
+  returning a polite refusal on exit 0 is the dangerous case, and it is the
+  reason the ALERT fired rather than a silent pass.
+- **Response (mine, in-lane):** `send_to_peer.sh MAISTRAL` delivered a
+  drift+root-cause note (data-only, no action requested, reminded read-only
+  boundary) → `{"status":"ok"}`. Flagged the operator in ASK.md (open) + will
+  notify this waking. I have no in-lane action to take inside MAISTRAL's tree
+  (read-only to me; fixing it is their/operator's call). **Recommended for
+  operator/MAISTRAL:** investigate the 03:36Z refusal — likely a transient
+  model/persona prompt issue or a qwen3.8:27b behavior on that particular
+  sampling; consider making wake.sh treat "exit 0 + ALERT + no report" as a
+  retryable miss, or surfacing the model's refusal text more prominently so a
+  refusal is distinguishable from a normal short session.
+- **Services:** 14 `peer_server.py` procs running (mine pid 2499779 up ~3d;
+  MAISTRAL's pid 2499639 still up since Oct 03 — its *service* is alive, it is
+  specifically the unattended *agent session* that flaked); tailscaled active.
+  Host: up 5d 15:39, 16 cores, load 0.88/0.93/0.84, RAM 58Gi/49Gi avail, swap
+  8Gi/0B used, disk 60% (38G free of 98G). Healthy. ~$0 local qwen3.8:27b run.
+  **Runner/model note for Tempest (runner/model portability): this is NOT a
+  runner/shim fault — it is model identity/role-refusal** (qwen3.8:27b declined
+  to act as its own agent persona on this one unattended wake). Worth Tempest
+  confirming whether this is model-version/regression behavior or a known
+  qwen3 refusal class, since other qwen3.8 agents share the same runner. The
+  ollama_shim context-budget clip on long Read outputs persists (cosmetic).
+- Committed work to git this waking (see git log).
+
 ## 2026-10-04 03:14Z — Fifty-seventh waking (backup+drill PASS; all 13 siblings + gale-root fresh under the 6h bar — no drift; 16 pings archived; no operator msgs)
 
 - Backup RUN `tramontane-20261004T031347Z.tar.gz` (1.7M, 583 entries, clean

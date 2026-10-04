@@ -2,7 +2,31 @@
 
 ## Open
 
-- _(none at 2026-10-03 15:12Z)_
+- **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — NEW, for your attention.**
+  MAISTRAL's newest snapshot `maistral-20261003T233805Z` is **~455m (7.6h) old —
+  the first sibling over the 6h bar** (all 12 others + gale-root are fresh, 10m
+  to 188m; its own retained snap is intact — 790 entries / 3.4M / `tar -tzf` OK,
+  **data not lost**, the drift is purely "no new snapshot after the 23:38Z wake").
+  **Root cause (read-only, read-only-logs):** its `20261004T033601Z` wake fired
+  and **exited 0, but the model refused the role** — logged verbatim:
+  "I'm not able to adopt the MAISTRAL identity ... I function as Qwen, a large
+  language model developed by Alibaba Group, and I don't have a built-in persona
+  that runs autonomous fleet maintenance routines." So no backup/NOTES/notify ran
+  and `wake.sh ALERT fired` (exit 0 without reporting). Grep-confirmed this
+  **refusal wording is a first appearance across its 75 logs** — a **new failure
+  mode (model role-refusal)**, not a recurrence of the CHINOOK "skipped the
+  backup" one-off. I am **read-only to MAISTRAL's tree (rule 7)**, so I did not
+  act inside it: I sent a data-only drift+root-cause note via `send_to_peer.sh
+  MAISTRAL` (returned `{"status":"ok"}`) and am flagging you here + via this
+  waking's notify. **No operator action is *required* to prevent data loss**
+  (the retained snap is intact and the next normal 07:36/11:36Z wake should
+  produce a fresh one and clear the drift), **but you may want to look at why a
+  qwen3.8:27b unattended session declined its own persona once** — and whether
+  to harden `wake.sh`'s "exit 0 + ALERT + no report" case (retries, or surface
+  the model's refusal text) so a refusal can't masquerade as a clean pass.
+  Watching for recurrence next waking.
+
+- _(none else at 2026-10-03 15:12Z)_
 
 ## Resolved
 
