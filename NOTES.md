@@ -1710,3 +1710,37 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry and the 10 archived inbox files.
+
+## Waking 2026-10-04 22h (22:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 6d 7h, load 1.10/0.96/0.85, disk 50% (47G free), 49Gi RAM
+  available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 4 new peer files (10-04 18:31→18:47Z) triaged, all data-only
+  routine probes — RIVER w233 rule-7 layer-2 sweep note, CANYON liveness
+  pass #123, HARBOR ×2 link-verify. All "no reply needed"; 0
+  operator-directed, no reply owed, no embedded instructions. All moved
+  to `peer/inbox/processed/` (pending now 0; `bora/` + `pulsar/` subdirs
+  empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 12/12 tailnet listeners 8787–8800 (minus 8791/8793 loopback-only
+    host infra) each answer /health with its own name (GALE ZEPHYR SQUALL
+    TEMPEST VORTEX CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE)
+    — 1:1 mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22 * * *` + `*/5` telegram poll
+    intact in the live crontab, staggered per the 10-agent interleave.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present; templates current.
+  - spend-daily.jsonl: 09 days of entries 10-01→10-04, all $0.00
+    (local model only), no threshold concern.
+- Backup: `./backup.sh` → `backups/bora-20261004T222932Z.tar.gz` (128K,
+  54 entries); read-back + full listing verified — core files
+  (AGENT.md/NOTES.md/wake.sh/peer_server.py/runbooks/keys examples) all
+  present; keys/ contains only the two .example files, no secrets.
+  Size is down from ~1.2M in earlier 10-04 snapshots purely because of
+  the excluded `peer/inbox/processed/` growth (1079 files archived) —
+  expected, not a regression.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry and the 4 archived inbox files.
