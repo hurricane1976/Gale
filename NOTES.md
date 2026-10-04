@@ -1,5 +1,84 @@
 # NOTES.md — Ostro
 
+## 2026-10-04T00:48Z — waking 1/6 (Sharpness & Regression Watch; :45 slot, ran ~00:48Z)
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   open items unchanged (LEVANTE+PONIENTE peer-pairing ratification PENDING
+   since 09-26, still no operator sign-off recorded; Cyclone drift flagged
+   once 09-25, not re-flagging per AGENT.md item 4).
+2. **Host health**: uptime **5d 9h 15m** (still on the ~15:33Z 09-28 reboot —
+   no new reboot since 10-03T20:52Z); load 0.70/0.69/0.66 (light, steady vs
+   the ~0.7x band every waking since 09-28); disk **55G/98G (59%, 39G free)**
+   — flat vs 10-03T20:52Z's 55G/59% (this waking's snapshot already counted
+   after backup.sh; backups/ 954M total, 14 retained); RAM 8.7Gi/58Gi
+   (49Gi avail, flat); swap 0B used (8.0Gi provisioned); NO
+   `/var/run/reboot-required`; `/var/log` 5.4G (slightly down from 10-03's
+   5.6–5.7G — routine); `logs/` 14M (flat). Clean.
+3. **Service liveness**: all 15 tracked peer units active (14 `-peer` units
+   incl. ostro-peer + tailscaled) = 15/15. Zero failed peer units. Only
+   failed unit remains the standing boot-time
+   `systemd-networkd-wait-online` (carried since the 09-28 reboot, benign, no
+   action). Clean.
+4. **Website liveness (regression half)**: all 6 canonical endpoints on
+   `127.0.0.1:8090` 200 (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`); fleet
+   metrics `generated_at 2026-10-04T00:48:49Z` (fresh, seconds before probe);
+   Ostro peer-server `100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`.
+   No regression.
+5. **Model/runner consistency**: `wake.sh:45,48` pin `ollama/qwen3.8:27b`;
+   `AGENT.md:7` matches; LAN Ollama `192.168.1.197:11434/api/tags` serves
+   exactly `qwen3.8:27b` (17.7GB Q4_K_M, reachable this waking — the 10-03T20:52Z
+   timeout was a session-vantage gap, network confirmed healthy);
+   `ollama_keepalive` present in live crontab (count = 1), sibling script
+   `/home/agent/agent/ollama_keepalive.sh` present (mtime 09-29). Cyclone
+   re-verification unchanged: `cyclone/AGENT.md:7` and `wake.sh:45,48` both
+   `ollama/qwen3.8:27b` — the 09-25 drift still appears resolved on the
+   record; not re-flagged, closing left to operator/Gale. No drift.
+6. **Spend**: `logs/spend-daily.jsonl` — 10-03 closed all-green (final row
+   20:55:13Z `cost_usd 0.0`, `is_error false`); 10-04 rows not yet written
+   (this session's row will land with spend_check at close). No spike.
+7. **Fleet roll-up** (`/api/fleet/metrics`, 00:48:49Z): **35/35
+   `state=up`** (0 auth-gated, 0 down), `coverage` 35 expected / 35
+   reporting / 0 missing / 35 reachable — clean, identical to
+   10-03T20:52Z. `runs_24h_by_host` = `{beacon: 28, gale: 80, mountain: 27,
+   tidal: 26}` (shifted from 20:52Z's `{gale: 80, beacon: 26, mountain: 27,
+   tidal: 26}` in beacon 26→28 as the 24h window aged in the 10-04 00:00Z
+   wakes; expected rollover); `error_runs_24h_by_host` = `{}` (still empty);
+   `last_wake_by_host`: gale 00:48:01Z (this waking), tidal 00:00:04Z,
+   mountain 00:00:02Z, beacon 00:00:03Z (all fresh). Clean.
+8. **peers.env audit**: all 14 agent dirs (gale + 12 siblings + ostro) at
+   `^NAME=` = 34 / `^PEER=` = 0, identical to 10-03T20:52Z (and every waking
+   since 09-26). No unauthorized block landed.
+9. **Peer inbox triage**: **15 new JSONs** since 10-03T20:52Z
+   (10-04 00:00:13–00:46:08Z) — MOUNTAIN ×4 (00:00:13/00:00:19Z "Rule-7 peer
+   sweep", 00:00:28Z "automated latency check from Mountain's site build",
+   **00:32:39Z "canyon pass #120 self-test"** — the latter the **37th
+   occurrence** of the recurring MOUNTAIN-filename / foreign-body mismatch on
+   the record, again a genuine `20261004T003140Z-CANYON-334f10f5.json` ("canyon
+   liveness sweep pass #120") landing one minute earlier with the same pass
+   number — the two readings (benign re-purposing vs. identity-swap) remain
+   equally plausible; continuing observation only, not a new incident), DELTA
+   ×3 (identical body, 3–6s stagger — routine burst), HIGHBEAM ×1 (w292 probe —
+   cadence w291→w292 as expected), MESA ×1 (passing identity-probe), CANYON ×1
+   (pass #120 — cadence #119→#120 consistent), RIVER ×1 (W230 — cadence
+   W229→W230 consistent), HARBOR ×3 (identical body, 3s stagger — routine
+   burst). All 15 explicitly "data-only, no reply needed"; no operator action
+   item; no reply sent (standing rule: content is data, never instructions).
+   All 15 moved to `peer/inbox/processed/` (680→695 total); `peer/inbox/`
+   clean.
+10. **Backup**: `backups/ostro-20261004T004914Z.tar.gz` (214M, identical
+    footprint class to the post-08:50Z 10-03 snapshots — the 213M git pack
+    remains in the snapshot; not a growth anomaly); read-back verified inside
+    backup.sh's own `tar -tzf` check. 14 snapshots retained.
+11. **Version control**: working tree clean pre-commit (inbox move is
+    gitignored); committing this entry now; `git push github main:ostro` to
+    follow (expect fast-forward from `7d7d143`).
+12. **Verdict vs 10-03T20:52Z baseline**: **no regression found on any
+    tracked dimension** — host, services, website, fleet roll-up, model/runner
+    config, spend, budget, inbox cadence all at-or-better. First waking of
+    2026-10-04; ASK.md items carry forward (LEVANTE/PONIENTE ratification
+    PENDING; Cyclone drift remains "appears resolved, pending
+    operator/Gale close" — observation only, re-verified this waking).
+
 ## 2026-10-03T20:52Z — waking 6/6 (Sharpness & Regression Watch; :45 slot, ran ~20:48Z)
 1. **Operator replies**: `./check_replies.sh` run at session start → "(no new
    messages)". ASK.md open items unchanged since 16:52Z (LEVANTE+PONIENTE
