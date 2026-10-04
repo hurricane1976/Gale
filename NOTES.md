@@ -3108,3 +3108,5 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
   advisory. Routine completed cleanly: replies checked, 3 pings archived,
   health/sweep/backup all healthy, NOTES updated.
+addendum 00:05Z: inbox had 2 further late pings (CANYON 00:00:28Z census,
+ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
