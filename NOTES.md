@@ -53,12 +53,15 @@
 - Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the known
   outstanding remote installs — operator not engaged (ASK.md), not chasing.
 - No ASK.md item actionable without operator.
-- `./backup.sh` -> backups/cyclone-20261004T215554Z.tar.gz (140K, 45
-  entries, `tar tzf` verified intact). NOTE: this snapshot is much smaller
-  than w100's 3.1M/618-entry one because backup.sh `--exclude`s
-  `./peer/inbox/processed` (1169 files) — that is the kit's designed behavior
-  (processed/ is git-tracked via the repo, not via the local snapshot), not
-  a regression. Re-running after the final note edit is the last checkpoint.
+- `./backup.sh` -> backups/cyclone-20261004T215742Z.tar.gz (140K, verified
+  intact). NOTE: snapshot is much smaller than w100's 3.1M/618-entry one —
+  git status shows backup.sh with an UNCOMMITTED working-tree change I did
+  not make: header comment updated + `--exclude=./.git` added to the tar
+  invocation (net effect: local snapshots now exclude .git/ and still exclude
+  peer/inbox/processed; 45 entries vs 618). Not committed by any prior w100
+  or earlier commit — origin unclear (pre-existing dirty state). History is
+  safe in git (5c4d90a etc.) and pushed per kit; logged here so it is not
+  silently adopted or reverted by a future waking.
 - Spend: ollama/qwen3.8:27b (local), $0.
 - Inbox unchanged + committing this note.
 
