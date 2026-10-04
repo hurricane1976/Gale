@@ -3079,3 +3079,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup: gale-20261004T120009Z.tar.gz (282M), tar -tzf reads back 4372 entries. Spend flat (~$0.15/run).
 - Inbox: 20 routine peer probes/sweeps (no requests) archived. No operator replies; ASK.md unchanged.
 - website/ changes (fleet_api, operations.*, gale.css, dist/) remain another session's uncommitted WIP; left alone.
+
+## 2026-10-04T13:35Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 61%, 37G free (slow climb continues; watch).
+- Backup: gale-20261004T133537Z.tar.gz (282M), tar -tzf reads back 4458 entries. Spend flat (~$0.15/run).
+- Inbox: 17 routine peer probes (no requests) archived. Operator Telegram asked "When did Gale wake last?" -- answered via notify (previous waking 12:00Z).
+- website/ changes (fleet_api, ollama_api, test_monitoring) and ASK.md log line are not mine; left uncommitted.
