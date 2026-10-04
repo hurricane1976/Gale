@@ -1586,6 +1586,14 @@ def ollama_alerts(now=None):
                     "text": f"ollama inference server down ~{mins}m (192.168.1.197:11434) — agent runs will fail",
                     "runbook": "ollama.html"})
     gpu = latest.get("gpu") or {}
+    # HTTP up != inference up: on 2026-10-04 a fallen-off-bus GPU (Xid 79)
+    # left the server answering green for 2.5h while every generation 500'd.
+    # The sampler's gen probe records that as gen_ok:false; trust it only on
+    # fresh, reachable samples (same evidence rule as the down alert).
+    if age <= OLLAMA_SAMPLE_MAX_AGE_S and latest.get("reachable") is True and latest.get("gen_ok") is False:
+        out.append({"sev": "crit", "kind": "inference-degraded",
+                    "text": "inference server answering but generation failing (dead GPU / crashed runner) — agent runs will fail",
+                    "runbook": "ollama.html"})
     if not gpu or gpu.get("stale") is True or gpu.get("ok") is False:
         gt = _iso_epoch(gpu.get("generated_at"))
         if gt:

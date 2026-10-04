@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import fleet_monitor as monitor
 import control_access as controls
 import fleet_api as fleet
+import ollama_api
 import yaml
 
 
@@ -217,10 +218,11 @@ class OllamaAlertsTests(unittest.TestCase):
         stack.enter_context(patch.object(fleet, 'OLLAMA_HISTORY_PATH', str(path)))
         return path
 
-    def _sample(self, ts, reachable, gpu=None):
+    def _sample(self, ts, reachable, gpu=None, **extra):
         rec = {'ts': ts, 'reachable': reachable}
         if gpu is not None:
             rec['gpu'] = gpu
+        rec.update(extra)
         return rec
 
     def test_healthy_latest_sample_raises_nothing(self):
@@ -302,6 +304,78 @@ class OllamaAlertsTests(unittest.TestCase):
             alerts = fleet.ollama_alerts(now=self.NOW)
         self.assertEqual([a['kind'] for a in alerts], ['inference-flapping'])
         self.assertIn('crashed 3x in 24h', alerts[0]['text'])
+
+    def test_fresh_generation_failure_raises_crit_degraded(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T08:00:00Z', True, gpu,
+                             gen_ok=False, gen_ms=5020, gen_err='llama runner terminated'),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([(a['sev'], a['kind']) for a in alerts], [('crit', 'inference-degraded')])
+        self.assertIn('generation failing', alerts[0]['text'])
+
+    def test_inconclusive_gen_or_absent_field_raises_nothing(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T08:00:00Z', True, gpu, gen_ok=None, gen_ms=25100),
+            ])
+            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
+        with ExitStack() as stack:
+            self._feed(stack, [   # pre-probe sample format: no gen keys at all
+                self._sample('2027-01-15T08:00:00Z', True, gpu),
+            ])
+            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
+
+    def test_stale_generation_failure_not_claimed(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T07:49:00Z', True, gpu, gen_ok=False, gen_ms=8000),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([a['kind'] for a in alerts], ['inference-monitor-stale'])
+
+    def test_unreachable_sample_never_claims_degraded(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T08:00:00Z', False, gpu, gen_ok=False, gen_ms=0),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([a['kind'] for a in alerts], ['inference-down'])
+
+
+class GenProbeTests(unittest.TestCase):
+    def test_classification_matrix(self):
+        classify = ollama_api._classify_gen
+        self.assertIs(classify(200, {'done': True}), True)
+        self.assertIs(classify(200, {'done': True, 'response': ''}), True)
+        self.assertIs(classify(500, {'error': 'CUDA error: unspecified launch failure'}), False)
+        self.assertIs(classify(503, {'error': 'llama runner process has terminated'}), False)
+        self.assertIs(classify(0, {'error': 'URLError: timeout'}), None)          # transport
+        self.assertIs(classify(200, {'done': False}), None)                        # partial/odd 200
+        self.assertIs(classify(404, {'error': 'model not found'}), None)           # race, not hardware
+        self.assertIs(classify(200, None), None)
+
+    def test_probe_fragment_shapes(self):
+        with patch.object(ollama_api, 'fetch_json', return_value=(200, {'done': True})):
+            frag = ollama_api._gen_probe('qwen3.8:27b')
+        self.assertIs(frag['gen_ok'], True)
+        self.assertNotIn('gen_err', frag)
+        self.assertGreaterEqual(frag['gen_ms'], 0)
+
+        with patch.object(ollama_api, 'fetch_json', return_value=(500, {'error': 'CUDA error: unspecified launch failure'})):
+            frag = ollama_api._gen_probe('qwen3.8:27b')
+        self.assertIs(frag['gen_ok'], False)
+        self.assertIn('CUDA error', frag['gen_err'])
+
+        with patch.object(ollama_api, 'fetch_json', return_value=(0, {'error': 'URLError: timed out'})):
+            frag = ollama_api._gen_probe('qwen3.8:27b')
+        self.assertIsNone(frag['gen_ok'])
+        self.assertNotIn('gen_err', frag)
 
 
 if __name__ == '__main__':

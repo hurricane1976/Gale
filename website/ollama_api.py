@@ -58,6 +58,7 @@ API_DIR = "/var/www/gale-api"
 HISTORY_PATH = os.path.join(API_DIR, "ollama-history.jsonl")
 
 SAMPLE_EVERY_S = 30
+GEN_PROBE_TIMEOUT_S = 25   # probe joins the generation queue; agents may hold it for a while
 SNAPSHOT_TTL_S = 5
 SHOW_TTL_S = 60
 GPU_TTL_S = 30
@@ -117,6 +118,40 @@ def fetch_json(path, method="GET", body=None, timeout=10):
         return e.code, {"error": (payload or {}).get("error", str(e))}
     except Exception as e:
         return 0, {"error": f"{type(e).__name__}: {e}"}
+
+
+def _classify_gen(status, obj):
+    """HTTP up != inference up: on 2026-10-04 a fallen-off-bus GPU (Xid 79)
+    left /api answering green for 2.5h while every generation 500'd. Returns
+    True (generated), False (server admitted failure), or None (inconclusive:
+    transport error, busy-queue timeout, or a 4xx race like the model having
+    just unloaded -- None must never become an alarm)."""
+    if status == 200 and isinstance(obj, dict) and obj.get("done") is True:
+        return True
+    if status >= 500:
+        return False
+    return None
+
+
+def _gen_probe(model):
+    """One-token real generation against the resident model. Cheap ground
+    truth the status endpoints cannot give; also emits gen_ms so the board
+    can trend queue latency. Returns a sample fragment (possibly empty)."""
+    t0 = time.monotonic()
+    status, obj = fetch_json("/api/generate", method="POST",
+                             body={"model": model, "prompt": "ping", "stream": False,
+                                   "options": {"num_predict": 1}},
+                             timeout=GEN_PROBE_TIMEOUT_S)
+    ms = round((time.monotonic() - t0) * 1000)
+    verdict = _classify_gen(status, obj)
+    if verdict is None:
+        return {"gen_ok": None, "gen_ms": ms}
+    frag = {"gen_ok": verdict, "gen_ms": ms}
+    if verdict is False:
+        err = str((obj or {}).get("error", ""))[:120]
+        if err:
+            frag["gen_err"] = err
+    return frag
 
 
 def fetch_lines(path, body, timeout, on_line, stop_check=None):
@@ -248,6 +283,16 @@ class Sampler:
                 resident.append(name)
                 vram += int(m.get("size_vram") or 0)
 
+        # Ground-truth generation probe: only when the server claims a model
+        # is resident (probing an empty server would trigger a full load).
+        # Skipped probes leave no gen keys -- absent == unknown, never an alarm.
+        probe = {}
+        if reachable and resident:
+            try:
+                probe = _gen_probe(resident[0])
+            except Exception as e:                     # never die sampling
+                sys.stderr.write(f"[probe] {type(e).__name__}: {e}\n")
+
         _, gobj = fetch_gpu()
         sample = {
             "ts": now_iso(),
@@ -258,6 +303,7 @@ class Sampler:
             "vram_bytes": vram,
             "gpu": (gobj if (gobj or {}).get("ok") else None),
         }
+        sample.update(probe)
         events = []
         with self.lock:
             if self.last_reachable is False and reachable:
