@@ -2,26 +2,33 @@
 
 ## Open
 
-- **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — STILL OPEN at w59 15:15Z.**
-  **PARTIAL RECOVERY:** MAISTRAL's flagged 03:36Z role-refusal slot DID get
-  a fresh backup at its 07:36Z wake (`maistral-20261004T073954Z`, intact,
-  14 snaps retained) — data never lost. But its **11:36Z wake failed with
-  `retryable APIError` ×3 → exit 1 → ALERT** and it is **7.4h stale again at
-  w59** (last snap 07:39Z). Its 14:53Z wake is in-flight at sweep time.
-  So the drift I flagged is *cyclical*: role-refusal or APIError, roughly
-  every other slot. **Root-cause status:** the refusal is a logged one-off
-  event on their 67th waking (their own logs corroborate my w58 note); the
-  APIErrors are transient LLM-API failures that hit **7 of 15 agents today**
-  (bora, chinook, maistral, poniente, sirocco, vortex, **and my own 11:12Z
-  waking** — all logged `ALERT`/`exit 1`) — **infrastructure issue on the
-  shared LLM endpoint** in the midday window, not per-agent config.
-  **Operator may want** (a) the Ollama/API gateway for today's
-  11:00–12:10Z window, and (b) the standing wake.sh "exit 0 + ALERT + no
-  report" hardening from w58 still applies (now compounded by exit-1
-  APIError cases).
+- **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
+  compounded w59 APIError cases) — still open at w60 19:15Z.** Today's
+  10:48–12:00Z `retryable APIError` window hit **7 of 15 agents** (bora,
+  chinook, maistral, poniente, sirocco, vortex, **and my own 11:12Z slot**)
+  and MAISTRAL's earlier role-refusal was only caught because `wake.sh`
+  fires an ALERT on "exit 0 without reporting". Two recommendations pending
+  your call: (a) look at the Ollama/API gateway for today's
+  11:00–12:10Z window, (b) treat "exit 0 + ALERT + no report" as a
+  retryable miss / surface refusal text so a model refusal can't masquerade
+  as a clean pass. No data loss in either case (verified: all flagged
+  snapshots intact, `tar -tzf` readable).
+
+## Resolved
+
+- **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — RESOLVED w60
+  19:15Z.** All three w59 drifts (MAISTRAL 7.4h / CHINOOK 7.0h / VORTEX
+  8.2h, shared `retryable APIError` root cause) are **fully self-recovered
+  at w60 sweep**: MAISTRAL's in-flight 14:53Z wake succeeded — newest snap
+  `maistral-20261004T153802Z` (4.0M, 14 snaps, `tar -tzf` readable), 214m
+  old at sweep time; CHINOOK 188m; VORTEX 18m. **Fleet 14/14 under the 6h
+  bar, no drift, no silent failures.** Data was never lost at any point
+  (intact retained snaps throughout the cyclical misses). The *systemic*
+  part (APIError infra window + wake.sh hardening) is carried forward as
+  the single open item above.
 
 - **MAISTRAL backup-drift flag (w58 2026-10-04 07:12Z) — SUPERSEDED by the
-  w59 entry above (kept for history), for your attention.**
+  w59 note (kept for history), now RESOLVED as above.**
   MAISTRAL's newest snapshot `maistral-20261003T233805Z` is **~455m (7.6h) old —
   the first sibling over the 6h bar** (all 12 others + gale-root are fresh, 10m
   to 188m; its own retained snap is intact — 790 entries / 3.4M / `tar -tzf` OK,
@@ -44,10 +51,6 @@
   to harden `wake.sh`'s "exit 0 + ALERT + no report" case (retries, or surface
   the model's refusal text) so a refusal can't masquerade as a clean pass.
   Watching for recurrence next waking.
-
-- _(none else at 2026-10-03 15:12Z)_
-
-## Resolved
 
 - **CHINOOK backup-drift flag (w53 2026-10-03 11:12Z) — RESOLVED w54 15:12Z.**
   At w53 CHINOOK's newest snapshot was 7.1h old (over the 6h bar) due to a

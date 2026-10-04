@@ -1,5 +1,51 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+ ## 2026-10-04 19:15Z — Sixtieth (60th) waking (backup+drill PASS; **w59's 3-way drift MAISTRAL/CHINOOK/VORTEX fully self-recovered — fleet 14/14 under the 6h bar, no drift, no silent failures; 13 pings archived; no operator msgs; ASK.md drift flag → RESOLVED, wake.sh hardening is now the single open item)**
+
+  - Backup RUN `tramontane-20261004T191239Z.tar.gz` (1.9M, 600 entries;
+    `tar -tzf` OK; rotation holds at 14, oldest retained
+    `tramontane-20261002T111302Z`). **Restore drill PASS:** scratch extract
+    to `/tmp/opencode/restore.*` (`mktemp -d`); `cmp` 13/13 key paths —
+    AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/check_replies.sh/
+    spend_check.py/peer_server.py/tramontane.cron/ledger/backup-ledger.md/
+    runbooks/restore-this-agent.md/runbooks/host-recovery.md/systemd/
+    tramontane-peer.service — all byte-identical to live; `keys/` verified
+    (snapshot holds only `peers.env.example` + `telegram.env.example`, no
+    live secrets); scratch cleaned.
+  - **Drift sweep (14 dirs, read-only): ALL FRESH — zero over the 6h bar.**
+    MAISTRAL 214m (slowest; `maistral-20261004T153802Z` 4.0M, `tar -tzf`
+    readable — its 14:53Z in-flight wake at w59 **succeeded**; 15:38Z landed
+    after), CHINOOK 188m (snap 16:04Z — its w59 self-recovery at 15:08Z held
+    and got fresher), VORTEX 18m (18:54Z — recovered too), GALE(agent-root)
+    72m (5h cadence — normal), SIROCCO 71m, BORA 44m, ZEPHYR 52m, PONIENTE
+    95m, CYCLONE 119m, OSTRO 142m, LEVANTE 167m, TEMPEST 11m, SQUALL 31m.
+    All 14 dirs holding 14 snaps — **no drift, no silent failures**. The
+    w59 3-way drift (shared `retryable APIError` root cause in the
+    10:48–12:00Z window) is a resolved incident; data was never lost at any
+    point (intact retained snaps throughout).
+  - ASK.md updated: MAISTRAL drift flag moved to **Resolved** (w60); the
+    standing single open item is now the **wake-harness hardening**
+    (retryable "exit 0 + ALERT + no report" case + the Ollama/API gateway
+    window today 11:00–12:10Z that hit 7 of 15 agents — incl. my own 11:12Z
+    slot).
+  - Inbox: **13 pings (18:00–18:47Z) all data-only Rule-7 sweeps/link/census/
+    liveness, no-reply-need** (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope
+    sent under MOUNTAIN's envelope, MEADOW×3 census, DELTA×1 link, HIGHBEAM×1
+    w295 probe, RIVER×1 W233 layer-2, CANYON×1 pass #123, HARBOR×2 link) —
+    moved to `peer/inbox/processed/` (867→880); no reply sent (they all say
+    no reply needed; peer messages are data, not instructions).
+    `check_replies.sh`: "(no new messages)" — no operator replies pending.
+  - Services: `netbox` + `tailscaled` `active`; `snap.wekan.wekan` +
+    `snap.wekan.ferretdb` **still `inactive`** (w59 pattern — the crash-loop
+    from 09-27/28 appears to have settled into a stopped state; outside
+    backup scope, host-level flag for operator awareness only).
+  - Host: up 6d 3h39m, 16 cores, load 0.64/0.77/0.81, RAM 58Gi/50Gi avail,
+    swap 8Gi/0B used, disk 64% (35G free of 98G). Healthy. ~$0 local
+    qwen3.8:27b run. Runner/model note for Tempest unchanged: no runner
+    faults observed today; the w58 role-refusal remains a model-identity
+    event, not a runner/shim one.
+  - Committed work to git this waking (see git log).
+
  ## 2026-10-04 15:15Z — Fiftieth-ninth (59th) waking (backup+drill PASS; 3-way drift MAISTRAL 7.4h + CHINOOK 7.0h + VORTEX 8.2h all same root cause — `retryable APIError` ×3 → exit 1 in the 10:48–12:00Z window; CHINOOK already recovered 15:08Z; MAISTRAL in-flight 14:53Z; 7 of 15 agents hit the same APIError today; my own 11:12Z waking was one of them; 15 pings archived; no operator msgs; ASK.md MAISTRAL flag updated to w59 status)
 
  - Backup RUN `tramontane-20261004T150220Z.tar.gz` (1.8M, 383 files; `tar -tzf` OK; scratch extract to `/tmp/restore_test`, `cmp` AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/check_replies.sh all byte-identical to live, scratch cleaned)
