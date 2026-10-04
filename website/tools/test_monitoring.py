@@ -7,6 +7,7 @@ import sys
 import tempfile
 import time
 import unittest
+from contextlib import ExitStack
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -121,6 +122,72 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(len(touched), 1)
 
 
+class WakeTests(unittest.TestCase):
+    def test_display_name_resolves_to_dir_for_gale(self):
+        proc = SimpleNamespace(pid=1234)
+        with tempfile.TemporaryDirectory() as directory:
+            with ExitStack() as stack:
+                stack.enter_context(patch.object(fleet, '_wake_live_seconds', return_value=0))
+                stack.enter_context(patch.object(fleet, '_wake_flock_held', return_value=False))
+                stack.enter_context(patch.object(fleet.subprocess, 'Popen', return_value=proc))
+                stack.enter_context(patch.object(fleet, 'WAKE_LOG_PATH', str(Path(directory) / 'wake.jsonl')))
+                # "gale" is display-only; its dir is "agent" (previously 400 unknown agent)
+                self.assertEqual(fleet.wake_post({'agent': 'gale'})[0], 202)
+                # a dir-name still resolves too
+                self.assertEqual(fleet.wake_post({'agent': 'zephyr'})[0], 202)
+                # an unknown name is still rejected
+                self.assertEqual(fleet.wake_post({'agent': 'definitely-not-an-agent'})[0], 400)
+
+
+class LifecycleTests(unittest.TestCase):
+    def _patch_store(self, directory):
+        return patch.object(fleet, 'LIFECYCLE_PATH', str(Path(directory) / 'incident-lifecycle.json'))
+
+    def test_transitions_forward_and_terminal_is_immutable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self._patch_store(directory):
+                self.assertEqual(fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'investigating'})[0], 200)
+                self.assertEqual(fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'root-caused'})[0], 200)
+                code, resp = fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'verified'})
+                self.assertEqual(code, 200)
+                self.assertTrue(resp['muted'])
+                code, err = fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'investigating'})
+                self.assertEqual(code, 409)
+
+    def test_invalid_stage_and_id_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self._patch_store(directory):
+                self.assertEqual(fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'nope'})[0], 400)
+                self.assertEqual(fleet.lifecycle_post({'incident_id': '', 'stage': 'verified'})[0], 400)
+
+    def test_reset_clears_even_from_terminal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self._patch_store(directory):
+                self.assertEqual(fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'verified'})[0], 200)
+                code, resp = fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'reset'})
+                self.assertEqual(code, 200)
+                self.assertTrue(resp['reset'])
+                # after reset an incident is open again: forward transition allowed
+                self.assertEqual(fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'investigating'})[0], 200)
+                self.assertEqual(fleet.lifecycle_read()['lifecycle']['ix']['stage'], 'investigating')
+
+    def test_expired_entry_prunes_on_read(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'incident-lifecycle.json'
+            path.write_text(json.dumps({'incidents': {'stale': {'stage': 'verified', 'until': 1.0, 'since': 0.0, 'updated': 0.0}}}))
+            with self._patch_store(directory):
+                self.assertEqual(fleet.lifecycle_read()['lifecycle'], {})
+                self.assertEqual(json.loads(path.read_text()), {'incidents': {}})
+
+    def test_read_reflects_prior_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self._patch_store(directory):
+                fleet.lifecycle_post({'incident_id': 'ix', 'stage': 'investigating'})
+                got = fleet.lifecycle_read()['lifecycle']['ix']
+                self.assertEqual(got['stage'], 'investigating')
+
+
+
 class RunnerTests(unittest.TestCase):
     def test_stream_preserves_result_and_excludes_tool_arguments(self):
         runtime = "import json; print(json.dumps({'type':'assistant','message':{'content':[{'type':'tool_use','id':'one','name':'Bash','input':{'command':'PRIVATE_TEST_VALUE'}}]}})); print(json.dumps({'type':'user','message':{'content':[{'type':'tool_result','tool_use_id':'one','content':'PRIVATE_TEST_VALUE'}]}})); print(json.dumps({'type':'result','result':'PRIVATE_TEST_VALUE','is_error':False,'total_cost_usd':0.2,'usage':{'input_tokens':10,'output_tokens':5}}))"
@@ -137,6 +204,104 @@ class RunnerTests(unittest.TestCase):
             meta = json.loads((Path(directory)/'20261002T120000Z.meta.json').read_text())
             self.assertEqual(meta['verification'], 'unknown')
             self.assertEqual(meta['ts'], '2026-10-02T12:00:00Z')
+
+
+class OllamaAlertsTests(unittest.TestCase):
+    # 1_800_000_000 == 2027-01-15T08:00:00Z
+    NOW = 1_800_000_000
+
+    def _feed(self, stack, lines):
+        directory = stack.enter_context(tempfile.TemporaryDirectory())
+        path = Path(directory) / 'ollama-history.jsonl'
+        path.write_text(''.join(json.dumps(line) + '\n' for line in lines))
+        stack.enter_context(patch.object(fleet, 'OLLAMA_HISTORY_PATH', str(path)))
+        return path
+
+    def _sample(self, ts, reachable, gpu=None):
+        rec = {'ts': ts, 'reachable': reachable}
+        if gpu is not None:
+            rec['gpu'] = gpu
+        return rec
+
+    def test_healthy_latest_sample_raises_nothing(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                {'ts': '2027-01-15T06:00:00Z', 'type': 'server_down'},
+                {'ts': '2027-01-15T06:05:00Z', 'type': 'server_up'},
+                self._sample('2027-01-15T07:59:30Z', True, gpu),
+                self._sample('2027-01-15T08:00:00Z', True, gpu),
+            ])
+            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
+
+    def test_fresh_down_sample_raises_crit_with_quantized_duration(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T07:47:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T07:45:00Z', True, gpu),
+                self._sample('2027-01-15T07:47:00Z', False, gpu),
+                self._sample('2027-01-15T07:59:30Z', False, gpu),
+                self._sample('2027-01-15T08:00:00Z', False, gpu),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([(a['sev'], a['kind']) for a in alerts], [('crit', 'inference-down')])
+        self.assertIn('down ~10m', alerts[0]['text'])
+
+    def test_stale_evidence_never_claims_outage(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T07:50:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T07:49:00Z', False, gpu),
+                self._sample('2027-01-15T07:50:00Z', False, gpu),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([a['kind'] for a in alerts], ['inference-monitor-stale'])
+
+    def test_missing_or_empty_history_is_monitor_stale(self):
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(fleet, 'OLLAMA_HISTORY_PATH', '/nonexistent/ollama-history.jsonl'))
+            self.assertEqual([a['kind'] for a in fleet.ollama_alerts(now=self.NOW)], ['inference-monitor-stale'])
+        with ExitStack() as stack:
+            self._feed(stack, [{'ts': '2027-01-15T07:00:00Z', 'type': 'server_up'}])
+            self.assertEqual([a['kind'] for a in fleet.ollama_alerts(now=self.NOW)], ['inference-monitor-stale'])
+
+    def test_gpu_collector_staleness_raises_warn(self):
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T08:00:00Z', True,
+                             {'ok': True, 'stale': True, 'generated_at': '2027-01-15T05:37:00Z'}),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([(a['sev'], a['kind']) for a in alerts], [('warn', 'inference-collector-stale')])
+        self.assertIn('stale ~3h', alerts[0]['text'])
+
+    def test_event_lines_and_torn_tail_are_ignored(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            path = self._feed(stack, [
+                self._sample('2027-01-15T08:00:00Z', True, gpu),
+            ])
+            with open(path, 'a') as fh:
+                fh.write('{"ts": "2027-01-15T08:00:30Z", "type": "serv')  # torn final line
+                fh.write('\n' + json.dumps({'ts': '2027-01-15T08:00:30Z', 'type': 'server_down'}) + '\n')
+            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
+
+    def test_three_crashes_in_24h_warns_flapping(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                {'ts': '2027-01-14T07:00:00Z', 'type': 'server_down'},   # >24h old: not counted
+                {'ts': '2027-01-15T02:00:00Z', 'type': 'server_down'},
+                {'ts': '2027-01-15T02:10:00Z', 'type': 'server_up'},
+                {'ts': '2027-01-15T05:00:00Z', 'type': 'server_down'},
+                {'ts': '2027-01-15T05:20:00Z', 'type': 'server_up'},
+                {'ts': '2027-01-15T07:00:00Z', 'type': 'server_down'},
+                {'ts': '2027-01-15T07:30:00Z', 'type': 'server_up'},
+                self._sample('2027-01-15T08:00:00Z', True, gpu),
+            ])
+            alerts = fleet.ollama_alerts(now=self.NOW)
+        self.assertEqual([a['kind'] for a in alerts], ['inference-flapping'])
+        self.assertIn('crashed 3x in 24h', alerts[0]['text'])
 
 
 if __name__ == '__main__':

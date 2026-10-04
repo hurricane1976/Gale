@@ -1,3 +1,7 @@
 node_modules/
-dist/
-tools/node_modules/
+tools/browser/
+*.pyc
+__pycache__/
+tools/disk_history.jsonl
+tools/podman_logs.txt
+tools/tmp/

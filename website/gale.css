@@ -616,6 +616,50 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 }
 .add-system code { font-family: var(--font-mono); font-size: 0.8rem; }
 
+/* ---- operations: active-incident cards + lifecycle stepper ---- */
+.ops-inc-head { display: flex; align-items: center; justify-content: space-between; gap: 12px 18px; flex-wrap: wrap; margin: 4px 0 12px; }
+.ops-inc-head #ops-access { margin: 0; flex: 1 1 260px; }
+.ops-inc-filter { display: inline-flex; align-items: center; gap: 9px; }
+.ops-inc-filter-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-faint); text-transform: uppercase; }
+.ops-inc-select { width: auto; min-width: 200px; margin: 0; }
+.ops-muted-note { margin: 0 0 12px; padding: 9px 13px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--ok) 32%, var(--line)); background: color-mix(in srgb, var(--ok) 9%, transparent); font-size: 0.84rem; color: var(--text-dim); }
+.ops-muted-note code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ok); }
+.inc-muted-pill { display: inline-flex; align-items: center; gap: 6px; margin: 3px 8px 3px 0; padding: 2px 4px 2px 9px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
+.inc-muted-pill .inc-unmute { margin: 0; }
+
+.inc-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.inc-head strong { font-family: var(--font-heading); font-weight: 600; font-size: 1rem; }
+.inc-meta { margin: 0; font-size: 0.83rem; color: var(--text-dim); }
+.inc-meta code { font-family: var(--font-mono); font-size: 0.74rem; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; }
+.inc-kind { margin: 0; font-size: 0.83rem; font-family: var(--font-mono); }
+.inc-kind--stale { color: var(--warn); }
+.inc-kind--fail { color: var(--text); }
+
+.inc-ack { margin: 0; font-size: 0.78rem; font-family: var(--font-mono); color: var(--ok); }
+.inc-acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0; }
+.inc-acts .btn-sm { padding: 7px 12px; font-size: 0.74rem; }
+.btn-sm { padding: 8px 13px; font-size: 0.74rem; }
+.inc-links { margin: 4px 0 0; font-size: 0.8rem; }
+.inc-links a { color: var(--gust); }
+.inc-none { margin: 0; color: var(--text-dim); }
+.inc-clear { color: var(--flag); font-size: 0.82rem; margin-left: 4px; }
+
+/* lifecycle stepper: done steps filled, current flagged, upcoming muted */
+.lc-track { list-style: none; margin: 6px 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 10px; }
+.lc-step { display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px 5px 7px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); font-family: var(--font-mono); font-size: 0.72rem; text-transform: capitalize; color: var(--text-faint); line-height: 1; }
+.lc-step .lc-dot { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; border: 1px solid var(--line-strong); font-size: 0.64rem; font-weight: 600; color: var(--text-faint); }
+.lc-step.is-done { color: var(--text-dim); border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); }
+.lc-step.is-done .lc-dot { background: var(--ok); border-color: var(--ok); color: #06210f; }
+.lc-step.is-current { color: var(--text); border-color: color-mix(in srgb, var(--flag) 55%, var(--line)); background: color-mix(in srgb, var(--flag) 12%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--flag) 30%, transparent) inset; }
+.lc-step.is-current .lc-dot { background: var(--flag); border-color: var(--flag); color: #04101f; }
+
+/* severity tag on the incident head */
+.inc-sev { flex: none; align-self: flex-start; font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 6px; }
+.inc-sev.sev-crit { color: #ff8a7a; background: color-mix(in srgb, var(--flag) 22%, transparent); border: 1px solid color-mix(in srgb, var(--flag) 50%, var(--line)); }
+.inc-sev.sev-warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent); border: 1px solid color-mix(in srgb, var(--warn) 40%, var(--line)); }
+.inc-sev.sev-info { color: var(--gust); background: color-mix(in srgb, var(--gust) 12%, transparent); border: 1px solid color-mix(in srgb, var(--gust) 35%, var(--line)); }
+@media (max-width: 620px) { .lc-track { flex-direction: column; align-items: flex-start; gap: 5px; } }
+
 /* ---- remote full-stat hosts (status.html) ---- */
 .full-hosts-grid { display: grid; gap: 18px; }
 .full-host-card { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 20px; background: var(--surface-2); }

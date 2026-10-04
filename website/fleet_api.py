@@ -588,9 +588,9 @@ def wakes_envelope():
             "cache_ttl_s": WAKES_TTL_S,
             "count": len(runs),
             "runs": runs,
-            # display-only liveness (60s cache; POST /wake is the
-            # authoritative single-instance check)
-            "live": {d: round(_wake_live_seconds(d)) for _disp, d in AGENTS},
+            # display-keyed liveness (60s cache; POST /wake is the
+            # authoritative single-instance check). JS reads live[display].
+            "live": {disp: round(_wake_live_seconds(d)) for disp, d in AGENTS},
             "generated_at": now_iso(),
         }
         _WAKES["env"] = env
@@ -743,7 +743,7 @@ def wake_post(payload):
     if not isinstance(payload, dict):
         return 400, {"error": "JSON object expected"}
     agent = _CTRL.sub("", str(payload.get("agent", "")).strip().lower())
-    dirname = next((d for _disp, d in AGENTS if d == agent), None)
+    dirname = next((d for disp, d in AGENTS if disp == agent or d == agent), None)
     if dirname is None:
         return 400, {"error": "unknown agent"}
     live = _wake_live_seconds(dirname)
@@ -1407,6 +1407,7 @@ def alerts_envelope():
             seen.add(key)
             alerts.append({"sev": "info", "kind": "quarantine",
                            "text": f"{e.get('agent', '?')}: {e.get('text', '')}"})
+    alerts.extend(ollama_alerts())
     alerts.extend(am_firing_alerts())
     alerts.sort(key=lambda a: _SEV_RANK.get(a.get("sev"), 9))
     alerts = alerts[:ALERTS_MAX]
@@ -1503,6 +1504,102 @@ def am_firing_alerts(now=None):
                     "host": s["labels"].get("fleet_host") or s["labels"].get("host"),
                     "agent": s["labels"].get("agent"), "owner": s["labels"].get("owner", "gale"),
                     "started_at": s.get("starts"), "runbook": s["annotations"].get("runbook_url", "runbooks.html")})
+    return out
+
+
+# --------------------------------------------------------------------------
+# Inference-server incidents. The ollama monitor (ollama_api.py, :8794)
+# samples the LAN model server every 30s into ollama-history.jsonl (same
+# dir): sample lines carry boolean reachable + gpu staleness, transition
+# lines carry {"type": "server_down"/"server_up"} instead. Every agent run
+# needs the model server, so a dead inference stack must surface on
+# /incidents like any node-down, and a chronic crash pattern (39 downs in
+# its first 8 days) deserves its own warn. Read-only tail of the sampler
+# log; any failure here must never break /alerts (same contract as the
+# Alertmanager reader above). Durations in text are quantized so alert
+# keys (kind|text) stay stable in alert-history.json instead of churning
+# open/close every refresh.
+# --------------------------------------------------------------------------
+
+OLLAMA_HISTORY_PATH = os.path.join(API_DIR, "ollama-history.jsonl")
+OLLAMA_SAMPLE_MAX_AGE_S = 300          # sampler cadence is 30s; 5min silent = monitor trouble
+OLLAMA_TAIL_BYTES = 2 * 1024 * 1024    # ~15h of samples; bounds the flapping lookback
+
+
+def _iso_epoch(ts):
+    try:
+        return datetime.strptime((ts or "")[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    except (ValueError, TypeError):
+        return None
+
+
+def _ollama_history_tail():
+    try:
+        with open(OLLAMA_HISTORY_PATH, "rb") as fh:
+            fh.seek(0, 2)
+            fh.seek(max(0, fh.tell() - OLLAMA_TAIL_BYTES))
+            chunks = fh.read().split(b"\n")
+    except OSError:
+        return []
+    out = []
+    for line in chunks:  # a torn final line fails json.loads and is skipped
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except (json.JSONDecodeError, ValueError):
+            continue
+        if isinstance(rec, dict) and rec.get("ts"):
+            out.append(rec)
+    return out
+
+
+def ollama_alerts(now=None):
+    now = now if now is not None else time.time()
+    recs = _ollama_history_tail()
+    samples = [r for r in recs if isinstance(r.get("reachable"), bool)]
+    out = []
+    latest = samples[-1] if samples else None
+    age = None if not latest else _iso_epoch(latest.get("ts"))
+    age = None if age is None else max(0.0, now - age)
+    if age is None:
+        out.append({"sev": "warn", "kind": "inference-monitor-stale",
+                    "text": "inference telemetry missing — sampler not reporting",
+                    "runbook": "ollama.html"})
+        return out
+    if age > OLLAMA_SAMPLE_MAX_AGE_S:
+        out.append({"sev": "warn", "kind": "inference-monitor-stale",
+                    "text": "inference telemetry stale — sampler not reporting",
+                    "runbook": "ollama.html"})
+    # Only claim an outage on fresh evidence: a stalled sampler with a stale
+    # down-sample must not page crit for an outage that may already be over.
+    if age <= OLLAMA_SAMPLE_MAX_AGE_S and latest["reachable"] is False:
+        span_start = latest
+        for r in reversed(samples[:-1]):
+            if r.get("reachable") is not False:
+                break
+            span_start = r
+        t0 = _iso_epoch(span_start.get("ts"))
+        mins = max(1, int((now - t0) / 60) // 5 * 5) if t0 else 0
+        out.append({"sev": "crit", "kind": "inference-down",
+                    "text": f"ollama inference server down ~{mins}m (192.168.1.197:11434) — agent runs will fail",
+                    "runbook": "ollama.html"})
+    gpu = latest.get("gpu") or {}
+    if not gpu or gpu.get("stale") is True or gpu.get("ok") is False:
+        gt = _iso_epoch(gpu.get("generated_at"))
+        if gt:
+            hours = max(0.0, now - gt) / 3600.0
+            text = f"GPU telemetry on inference host stale ~{int(hours) + 1}h (collector stalled)"
+        else:
+            text = "GPU telemetry on inference host unavailable (collector stalled)"
+        out.append({"sev": "warn", "kind": "inference-collector-stale", "text": text, "runbook": "ollama.html"})
+    day_ago = now - 86400
+    crashes = sum(1 for r in recs if r.get("type") == "server_down" and (_iso_epoch(r.get("ts")) or 0) >= day_ago)
+    if crashes >= 3:
+        out.append({"sev": "warn", "kind": "inference-flapping",
+                    "text": f"inference server crashed {crashes}x in 24h — check the GPU box",
+                    "runbook": "ollama.html"})
     return out
 
 
@@ -1703,6 +1800,77 @@ def acks_post(payload):
 
 
 # --------------------------------------------------------------------------
+# Incident lifecycle (review #7): each incident carries a stable id and moves
+# through investigating -> root-caused -> remediated -> verified. "verified"
+# mutes the alert for a retention window so confirmed-recovered incidents stop
+# repeating as noise; full machine history stays in alert-history.json. One
+# JSON file, atomic replace -- same shape and trust level as the acks store.
+# --------------------------------------------------------------------------
+
+LIFECYCLE_PATH = os.path.join(API_DIR, "incident-lifecycle.json")
+LIFECYCLE_STAGES = ("investigating", "root-caused", "remediated", "verified")
+LIFECYCLE_RETAIN_S = {stage: (30 * 86400 if stage == "verified" else 14 * 86400) for stage in LIFECYCLE_STAGES}
+
+
+def _lifecycle_load():
+    try:
+        with open(LIFECYCLE_PATH) as fh:
+            store = json.load(fh)
+        if isinstance(store, dict) and isinstance(store.get("incidents"), dict):
+            return store
+    except Exception:
+        pass
+    return {"incidents": {}}
+
+
+def _lifecycle_save(store):
+    tmp = LIFECYCLE_PATH + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(store, fh, indent=1)
+        fh.flush()
+        os.fsync(fh.fileno())
+    os.replace(tmp, LIFECYCLE_PATH)
+
+
+def lifecycle_read():
+    store = _lifecycle_load()
+    now = time.time()
+    live = {i: m for i, m in store["incidents"].items()
+            if isinstance(m, dict) and isinstance(m.get("until"), (int, float)) and m["until"] > now}
+    if len(live) != len(store["incidents"]):
+        _lifecycle_save({"incidents": live})
+    return {"ok": True, "lifecycle": live, "generated_at": now_iso()}
+
+
+def lifecycle_post(payload):
+    ident = payload.get("incident_id")
+    stage = payload.get("stage")
+    if not isinstance(ident, str) or not ident or len(ident) > 80:
+        return 400, {"ok": False, "error": "incident_id must be a non-empty string"}
+    store = _lifecycle_load()
+    now = time.time()
+    live = {i: m for i, m in store["incidents"].items()
+            if isinstance(m, dict) and isinstance(m.get("until"), (int, float)) and m["until"] > now}
+    if stage == "reset":
+        # Operator re-opens the incident: clears the lifecycle so it returns to
+        # "investigating" implicitly. Always allowed, including from verified.
+        live.pop(ident, None)
+        _lifecycle_save({"incidents": live})
+        return 200, {"ok": True, "incident_id": ident, "stage": None, "muted": False, "reset": True}
+    if not isinstance(stage, str) or not stage or stage not in LIFECYCLE_STAGES:
+        return 400, {"ok": False, "error": "stage must be one of: " + ", ".join(LIFECYCLE_STAGES + ("reset",))}
+    prior = live.get(ident)
+    if prior and prior.get("stage") == "verified" and stage != "verified":
+        return 409, {"ok": False, "error": "verified is terminal; use reset or wait for retention expiry before regressing"}
+    live[ident] = {"stage": stage, "actor": payload.get("actor", "unknown"),
+                   "since": (prior or {}).get("since", now), "updated": now,
+                   "until": now + LIFECYCLE_RETAIN_S[stage]}
+    _lifecycle_save({"incidents": live})
+    return 200, {"ok": True, "incident_id": ident, "stage": stage,
+                 "muted": stage == "verified", "until": int(live[ident]["until"])}
+
+
+# --------------------------------------------------------------------------
 # Network (interfaces / ARP / sockets) -- served to website/network.html
 # --------------------------------------------------------------------------
 
@@ -1887,7 +2055,8 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/incidents":
                 incidents = alerts_envelope()
                 acknowledgements = acks_read()["acks"]
-                return self._send(200, {**incidents, "acknowledgements": acknowledgements, "access": access(self)})
+                lifecycle = lifecycle_read()["lifecycle"]
+                return self._send(200, {**incidents, "acknowledgements": acknowledgements, "lifecycle": lifecycle, "access": access(self)})
             if path == "/tasks":
                 return self._send(200, {"events": monitor.task_events(API_DIR), "generated_at": now_iso()})
             if path == "/registry":
@@ -1965,10 +2134,10 @@ class Handler(BaseHTTPRequestHandler):
                       (time.time() - started) * 1000,
                       {"http.status_code": getattr(self, "_last_code", 0) or 200})
 
-    @guarded({"/wake", "/alerts/acks"})
+    @guarded({"/wake", "/alerts/acks", "/alerts/lifecycle"})
     def do_POST(self):
         path = urlsplit(self.path).path
-        if path not in ("/agora/posts", "/alerts/acks", "/wake"):
+        if path not in ("/agora/posts", "/alerts/acks", "/wake", "/alerts/lifecycle"):
             return self._send(404, {"error": "not found"})
         try:
             length = int(self.headers.get("Content-Length") or 0)
@@ -1980,9 +2149,12 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
         except Exception:
             return self._send(400, {"error": "invalid JSON"})
-        if path == "/alerts/acks":
+        if path in ("/alerts/acks", "/alerts/lifecycle"):
             payload["actor"] = getattr(self, "_control_actor", "unknown")
+        if path == "/alerts/acks":
             code, resp = acks_post(payload)
+        elif path == "/alerts/lifecycle":
+            code, resp = lifecycle_post(payload)
         elif path == "/wake":
             code, resp = wake_post(payload)
         else:
