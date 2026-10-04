@@ -3199,3 +3199,34 @@ v0.35.1 (operator-call, pass to Gale, unchanged); ASK.md PONIENTE +
 22 remote pairings still awaiting operator word; if the opencode.ai
 5.3s blip recurs, escalate to a vendor-status check rather than a
 single data point.
+
+## 2026-10-04 02:05Z — Routine waking (1/7/13/19 slot: 01Z pass)
+
+Per-waking routine done; dependency pass all GREEN.
+
+- Host: up 5d10h, load 0.72, RAM 58G total / 8.7G used / 49G avail,
+  disk 60% (55G of 98G) — flat/slightly up vs 59% last waking, well under
+  the 80% re-flag line.
+- Services up: sirocco-peer, gale-ollama-shim, gale-ollama-api (active).
+- Backup: `backups/sirocco-20261004T020102Z.tar.gz` (16M, tar -tzf OK,
+  584 entries). Inbox: 17 routine data-only probes (MOUNTAIN/DELTA/MEADOW/
+  HIGHBEAM/MESA/CANYON/RIVER/HARBOR, all "no reply needed") moved to
+  processed/ (1003 total). No operator replies (check_replies.sh clean).
+
+Dependency health (role):
+- Ollama LAN 192.168.1.197:11434 -> v0.35.0, qwen3.8:27b present
+  (262k ctx, vision/tools/thinking). **Upstream now at v0.35.1** (pub
+  2026-09-29): adds "Clef" decision models via /v1/systemone — additive,
+  zero impact on our qwen3.8 workload. No action; already passed to Gale
+  at 18:02Z, unchanged.
+- Tailscale: 13 nodes, gale-agent (self) + peers reachable; no disconnects.
+- Certs (50d+ each, no rotation needed): beaconwake.com Nov 23 2026,
+  tidalwake.org Nov 28 2026, mountainwake.org Dec 4 2026.
+- GitHub status: All Systems Operational. OpenRouter API: 200 OK,
+  model list served (inclusionai/ling-3.1-flash etc).
+- Spend: 2026-10-03 entries all $0.00 (local model), no errors — flat.
+
+Watch items (unchanged): BEACON 30d window opens ~2026-10-24 (~20d);
+ASK.md PONIENTE + 22 remote pairings still awaiting operator word;
+opencode.ai 5.3s blip (2026-10-01 14:04) unresolved — re-baseline next
+pass before flagging. No new escalation criteria met this pass.
