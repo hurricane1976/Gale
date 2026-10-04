@@ -3057,3 +3057,54 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
   advisory. Routine completed cleanly: replies checked, 16 pings archived,
   health/sweep/backup all healthy, NOTES updated.
+## 2026-10-04T00:03Z — waking #63
+- **Operator replies:** none (check_replies clean).
+- **Peer inbox (3 pings, 00:00Z):** all data-only/no-reply — MOUNTAIN x2
+  (rule-7 sweep, credentialed reach, "no reply needed"), MOUNTAIN x1
+  (automated latency check, site build). Zero operator content, zero acks
+  owed (data per rule 5). All archived; inbox empty. processed/ count 982
+  → 985. Continues MOUNTAIN's burst-then-quiet sweep pattern from #60–#62.
+- **HOST HEALTH:** uptime 5d8h28m (same boot since 9/28 15:33Z, no reboot);
+  load 0.64/0.70/0.72 on 16 cores (~4–5%, midnight, calm floor); RAM
+  8.8G used / 49G avail (58Gi total); swap 0/8G (unused); Tailscale live,
+  100.66.39.59, gemini/mountain/beacon peers active/direct — **~318h
+  continuous hold, no TUN regression this boot**.
+- **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet (~0.5–0.74ms each). 35th consecutive alive sweep.
+- **CAPACITY / DISK:** disk **55G used / 39G free (59%)** — flat vs #62's
+  55G/59% (churn within noise). Neighbor footprint /home/agent 13G (settled,
+  flat vs #62); snapd 4.5G (settled, flat); apt cache 1.1G (watch, well
+  under ~2G line); /tmp 3.1G (churn, well under ~5G line). 80% trip line
+  (~78G) is **~23G of headroom** away — no crossing nameable before several
+  weeks at this flat arc. GROWTH WATCH: toward CLEARED.
+- **Spend (ledgers):** 10-04 day fresh — 1 paid run so far: GALE (agent)
+  $0.15 (00:00Z). All other lanes (bora/cyclone/levante/maistral/ostro/
+  poniente/sirocco/tramontane/vortex + chinook) $0.00 (ollama lanes).
+  10-03 closed at 20 runs / $1.99 (matches #62 snapshot; 2 lines of 10-03
+  in gale ledger — one pre-20Z and #62's own run). No per-run ($5.00) or
+  daily ($15.00) alert trigger. In-band.
+- **Wake-reliability (all slots clean to date):** 10-03 full day: 00:00
+  CLEAN (#57), 04:00 CLEAN (#58), 08:00 NO-OP #59 (already back-filled +
+  operator-alerted), 12:00 CLEAN (#60), 16:00 CLEAN (#61), 20:00 CLEAN
+  (#62). 10-04 00:00 CLEAN (this, #63). No new reliability signal; #59
+  remains the one open triage item (operator lane).
+- **Backup:** chinook-20261004T000307Z.tar.gz (2.3M), gzip -t OK, tar list
+  546 entries OK, ./AGENT.md read-back clean in listing; **14-snapshot
+  ceiling held** (oldest 10-02 00:00 rotated out → 14 in backups/).
+  No drift.
+- **Commit:** inbox archive (3) + this entry.
+- **Forecast / thresholds:**
+  - Disk: 55G / 39G free (59%). Arc #57–#63: 62→51→52→54→55→55 (flat
+    arc). 80% line ~23G headroom. GROWTH WATCH toward CLEARED. Named
+    watch list unchanged: (a) snapd refresh +1–3G, (b) /tmp past ~5G
+    (now 3.1G), (c) opencode.db runaway (watch), (d) apt archives past
+    ~2G (now 1.1G).
+  - Load/mem/swap: midnight floor, calm, swap unused; no crossing.
+  - Spend: in-band; 10-04 fresh at $0.15 / 1 run; no trend.
+  - Wake-reliability: all 7 most recent slots clean (10-03 00→10-04 00);
+    #59 no-op remains sole open item awaiting operator triage.
+  - Tailscale: live, ~318h hold, no TUN regression; no nameable threshold.
+  - Neighbor footprint: /home/agent 13G flat; watch.
+- **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
+  advisory. Routine completed cleanly: replies checked, 3 pings archived,
+  health/sweep/backup all healthy, NOTES updated.
