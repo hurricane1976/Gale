@@ -3345,3 +3345,84 @@ Next: watch disk (61%, creep continues, re-flag to Gale only past 80%);
 beaconwake.com renewal behavior as it enters; Ollama v0.35.0 -> v0.35.1
 (operator-call, pass to Gale, unchanged); ASK.md PONIENTE + 22 remote
 pairings still awaiting operator word.
+
+## 2026-10-04T18:02Z — Scheduled waking (all green; 10:00Z slot FAILED — API timeout)
+
+Context: 18:00 slot of the 2026-09-26 reconfig; ran at ~18:01Z, on time.
+`check_replies.sh`: no new operator messages.
+
+**SCHEDULE GAP (new, notable): the 2026-10-04 10:00Z waking FAILED.**
+`logs/20261004T100001Z.log`: attempt 1 + 2 both `APIError` —
+`ProviderHeaderTimeoutError`, "Provider response headers timed out after
+300000ms", isRetryable:true; attempt 3 also exit 1. `wake.sh: ALERT fired
+-- opencode session exited with code 1`. No session output was produced
+(the `20261004T100001Z.json` log captured only the error envelope, 277B).
+This is a LAN-runtime / provider-side timeout, not a host or network
+issue on our side (everything else green this waking — 06:01Z and
+14:02Z ran clean). No operator action needed, but logging as a single
+retried-then-failed slot; if it recurs on a later slot or on consecutive
+slots, escalate (possible LAN runner / Ollama gateway pressure).
+
+Host: up 6d2h, load 15.01 (3-min 7.32, 15-min 3.75) — elevated this
+waking vs the ~0.5-0.7 of every prior waking today, but host is a shared
+gale host (other agents/telemetry) and memory is healthy (8.7Gi used,
+49Gi available of 58Gi, no swap in use); treating as transient shared-host
+load, not a sirocco fault. disk 63% (59G/98G, 35G free — up 2pt vs
+14:02Z's 61%, creep continues, well under the 80% re-flag line).
+`sirocco-peer` active on 100.66.39.59:8796; all 14 tailnet peer listeners
+8787–8800 + localhost-only :8791/:8793/:8794/:8795 as before.
+
+Inbox: 3 new (2026-10-04 18:00Z) — all MOUNTAIN, all explicitly "no
+reply needed, data only": two Rule-7 peer sweeps "confirming mountain ->
+sirocco /inbox credentialed reach" (dc3dfc11, 1fb296ba) + one automated
+"latency check from Mountain's site build" (bd23b612). Filed to
+`processed/` (now 1039 total). No replies sent, nothing minted or
+installed. No label quirk this waking (all correctly self-labeled as
+MOUNTAIN).
+
+Dependencies (all green, live probes ~18:01Z):
+- OpenRouter: openrouter.ai/api/v1/models 200 in 0.39s.
+- opencode.ai: 200 in 0.19s — fast, no blip recurrence (the isolated
+  2026-10-01 5.3s data point still stands alone; no escalation pattern).
+- GitHub: api.github.com 200 in 0.08s; latest opencode release v1.18.34
+  (unchanged).
+- Tailscale: tailscaled active; same 13-node set (gale-agent self,
+  6x beacon-* [prism active, rest idle], gemini/mountain/ubuntu agents
+  active direct, ipad174, josh-iphone18, josh-linux). No disconnects.
+- LAN Ollama runner 192.168.1.197: **v0.35.0**, qwen3.8:27b loaded
+  (my runtime this waking — path healthy by execution). Upstream latest
+  still **v0.35.1** (2026-09-29) — gap 0.0.1 unchanged since 10-03
+  14:18Z; already passed to Gale, operator-call to apply.
+
+Cert expiries (fresh probes this waking, no 30/14/7-day warnings):
+beaconwake.com notAfter **2026-11-23** (~40d), tidalwake.org notAfter
+2026-11-28 (~45d), mountainwake.org notAfter 2026-12-04 (~52d).
+BEACON 30d warning window still >30d out (opens ~2026-10-24, ~10 days) —
+continuing to watch beaconwake.com renewal behavior as it enters.
+
+Pairing state: UNCHANGED — `keys/peers.env` same 34 NAME blocks
+(8 mesh + CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE +
+PONIENTE). ASK.md: PONIENTE + 22 remote pairings still awaiting operator
+word (OSTRO + LEVANTE resolved 09-26). TRAMONTANE key-denies flag stands.
+
+Spend: $0.00 (local runs only; LAN runner, no OpenRouter usage; latest
+recorded spend entry 2026-10-04T06:02:56Z cost 0.0). The failed 10:00Z
+wake recorded no cost (session never returned a usage envelope).
+
+Runner/portability note for Tempest: `ollama/qwen3.8:27b` normal again
+this waking; the ONE anomaly is the 10:00Z ProviderHeaderTimeoutError
+(300s header timeout x3) — a provider/gateway-side stall, not a model or
+model-portability issue; flag to Tempest only if it recurs. LAN runner
+v0.35.0 vs upstream v0.35.1 (gap 0.0.1, unchanged).
+
+Backup: `backups/sirocco-20261004T180136Z.tar.gz` (17M, tar -tzf OK,
+595 entries; AGENT.md/NOTES.md/ASK.md/peers scripts/wake.sh present).
+
+Next: watch disk (63%, creep continues, re-flag to Gale only past 80%);
+**be aware of the new 10:00Z ProviderHeaderTimeout gap** — re-baseline on
+the 19:00Z slot (next waking) and if the header timeout recurs or a 4th+
+slot fails, escalate to a LAN runner / gateway check;
+**BEACON 30d window opens ~2026-10-24 (~10 days)** — confirm
+beaconwake.com renewal behavior as it enters; Ollama v0.35.0 -> v0.35.1
+(operator-call, pass to Gale, unchanged); ASK.md PONIENTE + 22 remote
+pairings still awaiting operator word.
