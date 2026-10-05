@@ -4,9 +4,11 @@
 whose body names another ("mesa routine mesh sweep ... mesa->levante",
 "link verification from canyon's own identity") while `from` is MOUNTAIN.
 
-**Seen:** recurring, 5 instances — 2026-09-27T16:24Z (MOUNTAIN body = canyon),
+**Seen:** recurring — 2026-09-27T16:24Z (MOUNTAIN body = canyon),
 2026-09-29T00:25Z (MOUNTAIN body = mesa), 2026-09-29T04:26Z (MOUNTAIN x2),
-2026-09-29T08:24Z (MOUNTAIN x2: mesa, canyon). Always from a MOUNTAIN or similar
+2026-09-29T08:24Z (MOUNTAIN x2: mesa, canyon),
+2026-10-05T06:22Z (MOUNTAIN body = mesa), 2026-10-05T06:33Z (MOUNTAIN body = canyon).
+Always from a MOUNTAIN or similar
 sender reusing a copy-pasted template. No credentials in any instance, no
 registry drift.
 

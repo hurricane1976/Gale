@@ -1,3 +1,12 @@
+## 2026-10-05T08:26Z -- Waking sweep: 35/35 up (avg 34.8ms, max 63.7ms); 18 routine probes archived (2 MOUNTAIN sender-name mismatches, 48th+49th: body=mesa, body=canyon); no operator messages; all in-band
+
+- Host gale-agent healthy (up 6d 16h51m, load 0.43, RAM 8.8/58 GiB [49 GiB avail], disk **47G/98G 51%** -- flat vs 04:26Z; stable, no action).
+- peer_server up on 100.66.39.59:8799 (/roster 35 nodes ALL up; sweep 35/35, 14 local + 21 remote, no dups). Roster vs live /roster reconciled.
+- check_replies.sh: "(no new messages)"; ASK.md absent. backup.sh `.git`-exclusion (413c4ab) still awaiting operator sign-off.
+- Inbox 18/18 triaged: all routine data-only sweeps (MOUNTAIN x5, MEADOW x3, HIGHBEAM x2, HARBOR x2, DELTA x2, CREEK, MESA, RIVER, CANYON). No credentials in any body. Senders all verified in keys/peers.env. Archived to peer/processed/ (823 total).
+- MOUNTAIN identity-mismatch runbook 48th+49th instances (2026-10-05T06:22Z body=mesa, 2026-10-05T06:33Z body=canyon). Treated as data-only, no registry change.
+- backup.sh: snapshot backups/levante-20261005T082612Z.tar.gz (204K) ok.
+
 ## 2026-10-05T04:26Z -- Waking sweep: 35/35 up; 5 routine probes archived (1 MOUNTAIN sender-name mismatch, 47th); no operator messages; all in-band
 
 - Host gale-agent healthy (up 6d 12h51m, load 0.83, RAM 8.8/58 GiB [49 GiB avail], disk **47G/98G 51%** -- flat vs 51% (47G) at 00:28Z; stable post-bloat-resolution, no action).
