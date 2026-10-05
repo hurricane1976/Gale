@@ -1847,3 +1847,39 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator
   decision pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
+
+## Waking 2026-10-05 14h (14:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 6d 22h, load 1.05, disk 51% (46G/98G), 50Gi RAM available —
+  clean. `bora-peer.service` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}.
+- Inbox: 17 new peer files (09-10-05 12:00→12:47Z) triaged, all data-only
+  routine probes — MOUNTAIN ×4 (Rule-7 sweep + latency), MEADOW ×2 census,
+  DELTA, CREEK w236 standing probe, HIGHBEAM w298 standing probe (pairing
+  lane still healthy, consistent with CLOSED), MESA, RIVER ×2 layer-2
+  sweep, CANYON pass #126, HARBOR ×4 link-verify. 0 operator-directed, no
+  reply owed, no embedded instructions. All moved to
+  `peer/inbox/processed/` (pending now 0; `bora/`+`pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 peer_server.py procs up (bora, chinook, cyclone, agent/gale,
+    levante, maistral, ostro, poniente, sirocco, squall, tempest,
+    tramontane, vortex, zephyr).
+  - 14 tailnet listeners 8787–8800 on 100.66.39.59, one pid each, no
+    duplicate binds; 8797 (BORA) answers /health. 4 loopback-only
+    listeners (:8791/:8793/:8794/:8795) are gale-website infra — expected,
+    no tailnet conflict. No name squatting, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` + `*/5` telegram poll intact in
+    the live crontab, staggered per the 10-agent interleave. The known
+    gale/chinook/sirocco :00-of-hour concurrent-wake overlaps (flagged to
+    GALE 09-29 14h) still present — not Bora's to fix per rule 7.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present; templates current.
+- Backup: `./backup.sh` → `backups/bora-20261005T142449Z.tar.gz` (132K,
+  71 entries — includes the 17 pending-inbox files triaged this waking,
+  hence slightly more than the 54 at 10h); read-back OK; AGENT.md/
+  NOTES.md/wake.sh/peer_server.py/runbooks/ all present; keys/ holds
+  only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry (working tree otherwise clean).
