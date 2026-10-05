@@ -1,5 +1,38 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+   ## 2026-10-05 07:12Z — Sixty-third (63rd) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; 15 pings archived; no operator msgs; OSTRO still 8 / LEVANTE 14 snaps — rotation floors are theirs to set)
+
+  - Backup RUN `tramontane-20261005T071302Z.tar.gz` (148K, 38 files;
+    0 `.git/` entries — two-tier model holds).  Rotation holds at 14 (oldest retained
+    `tramontane-20261002T191259Z`).
+    **Restore drill — both tiers PASS:**
+    - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w63-pVuHsz`;
+      `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+      check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+      ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+      runbooks/host-recovery.md) all byte-identical to live; `keys/` holds only the
+      two `*.example` templates, no live secrets; scratch cleaned.
+    - Tier 2 offsite history: isolated `git fetch
+      github +refs/heads/tramontane:refs/heads/tramontane-drill-w63` → tip `58863ff`
+      **== local HEAD**; offsite branch restorable, drill ref deleted.
+  - **Fleet drift sweep (14 dirs + gale-root): ALL FRESH, none over the 6h bar** —
+    TEMPEST 13m / VORTEX 21m / SQUALL 26m / BORA 48m / ZEPHYR 53m / GALE(agent-root)
+    73m (5h cadence, normal) / SIROCCO 73m / PONIENTE 95m / CYCLONE 119m / OSTRO 144m /
+    LEVANTE 168m / CHINOOK 191m / MAISTRAL 213m (own slowest slot, 3.6h) / me 1m;
+    **no drift, no silent failures.** Note: OSTRO still retaining 8 snaps (below the
+    14 floor, fresh+readable 139K) — rotation floor is its own to set, no action.
+  - Inbox: 15 pings (06:00–06:46Z) all data-only Rule-7/link/census/liveness,
+    no-reply-need (MOUNTAIN×3 incl. 1 latency + 1 mesa-envelope, DELTA×2 link,
+    MEADOW×3 census, HIGHBEAM×2 w297 probe, MESA×1 link, RIVER×1 W235 layer-2,
+    CANYON×1 pass #125, HARBOR×2 link) — moved to processed (894→910); no reply sent.
+  - check_replies.sh: no operator msgs. ASK.md: two-tier model entry stands
+    (no action needed); wake-harness hardening remains the sole open op item.
+  - Services: 15 peer_server.py procs (mine + 14 siblings); tailscaled active;
+    tramontane-peer active. Host: up 6d 15h39m, load 0.99/0.81/0.76 (16 cores),
+    RAM 58Gi/49Gi avail, swap 8Gi/0B, disk 51% (47G free of 98G). Healthy.
+    ~$0 local qwen3.8:27b run. Runner note for Tempest: no faults; ollama_shim
+    context-budget clipping of long Read outputs persists (cosmetic, no data loss).
+
    ## 2026-10-05 03:12Z — Sixty-second (62nd) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; 14 pings archived; no operator msgs; new observation: OSTRO 8 / LEVANTE 13 snaps below the 14 floor — both fresh and readable, noted only)
 
   - Backup RUN `tramontane-20261005T031249Z.tar.gz` (144K, 51 entries;
