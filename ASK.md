@@ -2,7 +2,35 @@
 
 ## Open
 
-- **MAISTRAL backup-drift flag (w64 2026-10-05 11:12Z): 7.5h, 3-slot miss streak — first over-bar in 4 clean sweeps.** MAISTRAL's newest snapshot `maistral-20261005T034041Z` (452m old at sweep) is the **only** dir over the 6h bar (all 13 others + gale-root fresh, 20–312m). Root cause from its own read-only logs (rule 7 — I did not enter its tree): its 07:36Z wake **`exit code: 124` (opencode wall-clock timeout)**; the session before it (04:05Z) exited 0 without reporting (ALERT); the one before (03:36Z) hit the 8192 output-token cap (`reason=length`, 8192 out). A 3-slot miss streak, not a data event: **14 retained snaps intact, newest 228K, `tar -tzf` fully readable** — nothing lost at any point. This is a *newer* failure mode than the w58 one-off role-refusal (timeout/length-cap, not persona refusal). Data-only drift notice sent to MAISTRAL (`{"status":"ok"}`); expect self-clear at its next slot. **No operator action required** — flagging the pattern (two consecutive wakening-miss modes in one agent within a day) in case it recurs across wakings or to another sibling; if it does I will re-flag with the full streak.
+- **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
+  compounded w59 APIError cases) — STILL OPEN at w65 2026-10-05 15:15Z.**
+  The 2026-10-04 10:48–12:00Z `retryable APIError` window hit **7 of 15
+  agents** (bora, chinook, maistral, poniente, sirocco, vortex, **and my own
+  11:12Z slot**). MAISTRAL's w64 window (2026-10-05 03:36–07:36Z) showed the
+  same two failure shapes — 8192 output-token cap (`reason=length`) and
+  `exit code: 124` opencode wall-clock timeout — in a 3-slot miss streak
+  (now self-recovered, see Resolved). MAISTRAL's earlier role-refusal was only
+  caught because `wake.sh` fires an ALERT on "exit 0 without reporting". Two
+  recommendations pending your call: (a) look at the Ollama/API gateway for
+  the 2026-10-04 11:00–12:10Z window, (b) treat "exit 0 + ALERT + no report"
+  and `exit 124` timeouts as retryable misses / surface the model's refusal or
+  truncation text so a miss can't masquerade as a clean pass. **No data loss
+  in any of these cases** (every flagged snapshot verified intact,
+  `tar -tzf` readable).
+
+## Resolved / for the record
+
+- **MAISTRAL backup-drift flag (w64 2026-10-05 11:12Z) — RESOLVED w65
+  15:15Z.** w64 sweep found MAISTRAL's newest snap 7.5h old, sole dir over
+  the 6h bar, after a 3-slot miss streak (03:36Z `reason=length` 8192-out cap;
+  04:05Z exit 0 without reporting → ALERT; 07:36Z `exit code: 124` opencode
+  wall-clock timeout). **Self-recovered:** its expected 11:36Z slot produced
+  `maistral-20261005T113931Z` (232K, 7.5min after slot start — normal),
+  readable `tar -tzf`, 14 retained. At w65 sweep it is **212m old — back under
+  the bar; fleet 14/14 fresh, no drift.** No data was lost at any point
+  (snapshots intact through the streak). No operator action needed; the
+  *pattern* (two wake-miss modes in one agent in a day) feeds the standing
+  wake-harness hardening item above.
 
 - **No action needed — flagging for the record (w61 23:12Z):** the fleet-wide
   `backup.sh` change (exclude `./.git`; "history lives on github") applied

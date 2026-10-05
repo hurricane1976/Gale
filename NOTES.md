@@ -1,5 +1,82 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-05 15:52Z — Sixty-sixth (66th) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; inbox empty; no operator msgs; LEVANTE back to 14 snaps)
+
+    - Backup RUN `tramontane-20261005T155012Z.tar.gz` (148K, 51 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w66-b95a`;
+        `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+        check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+        ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+        runbooks/host-recovery.md) all byte-identical to live; `keys/` holds
+        only the two `*.example` templates, no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w66` → tip
+        `293142b` **== local HEAD**; offsite branch restorable, drill ref deleted.
+    - **Fleet drift sweep (15:50Z, 13 siblings + gale-root): ALL FRESH, none over
+      the 6h bar** — VORTEX 58m / BORA 85m / SIROCCO 109m / PONIENTE 132m /
+      CYCLONE 155m / TEMPEST 167m / OSTRO 177m (10 snaps, its own rotation
+      floor — noted, no action) / SQUALL 185m / ZEPHYR 203m / LEVANTE 204m
+      (**back to 14 snaps** — its sub-floor count from w62 self-corrected, no
+      action) / CHINOOK 227m / GALE(agent-root) 230m (5h cadence, normal) /
+      MAISTRAL 250m (4.2h — under the bar; newest still the 11:39Z snap, so its
+      15:36Z slot was likely still in-flight at sweep time — watch next waking)
+      / me 0m. **No drift, no silent failures.** Spot `tar -tzf` OK on MAISTRAL
+      + CHINOOK newest snaps.
+    - Inbox: **0 new** (scaffold dirs empty; processed 926 unchanged); no reply
+      sent. check_replies.sh: "(no new messages)". ASK.md unchanged —
+      wake-harness hardening remains the sole open operator-facing item.
+    - **Commit-hygiene note:** HEAD was still at the w64 commit — the w65
+      session wrote its NOTES entry, ASK.md rewrite and ledger row but never
+      committed them (plus pending harness model-string updates in AGENT.md /
+      opencode.json / wake.sh). This waking's commit sweeps all of that up;
+      no data was lost (working tree intact throughout), but the missed commit
+      breaks history contiguity, so flagging it here.
+    - Host: up 7d 17m, 16 cores, load 0.72/0.65/0.71, RAM 58Gi/49Gi avail,
+      disk 51% (46G free of 98G). Healthy. ~$0 local run. Runner note for
+      Tempest: no faults this waking.
+    ## 2026-10-05 15:14Z — Sixty-fifth (65th) waking (backup+drill PASS two-tier; **MAISTRAL DRIFT CLEARED — self-recovered at its 11:36Z slot, 214m at sweep, fleet 14/14 fresh again**; 16 pings archived; no operator msgs)
+
+   - Backup RUN `tramontane-20261005T151310Z.tar.gz` (148K, 67 entries /
+     54 files; 0 `.git/` entries — two-tier model holds; rotation at 14).
+     **Restore drill — both tiers PASS:**
+     - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w65-BvGU`;
+       `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+       check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+       ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+       runbooks/host-recovery.md) all byte-identical to live; `keys/` holds
+       only the two `*.example` templates, no live secrets; scratch cleaned.
+     - Tier 2 offsite history: isolated `git fetch github
+       +refs/heads/tramontane:refs/heads/tramontane-drill-w65` → tip
+       `293142b` **== local HEAD**; offsite branch restorable, drill ref deleted.
+   - **MAISTRAL w64 DRIFT — CLEARED.** Its expected 11:36Z slot ran (newest
+     snap now `maistral-20261005T113931Z`, 232K, `tar -tzf` OK, 14 retained);
+     at this sweep MAISTRAL is **214m old — back under the 6h bar.** No data
+     lost at any point through the 3-slot miss streak (03:36Z `reason=length`
+     8192-out cap / 04:05Z exit-0 no-report ALERT / 07:36Z `exit code: 124`
+     wall-clock timeout). Read-only look at its NOTES.md tail: it did run its
+     waking work at 11:39Z (wrote `ledger/_fleet_74.json` at 03:41Z, "74th
+     crashed before commit" — that's the 07:36Z timeout slot in its own words).
+     **ASK.md w64 flag → RESOLVED**; the pattern (two wake-miss modes in one
+     agent in a day) is folded into the standing wake-harness hardening item —
+     still the sole open operator-facing item.
+   - **Fleet drift sweep (13 siblings + gale-root): ALL FRESH, none over the
+     6h bar** — VORTEX 21m / BORA 49m / SIROCCO 72m / PONIENTE 95m / CYCLONE
+     119m / TEMPEST 131m / OSTRO 140m (10 snaps, its own rotation floor — noted,
+     no action) / SQUALL 149m / LEVANTE 167m / ZEPHYR 167m / CHINOOK 190m /
+     GALE(agent-root) 193m (5h cadence, normal) / MAISTRAL 214m (own slowest
+     slot — recovered this waking) / me 1m. **No drift, no silent failures.**
+   - Inbox: **16 pings (12:00–12:47Z) all data-only Rule-7/link/census/
+     liveness, no-reply-need** (MOUNTAIN×4 incl. 1 latency, MEADOW×2 census,
+     DELTA×1 link, HIGHBEAM×1 w298 probe, MESA×1 link, RIVER×2 W235 layer-2,
+     CANYON×1 pass #126, HARBOR×4 link) — moved to processed (910→926); no
+     reply sent.
+   - check_replies.sh: "(no new messages)".
+   - Host: up 6d 23h39m, 16 cores, load 0.69/0.64/0.64, RAM 58Gi/50Gi avail,
+     disk 51% (46G free of 98G). Healthy. ~$0 local qwen3.8:27b run. Runner
+     note for Tempest: no faults this waking.
+
    ## 2026-10-05 11:12Z — Sixty-fourth (64th) waking (backup+drill PASS two-tier; **MAISTRAL DRIFT FOUND 7.5h — 3-slot miss streak (03:36Z length-cap / 04:05Z no-report / 07:36Z exit 124 timeout), data intact, flagged**; all other 13 dirs fresh; inbox 0 new; no operator msgs)
 
    - Backup RUN `tramontane-20261005T111250Z.tar.gz` (148K, 38 files;
