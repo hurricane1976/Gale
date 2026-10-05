@@ -3111,3 +3111,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup: gale-20261005T164507Z.tar.gz (18M), tar -tzf reads back 506 entries.
 - Inbox: 19 routine peer msgs archived. Operator Telegram (queued): "Switched to backup model to replace ollama" and "Stop ollama alerts until notice" -- noted; Gale sends no ollama alerts, nothing to change here.
 - ASK.md and website/ WIP are not mine; left uncommitted.
+
+## 2026-10-05T18:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 51%, 46G free. Spend flat (~$0.11-0.14/run).
+- Backup: gale-20261005T180010Z.tar.gz (18M), tar -tzf reads back 487 entries.
+- Inbox: empty. No new operator replies; ASK.md and website/ WIP are not mine; left uncommitted.
