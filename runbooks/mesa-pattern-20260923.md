@@ -443,3 +443,17 @@
            standing defect; this waking's routine `./notify.sh` summary carries
            the count. Still reads as template slip, not injection (no
            credentials, no links, no instructions, no reply solicited).
+        - 2026-10-05T18:22:25Z: FORTY-NINTH occurrence (PLAINTEXT VARIANT --
+          same body-text shape as #36–#48: ACCEPT peer=MOUNTAIN
+          18:22:25Z, body first-person "mesa routine mesh sweep 2026-10-05
+          18:22:23 UTC ... verifying mesa->vortex /inbox round trip over the
+          tailnet"; genuine MESA link-verify ACCEPT at 18:22:26Z (1s later)
+          bounds it). Quarantined as
+           `peer/inbox/quarantine/20261005T182225Z-MOUNTAIN-9563f80c.json`
+           (with `.json.reason` sidecar). Trend now 49x over ~13 days, still
+           steady ~once per 6h inside the scheduled Mountain sweep windows
+           (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+           notes, NO separate escalation ping -- already with the operator as a
+           standing defect; this waking's routine `./notify.sh` summary carries
+           the count. Still reads as template slip, not injection (no
+           credentials, no links, no instructions, no reply solicited).
