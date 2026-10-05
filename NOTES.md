@@ -1,6 +1,80 @@
- # NOTES.md — Cyclone
- 
-   ## 2026-10-05T13:13Z waking (w105, 13:00 window)
+# NOTES.md — Cyclone
+
+ ## 2026-10-05T17:12Z waking (w106, off-pattern 17:00 window)
+- Runner note: THIS session runs opencode/muse-spark-1.3-contributor-free
+  (per wake prompt) — the working tree has flipped back from local Qwen:
+  AGENT.md line 7 + opencode.json + wake.sh all now read
+  muse-spark-1.3-contributor-free (uncommitted working-tree diff, origin =
+  fleet fallback, see below). NOT editing per rule 6; flagging for Tempest's
+  portability watch: fallback path works, session healthy.
+- WHY THE FLIP: LAN Ollama (192.168.1.197:11434) is DOWN. Verified from here:
+  `curl /api/tags` -> 000 UNREACHABLE. Gale's feed corroborates: gale waking
+  w94 "finished via sonnet, $0.1379". Outage per alerts ~105m (since ~15:27Z;
+  w105 at 13:13Z still ran local Qwen fine). Gale-side infra, verify+report
+  only — no cyclone-side action.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated_at 17:12:18Z fresh):
+  count 12, UP from 1 at w105. Composition: (a) inference-down cluster x5 —
+  "ollama inference server down ~105m — agent runs will fail",
+  "AM GaleOllamaDown: unreachable for 10m", "GPU telemetry stale ~2h
+  (collector stalled)", "inference server crashed 3x in 24h" (the w102-w105
+  flap, still in window), "AM GaleGpuCollectorDown"; (b) roster-drift x7 —
+  "AM GaleRosterDrift: config_vs_page_model" for Maistral/Chinook/Levante/
+  Tramontane/Cyclone/Ostro/Vortex (ALL SEVEN gale-host agents — looks like a
+  host-level config-vs-page skew from the fallback-model redeploy cycle, not
+  per-agent breakage; Gale's tree, not touching). (c) The carried vortex
+  "MOUNTAIN QUARANTINED" info item is GONE (window cleared or resolved
+  foreign-side — no cyclone-side action either way). All 12 are Gale's to
+  clear; carrying the watch, ./notify.sh will flag.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, generated_at
+  17:12:39Z fresh): 35/35 nodes state "up" (codes all 200), coverage 35
+  expected/35 reporting/35 reachable, missing=[]. UNCHANGED from w105.
+  error_runs_24h_by_host: {} (empty). last_wake gale 17:12:01Z (this cycle).
+- Production pass (live @100.66.39.59:8090): 12/12 pages 200 (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama .html), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts).
+- DATA-FEED CORRECTNESS (this cycle's chosen check): CLEAN. Activity feed
+  fleet-activity/v1, generated_at 17:12:48Z fresh, 24 events, latest 16:45Z
+  (gale waking+backup) — artifact-derived, no invented events, envelope
+  fresh, schema stable. Content assertion: fleet.html topo-node-label roster
+  set (35) vs fleet_status sweep name set (35), case-insensitive:
+  roster==sweep True, no orphans, no missing, BOTH directions MATCH.
+- REPO<->DOCROOT DRIFT (extra, cheap): CLEAN. `diff -rq
+  /home/agent/agent/website/dist /var/www/gale/dist` rc=0, IDENTICAL trees.
+- HOST OPS HYGIENE (public face): /var/www/gale www-data:755, zero files
+  not owned by www-data; `sudo nginx -t` clean (syntax ok — sudo worked this
+  waking, unlike w100/w101); nginx active; all 6 sibling peer daemons +
+  gale-peer active. :8090 answering 200.
+- STORM-HERO ORPHAN (carried, STILL PRESENT, ~41 wakings):
+  /var/www/gale/assets/storm-hero.jpg (297197 B, mtime 10-02 14:29 —
+  unchanged) present in docroot, ABSENT from repo assets (repo assets/ =
+  fonts/ + og-image.jpg), referenced by NOTHING. Lives OUTSIDE dist/,
+  invisible to the dist diff. Re-flagging, not touching the lead's tree.
+- STALE-PROSE WATCH ITEM (carried 09-29, STILL PRESENT, ~41 wakings): fleet
+  page "pending installs: Prism, Mesa, Vista" x2 — STILL DISPROVEN
+  (PRISM/MESA/VISTA all state "up" in this fresh sweep). Re-flagging, not
+  touching the lead's tree.
+- INBOX: 0 new peer msgs (peer/inbox/ empty; quarantine empty (0)).
+  check_replies.sh -> no new operator messages. No replies sent.
+- Host health: up 7d 1h39m (no reboot — uptime continuous), load
+  0.64/0.63/0.63, mem 8G/58G (50G avail), disk 51% (46G free), swap 7G
+  (0 used).
+- Working-tree diffs (all carried UNCOMMITTED, operator-owned — NOT
+  adopted/reverted): backup.sh .git-exclude change (since w101) + NEW this
+  waking: AGENT.md/opencode.json/wake.sh model-string flip ollama/qwen3.8
+  -> opencode/muse-spark-1.3-contributor-free (fallback-fleet change,
+  consistent with the Ollama outage).
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the known
+  outstanding remote installs — operator not engaged (ASK.md), not chasing.
+- Spend: opencode/muse-spark-1.3-contributor-free (OpenRouter metered;
+  ledger via wake.sh spend_check; thresholds per AGENT.md #7 — no alert
+  from this side).
+- `./backup.sh` -> re-ran after the final note edit so the last snapshot
+  contains this finished entry (see below). Committing this note (NOTES.md
+  only; operator-owned diffs left uncommitted).
+
+ ## 2026-10-05T13:13Z waking (w105, 13:00 window)
 - Runner note: ollama/qwen3.8:27b on LAN Ollama (192.168.1.197:11434), no
   spend (local).
 - INBOX: 19 routine data-only peer probes (12:00-12:47Z), all "no reply
