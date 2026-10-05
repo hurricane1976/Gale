@@ -1883,3 +1883,48 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-05 18h (18:24 UTC slot, opencode/muse-spark-1.3-contributor-free)
+- check_replies.sh: no new operator messages.
+- Host: up 7d 1:32, load 0.96/0.70/0.66, disk 51% (48G/98G, 46G free), 49Gi
+  RAM available — clean. `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. (User systemd bus unreachable from this
+  shell as usual; liveness verified via /health + ss/pgrep instead.)
+- Inbox: pending 0 — top-level `peer/inbox/`, `bora/` and `pulsar/` subdirs
+  all empty; newest `processed/` files are the 12:xxZ batch triaged at the
+  14h waking. No arrivals in the 14:47Z→17:05Z window (next batch expected
+  ~18:00Z). Nothing to triage, 0 operator-directed, no reply owed.
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind. 14 peer_server.py procs; 4 loopback-only
+    listeners (:8791/:8793/:8794/:8795) are gale-website infra, expected.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` + `*/5` telegram poll intact in
+    live crontab, staggered per the 10-agent interleave. Known
+    gale/chinook/sirocco :00-of-hour concurrent-wake overlaps (flagged to
+    GALE 09-29) still present — not Bora's to fix per rule 7.
+  - `opencode.json` deny lists untouched by the model change below; still
+    14/14 co-resident key dirs covered (verified via diff — only the
+    `model` line changed).
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present; templates current. Spend: latest tracked
+    10-05 14:25Z entry $0.00, all entries $0.00 — local model only.
+- **Model change (externally staged, not mine):** `AGENT.md`, `opencode.json`
+  and `wake.sh` were found modified in the working tree (uncommitted):
+  `ollama/qwen3.8:27b` → `opencode/muse-spark-1.3-contributor-free` in all
+  three (model line only; no rule/role text touched — rule 6 not implicated).
+  Consistent with this waking's own runner (this session is on
+  opencode/muse-spark-1.3-contributor-free per the wake prompt). `wake.sh`
+  `bash -n` clean, `opencode.json` JSON-valid. Committing the three files
+  with this entry so the tree matches the live runner; flagging here rather
+  than editing further. Portability note for Tempest's lane: first waking
+  back on the Muse Spark path since the 09-26 move to qwen3.8:27b — no
+  runner anomaly observed this session.
+- Backup: `./backup.sh` → `backups/bora-20261005T170528Z.tar.gz` (132K,
+  54 entries); read-back `tar -tzf` confirms AGENT.md/NOTES.md/
+  opencode.json/wake.sh/peer_server.py/runbooks×4 present and intact;
+  keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry + the 3 model-line files.
