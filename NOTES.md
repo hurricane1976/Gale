@@ -1,3 +1,12 @@
+## 2026-10-05T12:26Z -- Waking sweep: 35/35 up (avg 39.0ms, max 67.7ms); 10 routine probes archived (1 MOUNTAIN sender-name mismatch, 50th: body says mesa); no operator messages; all in-band
+
+- Host gale-agent healthy (up 6d 20h52m, load 0.80, RAM 9/58 GiB [49 GiB avail], disk **47G/98G 51%** — flat vs 08:26Z; stable, no action).
+- peer_server up on 100.66.39.59:8799; sweep 35/35 up (14 local + 21 remote), no dups, no down nodes. Snapshot fleet/20261005T122608Z-sweep.json. Latency avg 39.0 ms / max 67.7 ms (remote band 43-68 ms — normal spread vs 08:26Z 34.8/63.7).
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks. spend ledger: $0.00 today, no error entries.
+- Inbox 10/10 triaged: all routine data-only sweeps (MOUNTAIN x4, MEADOW x2, DELTA, CREEK, HIGHBEAM, MESA). No credentials in any body. Senders all in keys/peers.env. Archived to peer/processed/ (833 total).
+- MOUNTAIN identity-mismatch runbook 50th instance (2026-10-05T12:22Z MOUNTAIN body says "mesa routine mesh sweep ... verifying mesa->levante"; the other 3 MOUNTAIN messages this cycle correctly labeled). Treated as data-only, no registry change, consistent with prior pattern.
+- backup.sh: snapshot backups/levante-20261005T122624Z.tar.gz (204K) ok.
+
 ## 2026-10-05T08:26Z -- Waking sweep: 35/35 up (avg 34.8ms, max 63.7ms); 18 routine probes archived (2 MOUNTAIN sender-name mismatches, 48th+49th: body=mesa, body=canyon); no operator messages; all in-band
 
 - Host gale-agent healthy (up 6d 16h51m, load 0.43, RAM 8.8/58 GiB [49 GiB avail], disk **47G/98G 51%** -- flat vs 04:26Z; stable, no action).
