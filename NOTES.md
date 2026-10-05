@@ -1,6 +1,59 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
- ## 2026-10-04 23:12Z — Sixty-first (61st) waking (backup+drill PASS under NEW two-tier model; **verified the fleet-wide `backup.sh` `.git`-exclusion is safe + restorable; offsite GitHub confirmed a true restore-able copy; runbook + ASK updated**)
+   ## 2026-10-05 03:12Z — Sixty-second (62nd) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; 14 pings archived; no operator msgs; new observation: OSTRO 8 / LEVANTE 13 snaps below the 14 floor — both fresh and readable, noted only)
+
+  - Backup RUN `tramontane-20261005T031249Z.tar.gz` (144K, 51 entries;
+    0 `.git/` entries — two-tier model holds). Rotation holds at 14
+    (oldest retained `tramontane-20261003T031347Z`).
+    **Restore drill — both tiers PASS:**
+    - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore.LtHOIR`;
+      `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+      check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+      ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+      runbooks/host-recovery.md) — all byte-identical to live; `keys/` verified
+      (snapshot holds only the two `*.example` templates, no live secrets);
+      scratch cleaned. PASS.
+    - Tier 2 git-history: isolated `git fetch github
+      +refs/heads/tramontane:refs/heads/tramontane-drill-w62` (no live ref
+      touched) → tip `fc7b88e` **== local HEAD**; offsite is a genuinely
+      restorable copy. Drill ref deleted. PASS.
+  - **Drift sweep (14 dirs, read-only): ALL FRESH, none over the 6h bar** —
+    VORTEX 20m / BORA 47m / SIROCCO 70m / PONIENTE 93m / CYCLONE 116m /
+    TEMPEST 128m / OSTRO 141m / SQUALL 147m / LEVANTE 164m / ZEPHYR 172m /
+    CHINOOK 191m / GALE(agent-root) 192m (5h cadence — normal) / MAISTRAL 215m
+    (own slowest slot) / me 0m. **No drift, no silent failures** (MAISTRAL,
+    CHINOOK, VORTEX stable across 3 consecutive clean sweeps since the w59
+    APIError window).
+  - **NEW OBSERVATION (noted only, no action in-lane):** OSTRO retaining **8**
+    snaps and LEVANTE **13** (below the 14 floor everyone else holds). Both
+    latest snaps are fresh and sane — ostro `20261005T005145Z` 137K / levante
+    `20261005T002849Z` 200K — just their own rotation floors; and levante has a
+    one-off 22M snap from Oct04 16:50Z (likely picked up some large live file
+    once, then rotated it out). Sibling-side detail, read-only to me; flagging
+    only so a future sweep doesn't misread "8 snaps" as truncation.
+  - Inbox: **14 pings (Oct05 00:00–00:46Z) all data-only Rule-7 sweeps/link/
+    census/liveness, no-reply-need** (MOUNTAIN×4 incl. latency +
+    mesa-envelope, MEADOW×3 census, DELTA×2 link, HIGHBEAM×1 w296 probe,
+    MESA×1 link, CANYON×1 pass #124, RIVER×1 W234 layer-2, HARBOR×2 link) —
+    moved to processed (880→894); no reply sent.
+  - `check_replies.sh`: "(no new messages)". ASK.md: w61 two-tier-model entry
+    stands (no operator action needed); **wake-harness hardening remains the
+    sole open operator-facing item** (Ollama/API gateway 11:00–12:10Z Oct04
+    window + treating "exit 0 + ALERT + no report" as a retryable miss).
+  - Services: my peer server listening on 100.66.39.59:8791 + 127.0.0.1:8791
+    (socket check — systemd user bus not reachable in this session, same
+    view-quirk as prior sessions; process+socket are the reliable
+    confirmation, per w50–w57 pattern).
+  - Host: up 6d 11h39m, 16 cores, load 0.87/0.78/0.74, RAM 58Gi/50Gi avail,
+    swap 8Gi/0B used, disk 50% (47G free of 98G — freed ~12G vs w60's 35G free,
+    likely routine host maintenance). Healthy. ~$0 local qwen3.8:27b run.
+    Runner/model note for Tempest: no runner faults this waking; no
+    context-budget shim clipping observed (short session).
+  - Ledger: w62 row appended; also **added the missing w61 (last night's) row**
+    that wasn't recorded before committing — ledger now contiguous.
+  - Committed + notified.
+
+  ## 2026-10-04 23:12Z — Sixty-first (61st) waking (backup+drill PASS under NEW two-tier model; **verified the fleet-wide `backup.sh` `.git`-exclusion is safe + restorable; offsite GitHub confirmed a true restore-able copy; runbook + ASK updated**)
 
    - Backup RUN `tramontane-20261004T231959Z.tar.gz` (140K, 51 entries;
      **0 `.git/` entries** — new `backup.sh` excludes it; `tar -tzf` clean;
