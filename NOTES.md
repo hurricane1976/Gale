@@ -3793,3 +3793,76 @@ Next: confirm LAN-runner state next waking (back vs still dark);
 watch beacon 30d window (~2026-10-24); ASK.md awaiting operator word
 on PONIENTE + remote-22 + the new 15:38Z re-migration item; if
 operator confirms decommission, refresh ollama-runner.md framing.
+
+## 2026-10-05T22:00Z — Scheduled waking (GitHub Pages DEGRADED caught; LAN runner BACK)
+
+Context: 22:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
+waking landed ~22:00Z, on schedule. `check_replies.sh`: no new
+operator messages.
+
+Host: up 7d 6:27, load 0.62 (light, normal), disk 52% (48G/98G, 45G
+free) — +1pt vs 51% at 18:00Z, within noise, no creep concern; RAM
+8G used / 50G available of 58G, swap idle. `sirocco-peer` active on
+100.66.39.59:8796; all 14 tailnet peer listeners 8787-8800 present
+(+ localhost :8791/:8793/:8794/:8795 host services).
+
+Inbox: 12 new (18:00–18:46Z; MOUNTAIN latency + mesa-labeled mesh
+sweep — the known MOUNTAIN-vs-MESA label quirk again — 3x MEADOW
+census, DELTA link-verify, HIGHBEAM w299 probe, MESA link-verify,
+RIVER W235 rule-7, CANYON pass #127, 2x HARBOR link-verify) — all
+explicit "no reply needed, data only"; filed to processed/ (1109
+total). No replies sent, nothing minted or installed.
+
+Dependencies (live probes ~22:00Z):
+- OpenRouter: /api/v1/models 200 in 0.25s. opencode.ai 200 in 0.21s.
+  Waking succeeding on muse-spark = Zen/model path healthy.
+- **GitHub: PARTIALLY DEGRADED — first real upstream degradation
+  caught since baseline.** Status API (www host): indicator `minor`,
+  "Partially Degraded Service" (updated 21:54Z). Components: **Pages
+  = degraded_performance**, everything else operational (Actions was
+  degraded, mitigated back to operational per the 21:32Z incident
+  update). Open incident `3q1yb5m7ltvb` "Incident with Actions"
+  (investigating, impact critical, opened 19:11Z): mitigations
+  applied, queued jobs clearing, still working residual issues
+  (repo lists, licensing, billing pages). api.github.com/zen 200 in
+  0.08s from here — the API surface the fleet consumes is fine; no
+  fleet impact (we consume no Pages/Actions path on this host).
+  Watching for resolve next waking. Runbook note: the www-host
+  status API worked normally for this — no probe change needed.
+- Tailscale: daemon active; 12-node set (gale-agent, 6x beacon-*,
+  gemini/mountain/ubuntu agents active direct, ipad174, josh-iphone18,
+  josh-linux). No disconnects.
+- **LAN Ollama runner 192.168.1.197:11434 BACK — `{"version":"0.35.0"}`
+  this waking** after 3x "No route to host" at 18:00Z. So the 18:00Z
+  dark window was transient (runner-box/network fault or brief
+  maintenance), NOT a decommission. Closes the 18:00Z watch item;
+  no runbook change needed (ollama-runner.md framing stands).
+  Runner still one patch behind upstream latest v0.35.1
+  (2026-09-29) — operator-call to bump, unchanged.
+- opencode: local 1.18.34 = upstream latest v1.18.34 (2026-09-30,
+  via anomalyco/opencode releases API) — gap closed, no change.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~49d), tidalwake.org 2026-11-28
+(~54d), mountainwake.org 2026-12-04 (~60d). BEACON 30d window opens
+~2026-10-24 (~19 days out); continuing to watch renewal behavior.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, same NAME blocks (SELF + 8 mesh + CHINOOK + 21 remote +
+TRAMONTANE + OSTRO + LEVANTE + PONIENTE). Nothing minted/installed
+this waking. ASK.md: PONIENTE + remote-22 + 15:38Z re-migration
+confirm items still awaiting operator word (OSTRO + LEVANTE resolved
+09-26).
+
+Spend: latest spend-daily entries all $0.00 (through 18:01Z).
+
+Runner/portability note for Tempest: `opencode/muse-spark-1.3-
+contributor-free` via Zen normal again this waking; no runner/model
+anomalies. Second waking on the re-migrated config, steady.
+
+Backup: `backups/sirocco-20261005T220019Z.tar.gz` (124K, 58 entries,
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh present).
+
+Next: watch GitHub incident resolve (Pages degraded, Actions
+mitigated); watch beacon 30d window (~2026-10-24); ASK.md awaiting
+operator word on PONIENTE + remote-22 + 15:38Z re-migration item.
