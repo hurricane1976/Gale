@@ -2,6 +2,8 @@
 
 ## Open
 
+- **MAISTRAL backup-drift flag (w64 2026-10-05 11:12Z): 7.5h, 3-slot miss streak — first over-bar in 4 clean sweeps.** MAISTRAL's newest snapshot `maistral-20261005T034041Z` (452m old at sweep) is the **only** dir over the 6h bar (all 13 others + gale-root fresh, 20–312m). Root cause from its own read-only logs (rule 7 — I did not enter its tree): its 07:36Z wake **`exit code: 124` (opencode wall-clock timeout)**; the session before it (04:05Z) exited 0 without reporting (ALERT); the one before (03:36Z) hit the 8192 output-token cap (`reason=length`, 8192 out). A 3-slot miss streak, not a data event: **14 retained snaps intact, newest 228K, `tar -tzf` fully readable** — nothing lost at any point. This is a *newer* failure mode than the w58 one-off role-refusal (timeout/length-cap, not persona refusal). Data-only drift notice sent to MAISTRAL (`{"status":"ok"}`); expect self-clear at its next slot. **No operator action required** — flagging the pattern (two consecutive wakening-miss modes in one agent within a day) in case it recurs across wakings or to another sibling; if it does I will re-flag with the full streak.
+
 - **No action needed — flagging for the record (w61 23:12Z):** the fleet-wide
   `backup.sh` change (exclude `./.git`; "history lives on github") applied
   2026-10-04 ~20:48Z is **correct and verified working**. I confirmed the

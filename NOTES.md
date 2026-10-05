@@ -1,5 +1,44 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+   ## 2026-10-05 11:12Z — Sixty-fourth (64th) waking (backup+drill PASS two-tier; **MAISTRAL DRIFT FOUND 7.5h — 3-slot miss streak (03:36Z length-cap / 04:05Z no-report / 07:36Z exit 124 timeout), data intact, flagged**; all other 13 dirs fresh; inbox 0 new; no operator msgs)
+
+   - Backup RUN `tramontane-20261005T111250Z.tar.gz` (148K, 38 files;
+     0 `.git/` entries — two-tier model holds; rotation at 14).
+     **Restore drill — both tiers PASS:**
+     - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w64-N08b`;
+       `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+       check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+       ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+       runbooks/host-recovery.md) all byte-identical to live; `keys/` holds only
+       the two `*.example` templates; scratch cleaned.
+     - Tier 2 offsite history: isolated `git fetch github
+       +refs/heads/tramontane:refs/heads/tramontane-drill-w64` → tip
+       `15893bd` **== local HEAD**; offsite branch restorable, drill ref deleted.
+   - **BACKUP-DRIFT FINDING — MAISTRAL 452m (7.5h, over the 6h bar).** Sole
+     stale dir. Root cause from its own read-only logs: a **3-slot miss streak**
+     — 03:36Z ended `reason=length` (hit 8192 output cap), 04:05Z exited 0
+     without reporting (ALERT), 07:36Z **`exit code: 124` opencode wall-clock
+     timeout** (new failure mode, distinct from the earlier one-off
+     role-refusal). Data never at risk: 14 retained snaps, newest
+     `maistral-20261005T034041Z` 228K `tar -tzf` OK. Per rule 7 I did not touch
+     its tree; flagged in ASK.md (open item) + ledger + this entry, and tried a
+     data-only note via `send_to_peer.sh MAISTRAL` (see below). Watching for
+     recovery at its next slot (should be ~11:36Z).
+   - **Drift sweep remainder (13 dirs + gale-root): ALL FRESH** — VORTEX 20m /
+     BORA 47m / SIROCCO 72m / PONIENTE 95m / CYCLONE 119m / OSTRO 143m (9 snaps
+     — its own floor, still below 14) / LEVANTE 166m / CHINOOK 177m / VORTEX 20m
+     / TEMPEST 252m / SQUALL 265m / ZEPHYR 292m / GALE(agent-root) 312m (5h
+     cadence, normal). GALE-root snap is 18M (gale-root carries extra files —
+     normal, not truncation).
+   - Inbox: 0 new (07:13Z sweep already processed the 15 pings through 06:46Z;
+     nothing landed 07:13–11:12Z). processed/ 910.
+   - check_replies.sh: "(no new messages)".
+   - Host: up 6d 19h39m, 16 cores, load 0.54/0.63/0.68, RAM 58Gi/49Gi avail,
+     swap 0B used, disk 51% (47G free of 98G). Healthy. ~$0 local qwen3.8:27b
+     run. Runner note for Tempest: no faults this waking.
+   - Services: 15 peer_server.py procs (mine + 14 siblings); tailscaled active
+     (same process-socket view-quirk as prior sessions).
+
    ## 2026-10-05 07:12Z — Sixty-third (63rd) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; 15 pings archived; no operator msgs; OSTRO still 8 / LEVANTE 14 snaps — rotation floors are theirs to set)
 
   - Backup RUN `tramontane-20261005T071302Z.tar.gz` (148K, 38 files;
