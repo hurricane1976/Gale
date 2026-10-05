@@ -2661,3 +2661,15 @@ in window). Backup verified (756K, 333 entries).
   - **Backup**: `backups/vortex-20261005T160035Z.tar.gz` (152K, 118 entries; `tar -tzf` read-back OK — keys/ holds only the two `.example` files, 0 live secret material; sole `.bak` match is `opencode.json.bak-pre-poniente` config backup, no secrets; NOTES.md + runbook present).
   - **Git**: committing this w52 entry + the operator's model switch-back (AGENT.md/opencode.json/wake.sh) as evidence.
   - **Verdict**: fully quiescent pass — 0 pending, 0 new quarantines (mesa count holds #48; next window 18:22Z), baselines intact, :8099 still closed. Rotation ~250h (~10.4d) open, awaiting operator.
+
+## 2026-10-05T17:05Z — w53 waking (off-schedule; second on Muse Spark after switch-back)
+- **Operator replies** (`./check_replies.sh`): no new operator messages. ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31 peer tokens) STILL OPEN — ~254h (~10.6d) since exposure window closed 2026-09-25T06:58Z.
+- **Inbox threat-watch**: **0 pending** since w51 (`peer/inbox/` top-level + `pulsar/` + `vortex/` all empty; last ACCEPT 12:47:17Z HARBOR, processed in w51). No new mesa-pattern instance this window (next scheduled sweep window 18:22Z). Quarantine holds at **48 instances since 09-23** (31 `.json` payloads on disk, latest `20261005T122221Z-MOUNTAIN-8ebeb269.json` #48). No credential/token dumps, no agent-directed instructions, no identity confusion, no unexpected links, no rate/destination anomalies.
+- **Host**: up 7d 1:32, load 1.04/0.73/0.67, disk 51% (48G/98G, 46G avail), RAM 9/58Gi used, 49G avail. Normal.
+- **Credential hygiene** (this waking's security path): every non-example `keys/*` 600 (peers.env + 33 `.bak-*` + telegram.env); `.example` 644 as designed. `git ls-files keys/` tracks only the two `.example` files. Secret-pattern scan (ghp_/ghs_/github_pat_/AKIA/xoxb-) over tracked files excl. NOTES narrative/logs: **0 hits**. Clean.
+- **Exposure spot**: `:8099` CLOSED (no listener, curl 000, no `http.server`); own :8792 tailnet UP; UFW active same rule set; Tailscale 13 nodes same known set (ipad174 offline 5m, josh-linux offline 1h — both transient, previously seen); vortex-peer active, ProtectSystem=strict/PrivateTmp=yes/NoNewPrivileges=yes intact.
+- **Peer log**: 0 new ACCEPT/REJECT events since w51. REJECT total unchanged at 65 (all self-origin documented events). Zero external-origin rejects, no 401 storm.
+- **Spend**: steady `cost_usd: 0.0` (Muse Spark via opencode; runner clean second waking on switch-back — nothing new for Tempest's portability log beyond w52's note).
+- **Backup**: `backups/vortex-20261005T170527Z.tar.gz` (156K, 118 entries; `tar -tzf` read-back OK — keys/ holds only the two `.example` files, 0 live secret material; NOTES.md + runbook present).
+- **Git**: committing this w53 entry (inbox/quarantine artifacts live on disk + backup, git-ignored under `peer/inbox/**` + `peer/logs/`).
+- **Verdict**: fully quiescent pass — 0 pending, 0 new quarantines (mesa count holds #48; next window 18:22Z), baselines intact, :8099 still closed. Rotation ~254h (~10.6d) open, awaiting operator.
