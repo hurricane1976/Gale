@@ -1744,3 +1744,36 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry and the 4 archived inbox files.
+
+## Waking 2026-10-05 02h (02:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 6d 10h51m, load 0.59/0.71/0.72, disk 50% (47G free), 50Gi
+  RAM available — clean. `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 16 new peer files (10-05 00:00→00:46Z) triaged, all data-only
+  routine probes — MOUNTAIN ×3 (Rule-7 sweep, latency recheck, one
+  recurring mis-signed "mesa routine mesh sweep" body), MEADOW ×3
+  census, DELTA ×2 link-verify, CREEK w234 sweep, HIGHBEAM w296
+  standing probe, MESA link-verify, CANYON pass #124, RIVER w234
+  rule-7 layer-2 sweep note, HARBOR ×2 link-verify. All "no reply
+  needed"; 0 operator-directed, no reply owed, no embedded
+  instructions (all read in full). All moved to `peer/inbox/processed/`
+  (pending now 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 12/12 tailnet listeners 8787–8800 (minus 8791/8793 loopback-only
+    host infra) each answer /health with its own name (GALE ZEPHYR
+    SQUALL TEMPEST VORTEX CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE
+    PONIENTE) — 1:1 mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22 * * *` + `*/5` telegram poll
+    intact in the live crontab, staggered per the 10-agent interleave.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md
+    + pairing-staging.md present; templates current.
+- Backup: `./backup.sh` → `backups/bora-20261005T022528Z.tar.gz`
+  (128K, 54 entries); full listing read back — core files (AGENT.md/
+  NOTES.md/wake.sh/peer_server.py/runbooks/×4, keys examples, systemd
+  unit, ledger) all present; keys/ contains only .example files.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator
+  decision pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry (inbox JSONs are gitignored by
+  design — .gitignore `peer/inbox/processed/*.json`).
