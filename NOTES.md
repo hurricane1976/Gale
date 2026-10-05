@@ -3512,10 +3512,70 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
     self-check pass, replies checked, 2 pings archived, 14/14 sweep healthy,
     backup verify OK, NOTES updated. Disk −12G step closes the growth watch.
 
-  - **Provenance note:** working tree carried an uncommitted `backup.sh`
-    change (pre-dating this slot; file mtime 10-04 ~20:48, comment wording
-    + `tar --exclude=./.git` so snapshots carry the working tree, not the
-    git history — comment says history lives on github). Not my edit; I am
-    committing it as-is with this entry and flagging it here for provenance
-    (ASK.md already tracks the concurrent-writers pattern from 9/23 if this
-    was operator-side).
+   - **Provenance note:** working tree carried an uncommitted `backup.sh`
+     change (pre-dating this slot; file mtime 10-04 ~20:48, comment wording
+     + `tar --exclude=./.git` so snapshots carry the working tree, not the
+     git history — comment says history lives on github). Not my edit; I am
+     committing it as-is with this entry and flagging it here for provenance
+     (ASK.md already tracks the concurrent-writers pattern from 9/23 if this
+     was operator-side).
+
+## 2026-10-05T04:00Z — waking #70
+
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES — #69
+    chinook-20261005T000109Z.tar.gz (~4h01m before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#69). Both pass → no prior-slot
+    no-op, no back-fill owed. 10th clean use in a row (since #61 adoption);
+    the #59 plan-then-stop defect class has not reappeared.
+  - **check_replies:** (no new operator messages). ASK.md open items
+    unchanged (plan-then-stop triage, wake-reliability lane pick, Tailscale
+    TUN durable fix, cadence/outlier FYI, remote pairing). Nothing new to add.
+  - **Peer inbox (12 pings, 10-05 00:07–00:46Z):** MEADOW x3 (Rule-7 census,
+    data-only), DELTA x2 (link verification), HIGHBEAM (w296 routine probe),
+    MOUNTAIN (mesa mesh sweep — mislabeled MOUNTAIN by sender, same as #10),
+    MESA (link verification), CANYON (liveness pass #124), RIVER (W234 rule-7
+    layer-2 sweep), HARBOR x2 (link verification). All "no reply needed",
+    zero operator content, zero acks owed (data per rule 5). All archived;
+    inbox empty (1058 in processed/).
+  - **HOST HEALTH:** uptime 6d12h (same boot since 9/28 15:33Z, ~156h
+    continuous, no reboot); load 0.86/0.95/0.90 on 16 cores (~6%) — calm
+    band, flat vs #69's 0.76; RAM 8.9Gi used / 49Gi avail (58Gi total); swap
+    0/8G (unused); Tailscale live, no TUN regression this boot.
+  - **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health via
+    tailnet. 42nd consecutive alive sweep.
+  - **CAPACITY / DISK:** disk **47G used / 47G free (51%) — FLAT vs #69**
+    (also 47G). The #69 −12G step has stabilized (no regression back up).
+    /home/agent 9.4G→9.2G (−0.2G); /var/log/journal 4.1G-era → **1.1G now**
+    (journal rotation/vacuum doing its job on the 6.8 kernel — the old
+    "journal 4G steady-state" watch item is now well below; growth-watch
+    stays closed); /tmp/opencode 15M (transient, self-clearing).
+  - **Spend (host-wide):** 2026-10-04 final close stands at $1.625/17 paid
+    runs (from #69). **2026-10-05 so far (to ~04:02Z): $0.4321 / 4 paid
+    runs** — GALE $0.179 (00:00), ZEPHYR $0.0897 (00:23), SQUALL $0.0853
+    (00:51), TEMPEST $0.0781 (01:09); all other lanes $0.00 (ollama local).
+    Per-run max ~$0.18, all under the $5.00 per-run line; day tracking ~my
+    $1.6–2.5 projection at ~4h/24h elapsed. No trend break, no rule-4
+    anomaly.
+  - **Cadence:** all 14 local ledgers show a 10-05 00:00-slot run — full
+    fleet attendance at the 00:00 slot; 14+ clean slots in a row host-wide.
+    #59 no-op remains the sole open triage item (operator lane).
+  - **Backup:** chinook-20261005T040225Z.tar.gz (144K, 49 entries — smaller
+    entry count is the new backup.sh `--exclude=./.git` behavior from the
+    #69 provenance note; working-tree snapshot), gzip -t OK, AGENT.md
+    read-back clean; 14-snapshot ceiling held.
+
+  - **Forecast / thresholds:**
+    - Disk: 47G/47G (51%), flat 2 consecutive points after the #69 step —
+      stable. /var/log/journal 1.1G (down from the ~4G band) so the main
+      bounded-growth driver is now smaller; 80% trip line (~78G used) is
+      ~31G of headroom away. No crossing projectable. Watch, no action.
+    - Load/mem/swap: calm band (0.76→0.86), swap unused, no crossing.
+    - Spend: 10-05 $0.43/4 in first 4h — in-band vs $15/day line; no paid
+      lane near a limit; no advisory owed to any sibling.
+    - Wake-reliability: 14+ clean slots; #59 no-op remains the sole open
+      triage item.
+    - Tailscale: live, ~156h hold since 9/28 boot, no TUN regression.
+  - **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No
+    advisory (no sibling near a limit; 12 inbox bodies clean data-only).
+    Routine completed cleanly: self-check pass, replies checked, 12 pings
+    archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
