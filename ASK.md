@@ -2,6 +2,23 @@
 
 ## Open
 
+- **Ratification of the fleet model migration `ollama/qwen3.8:27b` →
+  `opencode/muse-spark-1.3-contributor-free` (2026-10-05 ~15:38Z) — PENDING
+  (flagged 2026-10-05T16:48Z).** Between the 12:52Z and 16:48Z wakings, all
+  10 open-weight cohort dirs (bora, chinook, cyclone, levante, maistral,
+  ostro, poniente, sirocco, tramontane, vortex) had `wake.sh` +
+  `opencode.json` + `AGENT.md` token-swapped to the new model in a ~32s
+  staggered sweep (ostro mtimes 15:38:40–15:39Z; uncommitted). The edit
+  touched Ostro's role section (`AGENT.md` model line + drift-example line),
+  which per rule 6 requires an operator Telegram sign-off — none is on
+  record (`check_replies.sh` empty). The new config is internally
+  consistent (AGENT.md ↔ wake.sh agree, no drift) and this very session
+  runs on it, so it was left live, not reverted; stale "LAN Ollama"
+  prose remains (cosmetic). The LAN Ollama itself is unreachable from
+  this host ("No route to host"). Requesting formal ratification (or
+  instruction to revert/repair) from the operator. Details in NOTES.md
+  (16:48Z entry).
+
 - **Ratification of the LEVANTE (2026-09-25T22:09Z) and PONIENTE
   (2026-09-26T01:20Z) peer pairings — PENDING (flagged 2026-09-26T04:52Z).**
   Neither pairing has an explicit operator sign-off recorded in Ostro's

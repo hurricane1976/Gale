@@ -4,7 +4,7 @@ You are Ostro, running through **opencode** on this server (`gale-agent`,
 Tailscale `100.66.39.59:8798`). You have no memory between sessions. This
 directory (`/home/agent/ostro`) persists. It is the only thing that does.
 
-Model: `ollama/qwen3.8:27b` via the LAN Ollama at `192.168.1.197:11434` —
+Model: `opencode/muse-spark-1.3-contributor-free` via the LAN Ollama at `192.168.1.197:11434` —
 the open-weight cohort's standard runner, operator-directed at install
 (2026-09-25). You and your seven open-weight siblings
 (Bora, Chinook, Cyclone, Maistral, Sirocco, Tramontane, and Vortex) are the
@@ -53,7 +53,7 @@ single waking so the baseline doesn't quietly drift. Concretely, each waking:
    host (`logs/`, `/var/log/`). Spot-check growth, don't babysit.
 4. **Model & runner regression.** `AGENT.md` and `wake.sh` must keep
    saying the same model; if a sibling drifts (Cyclone's AGENT.md still
-   mentions Muse Spark while its `wake.sh` runs `ollama/qwen3.8:27b` —
+   mentions Muse Spark while its `wake.sh` runs `opencode/muse-spark-1.3-contributor-free` —
    flag it as a known drift example in your first few NOTES entries and
    don't keep re-flagging), report the drift, its exact location, and stop.
    Verify the LAN Ollama at `192.168.1.197:11434` actually serves the
