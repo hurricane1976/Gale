@@ -3448,3 +3448,74 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
     healthy, backup verify OK, NOTES updated. Disk +2G step re-opens (does
     not trip) the growth watch — carried forward.
 
+
+## 2026-10-05T00:01Z — waking #69
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES — #68
+    chinook-20261004T200226Z.tar.gz (~3h59m before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#68). Both pass → no prior-slot
+    no-op, no back-fill owed. 9th clean use in a row (since #61 adoption); the
+    #59 plan-then-stop defect class has not reappeared.
+  - **check_replies:** (no new operator messages). ASK.md open items
+    unchanged (plan-then-stop triage, wake-reliability lane pick, Tailscale
+    TUN durable fix, cadence/outlier FYI, remote pairing). Nothing new to
+    add.
+  - **Peer inbox (2 pings, 10-05 00:00Z):** MOUNTAIN x2 (Rule-7 credentialed
+    reach sweep + site-build automated latency check; both "no reply needed").
+    Zero operator content, zero acks owed (data per rule 5). All archived;
+    inbox empty.
+  - **HOST HEALTH:** uptime 6d8h27m (same boot since 9/28 15:33Z, no reboot —
+    ~152h continuous, steady-state); load 0.76/0.71/0.67 on 16 cores (~5%,
+    midnight floor — within the calm band of the arc, tick above #68's 0.27
+    but below any line); RAM 8.0Gi used / 50Gi avail (58Gi total); swap
+    0/8G (unused); Tailscale live, 100.66.39.59/32, no TUN regression this
+    boot.
+  - **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health via
+    tailnet. 41st consecutive alive sweep.
+  - **CAPACITY / DISK:** disk **47G used / 47G free (51%)** — **−12G vs
+    #68's 59G/35G (64%)** in a 4h window. This is a DROP, not growth:
+    /home/agent fell 16G → 9.4G (ostro 2.4G → 482M is the visible driver;
+    agent 755M, sirocco 443M, maistral 289M roughly unchanged in
+    relative terms) — consistent with a sibling-side cleanup/rotation
+    (ostro's lane, read-only for me; no evidence of anything abnormal).
+    Not a breach, not a defect — a non-monotonic step in the series.
+  - **Spend 2026-10-04 (final day close, fleet-wide):** **$1.625 / 17 paid
+    runs** (59 free/ollama runs) — GALE 5 $0.698, SQUALL 4 $0.364, TEMPEST
+    4 $0.298, ZEPHYR 4 $0.265; chinook $0 (ollama). Slightly under my #68
+    "on pace ~$2–2.5" projection; same order as 10-03 (~$2/20). 2026-10-05
+    so far (00:05Z): GALE 1 $0.179 — in-band. Per-run max ~$0.19, daily
+    max ~$1.63 — well under the $5.00/$15.00 alert lines.
+  - **Wake-reliability:** 10-04 chinook ledger shows all 6 slots executed
+    (00:04, 04:05, 08:02, 15:21, 16:05, 20:04 — the 15:21 row is a same-slot
+    retry twin of the 16:05 clean slot). 12+ clean slots in a row host-wide;
+    #59 no-op remains the sole open triage item (operator lane).
+  - **Backup:** chinook-20261005T000109Z.tar.gz (144K), read-back OK;
+    14-snapshot ceiling held (oldest rotated out).
+  - **Commit:** inbox archive (2) + this entry + sweep/health.
+  - **Forecast / thresholds:**
+    - Disk: 47G / 47G free (51%). Arc #57–#69: 62→51→52→54→55→56→57→57→59
+      →47. The −12G step CLEARS the growth watch (stronger than the two-flat
+      criterion; drivers were capped all along). 80% trip line (~78G used) is
+      now **~31G of headroom** away. Back to "watch, no action"; re-check
+      every waking as before.
+    - Load/mem/swap: midnight floor, calm (load 0.76), swap unused; no
+      crossing.
+    - Spend: 10-04 closed $1.625/17 (in-band, under my own projection);
+      10-05 in-band so far ($0.18). No trend break; no ASK-worthy anomaly.
+    - Wake-reliability: 13+ clean slots; #59 no-op remains the sole open
+      triage item awaiting operator (plan-then-stop, exits 0).
+    - Tailscale: live, ~152h hold since 9/28 boot, no TUN regression; no
+      nameable threshold.
+    - Neighbor footprint: /home/agent 9.4G (−6.6G vs #68 — sibling cleanup,
+      benign); watch, no action.
+  - **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No new
+    advisory (no sibling near a limit). Routine completed cleanly:
+    self-check pass, replies checked, 2 pings archived, 14/14 sweep healthy,
+    backup verify OK, NOTES updated. Disk −12G step closes the growth watch.
+
+  - **Provenance note:** working tree carried an uncommitted `backup.sh`
+    change (pre-dating this slot; file mtime 10-04 ~20:48, comment wording
+    + `tar --exclude=./.git` so snapshots carry the working tree, not the
+    git history — comment says history lives on github). Not my edit; I am
+    committing it as-is with this entry and flagging it here for provenance
+    (ASK.md already tracks the concurrent-writers pattern from 9/23 if this
+    was operator-side).
