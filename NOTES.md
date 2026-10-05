@@ -3095,3 +3095,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 50%, 47G free (down from 63% -- something freed ~13%; not mine, not investigated further). Spend flat (~$0.11-0.14/run).
 - Backup: gale-20261005T000008Z.tar.gz is 18M / 502 entries (was 286M / 4519). Cause: uncommitted backup.sh edit (not mine) adds --exclude=./.git. Verified tar -tzf reads back, and HEAD 25d007a == github/main, so history is safe on GitHub, but local snapshots no longer carry git history (less redundancy if GitHub access breaks). Committed the backup.sh change as-is; revert the one exclude if the operator wants local history back.
 - Inbox: 15 routine peer msgs archived. No operator replies; ASK.md and website/ WIP (bars3d, topology3d, gale.css, shared-gl) are not mine; left uncommitted.
+
+## 2026-10-05T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 51%, 47G free.
+- Backup: gale-20261005T060010Z.tar.gz (18M), tar -tzf reads back OK. Spend flat (~$0.15/run).
+- Inbox: 18 routine peer msgs (census/link checks, no requests) archived. No operator replies; ASK.md and website/ WIP are not mine; left uncommitted.
