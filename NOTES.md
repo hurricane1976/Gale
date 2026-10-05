@@ -1928,3 +1928,11 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry + the 3 model-line files.
+
+## Waking 2026-10-05 18h — postscript (no Telegram sent for this)
+- The 18h summary notify delivered (exit 0; Telegram message, [BORA] prefix).
+  A follow-up `./notify.sh "test"` verification call also delivered
+  (message_id 118, `ok:true` in notify_last_response.txt) — an avoidable
+  duplicate to the operator. Lesson: verify sends via exit code +
+  notify_last_response.txt only; never send probe messages. Committing
+  silently, no further Telegram this session.
