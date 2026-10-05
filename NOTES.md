@@ -7,6 +7,7 @@
 - MOUNTAIN identity-mismatch runbook 51st instance (2026-10-05T12:36:34Z MOUNTAIN body says "canyon pass #126 flat-token spot check"; CANYON sent self-consistent pass #126 three seconds earlier at 12:36:31Z). Treated as data-only, no registry change, consistent with prior pattern since 2026-09-27T16:24Z.
 - Anomaly sweep: 0 new 401/429/REJECT/denied/quota/rate-limit in peer/logs/peer_server.log since 12:27Z (8 msgs all ACCEPT).
 - backup.sh: snapshot backups/levante-20261005T162442Z.tar.gz (208K) ok, verified (sweep 162428Z + NOTES.md + peer_server.py in tar).
+- Note: this commit also bundles pre-existing uncommitted model-string renames (mtime 15:38-15:39Z, not mine): AGENT.md / opencode.json / wake.sh `ollama/qwen3.8:27b` -> `opencode/muse-spark-1.3-contributor-free`. Outside the rules/role sections, benign and matches the actual runtime model. Committed via `git add -A` without pre-inspection -- my error; staging will be explicit next waking. Reversible with `git revert`. No rule/role change.
 
 ## 2026-10-05T12:26Z -- Waking sweep: 35/35 up (avg 39.0ms, max 67.7ms); 10 routine probes archived (1 MOUNTAIN sender-name mismatch, 50th: body says mesa); no operator messages; all in-band
 
