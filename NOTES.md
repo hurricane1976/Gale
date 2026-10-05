@@ -3579,3 +3579,68 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
     advisory (no sibling near a limit; 12 inbox bodies clean data-only).
     Routine completed cleanly: self-check pass, replies checked, 12 pings
     archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
+
+## 2026-10-05T08:00Z — waking #71
+
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES — #70
+    chinook-20261005T040225Z.tar.gz (~4h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#70). Both pass → no
+    prior-slot no-op, no back-fill owed. 11th clean use in a row (since #61
+    adoption); the #59 plan-then-stop defect class has not reappeared.
+  - **check_replies:** (no new operator messages). ASK.md open items
+    unchanged (plan-then-stop triage, wake-reliability lane pick, Tailscale
+    TUN durable fix, cadence/outlier FYI, remote pairing). Nothing new to add.
+  - **Peer inbox (15 pings, 10-05 06:00–06:46Z):** MOUNTAIN x3 (Rule-7
+    credentialed reach sweep + latency check), DELTA x2 (link verification),
+    MEADOW x3 (Rule-7 census, data-only), HIGHBEAM x2 (w297 standing probe),
+    MESA (link verification), RIVER (W235 rule-7 layer-2 sweep), CANYON
+    (liveness pass #125), HARBOR x2 (link verification). All "no reply
+    needed", zero operator content, zero acks owed (data per rule 5). All
+    archived; inbox empty.
+  - **HOST HEALTH:** uptime 6d16h32m (same boot since 9/28 15:33Z, ~160h
+    continuous, no reboot); load 0.60/0.80/0.81 on 16 cores (~4–5%) — calm
+    band, slightly below #70's 0.86; RAM 9.3Gi used / 49Gi avail (58Gi
+    total); swap 0/8G (unused); Tailscale live, tailscale0 present, all
+    remote peers direct (no DERP fallback), no TUN regression this boot.
+  - **Fleet health sweep:** all 14 ports 8787–8800 → HTTP 200 on /health
+    via tailnet. 43rd consecutive alive sweep.
+  - **CAPACITY / DISK:** disk **47G used / 47G free (51%) — FLAT vs #70 and
+    #69** (3 consecutive flat points after the #69 −12G step; growth watch
+    stays closed). /home/agent 9.2G (flat vs #70); /var/log/journal 1.0G
+    (steady, ~1G band); /tmp/opencode 16M (transient, self-clearing).
+  - **Spend (host-wide):** 10-05 so far (to ~08:15Z, ~1/3 day elapsed):
+    **$0.7448 / 8 paid runs, 28 total** — GALE 2 ($0.179 @00:00, $0.1131
+    @06:00), ZEPHYR 2 ($0.0897, $0.0465), TEMPEST 2 ($0.0781, $0.0643),
+    SQUALL 2 ($0.0888, $0.0853); chinook $0.00 (ollama local). Per-run max
+    $0.179, all under the $5.00 per-run line. Pace at ~8h: $0.74 →
+    projected ~$2.2/day at close — flat inside the $1.6–2.5 band my #70
+    projection carried from 10-03/10-04 closes (~$1.6–2.0). No trend break,
+    no rule-4 anomaly.
+  - **Cadence:** all 14 local ledgers show a 06:00-slot run (agent 06:00,
+    sirocco 06:00, bora 06:24, zephyr 06:20, squall 06:40, vortex 06:48,
+    tempest 07:00, tramontane 07:12, maistral 07:36) — full fleet
+    attendance at the 06:00 grid. CYCLONE 01:12 and 05:12 slots show
+    `.attempt1.json` twin rows (a retry fired then succeeded — the known
+    opencode retry-twin shape, same as 10-04's 15:21/16:05 case); not a
+    defect, just the retry path working. 15+ clean effective slots
+    host-wide; #59 no-op remains the sole open triage item (operator lane).
+  - **Backup:** chinook-20261005T081515Z.tar.gz (144K, 49 entries —
+    working-tree snapshot per the #69 backup.sh change), gzip -t OK,
+    ./AGENT.md read-back clean; 14-snapshot ceiling held (oldest rotated).
+  - **Forecast / thresholds:**
+    - Disk: 47G/47G (51%), flat 3 consecutive points — stable. 80% trip
+      line (~78G used) ~31G of headroom away. No crossing projectable at
+      any current run rate (drivers: /home/agent flat ~9.2G, journal
+      ~1.0G steady). Watch, no action.
+    - Load/mem/swap: calm band (0.86→0.60), swap unused; no crossing.
+    - Spend: 10-05 $0.74/8 in first ~8h → on pace ~$2.2 full day; inside
+      the $15/day alert line by ~7x; no paid lane near a limit (max per
+      lane so far $0.30/GALE); no advisory owed to any sibling.
+    - Wake-reliability: 15+ clean slots; #59 no-op remains the sole open
+      triage item.
+    - Tailscale: live, ~160h hold since 9/28 boot, no TUN regression, all
+      peers direct.
+  - **Drift/breaches/advisories:** NONE. No disk/load/spend breach. No
+    advisory (no sibling near a limit; 15 inbox bodies clean data-only).
+    Routine completed cleanly: self-check pass, replies checked, 15 pings
+    archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
