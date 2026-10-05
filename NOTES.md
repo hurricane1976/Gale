@@ -1,5 +1,54 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-05 17:05Z — Sixty-seventh (67th) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift; **MAISTRAL single-slot miss at 15:36Z (retryable APIError ×3, w59 signature, data intact) — WATCH for ~19:36Z recovery**; inbox empty; no operator msgs)
+
+    - Backup RUN `tramontane-20261005T170521Z.tar.gz` (152K, 51 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w67-gMRf`;
+        `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+        check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+        ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+        runbooks/host-recovery.md) all byte-identical to live; `keys/` holds
+        only the two `*.example` templates, no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w67` → tip
+        `ae2fbe2` **== local HEAD**; offsite branch restorable, drill ref deleted.
+    - **Fleet drift sweep (17:05Z, 12 siblings + gale-root + me): ALL FRESH,
+      none over the 6h bar** — VORTEX 0m / BORA 0m / OSTRO 15m (12 snaps, its
+      own rotation floor — noted, no action) / GALE(agent-root) 20m (**5 snaps:
+      4×18M recent + 1×300M Oct04 18:00Z** — its own rotation floor, fresh,
+      note only) / LEVANTE 40m / CHINOOK 64m / SIROCCO 184m / PONIENTE 207m /
+      CYCLONE 230m / TEMPEST 243m / SQUALL 261m / ZEPHYR 278m / MAISTRAL 326m
+      (5.4h — under the bar; **WATCH item below**) / me 0m. **No drift, no
+      silent failures.** Spot `tar -tzf` OK on MAISTRAL + ZEPHYR newest snaps.
+    - **MAISTRAL single-slot miss — NOT drift (under bar), WATCH for next
+      waking.** Its expected ~15:36Z slot fired (`logs/20261005T153601Z.log`)
+      but hit **`retryable APIError` ×3 → session never ran → no snapshot**:
+      `ollama_shim upstream: <urlopen error [Errno 113] No route to host>`,
+      502 from `127.0.0.1:11435`, 15:36–15:41Z — **same signature as the w59
+      Oct-04 10:48–12:00Z window** (transient shim-upstream blip, not per-agent
+      config). Newest remains `maistral-20261005T113931Z` (232K, `tar -tzf`
+      OK, 14 retained — data intact). Contained: only MAISTRAL was scheduled
+      in that window — CHINOOK 16:01Z / LEVANTE 16:24Z / GALE-root 16:45Z /
+      OSTRO 16:49Z / BORA+VORTEX 17:05Z all landed fine after. No peer note
+      sent (its own logs self-diagnose the APIError; single miss under bar —
+      per rule 7/8a restraint; will re-sweep next waking and expect
+      self-recovery at its ~19:36Z slot). Folded into the standing
+      wake-harness hardening ASK item (updated to w67).
+    - Inbox: **0 new** (scaffold dirs empty; processed 926 unchanged); no reply
+      sent. check_replies.sh: "(no new messages)". ASK.md: standing
+      wake-harness item refreshed to w67 (15:36Z APIError recurrence noted);
+      remains the sole open operator-facing item.
+    - Services: all 14 `peer_server.py` procs (12 siblings + me + gale-root).
+      Host: up 7d 1h32m, 16 cores, load 1.04/0.73/0.67, RAM 58Gi/49Gi avail,
+      disk 51% (46G free of 98G). Healthy. ~$0 local run. Runner note for
+      Tempest: no faults this waking (this run itself is the evidence the
+      15:36–15:41Z shim blip was transient — 17:05Z session ran clean).
+      (Self-note: `./notify.sh` ran twice this waking — the second was an
+      accidental delivery-check ping with junk text, not a second finding.
+      No action; will verify delivery via exit code only next time.)
+
     ## 2026-10-05 15:52Z — Sixty-sixth (66th) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; inbox empty; no operator msgs; LEVANTE back to 14 snaps)
 
     - Backup RUN `tramontane-20261005T155012Z.tar.gz` (148K, 51 entries;
