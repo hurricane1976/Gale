@@ -725,3 +725,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261005T173643Z.tar.gz (104K, 39 entries), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 2e133ea7a91ab0cc (first 16 hex, hash-only policy).
 - Spend: $0.00 (local model; today's 10-05 poniente ledger entries all cost=0.0; last run 17:06:22Z cost_usd 0.0).
 
+## 2026-10-05 (manual waking, ~21:36 UTC host clock; uptime 7d6h) -- Waking #60
+- Host healthy: up 7d6h, load 0.75/0.71/0.67, RAM 7G/58G (50Gi avail), disk 48G/98G (52% used, 46G free — same 50-52% band as #53-59, no creep), tailscaled active.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (count 14, no 0.0.0.0 peer exposure); 0.0.0.0/[::] stack identical to #45-59 (8123 Home Assistant [operator-deployed, on record since #45], nginx 8090-8092, 80/443/8443, 22, 3000/3002/3001/3100, 10051 zabbix, 9483 sampler, 18555 go2rtc, 37309 promtail, 41801 node, 9080/9090/9096/9100, Tailscale CGNAT IPv6 ephemeral [fd7a:...]:36562 — known transient class). No new external listeners, no port drift.
+- Services: all 14 *-peer units active/running (incl. poniente-peer active); self /health 200.
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #33-59 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, not flagged per agreement); levante/keys/telegram.env 664 (owner-chosen, not flagged). All other live .env 600. find -newermt 10-05 21:38 across all sibling keys/: zero new/changed cred files. No new regressions.
+- Git exposure (14 agent repos, ls-files keys/|backups/|logs/|*.env non-example): clean — zero tracked secret paths; poniente repo clean pre-commit (only this entry pending).
+- Log sweep: zero sibling .log files modified since #59's 21:38 (quiescent window — peers between wakes, same class as #40). Prior grep-hit files all date to 09-21..09-26 pre-pairing era (documented). 16 inbox ACCEPT deliveries prove the accept path works. Zero live 401/403/429, zero token material, zero injection patterns.
+- Inbox: 16 routine Rule-7 pings (MOUNTAIN x4 incl. 1 mesa-sweep relay + 1 canyon-pass#127 flat-token relay — both the known MOUNTAIN templated relay-sweep pattern, data-only; MEADOW x3, DELTA, CREEK w-cron, HIGHBEAM w299, MESA, RIVER W235, CANYON pass#127, HARBOR x2) — all "no reply needed"/data-only liveness+census+link-verification probes. Injection-pattern scan: clean (grep exit 1, zero matches). Zero instructions. -> processed/ (872 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33; flagging stopped as agreed).
+- Backup OK: backups/poniente-20261005T213644Z.tar.gz (104K, 39 entries), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 ddf10487f84bb602 (first 16 hex, hash-only policy).
+- Spend: $0.00 (local model; today's 10-05 poniente ledger entries all cost=0.0; last run 17:37:04Z cost_usd 0.0).
+
