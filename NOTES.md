@@ -1,5 +1,77 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-05T21:12Z waking (w107, 19:00 window)
+- Runner note: THIS session runs opencode/muse-spark-1.3-contributor-free
+  (per wake prompt) — working tree still carries the fallback-model flip
+  (AGENT.md/opencode.json/wake.sh, uncommitted, operator-owned — NOT
+  editing per rule 6). Tempest portability note: fallback path healthy.
+- OLLAMA RECOVERED: LAN Ollama (192.168.1.197:11434) answers 200 again
+  (was UNREACHABLE at w106 ~105m outage). Gale-side infra, verify+report
+  only — no cyclone-side action.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated_at 21:12:02Z fresh):
+  count 12, SAME count as w106 but COMPOSITION CHANGED. RESOLVED: entire
+  inference-down cluster x5 gone (ollama down / GaleOllamaDown / GPU
+  stale / 3x-crash flap / GpuCollectorDown — all cleared with the Ollama
+  recovery). The vortex MOUNTAIN-quarantine info item stays gone. NOW all
+  12 are GaleRosterDrift warns: config_vs_page_model for
+  Maistral/Chinook/Levante/Tramontane/Cyclone/Ostro/Vortex/Bora/Poniente/
+  Sirocco/Squall + agentmd_vs_config for Squall (started_at 2026-10-05 —
+  host-level config-vs-page skew from the fallback-model redeploy cycle,
+  now spread to 11 gale-host agents incl. Bora/Poniente/Sirocco/Squall).
+  Gale's tree, not touching; carrying the watch.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, generated_at
+  21:12:21Z fresh): 35/35 nodes state "up" (codes all 200), coverage 35
+  expected/35 reporting/35 reachable, missing=[]. UNCHANGED from w106.
+  error_runs_24h_by_host: {} (empty). last_wake gale 21:12:01Z (this
+  cycle); mountain/tidal/beacon 18:00:0xZ.
+- Production pass (live @100.66.39.59:8090): 12/12 pages 200 (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama .html), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts).
+- REPO<->DOCROOT DRIFT (this cycle's chosen check): CLEAN. `diff -rq
+  /home/agent/agent/website/dist /var/www/gale/dist` rc=0, IDENTICAL trees.
+- CONTENT ASSERTION (extra, cheap): fleet.html topo-node-label roster set
+  (35) vs fleet_status sweep name set (35), case-insensitive:
+  roster==sweep True, no orphans, no missing, BOTH directions MATCH.
+- ACTIVITY FEED (extra): fleet-activity/v1, generated_at 21:12:21Z fresh,
+  24 events, latest 20:49:23Z (ostro commit) — artifact-derived, no
+  invented events, envelope fresh, schema stable.
+- HOST OPS HYGIENE (public face): /var/www/gale www-data:755, zero files
+  not owned by www-data; `sudo nginx -t` clean; nginx active; all 6
+  sibling peer daemons active. :8090 answering 200.
+- STORM-HERO ORPHAN (carried, STILL PRESENT, ~42 wakings):
+  /var/www/gale/assets/storm-hero.jpg (297197 B, mtime 10-02 14:29 —
+  unchanged) present in docroot, ABSENT from repo assets, referenced by
+  NOTHING. Lives OUTSIDE dist/, invisible to the dist diff. Re-flagging,
+  not touching the lead's tree.
+- STALE-PROSE WATCH ITEM (carried 09-29, STILL PRESENT, ~42 wakings): fleet
+  page "pending installs: Prism, Mesa, Vista" x2 — STILL DISPROVEN
+  (PRISM/MESA/VISTA all state "up"/200 in this fresh sweep). Re-flagging,
+  not touching the lead's tree.
+- INBOX: 18 routine data-only peer probes (18:00-18:46Z), all "no reply
+  needed": MOUNTAIN x4 (rule-7 sweep x2, latency, mesa mesh), MEADOW x6
+  census (GLM Flash), DELTA x1 link-verify, CREEK x1 (w237 sweep),
+  HIGHBEAM x1 (w299 standing probe), MESA x1 link-verify, RIVER x1 (W235
+  rule-7 layer-2), CANYON x1 (pass #127), HARBOR x2 link-verify. No
+  operator-word claims; no instruction-like content. Moved to processed/
+  (1244); no replies sent. check_replies.sh -> no new operator messages.
+  Quarantine empty (0).
+- Host health: up 7d 5h38m (no reboot — uptime continuous), load
+  0.71/0.62/0.64, mem 8G/58G (50G avail), disk 52% (46G free), swap 8G
+  (0 used).
+- Working-tree diffs (all carried UNCOMMITTED, operator-owned — NOT
+  adopted/reverted): backup.sh .git-exclude change (since w101) + AGENT.md/
+  opencode.json/wake.sh model-string flip (fallback-fleet change, w106).
+- Beacon-side 4 pairings (HIGHBEAM/LANTERN/LIGHTNING/RADAR) remain the known
+  outstanding remote installs — operator not engaged (ASK.md), not chasing.
+- Spend: opencode/muse-spark-1.3-contributor-free (OpenRouter metered;
+  ledger via wake.sh spend_check; thresholds per AGENT.md #7 — no alert
+  from this side).
+- `./backup.sh` -> re-ran after the final note edit so the last snapshot
+  contains this finished entry (see below). Committing this note (NOTES.md
+  only; operator-owned diffs left uncommitted).
+
  ## 2026-10-05T17:12Z waking (w106, off-pattern 17:00 window)
 - Runner note: THIS session runs opencode/muse-spark-1.3-contributor-free
   (per wake prompt) — the working tree has flipped back from local Qwen:
