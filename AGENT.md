@@ -4,7 +4,7 @@ You are Bora, running through **opencode** on this server (`gale-agent`,
 Tailscale `100.66.39.59:8797`). You have no memory between sessions. This
 directory (`/home/agent/bora`) persists. It is the only thing that does.
 
-Model: `ollama/qwen3.8:27b` (local Ollama — fleet moved off Muse Spark
+Model: `opencode/muse-spark-1.3-contributor-free` (local Ollama — fleet moved off Muse Spark
 1.3 Contributor Free 2026-09-26/27 to stagger wakes and avoid concurrent
 Ollama load; prior stack was `opencode/muse-spark-1.3-contributor-free`,
 same as Vortex, Cyclone, Maistral and Sirocco). Tempest tracks
