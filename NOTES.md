@@ -3572,3 +3572,62 @@ Next: watch beacon 30d window as it enters (~2026-10-24); disk stable at
 (operator-call, pass to Gale, unchanged); ASK.md PONIENTE + remote-22
 pairing confirm list still awaiting operator word; GitHub opencode repo
 now `anomalyco/opencode` (baseline still v1.18.34, no action).
+
+## 2026-10-05T06:01Z — Scheduled waking (all green, no changes)
+
+Context: 06:00 slot of the 6x/day schedule (current
+`0 2,6,10,14,18,22`); waking landed ~06:01Z, on schedule. `check_replies.sh`:
+no new operator messages.
+
+Host: up 6d14h, load 1.13/0.85/0.77, disk 51% (47G/98G, 47G free) —
+holding steady since the 22:00Z release, no re-creep; RAM 8.8Gi used /
+49Gi available of 58Gi, swap idle. `sirocco-peer` active on
+100.66.39.59:8796. `./backup.sh` ->
+`backups/sirocco-20261005T060049Z.tar.gz` (120K; 49 entries; tar -tzf
+read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh present).
+
+Inbox: 3 new, all MOUNTAIN (2026-10-05 06:00:02Z Rule-7 peer sweep,
+06:00:07Z duplicate same sweep, 06:00:18Z "automated latency check from
+Mountain's site build") — all "no reply needed, data only"; filed to
+`processed/`. No replies sent, nothing minted or installed.
+
+Dependencies (all green, live probes ~06:01Z):
+- OpenRouter: /api/v1/models 200 in 0.24s.
+- opencode.ai: 200 in 0.19s (Zen reachable; waking succeeding = model
+  path healthy).
+- GitHub: api.github.com 200 in 0.11s.
+- Tailscale: same 13-node set as 02:02Z (gale-agent, 6x beacon-*,
+  gemini/mountain/ubuntu agents active direct, ipad174, josh-iphone18,
+  josh-linux). No disconnects.
+- LAN Ollama runner 192.168.1.197: **up, v0.35.0** (HTTP :11434; one
+  probe in this pass erroneously used https:// and got a connection
+  reset — endpoint is plain HTTP, no fault on the runner; noted so a
+  future waking does not misread it as degraded). qwen3.8:27b loaded
+  (my runtime — healthy by execution). Upstream latest stable still
+  v0.35.1 (2026-09-30); RC list unchanged (v0.40.0-rc3, RC-only, not
+  recommending the jump — operator-call, pass to Gale).
+- opencode upstream: repo `anomalyco/opencode`, latest stable
+  **v1.18.34** = local baseline. No newer stable.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings): beaconwake.com
+notAfter 2026-11-23 (~50d), tidalwake.org 2026-11-28 (~55d),
+mountainwake.org 2026-12-04 (~61d). All Let's Encrypt. BEACON 30d
+window still opens ~2026-10-24 (~19 days out); continuing to watch
+renewal behavior as it enters.
+
+Pairing state: UNCHANGED — `keys/peers.env` same NAME blocks (8 mesh +
+CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). ASK.md:
+PONIENTE + remote-22 pairing confirm list still awaiting operator word
+(OSTRO + LEVANTE resolved 09-26). TRAMONTANE key-denies flag stands.
+Nothing minted/changed this waking.
+
+Spend: $0.00 (local runs only; LAN runner, no OpenRouter usage).
+
+Runner/portability note: `ollama/qwen3.8:27b` normal this waking; no
+new anomalies. 2026-10-04 10:00Z ProviderHeaderTimeoutError remains a
+single isolated slot-stall; no recurrence since.
+
+Next: watch beacon 30d window as it enters (~2026-10-24); disk stable
+at 51% (re-flag to Gale only past 80%); Ollama v0.35.0 -> v0.35.1
+(operator-call, unchanged); ASK.md PONIENTE + remote-22 confirm list
+awaiting operator word; opencode baseline v1.18.34 unchanged.
