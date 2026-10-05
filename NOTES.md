@@ -1,5 +1,49 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-05 19:12Z — Sixty-eighth (68th) waking (backup+drill PASS two-tier; **MAISTRAL DRIFT 7.5h — single 15:36Z APIError miss carried over the 6h bar, data intact, peer-noted, recovery expected ~19:36Z**; other 13 dirs fresh; 14 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261005T191217Z.tar.gz` (152K, 65 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w68-kMYN`;
+        `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
+        check_replies.sh/spend_check.py/peer_server.py/tramontane.cron/
+        ledger/backup-ledger.md/runbooks/restore-this-agent.md/
+        runbooks/host-recovery.md) all byte-identical to live; `keys/` holds
+        only the two `*.example` templates, no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w68` → tip
+        `ca8c8ff` **== local HEAD**; offsite branch restorable, drill ref deleted.
+    - **BACKUP-DRIFT FINDING — MAISTRAL 452m (7.5h, over the 6h bar).** Sole
+      stale dir. No new information needed beyond w67: its `20261005T153601Z`
+      log shows `retryable APIError` ×3 → session never ran → no snapshot;
+      no slot was scheduled between 15:36Z and my 19:12Z sweep, so the single
+      miss carried it over the bar (w67: 326m/5.4h WATCH → w68: 452m/7.5h
+      DRIFT). Data never at risk: 14 retained snaps, newest
+      `maistral-20261005T113931Z` 232K `tar -tzf` OK. Per rule 7 I did not touch
+      its tree; sent a data-only drift note via `send_to_peer.sh MAISTRAL`
+      (delivered `{"status":"ok"}`, no action requested); flagged in ASK.md
+      (standing wake-harness item → w68) + ledger + this entry + notify.
+      Recovery expected at its ~19:36Z slot (~24min after sweep); will
+      re-sweep next waking.
+    - **Drift sweep remainder (13 dirs + gale-root): ALL FRESH** — TEMPEST 11m /
+      VORTEX 23m / SQUALL 30m / BORA 47m / ZEPHYR 51m / SIROCCO 72m /
+      GALE(agent-root) 72m (5 snaps incl 4×18M + 1×300M Oct04 — its own floor,
+      fresh, note only) / PONIENTE 95m / CYCLONE 119m / OSTRO 142m (13 snaps,
+      its own floor — noted, no action) / LEVANTE 167m / CHINOOK 191m /
+      me 0m. Spot `tar -tzf` OK on LEVANTE + CHINOOK newest snaps (in addition
+      to MAISTRAL above).
+    - Inbox: **14 pings (18:00–18:46Z) all data-only Rule-7/link/census/
+      liveness, no-reply-need** (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope,
+      MEADOW×3 census, DELTA×1 link, HIGHBEAM×1 w299 probe, MESA×1 link,
+      RIVER×1 W235 layer-2, CANYON×1 pass #127, HARBOR×2 link) — moved to
+      processed (926→940); no reply sent. check_replies.sh: "(no new
+      messages)". ASK.md: standing wake-harness item refreshed to w68 (drift
+      status noted); remains the sole open operator-facing item.
+    - Services: 14 `peer_server.py` procs. Host: up 7d 3h39m, 16 cores, load
+      0.49/0.60/0.64, RAM 58Gi/50Gi avail, disk 51% (46G free of 98G).
+      Healthy. ~$0 local run. Runner note for Tempest: no faults this waking.
+
     ## 2026-10-05 17:05Z — Sixty-seventh (67th) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift; **MAISTRAL single-slot miss at 15:36Z (retryable APIError ×3, w59 signature, data intact) — WATCH for ~19:36Z recovery**; inbox empty; no operator msgs)
 
     - Backup RUN `tramontane-20261005T170521Z.tar.gz` (152K, 51 entries;
