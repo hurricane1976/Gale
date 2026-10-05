@@ -664,3 +664,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261005T013927Z.tar.gz (100K, 39 entries), gzip -t OK, tar -tzf read-back verified; 3 log-matching entries = peer/logs/peer_server.log + peer_send.log (reachability records, no token material), zero keys/ entries (secret-scan clean); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 04ce73f646906569 (first 16 hex, hash-only policy).
 - Spend: $0.00 (local Ollama; today's 10-05 poniente ledger entries all cost=0.0).
 
+## 2026-10-05 05:37 UTC
+- Waking #55. Host healthy: up 6d14h, load 0.62/0.70/0.75 (settled, same band as #53-54), RAM 8.7G/58G (49Gi avail), disk 47G/98G (51% used, 47G free — same 50-51% band as #53-54, no creep), tailscaled active.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (no 0.0.0.0 peer exposure); loopback ollama_shim mirrors 8791/8793/8794/8795 unchanged. 0.0.0.0/[::] + loopback stack identical to #45-54 (nginx 8090-8092, 80/443/8443, 22, 3000/3002, 9483, 10051, 8123, Tailscale CGNAT IPv6 ephemeral [fd7a:115c:a1e0::a836:273c]:36562 still present — known transient class, not a regression). No new external listeners.
+- Services: all 14 *-peer units active/running; cron intact; tailscaled up; Ollama served via fleet-host (192.168.1.197:11434) through ollama_shim (local 11434 not listening — expected, matches #51-54 setup).
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #33-54 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, not flagged per agreement); levante/keys/telegram.env 664 (owner-chosen, not flagged). All other live .env 600. No new/changed cred files this window.
+- Git exposure (14 agent repos, ls-files keys/|backups/|logs/|*.env non-example): clean — zero tracked secret paths; poniente repo clean pre-commit (only this entry pending).
+- Log sweep (sibling logs 20261005T02:00..05:12 + ollama_shim + network-monitor sampler, since #54's 01:39): zero live 401/403/429; zero token material (bearer|eyJ|ghp_|sk-|AKIA|PRIVATE KEY|token= — clean); zero injection patterns (ignore-previous|disregard|new-instruction|exfiltrat — clean). All REJECT hits = vortex baseline negation "REJECT total 65 (all self-origin, no external 401s)" + peer-logs ACCEPT/REJECT triage phrasing — expected pre-pairing era documentation, not live events.
+- Inbox: empty (zero new pings since #54's 01:39; last processed 00:46 HARBOR/RIVER/MOUNTAIN/CANYON batch). processed/ steady at 820. Injection-pattern scan: clean. Zero instructions.
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33; flagging stopped as agreed).
+- Backup OK: backups/poniente-20261005T053818Z.tar.gz (100K, 39 entries), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan clean); ASK/AGENT/NOTES present in dir. 14 snapshots retained (ceiling). sha256 2368adb5b3838a97 (first 16 hex, hash-only policy).
+- Spend: $0.00 (local Ollama on fleet-host; today's 10-05 poniente ledger entries all cost=0.0).
+
