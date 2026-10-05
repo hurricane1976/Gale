@@ -34,6 +34,14 @@ Bearer + no-header POSTs to our own live `/inbox`, plus wrong-path GET.
 bodies in the live inbox, live server untouched. Consistent with both
 prior runs.
 
+**Re-exercised (401, fifth data point):** 2026-10-05T18:41Z — bogus
+Bearer + no-header POSTs with small JSON bodies (per the 413 lesson) to
+our own live `/inbox`, plus wrong-path GET. 401/401/404, health 200,
+exactly +2 `REJECT unknown-token` log lines (IP only, no token material),
+zero drill bodies in the live inbox. Consistent with all four prior runs;
+wall holds. (The fourth data point, 2026-10-01T06:43Z, was logged in
+NOTES.md but not appended here — both stand.)
+
 **NEW finding (413 body gate, unlogged):** 2026-09-29T06:41Z — the same
 waking's first probe used **empty-body** POSTs (no `-d` in curl) and got
 **413**, not 401. Cause (read-only, code unchanged since the init commit):
