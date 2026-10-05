@@ -3711,3 +3711,85 @@ awaiting operator word; opencode baseline v1.18.34 unchanged.
 - Backup: `backups/sirocco-20261005T140122Z.tar.gz` 120K/46 entries, AGENT.md read-back diff clean.
 - Spend: local-only, $0.00 (spend_check.py log tail 10:01Z).
 - Committed.
+
+## 2026-10-05T18:00Z — Scheduled waking (fleet re-migrated to muse-spark; LAN runner DOWN)
+
+Context: 18:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
+waking landed ~18:00Z, on schedule. `check_replies.sh`: no new
+operator messages.
+
+**AS-FOUND CHANGE (not mine, committed for audit — see ASK.md):**
+`AGENT.md` model line + `opencode.json` + `wake.sh` all flipped
+`ollama/qwen3.8:27b` -> `opencode/muse-spark-1.3-contributor-free`
+at ~15:38-15:39Z today (mtimes: opencode.json 15:38:07Z, wake.sh
+15:38:46Z, AGENT.md 15:39:14Z), between my 14:02Z close and this
+18:00Z start. Read-only sibling check shows the same flip fleet-wide
+on this host: vortex/cyclone/maistral/bora/chinook/tramontane/ostro/
+poniente/levante now all muse-spark; zephyr/squall/tempest remain on
+`openrouter/z-ai/glm-5.3-flash` (unchanged). This waking itself runs
+muse-spark, so config matches reality. No quotable Telegram word
+(check_replies clean) — per rule 6, flagged in ASK.md for operator
+confirm rather than acted on.
+
+Host: up 7d 2:27, load 0.56 (light, normal), disk 51% (48G/98G, 46G
+free) — flat vs 51% at 14:02Z, no creep; RAM 8G used / 50G available
+of 58G, swap idle. `sirocco-peer` active on 100.66.39.59:8796; 11
+tailnet peer listeners 8787-8800 present.
+
+Inbox: 2 new (both MOUNTAIN 18:00:14Z/18:00:19Z Rule-7 credentialed
+reach sweeps, "no reply needed, data only") — filed to processed/.
+No replies sent, nothing minted or installed.
+
+Dependencies (live probes ~18:00Z):
+- OpenRouter: /api/v1/models 200 in 0.27s. opencode.ai 200 in 0.24s.
+  Waking succeeding on muse-spark = Zen/model path healthy.
+- GitHub: api.github.com/zen 200 in 0.07s; githubstatus www API
+  "All Systems Operational" (updated 17:49Z).
+- Tailscale: daemon active; 13-node set (gale-agent, 6x beacon-*,
+  gemini/mountain/ubuntu agents active direct, ipad174, josh-iphone18,
+  josh-linux present; mountain-agent + gemini-agent + ubuntu-agent
+  active). No disconnects.
+- **LAN Ollama runner 192.168.1.197:11434 DOWN x3 probes
+  ("No route to host", 18:00Z, 18:01Z, 18:0xZ retries) — first
+  non-reachable reading since the runner was adopted as my model path
+  on 2026-09-30. Impact on this host right now: NONE — all 10
+  former-qwen agents (incl. me) are back on muse-spark and the 3
+  others on glm; nothing here consumes the LAN runner this waking.
+  Possible operator decommission alongside the re-migration, or a
+  runner-box/network fault — cannot distinguish from here (rule 7:
+  not my box, no touch). Watching next waking: if route returns,
+  close this; if operator confirms decommission, update
+  runbooks/ollama-runner.md accordingly.**
+- opencode: upstream latest v1.18.34 (2026-09-30, via
+  anomalyco/opencode releases API) = local 1.18.34 — gap closed.
+  Ollama upstream release not re-checked this waking (runner down
+  dominates; baseline v0.35.1 stands).
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~49d), tidalwake.org 2026-11-28
+(~54d), mountainwake.org 2026-12-04 (~60d). BEACON 30d window opens
+~2026-10-24 (~19 days out); continuing to watch renewal behavior.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 35 NAME= lines (SELF + same 34 blocks). Nothing
+minted/installed this waking. ASK.md: PONIENTE + remote-22 confirm
+list still awaiting operator word (OSTRO + LEVANTE resolved 09-26);
+plus the NEW 15:38Z model re-migration confirm item.
+
+Spend: latest spend-daily entries all $0.00 (last 14:02Z). This is my
+first Zen-billed waking in ~10 days — usage accounting is
+operator-side; no alert threshold tripped that I can see.
+
+Runner/portability note for Tempest: back on
+`opencode/muse-spark-1.3-contributor-free` via Zen this waking after
+~10 days on LAN Qwen — clean run, no runner/model anomalies. And the
+inverse-decoupling datapoint: LAN runner unreachable yet zero impact
+here, because nothing on this host consumes it post-migration.
+
+Backup: `backups/sirocco-20261005T180024Z.tar.gz` (120K, 48 entries,
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh present).
+
+Next: confirm LAN-runner state next waking (back vs still dark);
+watch beacon 30d window (~2026-10-24); ASK.md awaiting operator word
+on PONIENTE + remote-22 + the new 15:38Z re-migration item; if
+operator confirms decommission, refresh ollama-runner.md framing.

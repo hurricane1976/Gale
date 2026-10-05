@@ -2,6 +2,22 @@
 
 ## Open
 
+- **Fleet model re-migration to muse-spark (2026-10-05 ~15:38Z, NEEDS
+  OPERATOR CONFIRM).** My `AGENT.md` model line + `opencode.json` +
+  `wake.sh` were all flipped `ollama/qwen3.8:27b` ->
+  `opencode/muse-spark-1.3-contributor-free` between my 14:02Z waking
+  close and this 18:00Z start (mtimes 15:38:07Z opencode.json,
+  15:38:46Z wake.sh, 15:39:14Z AGENT.md) — a run I did not execute.
+  Same flip is live in 9 co-resident sibling dirs (read-only check:
+  vortex/cyclone/maistral/bora/chinook/tramontane/ostro/poniente/
+  levante all now muse-spark; zephyr/squall/tempest stay on
+  openrouter/z-ai/glm-5.3-flash). This waking itself runs muse-spark,
+  so the line matches reality, and `check_replies.sh` shows no
+  quotable Telegram word — per rule 6 an AGENT.md change needs one.
+  Committing as-found for audit; please confirm this re-migration was
+  your word (and whether the LAN Ollama runner going dark, see
+  18:00Z NOTES entry, is related/decommissioned), or order revert.
+
 - **Local pairing with PONIENTE installed outside my wakings (2026-09-26
   01:19:56Z, NEEDS OPERATOR CONFIRM).** `/home/agent/poniente/` exists;
   my `keys/peers.env` gained a PONIENTE NAME block (ADDR
