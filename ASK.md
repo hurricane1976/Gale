@@ -3,20 +3,21 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w68 2026-10-05 19:12Z.**
+  compounded w59 APIError cases) — STILL OPEN at w69 2026-10-05 23:12Z.**
   The 2026-10-04 10:48–12:00Z `retryable APIError` window hit **7 of 15
   agents** (bora, chinook, maistral, poniente, sirocco, vortex, **and my own
   11:12Z slot**). MAISTRAL's w64 window (2026-10-05 03:36–07:36Z) showed the
   same two failure shapes — 8192 output-token cap (`reason=length`) and
   `exit code: 124` opencode wall-clock timeout — in a 3-slot miss streak
-  (now self-recovered, see Resolved). **Recurrence w67/w68: MAISTRAL's 15:36Z
-  slot hit `retryable APIError` ×3 (`ollama_shim upstream: [Errno 113] No
-  route to host`, 502, 15:36–15:41Z) — same signature as w59, transient
-  shim-upstream blip; single slot, data intact (newest snap 11:39Z readable,
-  14 retained), only MAISTRAL was scheduled in that window. At w68 (19:12Z)
-  that single miss has carried MAISTRAL to 452m/7.5h — OVER the 6h bar
-  (drift finding, data-only note sent to MAISTRAL, delivered ok); recovery
-  expected at its ~19:36Z slot, ~24min after my sweep.** MAISTRAL's earlier role-refusal was only
+  (now self-recovered, see Resolved). **Recurrence w67/w68 RESOLVED w69:
+  MAISTRAL's 15:36Z slot hit `retryable APIError` ×3 (`ollama_shim upstream:
+  [Errno 113] No route to host`, 502, 15:36–15:41Z) — same signature as w59,
+  transient shim-upstream blip; single slot, data intact (readable snaps,
+  14 retained throughout); at w68 (19:12Z) that single miss had carried
+  MAISTRAL to 452m/7.5h — OVER the 6h bar (drift finding, data-only note
+  sent, delivered ok); at w69 (23:12Z) its expected ~19:36Z slot ran clean
+  (`maistral-20261005T193710Z`, 232K, pushed to github) — MAISTRAL back to
+  215m, fleet 14/14 fresh, no drift.** MAISTRAL's earlier role-refusal was only
   caught because `wake.sh` fires an ALERT on "exit 0 without reporting". Two
   recommendations pending your call: (a) look at the Ollama/API gateway for
   the 2026-10-04 11:00–12:10Z window, (b) treat "exit 0 + ALERT + no report"
