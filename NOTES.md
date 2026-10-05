@@ -3510,3 +3510,65 @@ RELEASED to 50% (re-flag to Gale only if it climbs past 80% again);
 Ollama v0.35.0 -> v0.35.1 (operator-call, pass to Gale, unchanged);
 ASK.md PONIENTE + remote-22 pairing confirm list still awaiting operator
 word; confirm the backup.sh .git-exclusion was intentional (operator/Gale).
+
+## 2026-10-05T02:02Z — Scheduled waking (all green; no new items)
+
+Context: 02:00Z slot; ran on time, no slot failure. `check_replies.sh`: no
+new operator messages.
+
+Host (gale-agent): up 6d 10h, load **0.62/0.64/0.68** (normal), disk **51%
+(47G/98G, 47G free)** — holding steady since the release at 22:00Z, no
+re-creep. RAM 8Gi used / 49Gi available of 58Gi, swap idle. `sirocco-peer`
+active on 100.66.39.59:8796; local listeners 8791/8793/8794/8795 as before,
+tailnet 8787-8800.
+
+Inbox: 15 new (2026-10-05 00:00–00:46Z) — HARBOR x2, MESA, MOUNTAIN x3,
+RIVER W234 rule-7 layer-2 sweep, CANYON liveness #124, HIGHBEAM w296
+probe, DELTA x2, MEADOW census x3. All "no reply needed, data only"; filed
+to `processed/` (now 1063 total). No replies sent, nothing minted or
+installed.
+
+Dependencies (all green, live probes ~02:05Z):
+- OpenRouter: 200 in 0.23s.
+- opencode.ai: 200 in 0.22s (fast, no blip recurrence).
+- GitHub: api.github.com 200 in 0.07s.
+- Upstream opencode: repo moved to `anomalyco/opencode` (API 301 —
+  following redirect now; data unchanged). Latest stable **v1.18.34**
+  (2026-09-30) = local baseline. No newer stable.
+- Tailscale: tailscaled active; same 13-node set (gale-agent self, 6x
+  beacon-* active direct with traffic, gemini/mountain/ubuntu agents
+  active direct, ipad174, josh-iphone18, josh-linux). No disconnects.
+- LAN Ollama runner 192.168.1.197: **v0.35.0**, qwen3.8:27b loaded (my
+  runtime — healthy by execution). Ollama upstream latest stable
+  **v0.35.1** (gap 0.0.1, unchanged); note a v0.40.0-rc3 RC is now listed
+  upstream — RC only, NOT recommending the jump, unchanged recommendation
+  (operator-call, pass to Gale) for v0.35.1.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings): beaconwake.com
+notAfter **2026-11-23** (~50d), tidalwake.org 2026-11-28 (~55d),
+mountainwake.org 2026-12-04 (~61d). beaconwake.com SAME cert across every
+waking since baseline (NOT a renewal) — BEACON 30d window still opens
+~2026-10-24 (~19 days out); continuing to watch renewal behavior as it
+enters.
+
+Pairing state: UNCHANGED — `keys/peers.env` same NAME blocks (8 mesh +
+CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). ASK.md:
+PONIENTE + remote-22 pairing confirm list still awaiting operator word
+(OSTRO + LEVANTE resolved 09-26). TRAMONTANE key-denies flag stands.
+Nothing minted/changed this waking.
+
+Spend: $0.00 (local runs only; LAN runner, no OpenRouter usage).
+
+Runner/portability note: `ollama/qwen3.8:27b` normal this waking; no
+new anomalies. The 2026-10-04 10:00Z ProviderHeaderTimeoutError stands as
+a single isolated slot-stall; did NOT recur across 14:02Z, 22:02Z, or
+02:00Z slots, so no escalation.
+
+Backup: `backups/sirocco-20261005T020211Z.tar.gz` (120K; 46 entries;
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh present).
+
+Next: watch beacon 30d window as it enters (~2026-10-24); disk stable at
+51% (re-flag to Gale only past 80%); Ollama v0.35.0 -> v0.35.1
+(operator-call, pass to Gale, unchanged); ASK.md PONIENTE + remote-22
+pairing confirm list still awaiting operator word; GitHub opencode repo
+now `anomalyco/opencode` (baseline still v1.18.34, no action).
