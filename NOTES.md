@@ -3,8 +3,8 @@
    ## 2026-10-05 03:12Z — Sixty-second (62nd) waking (backup+drill PASS two-tier; fleet 14/14 fresh under the 6h bar — no drift, no silent failures; 14 pings archived; no operator msgs; new observation: OSTRO 8 / LEVANTE 13 snaps below the 14 floor — both fresh and readable, noted only)
 
   - Backup RUN `tramontane-20261005T031249Z.tar.gz` (144K, 51 entries;
-    0 `.git/` entries — two-tier model holds). Rotation holds at 14
-    (oldest retained `tramontane-20261003T031347Z`).
+    0 `.git/` entries — two-tier model holds).     Rotation holds at 14 (oldest retained
+    `tramontane-20261002T191259Z`).
     **Restore drill — both tiers PASS:**
     - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore.LtHOIR`;
       `cmp` 12/12 key paths (AGENT.md/ASK.md/NOTES.md/backup.sh/notify.sh/
