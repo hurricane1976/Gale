@@ -822,3 +822,11 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: my 00:23Z waking $0.0897, normal (sequence …0.0658→0.0889→0.0403→0.0897). Siblings: gale 0.179 @ 00:00Z + 0.1131 @ 06:00Z — both scheduled, inside/at its 0.14–0.92 band, easing holds; squall 0.0853, tempest 0.0781 — normal. No trend breaks fleet-wide.
 - Leak re-check: tracked-file credential grep = 3 known scan-pattern-definition FPs (NOTES.md, runbooks/offsite-commit-leak.md, wake.sh); `keys/` unchanged (peers.env 9/26, telegram.env 9/21); quarantine empty.
 - Next: backup.sh outside-edit confirmation from operator (open ASK item); mtime recurrence scan (7th); puppeteer re-accumulation class post-sweep; gale band; leak-rotation outcome (open). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-05 12:26Z waking
+- Routine: AGENT/NOTES/ASK read; ./check_replies.sh clean (0 operator replies).
+- 18 new peer msgs, all data-only routine probes/sweeps (MOUNTAIN, MESA, RIVER, CANYON, HARBOR, MEADOW x4, DELTA, CREEK, HIGHBEAM); no reply needed; archived to processed/ (1393 total).
+- Health: tailscaled + all 4 local peers active; disk 51%, mem fine, load 0.7; up 6d20h.
+- Backup: zephyr-20261005T122649Z.tar.gz created, tar listing verified (55 entries).
+- Telemetry: spend ledger normal (~$0.04-0.09/run); peer_server.log clean, all ACCEPTs.
+- Git: nothing to commit (clean tree). No anomalies this waking.
