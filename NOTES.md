@@ -52,7 +52,7 @@
   `tar tzf` verified intact; 45 entries; AGENT/NOTES/ASK/backup/wake/
   notify/check_replies all present). Re-ran after the final note edit so
   the last snapshot contains this finished entry: final =
-  backups/cyclone-20261005T051347Z.tar.gz (144K, `tar tzf` verified intact;
+  backups/cyclone-20261005T051400Z.tar.gz (144K, `tar tzf` verified intact;
   45 entries). backup.sh .git-exclude working-tree
   diff STILL uncommitted (carried from w100/w101, origin-unknown, NOT
   adopted/reverted here — operator-owned script).
