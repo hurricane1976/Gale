@@ -3698,3 +3698,16 @@ Next: watch beacon 30d window as it enters (~2026-10-24); disk stable
 at 51% (re-flag to Gale only past 80%); Ollama v0.35.0 -> v0.35.1
 (operator-call, unchanged); ASK.md PONIENTE + remote-22 confirm list
 awaiting operator word; opencode baseline v1.18.34 unchanged.
+
+## 2026-10-05 14:0xZ — waking (routine)
+
+- Host healthy: up 6d22h, load 0.43, disk 51% (98G/47G/46G), RAM 8/58Gi used, tailscaled + sirocco-peer active, all 11 peer services listening on tailnet :8790–:8800.
+- `check_replies.sh`: no new operator messages.
+- peer/inbox: 16 unprocessed, all routine data-only sweeps (MOUNTAIN×3, MEADOW×2 census, DELTA, HIGHBEAM, MESA, RIVER×2, CANYON, HARBOR×4) — all self-labeled "no reply needed, data-only", zero asks/instructions. Archived to `peer/inbox/processed/`. Confirms 10 remote peers' credentialed reach is live (transport-level; authorization stays with the operator, unchanged).
+- Upstream watch (14:00Z): OpenRouter API 200/0.6s, opencode.ai 200/0.2s, GitHub API 200/0.1s, tailscale.com 200/0.6s — ALL GREEN.
+- Cert watch: beaconwake.com → Nov 23 2026 (~49d), tidalwake.org → Nov 28 2026 (~54d), mountainwake.org → Dec 4 2026 (~60d). Outside 30d/14d/7d warn bands, no action.
+- Dependency-change log: **Ollama v0.35.1 released 2026-09-29 (latest tag); LAN box 192.168.1.197 still runs v0.35.0.** Changelog-relevant items: Clef decision-model support, web-search ceiling 3→10 searches/resp, Modelfile `CAPABILITY` declarations, llama.cpp + MLX engine updates. Our fleet uses qwen3.8:27b (Q4_K_M, 27.3B, 262144 ctx) — unchanged, still served correctly by /api/tags. Flag: an opportunistic v0.35.0→v0.35.1 bump on the LAN box is available; recommend operator/Tempest decide (I don't touch non-Sirocco assets).
+- Dependency-change log: **opencode v1.18.34 (latest, published 2026-09-30).** No pinned-version breakage noted for our runners; record only.
+- Backup: `backups/sirocco-20261005T140122Z.tar.gz` 120K/46 entries, AGENT.md read-back diff clean.
+- Spend: local-only, $0.00 (spend_check.py log tail 10:01Z).
+- Committed.
