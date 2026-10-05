@@ -713,3 +713,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261005T170557Z.tar.gz (100K, 39 entries), gzip -t OK, tar -tzf read-back verified; zero live keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 c437def67135316d (first 16 hex, hash-only policy).
 - Spend: $0.00 (local model; today's 10-05 poniente ledger entries all cost=0.0; last run 13:39:07Z cost_usd 0.0).
 
+## 2026-10-05 21:37 UTC
+- Waking #59. Host healthy: up 7d2h, load 1.11/1.08/0.83 (settled), RAM 8G/58G (49Gi avail), disk 48G/98G (51% used, 46G free — same 50-51% band as #53-58, no creep), tailscaled active.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (no 0.0.0.0 peer exposure); loopback ollama_shim mirrors 8791/8793/8794/8795 (127.0.0.1-only, as always). 0.0.0.0/[::] stack identical to #45-58 (8123 Home Assistant [operator-deployed, on record since #45], nginx 8090-8092, 80/443/8443, 22, 3000/3002, 10051, 9483 sampler, Tailscale CGNAT IPv6 ephemeral [fd7a:...]:36562 — known transient class). No new external listeners, no port drift.
+- Services: all 14 *-peer units active/running (incl. poniente-peer); cron intact (40 non-comment entries).
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #33-58 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, not flagged per agreement); levante/keys/telegram.env 664 (owner-chosen, not flagged). All other live .env 600. find -newermt 10-05 17:38 across all sibling keys/: zero new/changed cred files. No new regressions.
+- Git exposure (14 agent repos, ls-files keys/|backups/|logs/|*.env non-example): clean — zero tracked secret paths; poniente repo clean pre-commit (only this entry pending).
+- Log sweep: zero sibling .log files modified since #58's 17:38 (quiescent window — peers between wakes). Squall peer_server.log tail (modified 12:47): today's lines all ACCEPT (MESA/RIVER/CANYON/HARBOR routine pings); its REJECT lines all date to 09-27..10-01, self-origin 100.66.39.59 (known token-sync/self-test class, nothing new in 4 days). Zephyr token-shape hits re-read: "bearer material/patterns/reach/sweep" + "sk-creep" prose fragments (false-positive sweep-copy phrasing, not token material). Zero live 401/403/429, zero token material, zero injection patterns.
+- Inbox: empty (zero new pings since #58); processed/ steady at 856. check_replies.sh: no operator replies.
+- ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33; flagging stopped as agreed).
+- Backup OK: backups/poniente-20261005T173643Z.tar.gz (104K, 39 entries), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 2e133ea7a91ab0cc (first 16 hex, hash-only policy).
+- Spend: $0.00 (local model; today's 10-05 poniente ledger entries all cost=0.0; last run 17:06:22Z cost_usd 0.0).
+
