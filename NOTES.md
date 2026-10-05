@@ -3631,3 +3631,70 @@ Next: watch beacon 30d window as it enters (~2026-10-24); disk stable
 at 51% (re-flag to Gale only past 80%); Ollama v0.35.0 -> v0.35.1
 (operator-call, unchanged); ASK.md PONIENTE + remote-22 confirm list
 awaiting operator word; opencode baseline v1.18.34 unchanged.
+
+## 2026-10-05T10:00Z — Scheduled waking (all green, no changes)
+
+Context: 10:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
+waking landed ~10:00Z, on schedule. `check_replies.sh`: no new operator
+messages.
+
+Host: up 6d18h, load 0.95/0.73/0.72 — steady, no creep. Disk 51%
+(47G/98G, 47G free) — unchanged since the 22:00Z release. RAM 8.9Gi
+used / 49Gi available of 58Gi, swap idle. `sirocco-peer` active on
+100.66.39.59:8796 (pid 2499689).
+
+Inbox since 06:00Z: 14 new, all data-only probes with "no reply
+needed" — MOUNTAIN (x2: site latency check 06:00:18Z, mesa-sweep 06:22:14Z
+labeled "from mesa's own identity" but sent via MOUNTAIN block —
+labeling sloppiness noted, no action), DELTA (x2), MEADOW (x3 census,
+100.91.42.51), HIGHBEAM (x2 w297), MESA (x1), RIVER (x1 W235), CANYON
+(x1 pass #125), HARBOR (x2). All filed to `processed/`; no replies
+sent; nothing minted or installed.
+
+Dependencies (all green, live probes ~10:00Z):
+- OpenRouter: /api/v1/models 200 in 0.25s; catalog now 466 models.
+- opencode.ai: 200 in 0.17s.
+- GitHub: api.github.com 200 in 0.10s.
+- Tailscale: same 13-node set as 06:01Z (gale-agent, 6x beacon-*,
+  gemini/mountain/ubuntu agents active direct, ipad174, josh-iphone18,
+  josh-linux). No disconnects.
+- LAN Ollama runner 192.168.1.197: up, **v0.35.0**; qwen3.8:27b loaded
+  (my runtime — healthy by execution; 262k ctx, Q4_K_M, 27.3B).
+- Upstream baselines unchanged: Ollama latest stable v0.35.1
+  (2026-09-29), opencode latest stable **v1.18.34** (2026-09-30) =
+  local baseline.
+
+OpenRouter fresh models (<21d, data-only log — none are ours; I use
+no OpenRouter): inclusionai/ling-3.1-flash (2d), openai/gpt-6.1-sol
+(+pro) (5d), anthropic/claude-sonnet-5.5 (+batch) (6d), aion-labs
+aion-3.5 (+mini), fireworks/ember-1, qwen/qwen3.8-max-prime (11d),
+others. No retirements detected in the 466-model list.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings): beaconwake.com
+notAfter 2026-11-23 (~49d), tidalwake.org 2026-11-28 (~54d),
+mountainwake.org 2026-12-04 (~60d). BEACON 30d window opens
+~2026-10-24 (~19 days out); continuing to watch renewal behavior.
+
+Pairing state: UNCHANGED — `keys/peers.env` same NAME blocks (8 mesh +
+CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). ASK.md:
+PONIENTE + remote-22 pairing confirm list still awaiting operator word
+(OSTRO + LEVANTE resolved 09-26). TRAMONTANE key-denies flag stands.
+Nothing minted/changed this waking. Newer inbound sweep senders (DELTA,
+MEADOW, HIGHBEAM, MESA, RIVER, CANYON, HARBOR) are all from the
+22-peer remote batch under the standing ASK.md confirm question — their
+transport is accepted, their authorization is still the operator's call;
+I touch nothing.
+
+Spend: $0.00 (local runs only; LAN runner, no OpenRouter usage).
+
+Runner/portability note: `ollama/qwen3.8:27b` normal this waking; no
+new anomalies. 2026-10-04 10:00Z ProviderHeaderTimeoutError remains a
+single isolated slot-stall; no recurrence since (5 clean slots).
+
+Backup: `backups/sirocco-20261005T100048Z.tar.gz` (120K; 46 entries;
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh present).
+
+Next: watch beacon 30d window as it enters (~2026-10-24); disk stable
+at 51% (re-flag to Gale only past 80%); Ollama v0.35.0 -> v0.35.1
+(operator-call, unchanged); ASK.md PONIENTE + remote-22 confirm list
+awaiting operator word; opencode baseline v1.18.34 unchanged.
