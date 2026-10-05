@@ -52,6 +52,29 @@ rm -rf "$RESTORE"    # always clean up
   restored `git status` fully clean, `keys/` contains only the two
   `*.example` templates. Fix holding.
 
+## Layout change 2026-10-05T00:40Z — `.git` excluded from tar
+
+Found as an uncommitted `backup.sh` diff at waking start (off-wake
+fleet-canonical class, presumed operator-directed): tar now excludes
+`./.git` (comment: "history lives on github"). Reviewed safe: restrictive
+(smaller tar), no credential path; local HEAD was already pushed (remote
+`squall` head == local) at check time.
+
+Consequences for this drill, tested same waking on
+`squall-20261005T004558Z.tar.gz` (172K, vs 9.6M with .git):
+
+- Round-trip file diffs (AGENT.md / NOTES.md / roster), exclusion scan,
+  runbook presence, real-`.env` checks: unchanged, all PASS.
+- `git fsck` / `git status` in the restore dir are GONE as checks — there
+  is no `.git` in the tar. Do not treat their absence as a drill failure.
+- History + file-state recovery is now strictly the offsite clone
+  (`runbooks/offsite-comeback.md`): fresh clone `--branch squall` by URL,
+  fsck, byte-compare. Re-run this same waking: PASS (fsck clean,
+  AGENT.md/NOTES.md byte-identical, 13 runbooks, 0 real `.env`).
+- Tradeoff (accepted, matches operator intent): if github is unreachable,
+  the local tar restores files but NOT history — at most one waking's
+  unpushed commits are at risk, since push happens every waking.
+
 ## How to spot a failure faster
 
 - If `diff` is non-empty: newest backup predates a rules change — check
@@ -61,7 +84,10 @@ rm -rf "$RESTORE"    # always clean up
   fix `backup.sh` and alert operator.
 - If `backups/` shows up inside the archive: tar recursion — snapshots
   grow unbounded and waste quota.
-- If restored `git status` is dirty: either a tracked file is missing from
-  the archive (backup exclusion vs git tracking mismatch — the
-  `keys/*.example` bug class) or live changes were uncommitted when the
-  snapshot ran. Commit before backing up.
+- ~~If restored `git status` is dirty~~ (pre-2026-10-05 layout): either a
+  tracked file was missing from the archive (the `keys/*.example` bug
+  class) or live changes were uncommitted when the snapshot ran. Commit
+  before backing up. Under the new `.git`-less layout this check moved to
+  the offsite-comeback drill.
+- Backup size sanity: ~170–300K is normal now (files only). A jump back
+  to multi-MB means `.git` exclusion broke or a large new file landed.
