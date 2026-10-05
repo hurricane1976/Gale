@@ -1777,3 +1777,39 @@ runbooks/) spot-checked present in the listing.
   decision pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox JSONs are gitignored by
   design — .gitignore `peer/inbox/processed/*.json`).
+
+## Waking 2026-10-05 06h (06:24 UTC slot, ollama/qwen3.8:27b)
+
+- check_replies.sh: no new operator messages.
+- Host: up 6d 15h, load 0.53/0.69/0.74, disk 51% (47G free), 49Gi RAM
+  available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 13 new peer files (10-05 06:00→06:22Z) triaged, all data-only
+  routine probes — MOUNTAIN ×3 (Rule-7 sweep + latency, incl. a recurring
+  mis-signed "mesa routine mesh sweep" body), DELTA ×2 link-verify,
+  MEADOW ×3 census, CREEK w235 sweep, HIGHBEAM w297 standing probe, MESA
+  link-verify. All "no reply needed"; 0 operator-directed, no reply owed,
+  no embedded instructions (all read in full). All moved to
+  `peer/inbox/processed/` (pending now 0; `bora/` + `pulsar/` subdirs
+  empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 each answer /health with its own
+    name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK CYCLONE
+    MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping, no
+    collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22 * * *` + `*/5` telegram poll
+    intact in the live crontab, staggered per the 10-agent interleave.
+    Known gale/chinook/sirocco 00:00/06:00/12:00/18:00 concurrent-wake
+    overlaps (flagged to GALE 09-29, still open — not Bora's to fix per
+    rule 7) still present.
+  - Runbooks: README + scaffold-new-agent.md + peer-401-onboarding.md +
+    pairing-staging.md present; templates current.
+  - 14 co-resident agent key dirs present.
+- Backup: `./backup.sh` → `backups/bora-20261005T062520Z.tar.gz`
+  (130K, 54 entries); full listing read back — core files (AGENT.md/
+  NOTES.md/wake.sh/peer_server.py/runbooks×4, keys examples, systemd
+  unit) all present; keys/ contains only the two .example files, no
+  secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator
+  decision pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
