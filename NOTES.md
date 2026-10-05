@@ -3711,3 +3711,75 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
     advisory (no sibling near a limit; 3 inbox bodies clean data-only).
     Routine completed cleanly: self-check pass, replies checked, 3 pings
     archived, 14/14 sweep healthy, backup verify OK, NOTES updated.
+
+## 2026-10-05T16:00Z — waking #73 (model switch incident #2 — flagged, not reverted; fallback dead)
+
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES — #72
+    chinook-20261005T120314Z.tar.gz (~3.8h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#72). Both pass → no
+    prior-slot no-op. 13th clean use in a row; #59 plan-then-stop class
+    has not reappeared.
+  - **check_replies:** (no new operator messages). ASK.md gained one NEW
+    open item (below); older items unchanged.
+  - **INCIDENT — unverified model switch in working tree (15:37–15:39Z,
+    ~20 min before this slot fired):** `opencode.json`, `wake.sh`,
+    `AGENT.md` edited uncommitted, `ollama/qwen3.8:27b` →
+    `opencode/muse-spark-1.3-contributor-free` (AGENT.md: header Model
+    line only; rules/role sections untouched; NOTES.md/ASK.md untouched
+    — no history rewriting this time, unlike the 9/23 concurrent-edit
+    incident). This session IS running on the new model (runner picked it
+    up; it works — existence proof).
+  - **Provenance (evidence, not verification):** same-window switches on
+    VORTEX (15:38:10), BORA (15:37:55), CYCLONE (15:37:59) — staged
+    fleet migration signature, not a one-off; operator-pattern
+    interactive pts/0 (100.95.19.86, login 15:19Z, still in) live at edit
+    time, same as the 9/23 `65af74c` pattern. But `check_replies.sh` =
+    empty: no chat-id-verified Telegram word. Per rules 4/6: flagged in
+    ASK.md + Telegram question sent; the three files stay UNCOMMITTED
+    (not my work) until the operator confirms ("Yes I did it" standard).
+  - **Why no revert (deliberate deviation from the waking-#2 playbook):**
+    old fallback is dead — LAN Ollama 192.168.1.197:11434 returns 000
+    (two probes, 8s/15s). Reverting to `ollama/qwen3.8:27b` would likely
+    fail the 20:00Z waking. Flag-loudly-and-ask beats revert-to-broken.
+    Also asked operator: (b) is LAN Ollama intentionally retired (fleet-
+    wide capacity fact for the forecast), (c) are zephyr/squall/tempest/
+    gale slated for the same switch (still on glm-5.3-flash, mtimes 9/26).
+  - **Peer inbox (13 pings, 12:07–12:47Z):** MEADOW x2 (census), DELTA
+    (link verify), HIGHBEAM w298 (probe), MOUNTAIN x1 header / MESA body
+    (same mislabel pattern as #41 — relay or copy-paste, data only),
+    MESA (link verify), RIVER x2 (W235 sweep), CANYON #126 (liveness),
+    HARBOR x4 (link verify). All "no reply needed", zero operator
+    content, zero acks owed. All archived; inbox empty (1090 processed).
+  - **HOST HEALTH:** uptime 7d27m (same boot since 9/28 15:33Z, ~168h
+    continuous); load 1.06/0.69/0.68 on 16 cores (~4–7%) — calm;
+    RAM 9Gi used / 49Gi avail (58Gi); swap 0/7G; disk / 47G/46G (51%).
+    Tailscale live, 100.66.39.59/32 present, no TUN regression.
+  - **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+    via tailnet. 45th consecutive alive sweep.
+  - **CAPACITY / DISK:** 47G used / 46G free (51%) — FLAT vs #69–#72
+    (5th consecutive flat point after the #69 −12G step; growth watch
+    stays closed). /home/agent 9.2G flat; /var/log/journal 990M (~1G
+    band); /tmp/opencode 16M transient.
+  - **Spend (host-wide, 10-05 to ~16:05Z):** **$1.1161 / 53 runs** — GALE
+    $0.4280/3, SQUALL $0.2775/3, TEMPEST $0.2074/3, ZEPHYR $0.2032/3; all
+    other lanes (incl. chinook 4 runs) $0.00. Per-run max in-band, far
+    under $5.00. Pace at ~16h: $1.12 → projected ~$1.7/day at close,
+    inside the $1.6–2.5 band. **Forecast note:** this waking's ledger row
+    (records at session end) will be chinook's first nonzero-cost run in
+    12 days (paid muse-spark vs $0 ollama) — ends the $0.00 local arc;
+    host forecast re-baselines once ≥3 days of the new shape exist.
+    No trend break, no rule-4 anomaly.
+  - **Cadence:** chinook cron confirmed `0 0,4,8,12,16,20` (6x/day, this
+    is the 16:00Z slot); sibling ledgers show full attendance. Cron
+    comment block still says "qwen3.8:27b 4-hour interleave" — stale if
+    the switch confirms; Bora's lane, noted only.
+  - **Backup:** chinook-20261005T160120Z.tar.gz (148K), gzip -t OK,
+    ./AGENT.md read-back clean; 14-snapshot ceiling held.
+  - **Forecast / thresholds:** disk flat 5 pts, ~31G headroom to 80% line
+    — no crossing projectable; load/mem/swap calm; spend in-band (~7x
+    inside $15/day alert); Tailscale ~168h hold; wake-reliability clean
+    (13 self-checks). Sole open triage items: model-switch confirmation
+    (new) + #59 no-op (operator lane).
+  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+    sibling near a limit; 13 inbox bodies clean data-only). Model-switch
+    question sent to operator; awaiting verified word.

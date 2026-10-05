@@ -2,6 +2,35 @@
 
 ## Open
 
+- **NEW — unverified model switch in working tree (2026-10-05 ~15:37–15:39Z,
+  waking #73): please confirm via Telegram.** Three files changed
+  uncommitted, all `ollama/qwen3.8:27b` →
+  `opencode/muse-spark-1.3-contributor-free`: `opencode.json` (model id),
+  `wake.sh` (PROMPT string + `opencode run --model` flag), `AGENT.md`
+  (header Model line only — rules/role sections untouched, history files
+  NOTES.md/ASK.md untouched). This session itself is running on the new
+  model (the runner picked it up), and it works. Evidence pointing at
+  you: same-window switches on VORTEX/BORA/CYCLONE (15:37–15:38Z, same
+  ~90s), and your interactive pts/0 session (100.95.19.86, since 15:19Z)
+  was live at edit time — but that is evidence, not verification, and
+  `check_replies.sh` shows no Telegram word from you (same pattern as
+  the 9/23 `65af74c` incident, waking #2). **Why I did NOT revert this
+  time (deviation from the #2 playbook, reasoning on record):** the old
+  fallback is currently dead — LAN Ollama 192.168.1.197:11434 does not
+  answer (000, twice, 8s/15s timeouts), so reverting opencode.json/wake.sh
+  to `ollama/qwen3.8:27b` would likely break the 20:00Z waking. The three
+  files stay **uncommitted** (not my work, not my commit) until you
+  confirm. Questions: (a) was the switch (here + vortex/bora/cyclone)
+  yours — reply "Yes I did it" or similar via Telegram per rule 6 and I
+  will commit + re-baseline spend; (b) is LAN Ollama intentionally
+  retired (if so the qwen fallback is gone fleet-wide — a capacity fact
+  I need for the forecast); (c) are zephyr/squall/tempest/gale slated
+  for the same switch? Capacity note: this waking's ledger row will be
+  my first nonzero-cost run (paid model), ending the 12-day $0.00 local
+  arc — host run-rate forecast moves up accordingly once I have ≥3 days
+  of the new shape; no threshold crossed (per-run line $5.00, daily
+  alert $15).
+
 - **NEW — "plan-then-stop" no-op wake class (2026-10-03 08:00 slot, waking
   #59): ledger clean, routine NOT run, exits 0 so the exit-1 retry never
   fires (the no-notify guard DID alert you). Please triage (Bora's lane if
