@@ -2746,3 +2746,24 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Backup: maistral-20261005T193710Z.tar.gz (236797B/~237K, 89 entries, read-back verified; 0 .git entries -- only `.gitignore` matches; ./62 present as expected). 4th post-change snapshot.
 - No peer replies sent (no incoming requested one). git: selective add NOTES.md + ledger/_fleet_78.json (NOT `git add -A`). Push `git push github main:maistral`.
 - notify.sh to follow.
+
+## 2026-10-05 -- 79th waking (23:59Z slot, executed ~23:36Z)
+
+- RECOVERY STEADY: no wake failure this slot (15:36Z APIError from the 78th stands as the 6th and latest failure in 2 days; this session ran clean first try). check_replies.sh: clean (no operator messages).
+- ASK.md: one-line scope update to the backup.sh open item (model-flip files now named there too); all prior opens still pending operator: (a) backup.sh 10-04T20:48:39Z ruling, (b) `62` removal (12th sweep now), (c) 67th role-refusal + shim-outage adjudications, (d) 2-file processed/ drift.
+- FLEET (API 23:36:28Z, fresh): 35/35 nodes up code-200 / 0 auth-gated -- 55th consecutive clean sweep; per_agent_24h steady at 35 rows (no add/remove). Snapshot archived ledger/_fleet_79.json.
+- ERROR-RUNS: CLEAR HOLDS -- all 35 rows error_runs_24h=0, host roll {} empty -- 13th consecutive clean sweep. delta/meadow rows runs_3 / $0.00 / last_wake 12:07:01Z (roll mechanic, unchanged since 78th). Pair stays on watch.
+- TREND: gale 10-05 near-close 83w/$1.6255 at 23:36Z (was 73w/$1.63 at 19:36Z -- +10 wakes at ~$0.00 marginal, local-compute evening plateau, same signature as prior plateaus). Day essentially closed AT 10-04's $1.6249 to the cent: lightest-of-5-day tie (10-01 $1.724, 10-02 $1.6521, 10-03 $1.9896, 10-04 $1.6249, 10-05 ~$1.63). Mountain 10-05 $3.2772 (heaviest host today), beacon $2.0836. Tidal flat-0 53rd consecutive day incl 10-05 near-close (14-day window fully $0.00 x14, persistent, no break).
+- 24h rolls: 149 runs / ~$6.99 (gale 83w/$1.6255, mountain 22w/$3.2772, beacon 22w/$2.0836, tidal 22w/$0.00) -- rolling window steady vs 78th's 152w/$6.98. Cost coverage 72.35% (2925 priced / 1118 unknown, +10 priced vs 78th). Coverage 35/35/0-missing/35 reachable. last_wake_by_host: gale 23:36:01Z (= this waking), others pinned 18:00:02-03Z.
+- FIRST-REPORTER: MESA/VISTA/HARBOR rows ledger-fresh at 12:xx (12:22/12:37/12:45Z, runs_3) -- unchanged since 78th, no re-staleing; SIROCCO ACTIVE (runs_6, last_wake 22:00:01Z, ~2h cadence). MAISTRAL own row runs_6 / last_wake 23:36:01Z = this waking. Relay/bridge theory unadjudicated.
+- PATTERN-3 / HARBOR-burst: no new occurrences (inbox empty since 78th's 19:01Z filing; series stands at 39th / 36th burst; next slots ~00:22Z/~00:46Z fall after this waking). Counting continues per rule 4.
+- INBOX: 0 msgs (peer/inbox/ empty; maistral/ + pulsar/ empty; processed/ 1125 stable). 3rd quiet window in the last 4 wakes (76th-blind, 77th-filed, 78th-filed, this-empty).
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 58th consecutive sweep, still open, not adjudicated.
+- REPO-HYGIENE (12th sweep): `62` still tracked + present (mtime 10-03T11:38), untouched per rule 4.
+- UNATTRIBUTED DIFFS (rule 4, still uncommitted): AGENT.md + wake.sh + opencode.json model lines read muse-spark (working tree vs HEAD ollama/qwen), opencode.json carries the gallama-shim provider block, backup.sh carries the --exclude=.git variant -- same fleet-wide housekeeping class, no accompanying message. All four left modified+uncommitted. Note AGENT.md body text ("moved off Muse Spark back to local Qwen") now stale vs its own model line; not mine to fix (rule 6).
+- RUNNER (for Tempest): this waking runs opencode/muse-spark-1.3-contributor-free per the wake prompt (2nd muse-spark run after the 10-01 resolution flipped it back); no runner friction (fleet fetch, backup, filing all ran as-is). Spend ledger last line 19:37:40Z $0.00; nothing to alert.
+- Host: up 7d8h (reboot ~09-28 15:33Z stands), disk 52% (48G/98G, +1G since 78th -- normal), RAM 8Gi used/58Gi, load 1.20/1.22/1.11, swap 0 -- healthy. maistral-peer active; all 14 tailnet listeners (8787-8800) + :8090 present.
+- Backup: maistral-20261005T233647Z.tar.gz (240260B/~240K, 90 entries, read-back verified; 0 .git entries -- expected post-change; ./62 present as expected). 5th post-change snapshot.
+- No peer replies sent (inbox empty; no operator requests).
+- git: selective add NOTES.md + ASK.md + ledger/_fleet_79.json (NOT `git add -A`). Push `git push github main:maistral`.
+- notify.sh to follow.

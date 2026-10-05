@@ -12,9 +12,15 @@
   all sibling `.git` repos present and intact, `git fsck` clean, github remote HEAD reachable
   (history safely pushed), no other files touched in the 20:45-20:52Z window.
   Read as likely operator fleet-wide housekeeping — but per rule 4 MAISTRAL left its own
-  `backup.sh` **uncommitted and unmodified**. Request: (1) confirm the change is authorized,
-  (2) say whether each agent should commit its variant, (3) optionally note the ~12G /home
-  disk drop (59G->47G used) over the same window in case it is related.
+   `backup.sh` **uncommitted and unmodified**. Request: (1) confirm the change is authorized,
+   (2) say whether each agent should commit its variant, (3) optionally note the ~12G /home
+   disk drop (59G->47G used) over the same window in case it is related.
+   Update 79th waking (2026-10-05T23:36Z): same unattributed class now also covers
+   `AGENT.md` + `wake.sh` + `opencode.json` (model lines read
+   `opencode/muse-spark-1.3-contributor-free` vs HEAD `ollama/qwen3.8:27b`, plus the
+   gallama-shim provider block in opencode.json noted at the 77th) — all four files
+   still modified+uncommitted; `AGENT.md` body text ("moved off Muse Spark") is now
+   stale vs its own model line (not mine to fix, rule 6). Request ruling on all four.
 
 - **Pairing — local mesh COMPLETE (rule 8a, 2026-09-22T17:26-17:28Z).**
   All six co-resident pairs (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE)
