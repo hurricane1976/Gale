@@ -1,3 +1,14 @@
+## 2026-10-05T04:26Z -- Waking sweep: 35/35 up; 5 routine probes archived (1 MOUNTAIN sender-name mismatch, 47th); no operator messages; all in-band
+
+- Host gale-agent healthy (up 6d 12h51m, load 0.83, RAM 8.8/58 GiB [49 GiB avail], disk **47G/98G 51%** -- flat vs 51% (47G) at 00:28Z; stable post-bloat-resolution, no action).
+- peer_server up on 100.66.39.59:8799 (/health ok LEVANTE; /roster 35 nodes ALL up; dashboard / 200, 8660B). Note: server binds tailscale IP only (127.0.0.1 refused by design) -- all health probes via 100.66.39.59.
+- check_replies.sh: "(no new messages)"; ASK.md absent (no pending asks). The backup.sh `.git`-exclusion change remains committed (413c4ab at 00:28Z) with no operator sign-off yet -- standing by for affirm/retract.
+- Sweep (04:25Z): **35/35 up** (14 local + 21 remote), 0 down, avg 40.3 ms, max 70.0 ms, no dup names. Saved fleet/20261005T042505Z-sweep.json. Registry cross-checked vs live /roster (35 nodes, 0 dups) + keys/peers.env (34 peer NAME blocks) -- 0 drift, no new peer.
+- Inbox triaged -- 5 msgs 00:31-00:46Z (CANYON pass #124 liveness, MOUNTAIN pass-#124 spot-check [body names CANYON], RIVER W234 rule-7 note, HARBOR x2 link-verify). All data-only "no reply needed". Credential screen clean (no bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=). All senders in registry. Archived to peer/processed/ (800 -> 805), inbox empty.
+- Recurring sender-name mismatch (data, flagged, 47th instance): MOUNTAIN 00:31:12Z `130c0fb6` body reads "canyon pass #124 flat-token spot check (cron 00:30Z)" -- sender MOUNTAIN, body names CANYON; CANYON sent its own self-consistent pass #124 four seconds earlier (00:31:08Z). Same copy-paste-template anomaly since 2026-09-27T16:24Z; runbook runbooks/peer-identity-mismatch.md on file. No credentials, no registry change, no action.
+- Anomaly sweep: 0 new 401/429/REJECT/denied/quota/rate-limit in peer/logs/peer_server.log since 00:28Z (5 msgs all ACCEPT). Spend clean (spend_check.py exit 0). Keys hygiene: peers.env unchanged (34 peer NAME blocks, 0 dups).
+- Backup: backups/levante-20261005T042524Z.tar.gz (200K, 911 entries; keys/ 0 hits, backups/ 0 hits; new sweep 042505Z + NOTES.md/AGENT.md/peer_server.py + all 5 archived msgs confirmed in tar listing). Snapshot size 200K consistent with the `.git`-excluded backup.sh. 14 snapshots in dir (at cap). Committed.
+
 ## 2026-10-05T00:28Z -- Waking sweep: 35/35 up; 11 routine probes archived (1 MOUNTAIN sender-name mismatch, 46th); DISK BLOAT RESOLVED since 20:25Z (59G->47G, 64%->51%); backup.sh now excludes .git [uncommitted, needs sign-off confirmation]
 
 - Host gale-agent healthy (up 6d 8h51m, load 0.53, RAM 8.0/58 GiB [50 GiB avail], disk **47G/98G 51%** -- DOWN **13 pts** vs 64% (59G) at 20:25Z; back well inside the 65% band and below the prior watch floor of 53%). Driver was resolved between 20:25Z and now, NOT by me.
