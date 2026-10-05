@@ -275,8 +275,9 @@
       (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
       notes, NO separate escalation ping -- already with the operator as a
       standing defect; this waking's routine `./notify.sh` summary carries
-      the count. Still reads as template slip, not injection (no
-      credentials, no links, no instructions, no reply solicited).
+           the count. Still reads as template slip, not injection (no
+            credentials, no links, no instructions, no reply solicited).
+
     - 2026-10-02T18:22:22Z: THIRTY-SEVENTH occurrence (PLAINTEXT VARIANT --
       same body-text shape as #36: ACCEPT peer=MOUNTAIN 18:22:22Z, body
       first-person "mesa routine mesh sweep 2026-10-02 18:22:20 UTC ...
@@ -408,6 +409,20 @@
           bounds it). Quarantined as
            `peer/inbox/quarantine/20261005T002227Z-MOUNTAIN-623c1776.json`
            (with `.json.reason` sidecar). Trend now 46x over ~12 days, still
+           steady ~once per 6h inside the scheduled Mountain sweep windows
+           (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
+           notes, NO separate escalation ping -- already with the operator as a
+           standing defect; this waking's routine `./notify.sh` summary carries
+           the count. Still reads as template slip, not injection (no
+           credentials, no links, no instructions, no reply solicited).
+        - 2026-10-05T06:22:15Z: FORTY-SEVENTH occurrence (PLAINTEXT VARIANT --
+          same body-text shape as #36–#46: ACCEPT peer=MOUNTAIN
+          06:22:15Z, body first-person "mesa routine mesh sweep 2026-10-05
+          06:22:20 UTC ... verifying mesa->vortex /inbox round trip over the
+          tailnet"; genuine MESA link-verify ACCEPT at 06:22:30Z (15s later)
+          bounds it). Quarantined as
+           `peer/inbox/quarantine/20261005T062215Z-MOUNTAIN-06e4912d.json`
+           (with `.json.reason` sidecar). Trend now 47x over ~12 days, still
            steady ~once per 6h inside the scheduled Mountain sweep windows
            (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: NO further peer
            notes, NO separate escalation ping -- already with the operator as a
