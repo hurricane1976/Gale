@@ -3783,3 +3783,67 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
     sibling near a limit; 13 inbox bodies clean data-only). Model-switch
     question sent to operator; awaiting verified word.
+
+## 2026-10-05T20:00Z — waking #74
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES — #73
+    chinook-20261005T160120Z.tar.gz (~4h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#73). Both pass → no
+    prior-slot no-op, no back-fill owed. 14th clean use in a row (since #61
+    adoption); the #59 plan-then-stop defect class has not reappeared.
+  - **check_replies:** (no new operator messages). ASK.md model-switch item
+    (#73) stays open — `AGENT.md`/`opencode.json`/`wake.sh` remain
+    UNCOMMITTED (still not my work, still no verified word). This session
+    is itself running on `opencode/muse-spark-1.3-contributor-free` and it
+    works (second existence proof after #73).
+  - **Peer inbox (14 pings, 10-05 18:00–18:46Z):** MOUNTAIN x4 (Rule-7
+    credentialed reach x2 + site-build latency + MOUNTAIN-header/MESA-body
+    mesh sweep — the standing shared-lane baseline closed at #46, data
+    only), MEADOW x3 census, DELTA link-verify, HIGHBEAM w299 probe, MESA
+    link-verify, RIVER W235 sweep, CANYON pass #127, HARBOR x2 link-verify
+    (18:46:18/21Z, 3s spacing). All "no reply needed", zero operator
+    content, zero acks owed (data per rule 5). All archived; inbox empty
+    (1090→1104 in processed/).
+  - **HOST HEALTH:** uptime 7d4h27m (same boot since 9/28 15:33Z, no reboot
+    — ~172h continuous, steady-state); load 1.93/1.04/0.86 on 16 cores
+    (1-min tick elevated vs the 0.6–1.1 calm band, but 5/15-min 1.04/0.86
+    in-band — evening-window + own-sweep blip, not a trend; re-check at
+    #75); RAM 8Gi used / 50Gi avail (58Gi total); swap 0/7G (unused);
+    Tailscale live, 100.66.39.59/32 present, no TUN regression.
+  - **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+    tailnet. 46th consecutive alive sweep.
+  - **CAPACITY / DISK:** disk **48G used / 46G free (52%)** — +1G vs #73's
+    47G/51% (single-step noise on the flat arc, same order as every prior
+    window's churn). /home/agent 9.7G (+0.5G vs #73's 9.2G — backup/inbox
+    churn, benign); /var/log/journal 1.0G (steady ~1G band); /tmp/opencode
+    16M (transient, self-clearing). 80% trip line (~78G) ~30G headroom —
+    no crossing nameable. Growth watch stays closed (6th flat point after
+    the #69 −12G step).
+  - **Spend (host-wide, 10-05 to ~20:05Z):** **$1.6253 / 72 runs (17 paid)**
+    — GALE 5 ($0.179/$0.1131/$0.1359/$0.1379/$0.1344 — lead lane, in-band),
+    SQUALL 4 ($0.0853/$0.0888/$0.1034/$0.1151), TEMPEST 4
+    ($0.0781/$0.0643/$0.0650/$0.0576), ZEPHYR 4
+    ($0.0897/$0.0465/$0.0670/$0.0642); all other 10 lanes $0.00. Per-run
+    max $0.179, far under the $5.00 per-run line; pace at ~20h ($1.63) →
+    projected ~$1.9–2.0 at close, inside the $1.6–2.5 band. **No rule-4
+    anomaly** (no cost jump without run-count change, no count jump without
+    schedule change). Paid-flash trio+GALE pattern stable since #16.
+  - **FORECAST CORRECTION (my #73 line was wrong):** #73 predicted "this
+    waking's ledger row will be chinook's first nonzero-cost run in 12
+    days (paid muse-spark)". The 16:02Z row came in **$0.00** — this model
+    (name: "contributor-free") logs zero cost like the ollama lane. The
+    $0.00 arc extends to a 13th day, NOT broken. No spend re-baseline is
+    owed unless a nonzero chinook row actually posts; annotated in ASK.md.
+    If the operator confirms the switch, the capacity consequence is nil
+    on spend (free→free) — the open questions collapse to (b) LAN Ollama
+    retirement status and (c) trio/GALE migration plans.
+  - **Backup:** chinook-20261005T200042Z.tar.gz (148K), gzip -t OK,
+    ./AGENT.md + ./NOTES.md read-back clean from listing; 14-snapshot
+    ceiling held.
+  - **Forecast / thresholds:** disk flat 6 pts, ~30G headroom to 80% line —
+    no crossing projectable; load 1-min blip only (15-min in-band), mem
+    calm, swap unused; spend in-band (~9x inside $15/day alert); Tailscale
+    ~172h hold; wake-reliability clean (14 self-checks). Sole open triage
+    items: model-switch confirmation (new) + #59 no-op (operator lane).
+  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+    sibling near a limit; 14 inbox bodies clean data-only). Model-switch
+    files deliberately left uncommitted; awaiting verified word.

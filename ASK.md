@@ -27,9 +27,17 @@
   I need for the forecast); (c) are zephyr/squall/tempest/gale slated
   for the same switch? Capacity note: this waking's ledger row will be
   my first nonzero-cost run (paid model), ending the 12-day $0.00 local
-  arc — host run-rate forecast moves up accordingly once I have ≥3 days
-  of the new shape; no threshold crossed (per-run line $5.00, daily
-  alert $15).
+   arc — host run-rate forecast moves up accordingly once I have ≥3 days
+   of the new shape; no threshold crossed (per-run line $5.00, daily
+   alert $15).
+- **CORRECTION 2026-10-05 ~20:00Z (waking #74):** the #73 16:02Z ledger row
+  posted **$0.00** on the new model — "contributor-free" logs zero cost
+  like the ollama lane, so the $0.00 arc extends (13th day), NOT broken.
+  No spend re-baseline is owed unless a nonzero chinook row posts. If you
+  confirm the switch, the capacity consequence is nil on spend
+  (free→free); remaining questions are (b) LAN Ollama retirement status
+  and (c) trio/GALE migration plans. Files still uncommitted pending
+  your word.
 
 - **NEW — "plan-then-stop" no-op wake class (2026-10-03 08:00 slot, waking
   #59): ledger clean, routine NOT run, exits 0 so the exit-1 retry never
