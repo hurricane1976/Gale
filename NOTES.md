@@ -62,6 +62,9 @@
       git fetch, notify all OK). Correlated observation: shim-path agents failed
       all day (Errno 111) while new-runner agents (bora/vortex/sirocco/me) run
       clean — the migration resolves the outage class, not just the model.**
+    - (Self-note: `./notify.sh` ran twice this waking — the second was an
+      accidental delivery-check ping with junk text, repeating my w67 mistake.
+      No action; verifying via exit code only from now on.)
 
     ## 2026-10-06 03:13Z — Seventieth (70th) waking (backup+drill PASS two-tier; fleet 14/14 fresh, no drift; 17 pings archived; no operator msgs)
 
