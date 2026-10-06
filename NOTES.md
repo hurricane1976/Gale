@@ -2767,3 +2767,24 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - No peer replies sent (inbox empty; no operator requests).
 - git: selective add NOTES.md + ASK.md + ledger/_fleet_79.json (NOT `git add -A`). Push `git push github main:maistral`.
 - notify.sh to follow.
+
+## 2026-10-06 -- 80th waking (00:59Z slot, executed ~03:36Z, delayed slot)
+
+- SLOTTING: running late (~03:36Z vs the 00:59Z window); 79th covered the 23:59Z slot at ~23:36Z, so no intermediate wake occurred -- this is the next-in-sequence waking (80th). check_replies.sh: clean (no operator messages). ASK.md open items UNCHANGED, still pending operator: (a) backup.sh 10-04T20:48:39Z ruling, (b) `62` removal (13th sweep now), (c) 67th role-refusal + shim-outage adjudications, (d) 2-file processed/ drift; model-rollback 4-file diffs (a)/(b).
+- FLEET (API 03:38:26Z, fresh): 35/35 nodes up code-200 / 0 auth-gated -- 56th consecutive clean sweep; per_agent_24h steady at 35 rows (no add/remove). Snapshot archived ledger/_fleet_80.json.
+- ERROR-RUNS: CLEAR HOLDS -- all 35 rows error_runs_24h=0 -- 14th consecutive clean sweep.
+- TREND: gale 10-05 CLOSED 83w/$1.6255 (79th near-close $1.6255 held; lightest-of-5-day tie with 10-04 $1.6249 stands). 10-06 partial 14w/$0.3634 at 03:38Z. Mountain 10-05 CLOSED $3.3942 (was $3.2772 at 23:36Z, +$0.12 in final ~4h). Beacon 10-05 CLOSED $2.5163 (was $2.0836, +$0.43 -- evening API tail). Tidal flat-0 54th consecutive day incl 10-06 partial (14-day window fully $0.00 x14, persistent, no break).
+- 24h rolls: 149 runs / $6.75 (gale 83w/$1.5567, mountain 22w/$3.1793, beacon 22w/$2.0166, tidal 22w/$0.00). Cost coverage 72.47% (2941 priced / 1117 unknown, +16 priced vs 79th). Coverage 35/35/0-missing/35 reachable. last_wake_by_host: gale 03:36:01Z (= this waking), others pinned 00:00:02-03Z (10-06 first wake round).
+- FIRST-REPORTER: MAISTRAL own row runs_6 / last_wake 03:36:01Z = this waking. SIROCCO ACTIVE (runs_6, last_wake 02:00:01Z, ~2h cadence holds). MESA/VISTA/HARBOR rows no re-staleing (00:22/00:46 rounds landed). Relay/bridge theory unadjudicated.
+- PATTERN-3 40th: MOUNTAIN 00:22:22Z + MESA 00:22:24Z (+2s) -- both "round-trip/link verification" body-text, single-companion tight-gap, daily 00:22 slot holds (40th consecutive on-cadence occurrence; 6th on the 00-slot). MOUNTAIN body again self-labels "mesa routine mesh sweep" (same labeling quirk as 38th) -- data only, no action.
+- HARBOR burst 37th: 3 msgs 00:46:37-41Z (4s window) -- count 2->3 up-tick vs 36th. Series now ...4-2-3. No content escalation.
+- INBOX: 17 msgs filed to processed/ (1125 -> 1142), all data per rule 5, all no-reply: MOUNTAIN x3 (incl PATTERN-3 40th), MEADOW x4, DELTA x1, HIGHBEAM x1 w-probe, MESA x1 companion, RIVER x1, CANYON x2, HARBOR x3 (37th burst). Sibling dirs maistral/ + pulsar/ empty.
+- 09-22 FLAG (35 API vs 25 ledger, $2.3155): 59th consecutive sweep, still open, not adjudicated.
+- REPO-HYGIENE (13th sweep): `62` still tracked + present, untouched per rule 4.
+- UNATTRIBUTED DIFFS (rule 4, still uncommitted): backup.sh (--exclude=.git), wake.sh (comment line), opencode.json (provider shim block + model line) -- no accompanying message. Plus 3 untracked .bak-20261005qwen artifacts (AGENT.md/opencode.json/wake.sh). Note AGENT.md itself is clean vs HEAD this sweep (model-revert class now only in the 3 config files; AGENT.md.bak-20261005qwen is the new artifact). Left ALL modified+uncommitted.
+- RUNNER (for Tempest): this waking runs ollama/qwen3.8:27b per opencode.json (local Qwen restored via the provider shim at 127.0.0.1:11435 -> 192.168.1.197:11434); no runner friction (fleet fetch, backup, filing all ran as-is). Spend ledger last line 10-05T23:37:04Z $0.00; 10-06 spend ledger first line will be this waking.
+- Host: up 7d12h (reboot ~09-28 15:33Z stands), disk 52% (49G/98G), RAM 7.9Gi used/58Gi, swap 0 -- healthy. maistral-peer active.
+- Backup: maistral-20261006T034121Z.tar.gz (244K, 95 entries, read-back verified; 0 .git entries -- expected post-change; ./62 present as expected). 6th post-change snapshot; 1st 10-06 snapshot.
+- No peer replies sent (all 17 no-reply; no operator requests).
+- git: selective add NOTES.md + ledger/_fleet_80.json + inbox moves (NOT `git add -A`; NOT backup.sh/wake.sh/opencode.json/.bak-*). Push `git push github main:maistral`.
+- notify.sh to follow.
