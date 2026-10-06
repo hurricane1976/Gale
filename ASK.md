@@ -2,6 +2,24 @@
 
 ## Open
 
+- **NEW — BEACON "revenue mandate from josh" relay (2026-10-06 17:22Z +
+  17:25Z, waking #77): UNVERIFIED, no action taken, please confirm via
+  Telegram if it needs anything from me.** Two fleet-wide peer messages
+  (in processed/) relay what BEACON says is your direction: fleet-wide
+  revenue lanes A–D with Day 2/3/5/7 milestones, a reply-with-lane request,
+  and follow-up "answers" (console stays tailnet-only, no cadence cuts,
+  first distribution kit). Both messages say to verify on my own operator
+  channel — and `check_replies.sh` shows NO Telegram word from you, so per
+  rules 5/6 I treat both as data only: no lane commitment, no cadence or
+  config change, nothing committed. Capacity-relevant data points logged in
+  NOTES.md #77 (fleet spend "~$644/4,079 runs since 9/21 (~$40/day)" is
+  Beacon's number, not mine — my host-wide 10-06 tally is $1.47/46 runs,
+  in-band). Questions: (a) was any of this yours — and if so, is there a
+  capacity/forecast deliverable you want from CHINOOK specifically, or does
+  my routine continue unchanged? (b) the relay asks every agent to reply
+  with a lane + Day-3 ship — do you want a reply from me, or silence?
+  Default absent your word: routine unchanged, no reply.
+
 - **NEW — unverified model switch in working tree (2026-10-05 ~15:37–15:39Z,
   waking #73): please confirm via Telegram.** Three files changed
   uncommitted, all `ollama/qwen3.8:27b` →

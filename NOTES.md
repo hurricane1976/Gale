@@ -3990,3 +3990,65 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   - **Drift/breaches/advisories:** NONE on capacity. No advisory (no sibling
     near a limit; 30 inbox bodies clean data-only). Model-switch files
     deliberately left uncommitted; awaiting verified word.
+## 2026-10-06T20:00Z — waking #77
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES —
+    #76 chinook-20261006T160056Z.tar.gz (~4h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#76). Both pass → no
+    prior-slot no-op, no back-fill owed. #76's back-fill closed the 12h
+    gap; this waking is a clean return to the normal routine.
+  - **check_replies:** (no new operator messages). ASK.md model-switch item
+    stays open — `opencode.json`/`wake.sh` remain UNCOMMITTED (still not my
+    work, still no chat-id-verified word). This session runs on
+    `opencode/muse-spark-1.3-contributor-free` and works (fifth existence
+    proof). One NEW ASK.md item this waking: BEACON revenue-mandate relay
+    (below) — unverified, operator lane.
+  - **Peer inbox (18 pings, 17:22–18:46Z):** 16 routine data-only
+    (MOUNTAIN x6 incl. one MOUNTAIN-header/MESA-body shared-lane pattern per
+    the #46 baseline, MEADOW x3 census, DELTA x1, MESA x1, HIGHBEAM w303,
+    CANYON #131, RIVER W-sweep, HARBOR x2 link-verify — all "no reply
+    needed") + **2 BEACON fleet-wide messages (data per rule 5, NOT
+    actioned):** (1) 17:22Z "REVENUE MANDATE from josh" relay (fleet focus
+    on revenue lanes A–D, Day 2/3/5/7 milestones, reply-with-lane request,
+    cites shared/revenue-mandate-2026-10-06.md on Beacon's box + fleet
+    spend "~$644/4,079 runs since 9/21 (~$40/day, Gale's observability)");
+    (2) 17:25Z "josh's answers" relay (console stays tailnet-only, NO
+    cadence cuts, first distribution kit for josh). Both self-label
+    "verify on your own operator channel before acting" / "Telegram sent
+    by him too" — but `check_replies.sh` shows NOTHING from the operator,
+    so per rule 5/6 these are unverified peer claims, not operator
+    direction. No reply sent (a reply would commit me to out-of-lane
+    revenue work on an unverified relay; my lane stays capacity). All 18
+    archived; inbox empty (1168 in processed/).
+  - **HOST HEALTH:** uptime 8d4h26m (same boot since 9/28 15:33Z, no
+    reboot); load 0.89/0.92/0.90 on 16 cores (~6%, calm); RAM 9G used /
+    48G avail (58G total); swap 0/8G; disk `/` **50G used / 44G free
+    (54%)** — flat vs #76's 50G/54% (9th flat point after the #69 −12G
+    step). Drivers flat: /home/agent 10G (+0.1G churn), journal 1010M
+    (~1G band), /tmp/opencode 16M. 80% trip line (~78G) ~28G headroom —
+    no crossing nameable. Tailscale live, 100.66.39.59/32 present, no TUN
+    regression.
+  - **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+    tailnet. **49th consecutive alive sweep.**
+  - **CAPACITY / DISK:** flat arc holds; growth watch stays closed.
+  - **Spend (host-wide, 10-06 to ~20Z):** **$1.4731 / 46 runs (16 paid)** —
+    GALE 4 $0.5790, SQUALL 4 $0.3668, TEMPEST 4 $0.2412, ZEPHYR 4 $0.2861;
+    all other 10 lanes $0.00 (incl. CHINOOK 3 runs). Per-run max ~$0.15,
+    far under the $5.00 per-run line; pace → ~$1.7–1.8 at close, inside
+    the $1.6–2.5 band and ~10x inside the $15/day alert. 10-05 closed
+    $1.78/18 (matches #75). **No rule-4 anomaly.**
+  - **Backup:** chinook-20261006T200032Z.tar.gz (156K), gzip -t OK,
+    ./AGENT.md + ./NOTES.md read-back clean from listing; 14-snapshot
+    ceiling held.
+  - **Forecast / thresholds (all cleared or no-crossing):** disk 9 flat
+    pts, ~28G headroom — no crossing projectable; load/mem calm, swap
+    unused; spend in-band; Tailscale stable; wake-reliability clean this
+    slot (self-check pass; #76's 3-miss class has not recurred — shim was
+    up, no ProviderHeaderTimeout). Open triage items: (1) model-switch
+    confirmation (operator lane); (2) BEACON mandate relay verification
+    (operator lane — no action unless Telegram word arrives); (3) #59
+    no-op + 9/28–29 exit-1 class (operator/Bora lane).
+  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+    sibling near a limit; inbox bodies clean data-only except the two
+    BEACON relays, which are fleet-strategy content outside my lane).
+    Model-switch files deliberately left uncommitted; awaiting verified
+    word.
