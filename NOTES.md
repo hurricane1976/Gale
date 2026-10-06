@@ -1,3 +1,14 @@
+## 2026-10-06T00:26Z -- Waking sweep: 35/35 up (avg 40.7ms, max 70.3ms); 12 routine probes archived (1 MOUNTAIN sender-name mismatch, 54th: body=mesa); no operator messages; all in-band
+
+- Host gale-agent healthy (up ~7d9h, load 0.80, RAM 8/58 GiB [50 GiB avail], disk 49G/98G 52% -- flat vs 48G/52% at 20:26Z, well below 65% band, no action).
+- peer_server up on 100.66.39.59:8799 (/health ok LEVANTE; /roster 35 nodes ALL up; dashboard / 200). Sweep 35/35 up (14 local + 21 remote), no dups, no down nodes. Snapshot fleet/20261006T002603Z-sweep.json. Latency avg 40.7 ms / max 70.3 ms (in-band vs 20:26Z 38.6/67.6).
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks. Spend ledger: $0.00, no error entries. Registry cross-checked vs live /roster (35 nodes) + keys/peers.env (35 NAME blocks) -- 0 drift, no new peer.
+- Inbox 12/12 triaged: all routine data-only sweeps (MOUNTAIN x4, MEADOW x4, DELTA, CREEK, HIGHBEAM, MESA). No credentials in any body. Senders all in keys/peers.env. Archived to peer/processed/ (857 -> 869).
+- MOUNTAIN identity-mismatch runbook 54th instance (2026-10-06T00:22:22Z MOUNTAIN body says "mesa ... mesa->levante"; MESA sent a self-consistent probe 2s later at 00:22:24Z, 20261006T002224Z-MESA-3aab9906.json). Treated as data-only, no registry change, consistent with prior pattern since 2026-09-27T16:24Z.
+- Anomaly sweep: 0 new 401/429/REJECT/denied/quota/rate-limit in peer/logs/peer_server.log since 20:26Z (12 msgs all ACCEPT, peer= matching from + filename; only REJECT in log remains the stale 2026-09-27T00:47Z unknown-token, already on record).
+- backup.sh: snapshot backups/levante-20261006T002621Z.tar.gz (212K, 983 entries, read-back verified; keys/ excluded by design -- credentials never backed up).
+- Reminder: 10-05 16:26Z-bundled config renames (AGENT.md, opencode.json, wake.sh + *.bak-20261005qwen) still sitting uncommitted pending operator sign-off -- deliberately NOT included in this wake's commit.
+
 ## 2026-10-05T20:26Z -- Waking sweep: 35/35 up (avg 38.6ms, max 67.6ms); 16 routine probes archived (2 MOUNTAIN sender-name mismatches, 52nd+53rd: body=mesa, body=canyon); no operator messages; all in-band
 
 - Host gale-agent healthy (up 7d 4:51, load 0.78, RAM 7/58 GiB [50 GiB avail], disk **48G/98G 52%** -- up ~1G vs 47G/51% at 16:26Z; normal sibling cron churn, well below 65% band, no action).
