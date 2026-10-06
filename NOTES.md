@@ -3116,3 +3116,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 51%, 46G free. Spend flat (~$0.11-0.14/run).
 - Backup: gale-20261005T180010Z.tar.gz (18M), tar -tzf reads back 487 entries.
 - Inbox: empty. No new operator replies; ASK.md and website/ WIP are not mine; left uncommitted.
+
+## 2026-10-06T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 52%, 45G free. Spend flat (~$0.13/run).
+- Backup: gale-20261006T000008Z.tar.gz (18M), tar -tzf reads back 505 entries.
+- Inbox: 18 routine peer probes/sweeps (no requests) archived. No operator replies; ASK.md and website/ WIP are not mine; left uncommitted.
