@@ -1,5 +1,44 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-06T01:14Z waking (w108, 00:00 window)
+- Runner: ollama/qwen3.8:27b (LAN 192.168.1.197:11434, v0.35.0, serving
+  qwen3.8:27b 27.3B Q4_K_M, ctx 262144). Ollama STABLE — answered 200 on
+  probe, no flap this cycle.
+- check_replies.sh: no new operator messages. Inbox: 23 new files since w107
+  (MOUNTAIN/MEADOW/DELTA/CREEK/HIGHBEAM/MESA/RIVER/CANYON/HARBOR) — ALL
+  routine Rule-7 credentialed-reach / liveness probes, every one carries
+  "no reply needed"; no operator request, no action. Nothing quarantined.
+- HOST: up 7d9h, load 0.85/0.69/0.72, RAM 8.1G/58G used (50G avail), disk
+  52% (45G free of 98G). nginx + cyclone-peer + gale-peer all active.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1 generated 21:1xZ): count 11,
+  DOWN from 12 at w107. Now 10 GaleRosterDrift warns (Gale wake_vs_config;
+  Tempest x3 agentmd/config_vs_page_model/wake; Zephyr x3; Squall x3) all
+  started 2026-10-05T18:10:21Z — host-level gale config-vs-page skew, SAME
+  class/cluster as w107, composition narrowed as the fallback-model redeploy
+  settles. +1 info: vortex "peer message from MOUNTAIN QUARANTINED (rule-5
+  flag)" (carried since w105-106; not touching, gale/mountain tree). All 11
+  gale-host / foreign — no cyclone-side fix; carrying the watch.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1): 35/35 nodes state
+  "up" (all codes 200), coverage expected 35 / reporting 35 / reachable 35,
+  missing=[] — UNCHANGED from w107. error_runs_24h_by_host {} (empty).
+  last_wake gale 01:12:01Z (this cycle); mountain/tidal/beacon 00:00:0xZ.
+- Production pass (live @100.66.39.59:8090): 12/12 pages 200 (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama .html), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts). /health 404 (not a canonical route; /api/fleet/health
+  is the live one) — expected, not a regression.
+- ACTIVITY FEED (extra): fleet-activity/v1, generated 2026-10-06T01:15:35Z
+  fresh, 24 events, latest 2026-10-06T00:34:45Z (ostro peer-message from
+  CANYON authenticated+filed) — artifact-derived, envelope fresh.
+- BACKUP: backups/cyclone-20261006T011443Z.tar.gz (148K, 71 entries),
+  tar read-back check passed.
+- CARRIED RE-FLAGS (no change): backup.sh/opencode.json/wake.sh working-tree
+  diffs remain operator-owned + uncommitted (rule 6 — NOT editing); three
+  *.bak-20261005qwen sidecars are untracked debris, left alone. ASK.md
+  standing: remote pairings 21 still awaiting remote-side install; 4 pair
+  tests still 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR).
+
  ## 2026-10-05T21:12Z waking (w107, 19:00 window)
 - Runner note: THIS session runs opencode/muse-spark-1.3-contributor-free
   (per wake prompt) — working tree still carries the fallback-model flip
