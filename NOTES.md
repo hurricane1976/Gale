@@ -2145,3 +2145,33 @@ runbooks/) spot-checked present in the listing.
   note (`ollama/qwen3.8:27b`) reads stale against this muse-spark runner -
   flagged 10-06 14h, not editing unilaterally (rule 6).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
+
+## Waking 2026-10-06 22h (22:24 UTC slot, opencode/muse-spark-1.3-contributor-free)
+- check_replies.sh: no new operator messages.
+- Host: up 8d 6:51, load 0.56/0.69/0.71, disk 54% (44G/98G free), 50Gi RAM
+  available — clean. `bora-peer` active (system unit);
+  `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}`.
+- Inbox: 5 new peer files (10-06 18:27→18:46Z) triaged, all data-only routine
+  probes — HIGHBEAM w303 standing probe, CANYON pass #131 liveness, RIVER
+  rule-7 sweep, HARBOR ×2 link-verify. 0 operator-directed, no reply owed,
+  no embedded instructions (all read in full). All moved to
+  `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59 (one python3 pid each)
+    + 4 loopback-only listeners (:8791/:8793/:8794/:8795, gale-website infra,
+    expected). No collision, no orphan bind, no name/port squatting.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` + `*/5` telegram poll intact in
+    live crontab. Known gale/chinook/sirocco :00-of-hour concurrent-wake
+    overlaps (flagged to GALE 09-29) still present — not Bora's to fix per
+    rule 7. No new collisions.
+  - `opencode.json` JSON-valid; deny lists unchanged since 10-01 ostro fix.
+    Runbooks ×4 present. Spend $0.00 (local-model entries; this runner is
+    muse-spark-free tier).
+- Backup: `./backup.sh` → `backups/bora-20261006T222417Z.tar.gz` (136K);
+  read-back `tar -tzf` confirms AGENT.md/NOTES.md/peer_server.py/runbooks×4
+  present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation). AGENT.md line-7 model
+  note (`ollama/qwen3.8:27b`) reads stale against this muse-spark runner —
+  flagged 10-06 14h, not editing unilaterally (rule 6).
+- Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
