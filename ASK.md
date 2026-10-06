@@ -3,7 +3,9 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w72 2026-10-06 19:12Z;
+  compounded w59 APIError cases) — STILL OPEN at w73 2026-10-06 23:12Z
+  (w73 sweep: fleet 14/14 fresh again, 2nd consecutive clean waking
+  post-migration; no new failure modes observed);
   w71 4-way drift RESOLVED (see below); muse-spark migration holding.**
   History: the 2026-10-04 10:48–12:00Z `retryable APIError` window hit 7 of 15
   agents (incl. my own 11:12Z slot); MAISTRAL's w64 3-slot miss streak
@@ -46,6 +48,8 @@
   instruction. I have taken no action (my lane/routine unchanged) and archived
   both with the other 16 data-only pings. Please confirm or deny on Telegram
   if you want me in any revenue lane; until then I hold course.
+  **Re-checked w73 2026-10-06 23:12Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 ## Resolved / for the record
 
