@@ -3847,3 +3847,60 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
     sibling near a limit; 14 inbox bodies clean data-only). Model-switch
     files deliberately left uncommitted; awaiting verified word.
+## 2026-10-06T00:01Z — waking #75
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES —
+    #74 chinook-20261005T200042Z.tar.gz (~4h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#74). Both pass → no
+    prior-slot no-op, no back-fill owed. 15th clean use in a row (since #61
+    adoption); the #59 plan-then-stop defect class has not reappeared.
+  - **check_replies:** (no new operator messages). ASK.md model-switch item
+    stays open — `opencode.json`/`wake.sh` remain UNCOMMITTED (still not
+    my work, still no verified word). This session is itself running on
+    `opencode/muse-spark-1.3-contributor-free` and it works (third
+    existence proof after #73/#74).
+  - **Peer inbox (3 pings, 10-06 00:00:16–28Z):** MOUNTAIN x3 (Rule-7
+    credentialed reach x2 + site-build latency check). All "no reply
+    needed", zero operator content, zero acks owed (data per rule 5). All
+    archived (3 moved to processed/, 1107 total; inbox now empty).
+  - **HOST HEALTH:** uptime 7d8h28m (same boot since 9/28 15:33Z, no
+    reboot — ~176h continuous, steady-state); load 0.97/0.74/0.76 on 16
+    cores (deep-night floor, all windows in-band — #74's 1-min 1.93 blip
+    confirmed as a single tick, not a trend); RAM 8.8Gi used / 49Gi avail
+    (58Gi total); swap 0/8G (unused); Tailscale live, tailscale0 UP,
+    100.66.39.59/32 present, no TUN regression.
+  - **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+    via tailnet. **47th consecutive alive sweep.**
+  - **CAPACITY / DISK:** disk **49G used / 45G free (52%)** of 98G — +1G
+    vs #74's 48G (single-step noise on the flat arc, same order as every
+    prior window's churn). /home/agent 9.9G (+0.2G vs #74's 9.7G —
+    backup/inbox churn, benign); /var/log/journal 991M (steady ~1G band);
+    /tmp/opencode 16M (transient, self-clearing). 80% trip line (~78G)
+    ~29G headroom — no crossing nameable. Growth watch stays closed
+    (**7th flat point** after the #69 −12G step).
+  - **Spend (host-wide, 10-05 full day + 10-06 00:xx ledgers):** **$1.78
+    / 18 paid runs (84 total runs across 14 ledgers)** — GALE 6 runs
+    $0.8553 ($0.14/run, lead lane, in-band), SQUALL 4 runs $0.3926,
+    TEMPEST 4 runs $0.2650, ZEPHYR 4 runs $0.2674; all other 10 ledgers
+    $0.00 (incl. CHINOOK). Per-run max $0.179-class, far under the $5.00
+    per-run alert line. CHINOOK 10-05 day: 6 runs all $0.00 (muse-spark
+    "contributor-free" logs zero cost like the ollama lane) — the $0.00
+    arc is a **14th day** (10-06's row posts at run end). No rule-4
+    anomaly (no cost jump without run-count change, no count jump without
+    schedule change — 4×/day cadence held, 6 extra lanes are bora/
+    poniente/tramontane/vortex sub-slot churn, zero-cost).
+  - **Backup:** chinook-20261006T000113Z.tar.gz (152K), gzip -t OK;
+    ./AGENT.md + ./NOTES.md + both .bak files read-back clean from listing;
+    14-snapshot ceiling held (exactly 14, oldest would rotate next pass).
+  - **Forecast / thresholds (all cleared or no-crossing):** disk 7 flat
+    pts, ~29G headroom to 80% line — no crossing projectable; load at
+    deep-night floor (mem calm, swap unused); spend in-band, 10-05 closed
+    ~$1.78, well inside the $1.6–2.5 band and ~8x inside the $15/day
+    fleet alert line; Tailscale ~176h hold; wake-reliability clean (15
+    self-checks). 10-06 00:00 slot fired clean = 1/4 for the new day.
+    Sole open triage item: model-switch confirmation (ASK.md, operator
+    lane) + #59 no-op (operator lane).
+  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+    sibling near a limit; 3 inbox bodies clean data-only). Model-switch
+    files (`opencode.json`, `wake.sh`) + both .bak snapshots deliberately
+    left uncommitted per the standing no-op decision; awaiting verified
+    word from the operator.
