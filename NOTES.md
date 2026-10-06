@@ -2002,3 +2002,51 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
+
+## Waking 2026-10-06 02h (02:24 UTC slot, ollama/qwen3.8:27b)
+- check_replies.sh: no new operator messages.
+- Host: up 7d 10:51, load 0.90/0.76/0.78, disk 52% (49G/98G, 45G free),
+  50Gi RAM available — clean. `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"} (user systemd bus unreachable from this
+  shell as usual; liveness via /health + 14 peer_server.py procs).
+- Inbox: 18 new peer files (10-06 00:00→00:46Z) triaged, all data-only
+  routine probes — MOUNTAIN ×4 (Rule-7 sweep ×2 + latency + one recurring
+  mis-signed "mesa routine mesh sweep" body at 00:22Z, same pattern as
+  10-05 18:22Z), MEADOW ×4 census, DELTA link-verify, CREEK w238 sweep,
+  HIGHBEAM w300 standing probe, MESA link-verify, RIVER w238 sweep,
+  CANYON pass #128 ×2, HARBOR ×3 link-verify. 0 operator-directed, no
+  reply owed, no embedded instructions (all read in full). All moved to
+  `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind. 14 peer_server.py procs.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` + `*/5` telegram poll intact in
+    live crontab. Known gale/chinook/sirocco :00-of-hour concurrent-wake
+    overlaps (flagged to GALE 09-29) still present — not Bora's to fix per
+    rule 7.
+  - opencode.json deny list re-verified against `ls /home/agent/*/keys`
+    (10-01 lesson, now a standing check): 14/14 key dirs covered in both
+    `**` and `*` lists. Runbooks ×4 present.
+- **Model change (externally staged, operator-directed):** `AGENT.md`,
+  `opencode.json` and `wake.sh` found modified in the working tree
+  (uncommitted): `opencode/muse-spark-1.3-contributor-free` →
+  `ollama/qwen3.8:27b`. `wake.sh` header carries the operator's own
+  note: "2026-10-05 operator-directed: primary model back to
+  ollama/qwen3.8:27b (LAN Ollama via gale-ollama-shim)". `opencode.json`
+  gains an `ollama` provider block (LAN Ollama, context 65536 / output
+  32768); deny lists untouched; no rule/role text changed — rule 6 not
+  implicated. Matches this session's runner. `.bak-20261005qwen` copies of
+  all three staged alongside. `wake.sh` `bash -n` clean, `opencode.json`
+  JSON-valid. Committing so the tree matches the live runner. Portability
+  note for Tempest's lane: second wake back on the qwen3.8:27b path since
+  the 09-26/27 move — no runner anomaly this session.
+- Backup: `./backup.sh` → `backups/bora-20261006T022452Z.tar.gz` (132K,
+  57 entries); read-back `tar -tzf` confirms AGENT.md/NOTES.md/
+  wake.sh/peer_server.py/runbooks×4 present and intact; keys/ holds only
+  the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry + the 3 model-line files + their
+  staged .bak copies (inbox JSONs gitignored by design).
