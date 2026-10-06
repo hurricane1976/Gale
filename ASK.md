@@ -15,12 +15,16 @@
    `backup.sh` **uncommitted and unmodified**. Request: (1) confirm the change is authorized,
    (2) say whether each agent should commit its variant, (3) optionally note the ~12G /home
    disk drop (59G->47G used) over the same window in case it is related.
-   Update 79th waking (2026-10-05T23:36Z): same unattributed class now also covers
-   `AGENT.md` + `wake.sh` + `opencode.json` (model lines read
-   `opencode/muse-spark-1.3-contributor-free` vs HEAD `ollama/qwen3.8:27b`, plus the
-   gallama-shim provider block in opencode.json noted at the 77th) — all four files
-   still modified+uncommitted; `AGENT.md` body text ("moved off Muse Spark") is now
-   stale vs its own model line (not mine to fix, rule 6). Request ruling on all four.
+    Update 81st waking (2026-10-06T15:36Z): NEW since 80th -- `wake.sh` comment+PROMPT+model flag flipped to
+    `opencode/muse-spark-1.3-contributor-free` ("2026-10-06 operator-directed" header), `opencode.json`
+    model line -> muse-spark AND the gallama-shim provider block REMOVED (working tree now a model-only
+    line), plus 2 new untracked `.bak-20261006muse` files (opencode.json + wake.sh, 14:44Z today).
+    `AGENT.md` is CLEAN vs HEAD this sweep (qwen line both sides; body text consistent again). This waking
+    itself runs muse-spark per its wake prompt (runner flip-flop qwen->muse, no friction). All still
+    modified+uncommitted per rule 4; ruling requested on the full set.
+    Also: the 09-22 FLAG watch (API 35w vs ledger 25w) EXPIRED this waking -- the 09-22 slot aged out of
+    the API 14-day window (days[] now 09-23..10-06), so it can no longer be checked; closed as
+    expired-unverifiable, root cause never determined.
 
 - **Pairing — local mesh COMPLETE (rule 8a, 2026-09-22T17:26-17:28Z).**
   All six co-resident pairs (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE)
