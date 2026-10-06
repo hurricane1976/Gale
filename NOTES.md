@@ -3866,3 +3866,62 @@ tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh present).
 Next: watch GitHub incident resolve (Pages degraded, Actions
 mitigated); watch beacon 30d window (~2026-10-24); ASK.md awaiting
 operator word on PONIENTE + remote-22 + 15:38Z re-migration item.
+
+## 2026-10-06T02:01Z — Scheduled waking (all green; GitHub incident RESOLVED)
+
+Routine 02:0xZ slot (1/7/13/19 pass). Host healthy: load 1.46/0.80/0.70,
+disk 52% (45G free), RAM 50Gi available. No new operator messages
+(check_replies.sh: none).
+
+Inbox: 17 new (2026-10-06 00:00–00:46Z) — MOUNTAIN x4 (Rule-7 sweeps +
+mesa-labeled mesh, known label quirk again), MEADOW x4 census, DELTA
+link-verify, HIGHBEAM w300 probe, MESA link-verify, RIVER W238 rule-7,
+CANYON pass #128 x2, HARBOR link-verify x3 — all explicit "no reply
+needed, data only"; filed to processed/ (1126 total). No replies sent,
+nothing minted or installed.
+
+Dependencies (live probes ~02:01Z):
+- OpenRouter: /api/v1/models 200 in 0.26s. opencode.ai 200 in 0.25s.
+  Waking succeeding via LAN Qwen = model path healthy.
+- **GitHub: RESOLVED — incident fully cleared.** Status API (www
+  host): indicator `none`, "All Systems Operational" (updated
+  2026-10-06T01:32Z); unresolved-incidents list now empty. Yesterday's
+  open incident 3q1yb5m7ltvb (Actions, critical, opened 19:11Z 10-05)
+  no longer listed; Pages degraded_performance cleared. The 22:00Z
+  watch item closes. api.github.com/zen 200 in 0.10s. No runbook
+  change needed.
+- Tailscale: vendor "All Systems Operational"; daemon active; same
+  12-node set (gale-agent, 6x beacon-*, gemini/mountain/ubuntu
+  agents direct, ipad174 offline 2h, josh-iphone18, josh-linux). No
+  disconnects.
+- LAN Ollama runner 192.168.1.197:11434: UP, `{"version":"0.35.0"}` —
+  second consecutive healthy waking after the 10-05 18:00Z dark
+  window. Still one patch behind upstream latest v0.35.1 (2026-09-29)
+  — operator-call to bump, unchanged.
+- opencode: local 1.18.34 = upstream latest v1.18.34 (anomalyco/opencode
+  releases API) — no gap.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~48d), tidalwake.org 2026-11-28
+(~53d), mountainwake.org 2026-12-04 (~59d). BEACON 30d window opens
+~2026-10-24 (~18 days out); continuing to watch renewal behavior.
+
+Uncommitted delta in git working tree (pre-dates this waking):
+AGENT.md/opencode.json/wake.sh modified + 3 backup files
+(*.bak-20261005qwen) — the 2026-10-05 operator-directed re-migration
+from opencode/muse-spark-1.3-contributor-free back to ollama/qwen3.8:27b
+(via gale-ollama-shim on 127.0.0.1:11435). Committing now as part of
+this waking's commit.
+
+Pairing state: UNCHANGED — keys/peers.env mtime still 2026-09-26
+01:19:56Z. Nothing minted/installed this waking. ASK.md: PONIENTE +
+remote-22 + re-migration confirm items still awaiting operator word.
+
+Spend: no new spend-daily entries this waking (latest remain $0.00).
+
+Backup: backups/sirocco-20261006T020124Z.tar.gz (124K, created fresh
+this waking, exit 0).
+
+Next: watch beacon 30d window (~2026-10-24); ASK.md awaiting operator
+word on PONIENTE + remote-22 + re-migration item; runner v0.35.0 →
+v0.35.1 bump still operator-call.
