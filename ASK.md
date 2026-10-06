@@ -2,23 +2,6 @@
 
 ## Open
 
-- **Ratification of the fleet model migration `ollama/qwen3.8:27b` →
-  `opencode/muse-spark-1.3-contributor-free` (2026-10-05 ~15:38Z) — PENDING
-  (flagged 2026-10-05T16:48Z).** Between the 12:52Z and 16:48Z wakings, all
-  10 open-weight cohort dirs (bora, chinook, cyclone, levante, maistral,
-  ostro, poniente, sirocco, tramontane, vortex) had `wake.sh` +
-  `opencode.json` + `AGENT.md` token-swapped to the new model in a ~32s
-  staggered sweep (ostro mtimes 15:38:40–15:39Z; uncommitted). The edit
-  touched Ostro's role section (`AGENT.md` model line + drift-example line),
-  which per rule 6 requires an operator Telegram sign-off — none is on
-  record (`check_replies.sh` empty). The new config is internally
-  consistent (AGENT.md ↔ wake.sh agree, no drift) and this very session
-  runs on it, so it was left live, not reverted; stale "LAN Ollama"
-  prose remains (cosmetic). The LAN Ollama itself is unreachable from
-  this host ("No route to host"). Requesting formal ratification (or
-  instruction to revert/repair) from the operator. Details in NOTES.md
-  (16:48Z entry).
-
 - **Ratification of the LEVANTE (2026-09-25T22:09Z) and PONIENTE
   (2026-09-26T01:20Z) peer pairings — PENDING (flagged 2026-09-26T04:52Z).**
   Neither pairing has an explicit operator sign-off recorded in Ostro's
@@ -32,17 +15,31 @@
   exist; peer_server.log shows selftest ACCEPT + expected 401 REJECT.
   Disposition: link left live (reverting would be destructive without
   operator context); no new pairing actions taken. Requesting formal
-  ratification (or instruction to revert) from the operator.
-  Details in NOTES.md (04:52Z annotation).
-
-- **Cyclone model/runner drift (2026-09-25T17:30Z, known example, flagged
-  once per AGENT.md item 4):** `cyclone/AGENT.md:7` declares
-  `opencode/muse-spark-1.3-contributor-free` while `cyclone/wake.sh:48`
-  runs `--model ollama/qwen3.8:27b` and its own PROMPT line 45 says the
-  same. AGENT.md header has drifted from the actual runner. Flagged here
-  for the record; per my role I will not keep re-flagging.
+   ratification (or instruction to revert) from the operator.
+   Details in NOTES.md (04:52Z annotation).
 
 ## Resolved
+
+- **Fleet model migration `ollama/qwen3.8:27b` →
+  `opencode/muse-spark-1.3-contributor-free` (2026-10-05 ~15:38Z) — RESOLVED-BY-REVERT
+  (flagged 2026-10-05T16:48Z, operator-reverted 2026-10-05T23:47Z).**
+  Between the flagged waking (16:48Z) and this one (2026-10-06T00:55Z),
+  the operator reverted all 10 open-weight cohort dirs (bora, chinook,
+  cyclone, levante, maistral, ostro, poniente, sirocco, tramontane, vortex)
+  back to `ollama/qwen3.8:27b` in `opencode.json` + `wake.sh` + `AGENT.md`
+  (verified this waking: `oc="ollama/qwen3.8:27b"` everywhere; `wake.sh`
+  carries an operator-directed header comment; `.bak-20261005qwen` files
+  preserve the pre-revert muse-spark state). LAN Ollama confirmed live both
+  ways: `192.168.1.197:11434/api/tags` serves `qwen3.8:27b` (Q4_K_M, 27.3B,
+  ctx 262144, vision/tools/thinking); LAN shim `127.0.0.1:11435/v1/models`
+  same. The 20:48Z "LAN Ollama UNREACHABLE" observation was resolved by the
+  revert. No ratification outstanding — the operator acted directly.
+
+- **Cyclone model/runner drift — RESOLVED-BY-REVERT (filed 2026-09-25,
+  re-stated 2026-10-05T16:48Z; cleared 2026-10-06T00:55Z).** With the
+  cohort revert, `cyclone/AGENT.md:7`, `cyclone/opencode.json` and
+  `cyclone/wake.sh` all agree on `ollama/qwen3.8:27b` (verified this
+  waking). No drift remains.
 
 - **Ostro missing from the host's fleet-metrics liveness sweep — RESOLVED
   (filed 2026-09-25T17:30Z, verified fixed 2026-09-25T18:47Z).**
