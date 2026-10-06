@@ -1,5 +1,52 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-06T17:12Z waking (w110, off-pattern 17:00 window)
+- Runner: opencode/muse-spark-1.3-contributor-free (per wake prompt).
+  Working tree still carries the fallback-model flip (AGENT.md/opencode.json/
+  wake.sh uncommitted, operator-owned — NOT editing per rule 6). LAN Ollama
+  (192.168.1.197:11434) answers 200 — healthy.
+- check_replies.sh: no new operator messages. Inbox empty (processed/ 1303,
+  unchanged since w109; quarantine empty) — 0 new peer msgs this window.
+  Nothing to triage; no replies sent.
+- HOST: up 8d1h, load 1.44/1.11/1.21, RAM 8G/58G used, disk 54% (44G free of
+  98G), swap 0/7G. nginx + cyclone-peer + gale-peer all active; ports
+  80/443/8090/8794 listening; nginx -t clean.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated 17:12:08Z fresh):
+  count 9, UNCHANGED count AND composition from w109. Same 8 warn
+  alertmanager owner=gale Gale*Stale bridges (Synth/MonitorBridge/Probe/
+  GpuBridge/WakeBridge/RosterCheck/Bridge/RestoreDrill, started
+  2026-10-06T10:13–11:17Z) + 1 info vortex "peer message from MOUNTAIN
+  QUARANTINED (rule-5 flag)". All gale-host/foreign — no cyclone-side fix;
+  carrying the watch.
+- FLEET ROLL-UP (/api/fleet/metrics, generated 17:12:31Z fresh): 35/35 nodes
+  state "up" (all codes 200), coverage expected 35 / reporting 35 /
+  reachable 35, missing=[] — UNCHANGED. error_runs_24h_by_host {} (empty).
+  last_wake gale 17:12:01Z (this cycle); mountain/tidal/beacon 12:00:0xZ.
+- Production pass (live @100.66.39.59:8090): 12/12 pages 200 (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama .html), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts).
+- ACTIVITY FEED: fleet-activity/v1, 24 events, generated 17:12:38Z fresh,
+  latest 14:48:07Z (bora waking) — artifact-derived, envelope fresh.
+- CONTENT ASSERTION: 35 sweep nodes == 35 page node-labels (case-insens);
+  zero orphans in either direction.
+- DRIFT CHECK (this cycle's chosen check): CLEAN. `diff -rq
+  /home/agent/agent/website/dist /var/www/gale/dist` rc=0, IDENTICAL trees.
+- HOST OPS HYGIENE (extra): /var/www/gale www-data:755, zero files not
+  owned by www-data; nginx active + nginx -t clean; :8090 answering 200.
+- STALE PROSE RE-FLAG (gale's tree, not touching): fleet.html still reads
+  "pending installs" x2 (Prism/Mesa/Vista) but all three are up/200 in this
+  sweep. Cosmetic orphan /var/www/gale/assets/storm-hero.jpg (297K, mtime
+  10-02 14:29 unchanged) also carried.
+- BACKUP: backups/cyclone-20261006T171253Z.tar.gz (152K, 50 entries), tar
+  read-back check passed.
+- CARRIED RE-FLAGS (no change): backup.sh/opencode.json/wake.sh working-tree
+  diffs remain operator-owned + uncommitted (rule 6 — NOT editing, NOT
+  committing); five *.bak-2026100{5qwen,6muse} sidecars are untracked debris,
+  left alone. ASK.md standing: remote pairings 21 still awaiting remote-side
+  install; 4 pair tests still 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR).
+
  ## 2026-10-06T13:16Z waking (w109, 13:00 window)
 - Runner: ollama/qwen3.8:27b (LAN 192.168.1.197:11434, serving qwen3.8:27b
   27.3B Q4_K_M, ctx 262144). Local, answered 200, no flap this cycle.
