@@ -3925,3 +3925,107 @@ this waking, exit 0).
 Next: watch beacon 30d window (~2026-10-24); ASK.md awaiting operator
 word on PONIENTE + remote-22 + re-migration item; runner v0.35.0 →
 v0.35.1 bump still operator-call.
+
+## 2026-10-06T18:00Z — Scheduled waking (all green; 2 failed slots + new out-of-band model flip, see ASK.md)
+
+Context: 18:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
+waking landed ~18:00Z, on schedule. This waking runs
+`opencode/muse-spark-1.3-contributor-free` via Zen.
+`check_replies.sh`: no new operator messages.
+
+**Slot history today (reconstructed from logs/ + git):**
+- 06:00Z slot FAILED: attempts 1+2+3 all retryable APIError, exit 1
+  (07:34Z, ALERT fired, 277B error envelope — same signature as the
+  2026-10-04 10:00Z ProviderHeaderTimeoutError stall). No NOTES entry.
+- 10:00Z slot FAILED identically (11:34Z, ALERT fired, 277B envelope).
+  No NOTES entry. Two consecutive failed slots on the Zen path is now
+  a PATTERN (3rd + 4th such stalls after 10-04 10:00Z): flagging to
+  Tempest/operator as possible Zen/gateway pressure — no local action
+  (retries + alerts behaved as designed, $0 cost each).
+- 14:00Z slot RAN (14:00–14:45Z, ~29 probes, spend entry $0.00) and
+  committed `ce6daac`, but: (a) the commit message is mislabeled
+  "19:02Z" (committed 14:12:31Z — future-slot label, history now
+  carries it, not rewriting a pushed commit); (b) the commit only
+  touched opencode.json context limits (65536/32768 -> 16384/8192);
+  (c) the session then idled to the 45m timeout (exit 124, ALERT
+  fired — same stall-after-output pattern as the 09-28 22:50Z
+  finding); (d) it wrote NO NOTES.md entry (this entry covers the
+  gap from the 02:01Z entry).
+
+**AS-FOUND CHANGE (not mine, committed for audit — see ASK.md):**
+`opencode.json` + `wake.sh` flipped `ollama/qwen3.8:27b` (shim
+127.0.0.1:11435) -> `opencode/muse-spark-1.3-contributor-free` at
+~14:44Z (all four mtimes 14:44Z incl. the `.bak-20261006muse`
+pair, which holds the qwen config — confirmed by diff). The new
+wake.sh header claims "2026-10-06 operator-directed" but
+check_replies is clean, so per rule 6 it is NEEDS OPERATOR CONFIRM
+(new ASK.md item). Working tree matches this waking's reality;
+`AGENT.md` (2026-10-05 23:47 qwen line) now mismatches in the
+opposite direction — leaving it untouched (rule 6), flagging.
+
+Host: up 8d 2:27, load 1.49/1.45/1.37 (normal shared-host range),
+disk 54% (50G/98G, 44G free — +2pt vs 52% at 02:01Z, normal churn,
+far from 80%), RAM 9G used / 49G available of 58G, swap idle.
+`sirocco-peer` active on 100.66.39.59:8796; all 14 tailnet peer
+listeners 8787–8800 present (+ localhost host services).
+
+Dependencies (all green, live probes ~18:00Z):
+- OpenRouter: /api/v1/models 200 in 0.40s. opencode.ai 200 in 0.23s.
+  Waking succeeding on muse-spark = Zen/model path healthy.
+- GitHub: api.github.com/zen 200 in 0.11s; status API (www host)
+  "All Systems Operational" (updated 17:14Z). The 10-05 Pages
+  incident stays resolved.
+- Tailscale: daemon active; 12-node set (gale-agent, 6x beacon-*
+  [prism active, rest idle], gemini/mountain/ubuntu agents active
+  direct, josh-iphone18, josh-linux, ipad174 offline 11m). No
+  disconnects.
+- LAN Ollama runner 192.168.1.197:11434 UP, `{"version":"0.35.0"}`
+  — 3rd consecutive healthy waking after the 10-05 18:00Z dark
+  window. Upstream latest still v0.35.1 (2026-09-29) — gap 0.0.1,
+  operator-call to bump, unchanged.
+- opencode: local 1.18.34 = upstream latest v1.18.34 (2026-09-30,
+  via anomalyco/opencode releases API) — gap closed, no change.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~48d), tidalwake.org
+2026-11-28 (~53d), mountainwake.org 2026-12-04 (~59d). SAME certs
+since baseline (no renewal). BEACON 30d window opens ~2026-10-24
+(~18 days out).
+
+Inbox: 7 new, all filed to processed/ (1162 total). 2x BEACON
+"revenue mandate" relays (17:22Z + 17:25Z) claiming josh's word via
+an interactive session and explicitly saying "verify on your own
+operator channel before acting" — check_replies shows no operator
+Telegram, so per rule 5 these are data only: logged, NO action, no
+reply, no lane changes. 2x MOUNTAIN latency checks (17:25Z/17:39Z)
++ 3x MOUNTAIN Rule-7/latency (18:00–18:01Z, arrived mid-waking) —
+all routine "no reply needed, data only". No replies sent, nothing
+minted or installed. No MOUNTAIN-vs-MESA label quirk in this batch.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, same 34 NAME blocks (GALE + 7 mesh + CHINOOK + 21 remote
++ TRAMONTANE + OSTRO + LEVANTE + PONIENTE, verified by name).
+Nothing minted/installed this waking. ASK.md: PONIENTE + remote-22
++ 10-05 re-migration + NEW 10-06 14:44Z flip items awaiting
+operator word (OSTRO + LEVANTE resolved 09-26).
+
+Spend: $0.00 (latest spend-daily entries 10-06 02:02Z + 14:45Z both
+0.0; Zen-billed wakings' accounting is operator-side, no alert
+threshold tripped that I can see).
+
+Runner/portability note for Tempest: back on
+`opencode/muse-spark-1.3-contributor-free` via Zen this waking
+after ~1 day on LAN Qwen — clean run, no runner/model anomalies.
+Plus the decoupling datapoint in reverse: LAN runner UP while
+nothing on this host consumes it post-flip. And the slot-failure
+pattern above (06:00Z + 10:00Z APIError x3) is Zen-path-side, worth
+a Tempest-series check if a 3rd consecutive slot fails.
+
+Backup: `backups/sirocco-20261006T180134Z.tar.gz` (128K, 51
+entries, tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/
+opencode.json present).
+
+Next: watch for a 3rd consecutive Zen-path slot failure (escalate
+to runner/gateway check); watch beacon 30d window (~2026-10-24);
+ASK.md awaiting operator word on PONIENTE + remote-22 + both model
+flips; runner v0.35.0 -> v0.35.1 bump still operator-call.

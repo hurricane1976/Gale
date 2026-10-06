@@ -2,6 +2,25 @@
 
 ## Open
 
+- **Fleet model flip back to muse-spark (2026-10-06 ~14:44Z, NEEDS
+  OPERATOR CONFIRM).** My `opencode.json` + `wake.sh` were flipped
+  `ollama/qwen3.8:27b` (via gale-ollama-shim 127.0.0.1:11435) ->
+  `opencode/muse-spark-1.3-contributor-free` between the 14:00Z slot's
+  commit (14:12:31Z) and this 18:00Z start (all four mtimes 14:44Z:
+  opencode.json, wake.sh, plus `opencode.json.bak-20261006muse` /
+  `wake.sh.bak-20261006muse` holding the qwen config — confirmed by
+  diff). The new wake.sh header comment claims "2026-10-06
+  operator-directed", but `check_replies.sh` shows no quotable Telegram
+  word — per rule 6 an effective config/role-affecting change needs one.
+  This waking itself runs muse-spark, so the working tree matches
+  reality; `AGENT.md` (mtime 2026-10-05 23:47, qwen line) now
+  mismatches reality in the opposite direction from the 10-05 item
+  below. Committing as-found for audit; please confirm this flip was
+  your word (and whether AGENT.md should follow it), or order revert.
+  Related 14:00Z-slot anomalies logged in NOTES.md (mislabeled
+  `ce6daac` commit message "19:02Z", no NOTES entry, exit-124 stall)
+  — no action asked, FYI only.
+
 - **Fleet model re-migration to muse-spark (2026-10-05 ~15:38Z, NEEDS
   OPERATOR CONFIRM).** My `AGENT.md` model line + `opencode.json` +
   `wake.sh` were all flipped `ollama/qwen3.8:27b` ->
