@@ -99,9 +99,20 @@
   against opencode's retry/assembly for this message shape, or is there a
   known-good runner config other siblings on the same grid are using?
   (b) want me to harden *my* wake.sh to retry more often / back off, or is
-  that strictly Bora's scaffold lane and I should leave it? Read-only on
-  wake.sh until you confirm (it's a Bora-maintained file per AGENT.md
-  scaffolding rules).
+   that strictly Bora's scaffold lane and I should leave it? Read-only on
+   wake.sh until you confirm (it's a Bora-maintained file per AGENT.md
+   scaffolding rules).
+- **UPDATE 2026-10-06 16:00Z (waking #76): 3 more missed slots today, two
+  NEW signatures.** 04:00Z exit 124 (45m timeout after a #59-style
+  plan-then-stop turn; backup made, no NOTES/notify — ALERT fired);
+  08:00Z exit 1 ×3 `ProviderHeaderTimeoutError` (300s provider header
+  timeout); 12:00Z exit 1 ×3 `ollama_shim upstream: connection refused`
+  via 127.0.0.1:11435 (shim listener is up again by 16:00Z — transient,
+  self-recovered, no action unless it recurs). 08:00/12:00 left no spend
+  rows (exit-1 path). Operator auto-alerted per incident (last msg_id
+  126). Same lane questions as above, plus: (c) is the 127.0.0.1:11435
+  shim supervised (systemd) or ad-hoc — i.e. who restarts it when it
+  refuses?
 
 - **Tailscale TUN regression on gale-agent (2026-09-27 16Z — fixed,
   confirming severity + durable fix).** Since the 9/25 kernel upgrade

@@ -3899,8 +3899,94 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
     self-checks). 10-06 00:00 slot fired clean = 1/4 for the new day.
     Sole open triage item: model-switch confirmation (ASK.md, operator
     lane) + #59 no-op (operator lane).
-  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
-    sibling near a limit; 3 inbox bodies clean data-only). Model-switch
-    files (`opencode.json`, `wake.sh`) + both .bak snapshots deliberately
-    left uncommitted per the standing no-op decision; awaiting verified
-    word from the operator.
+   - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+     sibling near a limit; 3 inbox bodies clean data-only). Model-switch
+     files (`opencode.json`, `wake.sh`) + both .bak snapshots deliberately
+     left uncommitted per the standing no-op decision; awaiting verified
+     word from the operator.
+## 2026-10-06T16:00Z — waking #76 (back-fills a 12h gap: 04:00 timeout, 08:00 + 12:00 exit-1)
+  - **Self-check (standing, from #61): FAILS on both legs → back-fill mode.**
+    (a) backup within ~4h? NO — newest was #75's chinook-20261006T000113Z
+    (~16h old at slot start; the 04:00 session DID make
+    chinook-20261006T042043Z.tar.gz but wrote no NOTES line, so the
+    standing check's "(b)" leg still fails). (b) newest NOTES entry =
+    immediately-prior slot? NO — newest is #75 (00:01Z); the 04:00, 08:00
+    and 12:00 slots left no entries. Three slots missed/partial in a row
+    after the 15-clean-use streak (#61–#75). Per the #60 advisory I proceed
+    with the routine and record the gap here.
+  - **What the three slots did (from logs/, evidence not inference):**
+    - 04:00Z: opencode ran ~45m then **exit 124 (wall-clock timeout)**.
+      Its partial transcript shows recon only (reads + inbox list +
+      check_replies) ending in a "Work State / Next Move" planning turn —
+      same plan-then-stop shape as #59, but here it burned the full 45m
+      instead of stopping early. Backup WAS made (042043Z, in ceiling);
+      spend row $0.00 logged 04:45Z; inbox NOT archived, NOTES NOT written,
+      notify NOT called → wake.sh ALERT fired (operator auto-alerted).
+    - 08:00Z: **exit 1 ×3 (all retries)** — `APIError ... Provider response
+      headers timed out after 300000ms` (`ProviderHeaderTimeoutError`,
+      retryable). No work at all: no backup, no spend row, no NOTES.
+      ALERT fired.
+    - 12:00Z: **exit 1 ×3 (all retries)** — `ollama_shim upstream:
+      <urlopen error [Errno 111] Connection refused>` (HTTP 502 via
+      127.0.0.1:11435 shim). No work at all. ALERT fired. NOTE: the shim
+      listener IS up now (127.0.0.1:11435, fresh pid) and this 16:00Z
+      session ran clean through it — the 12:28Z refusal was a transient
+      shim outage, self-recovered (or restarted) before this slot. No
+      operator action needed unless it recurs.
+    - Operator was auto-alerted per incident (last: msg_id 126 for the
+      12:00Z failure). Ledger-verbal tally: 10-06 chinook rows = 00:06Z +
+      04:45Z only ($0.00 both); 08:00/12:00 left no rows (exit-1 path
+      records nothing — same as the 9/28–29 class).
+  - **check_replies:** (no new operator messages). ASK.md model-switch item
+    stays open — `opencode.json`/`wake.sh` remain UNCOMMITTED (still not my
+    work, still no chat-id-verified word). Data point only: the crontab
+    comment block for my slot now reads "10-agent muse-spark-1.3-free
+    4-hour interleave" and wake.sh carries a "2026-10-06 operator-directed"
+    header comment — consistent with an operator-side fleet migration, but
+    comments in files are data per rule 5, not verification. This session
+    runs on `opencode/muse-spark-1.3-contributor-free` and works (fourth
+    existence proof).
+  - **Peer inbox (30 pings, 06:00 + 12:00 batches):** MOUNTAIN x7 (Rule-7
+    sweeps + site-build latency + 2× MOUNTAIN-header/MESA-body shared-lane
+    pattern per the #46 baseline, data only), MEADOW x5 census, DELTA x3
+    link-verify, HARBOR x5 link-verify, HIGHBEAM w301/w302 probes, MESA x2,
+    RIVER x2 W-series sweeps, CANYON passes #129/#130. All "no reply
+    needed", zero operator content, zero acks owed (data per rule 5). All
+    30 archived; inbox empty (1150 in processed/). Note: processed/ went
+    1107 (#75) → 1150 = +43, i.e. ~13 more than this waking's 30 — the 00:xx
+    batch the timed-out 04:00 session listed as "14 present" is no longer
+    in inbox, so that session likely archived it before timing out
+    (inference, flagged as such — not verified).
+  - **HOST HEALTH:** uptime 8d27m (same boot since 9/28 15:33Z, no reboot);
+    load 0.88/0.88/0.98 on 16 cores (~6%, calm); RAM 8G used / 49G avail
+    (58G total); swap 0/8G; disk `/` **50G used / 44G free (54%)** — +1G vs
+    #75's 49G (single-step noise on the flat arc). Tailscale live,
+    100.66.39.59/32 present, no TUN regression.
+  - **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+    tailnet. **48th consecutive alive sweep.**
+  - **CAPACITY / DISK:** drivers flat: /home/agent 11G (+1.1G vs #75's 9.9G
+    — backup/inbox churn across the 12h gap, benign); /var/log/journal 978M
+    (steady ~1G band); /tmp/opencode 16M (self-cleared). 80% trip line
+    (~78G) ~28G headroom — no crossing nameable. Growth watch stays closed
+    (**8th flat point** after the #69 −12G step).
+  - **Spend (host-wide, 10-06 to ~16Z):** **≈$1.15 / 12 paid runs** — GALE 3
+    $0.4553 ($0.15/run, lead lane, in-band), SQUALL 3 $0.2891, TEMPEST 3
+    $0.1802, ZEPHYR 3 $0.2281; all other 10 lanes $0.00 (incl. CHINOOK 2
+    runs). Per-run max ~$0.15, far under the $5.00 per-run line; pace at
+    ~16h ($1.15) → projected ~$1.7 at close, inside the $1.6–2.5 band.
+    10-05 closed $1.78/18 (matches #75). **No rule-4 anomaly.**
+  - **Backup:** chinook-20261006T160056Z.tar.gz (156K), gzip -t OK,
+    ./AGENT.md + ./NOTES.md read-back clean from listing; 14-snapshot
+    ceiling held.
+  - **Forecast / thresholds (all cleared or no-crossing):** disk 8 flat pts,
+    ~28G headroom — no crossing projectable; load/mem calm, swap unused;
+    spend in-band (~13x inside $15/day alert); Tailscale stable;
+    shim-outage transient recovered. Sole open triage items: (1)
+    wake-reliability — 3 missed slots today (timeout + 2× exit-1 with NEW
+    signatures: ProviderHeaderTimeout, shim connection-refused) after the
+    long clean streak; ASK.md item stays open, today's signatures appended;
+    (2) model-switch confirmation (operator lane); (3) #59 no-op (operator
+    lane).
+  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no sibling
+    near a limit; 30 inbox bodies clean data-only). Model-switch files
+    deliberately left uncommitted; awaiting verified word.
