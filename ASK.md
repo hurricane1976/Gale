@@ -3,29 +3,34 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w70 2026-10-06 03:13Z;
-  no new failures w69/w70 (fleet 14/14 fresh three consecutive wakings).**
-  The 2026-10-04 10:48–12:00Z `retryable APIError` window hit **7 of 15
-  agents** (bora, chinook, maistral, poniente, sirocco, vortex, **and my own
-  11:12Z slot**). MAISTRAL's w64 window (2026-10-05 03:36–07:36Z) showed the
-  same two failure shapes — 8192 output-token cap (`reason=length`) and
-  `exit code: 124` opencode wall-clock timeout — in a 3-slot miss streak
-  (now self-recovered, see Resolved). **Recurrence w67/w68 RESOLVED w69:
-  MAISTRAL's 15:36Z slot hit `retryable APIError` ×3 (`ollama_shim upstream:
-  [Errno 113] No route to host`, 502, 15:36–15:41Z) — same signature as w59,
-  transient shim-upstream blip; single slot, data intact (readable snaps,
-  14 retained throughout); at w68 (19:12Z) that single miss had carried
-  MAISTRAL to 452m/7.5h — OVER the 6h bar (drift finding, data-only note
-  sent, delivered ok); at w69 (23:12Z) its expected ~19:36Z slot ran clean
-  (`maistral-20261005T193710Z`, 232K, pushed to github) — MAISTRAL back to
-  215m, fleet 14/14 fresh, no drift.** MAISTRAL's earlier role-refusal was only
-  caught because `wake.sh` fires an ALERT on "exit 0 without reporting". Two
-  recommendations pending your call: (a) look at the Ollama/API gateway for
-  the 2026-10-04 11:00–12:10Z window, (b) treat "exit 0 + ALERT + no report"
-  and `exit 124` timeouts as retryable misses / surface the model's refusal or
-  truncation text so a miss can't masquerade as a clean pass. **No data loss
-  in any of these cases** (every flagged snapshot verified intact,
-  `tar -tzf` readable).
+  compounded w59 APIError cases) — STILL OPEN at w71 2026-10-06 15:12Z;
+  NEW biggest miss window since w59 (see below); fleet-wide migration to
+  muse-spark ~14:44Z should resolve the shim-outage class.**
+  History: the 2026-10-04 10:48–12:00Z `retryable APIError` window hit 7 of 15
+  agents (incl. my own 11:12Z slot); MAISTRAL's w64 3-slot miss streak
+  (8192-cap / exit-0-no-report / `exit 124`) self-recovered w65; its w67/w68
+  single-slot APIError recurrence (Errno 113, 15:36Z) carried it over the bar
+  at w68 and self-recovered w69 (see Resolved entries below for detail).
+  **NEW w71 2026-10-06 (~04:24Z→13:36Z+):
+  `ollama_shim upstream: [Errno 111] Connection refused` + 502s — the shim
+  path refused for ~9h; CHINOOK (08:00Z+12:00Z, plus 04:00Z `exit 124`) /
+  LEVANTE (04:24Z+08:24Z+12:24Z) / MAISTRAL (07:36Z+11:36Z) / PONIENTE
+  (05:36Z+09:36Z+13:36Z) each missed 2–3 slots → 10.9h/14.8h/11.5h/13.6h at
+  the 15:12Z sweep, all OVER the 6h bar; every newest snap verified intact
+  (`tar -tzf` readable, 14 retained each) — no data loss; no peer notes sent
+  (w59 precedent: shared infra cause, each agent's own logs self-diagnose).
+  Mitigating fact: at ~14:44Z the whole fleet (all checked siblings + me)
+  was switched operator-side to `opencode/muse-spark-1.3-contributor-free`
+  (Ollama provider block removed); post-switch runs are clean (BORA 24m /
+  VORTEX 23m / SIROCCO 61m / mine 0m), so the four drifters should
+  self-recover at their next slots — will re-sweep next waking.** MAISTRAL's
+  earlier role-refusal was only caught because `wake.sh` fires an ALERT on
+  "exit 0 without reporting". Two recommendations pending your call: (a) look
+  at the Ollama/API gateway for the 2026-10-04 11:00–12:10Z window, (b) treat
+  "exit 0 + ALERT + no report" and `exit 124` timeouts as retryable misses /
+  surface the model's refusal or truncation text so a miss can't masquerade as
+  a clean pass. **No data loss in any of these cases** (every flagged snapshot
+  verified intact, `tar -tzf` readable).
 
 ## Resolved / for the record
 
