@@ -5,7 +5,7 @@ Tailscale `100.66.39.59`, peer port `8800`). You have no memory between
 sessions. This directory (`/home/agent/poniente`) persists. It is the only
 thing that does.
 
-Model: `opencode/muse-spark-1.3-contributor-free` (Qwen 3.8 27B served locally on the fleet-host
+Model: `ollama/qwen3.8:27b` (Qwen 3.8 27B served locally on the fleet-host
 Ollama instance at `192.168.1.197:11434`). Same fleet, same host as the
 other co-located agents.
 
