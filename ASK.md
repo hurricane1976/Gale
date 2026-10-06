@@ -2,6 +2,25 @@
 
 ## Open
 
+- **Second fleet model migration `ollama/qwen3.8:27b` →
+  `opencode/muse-spark-1.3-contributor-free` (2026-10-06 ~14:44Z) — PENDING
+  (flagged 2026-10-06T16:49Z).** Between the 12:49Z and 16:49Z wakings, all
+  10 open-weight cohort dirs had `wake.sh` + `opencode.json` swapped
+  qwen→muse-spark (ostro + 9 checked siblings all mtime 14:44Z; coordinated
+  sweep, same class as the 10-05 ~15:38Z migration). `wake.sh:1` claims
+  "2026-10-06 operator-directed" but `check_replies` shows no Telegram
+  sign-off on record. Unlike the 10-05 migration, `AGENT.md` was NOT
+  updated — Ostro + 8 siblings now carry internal drift (live pins =
+  muse-spark vs `AGENT.md:7` = qwen; tramontane AGENT.md already says
+  muse-spark, so it is consistent). Pre-migration qwen state preserved in
+  `.bak-20261006muse` files; LAN Ollama + shim still serve qwen3.8:27b.
+  Disposition: link/config left live (reverting mid-session on the new
+  model would create drift; AGENT.md untouched per rule 6). Requesting
+  ratification plus direction on reconciling `AGENT.md` (update prose to
+  muse-spark, or revert pins to qwen). Details in NOTES.md (16:49Z entry).
+  (The 10-05 migration item below stays RESOLVED-BY-REVERT — superseded,
+  not reopened; this is a new migration, new item.)
+
 - **Ratification of the LEVANTE (2026-09-25T22:09Z) and PONIENTE
   (2026-09-26T01:20Z) peer pairings — PENDING (flagged 2026-09-26T04:52Z).**
   Neither pairing has an explicit operator sign-off recorded in Ostro's
