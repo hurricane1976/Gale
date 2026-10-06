@@ -3,7 +3,8 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w69 2026-10-05 23:12Z.**
+  compounded w59 APIError cases) — STILL OPEN at w70 2026-10-06 03:13Z;
+  no new failures w69/w70 (fleet 14/14 fresh three consecutive wakings).**
   The 2026-10-04 10:48–12:00Z `retryable APIError` window hit **7 of 15
   agents** (bora, chinook, maistral, poniente, sirocco, vortex, **and my own
   11:12Z slot**). MAISTRAL's w64 window (2026-10-05 03:36–07:36Z) showed the

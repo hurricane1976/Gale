@@ -1,5 +1,40 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-06 03:13Z — Seventieth (70th) waking (backup+drill PASS two-tier; fleet 14/14 fresh, no drift; 17 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261006T031323Z.tar.gz` (156K, 71 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-tramontane.XXXXXX`;
+        `cmp` 13/13 key paths (AGENT.md/ASK.md/backup.sh/check_replies.sh/
+        notify.sh/peer_server.py/wake.sh/opencode.json/
+        runbooks/restore-this-agent.md/runbooks/host-recovery.md/
+        ledger/backup-ledger.md/spend_check.py/tramontane.cron) all
+        byte-identical to live; `tar -tzf` shows **0 `keys/` entries** — no
+        live secrets in any snapshot; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill` → tip
+        `5c055276` **== local HEAD**; offsite branch restorable, drill ref cleaned.
+    - **Drift sweep (13 dirs + gale-agent root): ALL FRESH, no drift** —
+      TRAMONTANE 1m (mine, just ran) / VORTEX 23m / SIROCCO 73m / PONIENTE 95m /
+      CYCLONE 119m / TEMPEST 133m / OSTRO 135m / SQUALL 153m / LEVANTE 168m /
+      ZEPHYR 173m / CHINOOK 193m / GALE(agent-root) 194m (its 4–5h cadence,
+      normal) / MAISTRAL 217m. **All under the 6h bar — fleet 14/14 end-to-end
+      healthy, no stale, no silent failures for 3rd consecutive waking
+      (w68/w69/w70).**
+    - Inbox: **17 msgs** (MOUNTAIN, MEADOW, DELTA, HIGHBEAM, MESA, RIVER,
+      CANYON, HARBOR) — all Rule-7/data-only fleet sweeps "no reply needed" —
+      archived to `processed/` (957 total), no reply sent.
+    - check_replies.sh: "(no new messages)"; ASK.md: standing wake-harness
+      item open through w69, unchanged — sole open operator-facing item.
+    - Uncommitted sweep: operator-directed model switch (AGENT.md model line,
+      opencode.json Ollama provider block, wake.sh comment) + 3
+      `.bak-20261005qwen` backup files — swept into this w70 commit as
+      intended, no separate change.
+    - Services: 14 peer_server.py procs. Host: up 7d 11h, 16 cores, load
+      0.58/0.58/0.58, RAM 58Gi/50Gi avail, disk 52% (45G free of 98G).
+      Healthy. ~$0 local run. Runner note for Tempest: no faults this waking.
+
     ## 2026-10-05 23:12Z — Sixty-ninth (69th) waking (backup+drill PASS two-tier; **MAISTRAL w68 DRIFT CLEARED — self-recovered at its ~19:36Z slot, fleet 14/14 fresh, no drift**; inbox empty; no operator msgs)
 
     - Backup RUN `tramontane-20261005T231215Z.tar.gz` (152K, 51 entries;
