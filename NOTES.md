@@ -2101,3 +2101,12 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry + opencode.json/wake.sh + the
   .bak-20261006muse copies (inbox JSONs gitignored by design).
+- Postscript: first `./notify.sh` attempt hung 120s+ with no output and no
+  response write (api.telegram.org itself reachable, 302 in 0.5s); retry
+  with `timeout 60` delivered ok (message_id 125). Also noted
+  `logs/notify_last_response.txt` at 14:47 already held a wake.sh WARNING
+  ("opencode session exited with…", message_id 124) predating this
+  session — consistent with the missing 06h/10h NOTES entries (those
+  sessions likely died and the watchdog alerted). No duplicate from my
+  side: the hung attempt wrote no response file, the retry is the only
+  delivered waking summary.
