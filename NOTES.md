@@ -1,5 +1,53 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-06T13:16Z waking (w109, 13:00 window)
+- Runner: ollama/qwen3.8:27b (LAN 192.168.1.197:11434, serving qwen3.8:27b
+  27.3B Q4_K_M, ctx 262144). Local, answered 200, no flap this cycle.
+- check_replies.sh: no new operator messages. Inbox fully drained to
+  processed/ (0 remaining; processed/ now 1303) — routine Rule-7
+  credentialed-reach/liveness probes, every one carries "no reply needed";
+  no operator request, no action. Nothing quarantined.
+- HOST: up 7d21h, load 0.75 (1m), RAM 8G/58G used, disk 53% (44G free of
+  98G), swap 0/0. nginx + cyclone-peer + gale-peer all active; ports
+  80/443/8090/8794 listening; nginx -t clean.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1): count 9, DOWN from 11 at w108
+  but COMPOSITION CHANGED. Now 8 warn alertmanager owner=gale "...Stale"
+  bridges, all started 2026-10-06T10:13–11:17Z: GaleSynthStale ("no
+  synthetic run in 15m — cron bridge down?"), GaleMonitorBridgeStale,
+  GaleProbeStale, GaleGpuBridgeStale, GaleWakeBridgeStale,
+  GaleRosterCheckStale, GaleBridgeStale (sysmon textfile),
+  GaleRestoreDrillStale ("no restore drill in 14+ days"). A NEW staleness
+  cluster (Gale-side bridges/collectors stopped updating), REPLACING the
+  w108 GaleRosterDrift set. +1 info: vortex "peer message from MOUNTAIN
+  QUARANTINED (rule-5 flag)" (carried). All gale-host/foreign — no
+  cyclone-side fix; carrying the watch.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1): 35/35 nodes state
+  "up" (all codes 200), coverage expected 35 / reporting 35 / reachable 35,
+  missing=[] — UNCHANGED from w108. last_wake gale 13:12:01Z (this cycle);
+  mountain 12:00:01Z, tidal 12:00:03Z, beacon 12:00:02Z.
+- Production pass (live @100.66.39.59:8090): 12/12 pages 200 (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama .html), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts).
+- ACTIVITY FEED: fleet-activity/v1, 24 events, latest ~2026-10-06T12:31Z
+  (peer auth filings) — artifact-derived, envelope fresh.
+- CONTENT ASSERTION: 35 sweep nodes == 35 page node-labels (case-insens);
+  zero orphans in either direction.
+- DRIFT CHECK: diff <(ls repo/dist/) <(ls /var/www/gale/dist/) → IDENTICAL.
+- STALE PROSE RE-FLAG (gale's tree, not touching): /var/www/gale/fleet.html
+  still reads "pending installs: Prism, Mesa, Vista" but all three are
+  up/200 in this sweep — stale, Gale's jurisdiction. Cosmetic orphan
+  /var/www/gale/assets/storm-hero.jpg (297K) also carried.
+- BACKUP: backups/cyclone-20261006T131645Z.tar.gz (148K, 48 entries), tar
+  read-back check passed. (Entry count down from w108's 71 because
+  backup.sh now excludes .git — operator change, in-tree uncommitted.)
+- CARRIED RE-FLAGS (no change): backup.sh/opencode.json/wake.sh working-tree
+  diffs remain operator-owned + uncommitted (rule 6 — NOT editing, NOT
+  committing); three *.bak-20261005qwen sidecars are untracked debris, left
+  alone. ASK.md standing: remote pairings 21 still awaiting remote-side
+  install; 4 pair tests still 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR).
+
  ## 2026-10-06T01:14Z waking (w108, 00:00 window)
 - Runner: ollama/qwen3.8:27b (LAN 192.168.1.197:11434, v0.35.0, serving
   qwen3.8:27b 27.3B Q4_K_M, ctx 262144). Ollama STABLE — answered 200 on
