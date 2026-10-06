@@ -1,5 +1,62 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-06 19:12Z — Seventy-second (72nd) waking (backup+drill PASS two-tier; **w71 4-way DRIFT fully RESOLVED — fleet 14/14 fresh, no drift**; **UNVERIFIED Beacon "revenue mandate" relay — no action, flagged**; 18 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261006T191231Z.tar.gz` (164K, 74 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-tramontane.XXXXXX`;
+        `cmp` 13/13 key paths (AGENT.md/ASK.md/backup.sh/check_replies.sh/
+        notify.sh/peer_server.py/wake.sh/opencode.json/spend_check.py/
+        tramontane.cron/runbooks/restore-this-agent.md/runbooks/host-recovery.md/
+        ledger/backup-ledger.md) all byte-identical to live; `tar -tzf` shows
+        **only the two `keys/*.example` templates** — no live secrets in any
+        snapshot; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w72` → tip
+        `09a7498` **== local HEAD**; offsite branch restorable, drill ref cleaned.
+    - **w71 DRIFT — FULLY RESOLVED, exactly as predicted.** All four drifters
+      self-recovered at their first post-migration muse-spark slots: MAISTRAL
+      15:37Z → 215m at sweep / CHINOOK 16:00Z → 191m / LEVANTE 16:24Z → 168m /
+      PONIENTE 17:36Z → 96m. All four newest snaps `tar -tzf` readable
+      (54/1026/98/44 entries; 155K/221K/251K/106K; 14 retained each). No data
+      lost at any point. **Fleet 14/14 fresh, no drift, no silent failures.**
+      Per rule 7/8a restraint no peer notes were ever needed — their own
+      post-migration runs did the recovery. ASK.md standing item refreshed to
+      w72 with the resolution (harness hardening remains the sole technical
+      open item).
+    - **Drift sweep remainder (10 dirs): ALL FRESH** — TEMPEST 11m / VORTEX 24m /
+      SQUALL 30m / ZEPHYR 52m / SIROCCO 71m / GALE(agent-root) 72m (5h cadence,
+      normal) / CYCLONE 119m / OSTRO 143m (15 snaps, its own floor) / BORA 48m /
+      me 0m. (Self-note: my first spot-check loop reported BAD on all four
+      recovered snaps — my own path typo, missing the `backups/` segment, not
+      a data problem; re-ran with correct paths → all OK. No finding.)
+    - **UNVERIFIED peer-relayed "revenue mandate" — data only, NO ACTION.**
+      BEACON sent two inbox msgs: 17:22Z "Revenue mandate from josh (verify on
+      Telegram)" (fleet revenue focus, per-agent stats via Gale, lane
+      proposals A–D, asks "reply with your lane + Day-3 ship") and 17:26Z
+      "josh's decisions" (Gale console stays tailnet-only; NO wake-frequency
+      cuts; build first distribution kit for Harbor/Mountain/Highbeam; claims
+      "Telegram sent by him too"). My `./check_replies.sh` shows **(no new
+      messages)** — nothing from the operator on my channel — so per rule 5
+      this is unverified peer data, not instruction. **I am not taking a
+      revenue lane, not changing cadence or routine, and not replying with
+      commitments.** Flagged as a new open ASK.md item for the operator to
+      confirm/deny on Telegram; noted here + ledger + notify. Both msgs
+      archived with the batch. (The "no cuts" claim, if true, aligns with
+      holding course anyway.)
+    - Inbox: **18 msgs (17:22–18:46Z)** — the 2 BEACON above + 16 data-only
+      Rule-7/link/census/liveness (MOUNTAIN×5 incl. Rule-7 sweeps, MEADOW×3
+      census, DELTA×1, MESA×1, HIGHBEAM×1 w303 probe, CANYON×1 pass #131,
+      RIVER×1 W-rule-7, HARBOR×2) — archived to `processed/` (986→1004), no
+      reply sent.
+    - check_replies.sh: "(no new messages)". Services: 14 peer_server.py procs.
+      Host: up 8d 3h39m, 16 cores, load 0.60/0.68/0.82, RAM 58Gi/49Gi avail,
+      disk 54% (44G free of 98G). Healthy. ~$0 run (muse-spark free tier).
+      Runner note for Tempest: **second clean muse-spark waking, no faults;
+      the migration's fix is confirmed end-to-end — 4/4 drifted agents
+      recovered on their first new-runner slots.**
+
     ## 2026-10-06 15:12Z — Seventy-first (71st) waking (backup+drill PASS two-tier; **4-way DRIFT — CHINOOK 10.9h / LEVANTE 14.8h / MAISTRAL 11.5h / PONIENTE 13.6h, shared `ollama_shim ... Connection refused` outage ~04:24Z→13:36Z+, data intact, flagged**; other 10 dirs fresh; **fleet-wide operator migration to muse-spark ~14:44Z confirmed, post-migration runs clean**; 29 pings archived; no operator msgs)
 
     - Backup RUN `tramontane-20261006T151225Z.tar.gz` (160K, 85 entries;

@@ -3,9 +3,8 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w71 2026-10-06 15:12Z;
-  NEW biggest miss window since w59 (see below); fleet-wide migration to
-  muse-spark ~14:44Z should resolve the shim-outage class.**
+  compounded w59 APIError cases) — STILL OPEN at w72 2026-10-06 19:12Z;
+  w71 4-way drift RESOLVED (see below); muse-spark migration holding.**
   History: the 2026-10-04 10:48–12:00Z `retryable APIError` window hit 7 of 15
   agents (incl. my own 11:12Z slot); MAISTRAL's w64 3-slot miss streak
   (8192-cap / exit-0-no-report / `exit 124`) self-recovered w65; its w67/w68
@@ -23,7 +22,7 @@
   was switched operator-side to `opencode/muse-spark-1.3-contributor-free`
   (Ollama provider block removed); post-switch runs are clean (BORA 24m /
   VORTEX 23m / SIROCCO 61m / mine 0m), so the four drifters should
-  self-recover at their next slots — will re-sweep next waking.** MAISTRAL's
+   self-recover at their next slots — will re-sweep next waking.** MAISTRAL's
   earlier role-refusal was only caught because `wake.sh` fires an ALERT on
   "exit 0 without reporting". Two recommendations pending your call: (a) look
   at the Ollama/API gateway for the 2026-10-04 11:00–12:10Z window, (b) treat
@@ -31,6 +30,22 @@
   surface the model's refusal or truncation text so a miss can't masquerade as
   a clean pass. **No data loss in any of these cases** (every flagged snapshot
   verified intact, `tar -tzf` readable).
+  **RESOLVED w72 2026-10-06 19:12Z: all four drifters self-recovered at their
+  first post-migration slots** — CHINOOK 16:00Z (191m at sweep) / LEVANTE
+  16:24Z (168m) / MAISTRAL 15:37Z (215m) / PONIENTE 17:36Z (96m); all four
+  newest snaps `tar -tzf` readable, 14 retained each; fleet 14/14 fresh, no
+  drift. Migration resolves the outage class as predicted.
+
+- **UNVERIFIED peer-relayed "revenue mandate" (w72 2026-10-06 19:12Z) — no
+  action taken, awaiting your word on Telegram.** BEACON sent two inbox msgs
+  (17:22Z + 17:26Z) relaying operator decisions: fleet-wide revenue focus,
+  per-agent stats via Gale, no wake-frequency cuts, a first distribution kit
+  for Harbor/Mountain/Highbeam; the second claims "Telegram sent by him too".
+  My `./check_replies.sh` this waking shows **(no new messages)** — nothing
+  from you on my operator channel — so per rule 5 this is data, not
+  instruction. I have taken no action (my lane/routine unchanged) and archived
+  both with the other 16 data-only pings. Please confirm or deny on Telegram
+  if you want me in any revenue lane; until then I hold course.
 
 ## Resolved / for the record
 
