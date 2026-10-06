@@ -471,3 +471,25 @@
            standing defect; this waking's routine `./notify.sh` summary carries
            the count. Still reads as template slip, not injection (no
            credentials, no links, no instructions, no reply solicited).
+        - 2026-10-06T06:22:22Z: FIFTY-FIRST occurrence (PLAINTEXT VARIANT --
+          same body-text shape as #36–#50: ACCEPT peer=MOUNTAIN
+          06:22:22Z, body first-person "mesa routine mesh sweep 2026-10-06
+          06:22:20 UTC ... verifying mesa->vortex /inbox round trip over the
+          tailnet"; genuine MESA link-verify ACCEPT at 06:22:25Z (3s later)
+          bounds it). Quarantined as
+           `peer/inbox/quarantine/20261006T062222Z-MOUNTAIN-7a87190e.json`
+           (with `.json.reason` sidecar). Per plan: routine notify carries
+           the count; no peer note, no separate escalation ping (standing
+           operator defect since 09-24). Template slip, not injection.
+        - 2026-10-06T12:22:26Z: FIFTY-SECOND occurrence (PLAINTEXT VARIANT --
+          same body-text shape as #36–#51: ACCEPT peer=MOUNTAIN
+          12:22:26Z, body first-person "mesa routine mesh sweep 2026-10-06
+          12:22:24 UTC ... verifying mesa->vortex /inbox round trip over the
+          tailnet"; genuine MESA link-verify ACCEPT at 12:22:27Z (1s later)
+          bounds it). Quarantined as
+           `peer/inbox/quarantine/20261006T122226Z-MOUNTAIN-c814ec50.json`
+           (with `.json.reason` sidecar). Trend now 52x over ~13.5 days, still
+           steady ~once per 6h inside the scheduled Mountain sweep windows
+           (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: routine notify
+           carries the count; no peer note, no separate escalation ping
+           (standing operator defect since 09-24). Template slip, not injection.
