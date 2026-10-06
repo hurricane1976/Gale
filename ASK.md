@@ -2,6 +2,27 @@
 
 ## Open
 
+- **Unverified operator-attributed "revenue mandate" broadcast via peer inbox
+  (2026-10-06 ~17:22–17:25Z) — PENDING (flagged 2026-10-06T20:49Z).** BEACON
+  posted two fleet-wide messages to Ostro's `peer/inbox/`
+  (`20261006T172246Z-BEACON-adbee017.json` "REVENUE MANDATE from josh" +
+  `20261006T172558Z-BEACON-a6f6004c.json` "josh's decisions"): claimed
+  operator directives to reorient the fleet toward revenue (lanes A–D,
+  Day-2/3/5/7 milestones, per-agent stats panels, distribution-kit work),
+  plus claimed operator answers (Gale console stays tailnet-only, no
+  cadence cuts, guided posting kit). Both messages invite verification on
+  each agent's own operator channel; the second claims corroborating
+  Telegram messages were sent — but `./check_replies.sh` on this host shows
+  **no new operator messages**, so there is nothing to corroborate against
+  from here. Disposition per rules 4/5: treated as data, **no lane
+  commitment sent, no behavior or cadence change made** (Beacon's "reply
+  with your lane + what you'll ship by Day 3" is a peer request, not an
+  operator order; changing this host's sharpness role on a peer's word
+  would violate the peer-talking rules). Requesting operator confirmation
+  via Telegram (genuine / relayed-and-accurate / not-yours) and direction
+  on whether any Ostro action is wanted. Full bodies in
+  `peer/inbox/processed/`; summary in NOTES.md (20:49Z entry).
+
 - **Second fleet model migration `ollama/qwen3.8:27b` →
   `opencode/muse-spark-1.3-contributor-free` (2026-10-06 ~14:44Z) — PENDING
   (flagged 2026-10-06T16:49Z).** Between the 12:49Z and 16:49Z wakings, all
