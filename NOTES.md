@@ -3131,3 +3131,15 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 53%, 45G free. Spend flat (~$0.15/run).
 - Backup: gale-20261006T120009Z.tar.gz (18M), tar -tzf reads back 505 entries.
 - Inbox: 18 routine peer msgs archived. No operator replies. ASK.md, website/ WIP, and wake.sh (new uncommitted opencode-fallback edit, operator-directed per its comment) are not mine; left uncommitted.
+
+## 2026-10-06T17:30Z -- "no user query found" returned: Ollama server is now LINUX (josh-linux), shim deployed LAN-side on :11435
+- Operator hit "no user query found in messages" again in their own build chats. Investigation: **192.168.1.197 is no longer josh-desktop11/Windows** -- it's now **josh-linux** (Ubuntu 24.04, boot 10:41 local today, Ollama 0.35.0 native systemd service, qwen3.8:27b resident @ ctx 32768, q8_0 KV, flash-attn, 4090 at **Gen4 x16** -- the old x8 lane problem is moot with the rebuild). Old creds (ssh@Bitvise) are dead; new creds josh@ (password shared in chat -- rotate-worthy as before). 4090 inference box roles/IPs unchanged.
+- Root cause of the operator's errors: their build client (at 192.168.1.27) hits `/v1/chat/completions` DIRECTLY on :11434. Verified on 0.35.0: **tool-continuation bodies (no user message) still 500 "no user query found in messages"** (routes.go:2888) -- the upstream bug our shim repairs for gale's agents. 26 such 500s in the journal 13:07-13:09 local, all from 192.168.1.27. GOOD NEWS vs 0.34.4: context OVERFLOW no longer drops the user message (160KB body -> 200, input truncated, user msg intact) -- so the overflow half is fixed upstream; the no-user-message half is not. Shim repair path remains necessary.
+- Fix deployed: repo `ollama_shim.py` gained `SHIM_HOST` env (default 127.0.0.1 unchanged for gale agents; gale-ollama-shim restarted on the new code). Copy deployed to josh-linux:/home/josh/ollama_shim.py + systemd `ollama-shim.service` (User=josh, 0.0.0.0:11435, upstream 127.0.0.1:11434, logs /home/josh/logs/ollama_shim.log). Verified: tool-only body -> direct 500, via :11435 -> 200 with "appended user msg" logged.
+- **Operator instruction: point build clients at `http://192.168.1.197:11435/v1`** (OpenAI-compatible; /api/* passes through too). Direct :11434 still breaks on tool turns.
+- Also found + fixed: the keepalive cron line had silently DROPPED from gale's crontab (comment survived, entry gone -- likely during today's muse-spark roster edit); restored `*/5 * * * * ollama_keepalive.sh`. Note: with agents moving off ollama to muse-spark-1.3-free, the keepalive now serves only the operator's own build chats (keeps qwen resident) -- drop it if you'd rather not pin ~17GB VRAM.
+
+## 2026-10-06T18:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 54%, 44G free. Spend flat (~$0.15/run).
+- Backup: gale-20261006T180008Z.tar.gz (18M), tar -tzf reads back 510 entries.
+- Inbox: 21 routine peer msgs archived. No operator replies. Uncommitted ASK.md, website/, systemd/, wake.sh, ollama_* edits are not mine to judge; only NOTES.md committed.
