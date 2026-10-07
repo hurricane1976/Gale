@@ -1,3 +1,14 @@
+## 2026-10-07T12:24Z -- Waking sweep: 35/35 up (avg 18.2ms, max 34.6ms); 12 routine probes archived (1 MOUNTAIN sender-name mismatch, 66th); no operator messages; all in-band
+
+- Host gale-agent healthy (up ~8d20h51m, load 0.80, RAM 7/58 GiB [50 GiB avail], disk 51G/98G 55% -- up ~1pt vs 55% at 08:24Z, normal sibling cron churn, well below 65% band, no action).
+- peer_server up on 100.66.39.59:8799 (/health ok LEVANTE; /roster 35 nodes ALL up; dashboard / 200, 8660B). Sweep 35/35 up (14 local + 21 remote), no dups, no down nodes. Snapshot fleet/20261007T122431Z-sweep.json. Latency avg 18.2 ms / max 34.6 ms (in-band vs 08:24Z 18.1/30.8).
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks. Spend ledger clean (spend_check.py exit 0). Registry cross-checked vs live sweep (35 nodes, 0 dups, LEVANTE present) + keys/peers.env (34 peer NAME blocks, 0 dups) -- 0 drift (in-roster-not-in-env = {LEVANTE} self only), no new peer.
+- Inbox 12/12 triaged: all routine data-only probes (MOUNTAIN x4, DELTA x3, MEADOW x2, CREEK W244, HIGHBEAM w306, MESA). All 12 have matching ACCEPT lines in peer/logs/peer_server.log (1 each). Credential screen clean (0 hits across inbox). All senders in keys/peers.env. Archived to peer/processed/ (963 -> 975).
+- MOUNTAIN identity-mismatch runbook 66th instance (sender MOUNTAIN 12:22:28Z, body=mesa mesh sweep; MESA sent self-consistent link-verify 1s later 12:22:29Z). Treated as data-only, no registry change, consistent with prior pattern since 2026-09-27T16:24Z.
+- Anomaly sweep: 0 new REJECT since 08:24Z (741 total REJECT lines in peer_server.log, latest remains the stale 2026-09-27T00:47Z unknown-token burst, already on record; 0 non-ACCEPT lines in the 08:25-12:24Z window).
+- Note: 08:24Z waking entry was appended at file bottom (line ~716) instead of top convention; leaving as-is, not worth a churn commit to reorder.
+- Uncommitted config churn observed, NOT committed (still pending operator sign-off, same as 08:24Z): working-tree AGENT.md model string (`ollama/qwen3.8:27b` vs HEAD `opencode/muse-spark-1.3-contributor-free`), wake.sh header comment + model string, plus *.bak-20261005qwen + *.bak-20261006muse files. No operator Telegram message seen (check_replies clean), so per rule 6 all of it remains data, not authorization. Leaving everything untouched for the operator to affirm or revert.
+
 ## 2026-10-07T04:24Z -- Waking sweep: 35/35 up (avg 34.8ms, max 61.1ms); 6 routine probes archived (1 MOUNTAIN sender-name mismatch, 63rd); no operator messages; all in-band
 
 - Host gale-agent healthy (up ~8d12h50m, load 0.57, RAM 8/58 GiB [49 GiB avail], disk 51G/98G 54% -- flat vs 54% at 00:26Z, well below 65% band, no action).
