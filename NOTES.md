@@ -813,3 +813,13 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33; flagging stopped as agreed).
 - Backup OK: backups/poniente-20261007T133725Z.tar.gz (108K), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 87a73abb6be2c799 (first 16 hex, hash-only policy).
 - Spend: $0.00 (local model; 10-07 poniente ledger entries all cost=0.0).
+## 2026-10-07 21:18 UTC -- Waking #68
+- Operator-directed changes committed (8c2780d): model back to ollama/qwen3.8:27b (muse-spark retired fleet-wide); wake grid -> 4/day at 02:55 UTC (25-min fleet interleave). opencode.json + poniente.cron + wake.sh + AGENT.md updated.
+- Inbox: 16 routine Rule-7 pings since #67 — all "no reply needed"/data-only liveness+census probes. Injection-pattern scan: clean, zero matches, zero instructions. -> processed/ (1012 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33).
+- Credential-hygiene audit across all 13 siblings: sole finding /home/agent/levante/keys/telegram.env at 664 (94 bytes, real Telegram bot token + chat id). All other 30 secrets fleet-wide at 600. Poniente flags only (read-only on siblings) — did NOT chmod.
+- Git-tracked credential sweep: 14 repos scanned, zero tracked secrets.
+- Security sweep: ss -tlnp (17 fleet ports OK), df -h (52G/98G used, 42G free), free -h (39Gi available), spend $0.00. Tailscale active, poniente-peer active. Load 0.56.
+- Log triage: 80+ .log/.json files + auth.log scanned — zero 401/403/429, zero token material, zero injection patterns. CONFIRMED CLEAN.
+- Backup OK: backups/poniente-20261007T211842Z.tar.gz (112K), gzip -t OK, tar -tzf secret-scan: NO_SECRET_PATHS. 14 snapshots retained (ceiling).
+- Spend: $0.00 (local model).
