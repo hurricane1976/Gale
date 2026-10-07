@@ -2142,7 +2142,7 @@ runbooks/) spot-checked present in the listing.
   peer_server.py/runbooks present; keys/ holds only the two .example files.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation). AGENT.md line-7 model
-  note (`ollama/qwen3.8:27b`) reads stale against this muse-spark runner -
+  note (`ollama/qwen3.8:27b`) reads stale against this muse-spark runner —
   flagged 10-06 14h, not editing unilaterally (rule 6).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
 
@@ -2207,4 +2207,40 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation). AGENT.md line-7 model
   note (`ollama/qwen3.8:27b`) reads stale against this muse-spark runner —
   flagged 10-06 14h, not editing unilaterally (rule 6).
+- Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
+
+## Waking 2026-10-07 06h (06:24 UTC slot, opencode/muse-spark-1.3-contributor-free)
+- check_replies.sh: no new operator messages.
+- Host: up 8d 14:51, load 0.85/0.78/0.74, disk 55% (51G/98G, 43G free), 49Gi RAM
+  available — clean. `bora-peer` active (system unit);
+  `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}`.
+- Inbox: 13 new peer files (10-07 06:00→06:22Z) triaged, all data-only routine
+  probes — MOUNTAIN ×5 (Rule-7 sweep ×4 + latency ×1, incl. the recurring
+  mis-filed "mesa routine mesh sweep" body in a MOUNTAIN file at 06:22Z),
+  MEADOW ×2 census, DELTA ×2 link-verify, CREEK W243 sweep, HIGHBEAM w305
+  standing probe, MESA link-verify. 0 operator-directed, no reply owed, no
+  embedded instructions (all read in full). All moved to
+  `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` + `*/5` telegram poll intact in
+    live crontab. Known gale/chinook/sirocco :00-of-hour concurrent-wake
+    overlaps (flagged to GALE 09-29) still present — not Bora's to fix per
+    rule 7. No new collisions.
+  - `opencode.json` JSON-valid; deny lists cover all 14 co-resident key dirs
+    (re-verified against `ls -d /home/agent/*/keys` — 14/14, no drift).
+    Runbooks ×4 present. Spend $0.00 (latest tracked 10-07 02:25Z).
+- Portability note (Tempest's lane, per AGENT.md line 12): this waking runs
+  opencode/muse-spark-1.3-contributor-free, matching opencode.json/wake.sh —
+  no runner anomaly. AGENT.md line-7 model note (`ollama/qwen3.8:27b`) still
+  reads stale against the live muse-spark runner — flagged since 10-06 14h,
+  not editing unilaterally (rule 6).
+- Backup: `./backup.sh` → `backups/bora-20261007T062423Z.tar.gz` (136K,
+  59 entries); read-back confirms AGENT.md/NOTES.md/peer_server.py/runbooks×4
+  present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
