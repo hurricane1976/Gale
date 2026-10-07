@@ -4119,3 +4119,88 @@ call, runner stays v0.35.0); watch for further Zen-path slot
 stalls (escalate on 5th); watch beacon 30d window
 (~2026-10-24); ASK.md awaiting operator word on PONIENTE +
 remote-22 + both model flips.
+
+## 2026-10-07T02:02Z — Scheduled waking (all green; opencode 1.18.35 gap closed itself)
+
+Context: 02:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
+waking landed ~02:00Z, on schedule. This waking runs
+`opencode/muse-spark-1.3-contributor-free` via Zen.
+`check_replies.sh`: no new operator messages.
+
+Host: up 8d 10:27, load 0.95/0.85/0.77 (normal shared-host range),
+disk 54% (51G/98G, 43G free — flat vs 54% at 22:00Z, far from 80%),
+RAM 8G used / 49G available of 58G, swap idle. `sirocco-peer` active
+on 100.66.39.59:8796; all 14 tailnet peer listeners 8787–8800
+present (+ localhost host services :8791/:8793/:8794/:8795).
+
+Dependencies (all green, live probes ~02:00Z):
+- OpenRouter: /api/v1/models 200 in 0.22s. opencode.ai 200 in
+  0.23s. Waking succeeding on muse-spark = Zen/model path healthy.
+  No recurrence of the 10-06 06:00Z/10:00Z APIError stalls — pattern
+  holds at 4, none since 14:00Z 10-06.
+- GitHub: api.github.com/zen 200 in 0.10s; status API (www host)
+  "All Systems Operational" (updated 01:19Z). The 10-05 Pages
+  incident stays resolved.
+- Tailscale: status.tailscale.com 200; daemon active; 12-node set
+  (gale-agent, 6x beacon-* active direct, gemini/mountain/ubuntu
+  agents active direct, josh-iphone18, josh-linux, ipad174 offline
+  6h — operator personal device, no fleet lane depends on it). No
+  disconnects.
+- LAN Ollama runner 192.168.1.197:11434 UP, `{"version":"0.35.0"}`
+  — 5th consecutive healthy waking after the 10-05 18:00Z dark
+  window. Nothing on this host consumes it post-flip (all on
+  muse-spark/glm), so zero local impact either way.
+- **opencode: local binary now 1.18.35 = upstream latest v1.18.35
+  (2026-10-06T20:18Z, via anomalyco/opencode releases API) — the
+  gap flagged at 22:00Z is closed.** Single shared binary
+  (/home/agent/.opencode/bin/opencode); I changed nothing.
+  ACCURACY NOTE: the binary mtime is 2026-10-06 20:00:17Z, which
+  predates the 22:00Z waking's "still 1.18.34" reading — so the
+  22:00Z reading was likely stale (checked mid-swap or a cached
+  string), and the update actually landed ~20:00Z 10-06. Either
+  way the as-found state this waking is 1.18.35 = latest; no
+  action, recording the correction.
+- **Ollama upstream: "latest" pointer still v0.40.0** (stable, tag
+  published 2026-09-25, promoted to latest after-the-fact) —
+  unchanged from the 22:00Z reading. LAN runner stays on v0.35.0
+  until told otherwise (operator/Gale call).
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~47d), tidalwake.org
+2026-11-28 (~52d), mountainwake.org 2026-12-04 (~58d). SAME
+certs since baseline (no renewal). BEACON 30d window opens
+~2026-10-24 (~17 days out).
+
+Inbox: 14 new, all filed to processed/ (1187 total). 4x MOUNTAIN
+(3x Rule-7 sweep 00:00Z incl. a duplicate delivery + 1x latency
+check; plus 00:22Z body again self-labeled "mesa routine mesh
+sweep" under MOUNTAIN's identity — the known MOUNTAIN-vs-MESA
+label quirk, stable pattern, data-only, no action) + 1x genuine
+MESA link-verify 00:22Z, 1x DELTA link-verify, 3x MEADOW census,
+1x HIGHBEAM w304 probe, 1x RIVER rule-7 sweep, 1x CANYON pass
+#132, 2x HARBOR link-verify. All explicit "no reply needed, data
+only". No replies sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still
+2026-09-26 01:19:56Z, same 34 NAME blocks (verified by name
+this waking). Nothing minted/installed. ASK.md: PONIENTE +
+remote-22 + 10-05 re-migration + 10-06 14:44Z flip items
+awaiting operator word (OSTRO + LEVANTE resolved 09-26).
+
+Spend: $0.00 (latest spend-daily entries 10-06 14:45Z + 18:02Z
++ 22:01Z all 0.0; Zen-billed accounting operator-side, no
+alert threshold tripped that I can see).
+
+Runner/portability note for Tempest: `opencode/muse-spark-1.3-
+contributor-free` via Zen normal this waking (3rd consecutive
+clean slot after the 06:00Z/10:00Z stalls — pattern holding
+at 4, not growing).
+
+Backup: `backups/sirocco-20261007T020034Z.tar.gz` (128K, 51
+entries, tar -tzf read-back OK; pre-NOTES-append snapshot,
+same order as prior wakings; post-commit snapshot below).
+
+Next: watch for further Zen-path slot stalls (escalate on 5th);
+watch beacon 30d window (~2026-10-24); ASK.md awaiting operator
+word on PONIENTE + remote-22 + both model flips; runner
+v0.35.0 vs upstream-latest v0.40.0 (operator/Gale call).
