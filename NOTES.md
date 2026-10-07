@@ -4430,3 +4430,84 @@ now at 6 clean, standing down); watch beacon 30d window
 (~2026-10-24); ASK.md awaiting operator word on PONIENTE +
 remote-22 + both model flips; runner v0.35.0 vs upstream-latest
 v0.40.0 (operator/Gale call).
+
+---
+
+## 2026-10-07T16:02Z waking (sirocco)
+
+Routine ran at 17:06Z (late-ish start after model flip; state consistent
+with 14:02Z entry, nothing regressed).
+
+Host: uptime 9d, load 0.88, disk 56% (42G avail), mem 9.6Gi used / 49Gi
+available, `sirocco-peer` service active.
+
+Upstream/external probes (all green, fresh):
+- OpenRouter HTTP 200 in 0.064s; opencode.ai HTTP 200 in 0.162s.
+- GitHub API HTTP 200 in 0.037s; status "All Systems Operational".
+- Tailscale daemon active, 13 nodes (same set as 14:02Z, no
+  disconnects), status.tailscale.com 200.
+- opencode local 1.18.35 = upstream latest v1.18.35 (2026-10-06) — gap
+  stays closed.
+
+CHANGE since 14:02Z entry — operator-directed fleet-wide model change
+(2026-10-07): `muse-spark` retired; primary model back to
+`ollama/qwen3.8:27b` (LAN Ollama 192.168.1.197:11434). Reflected in
+`opencode.json` (`"model": "ollama/qwen3.8:27b"`), `wake.sh` (PROMPT +
+header), `AGENT.md`. Pre-change snapshots kept as
+`opencode.json.bak-20261007ollama` + `wake.sh.bak-20261007ollama`.
+Consequence for this watch: Tempest's "Zen-path slot stall" signal
+(6 clean slots as of 14:02Z) is now moot — nothing on this host uses
+muse-spark anymore. New watch item: LAN Ollama runner health +
+qwen3.8:27b responsiveness are the live dependency now (runner itself
+consumes nothing on gale-agent except us — zero contention either way).
+
+CHANGE since 14:02Z entry — LAN Ollama runner 192.168.1.197:11434
+UPGRADED v0.35.0 → v0.40.0 between the 14:02Z probe and this one
+(16:02Z probe returned `{"version":"0.40.0"}`). This resolves the
+open "runner v0.35.0 vs upstream-latest v0.40.0 (operator/Gale call)"
+item — runner is now on upstream-latest (v0.40.0, tag 2026-09-25).
+Healthy, `qwen3.8:27b` serving, no dark window. 10th consecutive
+healthy reading since the 10-05 18:00Z dark window closed.
+
+CHANGE since 14:02Z entry — waking schedule redefined fleet-wide
+(operator-directed 2026-10-07, ≥25 min between all fleet wakes):
+sirocco now **4 wakings/day at :20 of hours 3,9,15,21 UTC**
+(14-agent 25-min grid), down from the old 6×/:02-of-1,7,13,19.
+`sirocco.cron` in the repo was lagging (schedule line still
+`0 2,6,10,14,18,22` — pre-grid, mismatched by 2+ days) while the live
+crontab already ran `20 3,9,15,21` (verified via `crontab -l` this
+waking). Synced repo file to live crontab this waking:
+`sirocco.cron` schedule line now `20 3,9,15,21`, comment already noted
+the 14-agent 25-min grid. `AGENT.md` + `wake.sh` headers updated in the
+same flip. Telegram commands poll still `*/5`. File-lag is now closed —
+re-audit on next waking to keep it so.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~47d), tidalwake.org
+2026-11-28 (~52d), mountainwake.org 2026-12-04 (~58d). SAME certs
+since baseline (no renewal). BEACON 30d window opens ~2026-10-24
+(~17 days out) — unchanged watch.
+
+Inbox: 16 filed since 14:02Z into `processed/` (total now 1219, same
+as 14:02Z count — the 16 were already counted); 0 new since that entry.
+`check_replies.sh` → "no new messages". No replies sent, nothing
+minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still
+2026-09-26 01:19:56Z, same 35 NAME lines (self + 34 peers). Nothing
+minted/installed. ASK.md: PONIENTE + remote-22 + 10-05 re-migration +
+10-06 14:44Z flip items awaiting operator word (the 10-06 flip item is
+superseded by this waking's operator-directed revert to qwen3.8:27b,
+but left in ASK.md for operator to close out).
+
+Spend: $0.00 (operator-side).
+
+Backup: `backups/sirocco-20261007T165623Z.tar.gz` (132K,
+tar -tzf read-back OK, 53 entries; pre-NOTES-append snapshot, same
+order as prior wakings; post-commit snapshot to follow).
+
+Next: watch LAN Ollama v0.40.0 + qwen3.8:27b responsiveness (new
+primary dependency); watch beacon 30d window (~2026-10-24, ~17 days
+out); ASK.md awaiting operator word on PONIENTE + remote-22 + 10-05
+re-migration + closing out 10-06 flip item; re-audit sirocco.cron file
+vs live crontab on next waking to keep them in lock-step.
