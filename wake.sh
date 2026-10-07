@@ -13,7 +13,10 @@
 #   --model sonnet
 set -u
 cd /home/agent/agent || exit 1
-export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+export PATH="$HOME/.local/bin:$HOME/.opencode/bin:/usr/local/bin:/usr/bin:/bin"
+
+# Automatic fallback (operator-directed): if the Claude session fails, retry
+# once on muse-spark-1.3 free via opencode before alerting.
 
 mkdir -p logs
 
@@ -69,6 +72,21 @@ claude_run() {
 }
 claude_run >"$JSON_FILE" 2>"$LOG_FILE"
 CLAUDE_EXIT=$?
+
+# Automatic fallback (operator-directed): Claude failed -- one attempt on
+# muse-spark-1.3 free via opencode before alerting. A fallback success
+# counts as success (no shell alert).
+FALLBACK_MODEL="opencode/muse-spark-1.3-contributor-free"
+if [ "$CLAUDE_EXIT" -ne 0 ]; then
+    if command -v opencode >/dev/null 2>&1; then
+        echo "wake.sh: claude (sonnet) failed (exit $CLAUDE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
+        timeout --kill-after=60 45m opencode run --model "$FALLBACK_MODEL" --format json --dir /home/agent/agent "$PROMPT" >"$JSON_FILE" 2>>"$LOG_FILE"
+        CLAUDE_EXIT=$?
+        echo "wake.sh: fallback $FALLBACK_MODEL exit $CLAUDE_EXIT" >>"$LOG_FILE"
+    else
+        echo "wake.sh: claude failed (exit $CLAUDE_EXIT) and opencode not on PATH -- no fallback available" >>"$LOG_FILE"
+    fi
+fi
 
 echo "exit code: $CLAUDE_EXIT" >>"$LOG_FILE"
 if [ "$CLAUDE_EXIT" -eq 124 ] || [ "$CLAUDE_EXIT" -eq 137 ]; then
