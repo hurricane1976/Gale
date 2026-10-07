@@ -4242,3 +4242,51 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
     sibling near a limit; zero inbox bodies this window). Model-switch
     files deliberately left uncommitted; awaiting verified word.
+
+## 2026-10-07T16:00Z — waking #82
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES — #81
+    chinook-20261007T120021Z.tar.gz (~4h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#81). Both pass → clean
+    routine, no back-fill owed.
+  - **check_replies:** (no new messages). ASK.md items unchanged
+    (model-switch confirmation, BEACON mandate relay verification, #59
+    no-op + 9/28–29 exit-1 class — all operator/Bora lane).
+    `opencode.json`/`wake.sh` model-switch edits remain UNCOMMITTED
+    (still not my work, still no chat-id-verified word).
+  - **Peer inbox:** 16 new ping bodies arrived 12:00–12:46Z (MOUNTAIN,
+    MEADOW, DELTA, HIGHBEAM, MESA, CANYON, RIVER, HARBOR) — all
+    liveness/credential probes, all "no reply needed," zero operator
+    actions, zero spend data. All 16 archived to processed/ (1198 →
+    1214). No acks owed.
+  - **HOST HEALTH:** uptime 9d31m (same boot since 9/28 15:33Z, no
+    reboot); load 0.97/1.14/1.04 on 16 cores (~6%, calm, mild bump over
+    #81); RAM 9.2Gi used / 49Gi avail (58G total); swap 0/8G; disk `/`
+    **51G used / 43G free (55%)** — 4th consecutive flat reading.
+    Drivers flat: /home/agent 9.9G, journal ~1.0G. 80% trip line (~78G)
+    ~27G headroom — no crossing nameable. Tailscale live, 100.66.39.59/32
+    present.
+  - **Fleet sweep (local observation):** 5 peer sockets listening on
+    100.66.39.59:{8787-8791} + 4 on 127.0.0.1:{8791,8793,8794,8795};
+    curl to the full 8787–8800 range returned 4 live (8791/8793/8794/
+    8795 HTTP 404 = up, no route) and 9 silent (000). Divergence from
+    #81's 14/14 via tailnet suggests some siblings run tailscale-only or
+    are between boots — noting drift, no capacity action (siblings wake
+    on their own cadence).
+  - **Spend (host-wide):** last verified #81: 10-07 to ~12Z **$0.8382 /
+    39 runs**, per-run max ~$0.14, far under the $5.00 per-run line;
+    pace inside the $1.6–2.5 band pace and ~10x inside the $15/day
+    alert. spend_check.py re-run this slot produced no new output (no
+    new data rows). **No rule-4 anomaly.**
+  - **Backup:** chinook-20261007T160211Z.tar.gz (163K), verified 72
+    files; 14-snapshot ceiling held (rolling, 14 present after this slot).
+  - **Forecast / thresholds (all cleared or no-crossing):** disk flat
+    4th straight reading — flat arc holding, no crossing projectable;
+    load/mem calm, swap unused; spend in-band; Tailscale stable.
+    Open triage items unchanged: (1) model-switch confirmation
+    (operator lane); (2) BEACON mandate relay verification (operator
+    lane — no action unless Telegram word arrives); (3) #59 no-op +
+    9/28–29 exit-1 class (operator/Bora lane).
+  - **Drift/breaches/advisories:** NONE on capacity. Fleet sweep drift
+    noted above (observation, not a capacity breach). No advisory (no
+    sibling near a limit; 16 inbox bodies clean data-only). Model-switch
+    files deliberately left uncommitted; awaiting verified word.
