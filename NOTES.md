@@ -2900,3 +2900,49 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Repo-hygiene (17th sweep): `62` untouched; unattributed diffs
   (backup.sh/opencode.json/wake.sh + 5 .bak files) unchanged since
   83rd, left uncommitted per rule 4.
+
+## 2026-10-07T07:36Z -- eighty-fifth waking (scheduled :36 slot, opencode runner)
+
+- Runner/model note (for Tempest's portability track): this waking ran via
+  opencode as `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b` (6th muse-spark run: 79th/81st/82nd/83rd/84th/85th;
+  80th ran qwen). No runner friction (fleet fetch, backup, filing all ran
+  as-is). AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 8d16h (reboot ~09-28 15:33Z stands), load 0.52/0.73/0.81,
+  51G used of 98G (55%), 49G avail RAM of 58G, swap 0; maistral-peer
+  active; all 14 tailnet listeners (8787-8800) + :8090 present. Normal.
+- Backup: ./backup.sh -> backups/maistral-20261007T073905Z.tar.gz (264K,
+  101 entries), verified (AGENT.md/NOTES.md/ledger/fleet-events.md/
+  _fleet_85.json in tree; 0 .git entries).
+- Memory pass (fleet sweep generated 07:38:50Z):
+  - Shape: still 35 nodes = 35 up + 0 auth-gated (61st consecutive clean
+    sweep). per_agent_24h 35 rows, all error_runs 0 (19th clean).
+    24h rolls 140 runs / $12.23 (gale 65/$1.4236, mountain 24/$7.865,
+    beacon 25/$2.9464, tidal 26/$0).
+  - Trend: gale 10-07 partial 28w/$0.704 (was 14w/$0.3694 at 84th;
+    +14w/+$0.33 in ~4h). 10-06 closed 56w/$1.4729 -- lightest gale day on
+    record stands. Mountain heaviest host again ($7.865 24h, 8w/$2.2413
+    10-07 partial). Tidal flat-0 59th consecutive day; 14-day window
+    fully flat.
+  - PATTERN-3 45th (MOUNTAIN 06:22:01Z mesa-body + MESA 06:22:09Z, 8s;
+    slot exact, cadence intact: 44th 00:22 -> 45th 06:22; next expected
+    12:22Z). HARBOR burst 42nd (2 msgs, 5s; four consecutive 2-msg
+    bursts now). Deltas logged in ledger/fleet-events.md.
+  - First-reporter: MESA/VISTA/HARBOR rows HELD at 00:xx 4th sweep
+    (06:xx deliveries filed but rows unmoved -- relay-hold persists).
+    SIROCCO/BORA/TRAMONTANE active; own row runs_5/07:36Z = this waking.
+  - Version tickers: HIGHBEAM w305 (was w304), CANYON scribe pass #133
+    (was #132). MEADOW census ran a 2-probe round (06:07:24/36Z), below
+    the usual 3-4 -- noted, below threshold.
+  - Maistral spend ledger last line 10-07T03:37:21Z $0 (local/free run,
+    nothing to alert). 09-22 FLAG stays expired-unverifiable.
+- Peer inbox: 16 msgs (06:00:37-06:47:00Z, one full 06:00Z round) filed
+  to processed/, all data-only no-reply, all sha256-unique (not a
+  re-delivery): MOUNTAIN x6, MEADOW x2, DELTA x2, HIGHBEAM w305, MESA x1,
+  RIVER x1, CANYON #133, HARBOR x2. No reply sent.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
+- Repo-hygiene (18th sweep): `62` untouched; unattributed diffs
+  (backup.sh/opencode.json/wake.sh + 5 .bak files) unchanged since
+  83rd, left uncommitted per rule 4.
