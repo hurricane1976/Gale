@@ -4198,3 +4198,47 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
     sibling near a limit; 16 inbox bodies clean data-only). Model-switch
     files deliberately left uncommitted; awaiting verified word.
+## 2026-10-07T12:00Z — waking #81
+  - **Self-check (standing, from #61):** (a) backup within ~4h? YES —
+    #80 chinook-20261007T080029Z.tar.gz (~4h before this slot). (b) newest
+    NOTES entry = immediately-prior slot? YES (#80). Both pass → no
+    prior-slot no-op, no back-fill owed. Clean routine.
+  - **check_replies:** (no new messages). ASK.md items unchanged
+    (model-switch confirmation, BEACON mandate relay verification, #59
+    no-op + 9/28–29 exit-1 class — all operator/Bora lane). This session
+    runs on `opencode/muse-spark-1.3-contributor-free` and works (ninth
+    existence proof). `opencode.json`/`wake.sh` model-switch edits remain
+    UNCOMMITTED (still not my work, still no chat-id-verified word).
+  - **Peer inbox:** zero new since #80 (no top-level arrivals; processed/
+    still 1198; chinook/ and pulsar/ subdirs empty). Nothing to archive,
+    zero acks owed. Quiet window.
+  - **HOST HEALTH:** uptime 8d20h (same boot since 9/28 15:33Z, no
+    reboot); load 0.51/0.57/0.62 on 16 cores (~4%, calm); RAM 8G used /
+    50G avail (58G total); swap 0/8G; disk `/` **51G used / 43G free
+    (55%)** — flat vs #79/#80's 51G/43G (3rd consecutive flat reading;
+    the #79 +1G step stays unrepeated, watch stays closed). Drivers flat:
+    /home/agent 9.8G, journal 1.0G (~1G band), /tmp/opencode 16M. 80% trip
+    line (~78G) ~27G headroom — no crossing nameable. Tailscale live,
+    100.66.39.59/32 present, no TUN regression.
+  - **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+    tailnet. **53rd consecutive alive sweep.**
+  - **Spend (host-wide):** 10-06 closed **$1.4731 / 56 runs** (matches
+    #78/#79/#80). 10-07 to ~12Z: **$0.8382 / 39 runs** — GALE/agent
+    $0.4043 (max run $0.14), SQUALL $0.1355, TEMPEST $0.1455, ZEPHYR
+    $0.1529; all other 10 lanes $0.00 (incl. CHINOOK 3 runs). Per-run max
+    ~$0.14, far under the $5.00 per-run line; pace → ~$1.3–1.5 at close,
+    inside the $1.6–2.5 band pace and ~10x inside the $15/day alert.
+    **No rule-4 anomaly.**
+  - **Backup:** chinook-20261007T120021Z.tar.gz (160K), gzip -t OK,
+    ./AGENT.md + ./NOTES.md read-back clean from listing; 14-snapshot
+    ceiling held.
+  - **Forecast / thresholds (all cleared or no-crossing):** disk flat 3rd
+    straight reading — flat arc resumes, no crossing projectable;
+    load/mem calm, swap unused; spend in-band; Tailscale stable;
+    wake-reliability clean this slot (self-check pass). Open triage items
+    unchanged: (1) model-switch confirmation (operator lane); (2) BEACON
+    mandate relay verification (operator lane — no action unless Telegram
+    word arrives); (3) #59 no-op + 9/28–29 exit-1 class (operator/Bora lane).
+  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+    sibling near a limit; zero inbox bodies this window). Model-switch
+    files deliberately left uncommitted; awaiting verified word.
