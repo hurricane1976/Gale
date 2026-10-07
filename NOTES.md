@@ -4511,3 +4511,68 @@ primary dependency); watch beacon 30d window (~2026-10-24, ~17 days
 out); ASK.md awaiting operator word on PONIENTE + remote-22 + 10-05
 re-migration + closing out 10-06 flip item; re-audit sirocco.cron file
 vs live crontab on next waking to keep them in lock-step.
+
+---
+
+## 2026-10-07T21:20Z waking (sirocco)
+
+Routine ran at 21:41Z; state consistent with 16:02Z entry, nothing
+regressed; one further model flip.
+
+Host: uptime 9d 6h, load 0.61/0.81/0.93, disk 56% (52G used / 42G
+avail), mem 8.6Gi used / 50Gi available, swap 0/8Gi. Green.
+
+CHANGE since 16:02Z entry — operator-directed fleet-wide model change
+again (2026-10-07): `ollama/qwen3.8:27b` retired; primary model now
+`opencode/glm-5.3-flash` (GLM 5.3 Flash via OpenCode Go). Reflected in
+`opencode.json` (`"model": "opencode/glm-5.3-flash"`), `AGENT.md`,
+`wake.sh`. Pre-change snapshots kept as
+`AGENT.md.bak-20261007-pre-glm` + `opencode.json.bak-20261007-pre-glm`
++ `wake.sh.bak-20261007-pre-glm`. Consequence for this watch: the
+16:02Z "LAN Ollama runner health + qwen3.8:27b responsiveness is the
+live dependency" watch item is moot again — nothing on this host runs
+qwen3.8:27b as primary. Runner on 192.168.1.197:11434 still up and
+serving (verified this waking) so no contention either way. New live
+dependency: OpenCode Go endpoint health for GLM 5.3 Flash — will
+verify end-to-end via opencode.ai + OpenRouter probes next waking.
+
+Upstream/external probes (all green, fresh this waking):
+- opencode.ai HTTP 200 in 0.14s (GLM endpoint reachable).
+- Ollama LAN 192.168.1.197:11434 responding; qwen3.8:27b still
+  resident (kept warm; no longer primary).
+- GitHub API HTTP 200; 57/60 rate-limit remaining.
+- Tailscale active, 5 peers visible (gale-agent + immediate fleet),
+  sirocco-peer service active — fleet reachable.
+- Certs: opencode.ai notAfter 2027-01 (~3 months), github.com notAfter
+  2026-11-08 (~1 month), tailscaled status OK. No 30/14/7-day
+  warnings on any monitored cert this pass.
+
+CERT WATCH — unchanged: beaconwake.com notAfter 2026-11-23; 30-day
+window opens ~2026-10-24 (~17 days out). Same baseline since 16:02Z
+entry. Still no renewal action taken.
+
+Inbox: 14 peer-sweep JSON files filed from inbox/ into processed/ this
+waking (all routine peer sweeps, no replies needed); inbox/ now 0
+pending; processed/ total 1233 (was 1219 at 16:02Z → +14).
+`check_replies.sh` → "no new messages" from operator. No replies sent,
+nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still
+2026-09-26 01:19:56Z, same 35 NAME lines (self + 34 peers). Nothing
+minted or installed. ASK.md: PONIENTE + remote-22 + 10-05 re-migration
+items still awaiting operator word; 10-06 14:44Z flip item now fully
+superseded (qwen3.8:27b → glm-5.3-flash). Left in ASK.md for operator
+to close out.
+
+Spend: $0.00 (operator-side, no paid calls this waking).
+
+Backup: `backups/sirocco-20261007T213649Z.tar.gz` (135154 B, 135K,
+56 entries, tar -tzf read-back OK). Pre-NOTES-append snapshot;
+post-commit snapshot to follow.
+
+Next: monitor GLM 5.3 Flash / OpenCode Go endpoint health as new
+primary dependency (opencode.ai probe + OpenRouter if needed);
+watch beacon 30d cert window opening ~2026-10-24 (~17 days out);
+re-audit sirocco.cron file vs live crontab on next waking to keep
+lock-step; ASK.md awaiting operator word on PONIENTE + remote-22 +
+10-05 re-migration + 10-06 flip closeout.
