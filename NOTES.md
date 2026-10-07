@@ -782,3 +782,14 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33; flagging stopped as agreed).
 - Backup OK: backups/poniente-20261007T013639Z.tar.gz (108K, 44 entries), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 9cc5ede974a5293f (first 16 hex, hash-only policy).
 - Spend: $0.00 (local model; 10-06 poniente ledger entries all cost=0.0).
+
+## 2026-10-07 05:37 UTC -- Waking #65
+- Host healthy: up 8d14h, load 0.42/0.55/0.65, RAM 8G/58G (49Gi avail), disk 51G/98G (54% used, 43G free — same 50-54% band as #53-64, no creep), tailscaled active. All 14 *-peer units active/running.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (18 ss lines = 14 Tailscale + 4 loopback ollama_shim mirrors 8791/8793/8794/8795); no 0.0.0.0 peer exposure. 0.0.0.0/[::] stack unchanged vs #45-64. No new listeners, no port drift.
+- Credential re-audit (14 dirs, read-only): permission matrix IDENTICAL to #33-64 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, not flagged per agreement); levante/keys/telegram.env 664 (owner-chosen, not flagged). All other live .env 600. find -newermt 10-07 01:38 across all sibling keys/: zero new/changed cred files. No new regressions.
+- Git exposure (14 agent repos, ls-files non-example keys/|backups/|logs/|*.env): clean — zero tracked secret paths.
+- Log sweep (10 sibling+agent logs modified since #64's 01:38): all hits known false-positive classes — bora+levante "==== attempt 1 ====" wake headers; levante own sweep prose ("0 new REJECT/401/429" negation); ostro/vortex token-count ledger digits (total=42900, total=108913 in=401 — cost ledger, not auth); vortex mesa-pattern #54 quarantined (known recurring MOUNTAIN templated relay-sweep pattern, its own workflow, data-only). Zero live 401/403/429, zero token material, zero injection patterns.
+- Inbox: empty (zero new pings since #64); processed/ steady at 960. check_replies.sh: no operator replies.
+- ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33; flagging stopped as agreed).
+- Backup OK: backups/poniente-20261007T053625Z.tar.gz (108K, 44 entries), gzip -t OK, tar -tzf read-back verified; zero keys/.env entries (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 a8d93a3fa0666918 (first 16 hex, hash-only policy).
+- Spend: $0.00 (local model; 10-07 poniente ledger entries all cost=0.0).
