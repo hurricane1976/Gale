@@ -8,6 +8,8 @@
      bar  = { x, z, h, y0?, w?, d?, color:[r,g,b], tip:"line1\nline2" }   (world units; h = height)
      meta = { xLabels:[{x,text}], zLabels:[{z,text}] }                      (edge labels, keep to <= ~14 each) */
 
+import { program, Quality, dprCap } from "./shared-gl.js";
+
 const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const VS = `attribute vec3 a_pos; attribute vec3 a_nrm; attribute vec3 a_col;
@@ -21,12 +23,6 @@ void main() {
   float f = clamp((v_d - u_fog) / (u_fog * 1.5), 0.0, 0.6);
   gl_FragColor = vec4(mix(c, vec3(0.03, 0.05, 0.10), f), 1.0);
 }`;
-
-function compile(gl, type, src) {
-  const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
-  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
-  return s;
-}
 
 const perspective = (fov, asp, n, f) => {
   const t = 1 / Math.tan(fov / 2), o = new Float32Array(16);
@@ -52,14 +48,14 @@ export function mountBars3D(canvas, opts = {}) {
   if (!gl) return null;
   let prog;
   try {
-    prog = gl.createProgram();
-    gl.attachShader(prog, compile(gl, gl.VERTEX_SHADER, VS));
-    gl.attachShader(prog, compile(gl, gl.FRAGMENT_SHADER, FS));
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error("link");
+    prog = program(gl, VS, FS, "bars3d");
   } catch { return null; }
   const LITE = (matchMedia && matchMedia("(pointer: coarse)").matches) || innerWidth < 700;
   if (LITE) canvas.style.touchAction = "pan-y";
+  /* runtime quality: measured fps shrinks backing resolution (and skips
+     frames at tier 2+) instead of stuttering; frozen for reduced motion */
+  const q = REDUCED ? null : new Quality();
+  let lastFrame = 0;
 
   const aPos = gl.getAttribLocation(prog, "a_pos"), aNrm = gl.getAttribLocation(prog, "a_nrm"), aCol = gl.getAttribLocation(prog, "a_col");
   const uMvp = gl.getUniformLocation(prog, "u_mvp"), uLight = gl.getUniformLocation(prog, "u_light"), uFog = gl.getUniformLocation(prog, "u_fog");
@@ -155,8 +151,11 @@ export function mountBars3D(canvas, opts = {}) {
   function frame() {
     raf = requestAnimationFrame(frame);
     if (!visible || document.hidden) return;
-    if (LITE && (frameN++ & 1)) return;
-    const dpr = Math.min(devicePixelRatio || 1, LITE ? 1.5 : 2), w = canvas.clientWidth, h = canvas.clientHeight;
+    if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return;
+    const nowMs = performance.now();
+    if (q) q.tick(Math.max(0, nowMs - lastFrame), nowMs);
+    lastFrame = nowMs;
+    const dpr = dprCap((LITE ? 1.5 : 2) * (q ? q.scale() : 1)), w = canvas.clientWidth, h = canvas.clientHeight;
     if (w < 2 || h < 2) return;
     if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); dirty = true; }
     // grow-in / morph toward the target heights

@@ -56,6 +56,8 @@ void main() { gl_FragColor = v_color; }`;
 
 const esc3d = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+import { program, Quality, dprCap } from "./shared-gl.js";
+
 const REDUCED3D = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function mulberry32(seed) {
@@ -88,21 +90,6 @@ const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a
 const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const norm = (v) => { const l = Math.hypot(...v) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
 
-function compile(gl, type, src) {
-  const sh = gl.createShader(type);
-  gl.shaderSource(sh, src);
-  gl.compileShader(sh);
-  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
-  return sh;
-}
-function program(gl, vs, fs) {
-  const p = gl.createProgram();
-  gl.attachShader(p, compile(gl, gl.VERTEX_SHADER, vs));
-  gl.attachShader(p, compile(gl, gl.FRAGMENT_SHADER, fs));
-  gl.linkProgram(p);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
-  return p;
-}
 
 /* opts (all optional):
      nodes:    [{name, host, model, listener, color:[r,g,b]}] roster instead of reading the DOM (status host map)
@@ -300,7 +287,8 @@ export function initTopology3D(opts = {}) {
   }
 
   const resize = () => {
-    const dpr = Math.min(devicePixelRatio || 1, LITE ? 1.5 : 2);
+    const dpr = dprCap((LITE ? 1.5 : 2) * (q ? q.scale() : 1));
+    backingDpr = dpr;
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
       canvas.width = w * dpr; canvas.height = h * dpr;
@@ -322,11 +310,16 @@ export function initTopology3D(opts = {}) {
   });
   if (canvas.parentElement) canvas.parentElement.appendChild(labelBox);
 
-  let raf = 0, frameN = 0;
+  let raf = 0, frameN = 0, backingDpr = 1;
+  const q = REDUCED3D ? null : new Quality();
+  let lastFrame = 0;
   const draw = () => {
     raf = requestAnimationFrame(draw);
     if (document.hidden) return;
-    if (LITE && (frameN++ & 1)) return; // 30 fps on phones
+    if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return; // 30 fps on phones / tier-2 rescue
+    const nowMs = performance.now();
+    if (q) q.tick(Math.max(0, nowMs - lastFrame), nowMs);
+    lastFrame = nowMs;
     step();
     resize();
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -391,7 +384,7 @@ export function initTopology3D(opts = {}) {
     gl.enableVertexAttribArray(na2);
     gl.vertexAttribPointer(na2, 3, gl.FLOAT, false, 0, 0);
     gl.uniformMatrix4fv(gl.getUniformLocation(np, "u_mvp"), false, m);
-    const dpr3 = Math.min(devicePixelRatio || 1, LITE ? 1.5 : 2);
+    const dpr3 = backingDpr; // point sizes follow the ACTUAL backing scale
     const uMode = gl.getUniformLocation(np, "u_mode");
     const uSize = gl.getUniformLocation(np, "u_size");
     const ns = gl.getAttribLocation(np, "a_scale");
