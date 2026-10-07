@@ -36,5 +36,38 @@
       "/home/agent/levante/keys/*": "deny",
       "/home/agent/poniente/keys/*": "deny"
     }
+  },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (LAN 192.168.1.197)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11435/v1",
+        "apiKey": "ollama",
+        "timeout": false,
+        "headerTimeout": 300000,
+        "chunkTimeout": false
+      },
+      "models": {
+        "qwen3.8:27b": {
+          "name": "qwen3.8:27b (LAN Ollama)",
+          "tools": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 16384,
+            "output": 8192
+          }
+        }
+      }
+    }
   }
 }
