@@ -963,6 +963,7 @@ def write_atomic(path, data):
     with open(tmp, "w") as f:
         json.dump(data, f, indent=1)
     os.replace(tmp, path)
+    os.chmod(path, 0o644)
 
 
 def _prom_esc(s):
