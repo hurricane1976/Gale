@@ -1,5 +1,6 @@
 rule_files:
 - ../monitoring/gale-monitor.rules.yml
+- ../monitoring/gale.rules.yml
 evaluation_interval: 1m
 tests:
 - interval: 1m
@@ -31,4 +32,230 @@ tests:
   alert_rule_test:
   - eval_time: 10m
     alertname: GaleFleetApiDown
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_monitor_api_up{host="gale-agent"}
+    values: 0x6
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GaleFleetApiDown
+    exp_alerts:
+    - exp_labels:
+        severity: critical
+        component: fleet-api
+        owner: gale
+        host: gale-agent
+      exp_annotations:
+        summary: Fleet API unavailable to the monitoring bridge
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+- interval: 1m
+  input_series:
+  - series: gale_monitor_collector_fresh{host="gale-agent"}
+    values: 0x6
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GaleCollectorStale
+    exp_alerts:
+    - exp_labels:
+        severity: critical
+        component: collector
+        owner: gale
+        host: gale-agent
+      exp_annotations:
+        summary: Host collector is missing or stale
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+- interval: 1m
+  input_series:
+  - series: gale_monitor_collector_fresh{host="gale-agent"}
+    values: 1x6
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: GaleCollectorStale
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_monitor_source_fresh{source="prometheus"}
+    values: 0x14
+  alert_rule_test:
+  - eval_time: 11m
+    alertname: GaleTelemetrySourceStale
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        component: telemetry
+        owner: gale
+        source: prometheus
+      exp_annotations:
+        summary: Telemetry source prometheus is stale or failing
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#telemetry
+- interval: 1m
+  input_series:
+  - series: gale_monitor_source_fresh{source="prometheus"}
+    values: 1x14
+  alert_rule_test:
+  - eval_time: 11m
+    alertname: GaleTelemetrySourceStale
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_monitor_active_progress_age_seconds{agent="gale-agent"}
+    values: 2000x8
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: GaleActiveTaskStalled
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        component: task
+        owner: gale
+        agent: gale-agent
+      exp_annotations:
+        summary: Active gale-agent task has made no observable progress for 30m
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
+- interval: 1m
+  input_series:
+  - series: gale_monitor_active_progress_age_seconds{agent="gale-agent"}
+    values: 100x8
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: GaleActiveTaskStalled
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: up{job="fleet-node", instance="10.0.0.5:9100"}
+    values: 0x8
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: RemoteNodeExporterDown
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        component: exporter
+        owner: gale
+        job: fleet-node
+        instance: 10.0.0.5:9100
+      exp_annotations:
+        summary: Remote exporter 10.0.0.5:9100 is down
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+- interval: 1m
+  input_series:
+  - series: up{job="fleet-node", instance="10.0.0.5:9100"}
+    values: 1x8
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: RemoteNodeExporterDown
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_service_up{unit="gale-web-peer"}
+    values: 0x6
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GalePeerDown
+    exp_alerts:
+    - exp_labels:
+        severity: critical
+        owner: gale
+        unit: gale-web-peer
+      exp_annotations:
+        summary: 'Peer listener down: gale-web-peer'
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- interval: 1m
+  input_series:
+  - series: gale_service_up{unit="gale-web-peer"}
+    values: 1x6
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GalePeerDown
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_service_up{unit="nginx"}
+    values: 0x6
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GaleInfraDown
+    exp_alerts:
+    - exp_labels:
+        severity: critical
+        owner: gale
+        unit: nginx
+      exp_annotations:
+        summary: 'Infra unit down: nginx'
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- interval: 1m
+  input_series:
+  - series: gale_service_up{unit="nginx"}
+    values: 1x6
+  alert_rule_test:
+  - eval_time: 4m
+    alertname: GaleInfraDown
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_backup_age_hours{host="gale-agent"}
+    values: 40x2
+  alert_rule_test:
+  - eval_time: 1m
+    alertname: GaleBackupStale
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        owner: gale
+        host: gale-agent
+      exp_annotations:
+        summary: No verified backup in 40h
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- interval: 1m
+  input_series:
+  - series: gale_backup_age_hours{host="gale-agent"}
+    values: 24x2
+  alert_rule_test:
+  - eval_time: 1m
+    alertname: GaleBackupStale
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - series: gale_synth_green_ratio{host="gale-agent"}
+    values: 0.5x14
+  alert_rule_test:
+  - eval_time: 11m
+    alertname: GaleSynthFailing
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        owner: gale
+        host: gale-agent
+      exp_annotations:
+        summary: Synthetic checks failing (green 0.5)
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- interval: 1m
+  input_series:
+  - series: gale_synth_green_ratio{host="gale-agent"}
+    values: 1x14
+  alert_rule_test:
+  - eval_time: 11m
+    alertname: GaleSynthFailing
+    exp_alerts: []
+- interval: 1m
+  input_series: []
+  alert_rule_test:
+  - eval_time: 1m
+    alertname: GaleSynthStale
+    exp_alerts:
+    - exp_labels:
+        severity: warning
+        owner: gale
+        host: gale-agent
+      exp_annotations:
+        summary: "No synthetic run in 15m \u2014 cron bridge down?"
+        runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+- interval: 1m
+  input_series:
+  - series: gale_synth_run_unixtime{host="gale-agent"}
+    values: 0+60x14
+  alert_rule_test:
+  - eval_time: 12m
+    alertname: GaleSynthStale
     exp_alerts: []

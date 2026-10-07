@@ -11,7 +11,7 @@ groups:
       summary: hottest box sensor over 80C
       description: 'max hwmon temp: {{ $value | printf "%.1f" }}C for 5m'
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
-  - alert: BoxTempHigh
+  - alert: BoxTempCritical
     expr: max by (host) (node_hwmon_temp_celsius) > 90
     for: 5m
     labels:
@@ -91,7 +91,7 @@ groups:
       summary: TLS cert expires in {{ $value | printf "%.0f" }} days
       description: tailscale cert runway under 21d -- renew before push/PWA breaks
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
-  - alert: TlsCertExpiring
+  - alert: TlsCertExpiringCritical
     expr: gale_tls_cert_days_left < 7
     for: 1h
     labels:
@@ -101,7 +101,7 @@ groups:
       summary: TLS cert expires in {{ $value | printf "%.0f" }} days
       description: renew now -- HTTPS listeners go dark at expiry
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
-  - alert: GaleBackupStale
+  - alert: GaleBackupStaleCritical
     expr: gale_backup_age_hours > 168
     for: 1h
     labels:

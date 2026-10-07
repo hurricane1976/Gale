@@ -10,7 +10,7 @@ groups:
       owner: gale
     annotations:
       summary: LAN Ollama server unreachable for 10m
-      description: 10 local agents run on ollama/qwen3.8:27b -- scheduled wakes will fail until it's back
+      description: interactive Ollama host is down (qwen3.8:27b) -- interactive inference &amp; bench runs will fail until it's back
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
   - alert: GaleOllamaModelUnloaded
     expr: gale_ollama_model_loaded == 0
