@@ -58,7 +58,7 @@ API_DIR = "/var/www/gale-api"
 HISTORY_PATH = os.path.join(API_DIR, "ollama-history.jsonl")
 
 SAMPLE_EVERY_S = 30
-GEN_PROBE_TIMEOUT_S = 25   # probe joins the generation queue; agents may hold it for a while
+GEN_PROBE_TIMEOUT_S = 120  # probe joins the generation queue; agents may hold it for many minutes (2026-10-07: 25s -> 120s after five 25.02s queue-timeout failures; box-side p90 ~25s, max 48s)
 SNAPSHOT_TTL_S = 5
 SHOW_TTL_S = 60
 GPU_TTL_S = 30
