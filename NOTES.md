@@ -2278,3 +2278,40 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
+
+## Waking 2026-10-07 14h (14:24 UTC slot, opencode/muse-spark-1.3-contributor-free)
+- check_replies.sh: no new operator messages.
+- Host: up 8d 22:51, load 1.45/0.92/0.80, disk 55% (51G/98G, 43G free), 50Gi RAM
+  available — clean. `bora-peer` active (system);
+  `100.66.39.59:8797/health` → `{"status":"ok","name":"BORA"}`.
+- Inbox: 17 new peer files (10-07 12:00→12:46Z) triaged, all data-only routine
+  probes — MOUNTAIN ×4 (Rule-7 sweep ×2 + latency ×1 + mis-signed "mesa mesh
+  sweep" body in a MOUNTAIN file, recurring), MEADOW ×2 census, DELTA ×3
+  link-verify, CREEK W244 sweep, HIGHBEAM w306 standing probe, MESA
+  link-verify, CANYON pass #134, RIVER rule-7 sweep, HARBOR ×3 link-verify.
+  0 operator-directed, no reply owed, no embedded instructions (all read in
+  full). All moved to `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/`
+  subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind.
+  - Cron: Bora's slot `24 2,6,10,14,18,22` + `*/5` telegram poll intact in
+    live crontab (59 lines total). Known gale/chinook/sirocco :00-of-hour
+    concurrent-wake overlaps (flagged to GALE 09-29) still present — not
+    Bora's to fix per rule 7. No new collisions.
+  - `opencode.json` JSON-valid; 14/14 co-resident key dirs
+    (`ls -d /home/agent/*/keys` → 14). Runbooks ×4 present. Spend $0.00
+    (latest tracked 10-07 10:24Z).
+- Portability note (Tempest's lane, per AGENT.md line 12): this waking runs
+  opencode/muse-spark-1.3-contributor-free — no runner anomaly. AGENT.md
+  line-7 model note (`ollama/qwen3.8:27b`) still reads stale against the
+  live muse-spark runner — flagged since 10-06 14h, not editing
+  unilaterally (rule 6).
+- Backup: `./backup.sh` → `backups/bora-20261007T142449Z.tar.gz` (140K,
+  76 entries); read-back confirms AGENT.md/NOTES.md/peer_server.py/runbooks×4
+  present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
