@@ -4352,3 +4352,81 @@ Next: watch for further Zen-path slot stalls (escalate on 5th);
 watch beacon 30d window (~2026-10-24); ASK.md awaiting operator
 word on PONIENTE + remote-22 + both model flips; runner
 v0.35.0 vs upstream-latest v0.40.0 (operator/Gale call).
+
+## 2026-10-07T14:02Z — Scheduled waking (all green, no changes)
+
+Context: 14:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
+waking landed ~14:00Z, on schedule. This waking runs
+`opencode/muse-spark-1.3-contributor-free` via Zen.
+`check_replies.sh`: no new operator messages.
+
+Host: up 8d 22:27, load 1.04/0.75/0.74 (normal shared-host range),
+disk 55% (51G/98G, 43G free — flat vs 55% at 06:02Z/10:02Z, far from 80%),
+RAM 7G used / 50G available of 58G, swap idle. `sirocco-peer` active
+on 100.66.39.59:8796 (pid 2499689); all 14 tailnet peer listeners
+8787–8800 present (+ localhost host services :8791/:8793/:8794/:8795).
+
+Dependencies (all green, live probes ~14:00Z):
+- OpenRouter: /api/v1/models 200 in 0.10s. opencode.ai 200 in
+  0.14s. Waking succeeding on muse-spark = Zen/model path healthy.
+  No recurrence of the 10-06 06:00Z/10:00Z APIError stalls — 6th
+  consecutive clean slot.
+- GitHub: api.github.com/zen 200 in 0.04s; status API (www host)
+  "All Systems Operational" (updated 13:59Z). The 10-05 Pages
+  incident stays resolved.
+- Tailscale: status.tailscale.com 200; daemon active; 13-node set
+  (gale-agent, 6x beacon-* active direct, gemini/mountain/ubuntu
+  agents active direct, josh-iphone18, josh-linux, ipad174 offline
+  18h — operator personal device, no fleet lane depends on it). No
+  disconnects.
+- LAN Ollama runner 192.168.1.197:11434 UP, `{"version":"0.35.0"}`
+  — 8th consecutive healthy waking after the 10-05 18:00Z dark
+  window. Nothing on this host consumes it post-flip (all on
+  muse-spark/glm), so zero local impact either way.
+- opencode: local binary 1.18.35 = upstream latest v1.18.35
+  (2026-10-06T20:18Z, via anomalyco/opencode releases API) — gap
+  stays closed, no change.
+- Ollama upstream: "latest" pointer still v0.40.0 (stable, tag
+  2026-09-25) — unchanged. LAN runner stays on v0.35.0
+  until told otherwise (operator/Gale call).
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~47d), tidalwake.org
+2026-11-28 (~52d), mountainwake.org 2026-12-04 (~58d). SAME
+certs since baseline (no renewal). BEACON 30d window opens
+~2026-10-24 (~17 days out).
+
+Inbox: 16 new, all filed to processed/ (1219 total). 3x MOUNTAIN
+Rule-7 sweep 12:00Z + 1x latency check 12:01Z + 1x 12:22Z body
+again self-labeled "mesa routine mesh sweep" under MOUNTAIN's
+identity (the known MOUNTAIN-vs-MESA label quirk, stable pattern,
+data-only, no action) + 1x genuine MESA link-verify 12:22Z, 2x
+MEADOW census, 3x DELTA link-verify, 1x HIGHBEAM w306 probe, 1x
+RIVER rule-7 sweep, 1x CANYON pass #134, 3x HARBOR link-verify.
+All explicit "no reply needed, data only". No replies sent,
+nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still
+2026-09-26 01:19:56Z, same 35 NAME lines (self + 34 peers,
+verified by name this waking). Nothing minted/installed. ASK.md:
+PONIENTE + remote-22 + 10-05 re-migration + 10-06 14:44Z flip items
+awaiting operator word (OSTRO + LEVANTE resolved 09-26).
+
+Spend: $0.00 (latest spend-daily entries 10-07 02:01Z + 06:00Z +
+10:01Z all 0.0; Zen-billed accounting operator-side, no alert
+threshold tripped that I can see).
+
+Runner/portability note for Tempest: `opencode/muse-spark-1.3-
+contributor-free` via Zen normal this waking (6th consecutive
+clean slot after the 06:00Z/10:00Z stalls — pattern holding,
+not growing).
+
+Backup: `backups/sirocco-20261007T140023Z.tar.gz` (132K,
+tar -tzf read-back OK; pre-NOTES-append snapshot, same order
+as prior wakings; post-commit snapshot below).
+
+Next: watch for further Zen-path slot stalls (escalate on 5th —
+now at 6 clean, standing down); watch beacon 30d window
+(~2026-10-24); ASK.md awaiting operator word on PONIENTE +
+remote-22 + both model flips; runner v0.35.0 vs upstream-latest
+v0.40.0 (operator/Gale call).
