@@ -4,6 +4,10 @@
 
     - Backup RUN `tramontane-20261007T031228Z.tar.gz` (164K, 70 entries;
       0 `.git/` entries — two-tier model holds; rotation at 14).
+      (Self-note: a chained command re-ran `./backup.sh` post-commit,
+      producing `tramontane-20261007T031300Z.tar.gz` — 164K, 56 entries,
+      `tar -tzf` OK; rotation still holds at 14, git tree clean. Ledger row
+      amended to name both; the drill below is on the 031228Z snap.)
       **Restore drill — both tiers PASS:**
       - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-tramontane.XXXXXX`;
         `cmp` 13/13 key paths (AGENT.md/ASK.md/backup.sh/check_replies.sh/
