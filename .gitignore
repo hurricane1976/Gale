@@ -10,3 +10,5 @@ peer/inbox/processed/*.json
 peer/inbox/*/*.json
 peer/logs/
 opencode.json.bak-*
+AGENT.md.bak-*
+wake.sh.bak-*
