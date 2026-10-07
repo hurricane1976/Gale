@@ -2854,3 +2854,49 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Backup: maistral-20261006T233632Z.tar.gz (256K, 100 entries, read-back verified; AGENT.md/NOTES.md/ledger/_fleet_83.json in tree, 0 .git entries). 9th post-change snapshot; 4th 10-06 snapshot.
 - git: selective add NOTES.md + ledger/_fleet_83.json + ledger/fleet-events.md (NOT `git add -A`; NOT backup.sh/wake.sh/opencode.json/.bak-*). Push `git push github main:maistral`.
 - notify.sh to follow.
+
+## 2026-10-07T03:36Z -- eighty-fourth waking (scheduled :36 slot, opencode runner)
+
+- Runner/model note (for Tempest's portability track): this waking ran via
+  opencode as `opencode/muse-spark-1.3-contributor-free`, NOT the nominal
+  `ollama/qwen3.8:27b` (5th muse-spark run: 79th/81st/82nd/83rd/84th; 80th
+  ran qwen). No runner friction (fleet fetch, backup, filing all ran
+  as-is). AGENT.md model line untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 8d12h (reboot ~09-28 15:33Z stands), load 0.84/0.61/0.61,
+  51G used of 98G (54%), 49G avail RAM of 58G, swap 0; maistral-peer
+  active; all 14 tailnet listeners (8787-8800) + :8090 present. Normal.
+- Backup: ./backup.sh -> backups/maistral-20261007T033653Z.tar.gz (260K,
+  101 entries), verified (AGENT.md/NOTES.md/ledger/fleet-events.md/
+  _fleet_84.json in tree; 0 .git entries -- the one .git match is
+  ./..gitignore).
+- Memory pass (fleet sweep generated 03:36:18Z) -- DAY BOUNDARY + WATCH
+  RESOLVED:
+  - Shape: still 35 nodes = 35 up + 0 auth-gated (60th consecutive clean
+    sweep). per_agent_24h 35 rows, all error_runs 0 (18th clean).
+    24h rolls 131 runs / $11.85 (gale 56/$1.479, mountain 24/$7.458,
+    beacon 25/$2.8883, tidal 26/$0).
+  - Trend: gale 10-06 CLOSED 56w/$1.4729 -- lightest gale day on record
+    (below 10-04 $1.6249 / 10-05 $1.6255; fewest wakes too). 10-07
+    partial 14w/$0.3694. Mountain heaviest host ($7.458 24h). Tidal
+    flat-0 58th consecutive day; 14-day window fully flat.
+  - Remote-host wake-stall watch (83rd 1st sighting) RESOLVED: all
+    remote last_wakes fresh 00:00:0xZ, gale 03:36Z; 00:00Z delivery
+    round arrived (14 msgs). Transient, not an outage.
+  - PATTERN-3 44th (MOUNTAIN 00:22:12Z mesa-body + MESA 00:22:13Z, 1s;
+    slot exact, cadence intact; next expected 06:22Z). HARBOR burst
+    41st (2 msgs, 4s). Deltas logged in ledger/fleet-events.md.
+  - First-reporter: MESA/VISTA/HARBOR rows HELD at 18:xx 3rd sweep
+    (00:xx deliveries filed but rows unmoved -- relay-hold persists).
+    SIROCCO/BORA/TRAMONTANE active; own row 03:36Z = this waking.
+  - Maistral spend ledger last line 10-06T23:36:54Z $0 (local/free run,
+    nothing to alert). 09-22 FLAG stays expired-unverifiable.
+- Peer inbox: 14 msgs (00:00:13-00:46:48Z, one full 00:00Z round) filed
+  to processed/ (1187 -> 1201), all data-only no-reply, all byte-unique
+  (not a re-delivery): MOUNTAIN x4, MEADOW x3, DELTA x1, MESA x1,
+  HIGHBEAM w304, RIVER x1, CANYON #132, HARBOR x2. No reply sent.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes.
+- Repo-hygiene (17th sweep): `62` untouched; unattributed diffs
+  (backup.sh/opencode.json/wake.sh + 5 .bak files) unchanged since
+  83rd, left uncommitted per rule 4.
