@@ -1505,6 +1505,24 @@ def am_firing_alerts(now=None):
                     "host": s["labels"].get("fleet_host") or s["labels"].get("host"),
                     "agent": s["labels"].get("agent"), "owner": s["labels"].get("owner", "gale"),
                     "started_at": s.get("starts"), "runbook": s["annotations"].get("runbook_url", "runbooks.html")})
+    # Maintenance mute: drop any alert for the .197 inference host while it
+    # is powered down until further notice (GaleOllamaDown,
+    # GaleOllamaModelUnloaded, GaleGpuCollectorDown, or anything mentioning
+    # ollama / inference / the host IP). Prometheus keeps firing; the PWA
+    # just stops surfacing it. Re-arm by clearing the maintenance flag.
+    if _ollama_maintenance():
+        muted_names = {"GaleOllamaDown", "GaleOllamaModelUnloaded", "GaleGpuCollectorDown"}
+        kept = []
+        for a in out:
+            nm = str((a.get("id") or "") + " " + (a.get("text") or "")).lower()
+            alertname = nm  # id carries the fingerprint/alertname
+            if any(m.lower() in alertname for m in muted_names):
+                continue
+            if ("ollama" in nm or "inference" in nm or OLLAMA_MAINTENANCE_HOST in nm
+                    or "gpu collector" in nm or "josh-desktop11" in nm or "josh-linux" in nm):
+                continue
+            kept.append(a)
+        return kept
     return out
 
 
@@ -1525,6 +1543,28 @@ def am_firing_alerts(now=None):
 OLLAMA_HISTORY_PATH = os.path.join(API_DIR, "ollama-history.jsonl")
 OLLAMA_SAMPLE_MAX_AGE_S = 300          # sampler cadence is 30s; 5min silent = monitor trouble
 OLLAMA_TAIL_BYTES = 2 * 1024 * 1024    # ~15h of samples; bounds the flapping lookback
+
+# Maintenance mute for the LAN inference host (192.168.1.197: ollama :11434
+# + GPU collector :8792). When the operator powers that box down until
+# further notice, every inference alert would otherwise fire crit/warn
+# forever. Set env OLLAMA_MAINTENANCE=1 or write
+# /var/www/gale-api/ollama-maintenance.json {"maintenance": true, ...} to
+# silence inference + related AM alerts in the PWA. Delete the file / unset
+# the env to re-arm. The sampler keeps writing history; only alerting mutes.
+OLLAMA_MAINTENANCE_PATH = os.path.join(API_DIR, "ollama-maintenance.json")
+OLLAMA_MAINTENANCE_HOST = "192.168.1.197"
+
+
+def _ollama_maintenance():
+    """True when the 192.168.1.197 host is in scheduled maintenance."""
+    if os.environ.get("OLLAMA_MAINTENANCE") == "1":
+        return True
+    try:
+        with open(OLLAMA_MAINTENANCE_PATH) as fh:
+            doc = json.load(fh)
+        return bool(isinstance(doc, dict) and doc.get("maintenance") is True)
+    except Exception:
+        return False
 
 
 def _iso_epoch(ts):
@@ -1557,6 +1597,10 @@ def _ollama_history_tail():
 
 
 def ollama_alerts(now=None):
+    # Maintenance mute: the .197 box is down until further notice per
+    # operator -- report nothing (old crits auto-close in alert-history).
+    if _ollama_maintenance():
+        return []
     now = now if now is not None else time.time()
     recs = _ollama_history_tail()
     samples = [r for r in recs if isinstance(r.get("reachable"), bool)]

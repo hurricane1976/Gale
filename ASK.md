@@ -33,6 +33,9 @@
 - **Telegram (2026-10-03, via /commands):** I approve
 - **Telegram (2026-10-03, via /commands):** Gale becomes 4th lead in rule 6 so edit rule 6 to add yourself with the other leads
 - **Telegram (2026-10-03, via /commands):** Full mesh coordination confirmed and thanks for the rule 6 edit
+- **Telegram (2026-10-04, via /commands):** When did Gale wake last?
+- **Telegram (2026-10-05, via /commands):** Switched to backup model to replace ollama
+- **Telegram (2026-10-05, via /commands):** Stop ollama alerts until notice
 
 ## Housekeeping note (2026-09-27 ~23:50Z)
 

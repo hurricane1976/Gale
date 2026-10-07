@@ -218,6 +218,10 @@ class OllamaAlertsTests(unittest.TestCase):
         path = Path(directory) / 'ollama-history.jsonl'
         path.write_text(''.join(json.dumps(line) + '\n' for line in lines))
         stack.enter_context(patch.object(fleet, 'OLLAMA_HISTORY_PATH', str(path)))
+        # Maintenance mute must not leak into unit tests: the live host flag
+        # file may exist on this box (operator maintenance) -- point at a
+        # path that never exists so these tests exercise alert logic.
+        stack.enter_context(patch.object(fleet, 'OLLAMA_MAINTENANCE_PATH', str(Path(directory) / 'no-maintenance.json')))
         return path
 
     def _sample(self, ts, reachable, gpu=None, **extra):
@@ -264,10 +268,24 @@ class OllamaAlertsTests(unittest.TestCase):
     def test_missing_or_empty_history_is_monitor_stale(self):
         with ExitStack() as stack:
             stack.enter_context(patch.object(fleet, 'OLLAMA_HISTORY_PATH', '/nonexistent/ollama-history.jsonl'))
+            stack.enter_context(patch.object(fleet, 'OLLAMA_MAINTENANCE_PATH', '/nonexistent/ollama-maintenance.json'))
             self.assertEqual([a['kind'] for a in fleet.ollama_alerts(now=self.NOW)], ['inference-monitor-stale'])
         with ExitStack() as stack:
             self._feed(stack, [{'ts': '2027-01-15T07:00:00Z', 'type': 'server_up'}])
             self.assertEqual([a['kind'] for a in fleet.ollama_alerts(now=self.NOW)], ['inference-monitor-stale'])
+
+    def test_maintenance_mute_suppresses_all_inference_alerts(self):
+        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T07:47:00Z'}
+        with ExitStack() as stack:
+            self._feed(stack, [
+                self._sample('2027-01-15T07:47:00Z', False, gpu),
+                self._sample('2027-01-15T08:00:00Z', False, gpu),
+            ])
+            directory = stack.enter_context(tempfile.TemporaryDirectory())
+            flag = Path(directory) / 'ollama-maintenance.json'
+            flag.write_text(json.dumps({"maintenance": True, "host": "192.168.1.197"}))
+            stack.enter_context(patch.object(fleet, 'OLLAMA_MAINTENANCE_PATH', str(flag)))
+            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
 
     def test_gpu_collector_staleness_raises_warn(self):
         with ExitStack() as stack:

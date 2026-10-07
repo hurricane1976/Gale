@@ -130,6 +130,25 @@ FULL_TARGET_TIMEOUT_S = 3.0
 OLLAMA_ADDR = os.environ.get("OLLAMA_ADDR", "192.168.1.197:11434")
 OLLAMA_TIMEOUT_S = 3.0
 
+# Maintenance mute for the 192.168.1.197 inference host (ollama :11434 +
+# GPU collector :8792). Same flag file as fleet_api.py: env
+# OLLAMA_MAINTENANCE=1 or API_DIR/ollama-maintenance.json {"maintenance":
+# true}. While set, collect_ollama() stamps maintenance:true so status.js
+# shows "maintenance" instead of firing the "ollama unreachable" crit, and
+# the josh-linux full-target card shows maintenance instead of down.
+OLLAMA_MAINTENANCE_PATH = os.path.join(API_DIR, "ollama-maintenance.json")
+
+
+def _ollama_maintenance():
+    if os.environ.get("OLLAMA_MAINTENANCE") == "1":
+        return True
+    try:
+        with open(OLLAMA_MAINTENANCE_PATH) as fh:
+            doc = json.load(fh)
+        return bool(isinstance(doc, dict) and doc.get("maintenance") is True)
+    except Exception:
+        return False
+
 # systemd units this dashboard cares about (fleet + the services the site
 # and mesh depend on). Any unit name systemctl knows about works here.
 SERVICES = [
@@ -698,7 +717,16 @@ def probe_full_target(t):
 
 
 def collect_full_targets():
-    return [probe_full_target(t) for t in FULL_TARGETS]
+    out = []
+    maint = _ollama_maintenance()
+    for t in FULL_TARGETS:
+        r = probe_full_target(t)
+        # josh-linux IS the .197 inference host: stamp maintenance so the
+        # card reads "maintenance" instead of a red unreachable.
+        if maint and "192.168.1.197" in str(t.get("addr", "")):
+            r["maintenance"] = True
+        out.append(r)
+    return out
 
 
 # Firewalla is a cloud API (MSP), not a local call -- poll it far less often
@@ -870,7 +898,8 @@ def collect_ollama():
     from datetime import datetime, timezone
     data = {"ok": False, "addr": OLLAMA_ADDR, "reachable": False,
             "version": None, "loaded": [], "inventory": [],
-            "models_total": 0, "vram_loaded_gb": 0.0, "error": None}
+            "models_total": 0, "vram_loaded_gb": 0.0, "error": None,
+            "maintenance": _ollama_maintenance()}
     try:
         ver = _ollama_get("/api/version")
         data["reachable"] = True

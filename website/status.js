@@ -315,6 +315,18 @@ function renderFullHosts(list) {
   }
   setHTML(grid, list.map((t) => {
     if (t.health !== "up" || !t.stats) {
+      // Maintenance mute: josh-linux is the .197 inference host, down until
+      // further notice — amber maintenance card, not a red unreachable.
+      if (t.maintenance) {
+        return `<div class="full-host-card" data-health="down">
+        <div class="full-host-head">
+          <span class="full-host-name">${esc(t.name)}</span>
+          <span class="pill" data-level="warn">maintenance</span>
+          <span class="mono-dim">${esc(t.addr)}</span>
+        </div>
+        <p class="full-host-down">Powered down until further notice (operator maintenance) — no action needed.</p>
+      </div>`;
+      }
       return `<div class="full-host-card" data-health="down">
         <div class="full-host-head">
           <span class="full-host-name">${esc(t.name)}</span>
@@ -673,6 +685,10 @@ function renderOllama(o) {
   const bodyEl = document.getElementById("ollama-body");
   if (!o || !o.reachable) {
     setText(addrEl, "–");
+    // Maintenance mute: the .197 box is down until further notice — say so
+    // instead of a bare "Unreachable".
+    if (o && o.maintenance) setText(downEl, "Maintenance — inference host powered down until further notice");
+    else setText(downEl, "Unreachable");
     downEl.hidden = false;
     bodyEl.hidden = true;
     return;
@@ -849,9 +865,12 @@ function hostAlerts(d) {
     if (sv.state !== "active") a.push({ sev: "crit", kind: "service", text: `${sv.unit} ${sv.state}` });
   }
   // ollama down/up (the collector probes /api/version; "up but slow" is the
-  // ollama page's diagnostics panel's job — this is binary reachability)
+  // ollama page's diagnostics panel's job — this is binary reachability).
+  // Maintenance mute: when the 192.168.1.197 host is powered down until
+  // further notice (sysmon stamps ollama.maintenance), stay quiet — the
+  // panel shows "maintenance" instead of alerting.
   const o = d.ollama || {};
-  if (o.reachable === false) a.push({ sev: "crit", kind: "ollama", text: "ollama unreachable" });
+  if (o.reachable === false && !o.maintenance) a.push({ sev: "crit", kind: "ollama", text: "ollama unreachable" });
   return a;
 }
 
@@ -878,8 +897,22 @@ async function fleetAlerts() {
 
 let lastStripAlerts = [];
 function refreshStrip(fleetArr, statusData) {
+  // Maintenance mute (defense in depth): even if the fleet API hasn't
+  // restarted yet, never show .197 inference alerts while sysmon reports
+  // ollama.maintenance. Covers inference-*, ollama, and GPU-collector texts.
+  const maint = Boolean(statusData && statusData.ollama && statusData.ollama.maintenance);
+  const fleet = maint
+    ? (fleetArr || []).filter((a) => {
+        const kind = String(a.kind || "").toLowerCase();
+        const text = String(a.text || "").toLowerCase();
+        if (kind === "ollama" || kind === "inference" || kind.startsWith("inference-")) return false;
+        if (text.includes("ollama") || text.includes("inference") || text.includes("192.168.1.197")) return false;
+        if (text.includes("gpu telemetry") || text.includes("gpu collector") || text.includes("collector stalled")) return false;
+        return true;
+      })
+    : (fleetArr || []);
   const host = statusData ? hostAlerts(statusData) : [];
-  const all = [...fleetArr, ...host];
+  const all = [...fleet, ...host];
   lastStripAlerts = all;
   morph(() => renderAlertStrip(all, statusData));
   /* ambient fleet health (ROADMAP "ambient theming"): html[data-fleet-health]
