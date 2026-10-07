@@ -43,7 +43,7 @@ PROMPT="You are waking up on your regular schedule as SQUALL, running via openco
 PRIMARY_MODEL="openrouter/z-ai/glm-5.3-flash"
 # Automatic fallback (operator-directed): if the primary model fails, retry
 # once on the ollama fallback before giving up.
-FALLBACK_MODEL="opencode/glm-5.3-flash"
+FALLBACK_MODEL="ollama/qwen3.8:27b"
 
 opencode_run() {
     timeout --kill-after=60 45m         opencode run --model "$PRIMARY_MODEL" --format json --dir /home/agent/squall "$PROMPT"

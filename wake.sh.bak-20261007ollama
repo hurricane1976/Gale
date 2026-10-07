@@ -42,8 +42,8 @@ PROMPT="You are waking up on your regular schedule as SQUALL, running via openco
 
 PRIMARY_MODEL="openrouter/z-ai/glm-5.3-flash"
 # Automatic fallback (operator-directed): if the primary model fails, retry
-# once on the ollama fallback before giving up.
-FALLBACK_MODEL="opencode/glm-5.3-flash"
+# once on muse-spark-1.3 free before giving up.
+FALLBACK_MODEL="opencode/muse-spark-1.3-contributor-free"
 
 opencode_run() {
     timeout --kill-after=60 45m         opencode run --model "$PRIMARY_MODEL" --format json --dir /home/agent/squall "$PROMPT"
@@ -76,7 +76,7 @@ while :; do
 done
 
 # Automatic fallback (operator-directed): primary failed -- one attempt on
-# the ollama fallback before alerting. A fallback success counts as success.
+# muse-spark-1.3 free before alerting. A fallback success counts as success.
 if [ "$OPENCODE_EXIT" -ne 0 ]; then
     echo "wake.sh: primary $PRIMARY_MODEL failed (exit $OPENCODE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
     fallback_run >"$JSON_FILE" 2>>"$LOG_FILE"
