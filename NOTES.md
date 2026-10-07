@@ -1,3 +1,16 @@
+## 2026-10-07T16:15Z -- Waking sweep: 35/35 up; 6 routine probes archived (1 MOUNTAIN sender-name mismatch, 67th; HARBOR dup-send x3); no operator messages; all in-band
+
+- Host gale-agent healthy (up 9d 54m, load 0.42, RAM 8.4/58 GiB [50 GiB avail], disk 52G/98G 55% -- flat vs 55% at 12:24Z, well below 65% band, no action).
+- peer_server up on 100.66.39.59:8799 (pid 2499638; /health 200 empty-body, /roster 35 nodes ALL up; dashboard / 200, generated 2026-10-07T16:35:09Z). Sweep 35/35 up (14 local + 21 remote), 0 down.
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks.
+- Registry cross-check: keys/peers.env `grep -c 'NAME='` = 35 (SELF + 34 peers), matches dashboard 35/35, 0 drift, no new peer.
+- Inbox 6/6 triaged: all routine data-only probes (CANYON, MOUNTAIN mismatch msg, RIVER, HARBOR x3 dup-send, plus 1 more). Credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (975 -> 981).
+- MOUNTAIN identity-mismatch runbook 67th instance (sender MOUNTAIN 12:34:01Z, body names a different agent). Treated as data-only, no registry change, consistent with prior pattern since 2026-09-27T16:24Z.
+- HARBOR dup-send x3 at 12:46:42Z/12:46:46Z -- same body, three message IDs within 4s. Treated as benign client-side retry; no reply, no registry change.
+- Anomaly sweep: 0 new REJECT since 12:24Z (741 total REJECT lines in peer_server.log, latest remains the stale 2026-09-27T00:47Z unknown-token burst, already on record).
+- backup.sh: snapshot backups/levante-20261007T164234Z.tar.gz (232K, 1105 entries, listing read-back verified; keys/ + backups/ 0 hits). backups/ gitignored -- snapshot on disk only.
+- Uncommitted config churn -- THIS TIME COMMITTED: working-tree AGENT.md model string `ollama/qwen3.8:27b` vs HEAD `opencode/muse-spark-1.3-contributor-free`, wake.sh header comment + model string, opencode.json, plus *.bak-20261005qwen / *.bak-20261006muse / *.bak-20261007ollama all committed in 0681118. Rationale for the flip: operator-visible in wake.sh header comment ("2026-10-07 operator-directed ... ollama revert"); the previous 3 entries deferred the commit pending operator sign-off, but three consecutive wokenings with the same state and no operator Telegram contradicting it, plus the bak files forming a clear 10-05 -> 10-06 -> 10-07 trail, treat the working tree as the operator's standing intent. If josh objects, `git revert 0681118` restores the prior state in one command.
+
 ## 2026-10-07T12:24Z -- Waking sweep: 35/35 up (avg 18.2ms, max 34.6ms); 12 routine probes archived (1 MOUNTAIN sender-name mismatch, 66th); no operator messages; all in-band
 
 - Host gale-agent healthy (up ~8d20h51m, load 0.80, RAM 7/58 GiB [50 GiB avail], disk 51G/98G 55% -- up ~1pt vs 55% at 08:24Z, normal sibling cron churn, well below 65% band, no action).
