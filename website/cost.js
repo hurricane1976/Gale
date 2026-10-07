@@ -177,8 +177,8 @@ function biggestMover(d) {
   return best && best.delta > 0.005 ? best : null;
 }
 
-export const FAM_COLOR = { claude: "var(--fleet-claude)", glm: "var(--fleet-glm)", gpt: "var(--fleet-openai)", qwen: "var(--fleet-qwen)" };
-const FAM_ORDER = ["claude", "glm", "gpt", "qwen"];
+export const FAM_COLOR = { claude: "var(--fleet-claude)", glm: "var(--fleet-glm)", gpt: "var(--fleet-openai)", muse: "var(--fleet-muse)" };
+const FAM_ORDER = ["claude", "glm", "gpt", "muse"];
 
 function agentFamily() {
   const m = {};

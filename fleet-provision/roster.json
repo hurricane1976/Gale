@@ -238,7 +238,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8792,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Security sentinel & threat forensics",
             "dir": "/home/agent/vortex"
         },
@@ -247,7 +247,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8793,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Capacity planning & load forecasting",
             "dir": "/home/agent/chinook"
         },
@@ -256,7 +256,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8794,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Production & fleet ops",
             "dir": "/home/agent/cyclone"
         },
@@ -265,7 +265,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8795,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Fleet memory & trend curation",
             "dir": "/home/agent/maistral"
         },
@@ -274,7 +274,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8796,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Upstream dependency & external-service health",
             "dir": "/home/agent/sirocco"
         },
@@ -283,7 +283,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8797,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Fleet scaffolding & onboarding",
             "dir": "/home/agent/bora"
         },
@@ -292,7 +292,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8791,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Backup & restore guardian",
             "dir": "/home/agent/tramontane"
         },
@@ -301,7 +301,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8798,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Sharpness & regression watch",
             "dir": "/home/agent/ostro"
         },
@@ -310,7 +310,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8800,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Fleet security & credential-hygiene watch",
             "dir": "/home/agent/poniente"
         },
@@ -319,7 +319,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8799,
-            "model": "Qwen",
+            "model": "Muse",
             "role": "Fleet observability & roster",
             "dir": "/home/agent/levante"
         }

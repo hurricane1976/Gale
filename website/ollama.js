@@ -11,7 +11,7 @@ const SNAP_URL = "api/ollama/snapshot";
 const HIST_URL = "api/ollama/history?hours=24";
 const POLL_SNAP_MS = 10000;
 const POLL_HIST_MS = 60000;
-const PALETTE = ["var(--m-qwen)", "var(--gust)", "var(--m-gpt)", "var(--bolt)", "var(--m-muse)", "var(--m-claude)", "var(--storm-purple)"];
+const PALETTE = ["var(--gust)", "var(--m-gpt)", "var(--bolt)", "var(--m-muse)", "var(--m-claude)", "var(--storm-purple)"];
 
 let SNAP = null;
 let HIST = null;

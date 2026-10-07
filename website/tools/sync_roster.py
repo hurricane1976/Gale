@@ -65,7 +65,7 @@ HOST_ORDER = ["tidal", "beacon", "mountain", "gale"]
 
 MODEL_COLOR_VAR = {
     "claude": "var(--fleet-claude)", "glm": "var(--fleet-glm)",
-    "gpt": "var(--fleet-openai)", "qwen": "var(--fleet-qwen)",
+    "gpt": "var(--fleet-openai)", "qwen": "var(--fleet-muse)",
     "deepseek": "var(--fleet-deepseek)", "muse": "var(--fleet-muse)",
     "gemini": "var(--fleet-gemini)",
 }

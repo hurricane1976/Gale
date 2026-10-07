@@ -3,7 +3,7 @@
    already loaded by the page (any partial first-paint slice just shows fewer old buckets until the full set lands). */
 import { mountBars3D } from "./bars3d.js";
 
-const FAM = { claude: [0.98, 0.7, 0.25], glm: [0.9, 0.35, 0.75], qwen: [0.55, 0.5, 0.98], gpt: [1.0, 0.45, 0.45], deepseek: [0.3, 0.8, 0.95], muse: [0.4, 0.9, 0.6], gemini: [0.3, 0.7, 0.9], other: [0.6, 0.65, 0.75] };
+const FAM = { claude: [0.98, 0.7, 0.25], glm: [0.9, 0.35, 0.75], gpt: [1.0, 0.45, 0.45], deepseek: [0.3, 0.8, 0.95], muse: [0.4, 0.9, 0.6], gemini: [0.3, 0.7, 0.9], other: [0.6, 0.65, 0.75] };
 let view = null;
 
 export function updateRuns3D(runs) {

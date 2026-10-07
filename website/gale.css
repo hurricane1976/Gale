@@ -43,7 +43,6 @@
   --m-gpt: #ff5a5f;
   --m-muse: #9dff3d;
   --m-deepseek: #7c8bff;
-  --m-qwen: #a78bfa;
   --font-heading: "Fraunces", Georgia, serif;
   --font-body: "Inter", -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
@@ -145,6 +144,40 @@ body::after {
   /* live theme engine (#5): ambient-only hue/glow, content untouched */
   filter: hue-rotate(var(--theme-hue, 0deg)) saturate(var(--theme-glow, 1));
 }
+
+/* ---- storm ceiling (#5b): the weather follows you off the home page.
+   A fixed band of moonlit cloud streaks drifting behind everything at the
+   blob plane; its weight follows live --storm-level, so a busier box hangs
+   heavier over every page. Transform-only drift, compositor-driven.
+   Retires under reduced motion (layer stays as static ambience), data
+   saver and high contrast. Opt-out any time:
+   html.no-storm-ceiling::before { display: none; } ---- */
+html::before {
+  content: "";
+  position: fixed; inset: -60px -12% auto -12%; height: 240px;
+  z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(42% 88% at 18% -30%, color-mix(in srgb, #8ba0cc 16%, transparent), transparent 70%),
+    radial-gradient(55% 100% at 64% -42%, color-mix(in srgb, var(--storm-purple) 13%, transparent), transparent 72%),
+    radial-gradient(38% 80% at 88% -24%, color-mix(in srgb, #4a5f8a 12%, transparent), transparent 68%);
+  opacity: calc(0.55 + var(--storm-level, 0.35) * 0.35);
+  /* no blur here: the radial falloffs are already soft, and a filtered
+     fixed layer is real composite cost on the heaviest pages */
+  filter: saturate(var(--theme-glow, 1));
+  animation: storm-ceiling-drift 140s ease-in-out infinite alternate;
+}
+
+@keyframes storm-ceiling-drift {
+  from { transform: translate3d(-2.5%, 0, 0); }
+  to   { transform: translate3d(2.5%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html::before { animation: none; }
+}
+html[data-saver="1"]::before,
+html[data-contrast="high"]::before,
+html.no-storm-ceiling::before { display: none; }
 
 .blob {
   position: fixed; z-index: -2; pointer-events: none;
@@ -971,7 +1004,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .hero .chips .chip[data-model="claude"] { color: var(--m-claude); border-color: color-mix(in srgb, var(--m-claude) 45%, transparent); }
 .hero .chips .chip[data-model="glm"] { color: var(--m-glm); border-color: color-mix(in srgb, var(--m-glm) 45%, transparent); }
 .hero .chips .chip[data-model="gpt"] { color: var(--m-gpt); border-color: color-mix(in srgb, var(--m-gpt) 45%, transparent); }
-.hero .chips .chip[data-model="qwen"] { color: var(--m-qwen); border-color: color-mix(in srgb, var(--m-qwen) 45%, transparent); }
+.hero .chips .chip[data-model="muse"] { color: var(--m-muse); border-color: color-mix(in srgb, var(--m-muse) 45%, transparent); }
 .hero .chips .chip[data-model="deepseek"] { color: var(--m-deepseek); border-color: color-mix(in srgb, var(--m-deepseek) 45%, transparent); }
 .hero .meta {
   list-style: none; margin: 0; padding: 0;
@@ -1075,7 +1108,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .agent[data-model="claude"] { --mc: var(--m-claude); }
 .agent[data-model="glm"] { --mc: var(--m-glm); }
 .agent[data-model="gpt"] { --mc: var(--m-gpt); }
-.agent[data-model="qwen"] { --mc: var(--m-qwen); }
+.agent[data-model="muse"] { --mc: var(--m-muse); }
 .agent[data-model="deepseek"] { --mc: var(--m-deepseek); }
 .agent[data-model] { border-color: color-mix(in srgb, var(--mc) 32%, transparent); }
 
@@ -1810,7 +1843,7 @@ dialog#palette::backdrop { background: rgba(6, 9, 16, 0.55); backdrop-filter: bl
        were unreadable); these are all >= 4.5:1 on every light surface above */
     --gust: #066a5a; --bolt: #3a49a8; --bolt-bright: #2f3d96; --storm-purple: #46549c;
     --m-claude: #7d5200; --m-glm: #a50d78; --m-gpt: #b3262b; --m-muse: #3a7000;
-    --m-deepseek: #3340b8; --m-qwen: #5b3fc4;
+    --m-deepseek: #3340b8;
     --card-shadow: 0 1px 2px rgba(13, 19, 34, 0.07), 0 10px 26px rgba(13, 19, 34, 0.09);
     --card-shadow-hover: 0 2px 4px rgba(13, 19, 34, 0.08), 0 18px 40px rgba(13, 19, 34, 0.14);
     color-scheme: light;
@@ -1827,7 +1860,7 @@ dialog#palette::backdrop { background: rgba(6, 9, 16, 0.55); backdrop-filter: bl
        were unreadable); these are all >= 4.5:1 on every light surface above */
     --gust: #066a5a; --bolt: #3a49a8; --bolt-bright: #2f3d96; --storm-purple: #46549c;
     --m-claude: #7d5200; --m-glm: #a50d78; --m-gpt: #b3262b; --m-muse: #3a7000;
-    --m-deepseek: #3340b8; --m-qwen: #5b3fc4;
+    --m-deepseek: #3340b8;
   --card-shadow: 0 1px 2px rgba(13, 19, 34, 0.07), 0 10px 26px rgba(13, 19, 34, 0.09);
   --card-shadow-hover: 0 2px 4px rgba(13, 19, 34, 0.08), 0 18px 40px rgba(13, 19, 34, 0.14);
   color-scheme: light;
