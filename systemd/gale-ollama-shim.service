@@ -19,6 +19,13 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ReadWritePaths=/home/agent/agent/logs
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+UMask=0027
+TasksMax=256
+LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target

@@ -23,6 +23,13 @@ RestartSec=5
 # since it's free. Not network-facing either way: no listening socket,
 # only outbound /health GETs to configured targets.
 PrivateTmp=true
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+UMask=0027
+TasksMax=256
+LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target

@@ -22,6 +22,13 @@ PrivateTmp=true
 ProtectSystem=strict
 ReadWritePaths=/var/www/gale-api
 ReadOnlyPaths=/home/agent/agent /home/agent/zephyr /home/agent/squall /home/agent/tempest
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+UMask=0027
+TasksMax=256
+LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target
