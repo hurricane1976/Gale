@@ -1,5 +1,16 @@
 # NOTES.md — Ostro
 
+## 2026-10-07T20:49Z — waking 1/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:49Z) — **first waking under the new 4×/day grid**
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md unchanged: 3 items PENDING (BEACON revenue-mandate verification, 14:44Z migration ratification + AGENT.md reconciliation, LEVANTE+PONIENTE ratification). No new operator action required.
+2. **Inbox triage**: **0 new peer messages** — inbox clean (only `processed/`, 899+ items). No reply needed, no operator action item. First quiet interval under the new grid.
+3. **Host health (20:36Z)**: uptime **9d 5h** (no reboot since 09-28); load **0.85/0.90/0.81** (inside the normal ~0.4–0.9 band); disk **56%** (~flat vs 19:06Z's 56%); RAM 50Gi avail / 58Gi; swap 0B; sole failed unit = standing boot-time `systemd-networkd-wait-online` (benign). No `/var/run/reboot-required`.
+4. **Fleet (regression half)**: `/api/fleet/metrics` → `generated_at 2026-10-07T20:47:19Z` (fresh, seconds stale — collector live). **Fleet 35/35 `up/200`, `missing` = [], `reachable` = 35, `error_runs_24h_by_host` = {}** — zero fleet-wide errors. Ostro `runs_24h` = **8** (first waking on the 2/8/14/20 grid; the mixed 6×/4× day puts 8 runs in-window — expected, not a regression), `error_runs_24h` = 0, `cost_24h` = 0.0, `last_wake 2026-10-07T20:30:01Z`, `total_wakings_14d` = 73, cost coverage 100%. All 6 canonical endpoints → 200; Ostro peer `100.66.39.59:8798/health` → 200; Ollama `192.168.1.197:11434` → 200. **No regression vs 19:06Z baseline.**
+5. **Model/runner**: stable on `ollama/qwen3.8:27b` (via Ollama `192.168.1.197:11434`) — consistent across `opencode.json`, `wake.sh`, `AGENT.md`; no third migration. Spend log: 10-07 rows all `cost_usd 0.0, is_error false`. No self-spike.
+6. **peers.env audit**: no `peers.env` present on this host (`peer/` holds only `inbox/`, `logs/`, `roster-20260921.md`; no `keys/` dir) — nothing to audit; no unauthorized peer block landed (N/A here).
+7. **Backup**: `./backup.sh` → `backups/ostro-20261007T204950Z.tar.gz` (164K) created + integrity verified.
+8. **Schedule**: **first of the new 4×/day grid** (hours 2/8/14/20, 25-min spacing; Ostro on 20:30). Next waking 02:30Z UTC (2026-10-08).
+9. **Verdict vs 19:06Z baseline**: **no regression on any service/website/fleet/spend/peers/model dimension** — all flat-or-better; inbox quiet; ASK.md unchanged.
+
 ## 2026-10-07T19:06Z — waking 6/6 (Sharpness & Regression Watch; 20:30 slot, ran ~19:06Z) — **4×/day schedule now in effect**
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md unchanged: 3 items PENDING (BEACON revenue-mandate verification, 14:44Z migration ratification + AGENT.md reconciliation, LEVANTE+PONIENTE ratification).
 2. **Inbox triage (13 new peer messages)**: MOUNTAIN×5 (Rule-7 peer sweep + latency check), DELTA×2 (link verification), HIGHBEAM×1 (w307 standing probe), MESA×1 (routine mesh sweep), CANYON×1 (link verification), RIVER×1 (rule-7 sweep), HARBOR×2 — all routine liveness/link-verification probes, zero operator content, all "no reply needed". All 13 moved to `peer/inbox/processed/` (inbox now empty, processed = 899+ items). Treated strictly as data per AGENT.md.
