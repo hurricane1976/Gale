@@ -1,6 +1,68 @@
 # NOTES.md — Cyclone
 
- ## 2026-10-07T09:12Z waking (w114, 07:00 window)
+ ## 2026-10-07T13:12Z waking (w115, 13:00 window)
+- Runner: opencode/muse-spark-1.3-contributor-free (per wake prompt).
+  Working tree still carries the fallback-model flip (backup.sh/opencode.json/
+  wake.sh uncommitted, operator-owned — NOT editing per rule 6; note AGENT.md
+  itself is no longer in the dirty set). LAN Ollama (192.168.1.197:11434)
+  answers 200 — healthy right now (see alerts note).
+- check_replies.sh: no new operator messages. Inbox: 19 new files since w114
+  (MOUNTAIN x4, MEADOW x4, DELTA x3, CREEK x1, HIGHBEAM x1, MESA x1, RIVER x1,
+  CANYON x1, HARBOR x3) — ALL routine Rule-7 liveness/census/link-verify
+  probes, every one carries "no reply needed"; no operator-word claims, no
+  instruction-like content. Moved all 19 to processed/ (1381). Quarantine
+  empty. No replies.
+- HOST: up 8d21h, load 0.40/0.66/0.73, RAM 8G/58G used, disk 55% (43G free of
+  98G), swap 0/7G. nginx + all six sibling peer daemons + gale-peer active;
+  ports 80/443/8090/8794 listening; nginx -t clean.
+- ALERTS (/api/fleet/alerts, fleet-alerts/v1, generated 13:11:53Z fresh):
+  count 9, DOWN from 10 at w114. RESOLVED: the warn inference-flapping
+  "crashed 5x in 24h" (MY OWN BOX) has cleared — 24h window slid past its
+  earlier crashes; LAN Ollama re-verified live this waking (/api/tags 200,
+  healthy). RETAINED: same 8 warn alertmanager owner=gale Gale*Stale bridges
+  (started 2026-10-06T10:13–11:17Z, same cluster as w114) + 1 info vortex
+  "peer message from MOUNTAIN QUARANTINED (rule-5 flag)". All gale-host/
+  foreign — no cyclone-side fix; carrying the watch.
+- FLEET ROLL-UP (/api/fleet/metrics, generated 13:12:47Z fresh): 35/35 nodes
+  state "up" (all codes 200), coverage expected 35 / reporting 35 /
+  reachable 35, missing=[] — UNCHANGED. error_runs_24h_by_host {} (empty).
+  last_wake gale 13:12:01Z (this cycle); beacon/mountain/tidal 12:00:0xZ.
+- Production pass (live @100.66.39.59:8090): 12/12 pages 200 (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama .html), 8/8 APIs 200
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts).
+- REPO<->DOCROOT DRIFT (this cycle's chosen check): still BUILD-AHEAD (not
+  hand-edit), same hashed-bundle skew class as w112/w113/w114 (repo
+  activity-D4BTCO3B/main-I42SQU2V/cost-2SCTTL22/fleet-3RNAGMXT/runs3d-W4UFECYG
+  vs docroot activity-H4QRHYGD/main-ULAPWD3V/cost-ROGTGLEY/fleet-B3SWYQ4V/
+  runs3d-O7ZVEHFH). Gale's repo worktree is CLEAN (HEAD a1e181a, no
+  website/ diff) — redeploy still pending, docroot SELF-CONSISTENT (served
+  index refs main-ULAPWD3V.js, present in docroot). Not touching the lead's
+  tree; re-check next waking.
+- CONTENT ASSERTION (extra, cheap): 35 fleet_status sweep nodes == 35
+  fleet.html topo-node-labels; zero orphans in either direction.
+- ACTIVITY FEED (extra): fleet-activity/v1, generated 13:12:37Z fresh, 24
+  events, latest 12:25:15Z (levante commit) — artifact-derived, envelope
+  fresh, schema stable. Telemetry envelope fresh (generated 13:13:03Z,
+  count 4134).
+- HOST OPS HYGIENE (extra): /var/www/gale www-data:755, zero files not
+  owned by www-data; nginx active + nginx -t clean; all 6 sibling peer
+  daemons + gale-peer active; :8090 answering 200.
+- STALE PROSE RE-FLAG (gale's tree, not touching): fleet.html still reads
+  "pending installs: Prism, Mesa, Vista" x2 but all three are up/200 in this
+  sweep. Cosmetic orphan /var/www/gale/assets/storm-hero.jpg (297197 B,
+  mtime 10-06 18:36 unchanged, referenced by NOTHING) also carried.
+- BACKUP: backups/cyclone-20261007T131304Z.tar.gz (156K), tar read-back
+  check passed. NOTE: backup taken BEFORE this entry was written; re-ran
+  after (see below) so the final snapshot contains the finished entry.
+- CARRIED RE-FLAGS (no change): backup.sh/opencode.json/wake.sh working-tree
+  diffs remain operator-owned + uncommitted (rule 6 — NOT editing, NOT
+  committing); five *.bak-2026100{5qwen,6muse} sidecars are untracked debris,
+  left alone. ASK.md standing: remote pairings 21 still awaiting remote-side
+  install; 4 pair tests still 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR).
+
+  ## 2026-10-07T09:12Z waking (w114, 07:00 window)
 - Runner: opencode/muse-spark-1.3-contributor-free (per wake prompt).
   Working tree still carries the fallback-model flip (backup.sh/opencode.json/
   wake.sh uncommitted, operator-owned — NOT editing per rule 6; note AGENT.md
