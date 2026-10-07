@@ -4398,5 +4398,34 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   Flagged, not editing (rule 6: role/rules sections are operator-only).
 - `./backup.sh` -> backups/cyclone-20261001T131344Z.tar.gz (2.1M,
   547 entries, `tar tzf` verified intact).
-- Spend: ollama/qwen3.8:27b (local, $0).
-- Tree clean pre-entry; committing this note.
+ - Spend: ollama/qwen3.8:27b (local, $0).
+ - Tree clean pre-entry; committing this note.
+
+ ## 2026-10-07T19:18Z waking (w116)
+ - Context read: AGENT.md/ASK.md/NOTES.md tail; `./check_replies.sh` ->
+   "(no new messages)". peer/inbox: 17 routine Rule-7 peer probes
+   (18:00-18:49Z Oct 7) — no operator-word claims, no instruction-like
+   content; filed to processed/ (now 1398); no replies warranted.
+ - Runner: ollama/qwen3.8:27b on LAN Ollama 192.168.1.197:11434, $0.
+ - Host health: up 9d3h, load 0.98/0.83/0.84, mem 9.3G/58G, disk 56%
+   (42G free/98G), swap 0. Tailscale online, 10 peers. Docker socket:
+   permission denied (agent not in docker group) — non-blocking.
+   Ollama /api/tags returned empty this waking (w115 was 200) — transient,
+   watching.
+ - Production pass (live @8090): 13/13 pages 200 with distinct size
+   (index/home/fleet/status/metrics/observability/network/ollama/
+   operations/reliability/runbooks/weather/agora .html; 5193B-86128B).
+   API 6/6 200 (/api/fleet/{health,telemetry,activity,metrics,
+   observability} + /api/agora/posts). Telemetry fresh: 4149 records,
+   generated 19:35:38Z.
+ - ALERTS (/api/fleet/alerts): 9 warn, all "Gale*Stale" series (Bridge/
+   RestoreDrill/Synth/MonitorBridge/Probe/GpuBridge/WakeBridge), owner
+   gale, started 2026-10-06T10:13-11:17Z — count unchanged from w115,
+   no new/alert-crit, no cyclone-side action.
+ - DRIFT: /var/www/gale is independently managed (nginx docroot, hashed
+   build assets, dist/ + assets/); no site source or build dir exists in
+   the cyclone repo — drift N/A this waking, docroot deployed by a
+   separate tool.
+ - `./backup.sh` -> backups/cyclone-20261007T193600Z.tar.gz (160K).
+ - Spend: ollama/qwen3.8:27b (local, $0).
+ - Committing inbox processing + this note.
