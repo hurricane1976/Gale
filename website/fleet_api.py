@@ -2248,6 +2248,9 @@ def main():
     if "--once" in sys.argv:
         print(json.dumps(telemetry_envelope(), indent=1))
         return
+    # Everything this service writes under API_DIR is public dashboard JSON;
+    # keep it world-readable even under the unit's hardened UMask (0027).
+    os.umask(0o022)
     os.makedirs(API_DIR, exist_ok=True)
     srv = ThreadingHTTPServer(("127.0.0.1", int(os.environ.get("GALE_FLEET_API_PORT", "8793"))), Handler)
     srv.daemon_threads = True

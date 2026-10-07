@@ -27,7 +27,7 @@ ProtectKernelTunables=yes
 ProtectKernelModules=yes
 ProtectKernelLogs=yes
 ProtectClock=yes
-UMask=0027
+UMask=0022
 TasksMax=256
 LimitNOFILE=65535
 
