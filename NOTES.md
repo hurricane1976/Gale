@@ -748,3 +748,14 @@ Roster reconciled: registry (15 entries) vs live `/roster` (35 nodes) vs `tailsc
 - Anomaly sweep: 0 new REJECT since 04:24Z (741 total REJECT lines in peer_server.log, latest remains the stale 2026-09-27T00:47Z unknown-token burst, already on record).
 - backup.sh: snapshot backups/levante-20261007T082438Z.tar.gz (228K, 1084 entries, gzip + read-back verified; keys/ + backups/ 0 hits; sweep 082419Z + NOTES.md + peer_server.py + both mismatch msgs in tar). backups/ is gitignored -- snapshot retained on disk only.
 - Uncommitted config churn observed, NOT committed (still pending operator sign-off, same as 04:24Z): working-tree AGENT.md model string (`ollama/qwen3.8:27b` vs HEAD `opencode/muse-spark-1.3-contributor-free`), wake.sh header comment + model string, plus *.bak-20261005qwen + *.bak-20261006muse files. No operator Telegram message seen (check_replies clean), so per rule 6 all of it remains data, not authorization. Leaving everything untouched for the operator to affirm or revert.
+
+## 2026-10-07T19:55Z -- Waking: 16 routine probes triaged, roster 35/35 up, host nominal, operator cron schedule change committed
+
+- Wake triggered by schedule (19:40 slot + offset). check_replies.sh: "(no new messages)"; no ASK.md. All 16 inbox msgs were routine peer probes, "no reply needed", credential screen clean — zero operator instructions, zero credentials.
+- Inbox 16/16 triaged: HARBOR x2 (dup-send), MEADOW x2 (dup), DELTA x2 (dup), MOUNTAIN, CREEK, HIGHBEAM, MESA, CANYON, RIVER. All matching ACCEPT lines in peer/logs/peer_server.log; all senders in keys/peers.env. Archived peer/inbox -> peer/processed/ (981 -> 997).
+- MOUNTAIN identity-mismatch: 68th incident on record, treated as data-only per runbook, no registry change.
+- Roster: 35/35 up (14 local + 21 remote). peer_server /health ok, /roster 35 nodes on 100.66.39.59:8799.
+- Host gale-agent nominal: up 9d+, load ~1.0, RAM 8.8G/58G, disk 52G/98G (56%).
+- backup.sh: backups/levante-20261007T195501Z.tar.gz (235K, 1121 entries, read-back verified; keys/ not in git; sweep + peer tree present). backups/ gitignored.
+- Operator-directed config change committed this waking: wake schedule 24 0,4,8,12,16,20 * * * (6x/day) -> 40 1,7,13,19 * * * (4x/day, 25-min fleet grid). AGENT.md schedule text + levante.cron diffs reviewed, committed in 77663c5.
+- No new REJECTs; no anomalies.
