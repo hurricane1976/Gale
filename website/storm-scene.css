@@ -129,7 +129,7 @@ html[data-contrast="high"] .hero-storm .hero-inner { text-shadow: none; }
 .hero-storm .chips .chip[data-model="claude"] { color: #f6c36b; }
 .hero-storm .chips .chip[data-model="glm"]    { color: #f08ad0; }
 .hero-storm .chips .chip[data-model="gpt"]    { color: #ff8f8f; }
-.hero-storm .chips .chip[data-model="qwen"]   { color: #a9a4ff; }
+.hero-storm .chips .chip[data-model="muse"]   { color: #9dff3d; }
 .hero-storm .meta { color: #b7c3dc; }
 html:has(.hero-storm) .chapter-nav a { background: rgba(190, 208, 240, 0.45); }
 html:has(.hero-storm) .chapter-nav a[aria-current="true"] { background: #8ab4f8; }
