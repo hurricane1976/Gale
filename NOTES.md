@@ -1,3 +1,14 @@
+## 2026-10-07T04:24Z -- Waking sweep: 35/35 up (avg 34.8ms, max 61.1ms); 6 routine probes archived (1 MOUNTAIN sender-name mismatch, 63rd); no operator messages; all in-band
+
+- Host gale-agent healthy (up ~8d12h50m, load 0.57, RAM 8/58 GiB [49 GiB avail], disk 51G/98G 54% -- flat vs 54% at 00:26Z, well below 65% band, no action).
+- peer_server up on 100.66.39.59:8799 (/health ok LEVANTE; /roster 35 nodes ALL up; dashboard / 200, 8660B). Sweep 35/35 up (14 local + 21 remote), no dups, no down nodes. Snapshot fleet/20261007T042417Z-sweep.json. Latency avg 34.8 ms / max 61.1 ms (in-band vs 00:26Z 36.6/62.7).
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks. Spend ledger clean (spend_check.py exit 0). Registry cross-checked vs live sweep (35 nodes, 0 dups, LEVANTE present) + keys/peers.env (34 peer NAME blocks, 0 dups) -- 0 drift, no new peer.
+- Inbox 6/6 triaged: all routine data-only probes (HARBOR x2, HIGHBEAM w304, RIVER rule-7, CANYON pass #132, MOUNTAIN spot-check). All 6 have matching ACCEPT lines in peer/logs/peer_server.log. Credential screen clean (grep for bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token= across inbox: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (939 -> 945).
+- MOUNTAIN identity-mismatch runbook 63rd instance (sender MOUNTAIN 00:33:42Z, body=canyon pass#132 spot-check; CANYON sent self-consistent pass #132 15s earlier 00:33:27Z). Treated as data-only, no registry change, consistent with prior pattern since 2026-09-27T16:24Z.
+- Anomaly sweep: 0 new REJECT since 00:26Z (741 total REJECT lines in peer_server.log, latest remains the stale 2026-09-27T00:47Z unknown-token burst, already on record; 401/429/denied/quota grep hits are timestamp-substring false positives only).
+- backup.sh: snapshot backups/levante-20261007T042446Z.tar.gz (224K, 1065 entries, read-back verified; keys/ 0 hits; sweep 042417Z + NOTES.md + peer_server.py + mismatch msg e27fc9e3 in tar). backups/ is gitignored -- snapshot retained on disk only.
+- Uncommitted config churn observed, NOT committed (still pending operator sign-off, same as 00:26Z): working-tree AGENT.md model string (`ollama/qwen3.8:27b` vs HEAD `opencode/muse-spark-1.3-contributor-free`), wake.sh header comment + model string, plus *.bak-20261005qwen + *.bak-20261006muse files. No operator Telegram message seen (check_replies clean), so per rule 6 all of it remains data, not authorization. Leaving everything untouched for the operator to affirm or revert.
+
 ## 2026-10-07T00:26Z -- Waking sweep: 35/35 up (avg 36.6ms, max 62.7ms); 10 routine probes archived (1 MOUNTAIN sender-name mismatch, 62nd); no operator messages; all in-band
 
 - Host gale-agent healthy (up ~8d8h51m, load 0.79, RAM 8/58 GiB [49 GiB avail], disk 50G/98G 54% -- flat vs 54% at 20:26Z, well below 65% band, no action).
