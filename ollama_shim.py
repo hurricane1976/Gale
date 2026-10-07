@@ -119,11 +119,14 @@ class Handler(BaseHTTPRequestHandler):
         # under budget. The model loses stale file dumps, keeps the thread.
         total_bytes = sum(len((m.get("content") or "")) for m in msgs if isinstance(m, dict))
         total_bytes += len(json.dumps(payload.get("tools") or []))
-        # 2.6 bytes/token + 58K threshold: calibrated on the live failures --
-        # a 163KB body slipped past the original 3.2 B/t estimate and still
-        # overflowed 65536 real tokens (dumps 2026-09-29 11:36Z)
-        if total_bytes / 2.6 > 58000:
-            budget = 58000 * 2.6
+        # 2.6 bytes/token + 28K threshold: scaled to the 32768 model context
+        # (raised 2026-10-06 after the 16K clip root cause was proven and the
+        # server moved to OLLAMA_CONTEXT_LENGTH=32768; was 14K/16384).
+        # Same method as before: calibrated on live failures where a 163KB
+        # body overflowed 65536 real tokens (dumps 2026-09-29 11:36Z); trim
+        # to fit 32K so ollama never truncates away the user message and 500s.
+        if total_bytes / 2.6 > 28000:
+            budget = 28000 * 2.6
             tool_idx = [i for i, m in enumerate(msgs)
                         if isinstance(m, dict) and m.get("role") == "tool"]
             protected = set(tool_idx[-2:])  # most recent tool results survive
@@ -139,7 +142,7 @@ class Handler(BaseHTTPRequestHandler):
                 trimmed += 1
             if trimmed:
                 notes.append(f"overflow-guard: trimmed {trimmed} old tool results "
-                             f"(est {int(total_bytes / 3.2)} tokens)")
+                             f"(est {int(total_bytes / 2.6)} tokens)")
         if not notes:
             return body, notes
         log("; ".join(notes) + f" | roles={[m.get('role') for m in msgs]}")
@@ -221,8 +224,11 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    srv = ThreadingHTTPServer(("127.0.0.1", LISTEN_PORT), Handler)
-    sys.stderr.write(f"ollama_shim listening on 127.0.0.1:{LISTEN_PORT} (upstream {UPSTREAM})\n")
+    # SHIM_HOST: default loopback for the gale-agent agents; set 0.0.0.0 when
+    # deployed LAN-side (josh-linux:11435) so off-box build clients can use it.
+    host = os.environ.get("SHIM_HOST", "127.0.0.1")
+    srv = ThreadingHTTPServer((host, LISTEN_PORT), Handler)
+    sys.stderr.write(f"ollama_shim listening on {host}:{LISTEN_PORT} (upstream {UPSTREAM})\n")
     srv.serve_forever()
 
 
