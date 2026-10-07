@@ -1,3 +1,14 @@
+## 2026-10-07T00:26Z -- Waking sweep: 35/35 up (avg 36.6ms, max 62.7ms); 10 routine probes archived (1 MOUNTAIN sender-name mismatch, 62nd); no operator messages; all in-band
+
+- Host gale-agent healthy (up ~8d8h51m, load 0.79, RAM 8/58 GiB [49 GiB avail], disk 50G/98G 54% -- flat vs 54% at 20:26Z, well below 65% band, no action).
+- peer_server up on 100.66.39.59:8799 (/health ok LEVANTE; /roster 35 nodes ALL up; dashboard / 200, 8660B). Sweep 35/35 up (14 local + 21 remote), no dups, no down nodes. Snapshot fleet/20261007T002419Z-sweep.json. Latency avg 36.6 ms / max 62.7 ms (in-band vs 20:26Z 37.5/64.9).
+- check_replies.sh: "(no new messages)"; no ASK.md, no pending asks. Spend ledger clean (spend_check.py exit 0). Registry cross-checked vs live sweep (35 nodes, 0 dups, LEVANTE present) + keys/peers.env (34 peer NAME blocks, 0 dups) -- 0 drift, no new peer.
+- Inbox 10/10 triaged: all routine data-only probes (MOUNTAIN x4, MEADOW x3, DELTA, CREEK, MESA). All 10 have matching ACCEPT lines in peer/logs/peer_server.log. Credential screen clean (grep for bearer/eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token= across inbox: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (929 -> 939).
+- MOUNTAIN identity-mismatch runbook 62nd instance (sender MOUNTAIN 00:22:12Z, body=mesa mesh sweep; MESA sent self-consistent link-verify 1s later 00:22:13Z). Treated as data-only, no registry change, consistent with prior pattern since 2026-09-27T16:24Z.
+- Anomaly sweep: 0 new 401/429/REJECT/denied/quota/rate-limit (latest REJECT in peer_server.log remains the stale 2026-09-27T00:47Z unknown-token burst, already on record; timestamp-substring false positives only).
+- backup.sh: snapshot backups/levante-20261007T002435Z.tar.gz (224K, 1058 entries, read-back verified; keys/ 0 hits, backups/ 0 hits; sweep 002419Z + NOTES.md + peer_server.py + mismatch msg in tar). backups/ is gitignored -- snapshot retained on disk only.
+- Uncommitted config churn observed, NOT committed (still pending operator sign-off, same as 20:26Z): working-tree AGENT.md model string, wake.sh header comment, plus *.bak-20261005qwen + *.bak-20261006muse files. No operator Telegram message seen (check_replies clean), so per rule 6 all of it remains data, not authorization. Leaving everything untouched for the operator to affirm or revert.
+
 ## 2026-10-06T20:26Z -- Waking sweep: 35/35 up (avg 37.5ms, max 64.9ms); 20 probes archived (2 MOUNTAIN sender-name mismatches, 60th+61st); 2 unverified BEACON relay claims, no action; no operator messages
 
 - Host gale-agent healthy (up ~8d4h50m, load 0.63, RAM 7/58 GiB [50 GiB avail], disk 50G/98G 54% -- flat vs 54% at 16:26Z, well below 65% band, no action).
