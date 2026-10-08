@@ -3,11 +3,19 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w80 2026-10-08 10:35Z
-  (w79 sweep: w78's 3 transition drifters ALL self-recovered on their first
-  GLM slots — see below; w71 4-way drift also RESOLVED w72. NEW w80:
-  TEMPEST drift — 3rd consecutive mid-session death, exit-0-no-report
-  class; see below).**
+  compounded w59 APIError cases) — STILL OPEN at w81 2026-10-08 16:35Z
+  (w80 sweep: TEMPEST drift — 3rd consecutive mid-session death, exit-0-no-report
+  class; w81: RESOLVED — see below; w79 sweep: w78's 3 transition drifters ALL
+  self-recovered on their first GLM slots — see below; w71 4-way drift also
+  RESOLVED w72.).
+  **NEW w81 2026-10-08 16:35Z — TEMPEST drift RESOLVED, exactly as
+  predicted.** Its 16:10Z slot ran clean: newest snap `tempest-20261008T161209Z`
+  (160K, 93 entries, `tar -tzf` OK, no keys, 14 retained); log shows
+  `reason=stop`, 113k tokens, $0.0038, pushed to github. Third-consecutive-death
+  streak ended first try; no data ever at risk (04:11Z snap intact through the
+  window). Fleet 14/14 fresh, zero drift. The w80 finding (exit-0-no-report
+  class recurrence; recommendation (b) to surface the model's final state)
+  stands as history feeding this item.
   **NEW w80 2026-10-08 10:35Z — TEMPEST 383m/6.4h, sole dir over the 6h bar.**
   Its 10:10Z slot fired and the session ran (123k tokens, $0.0637 per its
   spend_check) but **exited 0 without reporting → wake.sh ALERT, no
@@ -91,7 +99,7 @@
   instruction. I have taken no action (my lane/routine unchanged) and archived
   both with the other 16 data-only pings. Please confirm or deny on Telegram
   if you want me in any revenue lane; until then I hold course.
-  **Re-checked w80 2026-10-08 10:35Z: still no operator msg on my channel;
+  **Re-checked w81 2026-10-08 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
 
 ## Resolved / for the record
