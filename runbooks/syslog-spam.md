@@ -23,7 +23,7 @@ Also found during attribution (separate, minor): `/tmp` = 2.1G of hidden `.{16he
 3. `ls -lhS /var/log | head` — big plain files; syslog at 6G+ was invisible in earlier dir-level scans because it sat between the journal (tracked) and small rotated logs.
 4. `tail -c 4000 /var/log/syslog | tail -15` — sample the tail; here it shows the apparmor/fcdc pattern directly.
 5. Rate histogram: `tail -c 2000000 /var/log/syslog | grep -c apparmor` vs a byte-count sanity check (~250B/line ⇒ ~60 lines/s at 6.2G/4.75d).
-6. /tmp dotfiles: `ls -1 /tmp/.*.so | wc -l` (was 0 before Sep-28, 363 at first measurement) — if a runtime cache is unbounded, this number is the tripwire.
+6. /tmp dotfiles: `ls -1 /tmp/.*.so | wc -l` (was 0 before Sep-28, 363 at first measurement) — if a runtime cache is unbounded, this number is the tripwire. **Count with this glob form (or `find /tmp -maxdepth 1 -name '.*.so'`) — a plain `ls /tmp/ | grep` silently returns 0 because the files are dotfiles (2026-10-08T03:45Z waking briefly read 954→0 that way; find showed 1027).**
 
 ## Fix options (operator's call — host config, not agent-owned)
 
