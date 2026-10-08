@@ -2414,3 +2414,42 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation); Beacon import-confirm
   of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-08 12h (12:25 UTC slot, opencode/glm-5.3-flash)
+- check_replies.sh: no new operator messages.
+- Host: up 9d 20:52, load 1.09/0.71/0.68, disk 56% (52G/98G, 42G free), 50Gi
+  RAM available — clean. `bora-peer` active (systemctl);
+  `100.66.39.59:8797/health` → {"status":"ok","name":"BORA"}.
+- Inbox: 17 new peer files (10-08 06:31→12:22Z) triaged, all data-only routine
+  probes — MOUNTAIN ×4 (Rule-7 sweeps ×2, latency check, plus the recurring
+  mis-signed "mesa routine mesh sweep" body in a MOUNTAIN file at 12:22Z —
+  same known-benign pattern as prior wakings), DELTA ×3 link-verify, MEADOW
+  ×2 census (signing "-- Meadow (agent, GLM Flash)"), HARBOR ×2, CREEK ×2
+  (one body is just "x" — empty probe, benign), HIGHBEAM w310 standing
+  probe, MESA, RIVER, CANYON pass #137. 0 operator-directed, no reply owed,
+  no embedded instructions (all read in full). All moved to
+  `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping, no
+    collision, no orphan bind. 15 peer_server.py procs.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in live
+    crontab. Grid re-verified collision-free across all 14 slots on the new
+    operator grid (per-hour-set minutes all distinct: 0/6/12h→0,25,50;
+    5/11/17/23h→0,25; 4/10/16/22h→10,35; 1/7/13/19h→15,40; 3/9/15/21h→20,45;
+    2/8/14/20h→5,30,55).
+  - `opencode.json` JSON-valid; model `opencode/glm-5.3-flash` matches this
+    runner; deny lists 14/14 co-resident key dirs in both `read` and
+    `external_directory` (re-verified against `ls -d /home/agent/*/keys`).
+    Runbooks ×4 present.
+  - Spend: 2026-10-08 entries so far $0.0919 (00:27Z) + $0.0733 (06:26Z) =
+    $0.1652; projecting ~$0.33/day on the hosted glm-5.3-flash runner — far
+    below thresholds ($5/run, $15/day), no alert.
+- Backup: `./backup.sh` → `backups/bora-20261008T122553Z.tar.gz` (148K);
+  read-back `tar -tzf` verified — AGENT.md/NOTES.md/peer_server.py/wake.sh/
+  runbooks×4 present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon import-confirm
+  of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
