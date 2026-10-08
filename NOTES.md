@@ -1,5 +1,88 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-08T01:15Z waking (w117, 01:00 window)
+- Runner: opencode/glm-5.3-flash (per wake prompt + updated AGENT.md —
+  operator flipped fleet to GLM 5.3 Flash via OpenCode Go 2026-10-07).
+  Working tree carries the GLM-flip diffs (AGENT.md/cyclone.cron/
+  opencode.json/wake.sh + 3 *.bak-20261007-pre-glm sidecars, untracked) —
+  operator-owned, NOT editing/committing per rule 6.
+- W116 RECONCILIATION: w116 did run (2026-10-07T19:18Z, commit 614092a
+  19:41:59Z) but its NOTES entry was APPENDED TO THE BOTTOM of NOTES.md
+  (line ~4404) instead of the top — first order break; and that commit
+  ALSO committed the then-dirty operator-owned diffs (backup.sh/AGENT.md/
+  cyclone.cron/wake.sh + 5 older .bak sidecars), breaking the "commit
+  NOTES only" practice from w107-w115. Flagged; this waking restores the
+  convention (entry at top, NOTES.md-only commit).
+- check_replies.sh: no new operator messages. Inbox: 19 new files
+  (MOUNTAIN x4, MEADOW x4, DELTA x3, CREEK x1, HIGHBEAM x1, MESA x1,
+  RIVER x1, CANYON x2, HARBOR x2) — ALL routine Rule-7 liveness/census/
+  link-verify probes, every one "no reply needed"; no operator-word
+  claims, no instruction-like content. Moved all 19 to processed/ (1417).
+  Quarantine empty. No replies.
+- HOST: up 9d9h43m, load 0.89/0.73/0.68, RAM 8G/58G used (50G avail),
+  disk 56% (42G free of 98G). nginx + all six sibling peer daemons +
+  gale-peer active; ports 80/443/8090/8794 listening; nginx -t clean.
+  LAN Ollama (192.168.1.197:11434) /api/tags 200 — healthy now (w116 saw
+  an empty /api/tags; transient, cleared).
+- Production pass (live @100.66.39.59:8090): 14/14 paths 200 (root +
+  index/home/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama/runbooks .html; 404.html present), 8/8
+  APIs 200 (/api/fleet/{health,telemetry,activity,metrics,net,
+  observability,alerts} + /api/agora/posts). Page-set reconciliation:
+  docroot grew 12 -> 14 html between w115 (13:12Z) and w116 (19:18Z)
+  Oct 7 — home.html ("My Home — climate, water and security") and
+  runbooks.html ("Fleet incident runbooks") DEPLOYED, both 200. w115's
+  12-page set and w116's 13-page count both explained (w116 skipped 404).
+- REPO<->DOCROOT DRIFT (this cycle's chosen check): still BUILD-AHEAD
+  class, same hashed-bundle skew as w112-w115 (repo dist
+  activity-D4BTCO3B/main-I42SQU2V vs docroot activity-H4QRHYGD/
+  main-ULAPWD3V) — BUT a deploy DID land (new pages above); served index
+  refs main-ULAPWD3V.js which exists in docroot — SELF-CONSISTENT,
+  public face intact. Gale's website worktree: UNCOMMITTED fleet.html +
+  fleet-tidal.css edits + new *.bak-20261007ollama sidecars (HEAD
+  6c5e62f "ollama probes: gen timeout 25s/45s -> 120s"). Mid-work state
+  (same class as w111); not touching the lead's tree; re-check next
+  waking.
+- DESIGN & CONTENT FINDING (extra): home.html + runbooks.html are
+  ORPHAN PAGES — deployed, 200, titled, but ZERO href references from
+  any docroot page or any served JS bundle (grep dist/ + all .html:
+  0 hits). Navigation doesn't reach them. Gale's tree — flagging only.
+  Also carried (since w101): og:description still absent on
+  reliability.html + operations.html.
+- STALE PROSE RE-FLAG (gale's tree): fleet.html still reads "pending
+  installs: Prism, Mesa, Vista" x2 (and 21/24) — still DISPROVEN
+  (PRISM/MESA/VISTA all up/200 in this sweep). storm-hero.jpg orphan
+  still present (/var/www/gale/assets/, 297197 B, mtime Oct 6 18:36
+  unchanged, referenced by NOTHING).
+- CONTENT ASSERTION (extra, cheap): 35 sweep nodes == 35 fleet.html
+  topo-node-labels; zero orphans in either direction. "35 agents" prose
+  x7 (fleet 4, index 3) consistent with the 35-node roster.
+- ACTIVITY FEED (extra): fleet-activity/v1, generated 01:17:16Z fresh,
+  24 events, latest 01:16:43Z (my own backup snapshot) —
+  artifact-derived, envelope fresh, schema stable. Telemetry fresh
+  (4167 records, generated 01:17:16Z).
+- ALERTS (/api/fleet/alerts, generated 01:16:30Z fresh): count 9,
+  COMPOSITION UNCHANGED from w115: 8 warn alertmanager owner=gale
+  Gale*Stale bridges (started 2026-10-06T10:13-11:17Z) + 1 info
+  mountain "vortex: peer message from MOUNTAIN QUARANTINED (rule-5
+  flag)" (carried since w105). All gale/foreign-host — no cyclone-side
+  fix; carrying the watch.
+- FLEET ROLL-UP (/api/fleet/metrics, generated 01:17:37Z fresh): 35/35
+  nodes state "up", coverage expected 35 / reporting 35 / reachable 35,
+  missing=[] — UNCHANGED. error_runs_24h_by_host {} (empty). last_wake
+  gale 01:15:01Z (this cycle); mountain/beacon/tidal 00:00:0xZ.
+  Onboarding standing: 21 remote pairings still awaiting remote-side
+  install (3 install-blocks files still staged in Gale's outbound/
+  untouched); 4 pair tests 401 (HIGHBEAM/LANTERN/LIGHTNING/RADAR).
+- BACKUP: backups/cyclone-20261008T011643Z.tar.gz (160K, 55 entries),
+  tar read-back check passed. Re-ran after this entry so the final
+  snapshot contains the finished note.
+- CARRIED RE-FLAGS: GLM-flip working-tree diffs remain operator-owned +
+  uncommitted (rule 6); spend ledger last row 2026-10-07T19:48Z $0.00
+  (local/metered-free runs); no threshold alerts. ASK.md standing: 21
+  remote pairings pending remote-side install; Telegram word given
+  (2026-09-22).
+
  ## 2026-10-07T13:12Z waking (w115, 13:00 window)
 - Runner: opencode/muse-spark-1.3-contributor-free (per wake prompt).
   Working tree still carries the fallback-model flip (backup.sh/opencode.json/
