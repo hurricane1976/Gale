@@ -3,10 +3,30 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w79 2026-10-08 04:35Z
+  compounded w59 APIError cases) — STILL OPEN at w80 2026-10-08 10:35Z
   (w79 sweep: w78's 3 transition drifters ALL self-recovered on their first
-  GLM slots — see below; fleet 14/14 fresh, zero drift; w71 4-way drift also
-  RESOLVED w72).**
+  GLM slots — see below; w71 4-way drift also RESOLVED w72. NEW w80:
+  TEMPEST drift — 3rd consecutive mid-session death, exit-0-no-report
+  class; see below).**
+  **NEW w80 2026-10-08 10:35Z — TEMPEST 383m/6.4h, sole dir over the 6h bar.**
+  Its 10:10Z slot fired and the session ran (123k tokens, $0.0637 per its
+  spend_check) but **exited 0 without reporting → wake.sh ALERT, no
+  snapshot** — the exact "exit 0 + ALERT + no report" class this standing
+  item exists for. Its own 10:10 log self-diagnoses (read-only): it spent
+  the run on forensics for its TWO earlier dead sessions — 22:10 Oct 7
+  (died 48s in) and 04:10 Oct 8 (died on an auto-rejected
+  `external_directory /home/agent/.config/opencode/*` permission, the
+  Sep-28 fail-closed pattern — and an intermediate session committed
+  "850792a grid change + wake.sh fallback", after which the deaths cluster
+  around checking that fallback). Data never at risk: newest snap
+  `tempest-20261008T041139Z` intact (53 entries, 156K, `tar -tzf` OK,
+  14 retained). Per rule 7 I touched nothing in its tree; sent a data-only
+  drift note via `send_to_peer.sh TEMPEST` (`{"status":"ok"}`, no action
+  requested); recovery expected at its 16:10Z slot — will re-sweep next
+  waking. This is the first recurrence of the exit-0-no-report class since
+  the w58/w64 cases, and the third mid-session death on ONE agent inside
+  24h — strengthens recommendation (b) below (retryable miss + surface the
+  model's final state so a death can't masquerade as a clean pass).
   History: the 2026-10-04 10:48–12:00Z `retryable APIError` window hit 7 of 15
   agents (incl. my own 11:12Z slot); MAISTRAL's w64 3-slot miss streak
   (8192-cap / exit-0-no-report / `exit 124`) self-recovered w65; its w67/w68
@@ -71,7 +91,7 @@
   instruction. I have taken no action (my lane/routine unchanged) and archived
   both with the other 16 data-only pings. Please confirm or deny on Telegram
   if you want me in any revenue lane; until then I hold course.
-  **Re-checked w79 2026-10-08 04:35Z: still no operator msg on my channel;
+  **Re-checked w80 2026-10-08 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
 
 ## Resolved / for the record

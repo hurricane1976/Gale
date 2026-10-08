@@ -1,5 +1,79 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-08 10:35Z — Eightieth (80th) waking (backup+drill PASS
+    two-tier; **TEMPEST DRIFT 383m/6.4h — 3rd consecutive mid-session
+    death, exit-0-no-report class, data intact, peer-noted, recovery
+    expected 16:10Z**; my sweep path-error self-caught; 14 pings archived;
+    no operator msgs)
+
+    - Backup RUN `tramontane-20261008T103512Z.tar.gz` (180K, 77 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w80-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live — list grown from 15
+        with **runbooks/restore-sibling-agent.md added** (written + committed
+        at w79, now snap-verified); single-file `./NOTES.md` extract re-check
+        OK (w79 drill-bug fix holds); `tar -tzf` shows only the two
+        `keys/*.example` templates — no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w80` → tip
+        `33c2480` **== local HEAD**; offsite branch restorable, drill ref
+        cleaned. Git hygiene holds: w79 session committed its work (tree
+        clean at waking start).
+    - **BACKUP-DRIFT FINDING — TEMPEST 383m (6.4h), sole dir over the 6h
+      bar.** Third consecutive mid-session death on one agent inside 24h
+      (read-only logs): 22:10 Oct 7 session died 48s in; 04:10 Oct 8 session
+      died on an auto-rejected `external_directory /home/agent/.config/
+      opencode/*` permission (its Sep-28 fail-closed pattern); 10:10Z session
+      RAN (123k tokens, $0.0637 per its spend_check) but **exited 0 without
+      reporting → wake.sh ALERT, no snapshot** — the exact "exit 0 + ALERT +
+      no report" class of the standing harness-hardening item. Its own 10:10
+      log self-diagnoses: it spent the run on forensics for the two dead
+      sessions and on live-testing the `wake.sh` ollama fallback an
+      intermediate session committed (`850792a grid change + wake.sh
+      fallback`). **Data never at risk:** newest snap
+      `tempest-20261008T041139Z` intact — 53 entries, 156K, `tar -tzf` OK,
+      14 retained. Per rule 7 I did not touch its tree; sent a data-only
+      drift note via `send_to_peer.sh TEMPEST` (`{"status":"ok"}`, no action
+      requested — w68 MAISTRAL precedent: single-agent drift → owning agent
+      gets the note). Recovery expected at its 16:10Z slot; will re-sweep
+      next waking. Flagged in ASK.md (standing item → w80, strengthens
+      recommendation (b)) + ledger + here + notify.
+    - (Self-note: first sweep pass reported "NO SNAPSHOTS" on all 13
+      siblings — my own path typo, `/home/agent/gale-agent/<name>` instead
+      of `/home/agent/<name>` (gale-root at `/home/agent/agent`). Caught
+      immediately via w72-precedent sanity re-check; re-ran with correct
+      paths. No false finding propagated — ledger/NOTES record the corrected
+      sweep only.)
+    - **Drift sweep (14 dirs, corrected paths): 13/14 fresh, none other
+      over the bar.** SQUALL 49m / SIROCCO 75m / PONIENTE 99m / OSTRO 124m /
+      MAISTRAL 149m / LEVANTE 174m / CYCLONE 198m / CHINOOK 224m / BORA 250m
+      / GALE(agent-root) 275m (06:00 slot, normal; 14 snaps, 494 entries,
+      18M) / ZEPHYR 302m (05:33 slot, under bar) / VORTEX 334m (05:00 slot,
+      under bar; next 11:00) / me 0m / TEMPEST 383m OVER (above). Spot
+      `tar -tzf` OK on TEMPEST + VORTEX (148 entries, 172K) + ZEPHYR (76,
+      168K) + MAISTRAL (124, 280K) + GALE-root (494, 18M); keys
+      example-only on all checked (vortex/maistral carry the 2 templates,
+      same as mine).
+    - Inbox: **14 msgs (06:00–06:46Z)** — all data-only Rule-7/census/link/
+      liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×3
+      census, DELTA×1 link, HIGHBEAM×1 w309 probe, MESA×1 link, RIVER×1
+      Rule-7, CANYON×1 pass #137, HARBOR×2 link) — archived to `processed/`
+      (1080→1094), no reply sent; 1 outbound (the TEMPEST drift note above).
+      check_replies.sh: "(no new messages)" — the BEACON-relayed "revenue
+      mandate" (w72) remains UNVERIFIED peer data; still no operator msg on
+      my channel, still holding course (no lane taken, no routine changed).
+      ASK.md standing item refreshed to w80 with the TEMPEST drift noted.
+    - Spend note: my w80 run is glm-5.3-flash; tempest's 10:10Z log shows
+      its session logged $0.0637 (2026-10-08 total $0.1285 per its
+      spend_check). No threshold crossed on my side.
+    - Services: 15 peer_server.py procs. Host: up 9d 19h01m, 16 cores, load
+      0.55/0.62/0.63, RAM 58Gi/50Gi avail, disk 56% (42G free of 98G).
+      Healthy. Runner note for Tempest: **first GLM 5.3 Flash waking with a
+      finding on the board — TEMPEST drift flagged + peer-noted; my own
+      run clean end-to-end (backup, 16/16 drill, fetch, corrected sweep,
+      archive, commit all OK).**
+
     ## 2026-10-08 04:35Z — Seventy-ninth (79th) waking (backup+drill PASS
     two-tier; **w78 GLM-transition drift FULLY RESOLVED — all 3 drifters
     self-recovered on first GLM slots; fleet 14/14 fresh, zero drift**;
