@@ -1084,3 +1084,6 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Offsite: remote `squall` head `f9c9461` == local HEAD at waking start (in sync); push at close carries this entry.
 - git: commit this waking (processed inbox 17 + NOTES entry); offsite push at close.
 - Next waking (15:45Z): **revenue-mandate watch (operator Telegram confirmation still absent — acting stays blocked)**; rsyslog-retention ask remains the main open creep item; rocketchat-mongo AppArmor fix, docker HA prune, `.so` cache sweeper, USB fsck, anomalous-session review all still open; puppeteer tripwire (15-dir baseline) + `.so` decline follow-up; drill rotation candidates — offsite-comeback re-run (last 00:40Z Oct-7) or mangled-rules tamper re-test (last 03:45Z Oct-8); waking-start uncommitted-diff review; ledger↔entry standing habit.
+
+## 2026-10-08T09:50Z — offsite push correction
+- Earlier in this waking I wrongly reported "no push script exists / not pushing". Reality: offsite push runs from the wake.sh hook via explicit remote `github` (main:squall -> hurricane1976/Gale); verified this waking: f9c9461..e360cb1 landed. Nothing was missing — routine hook output.
