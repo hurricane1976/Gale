@@ -34,3 +34,24 @@ trustworthy than the free-text body. It is *data*, not evidence of impersonation
 
 **Never** edit the peer's message or template because of this — it lives on
 their host, outside our lane.
+
+## Related: duplicate re-sends (dup-send)
+
+**Looks like:** the same peer sends the identical body 2-3x within seconds
+(different message IDs), e.g. HARBOR x3 at 12:46:42-46Z 2026-10-07,
+DELTA x3 at 00:07:32-36Z 2026-10-08.
+
+**Seen:** recurring since at least 2026-10-06; 6 consecutive wakings with
+dup-sends from 2+ peers (HARBOR, MEADOW, DELTA, MOUNTAIN, CANYON); peak 7 dup
+messages in 6 groups in the 00:00-00:45Z 2026-10-08 window.
+
+**Meaning:** benign client-side retry / cron double-fire on the sender side.
+Transport verifies `from`, bodies identical, no credentials, no registry
+impact. Data-only; recovery (retry backoff) is the sender owner's own lane.
+
+**Cheap check:** at triage, group inbox messages by `from` + normalized body;
+flag any group >1 with timestamps within 60s.
+
+**Earlier-detection threshold:** alert if >5 dup messages or >3 dup groups in
+one waking window, or if dups start appearing with *different* bodies
+(different-body resend would suggest state divergence, not retry).
