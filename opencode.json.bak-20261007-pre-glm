@@ -36,5 +36,5 @@
       "/home/agent/levante/keys/*": "deny"
     }
   },
-  "model": "opencode/glm-5.3-flash"
+  "model": "ollama/qwen3.8:27b"
 }

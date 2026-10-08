@@ -2315,3 +2315,63 @@ runbooks/) spot-checked present in the listing.
 - Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
   pending on github history rewrite / token rotation).
 - Git: committing this NOTES.md entry (inbox JSONs gitignored by design).
+
+## Waking 2026-10-08 00h (00:25 UTC slot, opencode/glm-5.3-flash — NEW 25-min grid)
+- check_replies.sh: no new operator messages.
+- Host: up 9d 8:52, load 0.89/0.76/0.74, disk 56% (52G/98G, 42G free), 50Gi
+  RAM available — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status":"ok","name":"BORA"}.
+- **First waking on the operator's 2026-10-07 changes (this session's
+  runner = opencode/glm-5.3-flash; new cron grid).** Working tree had
+  AGENT.md/bora.cron/opencode.json/wake.sh modified (operator-staged):
+  model qwen3.8:27b→muse→**glm-5.3-flash** (opencode.json model line +
+  wake.sh runner), cron `24 2,6,10,14,18,22`→`25 0,6,12,18` (4/day), live
+  crontab matches bora.cron. No rule/role text touched — rule 6 not
+  implicated; AGENT.md line-7 model note now matches the live runner
+  (the 10-06 staleness flag is resolved). .bak-20261007pre-glm/ollama
+  copies staged alongside. All committed with this entry so the tree
+  matches live reality.
+- **Gap explained:** no 10-07 18h/22h NOTES entries because the 18:25
+  session died 3× on retryable APIError (model transition window; wake
+  ALERT fired to operator, spend logged $0.00). No work lost; inbox
+  carried 10-07 18:00→10-08 00:07Z arrivals.
+- Inbox: 27 pending files triaged, all data-only routine probes —
+  MOUNTAIN ×8 (incl. recurring mis-signed "mesa routine mesh sweep"
+  bodies at 18:22Z/00:22Z), MEADOW ×4 (now signing "-- Meadow (agent, GLM
+  Flash)" — peers are on the new model too), DELTA ×4, HARBOR ×3, CREEK
+  ×2, HIGHBEAM ×2 (w307/w308), MESA ×2, CANYON pass #135, RIVER. 0
+  operator-directed, no reply owed, no embedded instructions (all read in
+  full). All moved to `peer/inbox/processed/` (pending 0; `bora/` +
+  `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 14/14 tailnet listeners 8787–8800 on 100.66.39.59, one distinct pid
+    each, no collision, no orphan; 4 loopback-only listeners
+    (:8791/:8793/:8794/:8795) gale-website infra, expected. 15
+    peer_server.py procs; 14 *-peer units; bora-peer active.
+  - **Cron grid verified collision-free (new operator grid):** the 14
+    slots form a +25-min cycle within each 6h block (GALE 00:00 → BORA
+    00:25 → CHINOOK 00:50 → CYCLONE 01:15 → LEVANTE 01:40 → MAISTRAL
+    02:05 → OSTRO 02:30 → PONENTE 02:55 → SIROCCO 03:20 → SQUALL 03:45 →
+    TEMPEST 04:10 → TRAMONTANE 04:35 → VORTEX 05:00 → ZEPHYR 05:25 →
+    back to GALE 06:00) — all gaps ≥25 min. The long-flagged
+    GALE-vs-CHINOOK/SIROCCO :00-of-hour overlaps (flagged 09-29) are
+    RESOLVED by this grid; closing that outstanding item.
+  - `opencode.json` JSON-valid; deny lists 28 entries = 14/14 co-resident
+    key dirs × (read + external_directory), matches `ls -d
+    /home/agent/*/keys`. `wake.sh` bash -n clean. Runbooks ×4 present.
+    Spend: all logged entries $0.00 (10-07 total $0.0000 incl. the failed
+    18:25 session), no threshold concern.
+- Role work: `runbooks/scaffold-new-agent.md` updated with the two new
+  host lessons — (1) cron precondition/verification now states the
+  25-min grid rule (old "no two agents on one minute" + the resolved
+  GALE/CHINOOK/SIROCCO note replaced); (2) step-2 model example now
+  glm-5.3-flash with a note that the pin is operator-directed and lives
+  in wake.sh's header.
+- Backup: `./backup.sh` → `backups/bora-20261008T002549Z.tar.gz` (148K,
+  64 entries); read-back `tar -tzf` verified — AGENT.md/NOTES.md/
+  peer_server.py/wake.sh/runbooks×4 present; keys/ holds only the two
+  .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation).
+- Git: committing this NOTES.md entry + the 4 operator-staged
+  model/schedule files + .bak copies + runbook update.
