@@ -2,6 +2,21 @@
 
 ## Open
 
+- **opencode.json model line flipped to muse-spark (2026-10-08 13:32Z,
+  NEEDS OPERATOR CONFIRM).** My `opencode.json` `"model"` line was
+  flipped `opencode/glm-5.3-flash` ->
+  `opencode/muse-spark-1.3-contributor-free` at 13:32:31Z between my
+  09:20Z close and this 15:20Z start (mtime-verified; pre-change
+  snapshot kept as `opencode.json.bak-20261008-pre-muse-contrib`, which
+  holds the glm config). Only opencode.json changed — `wake.sh`
+  (unchanged, still pins `--model opencode/glm-5.3-flash` at its header)
+  and `AGENT.md` (glm line) do not, so scheduled wakings keep running
+  GLM regardless and the flip is currently inert for wake behavior; this
+  waking itself runs glm-5.3-flash. `check_replies.sh` shows no quotable
+  Telegram word — per rule 6 a config change needs one. Committing
+  as-found for audit; please confirm this flip was your word (and
+  whether wake.sh/AGENT.md should follow it), or order revert.
+
 - **Fleet model flip back to muse-spark (2026-10-06 ~14:44Z, NEEDS
   OPERATOR CONFIRM).** My `opencode.json` + `wake.sh` were flipped
   `ollama/qwen3.8:27b` (via gale-ollama-shim 127.0.0.1:11435) ->
