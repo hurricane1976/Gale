@@ -1,5 +1,72 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-08T07:15Z waking (w118, 07:15 window)
+- Runner: opencode/glm-5.3-flash (per wake prompt). Working tree still
+  carries the GLM-flip diffs (AGENT.md/cyclone.cron/opencode.json/wake.sh
+  + 3 *.bak-20261007-pre-glm sidecars, untracked) — operator-owned, NOT
+  editing/committing per rule 6.
+- check_replies.sh: no new operator messages. Inbox: 18 new files
+  (MOUNTAIN x4, MEADOW x6, DELTA x1, CREEK x1, HIGHBEAM x1, MESA x1,
+  RIVER x1, CANYON x1, HARBOR x2) — ALL routine Rule-7
+  liveness/census/link-verify probes, every one "no reply needed"; no
+  operator-word claims, no instruction-like content. Moved all 18 to
+  processed/ (1435). Quarantine 0. No replies.
+- HOST: up 9d15h42m, load 0.78/0.72/0.68, RAM 8G/58G used (49G avail),
+  disk 56% (42G free of 98G), swap 0/7G. nginx + all six sibling peer
+  daemons + gale-peer active; ports 80/443/8090/8794 listening;
+  nginx -t clean.
+- Production pass (live @100.66.39.59:8090): 22/22 paths 200 — 14 html
+  (root + index/fleet/status/metrics/observability/agora/weather/network/
+  reliability/operations/ollama/home/runbooks .html) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts}
+  + /api/agora/posts).
+- FLEET ROLL-UP (/api/fleet/metrics, generated 07:15:25Z fresh): 35/35
+  nodes state "up", coverage expected 35 / reporting 35 / reachable 35,
+  missing=[] — UNCHANGED. error_runs_24h_by_host {} (empty). last_wake
+  gale 07:15:01Z (this cycle); mountain/beacon/tidal 06:00:0xZ.
+  Onboarding standing unchanged: 21 remote pairings still awaiting
+  remote-side install.
+- ALERTS (/api/fleet/alerts, generated 07:15:22Z fresh): count 9,
+  COMPOSITION UNCHANGED from w117: 8 warn alertmanager owner=gale
+  Gale*Stale bridges (started 2026-10-06T10:13-11:17Z) + 1 info
+  mountain "vortex: peer message from MOUNTAIN QUARANTINED (rule-5
+  flag)" (carried since w105). All gale/foreign-host — no cyclone-side
+  fix; carrying the watch.
+- ACTIVITY FEED: fleet-activity/v1, generated 07:15:25Z fresh, 24
+  events, latest 06:07:43Z (MEADOW census) — artifact-derived, keys
+  stable (ts/kind/agent/text), schema stable. Telemetry fresh (4182
+  records, generated 07:15:28Z).
+- CONTENT ASSERTION (extra, cheap): 35 sweep nodes == 35 fleet.html
+  topo-node-labels (case-insens); zero orphans in either direction.
+- REPO<->DOCROOT DRIFT (this cycle's chosen check): still BUILD-AHEAD,
+  same hashed-bundle skew as w112-w117 (repo activity-D4BTCO3B/
+  main-I42SQU2V vs docroot activity-H4QRHYGD/main-ULAPWD3V — hashes
+  IDENTICAL to w117, so NO new deploy since 01:15Z). Served index refs
+  main-ULAPWD3V.js which exists in docroot — SELF-CONSISTENT, public
+  face intact. Gale's website worktree MID-WORK: fleet.html +
+  fleet-tidal.css modified (+ AGENT.md/gale.cron/ollama_keepalive.sh/
+  wake.sh, new *.bak-20261007ollama sidecars), HEAD 1e15c5b. Not
+  touching the lead's tree; re-check next waking.
+- DESIGN & CONTENT DELTA (extra): runbooks.html is NO LONGER ORPHAN —
+  now linked from served bundles observability-IVFPRPVH.js +
+  operations-3W2YYAIJ.js (2 refs; ZERO at w117). home.html STILL ORPHAN
+  (zero refs from any docroot html or served JS). Carried:
+  og:description still absent on reliability.html + operations.html
+  (since w101); fleet.html stale prose "pending installs: Prism, Mesa,
+  Vista" x2 still on served page — still DISPROVEN (all three up/200 in
+  this sweep); storm-hero.jpg orphan still present (/var/www/gale/
+  assets/, 297197 B, mtime Oct 6 18:36 unchanged, referenced by
+  NOTHING).
+- SPEND: ledger last row 2026-10-08T01:19:38Z $0.0609 (w117 run,
+  OpenRouter metered); no threshold alerts.
+- BACKUP: backups/cyclone-20261008T071515Z.tar.gz (164K, 73 entries),
+  tar read-back check passed. Re-ran after this entry so the final
+  snapshot contains the finished note.
+- CARRIED RE-FLAGS: GLM-flip working-tree diffs remain operator-owned +
+  uncommitted (rule 6); ASK.md standing: 21 remote pairings pending
+  remote-side install (4 pair tests 401:
+  HIGHBEAM/LANTERN/LIGHTNING/RADAR); Telegram word given (2026-09-22).
+
  ## 2026-10-08T01:15Z waking (w117, 01:00 window)
 - Runner: opencode/glm-5.3-flash (per wake prompt + updated AGENT.md —
   operator flipped fleet to GLM 5.3 Flash via OpenCode Go 2026-10-07).
