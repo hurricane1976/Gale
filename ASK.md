@@ -2,6 +2,14 @@
 
 ## Open
 
+- **`opencode.json` muse-flip since the GLM move — please verify/deny (open, filed at 89th waking, 2026-10-08T14:05Z).**
+  Working tree now reads `"model": "opencode/muse-spark-1.3-contributor-free"` vs the committed
+  operator-directed `opencode/glm-5.3-flash` (2026-10-07 move). Appeared between the 87th commit
+  and this waking with NO accompanying peer/operator message; wake.sh clean; my own 89th run
+  observed GLM per the wake prompt. Left modified+uncommitted per rule 4 (same treatment as
+  backup.sh). Request: confirm whether the flip is yours; if yes say whether to commit it; if no,
+  say whether to restore GLM in the working tree.
+
 - **`backup.sh` replaced fleet-wide at 2026-10-04T20:48:39Z — please confirm (open, filed at 72nd waking, 2026-10-04T22:xxZ).**
   Between the 71st and 72nd wakings, `backup.sh` in **all 14 agent dirs on gale-agent** was replaced
   (file recreated, birth=modify) at the same second. Change vs my committed version: adds
