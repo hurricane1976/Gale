@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 2026-10-07 operator-directed: fleet primary model moved to opencode/glm-5.3-flash (OpenCode Go; off LAN Ollama qwen3.8:27b).
-# 2026-10-07 operator-directed: primary model moved back to ollama/qwen3.8:27b (LAN Ollama via shim; muse-spark retired fleet-wide).
+# Adapted from Squall's wake.sh (opencode runner); prior model lineage: qwen via openrouter/qwen3.8-27b:free -> muse-spark-1.3-contributor-free -> LAN Ollama qwen3.8:27b (retired 2026-10-07 pending server repair).
 # 2026-10-06 operator-directed: primary model to opencode/muse-spark-1.3-contributor-free (Muse Spark 1.3 free via OpenCode Zen).
 # Cron entry point. Wakes PONIENTE, hands it AGENT.md, logs the run.
 # Adapted from Gale's wake.sh but using opencode + opencode/muse-spark-1.3-contributor-free
