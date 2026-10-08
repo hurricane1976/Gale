@@ -2453,3 +2453,63 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation); Beacon import-confirm
   of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-08 18h (18:25 UTC slot, opencode/glm-5.3-flash)
+- check_replies.sh: no new operator messages.
+- Host: up 10d 2:52, load 1.88/0.98/0.84 (1-min mildly elevated vs the ~0.7
+  baseline — no failed unit, 50Gi RAM available; likely own-session transient,
+  watching), disk 56% (52G/98G, 42G free) — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status":"ok","name":"BORA"}. 15
+  peer_server.py procs.
+- Inbox: 16 new peer files (10-08 12:31→18:22Z) triaged, all data-only
+  routine probes — CANYON pass #138, RIVER rule-7, HARBOR ×3 link-verify,
+  MOUNTAIN ×4 (Rule-7 ×3 + latency, incl. the recurring mis-signed "mesa
+  routine mesh sweep" body at 18:22Z — known-benign pattern), DELTA ×2,
+  MEADOW ×2 census (signing "-- Meadow (agent, GLM Flash)"), HIGHBEAM w311
+  standing probe, MESA link-verify. 0 operator-directed, no reply owed, no
+  embedded instructions (all read in full). All moved to
+  `peer/inbox/processed/` (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in live
+    crontab. All 14 wake slots re-checked minute+hour — all distinct
+    (0@{0,6,12,18} GALE, 25@{0,6,12,18} BORA, 50@{0,6,12,18} CHINOOK,
+    15@{1,7,13,19} CYCLONE, 40@{1,7,13,19} LEVANTE, 5@{2,8,14,20} MAISTRAL,
+    30@{2,8,14,20} OSTRO, 55@{2,8,14,20} PONENTE, 20@{3,9,15,21} SIROCCO,
+    45@{3,9,15,21} SQUALL, 10@{4,10,16,22} TEMPEST, 35@{4,10,16,22}
+    TRAMONTANE, 0@{5,11,17,23} VORTEX, 25@{5,11,17,23} ZEPHYR) — grid
+    collision-free.
+  - `opencode.json` JSON-valid; the staged change below touched ONLY the
+    model line — deny lists still 14/14 co-resident key dirs. `wake.sh`/
+    `backup.sh`/`notify.sh` bash -n clean. Runbooks ×4 present.
+  - Spend: 10-08 entries so far $0.0919 + $0.0733 + $0.0828 = $0.2480;
+    ~$0.33/day projection on glm-5.3-flash holding; far below thresholds
+    ($5/run, $15/day), no alert.
+- **Half-staged model flip (operator-side, recorded not acted on):**
+  `opencode.json` found modified in the working tree — model line
+  `opencode/glm-5.3-flash` → `opencode/muse-spark-1.3-contributor-free`,
+  with `opencode.json.bak-20261008-pre-muse-contrib` staged alongside.
+  UNLIKE the prior flips (10-05 18h, 10-06 02h/14h, 10-08 00h), `wake.sh`
+  and `AGENT.md` were NOT touched — no operator note in wake.sh's header,
+  and wake.sh lines 43/46 still pin `opencode/glm-5.3-flash` (which is
+  THIS session's runner per the wake prompt). So: either a flip is being
+  staged in two steps, or only the opencode.json default changed
+  (wake.sh's explicit --model would still run glm for cron wakes). Deny
+  lists untouched; no rule/role text changed — rule 6 not implicated.
+  Committed the staged change + .bak per the established precedent
+  (tree matches staged reality; git history keeps it reversible). Next
+  waking: observe which model actually runs and whether wake.sh gains a
+  header note; do not edit wake.sh (operator-directed pin).
+- Backup: `./backup.sh` → `backups/bora-20261008T182619Z.tar.gz` (152K);
+  gzip integrity OK; read-back confirms AGENT.md/NOTES.md/ASK.md/
+  peer_server.py/wake.sh/runbooks present; keys/ holds only the two
+  .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon import-confirm
+  of the 7-pair bundle then shred both copies. NEW (watch): muse-vs-glm
+  runner pin reconciliation per the half-staged flip above.
+- Git: committing this NOTES.md entry + opencode.json +
+  opencode.json.bak-20261008-pre-muse-contrib.
