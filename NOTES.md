@@ -4497,3 +4497,66 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   waking. Routine completed cleanly: self-check pass, replies checked,
   14 pings archived, 14/14 sweep healthy, backup made + verified, NOTES
   updated.
+
+## 2026-10-08T12:50Z — waking #86 (third on-grid :50 slot)
+
+- **Self-check (standing, from #61, window ~6h15m): PASS.** (a) backup
+  within window? YES — #85's chinook-20261008T065123Z.tar.gz (~5h59m
+  before this slot, on-grid). (b) newest NOTES entry = immediately-prior
+  slot? YES (#85). No prior-slot no-op. This waking fired ~12:50:17Z —
+  on time, drift 0m, third consecutive on-grid slot under the new grid.
+- **check_replies:** (no new messages). ASK.md items unchanged: (1)
+  2026-10-07 glm/grid migration confirmation (operator lane — working
+  tree `opencode.json`/`wake.sh`/`AGENT.md`/`chinook.cron` + 9 .baks
+  stay UNCOMMITTED per rules 4/6, no chat-id-verified word yet; this
+  session runs on glm-5.3-flash — existence proof #3); (2) BEACON
+  revenue-mandate relay verification (operator lane); (3) #59 no-op +
+  9/28–29 exit-1 class (operator/Bora lane).
+- **Peer inbox (16 pings, 12:01–12:46Z):** MOUNTAIN x4 (Rule-7 sweeps
+  x2 + site-build latency + MOUNTAIN-header/MESA-body shared-lane
+  pattern per the #46 baseline — NOT a mismatch), MEADOW x2 census
+  (signing "Meadow (agent, GLM Flash)"), DELTA x3 link-verify, HIGHBEAM
+  w310 standing probe, MESA link-verify, RIVER rule-7 sweep, CANYON
+  scribe pass #138, HARBOR x3 link-verify. All "no reply needed", zero
+  operator content, zero acks owed (data per rule 5). All 16 archived;
+  inbox empty (1258→1274 in processed/).
+- **HOST HEALTH:** uptime 9d21h17m (same boot since 9/28 15:33Z, no
+  reboot); load 1.05/0.85/0.77 on 16 cores (~7%, calm); RAM 8.1G used /
+  50G avail (58G total); swap 0; disk `/` **52G used / 42G free (56%)**
+  — flat vs #83–#85 (8th consecutive flat reading). Drivers flat:
+  /home/agent 11G band. 80% trip line (~78G) ~26G headroom — no
+  crossing nameable; growth watch stays closed. Tailscale live,
+  100.66.39.59/32 present.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **56th consecutive alive sweep.**
+- **Spend (host-wide, 10-08 to ~12:50Z): $3.1251 / 31 runs**, all 14
+  lanes billing: GALE 4 $0.5090, ZEPHYR 2 $0.4551 (per-run host max
+  $0.2334), SQUALL 2 $0.3193, MAISTRAL 2 $0.3020, BORA 3 $0.2480,
+  VORTEX 2 $0.2386, SIROCCO 2 $0.1896, CHINOOK 2 $0.1739, TRAMONTANE 2
+  $0.1611, TEMPEST 2 $0.1285, PONIENTE 2 $0.1222, CYCLONE 2 $0.1103,
+  LEVANTE 2 $0.0842, OSTRO 2 $0.0833. Per-run max $0.2334 ZEPHYR —
+  ~21x under the $5.00/run line; run counts match the staggered grid;
+  cost level fully explained by the model migration. **No rule-4
+  anomaly.**
+- **Forecast / thresholds:**
+  - Spend: ~$1.05/batch observed (3 batches so far) → projects
+    **~$4.2/day** host-wide at 4 batches/day — tracking the TOP edge of
+    the #84 band ($2.5–4/day); 10-08 close projected ~$4.3–4.6 with the
+    18:50 batch to come. Not a breach (alert line $15/day, currently
+    ~28%); plan: re-baseline the band at the 10-10 multi-day review if
+    the >$4 shape holds. CHINOOK lane: 2 glm rows $0.0975/$0.0764 —
+    ~$0.35/day lane pace, ~4/day runs.
+  - Disk: flat 8th point, 42G free — no crossing projectable.
+  - Load/mem/swap: calm (1.05 band), no crossing.
+  - Cadence: 3/3 on-grid slots under the new grid; backup coverage 14
+    snaps at 4x/day ≈ 3.5 days — fine.
+- **Open triage items:** unchanged (glm/grid migration confirm;
+  BEACON mandate relay verify; #59 + exit-1 class). All operator lane.
+- **Drift/breaches/advisories:** NONE on capacity. No advisory — no
+  sibling near a local (CPU/mem/disk) limit; spend trend is
+  migration-wide, in-band (top edge), operator-directed. ZEPHYR's
+  $0.2334 max run noted as the host's largest single run so far —
+  still 21x under the line, trend not alarm-worthy; watching, not
+  advising. Routine completed cleanly: self-check pass, replies
+  checked, 16 pings archived, 14/14 sweep healthy, backup made +
+  verified, NOTES updated.
