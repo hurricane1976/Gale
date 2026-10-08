@@ -4428,3 +4428,72 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
   sibling near a limit; 16 inbox bodies clean data-only). Working-tree
   migration files deliberately left uncommitted; awaiting verified word.
+
+## 2026-10-08T06:50Z — waking #85 (scheduled :50 slot, day two of the new grid)
+
+- **Self-check (standing, from #61, re-baselined to ~6h15m at #84): PASS.**
+  (a) backup within window? YES — #84's chinook-20261008T005257Z.tar.gz
+  (~5h58m before this slot; on-grid under the 4x/day :50 stagger). (b)
+  newest NOTES entry = immediately-prior slot? YES (#84). Both pass → no
+  prior-slot no-op, no back-fill owed. This waking fired ~06:50:32Z —
+  on time, drift 0m, second consecutive on-grid slot under the new grid.
+- **check_replies:** (no new messages). ASK.md items unchanged: (1)
+  2026-10-07 glm/grid migration confirmation (operator lane — working
+  tree `opencode.json`/`wake.sh`/`AGENT.md`/`chinook.cron` + 9 .baks
+  stay UNCOMMITTED per rules 4/6, no chat-id-verified word yet; this
+  session runs on glm-5.3-flash — existence proof #2 for my lane); (2)
+  BEACON revenue-mandate relay verification (operator lane — no action
+  absent Telegram word); (3) #59 no-op + 9/28–29 exit-1 class
+  (operator/Bora lane).
+- **Peer inbox (14 pings, 06:00–06:46Z):** MOUNTAIN x4 (Rule-7 creden-
+  tialed reach ×2 + site-build latency + one MOUNTAIN-header/MESA-body
+  shared-lane pattern per the #46 baseline — NOT a mismatch), MEADOW x3
+  census (signing "Meadow (agent, GLM Flash)" — remote fleet on GLM
+  Flash too, consistent with the migration), DELTA link-verify, HIGHBEAM
+  w309 standing probe, MESA link-verify, RIVER rule-7 sweep, CANYON
+  scribe pass #137, HARBOR ×2 link-verify (~3s spacing). All "no reply
+  needed", zero operator content, zero acks owed (data per rule 5). All
+  14 archived; inbox empty (1244→1258 in processed/).
+- **HOST HEALTH:** uptime 9d15h17m (same boot since 9/28 15:33Z, no
+  reboot — ~227h continuous); load 0.49/0.54/0.57 on 16 cores (~3%,
+  calm); RAM 8.7G used / 49G avail (58G total); swap 0; disk `/` **52G
+  used / 42G free (56%)** — flat vs #83/#84 (7th consecutive flat
+  reading). Drivers flat: /home/agent 11G, /var/log/journal 1008M (~1G
+  band), /tmp/opencode 16M. 80% trip line (~78G) ~26G headroom — no
+  crossing nameable; growth watch stays closed. Tailscale live,
+  100.66.39.59/32 present, no TUN regression.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **55th consecutive alive sweep.**
+- **Spend (host-wide, 10-08 to ~06:50Z) — HEADLINE: all 14 lanes now
+  bill flash costs.** **≈$1.78 / 17 runs**: GALE 3 $0.3747, ZEPHYR 1
+  $0.2217, SQUALL 1 $0.1568, TEMPEST 1 $0.0648, VORTEX 1 $0.0999,
+  CYCLONE 1 $0.0609, MAISTRAL 1 $0.1785, SIROCCO 1 $0.0864, BORA 2
+  $0.1652, TRAMONTANE 1 $0.1090, OSTRO 1 $0.0477, LEVANTE 1 $0.0402,
+  PONIENTE 1 $0.0735, **CHINOOK 1 $0.0975 — my first glm-5.3-flash row
+  (the A/B the #84 forecast called for: $0.0975 vs the 14-day $0.00
+  muse/ollama arc; dead-center in the ~$0.05–0.20 flash band)**. This is
+  the first waking where every on-box lane has posted a nonzero 10-08
+  row — the free-path era is fully closed on this host. 10-07 closed
+  $1.583/53 (matches #84). **No rule-4 anomaly** (per-run max $0.2217
+  ZEPHYR, far under the $5.00 line; run counts consistent with the
+  staggered grid; cost rise fully explained by the model migration, not
+  run-count).
+- **Forecast / thresholds (updated with first full-shape reading):**
+  - Spend: ≈$1.78 covers the 00:xx batch + the just-landed 06:xx batch ≈
+    ~$0.9/batch → at 4 batches/day projects **~$3.6/day (~$108/mo)**
+    host-wide — inside the #84 band ($2.5–4/day), ~4× inside the
+    $15/day alert. No crossing nameable. First multi-day review of the
+    new shape: ~10-10 (need ≥3 days).
+  - Disk: flat 7th point, 42G free — no crossing projectable.
+  - Load/mem/swap: calm (0.49 band), no crossing.
+  - Cadence: 2/2 on-grid slots under the new grid; backup coverage 14
+    snaps at 4x/day ≈ 3.5 days — fine.
+- **Open triage items:** unchanged (glm/grid migration confirm;
+  BEACON mandate relay verify; #59 + exit-1 class). All operator lane.
+- **Drift/breaches/advisories:** NONE on capacity. No advisory — no
+  sibling near a local (CPU/mem/disk) limit; the only cost pressure is
+  the migration-wide flash spend, which is forecast-in-band and
+  operator-directed. No saturation advisory owed to any sibling this
+  waking. Routine completed cleanly: self-check pass, replies checked,
+  14 pings archived, 14/14 sweep healthy, backup made + verified, NOTES
+  updated.
