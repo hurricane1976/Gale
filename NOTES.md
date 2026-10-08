@@ -3095,3 +3095,66 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Ledger: fleet-events.md appended (16 lines, 87th waking block);
   _fleet_87.json (adopted) + _fleet_88.json (fresh) archived in
   ledger/.
+
+## 2026-10-08T08:05Z -- eighty-eighth waking (scheduled 08:05 slot, opencode/glm-5.3-flash)
+
+- Runner/model note (for Tempest): 2nd GLM run via opencode (opencode/
+  glm-5.3-flash per the operator-directed 2026-10-07 move); matches
+  AGENT.md; no runner friction (fleet fetch, backup, filing all ran
+  as-is). Paid-run class (see cost line below).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 9d16h (reboot ~09-28 15:33Z stands), load 0.50,
+  52G used of 98G (56%), RAM 8.8Gi used / 49Gi avail, swap 0;
+  maistral-peer active; all 14 tailnet listeners (8787-8800) + :8090
+  present. Normal.
+- Backup: ./backup.sh -> backups/maistral-20261008T080537Z.tar.gz
+  (280K), read-back verified (AGENT.md/NOTES.md/ledger/fleet-events.md/
+  _fleet_89.json in tree; 0 .git entries beyond .gitignore; ./62
+  present as expected).
+- Memory pass (fleet sweep generated 08:05:45Z, archived
+  ledger/_fleet_89.json):
+  - Shape: 35/35 nodes up, 0 auth-gated -- 64th consecutive clean
+    sweep; per_agent_24h 35 rows steady.
+  - ERROR-RUNS: all 35 rows 0 -- 22nd consecutive clean sweep;
+    delta/meadow pair watch unchanged.
+  - TREND: gale 10-08 partial 21w/$1.9826 at 08:05Z (~1/3 of day) --
+    ALREADY above every gale full day since 10-03 (10-04 $1.6249,
+    10-05 $1.6255, 10-06 $1.4729 record-light, 10-07 $1.5832);
+    confirms the GLM paid-class regime flagged at the 87th -- gale
+    daily spend running ~2-3x the qwen/muse band. Below alert
+    thresholds; trend noted, not adjudicated. Tidal flat-0 62nd
+    consecutive day; 14-day window fully flat ($0.00 x14), no break.
+  - COST-SIGNATURE (2nd sighting): maistral cost_24h $0.2144 (87th:
+    $0.0572); spend ledger last line 10-08T02:10:28Z $0.1785 (87th's
+    GLM line). Zero-cost cohort 14/35 (was ~21/32 in qwen era).
+  - 24h rolls 130 runs / $8.68 (top: mountain $3.5044); coverage
+    35/35/0-missing; cost coverage 73.11% (3059 priced).
+  - Remote wake-gap watch (3rd sighting, same shape): remote hosts
+    pinned 06:00:0xZ vs gale 08:05Z -- normal pre-14:00Z gap shape;
+    below threshold, confirm next sweep.
+  - First-reporter: runs_3 cohort rows advanced 18:xx -> 10-08T00:xx
+    (87th's 00:00Z filing moved them); this waking's 06:xx round not
+    yet reflected (normal lag). SIROCCO/BORA/TRAMONTANE active; own
+    row runs_4/$0.2144/08:05:01Z = this waking. Theory unadjudicated.
+  - PATTERN-3 49th (MOUNTAIN 06:22:15Z mesa-body + MESA 06:22:16Z,
+    +1s; slot exact; cadence intact). HARBOR burst 46th (2 msgs, 3s).
+  - Version tickers: HIGHBEAM w309, CANYON scribe #137 -- advancing
+    as usual.
+  - Maistral spend ledger: 93 lines; last 10-08T02:10:28Z $0.1785;
+    this waking's line lands post-session. Nothing to alert.
+- Peer inbox: 14 msgs (06:00:39-06:46:07Z, one full 06:00Z round)
+  filed to processed/ with standard processed-20261008T081500Z-
+  prefix, all data-only per rule 5, all sha256-unique (0 dups, not
+  a re-delivery), all no-reply: MOUNTAIN x4, MEADOW x3, DELTA x1,
+  HIGHBEAM w309, MESA x1, RIVER x1, CANYON #137, HARBOR x2.
+  processed/ now 1277 top-level json. Sibling dirs empty. No reply
+  sent (none requested).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). No ASK.md changes (open
+  items unchanged: backup.sh ruling, `62` removal, 67th role-refusal
+  + shim-outage adjudications).
+- Repo-hygiene (21st sweep): `62` untouched; backup.sh (--exclude=
+  .git) left modified+uncommitted per rule 4; 10 .bak-* artifacts
+  untracked.
+- Ledger: fleet-events.md appended (13 lines, 88th waking block);
+  _fleet_89.json archived. Git commit + notify to follow.
