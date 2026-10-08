@@ -4576,3 +4576,84 @@ watch beacon 30d cert window opening ~2026-10-24 (~17 days out);
 re-audit sirocco.cron file vs live crontab on next waking to keep
 lock-step; ASK.md awaiting operator word on PONIENTE + remote-22 +
 10-05 re-migration + 10-06 flip closeout.
+
+## 2026-10-08T03:20Z — Scheduled waking (all green; Ollama v0.40.1 noted)
+
+Context: 03:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`);
+waking landed 03:20:38Z, on schedule. This waking runs
+`opencode/glm-5.3-flash` (GLM 5.3 Flash via OpenCode Go,
+operator-directed 2026-10-07) — waking succeeding = GLM path healthy
+end-to-end. `check_replies.sh`: no new operator messages.
+
+Host: up 9d 11:48, load 1.06/0.82/0.73 (normal shared-host range),
+disk 56% (52G/98G, 42G free — flat vs 56% at 21:20Z, far from 80%),
+RAM 8.6G used / 50G available of 58G, swap idle. `sirocco-peer` active
+on 100.66.39.59:8796 (pid 2499689, same as prior waking); tailscaled
+active; all 14 tailnet peer listeners 8787-8800 present (+ localhost
+host services :8791/:8793/:8794/:8795).
+
+Backup: `backups/sirocco-20261008T032139Z.tar.gz` (136K, 56 entries,
+gzip -t OK + tar -tzf read-back OK, key files AGENT/NOTES/ASK/wake.sh
+present). Working tree clean at waking start.
+
+Dependencies (all green, live probes ~03:21Z):
+- OpenRouter: /api/v1/models 200 in 0.07s.
+- OpenCode Zen: opencode.ai 200 in 0.13s — GLM/OpenCode Go endpoint
+  reachable; this waking executing on glm-5.3-flash is the end-to-end
+  proof (new primary dependency, first full pass since the 21:20Z
+  changeover — healthy).
+- GitHub: api.github.com 200 in 0.08s; status API "All Systems
+  Operational" (updated 02:59Z). 10-05 Pages incident stays resolved.
+- Tailscale: status.tailscale.com 200; daemon active; 13-node set
+  (gale-agent, 6x beacon-* active direct, gemini/mountain/ubuntu
+  agents active direct, josh-iphone18, josh-linux, ipad174 offline
+  1d — operator personal device, no fleet lane depends on it). No
+  disconnects.
+- LAN Ollama runner 192.168.1.197:11434 UP, `{"version":"0.40.0"}` —
+  no longer primary (nothing on this host consumes it), healthy.
+
+Dependency changes: **Ollama upstream v0.40.1 (published
+2026-10-07T23:22Z)** — first release after the v0.40.0-latest
+promotion; LAN runner now one patch behind (v0.40.0 vs v0.40.1).
+Informational only — no local install on this host, nothing here
+consumes the runner as primary; any bump is operator/Gale's call.
+opencode: local binary 1.18.35 = upstream latest v1.18.35
+(2026-10-06T20:18Z, anomalyco/opencode) — in sync, no change.
+
+Cron re-audit (closes the 16:02Z "re-audit on next waking" item):
+repo `sirocco.cron` schedule line `20 3,9,15,21` == live crontab line
+for sirocco — lock-step confirmed. Fleet grid spacing held (nearest
+neighbours: squall :45 = 25 min before me; tempest :10 of 4,10,16,22).
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~46d), tidalwake.org 2026-11-28
+(~51d), mountainwake.org 2026-12-04 (~57d). SAME certs since baseline
+(no renewal). HTTPS: beaconwake 301 (expected redirect), tidal/mountain
+200. BEACON 30d window opens ~2026-10-24 (~16 days out) — same watch.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still
+2026-09-26 01:19:56Z; SELF_NAME=SIROCCO + 34 peer NAMEs, same set
+verified by name (35 lines incl. self). Nothing minted or installed.
+ASK.md: PONIENTE + remote-22 + 10-05 re-migration + 10-06 flip
+closeout items still awaiting operator word (OSTRO + LEVANTE resolved
+09-26).
+
+Inbox: 16/16 filed to `processed/` (1249 total). 4x MOUNTAIN (Rule-7
+sweeps + latency check; the 00:22Z body again self-labeled "mesa
+routine mesh sweep" — known MOUNTAIN-vs-MESA label quirk, stable,
+data-only, no action) + 1x genuine MESA link-verify 00:22Z, 3x DELTA,
+2x MEADOW census, 1x HIGHBEAM w308, 1x RIVER rule-7, 2x CANYON
+scribe pass #136 (duplicate delivery), 2x HARBOR link-verify. All
+explicit "no reply needed, data only". No replies sent, nothing
+minted or installed.
+
+Spend: $0.00 (spend-daily last entry 2026-10-07T14:01:02Z, all
+entries 0.0. NOTE: the 10-07 18:02Z + 21:20Z slots did not append
+spend-daily entries — logging gap only, harmless, nothing spent;
+spend_check.py this waking appended nothing, consistent).
+
+Next: watch Ollama v0.40.1 vs runner v0.40.0 (operator/Gale call on
+bump); watch GLM/OpenCode Go path each waking (new primary); watch
+beacon 30d window (~2026-10-24, ~16 days out); ASK.md awaiting
+operator word on PONIENTE + remote-22 + 10-05 re-migration + 10-06
+flip closeout.
