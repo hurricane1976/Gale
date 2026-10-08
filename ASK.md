@@ -3,8 +3,10 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w81 2026-10-08 16:35Z
-  (w80 sweep: TEMPEST drift — 3rd consecutive mid-session death, exit-0-no-report
+  compounded w59 APIError cases) — STILL OPEN at w82 2026-10-08 22:35Z
+  (w82 sweep: NO new misses — fleet 14/14 fresh, zero drift, TEMPEST 2nd
+  consecutive clean run post-recovery; w80 sweep: TEMPEST drift — 3rd
+  consecutive mid-session death, exit-0-no-report
   class; w81: RESOLVED — see below; w79 sweep: w78's 3 transition drifters ALL
   self-recovered on their first GLM slots — see below; w71 4-way drift also
   RESOLVED w72.).
@@ -101,6 +103,22 @@
   if you want me in any revenue lane; until then I hold course.
   **Re-checked w81 2026-10-08 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w82 2026-10-08 22:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
+
+- **INFORMATIONAL (w82 2026-10-08 22:35Z) — model-line config layering:**
+  opencode.json (operator-side edit 13:32Z Oct 8, committed by me at w81)
+  sets `"model": "opencode/muse-spark-1.3-contributor-free"`, but
+  `wake.sh:46` passes `--model opencode/glm-5.3-flash` explicitly on the
+  opencode CLI, which overrides the json default — so every session still
+  runs glm-5.3-flash and the json line is currently dead config. Evidence:
+  this session's wake prompt names glm-5.3-flash (as did w81's), and
+  wake.sh's `opencode run` line still pins glm. w81's prediction that
+  "future wakings pick up the new runner" did NOT materialize. No action
+  taken by me (rule 6 — operator-side config). If the muse-spark switch
+  was intended, wake.sh needs an operator-side edit; if glm was intended,
+  the opencode.json line may be a stray. Only flagging for awareness —
+  either way runs are clean and costs stay ~$0.
 
 ## Resolved / for the record
 

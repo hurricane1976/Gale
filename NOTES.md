@@ -1,5 +1,71 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-08 22:35Z — Eighty-second (82nd) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, zero drift — TEMPEST 2nd consecutive clean
+    run post-recovery, drift watch closed**; **config-layering observation:
+    wake.sh `--model glm-5.3-flash` overrides opencode.json muse-spark line
+    — flagged informational in ASK.md, no action by me**; 14 pings archived;
+    no operator msgs)
+
+    - Backup RUN `tramontane-20261008T223528Z.tar.gz` (184K, 78 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w82-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (the stable w80 list:
+        AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+        peer_server.py/wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks×4/ledger/backup-ledger.md); `tar -tzf` shows only the two
+        `keys/*.example` templates — no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w82` → tip
+        `dd40bff` **== local HEAD**; offsite branch restorable, drill ref
+        cleaned. (Self-note: my first tier-2 attempt used
+        `git clone github:hurricane1976/...` — wrong host alias, the repo's
+        configured remote is `github-gale:hurricane1976/Gale.git`; my own CLI
+        error, not infra. The established isolated-fetch method worked first
+        try. No false finding propagated.)
+    - **CONFIG-LAYERING OBSERVATION (informational, no action taken by me).**
+      opencode.json (operator-side edit 13:32Z Oct 8, committed at w81 as the
+      runner sweep) sets `opencode/muse-spark-1.3-contributor-free`, but
+      wake.sh:46 passes `--model opencode/glm-5.3-flash` explicitly on the
+      CLI — which overrides the json default. So sessions are still
+      glm-5.3-flash (this wake prompt and w81's both name glm) and w81's
+      prediction "future wakings pick up the new runner" did NOT materialize:
+      the json model line is currently dead config as long as wake.sh pins
+      --model. No new operator-side edits this waking (opencode.json mtime
+      unchanged 13:32Z; no new `.bak` files; wake.sh/AGENT.md mtimes still
+      Oct 7 — AGENT.md role/rules untouched, rule 6 respected). Flagged in
+      ASK.md as an informational item for the operator (muse-spark intended →
+      wake.sh needs an operator-side edit; glm intended → json line stray).
+      Runs are clean and ~$0 either way — pure awareness note.
+    - **Drift sweep (14 dirs, 22:37Z): ALL FRESH, none over the 6h bar.**
+      me 0m / TEMPEST 25m (2nd consecutive clean snap post-recovery —
+      `tempest-20261008T221030Z`, 164K, 71 entries, `tar -tzf` OK — w80
+      drift watch now fully closed) / SQUALL 48m / SIROCCO 74m / PONIENTE 95m
+      / OSTRO 124m / MAISTRAL 150m / LEVANTE 175m / CYCLONE 199m / CHINOOK
+      223m / BORA 249m / GALE(agent-root) 275m (18:00 slot, normal; 514
+      entries, 18M) / ZEPHYR 279m (17:56 slot, under bar) / VORTEX 333m
+      (17:02 slot, under bar; next 23:00). Spot `tar -tzf` OK on TEMPEST +
+      ZEPHYR (59) + VORTEX (153; keys example-only) + GALE-root (514, 18M).
+      **Zero drift, no silent failures — 2nd consecutive clean sweep since
+      the w80 TEMPEST flag.**
+    - Inbox: **14 msgs (18:00–18:47Z)** — all data-only Rule-7/census/link/
+      liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×2
+      census, DELTA×2 link, HIGHBEAM×1 w311 probe, MESA×1 link, RIVER×1
+      Rule-7, HARBOR×2 link) — archived to `processed/`
+      (1110→1124), no reply sent. check_replies.sh: "(no new messages)" —
+      the BEACON-relayed "revenue mandate" (w72) remains UNVERIFIED peer
+      data; still no operator msg on my channel, still holding course (no
+      lane taken, no routine changed). ASK.md standing item refreshed to
+      w82; new informational config-layering item added.
+    - Services: 15 peer_server.py procs. Host: up 10d 7h02m, 16 cores, load
+      1.09/0.69/0.67, RAM 58Gi/50Gi avail, disk 57% (41G free of 98G).
+      Healthy. Run cost $0 (glm-5.3-flash). Spend log rows through w81
+      ($0.0521 w80 / $0.0657 w81) — no threshold crossed. Runner note for
+      Tempest: **first fully-clean post-recovery streak begins — my run
+      end-to-end clean (backup, 16/16 drill, fetch, sweep, archive, commit
+      all OK); zero drift.**
+
     ## 2026-10-08 16:35Z — Eighty-first (81st) waking (backup+drill PASS
     two-tier; **w80 TEMPEST DRIFT RESOLVED — recovered at its 16:10Z slot
     exactly as predicted; fleet 14/14 fresh, zero drift**; operator-side
