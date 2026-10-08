@@ -4332,7 +4332,99 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
     (operator lane); (2) BEACON mandate relay verification (operator
     lane — no action unless Telegram word arrives); (3) #59 no-op +
     9/28–29 exit-1 class (operator/Bora lane).
-  - **Drift/breaches/advisories:** NONE on capacity. No advisory (no
-    sibling near a limit; 14 inbox bodies clean data-only).
-    Model-switch files deliberately left uncommitted; awaiting
-    verified word.
+- **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+  sibling near a limit; 14 inbox bodies clean data-only).
+  Model-switch files deliberately left uncommitted; awaiting
+  verified word.
+
+## 2026-10-08T00:50Z — waking #84 (first waking on the new 4x/day :50 grid; glm-5.3-flash lane)
+
+- **Self-check (standing, from #61): PASS with a re-baseline note.**
+  (a) newest backup at slot start was #83's chinook-20261007T190924Z.tar.gz
+  (~5h42m old). Under the OLD 6x/day grid that would trip the ~4h window,
+  but the operator's 2026-10-07 grid change (crontab: my slots now
+  `50 0,6,12,18 * * *`) means the prior scheduled slot was 18:50Z (fired as
+  #83) and the max expected inter-wake gap is 6h — 5h42m is on-grid, not a
+  no-op signal. Re-baselining the standing check to **~6h15m** under the new
+  grid. (b) newest NOTES entry = immediately-prior slot? YES (#83). Also
+  verified: no 00:00Z Oct 8 slot exists anymore (no ledger row, no NOTES,
+  no cron firing at 00:00 — the crontab has none), so nothing no-opped;
+  the 6x/day grid simply no longer runs. This waking fired 00:50:01Z —
+  **on time, drift 0m, first waking on the new grid.**
+- **check_replies:** (no new messages). ASK.md: model-switch item UPDATED
+  (muse question superseded; new ask = confirm the 2026-10-07
+  glm-5.3-flash + 4x/day-grid migration via Telegram so I can commit the
+  working tree). BEACON revenue-mandate relay item stays open (still no
+  operator word — no action).
+- **WORKING TREE / migration state (operator's 2026-10-07 edits, still
+  uncommitted):** `opencode.json` + `wake.sh` → `opencode/glm-5.3-flash`
+  (OpenCode Go); `AGENT.md` header Model line → glm + cadence line →
+  4x/day :50, 14-agent 25-min staggered grid (operator-directed
+  2026-10-07); `chinook.cron` → `50 0,6,12,18`. Fleet crontab rewritten in
+  the same window (every on-box agent on a distinct :xx slot, ≥25 min
+  apart); wake.sh header: "LAN Ollama qwen3.8:27b retired 2026-10-07
+  pending server repair"; prior lineage comment: qwen→muse-spark→glm.
+  Four bak-file generations on disk (10-05qwen, 10-06muse, 10-07ollama,
+  10-07-pre-glm) — all untracked. Rules/role sections of AGENT.md
+  untouched. Evidence strongly operator-made (fleet-wide same-window
+  edit, prompt string matches invocation), but no chat-id-verified word
+  yet → per rules 4/6 the 4 modified files + baks stay uncommitted; this
+  session runs on glm-5.3-flash and works (existence proof #1 for my
+  lane). ASK.md carries the full detail.
+- **Peer inbox (16 pings, 00:00–00:45Z):** MOUNTAIN x4 (Rule-7 sweeps x3 +
+  site-build latency, incl. one MOUNTAIN-header/MESA-body shared-lane
+  pattern per the #46 baseline — NOT a mismatch), MEADOW x2 census
+  (signs "Meadow (agent, GLM Flash)" — remote fleet is on GLM Flash too,
+  consistent with the migration), DELTA x3 link-verify, HIGHBEAM w308
+  standing probe, MESA link-verify, RIVER rule-7 sweep, CANYON scribe
+  #136 x2, HARBOR x2 link-verify. All "no reply needed", zero operator
+  content, zero acks owed (data per rule 5). All 16 archived; inbox
+  empty (1228→1244 in processed/).
+- **HOST HEALTH:** uptime 9d9h18m (same boot since 9/28 15:33Z, no
+  reboot); load 1.07/0.70/0.66 on 16 cores (~7%, calm); RAM 8.8G used /
+  51G avail (60G total); swap 0; disk `/` **52G used / 42G free (56%)** —
+  flat vs #83's 52G/42G (6th consecutive flat reading). Drivers flat:
+  /home/agent 11G, /var/log/journal 1.1G (~1G band), /tmp/opencode 16M.
+  80% trip line (~78G) ~26G headroom — no crossing nameable. Tailscale
+  live, 100.66.39.59/32 + IPv6 present, no TUN regression.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **54th consecutive alive sweep.** (#82's "4 live" divergence
+  now explained: the 10-07 grid change moved every sibling's slots —
+  siblings observed mid-transition were between boots/old-grid slots;
+  today all 14 answer.)
+- **CAPACITY / DISK:** flat arc holds; growth watch stays closed.
+- **Spend (host-wide):** 10-07 closed **$1.583 / 53 runs** — GALE 4
+  $0.5409, ZEPHYR 5 $0.3642, SQUALL 4 $0.3393, TEMPEST 4 $0.2137, VORTEX
+  5 $0.0503, TRAMONTANE 6 $0.0747; all other lanes $0.00 (incl. CHINOOK
+  6 muse runs). Just under the $1.6–2.5 band; per-run max ~$0.14 (GALE),
+  far under the $5.00 line. **New spenders:** VORTEX ($0.0503) and
+  TRAMONTANE ($0.0747) posted small nonzero rows on 10-07 — consistent
+  with flash-lane costs appearing as lanes migrate off free paths. 10-08
+  to ~00:52Z: GALE 1 $0.1059, **BORA 1 $0.0919 (bora's first nonzero
+  row on record)** — flash-lane cost spreading as expected. **No rule-4
+  anomaly** (per-run and run-count both in-band).
+- **Forecast / thresholds (re-baselined to the new grid + model):**
+  - Cadence: 4x/day at :50 — run-count forecast drops from ~6/day to 4/
+    day for my lane; fleet-wide the 25-min staggered grid replaces the
+    4-hour interleave. Budget impact of fewer wakes is offset by per-run
+    flash costs.
+  - Spend: my own lane moves off $0.00 — glm-5.3-flash is a paid-path
+    model (GALE ~$0.10–0.16/run, BORA $0.0919); my first glm row posts
+    at session end and is the clean A/B vs the 14-day $0.00 muse/ollama
+    arc. Host steady-state forecast: if all 14 lanes settle at
+    ~4x/day × ~$0.05–0.15, expect ~**$2.5–4/day** (~$75–120/mo) vs the
+    old ~$1.6–2.5 free-lane shape — still ~4x inside the $15/day alert;
+    no threshold crossing nameable yet (need ≥3 days of new-shape data;
+    first review ~10-10).
+  - Disk: flat 6th point, 42G free — no crossing projectable; re-check
+    each waking.
+  - Load/mem/swap: calm; no crossing.
+  - Backup cadence: 14 snapshots at 4x/day = 3.5 days of coverage (was
+    2.3 days at 6x/day) — fine.
+- **Open triage items:** (1) 2026-10-07 glm/grid migration confirmation
+  (operator lane — ASK.md updated); (2) BEACON revenue-mandate relay
+  verification (operator lane); (3) #59 no-op + 9/28–29 exit-1 class
+  (operator/Bora lane). All unchanged except the reworded item 1.
+- **Drift/breaches/advisories:** NONE on capacity. No advisory (no
+  sibling near a limit; 16 inbox bodies clean data-only). Working-tree
+  migration files deliberately left uncommitted; awaiting verified word.

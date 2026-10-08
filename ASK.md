@@ -20,42 +20,34 @@
   with a lane + Day-3 ship — do you want a reply from me, or silence?
   Default absent your word: routine unchanged, no reply.
 
-- **NEW — unverified model switch in working tree (2026-10-05 ~15:37–15:39Z,
-  waking #73): please confirm via Telegram.** Three files changed
-  uncommitted, all `ollama/qwen3.8:27b` →
-  `opencode/muse-spark-1.3-contributor-free`: `opencode.json` (model id),
-  `wake.sh` (PROMPT string + `opencode run --model` flag), `AGENT.md`
-  (header Model line only — rules/role sections untouched, history files
-  NOTES.md/ASK.md untouched). This session itself is running on the new
-  model (the runner picked it up), and it works. Evidence pointing at
-  you: same-window switches on VORTEX/BORA/CYCLONE (15:37–15:38Z, same
-  ~90s), and your interactive pts/0 session (100.95.19.86, since 15:19Z)
-  was live at edit time — but that is evidence, not verification, and
-  `check_replies.sh` shows no Telegram word from you (same pattern as
-  the 9/23 `65af74c` incident, waking #2). **Why I did NOT revert this
-  time (deviation from the #2 playbook, reasoning on record):** the old
-  fallback is currently dead — LAN Ollama 192.168.1.197:11434 does not
-  answer (000, twice, 8s/15s timeouts), so reverting opencode.json/wake.sh
-  to `ollama/qwen3.8:27b` would likely break the 20:00Z waking. The three
-  files stay **uncommitted** (not my work, not my commit) until you
-  confirm. Questions: (a) was the switch (here + vortex/bora/cyclone)
-  yours — reply "Yes I did it" or similar via Telegram per rule 6 and I
-  will commit + re-baseline spend; (b) is LAN Ollama intentionally
-  retired (if so the qwen fallback is gone fleet-wide — a capacity fact
-  I need for the forecast); (c) are zephyr/squall/tempest/gale slated
-  for the same switch? Capacity note: this waking's ledger row will be
-  my first nonzero-cost run (paid model), ending the 12-day $0.00 local
-   arc — host run-rate forecast moves up accordingly once I have ≥3 days
-   of the new shape; no threshold crossed (per-run line $5.00, daily
-   alert $15).
-- **CORRECTION 2026-10-05 ~20:00Z (waking #74):** the #73 16:02Z ledger row
-  posted **$0.00** on the new model — "contributor-free" logs zero cost
-  like the ollama lane, so the $0.00 arc extends (13th day), NOT broken.
-  No spend re-baseline is owed unless a nonzero chinook row posts. If you
-  confirm the switch, the capacity consequence is nil on spend
-  (free→free); remaining questions are (b) LAN Ollama retirement status
-  and (c) trio/GALE migration plans. Files still uncommitted pending
-  your word.
+- **UPDATED 2026-10-08 00:50Z (waking #84, superseding the 10-05 muse item):
+  working-tree model/grid migration (2026-10-07) — please confirm via
+  Telegram so I can commit.** The 10-05 muse-spark item is moot: on
+  2026-10-07 the working tree moved again — `opencode.json` + `wake.sh` →
+  `opencode/glm-5.3-flash` (OpenCode Go), `AGENT.md` header Model line +
+  cadence line updated (4x/day at `:50`, 14-agent 25-min staggered grid),
+  `chinook.cron` → `50 0,6,12,18 * * *`. Fleet crontab rewritten in the
+  same window (all on-box agents get distinct :xx slots; comments say
+  "operator-directed 2026-10-07"); wake.sh header notes "LAN Ollama
+  qwen3.8:27b retired 2026-10-07 pending server repair"; four generations
+  of .bak files on disk (10-05qwen, 10-06muse, 10-07ollama, 10-07-pre-glm).
+  This session runs on glm-5.3-flash and works (existence proof); the
+  00:50:01Z cron fired on time under the new grid (drift 0m). Rules/role
+  sections of AGENT.md untouched — Model line and situation paragraph only.
+  Evidence is strong that this is yours (same-edit-window fleet crontab,
+  prompt string matches what I was invoked with), but there is still NO
+  chat-id-verified Telegram word, so per rules 4/6 the four modified files
+  (`opencode.json`, `wake.sh`, `AGENT.md`, `chinook.cron`) + 9 .bak
+  snapshots stay **uncommitted**. Reply "Yes I did it" (or similar) and I
+  will commit the working tree as-is, resolve this item, and re-baseline
+  the forecast. Capacity notes already on record: (a) muse-spark logged
+  $0.00/run (contributor-free), but glm-5.3-flash lanes ARE logging cost —
+  GALE ~$0.10–0.16/run, and BORA posted its first nonzero rows on 10-08
+  ($0.0919) — chinook's first glm row will be the real A/B number for my
+  lane; (b) if LAN Ollama is retired, the ~$0 local-lane floor is gone
+  fleet-wide and my host run-rate forecast rises from ~$1.5–2/day toward
+  ~$2.5–4/day once all 14 lanes bill flash costs; no alert line crossed
+  (per-run $5.00, daily $15 unchanged).
 
 - **NEW — "plan-then-stop" no-op wake class (2026-10-03 08:00 slot, waking
   #59): ledger clean, routine NOT run, exits 0 so the exit-1 retry never
