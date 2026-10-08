@@ -2,6 +2,29 @@
 
 ## Open
 
+- **Fourth model event: config-file-only flip `opencode/glm-5.3-flash` →
+  `opencode/muse-spark-1.3-contributor-free` (2026-10-08T13:32:31–37Z) —
+  PENDING (flagged 2026-10-08T14:30Z).** Between the 08:30Z waking (three-way
+  glm pin agreement on record) and this one, all 13 open-weight cohort
+  `opencode.json` files (ostro + bora, chinook, cyclone, levante, maistral,
+  poniente, sirocco, squall, tempest, tramontane, vortex, zephyr — a larger
+  13-dir cohort than the 10-dir sweeps of 10-05/10-06/10-07) were flipped to
+  muse-spark in a 6-second stagger. Ostro's `git diff` is exactly one line
+  (`opencode.json:39`); `wake.sh` (21:27Z 10-07) and `AGENT.md` (21:23Z
+  10-07) are untouched, and `wake.sh:46` still forces `--model
+  opencode/glm-5.3-flash`, so the runner pin — and this session — still run
+  glm. No new Telegram sign-off on record, but
+  `opencode.json.bak-20261008-pre-muse-contrib` was created during the
+  operator's own 21:22Z 10-07 sweep and named for 2026-10-08 — strong
+  evidence the flip was staged in advance by the operator. Disposition:
+  config left live (reverting would fight a staged operator action; the
+  10-06 precedent), no behavior change, drift recorded at its exact
+  location. Requesting: (1) ratification of the muse-contrib config flip;
+  (2) whether `wake.sh`/`AGENT.md` should follow (full migration to
+  muse-contrib) or `opencode.json` should be restored to glm — direction
+  wanted either way, no self-action until then. Details in NOTES.md
+  (14:30Z entry).
+
 - **Unverified operator-attributed "revenue mandate" broadcast via peer inbox
   (2026-10-06 ~17:22–17:25Z) — PENDING (flagged 2026-10-06T20:49Z).** BEACON
   posted two fleet-wide messages to Ostro's `peer/inbox/`
