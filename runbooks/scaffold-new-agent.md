@@ -8,8 +8,11 @@ port, a slot, or a lesson, update this file, not the agents' notes.
 
 ## Preconditions (operator-side, Bora never does these)
 - A chosen name and a role description (the AGENT.md prose).
-- A cron slot chosen with no two agents on one minute (`bora.cron` style:
-  one `wake` line `MM H1,H2,... * * *` + one `*/5` telegram poll line).
+- A cron slot chosen so no two fleet wakes start within 25 min of each
+  other (14-agent 25-min grid, operator-directed 2026-10-07; `bora.cron`
+  style: one `wake` line `MM H1,H2,... * * *` + one `*/5` telegram poll
+  line). Pick a (minute, hour-set) pair not already used and 25 min clear
+  of siblings sharing your hour-set.
 - A tailnet port in the 8787–8800 block not currently bound by a sibling
   (check `ss -ltn | grep 100.66.39.59`).
 - Telegram bot keys (`keys/telegram.env`, mode 600) — Bora refuses an
@@ -23,12 +26,14 @@ port, a slot, or a lesson, update this file, not the agents' notes.
    Add `.gitignore` covering `keys/*` (except `*.example`),
    `peer/inbox/processed/`, `backups/`, `logs/`, `pairout/`, and
    `peers.env*` before the first commit.
-2. **Config.** `opencode.json`: `"model": "ollama/qwen3.8:27b"` (or the
-   runner the operator pins for that agent) + `permission.read` and
-   `permission.external_directory` deny-lists for **every** sibling's
-   `keys/` dir including its own and gale-website's (`/home/agent/agent`) —
-   14 dirs as of 2026-10-01 (Bora's own list is the model; note the 09-30
-   lesson: ostro was missing until the 10-01 10h pass caught it).
+2. **Config.** `opencode.json`: `"model": "opencode/glm-5.3-flash"` (or
+   whatever the operator pins for that agent — model lineage is
+   operator-directed and changes; check `wake.sh`'s header note) +
+   `permission.read` and `permission.external_directory` deny-lists for
+   **every** sibling's `keys/` dir including its own and gale-website's
+   (`/home/agent/agent`) — 14 dirs as of 2026-10-01 (Bora's own list is
+   the model; note the 09-30 lesson: ostro was missing until the 10-01
+   10h pass caught it).
 3. **Scripts (each must pass `bash -n` clean before wiring):**
    - `wake.sh` — flock single-instance guard, 45m wall clock, spend record
      (see Bora's `wake.sh`), Telegram-gate, shell-side failure alert.
@@ -48,9 +53,11 @@ port, a slot, or a lesson, update this file, not the agents' notes.
    `ReadWritePaths=.../peer`, `NoNewPrivileges=true`, `PrivateTmp=true`,
    `Restart=on-failure`. Enable + start; confirm `active`.
 6. **Cron.** Write `<name>.cron` (wake line + `*/5` poll line) and install
-   into the live crontab. Verify: no wake minute shared with any sibling
-   (current 14-agent matrix is stable; the known GALE/CHINOOK/SIROCCO
-   overlaps at :00 hours are a GALE issue, not a new-agent issue).
+   into the live crontab. Verify against the 2026-10-07 14-agent 25-min
+   grid: every wake start ≥25 min from every sibling's (same minute is
+   only allowed on disjoint hour-sets — e.g. GALE `:00 0,6,12,18` vs
+   VORTEX `:00 5,11,17,23` is fine). The old GALE/CHINOOK/SIROCCO
+   `:00-of-hour` overlaps were resolved by that grid.
 7. **Roster wiring.** Sibling `opencode.json` deny-lists gain the new
    agent's `keys/` dir (each agent's own repo — Bora flags it to the
    owning agent, never edits it). Roster file (e.g. `peer/roster-*.md`)
@@ -68,7 +75,8 @@ port, a slot, or a lesson, update this file, not the agents' notes.
 - systemd unit `enabled` + `active`; killing it brings it back
   (`Restart=on-failure`).
 - Cron installed; `crontab -l` shows exactly one wake line + one `*/5`
-  line for the agent; minute does not collide with a sibling's wake line.
+  line for the agent; every wake start ≥25 min from any sibling's
+  (25-min grid rule, 2026-10-07).
 - `./backup.sh` produces a readable snapshot; core files
   (AGENT.md/NOTES.md/wake.sh/peer_server.py) present in the listing.
 - `./notify.sh` round-trips a test message to the operator's exact chat id.
