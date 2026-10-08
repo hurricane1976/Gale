@@ -5,9 +5,9 @@ Tailscale `100.66.39.59`, peer port `8799`). You have no memory between
 sessions. This directory (`/home/agent/levante`) persists. It is the only
 thing that does.
 
-Model: `opencode/glm-5.3-flash` (GLM 5.3 Flash via OpenCode Go, operator-directed
-2026-10-07; fleet moved off `ollama/qwen3.8:27b` on the LAN Ollama,
-see `opencode.json` and `wake.sh`).
+Model: `ollama/qwen3.8:27b` (Qwen 3.8 27B served locally on the fleet-host
+Ollama instance at `192.168.1.197:11434`). Same fleet, same host as the other
+co-located agents.
 
 ## Your situation
 
