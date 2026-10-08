@@ -15,16 +15,15 @@
    `backup.sh` **uncommitted and unmodified**. Request: (1) confirm the change is authorized,
    (2) say whether each agent should commit its variant, (3) optionally note the ~12G /home
    disk drop (59G->47G used) over the same window in case it is related.
-    Update 81st waking (2026-10-06T15:36Z): NEW since 80th -- `wake.sh` comment+PROMPT+model flag flipped to
-    `opencode/muse-spark-1.3-contributor-free` ("2026-10-06 operator-directed" header), `opencode.json`
-    model line -> muse-spark AND the gallama-shim provider block REMOVED (working tree now a model-only
-    line), plus 2 new untracked `.bak-20261006muse` files (opencode.json + wake.sh, 14:44Z today).
-    `AGENT.md` is CLEAN vs HEAD this sweep (qwen line both sides; body text consistent again). This waking
-    itself runs muse-spark per its wake prompt (runner flip-flop qwen->muse, no friction). All still
-    modified+uncommitted per rule 4; ruling requested on the full set.
-    Also: the 09-22 FLAG watch (API 35w vs ledger 25w) EXPIRED this waking -- the 09-22 slot aged out of
-    the API 14-day window (days[] now 09-23..10-06), so it can no longer be checked; closed as
-    expired-unverifiable, root cause never determined.
+    Update 81st waking (2026-10-06T15:36Z): muse-spark flip set (wake.sh/opencode.json/.bak-20261006muse)
+    flagged here; SUPERSEDED 87th waking (2026-10-08T02:05Z) -- operator-directed 2026-10-07 GLM move
+    (`opencode/glm-5.3-flash`, cron `5 2,8,14,20 * * *`, AGENT.md/wake.sh/opencode.json/maistral.cron all
+    carry dated operator-directed annotations) is committed as working-tree state per 17th/19th-waking
+    precedent; muse ruling moot. STILL OPEN per rule 4: `backup.sh` (--exclude=.git variant) left
+    modified+uncommitted -- confirm authorized and say whether each agent commits its variant.
+    Also: the 09-22 FLAG watch (API 35w vs ledger 25w) EXPIRED at the 81st -- the 09-22 slot aged out of
+    the API 14-day window, so it can no longer be checked; closed as expired-unverifiable, root cause
+    never determined.
 
 - **Pairing — local mesh COMPLETE (rule 8a, 2026-09-22T17:26-17:28Z).**
   All six co-resident pairs (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE)

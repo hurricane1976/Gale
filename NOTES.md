@@ -2998,3 +2998,100 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Repo-hygiene (19th sweep): `62` untouched; unattributed diffs
   (backup.sh/opencode.json/wake.sh + 5 .bak files) unchanged since
   83rd, left uncommitted per rule 4.
+
+## 2026-10-08T02:05Z -- eighty-seventh waking (1st at new 02:05 cadence, opencode/glm-5.3-flash)
+
+- SLOTTING: 02:05:01Z -- FIRST waking on the operator-directed 2026-10-07
+  cadence (cron `5 2,8,14,20 * * *`, 4/day, 14-agent 25-min grid; live
+  crontab verified). Sequence note: the two intervening slots (10-07
+  15:36Z and 20:05Z) both FAILED with opencode exit 124 (45m timeout,
+  ALERT fired per wake.sh) and never reached NOTES/commit/notify -- this
+  entry covers them. The 20:05Z run did PARTIAL work before dying
+  (tokens 15601, reason=tool-calls): filed 28 msgs (10-07 12:xx + 18:xx
+  rounds) to processed/ (1219 -> 1247) WITHOUT the processed-<ts>-
+  prefix (style deviation; names left raw), fetched a fleet snapshot
+  left at repo ROOT as _fleet_87.json, spend line 10-07T20:50:01Z $0.00.
+  I adopted that work product: _fleet_87.json moved into ledger/, the
+  uncounted PATTERN-3/HARBOR events backfilled (below). | logs/
+  20261007T153601Z + 20261007T200501Z tails
+- RUNNER (for Tempest): THIS waking runs opencode/glm-5.3-flash per the
+  wake prompt -- 1st GLM run after the operator-directed 2026-10-07
+  fleet model move (off LAN Ollama qwen3.8:27b, "retired pending server
+  repair" per wake.sh comment; lineage qwen->openrouter->muse->qwen->
+  muse->GLM). AGENT.md model line NOW MATCHES the runner, so the
+  muse-spark drift flag RESOLVES (open for 79th-86th muse wakings). No
+  runner friction (fleet fetch, backup, filing all ran as-is).
+- COST-SIGNATURE CHANGE (1st sighting): maistral cost_24h $0.0572 --
+  FIRST non-zero maistral cost in the recorded series (all prior wakes
+  $0.00 local-class); gale-host peers similar (bora $0.0919, cyclone
+  $0.0609, tramontane $0.0747). GLM via OpenCode Go is a priced run.
+  Far below the $5/$15 thresholds; nothing to alert. Zero-cost-tier
+  trend on gale-host ends. | API maistral row + spend-daily.jsonl
+- `./check_replies.sh`: clean, no new operator messages. ASK.md open
+  items unchanged (backup.sh ruling, `62` removal, 67th role-refusal +
+  shim-outage adjudications); muse-flip scope item now superseded by
+  the GLM change (scope updated in ASK.md this waking).
+- Host health: up 9d10h (reboot ~09-28 15:33Z stands), load 0.79/0.76/
+  0.76, 52G used of 98G (56%), RAM 8.8Gi used / 51Gi avail of 58G, swap
+  0; maistral-peer active; 20 expected listener ports present. Normal.
+- Backup: ./backup.sh -> backups/maistral-20261008T020748Z.tar.gz (276K,
+  125 entries), read-back verified (AGENT.md/NOTES.md/ledger/_fleet_87+
+  _fleet_88.json + fleet-events.md in tree; 0 .git entries beyond
+  .gitignore; ./62 present as expected).
+- Memory pass (fresh sweep, API generated 02:06:53Z, archived
+  ledger/_fleet_88.json):
+  - Shape: 35/35 nodes up, 0 auth-gated -- 63rd consecutive clean
+    sweep; per_agent_24h 35 rows steady (no add/remove).
+  - ERROR-RUNS: all 35 rows 0, host roll {} empty -- 21st consecutive
+    clean sweep. delta/meadow pair watch unchanged.
+  - 24h rolls 134 runs / $7.57 (gale 68w/$1.6675, mountain 22w/$4.2431,
+    beacon 22w/$1.6609, tidal 22w/$0.00); cost coverage 73.04% (3045
+    priced / 1124 unknown); coverage 35/35/0-missing/35 reachable; 4
+    sources ok.
+  - TREND: gale 10-07 CLOSED 72w/$1.5832 (above 10-06's record-light
+    $1.4729, below the 10-01..10-05 mid band). gale 10-08 partial 6w/
+    $0.4536 at 02:06Z (includes this GLM waking). Mountain heaviest
+    host (24h $4.2431). Tidal flat-0 61st consecutive day; 14-day
+    window fully flat ($0.00 x14), persistent, no break.
+  - Remote wake-gap watch (86th 2nd sighting) RESOLVED: mountain/
+    tidal/beacon last_wakes fresh 00:00:0xZ 10-08; gale 02:05Z = this
+    waking. Transient, not a stall (same shape as 83rd->84th).
+  - FIRST-REPORTER (relay-hold CLEARED): MESA/VISTA/HARBOR rows
+    ADVANCED 00:xx -> 10-07T18:22/18:37/18:45Z -- the 12:xx/18:xx
+    deliveries (filed by the timed-out 20:05Z run) DID move their
+    ledger rows, ending the 5-sweep relay-hold; rows ledger-fresh.
+    SIROCCO ACTIVE (runs_5, last 21:20:01Z). MAISTRAL own row runs_5 /
+    $0.0572 / last 02:05:01Z = this waking. Relay/bridge theory still
+    unadjudicated.
+  - PATTERN-3 (backfill + new): 46th = 10-07 12:22:28Z MOUNTAIN
+    mesa-body + MESA 12:22:29Z (+1s); 47th = 10-07 18:22:19Z + MESA
+    18:22:23Z (+4s) -- both in the uncounted 20:05Z filing; 48th =
+    10-08 00:22:14Z + MESA 00:22:15Z (+1s). All body-text variant,
+    single companion, tight gap (1-4s); daily 00/06/12/18:22 cadence
+    intact. Counting continues per rule 4.
+  - HARBOR bursts (backfill + new): 43rd = 10-07 12:46:42-46Z (3 msgs,
+    4s); 44th = 10-07 18:49:36-59Z (2 msgs, 23s); 45th = 10-08
+    00:45:28-31Z (2 msgs, 3s). No content escalation.
+  - Maistral spend ledger: last line 10-07T20:50:01Z $0.00 (the
+    failed 20:05Z run's tracker); this waking's GLM line lands
+    post-session via wake.sh (cost class now paid, see above).
+- Peer inbox: 16 msgs (10-08 00:00:25Z->00:45:31Z, one full 00:00Z
+  round) filed to processed/ WITH standard processed-20261008T020900Z-
+  prefix (restoring the convention the 20:05Z run dropped), all data
+  per rule 5, all no-reply: MOUNTAIN x4 (incl PATTERN-3 48th), MEADOW
+  x2, DELTA x3, HIGHBEAM x1, MESA x1 (companion), RIVER x1, CANYON x2,
+  HARBOR x2 (45th burst). processed/ now 1263 top-level json. Sibling
+  dirs maistral/, pulsar/ empty. No reply sent (none requested).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact).
+- Repo-hygiene (20th sweep): `62` untouched. Operator-directed GLM set
+  (AGENT.md model+cadence lines, opencode.json, wake.sh, maistral.cron)
+  committed AS WORKING-TREE STATE this waking per 17th/19th-waking
+  precedent -- provenance: explicit dated operator-directed
+  annotations in each file + my own wake prompt + live crontab; I
+  authored none of it (rule 6 honored). backup.sh (--exclude=.git)
+  stays modified+uncommitted per rule 4 (standing ASK item; no
+  operator word yet). .bak-* artifacts stay untracked.
+- Ledger: fleet-events.md appended (16 lines, 87th waking block);
+  _fleet_87.json (adopted) + _fleet_88.json (fresh) archived in
+  ledger/.
