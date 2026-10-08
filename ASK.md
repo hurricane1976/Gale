@@ -3,30 +3,38 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w78 2026-10-07 22:35Z
-  (w78 sweep: 3 siblings over the bar during TODAY'S second migration
-  transition — see below; muse-spark→GLM configs landed 21:22–21:27Z);
-  w71 4-way drift RESOLVED (see below).**
+  compounded w59 APIError cases) — STILL OPEN at w79 2026-10-08 04:35Z
+  (w79 sweep: w78's 3 transition drifters ALL self-recovered on their first
+  GLM slots — see below; fleet 14/14 fresh, zero drift; w71 4-way drift also
+  RESOLVED w72).**
   History: the 2026-10-04 10:48–12:00Z `retryable APIError` window hit 7 of 15
   agents (incl. my own 11:12Z slot); MAISTRAL's w64 3-slot miss streak
   (8192-cap / exit-0-no-report / `exit 124`) self-recovered w65; its w67/w68
   single-slot APIError recurrence (Errno 113, 15:36Z) carried it over the bar
   at w68 and self-recovered w69 (see Resolved entries below for detail).
-  **NEW w78 2026-10-07 22:35Z — second migration transition (muse-spark →
-  glm-5.3-flash): crontab re-grid swap ~17:00–18:24Z, GLM configs landed
-  21:22–21:27Z (my sweep found 3 siblings over the 6h bar): VORTEX 467m —
-  its 17:00Z new-grid slot fell in the cron-swap gap (no old entry, new one
-  not yet live; zero wake attempts — no log), next slot 23:00Z; BORA 491m —
-  18:25Z new-grid slot fired on the STALE pre-GLM config and hit the retired
-  LAN shim (`gale-ollama-shim` 500 "no user query found in messages",
-  retryable APIError ×3 → ALERT, exit 1, no snapshot), next slot 00:25Z;
-  MAISTRAL 659m — 15:36Z old-slot AND 20:05Z new-grid slot both ran
-  pre-GLM and hit `exit 124` (45m wall-clock timeout), no snapshots, next
-  slot 02:05Z. All three newest snaps verified intact (`tar -tzf` readable:
-  vortex 139 entries/164K, bora 76/140K, maistral 102/264K) — no data loss;
-  no peer notes sent (w59 precedent: shared transition cause, each agent's
-  own logs self-diagnose). All three should self-recover on their first GLM
-  slots — will re-sweep next waking.**
+   **NEW w78 2026-10-07 22:35Z — second migration transition (muse-spark →
+   glm-5.3-flash): crontab re-grid swap ~17:00–18:24Z, GLM configs landed
+   21:22–21:27Z (my sweep found 3 siblings over the 6h bar): VORTEX 467m —
+   its 17:00Z new-grid slot fell in the cron-swap gap (no old entry, new one
+   not yet live; zero wake attempts — no log), next slot 23:00Z; BORA 491m —
+   18:25Z new-grid slot fired on the STALE pre-GLM config and hit the retired
+   LAN shim (`gale-ollama-shim` 500 "no user query found in messages",
+   retryable APIError ×3 → ALERT, exit 1, no snapshot), next slot 00:25Z;
+   MAISTRAL 659m — 15:36Z old-slot AND 20:05Z new-grid slot both ran
+   pre-GLM and hit `exit 124` (45m wall-clock timeout), no snapshots, next
+   slot 02:05Z. All three newest snaps verified intact (`tar -tzf` readable:
+   vortex 139 entries/164K, bora 76/140K, maistral 102/264K) — no data loss;
+   no peer notes sent (w59 precedent: shared transition cause, each agent's
+   own logs self-diagnose). All three should self-recover on their first GLM
+   slots — will re-sweep next waking.**
+   **RESOLVED w79 2026-10-08 04:35Z: all three self-recovered on their first
+   GLM slots, exactly as predicted** — VORTEX 23:02Z (333m at sweep), BORA
+   00:25Z (249m), MAISTRAL 02:07Z (147m); all three logs `status:completed`,
+   pushed to github; newest snaps readable (vortex 146 entries/172K, bora
+   64/148K, maistral 125/276K; 14 retained each). Fleet 14/14 fresh, zero
+   drift — no data loss at any point. The transition-drift pattern (cron-gap
+   + stale-config + timeout on a runner swap) is now a known, self-healing
+   class: it feeds the standing harness-hardening item only.
   **NEW w71 2026-10-06 (~04:24Z→13:36Z+):
   `ollama_shim upstream: [Errno 111] Connection refused` + 502s — the shim
   path refused for ~9h; CHINOOK (08:00Z+12:00Z, plus 04:00Z `exit 124`) /
@@ -63,7 +71,7 @@
   instruction. I have taken no action (my lane/routine unchanged) and archived
   both with the other 16 data-only pings. Please confirm or deny on Telegram
   if you want me in any revenue lane; until then I hold course.
-  **Re-checked w78 2026-10-07 22:35Z: still no operator msg on my channel;
+  **Re-checked w79 2026-10-08 04:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
 
 ## Resolved / for the record

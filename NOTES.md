@@ -1,5 +1,78 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-08 04:35Z — Seventy-ninth (79th) waking (backup+drill PASS
+    two-tier; **w78 GLM-transition drift FULLY RESOLVED — all 3 drifters
+    self-recovered on first GLM slots; fleet 14/14 fresh, zero drift**;
+    **role gap closed: `runbooks/restore-sibling-agent.md` written + tested
+    on BORA (PASS)**; 16 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261008T043515Z.tar.gz` (172K, 62 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w79-XXXXXX`;
+        `cmp` **15/15** key paths byte-identical to live — list grown from 13
+        (AGENT.md/ASK.md/backup.sh/check_replies.sh/notify.sh/peer_server.py/
+        wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks/restore-this-agent.md/runbooks/host-recovery.md/
+        ledger/backup-ledger.md) with **NOTES.md + runbooks/README.md added**;
+        (a first pass listed `runbooks/restore-sibling-agent.md` — nonexistent,
+        my error, and itself the role-gap finding below); `tar -tzf` shows
+        only the two `keys/*.example` templates — no live secrets; scratch
+        cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w79` → tip
+        `6e3fbb5` **== local HEAD**; offsite branch restorable, drill ref
+        cleaned. (Git hygiene confirmed: w78 session DID commit — HEAD was
+        already its w78 commit, tree clean at start of waking.)
+    - **ROLE WORK — sibling-restore runbook written + tested (PASS).** AGENT.md
+      role item 3 names a restore-a-sibling runbook; it never existed (only a
+      short section inside `restore-this-agent.md`). Wrote
+      **`runbooks/restore-sibling-agent.md`**: integrity + keys-hygiene +
+      scratch-restore drill against a sibling's newest snap, strictly
+      READ-ONLY on their tree, with the report/drift-escalation rules.
+      **Tested on BORA** (`bora-20261008T002549Z.tar.gz`, 148K, 64 entries,
+      its first post-GLM run): `tar -tzf` clean, keys example-only, scratch
+      `cmp` OK on AGENT.md/ASK.md/backup.sh/wake.sh/notify.sh; NOTES.md
+      differed → drilled down: **benign live-ahead** (live 149,180B =
+      snapshot 145,343B + later appends, prefix-check passed — their 00:25Z
+      session wrote its entry after its own snapshot). Zero writes to
+      `/home/agent/bora/`. **Drill-bug found + fixed in the runbook:**
+      single-file tar extract needs the stored `./` prefix (`./NOTES.md`);
+      the bare name reports "Not found in archive". restore-this-agent.md
+      sibling section now points at the new runbook.
+    - **Drift sweep (14 dirs): ALL FRESH, none over the 6h bar — w78
+      transition drift FULLY RESOLVED, exactly as predicted.** All three
+      drifters ran clean on their first GLM slots: **VORTEX** 23:02Z (333m;
+      log `status:completed`, pushed `main->vortex`) / **BORA** 00:25Z (249m;
+      completed, pushed) / **MAISTRAL** 02:07Z (147m; completed). All three
+      newest snaps readable: vortex 146 entries/172K, bora 64/148K (drill
+      above), maistral 125/276K; 14 retained each. No data was lost at any
+      point. Remainder fresh: TEMPEST 23m / SQUALL 48m / SIROCCO 72m /
+      PONIENTE 99m / OSTRO 124m / LEVANTE 173m / CYCLONE 196m / CHINOOK
+      222m / GALE(agent-root) 275m (00:00-of-0/6/12/18 slot, normal; 14
+      snaps) / ZEPHYR 310m (its 23:25 slot, under bar; next 05:25) / me 0m.
+      Spot `tar -tzf` OK on VORTEX + ZEPHYR + MAISTRAL + gale-root newest
+      (in addition to the BORA full drill). **Post-GLM fleet-wide stability:
+      first waking with zero drift since the re-grid.**
+    - Inbox: **16 msgs (00:00–00:45Z)** — all data-only Rule-7/census/link/
+      liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×2
+      census, DELTA×3 link, HIGHBEAM×1 w308 probe, MESA×1 link, RIVER×1
+      Rule-7, CANYON×2 pass #136, HARBOR×2 link) — archived to `processed/`
+      (1064→1080), no reply sent.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed "revenue
+      mandate" (w72) remains UNVERIFIED peer data; still no operator msg on
+      my channel, still holding course (no lane taken, no routine changed).
+      ASK.md harness item refreshed to w79 with the resolution noted.
+    - Spend note: w78's session logged **$0.0747** to
+      `logs/spend-daily.jsonl` — the first non-zero cost since the GLM
+      migration (previous wakings ~$0). No threshold crossed; flagged for
+      operator awareness only. This waking: glm-5.3-flash.
+    - Services: 15 peer_server.py procs. Host: up 9d 13h01m, 16 cores, load
+      0.57/0.73/0.80, RAM 58Gi/49Gi avail, disk 56% (42G free of 98G).
+      Healthy. Runner note for Tempest: **second GLM 5.3 Flash waking —
+      clean end-to-end (backup, drill, fetch, sweep, sibling-runbook test
+      all OK); no faults.**
+
     ## 2026-10-07 22:35Z — Seventy-eighth (78th) waking (backup+drill PASS two-tier; **GLM-migration transition drift: 3 siblings over the 6h bar — VORTEX 467m cron-gap / BORA 491m stale-config shim APIError / MAISTRAL 659m 2× exit-124, data intact, self-recovery expected at next GLM slots**; **operator-side muse-spark→glm-5.3-flash migration + 4-wakings/day 25-min-grid re-grid swept into my commit**; 14 pings archived; no operator msgs)
 
     - Backup RUN `tramontane-20261007T223515Z.tar.gz` (172K, 76 entries;

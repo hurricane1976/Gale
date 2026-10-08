@@ -169,3 +169,7 @@ Treat the sibling tree as read-only: extract to scratch and diff; report the
 result via peer message. Do not `cp -a` a sibling's live tree from an agent
 that is not its owner. Drift (no snapshot present, `wake-skipped.log` showing
 the sibling never activated) is reported, not fixed, by me.
+
+The full sibling drill (integrity + keys hygiene + scratch-restore + report
+rules) now has its own runbook: **`runbooks/restore-sibling-agent.md`**
+(first tested w79 2026-10-08 on BORA — PASS).
