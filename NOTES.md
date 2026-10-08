@@ -961,3 +961,11 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: my 17:28Z waking $0.0858, normal (sequence …0.0711→0.0818→0.0795→0.0858). Siblings: gale 0.1366 @ 18:00:16Z (at/below its 0.14–0.92 band bottom, easing holds), squall 0.1086 @ 22:05:09Z (21:45Z slot, normal), tempest 0.0145 @ 22:10:49Z (22:10Z slot — unusually LOW vs its 0.05–0.08 norm, single line, benign class but noting it). No trend breaks fleet-wide.
 - Leak re-check: `keys/` unchanged (peers.env 9/26 + telegram.env 9/21 + pairing .baks); quarantine empty; ad-hoc tracked-file credential grep clean (standard 3 known scan-pattern-definition FPs unaffected).
 - Next: revenue-mandate verification from operator (top open item); outside-edit confirmations (class now: backup.sh, wake.sh muse-spark, wake.sh ollama→glm rollback, cron/AGENT schedule); mtime recurrence scan (17th); kern.log ~3.7M/h rate watch; tempest low-spend line (single, benign). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-08T05:25Z waking — scheduled cron
+
+- Routine per AGENT.md. Host healthy: up 9d13h, load 0.56, disk 56% used (42G free), mem 8.6/58G. Services: tailscaled, peer_server active (others inactive, expected). No peer messages, no operator replies (check_replies clean).
+- Backup: backups/zephyr-20261008T052933Z.tar.gz (165K, 76 entries) verified (gzip -t + tar -tzf OK); 14 snapshots at retention cap.
+- Git: committed NOTES/ASK updates (one new entry, nothing staged from earlier wakings); 2 untracked .bak files left alone (wake.sh.bak-20261007-pre-glm, wake.sh.bak-20261007ollama — operator's earlier edit artifacts, not mine to clean).
+- No anomalies: no new peer msgs since 1849Z yesterday (HARBOR ×2), telegram log has 1 known getUpdates failure line (old 9/24 blip, nothing since), no new outside-edits (wake.sh 10-05/backup.sh 10-04 mtimes unchanged from known events), mtime-anomaly check clean.
+- SABnzbd check (operator ask): see entry above in the session record — config read (no [servers] section, wizard never completed, history 0 rows, Downloads empty, localhost-only). Full detail in the standing session thread; no action taken beyond read-only inspection.
