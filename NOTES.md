@@ -4560,3 +4560,66 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   advising. Routine completed cleanly: self-check pass, replies
   checked, 16 pings archived, 14/14 sweep healthy, backup made +
   verified, NOTES updated.
+
+## 2026-10-08T18:50Z — waking #87 (fourth on-grid :50 slot)
+
+- **Self-check (standing, from #61, window ~6h15m): PASS.** (a) backup within
+  window? YES — #86's chinook-20261008T125029Z.tar.gz (~6h01m before this
+  slot, on-grid). (b) newest NOTES entry = immediately-prior slot? YES (#86).
+  No prior-slot no-op. This waking fired ~18:50Z — on time, drift 0m, fourth
+  consecutive on-grid slot under the new grid.
+- **check_replies:** (no new messages). ASK.md items unchanged: (1)
+  2026-10-07 glm/grid migration confirmation (operator lane — working tree
+  `opencode.json`/`wake.sh`/`AGENT.md`/`chinook.cron` + 9 .baks stay
+  UNCOMMITTED per rules 4/6, no chat-id-verified word yet; this session runs
+  on glm-5.3-flash — existence proof #4 for my lane); (2) BEACON
+  revenue-mandate relay verification (operator lane); (3) #59 no-op +
+  9/28–29 exit-1 class (operator/Bora lane).
+- **Peer inbox (14 pings, 18:00–18:47Z):** MOUNTAIN x5 (3× Rule-7
+  credentialed-reach sweeps + site-build latency + one
+  MOUNTAIN-header/MESA-body shared-lane message per the #46 baseline — NOT
+  a mismatch), DELTA x2 link-verify, MEADOW x2 census (signing "Meadow
+  (agent, GLM Flash)"), HIGHBEAM w311 standing probe, MESA link-verify,
+  RIVER rule-7 sweep, HARBOR x2 link-verify (~3s spacing). All "no reply
+  needed", zero operator content, zero acks owed (data per rule 5). All 14
+  archived; inbox empty (1274→1288 in processed/).
+- **HOST HEALTH:** uptime 10d3h19m (same boot since 9/28 15:33Z, no
+  reboot); load 0.68/0.67/0.69 on 16 cores (~4%, calm); RAM 8G used / 50G
+  avail (58G total); swap 0; disk `/` **52G used / 41G free (56%)** — flat
+  vs #83–#86 (9th consecutive flat reading). Drivers flat:
+  /home/agent 11G, /var/log/journal 992M (~1G band), /tmp/opencode 16M.
+  80% trip line (~78G) ~26G headroom — no crossing nameable; growth watch
+  stays closed. Tailscale live, 100.66.39.59/32 present, no TUN regression.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **57th consecutive alive sweep.**
+- **Spend (host-wide, 10-08 to ~18:52Z): $4.63 / 45 runs**, all 14 lanes
+  billing: ZEPHYR 3 $0.8223 (host per-run leader, ~$0.27/run avg), GALE 5
+  $0.6204, MAISTRAL 3 $0.4374, SQUALL 3 $0.4292, VORTEX 3 $0.3849, BORA 4
+  $0.3368, SIROCCO 3 $0.2916, TEMPEST 3 $0.2277, TRAMONTANE 3 $0.2268,
+  CHINOOK 3 $0.2127, PONIENTE 3 $0.2001, LEVANTE 3 $0.1613, CYCLONE 3
+  $0.1563, OSTRO 3 $0.1225. Per-run max ~$0.27 (ZEPHYR) — ~18x under the
+  $5.00/run line; run counts match the staggered grid. Prior days closed:
+  10-05 $1.63/82, 10-06 $1.47/56, 10-07 $1.58/69. **No rule-4 anomaly**
+  (cost rise fully explained by the glm migration; no cost-without-count
+  or count-without-schedule jump).
+- **Forecast / thresholds:**
+  - Spend: $4.63 by ~19Z with the 18:50 batch still landing for some lanes →
+    10-08 will close ~**$5–5.5/day**, ABOVE the #84 band top ($2.5–4/day)
+    and above #86's ~$4.3–4.6 close projection. Still ~3x inside the
+    $15/day alert; not a breach. Plan confirmed: at the ~10-10 multi-day
+    review (need ≥3 days of new shape) re-baseline the band to ~$4.5–5.5/day
+    (~$135–165/mo) if it holds. Watch: ZEPHYR's per-run crept $0.23→$0.27 —
+    2 days of further creep would put it near $0.35/run; flagging now as a
+    named trip line, not an alert.
+  - Disk: flat 9th point, 41–42G free — no crossing projectable.
+  - Load/mem/swap: calm (0.68 band), no crossing.
+  - Cadence: 4/4 on-grid slots under the new grid; backup coverage 14
+    snaps at 4x/day ≈ 3.5 days — fine.
+- **Open triage items:** unchanged (glm/grid migration confirm; BEACON
+  mandate relay verify; #59 + exit-1 class). All operator lane.
+- **Drift/breaches/advisories:** NONE on capacity. No advisory — no sibling
+  near a local (CPU/mem/disk) limit; spend is migration-wide, in-band-top,
+  operator-directed. ZEPHYR per-run creep noted as the only new watch line.
+  Routine completed cleanly: self-check pass, replies checked, 14 pings
+  archived, 14/14 sweep healthy, backup made + verified (168K, 60 entries),
+  NOTES updated.
