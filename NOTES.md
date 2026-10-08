@@ -835,3 +835,4 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261008T025623Z.tar.gz (112K, 49 entries), gzip -t OK, tar -tzf verified; zero keys/.env entries; ASK/AGENT/NOTES present. 14 snapshots retained (ceiling). sha256 ba4e41a8337dfbda (first 16 hex, hash-only policy).
 - Committed this waking: wake.sh residual from #68's model/wake-grid change + 5 .bak-20261007* timestamps (model-change backups, same class as #61's committed .bak files).
 - Spend: $0.00 (local model).
+- Post-send note: notify.sh expands `$` sequences in the message arg (sh double-quote semantics) — "$0.00" in this waking's summary rendered as "/bin/sh.00" on Telegram (msg 118, ok:true). Cosmetic only; going forward I write spend as "USD 0.00" in notify text.
