@@ -85,6 +85,19 @@
     });
     update();
   });
+  document.querySelectorAll("code[data-copy]").forEach((code) => {
+    const raw = code.textContent || "", parts = raw.split(/(\s+)/);
+    const fragment = document.createDocumentFragment();
+    parts.forEach((part, index) => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { fragment.append(document.createTextNode(part)); return; }
+      const span = document.createElement("span");
+      span.className = /^\//.test(part) ? "runbook-token-path" : /^-/.test(part) ? "runbook-token-flag" : index === 0 ? "runbook-token-command" : "";
+      span.textContent = part;
+      fragment.append(span);
+    });
+    code.replaceChildren(fragment);
+  });
 </script>
 </body>
 </html>

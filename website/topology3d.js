@@ -847,8 +847,8 @@ export function initTopology3D(opts = {}) {
     const n = i < N ? nodes[i] : null;
     const al = alertText.get(i);
     focusLabel.textContent = i < N
-      ? `${n.name} \u00b7 ${n.model || "agent"} \u00b7 ${n.host}${al ? " \u00b7 \u25cf " + al : ""}`
-      : `${hostNames[i - N] || "host"} \u00b7 ${members[i - N].length} agents`;
+      ? `Fleet \u203a ${n.host} \u203a ${n.name} \u00b7 ${n.model || "agent"}${al ? " \u00b7 \u25cf " + al : ""}`
+      : `Fleet \u203a ${hostNames[i - N] || "host"} \u00b7 ${members[i - N].length} agents`;
     focusLabel.hidden = false;
     for (const g of svg.querySelectorAll(".topo-node")) g.classList.toggle("is-focus", i < N && g.dataset.name === n.name);
     if (opts.onActivate && i < N) setTimeout(() => { if (focusIdx === i) opts.onActivate(nodes[i]); }, 900); // e.g. the 404 map navigates to the picked page

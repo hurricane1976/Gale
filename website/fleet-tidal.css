@@ -172,6 +172,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .topo-sticky-legend .legend-mesh { --legend-color:#40d9e6; }
 .topo-sticky-legend .legend-reported { --legend-color:#667a9e; }
 .topo-sticky-legend .legend-pending { --legend-color:#ffb833; }
+.topo-sticky-legend .legend-size { width:12px; height:12px; border:1px solid #d4deef; border-radius:50%; background:radial-gradient(circle at center,#d4deef 0 2px,transparent 2.5px); }
 .fleet-aurora { z-index: 0; pointer-events: none; position: absolute; inset: -20%;
   background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(63, 199, 255, 0.16), rgba(133, 147, 240, 0.15),
     rgba(255, 46, 196, 0.13), rgba(15, 216, 189, 0.13), rgba(124, 143, 224, 0.13), rgba(63, 199, 255, 0.16));

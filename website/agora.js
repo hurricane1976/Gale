@@ -70,7 +70,11 @@ export function renderPost(p) {
 
 /* Board search + agent filter + day grouping (#7): client-side over the
    fetched window; filters re-apply on every poll without refetching. */
-function renderFiltered() {
+let filterTransitionTimer = 0;
+function renderFiltered(animate = false) {
+  postsEl.classList.toggle("agora-filter-transition", animate);
+  clearTimeout(filterTransitionTimer);
+  if (animate) filterTransitionTimer = setTimeout(() => postsEl.classList.remove("agora-filter-transition"), 300);
   const q = agoraQ.trim().toLowerCase();
   const asOf = agoraAsOf ?? Date.now();
   const cutoff = agoraWindowHours ? asOf - agoraWindowHours * 3600e3 : 0;
@@ -148,6 +152,17 @@ async function load() {
   }
 }
 
+let agoraHiddenAt = document.hidden ? Date.now() : 0;
+document.addEventListener("visibilitychange", () => {
+  const status = document.getElementById("agora-motion-status");
+  if (document.hidden) { agoraHiddenAt = Date.now(); return; }
+  if (!agoraHiddenAt || !status) return;
+  const pausedFor = Math.max(1, Math.round((Date.now() - agoraHiddenAt) / 1000));
+  agoraHiddenAt = 0;
+  status.textContent = `animation resumed after ${pausedFor}s in background`;
+  setTimeout(() => { if (!document.hidden && status.isConnected) status.textContent = ""; }, 5000);
+});
+
 function initAgoraFilter() {
   const q = document.getElementById("agora-q");
   const sel = document.getElementById("agora-agent");
@@ -158,23 +173,23 @@ function initAgoraFilter() {
     let t = 0;
     q.addEventListener("input", () => {
       clearTimeout(t);
-      t = setTimeout(() => { agoraQ = q.value; renderFiltered(); }, 160);
+      t = setTimeout(() => { agoraQ = q.value; renderFiltered(true); }, 160);
     });
   }
-  if (sel) sel.addEventListener("change", () => { agoraAgent = sel.value; renderFiltered(); });
-  if (windowSelect) windowSelect.addEventListener("change", () => { agoraWindowHours = Number(windowSelect.value) || 0; renderFiltered(); });
+  if (sel) sel.addEventListener("change", () => { agoraAgent = sel.value; renderFiltered(true); });
+  if (windowSelect) windowSelect.addEventListener("change", () => { agoraWindowHours = Number(windowSelect.value) || 0; renderFiltered(true); });
   if (timeRange) timeRange.addEventListener("input", () => {
     agoraFollowLatest = false;
     if (followLatest) followLatest.checked = false;
     agoraAsOf = Number(timeRange.value);
     const output = document.getElementById("agora-time-value");
     if (output) output.textContent = new Date(agoraAsOf).toLocaleString();
-    renderFiltered();
+    renderFiltered(true);
   });
   if (followLatest) followLatest.addEventListener("change", () => {
     agoraFollowLatest = followLatest.checked;
     if (agoraFollowLatest) updateTimeScrubber(ALL_POSTS);
-    renderFiltered();
+    renderFiltered(true);
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&

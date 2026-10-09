@@ -257,13 +257,22 @@ async function offlineShellReport() {
 const SITE_PAGES = ["/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
 $("site-link-scan")?.addEventListener("click", async (event) => {
   const button = event.currentTarget, status = $("site-link-status"), results = $("site-link-results");
+  const progress = $("site-link-progress");
   button.disabled = true; button.textContent = "Scanning…";
+  if (progress) { progress.max = SITE_PAGES.length; progress.value = 0; progress.hidden = false; }
   setText(status, `Checking ${SITE_PAGES.length} local pages and their fragment links…`);
   try {
+    let completed = 0;
     const fetched = await Promise.all(SITE_PAGES.map(async (page) => {
-      const response = await fetch(page, { cache: "no-store" });
-      if (!response.ok) throw new Error(`${page} returned HTTP ${response.status}`);
-      return [page, new DOMParser().parseFromString(await response.text(), "text/html")];
+      try {
+        const response = await fetch(page, { cache: "no-store" });
+        if (!response.ok) throw new Error(`${page} returned HTTP ${response.status}`);
+        return [page, new DOMParser().parseFromString(await response.text(), "text/html")];
+      } finally {
+        completed++;
+        if (progress) progress.value = completed;
+        setText(status, `Fetched ${completed}/${SITE_PAGES.length} pages · checking internal links and anchors…`);
+      }
     }));
     const docs = new Map(fetched), inbound = new Map(SITE_PAGES.map((page) => [page, 0])), issues = [];
     for (const [source, doc] of docs) for (const link of doc.querySelectorAll("a[href]")) {
@@ -287,7 +296,7 @@ $("site-link-scan")?.addEventListener("click", async (event) => {
     setText(status, `Link audit complete · ${issues.length} broken links · ${orphans.length} orphan pages.`);
   } catch (error) {
     setText(status, `Link audit could not finish: ${error.message}`);
-  } finally { button.disabled = false; button.textContent = "Scan 14 pages"; }
+  } finally { button.disabled = false; button.textContent = "Scan 14 pages"; if (progress) progress.hidden = true; }
 });
 function buildLocalDiagnosticsBundle() {
   const samples = window.__galeRUM || [];
@@ -361,6 +370,13 @@ $("rum-retention")?.addEventListener("change", (e) => { rumRetentionHours = Numb
 $("rum-clear")?.addEventListener("click", () => {
   window.__galeRUMClear?.(); rumPage = ""; rum();
   setText($("rum-action-status"), "Browser-local RUM samples cleared.");
+});
+$("color-vision-mode")?.addEventListener("change", (event) => {
+  const mode = event.currentTarget.value;
+  const preview = $("color-vision-preview");
+  const labels = { normal: "Normal status palette preview.", protan: "Protanopia simulation preview.", deutan: "Deuteranopia simulation preview.", tritan: "Tritanopia simulation preview.", mono: "Monochrome status palette preview." };
+  if (preview) preview.dataset.mode = mode;
+  setText($("color-vision-description"), labels[mode] || labels.normal);
 });
 async function refresh() {
   if (busy) return;

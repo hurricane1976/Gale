@@ -35,6 +35,19 @@ export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
    It is absent from normal views and never writes telemetry by itself. */
 export function createGraphicsHud(canvas, scene, quality) {
   let el = null, windowAt = 0, frameCount = 0, lastTierSampleAt = 0;
+  let hiddenAt = document.hidden ? Date.now() : 0;
+  const visibility = () => {
+    if (document.hidden) { hiddenAt = Date.now(); window.__galeRUMRecord?.("SCENE_PAUSE", 1, "events", scene); }
+    else if (hiddenAt) {
+      window.__galeRUMRecord?.("SCENE_RESUME", 1, "events", scene);
+      hiddenAt = 0;
+    }
+  };
+  document.addEventListener("visibilitychange", visibility);
+  const tierBadge = document.createElement("output");
+  tierBadge.className = "graphics-tier";
+  tierBadge.setAttribute("aria-live", "off");
+  (canvas.parentElement || document.body).appendChild(tierBadge);
   window.__galeRUMRecord?.("SCENE_START", 1, "events", scene);
   try {
     if (new URLSearchParams(location.search).get("graphics") === "debug") {
@@ -47,6 +60,11 @@ export function createGraphicsHud(canvas, scene, quality) {
   } catch {}
   return {
     update(now, active = 0) {
+      const tierText = quality ? `quality ${quality.tier + 1}/4 · ${["full", "reduced", "half-rate", "minimum"][quality.tier] || "adaptive"}` : "static quality · motion reduced";
+      if (tierBadge.textContent !== `${scene} · ${tierText}`) {
+        tierBadge.textContent = `${scene} · ${tierText}`;
+        tierBadge.title = "Adaptive WebGL quality steps down under sustained slow frames; local display only.";
+      }
       if (quality && now - lastTierSampleAt >= 15000) {
         window.__galeRUMRecord?.("SCENE_TIER", quality.tier + 1, "quality tier (1=full)", scene);
         lastTierSampleAt = now;
@@ -64,7 +82,7 @@ export function createGraphicsHud(canvas, scene, quality) {
       if (/fallback|context lost/i.test(message)) window.__galeRUMRecord?.("SCENE_FALLBACK", 1, "events", scene);
       if (el) el.textContent = `${scene} · ${message}`;
     },
-    destroy() { el?.remove(); el = null; },
+    destroy() { document.removeEventListener("visibilitychange", visibility); el?.remove(); el = null; tierBadge.remove(); },
   };
 }
 
