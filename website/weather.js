@@ -38,6 +38,7 @@ let windMph = store.get("gale-wx-windmph", true);
 let radarFrames = [];
 let radarHost = "https://tilecache.rainviewer.com";
 let radarOverlay = null;
+let radarTileErrors = 0;
 let map = null, mapMarker = null, warningOverlay = null;
 let radarSource = store.get("gale-wx-radar", "noaa"), radarRequest = 0, observationRequest = 0;
 const NOAA_RADAR = "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer";
@@ -463,7 +464,17 @@ function initMap() {
   // Re-assert size once layout/fonts settle (fixes grey 0-size init).
   setTimeout(() => map && map.invalidateSize(), 400);
   window.addEventListener("load", () => map && map.invalidateSize());
-  $("wx-opacity").addEventListener("input", (e) => radarOverlay && radarOverlay.setOpacity(e.target.value / 100));
+  $("wx-opacity").addEventListener("input", (e) => {
+    $("wx-opacity-value").textContent = `${e.target.value}%`;
+    radarOverlay && radarOverlay.setOpacity(e.target.value / 100);
+  });
+  $("wx-radar-retry").addEventListener("click", () => {
+    if (!radarOverlay) return;
+    radarTileErrors = 0;
+    $("wx-radar-retry").hidden = true;
+    $("wx-radar-status").textContent = "Retrying radar tiles…";
+    radarOverlay.redraw();
+  });
   $("wx-play").addEventListener("click", togglePlay);
   $("wx-frame").addEventListener("input", (e) => { stopPlay(); showFrame(+e.target.value); });
 }
@@ -481,7 +492,8 @@ async function jsonFetch(url) {
 }
 async function loadRadarFrames() {
   const request=++radarRequest, selected=radarSource;
-  stopPlay();radarFrames=[];
+  stopPlay();radarFrames=[];radarTileErrors=0;
+  $("wx-radar-retry").hidden=true;
   if(radarOverlay){radarOverlay.remove();radarOverlay=null;}
   $("wx-play").disabled=true;$("wx-frame").disabled=true;
   $("wx-frame-label").textContent="Loading radar…";
@@ -509,7 +521,11 @@ async function loadRadarFrames() {
       }});
       radarOverlay=new NoaaTiles("",{rasterId:frames.at(-1).id,opacity:$("wx-opacity").value/100,zIndex:10,maxZoom:18,attribution:"Radar: NOAA / NWS"});
     }else radarOverlay=L.tileLayer(`${radarHost}${frames.at(-1).path}/256/{z}/{x}/{y}/2/1_1.png`,{opacity:$("wx-opacity").value/100,zIndex:10,maxNativeZoom:7,maxZoom:18,attribution:"Radar: RainViewer"});
-    radarOverlay.on("tileerror",()=>$("wx-radar-status").textContent="Radar imagery unavailable — try the other source.");
+    radarOverlay.on("tileerror", () => {
+      radarTileErrors++;
+      $("wx-radar-status").textContent = `Radar imagery unavailable · ${radarTileErrors} tile error${radarTileErrors === 1 ? "" : "s"}`;
+      $("wx-radar-retry").hidden = false;
+    });
     radarOverlay.addTo(map);
     $("wx-play").disabled=frames.length<2;$("wx-frame").disabled=false;
     $("wx-frame").max=frames.length-1;showFrame(frames.length-1);
@@ -519,6 +535,8 @@ async function loadRadarFrames() {
 function showFrame(i) {
   if(!map||!radarFrames.length||!radarOverlay)return;
   frameIdx=Math.max(0,Math.min(i,radarFrames.length-1));const f=radarFrames[frameIdx];
+  radarTileErrors=0;
+  $("wx-radar-retry").hidden=true;
   if(radarSource==="noaa"){radarOverlay.options.rasterId=f.id;radarOverlay.redraw();}
   else radarOverlay.setUrl(`${radarHost}${f.path}/256/{z}/{x}/{y}/2/1_1.png`);
   $("wx-frame").value=frameIdx;
