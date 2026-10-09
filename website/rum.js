@@ -32,6 +32,11 @@
       let motion = 0;
       try { motion = document.getAnimations ? document.getAnimations().filter((a) => a.playState === "running").length : 0; } catch {}
       push("VIS_MOTION", motion, "running animations");
+      const images = [...document.images].filter((img) => { try { return new URL(img.currentSrc || img.src, location.href).origin === location.origin; } catch { return false; } });
+      push("IMAGE_COUNT", images.length, "images");
+      push("IMAGE_DIMENSION_MISSING", images.filter((img) => img.complete && (!img.naturalWidth || !img.naturalHeight)).length, "loaded images without intrinsic dimensions");
+      const imageResources = performance.getEntriesByType("resource").filter((entry) => entry.initiatorType === "img" && (() => { try { return new URL(entry.name).origin === location.origin; } catch { return false; } })());
+      push("IMAGE_TRANSFER_KB", imageResources.reduce((total, entry) => total + (entry.transferSize || 0), 0) / 1024, "KB");
     };
     addEventListener("load", () => setTimeout(recordVisualInventory, 1500), { once: true });
     addEventListener("pagehide", recordVisualInventory, { once: true });
