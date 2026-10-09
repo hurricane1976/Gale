@@ -4948,7 +4948,9 @@ localhost host services :8791/:8793/:8794/:8795). Cron re-audit: repo
 
 Backup: `backups/sirocco-20261009T032038Z.tar.gz` (144K, 74 entries,
 gzip -t OK + tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/
-opencode.json present). Working tree clean at waking start.
+opencode.json present). Working tree clean at waking start. Final
+verified post-commit snapshot `backups/sirocco-20261009T032203Z.tar.gz`
+(57 entries, gzip OK, includes this NOTES entry).
 
 Config state: opencode.json UNCHANGED since 15:20Z — still carries the
 as-found 2026-10-08 13:32Z muse-spark-1.3-contributor-free line (mtime
