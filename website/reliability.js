@@ -79,10 +79,13 @@ function rum() {
   const pageSummary = new Map();
   for (const sample of allSamples) {
     if (!sample.page) continue;
-    const row = pageSummary.get(sample.page) || { views: 0, errors: 0, assetErrors: 0, viewports: new Set(), last: 0 };
+    const row = pageSummary.get(sample.page) || { views: 0, errors: 0, assetErrors: 0, viewports: new Set(), canvas: null, svg: null, motion: null, last: 0 };
     if (sample.metric === "PAGE_VIEW") row.views += sample.value || 1;
     if (sample.metric === "JS_ERROR" || sample.metric === "REJECTION") row.errors += sample.value || 1;
     if (sample.metric === "ASSET_ERROR") row.assetErrors += sample.value || 1;
+    if (sample.metric === "VIS_CANVAS") row.canvas = sample.value;
+    if (sample.metric === "VIS_SVG") row.svg = sample.value;
+    if (sample.metric === "VIS_MOTION") row.motion = sample.value;
     if (sample.viewport) row.viewports.add(sample.viewport);
     row.last = Math.max(row.last, sample.ts || 0);
     pageSummary.set(sample.page, row);
@@ -90,7 +93,8 @@ function rum() {
   const pageCards = [...pageSummary.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([page, row]) => {
     const state = row.errors || row.assetErrors ? "warn" : "ok";
     const age = row.last ? `${Math.max(0, Math.round((Date.now() - row.last) / 60000))}m ago` : "unknown";
-    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(page)}</span><span class="pill" data-level="${state}">${row.views} visits</span></div><span class="mono-dim">${row.errors} script/rejection errors · ${row.assetErrors} asset errors · ${esc([...row.viewports].sort().join(", ") || "viewport unknown")} · last activity ${age}</span></div>`;
+    const inventory = row.canvas == null ? "visual inventory pending" : `${row.canvas} canvases · ${row.svg ?? "?"} SVG charts · ${row.motion ?? "?"} running animations`;
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(page)}</span><span class="pill" data-level="${state}">${row.views} visits</span></div><span class="mono-dim">${row.errors} script/rejection errors · ${row.assetErrors} asset errors · ${esc([...row.viewports].sort().join(", ") || "viewport unknown")} · ${esc(inventory)} · last activity ${age}</span></div>`;
   });
   setHTML($("rum-page-summary"), pageCards.length ? pageCards.join("") : '<p class="mini-note">No page history in this browser yet.</p>');
   const specs = [

@@ -26,6 +26,15 @@
     window.__galeRUM = samples.slice();
     window.__galeRUMRecord = (metric, value, unit, scene) => push(metric, value, unit, scene ? { scene } : {});
     window.__galeRUMClear = () => { samples.length = 0; try { localStorage.removeItem(KEY); } catch {} publish(); };
+    const recordVisualInventory = () => {
+      push("VIS_CANVAS", document.querySelectorAll("canvas").length, "canvases");
+      push("VIS_SVG", document.querySelectorAll("svg").length, "SVG");
+      let motion = 0;
+      try { motion = document.getAnimations ? document.getAnimations().filter((a) => a.playState === "running").length : 0; } catch {}
+      push("VIS_MOTION", motion, "running animations");
+    };
+    addEventListener("load", () => setTimeout(recordVisualInventory, 1500), { once: true });
+    addEventListener("pagehide", recordVisualInventory, { once: true });
     push("PAGE_VIEW", 1, "views");
     const observe = (type, callback, options = {}) => {
       try { if (window.PerformanceObserver) new PerformanceObserver((list) => callback(list.getEntries())).observe({ type, buffered: true, ...options }); } catch {}
