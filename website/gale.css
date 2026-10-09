@@ -999,6 +999,12 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .wx-radar-bar input[type="range"] { flex: 1; min-width: 140px; accent-color: var(--flag); }
 .wx-opacity { display: inline-flex; align-items: center; gap: 8px; }
 .wx-chart { width: 100%; height: 150px; display: block; }
+.wx-chart-legend { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 5px; }
+.wx-series-toggle { display:inline-flex; align-items:center; gap:6px; min-height:30px; padding:4px 8px; border:1px solid var(--line); border-radius:7px; color:var(--text-faint); background:var(--glass); font-size:.72rem; cursor:pointer; }
+.wx-series-toggle[aria-pressed="true"] { color:var(--text); border-color:var(--line-strong); }
+.wx-series-toggle i { display:inline-block; width:17px; height:3px; border-radius:2px; background:var(--series-color); }
+.wx-series-toggle .wx-legend-temp { --series-color:#ff7a5c; }
+.wx-series-toggle .wx-legend-precip { --series-color:var(--gust); background-image:linear-gradient(90deg,var(--series-color) 60%,transparent 60%); background-size:6px 3px; }
 .wx-hourly {
   display: flex; gap: 4px; overflow-x: auto; padding: 10px 2px 4px;
   scrollbar-width: thin;

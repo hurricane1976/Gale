@@ -35,6 +35,7 @@ const store = {
 let loc = store.get("gale-wx-loc", WOODBRIDGE);
 let imperial = store.get("gale-wx-imperial", true);   // °F + mph
 let windMph = store.get("gale-wx-windmph", true);
+let hourlySeriesVisible = { temp: true, precip: true }, lastForecastPayload = null;
 let radarFrames = [];
 let radarHost = "https://tilecache.rainviewer.com";
 let radarOverlay = null;
@@ -298,6 +299,7 @@ function renderCurrent(f) {
 }
 
 function renderHourly(f) {
+  lastForecastPayload = f;
   const hrs = f.hourly.time.map((tm, i) => ({ tm, tmp: f.hourly.temperature_2m[i], pp: f.hourly.precipitation_probability?.[i] ?? 0, code: f.hourly.weather_code[i], ws: f.hourly.wind_speed_10m?.[i], wd: f.hourly.wind_direction_10m?.[i] }));
   const nowMs = Date.now();
   let start = hrs.findIndex((h) => new Date(h.tm).getTime() >= nowMs - 3600e3);
@@ -314,22 +316,26 @@ function renderHourly(f) {
   const Y = (v) => PT + (1 - (v - lo) / span) * (H - PT - PB);
   const pts = temps.map((v, i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
   const area = `8,${H - PB} ${pts} ${(W - 8).toFixed(1)},${H - PB}`;
-  $("wx-hourly-chart").innerHTML =
+  const precipPts = slice.map((h, i) => `${X(i).toFixed(1)},${(H - PB - clamp(h.pp, 0, 100) / 100 * (H - PT - PB)).toFixed(1)}`).join(" ");
+  const rainGrid = [0, 50, 100].map((v) => {
+    const y = H - PB - v / 100 * (H - PT - PB);
+    return `<line x1="8" y1="${y.toFixed(1)}" x2="${W - 34}" y2="${y.toFixed(1)}" stroke="var(--gust)" stroke-dasharray="3 5" opacity=".24"/><text x="${W - 6}" y="${(y + 3).toFixed(1)}" text-anchor="end" fill="var(--gust)" font-size="9">${v}%</text>`;
+  }).join("");
+  const tempLayer = hourlySeriesVisible.temp ? `<polygon points="${area}" fill="url(#wxg)"/><polyline points="${pts}" fill="none" stroke="#ff7a5c" stroke-width="2"/>` + temps.filter((_, i) => i % 6 === 0).map((v, k) => { const i = k * 6; return i < slice.length ? `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="#ffd23f"/>` : ""; }).join("") : "";
+  const precipLayer = hourlySeriesVisible.precip ? `<polyline points="${precipPts}" fill="none" stroke="var(--gust)" stroke-width="2" stroke-dasharray="5 4"/>` : "";
+  const chart = $("wx-hourly-chart");
+  chart.setAttribute("aria-label", `Hourly forecast chart${hourlySeriesVisible.temp ? " with temperature" : ""}${hourlySeriesVisible.precip ? " and precipitation chance" : ""}; right axis is precipitation percent`);
+  chart.innerHTML =
     `<defs><linearGradient id="wxg" x1="0" y1="0" x2="0" y2="1">` +
     `<stop offset="0" stop-color="#e8482c" stop-opacity=".45"/><stop offset="1" stop-color="#e8482c" stop-opacity="0"/></linearGradient></defs>` +
-    `<polygon points="${area}" fill="url(#wxg)"/>` +
-    `<polyline points="${pts}" fill="none" stroke="#ff7a5c" stroke-width="2"/>` +
-    temps.filter((_, i) => i % 6 === 0).map((v, k) => {
-      const i = k * 6; if (i >= slice.length) return "";
-      return `<circle cx="${X(i)}" cy="${Y(v)}" r="3" fill="#ffd23f"/>`;
-    }).join("");
+    (hourlySeriesVisible.precip ? rainGrid : "") + tempLayer + precipLayer + (!hourlySeriesVisible.temp && !hourlySeriesVisible.precip ? `<text x="480" y="96" text-anchor="middle" fill="var(--text-dim)">Enable a chart series above</text>` : "");
 
   chartTooltip($("wx-hourly-chart"),
     slice.map((h, i) => ({ x: X(i) })),
     (i) => {
       const h = slice[i];
       const dt = new Date(h.tm).toLocaleString([], { weekday: "short", hour: "numeric" });
-      return `${dt} · ${Math.round(temps[i])}° · ${wmo(h.code)[0]} · 💧${h.pp}%${Number.isFinite(h.wd) ? ` · wind from ${compass(h.wd)} at ${wnd(h.ws || 0)}` : ""}`;
+      return `${dt} · ${hourlySeriesVisible.temp ? `${Math.round(temps[i])}${tUnit()}` : ""}${hourlySeriesVisible.precip ? ` · precipitation chance ${h.pp}%` : ""} · ${wmo(h.code)[0]}${Number.isFinite(h.wd) ? ` · wind from ${compass(h.wd)} at ${wnd(h.ws || 0)}` : ""}`;
     });
   slice.forEach((h, i) => {
     const dt = new Date(h.tm);
@@ -373,6 +379,16 @@ function renderDaily(f) {
   });
   refreshEffects();
 }
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest?.(".wx-series-toggle");
+  if (!button) return;
+  const series = button.dataset.series;
+  if (!(series in hourlySeriesVisible)) return;
+  hourlySeriesVisible[series] = !hourlySeriesVisible[series];
+  button.setAttribute("aria-pressed", String(hourlySeriesVisible[series]));
+  if (lastForecastPayload) renderHourly(lastForecastPayload);
+});
 function rangeW(f, i) {
   const all = [...f.daily.temperature_2m_max, ...f.daily.temperature_2m_min];
   const lo = Math.min(...all), sp = Math.max(...all) - lo || 1;
