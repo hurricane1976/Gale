@@ -608,7 +608,14 @@ export function initTopology3D(opts = {}) {
   let heatStats = null; // Map(agentName_lower -> per_agent_24h entry)
 
   // selector chips under the toggle, visible only in 3d view
-  let heatBar = null;
+  let heatBar = null, heatLegend = null;
+  const paintHeatLegend = () => {
+    if (!heatLegend) return;
+    const layer = LAYERS[heatMode];
+    heatLegend.textContent = layer
+      ? `${layer.label}: larger/brighter nodes have higher values; dim nodes have a down listener. Hover for exact figures.`
+      : "Node colors show model family; dim nodes have a down listener.";
+  };
   const ensureHeatBar = () => {
     if (heatBar) return heatBar;
     heatBar = document.createElement("div");
@@ -619,6 +626,13 @@ export function initTopology3D(opts = {}) {
     heatBar.innerHTML = Object.keys(LAYERS).map((k) =>
       `<button type="button" data-heat="${k}" class="mini-toggle" aria-pressed="false"
         style="padding:6px 10px;min-height:32px;font-size:0.7rem">${LAYERS[k] ? LAYERS[k].label : "no heat"}</button>`).join("");
+    heatLegend = document.createElement("span");
+    heatLegend.id = "topo-heat-legend";
+    heatLegend.className = "topo-heat-legend";
+    heatLegend.setAttribute("role", "status");
+    heatBar.appendChild(heatLegend);
+    paintHeatLegend();
+    canvas.setAttribute("aria-describedby", heatLegend.id);
     heatBar.addEventListener("click", (e) => {
       const b = e.target.closest("[data-heat]");
       if (!b) return;
@@ -626,6 +640,7 @@ export function initTopology3D(opts = {}) {
       for (const btn of heatBar.querySelectorAll("[data-heat]"))
         btn.setAttribute("aria-pressed", String(btn.dataset.heat === heatMode));
       applyHeat();
+      paintHeatLegend();
     });
     const wrap = canvas.parentElement;
     if (wrap) wrap.appendChild(heatBar);
