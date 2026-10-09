@@ -523,7 +523,9 @@ function showFrame(i) {
   else radarOverlay.setUrl(`${radarHost}${f.path}/256/{z}/{x}/{y}/2/1_1.png`);
   $("wx-frame").value=frameIdx;
   const age=Math.round((Date.now()/1000-f.time)/60);
-  $("wx-frame-label").textContent=`${new Date(f.time*1000).toLocaleString()} · ${frameIdx+1}/${radarFrames.length} · ${age} min old${age>30?" · STALE":""}`;
+  const frameText = new Date(f.time*1000).toLocaleString() + " · " + (frameIdx+1) + "/" + radarFrames.length + " · " + age + " min old" + (age>30 ? " · STALE" : "");
+  $("wx-frame").setAttribute("aria-valuetext", frameText);
+  $("wx-frame-label").textContent=frameText;
 }
 async function loadObservations(){
   const request=++observationRequest,{lat,lon}=loc;
@@ -554,6 +556,8 @@ function togglePlay() {
   if (playTimer) return stopPlay();
   if (!radarFrames.length) return;
   $("wx-play").textContent = "⏸ Pause";
+  $("wx-play").setAttribute("aria-pressed", "true");
+  $("wx-play").setAttribute("aria-label", "Pause radar animation");
   let i = 0;
   showFrame(i);
   playTimer = setInterval(() => { i = (i + 1) % radarFrames.length; showFrame(i); }, 900);
@@ -561,6 +565,8 @@ function togglePlay() {
 function stopPlay() {
   clearInterval(playTimer); playTimer = null;
   $("wx-play").textContent = "▶ Play loop";
+  $("wx-play").setAttribute("aria-pressed", "false");
+  $("wx-play").setAttribute("aria-label", "Play recent radar frames");
 }
 
 /* ---------- boot ---------- */
