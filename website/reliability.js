@@ -66,11 +66,32 @@ async function coverage() {
 }
 function rum() {
   const samples = window.__galeRUM || [];
-  setHTML($("rum-grid"), ["LCP", "INP", "CLS"].map((name) => {
-    const values = samples.filter((s) => s.metric === name).map((s) => s.value).sort((a, b) => a - b);
-    const p95 = values.length ? values[Math.min(values.length - 1, Math.floor(values.length * .95))] : null;
-    return `<div class="vital" data-level="${p95 == null ? "unknown" : "ok"}"><span class="vital-label">${name} p95 · this browser</span><span class="vital-value">${p95 ?? "Unknown"}</span><span class="vital-sub">${values.length} samples${name === "INP" ? " · event duration approximation" : ""}</span></div>`;
-  }).join(""));
+  const specs = [
+    ["LCP", "Largest content paint", 2500, 4000, "ms", true], ["INP", "Interaction delay (approx)", 200, 500, "ms", true],
+    ["CLS", "Layout shift", .1, .25, "score", true], ["FCP", "First content paint", 1800, 3000, "ms", true],
+    ["TTFB", "Server response", 800, 1800, "ms", true], ["DOM_READY", "DOM ready", 2500, 5000, "ms", true],
+    ["LOAD", "Page load", 4000, 8000, "ms", true], ["LONGTASK", "Long tasks", 50, 100, "ms", false],
+    ["RESOURCE_KB", "First party transfer", 700, 1400, "KB", true], ["RESOURCE_SLOW", "Slow first party requests", 0, 2, "count", false],
+    ["JS_ERROR", "JavaScript errors", 0, 1, "count", false], ["ASSET_ERROR", "Asset errors", 0, 1, "count", false],
+    ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
+    ["WEBGL_LOSS", "WebGL context loss", 0, 1, "events", false], ["OFFLINE", "Offline events", 0, 1, "events", false],
+    ["API_HTTP_ERROR", "API HTTP errors", 0, 1, "responses", false], ["API_NETWORK_ERROR", "API network failures", 0, 1, "failures", false],
+    ["API_SLOW", "Slow API responses", 0, 2, "responses", false], ["SSE_ERROR", "Live stream reconnects", 0, 2, "events", false],
+  ];
+  const cards = specs.map(([name, label, good, warn, unit, percentile]) => {
+    const entries = samples.filter((s) => s.metric === name && Number.isFinite(s.value));
+    const values = entries.map((s) => s.value).sort((a, b) => a - b);
+    const value = values.length ? (percentile ? values[Math.min(values.length - 1, Math.ceil(values.length * .95) - 1)] : values.reduce((a, b) => a + b, 0)) : null;
+    const state = value == null ? "unknown" : value <= good ? "ok" : value <= warn ? "warn" : "crit";
+    const history = entries.slice(-16);
+    const max = Math.max(1, ...history.map((s) => s.value));
+    const points = history.map((s, i) => `${history.length < 2 ? 50 : i / (history.length - 1) * 100},${20 - (s.value / max) * 18}`).join(" ");
+    const graph = history.length > 1 ? `<svg class="rum-spark" viewBox="0 0 100 22" role="img" aria-label="${esc(label)} recent trend"><polyline points="${points}"/></svg>` : "";
+    const pages = [...new Set(entries.slice(-12).map((s) => s.page).filter(Boolean))];
+    const showValue = value == null ? "No sample" : `${value.toFixed(unit === "score" ? 3 : 0)} ${unit}`;
+    return `<div class="vital rum-vital" data-level="${state}"><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(showValue)}</span>${graph}<span class="vital-sub">${entries.length} local sample${entries.length === 1 ? "" : "s"}${percentile ? " · p95" : " · total"}${pages.length ? ` · ${esc(pages.join(", "))}` : ""}</span></div>`;
+  }).join("");
+  setHTML($("rum-grid"), cards);
 }
 async function refresh() {
   if (busy) return;

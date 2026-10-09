@@ -62,7 +62,7 @@
     <section class="ops-panel span-full"><h2 class="panel-title">SLOs &amp; error budgets</h2><div class="vitals-grid" id="slo-grid"></div></section>
 
     <section class="ops-panel"><h2 class="panel-title">Synthetics <span id="synth-fresh"></span></h2><div class="targets-grid" id="synth-grid"></div></section>
-    <section class="ops-panel"><h2 class="panel-title">RUM · this browser</h2><div class="vitals-grid" id="rum-grid"></div><p class="mini-note">LCP ≤2500ms · INP ≤200ms · CLS ≤0.1. Collector: <code>rum.js</code>.</p></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">RUM · this browser</h2><div class="vitals-grid" id="rum-grid"></div><p class="mini-note">Browser-local samples only: Web Vitals, long tasks, first-party transfer, JavaScript and asset errors, offline events, and WebGL losses. No URLs, page text, or telemetry are sent to the server. Trend values use this browser’s rolling sample window.</p></section>
     <section class="ops-panel"><h2 class="panel-title">Cost forecast</h2><p id="forecast" class="mono-dim">loading…</p><p class="mini-note">7-day average → 30-day projection from <code>/api/fleet/metrics</code>.</p></section>
     <section class="ops-panel"><h2 class="panel-title">Backup freshness</h2><div id="backup-proof"></div></section>
     <section class="ops-panel span-full"><h2 class="panel-title">Per-agent isolated restore proof</h2><div id="backup-inventory"></div></section>

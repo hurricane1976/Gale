@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v13";
+const CACHE_VERSION = "gale-v14";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -23,13 +23,14 @@ const SHELL_ASSETS = [
   "/",
   "/index.html", "/fleet.html", "/status.html", "/metrics.html",
   "/observability.html", "/ollama.html", "/agora.html", "/weather.html",
-  "/network.html", "/404.html",
+  "/network.html", "/reliability.html", "/operations.html", "/home.html",
+  "/runbooks.html", "/404.html",
   "/gale.css", "/fleet-tidal.css", "/mobile.css", "/cinematic.css", "/fonts.css", "/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2",
   "/dist/main.js", "/dist/fleet.js", "/dist/activity.js", "/dist/cost.js",
   "/dist/drilldown.js", "/dist/hosts.js", "/dist/particles.js",
   "/dist/metrics.js", "/dist/network.js", "/dist/observability.js",
   "/dist/status.js", "/dist/weather.js", "/dist/agora.js", "/dist/ollama.js",
-  "/shared.js",
+  "/shared.js", "/rum.js",
   "/manifest.json", "/favicon.ico", "/apple-touch-icon.png",
   "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png",
 ];
