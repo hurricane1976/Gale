@@ -1282,6 +1282,12 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .ol-acts { white-space: nowrap; }
 .ol-btn { cursor: pointer; font-size: 0.85rem; padding: 7px 14px; }
 .ol-btn-xs { font-size: 0.74rem; padding: 3px 9px; border-radius: 7px; }
+.ol-model-tools { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 12px; }
+.ol-model-tools label { color:var(--text-dim); font-size:.78rem; }
+.ol-model-tools input { width:min(300px, 56vw); }
+.ol-model-tools select { min-width:130px; }
+.ol-model-tools [role="status"] { margin-left:auto; }
+.ol-model-tools ~ .fw-table-scroll tr[hidden] { display:none; }
 .ol-btn-danger { color: var(--warn); border-color: var(--warn-dim); }
 .ol-btn-danger:hover { border-color: color-mix(in srgb, var(--warn) 55%, transparent); background: var(--warn-dim); }
 .ol-btn:disabled { opacity: 0.45; cursor: default; transform: none; }

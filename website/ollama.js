@@ -469,8 +469,32 @@ function renderModels() {
     </tr>`;
   }).join("");
   $("models-table").querySelector("tbody").innerHTML = rows || `<tr><td colspan="9" class="mini-note">No models installed.</td></tr>`;
+  [...$("models-table").querySelectorAll("tbody tr")].forEach((row, index) => {
+    const model = models[index];
+    if (!model) return;
+    row.dataset.modelSearch = [model.name, model.parameter_size, model.quantization_level, ...(model.capabilities || [])].filter(Boolean).join(" ").toLowerCase();
+    row.dataset.modelState = model.resident ? "resident" : "disk";
+  });
+  applyModelFilters();
   refreshChatModelSelect();
 }
+
+function applyModelFilters() {
+  const query = ($("model-filter")?.value || "").trim().toLowerCase();
+  const state = $("model-state-filter")?.value || "all";
+  const tableRows = [...$("models-table").querySelectorAll("tbody tr[data-model-search]")];
+  let shown = 0;
+  tableRows.forEach((row) => {
+    const visible = (!query || row.dataset.modelSearch.includes(query)) && (state === "all" || row.dataset.modelState === state);
+    row.hidden = !visible;
+    if (visible) shown++;
+  });
+  const total = Number($("model-count").textContent) || tableRows.length;
+  setText($("model-visible-count"), query || state !== "all" ? `Showing ${shown} of ${total} models` : `Showing all ${total} models`);
+}
+
+$("model-filter")?.addEventListener("input", applyModelFilters);
+$("model-state-filter")?.addEventListener("change", applyModelFilters);
 
 $("models-table").addEventListener("click", async (e) => {
   const btn = e.target.closest("[data-act]");
