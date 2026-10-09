@@ -818,10 +818,19 @@ export function initThemeEngine() {
         <button type="button" class="mini-toggle fx-preset" data-hue="8" data-glow="0.9">warm</button>
       </div>
       <button type="button" class="mini-toggle" id="fx-reset-auto">↺ reset to time of day</button>
+      <label style="font-size:.75rem;display:flex;gap:6px;align-items:flex-start"><input type="checkbox" id="fx-graphics-debug"> show renderer diagnostics <span class="mono-dim">local</span></label>
     </div>`;
   dockAdd(box);
   const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"),
         autoBox = box.querySelector("#fx-auto"), tod = box.querySelector("#fx-tod");
+  const graphicsDebug = box.querySelector("#fx-graphics-debug");
+  try { graphicsDebug.checked = new URLSearchParams(location.search).get("graphics") === "debug"; } catch {}
+  graphicsDebug.addEventListener("change", () => {
+    const url = new URL(location.href);
+    if (graphicsDebug.checked) url.searchParams.set("graphics", "debug");
+    else url.searchParams.delete("graphics");
+    location.assign(url.href);
+  });
   const paintTod = () => { if (tod) tod.textContent = auto ? `(${TOD(new Date().getHours()).name})` : ""; };
   const paintPresets = () => box.querySelectorAll(".fx-preset").forEach((preset) => {
     const selected = !auto && +preset.dataset.hue === +fx.hue && +preset.dataset.glow === +fx.glow;
