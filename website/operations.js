@@ -110,7 +110,11 @@ async function refresh() {
       </article>`;
     }).join(""):'<p class="inc-none">No active incidents'+(agentFilter?" matching this filter":"")+'.<a href="#" id="inc-clear" class="inc-clear">Clear filter</a></p>');
     setHTML($("ops-missing"),c.missing.length?c.missing.map(a=>`<p><strong>${esc(a.agent)}</strong> · ${esc(a.host)} · ${esc(a.listener_state)}</p>`).join(""):'<p>All active agents report runs.</p>');
-    setHTML($("ops-sources"),Object.entries(data.sources).map(([name,s])=>`<p>${esc(name)}: <strong>${esc(s.state)}</strong> · ${s.age_s??"unknown"}s since collection</p>`).join(""));
+    setHTML($("ops-sources"),Object.entries(data.sources).map(([name,s])=>{
+      const level = s.state === "ok" ? "ok" : s.state === "degraded" ? "warn" : s.state === "stale" ? "crit" : "unknown";
+      const health = s.state === "ok" ? "fresh" : s.state === "degraded" ? "delayed" : s.state === "stale" ? "stale" : "unavailable";
+      return `<p class="target-card" data-level="${level}">${esc(name)} <span class="pill" data-level="${level}">${health}</span> · ${s.age_s ?? "unknown"}s since success${s.error ? ` · ${esc(s.error)}` : ""}</p>`;
+    }).join(""));
     setText($("ops-cost"),`Known spend $${data.cost.known_daily_average_usd.toFixed(2)}/day · limit $${data.cost.daily_limit_usd} · priced coverage ${data.cost.coverage_pct??"unknown"}% · ${data.cost.unknown_runs} unpriced runs. Local compute/subscriptions excluded.`);
     const b=data.backup;
     setHTML($("ops-backup"),`<p>Archive ${b.backup_age_h??"unknown"}h old · ${esc(b.backup_name||"unknown")}</p><p>Restore ${b.drill_ok==null?"unknown":b.drill_ok?"passed":"failed"} · ${b.drill_age_h??"unknown"}h old · collector ${esc(b.collector.state)}</p>`);
