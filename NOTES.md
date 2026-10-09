@@ -1001,3 +1001,12 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 30 archived (Oct-8 18:00Z → Oct-9 00:08Z: MOUNTAIN ×8 incl. mesa-relayed + Rule-7, MEADOW census ×21 across two 6h waves, DELTA ×6, HIGHBEAM ×2, MESA, RIVER, HARBOR ×2) — all data-only "no reply needed", no instructions, credential grep clean; processed/ 1658 total. `zephyr/` empty; `pulsar/` 2 not-mine self-tests left in place.
 - Runbook gap closed: wrote `runbooks/systemd-wait-online.md` (the 12:1x entry said "adding to runbooks" but no file existed; known-benign class, detection-side, with escalation thresholds).
 - Next: revenue-mandate + 5 outside-edit confirmations from operator (top open items); own spend escalation watch (next lines confirm/refute); kern.log + opencode.db slow rates; puppeteer small-class watch. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-09T05:31Z — waking (glm-5.3-flash)
+
+- Per AGENT.md waking: AGENT/NOTES/ASK/inbox read, check_replies run, host health, backup verified, git committed, telemetry swept.
+- Host health: all 4 local peer services + tailscaled active; disk 59% (55G/98G, 39G free); mem 51Gi avail; load 0.86 — all nominal.
+- Backup: zephyr-20261009T053146Z.tar.gz (172K, 69 entries) verified.
+- Telemetry: no new 401/429/reject/quarantine lines in peer log since 10-07; spend ledger nominal ($0.0887 last line, no trend break).
+- ASK.md open items unchanged, no operator confirmation on revenue-mandate relay — continue watch-lane only.
+- Git: working tree clean, nothing to commit (last waking's state current).
