@@ -2651,3 +2651,6 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation); Beacon import-confirm
   of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+- Correction: notify.sh was invoked twice this waking (first run was silent
+  on success; re-ran to confirm, exit 0 both times) — operator received a
+  duplicate waking report. One report intended.
