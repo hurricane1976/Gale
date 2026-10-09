@@ -1,7 +1,7 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear, downloadFile } from "./shared.js";
 import { observabilityPayload, validate } from "./payloads.js";
 
 boot();
@@ -121,6 +121,22 @@ function renderCostChart(d) {
     <text x="${W - pad.r}" y="${H - 6}" text-anchor="end" class="obs-tick">${last}</text>
   </svg></div>`);
 }
+
+document.querySelectorAll("[data-observability-export]").forEach((button) => button.addEventListener("click", () => {
+  if (!DATA) return;
+  if (button.dataset.observabilityExport === "svg") {
+    const svg = $("cost-chart")?.querySelector("svg");
+    if (!svg) return;
+    const copy = svg.cloneNode(true);
+    copy.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    downloadFile("gale-observability-cost.svg", new XMLSerializer().serializeToString(copy), "image/svg+xml;charset=utf-8");
+    return;
+  }
+  const fields = ["ts", "host", "agent", "model", "model_family", "cost_usd", "waking_count"];
+  const cell = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const rows = [fields, ...DATA.runs.slice(-400).map((run) => fields.map((field) => run[field]))];
+  downloadFile("gale-observability-cost.csv", rows.map((row) => row.map(cell).join(",")).join("\n"), "text/csv;charset=utf-8");
+}));
 
 function renderLanes(d) {
   const runs = d.runs.filter((r) => !hostFilter || (r.host || "") === hostFilter);

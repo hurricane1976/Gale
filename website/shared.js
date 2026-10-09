@@ -11,6 +11,19 @@ export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
+export function downloadFile(filename, content, type = "text/plain;charset=utf-8") {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 /* ---- signals: fine-grained reactive state (ROADMAP #9). ----
    `signal(v)` returns [get, set]; `effect(fn)` re-runs fn whenever any
    signal read inside it changes. Notifications are batched to a

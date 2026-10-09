@@ -1,6 +1,6 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear } from "./shared.js";
+import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear, downloadFile } from "./shared.js";
 import { metricsPayload, validate } from "./payloads.js";
 
 boot();
@@ -42,6 +42,25 @@ rangeGroup?.querySelectorAll("[data-days]").forEach((button) => button.addEventL
   chartWindow = Number(button.dataset.days) === 7 ? 7 : 14;
   rangeGroup.querySelectorAll("[data-days]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
   if (DATA) renderAll();
+}));
+
+const csvCell = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+document.querySelectorAll("[data-metric-export]").forEach((button) => button.addEventListener("click", () => {
+  if (!DATA) return;
+  const [seriesName, format] = button.dataset.metricExport.split("-");
+  const view = chartView();
+  if (format === "svg") {
+    const svg = document.querySelector(`#${seriesName === "cost" ? "cost" : "wakings"}-chart svg`);
+    if (!svg) return;
+    const copy = svg.cloneNode(true);
+    copy.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    downloadFile(`gale-${seriesName}-${chartWindow}d.svg`, new XMLSerializer().serializeToString(copy), "image/svg+xml;charset=utf-8");
+    return;
+  }
+  const field = seriesName === "cost" ? view.daily_cost_by_host : view.daily_wakings_by_host;
+  const hosts = Object.keys(field);
+  const rows = [["date", ...hosts], ...view.days.map((day, i) => [day, ...hosts.map((host) => field[host][i] ?? 0)])];
+  downloadFile(`gale-${seriesName}-${chartWindow}d.csv`, rows.map((row) => row.map(csvCell).join(",")).join("\n"), "text/csv;charset=utf-8");
 }));
 
 const hostColor = (h) => HOST_COLOR[h] || "var(--text-faint)";
