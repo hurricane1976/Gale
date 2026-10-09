@@ -109,18 +109,21 @@ function rum() {
   setHTML($("rum-grid"), cards);
   const routes = new Map();
   for (const sample of samples) {
-    if (!sample.metric.startsWith("API_") || !sample.route) continue;
-    const row = routes.get(sample.route) || { latency: [], errors: 0, slow: 0 };
+    if ((!sample.metric.startsWith("API_") && !sample.metric.startsWith("SSE_")) || !sample.route) continue;
+    const row = routes.get(sample.route) || { latency: [], errors: 0, slow: 0, sseErrors: 0, sseOpens: 0 };
     if (sample.metric === "API_LATENCY") row.latency.push(sample.value);
     else if (["API_HTTP_ERROR", "API_NETWORK_ERROR"].includes(sample.metric)) row.errors += sample.value;
     else if (sample.metric === "API_SLOW") row.slow += sample.value;
+    else if (sample.metric === "SSE_ERROR") row.sseErrors += sample.value;
+    else if (sample.metric === "SSE_OPEN") row.sseOpens += sample.value;
     routes.set(sample.route, row);
   }
   const routeRows = [...routes.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([route, row]) => {
     row.latency.sort((a, b) => a - b);
     const p95 = row.latency.length ? row.latency[Math.min(row.latency.length - 1, Math.ceil(row.latency.length * .95) - 1)] : null;
-    const state = row.errors ? "warn" : p95 == null ? "unknown" : p95 > 1800 ? "crit" : p95 > 800 ? "warn" : "ok";
-    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(route)}</span><span class="pill" data-level="${state}">${p95 == null ? "unknown" : `${Math.round(p95)} ms p95`}</span></div><span class="mono-dim">${row.latency.length} samples · ${row.errors} API failures · ${row.slow} responses over 1.5s</span></div>`;
+    const state = row.errors || row.sseErrors ? "warn" : p95 == null ? "unknown" : p95 > 1800 ? "crit" : p95 > 800 ? "warn" : "ok";
+    const feedState = row.sseErrors > 0 ? `${row.sseErrors} stream errors / ${row.sseOpens} opens` : row.sseOpens ? `${row.sseOpens} stream opens · no errors` : "no stream sample";
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(route)}</span><span class="pill" data-level="${state}">${p95 == null ? "unknown" : `${Math.round(p95)} ms p95`}</span></div><span class="mono-dim">${row.latency.length} API samples · ${row.errors} API failures · ${row.slow} slow · ${feedState}</span></div>`;
   });
   setHTML($("api-route-health"), routeRows.length ? routeRows.join("") : '<p class="mini-note">No first-party API samples in this page selection yet.</p>');
 }

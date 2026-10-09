@@ -53,8 +53,10 @@
       window.EventSource = class extends NativeEventSource {
         constructor(url, options) {
           super(url, options);
-          this.addEventListener("error", () => push("SSE_ERROR", 1, "events"));
-          this.addEventListener("open", () => push("SSE_OPEN", 1, "events"));
+          let route = "";
+          try { const u = new URL(String(url), location.href); if (u.origin === location.origin && u.pathname.startsWith("/api/")) route = u.pathname.split("/").filter(Boolean).slice(0, 2).join("/"); } catch {}
+          this.addEventListener("error", () => push("SSE_ERROR", 1, "events", route ? { route } : {}));
+          this.addEventListener("open", () => push("SSE_OPEN", 1, "events", route ? { route } : {}));
         }
       };
     }
