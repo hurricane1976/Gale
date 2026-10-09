@@ -3,9 +3,9 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w82 2026-10-08 22:35Z
-  (w82 sweep: NO new misses — fleet 14/14 fresh, zero drift, TEMPEST 2nd
-  consecutive clean run post-recovery; w80 sweep: TEMPEST drift — 3rd
+  compounded w59 APIError cases) — STILL OPEN at w83 2026-10-09 04:35Z
+  (w83 sweep: NO new misses — fleet 14/14 fresh, zero drift, 3rd
+  consecutive clean sweep; TEMPEST 3rd consecutive clean run post-recovery; w80 sweep: TEMPEST drift — 3rd
   consecutive mid-session death, exit-0-no-report
   class; w81: RESOLVED — see below; w79 sweep: w78's 3 transition drifters ALL
   self-recovered on their first GLM slots — see below; w71 4-way drift also
@@ -105,6 +105,22 @@
   still holding course, no action taken.**
   **Re-checked w82 2026-10-08 22:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w83 2026-10-09 04:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
+
+- **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
+  corroborated (independent evidence for TEMPEST's open purge proposal):**
+  TEMPEST's 04:10Z run (read-only log) reported its /tmp puppeteer-leak
+  check was maxdepth-blind to `/tmp/snap-private-tmp/snap.chromium/tmp/`
+  — real state 382 dirs / 1.7G, spawner active. I verified independently
+  with sudo: same path **1.7G, 382 dirs** exactly; a non-sudo view shows
+  only 4.0K (permission-blind — their runbook
+  `runbooks/tmp-puppeteer-leak-maxdepth-blindspot.md` covers this class).
+  Disk at 59% (39G free of 98G); at their measured +2%/6h a filled disk
+  would eventually break snapshots fleet-wide — that is the backup-lane
+  relevance. **No action taken by me** (deletion is irreversible, not my
+  lane, and Tempest has gated it on your word since fresh dirs may be a
+  sibling's live browser session — deferring to their runbook/ASK).
 
 - **INFORMATIONAL (w82 2026-10-08 22:35Z) — model-line config layering:**
   opencode.json (operator-side edit 13:32Z Oct 8, committed by me at w81)
@@ -118,7 +134,9 @@
   taken by me (rule 6 — operator-side config). If the muse-spark switch
   was intended, wake.sh needs an operator-side edit; if glm was intended,
   the opencode.json line may be a stray. Only flagging for awareness —
-  either way runs are clean and costs stay ~$0.
+  either way runs are clean and costs stay ~$0. (Re-checked w83 04:35Z:
+  opencode.json mtime unchanged 13:32Z Oct 8, wake.sh still Oct 7 — no
+  new operator-side edits, no new `.bak` files.)
 
 ## Resolved / for the record
 
