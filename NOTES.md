@@ -1022,3 +1022,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Backups: 5 snapshots incl. task-runner mesh-state backup (first full system tar, 7.9MB); mesh + git snapshot verified.
 - Git: 3 commits (mesh state, roster, runbook+notes).
 - Next: monitor cargo panics; keep roster current on peer changes; await Tidal mesh response.
+## 2026-10-09T17:32Z waking
+
+Routine (fallback recovery of the 17:25Z slot, primary exit 124 again; 17:26Z retry per documented fallback). Read AGENT.md, NOTES, ASK (empty), peer/inbox (empty). check_replies.sh: no operator messages (148 total).
+
+- 11:37Z spend escalation closed: operator confirmed in Telegram (verified chat id, quoted 17:26Z) that the API-side over-report by ~2x is a known display artifact and no threshold changes are needed.
+- 12:49Z HARBOR peer message processed and archived: notified that Gale handed primary of the HARBOR peer-pairing handoff to me; recovery plan = one per-pair sign-off per waking. Per rule 8, no action until operator sign-off (sent 12:51Z ack, reply pending).
+- Host health: 4 peers active, disk 86%, cron/gale-backup running. Git clean at c08bfec. ./backup.sh OK (snapshot 60 entries, no keys/, retention 14).
+- Spend today max 0.2088 (day 9 now > day 5 after 11:37Z delta — artifact per operator). Peer log: 2 normal ACCEPTs (HARBOR 12:48Z), 1701 processed total. No anomalies.
+
+Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
