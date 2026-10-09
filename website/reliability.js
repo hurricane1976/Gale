@@ -13,7 +13,10 @@ function render(data) {
     const state = level(feed === "ok" ? s : { ...s, state: "stale" });
     const value = state === "unknown" ? "Unknown" : `${s.actual.toFixed(2)}%`;
     const budget = s.budget_remaining_pct == null ? "budget unavailable" : `budget remaining ${s.budget_remaining_pct.toFixed(1)}%`;
-    return `<div class="vital" data-level="${state}"><span class="vital-label">${esc(s.name)} · target ${s.target}%</span><span class="vital-value">${value}</span><span class="vital-sub">${esc(s.detail)} · ${budget}${s.coverage_pct != null ? ` · history coverage ${s.coverage_pct}%` : ""}</span></div>`;
+    const actualX = Math.max(0, Math.min(100, Number(s.actual) || 0)), targetX = Math.max(0, Math.min(100, Number(s.target) || 0));
+    const actualLabel = Number.isFinite(Number(s.actual)) ? Number(s.actual).toFixed(2) : "unknown";
+    const threshold = `<svg class="slo-threshold" viewBox="0 0 100 14" role="img" aria-label="${esc(s.name)} actual ${actualLabel} percent against ${Number(s.target).toFixed(2)} percent target"><rect x="0" y="4" width="100" height="6" rx="3" class="slo-track"/><rect x="0" y="4" width="${actualX}" height="6" rx="3" class="slo-actual"/><line x1="${targetX}" y1="1" x2="${targetX}" y2="13" class="slo-target"/></svg>`;
+    return `<div class="vital" data-level="${state}"><span class="vital-label">${esc(s.name)} · target ${s.target}%</span><span class="vital-value">${value}</span>${threshold}<span class="vital-sub">${esc(s.detail)} · ${budget}${s.coverage_pct != null ? ` · history coverage ${s.coverage_pct}%` : ""}</span></div>`;
   }).join(""));
   const c = data.coverage;
   setHTML($("coverage-proof"), `<p>${c.reachable}/${c.expected} reachable · <strong>${c.reporting}/${c.expected} reporting</strong></p>` +
