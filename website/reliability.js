@@ -4,6 +4,7 @@ boot();
 const $ = (id) => document.getElementById(id);
 let busy = false, last = null;
 let rumPage = "";
+let rumRetentionHours = 24;
 const money = (n) => Number.isFinite(n) ? `$${n.toFixed(2)}` : "unknown";
 function render(data) {
   const feed = freshness(data);
@@ -67,6 +68,10 @@ async function coverage() {
 }
 function rum() {
   const allSamples = window.__galeRUM || [];
+  const retention = $("rum-retention");
+  if (retention) retention.value = String(rumRetentionHours);
+  const cutoff = rumRetentionHours ? Date.now() - rumRetentionHours * 3600e3 : 0;
+  const rangedSamples = allSamples.filter((sample) => !cutoff || (sample.ts || 0) >= cutoff);
   const pages = [...new Set(allSamples.map((s) => s.page).filter(Boolean))].sort();
   const filter = $("rum-page-filter");
   if (filter) {
@@ -75,9 +80,9 @@ function rum() {
     filter.value = pages.includes(value) ? value : "";
     rumPage = filter.value;
   }
-  const samples = rumPage ? allSamples.filter((s) => s.page === rumPage) : allSamples;
+  const samples = rumPage ? rangedSamples.filter((s) => s.page === rumPage) : rangedSamples;
   const pageSummary = new Map();
-  for (const sample of allSamples) {
+  for (const sample of rangedSamples) {
     if (!sample.page) continue;
     const row = pageSummary.get(sample.page) || { views: 0, errors: 0, assetErrors: 0, viewports: new Set(), canvas: null, svg: null, motion: null, last: 0 };
     if (sample.metric === "PAGE_VIEW") row.views += sample.value || 1;
@@ -192,6 +197,7 @@ $("sw-check")?.addEventListener("click", async (e) => {
   } finally { button.disabled = false; clientRuntime(); }
 });
 $("rum-page-filter")?.addEventListener("change", (e) => { rumPage = e.currentTarget.value; rum(); });
+$("rum-retention")?.addEventListener("change", (e) => { rumRetentionHours = Number(e.currentTarget.value) || 0; rum(); });
 $("rum-clear")?.addEventListener("click", () => {
   window.__galeRUMClear?.(); rumPage = ""; rum();
   setText($("rum-action-status"), "Browser-local RUM samples cleared.");
