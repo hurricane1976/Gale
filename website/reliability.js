@@ -87,7 +87,7 @@ function rum() {
     ["WEBGL_LOSS", "WebGL context loss", 0, 1, "events", false], ["OFFLINE", "Offline events", 0, 1, "events", false],
     ["API_HTTP_ERROR", "API HTTP errors", 0, 1, "responses", false], ["API_4XX", "API client errors", 0, 1, "responses", false],
     ["API_5XX", "API server errors", 0, 1, "responses", false], ["API_NETWORK_ERROR", "API network failures", 0, 1, "failures", false],
-    ["API_SLOW", "Slow API responses", 0, 2, "responses", false], ["SSE_ERROR", "Live stream errors", 0, 2, "events", false],
+    ["API_LATENCY", "API response time", 800, 1800, "ms", true], ["API_SLOW", "Slow API responses", 0, 2, "responses", false], ["SSE_ERROR", "Live stream errors", 0, 2, "events", false],
     ["SSE_OPEN", "Live stream opens/reconnects", 999, 999, "events", false],
     ["SCENE_FPS", "3D scene frame rate", 50, 30, "fps", true],
   ];
@@ -106,6 +106,22 @@ function rum() {
     return `<div class="vital rum-vital" data-level="${state}"><span class="vital-state" data-level="${state}">${esc(state)}</span><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(showValue)}</span>${graph}<span class="vital-sub">${entries.length} local sample${entries.length === 1 ? "" : "s"}${percentile ? (name === "SCENE_FPS" ? " · p05" : " · p95") : " · total"}${pages.length ? ` · ${esc(pages.join(", "))}` : ""}${scenes.length ? ` · ${esc(scenes.join(", "))}` : ""}</span></div>`;
   }).join("");
   setHTML($("rum-grid"), cards);
+  const routes = new Map();
+  for (const sample of samples) {
+    if (!sample.metric.startsWith("API_") || !sample.route) continue;
+    const row = routes.get(sample.route) || { latency: [], errors: 0, slow: 0 };
+    if (sample.metric === "API_LATENCY") row.latency.push(sample.value);
+    else if (["API_HTTP_ERROR", "API_NETWORK_ERROR"].includes(sample.metric)) row.errors += sample.value;
+    else if (sample.metric === "API_SLOW") row.slow += sample.value;
+    routes.set(sample.route, row);
+  }
+  const routeRows = [...routes.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([route, row]) => {
+    row.latency.sort((a, b) => a - b);
+    const p95 = row.latency.length ? row.latency[Math.min(row.latency.length - 1, Math.ceil(row.latency.length * .95) - 1)] : null;
+    const state = row.errors ? "warn" : p95 == null ? "unknown" : p95 > 1800 ? "crit" : p95 > 800 ? "warn" : "ok";
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(route)}</span><span class="pill" data-level="${state}">${p95 == null ? "unknown" : `${Math.round(p95)} ms p95`}</span></div><span class="mono-dim">${row.latency.length} samples · ${row.errors} API failures · ${row.slow} responses over 1.5s</span></div>`;
+  });
+  setHTML($("api-route-health"), routeRows.length ? routeRows.join("") : '<p class="mini-note">No first-party API samples in this page selection yet.</p>');
 }
 async function clientRuntime() {
   const items = [];

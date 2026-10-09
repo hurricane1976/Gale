@@ -4,7 +4,7 @@
   try {
     if (typeof window === "undefined") return;
     const KEY = "gale-rum-v2", LIMIT = 120;
-    const load = () => { try { const x = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(x) ? x.slice(-LIMIT) : []; } catch { return []; } };
+    const load = () => { try { const x = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(x) ? x.filter((s) => s && typeof s.metric === "string" && Number.isFinite(s.value) && typeof s.page === "string").slice(-LIMIT) : []; } catch { return []; } };
     const samples = load();
     const context = {
       page: location.pathname.split("/").pop() || "index.html",
@@ -56,23 +56,28 @@
     if (window.fetch) {
       const nativeFetch = window.fetch.bind(window);
       window.fetch = (input, init) => {
-        let api = false;
+        let api = false, route = "";
         try {
           const href = input instanceof Request ? input.url : String(input);
           const u = new URL(href, location.href);
           api = u.origin === location.origin && u.pathname.startsWith("/api/");
+          if (api) {
+            const parts = u.pathname.split("/").filter(Boolean);
+            route = parts.length > 1 ? `${parts[0]}/${parts[1]}` : "api/other";
+          }
         } catch {}
         const started = performance.now();
         return nativeFetch(input, init).then((response) => {
+          if (api) push("API_LATENCY", performance.now() - started, "ms", { route });
           if (api && !response.ok) {
-            push("API_HTTP_ERROR", 1, "responses");
-            if (response.status >= 500) push("API_5XX", 1, "responses");
-            else if (response.status >= 400) push("API_4XX", 1, "responses");
+            push("API_HTTP_ERROR", 1, "responses", { route });
+            if (response.status >= 500) push("API_5XX", 1, "responses", { route });
+            else if (response.status >= 400) push("API_4XX", 1, "responses", { route });
           }
-          if (api && performance.now() - started > 1500) push("API_SLOW", 1, "responses >1.5s");
+          if (api && performance.now() - started > 1500) push("API_SLOW", 1, "responses >1.5s", { route });
           return response;
         }, (error) => {
-          if (api && error?.name !== "AbortError") push("API_NETWORK_ERROR", 1, "failures");
+          if (api && error?.name !== "AbortError") push("API_NETWORK_ERROR", 1, "failures", { route });
           throw error;
         });
       };
