@@ -270,10 +270,19 @@ function renderGpu(g) {
       gpuBar("VRAM", gpu.mem_total_mb ? (gpu.mem_used_mb || 0) / gpu.mem_total_mb * 100 : 0, `${gpu.mem_used_mb ?? 0} / ${gpu.mem_total_mb ?? "?"} MB`),
       gpuBar("Power draw", gpu.power_limit_w ? (gpu.power_w || 0) / gpu.power_limit_w * 100 : 0, `${gpu.power_w ?? "\u2013"} W`),
     ];
+    const gpuIndex = gpu.index ?? i;
+    const utilSeries = (HIST?.series || []).filter((sample) => sample.reachable).map((sample) => {
+      const historical = sample.gpu?.gpus?.find((entry) => entry.index === gpuIndex) || sample.gpu?.gpus?.[i];
+      return historical && Number.isFinite(historical.util_pct) ? historical.util_pct : null;
+    }).filter((value) => value != null).slice(-48);
+    const utilSpark = utilSeries.length > 1
+      ? `<div class="gpu-sparkrow"><span class="mono-dim">24h utilization</span><svg viewBox="0 0 100 22" role="img" aria-label="GPU ${esc(name)} utilization history, last 24 hours"><polyline points="${utilSeries.map((value, point) => `${(point / (utilSeries.length - 1) * 100).toFixed(1)},${(20 - clamp(value, 0, 100) / 100 * 18).toFixed(1)}`).join(" ")}"/></svg></div>`
+      : "";
     return `<div class="gpu-card">
       <div class="gpu-card-head"><span class="gpu-name">${esc(name)}</span>${g.stale ? '<span class="gpu-stale">stale</span>' : ""}</div>
       <div class="gpu-tilegrid">${tiles.join("")}</div>
       <div class="gpu-bars">${bars.join("")}</div>
+      ${utilSpark}
     </div>`;
   });
   box.innerHTML = `<div class="gpu-grid">${parts.join("")}</div>`;
