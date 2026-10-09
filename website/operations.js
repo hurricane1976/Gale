@@ -27,13 +27,22 @@ async function refresh() {
       setText($("home-ops-summary"), `${d.coverage.reachable}/${d.coverage.expected} reachable · ${d.coverage.reporting}/${d.coverage.expected} reporting${d.coverage.missing.length ? ` · missing: ${d.coverage.missing.map(a=>a.agent).join(", ")}` : ""} · collected ${d.generated_at}`);
       return;
     }
-    const [data, incidents, tasks, exporters] = await Promise.all([get("api/fleet/reliability"), get("api/fleet/incidents"),get("api/fleet/tasks"),get("api/exporter-coverage.json").catch(()=>null)]);
+    const [data, incidents, tasks, exporters, history] = await Promise.all([get("api/fleet/reliability"), get("api/fleet/incidents"),get("api/fleet/tasks"),get("api/exporter-coverage.json").catch(()=>null),get("api/fleet/alerts/history").catch(()=>null)]);
     const c=data.coverage;
     opsGeneratedAt = data.generated_at;
     opsNextRefreshAt = Date.now() + 30000;
     opsProblem = "";
     paintOpsFreshness();
     setVitals($("ops-summary"), [["Reachable",`${c.reachable}/${c.expected}`],["Reporting",`${c.reporting}/${c.expected}`],["Incidents",String(incidents.count)],["Task verification",`${data.outcomes.verified_runs} verified`]].map(([name,value])=>`<div class="vital"><span class="vital-label">${esc(name)}</span><span class="vital-value">${esc(value)}</span></div>`).join(""));
+    const timeline = history?.events || [];
+    const duration = (ms) => { const mins = Math.max(0, Math.floor(ms / 60000)); return mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins / 60)}h ${mins % 60}m` : `${Math.floor(mins / 1440)}d ${Math.floor(mins % 1440 / 60)}h`; };
+    setHTML($("ops-incident-timeline"), timeline.length ? timeline.map((event) => {
+      const start = Date.parse(event.since || event.ts), end = Date.parse(event.ts);
+      const span = event.event === "close" && Number.isFinite(start) && Number.isFinite(end) ? ` · open ${duration(end - start)}` : "";
+      const when = Number.isFinite(end) ? new Date(end).toLocaleString() : "time unknown";
+      const sev = event.sev || "unknown";
+      return `<div class="target-card" data-level="${esc(sev)}"><div class="target-top"><span class="target-name">${esc(event.event || "change")} · ${esc(event.kind || "alert")}</span><span class="pill" data-level="${esc(sev)}">${esc(sev)}</span></div><span class="mono-dim">${esc(when)}${span} · ${esc(event.text || "alert text unavailable")}</span></div>`;
+    }).join("") : '<p class="mini-note">No alert changes in the retained history, or the history feed is unavailable.</p>');
     setText($("ops-access"),`${incidents.access.role} access · ${incidents.access.can_write?"acknowledgements enabled":"use an authorized Tailscale user device for controls"}`);
     const lifemap = incidents.lifecycle || {};
     const agents = Array.from(new Set(incidents.alerts.map(a=>a.agent||"fleet")));
