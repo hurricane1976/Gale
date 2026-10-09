@@ -210,7 +210,7 @@ async function loadAll(soft) {
   const { lat, lon } = loc;
   const fUrl = `api/fleet/weather/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
-    `&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,uv_index_max,wind_speed_10m_max` +
+    `&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,uv_index_max,wind_speed_10m_max` +
     `&temperature_unit=celsius&wind_speed_unit=kmh&timezone=auto&forecast_days=7`;
   const aqUrl = `api/fleet/weather/airquality?latitude=${lat}&longitude=${lon}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide&timezone=auto`;
   try {
@@ -298,7 +298,7 @@ function renderCurrent(f) {
 }
 
 function renderHourly(f) {
-  const hrs = f.hourly.time.map((tm, i) => ({ tm, tmp: f.hourly.temperature_2m[i], pp: f.hourly.precipitation_probability?.[i] ?? 0, code: f.hourly.weather_code[i] }));
+  const hrs = f.hourly.time.map((tm, i) => ({ tm, tmp: f.hourly.temperature_2m[i], pp: f.hourly.precipitation_probability?.[i] ?? 0, code: f.hourly.weather_code[i], ws: f.hourly.wind_speed_10m?.[i], wd: f.hourly.wind_direction_10m?.[i] }));
   const nowMs = Date.now();
   let start = hrs.findIndex((h) => new Date(h.tm).getTime() >= nowMs - 3600e3);
   if (start < 0) start = 0;
@@ -329,19 +329,25 @@ function renderHourly(f) {
     (i) => {
       const h = slice[i];
       const dt = new Date(h.tm).toLocaleString([], { weekday: "short", hour: "numeric" });
-      return `${dt} · ${Math.round(temps[i])}° · ${wmo(h.code)[0]} · 💧${h.pp}%`;
+      return `${dt} · ${Math.round(temps[i])}° · ${wmo(h.code)[0]} · 💧${h.pp}%${Number.isFinite(h.wd) ? ` · wind from ${compass(h.wd)} at ${wnd(h.ws || 0)}` : ""}`;
     });
   slice.forEach((h, i) => {
     const dt = new Date(h.tm);
     const cell = document.createElement("div");
     cell.className = "wx-hcell" + (i === 0 ? " now" : "");
-    cell.innerHTML = `<span class="hh"></span><span class="hi"></span><span class="ht"></span><span class="hp"></span>`;
+    cell.innerHTML = `<span class="hh"></span><span class="hi"></span><span class="ht"></span><span class="hp"></span><span class="wx-wind-marker"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v13M4 5l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span></span></span>`;
     cell.querySelector(".hh").textContent = i === 0 ? "Now" : dt.toLocaleTimeString([], { hour: "numeric" });
     cell.querySelector(".hi").textContent = wmo(h.code)[1];
     cell.querySelector(".ht").textContent = `${Math.round(temps[i])}°`;
     const pp = cell.querySelector(".hp");
     pp.textContent = h.pp >= 5 ? `${h.pp}%` : "";
     pp.style.color = h.pp >= 40 ? "var(--gust)" : h.pp >= 5 ? "var(--text-dim)" : "transparent";
+    const wind = cell.querySelector(".wx-wind-marker"), arrow = wind.querySelector("svg"), windText = wind.querySelector("span");
+    if (Number.isFinite(h.wd) && Number.isFinite(h.ws)) {
+      arrow.style.transform = `rotate(${(h.wd + 180) % 360}deg)`;
+      windText.textContent = `${compass(h.wd)} ${wnd(h.ws)}`;
+      wind.setAttribute("aria-label", `Wind from ${compass(h.wd)} at ${wnd(h.ws)}`);
+    } else wind.remove();
     el.appendChild(cell);
   });
 }

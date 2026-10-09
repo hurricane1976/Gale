@@ -1006,6 +1006,9 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 }
 .wx-hcell.now { background: color-mix(in srgb, var(--flag) 12%, transparent); border: 1px solid color-mix(in srgb, var(--flag) 35%, transparent); }
 .wx-hcell .hh { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint); }
+.wx-wind-marker { display:flex; align-items:center; gap:3px; color:var(--gust); font: .58rem var(--font-mono); white-space:nowrap; }
+.wx-wind-marker svg { width:12px; height:12px; flex:none; transition:transform .25s ease; }
+@media (prefers-reduced-motion: reduce) { .wx-wind-marker svg { transition:none; } }
 .wx-hcell.now .hh { color: var(--flag-soft); }
 .wx-hcell .hi { font-size: 1.2rem; }
 .wx-hcell .ht { font-weight: 600; font-variant-numeric: tabular-nums; }
