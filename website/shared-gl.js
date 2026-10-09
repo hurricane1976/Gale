@@ -31,6 +31,35 @@ export function program(gl, vs, fs, label = "program") {
 
 export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
 
+/* Optional diagnostics HUD for local renderer triage: append ?graphics=debug.
+   It is absent from normal views and never writes telemetry by itself. */
+export function createGraphicsHud(canvas, scene, quality) {
+  let el = null, windowAt = 0, frameCount = 0;
+  try {
+    if (new URLSearchParams(location.search).get("graphics") === "debug") {
+      el = document.createElement("output");
+      el.className = "graphics-hud";
+      el.setAttribute("aria-live", "off");
+      el.textContent = `${scene} · waiting for frame data`;
+      (canvas.parentElement || document.body).appendChild(el);
+    }
+  } catch {}
+  return {
+    update(now, active = 0) {
+      if (!el) return;
+      if (!windowAt) windowAt = now;
+      frameCount++;
+      if (now - windowAt < 1000) return;
+      const dpr = canvas.clientWidth ? canvas.width / canvas.clientWidth : 0;
+      const fps = quality ? quality.fps() : frameCount * 1000 / Math.max(1, now - windowAt);
+      el.textContent = `${scene} · ${Math.round(fps)} fps · tier ${quality ? quality.tier : "fixed"} · DPR ${dpr.toFixed(2)} · ${Math.round(canvas.width * canvas.height / 1000)}k px · ${active} active elements`;
+      windowAt = now; frameCount = 0;
+    },
+    status(message) { if (el) el.textContent = `${scene} · ${message}`; },
+    destroy() { el?.remove(); el = null; },
+  };
+}
+
 /* the one light rig every GALE engine shares: a low warm-cool key from the
    upper left. bars3d shades with it; contact shadows fall away from it. */
 export const LIGHT = [-0.45, 0.85, 0.35];

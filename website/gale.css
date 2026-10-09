@@ -1991,6 +1991,9 @@ a.agent:hover, a.agent:focus-visible { color: var(--text); background: color-mix
   border: 1px solid color-mix(in srgb, var(--gust, #4aa3ff) 28%, var(--line));
   background: radial-gradient(120% 100% at 50% 0%, #131c33 0%, #070b16 72%); }
 .bars3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; touch-action: none; cursor: grab; }
+.graphics-hud { position: absolute; z-index: 6; left: 10px; bottom: 10px; max-width: calc(100% - 20px); padding: 5px 8px;
+  border: 1px solid var(--line-strong); border-radius: 7px; color: var(--text-dim); background: rgba(6, 11, 22, .88);
+  font: 0.65rem/1.4 var(--font-mono); font-variant-numeric: tabular-nums; pointer-events: none; }
 .ol-3d-grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 @media (max-width: 760px) { .ol-3d-grid { grid-template-columns: 1fr; } }
 .wx3d-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }

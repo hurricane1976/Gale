@@ -7,7 +7,7 @@
    motion or data-saver: nothing mounts and the per-card SVG ECGs stay.
    Node-safe: no top-level DOM access (render-test imports stay green). */
 
-import { program, Quality, dprCap } from "./shared-gl.js";
+import { program, Quality, dprCap, createGraphicsHud } from "./shared-gl.js";
 
 const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -72,6 +72,7 @@ export function initPulseWall(canvas) {
   } catch { return null; }
 
   const q = new Quality();
+  const hud = createGraphicsHud(canvas, "pulsewall", q);
   let lastFrame = 0, lastRumSample = 0, frameN = 0, raf = 0, visible = true, running = true, contextLost = false;
   let hover = -1;
   const LANES = 4;
@@ -155,6 +156,7 @@ export function initPulseWall(canvas) {
     const nowMs = performance.now();
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     q.tick(fdt, nowMs); lastFrame = nowMs;
+    hud.update(nowMs, lanes.length);
     if (nowMs - lastRumSample >= 15000) { window.__galeRUMRecord?.("SCENE_FPS", q.fps(), "fps", "pulsewall"); lastRumSample = nowMs; }
     if (!resize()) return;
     const dt = fdt / 1000;
@@ -238,6 +240,7 @@ export function initPulseWall(canvas) {
     contextLost = true;
     running = false;
     cancelAnimationFrame(raf);
+    hud.status("WebGL context lost · SVG heartbeats active");
     // The per-host SVG heartbeats remain the readable, live fallback.
     canvas.closest("#heartbeat")?.classList.remove("hb-wall-live");
   });
@@ -270,7 +273,7 @@ export function initPulseWall(canvas) {
       }
     },
     destroy() {
-      cancelAnimationFrame(raf); io && io.disconnect(); document.removeEventListener("visibilitychange", syncLoop); tip.remove();
+      cancelAnimationFrame(raf); io && io.disconnect(); document.removeEventListener("visibilitychange", syncLoop); tip.remove(); hud.destroy();
     },
   };
 }

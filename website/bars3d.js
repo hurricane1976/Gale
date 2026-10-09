@@ -8,7 +8,7 @@
      bar  = { x, z, h, y0?, w?, d?, color:[r,g,b], tip:"line1\nline2" }   (world units; h = height)
      meta = { xLabels:[{x,text}], zLabels:[{z,text}] }                      (edge labels, keep to <= ~14 each) */
 
-import { program, Quality, dprCap, LIGHT } from "./shared-gl.js";
+import { program, Quality, dprCap, LIGHT, createGraphicsHud } from "./shared-gl.js";
 
 const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -71,6 +71,7 @@ export function mountBars3D(canvas, opts = {}) {
 
   // overlay: edge labels + tooltip (textContent only)
   const host = canvas.parentElement;
+  const hud = createGraphicsHud(canvas, "bars3d", q);
   const layer = document.createElement("div");
   layer.setAttribute("aria-hidden", "true");
   layer.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2";
@@ -177,6 +178,7 @@ export function mountBars3D(canvas, opts = {}) {
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     if (q) q.tick(fdt, nowMs);
     lastFrame = nowMs;
+    hud.update(nowMs, bars.length);
     if (nowMs - lastRumSample >= 15000) { window.__galeRUMRecord?.("SCENE_FPS", q ? q.fps() : 1000 / fdt, "fps", "bars3d"); lastRumSample = nowMs; }
     const dpr = dprCap((LITE ? 1.5 : 2) * (q ? q.scale() : 1)), w = canvas.clientWidth, h = canvas.clientHeight;
     if (w < 2 || h < 2) return;
@@ -314,6 +316,7 @@ export function mountBars3D(canvas, opts = {}) {
     contextLost = true;
     running = false;
     cancelAnimationFrame(raf);
+    hud.status("WebGL context lost · text fallback active");
     canvas.hidden = true;
     fallback.hidden = false;
   });
@@ -335,6 +338,6 @@ export function mountBars3D(canvas, opts = {}) {
 
   return {
     setData,
-    destroy() { cancelAnimationFrame(raf); io && io.disconnect(); document.removeEventListener("visibilitychange", syncLoop); layer.remove(); tip.remove(); fallback.remove(); },
+    destroy() { cancelAnimationFrame(raf); io && io.disconnect(); document.removeEventListener("visibilitychange", syncLoop); layer.remove(); tip.remove(); fallback.remove(); hud.destroy(); },
   };
 }

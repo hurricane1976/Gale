@@ -56,7 +56,7 @@ void main() { gl_FragColor = v_color; }`;
 
 const esc3d = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-import { program, Quality, dprCap } from "./shared-gl.js";
+import { program, Quality, dprCap, createGraphicsHud } from "./shared-gl.js";
 
 const REDUCED3D = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -313,6 +313,7 @@ export function initTopology3D(opts = {}) {
 
   let raf = 0, frameN = 0, backingDpr = 1, sceneVisible = true;
   const q = REDUCED3D ? null : new Quality();
+  const hud = createGraphicsHud(canvas, "topology", q);
   let lastFrame = 0, lastRumSample = 0;
   const draw = () => {
     if (canvas.hidden || document.hidden || !sceneVisible) { raf = 0; return; }
@@ -322,6 +323,7 @@ export function initTopology3D(opts = {}) {
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     if (q) q.tick(fdt, nowMs);
     lastFrame = nowMs;
+    hud.update(nowMs, N);
     if (nowMs - lastRumSample >= 15000) { window.__galeRUMRecord?.("SCENE_FPS", q ? q.fps() : 1000 / fdt, "fps", "topology3d"); lastRumSample = nowMs; }
     step();
     resize();
@@ -537,6 +539,7 @@ export function initTopology3D(opts = {}) {
   document.addEventListener("visibilitychange", syncDraw);
   canvas.addEventListener("webglcontextlost", (event) => {
     event.preventDefault();
+    hud.status("WebGL context lost · SVG fallback active");
     canvas.hidden = true;
     svg.style.display = "";
     toggle.setAttribute("aria-pressed", "false");
