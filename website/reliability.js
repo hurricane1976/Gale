@@ -170,6 +170,12 @@ async function clientRuntime() {
   items.push(tile("Service-worker update", swState, swDetail, /waiting|installing/i.test(swState) ? "warn" : /active/i.test(swState) ? "ok" : "unknown"));
   items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
   items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
+  const heap = performance.memory;
+  if (heap && Number.isFinite(heap.usedJSHeapSize) && Number.isFinite(heap.jsHeapSizeLimit)) {
+    const heapPct = heap.usedJSHeapSize / Math.max(1, heap.jsHeapSizeLimit) * 100;
+    const heapLevel = heapPct >= 90 ? "crit" : heapPct >= 75 ? "warn" : "ok";
+    items.push(tile("JavaScript heap estimate", `${(heap.usedJSHeapSize / 1048576).toFixed(0)} / ${(heap.jsHeapSizeLimit / 1048576).toFixed(0)} MB`, `${heapPct.toFixed(0)}% of browser-reported limit · local runtime estimate`, heapLevel));
+  } else items.push(tile("JavaScript heap estimate", "Not exposed", "This browser does not provide a safe heap-size estimate.", "unknown"));
   const motionReduced = !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   const cssPaused = document.documentElement.dataset.cssMotion === "paused";
   const motionState = cssPaused ? "CSS paused" : motionReduced ? "System reduced" : "Full CSS motion";
