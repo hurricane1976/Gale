@@ -310,7 +310,13 @@ function downBands(series, t0, span, y0, y1) {
 
 function renderVramChart() {
   const el = $("vram-chart");
-  const series = (HIST.series || []).filter((s) => s.reachable);
+  const allSeries = HIST.series || [];
+  const series = allSeries.filter((s) => s.reachable);
+  const table = $("vram-history-table");
+  if (table) {
+    const rows = allSeries.slice(-100).reverse();
+    setHTML(table, rows.length ? `<table><thead><tr><th>Time (UTC)</th><th>Reachable</th><th>VRAM (GB)</th><th>API latency (ms)</th></tr></thead><tbody>${rows.map((sample) => `<tr><td>${esc(fmtClock(sample.ts))}</td><td>${sample.reachable ? "yes" : "no"}</td><td>${esc(sample.reachable ? ((sample.vram_bytes || 0) / 1e9).toFixed(2) : "—")}</td><td>${esc(sample.reachable ? sample.latency_ms ?? "—" : "—")}</td></tr>`).join("")}</tbody></table>` : '<p class="mini-note">No GPU history samples yet.</p>');
+  }
   if (series.length < 2) { el.innerHTML = `<p class="mini-note">Collecting samples&hellip; (first chart in a few minutes)</p>`; return; }
   const W = 720, H = 170, pad = { t: 14, r: 10, b: 22, l: 46 };
   const [t0, t1] = timeRange(HIST.series);
@@ -333,6 +339,14 @@ function renderVramChart() {
     <text x="${W - pad.r}" y="${H - 6}" text-anchor="end" class="obs-tick">${esc(fmtClock(HIST.series[HIST.series.length - 1].ts))} UTC</text>
   </svg>`;
 }
+
+$("vram-table-toggle")?.addEventListener("click", (event) => {
+  const button = event.currentTarget;
+  const open = button.getAttribute("aria-expanded") !== "true";
+  button.setAttribute("aria-expanded", String(open));
+  button.textContent = open ? "Hide VRAM history table" : "Show VRAM history table";
+  $("vram-history-table").hidden = !open;
+});
 
 function renderLatencyChart() {
   const el = $("latency-chart");
