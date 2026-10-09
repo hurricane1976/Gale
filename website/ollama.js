@@ -177,12 +177,13 @@ function gpuTile(label, value, sub, cls) {
   </div>`;
 }
 
-function gpuBar(label, pct, sub) {
+function gpuBar(label, pct, sub, capacityScale = false) {
   const level = pct >= 90 ? "warn" : "";
   const w = Math.max(0, Math.min(100, pct));
   return `<div class="gpu-bar">
     <div class="gpu-bar-head"><span class="gpu-label">${esc(label)}</span><span class="gpu-sub">${sub || ""}</span></div>
-    <div class="gpu-track ${level ? `gpu-bar-${level}` : ""}"><i style="width:${w.toFixed(1)}%"></i></div>
+    <div class="gpu-track ${level ? `gpu-bar-${level}` : ""}" role="img" aria-label="${esc(label)} ${Math.round(w)} percent${capacityScale ? " of capacity" : ""}"><i style="width:${w.toFixed(1)}%"></i></div>
+    ${capacityScale ? '<div class="gpu-capacity-scale" aria-hidden="true"><span>0%</span><span>50%</span><span>100% capacity</span></div>' : ""}
   </div>`;
 }
 
@@ -267,7 +268,7 @@ function renderGpu(g) {
     ];
     const bars = [
       gpuBar("Utilization", gpu.util_pct ?? 0, `${Math.round(gpu.util_pct ?? 0)}%`),
-      gpuBar("VRAM", gpu.mem_total_mb ? (gpu.mem_used_mb || 0) / gpu.mem_total_mb * 100 : 0, `${gpu.mem_used_mb ?? 0} / ${gpu.mem_total_mb ?? "?"} MB`),
+      gpuBar("VRAM", gpu.mem_total_mb ? (gpu.mem_used_mb || 0) / gpu.mem_total_mb * 100 : 0, `${gpu.mem_used_mb ?? 0} / ${gpu.mem_total_mb ?? "?"} MB`, true),
       gpuBar("Power draw", gpu.power_limit_w ? (gpu.power_w || 0) / gpu.power_limit_w * 100 : 0, `${gpu.power_w ?? "\u2013"} W`),
     ];
     const gpuIndex = gpu.index ?? i;

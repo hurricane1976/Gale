@@ -145,8 +145,8 @@ function rum() {
   const routes = new Map();
   for (const sample of samples) {
     if ((!sample.metric.startsWith("API_") && !sample.metric.startsWith("SSE_")) || !sample.route) continue;
-    const row = routes.get(sample.route) || { latency: [], errors: 0, slow: 0, sseErrors: 0, sseOpens: 0 };
-    if (sample.metric === "API_LATENCY") row.latency.push(sample.value);
+    const row = routes.get(sample.route) || { latency: [], errors: 0, slow: 0, sseErrors: 0, sseOpens: 0, lastSeen: 0 };
+    if (sample.metric === "API_LATENCY") { row.latency.push(sample.value); row.lastSeen = Math.max(row.lastSeen, sample.ts || 0); }
     else if (["API_HTTP_ERROR", "API_NETWORK_ERROR"].includes(sample.metric)) row.errors += sample.value;
     else if (sample.metric === "API_SLOW") row.slow += sample.value;
     else if (sample.metric === "SSE_ERROR") row.sseErrors += sample.value;
@@ -158,9 +158,18 @@ function rum() {
     const p95 = row.latency.length ? row.latency[Math.min(row.latency.length - 1, Math.ceil(row.latency.length * .95) - 1)] : null;
     const state = row.errors || row.sseErrors ? "warn" : p95 == null ? "unknown" : p95 > 1800 ? "crit" : p95 > 800 ? "warn" : "ok";
     const feedState = row.sseErrors > 0 ? `${row.sseErrors} stream errors / ${row.sseOpens} opens` : row.sseOpens ? `${row.sseOpens} stream opens · no errors` : "no stream sample";
-    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(route)}</span><span class="pill" data-level="${state}">${p95 == null ? "unknown" : `${Math.round(p95)} ms p95`}</span></div><span class="mono-dim">${row.latency.length} API samples · ${row.errors} API failures · ${row.slow} slow · ${feedState}</span></div>`;
+    const ageMin = row.lastSeen ? Math.max(0, (Date.now() - row.lastSeen) / 60000) : Infinity;
+    row.ageBucket = ageMin < 1 ? 0 : ageMin < 5 ? 1 : ageMin < 15 ? 2 : 3;
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(route)}</span><span class="pill" data-level="${state}">${p95 == null ? "unknown" : `${Math.round(p95)} ms p95`}</span></div><span class="mono-dim">${row.latency.length} API samples · ${row.errors} API failures · ${row.slow} slow · ${feedState} · latest sample ${row.lastSeen ? `${Math.round(ageMin)}m ago` : "unknown"}</span></div>`;
   });
-  setHTML($("api-route-health"), routeRows.length ? routeRows.join("") : '<p class="mini-note">No first-party API samples in this page selection yet.</p>');
+  if (routeRows.length) {
+    const buckets = [0, 0, 0, 0];
+    for (const row of routes.values()) if (row.latency.length) buckets[row.ageBucket]++;
+    const max = Math.max(1, ...buckets);
+    const labels = ["<1m", "1–5m", "5–15m", ">15m"];
+    const histogram = `<div class="rum-age-hist" role="img" aria-label="Latest API sample age across ${buckets.reduce((a, b) => a + b, 0)} service families"><strong>Latest sample age</strong>${buckets.map((n, i) => `<span class="rum-age-bin"><i style="height:${Math.max(3, n / max * 34)}px"></i><b>${n}</b><small>${labels[i]}</small></span>`).join("")}</div>`;
+    setHTML($("api-route-health"), histogram + routeRows.join(""));
+  } else setHTML($("api-route-health"), '<p class="mini-note">No first-party API samples in this page selection yet.</p>');
 }
 async function clientRuntime() {
   const items = [];

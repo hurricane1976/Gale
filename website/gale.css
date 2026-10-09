@@ -1288,6 +1288,12 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .ol-model-tools select { min-width:130px; }
 .ol-model-tools [role="status"] { margin-left:auto; }
 .ol-model-tools ~ .fw-table-scroll tr[hidden] { display:none; }
+.gpu-capacity-scale { display:flex; justify-content:space-between; margin-top:3px; color:var(--text-faint); font:0.62rem var(--font-mono); }
+.rum-age-hist { display:flex; align-items:end; gap:10px; padding:10px 12px; margin-bottom:10px; border:1px solid var(--line); border-radius:10px; background:var(--glass); }
+.rum-age-hist strong { align-self:center; margin-right:auto; font-size:.8rem; color:var(--text-dim); }
+.rum-age-bin { min-width:38px; display:grid; justify-items:center; gap:2px; font: .65rem var(--font-mono); color:var(--text-faint); }
+.rum-age-bin i { width:100%; max-width:28px; min-height:3px; border-radius:3px 3px 0 0; background:linear-gradient(0deg,var(--gust),var(--ok)); }
+.rum-age-bin b { color:var(--text); }
 .ol-btn-danger { color: var(--warn); border-color: var(--warn-dim); }
 .ol-btn-danger:hover { border-color: color-mix(in srgb, var(--warn) 55%, transparent); background: var(--warn-dim); }
 .ol-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
