@@ -6,8 +6,10 @@
     const KEY = "gale-rum-v2", LIMIT = 120;
     const load = () => { try { const x = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(x) ? x.filter((s) => s && typeof s.metric === "string" && Number.isFinite(s.value) && typeof s.page === "string").slice(-LIMIT) : []; } catch { return []; } };
     const samples = load();
+    const pageFiles = new Set(["index.html", "fleet.html", "status.html", "metrics.html", "observability.html", "ollama.html", "agora.html", "weather.html", "network.html", "reliability.html", "operations.html", "home.html", "runbooks.html", "404.html"]);
+    const requestedPage = location.pathname.split("/").pop() || "index.html";
     const context = {
-      page: location.pathname.split("/").pop() || "index.html",
+      page: pageFiles.has(requestedPage) ? requestedPage : "404.html",
       viewport: innerWidth < 600 ? "phone" : innerWidth < 1000 ? "tablet" : "desktop",
       motion: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduced" : "full",
     };
@@ -24,6 +26,7 @@
     window.__galeRUM = samples.slice();
     window.__galeRUMRecord = (metric, value, unit, scene) => push(metric, value, unit, scene ? { scene } : {});
     window.__galeRUMClear = () => { samples.length = 0; try { localStorage.removeItem(KEY); } catch {} publish(); };
+    push("PAGE_VIEW", 1, "views");
     const observe = (type, callback, options = {}) => {
       try { if (window.PerformanceObserver) new PerformanceObserver((list) => callback(list.getEntries())).observe({ type, buffered: true, ...options }); } catch {}
     };

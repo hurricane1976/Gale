@@ -91,6 +91,7 @@ function rum() {
     ["SSE_OPEN", "Live stream opens/reconnects", 999, 999, "events", false],
     ["SCENE_FPS", "3D scene frame rate", 50, 30, "fps", true],
     ["FONT_READY", "Font readiness", 1200, 3000, "ms", true], ["FONT_ERROR", "Font load errors", 0, 1, "count", false],
+    ["PAGE_VIEW", "Page visits", 999999, 999999, "views", false],
   ];
   const cards = specs.map(([name, label, good, warn, unit, percentile]) => {
     const entries = samples.filter((s) => s.metric === name && Number.isFinite(s.value));
