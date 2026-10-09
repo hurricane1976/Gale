@@ -3,6 +3,7 @@ boot();
 const $ = (id) => document.getElementById(id);
 let busy = false;
 let opsNextRefreshAt = 0, opsGeneratedAt = "", opsProblem = "";
+let severityFilter = "";
 const LIFECYCLE_STAGES = ["investigating","root-caused","remediated","verified"];
 const STALE_KINDS = new Set(["agent-stale","agent-missed-wake","inference-collector-stale","inference-monitor-stale"]);
 let agentFilter = ""; // "" = all
@@ -12,6 +13,16 @@ function paintOpsFreshness() {
   setText($("ops-freshness"), opsProblem
     ? `Monitoring unavailable: ${opsProblem}; last collected ${opsGeneratedAt} · retry in ${remaining}s.`
     : `Collected ${opsGeneratedAt} · next refresh in ${remaining}s`);
+}
+function renderSeverityHistogram(alerts = []) {
+  const groups = [["", "All"], ["crit", "Critical"], ["warn", "Warning"], ["info", "Info"], ["unknown", "Unknown"]];
+  const counts = new Map(groups.map(([key]) => [key, key ? 0 : alerts.length]));
+  for (const alert of alerts) { const key = groups.some(([k]) => k === alert.sev) ? alert.sev : "unknown"; counts.set(key, (counts.get(key) || 0) + 1); }
+  const max = Math.max(1, ...counts.values());
+  setHTML($("ops-severity-hist"), groups.map(([key, label]) => {
+    const count = counts.get(key) || 0;
+    return `<button type="button" class="ops-severity-filter" data-severity="${key}" aria-pressed="${String(severityFilter === key)}"><span>${label}</span><span class="ops-severity-track" aria-hidden="true"><i style="width:${Math.round(count / max * 100)}%"></i></span><strong>${count}</strong></button>`;
+  }).join(""));
 }
 async function get(path) {
   const r = await tracedFetch(path, {cache:"no-store", signal:AbortSignal.timeout(25000)});
@@ -44,6 +55,7 @@ async function refresh() {
       return `<div class="target-card" data-level="${esc(sev)}"><div class="target-top"><span class="target-name">${esc(event.event || "change")} · ${esc(event.kind || "alert")}</span><span class="pill" data-level="${esc(sev)}">${esc(sev)}</span></div><span class="mono-dim">${esc(when)}${span} · ${esc(event.text || "alert text unavailable")}</span></div>`;
     }).join("") : '<p class="mini-note">No alert changes in the retained history, or the history feed is unavailable.</p>');
     setText($("ops-access"),`${incidents.access.role} access · ${incidents.access.can_write?"acknowledgements enabled":"use an authorized Tailscale user device for controls"}`);
+    renderSeverityHistogram(incidents.alerts);
     const lifemap = incidents.lifecycle || {};
     const agents = Array.from(new Set(incidents.alerts.map(a=>a.agent||"fleet")));
     if ($("ops-agent-filter")) {
@@ -57,6 +69,7 @@ async function refresh() {
         `<option value="__fail" ${agentFilter==="__fail"?"selected":""}>Failed signals only</option>`;
     }
     const shownAll = incidents.alerts.filter(a=>{
+      if (severityFilter && (a.sev || "unknown") !== severityFilter) return false;
       if (agentFilter==="__stale") return STALE_KINDS.has(a.kind);
       if (agentFilter==="__fail") return !STALE_KINDS.has(a.kind);
       if (agentFilter) return (a.agent||"fleet")===agentFilter;
@@ -111,7 +124,9 @@ async function refresh() {
   } finally {busy=false;}
 }
 document.addEventListener("click",async e=>{
-  if (e.target.closest("#inc-clear")) { e.preventDefault(); agentFilter=""; await refresh(); return; }
+  if (e.target.closest("#inc-clear")) { e.preventDefault(); agentFilter=""; severityFilter=""; await refresh(); return; }
+  const sev = e.target.closest("[data-severity]");
+  if (sev) { severityFilter = sev.dataset.severity; await refresh(); return; }
   const adv=e.target.closest("[data-stage-btn]");
   if (adv) {
     adv.disabled=true;

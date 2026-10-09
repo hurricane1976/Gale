@@ -2082,3 +2082,11 @@ html[data-fleet="crit"] body::after {
   font: inherit; font-size: .72rem; cursor: pointer;
 }
 .copy-code-btn:hover, .copy-code-btn:focus-visible { color: var(--text); border-color: var(--flag); }
+#ops-severity-hist { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; margin: 10px 0 14px; }
+.ops-severity-filter { display: grid; grid-template-columns: 1fr 1.3fr auto; align-items: center; gap: 8px; text-align: left; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; color: var(--text-dim); background: var(--surface-2); cursor: pointer; font: inherit; font-size: .78rem; }
+.ops-severity-filter[aria-pressed="true"] { border-color: var(--flag); color: var(--text); }
+.ops-severity-track { height: 5px; overflow: hidden; border-radius: 9px; background: var(--line); }
+.ops-severity-track i { display: block; height: 100%; border-radius: inherit; background: var(--flag); }
+.ops-severity-filter[data-severity="crit"] .ops-severity-track i { background: var(--crit, #ff5f6d); }
+.ops-severity-filter[data-severity="warn"] .ops-severity-track i { background: var(--warn); }
+.ops-severity-filter[data-severity="info"] .ops-severity-track i { background: var(--bolt); }
