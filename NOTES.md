@@ -3530,3 +3530,103 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Ledger: fleet-events.md appended (93rd waking block, 15 lines);
   _fleet_94.json archived.
 - Commit + notify to follow.
+- CLOSEOUT AMENDMENT (added by 94th waking, 2026-10-09T20:06Z, self-audit
+  of this block's truncation): commit c6f5958 EXISTS and IS PUSHED
+  (github refs/heads/maistral == c6f5958) -- this block's work was
+  committed and pushed despite the truncated closeout line. notify.sh
+  delivery unverifiable (same as the 91st); no operator gap reported
+  back. Full closeout restored by the 94th.
+
+## 2026-10-09T20:05Z -- ninety-fourth waking (scheduled 20:05 slot, opencode/glm-5.3-flash)
+
+- Runner/model note (for Tempest): 8th GLM run via opencode (opencode/
+  glm-5.3-flash, operator-directed 2026-10-07 move); matches AGENT.md; no
+  runner friction (fleet fetch, backup, filing all ran as-is). Paid class
+  (cost-signature line below).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 11d4h (reboot ~09-28 15:33Z stands), load 0.79/0.87/0.75,
+  57G used of 98G (62%, +2G since 93rd), RAM 9.1Gi used / 51Gi avail of 58G,
+  swap 0; maistral-peer active; all 14 tailnet listeners (8787-8800) +
+  :8090 present. Normal.
+- Backup: ./backup.sh -> backups/maistral-20261009T200545Z.tar.gz
+  (308K, 131 entries), read-back verified (AGENT.md/NOTES.md/ledger/
+  fleet-events.md + _fleet_94.json in tree; 0 .git entries beyond
+  .gitignore; ./62 present as expected; _fleet_95.json archived
+  post-backup, captured in git).
+- Memory pass (fleet sweep generated 20:05:57Z, archived
+  ledger/_fleet_95.json):
+  - Shape: 35/35 nodes up, 0 auth-gated -- 70th consecutive clean sweep;
+    per_agent_24h 35 rows steady.
+  - PATTERN-4 PROMOTED (headline): HIGHBEAM error_runs_24h 2 -> 4 (92nd 1
+    -> 93rd 2 -> 94th 4 -- 3rd consecutive non-zero sweep, count
+    accelerating; runs_4/err_4 = every run errored), NEW second
+    beacon-host row LANTERN err=1 (runs_4, $1.2404, last_wake 18:30:03Z),
+    host roll beacon:5. The 93rd's promotion threshold (3rd consecutive
+    non-zero) is MET -> promoted to recurring-pattern block PATTERN-4 per
+    role #3 (first-seen 2026-10-09T08:05Z). First spread to a 2nd agent.
+    Both rows' daily cost climbing (highbeam 0.2367->0.5949->0.8744;
+    lantern 0.2991->0.3698->1.2404); beacon 10-09 partial 29w/$4.3667 =
+    heaviest beacon day since 10-05. Not adjudicated; no remediation
+    authorized. Recorded OPEN in ledger.
+  - TREND: gale 10-09 partial 48w/$4.2437 at 20:05Z (~84% of day, includes
+    this waking) -- tracking toward a second consecutive
+    heaviest-since-09-25 day (10-08 closed $5.7414; 10-04..07 =
+    $1.62/$1.63/$1.47/$1.58). GLM paid-class 8th data point. Tidal
+    flat-0 68th consecutive day; 14-day window fully flat ($0.00 x14),
+    no break.
+  - COST-SIGNATURE (8th sighting): maistral cost_24h $0.3144 (90th
+    $0.4929 -> 91st $0.4512 -> 92nd $0.4065 -> 93rd $0.3445 -> 94th
+    $0.3144 -- monotonic drift-down). maistral daily_cost_14d: 10-08
+    $0.5922, 10-09 partial $0.3144. Spend ledger 99 lines, last
+    10-09T14:09:08Z $0.1363 (93rd's GLM line); this waking's lands
+    post-session (ledger hits 100 next waking). Zero-cost cohort 14/35
+    (remote-host rows only); gale-host 14/14 paid (90th's finding HOLDS).
+  - 24h rolls 129 runs / $14.09 (gale 56w/$4.9965, mountain 22w/$4.7317,
+    beacon 29w/$4.3667, tidal 22w/$0.00); coverage 35/35/0-missing/35
+    reachable; cost coverage 73.33% (3129 priced).
+  - Remote wake-gap: note-only (understood-normal per 89th) -- remote
+    hosts fresh 18:00-19:20Z, gale 20:05Z = this waking.
+  - First-reporter: runs_3 cohort rows advanced 06:xx -> 12:xx (MESA
+    12:22:01, VISTA 12:37:01, HARBOR 12:45:01, DELTA/MEADOW 12:07:01,
+    BROOK 12:22:02, MIST 12:27:01; 93rd's filings moved them; this
+    waking's 18:xx round not yet reflected, normal lag). SIROCCO ACTIVE
+    paid-class (runs_4, $0.4635, 15:20:01Z, off-grid :20 slot). Own row
+    runs_4/$0.3144/20:05:01Z = this waking. Theory unadjudicated.
+  - PATTERN-3 55th, ORDER REVERSED (new sub-observation): genuine MESA
+    18:22:11Z arrived FIRST, MOUNTAIN 18:22:15Z carrying the mesa-body
+    +4s AFTER -- all 54 prior occurrences had MOUNTAIN first, MESA
+    +1-18s later. Slot 18:22Z exact; cadence intact. HARBOR burst 52nd
+    (2 msgs, 3s).
+  - Maistral spend ledger: 99 lines; last 10-09T14:09:08Z $0.1363;
+    nothing to alert.
+- Peer inbox: 14 msgs (18:00:45Z->18:46:23Z, one full 18:00Z round) filed
+  to processed/ with standard processed-20261009T200640Z- prefix, all
+  data-only per rule 5, all no-reply; 13 sha256-unique vs prior 1352
+  corpus + 1 byte-identical same-batch pair (DELTA 0164a7bd ==
+  8214b1d4, both files sha256 2d7402cb...b648a -- FIRST byte-identical
+  same-second pair sighting; prior double-sends were distinct-hash; not
+  a re-delivery): MOUNTAIN x4 (2 Rule-7 sweeps + latency + PATTERN-3
+  55th x-label), MESA x1 (companion, reversed order), MEADOW x2 (census;
+  GLM Flash self-sign 4th consecutive sweep, 2/2), DELTA x2
+  (byte-identical pair), RIVER x1, CANYON #142, VISTA x1, HARBOR x2
+  (52nd burst). processed/ now 1366 top-level json (1352 + 14 exact, no
+  drift). Sibling dirs empty. No reply sent (none requested).
+- 93RD CLOSEOUT TRUNCATION (self-audit): the 93rd NOTES entry ended at
+  "Commit + notify to follow" (same pattern as the 91st). Verified this
+  waking: commit c6f5958 exists AND github refs/heads/maistral ==
+  c6f5958 -- the 93rd's work IS committed and pushed; a closeout
+  amendment has been appended to the 93rd block above. 93rd notify.sh
+  delivery unverifiable; if the operator missed a ~14:15Z Telegram
+  summary, that truncation is why.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). ASK.md unchanged (open items:
+  muse-flip verify/deny, backup.sh ruling, `62` removal, 67th
+  role-refusal + shim-outage adjudications).
+- Repo-hygiene (27th sweep): `62` untouched; backup.sh + opencode.json
+  left modified+uncommitted per rule 4 (both standing ASK items,
+  verified unchanged since 89th; my own runs observed GLM 8/8 wakings).
+  11 .bak-* artifacts untracked.
+- Ledger: fleet-events.md appended (94th waking block, 16 lines);
+  _fleet_95.json archived.
+- Commit + push + notify: this waking's closeout (full, restored
+  pattern).
