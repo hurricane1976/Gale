@@ -64,7 +64,7 @@ export function mountBars3D(canvas, opts = {}) {
   let bars = [], meta = {}, cur = [], tgt = [], hover = -1, hoverK = 0;
   let boxCount = 0, gridCount = 0, shadowCount = 0, dirty = true;
   let center = [0, 0, 0], extent = 6, topY = 1, grow = 0, growStart = 0;
-  let yaw = opts.yaw ?? 0.5, pitch = opts.pitch ?? 0.5, dist = 12, userDist = false, sway = 0, lastInteract = performance.now(), visible = true, frameN = 0, raf = 0;
+  let yaw = opts.yaw ?? 0.5, pitch = opts.pitch ?? 0.5, dist = 12, userDist = false, sway = 0, lastInteract = performance.now(), visible = true, running = true, contextLost = false, frameN = 0, raf = 0;
   let dragging = false, lx = 0, ly = 0, down = [0, 0];
   let vyaw = 0, vpitch = 0, inertia = false, lastMoveT = 0; // flick momentum (rad/ms)
   const pointers = new Map(); let pinch0 = 0, dist0 = 0;
@@ -294,8 +294,28 @@ export function mountBars3D(canvas, opts = {}) {
   canvas.addEventListener("pointerdown", onDown); canvas.addEventListener("pointermove", onMove);
   canvas.addEventListener("pointerup", onUp); canvas.addEventListener("pointercancel", onUp);
   canvas.addEventListener("pointerleave", onLeave); canvas.addEventListener("wheel", onWheel, { passive: false });
-  const io = typeof IntersectionObserver === "function" ? new IntersectionObserver((es) => { visible = es.some((e) => e.isIntersecting); }, { rootMargin: "100px" }) : null;
+  const fallback = document.createElement("p");
+  fallback.className = "mini-note bars3d-fallback";
+  fallback.setAttribute("role", "status");
+  fallback.hidden = true;
+  fallback.textContent = "3D view unavailable. Use the labeled summary and tables on this page.";
+  host.appendChild(fallback);
+  const io = typeof IntersectionObserver === "function" ? new IntersectionObserver((es) => { visible = es.some((e) => e.isIntersecting); syncLoop(); }, { rootMargin: "100px" }) : null;
   if (io) io.observe(canvas);
+  function syncLoop() {
+    const shouldRun = visible && document.visibilityState === "visible" && !contextLost;
+    if (shouldRun && !running) { running = true; raf = requestAnimationFrame(frame); }
+    else if (!shouldRun && running) { running = false; cancelAnimationFrame(raf); }
+  }
+  document.addEventListener("visibilitychange", syncLoop);
+  canvas.addEventListener("webglcontextlost", (event) => {
+    event.preventDefault();
+    contextLost = true;
+    running = false;
+    cancelAnimationFrame(raf);
+    canvas.hidden = true;
+    fallback.hidden = false;
+  });
   // keyboard: focus the canvas, arrows orbit, +/- zoom, Home resets (the view is otherwise mouse/touch only)
   canvas.tabIndex = 0;
   canvas.addEventListener("keydown", (e) => {
@@ -309,10 +329,11 @@ export function mountBars3D(canvas, opts = {}) {
     e.preventDefault(); lastInteract = performance.now();
   });
   canvas.style.outlineOffset = "-3px";
-  raf = requestAnimationFrame(frame);
+  if (visible && document.visibilityState === "visible") raf = requestAnimationFrame(frame);
+  else running = false;
 
   return {
     setData,
-    destroy() { cancelAnimationFrame(raf); io && io.disconnect(); layer.remove(); tip.remove(); },
+    destroy() { cancelAnimationFrame(raf); io && io.disconnect(); document.removeEventListener("visibilitychange", syncLoop); layer.remove(); tip.remove(); fallback.remove(); },
   };
 }

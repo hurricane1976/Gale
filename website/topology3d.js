@@ -311,12 +311,12 @@ export function initTopology3D(opts = {}) {
   });
   if (canvas.parentElement) canvas.parentElement.appendChild(labelBox);
 
-  let raf = 0, frameN = 0, backingDpr = 1;
+  let raf = 0, frameN = 0, backingDpr = 1, sceneVisible = true;
   const q = REDUCED3D ? null : new Quality();
   let lastFrame = 0;
   const draw = () => {
+    if (canvas.hidden || document.hidden || !sceneVisible) { raf = 0; return; }
     raf = requestAnimationFrame(draw);
-    if (document.hidden) return;
     if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return; // 30 fps on phones / tier-2 rescue
     const nowMs = performance.now();
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
@@ -525,6 +525,28 @@ export function initTopology3D(opts = {}) {
     }
   };
 
+  function syncDraw() {
+    const shouldRun = !canvas.hidden && !document.hidden && sceneVisible;
+    if (shouldRun && !raf) raf = requestAnimationFrame(draw);
+    else if (!shouldRun && raf) { cancelAnimationFrame(raf); raf = 0; }
+  }
+  const sceneIO = typeof IntersectionObserver === "function"
+    ? new IntersectionObserver((es) => { sceneVisible = es.some((e) => e.isIntersecting); syncDraw(); }, { rootMargin: "120px" }) : null;
+  if (sceneIO) sceneIO.observe(canvas);
+  document.addEventListener("visibilitychange", syncDraw);
+  canvas.addEventListener("webglcontextlost", (event) => {
+    event.preventDefault();
+    canvas.hidden = true;
+    svg.style.display = "";
+    toggle.setAttribute("aria-pressed", "false");
+    toggle.textContent = "3D unavailable · SVG view";
+    toggle.disabled = true;
+    if (svg.parentElement) svg.parentElement.style.minHeight = "";
+    labelBox.remove();
+    document.getElementById("topo-heat")?.remove();
+    syncDraw();
+  });
+
   function mul4(a, b) {
     const o = new Float32Array(16);
     for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++)
@@ -565,9 +587,9 @@ export function initTopology3D(opts = {}) {
     svg.style.display = on ? "none" : "";
     toggle.textContent = on ? "← svg view" : "3d view";
     toggle.setAttribute("aria-pressed", String(on));
-    if (on && !raf) draw();
+    syncDraw();
   });
-  if (!toggle.hidden) draw();
+  syncDraw();
 
   /* ---- heat overlays (cost / runs / errors, 24h) ---- */
   const LAYERS = {
