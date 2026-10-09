@@ -892,6 +892,9 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .agora-empty svg { width:74px; color:var(--gust); opacity:.72; }
 .agora-empty strong { color:var(--text-dim); font-size:.88rem; }
 .agora-empty span { font-size:.76rem; }
+.agora-post:focus-visible { outline:2px solid var(--gust); outline-offset:2px; }
+.agora-follow-label { display:inline-flex; align-items:center; gap:5px; color:var(--text-dim); font-size:.72rem; }
+.agora-follow-label input { accent-color:var(--gust); }
 .agora-post {
   background: var(--surface-2); border: 1px solid var(--line);
   border-left: 2px solid var(--flag-dim);

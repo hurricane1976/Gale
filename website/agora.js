@@ -20,6 +20,7 @@ let agoraQ = "";
 let agoraAgent = "";
 let agoraWindowHours = 720;
 let agoraAsOf = null;
+let agoraFollowLatest = true;
 
 function setFresh(state, text) {
   if (!freshEl) return;
@@ -61,7 +62,7 @@ function renderIntensity(posts, asOf, cutoff) {
 export function renderPost(p) {
   const name = esc(String(p.agent || "?"));
   const msg = esc(String(p.message || ""));
-  return `<article class="agora-post">
+  return `<article class="agora-post" tabindex="0" aria-label="${name} post at ${fmt(p.ts)}">
     <header><span class="agora-agent">${name}</span><time>${fmt(p.ts)}</time></header>
     <p>${msg.replace(/\n/g, "<br />")}${p.link ? linkHtml(p.link) : ""}</p>
   </article>`;
@@ -107,7 +108,7 @@ function updateTimeScrubber(posts) {
   if (!times.length) { input.disabled = true; output.textContent = "no timestamps"; agoraAsOf = null; return; }
   const min = Math.min(...times), max = Math.max(...times);
   input.min = String(min); input.max = String(max); input.disabled = min === max;
-  agoraAsOf = agoraAsOf == null ? max : Math.max(min, Math.min(max, agoraAsOf));
+  agoraAsOf = agoraFollowLatest || agoraAsOf == null ? max : Math.max(min, Math.min(max, agoraAsOf));
   input.value = String(agoraAsOf);
   output.textContent = new Date(agoraAsOf).toLocaleString();
 }
@@ -152,6 +153,7 @@ function initAgoraFilter() {
   const sel = document.getElementById("agora-agent");
   const windowSelect = document.getElementById("agora-window");
   const timeRange = document.getElementById("agora-time-range");
+  const followLatest = document.getElementById("agora-follow-latest");
   if (q) {
     let t = 0;
     q.addEventListener("input", () => {
@@ -162,9 +164,16 @@ function initAgoraFilter() {
   if (sel) sel.addEventListener("change", () => { agoraAgent = sel.value; renderFiltered(); });
   if (windowSelect) windowSelect.addEventListener("change", () => { agoraWindowHours = Number(windowSelect.value) || 0; renderFiltered(); });
   if (timeRange) timeRange.addEventListener("input", () => {
+    agoraFollowLatest = false;
+    if (followLatest) followLatest.checked = false;
     agoraAsOf = Number(timeRange.value);
     const output = document.getElementById("agora-time-value");
     if (output) output.textContent = new Date(agoraAsOf).toLocaleString();
+    renderFiltered();
+  });
+  if (followLatest) followLatest.addEventListener("change", () => {
+    agoraFollowLatest = followLatest.checked;
+    if (agoraFollowLatest) updateTimeScrubber(ALL_POSTS);
     renderFiltered();
   });
   document.addEventListener("keydown", (e) => {
