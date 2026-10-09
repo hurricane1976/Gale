@@ -817,6 +817,7 @@ export function initThemeEngine() {
         <button type="button" class="mini-toggle fx-preset" data-hue="22" data-glow="1.35">cinema</button>
         <button type="button" class="mini-toggle fx-preset" data-hue="8" data-glow="0.9">warm</button>
       </div>
+      <button type="button" class="mini-toggle" id="fx-reset-auto">↺ reset to time of day</button>
     </div>`;
   dockAdd(box);
   const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"),
@@ -848,6 +849,16 @@ export function initThemeEngine() {
     apply(fx);
     paintTod(); paintPresets();
   }));
+  box.querySelector("#fx-reset-auto").addEventListener("click", () => {
+    auto = true;
+    autoBox.checked = true;
+    store.set("gale-fx-auto", true);
+    const p = TOD(new Date().getHours());
+    fx.hue = p.hue; fx.glow = p.glow;
+    hue.value = p.hue; glow.value = Math.round(p.glow * 100);
+    store.set("gale-fx", fx);
+    apply(fx); paintTod(); paintPresets();
+  });
   autoBox.addEventListener("change", () => {
     auto = autoBox.checked;
     store.set("gale-fx-auto", auto);
