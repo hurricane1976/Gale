@@ -2103,3 +2103,9 @@ html[data-fleet="crit"] body::after {
 .vital[data-level="crit"] .slo-actual { fill: var(--crit, #ff5f6d); }
 .vital[data-level="unknown"] .slo-actual { fill: var(--text-faint); }
 .slo-target { stroke: var(--text); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+html[data-density="compact"] .ops-board { gap: 10px; }
+html[data-density="compact"] .ops-panel { padding: 14px 16px 16px; }
+html[data-density="compact"] .panel-title { margin-bottom: 10px; padding-bottom: 8px; }
+html[data-density="compact"] .vitals-grid { gap: 8px; }
+html[data-density="compact"] .vital { padding: 10px 12px; gap: 4px; }
+html[data-density="compact"] .vital-value { font-size: 1.45rem; }

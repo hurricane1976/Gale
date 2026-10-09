@@ -1,4 +1,4 @@
-import{n as v}from"./chunks/chunk-PMZFECEB.js";var h=`
+import{n as v}from"./chunks/chunk-7ODAF7YA.js";var h=`
 struct U { time: f32, intensity: f32, aspect: f32, seed: f32 };
 @group(0) @binding(0) var<uniform> u: U;
 
@@ -40,4 +40,4 @@ fn fbm(p: vec2f) -> f32 {
   return vec4f(col, 1.0);
 }
 `;async function w(){try{if(!navigator.gpu)return!1;let i=await navigator.gpu.requestAdapter({powerPreference:"low-power"});if(!i)return!1;let t=await i.requestDevice(),e=document.getElementById("gl-sky");e||(e=document.createElement("canvas"),e.id="gl-sky",e.setAttribute("aria-hidden","true"),document.body.prepend(e));let s=e.getContext("webgpu");if(!s)return!1;let f=navigator.gpu.getPreferredCanvasFormat(),u=t.createShaderModule({code:h}),d=t.createRenderPipeline({layout:"auto",vertex:{module:u,entryPoint:"vs"},fragment:{module:u,entryPoint:"fs",targets:[{format:f}]}}),l=t.createBuffer({size:16,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST}),p=t.createBindGroup({layout:d.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:l}}]}),c=()=>{let n=Math.min(window.devicePixelRatio||1,1.5),o=Math.max(1,Math.floor(window.innerWidth*n)),r=Math.max(1,Math.floor(window.innerHeight*n));(e.width!==o||e.height!==r)&&(e.width=o,e.height=r,s.configure({device:t,format:f,alphaMode:"opaque"}))};c(),window.addEventListener("resize",c,{passive:!0});let m=performance.now();return document.documentElement.classList.add("gl-sky-on"),requestAnimationFrame(function n(){if(document.hidden){requestAnimationFrame(n);return}c();let o=(performance.now()-m)/1e3;t.queue.writeBuffer(l,0,new Float32Array([o,v.level,window.innerWidth/Math.max(1,window.innerHeight),7]));let r=t.createCommandEncoder(),a=r.beginRenderPass({colorAttachments:[{view:s.getCurrentTexture().createView(),loadOp:"clear",storeOp:"store"}]});a.setPipeline(d),a.setBindGroup(0,p),a.draw(3),a.end(),t.queue.submit([r.finish()]),requestAnimationFrame(n)}),!0}catch(i){return console.warn("gl-sky unavailable",i),!1}}export{w as initGlSky};
-//# sourceMappingURL=glsky-76MI4K6F.js.map
+//# sourceMappingURL=glsky-JUS6HQ7X.js.map

@@ -847,6 +847,8 @@ export function initThemeEngine() {
     : h < 17 ? { hue: 0, glow: 1.0, intensity: 0.9, name: "day" } : { hue: 22, glow: 1.2, intensity: 1.05, name: "dusk" };
   const stored = store.get("gale-fx", null);
   let auto = store.get("gale-fx-auto", stored == null);
+  const density = store.get("gale-density", "comfortable");
+  document.documentElement.dataset.density = density === "compact" ? "compact" : "comfortable";
   const fx = Object.assign({ hue: 0, glow: 1, intensity: 1 }, auto ? TOD(new Date().getHours()) : (stored || {}));
   apply(fx);
   const box = document.createElement("details");
@@ -861,6 +863,8 @@ export function initThemeEngine() {
         <input type="range" id="fx-glow" min="40" max="160" step="5" value="${Math.round(fx.glow * 100)}"></label>
       <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient intensity
         <input type="range" id="fx-intensity" min="0" max="120" step="5" value="${Math.round(fx.intensity * 100)}"></label>
+      <label style="font-size:.75rem;display:flex;gap:6px;align-items:center">screen density
+        <select id="fx-density" aria-label="Screen density"><option value="comfortable"${density !== "compact" ? " selected" : ""}>comfortable</option><option value="compact"${density === "compact" ? " selected" : ""}>compact</option></select></label>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px" aria-label="Display presets">
         <button type="button" class="mini-toggle fx-preset" data-hue="0" data-glow="0.65" data-intensity="0.5">calm</button>
         <button type="button" class="mini-toggle fx-preset" data-hue="-18" data-glow="1.15" data-intensity="1">aurora</button>
@@ -880,6 +884,11 @@ export function initThemeEngine() {
     if (graphicsDebug.checked) url.searchParams.set("graphics", "debug");
     else url.searchParams.delete("graphics");
     location.assign(url.href);
+  });
+  box.querySelector("#fx-density").addEventListener("change", (event) => {
+    const value = event.currentTarget.value === "compact" ? "compact" : "comfortable";
+    document.documentElement.dataset.density = value;
+    store.set("gale-density", value);
   });
   const paintTod = () => { if (tod) tod.textContent = auto ? `(${TOD(new Date().getHours()).name})` : ""; };
   const paintPresets = () => box.querySelectorAll(".fx-preset").forEach((preset) => {
