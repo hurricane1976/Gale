@@ -139,3 +139,13 @@ rehearsals; no false positives. Cleaned (0 residue dirs).
   POSIX `. ./block.sh`. Same class as the clone-by-URL / flat-archive
   harness lessons: verify the harness itself before concluding anything
   about the detector.
+
+## Re-test (2026-10-09T09:45Z, 8th data point)
+
+Alert logic extracted verbatim from live wake.sh (determination + firing
+blocks), stub notify at drill-dir root, POSIX sh, per-case stub-log read.
+A quiet-death exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale
+marker → ALERT; D healthy mid-run marker → silent. 4/4 PASS, consistent
+with all seven prior rehearsals; no false positives. Cleaned (0 residue
+dirs). Most-stale rotation class at the time of the run (prior 06:40Z
+Oct-6).

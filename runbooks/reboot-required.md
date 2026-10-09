@@ -114,3 +114,12 @@ kernel no longer matches disk state, and pending CVE fixes are dormant.
   it. USB-disk item now reduces to: fsck -f on its partitions if/when the
   operator re-attaches it (attachment path was flaky Sep-27; still not a
   trusted backup target).
+
+## Flag event 3 — kernel again (2026-10-09, OPEN)
+
+`/var/run/reboot-required` back at mtime 06:36:02Z Oct-9 (detected 09:45Z
+waking, latency ~3h — within the waking-cadence bound). `.pkgs` =
+linux-image-6.8.0-146-generic, linux-base. Running kernel 6.8.0-142.
+Same shape as flag event 1 (pending kernel upgrade); reboot operator-gated,
+flagged via notify this waking. Post-reboot checklist (below, rehearsed
+twice for real) applies unchanged.
