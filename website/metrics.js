@@ -12,6 +12,7 @@ const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(
 let DATA = null;
 let chartWindow = 14;
 let pollFallback = false, pollNextAt = 0, pollError = "", pollLabelTimer = 0;
+const hiddenSeries = { wakings: new Set(), cost: new Set() };
 
 const $ = (id) => document.getElementById(id);
 
@@ -65,7 +66,7 @@ document.querySelectorAll("[data-metric-export]").forEach((button) => button.add
     return;
   }
   const field = seriesName === "cost" ? view.daily_cost_by_host : view.daily_wakings_by_host;
-  const hosts = Object.keys(field);
+  const hosts = Object.keys(field).filter((host) => !hiddenSeries[seriesName].has(host));
   const rows = [["date", ...hosts], ...view.days.map((day, i) => [day, ...hosts.map((host) => field[host][i] ?? 0)])];
   downloadFile(`gale-${seriesName}-${chartWindow}d.csv`, rows.map((row) => row.map(csvCell).join(",")).join("\n"), "text/csv;charset=utf-8");
 }));
@@ -179,12 +180,20 @@ function stackedBars(series, labelFmt) {
     ${grid}${bars}${spark}</svg></div>`;
 }
 
-function legend(containerId, hosts) {
+function legend(containerId, hosts, seriesName) {
   patchList($(containerId), hosts.map((h) => ({
     key: h,
-    html: `<span><i class="obs-led" style="background:${hostColor(h)}"></i>${esc(h)}</span>`,
+    html: `<button type="button" class="mini-toggle metric-series-toggle" data-series="${seriesName}" data-host="${esc(h)}" aria-pressed="${String(!hiddenSeries[seriesName].has(h))}"><i class="obs-led" style="background:${hostColor(h)}"></i>${esc(h)}</button>`,
   })));
 }
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest?.(".metric-series-toggle");
+  if (!button || !hiddenSeries[button.dataset.series]) return;
+  const set = hiddenSeries[button.dataset.series];
+  set.has(button.dataset.host) ? set.delete(button.dataset.host) : set.add(button.dataset.host);
+  if (DATA) renderAll();
+});
 
 /* Day-total crosshair (#2): the per-bar <title>s already name host values;
    this adds the day total readout, reading x/day straight from the rendered
@@ -258,10 +267,13 @@ function renderAll() {
   setText($("metric-range-label"), rangeLabel);
   setText($("metric-range-label-cost"), rangeLabel);
   const hosts = Object.keys(view.daily_wakings_by_host);
-  setHTML($("wakings-chart"), stackedBars(view.daily_wakings_by_host, (v) => String(Math.round(v))));
-  legend("wakings-legend", hosts);
-  setHTML($("cost-chart"), stackedBars(view.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`));
-  legend("cost-legend", Object.keys(view.daily_cost_by_host));
+  const visibleWakings = Object.fromEntries(hosts.filter((host) => !hiddenSeries.wakings.has(host)).map((host) => [host, view.daily_wakings_by_host[host]]));
+  const costHosts = Object.keys(view.daily_cost_by_host);
+  const visibleCost = Object.fromEntries(costHosts.filter((host) => !hiddenSeries.cost.has(host)).map((host) => [host, view.daily_cost_by_host[host]]));
+  setHTML($("wakings-chart"), Object.keys(visibleWakings).length ? stackedBars(visibleWakings, (v) => String(Math.round(v))) : '<p class="mini-note">All host series are hidden. Re-enable one in the legend.</p>');
+  legend("wakings-legend", hosts, "wakings");
+  setHTML($("cost-chart"), Object.keys(visibleCost).length ? stackedBars(visibleCost, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`) : '<p class="mini-note">All host series are hidden. Re-enable one in the legend.</p>');
+  legend("cost-legend", costHosts, "cost");
   tipDayTotals("wakings-chart", view.days);
   tipDayTotals("cost-chart", view.days);
   renderStatus(DATA);
