@@ -42,7 +42,7 @@ let map = null, mapMarker = null, warningOverlay = null;
 let radarSource = store.get("gale-wx-radar", "noaa"), radarRequest = 0, observationRequest = 0;
 const NOAA_RADAR = "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer";
 const NOAA_WARNINGS = "https://mapservices.weather.noaa.gov/eventdriven/services/WWA/watch_warn_adv/MapServer/WMSServer";
-let playTimer = null, frameIdx = 0;
+let playTimer = null, frameIdx = 0, playDelay = 900;
 
 function setMapState(message, ready = false) {
   const el = $("wx-map-state");
@@ -560,7 +560,7 @@ function togglePlay() {
   $("wx-play").setAttribute("aria-label", "Pause radar animation");
   let i = 0;
   showFrame(i);
-  playTimer = setInterval(() => { i = (i + 1) % radarFrames.length; showFrame(i); }, 900);
+  playTimer = setInterval(() => { i = (i + 1) % radarFrames.length; showFrame(i); }, playDelay);
 }
 function stopPlay() {
   clearInterval(playTimer); playTimer = null;
@@ -568,6 +568,15 @@ function stopPlay() {
   $("wx-play").setAttribute("aria-pressed", "false");
   $("wx-play").setAttribute("aria-label", "Play recent radar frames");
 }
+$("wx-play-speed").addEventListener("change", (e) => {
+  const next = Number(e.currentTarget.value);
+  if (![500, 900, 1400].includes(next)) return;
+  playDelay = next;
+  if (playTimer) {
+    clearInterval(playTimer);
+    playTimer = setInterval(() => showFrame((frameIdx + 1) % radarFrames.length), playDelay);
+  }
+});
 
 /* ---------- boot ---------- */
 renderPresets();
