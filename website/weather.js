@@ -195,6 +195,13 @@ function initGeoButtons() {
 
 /* ---------- forecast + AQ ---------- */
 let lastData = null, forecastRequest = 0, alertRequest = 0;
+let activeAlertCount = null;
+function paintWarningCount() {
+  const badge = $("wx-warning-count"), enabled = !!$("wx-warnings")?.checked;
+  if (!badge) return;
+  badge.textContent = `${activeAlertCount == null ? "alert count unknown" : `${activeAlertCount} active alert${activeAlertCount === 1 ? "" : "s"}`} · polygons ${enabled ? "on" : "off"}`;
+  badge.dataset.state = activeAlertCount == null ? "unknown" : activeAlertCount ? "warn" : "ok";
+}
 async function loadAll(soft) {
   const request=++forecastRequest;
   $("wx-updated").textContent = "updating…";
@@ -397,13 +404,15 @@ async function renderAlerts() {
   const request=++alertRequest;
   const sec = $("wx-alerts-sec"), box = $("wx-alerts");
   box.innerHTML = ""; sec.hidden = true;
+  activeAlertCount = null; paintWarningCount();
   if (Math.abs(loc.lat) > 90) return;
   try {
     const r = await fetch(`https://api.weather.gov/alerts/active?point=${loc.lat.toFixed(4)},${loc.lon.toFixed(4)}`, { headers: { Accept: "application/geo+json" } });
-    if (!r.ok) return; // non-US or no alerts endpoint
+    if (!r.ok) { paintWarningCount(); return; } // non-US or no alerts endpoint
     const j = await r.json();
     if(request!==alertRequest)return;
     const feats = j.features || [];
+    activeAlertCount = feats.length; paintWarningCount();
     if (!feats.length) return;
     sec.hidden = false;
     $("wx-alert-count").textContent = `· ${feats.length} active`;
@@ -421,7 +430,7 @@ async function renderAlerts() {
       d.querySelectorAll("p")[1].textContent = `Effective ${p.effective ? new Date(p.effective).toLocaleString() : "—"} → expires ${p.expires ? new Date(p.expires).toLocaleString() : "—"}`;
       box.appendChild(d);
     }
-  } catch { /* alerts are best-effort */ }
+  } catch { paintWarningCount(); /* alerts are best-effort */ }
 }
 
 /* ---------- radar map ---------- */
@@ -457,7 +466,7 @@ function initMap() {
   warningOverlay = L.tileLayer.wms(NOAA_WARNINGS, {layers:"0", format:"image/png", transparent:true, version:"1.3.0", attribution:"Warnings: NOAA / NWS", zIndex:20, opacity:0.7});
   if ($("wx-warnings").checked) warningOverlay.addTo(map);
   warningOverlay.on("tileerror",()=>$("wx-radar-status").textContent="NWS warning layer unavailable; check the alert list separately.");
-  $("wx-warnings").addEventListener("change",e=>e.target.checked?warningOverlay.addTo(map):warningOverlay.remove());
+  $("wx-warnings").addEventListener("change",e=>{ e.target.checked?warningOverlay.addTo(map):warningOverlay.remove(); paintWarningCount(); });
   L.control.layers({"Dark":dark,"Satellite":satellite}).addTo(map);
   $("wx-radar-source").value=radarSource;
   $("wx-radar-source").addEventListener("change",e=>{radarSource=e.target.value;store.set("gale-wx-radar",radarSource);loadRadarFrames();});

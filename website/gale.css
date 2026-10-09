@@ -1300,6 +1300,9 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .runbook-progress strong { color:var(--text); font: .68rem var(--font-mono); }
 .runbook-step-check { width:16px; height:16px; margin:0 9px 0 0; accent-color:var(--ok); vertical-align:middle; }
 .runbook-step-done { color:var(--text-faint); text-decoration-color:var(--text-faint); }
+.wx-warning-count { display:inline-block; margin-left:5px; color:var(--text-faint); font: .62rem var(--font-mono); }
+.wx-warning-count[data-state="warn"] { color:var(--warn); }
+.wx-warning-count[data-state="unknown"] { color:var(--text-faint); }
 .ol-btn-danger { color: var(--warn); border-color: var(--warn-dim); }
 .ol-btn-danger:hover { border-color: color-mix(in srgb, var(--warn) 55%, transparent); background: var(--warn-dim); }
 .ol-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
