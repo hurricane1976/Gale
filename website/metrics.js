@@ -167,6 +167,7 @@ function stackedBars(series, labelFmt) {
   days.forEach((day, i) => {
     const total = totals[i];
     const x = pad.l + i * ((W - pad.l - pad.r) / days.length) + 6;
+    const hasGap = hosts.some((h) => series[h]?.[i] == null || !Number.isFinite(Number(series[h][i])));
     let y = H - pad.b;
     let segs = "";
     hosts.forEach((h) => {
@@ -178,7 +179,8 @@ function stackedBars(series, labelFmt) {
         fill="${hostColor(h)}" opacity="0.88" rx="1.5"><title>${esc(`${day} ${h}: ${labelFmt(v)}`)}</title></rect>`;
     });
     const totalLbl = labelFmt(total) === "0" ? "" : labelFmt(total);
-    bars += segs + `<line x1="${x.toFixed(1)}" y1="${H - pad.b}" x2="${x.toFixed(1)}" y2="${H - pad.b + 5}" stroke="var(--line-strong)"/>
+    const gapMark = hasGap ? `<line class="chart-gap" x1="${(x + bw / 2 - 4).toFixed(1)}" y1="${H - pad.b - 2}" x2="${(x + bw / 2 + 4).toFixed(1)}" y2="${H - pad.b - 10}" stroke="var(--warn)" stroke-width="2"><title>${esc(day)}: one or more host samples missing; stacked total is incomplete</title></line>` : "";
+    bars += segs + gapMark + `<line x1="${x.toFixed(1)}" y1="${H - pad.b}" x2="${x.toFixed(1)}" y2="${H - pad.b + 5}" stroke="var(--line-strong)"/>
       <text x="${(x + bw / 2).toFixed(1)}" y="${H - pad.b + 18}" text-anchor="middle" class="obs-tick">${esc(day.slice(5))}</text>
       <text x="${(x + bw / 2).toFixed(1)}" y="${(y - 5).toFixed(1)}" text-anchor="middle" class="obs-tick obs-tick-top">${esc(totalLbl)}</text>`;
   });
