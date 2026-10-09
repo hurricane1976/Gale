@@ -330,6 +330,10 @@ export function initTopology3D(opts = {}) {
     raf = requestAnimationFrame(draw);
     if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return; // 30 fps on phones / tier-2 rescue
     const nowMs = performance.now();
+    if (nowMs - lastZoomPaintAt > 250) {
+      zoomReadout.textContent = `zoom ${Math.round(Math.max(14, Math.min(280, 4.2 / Math.max(1.5, dist) * 100)))}%`;
+      lastZoomPaintAt = nowMs;
+    }
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     if (q) q.tick(fdt, nowMs);
     lastFrame = nowMs;
@@ -827,6 +831,12 @@ export function initTopology3D(opts = {}) {
                           : "drag to orbit \u00b7 scroll to zoom \u00b7 click a node or host to focus \u00b7 esc to reset";
   if (LITE) hint.hidden = true; // touch users know the gestures; the hint only covered the map
   canvas.parentElement && canvas.parentElement.appendChild(hint);
+  const zoomReadout = document.createElement("output");
+  zoomReadout.className = "topo-zoom-readout";
+  zoomReadout.setAttribute("aria-live", "off");
+  zoomReadout.textContent = "zoom 100%";
+  canvas.parentElement && canvas.parentElement.appendChild(zoomReadout);
+  let lastZoomPaintAt = 0;
 
   function focusOn(i) {
     if (i < 0) return clearFocus();
