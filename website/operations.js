@@ -2,9 +2,17 @@ import { boot, esc, setHTML, setText, setVitals, tracedFetch } from "./shared.js
 boot();
 const $ = (id) => document.getElementById(id);
 let busy = false;
+let opsNextRefreshAt = 0, opsGeneratedAt = "", opsProblem = "";
 const LIFECYCLE_STAGES = ["investigating","root-caused","remediated","verified"];
 const STALE_KINDS = new Set(["agent-stale","agent-missed-wake","inference-collector-stale","inference-monitor-stale"]);
 let agentFilter = ""; // "" = all
+function paintOpsFreshness() {
+  if (!opsGeneratedAt || !$("ops-freshness")) return;
+  const remaining = Math.max(0, Math.ceil((opsNextRefreshAt - Date.now()) / 1000));
+  setText($("ops-freshness"), opsProblem
+    ? `Monitoring unavailable: ${opsProblem}; last collected ${opsGeneratedAt} · retry in ${remaining}s.`
+    : `Collected ${opsGeneratedAt} · next refresh in ${remaining}s`);
+}
 async function get(path) {
   const r = await tracedFetch(path, {cache:"no-store", signal:AbortSignal.timeout(25000)});
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -21,7 +29,10 @@ async function refresh() {
     }
     const [data, incidents, tasks, exporters] = await Promise.all([get("api/fleet/reliability"), get("api/fleet/incidents"),get("api/fleet/tasks"),get("api/exporter-coverage.json").catch(()=>null)]);
     const c=data.coverage;
-    setText($("ops-freshness"),`Collected ${data.generated_at} · refresh every 30s`);
+    opsGeneratedAt = data.generated_at;
+    opsNextRefreshAt = Date.now() + 30000;
+    opsProblem = "";
+    paintOpsFreshness();
     setVitals($("ops-summary"), [["Reachable",`${c.reachable}/${c.expected}`],["Reporting",`${c.reporting}/${c.expected}`],["Incidents",String(incidents.count)],["Task verification",`${data.outcomes.verified_runs} verified`]].map(([name,value])=>`<div class="vital"><span class="vital-label">${esc(name)}</span><span class="vital-value">${esc(value)}</span></div>`).join(""));
     setText($("ops-access"),`${incidents.access.role} access · ${incidents.access.can_write?"acknowledgements enabled":"use an authorized Tailscale user device for controls"}`);
     const lifemap = incidents.lifecycle || {};
@@ -84,7 +95,9 @@ async function refresh() {
     setHTML($("ops-tasks"),tasks.events.length?tasks.events.slice(-15).reverse().map(e=>`<p><a href="observability.html?run=${encodeURIComponent(e.run_id)}">${esc(e.agent)} ${esc(e.event)}</a> · ${esc(e.at)}${e.tool?` · tool ${esc(e.tool)}`:""}</p>`).join(""):'<p>No instrumented task events yet.</p>');
     setHTML($("ops-exporters"),exporters?exporters.nodes.map(e=>`<p>${esc(e.host)} · ${esc(e.address)} · ${e.alias_of?`same machine as ${esc(e.alias_of)} (${esc(e.machine)}), scraped once`:e.instrumented?`host metrics enabled${e.machine?` · ${esc(e.machine)}`:""}`:"exporter unavailable; host setup required"}</p>`).join(""):'<p>Exporter coverage unknown.</p>');
   } catch(e) {
-    setText($("ops-freshness")||$("home-ops-summary"),`Monitoring unavailable: ${e.message}; previous values are stale.`);
+    opsProblem = e.message;
+    if (opsGeneratedAt) paintOpsFreshness();
+    else setText($("ops-freshness")||$("home-ops-summary"),`Monitoring unavailable: ${e.message}; previous values are stale.`);
     for(const id of ["ops-summary","ops-missing","ops-sources","ops-cost","ops-backup","ops-incidents","ops-tasks"]) if($(id)) { $(id).dataset.level="unknown"; setText($(id), "Unknown — monitoring feed unavailable."); }
   } finally {busy=false;}
 }
@@ -111,4 +124,4 @@ document.addEventListener("click",async e=>{
   }catch(e){setText($("ops-access"),`Acknowledgement failed: ${e.message}`);}finally{b.disabled=false;}
 });
 if ($("ops-agent-filter")) $("ops-agent-filter").addEventListener("change", (e) => { agentFilter = e.target.value; refresh(); });
-if ($("ops-summary") || $("home-ops-summary")) { refresh(); setInterval(refresh, 30000); }
+if ($("ops-summary") || $("home-ops-summary")) { refresh(); setInterval(refresh, 30000); setInterval(paintOpsFreshness, 1000); }
