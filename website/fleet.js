@@ -32,6 +32,45 @@ function showDefault() {
   detail.innerHTML = DEFAULT_DETAIL;
 }
 
+document.getElementById("topo-svg-export")?.addEventListener("click", () => {
+  const clone = topo.cloneNode(true);
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+  title.textContent = "Gale fleet topology";
+  clone.prepend(title);
+  const query = (document.getElementById("roster-q")?.value || "").trim().toLowerCase();
+  const matching = [];
+  const sourceNodes = [...topo.querySelectorAll(".topo-node")], cloneNodes = [...clone.querySelectorAll(".topo-node")];
+  sourceNodes.forEach((node, index) => {
+    const d = node.dataset, text = [d.name, d.host, d.model, d.roleDesc].join(" ").toLowerCase();
+    const hit = !query || text.includes(query);
+    if (hit) {
+      const dot = node.querySelector(".topo-node-bg");
+      if (dot) matching.push([Number(dot.getAttribute("cx")), Number(dot.getAttribute("cy"))]);
+    } else cloneNodes[index]?.style.setProperty("display", "none");
+  });
+  if (query) for (const line of clone.querySelectorAll("line.pulse-line")) {
+    const endpoints = [["x1", "y1"], ["x2", "y2"]].map(([x, y]) => [Number(line.getAttribute(x)), Number(line.getAttribute(y))]);
+    if (endpoints.some(([x, y]) => !matching.some(([mx, my]) => Math.hypot(mx - x, my - y) < 1))) line.remove();
+  }
+  const props = ["fill", "stroke", "stroke-width", "stroke-opacity", "opacity", "font-family", "font-size", "font-weight", "text-anchor", "stroke-dasharray", "stroke-linecap", "stroke-linejoin", "filter", "paint-order", "letter-spacing", "visibility"];
+  const rootStyle = getComputedStyle(topo);
+  props.forEach((prop) => { const value = rootStyle.getPropertyValue(prop); if (value && value !== "initial") clone.style.setProperty(prop, value); });
+  const sourceElements = [...topo.querySelectorAll("*")], cloneElements = [...clone.querySelectorAll("*")];
+  sourceElements.forEach((source, index) => {
+    const target = cloneElements[index];
+    if (!target || target.style?.display === "none") return;
+    const computed = getComputedStyle(source);
+    props.forEach((prop) => { const value = computed.getPropertyValue(prop); if (value && value !== "initial") target.style.setProperty(prop, value); });
+  });
+  const blob = new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob), link = document.createElement("a");
+  link.href = url; link.download = query ? `gale-fleet-topology-${query.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.svg` : "gale-fleet-topology.svg";
+  link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const status = document.getElementById("topo-map-status");
+  if (status) status.textContent = `SVG exported · ${matching.length} agents${query ? ` matching “${query}”` : ""}`;
+});
+
 topo.querySelectorAll(".topo-node").forEach((node) => {
   node.addEventListener("mouseenter", () => showNode(node));
   node.addEventListener("mouseleave", showDefault);
