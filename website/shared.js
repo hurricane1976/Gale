@@ -1660,21 +1660,31 @@ export function initThemeToggle() {
   btn.type = "button";
   btn.className = "mini-toggle";
   btn.style.cssText = "padding:8px 12px;min-height:32px";
+  const preferred = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)");
+  const systemTheme = () => preferred?.matches ? "light" : "dark";
+  const mode = () => {
+    try { const saved = localStorage.getItem("gale-theme"); return saved === "light" || saved === "dark" ? saved : "auto"; } catch { return "auto"; }
+  };
   const label = () => {
-    const cur = document.documentElement.dataset.theme ||
-      (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-    btn.textContent = cur === "light" ? "🌙 dark" : "☀️ light";
-    btn.setAttribute("aria-pressed", String(cur === "light"));
+    const current = mode();
+    btn.textContent = current === "auto" ? `◐ auto · ${systemTheme()}` : current === "light" ? "☀️ light" : "🌙 dark";
+    btn.setAttribute("aria-pressed", String(current !== "auto"));
+    btn.setAttribute("aria-label", `Appearance mode: ${current}${current === "auto" ? `, following system ${systemTheme()} theme` : ""}`);
   };
   btn.addEventListener("click", () => {
-    const cur = document.documentElement.dataset.theme ||
-      (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-    const next = cur === "light" ? "dark" : "light";
-    document.documentElement.dataset.theme = next;
-    try { localStorage.setItem("gale-theme", next); } catch {}
+    const cur = mode();
+    const next = cur === "auto" ? "light" : cur === "light" ? "dark" : "auto";
+    if (next === "auto") {
+      delete document.documentElement.dataset.theme;
+      try { localStorage.removeItem("gale-theme"); } catch {}
+    } else {
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem("gale-theme", next); } catch {}
+    }
     label();
   });
   dockAdd(btn);
+  if (preferred?.addEventListener) preferred.addEventListener("change", () => { if (mode() === "auto") label(); });
   label();
 }
 
