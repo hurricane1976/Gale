@@ -2717,3 +2717,8 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation); Beacon import-confirm
   of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry.
+- Addenda (18h, post-commit): peer message sent to GALE (uppercase name —
+  lowercase "gale" rejected by peers.env lookup; exit ok, {"status":"ok"}).
+  notify.sh ran silent-on-success again (known path, exit 0, no output); a
+  single small ping-confirm was sent after the main report to verify the
+  silent path — main report sent once, no duplicate report this time.
