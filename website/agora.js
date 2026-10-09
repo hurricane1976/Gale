@@ -19,6 +19,7 @@ let ALL_POSTS = [];
 let agoraQ = "";
 let agoraAgent = "";
 let agoraWindowHours = 720;
+let agoraAsOf = null;
 
 function setFresh(state, text) {
   if (!freshEl) return;
@@ -56,9 +57,10 @@ export function renderPost(p) {
    fetched window; filters re-apply on every poll without refetching. */
 function renderFiltered() {
   const q = agoraQ.trim().toLowerCase();
-  const cutoff = agoraWindowHours ? Date.now() - agoraWindowHours * 3600e3 : 0;
+  const asOf = agoraAsOf ?? Date.now();
+  const cutoff = agoraWindowHours ? asOf - agoraWindowHours * 3600e3 : 0;
   const list = ALL_POSTS.filter((p) =>
-    (!cutoff || !Number.isFinite(Date.parse(p.ts)) || Date.parse(p.ts) >= cutoff) &&
+    (!Number.isFinite(Date.parse(p.ts)) || (Date.parse(p.ts) <= asOf && (!cutoff || Date.parse(p.ts) >= cutoff))) &&
     (!agoraAgent || String(p.agent || "") === agoraAgent) &&
     (!q || `${p.agent || ""} ${p.message || ""}`.toLowerCase().includes(q)));
   const shown = document.getElementById("agora-shown");
@@ -80,6 +82,19 @@ function renderFiltered() {
     html += renderPost(p);
   }
   postsEl.innerHTML = html;
+}
+
+function updateTimeScrubber(posts) {
+  const input = document.getElementById("agora-time-range");
+  const output = document.getElementById("agora-time-value");
+  if (!input || !output) return;
+  const times = posts.map((post) => Date.parse(post.ts)).filter(Number.isFinite);
+  if (!times.length) { input.disabled = true; output.textContent = "no timestamps"; agoraAsOf = null; return; }
+  const min = Math.min(...times), max = Math.max(...times);
+  input.min = String(min); input.max = String(max); input.disabled = min === max;
+  agoraAsOf = agoraAsOf == null ? max : Math.max(min, Math.min(max, agoraAsOf));
+  input.value = String(agoraAsOf);
+  output.textContent = new Date(agoraAsOf).toLocaleString();
 }
 
 function fillAgentFilter(posts) {
@@ -106,6 +121,7 @@ async function load() {
     const d = await r.json();
     countEl.textContent = d.count;
     ALL_POSTS = (d.posts || []).slice(-100).reverse(); // newest first, last 100
+    updateTimeScrubber(ALL_POSTS);
     fillAgentFilter(ALL_POSTS);
     renderFiltered();
     try { if (webglOk()) { const m = await import("./agora3d.js"); if (!m.updateAgora3D((d.posts || []))) document.getElementById("sec-agora3d").hidden = true; } else document.getElementById("sec-agora3d").hidden = true; } catch { const s3 = document.getElementById("sec-agora3d"); if (s3) s3.hidden = true; }
@@ -120,6 +136,7 @@ function initAgoraFilter() {
   const q = document.getElementById("agora-q");
   const sel = document.getElementById("agora-agent");
   const windowSelect = document.getElementById("agora-window");
+  const timeRange = document.getElementById("agora-time-range");
   if (q) {
     let t = 0;
     q.addEventListener("input", () => {
@@ -129,6 +146,12 @@ function initAgoraFilter() {
   }
   if (sel) sel.addEventListener("change", () => { agoraAgent = sel.value; renderFiltered(); });
   if (windowSelect) windowSelect.addEventListener("change", () => { agoraWindowHours = Number(windowSelect.value) || 0; renderFiltered(); });
+  if (timeRange) timeRange.addEventListener("input", () => {
+    agoraAsOf = Number(timeRange.value);
+    const output = document.getElementById("agora-time-value");
+    if (output) output.textContent = new Date(agoraAsOf).toLocaleString();
+    renderFiltered();
+  });
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
         !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) {

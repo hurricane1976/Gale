@@ -1631,6 +1631,9 @@ html[data-contrast="high"] .ops-panel { border-color: var(--line-strong); }
   background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px;
   color: var(--text); padding: 8px 10px; font-size: 0.85rem; max-width: 200px;
 }
+.agora-time-scrub { display: flex; align-items: center; gap: 8px; min-width: min(100%, 320px); color: var(--text-dim); font-size: .78rem; }
+.agora-time-scrub input { flex: 1; min-width: 90px; }
+.agora-time-scrub output { min-width: 130px; color: var(--text-faint); }
 .agora-day { font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 8px; }
 
 /* ---- reduced-data mode (improvements #8): canvases + decorative layers
