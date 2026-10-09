@@ -116,7 +116,7 @@ function rum() {
     ["LOAD", "Page load", 4000, 8000, "ms", true], ["LONGTASK", "Long tasks", 50, 100, "ms", false],
     ["RESOURCE_KB", "First party transfer", 700, 1400, "KB", true], ["RESOURCE_SLOW", "Slow first party requests", 0, 2, "count", false],
     ["JS_ERROR", "JavaScript errors", 0, 1, "count", false], ["ASSET_ERROR", "Asset errors", 0, 1, "count", false],
-    ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
+    ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["IMAGE_DECODE_ERROR", "Image decode failures", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
     ["WEBGL_LOSS", "WebGL context loss", 0, 1, "events", false], ["OFFLINE", "Offline events", 0, 1, "events", false],
     ["SCENE_START", "3D scene starts", 999999, 999999, "events", false], ["SCENE_FALLBACK", "3D scene fallbacks", 0, 1, "events", false],
     ["API_HTTP_ERROR", "API HTTP errors", 0, 1, "responses", false], ["API_4XX", "API client errors", 0, 1, "responses", false],
@@ -186,6 +186,12 @@ async function clientRuntime() {
   items.push(tile("Service-worker update", swState, swDetail, /waiting|installing/i.test(swState) ? "warn" : /active/i.test(swState) ? "ok" : "unknown"));
   items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
   items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
+  const canvas2d = !!document.createElement("canvas").getContext("2d");
+  items.push(tile("2D canvas", canvas2d ? "Available" : "Unavailable", "Used by particle, weather-sky, and fallback scenes.", canvas2d ? "ok" : "unknown"));
+  items.push(tile("Scene visibility observers", typeof IntersectionObserver === "function" ? "Available" : "Unavailable", "Pauses off-screen scene rendering when supported.", typeof IntersectionObserver === "function" ? "ok" : "warn"));
+  items.push(tile("Responsive resize observer", typeof ResizeObserver === "function" ? "Available" : "Unavailable", "Keeps charts and 3D viewports sized to their panels.", typeof ResizeObserver === "function" ? "ok" : "warn"));
+  const dataSaver = !!navigator.connection?.saveData;
+  items.push(tile("Data saver preference", dataSaver ? "Enabled" : navigator.connection ? "Off" : "Not exposed", "Scene quality may be reduced when this browser preference is enabled.", dataSaver ? "ok" : "unknown"));
   const heap = performance.memory;
   if (heap && Number.isFinite(heap.usedJSHeapSize) && Number.isFinite(heap.jsHeapSizeLimit)) {
     const heapPct = heap.usedJSHeapSize / Math.max(1, heap.jsHeapSizeLimit) * 100;

@@ -65,6 +65,25 @@
       const target = e.target;
       if (target && target.tagName === "IMG") push("IMAGE_ERROR", 1, "count");
     }, true);
+    const decodedImageSrc = new WeakMap();
+    const inspectImageDecode = (img) => {
+      if (!img || img.tagName !== "IMG" || !img.complete || !img.naturalWidth || typeof img.decode !== "function") return;
+      let src = "";
+      try { const url = new URL(img.currentSrc || img.src, location.href); if (url.origin !== location.origin) return; src = url.pathname; } catch { return; }
+      if (!src || decodedImageSrc.get(img) === src) return;
+      decodedImageSrc.set(img, src);
+      img.decode().catch(() => push("IMAGE_DECODE_ERROR", 1, "count"));
+    };
+    const inspectLoadedImages = () => [...document.images].forEach(inspectImageDecode);
+    addEventListener("load", inspectLoadedImages, { once: true });
+    document.addEventListener("load", (event) => inspectImageDecode(event.target), true);
+    if (window.MutationObserver && document.documentElement) {
+      new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => {
+        if (node.nodeType !== 1) return;
+        if (node.tagName === "IMG") inspectImageDecode(node);
+        node.querySelectorAll?.("img").forEach(inspectImageDecode);
+      }))).observe(document.documentElement, { childList: true, subtree: true });
+    }
     if (window.EventSource) {
       const NativeEventSource = window.EventSource;
       window.EventSource = class extends NativeEventSource {
