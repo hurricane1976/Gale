@@ -17,6 +17,7 @@ let SNAP = null;
 let HIST = null;
 let GPU = null;
 let GPUReceivedAt = 0;
+let previousGpuMemory = new Map();
 let O3D;                   // undefined = not tried, null = unavailable (no WebGL), object = running
 let PULLING = false;
 let THREAD = [];
@@ -258,8 +259,13 @@ function renderGpu(g) {
     box.innerHTML = `<div class="gpu-empty gpu-err">${esc(err)}</div>`;
     return;
   }
+  const currentGpuMemory = new Map(g.gpus.map((gpu, i) => [gpu.index ?? i, Number(gpu.mem_used_mb)]).filter(([, value]) => Number.isFinite(value)));
   const parts = g.gpus.map((gpu, i) => {
     const name = gpu.name || `gpu ${gpu.index ?? i}`;
+    const gpuIndex = gpu.index ?? i;
+    const previousMemory = previousGpuMemory.get(gpuIndex), currentMemory = currentGpuMemory.get(gpuIndex);
+    const memoryMotion = previousMemory != null && currentMemory != null && previousMemory !== currentMemory
+      ? currentMemory > previousMemory ? " gpu-memory-up" : " gpu-memory-down" : "";
     const memPct = gpu.mem_used_mb != null && gpu.mem_total_mb ? (gpu.mem_used_mb / gpu.mem_total_mb) * 100 : null;
     const tiles = [
       gpuTile("VRAM", `${gpu.mem_used_mb ?? "\u2013"} / ${gpu.mem_total_mb ?? "?"} MB`, "video memory", heat(memPct, 85, 95)),
@@ -271,7 +277,6 @@ function renderGpu(g) {
       gpuBar("VRAM", gpu.mem_total_mb ? (gpu.mem_used_mb || 0) / gpu.mem_total_mb * 100 : 0, `${gpu.mem_used_mb ?? 0} / ${gpu.mem_total_mb ?? "?"} MB`, true),
       gpuBar("Power draw", gpu.power_limit_w ? (gpu.power_w || 0) / gpu.power_limit_w * 100 : 0, `${gpu.power_w ?? "\u2013"} W`),
     ];
-    const gpuIndex = gpu.index ?? i;
     const utilSeries = (HIST?.series || []).filter((sample) => sample.reachable).map((sample) => {
       const historical = sample.gpu?.gpus?.find((entry) => entry.index === gpuIndex) || sample.gpu?.gpus?.[i];
       return historical && Number.isFinite(historical.util_pct) ? historical.util_pct : null;
@@ -279,7 +284,7 @@ function renderGpu(g) {
     const utilSpark = utilSeries.length > 1
       ? `<div class="gpu-sparkrow"><span class="mono-dim">24h utilization</span><svg viewBox="0 0 100 22" role="img" aria-label="GPU ${esc(name)} utilization history, last 24 hours"><polyline points="${utilSeries.map((value, point) => `${(point / (utilSeries.length - 1) * 100).toFixed(1)},${(20 - clamp(value, 0, 100) / 100 * 18).toFixed(1)}`).join(" ")}"/></svg></div>`
       : "";
-    return `<div class="gpu-card">
+    return `<div class="gpu-card${memoryMotion}">
       <div class="gpu-card-head"><span class="gpu-name">${esc(name)}</span>${g.stale ? '<span class="gpu-stale">stale</span>' : ""}</div>
       <div class="gpu-tilegrid">${tiles.join("")}</div>
       <div class="gpu-bars">${bars.join("")}</div>
@@ -287,6 +292,7 @@ function renderGpu(g) {
     </div>`;
   });
   box.innerHTML = `<div class="gpu-grid">${parts.join("")}</div>`;
+  previousGpuMemory = currentGpuMemory;
   const sampleLabel = `received ${new Date(GPUReceivedAt || Date.now()).toLocaleTimeString()}`;
   setText($("gpu-sample-time"), sampleLabel);
   setText($("gpu-3d-sample-time"), sampleLabel);
@@ -993,6 +999,7 @@ async function loadGpu() {
     renderGpu(GPU);
     update3D();
   } catch {
+    previousGpuMemory = new Map();
     const box = $("gpu-wrap");
     if (box) box.innerHTML = '<div class="gpu-empty gpu-err">gpu feed unreachable</div>';
   }
