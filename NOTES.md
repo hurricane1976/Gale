@@ -5020,3 +5020,86 @@ bump); watch GLM/OpenCode Go path + ~$0.10/waking spend each waking;
 watch beacon 30d window (~2026-10-24, ~15 days out); ASK.md awaiting
 operator word on PONIENTE + remote-22 + 10-05 re-migration + 10-06
 flip closeout + 10-08 opencode.json flip.
+
+## 2026-10-09T09:20Z — Scheduled waking (all green; Ollama upstream v0.40.2 noted)
+
+Context: 09:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`);
+waking landed 09:20:35Z, on schedule. This waking runs
+`opencode/glm-5.3-flash` (GLM 5.3 Flash via OpenCode Go,
+operator-directed 2026-10-07) — waking succeeding = GLM path healthy
+end-to-end. `check_replies.sh`: no new operator messages.
+
+Host: up 10d 17:47, load 0.62/0.52/0.61 (normal shared-host range),
+disk 59% (55G/98G, 39G free — flat vs 59% at 03:20Z, far from 80%), RAM
+8.8G used / 49G available of 58G, swap idle. `sirocco-peer` +
+tailscaled active; 18 listeners in the 8787-8800 range (14 tailnet peer
+ports + localhost host services). Cron re-audit: repo `sirocco.cron`
+`20 3,9,15,21` == live crontab line — lock-step holds (6th consecutive
+confirmation).
+
+Backup: `backups/sirocco-20261009T092045Z.tar.gz` (144K, 57 entries,
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json
+present).
+
+Dependencies (all green, live probes ~09:21Z):
+- OpenRouter: site 200 in 0.10s; /api/v1/models 200 in 0.06s.
+- OpenCode Zen: opencode.ai 200 in 0.13s — GLM/OpenCode Go endpoint
+  reachable; this waking executing on glm-5.3-flash is the end-to-end
+  proof (primary dependency, healthy).
+- GitHub: api.github.com 200 in 0.05s; status API (www host) "All
+  Systems Operational". 10-05 Pages incident stays resolved.
+- Tailscale: status.tailscale.com 200 in 0.56s; daemon active; 13-node
+  set (gale-agent, 6x beacon-* [prism active direct, rest idle],
+  gemini/mountain/ubuntu agents active direct, josh-linux; ipad174
+  offline 2d + josh-iphone18 offline 11h — operator personal devices,
+  no fleet lane depends on them). No disconnects.
+- LAN Ollama runner 192.168.1.197:11434 UP, `{"version":"0.40.0"}`,
+  qwen3.8:27b resident (no longer primary — nothing on this host
+  consumes it; healthy).
+
+Dependency changes: **Ollama upstream v0.40.2 (published
+2026-10-08T16:53Z)** — first release since the v0.40.1 note at 03:20Z;
+LAN runner now TWO patches behind (v0.40.0 vs v0.40.2). Informational
+only — nothing on this host consumes the runner as primary; any bump
+is operator/Gale's call. opencode: local binary 1.18.35 = upstream
+latest v1.18.35 (2026-10-06, anomalyco/opencode) — in sync, no change.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings): beaconwake.com
+notAfter 2026-11-23 (~45d), tidalwake.org 2026-11-28 (~50d),
+mountainwake.org 2026-12-04 (~56d). SAME certs since baseline (no
+renewal). BEACON 30d window opens ~2026-10-24 (~15 days out) — same
+watch.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, 34 NAME blocks, same set verified by name (8 mesh + CHINOOK
++ 21 remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). Nothing minted
+or installed. Config state: opencode.json mtime unchanged (10-08
+13:32:31Z as-found muse line, still inert — wake.sh pins glm); no NEW
+out-of-band changes. ASK.md: PONIENTE + remote-22 + 10-05 re-migration
++ 10-06 flip closeout + 10-08 opencode.json flip items still awaiting
+operator word (OSTRO + LEVANTE resolved 09-26).
+
+Inbox: 14/14 filed to `processed/` (1324 total). 4x MOUNTAIN (3x
+Rule-7 sweeps 06:00Z + 1x automated latency check; the 06:22Z body
+again self-labeled "mesa routine mesh sweep" under MOUNTAIN's identity
+— known MOUNTAIN-vs-MESA label quirk, stable pattern, data-only, no
+action) + 1x genuine MESA link-verify 06:22Z, 2x MEADOW census ("Meadow
+(agent, GLM Flash)" signature), 2x DELTA link-verify, 2x HARBOR
+link-verify, 1x each VISTA/RIVER/CANYON scribe pass #140. All explicit
+"no reply needed, data only". No replies sent, nothing minted or
+installed.
+
+Spend: 2026-10-09 entry 03:22Z $0.1204 (GLM Flash waking; ~$0.10-0.12/
+waking as flagged to operator at 09:20Z on 10-08 — no alert threshold
+crossed). This waking's own entry appends at run end.
+
+Runner/portability note for Tempest: `opencode/glm-5.3-flash` via
+OpenCode Go normal this waking (6th consecutive clean slot on GLM);
+LAN runner v0.40.0 vs upstream v0.40.2 (gap 0.0.2, unchanged
+recommendation: operator-call); no runner/model anomalies.
+
+Next: watch Ollama v0.40.2 vs runner v0.40.0 (operator/Gale call on
+bump); watch GLM/OpenCode Go path + ~$0.10/waking spend each waking;
+watch beacon 30d window (~2026-10-24, ~15 days out); ASK.md awaiting
+operator word on PONIENTE + remote-22 + 10-05 re-migration + 10-06
+flip closeout + 10-08 opencode.json flip.
