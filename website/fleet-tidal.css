@@ -162,6 +162,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
   background: #06080c; margin-bottom: 8px; position: relative; overflow-x: auto; overflow-y: hidden;
   box-shadow: 0 0 0 1px rgba(63, 199, 255, 0.07), 0 24px 60px -20px rgba(63, 199, 255, 0.2); }
 .fleet-topo-wrap .fleet-topo-svg { z-index: 2; width: 100%; height: auto; display: block; position: relative; }
+.topo-map-status { position:absolute; z-index:4; top:10px; left:12px; max-width:calc(100% - 150px); padding:5px 9px; border:1px solid rgba(63,199,255,.28); border-radius:8px; background:rgba(3,9,16,.82); color:var(--text-dim); font: .68rem var(--font-ibm-mono),monospace; backdrop-filter:blur(8px); pointer-events:none; }
 .fleet-aurora { z-index: 0; pointer-events: none; position: absolute; inset: -20%;
   background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(63, 199, 255, 0.16), rgba(133, 147, 240, 0.15),
     rgba(255, 46, 196, 0.13), rgba(15, 216, 189, 0.13), rgba(124, 143, 224, 0.13), rgba(63, 199, 255, 0.16));
@@ -176,6 +177,9 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .topo-node { transform-origin: 50%; transform-box: fill-box; cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s; }
 .topo-node:hover, .topo-node:focus-visible { transform: scale(1.12); outline: none; }
+.topo-node.roster-search-dim { opacity:.22; filter:saturate(.25); }
+.topo-node.roster-search-hit { opacity:1; filter:drop-shadow(0 0 8px var(--node-color,var(--teal))); }
+.topo-node.roster-search-hit .topo-node-bg { stroke-opacity:1; stroke-width:2.5px; }
 .topo-node:focus-visible .topo-node-bg, .topo-node:hover .topo-node-bg {
   fill: var(--surface-2); stroke: var(--node-color, var(--teal)); stroke-opacity: 1;
   filter: url(#fleetGlow) drop-shadow(0 0 14px var(--node-color, var(--teal-dim))); }

@@ -69,6 +69,7 @@ refreshEffects();
 (function initRosterFilter() {
   const q = document.getElementById("roster-q");
   const count = document.getElementById("roster-count2");
+  const mapStatus = document.getElementById("topo-map-status");
   if (!q) return;
   const apply = () => {
     const needle = q.value.trim().toLowerCase();
@@ -85,6 +86,17 @@ refreshEffects();
       g.hidden = gShown === 0;
     });
     if (count) count.textContent = needle ? `${shown}/${total} agents` : "";
+    const mapNodes = [...topo.querySelectorAll(".topo-node")];
+    let mapMatches = 0;
+    mapNodes.forEach((node) => {
+      const d = node.dataset;
+      const hay = [d.name, d.host, d.model, d.roleDesc].join(" ").toLowerCase();
+      const hit = !needle || hay.includes(needle);
+      node.classList.toggle("roster-search-hit", !!needle && hit);
+      node.classList.toggle("roster-search-dim", !!needle && !hit);
+      if (hit) mapMatches++;
+    });
+    if (mapStatus) mapStatus.textContent = needle ? `${mapMatches} topology matches highlighted · ${shown}/${total} roster entries` : `${mapNodes.length} agents · 4 host clusters`;
   };
   q.addEventListener("input", apply);
   q.addEventListener("keydown", (e) => { if (e.key === "Escape") { q.value = ""; apply(); } });
