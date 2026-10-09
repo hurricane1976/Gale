@@ -1,4 +1,4 @@
-import { boot, esc, setHTML, setText, tracedFetch } from "./shared.js";
+import { boot, esc, setHTML, setText, tracedFetch, downloadFile } from "./shared.js";
 import { level, freshness } from "./reliability-state.js";
 boot();
 const $ = (id) => document.getElementById(id);
@@ -178,6 +178,55 @@ async function clientRuntime() {
   items.push(tile("Web fonts", fontState === "loaded" ? "Ready" : fontState, "Shared Inter, Fraunces, and JetBrains Mono font set.", fontState === "loaded" ? "ok" : fontState === "loading" ? "warn" : "unknown"));
   setHTML($("client-runtime"), items.join(""));
 }
+function buildLocalDiagnosticsBundle() {
+  const samples = window.__galeRUM || [];
+  const pages = new Map(), metrics = new Map();
+  for (const sample of samples) {
+    if (/^[a-z0-9._-]+$/i.test(sample.page || "")) {
+      const page = pages.get(sample.page) || { visits: 0, samples: 0, viewports: new Set() };
+      page.samples++;
+      if (sample.metric === "PAGE_VIEW") page.visits += sample.value || 1;
+      if (sample.viewport) page.viewports.add(sample.viewport);
+      pages.set(sample.page, page);
+    }
+    if (!/^[A-Z_]+$/.test(sample.metric || "") || !Number.isFinite(sample.value)) continue;
+    const metric = metrics.get(sample.metric) || { values: [], unit: /^[A-Za-z0-9 %._-]+$/.test(sample.unit || "") ? sample.unit : "" };
+    metric.values.push(sample.value);
+    metrics.set(sample.metric, metric);
+  }
+  const metricSummary = {};
+  for (const [name, metric] of metrics) {
+    const values = metric.values.slice().sort((a, b) => a - b);
+    metricSummary[name] = { count: values.length, unit: metric.unit, min: values[0], p95: values[Math.min(values.length - 1, Math.ceil(values.length * .95) - 1)], max: values.at(-1) };
+  }
+  return {
+    schema: "gale-browser-diagnostics/v1",
+    created_at: new Date().toISOString(),
+    scope: "local browser summary; not uploaded",
+    privacy: "No URLs, request paths, query strings, page text, referrers, or individual event timestamps are included.",
+    sample_count: samples.length,
+    pages: Object.fromEntries([...pages.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([page, row]) => [page, { visits: row.visits, samples: row.samples, viewports: [...row.viewports].sort() }])),
+    metrics: metricSummary,
+    capabilities: {
+      webgl: typeof WebGLRenderingContext === "function",
+      webgpu: !!navigator.gpu,
+      service_worker: !!navigator.serviceWorker,
+      reduced_motion: !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+      viewport: innerWidth < 600 ? "phone" : innerWidth < 1000 ? "tablet" : "desktop",
+    },
+  };
+}
+$("rum-export-preview")?.addEventListener("click", () => {
+  const bundle = buildLocalDiagnosticsBundle();
+  setText($("rum-export-summary"), `${bundle.sample_count} local samples · ${Object.keys(bundle.pages).length} pages · ${Object.keys(bundle.metrics).length} metrics. The bundle contains page/viewport counts, metric ranges, and browser capabilities. It excludes URLs, request paths, query strings, content, and per-event timestamps.`);
+  const details = $("rum-export-details");
+  details.hidden = false; details.open = true;
+});
+$("rum-export-download")?.addEventListener("click", () => {
+  const bundle = buildLocalDiagnosticsBundle();
+  downloadFile("gale-browser-diagnostics.json", JSON.stringify(bundle, null, 2), "application/json;charset=utf-8");
+  setText($("rum-action-status"), "Scrubbed local diagnostic summary downloaded.");
+});
 $("sw-check")?.addEventListener("click", async (e) => {
   const button = e.currentTarget;
   button.disabled = true; button.textContent = "Checking…";
