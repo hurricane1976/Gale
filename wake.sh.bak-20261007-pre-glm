@@ -76,7 +76,7 @@ CLAUDE_EXIT=$?
 # Automatic fallback (operator-directed): Claude failed -- one attempt on
 # the ollama fallback via opencode before alerting. A fallback success
 # counts as success (no shell alert).
-FALLBACK_MODEL="opencode/glm-5.3-flash"
+FALLBACK_MODEL="ollama/qwen3.8:27b"
 if [ "$CLAUDE_EXIT" -ne 0 ]; then
     if command -v opencode >/dev/null 2>&1; then
         echo "wake.sh: claude (sonnet) failed (exit $CLAUDE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"

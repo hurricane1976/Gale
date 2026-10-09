@@ -16,7 +16,7 @@ cd /home/agent/agent || exit 1
 export PATH="$HOME/.local/bin:$HOME/.opencode/bin:/usr/local/bin:/usr/bin:/bin"
 
 # Automatic fallback (operator-directed): if the Claude session fails, retry
-# once on the ollama fallback via opencode before alerting.
+# once on muse-spark-1.3 free via opencode before alerting.
 
 mkdir -p logs
 
@@ -74,9 +74,9 @@ claude_run >"$JSON_FILE" 2>"$LOG_FILE"
 CLAUDE_EXIT=$?
 
 # Automatic fallback (operator-directed): Claude failed -- one attempt on
-# the ollama fallback via opencode before alerting. A fallback success
+# muse-spark-1.3 free via opencode before alerting. A fallback success
 # counts as success (no shell alert).
-FALLBACK_MODEL="opencode/glm-5.3-flash"
+FALLBACK_MODEL="opencode/muse-spark-1.3-contributor-free"
 if [ "$CLAUDE_EXIT" -ne 0 ]; then
     if command -v opencode >/dev/null 2>&1; then
         echo "wake.sh: claude (sonnet) failed (exit $CLAUDE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
