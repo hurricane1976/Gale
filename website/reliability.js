@@ -90,6 +90,7 @@ function rum() {
     ["API_LATENCY", "API response time", 800, 1800, "ms", true], ["API_SLOW", "Slow API responses", 0, 2, "responses", false], ["SSE_ERROR", "Live stream errors", 0, 2, "events", false],
     ["SSE_OPEN", "Live stream opens/reconnects", 999, 999, "events", false],
     ["SCENE_FPS", "3D scene frame rate", 50, 30, "fps", true],
+    ["FONT_READY", "Font readiness", 1200, 3000, "ms", true], ["FONT_ERROR", "Font load errors", 0, 1, "count", false],
   ];
   const cards = specs.map(([name, label, good, warn, unit, percentile]) => {
     const entries = samples.filter((s) => s.metric === name && Number.isFinite(s.value));
@@ -138,6 +139,8 @@ async function clientRuntime() {
   items.push(tile("Service-worker update", swState, swDetail, /waiting|installing/i.test(swState) ? "warn" : /active/i.test(swState) ? "ok" : "unknown"));
   items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
   items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
+  const fontState = document.fonts ? document.fonts.status : "unsupported";
+  items.push(tile("Web fonts", fontState === "loaded" ? "Ready" : fontState, "Shared Inter, Fraunces, and JetBrains Mono font set.", fontState === "loaded" ? "ok" : fontState === "loading" ? "warn" : "unknown"));
   setHTML($("client-runtime"), items.join(""));
 }
 $("sw-check")?.addEventListener("click", async (e) => {

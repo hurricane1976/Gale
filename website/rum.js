@@ -33,6 +33,11 @@
     observe("event", (es) => { const worst = Math.max(0, ...es.map((e) => e.duration || 0)); if (worst) push("INP", worst, "ms approx"); }, { durationThreshold: 40 });
     observe("paint", (es) => { const e = es.find((x) => x.name === "first-contentful-paint"); if (e) push("FCP", e.startTime); });
     observe("longtask", (es) => { for (const e of es) push("LONGTASK", e.duration); });
+    if (document.fonts) {
+      const fontsStarted = performance.now();
+      document.fonts.ready.then(() => push("FONT_READY", performance.now() - fontsStarted));
+      document.fonts.addEventListener("loadingerror", () => push("FONT_ERROR", 1, "count"));
+    }
     addEventListener("error", (e) => { if (e instanceof ErrorEvent) push("JS_ERROR", 1, "count"); else if (e.target && e.target !== window) push("ASSET_ERROR", 1, "count"); }, true);
     addEventListener("unhandledrejection", () => push("REJECTION", 1, "count"));
     addEventListener("offline", () => push("OFFLINE", 1, "events"));
