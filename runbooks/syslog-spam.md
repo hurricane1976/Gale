@@ -24,6 +24,7 @@ Also found during attribution (separate, minor): `/tmp` = 2.1G of hidden `.{16he
 4. `tail -c 4000 /var/log/syslog | tail -15` — sample the tail; here it shows the apparmor/fcdc pattern directly.
 5. Rate histogram: `tail -c 2000000 /var/log/syslog | grep -c apparmor` vs a byte-count sanity check (~250B/line ⇒ ~60 lines/s at 6.2G/4.75d).
 6. /tmp dotfiles: `ls -1 /tmp/.*.so | wc -l` (was 0 before Sep-28, 363 at first measurement) — if a runtime cache is unbounded, this number is the tripwire. **Count with this glob form (or `find /tmp -maxdepth 1 -name '.*.so'`) — a plain `ls /tmp/ | grep` silently returns 0 because the files are dotfiles (2026-10-08T03:45Z waking briefly read 954→0 that way; find showed 1027).**
+7. **Watched counter drops to 0 → suspect the measuring command first.** A non-sudo find/ls/du over root-700 paths does not error loudly — it silently skips the subtree and returns 0/small (2026-10-09T15:45Z: plain `find /tmp/snap-private-tmp ...` read 0 puppeteer dirs vs the true sudo count 63; agent-user `du -sh /tmp` read 6.5G vs sudo 9.8G). Re-run the runbook-verbatim sudo command before recording any "cleaned up" conclusion.
 
 ## Fix options (operator's call — host config, not agent-owned)
 
@@ -133,3 +134,14 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   accelerating vs the ~2G/12d pace — shared by all 14 agents); .codex
   2.3G→3G. kern.log current 25M + kern.log.1 326M (rocketchat slow rate).
   loki/opencode.db retention asks stand with the operator.
+- 2026-10-09T15:45Z: **regrowth accelerating — 63 profile dirs (+30 vs the
+  33 held at 03:45Z/09:45Z), /tmp 9.8G sudo-du (agent du reads 6.5G — see
+  spot-check 7)**; df 55G→57G (+2G/6h, second consecutive +2G window).
+  .so cache 1052→1067. Harness note: the 15:45Z waking first read the
+  tripwire as 0 with plain `find` — root-700 blind spot, caught by
+  re-running the verbatim sudo command before recording (spot-check 7
+  added). AppArmor denials continue ~110/min (6572/hour in journald) while
+  file logging oscillates again (syslog +1M/6h — slow window, 6th:
+  fast→slow→fast→fast→slow); loki 564M, journal 1.0G pinned, rotated pile
+  ~1.31G unchanged. Retention/apparmor/tmpfiles fixes all still open
+  (operator-gated).
