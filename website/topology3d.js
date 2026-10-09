@@ -177,7 +177,7 @@ export function initTopology3D(opts = {}) {
   const hasPairing = nodes.some((n) => n.state);
 
   const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
-  if (!gl) { toggle.hidden = true; noteSceneChoice("WebGL is unavailable; the interactive SVG map remains active.", "webgl-unavailable"); return; }
+  if (!gl) { window.__galeRUMRecord?.("SCENE_INIT_FAILURE", 1, "events", "topology3d"); toggle.hidden = true; noteSceneChoice("WebGL is unavailable; the interactive SVG map remains active.", "webgl-unavailable"); return; }
 
   // --- simulation state: sphere-seeded positions settle into clusters ---
   const rng = mulberry32(0x6a1e);

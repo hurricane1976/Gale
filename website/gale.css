@@ -1005,6 +1005,14 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .wx-series-toggle i { display:inline-block; width:17px; height:3px; border-radius:2px; background:var(--series-color); }
 .wx-series-toggle .wx-legend-temp { --series-color:#ff7a5c; }
 .wx-series-toggle .wx-legend-precip { --series-color:var(--gust); background-image:linear-gradient(90deg,var(--series-color) 60%,transparent 60%); background-size:6px 3px; }
+.refresh-interval { margin-top:8px; }
+.refresh-interval-label { display:flex; justify-content:space-between; gap:8px; color:var(--text-faint); font:.67rem var(--font-mono); }
+.refresh-interval-label strong { color:var(--text-dim); }
+.refresh-interval-track { position:relative; height:8px; margin-top:8px; border-radius:6px; background:var(--line); overflow:visible; }
+.refresh-interval-track i { display:block; height:100%; max-width:100%; border-radius:6px; background:var(--ok); transition:width .3s ease; }
+.refresh-interval[data-level="warn"] .refresh-interval-track i { background:var(--warn); }
+.refresh-interval[data-level="crit"] .refresh-interval-track i { background:var(--crit,var(--flag-soft)); }
+.refresh-interval-track b { position:absolute; top:-3px; left:33.333%; width:2px; height:14px; background:var(--text); box-shadow:0 0 4px var(--text); }
 .wx-hourly {
   display: flex; gap: 4px; overflow-x: auto; padding: 10px 2px 4px;
   scrollbar-width: thin;

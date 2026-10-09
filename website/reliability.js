@@ -87,7 +87,7 @@ function rum() {
   const pageSummary = new Map();
   for (const sample of rangedSamples) {
     if (!sample.page) continue;
-    const row = pageSummary.get(sample.page) || { views: 0, errors: 0, assetErrors: 0, viewports: new Set(), canvas: null, svg: null, motion: null, images: null, imageDimsMissing: null, imageKB: null, last: 0 };
+    const row = pageSummary.get(sample.page) || { views: 0, errors: 0, assetErrors: 0, viewports: new Set(), canvas: null, svg: null, motion: null, images: null, imageDimsMissing: null, imageKB: null, last: 0, lastResponse: 0, lastGoodApi: 0 };
     if (sample.metric === "PAGE_VIEW") row.views += sample.value || 1;
     if (sample.metric === "JS_ERROR" || sample.metric === "REJECTION") row.errors += sample.value || 1;
     if (sample.metric === "ASSET_ERROR") row.assetErrors += sample.value || 1;
@@ -97,6 +97,8 @@ function rum() {
     if (sample.metric === "IMAGE_COUNT") row.images = sample.value;
     if (sample.metric === "IMAGE_DIMENSION_MISSING") row.imageDimsMissing = sample.value;
     if (sample.metric === "IMAGE_TRANSFER_KB") row.imageKB = sample.value;
+    if (sample.metric.startsWith("API_")) row.lastResponse = Math.max(row.lastResponse, sample.ts || 0);
+    if (sample.metric === "API_LATENCY") row.lastGoodApi = Math.max(row.lastGoodApi, sample.ts || 0);
     if (sample.viewport) row.viewports.add(sample.viewport);
     row.last = Math.max(row.last, sample.ts || 0);
     pageSummary.set(sample.page, row);
@@ -106,7 +108,9 @@ function rum() {
     const age = row.last ? `${Math.max(0, Math.round((Date.now() - row.last) / 60000))}m ago` : "unknown";
     const inventory = row.canvas == null ? "visual inventory pending" : `${row.canvas} canvases · ${row.svg ?? "?"} SVG charts · ${row.motion ?? "?"} running animations`;
     const imageInfo = row.images == null ? "image inventory pending" : `${row.images} first-party images · ${row.imageDimsMissing ?? "?"} missing dimensions · ${row.imageKB == null ? "?" : row.imageKB.toFixed(1)} KB transfer`;
-    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(page)}</span><span class="pill" data-level="${state}">${row.views} visits</span></div><span class="mono-dim">${row.errors} script/rejection errors · ${row.assetErrors} asset errors · ${esc([...row.viewports].sort().join(", ") || "viewport unknown")} · ${esc(inventory)} · ${esc(imageInfo)} · last activity ${age}</span></div>`;
+    const sampleAge = (ts) => ts ? `${Math.max(0, Math.round((Date.now() - ts) / 60000))}m ago` : "none stored";
+    const collector = `API last response ${sampleAge(row.lastResponse)} · last successful response ${sampleAge(row.lastGoodApi)}`;
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(page)}</span><span class="pill" data-level="${state}">${row.views} visits</span></div><span class="mono-dim">${row.errors} script/rejection errors · ${row.assetErrors} asset errors · ${esc([...row.viewports].sort().join(", ") || "viewport unknown")} · ${esc(inventory)} · ${esc(imageInfo)} · last activity ${age} · ${esc(collector)}</span></div>`;
   });
   setHTML($("rum-page-summary"), pageCards.length ? pageCards.join("") : '<p class="mini-note">No page history in this browser yet.</p>');
   const specs = [
@@ -119,7 +123,7 @@ function rum() {
     ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["IMAGE_DECODE_ERROR", "Image decode failures", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
     ["WEBGL_LOSS", "WebGL context loss", 0, 1, "events", false], ["OFFLINE", "Offline events", 0, 1, "events", false],
     ["SCENE_START", "3D scene starts", 999999, 999999, "events", false], ["SCENE_FALLBACK", "3D scene fallbacks", 0, 1, "events", false],
-    ["SCENE_SKIP", "Scenes skipped by browser preference or hardware", 0, 1, "events", false], ["SCENE_TIER", "Adaptive graphics quality tier", 1, 2, "tier (1=full)", true],
+    ["SCENE_SKIP", "Scenes skipped by browser preference or hardware", 0, 1, "events", false], ["SCENE_INIT_FAILURE", "Graphics scene initialization failures", 0, 1, "events", false], ["SCENE_TIER", "Adaptive graphics quality tier", 1, 2, "tier (1=full)", true],
     ["API_HTTP_ERROR", "API HTTP errors", 0, 1, "responses", false], ["API_4XX", "API client errors", 0, 1, "responses", false],
     ["API_5XX", "API server errors", 0, 1, "responses", false], ["API_NETWORK_ERROR", "API network failures", 0, 1, "failures", false],
     ["API_LATENCY", "API response time", 800, 1800, "ms", true], ["API_SLOW", "Slow API responses", 0, 2, "responses", false], ["SSE_ERROR", "Live stream errors", 0, 2, "events", false],
@@ -186,6 +190,12 @@ async function clientRuntime() {
   } catch { swState = "Unknown"; swDetail = "Registration status could not be read."; }
   items.push(tile("Service-worker update", swState, swDetail, /waiting|installing/i.test(swState) ? "warn" : /active/i.test(swState) ? "ok" : "unknown"));
   items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
+  let glCaps = null;
+  try {
+    const canvas = document.createElement("canvas"), gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    if (gl) glCaps = { version: typeof WebGL2RenderingContext === "function" && gl instanceof WebGL2RenderingContext ? "WebGL 2" : "WebGL 1", texture: gl.getParameter(gl.MAX_TEXTURE_SIZE), renderbuffer: gl.getParameter(gl.MAX_RENDERBUFFER_SIZE), viewport: [...gl.getParameter(gl.MAX_VIEWPORT_DIMS)] };
+  } catch {}
+  items.push(tile("WebGL graphics limits", glCaps ? `${glCaps.version} · ${glCaps.texture}px texture` : "Unavailable", glCaps ? `local limits · ${glCaps.renderbuffer}px renderbuffer · viewport ${glCaps.viewport.join(" × ")}` : "Scenes use 2D, CSS, SVG, or text fallbacks.", glCaps ? "ok" : "unknown"));
   items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
   const canvas2d = !!document.createElement("canvas").getContext("2d");
   items.push(tile("2D canvas", canvas2d ? "Available" : "Unavailable", "Used by particle, weather-sky, and fallback scenes.", canvas2d ? "ok" : "unknown"));

@@ -45,11 +45,11 @@ const mul = (a, b) => {
 
 export function mountBars3D(canvas, opts = {}) {
   const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
-  if (!gl) return null;
+  if (!gl) { window.__galeRUMRecord?.("SCENE_INIT_FAILURE", 1, "events", canvas.id || "bars3d"); return null; }
   let prog;
   try {
     prog = program(gl, VS, FS, "bars3d");
-  } catch { return null; }
+  } catch { window.__galeRUMRecord?.("SCENE_INIT_FAILURE", 1, "events", canvas.id || "bars3d"); return null; }
   const LITE = (matchMedia && matchMedia("(pointer: coarse)").matches) || innerWidth < 700;
   if (LITE) canvas.style.touchAction = "pan-y";
   /* runtime quality: measured fps shrinks backing resolution (and skips
@@ -71,7 +71,7 @@ export function mountBars3D(canvas, opts = {}) {
 
   // overlay: edge labels + tooltip (textContent only)
   const host = canvas.parentElement;
-  const hud = createGraphicsHud(canvas, "bars3d", q);
+  const hud = createGraphicsHud(canvas, canvas.id || "bars3d", q);
   const layer = document.createElement("div");
   layer.setAttribute("aria-hidden", "true");
   layer.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2";

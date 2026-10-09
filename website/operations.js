@@ -3,17 +3,29 @@ boot();
 const $ = (id) => document.getElementById(id);
 let busy = false;
 let opsNextRefreshAt = 0, opsGeneratedAt = "", opsProblem = "";
+let opsLastSuccessAt = 0, opsObservedIntervalS = null;
 let severityFilter = "";
 let knownIncidentIds = null;
 const LIFECYCLE_STAGES = ["investigating","root-caused","remediated","verified"];
 const STALE_KINDS = new Set(["agent-stale","agent-missed-wake","inference-collector-stale","inference-monitor-stale"]);
 let agentFilter = ""; // "" = all
 function paintOpsFreshness() {
+  paintRefreshMonitor();
   if (!opsGeneratedAt || !$("ops-freshness")) return;
   const remaining = Math.max(0, Math.ceil((opsNextRefreshAt - Date.now()) / 1000));
   setText($("ops-freshness"), opsProblem
     ? `Monitoring unavailable: ${opsProblem}; last collected ${opsGeneratedAt} · retry in ${remaining}s.`
     : `Collected ${opsGeneratedAt} · next refresh in ${remaining}s`);
+}
+function paintRefreshMonitor() {
+  const el = $("ops-refresh-monitor");
+  if (!el) return;
+  if (!opsLastSuccessAt) { el.textContent = "Waiting for successful reads…"; return; }
+  const age = Math.max(0, Math.floor((Date.now() - opsLastSuccessAt) / 1000));
+  const level = opsObservedIntervalS == null ? "unknown" : opsObservedIntervalS <= 40 ? "ok" : opsObservedIntervalS <= 65 ? "warn" : "crit";
+  const observed = opsObservedIntervalS == null ? "collecting baseline" : `${opsObservedIntervalS.toFixed(1)}s observed`;
+  el.dataset.level = level;
+  el.innerHTML = `<div class="refresh-interval-label"><strong>Expected 30s</strong><span>${observed} · last success ${age}s ago${opsProblem ? " · latest request failed" : ""}</span></div><div class="refresh-interval-track" role="img" aria-label="Expected refresh 30 seconds; observed ${esc(observed)}"><i style="width:${Math.min(100, (opsObservedIntervalS || 0) / 90 * 100)}%"></i><b aria-hidden="true"></b></div>`;
 }
 function renderSeverityHistogram(alerts = []) {
   const groups = [["", "All"], ["crit", "Critical"], ["warn", "Warning"], ["info", "Info"], ["unknown", "Unknown"]];
@@ -42,6 +54,9 @@ async function refresh() {
     const [data, incidents, tasks, exporters, history] = await Promise.all([get("api/fleet/reliability"), get("api/fleet/incidents"),get("api/fleet/tasks"),get("api/exporter-coverage.json").catch(()=>null),get("api/fleet/alerts/history").catch(()=>null)]);
     const c=data.coverage;
     opsGeneratedAt = data.generated_at;
+    const successAt = Date.now();
+    if (opsLastSuccessAt) opsObservedIntervalS = (successAt - opsLastSuccessAt) / 1000;
+    opsLastSuccessAt = successAt;
     opsNextRefreshAt = Date.now() + 30000;
     opsProblem = "";
     paintOpsFreshness();
