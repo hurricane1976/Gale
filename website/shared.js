@@ -811,6 +811,12 @@ export function initThemeEngine() {
         <input type="range" id="fx-hue" min="-40" max="40" step="1" value="${fx.hue}"></label>
       <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient glow
         <input type="range" id="fx-glow" min="40" max="160" step="5" value="${Math.round(fx.glow * 100)}"></label>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px" aria-label="Display presets">
+        <button type="button" class="mini-toggle fx-preset" data-hue="0" data-glow="0.65">calm</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="-18" data-glow="1.15">aurora</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="22" data-glow="1.35">cinema</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="8" data-glow="0.9">warm</button>
+      </div>
     </div>`;
   dockAdd(box);
   const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"),
@@ -824,6 +830,18 @@ export function initThemeEngine() {
   };
   hue.addEventListener("input", save);
   glow.addEventListener("input", save);
+  box.querySelectorAll(".fx-preset").forEach((preset) => preset.addEventListener("click", () => {
+    fx.hue = +preset.dataset.hue;
+    fx.glow = +preset.dataset.glow;
+    hue.value = fx.hue;
+    glow.value = Math.round(fx.glow * 100);
+    auto = false;
+    autoBox.checked = false;
+    store.set("gale-fx", fx);
+    store.set("gale-fx-auto", false);
+    apply(fx);
+    paintTod();
+  }));
   autoBox.addEventListener("change", () => {
     auto = autoBox.checked;
     store.set("gale-fx-auto", auto);
