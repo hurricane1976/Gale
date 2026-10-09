@@ -431,6 +431,7 @@ function initMap() {
     return;
   }
   map = L.map("wx-map", { scrollWheelZoom: true }).setView([loc.lat, loc.lon], 8);
+  L.control.scale({ position: "bottomleft", metric: true, imperial: true, maxWidth: 120 }).addTo(map);
   // NOTE: CARTO basemaps (basemaps.cartocdn.com) now gate tiles behind an
   // API key ("Zoom Level Not Supported / API KEY REQUIRED" error tiles), so
   // we use Esri's keyless dark-gray canvas + imagery instead.
