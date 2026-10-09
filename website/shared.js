@@ -822,11 +822,17 @@ export function initThemeEngine() {
   const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"),
         autoBox = box.querySelector("#fx-auto"), tod = box.querySelector("#fx-tod");
   const paintTod = () => { if (tod) tod.textContent = auto ? `(${TOD(new Date().getHours()).name})` : ""; };
+  const paintPresets = () => box.querySelectorAll(".fx-preset").forEach((preset) => {
+    const selected = !auto && +preset.dataset.hue === +fx.hue && +preset.dataset.glow === +fx.glow;
+    preset.setAttribute("aria-pressed", String(selected));
+    preset.style.borderColor = selected ? "var(--accent, #65d6ff)" : "";
+    preset.style.color = selected ? "var(--accent, #65d6ff)" : "";
+  });
   const save = () => {
     fx.hue = +hue.value; fx.glow = +glow.value / 100;
     auto = false; autoBox.checked = false;
     store.set("gale-fx", fx); store.set("gale-fx-auto", false);
-    apply(fx); paintTod();
+    apply(fx); paintTod(); paintPresets();
   };
   hue.addEventListener("input", save);
   glow.addEventListener("input", save);
@@ -840,7 +846,7 @@ export function initThemeEngine() {
     store.set("gale-fx", fx);
     store.set("gale-fx-auto", false);
     apply(fx);
-    paintTod();
+    paintTod(); paintPresets();
   }));
   autoBox.addEventListener("change", () => {
     auto = autoBox.checked;
@@ -851,9 +857,9 @@ export function initThemeEngine() {
       hue.value = p.hue; glow.value = Math.round(p.glow * 100);
       apply(fx);
     }
-    paintTod();
+    paintTod(); paintPresets();
   });
-  paintTod();
+  paintTod(); paintPresets();
   setInterval(() => {
     if (!auto || document.hidden) return;
     const p = TOD(new Date().getHours());
