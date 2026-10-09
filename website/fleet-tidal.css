@@ -249,6 +249,9 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
 .member-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(232, 234, 237, 0.08);
   border-left: 3px solid var(--mc, var(--teal)); border-radius: var(--radius-md); padding: 16px 18px;
   animation: card-enter 0.5s var(--ease-soft) both; animation-delay: calc(var(--i, 0) * 40ms); }
+html[data-density="compact"] .member-cards { gap:7px; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); }
+html[data-density="compact"] .member-card { padding:10px 12px; }
+html[data-density="compact"] .member-card .mc-role { margin:0 0 3px; font-size:.78rem; }
 .member-card .mc-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .member-card .mc-name { font-family: var(--font-space-grotesk); font-weight: 600; }
 .member-card .mc-chip { font-family: var(--font-ibm-mono); font-size: 0.68rem; padding: 1px 8px;
