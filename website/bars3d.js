@@ -338,6 +338,7 @@ export function mountBars3D(canvas, opts = {}) {
 
   return {
     setData,
+    resetView() { yaw = opts.yaw ?? 0.5; pitch = opts.pitch ?? 0.5; dist = 12; userDist = false; sway = 0; lastInteract = performance.now(); },
     destroy() { cancelAnimationFrame(raf); io && io.disconnect(); document.removeEventListener("visibilitychange", syncLoop); layer.remove(); tip.remove(); fallback.remove(); hud.destroy(); },
   };
 }

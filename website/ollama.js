@@ -952,6 +952,7 @@ function renderHealth() {
 
 /* ---------------- 3D (lazy): 24h skyline + live VRAM vault ---------------- */
 async function update3D() { try { await update3DInner(); } catch { /* decoration only */ } }
+$("gpu-3d-reset")?.addEventListener("click", () => { O3D?.resetView?.(); const label = $("gpu-3d-sample-time"); if (label) label.textContent = `view reset · received ${new Date(GPUReceivedAt || Date.now()).toLocaleTimeString()}`; });
 async function update3DInner() {
   const sec = $("sec-gpu3d");
   if (!sec || O3D === null) return;

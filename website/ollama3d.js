@@ -75,5 +75,5 @@ export function initOllama3D() {
     side.forEach((s) => bars.push({ x: s.x, z: 0, w: 1.2, d: 1.2, h: Math.max(0.05, s.v * 6), color: s.color, tip: s.tip }));
     vault.setData(bars, { xLabels: [{ x: 0, text: `VRAM ${usedGB.toFixed(1)}/${totalGB.toFixed(0)} GB` }, ...side.map((s) => ({ x: s.x, text: s.label }))], zLabels: [] });
   }
-  return { updateSkyline, updateVault };
+  return { updateSkyline, updateVault, resetView() { sky.resetView(); vault.resetView(); } };
 }
