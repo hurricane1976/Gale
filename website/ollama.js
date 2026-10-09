@@ -16,6 +16,7 @@ const PALETTE = ["var(--gust)", "var(--m-gpt)", "var(--bolt)", "var(--m-muse)", 
 let SNAP = null;
 let HIST = null;
 let GPU = null;
+let GPUReceivedAt = 0;
 let O3D;                   // undefined = not tried, null = unavailable (no WebGL), object = running
 let PULLING = false;
 let THREAD = [];
@@ -276,6 +277,9 @@ function renderGpu(g) {
     </div>`;
   });
   box.innerHTML = `<div class="gpu-grid">${parts.join("")}</div>`;
+  const sampleLabel = `received ${new Date(GPUReceivedAt || Date.now()).toLocaleTimeString()}`;
+  setText($("gpu-sample-time"), sampleLabel);
+  setText($("gpu-3d-sample-time"), sampleLabel);
 }
 
 /* ---------------- charts ---------------- */
@@ -936,6 +940,7 @@ async function loadGpu() {
     const r = await tracedFetch("api/ollama/gpu", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     GPU = await r.json();
+    GPUReceivedAt = Date.now();
     renderGpu(GPU);
     update3D();
   } catch {
