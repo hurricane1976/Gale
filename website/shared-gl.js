@@ -35,6 +35,7 @@ export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
    It is absent from normal views and never writes telemetry by itself. */
 export function createGraphicsHud(canvas, scene, quality) {
   let el = null, windowAt = 0, frameCount = 0;
+  window.__galeRUMRecord?.("SCENE_START", 1, "events", scene);
   try {
     if (new URLSearchParams(location.search).get("graphics") === "debug") {
       el = document.createElement("output");
@@ -55,7 +56,10 @@ export function createGraphicsHud(canvas, scene, quality) {
       el.textContent = `${scene} · ${Math.round(fps)} fps · tier ${quality ? quality.tier : "fixed"} · DPR ${dpr.toFixed(2)} · ${Math.round(canvas.width * canvas.height / 1000)}k px · ${active} active elements`;
       windowAt = now; frameCount = 0;
     },
-    status(message) { if (el) el.textContent = `${scene} · ${message}`; },
+    status(message) {
+      if (/fallback|context lost/i.test(message)) window.__galeRUMRecord?.("SCENE_FALLBACK", 1, "events", scene);
+      if (el) el.textContent = `${scene} · ${message}`;
+    },
     destroy() { el?.remove(); el = null; },
   };
 }
