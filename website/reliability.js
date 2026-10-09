@@ -3,6 +3,7 @@ import { level, freshness } from "./reliability-state.js";
 boot();
 const $ = (id) => document.getElementById(id);
 let busy = false, last = null;
+let rumPage = "";
 const money = (n) => Number.isFinite(n) ? `$${n.toFixed(2)}` : "unknown";
 function render(data) {
   const feed = freshness(data);
@@ -65,7 +66,16 @@ async function coverage() {
   setHTML($("mon-coverage-detail"), exp && exp.nodes ? `<ul>${exp.nodes.map((x) => `<li>${esc(x.host)} ${esc(x.address)} · ${x.alias_of ? `alias of ${esc(x.alias_of)} (same machine, scraped once)` : x.instrumented ? "node_exporter answering" : "no node_exporter"}</li>`).join("")}</ul>` : "");
 }
 function rum() {
-  const samples = window.__galeRUM || [];
+  const allSamples = window.__galeRUM || [];
+  const pages = [...new Set(allSamples.map((s) => s.page).filter(Boolean))].sort();
+  const filter = $("rum-page-filter");
+  if (filter) {
+    const value = rumPage || filter.value;
+    filter.replaceChildren(new Option("All pages", ""), ...pages.map((page) => new Option(page, page)));
+    filter.value = pages.includes(value) ? value : "";
+    rumPage = filter.value;
+  }
+  const samples = rumPage ? allSamples.filter((s) => s.page === rumPage) : allSamples;
   const specs = [
     ["LCP", "Largest content paint", 2500, 4000, "ms", true], ["INP", "Interaction delay (approx)", 200, 500, "ms", true],
     ["CLS", "Layout shift", .1, .25, "score", true], ["FCP", "First content paint", 1800, 3000, "ms", true],
@@ -95,6 +105,34 @@ function rum() {
   }).join("");
   setHTML($("rum-grid"), cards);
 }
+async function clientRuntime() {
+  const items = [];
+  const controlled = !!navigator.serviceWorker?.controller;
+  items.push(tile("Offline app shell", controlled ? "Active" : "Not controlling", controlled ? "This page is controlled by the Gale service worker." : "Open over HTTPS and reload after the worker installs.", controlled ? "ok" : "unknown"));
+  items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
+  items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
+  setHTML($("client-runtime"), items.join(""));
+}
+$("sw-check")?.addEventListener("click", async (e) => {
+  const button = e.currentTarget;
+  button.disabled = true; button.textContent = "Checking…";
+  try {
+    const reg = await navigator.serviceWorker?.getRegistration("/");
+    if (!reg) throw new Error("No Gale service worker registration found.");
+    await reg.update();
+    const update = reg.waiting || reg.installing;
+    setText($("rum-action-status"), update ? "An app update is downloading or waiting to install." : "The app is up to date.");
+    button.textContent = update ? "Update found" : "App is current";
+  } catch (error) {
+    setText($("rum-action-status"), `Update check unavailable: ${error.message}`);
+    button.textContent = "Check app update";
+  } finally { button.disabled = false; clientRuntime(); }
+});
+$("rum-page-filter")?.addEventListener("change", (e) => { rumPage = e.currentTarget.value; rum(); });
+$("rum-clear")?.addEventListener("click", () => {
+  window.__galeRUMClear?.(); rumPage = ""; rum();
+  setText($("rum-action-status"), "Browser-local RUM samples cleared.");
+});
 async function refresh() {
   if (busy) return;
   busy = true;
@@ -112,6 +150,7 @@ async function refresh() {
 }
 refresh();
 coverage();
+clientRuntime();
 setInterval(refresh, 30000);
 setInterval(coverage, 60000);
 setInterval(() => { if (last && freshness(last) !== "ok") render(last); rum(); }, 10000);

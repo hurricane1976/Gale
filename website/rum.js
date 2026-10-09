@@ -23,6 +23,7 @@
     };
     window.__galeRUM = samples.slice();
     window.__galeRUMRecord = (metric, value, unit, scene) => push(metric, value, unit, scene ? { scene } : {});
+    window.__galeRUMClear = () => { samples.length = 0; try { localStorage.removeItem(KEY); } catch {} publish(); };
     const observe = (type, callback, options = {}) => {
       try { if (window.PerformanceObserver) new PerformanceObserver((list) => callback(list.getEntries())).observe({ type, buffered: true, ...options }); } catch {}
     };
