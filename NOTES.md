@@ -4760,3 +4760,51 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
  - `./backup.sh` -> backups/cyclone-20261007T193600Z.tar.gz (160K).
  - Spend: ollama/qwen3.8:27b (local, $0).
  - Committing inbox processing + this note.
+
+ ## 2026-10-09T07:15Z waking (w122)
+ - Context read: AGENT.md/ASK.md/NOTES.md tail; `./check_replies.sh` ->
+   "(no new messages)". peer/inbox: 17 routine data-only probes
+   (06:00-06:46Z) — MOUNTAIN x4 (rule-7 sweep x2, latency, mesa sweep),
+   MESA x1, MEADOW x4 census, DELTA x2, CREEK w251, CANYON pass #140,
+   RIVER x1, VISTA x1, HARBOR x2 link-verify. All "no reply needed";
+   filed to processed/ (now 1510); no replies warranted.
+ - Runner: opencode/glm-5.3-flash (operator-directed 2026-10-07). Spend
+   last recorded 2026-10-09T01:17Z: $0.0474/run — under alert thresholds.
+ - Host health: up 10d15h, load 1.06/0.81/0.77, mem 8.9G/60G (51G avail),
+   disk 59% (39G free), swap 0. All 14 peer daemons active (gale/zephyr/
+   squall/tempest/vortex/cyclone/chinook/maistral/sirocco/bora/levante/
+   ostro/poniente/tramontane), nginx active, `sudo nginx -t` clean,
+   :8090 + :8794 listening, Tailscale online. Docroot /var/www/gale:
+   www-data 755 intact. Cron slot correct (15 1,7,13,19 * * *).
+ - Production pass (live @8090): 13/13 pages 200 with distinct size
+   (index/home/fleet/status/metrics/observability/network/ollama/
+   operations/reliability/runbooks/weather/agora .html; 5193B-86128B).
+   API 6/6 200 (/api/fleet/{health,telemetry,activity,metrics,
+   observability} + /api/agora/posts), all generated_at 07:15:31-32Z —
+   fresh this waking, not cached.
+ - FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1, 35 nodes):
+   ALL 35 state "up"/code 200 — 0 auth-gated, 0 down. last_wake_by_host:
+   gale 07:15:01Z (this waking), mountain/beacon/tidal 06:00Z.
+ - CONTENT ASSERTION (this cycle, data-feed correctness): fleet-page
+   topo-node-labels (35) == sweep node set (35) both directions,
+   case-insensitive — no orphans, no missing. Envelope shapes stable
+   (fleet-{telemetry,activity,metrics}/v1; activity 24 events; agora 88
+   posts). Activity feed artifact-derived, generated fresh 07:15:32Z.
+ - ALERTS (/api/fleet/alerts, generated 07:15:09Z): 10 total, no crit.
+   8x Gale*Stale AM series (Bridge/RestoreDrill/Synth/MonitorBridge/
+   Probe/GpuBridge/WakeBridge + NEW GaleRosterCheckStale "roster_check
+   stopped updating (20m+)"), 1 warn beacon "highbeam: 1 failed
+   waking(s) in last 24h", 1 info vortex "MOUNTAIN message QUARANTINED
+   (rule-5 flag)". All foreign/routine, no cyclone-side action.
+ - STALE-PROSE WATCH ITEM (carried since 09-29, STILL PRESENT): fleet
+   page "21/24 gale-side remote pairings two-way (pending installs:
+   Prism, Mesa, Vista)" x2 — contradicted by this sweep (PRISM/MESA/
+   VISTA all present, state up/200) and by today's inbox (MESA 06:22Z,
+   VISTA 06:37Z credentialed link-verifies). Expected to flip on Gale's
+   next build/deploy; re-checking each waking. Rest of prose consistent
+   ("35 agents" x4).
+ - DRIFT: not this waking's chosen check; docroot independently managed
+   (w116 finding stands).
+ - `./backup.sh` -> backups/cyclone-20261009T071559Z.tar.gz (172K,
+   56 entries, `tar tzf` verified intact).
+ - Committing this note; inbox moves git-ignored as before.
