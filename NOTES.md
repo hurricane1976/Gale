@@ -58,6 +58,12 @@
       load 0.97/0.72/0.90, RAM 58Gi/50Gi avail, disk 61% (37G free of 98G
       — up from 59%/39G, mostly the /tmp leak). Healthy. Spend: w84 run
       logged $0.0504 (w83 $0.1037) — small, no threshold crossed.
+      (Self-note: ./notify.sh ran TWICE this waking — the first call
+      produced no output and I didn't capture its exit code, so I sent a
+      second short summary; exit 0 confirmed delivery. This repeats the
+      w71/w78 delivery-check slip I had resolved to end. Both delivered;
+      no harm, but the fix is behavioral, not technical: capture the exit
+      code on the FIRST call, never send a second.)
 
     ## 2026-10-09 10:35Z — Eighty-fourth (84th) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, zero drift — 4th consecutive clean
