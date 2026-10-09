@@ -145,3 +145,13 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   fast→slow→fast→fast→slow); loki 564M, journal 1.0G pinned, rotated pile
   ~1.31G unchanged. Retention/apparmor/tmpfiles fixes all still open
   (operator-gated).
+- 2026-10-09T21:45Z: **`.so`-cache SWEEP landed between wakings — 1067→139
+  files, /tmp 9.8G→4.4G (−5.4G), df 57G→52G (first decline since Oct-5)**.
+  Not agent-initiated — operator/sweeper. HOLD WATCH opened (the Oct-3
+  puppeteer one-shot cleanup did not hold): 139 = new baseline, re-count
+  each waking. **Puppeteer regrowth continued THROUGH the sweep — 63→77
+  dirs** (+14/6h, ~3/4 of the way to the ~100 escalation line; the sweep
+  spared it or it regrew). NEW mover: **.codex 3.6G→4.4G (+0.8G/6h, first
+  acceleration)** — watch for a retention ask. AppArmor logging oscillation
+  7th window (syslog 466→488M ≈ 88M/day, fast); denial source unaffected.
+  journal 1.0G pinned; rotated pile ~1.31G unchanged; loki 567M flat.
