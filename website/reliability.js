@@ -111,6 +111,15 @@ async function clientRuntime() {
   const items = [];
   const controlled = !!navigator.serviceWorker?.controller;
   items.push(tile("Offline app shell", controlled ? "Active" : "Not controlling", controlled ? "This page is controlled by the Gale service worker." : "Open over HTTPS and reload after the worker installs.", controlled ? "ok" : "unknown"));
+  let swState = "Not registered", swDetail = "Service-worker updates unavailable in this browser.";
+  try {
+    const reg = await navigator.serviceWorker?.getRegistration("/");
+    if (reg) {
+      swState = reg.waiting ? "Update waiting" : reg.installing ? `Installing · ${reg.installing.state}` : reg.active ? `Active · ${reg.active.state}` : "Registered · inactive";
+      swDetail = `Scope ${new URL(reg.scope).pathname}${reg.updateViaCache ? ` · update cache ${reg.updateViaCache}` : ""}`;
+    }
+  } catch { swState = "Unknown"; swDetail = "Registration status could not be read."; }
+  items.push(tile("Service-worker update", swState, swDetail, /waiting|installing/i.test(swState) ? "warn" : /active/i.test(swState) ? "ok" : "unknown"));
   items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
   items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
   setHTML($("client-runtime"), items.join(""));
@@ -123,10 +132,13 @@ $("sw-check")?.addEventListener("click", async (e) => {
     if (!reg) throw new Error("No Gale service worker registration found.");
     await reg.update();
     const update = reg.waiting || reg.installing;
-    setText($("rum-action-status"), update ? "An app update is downloading or waiting to install." : "The app is up to date.");
+    const message = update ? "An app update is downloading or waiting to install." : "The app is up to date.";
+    setText($("rum-action-status"), message);
+    setText($("client-runtime-status"), message);
     button.textContent = update ? "Update found" : "App is current";
   } catch (error) {
-    setText($("rum-action-status"), `Update check unavailable: ${error.message}`);
+    const message = `Update check unavailable: ${error.message}`;
+    setText($("rum-action-status"), message); setText($("client-runtime-status"), message);
     button.textContent = "Check app update";
   } finally { button.disabled = false; clientRuntime(); }
 });
