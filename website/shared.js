@@ -837,16 +837,17 @@ export function initThemeEngine() {
     const html = document.documentElement;
     html.style.setProperty("--theme-hue", `${clamp(+fx.hue || 0, -40, 40)}deg`);
     html.style.setProperty("--theme-glow", `${clamp(+(fx.glow ?? 1), 0.4, 1.6)}`);
+    html.style.setProperty("--ambient-intensity", `${clamp(+(fx.intensity ?? 1), 0, 1.2)}`);
   };
   // time-of-day auto-mode (#10): dawn/day/dusk/night ambient presets while
   // the user has no stored manual prefs; first slider touch pins to manual
   // (checkbox re-enables auto). Recomputed on boot + every 10 min.
-  const TOD = (h) => h >= 21 || h < 5 ? { hue: -18, glow: 0.8, name: "night" }
-    : h < 8 ? { hue: 12, glow: 1.1, name: "dawn" }
-    : h < 17 ? { hue: 0, glow: 1.0, name: "day" } : { hue: 22, glow: 1.2, name: "dusk" };
+  const TOD = (h) => h >= 21 || h < 5 ? { hue: -18, glow: 0.8, intensity: 0.8, name: "night" }
+    : h < 8 ? { hue: 12, glow: 1.1, intensity: 1.0, name: "dawn" }
+    : h < 17 ? { hue: 0, glow: 1.0, intensity: 0.9, name: "day" } : { hue: 22, glow: 1.2, intensity: 1.05, name: "dusk" };
   const stored = store.get("gale-fx", null);
   let auto = store.get("gale-fx-auto", stored == null);
-  const fx = Object.assign({ hue: 0, glow: 1 }, auto ? TOD(new Date().getHours()) : (stored || {}));
+  const fx = Object.assign({ hue: 0, glow: 1, intensity: 1 }, auto ? TOD(new Date().getHours()) : (stored || {}));
   apply(fx);
   const box = document.createElement("details");
   box.id = "fx-theme";
@@ -858,17 +859,19 @@ export function initThemeEngine() {
         <input type="range" id="fx-hue" min="-40" max="40" step="1" value="${fx.hue}"></label>
       <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient glow
         <input type="range" id="fx-glow" min="40" max="160" step="5" value="${Math.round(fx.glow * 100)}"></label>
+      <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient intensity
+        <input type="range" id="fx-intensity" min="0" max="120" step="5" value="${Math.round(fx.intensity * 100)}"></label>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px" aria-label="Display presets">
-        <button type="button" class="mini-toggle fx-preset" data-hue="0" data-glow="0.65">calm</button>
-        <button type="button" class="mini-toggle fx-preset" data-hue="-18" data-glow="1.15">aurora</button>
-        <button type="button" class="mini-toggle fx-preset" data-hue="22" data-glow="1.35">cinema</button>
-        <button type="button" class="mini-toggle fx-preset" data-hue="8" data-glow="0.9">warm</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="0" data-glow="0.65" data-intensity="0.5">calm</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="-18" data-glow="1.15" data-intensity="1">aurora</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="22" data-glow="1.35" data-intensity="1.2">cinema</button>
+        <button type="button" class="mini-toggle fx-preset" data-hue="8" data-glow="0.9" data-intensity="0.8">warm</button>
       </div>
       <button type="button" class="mini-toggle" id="fx-reset-auto">↺ reset to time of day</button>
       <label style="font-size:.75rem;display:flex;gap:6px;align-items:flex-start"><input type="checkbox" id="fx-graphics-debug"> show renderer diagnostics <span class="mono-dim">local</span></label>
     </div>`;
   dockAdd(box);
-  const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"),
+  const hue = box.querySelector("#fx-hue"), glow = box.querySelector("#fx-glow"), intensity = box.querySelector("#fx-intensity"),
         autoBox = box.querySelector("#fx-auto"), tod = box.querySelector("#fx-tod");
   const graphicsDebug = box.querySelector("#fx-graphics-debug");
   try { graphicsDebug.checked = new URLSearchParams(location.search).get("graphics") === "debug"; } catch {}
@@ -880,24 +883,28 @@ export function initThemeEngine() {
   });
   const paintTod = () => { if (tod) tod.textContent = auto ? `(${TOD(new Date().getHours()).name})` : ""; };
   const paintPresets = () => box.querySelectorAll(".fx-preset").forEach((preset) => {
-    const selected = !auto && +preset.dataset.hue === +fx.hue && +preset.dataset.glow === +fx.glow;
+    const selected = !auto && +preset.dataset.hue === +fx.hue && +preset.dataset.glow === +fx.glow && +preset.dataset.intensity === +fx.intensity;
     preset.setAttribute("aria-pressed", String(selected));
     preset.style.borderColor = selected ? "var(--accent, #65d6ff)" : "";
     preset.style.color = selected ? "var(--accent, #65d6ff)" : "";
   });
   const save = () => {
     fx.hue = +hue.value; fx.glow = +glow.value / 100;
+    fx.intensity = +intensity.value / 100;
     auto = false; autoBox.checked = false;
     store.set("gale-fx", fx); store.set("gale-fx-auto", false);
     apply(fx); paintTod(); paintPresets();
   };
   hue.addEventListener("input", save);
   glow.addEventListener("input", save);
+  intensity.addEventListener("input", save);
   box.querySelectorAll(".fx-preset").forEach((preset) => preset.addEventListener("click", () => {
     fx.hue = +preset.dataset.hue;
     fx.glow = +preset.dataset.glow;
+    fx.intensity = +preset.dataset.intensity;
     hue.value = fx.hue;
     glow.value = Math.round(fx.glow * 100);
+    intensity.value = Math.round(fx.intensity * 100);
     auto = false;
     autoBox.checked = false;
     store.set("gale-fx", fx);
@@ -911,7 +918,8 @@ export function initThemeEngine() {
     store.set("gale-fx-auto", true);
     const p = TOD(new Date().getHours());
     fx.hue = p.hue; fx.glow = p.glow;
-    hue.value = p.hue; glow.value = Math.round(p.glow * 100);
+    fx.intensity = p.intensity;
+    hue.value = p.hue; glow.value = Math.round(p.glow * 100); intensity.value = Math.round(p.intensity * 100);
     store.set("gale-fx", fx);
     apply(fx); paintTod(); paintPresets();
   });
@@ -921,7 +929,8 @@ export function initThemeEngine() {
     if (auto) {
       const p = TOD(new Date().getHours());
       fx.hue = p.hue; fx.glow = p.glow;
-      hue.value = p.hue; glow.value = Math.round(p.glow * 100);
+      fx.intensity = p.intensity;
+      hue.value = p.hue; glow.value = Math.round(p.glow * 100); intensity.value = Math.round(p.intensity * 100);
       apply(fx);
     }
     paintTod(); paintPresets();
