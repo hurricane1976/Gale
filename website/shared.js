@@ -1699,6 +1699,29 @@ function initDataSaver() {
   paint();
 }
 
+function initCssMotionControl() {
+  if (typeof document === "undefined" || !document.body || document.getElementById("css-motion-toggle")) return;
+  const btn = document.createElement("button");
+  btn.id = "css-motion-toggle";
+  btn.type = "button";
+  btn.className = "mini-toggle";
+  btn.style.cssText = "padding:8px 12px;min-height:32px";
+  const paint = () => {
+    let paused = false;
+    try { paused = localStorage.getItem("gale-css-motion") === "paused"; } catch {}
+    document.documentElement.dataset.cssMotion = paused ? "paused" : "";
+    btn.textContent = paused ? "▶ CSS motion paused" : "Ⅱ pause CSS motion";
+    btn.setAttribute("aria-pressed", String(paused));
+  };
+  btn.addEventListener("click", () => {
+    const paused = document.documentElement.dataset.cssMotion === "paused";
+    try { localStorage.setItem("gale-css-motion", paused ? "running" : "paused"); } catch {}
+    paint();
+  });
+  dockAdd(btn);
+  paint();
+}
+
 /* Nav status pulse: a small dot at the end of the site nav showing the worst open fleet alert
    (crit / warn / ok), linking to the ops board. Same /api/fleet/alerts the status page uses. */
 function initNavPulse() {
@@ -1814,6 +1837,7 @@ export function boot() {
     initThemeToggle();
     initContrastMode();
     initDataSaver();
+    initCssMotionControl();
     initThemeEngine();
     import("./palette.js").then((m) => m.initPalette()).catch(() => {});
     // cinematic layer site-wide (Apple/ILM): dynamic so Node render-tests stay DOM-free
