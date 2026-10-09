@@ -555,6 +555,15 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .vital[data-level="warn"] .vital-value { color: var(--warn); }
 .vital[data-level="crit"] .vital-value { color: var(--flag-soft); }
 .vital-sub { font-size: 0.78rem; color: var(--text-faint); }
+.vital-state { align-self: flex-end; min-width: 3.6em; text-align: center; padding: 1px 5px; border: 1px solid var(--line-strong); border-radius: 999px;
+  font: 600 0.58rem/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; color: var(--text-dim); }
+.vital-state[data-level="ok"]::before { content: "✓ "; }
+.vital-state[data-level="warn"]::before { content: "▲ "; }
+.vital-state[data-level="crit"]::before { content: "! "; }
+.vital-state[data-level="unknown"]::before { content: "? "; }
+.vital-state[data-level="ok"] { color: var(--ok); }
+.vital-state[data-level="warn"] { color: var(--warn); }
+.vital-state[data-level="crit"] { color: var(--flag-soft); }
 .rum-vital { min-width: 0; }
 .rum-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; }
 .rum-head .panel-title { margin: 0 auto 0 0; padding: 0; border: 0; }

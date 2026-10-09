@@ -42,7 +42,7 @@ async function getJson(url) {
     return r.ok ? await r.json() : null;
   } catch { return null; }
 }
-const tile = (label, value, sub, lv) => `<div class="vital" data-level="${lv}"><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(value)}</span><span class="vital-sub">${esc(sub)}</span></div>`;
+const tile = (label, value, sub, lv) => `<div class="vital" data-level="${lv}"><span class="vital-state" data-level="${lv}">${esc(lv)}</span><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(value)}</span><span class="vital-sub">${esc(sub)}</span></div>`;
 async function coverage() {
   const [exp, bk, pr, reg] = await Promise.all([getJson("api/exporter-coverage.json"), getJson("api/backup-proof.json"),
     getJson("api/probes.json"), getJson("api/fleet/registry")]);
@@ -103,7 +103,7 @@ function rum() {
     const pages = [...new Set(entries.slice(-12).map((s) => s.page).filter(Boolean))];
     const scenes = [...new Set(entries.slice(-12).map((s) => s.scene).filter(Boolean))];
     const showValue = value == null ? "No sample" : `${value.toFixed(unit === "score" ? 3 : 0)} ${unit}`;
-    return `<div class="vital rum-vital" data-level="${state}"><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(showValue)}</span>${graph}<span class="vital-sub">${entries.length} local sample${entries.length === 1 ? "" : "s"}${percentile ? (name === "SCENE_FPS" ? " · p05" : " · p95") : " · total"}${pages.length ? ` · ${esc(pages.join(", "))}` : ""}${scenes.length ? ` · ${esc(scenes.join(", "))}` : ""}</span></div>`;
+    return `<div class="vital rum-vital" data-level="${state}"><span class="vital-state" data-level="${state}">${esc(state)}</span><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(showValue)}</span>${graph}<span class="vital-sub">${entries.length} local sample${entries.length === 1 ? "" : "s"}${percentile ? (name === "SCENE_FPS" ? " · p05" : " · p95") : " · total"}${pages.length ? ` · ${esc(pages.join(", "))}` : ""}${scenes.length ? ` · ${esc(scenes.join(", "))}` : ""}</span></div>`;
   }).join("");
   setHTML($("rum-grid"), cards);
 }
