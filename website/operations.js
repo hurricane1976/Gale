@@ -1,4 +1,4 @@
-import { boot, esc, setHTML, setText, tracedFetch } from "./shared.js";
+import { boot, esc, setHTML, setText, setVitals, tracedFetch } from "./shared.js";
 boot();
 const $ = (id) => document.getElementById(id);
 let busy = false;
@@ -22,7 +22,7 @@ async function refresh() {
     const [data, incidents, tasks, exporters] = await Promise.all([get("api/fleet/reliability"), get("api/fleet/incidents"),get("api/fleet/tasks"),get("api/exporter-coverage.json").catch(()=>null)]);
     const c=data.coverage;
     setText($("ops-freshness"),`Collected ${data.generated_at} · refresh every 30s`);
-    setHTML($("ops-summary"), [["Reachable",`${c.reachable}/${c.expected}`],["Reporting",`${c.reporting}/${c.expected}`],["Incidents",String(incidents.count)],["Task verification",`${data.outcomes.verified_runs} verified`]].map(([name,value])=>`<div class="vital"><span class="vital-label">${esc(name)}</span><span class="vital-value">${esc(value)}</span></div>`).join(""));
+    setVitals($("ops-summary"), [["Reachable",`${c.reachable}/${c.expected}`],["Reporting",`${c.reporting}/${c.expected}`],["Incidents",String(incidents.count)],["Task verification",`${data.outcomes.verified_runs} verified`]].map(([name,value])=>`<div class="vital"><span class="vital-label">${esc(name)}</span><span class="vital-value">${esc(value)}</span></div>`).join(""));
     setText($("ops-access"),`${incidents.access.role} access · ${incidents.access.can_write?"acknowledgements enabled":"use an authorized Tailscale user device for controls"}`);
     const lifemap = incidents.lifecycle || {};
     const agents = Array.from(new Set(incidents.alerts.map(a=>a.agent||"fleet")));

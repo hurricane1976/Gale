@@ -85,6 +85,18 @@
       <noscript><p class="sec-lede">This tracker needs JavaScript — forecasts render live from Open-Meteo in your browser.</p></noscript>
     </div>
 
+    <!-- live conditions sky: scenic canvas keyed to the current open-meteo payload
+         (cloud cover, precipitation, wind, day/night) — wxsky.js -->
+    <div class="wrap">
+      <div class="wx-sky-wrap">
+        <canvas id="wx-sky" role="img" aria-label="Animated sky illustrating the current conditions: cloud cover, precipitation and wind as reported in the panels below."></canvas>
+        <div class="wx-sky-caption" id="wx-sky-caption" aria-live="polite">
+          <span class="wx-sky-caption-mark" aria-hidden="true"></span>
+          <span><strong>Live sky</strong><small>Waiting for current conditions</small></span>
+        </div>
+      </div>
+    </div>
+
     <!-- Location controls -->
     <section class="reveal wrap" aria-label="Location controls">
       <div class="wx-controls card">
@@ -190,7 +202,9 @@
       <h2 class="sec-title">Live radar</h2>
       <p class="sec-lede">Choose NOAA radar for US locations or RainViewer for global coverage. Play recent observed frames; radar is not a forecast.</p>
       <div class="card wx-radar-card">
-        <div id="wx-map" class="wx-map" role="application" aria-label="Interactive weather radar map"></div>
+        <div id="wx-map" class="wx-map" role="application" aria-label="Interactive weather radar map">
+          <div id="wx-map-state" class="wx-map-state" role="status" aria-live="polite">Loading map and radar tiles…</div>
+        </div>
         <div class="wx-radar-bar">
           <label>Radar source <select id="wx-radar-source"><option value="noaa">NOAA / NWS (US)</option><option value="rainviewer">RainViewer (global)</option></select></label>
           <label><input id="wx-warnings" type="checkbox" checked /> NWS warning polygons</label>

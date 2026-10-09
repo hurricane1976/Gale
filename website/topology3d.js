@@ -237,6 +237,7 @@ export function initTopology3D(opts = {}) {
   // --- camera: orbit around origin ---
   let yaw = 0.6, pitch = 0.35, dist = 4.2;
   let dragging = false, lastX = 0, lastY = 0;
+  let vyaw = 0, vpitch = 0, inertia = false, lastMoveT = 0; // flick momentum (rad/ms)
   let fitLocked = false; // user zoomed: stop auto-fitting
   const cam = [0, 0, 0], camGoal = [0, 0, 0];      // orbit target (eases to a focused node)
   let focusIdx = -1, focusDist = 4.2, lastInteract = performance.now();
@@ -318,7 +319,8 @@ export function initTopology3D(opts = {}) {
     if (document.hidden) return;
     if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return; // 30 fps on phones / tier-2 rescue
     const nowMs = performance.now();
-    if (q) q.tick(Math.max(0, nowMs - lastFrame), nowMs);
+    const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
+    if (q) q.tick(fdt, nowMs);
     lastFrame = nowMs;
     step();
     resize();
@@ -341,6 +343,14 @@ export function initTopology3D(opts = {}) {
     if (focusIdx >= 0) dist += (focusDist - dist) * 0.07;
     // idle auto-orbit: a slow drift after a few seconds without input (never under reduced motion)
     if (!REDUCED3D && !dragging && focusIdx < 0 && performance.now() - lastInteract > 4000) yaw += 0.0022;
+    // flick momentum: glide after release, ~140 ms half-life (never under reduced motion)
+    if (!REDUCED3D && inertia && !dragging) {
+      yaw += vyaw * fdt;
+      pitch = Math.max(-1.4, Math.min(1.4, pitch + vpitch * fdt));
+      const dec = Math.pow(0.5, fdt / 140);
+      vyaw *= dec; vpitch *= dec;
+      if (Math.hypot(vyaw, vpitch) < 1e-5) { inertia = false; vyaw = vpitch = 0; }
+    }
     const m = camMatrix();
 
     // lines
@@ -523,14 +533,21 @@ export function initTopology3D(opts = {}) {
   }
 
   // --- interaction ---
-  canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; inertia = false; vyaw = vpitch = 0; lastMoveT = e.timeStamp || 0; canvas.setPointerCapture(e.pointerId); });
   canvas.addEventListener("pointermove", (e) => {
     if (!dragging || pinchActive) return;
+    const nowE = e.timeStamp || performance.now(), dtE = Math.max(1, nowE - (lastMoveT || nowE - 16)); lastMoveT = nowE;
+    vyaw = Math.max(-0.003, Math.min(0.003, vyaw * 0.7 + (((e.clientX - lastX) * 0.008) / dtE) * 0.3));
+    vpitch = Math.max(-0.002, Math.min(0.002, vpitch * 0.7 + (((e.clientY - lastY) * 0.008) / dtE) * 0.3));
     yaw += (e.clientX - lastX) * 0.008;
     pitch = Math.max(-1.4, Math.min(1.4, pitch + (e.clientY - lastY) * 0.008));
     lastX = e.clientX; lastY = e.clientY;
   });
-  canvas.addEventListener("pointerup", () => { dragging = false; });
+  canvas.addEventListener("pointerup", (e) => {
+    dragging = false;
+    // release mid-flick -> keep gliding (damped in draw()); pointercancel never glides
+    if (!REDUCED3D && e.type !== "pointercancel" && !pinchActive && Math.hypot(vyaw, vpitch) > 2.5e-4) inertia = true;
+  });
   canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
     fitLocked = true;
@@ -831,6 +848,22 @@ export function initTopology3D(opts = {}) {
      (commit = cyan, waking = green, backup = blue, flag = red). Skipped when no node matches (e.g. the LAN map). */
   if (!opts.noActivity && !opts.nodes) {
     const KIND = { commit: [0.2, 0.9, 1.0], waking: [0.3, 1.0, 0.55], backup: [0.4, 0.6, 1.0], "peer-flag": [1.0, 0.35, 0.35], peer: [0.8, 0.6, 1.0], relay: [0.8, 0.6, 1.0] };
+    // "ts|agent" seen-set: the SSE push (main.js dispatches gale:activity-event
+    // the instant an event lands) and this 15 s REST poll both feed pushRipple;
+    // the set lets an event ripple exactly once no matter which path wins.
+    const rippled = new Set();
+    const pushRipple = (agent, kind, ts, delay = 0) => {
+      const key = `${ts}|${String(agent || "").toLowerCase()}`;
+      if (ts && rippled.has(key)) return;
+      if (ts) { rippled.add(key); if (rippled.size > 80) rippled.delete(rippled.values().next().value); }
+      const i = nodes.findIndex((x) => x.name.toLowerCase() === String(agent || "").toLowerCase());
+      if (i >= 0 && ripples.length < 24) ripples.push({ i, t0: performance.now() + delay, c: KIND[kind] || [0.8, 0.9, 1.0] });
+    };
+    window.addEventListener("gale:activity-event", (e) => {
+      if (REDUCED3D || canvas.hidden) return;
+      const d = e.detail || {};
+      pushRipple(d.agent, d.kind, d.ts);
+    });
     let seen = null;
     const poll = async () => {
       try {
@@ -842,8 +875,7 @@ export function initTopology3D(opts = {}) {
         let n = 0;
         for (const e of evs) {
           if (String(e.ts) <= seen) continue;
-          const i = nodes.findIndex((x) => x.name.toLowerCase() === String(e.agent || "").toLowerCase());
-          if (i >= 0 && n++ < 6) ripples.push({ i, t0: performance.now() + n * 180, c: KIND[e.kind] || [0.8, 0.9, 1.0] });
+          if (n++ < 6) pushRipple(e.agent, e.kind, e.ts, n * 180);
         }
         if (evs.length) seen = evs[evs.length - 1].ts;
       } catch { /* decoration only */ }

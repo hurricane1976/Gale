@@ -31,6 +31,10 @@ export function program(gl, vs, fs, label = "program") {
 
 export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
 
+/* the one light rig every GALE engine shares: a low warm-cool key from the
+   upper left. bars3d shades with it; contact shadows fall away from it. */
+export const LIGHT = [-0.45, 0.85, 0.35];
+
 /* Quality: EMA of frame delta drives a tier ladder. Sustained slowness
    (hold frames over downMs) steps DOWN; sustained ease (longer hold over
    upMs) steps back UP; cooldown between moves stops flapping. dt spikes

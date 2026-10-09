@@ -551,7 +551,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   background: var(--surface-2); display: flex; flex-direction: column; gap: 6px;
 }
 .vital-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
-.vital-value { font-family: var(--font-heading); font-size: 1.65rem; font-weight: 600; line-height: 1; }
+.vital-value { font-family: var(--font-heading); font-size: 1.65rem; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
 .vital[data-level="warn"] .vital-value { color: var(--warn); }
 .vital[data-level="crit"] .vital-value { color: var(--flag-soft); }
 .vital-sub { font-size: 0.78rem; color: var(--text-faint); }
@@ -957,7 +957,12 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .wx-alert-card summary { cursor: pointer; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .wx-alert-body { white-space: pre-wrap; color: var(--text-dim); font-size: 0.9rem; max-height: 260px; overflow-y: auto; }
 .block-narrow { margin-top: 34px; }
-.wx-map { height: 420px; border-radius: 12px; overflow: hidden; background: #040509; z-index: 1; }
+.wx-map { position: relative; height: 420px; border-radius: 12px; overflow: hidden; background: #040509; z-index: 1; }
+.wx-map-state { position: absolute; z-index: 1000; inset: 0; display: grid; place-items: center; padding: 24px;
+  color: #e4ebf7; text-align: center; font: 600 0.9rem/1.5 var(--font-body);
+  background: radial-gradient(ellipse at 50% 42%, rgba(30, 43, 65, 0.96), rgba(4, 5, 9, 0.98));
+  pointer-events: none; }
+.wx-map-state[hidden] { display: none; }
 @media (max-width: 640px) { .wx-map { height: 300px; } }
 .wx-map .leaflet-container { background: #040509; font: inherit; }
 .wx-radar-card { padding: 14px !important; }
@@ -1056,6 +1061,11 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   border-bottom: 1px solid var(--line); font-size: 0.9rem;
 }
 .pulse-row:last-child { border-bottom: 0; }
+/* each SSE push re-renders newest-first, so the first row is the fresh event */
+@media (prefers-reduced-motion: no-preference) {
+  .pulse-row:first-child { animation: pulse-in 0.45s var(--ease-expo, ease-out) both; }
+}
+@keyframes pulse-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 .pulse-kind { color: var(--gust); font-family: var(--font-mono); }
 .pulse-agent { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; color: var(--flag-soft); }
 .pulse-text { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1934,6 +1944,20 @@ html:has([data-theme="light"]) #storm-canvas { opacity: 0.16; }
 @keyframes hb-throb { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.35); } }
 html[data-saver="1"] .hb-track, html[data-saver="1"] .hb-dot { animation: none; }
 .hb-grid { min-height: 176px; } /* reserve space: the cards arrive after a lazy fetch */
+/* pulse wall: WebGL strip above the cards (hidden until it actually mounts,
+   so no-WebGL / reduced-motion / data-saver users never see an empty frame) */
+.hb-wall { position: relative; height: clamp(190px, 24vw, 280px); margin: 14px 0 6px; border-radius: 16px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--gust, #4aa3ff) 26%, var(--line));
+  background: radial-gradient(120% 130% at 50% 0%, #101a30 0%, #060a14 75%); box-shadow: var(--card-shadow); }
+.hb-wall canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+#heartbeat:not(.hb-wall-live) .hb-wall { display: none; }
+.hb-wall-live .hb-ecg { display: none; } /* the wall carries the traces now */
+
+/* weather page: live conditions sky — a scenic window keyed to the real
+   forecast (cloud cover, precipitation, wind, day/night); wxsky.js */
+.wx-sky-wrap { position: relative; height: clamp(220px, 30vw, 380px); margin: 18px 0 26px; border-radius: 18px; overflow: hidden;
+  border: 1px solid var(--line-strong); box-shadow: var(--card-shadow); background: #0a1120; }
+.wx-sky-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .hb-24h { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; height: 14px; margin: 6px 0 4px; }
 .hb-24h i { border-radius: 2px; background: color-mix(in srgb, var(--text-faint) 22%, transparent); }
 .hb-24h i:not([data-n="0"]) { background: color-mix(in srgb, var(--hb) 55%, transparent); }
@@ -1980,3 +2004,46 @@ a.agent:hover, a.agent:focus-visible { color: var(--text); background: color-mix
 .scrub { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-family: var(--font-mono); font-size: .76rem; color: var(--text-dim); }
 .scrub input[type=range] { flex: 1 1 220px; min-width: 160px; accent-color: var(--gust, #4aa3ff); }
 .scrub output { min-width: 15ch; color: var(--text); }
+
+/* ---- cross-document view transitions: console pages cross-fade instead of
+   hard-cutting (progressive: Chromium 126+; other engines ignore the rule) ---- */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: 180ms ease both vt-fade-out; }
+  ::view-transition-new(root) { animation: 260ms ease both vt-fade-in; }
+}
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+
+/* ---- ambient fleet health: a barely-there tint follows the nav pulse state
+   (shared.js sets html[data-fleet]; ok = no tint, warn = amber, crit = red
+   with a slow uneasy breath). Never interactive, never more than a whisper. ---- */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 2147483000;
+  pointer-events: none; opacity: 0; transition: opacity 1.4s ease;
+}
+html[data-fleet="warn"] body::after {
+  opacity: 1;
+  background: radial-gradient(130% 100% at 50% -20%, rgba(224, 180, 92, 0.07), rgba(224, 180, 92, 0) 62%);
+}
+html[data-fleet="crit"] body::after {
+  opacity: 1;
+  background: radial-gradient(130% 100% at 50% -20%, rgba(229, 72, 77, 0.09), rgba(229, 72, 77, 0) 62%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fleet="crit"] body::after { animation: fleet-unease 5.5s ease-in-out infinite; }
+}
+@keyframes fleet-unease { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* gentle 3D tilt on the home cards: main.js feeds --tilt-x/--tilt-y from the
+   pointer; reduced motion never sets them (JS gate) so the base stays flat */
+@media (prefers-reduced-motion: no-preference) {
+  .stat-card, .rule-card, .dash-card {
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s, box-shadow 0.3s;
+    will-change: transform;
+  }
+}

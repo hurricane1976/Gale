@@ -129,7 +129,7 @@ function renderThroughput() {
   $("tput-iface").textContent = tputIface
     ? `${tputIface} · rx + tx Mb/s · last ${tputBuf.length} samples` : "measuring…";
   if (tputBuf.length < 2) {
-    box.innerHTML = `<p class="mini-note">collecting samples…</p>`;
+    skeleton(box, 1, 56); // shimmer placeholder; the chart cross-fades in over it
     return;
   }
   const W = 640, H = 120, PT = 8, PB = 16;

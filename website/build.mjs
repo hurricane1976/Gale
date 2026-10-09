@@ -25,6 +25,8 @@ const ENTRY_POINTS = [
   "drilldown.js",
   "hosts.js",
   "particles.js",
+  "pulsewall.js",   // home heartbeat section (lazy from heartbeat.js)
+  "wxsky.js",       // weather page conditions sky (lazy from weather.js)
   "metrics.js",      // metrics.html
   "network.js",      // network.html
   "observability.js",// observability.html

@@ -135,6 +135,33 @@ export function tweenText(el, to, { from = null, duration = 600 } = {}) {
   return true;
 }
 
+/* ---- tickers for headline stat rows. setVitals(el, html) replaces the
+   .vital rows like innerHTML would, but tweens each .vital-value from the
+   number previously shown in that slot when old and new share the same
+   prefix/suffix shape ("$597.7700" -> "$581.8315" eases; "up" -> "down"
+   or an agent-filter change swaps instantly). REDUCED: plain write. ---- */
+export function setVitals(el, html) {
+  if (!el) return;
+  const old = typeof el.querySelectorAll === "function"
+    ? [...el.querySelectorAll(".vital")].map((v) => ({
+      label: (v.querySelector(".vital-label")?.textContent || "").trim(),
+      text: (v.querySelector(".vital-value")?.textContent || "").trim(),
+    })) : [];
+  el.innerHTML = html;
+  if (REDUCED || !old.length) return;
+  el.querySelectorAll(".vital").forEach((v, i) => {
+    const o = old[i];
+    if (!o) return;
+    const node = v.querySelector(".vital-value");
+    const label = (v.querySelector(".vital-label")?.textContent || "").trim();
+    const to = (node?.textContent || "").trim();
+    if (!node || !o.text || o.text === to || label !== o.label) return;
+    const fm = o.text.match(NUM_CORE), tm = to.match(NUM_CORE);
+    if (!fm || !tm || fm[1] !== tm[1] || fm[3] !== tm[3]) return; // shape changed: swap, don't tween
+    tweenText(node, to, { from: parseFloat(fm[2]), duration: 850 });
+  });
+}
+
 /* ---- fine-grained DOM patching (ROADMAP #9)
    setHTML / setText: write-through-with-guards so unchanged SSE/poll payloads
    leave the DOM untouched (focus, scroll, hover state and DOM identity survive).
@@ -282,7 +309,7 @@ if (typeof HTMLElement !== "undefined") {
       .label { font-family: var(--font-mono, monospace); font-size: 0.72rem;
         letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
       .value { font-family: var(--font-heading, inherit); font-size: 1.65rem;
-        font-weight: 600; line-height: 1; }
+        font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
       :host([level="warn"]) .value { color: var(--warn, #e0b45c); }
       :host([level="crit"]) .value { color: var(--flag-soft, #6ea8f5); }
       .sub { font-size: 0.78rem; color: var(--text-faint); }
@@ -315,11 +342,26 @@ if (typeof HTMLElement !== "undefined") {
       // here re-fired attributeChangedCallback -> render -> setAttribute ...
       // until "Maximum call stack size exceeded".)
       if (!this.hasAttribute("level")) this.setAttribute("level", "ok");
-      this.shadowRoot.innerHTML =
-        `<span class="label">${esc(g("label"))}</span>` +
-        `<span class="value">${g("value")}</span>` +
-        (pct != null && pct !== "" ? `<div class="meter"><i style="width:${clamp(+pct, 0, 100).toFixed(1)}%"></i></div>` : "") +
-        `<span class="sub">${esc(g("sub") || "")}</span>`;
+      const val = g("value");
+      const root = this.shadowRoot;
+      const build = (valHtml) => {
+        root.innerHTML =
+          `<span class="label">${esc(g("label"))}</span>` + valHtml +
+          (pct != null && pct !== "" ? `<div class="meter"><i style="width:${clamp(+pct, 0, 100).toFixed(1)}%"></i></div>` : "") +
+          `<span class="sub">${esc(g("sub") || "")}</span>`;
+      };
+      // ticker: same-shape numeric values ease from the previously shown
+      // number instead of snapping (label/sub still re-render immediately)
+      const prev = this._valText;
+      const pm = prev != null ? String(prev).trim().match(NUM_CORE) : null;
+      const tm = String(val).trim().match(NUM_CORE);
+      if (pm && tm && pm[1] === tm[1] && pm[3] === tm[3] && root.querySelector(".value")) {
+        build(`<span class="value">${esc(String(prev).trim())}</span>`);
+        tweenText(root.querySelector(".value"), val, { from: parseFloat(pm[2]), duration: 750 });
+      } else {
+        build(`<span class="value">${val}</span>`);
+      }
+      this._valText = String(val);
     }
   }
   if (!customElements.get("gale-stat")) customElements.define("gale-stat", GaleStat);
@@ -747,7 +789,7 @@ export function initThemeEngine() {
   const apply = (fx) => {
     const html = document.documentElement;
     html.style.setProperty("--theme-hue", `${clamp(+fx.hue || 0, -40, 40)}deg`);
-    html.style.setProperty("--theme-glow", `${clamp(+fx.glow ?? 1, 0.4, 1.6)}`);
+    html.style.setProperty("--theme-glow", `${clamp(+(fx.glow ?? 1), 0.4, 1.6)}`);
   };
   // time-of-day auto-mode (#10): dawn/day/dusk/night ambient presets while
   // the user has no stored manual prefs; first slider touch pins to manual
@@ -1589,6 +1631,8 @@ function initNavPulse() {
       const lv = crit ? "crit" : warn ? "warn" : "ok";
       const txt = crit ? `${crit} critical` : warn ? `${warn} warning${warn > 1 ? "s" : ""}` : "all clear";
       a.dataset.level = lv;
+      // ambient: the whole page picks up a barely-there tint from this state (gale.css)
+      try { document.documentElement.dataset.fleet = lv; } catch { /* noop */ }
       a.querySelector(".nav-pulse-txt").textContent = txt;
       a.setAttribute("aria-label", `Fleet health: ${txt}. Open ops status.`);
       // hover/focus panel (hidden on phones, where the pill just links to the ops board)
@@ -1625,6 +1669,7 @@ function initNavPulse() {
         (list.length > top.length ? `<span class="np-more">+${list.length - top.length} more · open ops status</span>` : '<span class="np-more">open ops status →</span>') + histHTML;
     } catch {
       a.dataset.level = "unknown";
+      try { document.documentElement.dataset.fleet = "unknown"; } catch { /* noop */ }
       a.querySelector(".nav-pulse-txt").textContent = "offline";
     }
   };

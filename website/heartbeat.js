@@ -47,6 +47,8 @@ function card(host, info, last, h, cells) {
   </li>`;
 }
 
+let wallView = null;
+
 export async function renderHeartbeat() {
   const mount = document.getElementById("heartbeat-grid");
   if (!mount) return;
@@ -74,6 +76,22 @@ export async function renderHeartbeat() {
       el.textContent = String(n);
       tweenText(el, String(n), { from: REDUCED ? n : 0, duration: 1200 });
     });
+    // pulse wall: one WebGL strip above the cards, fed by the same facts the
+    // cards just rendered; on success the flat SVG ECGs hide (CSS: .hb-wall-live)
+    try {
+      const cv = document.getElementById("hb-wall");
+      if (cv && !wallView) {
+        const m = await import("./pulsewall.js");
+        wallView = m.initPulseWall(cv);
+        if (wallView) mount.closest("section")?.classList.add("hb-wall-live");
+      }
+      if (wallView) {
+        wallView.update(hosts.map((h) => {
+          const hAge = ageH(lastBy[h]);
+          return { host: h, age: hAge, ageText: fmtAge(hAge), level: level(d.hosts[h] && d.hosts[h].status, hAge) };
+        }));
+      }
+    } catch { /* the wall is decoration; the cards carry the same facts */ }
   } catch {
     mount.innerHTML = `<li class="hb-card" data-level="warn"><div class="hb-top"><strong class="hb-host">heartbeat unavailable</strong></div></li>`;
   }

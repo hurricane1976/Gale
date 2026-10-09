@@ -67,7 +67,6 @@
     <span class="blob blob-storm" aria-hidden="true" data-parallax="0.09"></span>
 
     <main id="main">
-      <aside class="wrap ops-panel" style="margin:4rem auto 1rem" aria-label="Fleet operations"><a href="operations.html"><strong>Open fleet operations</strong></a><p id="home-ops-summary" role="status">Loading reporting coverage…</p></aside>
       <div id="wrap" class="wrap">
         <!-- 1 · identity — full-viewport storm-mountain night hero -->
         <section id="hero" class="hero hero-solo hero-storm" data-parallax="0.02">
@@ -118,6 +117,11 @@
           </a>
         </section>
 
+        <aside class="ops-panel home-ops-summary" aria-label="Fleet operations">
+          <a href="operations.html"><strong>Open fleet operations</strong></a>
+          <p id="home-ops-summary" role="status">Loading reporting coverage…</p>
+        </aside>
+
         <!-- 2 · fleet stats -->
         <svg class="cine-wave" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0,35 C200,65 400,5 600,35 C800,65 1000,5 1200,35 L1200,70 L0,70 Z" fill="rgba(125,211,252,0.08)" /></svg>
         <section id="stats" class="block">
@@ -162,6 +166,8 @@
         <section id="heartbeat" class="block">
           <h2 class="sec-title">Fleet heartbeat</h2>
           <p class="sec-lede">One pulse per host. Brisk means it woke recently; a slow trace means it is overdue.</p>
+          <!-- pulse wall (WebGL, lazy): hides the flat SVG traces in the cards when it mounts -->
+          <div class="hb-wall"><canvas id="hb-wall" role="img" aria-label="Pulse wall: the four hosts' heartbeats as glowing traces racing along four lanes in depth. Slower or darker lanes woke longer ago; the same ages and run counts are in the cards below."></canvas></div>
           <ul id="heartbeat-grid" class="hb-grid" aria-live="off"><li class="hb-card" data-level="warn"><div class="hb-top"><strong class="hb-host">listening…</strong></div></li></ul>
         </section>
 

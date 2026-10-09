@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, chartTooltip, skeleton, whenNear } from "./shared.js";
+import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, setVitals, chartTooltip, skeleton, whenNear } from "./shared.js";
 
 boot();
 
@@ -98,7 +98,7 @@ function renderVitals() {
   const up = s && s.reachable;
   const resident = (s && s.resident) || [];
   const models = (s && s.models) || [];
-  $("vitals-grid").innerHTML = [
+  setVitals($("vitals-grid"), [
     statCard("Server", up ? "up" : "down", s && up ? `v${esc(s.version)} · ${esc(s.url)}` : esc((s && s.error) || "unreachable"), up ? "ok" : "crit"),
     statCard("VRAM in use", fmtGB(s && s.vram_bytes), `${resident.length} model${resident.length === 1 ? "" : "s"} resident`),
     statCard("Resident", resident.length, resident.map(esc).join(" · ") || "nothing loaded"),
@@ -106,7 +106,7 @@ function renderVitals() {
     statCard("API latency", s && s.latency_ms != null ? `${s.latency_ms} ms` : "–", h ? `p50 ${h.latency_ms.p50 ?? "–"} · p95 ${h.latency_ms.p95 ?? "–"} ms (24h)` : ""),
     statCard("Uptime", h && h.uptime_pct != null ? `${h.uptime_pct}%` : "–", h ? `${h.count} samples · ${h.hours}h window` : ""),
     `<button id="unload-all" class="btn ol-btn ol-btn-xs" type="button" ${resident.length ? "" : "disabled"}>Unload all resident</button>`,
-  ].join("");
+  ].join(""));
   refreshEffects();
 }
 

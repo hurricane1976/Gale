@@ -11,7 +11,6 @@ initStormScene();
 /* wire the shared effects engine to static markup: section reveals +
    count-up stat numbers (dynamic regions call refreshEffects themselves). */
 document.querySelectorAll(".block:not(#hero)").forEach((el) => el.classList.add("reveal"));
-document.querySelectorAll(".stat-card, .dash-card").forEach((el) => el.classList.add("tilt"));
 document.querySelectorAll(".stat-num").forEach((el) => {
   if (/^[\d,]+$/.test(el.textContent.trim())) el.setAttribute("data-countup", "");
 });
@@ -151,31 +150,78 @@ function fmtAgo(iso) {
   return `${Math.floor(s / 86400)}d ago`;
 }
 
-export async function renderLivePulse() {
+let lastPulseSig = "";
+
+export async function renderLivePulse(preloaded) {
   const feed = document.getElementById("pulse-feed");
   if (!feed) return;
-  try {
-    const r = await fetch("api/fleet/activity", { cache: "no-store" });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const d = await r.json();
-    const events = (d.events || []).slice(-8).reverse();
-    if (!events.length) {
-      feed.innerHTML = `<li class="pulse-row muted">mesh quiet — no recent wakes</li>`;
+  let d = preloaded;
+  if (!d) {
+    try {
+      const r = await fetch("api/fleet/activity", { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      d = await r.json();
+    } catch {
+      feed.innerHTML = `<li class="pulse-row muted">feed unreachable — mesh offline or 8090 down</li>`;
       return;
     }
-    feed.innerHTML = events.map((ev) => `
-      <li class="pulse-row">
-        <span class="pulse-kind">${esc(KIND_ICON[ev.kind] || "·")}</span>
-        <span class="pulse-agent">${esc((ev.agent || "?").toUpperCase())}</span>
-        <span class="pulse-text">${esc(ev.text || "")}</span>
-        <span class="pulse-ago">${esc(fmtAgo(ev.ts))}</span>
-      </li>`).join("");
-    renderHistory(d);
-    renderWakeDots(d.events || []);
-  } catch {
-    feed.innerHTML = `<li class="pulse-row muted">feed unreachable — mesh offline or 8090 down</li>`;
   }
+  const events = (d.events || []).slice(-8).reverse();
+  const sig = JSON.stringify(events);
+  if (sig === lastPulseSig) return; // SSE pushes repeat payloads; don't re-render (or re-animate) them
+  lastPulseSig = sig;
+  if (!events.length) {
+    feed.innerHTML = `<li class="pulse-row muted">mesh quiet — no recent wakes</li>`;
+    return;
+  }
+  feed.innerHTML = events.map((ev) => `
+    <li class="pulse-row">
+      <span class="pulse-kind">${esc(KIND_ICON[ev.kind] || "·")}</span>
+      <span class="pulse-agent">${esc((ev.agent || "?").toUpperCase())}</span>
+      <span class="pulse-text">${esc(ev.text || "")}</span>
+      <span class="pulse-ago">${esc(fmtAgo(ev.ts))}</span>
+    </li>`).join("");
+  renderHistory(d);
+  renderWakeDots(d.events || []);
 }
+renderLivePulse();
+
+/* ---- live push: the SSE stream re-renders the pulse feed the moment a mesh
+   event lands and tells the 3D fleet map (topology3d.js listens for
+   gale:activity-event) to ripple from that agent instantly, instead of the
+   map waiting for its own 15 s REST poll (which remains as the fallback).
+   If EventSource is missing or the stream dies repeatedly, the one-shot
+   fetch above is the floor; a slow poll keeps the feed from going stale. ---- */
+(function pulseSSE() {
+  if (typeof EventSource === "undefined") return;
+  let seen = null, failures = 0, dead = false;
+  try {
+    const es = new EventSource("api/fleet/activity/stream");
+    es.onmessage = (e) => {
+      failures = 0;
+      let d;
+      try { d = JSON.parse(e.data); } catch { return; } // malformed payload -- wait for the next push
+      const evs = (d.events || []).slice().sort((a, b) => String(a.ts).localeCompare(String(b.ts)));
+      if (seen === null) seen = evs.length ? evs[evs.length - 1].ts : ""; // first push: sync, no ripple backlog
+      else {
+        let n = 0;
+        for (const ev of evs) {
+          if (!ev.ts || String(ev.ts) <= seen) continue;
+          if (n++ < 6) window.dispatchEvent(new CustomEvent("gale:activity-event", { detail: { agent: ev.agent, host: ev.host, kind: ev.kind, ts: ev.ts } }));
+        }
+        if (evs.length) seen = evs[evs.length - 1].ts;
+      }
+      renderLivePulse(d);
+    };
+    es.onerror = () => {
+      if (++failures >= 3 && !dead) { // stream gone (proxy won't stream) -- stop hammering, poll slowly
+        dead = true;
+        es.close();
+        setInterval(() => renderLivePulse(), 60000);
+      }
+    };
+  } catch { /* EventSource construction failure -- keep the one-shot feed */ }
+})();
 
 /* ---- recent history: latest commits from the same activity feed.
    Static 2026-09-23 list in markup stays as the no-JS fallback. ---- */
@@ -190,7 +236,6 @@ export function renderHistory(d) {
       `<span class="h-msg">${esc(msg.slice(0, 140))}</span></li>`;
   }).join("");
 }
-renderLivePulse();
 
 /* ---- wake-activity dot strip (#4): last 24h bucketed by hour; a filled
    dot means at least one mesh event that hour. Same activity feed, no new
@@ -293,12 +338,21 @@ renderSpend();
     hero.addEventListener("pointerleave", () => { tx = ty = 0; if (!raf2) raf2 = requestAnimationFrame(tick); });
     title.classList.add("fx-depth");
   }
-  // stat cards: pointer position drives a glow that follows the cursor around the card edge
+  // stat cards: pointer position drives a glow that follows the cursor around the card edge,
+  // plus a gentle 3D tilt (--tilt-x/--tilt-y consumed by gale.css)
   document.querySelectorAll(".stat-card, .rule-card, .dash-card").forEach((el) => {
     el.addEventListener("pointermove", (e) => {
       const r = el.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - 0.5;
+      const ny = (e.clientY - r.top) / r.height - 0.5;
       el.style.setProperty("--gx", `${e.clientX - r.left}px`);
       el.style.setProperty("--gy", `${e.clientY - r.top}px`);
+      el.style.setProperty("--tilt-y", `${(nx * 7).toFixed(2)}deg`);
+      el.style.setProperty("--tilt-x", `${(-ny * 5).toFixed(2)}deg`);
+    }, { passive: true });
+    el.addEventListener("pointerleave", () => {
+      el.style.setProperty("--tilt-x", "0deg");
+      el.style.setProperty("--tilt-y", "0deg");
     }, { passive: true });
   });
   } catch { /* decoration only */ }

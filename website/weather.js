@@ -6,6 +6,12 @@ import { boot, refreshEffects, setStormIntensity, clamp, chartTooltip, whenNear 
 
 boot();
 
+/* the conditions sky (wxsky.js) — one lazy module handle shared by the
+   live-conditions hook and the 7-day hover preview */
+let wxskyMod = null;
+const wxsky = () => (wxskyMod ||= import("./wxsky.js").catch(() => null));
+const wxPreview = (day) => wxsky().then((m) => m && m.previewWxSky(day)).catch(() => {});
+
 const WOODBRIDGE = { name: "Woodbridge, VA", lat: 38.6582, lon: -77.2497, admin: "Prince William County", country: "US" };
 const PRESETS = [
   WOODBRIDGE,
@@ -37,6 +43,13 @@ let radarSource = store.get("gale-wx-radar", "noaa"), radarRequest = 0, observat
 const NOAA_RADAR = "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer";
 const NOAA_WARNINGS = "https://mapservices.weather.noaa.gov/eventdriven/services/WWA/watch_warn_adv/MapServer/WMSServer";
 let playTimer = null, frameIdx = 0;
+
+function setMapState(message, ready = false) {
+  const el = $("wx-map-state");
+  if (!el) return;
+  el.textContent = message;
+  el.hidden = ready;
+}
 
 const WMO = {
   0: ["Clear sky", "☀️"], 1: ["Mainly clear", "🌤️"], 2: ["Partly cloudy", "⛅"], 3: ["Overcast", "☁️"],
@@ -272,6 +285,8 @@ function renderCurrent(f) {
     setStormIntensity(clamp(precip * 0.45 + cloud * 0.3 + gustBoost + stormCode + 0.08, 0.05, 1),
       { windKmh: c.wind_speed_10m ?? 0 });
   } catch {}
+  // live conditions sky: the same payload drives the scenic canvas band
+  wxsky().then((m) => m && m.updateWxSky(c, d)).catch(() => {});
 }
 
 function renderHourly(f) {
@@ -338,6 +353,8 @@ function renderDaily(f) {
       `<div class="wx-day-d">${desc}</div>` +
       `<div class="wx-day-meta">💧 ${f.daily.precipitation_probability_max?.[i] ?? 0}% · 💨 ${wnd(f.daily.wind_speed_10m_max?.[i] ?? 0)} · ☀️ UV ${Number(f.daily.uv_index_max?.[i] ?? 0).toFixed(0)}</div>` +
       `<div class="wx-range"><i style="width:${rangeW(f, i)}%;left:${rangeL(f, i)}%"></i></div>`;
+    card.addEventListener("pointerenter", () => wxPreview({ code: f.daily.weather_code[i], windKmh: f.daily.wind_speed_10m_max?.[i] ?? 0 }), { passive: true });
+    card.addEventListener("pointerleave", () => wxPreview(null), { passive: true });
     el.appendChild(card);
   });
   refreshEffects();
@@ -409,7 +426,7 @@ async function renderAlerts() {
 /* ---------- radar map ---------- */
 function initMap() {
   if (typeof L === "undefined") {
-    $("wx-map").innerHTML = `<p class="mini-note" style="padding:20px">Map library failed to load (offline?). Live NWS radar: <a href="https://radar.weather.gov/" target="_blank" rel="noopener">radar.weather.gov ↗</a></p>`;
+    setMapState("Map library unavailable. Use the official radar link below or try again when online.");
     return;
   }
   map = L.map("wx-map", { scrollWheelZoom: true }).setView([loc.lat, loc.lon], 8);
@@ -427,8 +444,12 @@ function initMap() {
   dark.addTo(map);
   map._wxDark = dark;
   map._wxSat = satellite;
+  dark.once("tileload", () => setMapState("", true));
+  satellite.once("tileload", () => setMapState("", true));
   dark.on("tileerror", () => {
     $("wx-frame-label").textContent = "basemap tiles failing — try Satellite view";
+    const state = $("wx-map-state");
+    if (state && !state.hidden) setMapState("Map tiles are taking too long. Try Satellite view or open the official radar link below.");
   });
   placeMarker();
   warningOverlay = L.tileLayer.wms(NOAA_WARNINGS, {layers:"0", format:"image/png", transparent:true, version:"1.3.0", attribution:"Warnings: NOAA / NWS", zIndex:20, opacity:0.7});
@@ -464,6 +485,8 @@ async function loadRadarFrames() {
   if(radarOverlay){radarOverlay.remove();radarOverlay=null;}
   $("wx-play").disabled=true;$("wx-frame").disabled=true;
   $("wx-frame-label").textContent="Loading radar…";
+  const mapState = $("wx-map-state");
+  if (map && mapState && !mapState.hidden) setMapState("Loading map tiles and observed radar…");
   try {
     let frames;
     if(selected==="noaa") {
