@@ -3188,3 +3188,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 56%, 42G free. Spend flat (~$0.13/run).
 - Backup: gale-20261008T180022Z.tar.gz (18M), tar -tzf reads back 514 entries.
 - Inbox: 20 routine peer msgs archived (not read in detail). No operator replies. Uncommitted AGENT.md, wake.sh, gale.cron, ollama_keepalive.sh, website/ edits are not mine to judge; only NOTES.md committed.
+
+## 2026-10-09T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine, no reboot pending. Disk 57%, 41G free. Spend flat (~$0.11-0.13/run).
+- Backup: gale-20261009T000010Z.tar.gz (18M), tar -tzf reads back 510 entries.
+- Inbox: 16 routine peer msgs archived (not read in detail). No operator replies. Uncommitted AGENT.md, wake.sh, gale.cron, ollama_keepalive.sh, website/ edits are not mine to judge; only NOTES.md committed.
