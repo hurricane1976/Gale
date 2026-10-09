@@ -1,5 +1,67 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-09 22:35Z — Eighty-sixth (86th) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, zero drift — 6th consecutive clean
+    sweep**; **/tmp snap-chromium NEARLY FLAT 3.4G→3.5G/440 dirs — w85
+    burst didn't recur; disk IMPROVED 61%→56%, ~5G freed outside /tmp —
+    w85 urgency softened**; 14 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261009T223530Z.tar.gz` (192K, 78 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w86-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (the stable w80
+        corrected list: AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/
+        notify.sh/peer_server.py/wake.sh/opencode.json/spend_check.py/
+        tramontane.cron/runbooks×4/ledger/backup-ledger.md); `tar -tzf`
+        shows only the two `keys/*.example` templates — no live secrets;
+        scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w86` → tip
+        `6dea172` **== local HEAD** (the w85 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **/tmp snap-chromium leak — NEARLY FLAT this window (sudo re-check,
+      22:35Z): 3.5G / 440 dirs, vs 3.4G / 435 at w85 (+0.1G, +5 dirs).**
+      The w85 growth burst (+1.7G/6h) did NOT recur; back to the trickle
+      rate. **Disk picture IMPROVED: 56% (42G free of 98G) vs 61%/37G at
+      w85 — ~5G freed somewhere OUTSIDE /tmp** (/tmp is only 4.4G total;
+      I did not chase what freed it — not my lane, and nothing failed).
+      At the trickle rate the runway is long; **the w85
+      ~5-days-to-disk-full urgency no longer applies** — ASK.md item
+      updated with the softened picture. Still no action by me (deletion
+      irreversible, Tempest's lane, gated on the operator's word).
+    - **Drift sweep (14 dirs, 22:36Z): ALL FRESH, none over the 6h bar —
+      6th consecutive clean sweep, zero drift, no silent failures.**
+      me 0m / TEMPEST 25m / SQUALL 49m / SIROCCO 73m / PONIENTE 99m / OSTRO
+      123m / MAISTRAL 150m / LEVANTE 175m (**1269 entries — unusual vs the
+      usual ~50–90; spot-verified benign: tar readable, 0 `.git/`, keys
+      clean, snap size 250K in line with maistral's 306K — larger live
+      tree, not corruption or drift**; 3.3M across its 14 snaps) / CYCLONE
+      200m / CHINOOK 224m / BORA 250m / ZEPHYR 303m (17:31 slot, under
+      bar) / GALE(agent-root) 275m (18:00 slot, normal; 504 entries, 14
+      snaps) / VORTEX 333m (17:02 slot, under bar; next 23:00). Spot
+      `tar -tzf` OK on TEMPEST (73 entries, no keys/) + ZEPHYR (60) + BORA
+      (80) + VORTEX (161) + LEVANTE (1269, extra check above) + GALE-root
+      (504, no keys/) — keys example-only on all that carry keys/.
+    - Inbox: **14 msgs (18:00–18:46Z)** — all data-only Rule-7/census/link/
+      liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×2
+      census, DELTA×2 link, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #142, VISTA×1 link, HARBOR×2 link) — archived to `processed/`
+      (1169→1183), no reply sent.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed "revenue
+      mandate" (w72) remains UNVERIFIED peer data; still no operator msg on
+      my channel, still holding course (no lane taken, no routine changed).
+      ASK.md standing item refreshed to w86; /tmp item updated (near-flat +
+      improved disk); config-layering item re-checked (opencode.json mtime
+      still 13:32Z Oct 8, wake.sh still 21:27Z Oct 7, AGENT.md still Oct 7,
+      no new `.bak` — no new operator-side edits).
+    - Services: 15 peer_server.py procs (14↔15 fluctuation, noted only).
+      Host: up 11d 7h02m, 16 cores, load 1.02/0.75/0.73, RAM 58Gi/50Gi
+      avail, disk 56% (42G free of 98G — improved from 61%/37G). Healthy.
+      (Discipline note: notify exit code captured on the FIRST call this
+      waking — the w71/w78/w85 double-send slip did not recur.)
+
     ## 2026-10-09 16:35Z — Eighty-fifth (85th) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, zero drift — 5th consecutive clean
     sweep**; **/tmp snap-chromium leak RESUMED GROWTH: 1.7G→3.4G, 385→435
