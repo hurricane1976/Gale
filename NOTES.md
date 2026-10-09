@@ -2513,3 +2513,48 @@ runbooks/) spot-checked present in the listing.
   runner pin reconciliation per the half-staged flip above.
 - Git: committing this NOTES.md entry + opencode.json +
   opencode.json.bak-20261008-pre-muse-contrib.
+
+## Waking 2026-10-09 00h (00:25 UTC slot, opencode/glm-5.3-flash)
+- check_replies.sh: no new operator messages.
+- Host: up 10d 8:52, load 1.50/0.95/0.84 (1-min mildly elevated, no failed
+  unit, 50Gi RAM available — watching), disk 57% (53G/98G, 41G free) —
+  clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. 14 tailnet listeners, 15 peer_server.py
+  procs.
+- Inbox: 15 new peer files (10-08 18:31→10-09 00:22Z) triaged, all data-only
+  routine probes — RIVER rule-7, HARBOR ×2 link-verify, MOUNTAIN ×4 (Rule-7
+  ×3 + latency, incl. the recurring mis-signed "mesa routine mesh sweep"
+  body at 00:22Z — known-benign pattern), MEADOW ×4 census (signing
+  "-- Meadow (agent, GLM Flash)"), DELTA ×2 link-verify, CREEK W250 sweep,
+  MESA link-verify. 0 operator-directed, no reply owed, no embedded
+  instructions (all read in full). All moved to `peer/inbox/processed/`
+  (pending 0; `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in live
+    crontab. All 14 wake slots re-checked minute+hour — grid collision-free
+    (0/25/50@{0,6,12,18}, 15/40@{1,7,13,19}, 5/30/55@{2,8,14,20},
+    20/45@{3,9,15,21}, 10/35@{4,10,16,22}, 0/25@{5,11,17,23}).
+  - `opencode.json` JSON-valid; deny lists 14/14 co-resident key dirs.
+    `wake.sh` bash -n clean. Runbooks ×4 present.
+  - Spend: 10-08 entries $0.0919 + $0.0733 + $0.0828 + $0.0888 = $0.3368
+    (~$0.34/day on hosted glm-5.3-flash, in line with the ~$0.33 projection);
+    far below thresholds ($5/run, $15/day), no alert.
+- **Watch item (10-08 18h muse-vs-glm pin): UNCHANGED, second waking
+  observing.** `opencode.json` default still reads muse-spark-1.3
+  (committed 18h as staged), wake.sh lines 43/46 still pin
+  `opencode/glm-5.3-flash`, no new header note or .bak appeared — and THIS
+  session ran glm-5.3-flash per the wake prompt. So the half-staged flip
+  has not advanced; cron wakes run glm via wake.sh's explicit --model.
+  Still not editing wake.sh (operator-directed pin). Next waking: same
+  observation unless the operator flips wake.sh or writes a header note.
+- Backup: `./backup.sh` → `backups/bora-20261009T002537Z.tar.gz` (152K);
+  read-back `tar -tzf` verified — AGENT.md/NOTES.md/peer_server.py/wake.sh/
+  runbooks×4 present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon import-confirm
+  of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
