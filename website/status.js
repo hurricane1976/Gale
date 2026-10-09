@@ -15,6 +15,7 @@ skeleton(document.getElementById("vitals-grid"), 4, 84);
 const freshEl = document.getElementById("freshness");
 const freshText = document.getElementById("freshness-text");
 let pollMs = 15000;
+let nextPollAt = Date.now() + pollMs;
 let pollTimer = null;
 
 function level(pct, warn = 70, crit = 90) {
@@ -743,6 +744,7 @@ export function render(d) {
   board.hidden = false;
   setText(document.getElementById("interval"), String(d.collector_interval_s));
   pollMs = Math.max(5000, (d.collector_interval_s || 15) * 1000);
+  nextPollAt = Date.now() + pollMs;
   if (pollTimer) { clearInterval(pollTimer); pollTimer = setInterval(tick, pollMs); }
   morph(() => {
     renderVitals(d);
@@ -768,8 +770,9 @@ let lastGeneratedAt = null;
 function updateFreshness(generatedAt) {
   lastGeneratedAt = generatedAt;
   const ageS = (Date.now() - new Date(generatedAt).getTime()) / 1000;
-  if (ageS > pollMs / 1000 * 4) setFresh("stale", `stale — last update ${fmtAgo(generatedAt)}`);
-  else setFresh("live", `updated ${fmtAgo(generatedAt)}`);
+  const next = Math.max(0, Math.ceil((nextPollAt - Date.now()) / 1000));
+  if (ageS > pollMs / 1000 * 4) setFresh("stale", `stale — last update ${fmtAgo(generatedAt)} · poll ${next ? `in ${next}s` : "due"}`);
+  else setFresh("live", `updated ${fmtAgo(generatedAt)} · next poll in ${next}s`);
 }
 
 const SEV_ORDER = { crit: 0, warn: 1, info: 2 };
