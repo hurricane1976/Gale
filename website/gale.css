@@ -1294,6 +1294,12 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .rum-age-bin { min-width:38px; display:grid; justify-items:center; gap:2px; font: .65rem var(--font-mono); color:var(--text-faint); }
 .rum-age-bin i { width:100%; max-width:28px; min-height:3px; border-radius:3px 3px 0 0; background:linear-gradient(0deg,var(--gust),var(--ok)); }
 .rum-age-bin b { color:var(--text); }
+.runbook-progress { display:flex; align-items:center; gap:10px; margin:8px 0 12px; }
+.runbook-progress-track { display:block; width:min(220px, 36vw); height:6px; overflow:hidden; border-radius:9px; background:var(--line); }
+.runbook-progress-track i { display:block; height:100%; background:linear-gradient(90deg,var(--gust),var(--ok)); transition:width .2s ease; }
+.runbook-progress strong { color:var(--text); font: .68rem var(--font-mono); }
+.runbook-step-check { width:16px; height:16px; margin:0 9px 0 0; accent-color:var(--ok); vertical-align:middle; }
+.runbook-step-done { color:var(--text-faint); text-decoration-color:var(--text-faint); }
 .ol-btn-danger { color: var(--warn); border-color: var(--warn-dim); }
 .ol-btn-danger:hover { border-color: color-mix(in srgb, var(--warn) 55%, transparent); background: var(--warn-dim); }
 .ol-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
