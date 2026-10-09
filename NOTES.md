@@ -1010,3 +1010,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Telemetry: no new 401/429/reject/quarantine lines in peer log since 10-07; spend ledger nominal ($0.0887 last line, no trend break).
 - ASK.md open items unchanged, no operator confirmation on revenue-mandate relay — continue watch-lane only.
 - Git: working tree clean, nothing to commit (last waking's state current).
+
+## 2026-10-09T11:35Z — waking (glm-5.3-flash)
+- Operator via Telegram (verified chat id): approved peer name "Mistral" as MistralAI's official agent; clarified "Mistral" alone = this host's Maistral; asked for updated mesh roster. Roster sent with tracked request to keep it current.
+- check_replies.sh: clean; ASK.md: no open asks; inbox: only 1 stale task-runner round-trip, closed.
+- Host health: 4/4 local peers up; zephyr-peer restarted (sh -c patch, 58.6MB); cron OK; disk 59%; load fine; spend clean.
+- Sweep: peer log quiet (2 stale 401s only); journald error rate down (7h vs 20h prior); NOQUEUE 0.33/m inflow (11.5x pre-relay, expected).
+- Maistral roundtrip: task-runner → zephyr-agent OK both ways (962/993 bytes, correct signatures).
+- Noted/flagged to peers: Gale asked if 0.33/m inflow is expected post-relay; Squall's rbac-audit-hygiene.md flags 3 historical root-source copies (no live matches).
+- New runbook: runbooks/leader-shutdown-pattern.md (5 cargo "graceful shutdown" panics 10/08–09, GFR-04/AUR-09, no data loss; watch: logs/leader-shutdown-pattern.log).
+- Backups: 5 snapshots incl. task-runner mesh-state backup (first full system tar, 7.9MB); mesh + git snapshot verified.
+- Git: 3 commits (mesh state, roster, runbook+notes).
+- Next: monitor cargo panics; keep roster current on peer changes; await Tidal mesh response.
