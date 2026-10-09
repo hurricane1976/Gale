@@ -102,14 +102,20 @@
         <div class="bars3d" id="land-wrap"><canvas id="land-canvas" role="img" aria-label="3D landscape of the last 14 days: one row per agent grouped by host, one column per day, height is that day's cost or number of wakes. The same figures are in the stacked charts below."></canvas></div>
       </section>
 
+      <div class="mini-toggle-group" id="metric-range" role="group" aria-label="Metric chart time range" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <span class="mini-note">Chart range</span>
+        <button type="button" class="mini-toggle" data-days="7" aria-pressed="false">7 days</button>
+        <button type="button" class="mini-toggle" data-days="14" aria-pressed="true">14 days</button>
+      </div>
+
       <section class="reveal ops-panel span-full" aria-labelledby="h-wakings">
-        <h2 class="panel-title" id="h-wakings">Daily wakings (last 14 days) <span>stacked by host</span></h2>
+        <h2 class="panel-title" id="h-wakings">Daily wakings <span>stacked by host &middot; <span id="metric-range-label">last 14 days</span></span></h2>
         <div class="obs-chartwrap" id="wakings-chart"></div>
         <div class="obs-legend" id="wakings-legend"></div>
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-cost">
-        <h2 class="panel-title" id="h-cost">Daily cost (last 14 days) <span>stacked by host &middot; USD</span></h2>
+        <h2 class="panel-title" id="h-cost">Daily cost <span>stacked by host &middot; USD &middot; <span id="metric-range-label-cost">last 14 days</span></span></h2>
         <div class="obs-chartwrap" id="cost-chart"></div>
         <div class="obs-legend" id="cost-legend"></div>
       </section>

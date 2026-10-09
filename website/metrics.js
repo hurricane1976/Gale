@@ -10,6 +10,7 @@ const POLL_MS = 30000;
 const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)" };
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tramontane: "var(--m-muse)", ostro: "var(--m-muse)", poniente: "var(--m-muse)", levante: "var(--m-muse)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)", beacon: "var(--m-claude)", river: "light-dark(#0f6a50, #4fd1a5)", creek: "light-dark(#76560c, #e0b45c)", stream: "light-dark(#8a2b80, #d98fd1)", meadow: "var(--m-glm)", brook: "var(--m-gpt)", mist: "var(--m-gpt)", highbeam: "var(--m-glm)", lantern: "var(--m-glm)", lightning: "var(--m-glm)", radar: "var(--m-glm)", prism: "var(--m-gpt)", pulsar: "var(--m-claude)", canyon: "var(--m-glm)", ridge: "var(--m-glm)", harbor: "var(--m-glm)", delta: "var(--m-glm)", mesa: "var(--m-gpt)", vista: "var(--m-gpt)" };
 let DATA = null;
+let chartWindow = 14;
 
 const $ = (id) => document.getElementById(id);
 
@@ -24,6 +25,24 @@ function setFresh(state, text) {
   const t = $("freshness-text");
   if (t) t.textContent = text;
 }
+
+function chartView() {
+  const start = Math.max(0, DATA.days.length - chartWindow);
+  const sliceHosts = (source) => Object.fromEntries(Object.entries(source || {}).map(([host, values]) => [host, values.slice(start)]));
+  return {
+    ...DATA,
+    days: DATA.days.slice(start),
+    daily_wakings_by_host: sliceHosts(DATA.daily_wakings_by_host),
+    daily_cost_by_host: sliceHosts(DATA.daily_cost_by_host),
+  };
+}
+
+const rangeGroup = $("metric-range");
+rangeGroup?.querySelectorAll("[data-days]").forEach((button) => button.addEventListener("click", () => {
+  chartWindow = Number(button.dataset.days) === 7 ? 7 : 14;
+  rangeGroup.querySelectorAll("[data-days]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+  if (DATA) renderAll();
+}));
 
 const hostColor = (h) => HOST_COLOR[h] || "var(--text-faint)";
 
@@ -180,8 +199,8 @@ function renderStatus(d) {
 
 /* ---------------- 3D spend landscape (lazy; hidden where WebGL / motion isn't available) ---------------- */
 let LAND;               // undefined = not tried, null = unavailable, object = running
-async function update3D() { try { await update3DInner(); } catch { /* decoration only */ } }
-async function update3DInner() {
+async function update3D(view = DATA) { try { await update3DInner(view); } catch { /* decoration only */ } }
+async function update3DInner(view = DATA) {
   const sec = document.getElementById("sec-land3d");
   if (!sec || LAND === null) return;
   if (LAND === undefined) {
@@ -199,24 +218,28 @@ async function update3DInner() {
       btn.setAttribute("aria-pressed", String(wakes));
       btn.textContent = wakes ? "showing wakes \u2014 switch to cost" : "showing cost \u2014 switch to wakes";
       LAND.setMode(wakes ? "wakes" : "cost");
-      LAND.update(DATA);
+      LAND.update(chartView());
     });
   }
-  LAND.update(DATA);
+  LAND.update(view);
 }
 
 function renderAll() {
   if (!DATA) return;
   renderAgentCards(DATA);
-  const hosts = Object.keys(DATA.daily_wakings_by_host);
-  setHTML($("wakings-chart"), stackedBars(DATA.daily_wakings_by_host, (v) => String(Math.round(v))));
+  const view = chartView();
+  const rangeLabel = `last ${view.days.length} days`;
+  setText($("metric-range-label"), rangeLabel);
+  setText($("metric-range-label-cost"), rangeLabel);
+  const hosts = Object.keys(view.daily_wakings_by_host);
+  setHTML($("wakings-chart"), stackedBars(view.daily_wakings_by_host, (v) => String(Math.round(v))));
   legend("wakings-legend", hosts);
-  setHTML($("cost-chart"), stackedBars(DATA.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`));
-  legend("cost-legend", Object.keys(DATA.daily_cost_by_host));
-  tipDayTotals("wakings-chart", DATA.days);
-  tipDayTotals("cost-chart", DATA.days);
+  setHTML($("cost-chart"), stackedBars(view.daily_cost_by_host, (v) => `$${v < 10 ? v.toFixed(2) : v.toFixed(0)}`));
+  legend("cost-legend", Object.keys(view.daily_cost_by_host));
+  tipDayTotals("wakings-chart", view.days);
+  tipDayTotals("cost-chart", view.days);
   renderStatus(DATA);
-  update3D();
+  update3D(view);
   refreshEffects();
   setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
