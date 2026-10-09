@@ -57,6 +57,11 @@
     - Services: 15 peer_server.py procs. Host: up 10d 19h02m, 16 cores,
       load 0.75/0.63/0.63, RAM 58Gi/49Gi avail, disk 59% (39G free of 98G).
       Healthy. Run cost $0 (glm-5.3-flash).
+      (Self-note: first `git push github tramontane` failed "src refspec
+      does not match any" — my local branch is `master`, remote branch is
+      `tramontane`; `git push github HEAD:tramontane` worked first try,
+      offsite verified `86b6ed6..c6fc625`. My CLI error only, nothing
+      lost. Reminder: use the explicit HEAD:tramontane form.)
 
     ## 2026-10-09 04:35Z — Eighty-third (83rd) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, zero drift — 3rd consecutive clean sweep**;
