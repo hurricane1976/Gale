@@ -51,6 +51,29 @@ rangeGroup?.querySelectorAll("[data-days]").forEach((button) => button.addEventL
   rangeGroup.querySelectorAll("[data-days]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
   if (DATA) renderAll();
 }));
+const comparePanel = $("metric-period-comparison"), compareToggle = $("metric-compare-toggle");
+compareToggle?.addEventListener("click", () => {
+  const open = comparePanel.hidden;
+  comparePanel.hidden = !open;
+  compareToggle.setAttribute("aria-pressed", String(open));
+  if (open && DATA) renderComparison();
+});
+
+function renderComparison() {
+  if (!DATA || !comparePanel || comparePanel.hidden) return;
+  const split = Math.max(0, DATA.days.length - 7), previousDays = DATA.days.slice(Math.max(0, split - 7), split), currentDays = DATA.days.slice(split);
+  const hosts = [...new Set([...Object.keys(DATA.daily_wakings_by_host || {}), ...Object.keys(DATA.daily_cost_by_host || {})])].sort();
+  const total = (series, host, from, to) => (series[host] || []).slice(from, to).reduce((sum, value) => sum + (Number(value) || 0), 0);
+  const fmtDelta = (current, previous) => previous > 0 ? `${((current - previous) / previous * 100) > 0 ? "+" : ""}${((current - previous) / previous * 100).toFixed(1)}%` : current > 0 ? "new" : "0.0%";
+  const rows = hosts.map((host) => {
+    const wakeNow = total(DATA.daily_wakings_by_host || {}, host, split, DATA.days.length);
+    const wakePrev = total(DATA.daily_wakings_by_host || {}, host, Math.max(0, split - 7), split);
+    const costNow = total(DATA.daily_cost_by_host || {}, host, split, DATA.days.length);
+    const costPrev = total(DATA.daily_cost_by_host || {}, host, Math.max(0, split - 7), split);
+    return `<tr><th scope="row"><i class="obs-led" style="background:${hostColor(host)}"></i>${esc(host)}</th><td>${Math.round(wakeNow)}</td><td>${Math.round(wakePrev)}</td><td>${fmtDelta(wakeNow, wakePrev)}</td><td>$${costNow.toFixed(4)}</td><td>$${costPrev.toFixed(4)}</td><td>${fmtDelta(costNow, costPrev)}</td></tr>`;
+  }).join("");
+  setHTML(comparePanel, `<h2 class="panel-title">Pinned period comparison <span>${esc(currentDays[0] || "?")}–${esc(currentDays.at(-1) || "?")} vs ${esc(previousDays[0] || "?")}–${esc(previousDays.at(-1) || "?")}</span></h2><p class="mini-note">Totals for the latest seven available days compared with the preceding seven. Percent changes use the previous period as the baseline.</p><div class="table-wrap"><table><thead><tr><th>Host</th><th>Wakes now</th><th>Wakes prior</th><th>Wakes Δ</th><th>Cost now</th><th>Cost prior</th><th>Cost Δ</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No host series available.</td></tr>'}</tbody></table></div>`);
+}
 
 const csvCell = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
 document.querySelectorAll("[data-metric-export]").forEach((button) => button.addEventListener("click", () => {
@@ -277,6 +300,7 @@ function renderAll() {
   tipDayTotals("wakings-chart", view.days);
   tipDayTotals("cost-chart", view.days);
   renderStatus(DATA);
+  renderComparison();
   update3D(view);
   refreshEffects();
   if (pollFallback) { pollError = ""; paintPollStatus(); }
