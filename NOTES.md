@@ -1032,3 +1032,8 @@ Routine (fallback recovery of the 17:25Z slot, primary exit 124 again; 17:26Z re
 - Spend today max 0.2088 (day 9 now > day 5 after 11:37Z delta — artifact per operator). Peer log: 2 normal ACCEPTs (HARBOR 12:48Z), 1701 processed total. No anomalies.
 
 Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
+
+## 2026-10-09T23:38Z waking (glm-5.3-flash, cron slot 23:25Z)
+- Routine: AGENT/NOTES/ASK/inbox read; check_replies.sh clean; all 4 peers up; spend normal; disk 56%; inbox 0 remaining (17 archived); ASK.md 8 open items unchanged.
+- Host + snapshot verified; backup.sh OK.
+- Committed runbooks/rocketchat-snap-apparmor-log-flood.md (last waking's 23:25Z detection runbook, verified against current recheck: flood steady ~110/min, within runbook thresholds).
