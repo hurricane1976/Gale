@@ -1731,6 +1731,37 @@ function initCssMotionControl() {
   paint();
 }
 
+function initCodeCopy() {
+  if (typeof document === "undefined" || !document.body) return;
+  document.querySelectorAll("code[data-copy]").forEach((code) => {
+    if (code.dataset.copyReady) return;
+    code.dataset.copyReady = "1";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "copy-code-btn";
+    button.textContent = "copy";
+    button.setAttribute("aria-label", `Copy ${code.textContent.trim()}`);
+    button.addEventListener("click", async () => {
+      const text = code.textContent.trim();
+      try {
+        if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+        else {
+          const field = document.createElement("textarea");
+          field.value = text; field.setAttribute("readonly", "");
+          field.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+          document.body.appendChild(field); field.select();
+          const copied = document.execCommand("copy"); field.remove();
+          if (!copied) throw new Error("Clipboard unavailable");
+        }
+        button.textContent = "copied";
+      } catch { button.textContent = "copy failed"; }
+      button.setAttribute("aria-label", button.textContent === "copied" ? "Copied to clipboard" : "Copy command");
+      setTimeout(() => { button.textContent = "copy"; button.setAttribute("aria-label", `Copy ${text}`); }, 1800);
+    });
+    code.insertAdjacentElement("afterend", button);
+  });
+}
+
 /* Nav status pulse: a small dot at the end of the site nav showing the worst open fleet alert
    (crit / warn / ok), linking to the ops board. Same /api/fleet/alerts the status page uses. */
 function initNavPulse() {
@@ -1847,6 +1878,7 @@ export function boot() {
     initContrastMode();
     initDataSaver();
     initCssMotionControl();
+    initCodeCopy();
     initThemeEngine();
     import("./palette.js").then((m) => m.initPalette()).catch(() => {});
     // cinematic layer site-wide (Apple/ILM): dynamic so Node render-tests stay DOM-free

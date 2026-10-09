@@ -2075,3 +2075,10 @@ html[data-fleet="crit"] body::after {
     will-change: transform;
   }
 }
+
+.copy-code-btn {
+  margin-inline-start: 6px; border: 1px solid var(--line-strong); border-radius: 6px;
+  padding: 2px 7px; color: var(--text-dim); background: var(--surface-2);
+  font: inherit; font-size: .72rem; cursor: pointer;
+}
+.copy-code-btn:hover, .copy-code-btn:focus-visible { color: var(--text); border-color: var(--flag); }
