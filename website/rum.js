@@ -49,7 +49,7 @@
         constructor(url, options) {
           super(url, options);
           this.addEventListener("error", () => push("SSE_ERROR", 1, "events"));
-          this.addEventListener("open", () => push("SSE_OPEN", 1, "events"), { once: true });
+          this.addEventListener("open", () => push("SSE_OPEN", 1, "events"));
         }
       };
     }
@@ -64,7 +64,11 @@
         } catch {}
         const started = performance.now();
         return nativeFetch(input, init).then((response) => {
-          if (api && !response.ok) push("API_HTTP_ERROR", 1, "responses");
+          if (api && !response.ok) {
+            push("API_HTTP_ERROR", 1, "responses");
+            if (response.status >= 500) push("API_5XX", 1, "responses");
+            else if (response.status >= 400) push("API_4XX", 1, "responses");
+          }
           if (api && performance.now() - started > 1500) push("API_SLOW", 1, "responses >1.5s");
           return response;
         }, (error) => {
