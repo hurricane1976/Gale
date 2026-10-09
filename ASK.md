@@ -3,8 +3,10 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w84 2026-10-09 10:35Z
-  (w84 sweep: NO new misses — fleet 14/14 fresh, zero drift, 4th
+  compounded w59 APIError cases) — STILL OPEN at w85 2026-10-09 16:35Z
+  (w85 sweep: NO new misses — fleet 14/14 fresh, zero drift, 5th
+  consecutive clean sweep; TEMPEST 5th consecutive clean run post-recovery;
+  w84 sweep: NO new misses — fleet 14/14 fresh, zero drift, 4th
   consecutive clean sweep; TEMPEST 4th consecutive clean run post-recovery;
   w83 sweep: NO new misses — fleet 14/14 fresh, zero drift, 3rd
   consecutive clean sweep; TEMPEST 3rd consecutive clean run post-recovery;
@@ -112,6 +114,8 @@
   still holding course, no action taken.**
   **Re-checked w84 2026-10-09 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w85 2026-10-09 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -126,9 +130,17 @@
   relevance. **No action taken by me** (deletion is irreversible, not my
   lane, and Tempest has gated it on your word since fresh dirs may be a
    sibling's live browser session — deferring to their runbook/ASK).
-   **Re-checked w84 2026-10-09 10:35Z (sudo): 1.7G FLAT vs 04:35Z — no
-   growth this window; 385 dirs (+3), so the spawner still trickles. Their
-   measured +2%/6h did not recur this window. Still no action by me.**
+    **Re-checked w84 2026-10-09 10:35Z (sudo): 1.7G FLAT vs 04:35Z — no
+    growth this window; 385 dirs (+3), so the spawner still trickles. Their
+    measured +2%/6h did not recur this window. Still no action by me.**
+    **Re-checked w85 2026-10-09 16:35Z (sudo): GROWTH RESUMED — 1.7G→3.4G
+    (doubled), 385→435 dirs (+50) this window.** w84's flat window was the
+    exception, not the trend; this window's +1.7G/6h exceeds Tempest's
+    measured +2%/6h. Disk now 61% (37G free of 98G) — at this window's rate
+    ~5 days to disk-full, and a filled disk breaks snapshots fleet-wide
+    (backup-lane relevance). Still no action by me (deletion irreversible,
+    Tempest's lane, gated on your word); flagging the rate change here and
+    in notify so the purge decision can be timed against it.
 
 - **INFORMATIONAL (w82 2026-10-08 22:35Z) — model-line config layering:**
   opencode.json (operator-side edit 13:32Z Oct 8, committed by me at w81)
@@ -142,11 +154,14 @@
   taken by me (rule 6 — operator-side config). If the muse-spark switch
   was intended, wake.sh needs an operator-side edit; if glm was intended,
   the opencode.json line may be a stray. Only flagging for awareness —
-  either way runs are clean and costs stay ~$0. (Re-checked w83 04:35Z:
-  opencode.json mtime unchanged 13:32Z Oct 8, wake.sh still Oct 7 — no
-  new operator-side edits, no new `.bak` files.) (Re-checked w84 10:35Z:
-  same mtimes — opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md
-  Oct 7; still no new operator-side edits, no new `.bak` files.)
+   either way runs are clean and costs stay ~$0. (Re-checked w83 04:35Z:
+   opencode.json mtime unchanged 13:32Z Oct 8, wake.sh still Oct 7 — no
+   new operator-side edits, no new `.bak` files.) (Re-checked w84 10:35Z:
+   same mtimes — opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md
+   Oct 7; still no new operator-side edits, no new `.bak` files.) (Re-checked
+   w85 16:35Z: same mtimes again — opencode.json 13:32Z Oct 8, wake.sh
+   21:27Z Oct 7, AGENT.md Oct 7; no new operator-side edits, no new `.bak`
+   files.)
 
 ## Resolved / for the record
 

@@ -1,5 +1,64 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-09 16:35Z — Eighty-fifth (85th) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, zero drift — 5th consecutive clean
+    sweep**; **/tmp snap-chromium leak RESUMED GROWTH: 1.7G→3.4G, 385→435
+    dirs — disk 61%, 37G free, ~5d runway at this window's rate; urgency
+    raised in ASK.md**; 14 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261009T163521Z.tar.gz` (186K, 78 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w85-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (the stable w80
+        corrected list: AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/
+        notify.sh/peer_server.py/wake.sh/opencode.json/spend_check.py/
+        tramontane.cron/runbooks×4/ledger/backup-ledger.md); `tar -tzf`
+        shows only the two `keys/*.example` templates — no live secrets;
+        scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w85` → tip
+        `66203ba` **== local HEAD** (the w84 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **/tmp snap-chromium leak — GROWTH RESUMED (sudo re-check, 16:35Z):
+      3.4G / 435 dirs, vs 1.7G / 385 at w84 — size doubled, +50 dirs in 6h.**
+      w84's flat window was the exception; this window's +1.7G/6h exceeds
+      Tempest's measured +2%/6h. Disk 61% (37G free of 98G; 39G at w84 —
+      consistent). At this window's rate ~5 days to disk-full, and a filled
+      disk would break snapshots fleet-wide — that is the backup-lane
+      relevance. **Still no action by me** (deletion irreversible, not my
+      lane, Tempest has gated the purge on the operator's word); ASK.md
+      informational item updated with the rate change and flagged in notify
+      so the purge decision can be timed against it.
+    - **Drift sweep (14 dirs, 16:36Z): ALL FRESH, none over the 6h bar —
+      5th consecutive clean sweep, zero drift, no silent failures.**
+      me 0m / TEMPEST 25m / SQUALL 49m / SIROCCO 72m / PONIENTE 99m / OSTRO
+      125m / MAISTRAL 148m / LEVANTE 174m / CYCLONE 199m / CHINOOK 224m /
+      BORA 249m / ZEPHYR 299m (11:36 slot, under bar) / GALE(agent-root)
+      275m (12:00 slot, normal; 493 entries, 18M) / VORTEX 332m (11:02
+      slot, under bar; next 17:00). Spot `tar -tzf` OK on TEMPEST (73
+      entries, no keys/) + ZEPHYR (86, no keys/) + BORA (65) + VORTEX (159)
+      + GALE-root (493, no keys/) — keys example-only on all that carry
+      keys/.
+    - Inbox: **14 msgs (12:00–12:48Z)** — all data-only Rule-7/census/link/
+      liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×2
+      census, DELTA×2 link, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #141, VISTA×1 link, HARBOR×2 link) — archived to `processed/`
+      (1155→1169), no reply sent.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed "revenue
+      mandate" (w72) remains UNVERIFIED peer data; still no operator msg on
+      my channel, still holding course (no lane taken, no routine changed).
+      ASK.md standing item refreshed to w85; /tmp item updated with the
+      growth; config-layering item re-checked (opencode.json mtime still
+      13:32Z Oct 8, wake.sh still 21:27Z Oct 7, AGENT.md still Oct 7, no
+      new `.bak` — no new operator-side edits).
+    - Services: 14 peer_server.py procs (15 at w84 — count fluctuates
+      14↔15 across wakings, noted only). Host: up 11d 1h02m, 16 cores,
+      load 0.97/0.72/0.90, RAM 58Gi/50Gi avail, disk 61% (37G free of 98G
+      — up from 59%/39G, mostly the /tmp leak). Healthy. Spend: w84 run
+      logged $0.0504 (w83 $0.1037) — small, no threshold crossed.
+
     ## 2026-10-09 10:35Z — Eighty-fourth (84th) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, zero drift — 4th consecutive clean
     sweep**; **/tmp snap-chromium leak FLAT at 1.7G this window (385 dirs,
