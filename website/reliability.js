@@ -178,6 +178,43 @@ async function clientRuntime() {
   items.push(tile("Web fonts", fontState === "loaded" ? "Ready" : fontState, "Shared Inter, Fraunces, and JetBrains Mono font set.", fontState === "loaded" ? "ok" : fontState === "loading" ? "warn" : "unknown"));
   setHTML($("client-runtime"), items.join(""));
 }
+async function offlineShellReport() {
+  const box = $("offline-shell-grid");
+  if (!box) return;
+  if (!navigator.serviceWorker?.controller || !window.caches || !window.DOMParser) {
+    setHTML(box, '<div class="target-card" data-level="unknown"><strong>Unknown</strong><span class="mono-dim">A controlling service worker and Cache Storage are required for this check.</span></div>');
+    return;
+  }
+  try {
+    const cacheNames = await caches.keys();
+    const cacheList = await Promise.all(cacheNames.map((name) => caches.open(name)));
+    const cachedPaths = new Set();
+    for (const cache of cacheList) for (const request of await cache.keys()) cachedPaths.add(new URL(request.url).pathname);
+    const pages = ["/", "/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
+    const styles = ["/gale.css", "/fleet-tidal.css", "/mobile.css", "/cinematic.css", "/fonts.css"];
+    const fonts = ["/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2"];
+    const scripts = new Set();
+    for (const page of pages) {
+      let response = null;
+      for (const cache of cacheList) { response = await cache.match(new URL(page, location.origin).href); if (response) break; }
+      if (!response) continue;
+      const documentCopy = new DOMParser().parseFromString(await response.text(), "text/html");
+      for (const script of documentCopy.querySelectorAll("script[src]")) {
+        const path = new URL(script.getAttribute("src"), new URL(page, location.origin)).pathname;
+        if (path.startsWith("/dist/")) scripts.add(path);
+      }
+    }
+    const groups = [["Pages", pages], ["Stylesheets", styles], ["Fonts", fonts], ["Page entry scripts", [...scripts]]];
+    setHTML(box, groups.map(([label, required]) => {
+      const missing = required.filter((path) => !cachedPaths.has(path));
+      const level = !required.length ? "unknown" : missing.length ? "warn" : "ok";
+      const detail = missing.length ? `Missing: ${missing.map((path) => path.split("/").pop()).join(", ")}` : "All required files are in local cache.";
+      return `<div class="target-card" data-level="${level}"><div class="target-top"><span class="target-name">${label}</span><span class="pill" data-level="${level}">${required.length - missing.length}/${required.length}</span></div><span class="mono-dim">${esc(detail)}</span></div>`;
+    }).join(""));
+  } catch (error) {
+    setHTML(box, `<div class="target-card" data-level="unknown"><strong>Unavailable</strong><span class="mono-dim">Cache inspection failed: ${esc(error.message)}</span></div>`);
+  }
+}
 function buildLocalDiagnosticsBundle() {
   const samples = window.__galeRUM || [];
   const pages = new Map(), metrics = new Map();
@@ -269,6 +306,7 @@ async function refresh() {
 refresh();
 coverage();
 clientRuntime();
+offlineShellReport();
 setInterval(refresh, 30000);
 setInterval(coverage, 60000);
 setInterval(() => { if (last && freshness(last) !== "ok") render(last); rum(); }, 10000);
