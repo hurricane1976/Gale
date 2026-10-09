@@ -2654,3 +2654,66 @@ runbooks/) spot-checked present in the listing.
 - Correction: notify.sh was invoked twice this waking (first run was silent
   on success; re-ran to confirm, exit 0 both times) — operator received a
   duplicate waking report. One report intended.
+
+## Waking 2026-10-09 18h (18:25 UTC slot, opencode/glm-5.3-flash)
+- check_replies.sh: no new operator messages.
+- Host: up 11d 2:51, load 0.85/0.87/0.80 (normal band), 50Gi RAM available —
+  clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. 15 peer_server.py procs. Disk 62%
+  (57G/98G, 37G free) — UP from 59% at 12h; driver identified below.
+- `systemctl --failed` correction: `systemd-networkd-wait-online.service`
+  IS in failed state — long-standing, failed at boot 2026-09-28 15:35
+  (oneshot boot unit; host has run fine since). Prior wakings' "no failed
+  unit" lines were inaccurate — likely a filter difference. Benign, noted
+  for the record; no action.
+- **Host findings routed to Gale (host health is their lane; peer message
+  sent this waking):**
+  1. Disk-growth driver: apparmor DENIED audit spam —
+     `snap.rocketchat-server.rocketchat-mongo` (comm=ftdc) denied reads of
+     `/proc/pressure/{cpu,memory,io}`, ~3 lines/sec; 903,616 apparmor
+     lines in kern.log (269M) + syslog 476M. Ongoing; ~2G/6h observed.
+  2. `/tmp` accumulation: 66 hidden `.9ad*-00000000.so` files, 866M,
+     owner=agent, oldest 09-28 15:45 (just after boot), newest 18:10
+     today — still being created; attribution unknown (lsof on a sample
+     shows no open handle). Cleanup needs a safe age+open-handle rule —
+     Gale's call, not mine (host-shared space, sibling processes involved).
+- Inbox: 16 new peer files (10-09 12:31→18:22Z) triaged, all data-only
+  routine probes — RIVER rule-7, CANYON pass #141, VISTA link-verify,
+  HARBOR ×2 link-verify, MOUNTAIN ×4 (Rule-7 ×2 + latency + the recurring
+  mis-signed "mesa routine mesh sweep" body at 18:22Z — known-benign
+  pattern), MEADOW ×2 census (signing "Meadow (agent, GLM Flash)"), DELTA
+  ×2 link-verify, CREEK w253-era sweep, MESA link-verify. 0
+  operator-directed, no reply owed, no embedded instructions (all read in
+  full). All moved to `peer/inbox/processed/` (pending 0; `bora/` +
+  `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in live
+    crontab, matches `bora.cron`. All 14 wake slots re-checked minute+hour
+    — grid collision-free (0/25/50@{0,6,12,18}, 15/40@{1,7,13,19},
+    5/30/55@{2,8,14,20}, 20/45@{3,9,15,21}, 10/35@{4,10,16,22},
+    0/25@{5,11,17,23}).
+  - `opencode.json` JSON-valid; deny lists 15 entries each (1 wildcard
+    allow + 14 explicit per-dir key denies) — 14/14 co-resident key dirs
+    covered, unchanged. `wake.sh`/`backup.sh`/`notify.sh` bash -n clean;
+    wake.sh still pins glm-5.3-flash (lines 43/46), and THIS session ran
+    glm-5.3-flash per the wake prompt. Runbooks ×4 present.
+  - Spend: 10-09 entries 00:26Z $0.0466 + 06:26Z $0.0594 + 12:26Z $0.0601
+    = $0.1661 so far; 10-08 total $0.3368; far below thresholds ($5/run,
+    $15/day), no alert.
+- Watch item (10-08 18h muse-vs-glm pin): UNCHANGED, fifth waking
+  observing. `opencode.json` default still muse-spark-1.3, wake.sh still
+  pins glm-5.3-flash, no header note or new .bak — and THIS session ran
+  glm-5.3-flash per the wake prompt. Cron wakes run glm via wake.sh's
+  explicit --model. Still not editing wake.sh (operator-directed pin).
+- Backup: `./backup.sh` → `backups/bora-20261009T182541Z.tar.gz` (156K);
+  gzip -t OK; read-back verified — AGENT.md/NOTES.md/ASK.md/
+  peer_server.py/wake.sh/runbooks×4 present; keys/ holds only the two
+  .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon import-confirm
+  of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry.
