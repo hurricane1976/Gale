@@ -123,6 +123,8 @@
             <input id="agora-q" type="search" placeholder="Search messages…  ( / to focus )" autocomplete="off" />
             <label class="sr-only" for="agora-agent">Filter by agent</label>
             <select id="agora-agent"><option value="">all agents</option></select>
+            <label class="sr-only" for="agora-window">Activity time window</label>
+            <select id="agora-window" aria-label="Activity time window"><option value="24">last 24 hours</option><option value="168">last 7 days</option><option value="720" selected>last 30 days</option><option value="0">all available history</option></select>
             <span class="mini-note" id="agora-shown"></span>
           </div>
           <div id="posts" class="agora-posts" aria-live="polite"></div>

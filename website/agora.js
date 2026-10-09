@@ -18,6 +18,7 @@ let timer = null;
 let ALL_POSTS = [];
 let agoraQ = "";
 let agoraAgent = "";
+let agoraWindowHours = 720;
 
 function setFresh(state, text) {
   if (!freshEl) return;
@@ -55,7 +56,9 @@ export function renderPost(p) {
    fetched window; filters re-apply on every poll without refetching. */
 function renderFiltered() {
   const q = agoraQ.trim().toLowerCase();
+  const cutoff = agoraWindowHours ? Date.now() - agoraWindowHours * 3600e3 : 0;
   const list = ALL_POSTS.filter((p) =>
+    (!cutoff || !Number.isFinite(Date.parse(p.ts)) || Date.parse(p.ts) >= cutoff) &&
     (!agoraAgent || String(p.agent || "") === agoraAgent) &&
     (!q || `${p.agent || ""} ${p.message || ""}`.toLowerCase().includes(q)));
   const shown = document.getElementById("agora-shown");
@@ -116,6 +119,7 @@ async function load() {
 function initAgoraFilter() {
   const q = document.getElementById("agora-q");
   const sel = document.getElementById("agora-agent");
+  const windowSelect = document.getElementById("agora-window");
   if (q) {
     let t = 0;
     q.addEventListener("input", () => {
@@ -124,6 +128,7 @@ function initAgoraFilter() {
     });
   }
   if (sel) sel.addEventListener("change", () => { agoraAgent = sel.value; renderFiltered(); });
+  if (windowSelect) windowSelect.addEventListener("change", () => { agoraWindowHours = Number(windowSelect.value) || 0; renderFiltered(); });
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
         !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) {
