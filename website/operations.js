@@ -4,6 +4,7 @@ const $ = (id) => document.getElementById(id);
 let busy = false;
 let opsNextRefreshAt = 0, opsGeneratedAt = "", opsProblem = "";
 let severityFilter = "";
+let knownIncidentIds = null;
 const LIFECYCLE_STAGES = ["investigating","root-caused","remediated","verified"];
 const STALE_KINDS = new Set(["agent-stale","agent-missed-wake","inference-collector-stale","inference-monitor-stale"]);
 let agentFilter = ""; // "" = all
@@ -75,6 +76,9 @@ async function refresh() {
       if (agentFilter) return (a.agent||"fleet")===agentFilter;
       return true;
     });
+    const currentIncidentIds = new Set(incidents.alerts.map((alert) => alert.id));
+    const freshIncidentIds = knownIncidentIds ? new Set([...currentIncidentIds].filter((id) => !knownIncidentIds.has(id))) : new Set();
+    knownIncidentIds = currentIncidentIds;
     // partition so "verified" (terminal, muted) incidents don't masquerade as active
     const shown = [], muted = [];
     for (const a of shownAll) { ((lifemap[a.id]||{}).stage==="verified" ? muted : shown).push(a); }
@@ -93,7 +97,7 @@ async function refresh() {
       const idx=st?LIFECYCLE_STAGES.indexOf(st):-1;
       const next=idx>=0 && idx<LIFECYCLE_STAGES.length-1?LIFECYCLE_STAGES[idx+1]:null;
       const canWrite=!!incidents.access.can_write;
-      return `<article class="target-card" data-level="${esc(a.sev)}" data-id="${esc(a.id)}">
+      return `<article class="target-card${freshIncidentIds.has(a.id) ? " incident-arrival" : ""}" data-level="${esc(a.sev)}" data-id="${esc(a.id)}">
         <div class="inc-head"><strong>${esc(a.text)}</strong><span class="inc-sev sev-${esc(a.sev)}">${esc(a.sev).toUpperCase()}</span></div>
         <p class="inc-meta">Owner ${esc(a.owner)} · ${esc(a.host||"fleet")} · agent ${esc(a.agent||"fleet")} · <code title="stable id">${esc(a.id)}</code></p>
         <p class="inc-kind ${stale?"inc-kind--stale":"inc-kind--fail"}">${stale?"Telemetry gap / stale — not necessarily a failure.":"Active failure signal."}${a.note?` ${esc(a.note)}`:""}</p>

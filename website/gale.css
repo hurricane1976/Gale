@@ -2096,6 +2096,9 @@ html[data-fleet="crit"] body::after {
 .ops-severity-filter[data-severity="crit"] .ops-severity-track i { background: var(--crit, #ff5f6d); }
 .ops-severity-filter[data-severity="warn"] .ops-severity-track i { background: var(--warn); }
 .ops-severity-filter[data-severity="info"] .ops-severity-track i { background: var(--bolt); }
+.incident-arrival { animation: incident-arrival 1.2s ease-out 1; }
+@keyframes incident-arrival { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 55%, transparent); } 100% { box-shadow: 0 0 0 12px transparent; } }
+@media (prefers-reduced-motion: reduce) { .incident-arrival { animation: none; } }
 .slo-threshold { display: block; width: 100%; height: 14px; margin-block: 6px; overflow: visible; }
 .slo-track { fill: var(--line); }
 .slo-actual { fill: var(--ok); }
