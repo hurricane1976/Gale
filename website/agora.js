@@ -44,6 +44,20 @@ function linkHtml(url) {
   }
 }
 
+function renderIntensity(posts, asOf, cutoff) {
+  const box = document.getElementById("agora-intensity");
+  if (!box) return;
+  const times = posts.map((post) => Date.parse(post.ts)).filter(Number.isFinite);
+  const start = cutoff || (times.length ? Math.min(...times) : asOf - 1);
+  const end = Math.max(asOf, start + 1);
+  const counts = Array(12).fill(0);
+  for (const time of times) counts[Math.min(11, Math.max(0, Math.floor((time - start) / (end - start) * 12)))]++;
+  const max = Math.max(1, ...counts), peak = Math.max(...counts);
+  const labels = counts.map((count, index) => `bucket ${index + 1}: ${count} post${count === 1 ? "" : "s"}`).join("; ");
+  const total = counts.reduce((sum, count) => sum + count, 0);
+  box.innerHTML = `<div class="agora-intensity-head"><strong>Activity intensity</strong><span>${total} timestamped posts · peak bucket ${peak}</span></div><div class="agora-intensity-bars" role="img" aria-label="12 time buckets from ${new Date(start).toLocaleString()} through ${new Date(end).toLocaleString()}; ${labels}">${counts.map((count) => `<i title="${count} post${count === 1 ? "" : "s"}" style="--bar:${Math.max(3, count / max * 28)}px"></i>`).join("")}</div><div class="agora-intensity-axis"><span>${new Date(start).toLocaleDateString()}</span><span>selected window</span><span>${new Date(end).toLocaleDateString()}</span></div>`;
+}
+
 export function renderPost(p) {
   const name = esc(String(p.agent || "?"));
   const msg = esc(String(p.message || ""));
@@ -63,13 +77,14 @@ function renderFiltered() {
     (!Number.isFinite(Date.parse(p.ts)) || (Date.parse(p.ts) <= asOf && (!cutoff || Date.parse(p.ts) >= cutoff))) &&
     (!agoraAgent || String(p.agent || "") === agoraAgent) &&
     (!q || `${p.agent || ""} ${p.message || ""}`.toLowerCase().includes(q)));
+  renderIntensity(list, asOf, cutoff);
   const shown = document.getElementById("agora-shown");
   if (shown) shown.textContent = list.length === ALL_POSTS.length
     ? "" : `showing ${list.length}/${ALL_POSTS.length}`;
   if (!list.length) {
     postsEl.innerHTML = ALL_POSTS.length
       ? `<p class="mini-note">No posts match the current filter.</p>`
-      : `<p class="mini-note">Board is empty. First post sets the tone.</p>`;
+      : `<div class="agora-empty"><svg viewBox="0 0 112 72" role="img" aria-label="An empty message bubble surrounded by quiet signal dots"><path d="M22 12h68a8 8 0 0 1 8 8v31a8 8 0 0 1-8 8H49L34 68V59h-4a8 8 0 0 1-8-8V20a8 8 0 0 1 8-8Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M39 31h34M39 41h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="22" r="3" fill="currentColor"/><circle cx="102" cy="38" r="3" fill="currentColor"/></svg><strong>Board is quiet</strong><span>First post sets the tone.</span></div>`;
     return;
   }
   let html = "", lastDay = null;

@@ -883,6 +883,15 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 .agora-status[data-state="error"] { color: var(--warn); }
 .agora-status[data-state="ok"] { color: var(--ok); }
 .agora-posts { display: flex; flex-direction: column; gap: 10px; max-height: 560px; overflow-y: auto; }
+.agora-intensity { margin:0 0 12px; padding:9px 11px 7px; border:1px solid var(--line); border-radius:10px; background:var(--glass); }
+.agora-intensity-head,.agora-intensity-axis { display:flex; justify-content:space-between; gap:8px; color:var(--text-faint); font:.66rem var(--font-mono); }
+.agora-intensity-head strong { color:var(--text-dim); font:600 .76rem var(--font-sans); }
+.agora-intensity-bars { height:34px; display:flex; align-items:end; gap:3px; margin:5px 0; }
+.agora-intensity-bars i { flex:1; height:var(--bar); min-width:2px; border-radius:3px 3px 1px 1px; background:linear-gradient(0deg,var(--gust),var(--flag)); opacity:.78; transition:height .2s ease; }
+.agora-empty { min-height:150px; display:grid; justify-items:center; align-content:center; gap:6px; border:1px dashed var(--line-strong); border-radius:12px; color:var(--text-faint); text-align:center; }
+.agora-empty svg { width:74px; color:var(--gust); opacity:.72; }
+.agora-empty strong { color:var(--text-dim); font-size:.88rem; }
+.agora-empty span { font-size:.76rem; }
 .agora-post {
   background: var(--surface-2); border: 1px solid var(--line);
   border-left: 2px solid var(--flag-dim);
