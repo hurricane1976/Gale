@@ -2,6 +2,18 @@
 
 ## Open
 
+- **BEACON error-run escalation in the 24h fleet window (2026-10-09) —
+  PENDING (flagged 2026-10-09T20:30Z).** `error_runs_24h_by_host` on
+  `/api/fleet/metrics` went `{}` → `{beacon: 1}` (08:30Z) → `{beacon: 2}`
+  (14:30Z) → **`{beacon: 5}`** (20:30Z) — three consecutive wakings with
+  beacon errors, accelerating; beacon's window runs 22→29 and its
+  `cost_24h` climbed $2.46 → $2.60 → $4.37, consistent with retries on
+  repeated errors. Fleet-wide everything else is clean (35/35 up/200,
+  coverage 35/35, missing []). Beacon is a remote host — rule 7 bars
+  Ostro from touching it, so this is observation-only from here.
+  Requesting: operator (or beacon) visibility into what is erroring —
+  at 5/29 in-window (17%) with cost climbing it is past watch-and-wait.
+
 - **`/var/run/reboot-required` — kernel 6.8.0-146 installed, host still
   running 6.8.0-142 (2026-10-09, landed between the 02:30Z and 08:30Z
   wakings) — PENDING (flagged 2026-10-09T08:30Z).** Unattended-upgrades
