@@ -625,10 +625,12 @@ export function setAmbientHealth(level) {
    motion (the static <title>/aria-label content remains). ---- */
 export function chartTooltip(svg, points, format) {
   const noop = () => {};
-  if (!svg || REDUCED || !points || !points.length || typeof format !== "function") return noop;
+  if (!svg || !points || !points.length || typeof format !== "function") return noop;
   const NS = "http://www.w3.org/2000/svg";
   const vb = (svg.viewBox && svg.viewBox.baseVal) || { width: 300, height: 100 };
   const host = svg.parentElement;
+  svg._tipState?.refs?.line?.remove();
+  svg._tipState?.refs?.tip?.remove();
   if (host) host.querySelectorAll(":scope > .chart-tip").forEach((n) => n.remove());
   const line = document.createElementNS(NS, "line");
   line.setAttribute("y1", "0");
@@ -639,6 +641,9 @@ export function chartTooltip(svg, points, format) {
   const tip = document.createElement("div");
   tip.className = "chart-tip";
   tip.style.display = "none";
+  tip.id = `gale-chart-tip-${Math.random().toString(36).slice(2)}`;
+  tip.setAttribute("role", "status");
+  tip.setAttribute("aria-live", "off");
   if (host) {
     if (host.style && getComputedStyle(host).position === "static") host.style.position = "relative";
     host.appendChild(tip);
@@ -651,6 +656,30 @@ export function chartTooltip(svg, points, format) {
   st.format = format;
   st.vbWidth = vb.width || 100;
   st.refs = { line, tip, host };
+  st.index = Math.min(st.index || 0, points.length - 1);
+  if (!svg.hasAttribute?.("tabindex")) svg.setAttribute("tabindex", "0");
+  svg.setAttribute("aria-describedby", tip.id);
+  svg.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight Home End");
+  const showAt = (index, clientX = null, keyboard = false) => {
+    const cur = svg._tipState;
+    if (!cur?.points?.length) return;
+    const i = Math.max(0, Math.min(cur.points.length - 1, index));
+    cur.index = i;
+    const { line: ln, tip: tp, host: h } = cur.refs || {};
+    if (!ln?.isConnected || !tp?.isConnected) return;
+    const x = cur.points[i].x;
+    ln.setAttribute("x1", String(x));
+    ln.setAttribute("x2", String(x));
+    ln.style.display = "";
+    tp.textContent = String(cur.format(i, cur.points[i]));
+    tp.setAttribute("aria-live", keyboard ? "polite" : "off");
+    tp.style.display = "";
+    const rect = svg.getBoundingClientRect();
+    const hostRect = h ? h.getBoundingClientRect() : { left: 0 };
+    const left = clientX == null ? rect.left + rect.width * (x / (cur.vbWidth || rect.width)) - hostRect.left + 12 : clientX - hostRect.left + 12;
+    tp.style.left = `min(max(${Math.round(left)}px, 4px), calc(100% - 8px))`;
+    tp.style.top = "8px";
+  };
   if (!st.wired) {
     st.wired = true;
     const onMove = (e) => {
@@ -665,16 +694,7 @@ export function chartTooltip(svg, points, format) {
         const d = Math.abs(xs[i] - sx);
         if (d < bd) { bd = d; bi = i; }
       }
-      const { line: ln, tip: tp, host: h } = cur.refs || {};
-      if (!ln || !ln.isConnected || !tp || !tp.isConnected) return;
-      ln.setAttribute("x1", String(xs[bi]));
-      ln.setAttribute("x2", String(xs[bi]));
-      ln.style.display = "";
-      tp.textContent = String(cur.format(bi, cur.points[bi]));
-      tp.style.display = "";
-      const hw = h ? h.getBoundingClientRect() : { left: 0 };
-      tp.style.left = `min(max(${Math.round(e.clientX - hw.left + 12)}px, 4px), calc(100% - 8px))`;
-      tp.style.top = "8px";
+      showAt(bi, e.clientX, false);
     };
     const hide = () => {
       const { line: ln, tip: tp } = (svg._tipState && svg._tipState.refs) || {};
@@ -683,6 +703,20 @@ export function chartTooltip(svg, points, format) {
     };
     svg.addEventListener("pointermove", onMove);
     svg.addEventListener("pointerleave", hide);
+    svg.addEventListener("focus", () => showAt(svg._tipState?.index || 0, null, true));
+    svg.addEventListener("keydown", (event) => {
+      const cur = svg._tipState;
+      if (!cur?.points?.length) return;
+      let next = cur.index || 0;
+      if (event.key === "ArrowRight" || event.key === "ArrowUp") next++;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowDown") next--;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = cur.points.length - 1;
+      else if (event.key === "Escape") { hide(); return; }
+      else return;
+      event.preventDefault();
+      showAt(next, null, true);
+    });
   }
   return () => { line.remove(); tip.remove(); };
 }
