@@ -215,6 +215,41 @@ async function offlineShellReport() {
     setHTML(box, `<div class="target-card" data-level="unknown"><strong>Unavailable</strong><span class="mono-dim">Cache inspection failed: ${esc(error.message)}</span></div>`);
   }
 }
+const SITE_PAGES = ["/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
+$("site-link-scan")?.addEventListener("click", async (event) => {
+  const button = event.currentTarget, status = $("site-link-status"), results = $("site-link-results");
+  button.disabled = true; button.textContent = "Scanning…";
+  setText(status, `Checking ${SITE_PAGES.length} local pages and their fragment links…`);
+  try {
+    const fetched = await Promise.all(SITE_PAGES.map(async (page) => {
+      const response = await fetch(page, { cache: "no-store" });
+      if (!response.ok) throw new Error(`${page} returned HTTP ${response.status}`);
+      return [page, new DOMParser().parseFromString(await response.text(), "text/html")];
+    }));
+    const docs = new Map(fetched), inbound = new Map(SITE_PAGES.map((page) => [page, 0])), issues = [];
+    for (const [source, doc] of docs) for (const link of doc.querySelectorAll("a[href]")) {
+      let target;
+      try { target = new URL(link.getAttribute("href"), new URL(source, location.origin)); } catch { continue; }
+      if (target.origin !== location.origin) continue;
+      const path = target.pathname === "/" || target.pathname.endsWith("/") ? "/index.html" : target.pathname;
+      if (SITE_PAGES.includes(path)) {
+        if (source !== path) inbound.set(path, (inbound.get(path) || 0) + 1);
+        if (target.hash) {
+          let fragment = "";
+          try { fragment = decodeURIComponent(target.hash.slice(1)); } catch { fragment = target.hash.slice(1); }
+          if (fragment && !docs.get(path)?.getElementById(fragment)) issues.push({ kind: "Missing anchor", source, target: `${path}#${fragment}` });
+        }
+      } else if (/\.html?$/i.test(path)) issues.push({ kind: "Missing page", source, target: path });
+    }
+    const orphans = SITE_PAGES.filter((page) => page !== "/404.html" && !(inbound.get(page) || 0));
+    const summary = `<div class="target-card" data-level="${issues.length || orphans.length ? "warn" : "ok"}"><strong>${issues.length} broken link${issues.length === 1 ? "" : "s"} · ${orphans.length} orphan page${orphans.length === 1 ? "" : "s"}</strong><span class="mono-dim">${fetched.length} pages scanned · 404 excluded from orphan count</span></div>`;
+    const rows = [...issues.map((issue) => `<div class="target-card" data-level="crit"><strong>${esc(issue.kind)}</strong><span class="mono-dim">${esc(issue.source)} → ${esc(issue.target)}</span></div>`), ...orphans.map((page) => `<div class="target-card" data-level="warn"><strong>Orphan page</strong><span class="mono-dim">${esc(page)}</span></div>`)];
+    setHTML(results, summary + rows.slice(0, 50).join(""));
+    setText(status, `Link audit complete · ${issues.length} broken links · ${orphans.length} orphan pages.`);
+  } catch (error) {
+    setText(status, `Link audit could not finish: ${error.message}`);
+  } finally { button.disabled = false; button.textContent = "Scan 14 pages"; }
+});
 function buildLocalDiagnosticsBundle() {
   const samples = window.__galeRUM || [];
   const pages = new Map(), metrics = new Map();
