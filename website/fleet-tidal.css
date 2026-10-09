@@ -163,6 +163,7 @@ body.fleet-tidal code { font-family: var(--font-ibm-mono); font-size: 0.85em; co
   box-shadow: 0 0 0 1px rgba(63, 199, 255, 0.07), 0 24px 60px -20px rgba(63, 199, 255, 0.2); }
 .fleet-topo-wrap .fleet-topo-svg { z-index: 2; width: 100%; height: auto; display: block; position: relative; }
 .topo-map-status { position:absolute; z-index:4; top:10px; left:12px; max-width:calc(100% - 150px); padding:5px 9px; border:1px solid rgba(63,199,255,.28); border-radius:8px; background:rgba(3,9,16,.82); color:var(--text-dim); font: .68rem var(--font-ibm-mono),monospace; backdrop-filter:blur(8px); pointer-events:none; }
+.topo-scene-note { position:absolute; z-index:4; top:48px; right:12px; max-width:min(420px,70%); padding:6px 9px; border:1px solid var(--line-strong); border-radius:7px; background:rgba(3,9,16,.88); color:var(--text-dim); font-size:.7rem; }
 .fleet-aurora { z-index: 0; pointer-events: none; position: absolute; inset: -20%;
   background: conic-gradient(from var(--fleet-angle) at 50% 50%, rgba(63, 199, 255, 0.16), rgba(133, 147, 240, 0.15),
     rgba(255, 46, 196, 0.13), rgba(15, 216, 189, 0.13), rgba(124, 143, 224, 0.13), rgba(63, 199, 255, 0.16));

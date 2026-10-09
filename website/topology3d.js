@@ -106,6 +106,16 @@ export function initTopology3D(opts = {}) {
   const svg = document.getElementById("topo") || document.querySelector(".fleet-topo-svg, .topo-svg") ||
     document.getElementById("topo-home-stub");
   if (!toggle || !canvas || !svg) return;
+  const noteSceneChoice = (message, reason) => {
+    let note = document.getElementById("topo-scene-note");
+    if (!note) {
+      note = document.createElement("span"); note.id = "topo-scene-note"; note.className = "topo-scene-note";
+      note.setAttribute("role", "status"); note.setAttribute("aria-live", "polite");
+      toggle.insertAdjacentElement("afterend", note);
+    }
+    note.textContent = message;
+    window.__galeRUMRecord?.("SCENE_SKIP", 1, "events", `topology3d (${reason})`);
+  };
 
   // roster from the SVG's own markup — one source of truth, zero drift
   const probe = document.createElement("span");
@@ -167,7 +177,7 @@ export function initTopology3D(opts = {}) {
   const hasPairing = nodes.some((n) => n.state);
 
   const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
-  if (!gl) { toggle.hidden = true; return; }
+  if (!gl) { toggle.hidden = true; noteSceneChoice("WebGL is unavailable; the interactive SVG map remains active.", "webgl-unavailable"); return; }
 
   // --- simulation state: sphere-seeded positions settle into clusters ---
   const rng = mulberry32(0x6a1e);
@@ -954,6 +964,8 @@ export function initTopology3D(opts = {}) {
   // home/status maps, which run the lite renderer on phones), motion allowed, not data-saver
   const params = new URLSearchParams(location.search);
   const want = opts.autoOpen !== undefined ? opts.autoOpen : innerWidth >= 700;
+  if (want && REDUCED3D) noteSceneChoice("Automatic 3D motion is paused by your reduced-motion preference; use 3D view to open it manually.", "reduced-motion");
+  else if (want && document.documentElement.dataset.saver === "1") noteSceneChoice("Automatic 3D rendering is paused by Data Saver; use 3D view to open it manually.", "data-saver");
   if (want && !REDUCED3D && document.documentElement.dataset.saver !== "1" && !params.has("svg") && canvas.hidden) {
     requestAnimationFrame(() => toggle.click());
   }

@@ -119,6 +119,7 @@ function rum() {
     ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["IMAGE_DECODE_ERROR", "Image decode failures", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
     ["WEBGL_LOSS", "WebGL context loss", 0, 1, "events", false], ["OFFLINE", "Offline events", 0, 1, "events", false],
     ["SCENE_START", "3D scene starts", 999999, 999999, "events", false], ["SCENE_FALLBACK", "3D scene fallbacks", 0, 1, "events", false],
+    ["SCENE_SKIP", "Scenes skipped by browser preference or hardware", 0, 1, "events", false], ["SCENE_TIER", "Adaptive graphics quality tier", 1, 2, "tier (1=full)", true],
     ["API_HTTP_ERROR", "API HTTP errors", 0, 1, "responses", false], ["API_4XX", "API client errors", 0, 1, "responses", false],
     ["API_5XX", "API server errors", 0, 1, "responses", false], ["API_NETWORK_ERROR", "API network failures", 0, 1, "failures", false],
     ["API_LATENCY", "API response time", 800, 1800, "ms", true], ["API_SLOW", "Slow API responses", 0, 2, "responses", false], ["SSE_ERROR", "Live stream errors", 0, 2, "events", false],

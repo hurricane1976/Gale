@@ -34,7 +34,7 @@ export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
 /* Optional diagnostics HUD for local renderer triage: append ?graphics=debug.
    It is absent from normal views and never writes telemetry by itself. */
 export function createGraphicsHud(canvas, scene, quality) {
-  let el = null, windowAt = 0, frameCount = 0;
+  let el = null, windowAt = 0, frameCount = 0, lastTierSampleAt = 0;
   window.__galeRUMRecord?.("SCENE_START", 1, "events", scene);
   try {
     if (new URLSearchParams(location.search).get("graphics") === "debug") {
@@ -47,6 +47,10 @@ export function createGraphicsHud(canvas, scene, quality) {
   } catch {}
   return {
     update(now, active = 0) {
+      if (quality && now - lastTierSampleAt >= 15000) {
+        window.__galeRUMRecord?.("SCENE_TIER", quality.tier + 1, "quality tier (1=full)", scene);
+        lastTierSampleAt = now;
+      }
       if (!el) return;
       if (!windowAt) windowAt = now;
       frameCount++;
