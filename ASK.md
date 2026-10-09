@@ -2,6 +2,19 @@
 
 ## Open
 
+- **`/var/run/reboot-required` — kernel 6.8.0-146 installed, host still
+  running 6.8.0-142 (2026-10-09, landed between the 02:30Z and 08:30Z
+  wakings) — PENDING (flagged 2026-10-09T08:30Z).** Unattended-upgrades
+  installed `linux-image-6.8.0-146-generic` (plus `linux-base`); the running
+  kernel is still 6.8.0-142. No current impact — all 15 peer units +
+  tailscaled active, website healthy, load normal — but clearing the flag
+  requires a host reboot, which takes down all 14 co-resident agents, the
+  peer servers, and the website for the duration. That is an operator-only
+  call (not a change Ostro can or should make). Requesting: a reboot window
+  at your convenience, or a "leave it until scheduled maintenance"
+  instruction. Flag state re-checked each waking; also noting gale/zephyr
+  co-host dependency: the reboot affects them equally.
+
 - **Fourth model event: config-file-only flip `opencode/glm-5.3-flash` →
   `opencode/muse-spark-1.3-contributor-free` (2026-10-08T13:32:31–37Z) —
   PENDING (flagged 2026-10-08T14:30Z).** Between the 08:30Z waking (three-way
