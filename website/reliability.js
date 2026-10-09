@@ -76,6 +76,23 @@ function rum() {
     rumPage = filter.value;
   }
   const samples = rumPage ? allSamples.filter((s) => s.page === rumPage) : allSamples;
+  const pageSummary = new Map();
+  for (const sample of allSamples) {
+    if (!sample.page) continue;
+    const row = pageSummary.get(sample.page) || { views: 0, errors: 0, assetErrors: 0, viewports: new Set(), last: 0 };
+    if (sample.metric === "PAGE_VIEW") row.views += sample.value || 1;
+    if (sample.metric === "JS_ERROR" || sample.metric === "REJECTION") row.errors += sample.value || 1;
+    if (sample.metric === "ASSET_ERROR") row.assetErrors += sample.value || 1;
+    if (sample.viewport) row.viewports.add(sample.viewport);
+    row.last = Math.max(row.last, sample.ts || 0);
+    pageSummary.set(sample.page, row);
+  }
+  const pageCards = [...pageSummary.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([page, row]) => {
+    const state = row.errors || row.assetErrors ? "warn" : "ok";
+    const age = row.last ? `${Math.max(0, Math.round((Date.now() - row.last) / 60000))}m ago` : "unknown";
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(page)}</span><span class="pill" data-level="${state}">${row.views} visits</span></div><span class="mono-dim">${row.errors} script/rejection errors · ${row.assetErrors} asset errors · ${esc([...row.viewports].sort().join(", ") || "viewport unknown")} · last activity ${age}</span></div>`;
+  });
+  setHTML($("rum-page-summary"), pageCards.length ? pageCards.join("") : '<p class="mini-note">No page history in this browser yet.</p>');
   const specs = [
     ["LCP", "Largest content paint", 2500, 4000, "ms", true], ["INP", "Interaction delay (approx)", 200, 500, "ms", true],
     ["CLS", "Layout shift", .1, .25, "score", true], ["FCP", "First content paint", 1800, 3000, "ms", true],
