@@ -55,7 +55,7 @@ export function mountBars3D(canvas, opts = {}) {
   /* runtime quality: measured fps shrinks backing resolution (and skips
      frames at tier 2+) instead of stuttering; frozen for reduced motion */
   const q = REDUCED ? null : new Quality();
-  let lastFrame = 0;
+  let lastFrame = 0, lastRumSample = 0;
 
   const aPos = gl.getAttribLocation(prog, "a_pos"), aNrm = gl.getAttribLocation(prog, "a_nrm"), aCol = gl.getAttribLocation(prog, "a_col");
   const uMvp = gl.getUniformLocation(prog, "u_mvp"), uLight = gl.getUniformLocation(prog, "u_light"), uFog = gl.getUniformLocation(prog, "u_fog"), uAlpha = gl.getUniformLocation(prog, "u_alpha");
@@ -177,6 +177,7 @@ export function mountBars3D(canvas, opts = {}) {
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     if (q) q.tick(fdt, nowMs);
     lastFrame = nowMs;
+    if (nowMs - lastRumSample >= 15000) { window.__galeRUMRecord?.("SCENE_FPS", q ? q.fps() : 1000 / fdt, "fps", "bars3d"); lastRumSample = nowMs; }
     const dpr = dprCap((LITE ? 1.5 : 2) * (q ? q.scale() : 1)), w = canvas.clientWidth, h = canvas.clientHeight;
     if (w < 2 || h < 2) return;
     if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); dirty = true; }

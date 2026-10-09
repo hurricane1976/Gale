@@ -15,13 +15,14 @@
       try { localStorage.setItem(KEY, JSON.stringify(samples.slice(-LIMIT))); } catch {}
       window.__galeRUM = samples.slice();
     };
-    const push = (metric, value, unit = "ms") => {
+    const push = (metric, value, unit = "ms", extra = {}) => {
       if (!Number.isFinite(value)) return;
-      samples.push({ metric, value: Math.round(value * 1000) / 1000, unit, ...context, ts: Date.now() });
+      samples.push({ metric, value: Math.round(value * 1000) / 1000, unit, ...context, ...extra, ts: Date.now() });
       if (samples.length > LIMIT) samples.splice(0, samples.length - LIMIT);
       publish();
     };
     window.__galeRUM = samples.slice();
+    window.__galeRUMRecord = (metric, value, unit, scene) => push(metric, value, unit, scene ? { scene } : {});
     const observe = (type, callback, options = {}) => {
       try { if (window.PerformanceObserver) new PerformanceObserver((list) => callback(list.getEntries())).observe({ type, buffered: true, ...options }); } catch {}
     };

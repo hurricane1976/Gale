@@ -313,7 +313,7 @@ export function initTopology3D(opts = {}) {
 
   let raf = 0, frameN = 0, backingDpr = 1, sceneVisible = true;
   const q = REDUCED3D ? null : new Quality();
-  let lastFrame = 0;
+  let lastFrame = 0, lastRumSample = 0;
   const draw = () => {
     if (canvas.hidden || document.hidden || !sceneVisible) { raf = 0; return; }
     raf = requestAnimationFrame(draw);
@@ -322,6 +322,7 @@ export function initTopology3D(opts = {}) {
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     if (q) q.tick(fdt, nowMs);
     lastFrame = nowMs;
+    if (nowMs - lastRumSample >= 15000) { window.__galeRUMRecord?.("SCENE_FPS", q ? q.fps() : 1000 / fdt, "fps", "topology3d"); lastRumSample = nowMs; }
     step();
     resize();
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);

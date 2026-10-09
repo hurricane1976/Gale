@@ -72,7 +72,7 @@ export function initPulseWall(canvas) {
   } catch { return null; }
 
   const q = new Quality();
-  let lastFrame = 0, frameN = 0, raf = 0, visible = true, running = true, contextLost = false;
+  let lastFrame = 0, lastRumSample = 0, frameN = 0, raf = 0, visible = true, running = true, contextLost = false;
   let hover = -1;
   const LANES = 4;
   const lanes = Array.from({ length: LANES }, (_, i) => ({
@@ -155,6 +155,7 @@ export function initPulseWall(canvas) {
     const nowMs = performance.now();
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;
     q.tick(fdt, nowMs); lastFrame = nowMs;
+    if (nowMs - lastRumSample >= 15000) { window.__galeRUMRecord?.("SCENE_FPS", q.fps(), "fps", "pulsewall"); lastRumSample = nowMs; }
     if (!resize()) return;
     const dt = fdt / 1000;
     for (const L of lanes) {
