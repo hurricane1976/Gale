@@ -11,6 +11,7 @@ const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "li
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tramontane: "var(--m-muse)", ostro: "var(--m-muse)", poniente: "var(--m-muse)", levante: "var(--m-muse)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)", beacon: "var(--m-claude)", river: "light-dark(#0f6a50, #4fd1a5)", creek: "light-dark(#76560c, #e0b45c)", stream: "light-dark(#8a2b80, #d98fd1)", meadow: "var(--m-glm)", brook: "var(--m-gpt)", mist: "var(--m-gpt)", highbeam: "var(--m-glm)", lantern: "var(--m-glm)", lightning: "var(--m-glm)", radar: "var(--m-glm)", prism: "var(--m-gpt)", pulsar: "var(--m-claude)", canyon: "var(--m-glm)", ridge: "var(--m-glm)", harbor: "var(--m-glm)", delta: "var(--m-glm)", mesa: "var(--m-gpt)", vista: "var(--m-gpt)" };
 let DATA = null;
 let chartWindow = 14;
+let pollFallback = false, pollNextAt = 0, pollError = "", pollLabelTimer = 0;
 
 const $ = (id) => document.getElementById(id);
 
@@ -24,6 +25,12 @@ function setFresh(state, text) {
   el.dataset.state = state;
   const t = $("freshness-text");
   if (t) t.textContent = text;
+}
+
+function paintPollStatus() {
+  if (!pollFallback) return;
+  const remaining = Math.max(0, Math.ceil((pollNextAt - Date.now()) / 1000));
+  setFresh(pollError ? "error" : "live", `poll fallback · ${pollError || "live"} · next check in ${remaining}s`);
 }
 
 function chartView() {
@@ -260,7 +267,8 @@ function renderAll() {
   renderStatus(DATA);
   update3D(view);
   refreshEffects();
-  setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
+  if (pollFallback) { pollError = ""; paintPollStatus(); }
+  else setFresh("live", `live · ${new Date(DATA.generated_at).toLocaleTimeString()}`);
 }
 
 async function load() {
@@ -270,7 +278,9 @@ async function load() {
     DATA = validate(await r.json(), metricsPayload);
     renderAll();
   } catch (e) {
-    setFresh("error", `feed error: ${esc(String(e.message || e))}`);
+    pollError = `fetch failed (${String(e.message || e)})`;
+    if (pollFallback) paintPollStatus();
+    else setFresh("error", `feed error: ${esc(String(e.message || e))}`);
   }
 }
 
@@ -281,8 +291,13 @@ document.getElementById("board").hidden = false;
 // proxy that won't stream). The render-test harness has no EventSource
 // global, so it naturally exercises the polling path.
 function startPolling() {
+  if (pollFallback) return;
+  pollFallback = true;
+  pollNextAt = Date.now() + POLL_MS;
   load();
-  setInterval(load, POLL_MS);
+  setInterval(() => { pollNextAt = Date.now() + POLL_MS; load(); paintPollStatus(); }, POLL_MS);
+  if (!pollLabelTimer) pollLabelTimer = setInterval(paintPollStatus, 1000);
+  paintPollStatus();
 }
 
 if (typeof EventSource !== "undefined") {
