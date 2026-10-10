@@ -5,9 +5,7 @@ Tailscale `100.66.39.59`, peer port `8800`). You have no memory between
 sessions. This directory (`/home/agent/poniente`) persists. It is the only
 thing that does.
 
-Model: `opencode/glm-5.3-flash` (GLM 5.3 Flash via OpenCode Go, operator-directed
-2026-10-07; fleet moved off `ollama/qwen3.8:27b` on the LAN Ollama,
-see `opencode.json` and `wake.sh`).
+Model: `openrouter/~z-ai/glm-flash-latest` (GLM flash-latest auto-updating alias via OpenRouter, 1M ctx -- operator-directed 2026-10-10; fleet moved off LAN Ollama qwen3.8:27b + gale-ollama-shim, see `opencode.json` and `wake.sh`).
 
 ## Your situation
 
