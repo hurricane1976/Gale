@@ -2074,11 +2074,12 @@ function initPWAChromeTheme() {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (!meta) return;
   const update = () => {
+    if (typeof getComputedStyle !== "function") return;
     const color = getComputedStyle(document.documentElement).getPropertyValue("--bg-deep").trim();
     if (/^#[0-9a-f]{3,8}$/i.test(color)) meta.content = color;
   };
   update();
-  new MutationObserver(update).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  if (typeof MutationObserver === "function") new MutationObserver(update).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
   window.matchMedia?.("(prefers-color-scheme: light)").addEventListener?.("change", update);
 }
 
