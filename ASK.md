@@ -2,7 +2,7 @@
 
 ## Open
 
-- **BEACON error-run escalation in the 24h fleet window (2026-10-09) —
+- **RESOLVED 2026-10-10T20:30Z (moved from Open): BEACON error-run escalation in the 24h fleet window (2026-10-09) —
   PENDING (flagged 2026-10-09T20:30Z).** `error_runs_24h_by_host` on
   `/api/fleet/metrics` went `{}` → `{beacon: 1}` (08:30Z) → `{beacon: 2}`
   (14:30Z) → **`{beacon: 5}`** (20:30Z) — three consecutive wakings with
@@ -24,35 +24,22 @@
     consecutive decline — `{beacon: 2}`** (window runs 24, `cost_24h`
     $3.47→$3.20). 6th consecutive waking with a non-empty beacon error
     map; series 1→2→5→4→3→2 steadily draining; still PENDING, still
-    observation-only per rule 7.
+     observation-only per rule 7.
+  **Resolution 2026-10-10T20:30Z: `error_runs_24h_by_host` = {} —
+  cleared.** Series 1→2→5→4→3→2→{} drained to zero; beacon cost_24h
+  $3.20→$1.63. No operator visibility ever needed; closed by window.
 
-- **LAN Ollama host `192.168.1.197` down (2026-10-10, went down between
-  08:30Z and 14:30Z) — PENDING (flagged 2026-10-10T14:30Z).**
-  `192.168.1.197:11434` answers HTTP 000 on `/api/tags` and
-  `/api/version` AND the host drops ICMP (100% packet loss) — host-down,
-  not a service-only outage. Not LAN-wide: gateway 192.168.1.1 and other
-  LAN hosts ping fine. It was 200 at the 08:30Z waking, so it went down
-  inside the last 6h. Cohort runtime impact: none — all peers run
-  `opencode/glm-5.3-flash` via the opencode runner since the 2026-10-07
-  unification; the LAN Ollama is the retired qwen fallback (wake.sh
-  lineage: "retired 2026-10-07 pending server repair"). Remote host —
-  rule 7 bars Ostro from touching it, observation-only. Requesting:
-  operator awareness (or a pointer that it's a known
-  repair-in-progress box). Re-checked each waking; if it returns, the
-  item resolves.
+- **RESOLVED 2026-10-10T20:30Z: LAN Ollama host `192.168.1.197` back up.**
+  Down (HTTP 000 + ICMP loss) between 08:30Z and 14:30Z; at 20:30Z
+  `/api/tags` → 200 and ping answers (0.5ms). Cohort impact had been zero
+  (retired qwen fallback). Closed.
 
-- **`/var/run/reboot-required` — kernel 6.8.0-146 installed, host still
-  running 6.8.0-142 (2026-10-09, landed between the 02:30Z and 08:30Z
-  wakings) — PENDING (flagged 2026-10-09T08:30Z).** Unattended-upgrades
-  installed `linux-image-6.8.0-146-generic` (plus `linux-base`); the running
-  kernel is still 6.8.0-142. No current impact — all 15 peer units +
-  tailscaled active, website healthy, load normal — but clearing the flag
-  requires a host reboot, which takes down all 14 co-resident agents, the
-  peer servers, and the website for the duration. That is an operator-only
-  call (not a change Ostro can or should make). Requesting: a reboot window
-  at your convenience, or a "leave it until scheduled maintenance"
-  instruction. Flag state re-checked each waking; also noting gale/zephyr
-  co-host dependency: the reboot affects them equally.
+- **RESOLVED 2026-10-10T20:30Z: `/var/run/reboot-required` — operator
+  rebooted the host ~16:30Z (boot 2026-10-10T16:30:16Z).** Running kernel
+  is now 6.8.0-146-generic (was 6.8.0-142 since 10-09); flag gone. All 15
+  peer units + tailscaled auto-recovered active; website healthy; no
+  manual restarts needed. The reboot window I requested was taken;
+     closed. (Supersedes the 10-09T08:30Z Open item below.)
 
 - **Fourth model event: config-file-only flip `opencode/glm-5.3-flash` →
   `opencode/muse-spark-1.3-contributor-free` (2026-10-08T13:32:31–37Z) —

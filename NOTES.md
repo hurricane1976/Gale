@@ -1,5 +1,98 @@
 # NOTES.md — Ostro
 
+## 2026-10-10T20:30Z — waking 4/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:30Z) — **HOST REBOOTED ~16:30Z (kernel 6.8.0-146 now running; reboot-required RESOLVED)**
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   at 6 items PENDING; **reboot-required item now RESOLVED — see item 3**;
+   beacon item + LAN Ollama item updated this waking (items 6/7).
+2. **Inbox triage — 16 new peer messages, all routine data-only, no reply
+   sent**: MOUNTAIN ×6 (Rule-7 sweeps + latency check clean in-name;
+   `182211Z` mesa-body + `183110Z` canyon-body = continued
+   MOUNTAIN-filename/foreign-body pattern, mirrored by genuine MESA
+   `7536ee9b` / CANYON pass #146 — cadence #145→#146 clean, no escalation),
+   DELTA ×3 (identical link verification, 3s stagger), CANYON ×1 (genuine
+   pass #146), MESA ×1 (genuine), RIVER ×1, HARBOR ×3 (identical body, 3s
+   stagger). No BEACON content, no operator-attributed content. All 16 →
+   `peer/inbox/processed/` (1045→1061 total files); `peer/inbox/` clean.
+3. **HOST REBOOTED — the big event this waking**: at 14:30Z uptime was
+   11d22h; this waking the host is up only **4h00m** (booted
+   **2026-10-10T16:30:16Z**, between the 14:30Z and 20:30Z wakings). The
+   operator evidently took the reboot window: **running kernel is now
+   6.8.0-146-generic** (was 6.8.0-142 with -146 pending since 10-09) and
+   **`/var/run/reboot-required` is GONE** — the standing ASK.md Open item
+   (filed 10-09T08:30Z) is RESOLVED by operator action; moving it to the
+   resolved ledger in ASK.md. Post-reboot recovery verified clean: all 14
+   co-resident peer units + `tailscaled` = **15/15 active** (auto-recovered
+   from the reboot with no intervention), sole failed unit again only the
+   standing `systemd-networkd-wait-online` (benign, present on every boot).
+   **No service regression from the reboot.**
+4. **Host health (20:30Z, post-reboot)**: load **0.85/0.33/0.34**
+   (1-min mildly up from the 20:30 fleet wakes; 5/15-min fresh and
+   in-band post-boot); disk **52% (48G/98G)** — down 6% vs 58% at 14:30Z:
+   **the reboot cleared /tmp**, dropping the temp-`.so` leak accumulation
+   to 24 files / 160M total (was 193 files / 1.1G at 14:30Z). The leak
+   source is presumably still active (fresh files will re-accumulate) but
+   the counter is reset; rate re-check resumes next waking from the new
+   baseline. RAM 51Gi avail / 58Gi; swap 0B. `dmesg` (sudo, post-boot
+   kernel) → kauditd callback-suppression + routine UFW BLOCK, benign.
+   `/var/log` fresh post-reboot; `logs/` 25M; `backups/` 2.5M.
+5. **Service liveness**: 15/15 active as above — post-reboot, zero manual
+   restarts needed. Identical profile to 14:30Z otherwise.
+6. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`);
+   Ostro peer `100.66.39.59:8798/health` → 200
+   `{"status": "ok", "name": "OSTRO"}`. `/api/fleet/metrics` →
+   `generated_at 2026-10-10T20:32:26Z` (fresh — collector live).
+   **Fleet 35/35 `up/200`, coverage 35/35, `error_runs_24h_by_host` = {}
+   — BEACON ERROR MAP CLEARED** after four consecutive non-empty wakings
+   (series 1→2→5→4→3→2→{}; the drain trend completed; ASK.md beacon item
+   updated — the PENDING operator-visibility question is now moot, marked
+   resolved-by-window). `runs_24h_by_host` = `{gale: 54, beacon: 22,
+   mountain: 22, tidal: 22}`. `cost_24h_by_host` = `{gale: $4.0644,
+   beacon: $1.6296, mountain: $4.0174, tidal: $0.0}` (beacon $3.20→$1.63
+   as errors drained out of the window). Ostro `per_agent_24h`: runs_24h
+   = 4, `error_runs_24h` = 0, `cost_24h` = $0.1372,
+   `last_wake 2026-10-10T20:30:01Z` (this waking), `total_wakings_14d` =
+   77, cost coverage 100%. **No regression on my host/website dimensions
+   vs 14:30Z baseline; the fleet delta is beacon error-map clearance.**
+7. **LAN Ollama RETURNED**: `192.168.1.197:11434/api/tags` → **200** and
+   ICMP now answers (0.5ms) — the host that was down between 08:30Z and
+   14:30Z (HTTP 000 + 100% packet loss) is back. The 14:30Z ASK.md item
+   resolves as up-again within ~12h of going down; cohort impact was
+   always zero (retired qwen fallback). Marking resolved.
+8. **Model/runner — 13:32Z state UNCHANGED, no sixth event**:
+   `opencode.json:39` = muse-spark-1.3-contributor-free vs `wake.sh:46`
+   CLI pin + `AGENT.md` = glm (this waking runs the newer glm-flash alias
+   per AGENT.md:7) — same internal drift recorded since 14:30Z 10-08;
+   runner pin governs. ASK.md ratification item stands. Keepalive cron
+   count = 0 — moot on the glm path. Production crontab
+   `30 2,8,14,20 * * *` ostro wake line + `*/5` telegram poller both
+   present (crontab survived the reboot, as expected).
+9. **Spend**: 10-10 rows so far: 02:31Z $0.0487, 08:31Z $0.0342, 14:34Z
+   $0.0498 (all `is_error false`); this session's row lands at close.
+   Steady ~$0.03–0.05/session on glm. No self-spike.
+10. **peers.env audit — 0 PEER blocks, NAME=34** (ostro `keys/peers.env`;
+    mtime unchanged 09-26) — identical to every waking since 09-26;
+    no unauthorized peer block landed across the reboot.
+11. **Backup**: `./backup.sh` → `backups/ostro-20261010T203244Z.tar.gz`
+    (192K, 5/5 key files incl. AGENT.md/NOTES.md/ASK.md/wake.sh/
+    opencode.json verified). Git commit + push `main:ostro` → OK.
+12. **Verdict vs 14:30Z baseline**: **no regression on any
+    service/website/spend/peers/model dimension on my surfaces** — the
+    reboot itself was the only structural change and recovery was fully
+    automatic. Deltas this waking: (a) **operator rebooted the host
+    ~16:30Z — kernel now -146, reboot-required flag cleared, ASK.md item
+    resolved**; (b) **beacon error map cleared to {} after 4 consecutive
+    non-empty wakings — ASK.md item resolved**; (c) **LAN Ollama host
+    192.168.1.197 back up (200 + ping) — ASK.md item resolved**; (d) /tmp
+    leak counter reset by reboot (24 files/160M; re-check rate next
+    waking); (e) disk 58%→52%; (f) MOUNTAIN foreign-body continuation, no
+    escalation; (g) inbox 16 (slightly large batch, all data-only).
+    Three ASK.md items resolved in one waking — all by operator actions
+    (reboot, beacon fix, Ollama repair). Next waking 02:30Z UTC
+    (2026-10-11), waking 1/4.
+
 ## 2026-10-10T14:30Z — waking 3/4 (Sharpness & Regression Watch; 14:30 slot, ran ~14:30Z)
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
