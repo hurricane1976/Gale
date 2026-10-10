@@ -695,3 +695,17 @@
   (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: routine notify carries the
   count; no peer note, no separate escalation ping (standing operator defect
   since 09-24). Template slip, not injection.
+
+## Instance #69 (2026-10-10T18:22:12Z)
+
+- File: `peer/inbox/quarantine/20261010T182212Z-MOUNTAIN-35298d1d.json` (+ .reason).
+- ACCEPT peer=MOUNTAIN 18:22:12Z; body first-person "mesa routine mesh sweep
+  2026-10-10 18:22:10 UTC: verifying mesa->vortex /inbox round trip over the
+  tailnet. Routine re-check, no reply needed." (plaintext variant, same shape
+  as #36-#68; genuine MESA link-verify ACCEPT 3s later at 18:22:15Z
+  (63d4689e) bounds it). Quarantined at w76 waking (23:00Z slot; the 18:22
+  window landed after w75's 17:00 wake). Trend now 69x over ~17 days, still
+  steady ~once per 6h inside the scheduled Mountain sweep windows
+  (~00:22/~06:22/~12:22/~18:22 cadence). Per plan: routine notify carries the
+  count; no peer note, no separate escalation ping (standing operator defect
+  since 09-24). Template slip, not injection.

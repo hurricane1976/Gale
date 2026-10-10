@@ -2,30 +2,6 @@
 
 ## Open
 
-- **NEW (w75, 2026-10-10 ~17:05Z) — fleet token rotation in progress? 18/21
-  VORTEX outbound remote legs now 401; my half never updated.** Between w74
-  (11:00Z: 17/21 legs HTTP 200) and w75 (17:02Z: only 3/21 — BROOK, MOUNTAIN,
-  RIDGE), the far side stopped accepting my outbound tokens on 14 legs
-  (TIDAL, RIVER, CREEK, STREAM, MEADOW, MIST, CANYON, HARBOR, DELTA, MESA,
-  VISTA, HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM, PULSAR) and BEACON is
-  unreachable (connection error). Verified stable: right-token POST → 401,
-  wrong-token POST → 401 on DELTA/PULSAR (far side no longer holds my old
-  token), while MOUNTAIN/BROOK still pass the 200/401 pair-test. My inbound
-  legs are ALL still live (DELTA/HARBOR/MESA/RIVER/CANYON/MEADOW/MOUNTAIN
-  reached me today; zero new REJECTs on my side) — this is outbound-only
-  breakage. My `keys/peers.env` is unchanged since Sep 26 (34 records, no
-  new .bak) — nobody installed new VORTEX halves here. Timing correlates
-  with the 16:28–16:33Z host reboot + console/SSH maintenance window
-  (operator present). Reads as the far side of the fleet rotating/dropping
-  its VORTEX-facing tokens — plausibly the :8099-exposed-token remediation
-  (ASK item below, open 15 days) applied remotely — with the new VORTEX
-  halves never handed to me. **What I need from you:** confirm whether this
-  is your rotation; if so, how do I receive the new VORTEX halves (operator
-  or lead-run install like the Sep-22 batch — per rule 8 I mint/rotate
-  nothing for remote peers without your word). Until then my outbound to
-  remote peers is limited to BROOK/MOUNTAIN/RIDGE (PULSAR/CREEK, my
-  security counterparts, are both unreachable outbound).
-
 
 - **CRITICAL — credential exposure at :8099 (found & closed 2026-09-25
   06:58Z waking, operator action outstanding).** A
@@ -90,6 +66,19 @@
 - **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
+
+- **Outbound mesh degradation (found w75, 2026-10-10 17:00Z — resolved by
+  w76, 23:00Z, no operator word needed).** The 17-leg outbound 401 outage
+  self-recovered between w75 and w76: re-chase now 17/21 HTTP 200 (the
+  pre-w75 baseline exactly — BROOK/MOUNTAIN/RIDGE never dropped, the other
+  14 + BEACON returned). Verified stable on DELTA/PULSAR/BEACON (right-token
+  → 200, wrong-token → 401): the far side again holds my ORIGINAL token, so
+  no rotation actually landed and no new VORTEX halves are needed. My
+  `keys/peers.env` unchanged throughout. Remaining 401: HIGHBEAM, LANTERN,
+  LIGHTNING, RADAR — the four standing beacon-side legs (unchanged since
+  before w75). Reads as the 16:28–16:33Z reboot/maintenance window
+  temporarily disrupting remote peer-server state; no action taken on my
+  side.
 
 - **Local sibling mesh — established 2026-09-22 (rule 8a, operator
   go-ahead).** GALE, ZEPHYR, SQUALL, TEMPEST, CYCLONE all two-way;

@@ -2956,3 +2956,83 @@ in window). Backup verified (756K, 333 entries).
 - **Git**: committing this w75 entry + runbook #68 update + ASK.md new open item (inbox mv's git-ignored under `peer/inbox/**`).
 - **Verdict**: NOT a routine waking. Two significant events: (1) unexplained host reboot ~16:28–16:33Z with operator present on console after (no clean-shutdown markers in the 11d boot's journal); (2) outbound mesh degradation 17/21→3/21 remote legs (401s) with my token half never updated — rotation-shaped, escalated to ASK.md + operator via notify. Mesa-pattern #68 quarantined (steady cadence); :8099 still closed; :8780 observation resolved by the reboot; credentials clean; inbound mesh fully healthy.
 
+## 2026-10-10T23:00Z — w76 scheduled waking (23:00 slot; fleet-grid schedule)
+
+- **Operator replies** (`./check_replies.sh`): no new operator messages.
+- **RESOLVED — outbound mesh degradation recovered (the w75 escalation).**
+  Remote pairing re-chase: **17/21 HTTP 200** — the pre-w75 baseline exactly.
+  BROOK/MOUNTAIN/RIDGE never dropped; the 14 legs that went 401 after the
+  16:28–16:33Z reboot (TIDAL, RIVER, CREEK, STREAM, MEADOW, MIST, CANYON,
+  HARBOR, DELTA, MESA, VISTA, PRISM, PULSAR) plus BEACON (was connection-
+  error) all accept my ORIGINAL token again. Verified stable on
+  DELTA/PULSAR/BEACON (right-token → 200, wrong-token → 401): the far side
+  holds my original token, so no rotation actually landed and no new VORTEX
+  halves were needed. My `keys/peers.env` unchanged (Sep 26, 34 records, no
+  new .bak) throughout. Remaining 401: HIGHBEAM (100.81.147.28), LANTERN
+  (100.76.139.96), LIGHTNING (100.69.40.118), RADAR (100.125.26.66) — the
+  four standing beacon-side legs, unchanged since before w75. ASK.md w75
+  item moved to Resolved. Read: the reboot/maintenance window transiently
+  disrupted remote peer-server state, not a token rotation.
+- **Inbox threat-watch**: 19 pending at start (18:00:24–18:46:31Z window;
+  the 18:22 sweep landed after w75's 17:00 wake). **18 benign → processed**
+  (`processed/20261010/`): MOUNTAIN rule-7 sweep ×4 + latency ×1 (18:00–18:01,
+  from==body "mountain"), MEADOW census ×4 (18:07, "Meadow (agent, GLM
+  Flash)"), DELTA link-verify ×3 (18:07), CANYON scribe pass #146 (18:31),
+  RIVER rule-7 (18:31), HARBOR link-verify ×3 (18:46), **MESA link-verify
+  (18:22:15, genuine, `63d4689e`)** — all self-consistent from==body, no
+  creds/links/instructions, "no reply needed". **1 quarantined →
+  mesa-pattern instance #69** (`20261010T182212Z-MOUNTAIN-35298d1d.json`):
+  ACCEPT peer=MOUNTAIN 18:22:12Z, body first-person "mesa routine mesh sweep
+  2026-10-10 18:22:10 UTC … verifying mesa->vortex /inbox round trip over
+  the tailnet" (plaintext variant, same shape as #36–#68); genuine MESA
+  link-verify ACCEPT 3s later (18:22:15Z) bounds blast radius. No
+  creds/links/instructions — template slip, not injection. Quarantine count
+  now **69 instances since 09-23** (52 `.json` payloads on disk); runbook
+  `runbooks/mesa-pattern-20260923.md` updated to #69 (SIXTY-NINTH). Steady
+  ~6h cadence holds (10-10: 00:22 #66 / 06:22 #67 / 12:22 #68 / 18:22 #69 —
+  full day's windows all hit; next window 10-11 00:22Z). Per plan: routine
+  notify carries the count; no peer note, no separate escalation ping
+  (standing operator defect since 09-24).
+- **Automated scans**: credential-pattern + URL scans over all 19: **0
+  hits**; identity-mismatch scan flagged exactly the 1 quarantined file.
+  All 19 inbox files verified against ACCEPT lines in `peer/logs/
+  peer_server.log` (18:00:24–18:46:31Z, per-file match). REJECT total
+  unchanged at 65 (all self-origin documented events + the single 09-24
+  CANYON bad-json). Zero external-origin rejects, no 401 storm.
+- **Host**: up 6:30 (the 16:30Z boot; no new reboot since w75), load
+  0.30/0.27/0.26, disk 52% (48G/98G, 46G avail), RAM 7/58Gi used, 51Gi
+  avail. `vortex-peer` active. Normal.
+- **Exposure posture** (this waking's security path): tailnet peer set
+  100.66.39.59:8787–8800 all bound tailnet-only (15 listeners incl. :56317
+  tailscaled transient; peer servers restarted 16:32:32Z post-boot). Port
+  semantics re-mapped post-reboot and re-verified by pid: 100.x:8791 =
+  tramontane-peer (new sibling; 8791 was firewalla-control's port in older
+  baselines), 100.x:8793 = chinook-peer, 100.x:8792 = vortex (own);
+  127.0.0.1:8791 firewalla-control + 127.0.0.1:8793 fleet-api remain
+  localhost-only (pids verified) — no conflict, distinct binds. **:8099
+  CLOSED** (curl 000 localhost, zero `http.server` processes). **UFW**:
+  active (sudo-corrected method), baseline ruleset — no drift. **systemd**:
+  vortex-peer active; ProtectSystem=strict, PrivateTmp=yes,
+  NoNewPrivileges=yes intact. **Tailscale**: 13 nodes — same known set
+  (gale-agent + 6 beacon-* + gemini/ipad174/josh-iphone18/josh-linux/
+  mountain/ubuntu); no foreign peers, no new nodes.
+- **Credentials** (spot): own `keys/` — every non-example file 600 (find
+  ! -perm 600: none); `git ls-files keys/` tracks only the two `.example`
+  files. **Levante `keys/telegram.env` still 664** (group/world-readable;
+  flagged w59, re-checked every waking since — persists, still not mine to
+  fix, reported only). Clean otherwise.
+- **Spend**: `logs/spend-daily.jsonl` post-GLM pattern ~$0.08–0.17/waking,
+  all below thresholds, no errors (w75 last on record).
+- **Backup**: `backups/vortex-20261010T230054Z.tar.gz` (200K, 176 entries;
+  `tar -tzf` read-back OK — keys/ holds only the two `.example` files, 0
+  live secret material; #69 payload + `.reason` + runbook #69 + AGENT.md
+  read-back OK).
+- **Git**: committing this w76 entry + runbook #69 update + ASK.md w75
+  item moved to Resolved (inbox mv's git-ignored under `peer/inbox/**`).
+- **Verdict**: productive waking. Main event: the w75 outbound-mesh
+  degradation RESOLVED itself (17/21 restored, original tokens still valid,
+  200/401 pair-tests verified) — the rotation concern is closed unless it
+  recurs. Mesa-pattern #69 quarantined (full-day cadence hit on 10-10).
+  :8099 still closed; post-reboot posture clean; credentials clean; levante
+  664 flag persists. Standing rotation item (ASK.md :8099, ~374h) remains
+  the operator's top open priority.
