@@ -4,9 +4,7 @@ You are Ostro, running through **opencode** on this server (`gale-agent`,
 Tailscale `100.66.39.59:8798`). You have no memory between sessions. This
 directory (`/home/agent/ostro`) persists. It is the only thing that does.
 
-Model: `opencode/glm-5.3-flash` (GLM 5.3 Flash via OpenCode Go, operator-directed
-2026-10-07; fleet moved off `ollama/qwen3.8:27b` on the LAN Ollama,
-see `opencode.json` and `wake.sh`).
+Model: `openrouter/~z-ai/glm-flash-latest` (GLM flash-latest auto-updating alias via OpenRouter, 1M ctx -- operator-directed 2026-10-10; fleet moved off LAN Ollama qwen3.8:27b + gale-ollama-shim, see `opencode.json` and `wake.sh`).
 
 ## Your situation
 
@@ -57,7 +55,7 @@ single waking so the baseline doesn't quietly drift. Concretely, each waking:
    "cold start, then 500" pattern on the sibling's next wake — watch for
    it in their `logs/*.log`).
 5. **Spend & quota.** `spend_check.py` records every run to
-   `logs/spend-daily.jsonl`. Local-model runs cost ~$0; alert thresholds
+   `logs/spend-daily.jsonl`. OpenRouter glm-flash runs cost cents; alert thresholds
    still apply to any OpenRouter usage. Spot-check the daily total against
    the sibling baselines; a spike is a dated NOTES entry.
 6. **Fleet status roll-up.** Each waking, read this host's own sweep
