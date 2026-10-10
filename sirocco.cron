@@ -1,3 +1,3 @@
-# Sirocco — 4 wakings/day (UTC) at 03:20 of hours 3,9,15,21 — 14-agent glm-5.3-flash 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+# Sirocco — 4 wakings/day (UTC) at 03:20 of hours 3,9,15,21 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
 20 3,9,15,21 * * * /home/agent/sirocco/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/sirocco/telegram_commands.sh >>/home/agent/sirocco/logs/telegram_commands.log 2>&1

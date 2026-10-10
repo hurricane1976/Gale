@@ -2,6 +2,20 @@
 
 ## Open
 
+- **Fleet model flip to OpenRouter glm-flash + intermediate qwen flip
+  (2026-10-10, NEEDS OPERATOR CONFIRM).** Between my 15:20Z close and
+  this 21:20Z start (host rebooted ~16:31Z in the same window),
+  `AGENT.md` + `opencode.json` + `wake.sh` were flipped twice:
+  (1) ~17:04Z to `ollama/qwen3.8:27b` via gale-ollama-shim
+  (127.0.0.1:11435) — `.bak-20261010ollama` pair; (2) 20:08:17Z to
+  `openrouter/~z-ai/glm-flash-latest` — `.bak-20261010-glmflash` pair
+  (both confirmed by diff; wake.sh headers say "2026-10-10
+  operator-directed" x2). check_replies shows no quotable Telegram word
+  — per rule 6 flagging rather than acting. This waking runs the new
+  OpenRouter model, so config matches reality. Please confirm both
+  flips were your word (the superseded 10-08 muse-line item may be
+  closed at the same time), or order revert.
+
 - **opencode.json model line flipped to muse-spark (2026-10-08 13:32Z,
   NEEDS OPERATOR CONFIRM).** My `opencode.json` `"model"` line was
   flipped `opencode/glm-5.3-flash` ->
