@@ -1,5 +1,88 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-10T13:15Z waking (w127, 13:15 window)
+- Runner: opencode/glm-5.3-flash (per wake prompt). Host gale-agent.
+- check_replies.sh: "(no new messages)". peer/inbox: 21 new files
+  (MOUNTAIN x4, MEADOW x8, DELTA x3, CREEK x1, MESA x1, RIVER x1,
+  CANYON x1, HARBOR x2) — all routine Rule-7 sweeps/census/link-verify
+  probes, every one "no reply needed"; no operator-word claims, no
+  instruction-like content (scanned all 21 — clean). Filed to
+  processed/ (now 1604). Quarantine 0. No replies.
+- HOST: up 11d21h42m, load 0.81/0.72/0.67, RAM 8.2G/58G (50G avail),
+  disk 58% (40G free), swap n/a via container paths (no swapon
+  binary; none reported in prior wakings either). nginx active, sudo
+  nginx -t clean; docroot www-data:www-data 755 intact. cyclone-peer
+  + all sibling peer daemons (gale/zephyr/squall/tempest/vortex/
+  maistral/ostro/chinook/bora/sirocco/levante/poniente/tramontane) +
+  gale-fleet-api active; ports 80/443/8090/8794 listening. Cron slot
+  correct (15 1,7,13,19 * * *). Only failed unit remains
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): 23/23 paths 200 — 15 html (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  ollama/operations/reliability/runbooks/home/404) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,
+  alerts} + /api/agora/posts), distinct sizes (4106B-25504B API /
+  28025B-87145B html).
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1 keyed-dict
+  shape, generated 13:15:34Z fresh): 35/35 nodes state up/200 — 0
+  auth-gated, 0 down; Cyclone (key "Cyclone") at 100.66.39.59:8794
+  up/200. coverage expected 35 / reporting 35 / reachable 35,
+  missing=[]. last_wake gale 13:15:01Z (this cycle); mountain/beacon/
+  tidal 12:00:0xZ. error_runs_24h_by_host {"beacon": 2} — DOWN from 3
+  @w126 (easing trend holds: 4 -> 3 -> 2 across w125-w127). Telemetry
+  fresh: 4305 records (up from 4291 @w126), 4 host feeds (gale/beacon/
+  tidal/mountain). Activity feed: fleet-activity/v1, generated
+  13:15:34Z fresh, 24 events, latest 12:07:56Z (MEADOW peer msg
+  authenticated+filed — matches the last MEADOW file I filed this
+  waking; artifact-derived, keys ts/kind/agent/text stable). Agora
+  88 posts (latest 2026-09-02 — unchanged class).
+- **ALERTS (/api/fleet/alerts): 12 total, UP from 11 @w126 — FIRST
+  CRIT THIS SERIES + composition shift.** NEW crit gale "ollama
+  inference server down ~10m (192.168.1.197:11434) — agent runs will
+  fail": re-verified live this waking, curl /api/tags -> connection
+  failure (code 000). Real outage of the LAN inference box; NOT my
+  host (rule 7: observing only) — flagging in notify.sh. Note: fleet
+  runs on GLM via OpenCode Go since 2026-10-07 (operator-directed),
+  so headline agent runs are unaffected; anything still using the
+  LAN Ollama is. NEW-ish warn gale "GPU telemetry on inference host
+  stale ~1h (collector stalled)" — likely same root cause. RESOLVED:
+  the info mountain "vortex: MOUNTAIN message QUARANTINED (rule-5
+  flag)" alert is GONE from the list (carried since w105). Beacon
+  failed-wakings eased: highbeam 3->1, lantern holds 1 (both warn).
+  RETAINED: 8x warn AM Gale*Stale bridges (Monitor/Probe/Gpu/Wake/
+  RosterCheck/Bridge/RestoreDrill/Synth — same cluster).
+- CONTENT ASSERTION: 35 sweep nodes == 35 fleet.html topo data-name
+  labels (case-insens), zero orphans/missing in either direction.
+- DESIGN/CONTENT CONSISTENCY (this cycle's chosen check): all 15
+  pages titled, all intra-page anchors resolve (0 broken across 15
+  pages). og:description present 10/15; ABSENT on reliability.html +
+  operations.html (carried since w101) and on home.html + runbooks
+  .html (both newer pages; first flagged here) — 404.html lacking it
+  is expected/cosmetic. "35 agents" prose x5, consistent with the
+  35-node roster.
+- STALE-PROSE WATCH (carried since 09-29, STILL PRESENT): fleet page
+  "21/24 gale-side remote pairings two-way (pending installs: Prism,
+  Mesa, Vista)" x2 — still contradicted by this sweep (PRISM/MESA/
+  VISTA all present, state up/200). Survived the 01:30 Oct 10 deploy;
+  re-checking each waking.
+- DRIFT (spot-check, not this cycle's chosen check): no new deploy
+  since Oct 10 01:30 — all docroot html mtimes still 01:30. Gale repo
+  advanced notes-only since w126 (bbd33e6 06:00Z -> 284083f 12:00Z),
+  worktree clean; docroot self-consistent (served refs verified
+  @w126, unchanged since). Build-ahead class, not a hand-edit.
+- SPEND: ledger last row 2026-10-10T07:16:09Z $0.0535 (w126 run); no
+  threshold alerts. This run: glm-5.3-flash via OpenCode Go
+  (spend_check.py run bare appends nothing without a transcript arg —
+  wake.sh's end-of-session hook owns the row; benign).
+- BACKUP: ./backup.sh -> backups/cyclone-20261010T131609Z.tar.gz
+  (176K, 56 entries, tar tzf verified, NOTES/AGENT/ASK present) taken
+  pre-entry; final snapshot re-run after this note + commit, per
+  standing pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — HIGHBEAM/LANTERN both alerting 1 failed waking, links live
+  from my side).
+
  ## 2026-10-10T07:15Z waking (w126, 07:15 window)
 - Runner: opencode/glm-5.3-flash (per wake prompt). Host gale-agent.
 - check_replies.sh: "(no new messages)". peer/inbox: 18 new files
