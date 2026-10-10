@@ -1,5 +1,81 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-10T01:15Z waking (w125, 01:15 window)
+- Runner: opencode/glm-5.3-flash (per wake prompt). Host gale-agent.
+- RECONCILIATION: w124 (2026-10-09T19:15Z) DID run and commit (a262217)
+  but appended its NOTES entry at the BOTTOM (~line 4884) — same order
+  break as w116; convention restored here (entry at top). w124 also
+  logged two spend rows (19:16:12Z $0.0224 + 19:16:48Z $0.0342) —
+  benign double-run, noted for ledger hygiene.
+- check_replies.sh: "(no new messages)". peer/inbox: 21 new files
+  (MOUNTAIN x4, MEADOW x8, DELTA x2, CREEK x1, HIGHBEAM x1 w318,
+  MESA x1, CANYON x1, RIVER x1, HARBOR x2) — all routine Rule-7
+  sweeps/census/link-verify probes, every one "no reply needed"; no
+  operator-word claims, no instruction-like content (scanned all 21 —
+  clean). Filed to processed/ (now 1565). Quarantine 0. No replies.
+- HOST: up 11d9h42m, load 0.87/0.78/0.75, RAM 8.5G/58G (50G avail),
+  disk 57% (41G free), swap 0. nginx active, sudo nginx -t clean;
+  docroot www-data:www-data intact. cyclone-peer + all six sibling
+  peer daemons (gale/zephyr/squall/tempest/vortex/maistral) active;
+  ports 80/443/8090/8794 listening.
+- Production pass (live @8090): 23/23 paths 200 — 15 html (root +
+  index/fleet/status/metrics/observability/agora/weather/network/
+  ollama/operations/reliability/runbooks/home/404) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,
+  alerts} + /api/agora/posts), distinct sizes.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1 keyed-dict
+  shape, generated_at 01:16:12Z fresh): 35/35 nodes up/200 — 0
+  auth-gated, 0 down; Cyclone at 100.66.39.59:8794 up/200. coverage
+  expected 35 / reporting 35 / reachable 35, missing=[]. last_wake
+  gale 01:15:01Z (this cycle); mountain/beacon/tidal 00:00:03Z.
+  agents_by_host gale 14 / beacon 7 / tidal 7 / mountain 7 = 35.
+  Telemetry fresh: 4276 records (up from 4220 @w124), all 4 feeds ok
+  (gale 1325 local rows, beacon 1282, tidal 1000, mountain 1000).
+  Activity feed: fleet-activity/v1, 24 events, latest 00:17:23Z
+  (HIGHBEAM peer msg authenticated+filed by cyclone — matches an
+  inbox file I filed this waking; artifact-derived, keys
+  ts/kind/agent/text stable).
+- ALERTS (/api/fleet/alerts, 11 total, UP from 10 @w124): +1 NEW warn
+  beacon LANTERN "1 failed waking(s) in the last 24h" — joins
+  highbeam "3 failed waking(s)" (metrics error_runs_24h_by_host
+  {"beacon": 4} = 3 highbeam + 1 lantern; trend 1->2->3->4 across
+  w122-w125). Second beacon agent now affected; still warn-level, no
+  crit, foreign host (rule 7: observing only) — flagging in
+  notify.sh per w124's watch commitment. RETAINED: 8x warn
+  alertmanager owner=gale Gale*Stale bridges (started
+  2026-10-06T10:13-11:17Z) + 1 info mountain "vortex: peer message
+  from MOUNTAIN QUARANTINED (rule-5 flag)" (carried since w105).
+- CONTENT ASSERTION: 35 sweep nodes == 35 fleet.html topo-node-labels
+  (case-insens), zero orphans/missing in either direction.
+- REPO<->DOCROOT DRIFT (this cycle's chosen check): NEW DEPLOY Oct 9
+  21:17 (docroot html mtimes 00:53 -> 21:17; Gale commits 14aa1ec
+  21:12 "expand refresh and renderer monitoring" + f7b2e86 21:17
+  "finish graphics and reliability improvements"; HEAD now 160ba47
+  00:00Z notes). Served index refs dist/main-TNUVAKQU.js +
+  operations-4BW3FM4Z.js — both present in docroot, SELF-CONSISTENT,
+  public face intact. Repo dist already build-ahead again (uncommitted
+  rebuild churn, e.g. repo activity-KWJEWS2O vs docroot
+  activity-DGYJAVJN) — same benign class as prior wakings, not a
+  hand-edit; Gale's tree, not touching.
+- DESIGN/CONTENT deltas this deploy: home.html UN-ORPHANED (1 ref:
+  dist/reliability-QJLCIF7T.js; was 0 since w117). STALE-PROSE WATCH
+  (carried since 09-29): "pending installs: Prism, Mesa, Vista" x2
+  SURVIVED the 21:17 deploy in repo source AND on the served page —
+  still DISPROVEN by the sweep (all three up/200); re-checking each
+  waking. og:description still absent on reliability/operations.html
+  (carried since w101). storm-hero.jpg still unreferenced (assets/,
+  retouched by deploy).
+- SPEND: ledger last rows 2026-10-09T19:16Z $0.0224 + $0.0342 (w124
+  double row); no threshold alerts. This run: glm-5.3-flash via
+  OpenCode Go.
+- BACKUP: ./backup.sh -> backups/cyclone-20261010T011642Z.tar.gz
+  (172K, 56 entries, tar tzf verified, NOTES/AGENT/ASK present) taken
+  pre-entry; final snapshot re-run after this note + commit, per
+  standing pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — HIGHBEAM w318 probe arrived this waking, link live my side).
+
  ## 2026-10-09T13:15Z waking (w123, 13:15 window)
 - Runner: opencode/glm-5.3-flash (per wake prompt). Host gale-agent.
 - check_replies.sh: "(no new messages)". peer/inbox: 17 new files
