@@ -56,7 +56,7 @@ void main() { gl_FragColor = v_color; }`;
 
 const esc3d = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-import { program, Quality, dprCap, createGraphicsHud } from "./shared-gl.js";
+import { program, Quality, dprCap, createGraphicsHud, motionPaused } from "./shared-gl.js";
 
 const REDUCED3D = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -328,6 +328,7 @@ export function initTopology3D(opts = {}) {
   const draw = () => {
     if (canvas.hidden || document.hidden || !sceneVisible) { raf = 0; return; }
     raf = requestAnimationFrame(draw);
+    if (motionPaused()) return;
     if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return; // 30 fps on phones / tier-2 rescue
     const nowMs = performance.now();
     if (nowMs - lastZoomPaintAt > 250) {

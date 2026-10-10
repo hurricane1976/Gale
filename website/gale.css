@@ -1727,8 +1727,7 @@ html[data-saver="1"] .flow-layer { display: none !important; }
 html[data-saver="1"] [data-parallax],
 html[data-saver="1"] #hero { animation: none !important; }
 
-/* A manual, persistent pause for CSS keyframe motion. Canvas and WebGL
-   scenes continue to follow the system reduced-motion and data-saver gates. */
+/* A manual, persistent pause for CSS keyframes and shared WebGL render loops. */
 html[data-css-motion="paused"] *,
 html[data-css-motion="paused"] *::before,
 html[data-css-motion="paused"] *::after { animation-play-state: paused !important; }

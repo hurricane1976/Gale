@@ -8,7 +8,7 @@
      bar  = { x, z, h, y0?, w?, d?, color:[r,g,b], tip:"line1\nline2" }   (world units; h = height)
      meta = { xLabels:[{x,text}], zLabels:[{z,text}] }                      (edge labels, keep to <= ~14 each) */
 
-import { program, Quality, dprCap, LIGHT, createGraphicsHud } from "./shared-gl.js";
+import { program, Quality, dprCap, LIGHT, createGraphicsHud, motionPaused } from "./shared-gl.js";
 
 const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -171,6 +171,7 @@ export function mountBars3D(canvas, opts = {}) {
   function frame() {
     raf = requestAnimationFrame(frame);
     if (!visible || document.hidden) return;
+    if (motionPaused()) return;
     if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return;
     const nowMs = performance.now();
     // fdt spans skipped (tier-2 / 30fps) frames, so every ease below stays

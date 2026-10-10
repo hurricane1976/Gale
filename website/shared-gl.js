@@ -30,6 +30,7 @@ export function program(gl, vs, fs, label = "program") {
 }
 
 export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
+export const motionPaused = () => document.documentElement.dataset.cssMotion === "paused";
 
 /* Optional diagnostics HUD for local renderer triage: append ?graphics=debug.
    It is absent from normal views and never writes telemetry by itself. */

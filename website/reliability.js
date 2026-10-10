@@ -299,7 +299,7 @@ async function clientRuntime() {
   const motionReduced = !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   const cssPaused = document.documentElement.dataset.cssMotion === "paused";
   const motionState = cssPaused ? "CSS paused" : motionReduced ? "System reduced" : "Full CSS motion";
-  items.push(tile("Motion state", motionState, "The Display dock can pause CSS keyframe effects. Canvas and WebGL scenes use system motion and data-saver preferences.", cssPaused || motionReduced ? "ok" : "unknown"));
+  items.push(tile("Motion state", motionState, "The Display dock pauses CSS animations and shared WebGL scenes. System reduced-motion and data-saver gates remain active.", cssPaused || motionReduced ? "ok" : "unknown"));
   const fontState = document.fonts ? document.fonts.status : "unsupported";
   items.push(tile("Web fonts", fontState === "loaded" ? "Ready" : fontState, "Shared Inter, Fraunces, and JetBrains Mono font set.", fontState === "loaded" ? "ok" : fontState === "loading" ? "warn" : "unknown"));
   setHTML($("client-runtime"), items.join(""));

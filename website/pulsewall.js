@@ -7,7 +7,7 @@
    motion or data-saver: nothing mounts and the per-card SVG ECGs stay.
    Node-safe: no top-level DOM access (render-test imports stay green). */
 
-import { program, Quality, dprCap, createGraphicsHud } from "./shared-gl.js";
+import { program, Quality, dprCap, createGraphicsHud, motionPaused } from "./shared-gl.js";
 
 const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -152,6 +152,7 @@ export function initPulseWall(canvas) {
   function frame() {
     raf = requestAnimationFrame(frame);
     if (!visible || document.hidden) return;
+    if (motionPaused()) return;
     if ((frameN++ & 1) && q.tier >= 2) return; // tier-2 rescue: 30 fps
     const nowMs = performance.now();
     const fdt = lastFrame ? Math.min(100, Math.max(1, nowMs - lastFrame)) : 16.7;

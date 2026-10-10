@@ -1820,7 +1820,7 @@ function initCssMotionControl() {
     let paused = false;
     try { paused = localStorage.getItem("gale-css-motion") === "paused"; } catch {}
     document.documentElement.dataset.cssMotion = paused ? "paused" : "";
-    btn.textContent = paused ? "▶ CSS motion paused" : "Ⅱ pause CSS motion";
+    btn.textContent = paused ? "▶ Visual motion paused" : "Ⅱ pause visual motion";
     btn.setAttribute("aria-pressed", String(paused));
   };
   btn.addEventListener("click", () => {
