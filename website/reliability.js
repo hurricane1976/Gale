@@ -175,6 +175,24 @@ function rum() {
     const histogram = `<div class="rum-age-hist" role="img" aria-label="Latest API sample age across ${buckets.reduce((a, b) => a + b, 0)} service families"><strong>Latest sample age</strong>${buckets.map((n, i) => `<span class="rum-age-bin"><i style="height:${Math.max(3, n / max * 34)}px"></i><b>${n}</b><small>${labels[i]}</small></span>`).join("")}</div>`;
     setHTML($("api-route-health"), histogram + routeRows.join(""));
   } else setHTML($("api-route-health"), '<p class="mini-note">No first-party API samples in this page selection yet.</p>');
+  const feeds = new Map();
+  for (const sample of samples) {
+    if (!sample.metric.startsWith("API_") || !/^((status|weather|agora|firewalla|fleet_[a-z_]+|api_other))$/.test(sample.unit || "")) continue;
+    const row = feeds.get(sample.unit) || { latency: [], timeout: 0, error: 0, recovery: 0 };
+    if (sample.metric === "API_REQUEST_MS") row.latency.push(sample.value);
+    else if (sample.metric === "API_TIMEOUT") row.timeout += sample.value;
+    else if (["API_FETCH_ERROR", "API_HTTP_ERROR"].includes(sample.metric)) row.error += sample.value;
+    else if (sample.metric === "API_RECOVERY") row.recovery += sample.value;
+    feeds.set(sample.unit, row);
+  }
+  const feedRows = [...feeds.entries()].filter(([, row]) => row.latency.length || row.timeout || row.error || row.recovery).sort(([a], [b]) => a.localeCompare(b)).map(([family, row]) => {
+    row.latency.sort((a, b) => a - b);
+    const p95 = row.latency.length ? row.latency[Math.min(row.latency.length - 1, Math.ceil(row.latency.length * .95) - 1)] : null;
+    const failures = row.timeout + row.error;
+    const state = failures ? "warn" : p95 == null ? "unknown" : p95 > 1800 ? "crit" : p95 > 800 ? "warn" : "ok";
+    return `<div class="target-card" data-level="${state}"><div class="target-top"><span class="target-name">${esc(family.replace(/_/g, " / "))}</span><span class="pill" data-level="${state}">${p95 == null ? "no latency" : `${Math.round(p95)} ms p95`}</span></div><span class="mono-dim">${row.latency.length} requests · ${row.timeout} timeouts · ${row.error} HTTP/network failures · ${row.recovery} recoveries after a failed request · rolling browser-local sample</span></div>`;
+  });
+  setHTML($("api-feed-trends"), feedRows.length ? feedRows.join("") : '<p class="mini-note">No per-feed request samples in this browser yet. Refresh Reliability while online to collect latency and recovery data.</p>');
 }
 async function clientRuntime() {
   const items = [];

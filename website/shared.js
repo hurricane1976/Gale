@@ -97,14 +97,55 @@ const TRACE_ID = (crypto && crypto.getRandomValues)
   ? [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, "0")).join("")
   : String(Date.now()).padEnd(32, "0");
 
-export function tracedFetch(url, opts = {}) {
+const API_FAILURES = new Set();
+function apiFamily(url) {
+  let path = "";
+  try { path = new URL(url, location.href).pathname; } catch {}
+  const known = ["metrics", "activity", "alerts", "telemetry", "wakes", "asks", "net", "registry", "reliability", "incidents", "tasks"];
+  if (/\/api\/status\.json$/.test(path)) return "status";
+  if (/\/api\/weather\//.test(path)) return "weather";
+  if (/\/api\/agora\//.test(path)) return "agora";
+  if (/\/api\/firewalla\//.test(path)) return "firewalla";
+  if (/\/api\/fleet\//.test(path)) {
+    const endpoint = path.split("/")[3] || "fleet";
+    return known.includes(endpoint) ? `fleet_${endpoint}` : "fleet_other";
+  }
+  return path.startsWith("/api/") ? "api_other" : "other";
+}
+
+export async function tracedFetch(url, opts = {}) {
   const spanId = (crypto && crypto.getRandomValues)
     ? [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("")
     : String(Math.random()).slice(2, 18).padEnd(16, "0");
   const headers = new Headers(opts.headers || {});
   headers.set("traceparent", `00-${TRACE_ID}-${spanId}-01`);
   if (opts.method && !["GET", "HEAD"].includes(opts.method.toUpperCase()) && !headers.has("Idempotency-Key")) headers.set("Idempotency-Key", crypto.randomUUID());
-  return fetch(url, { ...opts, headers });
+  const family = apiFamily(url), started = performance.now();
+  let timeoutSignal = null;
+  const request = { ...opts, headers };
+  if (!request.signal && typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
+    timeoutSignal = AbortSignal.timeout(15000);
+    request.signal = timeoutSignal;
+  }
+  try {
+    const response = await fetch(url, request);
+    const elapsed = performance.now() - started;
+    window.__galeRUMRecord?.("API_REQUEST_MS", elapsed, family);
+    if (!response.ok) {
+      window.__galeRUMRecord?.("API_HTTP_ERROR", 1, family);
+      window.__galeRUMRecord?.("API_HTTP_STATUS", response.status, family);
+      API_FAILURES.add(family);
+    } else if (API_FAILURES.delete(family)) {
+      window.__galeRUMRecord?.("API_RECOVERY", 1, family);
+    }
+    return response;
+  } catch (error) {
+    window.__galeRUMRecord?.("API_REQUEST_MS", performance.now() - started, family);
+    const timedOut = !!timeoutSignal?.aborted || error?.name === "TimeoutError";
+    window.__galeRUMRecord?.(timedOut ? "API_TIMEOUT" : "API_FETCH_ERROR", 1, family);
+    API_FAILURES.add(family);
+    throw error;
+  }
 }
 
 /* Effect variants bound to an element: recompute via setText/setHTML (which
