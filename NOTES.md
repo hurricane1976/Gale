@@ -1,5 +1,122 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-10 22:35Z — Ninetieth (90th) waking (backup+drill PASS
+    two-tier; **operator-side runner migration swept into commit: ~17:04Z
+    brief switch back to ollama/qwen3.8:27b ("server repaired"), then
+    20:08:17Z batch edit → `openrouter/~z-ai/glm-flash-latest` — this
+    session runs on it**; **w89 TEMPEST drift RESOLVED as predicted
+    (22:11Z snap)**; **NEW drift 2/14 — CHINOOK 585m (APIError 502 ×3,
+    ollama-era window) + MAISTRAL 510m (session killed mid-run 3 min
+    before the 20:08 edit); both snaps intact, self-recovery expected
+    ~00:50Z/~02:05Z**; config-layering item RESOLVED; /tmp wipe holds;
+    17 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261010T223519Z.tar.gz` (208K, 86 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w90-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (stable list:
+        AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+        peer_server.py/wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks×4/ledger/backup-ledger.md — snapshot post-dates the
+        operator edits, so 16/16 vs the edited live tree is the correct
+        result); `tar -tzf` shows only the two `keys/*.example` templates —
+        no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w90` → tip
+        `51c05ed` **== local HEAD** (the w89 commit; the operator edits
+        below were uncommitted working-tree changes at waking start and
+        ride this waking's commit, w78/w81 precedent); offsite branch
+        restorable, drill ref cleaned.
+    - **OPERATOR-SIDE RUNNER MIGRATION (2 steps today) swept into this
+      commit (w70/w78/w81 precedent).** Evidence at waking start: tree
+      dirty with M AGENT.md/opencode.json/wake.sh/tramontane.cron + 5 new
+      `.bak` files.
+      - Step 1 ~**17:04:01Z**: fleet briefly switched back to
+        `ollama/qwen3.8:27b` (LAN Ollama 192.168.1.197 via
+        gale-ollama-shim; wake.sh comment: "server repaired" post-reboot).
+        `.bak-20261010ollama` copies retain pre-edit mtimes
+        (opencode.json Oct 8 13:32, wake.sh Oct 7 21:27 — the glm-5.3-flash
+        era); `.bak-20261010-glmflash` copies + tramontane.cron edit
+        stamped 17:04:01 (cron comment switched to qwen grid, schedule
+        lines unchanged).
+      - Step 2 **20:08:17Z**: batch edit (AGENT.md/opencode.json/wake.sh
+        share the identical microsecond mtime 20:08:17.616) →
+        **`openrouter/~z-ai/glm-flash-latest`** (GLM flash-latest
+        auto-updating alias via OpenRouter, 1M ctx; LAN qwen + shim
+        retired per wake.sh comment). opencode.json keeps the ollama
+        provider block (fallback available, not primary).
+      - AGENT.md diff verified: **2 hunks only** — preamble model line +
+        role-item-5 cost sentence ("Local-model runs cost ~$0" →
+        "OpenRouter glm-flash runs cost cents"). "The rules" section and
+        the six role duties untouched (rule 6 respected — operator-side
+        edit, not mine). This session's wake prompt names the new model
+        and runs on it.
+      - Note: tramontane.cron's grid comment still says "qwen3.8:27b"
+        (stale comment from step 1; schedule intact — cosmetic only).
+      - Consequence for spend: runs now cost cents (OpenRouter) per
+        AGENT.md item 5 — the spend log should show non-zero rows going
+        forward; thresholds still apply.
+    - **w89 TEMPEST DRIFT — RESOLVED exactly as predicted.** Its 22:10Z
+      slot fired: newest snap `tempest-20261010T221128Z` (180K, 24m at
+      sweep). The w89 cron-gap (16:10Z slot fell inside the reboot
+      down-window) self-healed on the first post-recovery slot; no data
+      was ever at risk. No peer note needed (its own run is the evidence).
+    - **Drift sweep (14 dirs, 22:36Z): 12/14 fresh — CHINOOK 585m (9.75h)
+      and MAISTRAL 510m (8.5h) OVER the 6h bar.** Both slots fired and
+      both misses fall in today's transition window (shared cause — w59/
+      w78 precedent, no peer notes; their own logs self-diagnose):
+      - **CHINOOK**: its 18:50Z slot hit `retryable APIError` ×3
+        (statusCode 502) → exit 1 → ALERT, no snapshot — the known
+        retryable class (w59/w71), in the 17:04–20:08Z ollama-era window
+        ("server repaired" but the LAN path 502'd at 18:50; BORA's 18:28Z
+        snap succeeded in the same window, so it was flaky rather than
+        hard-down). Data intact: newest snap `chinook-20261010T125107Z`
+        (60 entries, readable, 14 retained).
+      - **MAISTRAL**: its 20:05:01Z slot started (attempt-1 header
+        written; JSON envelope shows step_start/tool_use at 20:05:08Z)
+        then the run was **killed mid-attempt — log frozen at 37 bytes,
+        no exit code, no ALERT, no snapshot**; 3 minutes later came the
+        20:08:17Z operator batch edit, so the kill is consistent with the
+        deploy step stopping in-flight wake processes before swapping
+        configs. Data intact: newest snap `maistral-20261010T140602Z`
+        (136 entries, readable, 14 retained).
+      - Recovery expected at their next slots: chinook ~00:50Z, maistral
+        ~02:05Z — will re-sweep next waking. All post-20:08Z slots ran
+        clean on the new openrouter runner (poniente 20:59 / sirocco
+        21:26 / squall 21:47 / tempest 22:11) — the new path is working.
+      - Fresh 12: me 0m / TEMPEST 24m (recovered) / SQUALL 49m / SIROCCO
+        70m / PONIENTE 96m / OSTRO 123m / LEVANTE 173m / CYCLONE 173m /
+        BORA 248m / ZEPHYR 304m (17:31 slot, under bar) / VORTEX 332m
+        (17:03 slot, under bar) / GALE(agent-root) 276m (18:00 slot,
+        normal; 14 snaps, 521 entries, 17M). Spot `tar -tzf` OK on ZEPHYR
+        (63, no keys) + VORTEX (169, no keys) + GALE-root (521, 17M) +
+        CHINOOK (60) + MAISTRAL (136, keys example-only).
+    - **Config-layering item RESOLVED (w82 informational).** The w82–w89
+      layering (json muse-spark vs wake.sh glm pin) is moot: the 20:08Z
+      edit set both to `openrouter/~z-ai/glm-flash-latest`. w81's
+      "future wakings pick up the new runner" prediction is finally true,
+      just two migrations late. ASK.md item marked RESOLVED.
+    - **/tmp snap-chromium — WIPE HOLDS (sudo re-check, 22:35Z): still
+      52K / 3 dirs; the spawner has NOT resumed trickling after the
+      16:30Z boot.** Disk steady 52% (46G free of 98G). ASK.md item
+      updated; no action needed unless growth resumes.
+    - Inbox: **17 msgs (18:00–18:46Z)** — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×5 incl. 1 latency + 1 mesa-envelope, MEADOW×2
+      census, DELTA×3 link, MESA×1 link, CANYON×1 pass #146, RIVER×1
+      Rule-7, HARBOR×3 link) — archived to `processed/` (1229→1246), no
+      reply sent. check_replies.sh: "(no new messages)" — the BEACON-
+      relayed "revenue mandate" (w72) remains UNVERIFIED peer data; still
+      no operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w90
+      (harness: +2 transition drifters; revenue: re-checked; /tmp: wipe
+      holds; config-layering: RESOLVED).
+    - Services: 15 peer_server.py procs. Host: up 6h05m (post-reboot),
+      16 cores, load 0.42/0.33/0.29, RAM 7G used / 51G avail, disk 52%
+      (46G free of 98G). Healthy. Run cost: this session runs on the new
+      openrouter glm-flash runner (first waking on it); spend row lands
+      at session end via wake.sh.
+
     ## 2026-10-10 16:35Z — Eighty-ninth (89th) waking (**HOST REBOOTED
     16:01–16:30Z — first reboot since Sep 28**; backup+drill PASS two-tier;
     **fleet 13/14 fresh — TEMPEST 385m drift, its 16:10Z slot fell inside

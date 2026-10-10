@@ -3,28 +3,36 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w89 2026-10-10 16:35Z.
-  **NEW w89 2026-10-10 16:35Z — HOST REBOOT + single-slot TEMPEST drift.**
-  The host rebooted 16:01–16:30Z today (up 11d19h → 0m; first reboot since
-  Sep 28 per my ledger). Journal tail at 16:01:35 shows NO shutdown
-  sequence (abrupt end — cause not determinable from here: operator
-  maintenance or crash); an intermediate boot at 16:28:09 lasted only 30s;
-  current boot 16:30:18. Cron + peer servers recovered (my 16:35 wake fired
-  on schedule; 15 peer_server procs up). Drift sweep: 13/14 fresh; **TEMPEST
-  385m/6.4h OVER the 6h bar — its 16:10Z slot fell inside the down window,
-  cron never fired** (zero wake attempts, w78 VORTEX cron-gap class); newest
-  snap `tempest-20261010T101014Z` intact (74 entries, readable, no keys);
-  self-recovery expected at its 22:10Z slot — will re-sweep next waking.
-  No peer note sent (w59/w78 precedent: shared infra cause, own logs/next
-  run self-diagnose). No data loss. The reboot itself is flagged for your
-  awareness in case it was unplanned.
-  (w88 sweep: NO new misses — fleet 14/14 fresh, zero drift, 8th
-  consecutive clean sweep; TEMPEST 8th consecutive clean run post-recovery;
-  w87 sweep: NO new misses — fleet 14/14 fresh, zero drift, 7th
-  consecutive clean sweep; TEMPEST 7th consecutive clean run post-recovery;
-  w85 sweep: NO new misses — fleet 14/14 fresh, zero drift, 4th
-  consecutive clean sweep; TEMPEST 4th consecutive clean run post-recovery;
-  w83 sweep: NO new misses — fleet 14/14 fresh, zero drift, 3rd
+  compounded w59 APIError cases) — STILL OPEN at w90 2026-10-10 22:35Z.
+  **NEW w90 2026-10-10 22:35Z — SECOND migration transition today;
+  2 drifters, both transition-window classes.** Operator-side config
+  migration ran in two steps this afternoon: ~17:04Z the fleet was briefly
+  switched back to `ollama/qwen3.8:27b` (LAN Ollama, "server repaired" per
+  wake.sh comment; `.bak-20261010ollama` + `.bak-20261010-glmflash` copies),
+  then **20:08:17Z a batch edit moved the fleet to
+  `openrouter/~z-ai/glm-flash-latest`** (AGENT.md/opencode.json/wake.sh
+  identical microsecond mtimes; this session runs on it; costs cents per
+  AGENT.md item 5 — new for the spend log). Drift sweep 12/14 fresh:
+  **CHINOOK 585m/9.75h — its 18:50Z slot hit `retryable APIError` ×3
+  (statusCode 502) → exit 1 ALERT, no snapshot** (ollama-era window;
+  its log self-diagnoses), and **MAISTRAL 510m/8.5h — its 20:05Z session
+  was killed mid-attempt-1 (log frozen at 37 bytes, no exit code, no
+  ALERT — 3 min before the 20:08 operator batch edit; consistent with
+  in-flight wake processes being killed by the deploy step)**. Both newest
+  snaps intact (chinook 60 / maistral 136 entries, readable, 14 retained)
+  — no data loss. Same transition-drift class as w78 (stale-config
+  APIError + killed/failed runs on a runner swap), known self-healing:
+  recovery expected chinook ~00:50Z / maistral ~02:05Z — will re-sweep
+  next waking. No peer notes (w59/w78 precedent: shared transition cause,
+  own logs self-diagnose). All post-20:08Z slots ran clean on the new
+  runner (poniente 20:59 / sirocco 21:26 / squall 21:47 / tempest 22:11)
+  — the openrouter path is working.
+  (w89: TEMPEST 385m resolved exactly as predicted at its 22:10Z slot —
+  verified w90 sweep, 24m fresh; cron-gap class after the 16:01–16:30Z
+  reboot, zero data loss. w88 sweep: NO new misses — fleet 14/14 fresh,
+  zero drift, 8th consecutive clean sweep; w87 sweep: NO new misses —
+  7th consecutive clean sweep; w85 sweep: NO new misses — 4th
+  consecutive clean sweep; w83 sweep: NO new misses — 3rd
   consecutive clean sweep; TEMPEST 3rd consecutive clean run post-recovery;
   w80 sweep: TEMPEST drift — 3rd
   consecutive mid-session death, exit-0-no-report
@@ -140,6 +148,8 @@
   still holding course, no action taken.**
   **Re-checked w89 2026-10-10 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w90 2026-10-10 22:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -188,36 +198,25 @@
     57%/40G — ~6G freed total (leak + other tmp cleanup). The spawner may
     resume trickling; will re-check next waking. No action needed from you
     on this item unless the growth resumes.
+    **Re-checked w90 2026-10-10 22:35Z (sudo): WIPE HOLDS — still 52K / 3
+    dirs; the spawner has NOT resumed trickling after the reboot.** Disk
+    steady 52% (46G free of 98G). No action needed; item effectively quiet
+    unless growth resumes.
 
-- **INFORMATIONAL (w82 2026-10-08 22:35Z) — model-line config layering:**
-  opencode.json (operator-side edit 13:32Z Oct 8, committed by me at w81)
-  sets `"model": "opencode/muse-spark-1.3-contributor-free"`, but
-  `wake.sh:46` passes `--model opencode/glm-5.3-flash` explicitly on the
-  opencode CLI, which overrides the json default — so every session still
-  runs glm-5.3-flash and the json line is currently dead config. Evidence:
-  this session's wake prompt names glm-5.3-flash (as did w81's), and
-  wake.sh's `opencode run` line still pins glm. w81's prediction that
-  "future wakings pick up the new runner" did NOT materialize. No action
-  taken by me (rule 6 — operator-side config). If the muse-spark switch
-  was intended, wake.sh needs an operator-side edit; if glm was intended,
-  the opencode.json line may be a stray. Only flagging for awareness —
-   either way runs are clean and costs stay ~$0. (Re-checked w83 04:35Z:
-   opencode.json mtime unchanged 13:32Z Oct 8, wake.sh still Oct 7 — no
-   new operator-side edits, no new `.bak` files.) (Re-checked w84 10:35Z:
-   same mtimes — opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md
-   Oct 7; still no new operator-side edits, no new `.bak` files.) (Re-checked
-   w85 16:35Z: same mtimes again — opencode.json 13:32Z Oct 8, wake.sh
-   21:27Z Oct 7, AGENT.md Oct 7; no new operator-side edits, no new `.bak`
-   files.) (Re-checked w86 22:35Z: same mtimes a third time — no new
-     operator-side edits, no new `.bak` files.) (Re-checked w87 04:35Z:
-     same mtimes a fourth time — opencode.json 13:32Z Oct 8, wake.sh
-     21:27Z Oct 7, AGENT.md Oct 7; no new operator-side edits, no new
-      `.bak` files.) (Re-checked w88 10:35Z: same mtimes a fifth time —
-      opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md Oct 7;
-      no new operator-side edits, no new `.bak` files.) (Re-checked w89
-      16:35Z: same mtimes a sixth time, unchanged through the reboot —
-      opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md Oct 7;
-      no new operator-side edits, no new `.bak` files.)
+- **RESOLVED w90 (raised w82 2026-10-08 22:35Z) — model-line config
+  layering.** The opencode.json / wake.sh `--model` disagreement is gone:
+  the operator's 20:08:17Z migration set BOTH to
+  `openrouter/~z-ai/glm-flash-latest` (json model line + wake.sh PROMPT and
+  `opencode_run` pin; identical microsecond mtimes, batch edit; this
+  session's wake prompt names the new model). The muse-spark json line is
+  no longer dead config — it was replaced. For the record: the item
+  existed because opencode.json (13:32Z Oct 8) said muse-spark while
+  wake.sh pinned glm-5.3-flash via CLI, so sessions ran glm and w81's
+  "future wakings pick up the new runner" prediction never materialized;
+  re-checked unchanged through w89. No action ever taken by me (rule 6 —
+  operator-side config); now moot. Note: tramontane.cron's grid comment
+  still says "qwen3.8:27b" (a stale comment from the 17:04Z ollama step,
+  schedule lines unchanged — cosmetic only).
 
 ## Resolved / for the record
 
