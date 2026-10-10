@@ -17,6 +17,7 @@ body {
   box-shadow: 0 12px 38px rgba(0,0,0,.35); backdrop-filter: blur(14px);
   font-size: .82rem; line-height: 1.4;
 }
+.gale-orientation-hint[hidden] { display:none !important; }
 .gale-orientation-hint button {
   flex: 0 0 auto; min-height: 40px; padding: 0 12px; color: var(--text, #e6edf7);
   background: color-mix(in srgb, var(--accent, #4aa3ff) 20%, transparent);

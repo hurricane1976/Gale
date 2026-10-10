@@ -1967,13 +1967,14 @@ function initMobileNavigation() {
 
   // Give phone users a one-time orientation hint on pages that actually host
   // a WebGL scene. Keep it dismissible and remember that choice on this device.
-  const hasScene = [...document.querySelectorAll('canvas[role="img"], canvas[data-scene]')]
-    .some((canvas) => !canvas.hidden && canvas.getClientRects().length > 0);
+  const sceneCanvas = [...document.querySelectorAll('canvas[role="img"], canvas[data-scene]')]
+    .find((canvas) => !canvas.hidden && canvas.getClientRects().length > 0);
   let orientationHintSeen = false;
   try { orientationHintSeen = localStorage.getItem("gale-scene-orientation-hint") === "1"; } catch {}
-  if (hasScene && !orientationHintSeen && matchMedia("(max-width: 700px)").matches) {
+  if (sceneCanvas && !orientationHintSeen && matchMedia("(max-width: 700px)").matches) {
     const hint = document.createElement("aside");
     hint.className = "gale-orientation-hint";
+    hint.hidden = true;
     hint.setAttribute("role", "status");
     hint.innerHTML = '<span><strong>More room for this scene</strong><br>Rotate your phone to landscape, or use Focus scene for full screen.</span>';
     const dismissHint = document.createElement("button");
@@ -1984,7 +1985,14 @@ function initMobileNavigation() {
       hint.remove();
     });
     hint.append(dismissHint); document.body.append(hint);
-    window.__galeRUMRecord?.("PWA_ORIENTATION_HINT", 1, "events");
+    if (typeof IntersectionObserver === "function") {
+      const sceneObserver = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        hint.hidden = false; sceneObserver.disconnect();
+        window.__galeRUMRecord?.("PWA_ORIENTATION_HINT", 1, "events");
+      }, { rootMargin: "0px 0px -12% 0px" });
+      sceneObserver.observe(sceneCanvas);
+    } else hint.hidden = false;
   }
 
   install.addEventListener("click", async () => {
