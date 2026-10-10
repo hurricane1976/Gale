@@ -178,6 +178,43 @@ function rum() {
 }
 async function clientRuntime() {
   const items = [];
+  const standalone = !!(window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone);
+  const mobileMode = innerWidth <= 700 ? "Mobile" : "Desktop/tablet";
+  const shareSupport = !!navigator.share;
+  const badgeSupport = typeof navigator.setAppBadge === "function";
+  const notificationSupport = typeof Notification !== "undefined" && "serviceWorker" in navigator;
+  const installGuidance = !!document.querySelector("#gale-install-app");
+  items.push(tile("PWA display mode", standalone ? "Installed app" : "Browser tab", `${mobileMode} viewport · offline shell, share ${shareSupport ? "available" : "not exposed"}, notifications ${notificationSupport ? "available" : "not exposed"}, badges ${badgeSupport ? "available" : "not exposed"}, install guide ${installGuidance ? "available" : "unavailable"}.`, standalone ? "ok" : "unknown"));
+  let manifestState = "Unknown", manifestDetail = "Web app manifest is unavailable.";
+  try {
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (!manifestLink) throw new Error("No manifest link on this page");
+    const response = await fetch(manifestLink.href, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const manifest = await response.json();
+    const iconCount = Array.isArray(manifest.icons) ? manifest.icons.length : 0;
+    const hasMaskable = (manifest.icons || []).some((icon) => String(icon.purpose || "any").split(/\s+/).includes("maskable"));
+    const screenshotCount = Array.isArray(manifest.screenshots) ? manifest.screenshots.length : 0;
+    const complete = !!(manifest.name && manifest.start_url && manifest.display && iconCount && hasMaskable);
+    manifestState = complete ? "Ready" : "Needs review";
+    manifestDetail = `${iconCount} icons · maskable ${hasMaskable ? "yes" : "no"} · ${screenshotCount} install screenshots · launch ${manifest.start_url || "missing"}`;
+  } catch (error) { manifestState = "Unavailable"; manifestDetail = error.message; }
+  items.push(tile("PWA manifest & install assets", manifestState, manifestDetail, manifestState === "Ready" ? "ok" : "warn"));
+  const secureInstallContext = !!window.isSecureContext;
+  const swSupported = "serviceWorker" in navigator;
+  const installReady = secureInstallContext && swSupported && manifestState === "Ready";
+  items.push(tile("Install prerequisites", installReady ? "Ready" : "Guided install", `Secure context ${secureInstallContext ? "yes" : "no"} · service worker ${swSupported ? "supported" : "unavailable"} · browser-specific steps are in More → Install Gale.`, installReady ? "ok" : "warn"));
+  let pushState = "Not supported", pushDetail = "This browser does not expose web push.";
+  if ("PushManager" in window && navigator.serviceWorker) {
+    pushDetail = `Notification permission: ${typeof Notification === "undefined" ? "unavailable" : Notification.permission}.`;
+    pushState = typeof Notification === "undefined" ? "Permission unavailable" : Notification.permission === "denied" ? "Blocked" : Notification.permission === "granted" ? "Not subscribed" : "Not requested";
+    try {
+      const registration = await navigator.serviceWorker.getRegistration("/");
+      const subscription = await registration?.pushManager?.getSubscription();
+      if (subscription) { pushState = "Subscribed"; pushDetail = "A push subscription exists on this device; endpoint details are not shown."; }
+    } catch { pushDetail += " Subscription status could not be read."; }
+  }
+  items.push(tile("Push alert status", pushState, pushDetail, pushState === "Subscribed" ? "ok" : pushState === "Blocked" ? "warn" : "unknown"));
   const controlled = !!navigator.serviceWorker?.controller;
   items.push(tile("Offline app shell", controlled ? "Active" : "Not controlling", controlled ? "This page is controlled by the Gale service worker." : "Open over HTTPS and reload after the worker installs.", controlled ? "ok" : "unknown"));
   let swState = "Not registered", swDetail = "Service-worker updates unavailable in this browser.";
@@ -189,6 +226,36 @@ async function clientRuntime() {
     }
   } catch { swState = "Unknown"; swDetail = "Registration status could not be read."; }
   items.push(tile("Service-worker update", swState, swDetail, /waiting|installing/i.test(swState) ? "warn" : /active/i.test(swState) ? "ok" : "unknown"));
+  let shellVersion = "Unknown";
+  try {
+    shellVersion = await new Promise((resolve) => {
+      const done = (value) => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("message", onMessage); resolve(value); };
+      const onMessage = (event) => { if (event.data?.type === "gale:pong") done(event.data.version || "unknown"); };
+      const timer = setTimeout(() => done("No version response"), 1800);
+      navigator.serviceWorker.addEventListener("message", onMessage);
+      if (navigator.serviceWorker.controller) navigator.serviceWorker.controller.postMessage("gale:ping");
+      else done("Not controlled");
+    });
+  } catch {}
+  items.push(tile("PWA shell version", shellVersion, "Current service-worker cache generation · device-local", shellVersion.startsWith("gale-") ? "ok" : "unknown"));
+  try {
+    const cacheNames = await caches.keys();
+    items.push(tile("PWA cache storage", `${cacheNames.length} caches`, cacheNames.map((name) => esc(name)).join(" · ") || "No service-worker caches found.", cacheNames.length ? "ok" : "unknown"));
+  } catch { items.push(tile("PWA cache storage", "Unavailable", "Cache Storage is not exposed in this browser.", "unknown")); }
+  let wakeQueue = null;
+  if (navigator.serviceWorker?.controller) {
+    wakeQueue = await new Promise((resolve) => {
+      const finish = (value) => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("message", receive); resolve(value); };
+      const receive = (event) => { if (event.data?.type === "gale:wake-queue-status") finish(event.data); };
+      const timer = setTimeout(() => finish(null), 1400);
+      navigator.serviceWorker.addEventListener("message", receive);
+      navigator.serviceWorker.controller.postMessage("gale:wake-queue-status");
+    });
+  }
+  if (wakeQueue && !wakeQueue.unavailable) {
+    const queueAge = wakeQueue.oldest_age_ms < 60000 ? `${Math.round(wakeQueue.oldest_age_ms / 1000)}s` : `${Math.round(wakeQueue.oldest_age_ms / 60000)}m`;
+    items.push(tile("Offline wake queue", wakeQueue.count ? `${wakeQueue.count} pending` : "Empty", wakeQueue.count ? `Oldest queued request ${queueAge} · requests expire after 15m.` : "No queued wake requests on this device.", wakeQueue.count ? "warn" : "ok"));
+  } else items.push(tile("Offline wake queue", "Not available", "This browser has no active service-worker queue status response.", "unknown"));
   items.push(tile("WebGL renderer", typeof WebGLRenderingContext === "function" ? "Available" : "Unavailable", "3D scenes fall back to their SVG or text views when graphics support is missing.", typeof WebGLRenderingContext === "function" ? "ok" : "unknown"));
   let glCaps = null;
   try {
@@ -203,6 +270,8 @@ async function clientRuntime() {
   items.push(tile("Responsive resize observer", typeof ResizeObserver === "function" ? "Available" : "Unavailable", "Keeps charts and 3D viewports sized to their panels.", typeof ResizeObserver === "function" ? "ok" : "warn"));
   const dataSaver = !!navigator.connection?.saveData;
   items.push(tile("Data saver preference", dataSaver ? "Enabled" : navigator.connection ? "Off" : "Not exposed", "Scene quality may be reduced when this browser preference is enabled.", dataSaver ? "ok" : "unknown"));
+  const connectionType = navigator.connection?.effectiveType;
+  items.push(tile("Connection quality", !navigator.onLine ? "Offline" : connectionType ? connectionType : "Online · type not exposed", "Connection type is browser-provided and stored only in this page’s local diagnostics.", !navigator.onLine ? "crit" : ["slow-2g", "2g"].includes(connectionType) ? "warn" : "ok"));
   const heap = performance.memory;
   if (heap && Number.isFinite(heap.usedJSHeapSize) && Number.isFinite(heap.jsHeapSizeLimit)) {
     const heapPct = heap.usedJSHeapSize / Math.max(1, heap.jsHeapSizeLimit) * 100;
@@ -226,7 +295,9 @@ async function offlineShellReport() {
   }
   try {
     const cacheNames = await caches.keys();
-    const cacheList = await Promise.all(cacheNames.map((name) => caches.open(name)));
+    const metadataName = cacheNames.find((name) => name.endsWith("-asset-meta"));
+    const assetNames = cacheNames.filter((name) => name !== metadataName);
+    const cacheList = await Promise.all(assetNames.map((name) => caches.open(name)));
     const cachedPaths = new Set();
     for (const cache of cacheList) for (const request of await cache.keys()) cachedPaths.add(new URL(request.url).pathname);
     const pages = ["/", "/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
@@ -243,8 +314,23 @@ async function offlineShellReport() {
         if (path.startsWith("/dist/")) scripts.add(path);
       }
     }
-    const groups = [["Pages", pages], ["Stylesheets", styles], ["Fonts", fonts], ["Page entry scripts", [...scripts]]];
-    setHTML(box, groups.map(([label, required]) => {
+    const pwaAssets = ["/manifest.json", "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png", "/pwa-screenshots/gale-mobile.jpg", "/pwa-screenshots/gale-wide.jpg"];
+    const groups = [["Pages", pages], ["Stylesheets", styles], ["Fonts", fonts], ["Page entry scripts", [...scripts]], ["PWA metadata & install visuals", pwaAssets]];
+    const ageCards = [];
+    if (metadataName) {
+      const metadata = await caches.open(metadataName), keys = await metadata.keys();
+      const ages = [];
+      for (const key of keys) {
+        const stored = await metadata.match(key);
+        const value = stored ? await stored.json().catch(() => null) : null;
+        if (Number.isFinite(value?.cached_at)) ages.push(Math.max(0, Date.now() - value.cached_at));
+      }
+      const oldest = ages.length ? Math.max(...ages) : null;
+      const oldCount = ages.filter((age) => age > 30 * 864e5).length;
+      const oldestLabel = oldest == null ? "no timestamped assets" : oldest < 864e5 ? `${Math.round(oldest / 36e5)}h` : `${Math.round(oldest / 864e5)}d`;
+      ageCards.push(`<div class="target-card" data-level="${oldCount ? "warn" : ages.length ? "ok" : "unknown"}"><div class="target-top"><span class="target-name">Cached asset freshness</span><span class="pill" data-level="${oldCount ? "warn" : ages.length ? "ok" : "unknown"}">${ages.length} timestamped</span></div><span class="mono-dim">Oldest ${oldestLabel} · ${oldCount} older than 30 days · device-local cache metadata</span></div>`);
+    } else ageCards.push('<div class="target-card" data-level="unknown"><div class="target-top"><span class="target-name">Cached asset freshness</span><span class="pill" data-level="unknown">Unavailable</span></div><span class="mono-dim">The active app shell has no cache timestamp index yet. Install the current worker to start collecting local cache ages.</span></div>');
+    setHTML(box, ageCards.join("") + groups.map(([label, required]) => {
       const missing = required.filter((path) => !cachedPaths.has(path));
       const level = !required.length ? "unknown" : missing.length ? "warn" : "ok";
       const detail = missing.length ? `Missing: ${missing.map((path) => path.split("/").pop()).join(", ")}` : "All required files are in local cache.";
@@ -255,6 +341,28 @@ async function offlineShellReport() {
   }
 }
 const SITE_PAGES = ["/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
+$("tap-target-scan")?.addEventListener("click", () => {
+  const targets = [...document.querySelectorAll('button,a[href],input,select,summary,[role="button"]')].flatMap((element) => {
+    if (element.closest("[hidden]") || getComputedStyle(element).display === "none" || getComputedStyle(element).visibility === "hidden") return [];
+    if (element.matches("a[href]") && getComputedStyle(element).display === "inline") return [];
+    const rect = element.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return [];
+    return [{ element, rect, width: rect.width, height: rect.height }];
+  });
+  const undersized = targets.filter((target) => target.width < 44 || target.height < 44);
+  const below24 = targets.filter((target) => target.width < 24 || target.height < 24);
+  let tight = 0;
+  for (let i = 0; i < targets.length; i++) for (let j = i + 1; j < targets.length; j++) {
+    const a = targets[i].rect, b = targets[j].rect;
+    const dx = Math.max(0, a.left - b.right, b.left - a.right), dy = Math.max(0, a.top - b.bottom, b.top - a.bottom);
+    if (Math.hypot(dx, dy) < 8) tight++;
+  }
+  const level = below24.length ? "crit" : undersized.length || tight ? "warn" : "ok";
+  setText($("tap-target-status"), `Reviewed ${targets.length} visible block controls at ${innerWidth}×${innerHeight}px · ${matchMedia("(pointer:coarse)").matches ? "coarse pointer" : "fine pointer"}. 44px is a comfort target; 24px is the minimum size threshold used here.`);
+  const sample = undersized.slice(0, 12).map(({ element, width, height }) => `<div class="target-card" data-level="warn"><strong>${esc(element.tagName.toLowerCase())}${element.id ? `#${esc(element.id)}` : ""} · ${Math.round(width)}×${Math.round(height)}px</strong><span class="mono-dim">${esc(element.getAttribute("aria-label") || element.textContent.trim().slice(0, 48) || "Unlabeled control")}</span></div>`).join("");
+  setHTML($("tap-target-results"), `<div class="target-card" data-level="${level}"><strong>${undersized.length} below 44px · ${below24.length} below 24px · ${tight} close target pairs</strong><span class="mono-dim">This local estimate checks visible block controls; inline text links are excluded.</span></div>${sample}`);
+  window.__galeRUMRecord?.("TAP_TARGET_SCAN", undersized.length, "controls below 44px");
+});
 $("site-link-scan")?.addEventListener("click", async (event) => {
   const button = event.currentTarget, status = $("site-link-status"), results = $("site-link-results");
   const progress = $("site-link-progress");
@@ -333,6 +441,10 @@ function buildLocalDiagnosticsBundle() {
       service_worker: !!navigator.serviceWorker,
       reduced_motion: !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
       viewport: innerWidth < 600 ? "phone" : innerWidth < 1000 ? "tablet" : "desktop",
+      pwa_mode: !!(window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone) ? "standalone" : "browser",
+      online: navigator.onLine,
+      service_worker_controlled: !!navigator.serviceWorker?.controller,
+      cache_storage: "caches" in window,
     },
   };
 }
@@ -370,6 +482,11 @@ $("rum-retention")?.addEventListener("change", (e) => { rumRetentionHours = Numb
 $("rum-clear")?.addEventListener("click", () => {
   window.__galeRUMClear?.(); rumPage = ""; rum();
   setText($("rum-action-status"), "Browser-local RUM samples cleared.");
+});
+$("pwa-open-tools")?.addEventListener("click", () => {
+  const more = $("gale-mobile-more");
+  if (more) more.click();
+  else setText($("client-runtime-status"), "PWA tools are unavailable in this browser context.");
 });
 $("color-vision-mode")?.addEventListener("change", (event) => {
   const mode = event.currentTarget.value;

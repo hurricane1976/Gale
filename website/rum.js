@@ -37,6 +37,18 @@
       push("IMAGE_DIMENSION_MISSING", images.filter((img) => img.complete && (!img.naturalWidth || !img.naturalHeight)).length, "loaded images without intrinsic dimensions");
       const imageResources = performance.getEntriesByType("resource").filter((entry) => entry.initiatorType === "img" && (() => { try { return new URL(entry.name).origin === location.origin; } catch { return false; } })());
       push("IMAGE_TRANSFER_KB", imageResources.reduce((total, entry) => total + (entry.transferSize || 0), 0) / 1024, "KB");
+      const scripts = performance.getEntriesByType("resource").filter((entry) => entry.initiatorType === "script" && (() => { try { return new URL(entry.name).origin === location.origin; } catch { return false; } })());
+      push("MODULE_COUNT", scripts.length, "modules");
+      push("MODULE_LOAD_MS", scripts.reduce((total, entry) => total + entry.duration, 0), "ms total");
+      const rootFont = parseFloat(getComputedStyle(document.documentElement).fontSize) || 0;
+      push("ROOT_FONT_SIZE", rootFont, "CSS px");
+      push("VIS_EFFECTIVE_DPR", window.devicePixelRatio || 1, "device scale factor");
+      const safe = document.createElement("div");
+      safe.style.cssText = "position:fixed;visibility:hidden;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)";
+      document.body.append(safe);
+      const insets = getComputedStyle(safe);
+      push("VIS_SAFE_AREA_TOTAL", [insets.paddingTop,insets.paddingRight,insets.paddingBottom,insets.paddingLeft].reduce((sum,value)=>sum+(parseFloat(value)||0),0), "CSS px");
+      safe.remove();
     };
     addEventListener("load", () => setTimeout(recordVisualInventory, 1500), { once: true });
     addEventListener("pagehide", recordVisualInventory, { once: true });
@@ -48,6 +60,7 @@
     let cls = 0;
     observe("layout-shift", (es) => { for (const e of es) if (!e.hadRecentInput) cls += e.value || 0; push("CLS", cls, "score"); });
     observe("event", (es) => { const worst = Math.max(0, ...es.map((e) => e.duration || 0)); if (worst) push("INP", worst, "ms approx"); }, { durationThreshold: 40 });
+    observe("long-animation-frame", (es) => { for (const e of es) push("LONG_ANIMATION_FRAME", e.duration, "ms"); });
     observe("paint", (es) => { const e = es.find((x) => x.name === "first-contentful-paint"); if (e) push("FCP", e.startTime); });
     observe("longtask", (es) => { for (const e of es) push("LONGTASK", e.duration); });
     if (document.fonts) {
@@ -57,8 +70,9 @@
     }
     addEventListener("error", (e) => { if (e instanceof ErrorEvent) push("JS_ERROR", 1, "count"); else if (e.target && e.target !== window) push("ASSET_ERROR", 1, "count"); }, true);
     addEventListener("unhandledrejection", () => push("REJECTION", 1, "count"));
-    addEventListener("offline", () => push("OFFLINE", 1, "events"));
-    addEventListener("online", () => push("ONLINE", 1, "events"));
+    let offlineAt = navigator.onLine ? 0 : Date.now();
+    addEventListener("offline", () => { offlineAt = Date.now(); push("OFFLINE", 1, "events"); });
+    addEventListener("online", () => { push("ONLINE", 1, "events"); if (offlineAt) push("OFFLINE_DURATION", Date.now() - offlineAt, "ms"); offlineAt = 0; });
     document.addEventListener("webglcontextlost", () => push("WEBGL_LOSS", 1, "events"), true);
     addEventListener("error", (e) => {
       if (e instanceof ErrorEvent) return;
@@ -118,6 +132,7 @@
             else if (response.status >= 400) push("API_4XX", 1, "responses", { route });
           }
           if (api && performance.now() - started > 1500) push("API_SLOW", 1, "responses >1.5s", { route });
+          if (api) { const length = Number(response.headers.get("content-length")); if (Number.isFinite(length) && length >= 0) push("API_RESPONSE_BYTES", length, "bytes", { route }); }
           return response;
         }, (error) => {
           if (api && error?.name !== "AbortError") push("API_NETWORK_ERROR", 1, "failures", { route });

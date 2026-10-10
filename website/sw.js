@@ -15,9 +15,21 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v14";
+const CACHE_VERSION = "gale-v16";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
+const ASSET_META_CACHE = `${CACHE_VERSION}-asset-meta`;
+
+function metadataKey(request) {
+  const url = new URL(request.url);
+  return new Request(`${url.origin}${url.pathname}`);
+}
+async function recordCacheTime(request) {
+  try {
+    const metadata = await caches.open(ASSET_META_CACHE);
+    await metadata.put(metadataKey(request), new Response(JSON.stringify({ cached_at: Date.now() }), { headers: { "Content-Type": "application/json" } }));
+  } catch { /* cache timestamps improve diagnostics but never gate content caching */ }
+}
 
 const SHELL_ASSETS = [
   "/",
@@ -33,12 +45,17 @@ const SHELL_ASSETS = [
   "/shared.js", "/rum.js",
   "/manifest.json", "/favicon.ico", "/apple-touch-icon.png",
   "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png",
+  "/pwa-screenshots/gale-mobile.jpg", "/pwa-screenshots/gale-wide.jpg",
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(SHELL_CACHE)
       .then((cache) => cache.addAll(SHELL_ASSETS))
+      .then(async () => {
+        const shell = await caches.open(SHELL_CACHE);
+        await Promise.all((await shell.keys()).map(recordCacheTime));
+      })
       .then(() => self.skipWaiting())
       .catch((e) => console.warn("sw: shell precache failed (non-fatal)", e))
   );
@@ -67,7 +84,7 @@ self.addEventListener("fetch", (event) => {
       fetch(request)
         .then((res) => {
           const copy = res.clone();
-          caches.open(SHELL_CACHE).then((c) => c.put(request, copy));
+          caches.open(SHELL_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); });
           return res;
         })
         .catch(() => caches.match(request).then((r) => r || caches.match("/index.html")))
@@ -88,7 +105,7 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res.ok) {
             const copy = res.clone();
-            caches.open(RUNTIME_CACHE).then((c) => c.put(request, copy));
+            caches.open(RUNTIME_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); });
           }
           return res;
         })
@@ -103,7 +120,7 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res.ok) {
             const copy = res.clone();
-            caches.open(RUNTIME_CACHE).then((c) => c.put(request, copy));
+            caches.open(RUNTIME_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); });
           }
           return res;
         })
@@ -193,6 +210,15 @@ self.addEventListener("message", (event) => {
   }
   // page-detected update: activate a waiting worker immediately
   if (event.data === "gale:skip-waiting") self.skipWaiting();
+  if (event.data === "gale:wake-queue-status") {
+    event.waitUntil((async () => {
+      try {
+        const items = await tx("readonly", (store) => store.getAll());
+        const ages = (items || []).map((item) => Math.max(0, Date.now() - Number(item.at || Date.now())));
+        event.source?.postMessage({ type: "gale:wake-queue-status", count: ages.length, oldest_age_ms: Math.max(0, ...ages) });
+      } catch { event.source?.postMessage({ type: "gale:wake-queue-status", unavailable: true }); }
+    })());
+  }
   // version handshake so the page can verify the ACTIVE sw has push support.
   // (self.PushManager doesn't exist in worker scope and the SW global has no
   // "push" property -- the honest check is feature-detection on the

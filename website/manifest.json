@@ -1,5 +1,5 @@
 {
-  "name": "Gale \u2014 Fleet Resilience & Recovery",
+  "name": "Gale — Fleet Resilience & Recovery",
   "short_name": "Gale",
   "description": "Gale's fleet dashboard: topology, metrics, observability, status, and live activity across the 4-host fleet.",
   "start_url": "/operations.html",
@@ -94,6 +94,62 @@
           "sizes": "192x192"
         }
       ]
+    },
+    {
+      "name": "Home",
+      "short_name": "Home",
+      "url": "/index.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Metrics",
+      "short_name": "Metrics",
+      "url": "/metrics.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Weather",
+      "short_name": "Weather",
+      "url": "/weather.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "screenshots": [
+    {
+      "src": "pwa-screenshots/gale-mobile.jpg",
+      "sizes": "390x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Gale mobile fleet dashboard"
+    },
+    {
+      "src": "pwa-screenshots/gale-wide.jpg",
+      "sizes": "1440x900",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Gale fleet operations dashboard"
     }
   ]
 }

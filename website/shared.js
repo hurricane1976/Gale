@@ -655,6 +655,7 @@ export function chartTooltip(svg, points, format) {
   st.points = points;
   st.format = format;
   st.vbWidth = vb.width || 100;
+  if (st.pinnedIndex != null) st.pinnedIndex = Math.min(st.pinnedIndex, points.length - 1);
   st.refs = { line, tip, host };
   st.index = Math.min(st.index || 0, points.length - 1);
   if (!svg.hasAttribute?.("tabindex")) svg.setAttribute("tabindex", "0");
@@ -698,10 +699,24 @@ export function chartTooltip(svg, points, format) {
     };
     const hide = () => {
       const { line: ln, tip: tp } = (svg._tipState && svg._tipState.refs) || {};
+      if (svg._tipState?.pinnedIndex != null) return;
       if (ln) ln.style.display = "none";
       if (tp) tp.style.display = "none";
     };
     svg.addEventListener("pointermove", onMove);
+    svg.addEventListener("pointerup", (event) => {
+      if (event.pointerType !== "touch") return;
+      onMove(event);
+      const cur = svg._tipState;
+      if (cur.pinnedIndex === cur.index) {
+        cur.pinnedIndex = null;
+        hide();
+      } else {
+        cur.pinnedIndex = cur.index;
+        const tp = cur.refs?.tip;
+        if (tp) { tp.textContent = `Pinned · ${tp.textContent} · tap the same point to close`; tp.setAttribute("aria-live", "polite"); }
+      }
+    });
     svg.addEventListener("pointerleave", hide);
     svg.addEventListener("focus", () => showAt(svg._tipState?.index || 0, null, true));
     svg.addEventListener("keydown", (event) => {
@@ -712,7 +727,7 @@ export function chartTooltip(svg, points, format) {
       else if (event.key === "ArrowLeft" || event.key === "ArrowDown") next--;
       else if (event.key === "Home") next = 0;
       else if (event.key === "End") next = cur.points.length - 1;
-      else if (event.key === "Escape") { hide(); return; }
+      else if (event.key === "Escape") { cur.pinnedIndex = null; hide(); return; }
       else return;
       event.preventDefault();
       showAt(next, null, true);
@@ -865,6 +880,9 @@ export function initThemeEngine() {
         <input type="range" id="fx-intensity" min="0" max="120" step="5" value="${Math.round(fx.intensity * 100)}"></label>
       <label style="font-size:.75rem;display:flex;gap:6px;align-items:center">screen density
         <select id="fx-density" aria-label="Screen density"><option value="comfortable"${density !== "compact" ? " selected" : ""}>comfortable</option><option value="compact"${density === "compact" ? " selected" : ""}>compact</option></select></label>
+      <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">3D graphics quality
+        <select id="fx-quality" aria-label="3D graphics quality"><option value="auto">Auto · adaptive</option><option value="battery">Battery saver</option><option value="balanced">Balanced</option><option value="detail">Detail</option></select></label>
+      <small class="mono-dim">Auto follows measured frame time; manual modes persist on this device.</small>
       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px" aria-label="Display presets">
         <button type="button" class="mini-toggle fx-preset" data-hue="0" data-glow="0.65" data-intensity="0.5">calm</button>
         <button type="button" class="mini-toggle fx-preset" data-hue="-18" data-glow="1.15" data-intensity="1">aurora</button>
@@ -889,6 +907,13 @@ export function initThemeEngine() {
     const value = event.currentTarget.value === "compact" ? "compact" : "comfortable";
     document.documentElement.dataset.density = value;
     store.set("gale-density", value);
+  });
+  const qualityMode = box.querySelector("#fx-quality");
+  try { qualityMode.value = localStorage.getItem("gale-graphics-quality") || "auto"; } catch { qualityMode.value = "auto"; }
+  qualityMode.addEventListener("change", () => {
+    const mode = ["auto", "battery", "balanced", "detail"].includes(qualityMode.value) ? qualityMode.value : "auto";
+    try { localStorage.setItem("gale-graphics-quality", mode); } catch {}
+    window.dispatchEvent(new CustomEvent("gale:graphics-quality", { detail: { mode } }));
   });
   const paintTod = () => { if (tod) tod.textContent = auto ? `(${TOD(new Date().getHours()).name})` : ""; };
   const paintPresets = () => box.querySelectorAll(".fx-preset").forEach((preset) => {
@@ -1514,6 +1539,7 @@ function registerServiceWorker() {
     navigator.serviceWorker.ready.then((reg) => {
       reg.update().catch(() => {});
       reg.addEventListener("updatefound", () => {
+        window.__galeRUMRecord?.("PWA_SW_UPDATE_FOUND", 1, "events");
         const w = reg.installing;
         if (!w) return;
         w.addEventListener("statechange", () => {
@@ -1523,6 +1549,7 @@ function registerServiceWorker() {
         });
       });
     });
+    navigator.serviceWorker.addEventListener("controllerchange", () => window.__galeRUMRecord?.("PWA_SW_CONTROLLER_CHANGE", 1, "events"), { once: true });
     initPushBell();
   });
 }
@@ -1618,10 +1645,12 @@ async function initPushBell() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {});
         await sub.unsubscribe().catch(() => {});
+        window.__galeRUMRecord?.("PUSH_UNSUBSCRIBED", 1, "events");
         paint();
         return;
       }
       const perm = await Notification.requestPermission();
+      window.__galeRUMRecord?.(perm === "granted" ? "PUSH_PERMISSION_GRANTED" : "PUSH_PERMISSION_DENIED", 1, "events");
       if (perm !== "granted") return;
       const res = await fetch("api/push/vapid-key").then((r) => r.json());
       const newSub = await reg.pushManager.subscribe({
@@ -1631,6 +1660,7 @@ async function initPushBell() {
       await fetch("api/push/subscribe", { method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSub.toJSON()) });
+      window.__galeRUMRecord?.("PUSH_SUBSCRIBED", 1, "events");
       paint();
     }
     mk();
@@ -1781,6 +1811,277 @@ function initCodeCopy() {
   });
 }
 
+/* ---- mobile PWA wayfinding and install/share help ---- */
+const MOBILE_PAGES = [
+  ["Overview", "index.html", "home"], ["Status", "status.html", "status"],
+  ["Fleet", "fleet.html", "fleet"], ["Operations", "operations.html", "ops"],
+  ["Metrics", "metrics.html"], ["Observability", "observability.html"],
+  ["Ollama", "ollama.html"], ["Agora", "agora.html"], ["Weather", "weather.html"],
+  ["Network", "network.html"], ["Reliability", "reliability.html"],
+  ["Runbooks", "runbooks.html"], ["My Home", "home.html"],
+];
+let deferredInstallPrompt = null;
+
+function initMobileNavigation() {
+  if (!document.body || document.getElementById("gale-mobile-nav") || new URLSearchParams(location.search).has("kiosk")) return;
+  const path = location.pathname.split("/").pop() || "index.html";
+  const dialog = document.createElement("dialog");
+  dialog.id = "gale-page-menu";
+  dialog.className = "gale-page-menu";
+  dialog.setAttribute("aria-labelledby", "gale-page-menu-title");
+  const heading = document.createElement("h2");
+  heading.id = "gale-page-menu-title"; heading.textContent = "Navigate Gale";
+  const close = document.createElement("button");
+  close.type = "button"; close.className = "gale-menu-close"; close.textContent = "Close";
+  close.addEventListener("click", () => typeof dialog.close === "function" ? dialog.close() : dialog.removeAttribute("open"));
+  const pageList = document.createElement("nav");
+  pageList.className = "gale-page-links"; pageList.setAttribute("aria-label", "All Gale pages");
+  for (const [label, href] of MOBILE_PAGES) {
+    const link = document.createElement("a");
+    link.href = href; link.textContent = label;
+    if (href === path) link.setAttribute("aria-current", "page");
+    pageList.append(link);
+  }
+  const tools = document.createElement("div"); tools.className = "gale-pwa-tools";
+  const install = document.createElement("button");
+  install.type = "button"; install.id = "gale-install-app"; install.textContent = "Install Gale";
+  const share = document.createElement("button");
+  share.type = "button"; share.id = "gale-share-page"; share.textContent = "Share this page";
+  const update = document.createElement("button");
+  update.type = "button"; update.id = "gale-check-update"; update.textContent = "Check app update";
+  const applyUpdate = document.createElement("button");
+  applyUpdate.type = "button"; applyUpdate.id = "gale-apply-update"; applyUpdate.textContent = "Reload with update"; applyUpdate.hidden = true;
+  const copyStatus = document.createElement("button");
+  copyStatus.type = "button"; copyStatus.id = "gale-copy-pwa-status"; copyStatus.textContent = "Copy PWA status";
+  const displayControls = document.createElement("button");
+  displayControls.type = "button"; displayControls.id = "gale-open-controls"; displayControls.textContent = "Display & accessibility controls";
+  const toolStatus = document.createElement("p");
+  toolStatus.id = "gale-pwa-tool-status"; toolStatus.className = "mini-note";
+  toolStatus.setAttribute("role", "status"); toolStatus.setAttribute("aria-live", "polite");
+  tools.append(install, share, update, applyUpdate, copyStatus, displayControls, toolStatus);
+  dialog.append(close, heading, pageList, tools);
+  document.body.append(dialog);
+  addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault(); deferredInstallPrompt = event;
+    install.textContent = "Install Gale · ready";
+    window.__galeRUMRecord?.("PWA_INSTALL_PROMPT", 1, "events");
+  });
+  addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null; install.textContent = "Gale installed";
+    toolStatus.textContent = "Gale is ready from your home screen or app launcher.";
+    window.__galeRUMRecord?.("PWA_INSTALLED", 1, "events");
+  });
+  if (window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone) {
+    install.textContent = "Gale installed";
+    window.__galeRUMRecord?.("PWA_STANDALONE", 1, "events");
+  }
+
+  const more = document.createElement("button");
+  more.type = "button"; more.className = "gale-mobile-tab"; more.id = "gale-mobile-more";
+  more.setAttribute("aria-haspopup", "dialog"); more.setAttribute("aria-controls", dialog.id);
+  more.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>More</span>';
+  if (!MOBILE_PAGES.slice(0, 4).some(([, href]) => href === path)) more.setAttribute("aria-current", "page");
+  more.addEventListener("click", () => dialog.showModal ? dialog.showModal() : dialog.setAttribute("open", ""));
+  const nav = document.createElement("nav");
+  nav.id = "gale-mobile-nav"; nav.className = "gale-mobile-nav"; nav.setAttribute("aria-label", "Primary mobile navigation");
+  const mainPages = MOBILE_PAGES.slice(0, 4);
+  const icons = {
+    home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+    status: '<path d="M3 12h4l2-7 4 14 2-7h6"/>',
+    fleet: '<circle cx="12" cy="5" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M11 7 6 16m7-9 5 9M7 18h10"/>',
+    ops: '<path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/>'
+  };
+  for (const [label, href, key] of mainPages) {
+    const link = document.createElement("a"); link.className = "gale-mobile-tab"; link.href = href;
+    link.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[key]}</svg><span>${label}</span>`;
+    if (href === path) link.setAttribute("aria-current", "page");
+    nav.append(link);
+  }
+  nav.append(more); document.body.append(nav);
+  document.documentElement.dataset.mobileNav = "ready";
+
+  // Give phone users a one-time orientation hint on pages that actually host
+  // a WebGL scene. Keep it dismissible and remember that choice on this device.
+  const hasScene = !!document.querySelector('canvas[role="img"], canvas#storm-canvas, canvas#storm-scene, canvas[data-scene]');
+  let orientationHintSeen = false;
+  try { orientationHintSeen = localStorage.getItem("gale-scene-orientation-hint") === "1"; } catch {}
+  if (hasScene && !orientationHintSeen && matchMedia("(max-width: 700px)").matches) {
+    const hint = document.createElement("aside");
+    hint.className = "gale-orientation-hint";
+    hint.setAttribute("role", "status");
+    hint.innerHTML = '<span><strong>More room for this scene</strong><br>Rotate your phone to landscape, or use Focus scene for full screen.</span>';
+    const dismissHint = document.createElement("button");
+    dismissHint.type = "button"; dismissHint.textContent = "Got it";
+    dismissHint.setAttribute("aria-label", "Dismiss landscape tip");
+    dismissHint.addEventListener("click", () => {
+      try { localStorage.setItem("gale-scene-orientation-hint", "1"); } catch {}
+      hint.remove();
+    });
+    hint.append(dismissHint); document.body.append(hint);
+    window.__galeRUMRecord?.("PWA_ORIENTATION_HINT", 1, "events");
+  }
+
+  install.addEventListener("click", async () => {
+    if (deferredInstallPrompt) {
+      const prompt = deferredInstallPrompt; deferredInstallPrompt = null;
+      try {
+        await prompt.prompt();
+        const choice = await prompt.userChoice;
+        window.__galeRUMRecord?.(choice?.outcome === "accepted" ? "PWA_INSTALL_ACCEPT" : "PWA_INSTALL_DISMISS", 1, "events");
+        toolStatus.textContent = choice?.outcome === "accepted" ? "Gale was added to your apps." : "Install dismissed. You can install later from this menu.";
+      } catch { toolStatus.textContent = "Install prompt unavailable. Use your browser menu to install Gale."; }
+      return;
+    }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const installed = window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone;
+    toolStatus.textContent = installed ? "Gale is already installed on this device." : ios
+      ? "To install: tap Share in Safari, then choose Add to Home Screen."
+      : "To install: open your browser menu and choose Install app or Add to Home screen.";
+  });
+  update.addEventListener("click", async () => {
+    update.disabled = true; toolStatus.textContent = "Checking for a Gale update…";
+    try {
+      const registration = await navigator.serviceWorker?.getRegistration("/");
+      if (!registration) throw new Error("service worker is unavailable");
+      await registration.update();
+      if (registration.waiting) {
+        applyUpdate.hidden = false;
+        toolStatus.textContent = "An update is ready. Reload to apply it to this page.";
+      } else toolStatus.textContent = "Gale is up to date.";
+    } catch { toolStatus.textContent = "Could not check for an update. Try again when online."; }
+    finally { update.disabled = false; }
+  });
+  applyUpdate.addEventListener("click", async () => {
+    const registration = await navigator.serviceWorker?.getRegistration("/");
+    if (!registration?.waiting) { toolStatus.textContent = "No waiting update was found. Check again."; applyUpdate.hidden = true; return; }
+    toolStatus.textContent = "Applying update…";
+    navigator.serviceWorker.addEventListener("controllerchange", () => location.reload(), { once: true });
+    registration.waiting.postMessage("gale:skip-waiting");
+  });
+  copyStatus.addEventListener("click", async () => {
+    let cacheNames = [];
+    try { cacheNames = await caches.keys(); } catch {}
+    const standalone = !!(window.matchMedia?.("(display-mode: standalone)").matches || navigator.standalone);
+    const shell = cacheNames.find((name) => name.endsWith("-shell"))?.replace(/-shell$/, "") || "unknown";
+    const summary = `Gale PWA · mode ${standalone ? "standalone" : "browser"} · network ${navigator.onLine ? "online" : "offline"} · worker ${navigator.serviceWorker?.controller ? "controlling" : "not controlling"} · shell ${shell} · caches ${cacheNames.length || "unavailable"}`;
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(summary);
+      else throw new Error("clipboard unavailable");
+      toolStatus.textContent = "PWA status copied. It contains no page URL or device identifiers.";
+    } catch { toolStatus.textContent = summary; }
+    window.__galeRUMRecord?.("PWA_DIAGNOSTICS_COPY", 1, "events");
+  });
+  displayControls.addEventListener("click", () => {
+    if (typeof dialog.close === "function") dialog.close(); else dialog.removeAttribute("open");
+    const toggle = document.querySelector("#gale-dock #dock-toggle");
+    if (toggle?.getAttribute("aria-expanded") !== "true") toggle?.click();
+    else toggle?.focus();
+  });
+  share.addEventListener("click", async () => {
+    try {
+      if (navigator.share) await navigator.share({ title: document.title, url: location.href });
+      else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(location.href); toolStatus.textContent = "Page link copied."; }
+      else throw new Error("share unavailable");
+      window.__galeRUMRecord?.("PWA_SHARE", 1, "events");
+    } catch (error) {
+      if (error.name !== "AbortError") toolStatus.textContent = "Sharing is unavailable in this browser.";
+    }
+  });
+}
+
+function initConnectivityStatus() {
+  if (!document.body || document.getElementById("gale-connectivity")) return;
+  const banner = document.createElement("div");
+  banner.id = "gale-connectivity"; banner.className = "gale-connectivity";
+  banner.setAttribute("role", "status"); banner.setAttribute("aria-live", "polite"); banner.hidden = true;
+  const message = document.createElement("span");
+  const refresh = document.createElement("button"); refresh.type = "button"; refresh.textContent = "Reload current page";
+  refresh.addEventListener("click", () => location.reload());
+  banner.append(message, refresh);
+  const main = document.querySelector("main");
+  if (main) document.body.insertBefore(banner, main); else document.body.prepend(banner);
+  let wasOffline = !navigator.onLine;
+  const update = () => {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const limited = !!connection?.saveData || ["slow-2g", "2g"].includes(connection?.effectiveType);
+    if (!navigator.onLine) {
+      wasOffline = true; banner.dataset.state = "offline";
+      message.textContent = "Offline · live telemetry is paused. Cached pages remain available."; refresh.hidden = true; banner.hidden = false;
+    } else if (wasOffline) {
+      wasOffline = false; banner.dataset.state = "restored";
+      message.textContent = "Connection restored · reload to refresh live data."; refresh.hidden = false; banner.hidden = false;
+      setTimeout(() => { if (navigator.onLine && banner.dataset.state === "restored") banner.hidden = true; }, 15000);
+    } else if (limited) {
+      banner.dataset.state = "limited"; message.textContent = "Limited connection · open More → Display & accessibility controls for Data saver."; refresh.hidden = true; banner.hidden = false;
+    } else { banner.hidden = true; }
+  };
+  addEventListener("online", update); addEventListener("offline", update);
+  connectionEvent(update); update();
+}
+
+function initMobileTableHints() {
+  if (!document.body) return;
+  const init = (wrap) => {
+    if (wrap._galeScrollReady) { wrap._galeScrollUpdate?.(); return; }
+    wrap._galeScrollReady = true;
+    if (wrap.tabIndex < 0) wrap.tabIndex = 0;
+    if (!wrap.hasAttribute("role")) wrap.setAttribute("role", "region");
+    if (!wrap.hasAttribute("aria-label")) {
+      const heading = wrap.closest("section,article,.ops-panel")?.querySelector("h2,h3,.panel-title");
+      wrap.setAttribute("aria-label", `${heading?.textContent?.trim() || "Data table"} · horizontally scrollable`);
+    }
+    const hint = document.createElement("div"); hint.className = "table-scroll-hint"; hint.setAttribute("aria-hidden", "true");
+    const label = document.createElement("span");
+    const progress = document.createElement("progress"); progress.max = 1; progress.value = 0;
+    hint.append(label, progress);
+    wrap.insertAdjacentElement("afterend", hint);
+    const update = () => {
+      const max = Math.max(0, wrap.scrollWidth - wrap.clientWidth);
+      hint.hidden = max < 8;
+      if (max < 8) return;
+      const end = wrap.scrollLeft >= max - 4;
+      label.textContent = end ? "End of table" : wrap.scrollLeft > 4 ? "Scroll for more columns" : "Swipe for more columns";
+      progress.max = max; progress.value = Math.max(0, Math.min(max, wrap.scrollLeft));
+    };
+    wrap._galeScrollUpdate = update;
+    wrap.addEventListener("scroll", update, { passive: true });
+    wrap.addEventListener("keydown", (event) => {
+      if (event.target !== wrap) return;
+      const step = Math.max(80, Math.round(wrap.clientWidth * 0.7));
+      const direction = event.key === "ArrowRight" ? step : event.key === "ArrowLeft" ? -step : event.key === "End" ? wrap.scrollWidth : event.key === "Home" ? -wrap.scrollWidth : 0;
+      if (!direction) return;
+      event.preventDefault(); wrap.scrollBy({ left: direction, behavior: REDUCED ? "auto" : "smooth" });
+    });
+    if (typeof ResizeObserver === "function") new ResizeObserver(update).observe(wrap);
+    update();
+  };
+  const scan = (root) => {
+    if (root.nodeType !== 1) return;
+    const owner = root.closest?.(".table-wrap");
+    if (owner) init(owner);
+    if (root.matches?.(".table-wrap")) init(root);
+    root.querySelectorAll?.(".table-wrap").forEach(init);
+  };
+  document.querySelectorAll(".table-wrap").forEach(init);
+  if (typeof MutationObserver === "function") new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach(scan))).observe(document.body, { childList: true, subtree: true });
+}
+function connectionEvent(callback) {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  connection?.addEventListener?.("change", callback);
+}
+
+function initPWAChromeTheme() {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) return;
+  const update = () => {
+    const color = getComputedStyle(document.documentElement).getPropertyValue("--bg-deep").trim();
+    if (/^#[0-9a-f]{3,8}$/i.test(color)) meta.content = color;
+  };
+  update();
+  new MutationObserver(update).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  window.matchMedia?.("(prefers-color-scheme: light)").addEventListener?.("change", update);
+}
+
 /* Nav status pulse: a small dot at the end of the site nav showing the worst open fleet alert
    (crit / warn / ok), linking to the ops board. Same /api/fleet/alerts the status page uses. */
 function initNavPulse() {
@@ -1804,6 +2105,8 @@ function initNavPulse() {
       const lv = crit ? "crit" : warn ? "warn" : "ok";
       const txt = crit ? `${crit} critical` : warn ? `${warn} warning${warn > 1 ? "s" : ""}` : "all clear";
       a.dataset.level = lv;
+      const mobileStatus = document.querySelector('#gale-mobile-nav a[href="status.html"]');
+      if (mobileStatus) { mobileStatus.dataset.level = lv; mobileStatus.setAttribute("aria-label", `Status · ${txt}`); }
       // ambient: the whole page picks up a barely-there tint from this state (gale.css)
       try { document.documentElement.dataset.fleet = lv; } catch { /* noop */ }
       a.querySelector(".nav-pulse-txt").textContent = txt;
@@ -1892,6 +2195,10 @@ export function boot() {
   // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
+    initMobileNavigation();
+    initConnectivityStatus();
+    initPWAChromeTheme();
+    initMobileTableHints();
     initNavPulse();
     initThemeToggle();
     initContrastMode();
