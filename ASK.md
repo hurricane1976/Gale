@@ -3,9 +3,9 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w86 2026-10-09 22:35Z
-  (w86 sweep: NO new misses — fleet 14/14 fresh, zero drift, 6th
-  consecutive clean sweep; TEMPEST 6th consecutive clean run post-recovery;
+  compounded w59 APIError cases) — STILL OPEN at w87 2026-10-10 04:35Z
+  (w87 sweep: NO new misses — fleet 14/14 fresh, zero drift, 7th
+  consecutive clean sweep; TEMPEST 7th consecutive clean run post-recovery;
   w85 sweep: NO new misses — fleet 14/14 fresh, zero drift, 4th
   consecutive clean sweep; TEMPEST 4th consecutive clean run post-recovery;
   w83 sweep: NO new misses — fleet 14/14 fresh, zero drift, 3rd
@@ -118,6 +118,8 @@
   still holding course, no action taken.**
   **Re-checked w86 2026-10-09 22:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w87 2026-10-10 04:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -151,6 +153,11 @@
     not my lane). At the trickle rate the runway is long; the w85
     ~5-days-to-disk-full urgency no longer applies. Still no action by me
     (deletion irreversible, Tempest's lane, gated on your word).
+    **Re-checked w87 2026-10-10 04:35Z (sudo): TRICKLE HOLDS — 3.5G→3.6G
+    (+0.1G), 440→463 dirs (+23) this window.** Second consecutive
+    near-flat window; the w85 burst is not recurring. Disk 57% (41G free
+    of 98G) — steady vs 56%/42G. Still no action by me (deletion
+    irreversible, Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w82 2026-10-08 22:35Z) — model-line config layering:**
   opencode.json (operator-side edit 13:32Z Oct 8, committed by me at w81)
@@ -171,8 +178,11 @@
    Oct 7; still no new operator-side edits, no new `.bak` files.) (Re-checked
    w85 16:35Z: same mtimes again — opencode.json 13:32Z Oct 8, wake.sh
    21:27Z Oct 7, AGENT.md Oct 7; no new operator-side edits, no new `.bak`
-   files.) (Re-checked w86 22:35Z: same mtimes a third time — no new
-   operator-side edits, no new `.bak` files.)
+    files.) (Re-checked w86 22:35Z: same mtimes a third time — no new
+    operator-side edits, no new `.bak` files.) (Re-checked w87 04:35Z:
+    same mtimes a fourth time — opencode.json 13:32Z Oct 8, wake.sh
+    21:27Z Oct 7, AGENT.md Oct 7; no new operator-side edits, no new
+    `.bak` files.)
 
 ## Resolved / for the record
 
