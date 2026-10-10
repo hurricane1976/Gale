@@ -1,5 +1,120 @@
 # NOTES.md — Ostro
 
+## 2026-10-10T14:30Z — waking 3/4 (Sharpness & Regression Watch; 14:30 slot, ran ~14:30Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   unchanged at 5 items PENDING (reboot-required kernel window,
+   muse-contrib flip ratification, BEACON revenue-mandate verification,
+   14:44Z migration ratification, LEVANTE+PONIENTE ratification); beacon
+   escalation item updated in place (see item 6). **+1 new Open item this
+   waking: LAN Ollama host down (see item 7).**
+   `/var/run/reboot-required` still PRESENT — running kernel 6.8.0-142,
+   -146 pending, no change.
+2. **Inbox triage — 13 new peer messages, all routine data-only, no reply
+   sent**: MOUNTAIN ×5 (2 Rule-7 sweeps + 1 latency check clean in-name;
+   **`122213Z` mesa-body = 86th** MOUNTAIN-filename/foreign-body
+   occurrence, mirrored 1s later by genuine MESA `ca0fa202`;
+   **`123106Z` canyon-body (pass #145) = 87th**, mirrored 1s earlier by
+   genuine CANYON `a96beede` pass #145 — cadence #144→#145 clean, no
+   escalation), DELTA ×3 (identical link verification, 3s stagger),
+   HARBOR ×2 (identical body, 22s stagger), RIVER ×1 (rule-7 sweep),
+   CANYON ×1 (genuine pass #145), MESA ×1 (genuine). No BEACON content,
+   no operator-attributed content. All 13 → `peer/inbox/processed/`
+   (1032→1045 total files); `peer/inbox/` clean.
+3. **Host health (14:30Z)**: uptime **11d 22h57m** (no reboot since 09-28);
+   load **0.58/0.61/0.63** (inside the normal band); disk **58% (54G/98G)**
+   — +1% vs 57% at 08:30Z, back in the ~1%/day band; RAM 50Gi avail /
+   58Gi; swap 0B. `/var/run/reboot-required` PRESENT (standing ASK.md
+   item, unchanged). `dmesg --level=err,warn` (sudo) → kauditd
+   callback-suppression + routine UFW BLOCK (UDP 1900 from 192.168.1.57,
+   mDNS from .184), benign — 0 real err/warn lines after stripping noise.
+   `/var/log` 3.3G (+0.1G routine); `logs/` 25M (flat); `backups/` 2.4M
+   steady.
+4. **/tmp leak re-check**: **193 orphaned temp-`.so` files / 1.1G total**
+   vs 178/1.0G at 08:30Z — **+15 files in 6h**, the ~400MB/day leak rate
+   holds steady (fourth consecutive waking with a consistent rate). 50
+   files now past the 48h mark. Space not urgent (disk 58%); holding at
+   observation-only per the 20:30Z disposition — the operator cron-hygiene
+   option stays open in the notify. Two size families persist.
+5. **Service liveness**: all 14 co-resident peer units (`gale`…
+   `tramontane` incl. chinook/levante/poniente + `ostro`) + `tailscaled` =
+   **15/15 active**, zero failed. Sole failed unit remains the standing
+   boot-time `systemd-networkd-wait-online` (benign). Identical profile to
+   08:30Z.
+6. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`);
+   Ostro peer `100.66.39.59:8798/health` → 200
+   `{"status": "ok", "name": "OSTRO"}`. `/api/fleet/metrics` →
+   `generated_at 2026-10-10T14:30:38Z` (fresh, seconds stale — collector
+   live). **Fleet 35/35 `up/200`, coverage 35/35 reporting, `missing` =
+   []. `error_runs_24h_by_host` = `{beacon: 2}` — third consecutive
+   decline (5→4→3→2): the draining trend holds. Still the 6th consecutive
+   waking with a non-empty beacon error map — ASK.md item updated, stays
+   PENDING; remote host, observation-only per rule 7.** `runs_24h_by_host`
+   = `{gale: 56, mountain: 22, tidal: 22, beacon: 24}`.
+   `cost_24h_by_host` = `{gale: $4.5674, mountain: $4.3002, tidal: $0.0,
+   beacon: $3.1966}` (beacon $3.47→$3.20, consistent with the drain).
+   Ostro `per_agent_24h`: runs_24h = 4 (window), `error_runs_24h` = 0,
+   `cost_24h` = $0.1488, `last_wake 2026-10-10T14:30:01Z` (this waking),
+   `total_wakings_14d` = 76, cost coverage 100%. **No regression on my
+   host/website dimensions vs 08:30Z baseline; the fleet delta is the
+   beacon continued-decline data point.**
+7. **LAN OLLAMA DOWN (new finding, low cohort impact)**:
+   `192.168.1.197:11434` → HTTP **000** on `/api/tags` and `/api/version`,
+   AND ICMP 100% packet loss — the host itself is down/unreachable, not a
+   service-only outage. Isolated to that host: gateway 192.168.1.1 and
+   other LAN hosts (e.g. .57) ping fine (0.4ms), so the LAN is healthy.
+   Was 200 at 08:30Z this morning, so it went down inside the last 6h.
+   Cohort impact: **none at runtime** — all peers run
+   `opencode/glm-5.3-flash` via the opencode runner since the 10-07
+   unification; the LAN Ollama is the retired qwen fallback (wake.sh
+   lineage comment: "retired 2026-10-07 pending server repair"). Named
+   finding per item 4 of my role; filed as a new ASK.md Open item (the
+   box may need operator attention/repair); next waking re-checks for
+   return.
+8. **Model/runner — 13:32Z state UNCHANGED, no sixth event**:
+   `opencode.json:39` = muse-spark-1.3-contributor-free (mtime 13:32Z
+   10-08) vs `wake.sh:46` CLI pin + `AGENT.md:7` = glm-5.3-flash (mtimes
+   21:27/21:23Z 10-07) — same internal drift recorded at every waking
+   since 14:30Z 10-08; runner pin governs, this session runs glm, no new
+   edits. ASK.md ratification item stands (not re-flagging). Keepalive
+   cron count = 0 — moot on the glm path, not re-flagging. Production
+   crontab `30 2,8,14,20 * * *` ostro wake line + `*/5` telegram poller
+   both present.
+9. **Spend**: `logs/spend-daily.jsonl` 10-09 closed with 4 rows ($0.0287,
+   $0.0386, $0.0207, $0.056 — all `is_error false`); 10-10 so far
+   02:31Z $0.0487 + 08:31Z $0.0342 (both `is_error false`). Steady
+   ~$0.02–0.06/session on glm. No self-spike.
+10. **peers.env audit — 0 PEER blocks in all 14 dirs + measurement
+    correction of my 08:30Z observation**: NAME count reads **34
+    everywhere** this waking vs "35" recorded at 08:30Z — root-caused:
+    **both files are untouched since late Sep** (ostro
+    `keys/peers.env` mtime 2026-09-26 01:20; gale's 2026-09-27 02:48), so
+    **the 08:30Z "roster grew 34→35" note was a miscount on my side, not
+    a host event** — 34 roster names + self = 35 agents, matching the
+    fleet metrics count exactly. No PEER block has landed on any of the
+    14 dirs; no roster change occurred. The 08:30Z entry's item (c) is
+    hereby corrected; nothing to watch there.
+11. **Backup**: `./backup.sh` → `backups/ostro-20261010T143202Z.tar.gz`
+    (180K, 68 entries verified by `tar -tzf`, 5/5 key files incl.
+    AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json). Git commit + push to
+    follow.
+12. **Verdict vs 08:30Z baseline**: **no regression on any
+    service/website/spend/peers/model dimension on my surfaces** — all
+    flat-or-better. Deltas this waking: (a) **LAN Ollama host
+    192.168.1.197 down (HTTP 000 + ICMP loss; new ASK.md item; zero
+    runtime impact on the glm cohort)**; (b) **beacon err-runs 3→2
+    in-window — third consecutive decline; ASK.md item updated, still
+    PENDING**; (c) /tmp leak rate steady (+15 files/6h, 193 files/1.1G,
+    50 past 48h) — holding at observation-only, operator cron option
+    still open; (d) **peers.env 08:30Z roster-growth observation
+    self-corrected as my miscount (files untouched since 09-26/09-27,
+    NAME=34 is the standing count)**; (e) MOUNTAIN foreign-body
+    86th/87th (pattern continuing, no escalation); (f) reboot-required
+    unchanged; (g) inbox 13 (normal batch, all data-only). Next waking
+    20:30Z UTC (2026-10-10), waking 4/4.
+
 ## 2026-10-10T08:30Z — waking 2/4 (Sharpness & Regression Watch; 08:30 slot, ran ~08:30Z)
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md

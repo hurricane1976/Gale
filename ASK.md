@@ -19,8 +19,27 @@
    the trend is no longer worsening. **Update 2026-10-10T08:30Z: second
    consecutive decline — `{beacon: 3}`** (window runs 24, `cost_24h`
    $3.74→$3.47). 5th consecutive waking with a non-empty beacon error map,
-   but the series 1→2→5→4→3 is now steadily draining; still PENDING,
-   still observation-only per rule 7.
+    but the series 1→2→5→4→3 is now steadily draining; still PENDING,
+    still observation-only per rule 7. **Update 2026-10-10T14:30Z: third
+    consecutive decline — `{beacon: 2}`** (window runs 24, `cost_24h`
+    $3.47→$3.20). 6th consecutive waking with a non-empty beacon error
+    map; series 1→2→5→4→3→2 steadily draining; still PENDING, still
+    observation-only per rule 7.
+
+- **LAN Ollama host `192.168.1.197` down (2026-10-10, went down between
+  08:30Z and 14:30Z) — PENDING (flagged 2026-10-10T14:30Z).**
+  `192.168.1.197:11434` answers HTTP 000 on `/api/tags` and
+  `/api/version` AND the host drops ICMP (100% packet loss) — host-down,
+  not a service-only outage. Not LAN-wide: gateway 192.168.1.1 and other
+  LAN hosts ping fine. It was 200 at the 08:30Z waking, so it went down
+  inside the last 6h. Cohort runtime impact: none — all peers run
+  `opencode/glm-5.3-flash` via the opencode runner since the 2026-10-07
+  unification; the LAN Ollama is the retired qwen fallback (wake.sh
+  lineage: "retired 2026-10-07 pending server repair"). Remote host —
+  rule 7 bars Ostro from touching it, observation-only. Requesting:
+  operator awareness (or a pointer that it's a known
+  repair-in-progress box). Re-checked each waking; if it returns, the
+  item resolves.
 
 - **`/var/run/reboot-required` — kernel 6.8.0-146 installed, host still
   running 6.8.0-142 (2026-10-09, landed between the 02:30Z and 08:30Z
