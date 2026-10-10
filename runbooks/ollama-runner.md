@@ -1,27 +1,35 @@
 # Runbook: LAN Ollama runner (192.168.1.197:11434)
 
-What it is: the LAN Ollama server (192.168.1.197) that actually backs
-Sirocco's wake sessions. `opencode.json` model is `ollama/qwen3.8:27b`
-and opencode resolves the `ollama/` prefix to `http://192.168.1.197:11434`.
- Verified 2026-10-01: runner answers v0.35.0, model qwen3.8:27b present.
+What it is: the LAN Ollama server (192.168.1.197). **Fallback asset,
+not primary since 2026-10-07** (operator-directed: fleet primary moved
+to `opencode/glm-5.3-flash` via OpenCode Go; `ollama/qwen3.8:27b` was
+retired from primary — wake.sh header note "pending server repair").
+Nothing on this host consumes the runner as primary today; its loss
+removes the LAN fallback, not the waking path. Last seen healthy
+2026-10-10 09:20Z: v0.40.0, qwen3.8:27b resident. (Older framing: it
+backed wake sessions `ollama/qwen3.8:27b` until the 10-07 flip.)
 
-Fleet impact if DOWN: Sirocco's own sessions fail to run (waking
-degrades — shell-side scripts still fire, Telegram notify from the shell
-still works, but no model output). Any other agent on this host that was
-also switched from `opencode/muse-spark` (Zen) to `ollama/qwen3.8:27b`
-is affected the same way; check their opencode.json if you need to know
-who.
+Fleet impact if DOWN (as observed 2026-10-10 15:20Z): none to Sirocco's
+waking — the GLM/OpenCode Go path is unaffected (waking executing is
+the proof). Impact is loss of the LAN fallback for qwen-class workloads.
 
 Down vs slow:
  - `curl -s -m 5 http://192.168.1.197:11434/api/version` — expect
-   `{"version":"0.35.x"}`. No response = down (or LAN route broken).
+   `{"version":"0.40.x"}` (baseline 2026-10-10: 0.40.0; was 0.35.0 on
+   2026-10-01). No response = down (or LAN route broken).
 - `curl -s -m 5 http://192.168.1.197:11434/api/tags` — expect
   qwen3.8:27b in the list.
 - Slow: /api/version fast but an actual generation (a real `opencode run`)
   hangs — the server is up but overloaded / GPU contention. Distinguish
   by the version probe being healthy.
- - Baseline 2026-10-01: version 0.35.0, model qwen3.8:27b, /api/version
-   responds < 0.5s.
+- TESTED 2026-10-10 15:20Z (host-down signature): HTTP probes return
+  000 even at `-m 20`, `ping -c 2 192.168.1.197` = 100% loss, and
+  `ip neigh show | grep 192.168.1.197` = FAILED (no ARP reply) — while
+  gateway 192.168.1.1 pings fine and other LAN hosts respond. That
+  triple is host-down, not slow, and not a LAN problem. If ARP was
+  REACHABLE but HTTP times out, suspect the service, not the host.
+ - Baseline 2026-10-10 (last healthy): version 0.40.0, model
+   qwen3.8:27b, /api/version < 0.5s.
 
 What to do if down:
 1. Confirm with the two probes above.
@@ -42,9 +50,8 @@ in openrouter.md. Do not switch without the operator's word.
 
 Release watch (separate from availability):
 - `curl -s https://api.github.com/repos/ollama/ollama/releases/latest`
- - Baseline 2026-10-01: upstream latest v0.35.0 (2026-09-28); runner
-   running v0.35.0 (matches upstream — the "two releases behind" watch
-   item from 2026-09-30 is now closed, the bump happened).
+ - Baseline 2026-10-08: upstream latest v0.40.2; runner was on v0.40.0
+   (two patches behind) at its last healthy sighting 2026-10-10 09:20Z.
 
 Note: this file supersedes the "no Ollama on this host, releases-only"
 framing in ollama.md, which predates the qwen3.8:27b migration.
