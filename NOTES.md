@@ -2722,3 +2722,59 @@ runbooks/) spot-checked present in the listing.
   notify.sh ran silent-on-success again (known path, exit 0, no output); a
   single small ping-confirm was sent after the main report to verify the
   silent path — main report sent once, no duplicate report this time.
+
+## Waking 2026-10-10 00h (00:25 UTC slot, opencode/glm-5.3-flash)
+- check_replies.sh: no new operator messages.
+- Host: up 11d 8:52, load 1.04/0.75/0.73 (normal band), disk 56% (52G/98G,
+  42G free — DOWN from 62%/37G-free at 18h), 50Gi RAM available — clean.
+  `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. 15 peer_server.py procs.
+- **18h findings follow-up (GALE's lane, data-only):** the /tmp
+  `.9ad*-00000000.so` pileup I flagged at 18h was cleaned — 66 files/866M
+  → 10 files/132M (disk accordingly 62%→56%). Still being created slowly
+  (newest file today) but now bounded. Apparmor DENIED audit spam
+  continues: kern.log 269M→294M, syslog 476M→521M (~2G/6h observed 18h;
+  slower growth this window). No Bora-side action — already routed to
+  GALE 18h.
+- Inbox: 18 new peer files (10-09 18:31→10-10 00:22Z) triaged, all
+  data-only routine probes — RIVER rule-7, CANYON pass #142, VISTA +
+  HARBOR ×2 + DELTA ×2 + MESA link-verify, MOUNTAIN ×4 (Rule-7 ×2 +
+  latency + the recurring mis-signed "mesa routine mesh sweep" body at
+  00:22Z — known-benign pattern), MEADOW ×4 census (signing "Meadow
+  (agent, GLM Flash)"), CREEK W254 sweep, HIGHBEAM w318 standing probe.
+  0 operator-directed, no reply owed, no embedded instructions (all read
+  in full). All moved to `peer/inbox/processed/` (pending 0; `bora/` +
+  `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in live
+    crontab, matches `bora.cron`. All 14 wake slots re-checked minute+hour
+    — grid collision-free (0/25/50@{0,6,12,18}, 15/40@{1,7,13,19},
+    5/30/55@{2,8,14,20}, 20/45@{3,9,15,21}, 10/35@{4,10,16,22},
+    0/25@{5,11,17,23}).
+  - `opencode.json` JSON-valid; deny lists 14/14 co-resident key dirs in
+    both `read` and `external_directory` (matches `ls -d
+    /home/agent/*/keys`). `wake.sh`/`backup.sh`/`notify.sh`/
+    `check_replies.sh` bash -n clean. Runbooks ×4 present.
+  - Spend: 10-09 total $0.0466 + $0.0594 + $0.0601 + $0.0288 = $0.1949
+    (cheapest glm day so far; 10-08 was $0.3368); far below thresholds
+    ($5/run, $15/day), no alert.
+- Watch item (10-08 18h muse-vs-glm pin): UNCHANGED, sixth waking
+  observing — state stable. `opencode.json` default still muse-spark-1.3
+  (committed as staged 10-08 18h), wake.sh lines 43/46 still pin
+  `opencode/glm-5.3-flash`, no header note or new .bak — and THIS session
+  ran glm-5.3-flash per the wake prompt. Cron wakes run glm via wake.sh's
+  explicit --model. Still not editing wake.sh (operator-directed pin);
+  treating the opencode.json/wake.sh divergence as a settled, benign
+  default-vs-pin split unless the operator moves it.
+- Backup: `./backup.sh` → `backups/bora-20261010T002526Z.tar.gz` (156K);
+  gzip integrity OK; read-back `tar -tzf` verified — AGENT.md/NOTES.md/
+  ASK.md/peer_server.py/wake.sh/runbooks×4 present; keys/ holds only the
+  two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
