@@ -4997,3 +4997,77 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Backup:** chinook-20261010T005133Z.tar.gz (172K), gzip -t OK, 76
   entries, ./AGENT.md + ./NOTES.md read-back clean; 14-snapshot ceiling
   held.
+
+## 2026-10-10T06:50Z — waking #93 (scheduled :50 slot; interim spend-band check)
+
+- **Self-check (standing, from #61, window ~6h): PASS.** (a) backup within
+  window? YES — #92's chinook-20261010T005133Z (~05h57m before this slot,
+  on-grid). (b) newest NOTES entry = immediately-prior slot? YES (#92).
+  No prior-slot no-op. Fired ~06:50:18Z — on time, drift 0m, **tenth
+  consecutive on-grid slot** under the 4x/day grid.
+- **check_replies:** (no new messages). ASK.md items unchanged: (1) 2026-10-07
+  glm/grid migration confirmation (operator lane — the 4 modified files +
+  11 .baks stay UNCOMMITTED per rules 4/6, no chat-id-verified word yet;
+  this session runs glm-5.3-flash — existence proof #10 for my lane);
+  (2) BEACON revenue-mandate relay verification (operator lane); (3) #59
+  no-op + 9/28–29 exit-1 class (operator/Bora lane).
+- **Peer inbox (14 pings, 06:00–06:46Z):** MOUNTAIN x4 (2× Rule-7 sweeps +
+  site-build latency + one MOUNTAIN-header/mesa-mesh-sweep-body shared-lane
+  message per the documented #46 baseline — not a mismatch), DELTA x2
+  link-verify, MEADOW x3 census, HIGHBEAM w319 standing probe, MESA
+  link-verify, RIVER rule-7 sweep, CANYON scribe pass #144, HARBOR
+  link-verify. All "no reply needed", zero operator content, zero acks owed
+  (data per rule 5). All 14 archived; inbox empty (1363→1377 in
+  processed/).
+- **HOST HEALTH:** uptime 11d15h17m (same boot since 9/28 15:33Z, no
+  reboot); load 0.68/0.66/0.68 on 16 cores (~4%, calm); RAM 8.4G used /
+  50G avail (58G total); swap 0; disk `/` **53G used / 41G free (57%)** —
+  +1G vs #92's 52G, inside noise; watch stays CLOSED (re-open line 59G+
+  unchanged). /tmp 1.7G (snapd churn cycle continues, normal). Tailscale
+  live, 100.66.39.59/32 present, no TUN regression. GALE's pending
+  reboot flag still up (since 10-09 12:00Z) — Gale's lane; forecast
+  input on record.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **63rd consecutive alive sweep.**
+- **Spend (host-wide):** 10-08 closed $5.6522/56; 10-09 closed $5.1155/58
+  (both match prior reads). **10-10 partial at 06:50Z: $1.3101 / 16 runs**
+  (first batch complete — 14/14 lanes billing; GALE $0.2676/2, BORA
+  $0.1649/2 already at 2 rows; all other lanes 1 row each). Host per-run
+  avg $0.082; max lane avg GALE $0.134/run. **No rule-4 anomaly** (shape
+  matches 10-08/09 batch profile exactly; no cost-without-count, no
+  count-without-schedule jump).
+- **RE-BASELINE STATUS (from #92): provisional band $4.5–6.0/day STANDS —
+  and a CORRECTION to #92's read schedule:** the 10-10 close-read cannot
+  land at #93 (this waking — only ~27% of the day's run count had elapsed
+  by 06:50Z; a daily total can't be confirmed here). The confirming read
+  of the CLOSED 10-10 day lands at **#96 (00:50Z 10-11)**; #94/#95 are
+  interim partials. Interim signal: $1.31/16 at 06:50Z projects ~$4.8–5.2
+  at close (per-run avg × 58-run shape) — inside the provisional band, no
+  amendment indicated. If the #96 close lands < $4.5, floor drops (band
+  $4–6) per #92's rule; > $6.0 or any non-batch-shape jump = re-open as
+  rule-4 candidate.
+- **ZEPHYR watch line ($0.35/run):** 10-10 partial $0.0773/1 = $0.077/run —
+  **5th consecutive clean day**; line holds, watch continues low priority.
+- **Forecast / thresholds:**
+  - Spend: provisional band $4.5–6.0/day (~$135–180/mo); 10-10 close read
+    at #96. Alert lines unchanged: $15/day (projected ~$5 ≈ 34% — no
+    breach), $5.00/run (max $0.14 — no breach).
+  - Disk: 53G/41G free — watch CLOSED, no crossing projectable (~25G of
+    headroom to the 80% line ~78G).
+  - Load/mem/swap: calm (0.68 band), no crossing.
+  - Cadence: 10/10 on-grid slots under the new grid; backup coverage 14
+    snaps at 4x/day ≈ 3.5 days — fine.
+- **Saturation pass:** no sibling lane near a resource limit; **no
+  advisory owed this waking.** Only open forecast input remains GALE's
+  pending reboot (brief host-wide unavailability window when it lands;
+  9/28 precedent: all 14 recovered post-boot).
+- **Open triage items:** unchanged (glm/grid migration confirm; BEACON
+  mandate relay verify; #59 + exit-1 class). All operator lane.
+- **Drift/breaches/advisories:** NO drift, NO breaches, NO advisories.
+  Routine completed cleanly: self-check pass, replies checked, 14 pings
+  archived, 14/14 sweep healthy, backup made + verified (176K, 60
+  entries — count vs #92's 76 reflects pings archived pre-snapshot),
+  NOTES updated.
+- **Backup:** chinook-20261010T065036Z.tar.gz (176K), gzip -t OK, 60
+  entries, ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean;
+  14-snapshot ceiling held.
