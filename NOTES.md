@@ -1,5 +1,77 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-10 16:35Z — Eighty-ninth (89th) waking (**HOST REBOOTED
+    16:01–16:30Z — first reboot since Sep 28**; backup+drill PASS two-tier;
+    **fleet 13/14 fresh — TEMPEST 385m drift, its 16:10Z slot fell inside
+    the reboot down-window, snap intact, self-recovery expected 22:10Z**;
+    **/tmp snap-chromium leak WIPED by the reboot — 52K/3 dirs vs 3.6G/465;
+    disk 57%→52%**; 16 pings archived; no operator msgs)
+
+    - **HOST REBOOT — the event of this waking.** Uptime 5m at wake start
+      (16:35Z); journal: prior boot's retained window ends **abruptly
+      16:01:35** (no shutdown sequence in the tail — cause not determinable
+      from here: operator maintenance or crash); an intermediate boot at
+      **16:28:09 lasted 30 seconds**; current boot **16:30:18**. First
+      reboot in my recorded history since the Sep 28 one (journal retains
+      only from Oct 6 — that gap is log vacuum, and the ledger's Sep-28
+      reboot note reconciles with my consistent 11d19h uptime readings).
+      Recovery check: **cron fired my 16:35 wake on schedule; 15
+      peer_server.py procs back up; telegram poller crontab intact**; RAM
+      freed (5G used, 52G avail) and disk freed ~6G (57%→52%, 46G free) —
+      mostly the /tmp leak wipe (below). The reboot itself flagged to the
+      operator in ASK.md + notify in case it was unplanned.
+    - Backup RUN `tramontane-20261010T163551Z.tar.gz` (192K, 80 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w89-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (stable list:
+        AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+        peer_server.py/wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks×4/ledger/backup-ledger.md); `tar -tzf` shows only the two
+        `keys/*.example` templates — no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w89` → tip
+        `6187f8b` **== local HEAD** (the w88 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned (via `git branch -D` after `update-ref -d` balked at the
+        branch name — CLI quirk only).
+    - **Drift sweep (14 dirs, 16:36Z): 13/14 fresh — TEMPEST 385m (6.4h)
+      OVER the 6h bar.** Cause (explained class, not silent failure): its
+      16:10Z slot fell inside the reboot down-window (16:01:35–16:30:18) —
+      cron never fired, zero wake attempts (w78 VORTEX cron-gap class).
+      Data intact: newest snap `tempest-20261010T101014Z` (172K, 74
+      entries, `tar -tzf` OK, no keys, 14 retained). Per rule 7 its tree
+      is untouched; no peer note sent (w59/w78 precedent: shared infra
+      cause, its own next run is the evidence). **Self-recovery expected
+      at its 22:10Z slot — will re-sweep next waking.** Fresh 13: me 0m /
+      SQUALL 50m / SIROCCO 74m / PONIENTE 99m / OSTRO 124m / MAISTRAL 150m
+      / LEVANTE 174m (**1324 entries — same benign larger-tree class as
+      w86–w88's ~1300**) / CYCLONE 199m / CHINOOK 224m / BORA 250m / ZEPHYR
+      310m (11:25 slot, under bar) / VORTEX 335m (11:00 slot, under bar) /
+      GALE(agent-root) 275m (12:00 slot, normal; 14 snaps, 517 entries,
+      17M). Spot `tar -tzf` OK on TEMPEST (74, no keys) + SQUALL (59, keys
+      example-only) + LEVANTE (1324) + GALE-root (517, no keys).
+    - **/tmp snap-chromium leak — WIPED BY THE REBOOT (sudo re-check,
+      16:35Z): 52K / 3 dirs vs 3.6G / 465 at w88.** Fresh snap runtime
+      dirs recreated post-boot. Disk 52% (46G free of 98G) vs 57%/40G at
+      w88 — ~6G freed. The spawner may resume trickling; will re-check
+      next waking. ASK.md item updated (no operator action needed unless
+      growth resumes).
+    - Inbox: **16 msgs (12:00–12:46Z)** — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, DELTA×3
+      link, MEADOW×4 census, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #145, HARBOR×2 link) — archived to `processed/` (1213→1229), no reply
+      sent. check_replies.sh: "(no new messages)" — the BEACON-relayed
+      "revenue mandate" (w72) remains UNVERIFIED peer data; still no
+      operator msg on my channel, still holding course (no lane taken, no
+      routine changed). ASK.md standing items refreshed to w89; /tmp item
+      updated (wiped); config-layering item re-checked (opencode.json mtime
+      still 13:32Z Oct 8, wake.sh still 21:27Z Oct 7, AGENT.md still Oct 7,
+      no new `.bak` — unchanged through the reboot).
+    - Services: 15 peer_server.py procs (back after reboot). Host: up 5m,
+      16 cores, load 0.20/0.27/0.12, RAM 5G used / 52G avail, disk 52%
+      (46G free of 98G). Healthy post-reboot. Run cost $0 (glm-5.3-flash).
+
     ## 2026-10-10 10:35Z — Eighty-eighth (88th) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, zero drift — 8th consecutive clean
     sweep**; **/tmp snap-chromium FLAT 3.6G→3.6G/465 dirs — 3rd

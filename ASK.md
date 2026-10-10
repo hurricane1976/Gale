@@ -3,7 +3,21 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w88 2026-10-10 10:35Z
+  compounded w59 APIError cases) — STILL OPEN at w89 2026-10-10 16:35Z.
+  **NEW w89 2026-10-10 16:35Z — HOST REBOOT + single-slot TEMPEST drift.**
+  The host rebooted 16:01–16:30Z today (up 11d19h → 0m; first reboot since
+  Sep 28 per my ledger). Journal tail at 16:01:35 shows NO shutdown
+  sequence (abrupt end — cause not determinable from here: operator
+  maintenance or crash); an intermediate boot at 16:28:09 lasted only 30s;
+  current boot 16:30:18. Cron + peer servers recovered (my 16:35 wake fired
+  on schedule; 15 peer_server procs up). Drift sweep: 13/14 fresh; **TEMPEST
+  385m/6.4h OVER the 6h bar — its 16:10Z slot fell inside the down window,
+  cron never fired** (zero wake attempts, w78 VORTEX cron-gap class); newest
+  snap `tempest-20261010T101014Z` intact (74 entries, readable, no keys);
+  self-recovery expected at its 22:10Z slot — will re-sweep next waking.
+  No peer note sent (w59/w78 precedent: shared infra cause, own logs/next
+  run self-diagnose). No data loss. The reboot itself is flagged for your
+  awareness in case it was unplanned.
   (w88 sweep: NO new misses — fleet 14/14 fresh, zero drift, 8th
   consecutive clean sweep; TEMPEST 8th consecutive clean run post-recovery;
   w87 sweep: NO new misses — fleet 14/14 fresh, zero drift, 7th
@@ -124,6 +138,8 @@
   still holding course, no action taken.**
   **Re-checked w88 2026-10-10 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w89 2026-10-10 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -166,6 +182,12 @@
     dirs (+2) this window.** Third consecutive near-flat window; the w85
     burst has fully faded. Disk 57% (40G free of 98G) — steady. Still no
     action by me (deletion irreversible, Tempest's lane, gated on your word).
+    **Re-checked w89 2026-10-10 16:35Z (sudo): WIPED BY THE HOST REBOOT —
+    52K / 3 dirs vs 3.6G / 465 at w88.** The leak is gone as of the 16:30Z
+    boot (fresh snap runtime dirs recreated). Disk 52% (46G free of 98G) vs
+    57%/40G — ~6G freed total (leak + other tmp cleanup). The spawner may
+    resume trickling; will re-check next waking. No action needed from you
+    on this item unless the growth resumes.
 
 - **INFORMATIONAL (w82 2026-10-08 22:35Z) — model-line config layering:**
   opencode.json (operator-side edit 13:32Z Oct 8, committed by me at w81)
@@ -190,9 +212,12 @@
      operator-side edits, no new `.bak` files.) (Re-checked w87 04:35Z:
      same mtimes a fourth time — opencode.json 13:32Z Oct 8, wake.sh
      21:27Z Oct 7, AGENT.md Oct 7; no new operator-side edits, no new
-     `.bak` files.) (Re-checked w88 10:35Z: same mtimes a fifth time —
-     opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md Oct 7;
-     no new operator-side edits, no new `.bak` files.)
+      `.bak` files.) (Re-checked w88 10:35Z: same mtimes a fifth time —
+      opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md Oct 7;
+      no new operator-side edits, no new `.bak` files.) (Re-checked w89
+      16:35Z: same mtimes a sixth time, unchanged through the reboot —
+      opencode.json 13:32Z Oct 8, wake.sh 21:27Z Oct 7, AGENT.md Oct 7;
+      no new operator-side edits, no new `.bak` files.)
 
 ## Resolved / for the record
 
