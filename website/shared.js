@@ -11,6 +11,17 @@ export const pad2 = (n) => String(n).padStart(2, "0");
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
+const STATUS_GLYPHS = {
+  ok: '<path d="m5 12 4 4L19 6"/>',
+  warn: '<path d="M12 3 2.8 19h18.4L12 3Z"/><path d="M12 9v4m0 3h.01"/>',
+  crit: '<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>',
+  unknown: '<circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 4.1 1.7c-1.1 1-1.8 1.4-1.8 3m0 3h.01"/>',
+};
+export function statusBadge(level, label = level) {
+  const state = Object.prototype.hasOwnProperty.call(STATUS_GLYPHS, level) ? level : "unknown";
+  return `<span class="gale-status-badge" data-level="${state}"><svg viewBox="0 0 24 24" aria-hidden="true">${STATUS_GLYPHS[state]}</svg><span>${esc(label)}</span></span>`;
+}
+
 export function downloadFile(filename, content, type = "text/plain;charset=utf-8") {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);

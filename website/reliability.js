@@ -1,4 +1,4 @@
-import { boot, esc, setHTML, setText, tracedFetch, downloadFile } from "./shared.js";
+import { boot, esc, setHTML, setText, tracedFetch, downloadFile, statusBadge } from "./shared.js";
 import { level, freshness } from "./reliability-state.js";
 boot();
 const $ = (id) => document.getElementById(id);
@@ -46,7 +46,7 @@ async function getJson(url) {
     return r.ok ? await r.json() : null;
   } catch { return null; }
 }
-const tile = (label, value, sub, lv) => `<div class="vital" data-level="${lv}"><span class="vital-state" data-level="${lv}">${esc(lv)}</span><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(value)}</span><span class="vital-sub">${esc(sub)}</span></div>`;
+const tile = (label, value, sub, lv) => `<div class="vital" data-level="${lv}">${statusBadge(lv, lv)}<span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(value)}</span><span class="vital-sub">${esc(sub)}</span></div>`;
 async function coverage() {
   const [exp, bk, pr, reg] = await Promise.all([getJson("api/exporter-coverage.json"), getJson("api/backup-proof.json"),
     getJson("api/probes.json"), getJson("api/fleet/registry")]);

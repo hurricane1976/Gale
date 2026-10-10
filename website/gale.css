@@ -1706,6 +1706,15 @@ html[data-contrast="high"] .ops-panel { border-color: var(--line-strong); }
 .agora-time-scrub output { min-width: 130px; color: var(--text-faint); }
 .agora-day { font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 8px; }
 
+/* Shared, text-labeled status badge; the SVG supplements words and color. */
+.gale-status-badge { display:inline-flex; align-items:center; gap:5px; width:max-content; color:var(--text-dim); font:600 .68rem/1 var(--font-mono,monospace); text-transform:uppercase; }
+.gale-status-badge svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.gale-status-badge[data-level="ok"] { color:var(--teal,#39d7b0); }
+.gale-status-badge[data-level="warn"] { color:var(--warn,#e2b24c); }
+.gale-status-badge[data-level="crit"] { color:var(--flag,#ff6474); }
+.gale-status-badge[data-level="unknown"] { color:var(--text-faint,#8492aa); }
+.vital .gale-status-badge { align-self:flex-end; min-width:3.6em; justify-content:center; padding:2px 5px; border:1px solid var(--line-strong); border-radius:999px; }
+
 /* ---- reduced-data mode (improvements #8): canvases + decorative layers
    retire; content untouched. Toggle reloads, so no transition needed. */
 html[data-saver="1"] body::after,
