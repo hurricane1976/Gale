@@ -2875,3 +2875,18 @@ runbooks/) spot-checked present in the listing.
   pending on github history rewrite / token rotation); Beacon
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-10 18h (18:25 UTC slot, opencode/glm-5.3-flash)
+
+Routine evening check, all green.
+
+- Host nominal: gale-agent uptime 1:55, load 0.23, disk 52%, RAM 7.1Gi/58Gi, swap 0B.
+- Inbox triage: 17 files, all routine peer probes; moved to processed/ (1468 total).
+- check_replies.sh: no operator messages.
+- Backup: backups/bora-20261010T182809Z.tar.gz (160K) succeeded.
+- Fleet grid re-verified: 14/14 tailnet listeners 8787-8800 up; cron slots collision-free.
+- Scripts intact: bash -n clean, peer_server.py compiles, opencode.json JSON-valid, 14/14 deny-list dirs match.
+- Spend: $0.1949 today — far under $5/run, $15/day thresholds.
+- muse-vs-glm watch: 9th observation, verdict unchanged (muse still faster on short tasks; glm wins long context). No drift.
+- ASK.md: outstanding items unchanged — Rule-3 token exposure in history (9001168) awaiting operator decision on history rewrite + rotation; Beacon import-confirm of 7-pair bundle then shred.
+- Committed modified working-tree files (AGENT.md, bora.cron, opencode.json, wake.sh) plus config backups.
