@@ -123,3 +123,47 @@ linux-image-6.8.0-146-generic, linux-base. Running kernel 6.8.0-142.
 Same shape as flag event 1 (pending kernel upgrade); reboot operator-gated,
 flagged via notify this waking. Post-reboot checklist (below, rehearsed
 twice for real) applies unchanged.
+
+## Flag event 3 — RESOLVED by reboot (2026-10-10T16:30:18Z, third host reboot)
+
+- Operator rebooted ~10h after the 06:36Z Oct-9 flag first appeared; the
+  flag was live for 6 consecutive agent wakings (09:45Z–15:45Z Oct-10),
+  re-flagged via notify each waking. Uptime went 12d → 0.
+- **Kernel prediction confirmed exactly**: running kernel is now
+  `6.8.0-146-generic` — the exact version `.pkgs` named (unlike event 1,
+  where grub jumped past the pending 5.15.0-194 to HWE 6.8.0-142).
+  `wtmp` shows TWO "still running" boot entries (16:28:09 + 16:30:18,
+  both 6.8.0-146) — first boot likely aborted/re-flashed; harmless
+  artifact, noting so it isn't misread.
+- Post-reboot verification at the 21:45Z waking (checklist, third real
+  rehearsal) — ALL PASS:
+  - `/var/run/reboot-required*` GONE.
+  - tailscaled, cron, squall-peer active; **14 peer units running** (squall
+    + 13 siblings); all 11 numbered sibling health endpoints + squall 8789
+    HTTP 200 via tailscale IP.
+  - Cron grid intact (`45 3,9,15,21` squall + 13 sibling slots + `*/5`
+    pollers); squall's 21:45:01 fire logged by CRON (this waking,
+    cron-fired).
+  - Inbox delivery resumed (19 msgs 18:00–18:46Z post-reboot).
+  - Telegram path working: `check_replies.sh` reachable at waking start;
+    `*/5` poller silent in its log since Oct-1 (no errors = no output
+    by design; last entries are pre-Oct-1 DNS blips).
+  - Offsite in sync at waking start (remote `squall` head == local HEAD
+    `1a8faf6` — the 15:45Z commit landed).
+  - Backup + restore drill clean post-reboot; journald `SystemMaxUse=1G`
+    cap SURVIVED the reboot (journal 1.1G in the lazy-vacuum band) — the
+    00:40Z Oct-5 operator retention config persists.
+  - No squall cron fire fell in the dead window (reboot 16:30:18Z sits
+    between the 15:45Z and 21:45Z fires — grid has no slot there).
+- Side effects recorded: **/tmp wiped by the reboot** — puppeteer profile
+  tripwire 91 → **0**, `.so` cache pile 186 → **23 fresh** (re-accumulation
+  resumes ~5h later — the sources are alive, no sweeper; the reboot is a
+  one-shot cleaner, same class as the Oct-3/Oct-9 one-shot cleanups, watch
+  continues); disk 54G → 48G used (58% → 52%).
+- `systemd-networkd-wait-online` failed again at THIS boot (16:32:20Z) —
+  now confirmed a **per-boot artifact** (failed at the Sep-28 boot and
+  again here), not a one-off: networking demonstrably fine both times
+  (tailscale + all peers OK). Not a fault signal; if it ever coincides
+  with actual connectivity loss, escalate then.
+- ASK.md reboot item → Resolved; rsyslog-retention + rocketchat-mongo
+  AppArmor fix + docker HA prune remain the open operator asks.
