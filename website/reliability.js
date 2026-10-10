@@ -286,8 +286,10 @@ async function clientRuntime() {
   items.push(tile("2D canvas", canvas2d ? "Available" : "Unavailable", "Used by particle, weather-sky, and fallback scenes.", canvas2d ? "ok" : "unknown"));
   items.push(tile("Scene visibility observers", typeof IntersectionObserver === "function" ? "Available" : "Unavailable", "Pauses off-screen scene rendering when supported.", typeof IntersectionObserver === "function" ? "ok" : "warn"));
   items.push(tile("Responsive resize observer", typeof ResizeObserver === "function" ? "Available" : "Unavailable", "Keeps charts and 3D viewports sized to their panels.", typeof ResizeObserver === "function" ? "ok" : "warn"));
-  const dataSaver = !!navigator.connection?.saveData;
-  items.push(tile("Data saver preference", dataSaver ? "Enabled" : navigator.connection ? "Off" : "Not exposed", "Scene quality may be reduced when this browser preference is enabled.", dataSaver ? "ok" : "unknown"));
+  let manualSaver = false, saverOverride = false;
+  try { manualSaver = localStorage.getItem("gale-datasaver") === "1"; saverOverride = sessionStorage.getItem("gale-data-saver-override") === "1"; } catch {}
+  const dataSaver = !!navigator.connection?.saveData || manualSaver;
+  items.push(tile("Data saver preference", saverOverride ? "Scenes enabled for this tab" : dataSaver ? "Enabled" : navigator.connection ? "Off" : "Not exposed", saverOverride ? "You requested 3D scenes for this tab; the saved saver preference returns in a new tab or when restored in Display controls." : "Scene quality may be reduced when this browser preference is enabled.", saverOverride ? "warn" : dataSaver ? "ok" : "unknown"));
   const connectionType = navigator.connection?.effectiveType;
   items.push(tile("Connection quality", !navigator.onLine ? "Offline" : connectionType ? connectionType : "Online · type not exposed", "Connection type is browser-provided and stored only in this page’s local diagnostics.", !navigator.onLine ? "crit" : ["slow-2g", "2g"].includes(connectionType) ? "warn" : "ok"));
   const heap = performance.memory;

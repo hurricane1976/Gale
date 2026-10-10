@@ -1777,6 +1777,7 @@ export function initThemeToggle() {
    Toggle persists + reloads (loops are boot-bound, so reload is the clean
    apply). ---- */
 export function isDataSaver() {
+  try { if (sessionStorage.getItem("gale-data-saver-override") === "1") return false; } catch {}
   try {
     if (localStorage.getItem("gale-datasaver") === "1") return true;
   } catch {}
@@ -1794,12 +1795,18 @@ function initDataSaver() {
   btn.className = "mini-toggle";
   btn.style.cssText = "padding:8px 12px;min-height:32px";
   const paint = () => {
+    let override = false;
+    try { override = sessionStorage.getItem("gale-data-saver-override") === "1"; } catch {}
     const on = isDataSaver();
-    btn.textContent = on ? "⏾ saver on" : "⏾ saver";
+    btn.textContent = override ? "⏾ saver · scenes loaded" : on ? "⏾ saver on" : "⏾ saver";
+    btn.title = override ? "Data saver is bypassed for this tab; activate to restore it." : "Reduce decorative graphics and background activity.";
     btn.setAttribute("aria-pressed", String(on));
   };
   btn.addEventListener("click", () => {
     try {
+      if (sessionStorage.getItem("gale-data-saver-override") === "1") {
+        sessionStorage.removeItem("gale-data-saver-override"); location.reload(); return;
+      }
       const on = localStorage.getItem("gale-datasaver") === "1";
       localStorage.setItem("gale-datasaver", on ? "0" : "1");
     } catch {}
@@ -1807,6 +1814,25 @@ function initDataSaver() {
   });
   dockAdd(btn);
   paint();
+}
+
+function initSaverSceneOptIn() {
+  if (!isDataSaver()) return;
+  document.querySelectorAll(".bars3d canvas[role='img']").forEach((canvas) => {
+    const panel = canvas.closest(".bars3d");
+    if (!panel || panel.querySelector(".scene-saver-placeholder")) return;
+    const placeholder = document.createElement("div");
+    placeholder.className = "scene-saver-placeholder";
+    const label = document.createElement("p");
+    label.textContent = "3D graphics are paused by Data Saver.";
+    const load = document.createElement("button");
+    load.type = "button"; load.textContent = "Load scenes for this tab";
+    load.addEventListener("click", () => {
+      try { sessionStorage.setItem("gale-data-saver-override", "1"); } catch {}
+      location.reload();
+    });
+    placeholder.append(label, load); panel.append(placeholder);
+  });
 }
 
 function initCssMotionControl() {
@@ -2278,6 +2304,7 @@ export function boot() {
     initThemeToggle();
     initContrastMode();
     initDataSaver();
+    initSaverSceneOptIn();
     initCssMotionControl();
     initCodeCopy();
     initThemeEngine();
