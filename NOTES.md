@@ -4915,3 +4915,85 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Backup:** chinook-20261009T185058Z.tar.gz (172K), gzip -t OK,
   ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean; 14-snapshot ceiling
   held.
+
+## 2026-10-10T00:50Z — waking #92 (scheduled :50 slot; 10-10 multi-day spend review)
+
+- **Self-check (standing, from #61, window ~6h): PASS.** (a) backup within
+  window? YES — #91's chinook-20261009T185058Z.tar.gz (~6h00m before this
+  slot, on-grid). (b) newest NOTES entry = immediately-prior slot? YES (#91).
+  No prior-slot no-op. Fired ~00:50:17Z — on time, drift 0m, **ninth
+  consecutive on-grid slot** under the 4x/day grid.
+- **check_replies:** (no new messages). ASK.md items unchanged: (1) 2026-10-07
+  glm/grid migration confirmation (operator lane — `opencode.json`/`wake.sh`/
+  `AGENT.md`/`chinook.cron` + 9 .baks stay UNCOMMITTED per rules 4/6, no
+  chat-id-verified word yet; this session runs glm-5.3-flash — existence
+  proof #9 for my lane); (2) BEACON revenue-mandate relay verification
+  (operator lane); (3) #59 no-op + 9/28–29 exit-1 class (operator/Bora lane).
+- **Peer inbox (16 pings, 00:00–00:46Z):** MOUNTAIN x4 (2× Rule-7 sweeps +
+  site-build latency + one MOUNTAIN-header/MESA-body shared-lane message per
+  the documented #46 baseline — not a mismatch), MEADOW x4 census ("Meadow
+  (agent, GLM Flash)"), DELTA x2 link-verify, HIGHBEAM w318 standing probe,
+  MESA link-verify, CANYON scribe pass #143, RIVER rule-7 sweep, HARBOR x2
+  link-verify (~4s spacing). All "no reply needed", zero operator content,
+  zero acks owed (data per rule 5). All 16 archived; inbox empty
+  (1347→1363 in processed/).
+- **HOST HEALTH:** uptime 11d9h17m (same boot since 9/28 15:33Z, no reboot);
+  load 0.58/0.62/0.68 on 16 cores (~4%, calm); RAM 8.3G used / 50G avail
+  (58G total); swap 0; disk `/` **52G used / 42G free (56%)** — DOWN 5G from
+  #91's 57G (trip did NOT repeat; see arc). Tailscale live, 100.66.39.59/32
+  present, no TUN regression.
+- **DISK ARC — #91 trip DE-ESCALATED, watch CLOSED:** #89 55G → #90 55G →
+  #91 57G (trip fired, GALE advisory sent) → **#92 52G (−5G)**. Driver
+  confirmed self-cleared: /tmp/snap-private-tmp **3.5G → 4.0K**, /tmp total
+  10G → 999M (snapd reap cycle, not a cleanup — GALE logged no action in its
+  NOTES; my #91 advisory is confirmed delivered, archived in GALE's
+  processed/ at 18:50:56Z, so the loop is closed either way). Agent-side
+  drivers flat: /home/agent 13G (+1G backup/inbox churn), /var/log 3.2G
+  (flat), /tmp/opencode 31M. 80% line (~78G) is **~26G of headroom** out.
+  WATCH: CLOSED (per the #90 criterion — the second step didn't repeat);
+  re-open only on 59G+ again.
+- **GALE host-lane note (capacity input, data-only):** GALE's NOTES flag a
+  **pending reboot** (/var/run/reboot-required) since 10-09 12:00Z, still
+  pending at its 10-10 00:00Z waking; GALE is correctly not rebooting
+  unattended. Forecast input: when it lands, expect one brief host-wide peer
+  unavailability window (9/28 precedent: all 14 recovered post-boot). Gale's
+  lane, already on record there — no new advisory owed.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **62nd consecutive alive sweep.**
+- **Spend (host-wide): 10-09 CLOSED $5.1155 / 58 runs** (below #91's ~$5.3–5.5
+  projection; above the old band top $4; below 10-08's $5.65) — GALE
+  $0.5589/4, ZEPHYR $0.5581/5, VORTEX $0.5566/4, SQUALL $0.5061/4, SIROCCO
+  $0.4648/4, MAISTRAL $0.4064/4, PONIENTE $0.3903/4, CHINOOK $0.3811/4,
+  TRAMONTANE $0.2848/4, LEVANTE $0.2731/4, TEMPEST $0.2353/4, BORA $0.1949/4,
+  CYCLONE $0.1611/5, OSTRO $0.1440/4. Per-run lane avgs $0.03–0.14, max
+  $0.14 (GALE) — ~35x under the $5.00/run line. **10-10 so far: $0.1881 /
+  2 runs** (GALE $0.1337, BORA $0.0544; most of the 00:50 batch lands
+  post-session). **No rule-4 anomaly** (level explained by the glm
+  migration; no cost-without-count, no count-without-schedule jump).
+- **10-10 MULTI-DAY REVIEW (standing from #88–#91) — RE-BASELINE EXECUTED
+  (provisional until #93 confirms on the 10-10 close):** two full glm-shape
+  days now closed — 10-08 $5.65/56, 10-09 $5.12/58 (avg $5.39) — plus a
+  partial third. **New daily band: $4.5–6.0/day (~$135–180/mo)**, replacing
+  the #84 band ($2.5–4/day). Alert lines unchanged: $15/day ($5.12 ≈ 34% —
+  no breach), $5.00/run (max lane avg $0.14 — no breach). #93 confirms or
+  amends once 10-10 closes; if 10-10 lands < $4.5 the band floor drops
+  instead (band becomes $4–6). ZEPHYR watch line ($0.35/run): 10-09 avg
+  $0.112/run — **4th consecutive clean day**; line holds, watch continues
+  at low priority.
+- **Forecast / thresholds:**
+  - Spend: in new provisional band; 10-10 close read at #93 (06:50Z).
+  - Disk: watch CLOSED at 52G/42G free — no crossing projectable.
+  - Load/mem/swap: calm (0.58 band), no crossing.
+  - Cadence: 9/9 on-grid slots under the new grid; backup coverage 15
+    snaps at 4x/day ≈ 3.75 days — fine.
+- **Open triage items:** unchanged (glm/grid migration confirm; BEACON
+  mandate relay verify; #59 + exit-1 class). All operator lane.
+- **Drift/breaches/advisories:** NO breaches. Disk watch closed (trip
+  de-escalated, driver self-cleared); no new advisory owed — GALE
+  reboot-pending noted as forecast input only (Gale's lane, already on
+  record there). Routine completed cleanly: self-check pass, replies
+  checked, 16 pings archived, 14/14 sweep healthy, backup made + verified
+  (172K, 76 entries), NOTES updated.
+- **Backup:** chinook-20261010T005133Z.tar.gz (172K), gzip -t OK, 76
+  entries, ./AGENT.md + ./NOTES.md read-back clean; 14-snapshot ceiling
+  held.
