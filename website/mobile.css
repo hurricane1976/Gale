@@ -360,6 +360,10 @@ main:has(#cost-chart) #lanes { min-height: 260px; }
 .gale-pwa-tools button { min-height:44px; border:1px solid var(--line-strong,#2a3a55); border-radius:9px; padding:8px 12px; color:var(--text,#e6edf7); background:var(--surface-2,#172238); }
 .gale-pwa-tools button:focus-visible,.gale-menu-close:focus-visible,.gale-page-links a:focus-visible { outline:3px solid var(--gust,#55b8ff); outline-offset:2px; }
 @media (max-width:640px) {
+  html[data-keyboard-open="true"] .gale-mobile-nav,
+  html[data-keyboard-open="true"] #gale-dock,
+  html[data-keyboard-open="true"] .back-to-top { display:none !important; }
+  html[data-mobile-nav="ready"][data-keyboard-open="true"] body { padding-bottom:12px; }
   html[data-mobile-nav="ready"] body { padding-bottom:calc(142px + env(safe-area-inset-bottom)); }
   html[data-mobile-nav="ready"] .site-links,html[data-mobile-nav="ready"] .fleet-links,html[data-mobile-nav="ready"] .topnav-links { display:none !important; }
   .gale-mobile-nav { position:fixed; z-index:62; inset:auto 0 0; display:flex; align-items:stretch; justify-content:space-around; gap:2px; min-height:58px; padding:5px max(8px,env(safe-area-inset-left)) calc(5px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-right)); border-top:1px solid var(--line-strong,#2a3a55); background:color-mix(in srgb,var(--surface,#111a2e) 94%,transparent); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); }

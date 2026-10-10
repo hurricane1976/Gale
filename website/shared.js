@@ -1900,6 +1900,19 @@ function initMobileNavigation() {
   nav.append(more); document.body.append(nav);
   document.documentElement.dataset.mobileNav = "ready";
 
+  const viewport = window.visualViewport;
+  const syncKeyboardSpace = () => {
+    const active = document.activeElement;
+    const typing = active && /^(INPUT|TEXTAREA|SELECT)$/.test(active.tagName);
+    const keyboard = typing && viewport && viewport.height < window.innerHeight * 0.76;
+    if (keyboard) document.documentElement.dataset.keyboardOpen = "true";
+    else delete document.documentElement.dataset.keyboardOpen;
+  };
+  viewport?.addEventListener("resize", syncKeyboardSpace);
+  viewport?.addEventListener("scroll", syncKeyboardSpace);
+  document.addEventListener("focusin", syncKeyboardSpace);
+  document.addEventListener("focusout", () => setTimeout(syncKeyboardSpace, 120));
+
   // Give phone users a one-time orientation hint on pages that actually host
   // a WebGL scene. Keep it dismissible and remember that choice on this device.
   const hasScene = !!document.querySelector('canvas[role="img"], canvas#storm-canvas, canvas#storm-scene, canvas[data-scene]');
