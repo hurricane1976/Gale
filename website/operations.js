@@ -84,6 +84,14 @@ async function refresh() {
         `<option value="__stale" ${agentFilter==="__stale"?"selected":""}>Stale telemetry only</option>` +
         `<option value="__fail" ${agentFilter==="__fail"?"selected":""}>Failed signals only</option>`;
     }
+    const summary = $("ops-filter-summary");
+    if (summary) {
+      const active = [];
+      if (agentFilter) active.push(agentFilter === "__stale" ? "Stale telemetry only" : agentFilter === "__fail" ? "Failed signals only" : `Agent: ${agentFilter}`);
+      if (severityFilter) active.push(`Severity: ${severityFilter}`);
+      summary.hidden = active.length === 0;
+      summary.innerHTML = active.length ? `<span>${active.map(esc).join(" · ")}</span><button type="button" class="btn btn-sm" id="ops-clear-filters">Clear filters</button>` : "";
+    }
     const shownAll = incidents.alerts.filter(a=>{
       if (severityFilter && (a.sev || "unknown") !== severityFilter) return false;
       if (agentFilter==="__stale") return STALE_KINDS.has(a.kind);
@@ -147,6 +155,7 @@ async function refresh() {
   } finally {busy=false;}
 }
 document.addEventListener("click",async e=>{
+  if (e.target.closest("#ops-clear-filters")) { agentFilter=""; severityFilter=""; await refresh(); return; }
   if (e.target.closest("#inc-clear")) { e.preventDefault(); agentFilter=""; severityFilter=""; await refresh(); return; }
   const sev = e.target.closest("[data-severity]");
   if (sev) { severityFilter = sev.dataset.severity; await refresh(); return; }

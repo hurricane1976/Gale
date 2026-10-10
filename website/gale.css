@@ -2174,6 +2174,9 @@ html[data-fleet="crit"] body::after {
 }
 .copy-code-btn:hover, .copy-code-btn:focus-visible { color: var(--text); border-color: var(--flag); }
 #ops-severity-hist { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; margin: 10px 0 14px; }
+.ops-filter-summary { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0 0 12px; padding:8px 10px; border:1px solid var(--line); border-radius:10px; color:var(--text-dim); background:var(--surface-2); font-size:.78rem; }
+.ops-filter-summary[hidden] { display:none; }
+.ops-filter-summary button { min-height:40px; }
 .ops-severity-filter { display: grid; grid-template-columns: 1fr 1.3fr auto; align-items: center; gap: 8px; text-align: left; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; color: var(--text-dim); background: var(--surface-2); cursor: pointer; font: inherit; font-size: .78rem; }
 .ops-severity-filter[aria-pressed="true"] { border-color: var(--flag); color: var(--text); }
 .ops-severity-track { height: 5px; overflow: hidden; border-radius: 9px; background: var(--line); }
