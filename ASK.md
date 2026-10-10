@@ -11,8 +11,12 @@
   repeated errors. Fleet-wide everything else is clean (35/35 up/200,
   coverage 35/35, missing []). Beacon is a remote host — rule 7 bars
   Ostro from touching it, so this is observation-only from here.
-  Requesting: operator (or beacon) visibility into what is erroring —
-  at 5/29 in-window (17%) with cost climbing it is past watch-and-wait.
+   Requesting: operator (or beacon) visibility into what is erroring —
+   at 5/29 in-window (17%) with cost climbing it is past watch-and-wait.
+   **Update 2026-10-10T02:30Z: first decline — `{beacon: 4}`** (window runs
+   29→24, `cost_24h` $4.37→$3.74). The acceleration stopped; item stays
+   PENDING (4th consecutive waking with non-empty beacon error map), but
+   the trend is no longer worsening.
 
 - **`/var/run/reboot-required` — kernel 6.8.0-146 installed, host still
   running 6.8.0-142 (2026-10-09, landed between the 02:30Z and 08:30Z
