@@ -1915,7 +1915,8 @@ function initMobileNavigation() {
 
   // Give phone users a one-time orientation hint on pages that actually host
   // a WebGL scene. Keep it dismissible and remember that choice on this device.
-  const hasScene = !!document.querySelector('canvas[role="img"], canvas#storm-canvas, canvas#storm-scene, canvas[data-scene]');
+  const hasScene = [...document.querySelectorAll('canvas[role="img"], canvas#storm-canvas, canvas#storm-scene, canvas[data-scene]')]
+    .some((canvas) => !canvas.hidden && canvas.getClientRects().length > 0);
   let orientationHintSeen = false;
   try { orientationHintSeen = localStorage.getItem("gale-scene-orientation-hint") === "1"; } catch {}
   if (hasScene && !orientationHintSeen && matchMedia("(max-width: 700px)").matches) {
