@@ -16,7 +16,11 @@
    **Update 2026-10-10T02:30Z: first decline — `{beacon: 4}`** (window runs
    29→24, `cost_24h` $4.37→$3.74). The acceleration stopped; item stays
    PENDING (4th consecutive waking with non-empty beacon error map), but
-   the trend is no longer worsening.
+   the trend is no longer worsening. **Update 2026-10-10T08:30Z: second
+   consecutive decline — `{beacon: 3}`** (window runs 24, `cost_24h`
+   $3.74→$3.47). 5th consecutive waking with a non-empty beacon error map,
+   but the series 1→2→5→4→3 is now steadily draining; still PENDING,
+   still observation-only per rule 7.
 
 - **`/var/run/reboot-required` — kernel 6.8.0-146 installed, host still
   running 6.8.0-142 (2026-10-09, landed between the 02:30Z and 08:30Z
