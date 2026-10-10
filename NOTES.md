@@ -5071,3 +5071,71 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Backup:** chinook-20261010T065036Z.tar.gz (176K), gzip -t OK, 60
   entries, ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean;
   14-snapshot ceiling held.
+
+## 2026-10-10T12:50Z — waking #94 (scheduled :50 slot)
+
+- **Self-check (standing, from #61, window ~6h): PASS.** (a) backup within
+  window? YES — #93's chinook-20261010T065036Z (~6h00m before this slot,
+  on-grid). (b) newest NOTES entry = immediately-prior slot? YES (#93).
+  No prior-slot no-op. Fired ~12:50:01Z — on time, drift 0m, **eleventh
+  consecutive on-grid slot** under the 4x/day grid.
+- **check_replies:** (no new messages). ASK.md items unchanged: (1) 2026-10-07
+  glm/grid migration confirmation (operator lane — `opencode.json`/`wake.sh`/
+  `AGENT.md`/`chinook.cron` + 11 .baks stay UNCOMMITTED per rules 4/6, no
+  chat-id-verified word yet; this session runs glm-5.3-flash — existence
+  proof #11 for my lane); (2) BEACON revenue-mandate relay verification
+  (operator lane); (3) #59 no-op + 9/28–29 exit-1 class (operator/Bora lane).
+- **Peer inbox (16 pings, 12:00–12:48Z):** MOUNTAIN x4 (2× Rule-7 sweeps +
+  site-build latency + one MOUNTAIN-header/mesa-mesh-sweep-body shared-lane
+  message per the documented #46 baseline — not a mismatch), DELTA x3
+  link-verify, MEADOW x4 census ("Meadow (agent, GLM Flash)"), MESA
+  link-verify, RIVER rule-7 sweep, CANYON scribe pass #145, HARBOR x2
+  link-verify (~22s spacing). All "no reply needed", zero operator content,
+  zero acks owed (data per rule 5). All 16 archived; inbox empty
+  (1377→1393 in processed/).
+- **HOST HEALTH:** uptime 11d21h17m (same boot since 9/28 15:33Z, no
+  reboot); load 0.51/0.60/0.67 on 16 cores (~3–4%, calm); RAM 8.3Gi used /
+  50Gi avail (58Gi total); swap 0; disk `/` **54G used / 40G free (58%)** —
+  +1G vs #93's 53G, inside noise; watch stays CLOSED (re-open line 59G+
+  unchanged). Driver scan: /var/log 3.3G (flat), /tmp 1.7G (snapd churn
+  cycle, normal; snap-private-tmp self-cleared again), /home/agent 13G
+  (flat). Tailscale live, 100.66.39.59/32 present, no TUN regression.
+  GALE's pending reboot flag STILL up (since 10-09 12:00Z, confirmed in
+  GALE's NOTES at its 12:00Z waking — correctly not rebooting unattended);
+  forecast input on record: expect one brief host-wide peer unavailability
+  window when it lands (9/28 precedent: all 14 recovered post-boot).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **64th consecutive alive sweep.**
+- **Spend (host-wide, 10-10 to ~12:50Z): ≈$2.26 / 30 runs** (all 14 lanes
+  billing) — GALE $0.4028/3, MAISTRAL $0.2744/2, BORA $0.2031/3, SIROCCO
+  $0.1847/2, PONIENTE $0.1812/2, VORTEX $0.1694/2, SQUALL $0.1439/2,
+  TEMPEST $0.1294/2, TRAMONTANE $0.1289/2, CYCLONE $0.1078/2, ZEPHYR
+  $0.0980/2, OSTRO $0.0829/2, CHINOOK $0.0772/2, LEVANTE $0.0715/2.
+  Per-run avgs $0.03–0.14, max lane avg $0.14 (MAISTRAL/GALE) — ~35x under
+  the $5.00/run line. Shape matches the 10-08/09 batch profile; **no
+  rule-4 anomaly** (no cost-without-count, no count-without-schedule jump).
+- **Forecast / thresholds:**
+  - Spend: 2 of 4 batch-windows elapsed at $2.26 → projects **~$4.5–4.8
+    at close** — inside the provisional band ($4.5–6.0/day). The **10-10
+    close-read lands at #96 (00:50Z 10-11)** per #93's corrected schedule;
+    #94/#95 are interim partials. If close < $4.5, floor drops (band
+    $4–6) per #92's rule; > $6.0 or any non-batch-shape jump = re-open as
+    rule-4 candidate. Alert line $15/day: ~30% projected — no breach.
+  - ZEPHYR watch line ($0.35/run): 10-10 partial $0.049/run — **6th
+    consecutive clean day**; line holds, watch continues low priority.
+  - Disk: 54G/40G free — watch CLOSED, no crossing projectable (~24G
+    headroom to the 80% line ~78G).
+  - Load/mem/swap: calm (0.51 band), no crossing.
+  - Cadence: 11/11 on-grid slots under the new grid; backup coverage 14
+    snaps at 4x/day ≈ 3.5 days — fine.
+- **Open triage items:** unchanged (glm/grid migration confirm; BEACON
+  mandate relay verify; #59 + exit-1 class). All operator lane.
+- **Drift/breaches/advisories:** NO drift, NO breaches, NO advisories —
+  no sibling near a local (CPU/mem/disk) limit; spend is migration-wide,
+  in-band, operator-directed. Routine completed cleanly: self-check pass,
+  replies checked, 16 pings archived, 14/14 sweep healthy, backup made +
+  verified (176K, gzip OK, AGENT/NOTES/ASK read-back clean), NOTES
+  updated.
+- **Backup:** chinook-20261010T125107Z.tar.gz (176K), gzip -t OK,
+  ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean; 14-snapshot ceiling
+  held.
