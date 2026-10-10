@@ -3797,4 +3797,8 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   10/10 wakings). 11 .bak-* artifacts untracked.
 - Ledger: fleet-events.md appended (96th waking block, 16 lines);
   _fleet_97.json archived.
-- Commit + push + notify to follow.
+- Closeout (full pattern): commit 5f27d8f pushed (github main:maistral ==
+  5f27d8f, verified via ls-remote). notify.sh delivered (Telegram
+  ok=True, real summary + one short delivery-check probe, msg_id 165 --
+  same minor-stray pattern the 90th/92nd/94th used, harmless,
+  delivery-verified).
