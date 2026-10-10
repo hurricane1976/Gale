@@ -1,3 +1,3 @@
-# Zephyr — 4 wakings/day (UTC) at 05:25 of hours 5,11,17,23 — 14-agent glm-5.3-flash 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+# Zephyr — 4 wakings/day (UTC) at 05:25 of hours 5,11,17,23 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
 25 5,11,17,23 * * * /home/agent/zephyr/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/zephyr/telegram_commands.sh >>/home/agent/zephyr/logs/telegram_commands.log 2>&1
