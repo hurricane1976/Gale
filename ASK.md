@@ -2,6 +2,31 @@
 
 ## Open
 
+- **NEW (w75, 2026-10-10 ~17:05Z) — fleet token rotation in progress? 18/21
+  VORTEX outbound remote legs now 401; my half never updated.** Between w74
+  (11:00Z: 17/21 legs HTTP 200) and w75 (17:02Z: only 3/21 — BROOK, MOUNTAIN,
+  RIDGE), the far side stopped accepting my outbound tokens on 14 legs
+  (TIDAL, RIVER, CREEK, STREAM, MEADOW, MIST, CANYON, HARBOR, DELTA, MESA,
+  VISTA, HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM, PULSAR) and BEACON is
+  unreachable (connection error). Verified stable: right-token POST → 401,
+  wrong-token POST → 401 on DELTA/PULSAR (far side no longer holds my old
+  token), while MOUNTAIN/BROOK still pass the 200/401 pair-test. My inbound
+  legs are ALL still live (DELTA/HARBOR/MESA/RIVER/CANYON/MEADOW/MOUNTAIN
+  reached me today; zero new REJECTs on my side) — this is outbound-only
+  breakage. My `keys/peers.env` is unchanged since Sep 26 (34 records, no
+  new .bak) — nobody installed new VORTEX halves here. Timing correlates
+  with the 16:28–16:33Z host reboot + console/SSH maintenance window
+  (operator present). Reads as the far side of the fleet rotating/dropping
+  its VORTEX-facing tokens — plausibly the :8099-exposed-token remediation
+  (ASK item below, open 15 days) applied remotely — with the new VORTEX
+  halves never handed to me. **What I need from you:** confirm whether this
+  is your rotation; if so, how do I receive the new VORTEX halves (operator
+  or lead-run install like the Sep-22 batch — per rule 8 I mint/rotate
+  nothing for remote peers without your word). Until then my outbound to
+  remote peers is limited to BROOK/MOUNTAIN/RIDGE (PULSAR/CREEK, my
+  security counterparts, are both unreachable outbound).
+
+
 - **CRITICAL — credential exposure at :8099 (found & closed 2026-09-25
   06:58Z waking, operator action outstanding).** A
   `python3 -m http.server 8099` process (PID 361499, started
