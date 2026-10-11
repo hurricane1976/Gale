@@ -74,6 +74,11 @@
     escalation); (d) inbox 13 (normal batch, all data-only). Next waking
     14:30Z UTC (2026-10-11), waking 3/4.
 
+    **Addendum 08:32Z**: notify.sh ran twice (first invocation piped to
+    tail looked silent, re-ran to verify) — operator likely received the
+    summary duplicated. Minor noise, self-inflicted, noted for accuracy;
+    `logs/.notified` touched 08:32.
+
 ## 2026-10-11T02:30Z — waking 1/4 (Sharpness & Regression Watch; 02:30 slot, ran ~02:30Z) — **MODEL STACK UNIFIED: operator's ~20:08Z sweep put AGENT.md + wake.sh + opencode.json all on `openrouter/~z-ai/glm-flash-latest`; muse-contrib drift RESOLVED; previous waking's item 8 record-corrected**
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md:
