@@ -5278,3 +5278,82 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Commit:** NOTES + ASK updates only — the 4 migration files + 11
   .baks remain uncommitted per rules 4/6 (operator confirmation
   pending).
+
+## 2026-10-11T06:50Z — waking #97 (scheduled :50 slot; interim spend check)
+
+- **Self-check (standing, from #61, window ~6h): PASS.** (a) backup:
+  #96's chinook-20261011T005152Z at 00:51Z (~6h before this slot —
+  normal spacing under the 4x/day grid, no 4h expectation anymore).
+  (b) newest NOTES entry = #96 (immediately-prior slot). No no-op, no
+  back-fill owed. This waking fired 06:50:01Z on-grid (drift 0m) —
+  13th scheduled slot under the 4x/day :50 grid; streak 2 since the
+  #96 restart.
+- **check_replies.sh: no new messages.** The model/grid-migration ask
+  (ASK.md, updated 10-11 00:50Z #96) still has NO chat-id-verified
+  operator word — the 4 modified files (AGENT.md, chinook.cron,
+  opencode.json, wake.sh) + 15 .baks remain **UNCOMMITTED** per
+  rules 4/6. BEACON revenue-mandate relay also still unverified
+  (operator lane). No new asks added — #96's text stands verbatim.
+- **Peer inbox:** 16 unprocessed since #96 (00:46Z → 06:47Z): MOUNTAIN
+  x4 (Rule-7 sweeps + 1 site-build latency check + 1 mesa-mesh
+  shared-lane msg per the documented #46 baseline), MEADOW x5 census,
+  DELTA + MESA + RIVER + CANYON (scribe pass #148) x1 each,
+  HARBOR x3 link-verify. All "no reply needed", zero operator content,
+  zero acks owed (data per rule 5). All 16 archived; inbox empty
+  (1425→1441 in processed/).
+- **HOST HEALTH:** uptime 14h19m (boot 10-10 16:31Z, kernel
+  6.8.0-146); load 0.52/0.32/0.28 on 16 cores (~3%, calm); RAM 6.8G
+  used / 53.2G avail (60G total); swap 0; disk `/` **48G used / 46G
+  free (52%)** — flat vs #96 (48G/46G); watch stays CLOSED (re-open
+  line 59G+). No reboot-required flag. Tailscale: tailscale0 holds
+  100.66.39.59/32, tailscaled active, remote peers reachable.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **66th consecutive alive sweep.**
+- **Spend — 10-11 INTERIM PARTIAL (close-read stays scheduled at #98,
+  00:50Z 10-12):** host-wide **$0.8843 / 17 runs** as of 06:50Z
+  (GALE/"agent" $0.2691/2, SQUALL $0.0904/2, MAISTRAL $0.0844/1,
+  CHINOOK $0.0662/1 — my #96 session row; the other 13 lanes ≤$0.047
+  each). Per-run host avg **$0.052** — below the recent $0.077–0.088
+  avg, no creep. Remaining 10-11 slots (rest of the 06:xx batch +
+  12:50 + 18:50 batches ≈ 28–30 more runs) project a close of roughly
+  **$3.5–4.5/day at current per-run rate** — inside the provisional
+  $4–6 band (low end), no breach path visible; alert lines unchanged
+  ($15/day, $5.00/run) — no breach. Chinook own log: 100 rows, 10-10
+  had 3 rows ($0.0362/$0.041/$0.101), 10-11 has 1 ($0.0662) — #95
+  correctly has no row (exit-1 path).
+- **ZEPHYR watch line ($0.35/run):** 10-11 partial $0.0193/1 =
+  $0.019/run — **8th consecutive clean day**; line holds, watch
+  continues low priority.
+- **Cadence/backup coverage:** 14 snapshots, oldest→newest spans
+  ~4 days; #96→#97 gap 6h = normal grid spacing (00:51→06:51; the
+  #95-era 12h gap was the outage, not this pattern). Next slots
+  12:50/18:50 today — **watch 18:50 again** (second consecutive 18:50
+  under the glm grid after #95's shim-502 casualty; a repeat failure
+  there would make it a standing 18:50-class problem, a one-off pass
+  would close that watch).
+- **Forecast / thresholds:**
+  - Spend: interim tracks in-band; close-read #98. No breach.
+  - Disk: 48G/46G (52%), flat — no crossing projectable (~30G
+    headroom to the 80% line ~78G).
+  - Load/mem/swap: calm, no crossing.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit; spend per-run is *down* slightly. **No advisory owed this
+  waking.**
+- **Open triage items (unchanged, all operator lane):** (1) glm/grid
+  migration confirm — Telegram word pending; (2) BEACON revenue-mandate
+  relay verify; (3) #59 no-op + 9/28–29 exit-1 + 10-10 shim-502
+  classes (hardened retry count 3 noted at #96).
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 16 pings archived, 14/14 sweep healthy,
+  backup made + verified (192K, 65 entries, AGENT/NOTES/ASK read-back
+  clean), NOTES updated.
+- **Backup:** chinook-20261011T065113Z.tar.gz (192K), gzip -t OK, 65
+  entries, ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean;
+  14-snapshot ceiling held (oldest 10-07 16:02 rotated out).
+- **Commit:** NOTES update only — the 4 migration files + 15 .baks
+  remain uncommitted per rules 4/6 (operator confirmation pending).
+- **ERRATUM (notify):** summary was sent twice (msg_id 150 + 151,
+  duplicate) — first ./notify.sh call had succeeded silently and I
+  mistook the no output for a failure and re-sent. Harmless; note for
+  future wakings: no output from notify.sh = SUCCESS, verify via
+  logs/notify_last_response.txt only.
