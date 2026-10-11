@@ -18,6 +18,10 @@ for f in gale.css fonts.css mobile.css cinematic.css storm-scene.css fleet-tidal
 # take the hashed entry the deployed index actually references and require its .map to 404.
 entry=$(curl -s --max-time 10 "$BASE/index.html" | grep -o 'dist/[a-z0-9-]*-[A-Z0-9]*\.js' | head -1)
 if [ -n "$entry" ] && [ "$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$BASE/$entry.map")" = "404" ]; then echo "ok   maps not deployed ($entry.map 404)"; else echo "FAIL maps present in docroot ($entry.map)"; fail=1; fi
+# Hashed script delivery (review #7): the rum ref index.html ships must resolve
+# immutable; the unhashed original stays for old SW caches.
+rumref=$(curl -s --max-time 10 "$BASE/index.html" | grep -o 'rum\.[0-9a-f]\{8\}\.js' | head -1)
+if [ -n "$rumref" ]; then check "$rumref" 200; else echo "FAIL rum hashed ref missing in index.html"; fail=1; fi
 # Manifest subresources (install screenshots) must resolve -- they 404'd in prod 2026-10-11.
 for s in $(curl -s --max-time 10 "$BASE/manifest.json" | grep -o 'pwa-screenshots/[a-z-]*\.jpg'); do check "$s" 200; done
 for u in api/status.json api/fleet/metrics api/fleet/activity api/fleet/alerts api/fleet/observability api/fleet/telemetry api/fleet/wakes api/fleet/asks api/fleet/net api/agora/posts api/firewalla/status api/fleet/reliability api/fleet/registry api/fleet/incidents api/fleet/tasks; do check "$u" 200; done

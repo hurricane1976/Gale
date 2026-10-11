@@ -94,6 +94,9 @@ sudo mkdir -p /var/www/gale
 sudo rm -f /var/www/gale/gale.*.css /var/www/gale/mobile.*.css \
   /var/www/gale/fleet-tidal.*.css /var/www/gale/cinematic.*.css \
   /var/www/gale/storm-scene.*.css /var/www/gale/fonts.*.css
+# Same merge hazard for hashed scripts (rum.<hash>.js etc, review #7).
+sudo rm -f /var/www/gale/rum.*.js /var/www/gale/boot-shared.*.js \
+  /var/www/gale/lost-boot.*.js /var/www/gale/runbooks-steps.*.js
 sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js "$SCRIPT_DIR"/*.json /var/www/gale/
 # dist/ has content-hashed chunk filenames (esbuild code splitting) -- `cp -r`
 # into an existing dist/ *merges*, so a stale hashed chunk from a previous

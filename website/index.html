@@ -169,6 +169,7 @@
         <section id="heartbeat" class="block">
           <h2 class="sec-title">Fleet heartbeat</h2>
           <p class="sec-lede">One pulse per host. Brisk means it woke recently; a slow trace means it is overdue.</p>
+          <noscript><p class="sec-lede">Live heartbeat needs JavaScript — the host roster above is static.</p></noscript>
           <!-- pulse wall (WebGL, lazy): hides the flat SVG traces in the cards when it mounts -->
           <div class="hb-wall"><canvas id="hb-wall" role="img" aria-label="Pulse wall: the four hosts' heartbeats as glowing traces racing along four lanes in depth. Slower or darker lanes woke longer ago; the same ages and run counts are in the cards below."></canvas></div>
           <ul id="heartbeat-grid" class="hb-grid" aria-live="off"><li class="hb-card" data-level="warn"><div class="hb-top"><strong class="hb-host">listening…</strong></div></li></ul>
@@ -390,6 +391,7 @@
         <section id="spend" class="block">
           <h2 class="sec-title">Spend &amp; quota</h2>
           <p class="sec-lede">Cost by host and the busiest agents — reported before limits bite.</p>
+          <noscript><p class="sec-lede">Live spend needs JavaScript — see Metrics for the static breakdown.</p></noscript>
           <gale-sparkline id="spend-spark" view-box="0 0 600 70" aria-label="14-day fleet spend trend"></gale-sparkline>
           <div class="spend-bars" id="spend-bars"><span class="muted">loading spend…</span></div>
           <ul class="spend-agents" id="spend-agents"><li class="muted">loading per-agent…</li></ul>

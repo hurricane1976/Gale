@@ -241,6 +241,41 @@ renderLivePulse();
   });
 })();
 
+/* ---- model composition chips + open-ask count: derived from live registry
+   and asks feeds (review 2026-10-11 #40/#41). The static markup stays as the
+   no-JS fallback -- it had drifted (Qwen x13 missing, Muse x12 vs x2). ---- */
+export async function renderRosterFacts() {
+  const chips = document.querySelector(".chips[aria-label='Model composition']");
+  if (chips) {
+    try {
+      const r = await fetch("/api/fleet/registry", { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const agents = (await r.json()).agents || [];
+      const counts = new Map();
+      for (const a of agents) {
+        const model = String(a.model || "unknown");
+        counts.set(model, (counts.get(model) || 0) + 1);
+      }
+      if (counts.size) {
+        chips.innerHTML = [...counts.entries()]
+          .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+          .map(([model, n]) => `<li class="chip" data-model="${esc(model.toLowerCase())}">${esc(model)} &times;${n}</li>`)
+          .join("");
+      }
+    } catch { /* static fallback stands */ }
+  }
+  const askBar = document.querySelector("#ask .redact-bar");
+  if (askBar) {
+    try {
+      const r = await fetch("/api/fleet/asks", { cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const agents = (await r.json()).agents || [];
+      const open = agents.reduce((sum, a) => sum + (Number(a.open_asks) || 0), 0);
+      askBar.textContent = `${open} open item${open === 1 ? "" : "s"} — ask me.`;
+    } catch { /* static count stands */ }
+  }
+}
+
 /* ---- recent history: latest commits from the same activity feed.
    Static 2026-09-23 list in markup stays as the no-JS fallback. ---- */
 export function renderHistory(d) {
@@ -250,7 +285,8 @@ export function renderHistory(d) {
   if (!commits.length) return;
   list.innerHTML = commits.map((ev) => {
     const msg = String(ev.text || "").split(" -- ").slice(1).join(" -- ") || ev.text || "";
-    return `<li><span class="h-time">${esc((ev.ts || "").slice(0, 10))}</span>` +
+    const day = (ev.ts || "").slice(0, 10);
+    return `<li><span class="h-time"><time datetime="${esc(ev.ts || "")}">${esc(day)}</time></span>` +
       `<span class="h-msg">${esc(msg.slice(0, 140))}</span></li>`;
   }).join("");
 }
@@ -332,6 +368,7 @@ export async function renderSpend() {
   }
 }
 renderSpend();
+renderRosterFacts();
 
 /* ---- home special effects (off for reduced motion / data-saver) ---- */
 (function homeFX() {

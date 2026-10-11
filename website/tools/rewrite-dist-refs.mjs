@@ -92,12 +92,39 @@ const rewriteCss = (text) => {
   return { text, changed };
 };
 
+// Unhashed scripts (review 2026-10-11 #7): rum.js (classic script on every
+// page) and the 404/runbooks boot scripts are copied verbatim today, so they
+// revalidate on every view. Mint content-hash copies and rewrite the
+// src=/precache refs -- ref strings only, never inline blocks, so the CSP
+// inline hashes are unaffected. Originals stay (smoke checks, old SW caches).
+// shared.js is intentionally excluded: boot scripts import it relatively at
+// runtime, so renaming it would require editing file contents.
+const JS_UNHASHED = ["runbooks-steps", "boot-shared", "lost-boot", "rum"];
+const jsMap = {};
+for (const n of JS_UNHASHED) {
+  const f = join(root, n + ".js");
+  if (!existsSync(f)) continue;
+  const src = readFileSync(f);
+  const h = createHash("sha256").update(src).digest("hex").slice(0, 8);
+  writeFileSync(join(root, `${n}.${h}.js`), src);
+  jsMap[n] = `${n}.${h}.js`;
+}
+const rewriteJs = (text) => {
+  let changed = 0;
+  for (const [n, hashed] of Object.entries(jsMap)) {
+    const re = new RegExp(`(["'/])${esc(n)}\\.js(?=["'?])`, "g");
+    text = text.replace(re, (_m, pre) => { changed++; return pre + hashed; });
+  }
+  return { text, changed };
+};
+
 let total = 0, touched = [];
 for (const f of files) {
   const before = readFileSync(f, "utf8");
   const r1 = rewriteText(before);
   const r2 = rewriteCss(r1.text);
-  const after = r2.text, changed = r1.changed + r2.changed;
+  const r3 = rewriteJs(r2.text);
+  const after = r3.text, changed = r1.changed + r2.changed + r3.changed;
   if (changed > 0 && after !== before) {
     writeFileSync(f, after);
     touched.push(`${basename(f)} (${changed} ref${changed > 1 ? "s" : ""})`);
