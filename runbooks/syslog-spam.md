@@ -155,3 +155,12 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   acceleration)** — watch for a retention ask. AppArmor logging oscillation
   7th window (syslog 466→488M ≈ 88M/day, fast); denial source unaffected.
   journal 1.0G pinned; rotated pile ~1.31G unchanged; loki 567M flat.
+- 2026-10-11T03:45Z: midnight rotation shifted the pile — syslog.1 578M
+  (the whole Oct-10 file, day total 578M vs the ~88–188M/day band windows —
+  bursty day), old flood now syslog.3.gz 717M + syslog.2.gz 16M; pile total
+  ~1.65G (up from ~1.31G — retention call still pending). Current syslog
+  12M + kern.log 7.4M at 03:45Z (~77M/day + ~47M/day pace, established
+  band). Post-reboot (Oct-10 16:30Z) /tmp wiped: puppeteer 0 dirs AND
+  org.chromium 0 at 03:45Z (regrowth not resumed ~11h in), `.so` cache
+  23→42 (+19/11h ≈ 41/day, no sweeper), /tmp 277M. journal 1.0G pinned;
+  loki 578M flat; .codex 4.5G flat; docker HA image 3.542GB unchanged.
