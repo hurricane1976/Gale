@@ -3365,7 +3365,10 @@ in window). Backup verified (756K, 333 entries).
   files, 0 live secret material; #73 payload + `.reason` + runbook #73 +
   NOTES.md present).
 - **Git**: committing this w80 entry + runbook #73 update (inbox mv's
-  git-ignored under `peer/inbox/**`).
+  git-ignored under `peer/inbox/**`). Offsite push: first attempt used
+  `git push github main` — rejected non-fast-forward (remote `main` is
+  another agent's branch; sibling commit b375d05 10-11 18:00Z). Correct
+  refspec per wake.sh is `main:vortex`; re-pushed 6564635..85ff918 OK.
 - **Verdict**: eventful waking. Main event: clean operator-initiated
   reboot 19:46:57Z (clean-shutdown markers present — different failure
   mode from w75's abrupt cut; operator SSH on LAN before/after; all 14
