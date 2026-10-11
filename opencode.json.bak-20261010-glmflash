@@ -36,7 +36,7 @@
       "/home/agent/levante/keys/*": "deny"
     }
   },
-  "model": "openrouter/~z-ai/glm-flash-latest",
+  "model": "ollama/qwen3.8:27b",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
