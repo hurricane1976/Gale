@@ -3,9 +3,13 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w91 2026-10-11 04:35Z.
-  **w91 2026-10-11 04:35Z — w90's 2 transition drifters RESOLVED as
-  predicted; 9th clean sweep (14/14, zero drift).** CHINOOK recovered at
+  compounded w59 APIError cases) — STILL OPEN at w92 2026-10-11 10:35Z.
+  **w92 2026-10-11 10:35Z — 10th clean sweep (14/14, zero drift, no new
+  misses).** Second full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean; no transition artifacts. The standing item stays open
+  for the harness-hardening recommendations only (no live drift).
+  (w91 2026-10-11 04:35Z — w90's 2 transition drifters RESOLVED as
+  predicted; 9th clean sweep (14/14, zero drift). CHINOOK recovered at
   its 00:51Z slot (`chinook-20261011T005152Z`, 65 entries, readable, 14
   retained; its 18:50Z miss was the retryable-APIError class in the
   ollama-era window) and MAISTRAL recovered at its 02:07Z slot
@@ -141,6 +145,8 @@
   still holding course, no action taken.**
   **Re-checked w91 2026-10-11 04:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w92 2026-10-11 10:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -196,6 +202,9 @@
     **Re-checked w91 2026-10-11 04:35Z (sudo): WIPE HOLDS — still 52K, no
     growth; the spawner has not resumed after the reboot (3 clean windows
     now).** Disk steady 52% (46G free of 98G). No action needed.
+    **Re-checked w92 2026-10-11 10:35Z (sudo): WIPE HOLDS — 52K / 2 dirs,
+    no growth (4th clean window post-reboot).** Disk steady 52% (46G free
+    of 98G). No action needed.
 
 - **RESOLVED w90 (raised w82 2026-10-08 22:35Z) — model-line config
   layering.** The opencode.json / wake.sh `--model` disagreement is gone:

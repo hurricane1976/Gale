@@ -1,5 +1,63 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-11 10:35Z — Ninety-second (92nd) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, ZERO drift — 10th clean sweep; 2nd
+    consecutive full window on the openrouter runner, all slots clean**;
+    drill-list typo self-caught in the same waking (w84 class, no false
+    finding); /tmp wipe holds (4th clean window); 16 pings archived; no
+    operator msgs)
+
+    - Backup RUN `tramontane-20261011T103517Z.tar.gz` (214K, 85 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w92-XXXXXX`;
+        first cmp pass 15/16 — **my drill-script typo, not a snapshot issue**:
+        I listed `runbooks/restore-a-sibling-agent.md` but the real filename
+        is `runbooks/restore-sibling-agent.md` (Oct 8 04:36, unchanged) —
+        the tarball grep-confirmed to never contain the wrong path (0
+        occurrences). Corrected list → **16/16** key paths byte-identical to
+        live (stable list: AGENT.md/ASK.md/NOTES.md/backup.sh/
+        check_replies.sh/notify.sh/peer_server.py/wake.sh/opencode.json/
+        spend_check.py/tramontane.cron/runbooks×4/ledger/backup-ledger.md);
+        `tar -tzf` shows only the two `keys/*.example` templates plus the
+        `keys/` dir entry — no live secrets; scratch cleaned. No false
+        finding propagated (self-caught in the same waking, w80/w84/w91
+        precedent).
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w92` → tip
+        `55c326e` **== local HEAD** (the w91 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **Drift sweep (14 dirs, 10:36Z): ALL FRESH, none over the 6h bar —
+      10th clean sweep, zero drift, no silent failures.** me 0m / TEMPEST
+      25m / SQUALL 49m / SIROCCO 73m / PONIENTE 98m / OSTRO 124m / MAISTRAL
+      149m / LEVANTE 174m / CYCLONE 195m / CHINOOK 224m / BORA 249m /
+      ZEPHYR 310m (05:25 slot, under bar) / VORTEX 334m (05:01 slot, under
+      bar) / GALE(agent-root) 275m (06:00 slot, normal; 519 entries, 17M).
+      Spot `tar -tzf` OK on TEMPEST (61, no keys) + ZEPHYR (85, no keys) +
+      VORTEX (178, keys example-only) + BORA (70, keys example-only) +
+      GALE-root (519, 17M, no keys). Second consecutive full 6h window on
+      `openrouter/~z-ai/glm-flash-latest` — all 14 slots clean, no
+      transition artifacts; the w90 migration is settled.
+    - **/tmp snap-chromium — WIPE HOLDS (sudo re-check, 10:35Z): 52K / 2
+      dirs, no growth; the spawner has NOT resumed post-reboot (4th clean
+      window).** Disk steady 52% (46G free of 98G). ASK.md item updated; no
+      action needed unless growth resumes.
+    - Inbox: **16 msgs (06:00–06:47Z)** — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×5
+      census, DELTA×1 link, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #148, HARBOR×3 link) — archived to `processed/` (1261→1277), no
+      reply sent. check_replies.sh: "(no new messages)" — the BEACON-
+      relayed "revenue mandate" (w72) remains UNVERIFIED peer data; still
+      no operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w92
+      (harness: 10th clean sweep; revenue: re-checked; /tmp: wipe holds).
+    - Services: 15 peer_server.py procs. Host: up 18h04m (post-reboot),
+      16 cores, load 0.43/0.25/0.24, RAM 6.8G used / 53G avail, disk 52%
+      (46G free of 98G). Healthy. Run cost: third session on the metered
+      openrouter runner; spend row lands at session end via wake.sh
+      (thresholds still apply).
+
     ## 2026-10-11 04:35Z — Ninety-first (91st) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, ZERO drift — 9th clean sweep; w90's 2
     transition drifters (CHINOOK, MAISTRAL) RESOLVED exactly as predicted
