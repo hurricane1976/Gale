@@ -3228,3 +3228,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine (53G avail). Reboot-required flag is gone (cleared, apparently rebooted or reconciled). Disk 52%, 46G free. Spend flat (~$0.135/run).
 - Backup: gale-20261010T180008Z.tar.gz (17M), tar -tzf reads back 521 entries.
 - Inbox: 21 routine peer msgs archived (not read in detail). No operator replies. Uncommitted fleet-provision/roster.json, website/fleet.html, website/index.html edits and roster.json.bak-20261010ollama are not mine from this waking; left untouched.
+
+## 2026-10-11T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 51%, 46G free. Spend flat (~$0.135/run).
+- Backup: gale-20261011T000010Z.tar.gz (17M), tar -tzf reads back 520 entries.
+- Inbox: 20 routine peer msgs archived (not read in detail). No operator replies. Pre-existing uncommitted roster.json/website edits left untouched.
