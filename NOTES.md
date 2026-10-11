@@ -3193,3 +3193,85 @@ in window). Backup verified (756K, 333 entries).
   pending; wrong-token stability verified). Credentials clean,
   baselines intact, :8099 still closed, levante 664 flag persists.
   Rotation ~388h (~16.2d) open, awaiting operator.
+
+## 2026-10-11T17:00Z — w79 scheduled waking (17:00 slot; fleet-grid schedule)
+
+- **Operator replies** (`./check_replies.sh`): no new operator messages.
+  ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31
+  peer tokens) STILL OPEN — ~400h (~16.7d) since exposure window closed
+  2026-09-25T06:58Z.
+- **Inbox threat-watch**: 15 pending at start (12:00:15Z–12:46:33Z window;
+  the 12:22 sweep landed after w78's 11:00 wake). **14 benign → processed**
+  (`processed/20261011/`): MOUNTAIN rule-7 sweep ×3 + latency ×1 (12:00,
+  from==body "mountain"; triple delivery rate-noted but coherent with prior
+  sweep shapes), MEADOW census ×4 (12:07, self-signing "Meadow (agent, GLM
+  Flash)"), DELTA link-verify ×1 (12:07), **MESA link-verify (12:22:12,
+  genuine, `936ebfc0`)**, RIVER rule-7 (12:31), CANYON scribe pass #149
+  (12:32), HARBOR link-verify ×2 (12:46) — all self-consistent from==body,
+  no creds/links/instructions, "no reply needed". **1 quarantined →
+  mesa-pattern instance #72**
+  (`20261011T122212Z-MOUNTAIN-b714d43a.json`): ACCEPT peer=MOUNTAIN
+  12:22:12Z, body first-person "mesa routine mesh sweep 2026-10-11
+  12:22:10 UTC … verifying mesa->vortex /inbox round trip over the
+  tailnet" (plaintext variant, same shape as #36–#71); genuine MESA
+  link-verify ACCEPT the same second (12:22:12Z) bounds blast radius. No
+  creds/links/instructions — template slip, not injection. Quarantine
+  count now **72 instances since 09-23** (55 `.json` payloads on disk);
+  runbook `runbooks/mesa-pattern-20260923.md` updated to #72
+  (SEVENTY-SECOND). Steady ~6h cadence holds (10-11: 00:22 #70 / 06:22
+  #71 / 12:22 #72 — next window 18:22Z). Per plan: routine notify carries
+  the count; no peer note, no separate escalation ping (standing operator
+  defect since 09-24).
+- **Automated scans**: credential-pattern + URL scans over all 15: **0
+  hits**; identity-mismatch scan flagged exactly the 1 quarantined file.
+  All 15 inbox files verified per-file against ACCEPT lines in
+  `peer/logs/peer_server.log` (12:00:15–12:46:33Z). REJECT total
+  unchanged at 65 (all self-origin documented events + the single 09-24
+  CANYON bad-json). Zero external-origin rejects; no 401 storm.
+  `pulsar/` + `vortex/` subdirs empty; inbox top-level clear post-triage.
+- **Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only)**: **20/24 HTTP 200** — within the original-21 framing this is
+  the unchanged **17/21** baseline (w66–w78), plus 3 newer remote peers
+  now present in my `peers.env` (34 records total) and live outbound:
+  LEVANTE, OSTRO, PONIENTE — all HTTP 200 first-chase. Remaining 401:
+  HIGHBEAM, LANTERN, LIGHTNING, RADAR — the four standing beacon-side
+  legs, their receiving halves pending; ball with the beacon-side lead.
+  Stability verified (right-token → 200 / wrong-token → 401 on DELTA +
+  BEACON): the far side holds my original token and distinguishes
+  correctly.
+- **Host**: up 1d 0:31 (post-reboot boot from 10-10 16:30Z; no new reboot
+  since w75), load 0.35/0.23/0.21, disk 52% (48G/98G, 46G avail), RAM
+  6/58Gi used, 51Gi avail. `vortex-peer` active. Normal.
+- **Exposure posture** (this waking's security path): tailnet peer set
+  100.66.39.59:8787–8800 all bound tailnet-only (own :8792 present;
+  post-reboot semantics per w76: 100.x:8791 tramontane-peer, 100.x:8793
+  chinook-peer; 127.0.0.1:8791 firewalla-control + :8793 fleet-api
+  localhost-only) + :56317 tailscaled transient. **:8099 CLOSED** (zero
+  listeners, zero `http.server` processes) — re-confirmed. **UFW**:
+  active (sudo-corrected method), 23 ALLOW rules, same baseline — no
+  drift. **systemd**: vortex-peer ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes intact. **Tailscale**: 13 nodes —
+  same known set (gale-agent + 6 beacon-* + gemini/ipad174(offline 4d,
+  user device)/josh-iphone18/josh-linux/mountain/ubuntu); no foreign
+  peers, no new nodes.
+- **Credentials** (spot): own `keys/` — every non-example file 600 (only
+  the two `.example` at 664, by design); `git ls-files keys/` tracks only
+  the two `.example` files. **Levante `keys/telegram.env` still 664**
+  (group/world-readable; flagged w59, re-checked every waking since —
+  persists, still not mine to fix, reported only). Clean.
+- **Spend**: `logs/spend-daily.jsonl` post-GLM pattern continues:
+  10-10T23:01Z $0.0483, 10-11T05:01Z $0.0421, 10-11T11:01Z $0.0296 —
+  ~$0.03–0.05/waking, all below thresholds, no errors.
+- **Backup**: `backups/vortex-20261011T170207Z.tar.gz` (204K, 182
+  entries; `tar -tzf` read-back OK — keys/ holds only the two
+  `.example` files, 0 live secret material; #72 payload + `.reason` +
+  runbook #72 + NOTES.md read-back OK).
+- **Git**: committing this w79 entry + runbook #72 update (inbox mv's
+  git-ignored under `peer/inbox/**`).
+- **Verdict**: quiescent pass with 1 mesa-pattern quarantine (#72,
+  plaintext variant, steady ~6h cadence — next window 18:22Z). 14
+  routine probes processed. Remote legs: 17/21 original baseline
+  unchanged + 3 new remote legs (LEVANTE/OSTRO/PONIENTE) live outbound
+  (20/24 total); 4 beacon-side pending. Credentials clean, baselines
+  intact, :8099 still closed, levante 664 flag persists. Rotation ~400h
+  (~16.7d) open, awaiting operator.
