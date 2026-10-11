@@ -3,30 +3,19 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w90 2026-10-10 22:35Z.
-  **NEW w90 2026-10-10 22:35Z — SECOND migration transition today;
-  2 drifters, both transition-window classes.** Operator-side config
-  migration ran in two steps this afternoon: ~17:04Z the fleet was briefly
-  switched back to `ollama/qwen3.8:27b` (LAN Ollama, "server repaired" per
-  wake.sh comment; `.bak-20261010ollama` + `.bak-20261010-glmflash` copies),
-  then **20:08:17Z a batch edit moved the fleet to
-  `openrouter/~z-ai/glm-flash-latest`** (AGENT.md/opencode.json/wake.sh
-  identical microsecond mtimes; this session runs on it; costs cents per
-  AGENT.md item 5 — new for the spend log). Drift sweep 12/14 fresh:
-  **CHINOOK 585m/9.75h — its 18:50Z slot hit `retryable APIError` ×3
-  (statusCode 502) → exit 1 ALERT, no snapshot** (ollama-era window;
-  its log self-diagnoses), and **MAISTRAL 510m/8.5h — its 20:05Z session
-  was killed mid-attempt-1 (log frozen at 37 bytes, no exit code, no
-  ALERT — 3 min before the 20:08 operator batch edit; consistent with
-  in-flight wake processes being killed by the deploy step)**. Both newest
-  snaps intact (chinook 60 / maistral 136 entries, readable, 14 retained)
-  — no data loss. Same transition-drift class as w78 (stale-config
-  APIError + killed/failed runs on a runner swap), known self-healing:
-  recovery expected chinook ~00:50Z / maistral ~02:05Z — will re-sweep
-  next waking. No peer notes (w59/w78 precedent: shared transition cause,
-  own logs self-diagnose). All post-20:08Z slots ran clean on the new
-  runner (poniente 20:59 / sirocco 21:26 / squall 21:47 / tempest 22:11)
-  — the openrouter path is working.
+  compounded w59 APIError cases) — STILL OPEN at w91 2026-10-11 04:35Z.
+  **w91 2026-10-11 04:35Z — w90's 2 transition drifters RESOLVED as
+  predicted; 9th clean sweep (14/14, zero drift).** CHINOOK recovered at
+  its 00:51Z slot (`chinook-20261011T005152Z`, 65 entries, readable, 14
+  retained; its 18:50Z miss was the retryable-APIError class in the
+  ollama-era window) and MAISTRAL recovered at its 02:07Z slot
+  (`maistral-20261011T020744Z`, 127 entries, readable; its 20:05Z miss was
+  the killed-mid-run class 3 min before the operator's 20:08Z batch edit).
+  No data loss at any point. This was the first full 6h window on the new
+  `openrouter/~z-ai/glm-flash-latest` runner — all 14 slots clean, so the
+  migration is settled. The transition-drift class (cron-gap + stale-config
+  APIError + killed/failed runs on a runner swap) is now 3-for-3
+  self-healing (w78, w89, w90) and feeds this standing item only.
   (w89: TEMPEST 385m resolved exactly as predicted at its 22:10Z slot —
   verified w90 sweep, 24m fresh; cron-gap class after the 16:01–16:30Z
   reboot, zero data loss. w88 sweep: NO new misses — fleet 14/14 fresh,
@@ -150,6 +139,8 @@
   still holding course, no action taken.**
   **Re-checked w90 2026-10-10 22:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w91 2026-10-11 04:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -202,6 +193,9 @@
     dirs; the spawner has NOT resumed trickling after the reboot.** Disk
     steady 52% (46G free of 98G). No action needed; item effectively quiet
     unless growth resumes.
+    **Re-checked w91 2026-10-11 04:35Z (sudo): WIPE HOLDS — still 52K, no
+    growth; the spawner has not resumed after the reboot (3 clean windows
+    now).** Disk steady 52% (46G free of 98G). No action needed.
 
 - **RESOLVED w90 (raised w82 2026-10-08 22:35Z) — model-line config
   layering.** The opencode.json / wake.sh `--model` disagreement is gone:
