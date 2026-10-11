@@ -5876,3 +5876,98 @@ path + spend each waking; watch beacon 30d window (~2026-10-24, ~13
 days out); ASK.md awaiting operator word on PONIENTE + remote-22 +
 10-05 re-migration + 10-06 flip closeout + 2026-10-10 OpenRouter
 flip.
+
+## 2026-10-11T15:20Z — Scheduled waking (all green, no changes)
+
+Context: 15:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`);
+waking landed 15:20:48Z, on schedule. This waking runs
+`openrouter/~z-ai/glm-flash-latest` (operator-directed 2026-10-10 per
+AGENT.md) — waking succeeding = the OpenRouter path healthy end-to-end.
+`check_replies.sh`: no new operator messages.
+
+Host: up 22:50 (same boot as prior wakings since the 2026-10-10
+reboot), load 0.34/0.35/0.28 (light), disk 52% (48G/98G, 45G free —
+flat vs 52% at 03:20Z/09:20Z, far from 80%), RAM 6.7G used / 51G
+available of 58G, swap idle. `sirocco-peer` + tailscaled active; 18
+listeners in the 8787-8800 range (14 tailnet peer + 4 localhost, same
+as prior wakings). Cron re-audit: repo `sirocco.cron` `20 3,9,15,21`
+== live crontab — lock-step holds (15th consecutive confirmation; the
+file's comment line still says "qwen3.8:27b" grid — stale comment
+only, noted 10-10, unchanged).
+
+Backup: `backups/sirocco-20261011T152105Z.tar.gz` (160K, 62 entries,
+gzip -t OK + tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/
+opencode.json present; taken post-inbox-triage, pre-NOTES-append).
+Working tree clean at waking start.
+
+Config state: UNCHANGED since 09:20Z — AGENT.md/opencode.json/wake.sh
+mtimes still 2026-10-10 20:08:17Z (OpenRouter glm-flash config),
+sirocco.cron 17:04Z, `keys/peers.env` still 2026-09-26 01:19:56Z
+(SELF_NAME + 34 peer NAME blocks, count 34 verified). No NEW
+out-of-band changes; the ASK.md 2026-10-10 OpenRouter-flip confirm
+item stands as-is.
+
+Dependencies (all green, live probes ~15:21-15:31Z):
+- OpenRouter: /api/v1/models 200 in 0.08s (primary model path).
+- OpenCode Zen: opencode.ai 200 in 0.12s (secondary/informational).
+- GitHub: api.github.com 200 in 0.05s; status API (www host) "All
+  Systems Operational" (updated 15:04Z), indicator none; no
+  unresolved incidents. 10-05 Pages incident stays resolved.
+- Tailscale: daemon active; full 13-node set (gale-agent, 6x beacon-*
+  [prism active direct, rest idle], gemini/mountain/ubuntu agents
+  active direct, josh-iphone18, josh-linux; ipad174 offline 4d —
+  operator personal device, no fleet lane depends on it). No
+  disconnects. (Vendor status page probed at root: 200 — my first
+  probe used an /api path that 404s; the daemon set + root page are
+  the green signals, no degradation.)
+- LAN Ollama runner 192.168.1.197:11434 UP, `{"version":"0.40.0"}`;
+  /api/tags shows both qwen3.8:27b + qwen3:30b-a3b resident (new
+  model's 3rd consecutive sighting — resident, not transient;
+  nothing on this host consumes the runner as primary,
+  informational, noted for Gale).
+
+Dependency changes: NONE new. Ollama upstream latest still v0.40.3
+(2026-10-11T01:39Z) vs LAN runner v0.40.0 — gap 0.0.3, informational
+only (runner is fallback-not-primary since 2026-10-07), any bump
+operator/Gale call. opencode: upstream latest still v1.19.0
+(2026-10-11T01:39Z, anomalyco/opencode); local binary 1.18.35 — one
+minor behind, unchanged from 03:20Z, operator/Gale call.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings): beaconwake.com
+notAfter 2026-11-23 (~43d), tidalwake.org 2026-11-28 (~48d),
+mountainwake.org 2026-12-04 (~54d). SAME certs since baseline (no
+renewal). HTTPS: beaconwake 301 (expected redirect), tidal/mountain
+200. BEACON 30d window opens ~2026-10-24 (~13 days out) — same watch.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26
+01:19:56Z, SELF_NAME + 34 peer NAME blocks (8 mesh + CHINOOK + 21
+remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). Nothing minted or
+installed. ASK.md: PONIENTE + remote-22 + 10-05 re-migration + 10-06
+flip closeout + 2026-10-10 OpenRouter flip items still awaiting
+operator word (OSTRO + LEVANTE resolved 09-26).
+
+Inbox: 13/13 filed to `processed/` (1459 total). 4x MOUNTAIN (3x
+Rule-7 sweeps 12:00Z incl. duplicate delivery + 1x automated latency
+check; the 12:22Z body again self-labeled "mesa routine mesh sweep"
+under MOUNTAIN's identity — known MOUNTAIN-vs-MESA label quirk,
+stable pattern, data-only, no action) + 1x genuine MESA link-verify
+12:22Z, 2x MEADOW census ("Meadow (agent, GLM Flash)" signature), 1x
+DELTA link-verify, 1x RIVER rule-7 sweep, 1x CANYON scribe pass
+#149, 2x HARBOR link-verify. All explicit "no reply needed, data
+only". No replies sent, nothing minted or installed.
+
+Spend: 2026-10-11 entries so far 03:23Z $0.0397 + 09:22Z $0.0494
+(OpenRouter glm-flash path, ~$0.04-0.10/waking; no alert threshold
+crossed). This waking's own entry appends at run end.
+
+Runner/portability note for Tempest: `openrouter/~z-ai/glm-flash-latest`
+via OpenRouter normal this waking (15th consecutive clean slot across
+model changes); LAN runner up (fallback healthy); no runner/model
+anomalies on the primary path.
+
+Next: watch Ollama v0.40.3 vs runner v0.40.0 + opencode v1.19.0
+uptake (both operator/Gale calls); watch the OpenRouter glm-flash
+path + spend each waking; watch beacon 30d window (~2026-10-24, ~13
+days out); ASK.md awaiting operator word on PONIENTE + remote-22 +
+10-05 re-migration + 10-06 flip closeout + 2026-10-10 OpenRouter
+flip.
