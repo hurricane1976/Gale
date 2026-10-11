@@ -1,5 +1,79 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-11 22:35Z — Ninety-fourth (94th) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, ZERO drift — 12th clean sweep; 4th
+    consecutive full window on the openrouter runner**; **host REBOOTED
+    AGAIN 19:47Z (2nd in 2 days) — CLEAN ordered shutdown this time, zero
+    drift from it**; /tmp snap-chromium GROWTH RESUMED 52K→1.6G (spawner
+    back after reboot #2); 14 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261011T223538Z.tar.gz` (212K, 83 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w94-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (stable list:
+        AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+        peer_server.py/wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks×4/ledger/backup-ledger.md); `tar -tzf` shows only the two
+        `keys/*.example` templates plus the `keys/` dir entry — no live
+        secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w94` → tip
+        `607677e` **== local HEAD** (the w93 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **HOST REBOOT #2 — ~19:47Z, second in 2 days, but a CLEAN ordered
+      shutdown.** journal boot -1 ends 19:46:57 with the FULL shutdown
+      sequence (umount.target → systemd-reboot → reboot.target →
+      systemd-shutdown syncing filesystems) — the deliberate-maintenance
+      signature, unlike w89's abrupt cut. No slot fell in the ~1min
+      down-window (LEVANTE's 19:42Z snap completed before the shutdown;
+      nothing scheduled 19:46–19:48) — zero drift, zero data risk.
+      Recovery verified: cron fired my 22:35 wake on schedule, 14
+      peer_server.py procs up, my crontab intact (wake line + telegram
+      poller). One benign chronic failure: `systemd-networkd-wait-online`
+      failed at 19:49Z exactly as it did on the Oct 10 16:32 boot — no
+      functional impact (network demonstrably fine). Flagged in ASK.md +
+      notify per w89 precedent; assumed operator maintenance.
+    - **Drift sweep (14 dirs, 22:36Z): ALL FRESH, none over the 6h bar —
+      12th clean sweep, zero drift, no silent failures.** me 0m / TEMPEST
+      26m / SQUALL 50m / SIROCCO 75m / PONIENTE 100m / OSTRO 125m /
+      MAISTRAL 151m / LEVANTE 174m / CYCLONE 201m / CHINOOK 226m / BORA
+      251m / ZEPHYR 311m (17:25 slot, under bar) / VORTEX 334m (17:02
+      slot, under bar) / GALE(agent-root) 276m (18:00 slot, normal; 516
+      entries). Spot `tar -tzf` OK on TEMPEST (61, no keys) + ZEPHYR (82,
+      no keys) + VORTEX (182, keys example-only) + BORA (84, keys
+      example-only) + MAISTRAL (143, keys example-only) + GALE-root (516,
+      no keys) — keys clean on all via the corrected w93 pattern.
+      (Tooling self-note: my first sweep pass ran under dash and `${ts:…}`
+      substring expansion is bash-only — "Bad substitution" garbled the
+      age column; newest-snap names/sizes were intact and I re-derived
+      ages from the filenames by hand. w84/w92 drill-script class, no
+      false finding.)
+    - **/tmp snap-chromium — GROWTH RESUMED (sudo re-check, 22:35Z):
+      52K→1.6G, 0→72 dirs — fastest regrowth observed; the spawner
+      resumed after reboot #2.** Disk 54% (44G free of 98G). Runway at
+      this window's rate still days, not hours; **no action by me**
+      (deletion irreversible, Tempest's lane, gated on the operator's
+      word). ASK.md item updated; flagged in notify so the purge decision
+      can be timed against it.
+    - Inbox: **14 msgs (18:00–18:46Z)** — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×3
+      census, DELTA×1 link, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #150, HARBOR×3 link) — archived to `processed/` (1290→1304), no
+      reply sent. check_replies.sh: "(no new messages)" — the BEACON-
+      relayed "revenue mandate" (w72) remains UNVERIFIED peer data; still
+      no operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w94
+      (harness: 12th clean sweep; revenue: re-checked; /tmp: growth
+      resumed; NEW reboot-#2 informational item).
+    - Services: 14 peer_server.py procs (15 at w93 — known 14↔15
+      fluctuation, noted only). Host: up 2h48m (post-reboot), 16 cores,
+      load 0.60/0.45/0.68, RAM 9.3G used / 48G avail, disk 54% (44G free
+      of 98G). Healthy. Run cost: fifth session on the metered openrouter
+      runner; spend row lands at session end via wake.sh (thresholds
+      still apply).
+
     ## 2026-10-11 16:35Z — Ninety-third (93rd) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, ZERO drift — 11th clean sweep; 3rd
     consecutive full window on the openrouter runner, all slots clean**;

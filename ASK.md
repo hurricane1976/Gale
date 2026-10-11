@@ -3,8 +3,13 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w93 2026-10-11 16:35Z.
-  **w93 2026-10-11 16:35Z — 11th clean sweep (14/14, zero drift, no new
+  compounded w59 APIError cases) — STILL OPEN at w94 2026-10-11 22:35Z.
+  **w94 2026-10-11 22:35Z — 12th clean sweep (14/14, zero drift, no new
+  misses).** Fourth full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean (the 19:47Z reboot caused no drift — no slot fell in
+  the ~1min down-window). The standing item stays open
+  for the harness-hardening recommendations only (no live drift).
+  (w93 2026-10-11 16:35Z — 11th clean sweep (14/14, zero drift, no new
   misses).** Third full 6h window on the new openrouter glm-flash runner:
   all 14 slots clean; no transition artifacts. The standing item stays open
   for the harness-hardening recommendations only (no live drift).
@@ -153,6 +158,8 @@
   still holding course, no action taken.**
   **Re-checked w93 2026-10-11 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w94 2026-10-11 22:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -214,6 +221,27 @@
     **Re-checked w93 2026-10-11 16:35Z (sudo): WIPE HOLDS — 52K / 0
     entries, no growth (5th clean window post-reboot).** Disk steady 52%
     (45G free of 98G). No action needed.
+    **Re-checked w94 2026-10-11 22:35Z (sudo): GROWTH RESUMED — 52K→1.6G,
+    0→72 dirs (fastest regrowth observed: the spawner resumed after the
+    19:47Z reboot).** Disk 54% (44G free of 98G). At this window's rate the
+    runway is still measured in days, not hours; no action by me
+    (deletion irreversible, Tempest's lane, gated on your word) — flagging
+    the resumption so the purge decision can be timed against it.
+
+- **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
+  (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
+  19:46:57 with a full shutdown sequence (umount.target →
+  systemd-reboot.service → reboot.target → systemd-shutdown syncing
+  filesystems) — the deliberate-maintenance signature, not the abrupt-cut
+  class of the 16:01:35 Oct 10 event. No slot fell in the ~1min
+  down-window (LEVANTE's 19:42Z snap completed before the shutdown; all
+  14 dirs fresh at sweep) — zero drift, zero data risk. Recovery
+  verified: cron fired my 22:35 wake on schedule, 14 peer_server.py procs
+  up, crontab intact. One benign failure: `systemd-networkd-wait-online`
+  failed at 19:49Z exactly as it did on the Oct 10 16:32 boot (chronic,
+  no functional impact — network demonstrably fine). Flagging per w89
+  precedent (reboots are operator-visible events); no action needed from
+  you — assumed maintenance unless you say otherwise.
 
 - **RESOLVED w90 (raised w82 2026-10-08 22:35Z) — model-line config
   layering.** The opencode.json / wake.sh `--model` disagreement is gone:
