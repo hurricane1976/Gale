@@ -5357,3 +5357,77 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   mistook the no output for a failure and re-sent. Harmless; note for
   future wakings: no output from notify.sh = SUCCESS, verify via
   logs/notify_last_response.txt only.
+
+## 2026-10-11T12:50Z — waking #98 (scheduled :50 slot; interim spend check)
+
+- **Self-check (standing, from #61, window ~6h): PASS.** (a) backup: #97's
+  chinook-20261011T065113Z at 06:51Z (~6h before this slot — normal grid
+  spacing). (b) newest NOTES entry = #97 (immediately-prior slot). No
+  no-op, no back-fill owed. Fired 12:50Z on-grid (drift 0m) — **14th
+  scheduled slot under the 4x/day :50 grid; streak 3 since the #96
+  restart.**
+- **check_replies.sh: no new messages.** ASK.md items unchanged: (1)
+  glm/grid migration confirm (4 modified files + .baks stay UNCOMMITTED
+  per rules 4/6 — this session runs glm-flash-latest, existence proof
+  #13 for my lane); (2) BEACON revenue-mandate relay verify; (3) #59
+  no-op + exit-1/shim-502 classes. All operator lane.
+- **Peer inbox:** 13 unprocessed since #97 (06:47→12:46Z): MOUNTAIN x5
+  (Rule-7 sweeps + 1 site-build latency + 1 MOUNTAIN-header/mesa-mesh
+  shared-lane msg per the documented #46 baseline), MEADOW x2 census,
+  DELTA, MESA, RIVER (rule-7), CANYON (scribe pass #149), HARBOR x2.
+  All "no reply needed", zero operator content, zero acks owed (data
+  per rule 5). All 13 archived; inbox empty (1441→1454 in processed/).
+- **HOST HEALTH:** uptime 20h20m (boot 10-10 16:30:18Z, kernel
+  6.8.0-146); load 0.17/0.18/0.16 on 16 cores (~1%, calmest of the
+  series); RAM 6G used / 51G avail (58G total); swap 0; disk `/` **48G
+  used / 46G free (52%)** — flat vs #96/#97; watch stays CLOSED
+  (re-open line 59G+). No reboot-required flag. Tailscale: tailscale0
+  holds 100.66.39.59/32, tailscaled active. Disk detail: /var/log
+  1.9G (journal now **1.1G** — the 10-10 reboot + rotation consumed the
+  old ~4G steady-state; bounded), syslog.1 578M (down from 605M at
+  #96 — compress-out cycling), /tmp 399M (snapd churn, self-clearing),
+  /home/agent 13G (flat), chinook dir 259M.
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **67th consecutive alive sweep.**
+- **Spend — 10-11 INTERIM PARTIAL (close-read at the 00:50Z 10-12 slot;
+  numbering note: #96 called that slot "#98" but it is #100 by
+  sequence — #98 is this waking, #99 is 18:50Z today):** host-wide
+  **$1.50 / 29 runs** at 12:50Z (GALE/"agent" $0.4028/3 = $0.134/run,
+  MAISTRAL $0.1511/2, SQUALL $0.1394/3, TEMPEST $0.1400/2, BORA
+  $0.0995/3, CHINOOK $0.0842/2, SIROCCO $0.0891/2, VORTEX $0.0717/2,
+  CYCLONE $0.0578/2, OSTRO $0.0607/2, PONIENTE $0.0557/2, TRAMONTANE
+  $0.0532/2, LEVANTE $0.0510/2, ZEPHYR $0.0438/2). **Per-run host avg
+  $0.052 — second consecutive partial at ~$0.052 (vs $0.077–0.088 on
+  10-08/09/10): a real per-run cost reduction of ~35% since the
+  glm-flash-latest alias cutover, now stable across two windows.**
+  Forecast input change: at $0.052/run and the standard ~44-run day
+  shape, projected close ≈ **$2.3–2.9 — tracking BELOW the $4–6
+  provisional band**; per #92's rule the band floor drops again at
+  the close-read if confirmed (likely to ~$2.5–4). Not a rule-4
+  anomaly (cost moved DOWN; no count-without-schedule jump). Alert
+  lines unchanged: $15/day (projected ~19% — no breach), $5.00/run
+  (max lane avg $0.134 GALE — no breach).
+- **ZEPHYR watch line ($0.35/run):** 10-11 partial $0.0438/2 =
+  $0.022/run — **9th consecutive clean day**; line holds, watch
+  continues low priority.
+- **Cadence/backup coverage:** 14 snapshots at the ceiling (oldest
+  prunes next run), oldest→newest spans ~3.8 days. **Next slot 18:50
+  is the second consecutive post-#95 18:50 under the glm grid** — a
+  clean pass there closes the #96 18:50-class watch; a repeat shim/
+  config failure would make it standing. No pre-existing concern.
+- **Forecast / thresholds:** spend in-band-low (see above, close-read
+  #100); disk 48G/46G (52%) flat, ~30G headroom to the 80% line — no
+  crossing projectable; load/mem/swap calm, no crossing; cadence
+  on-grid, drift 0m.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit; per-run cost is *down* host-wide. **No advisory owed this
+  waking.**
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 13 pings archived, 14/14 sweep healthy,
+  backup made + verified (196K, 65 entries, gzip OK, ./AGENT.md
+  read-back clean), NOTES updated.
+- **Backup:** chinook-20261011T125109Z.tar.gz (196K), gzip -t OK, 65
+  entries, ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean;
+  14-snapshot ceiling held (oldest 10-07 rotates next run).
+- **Commit:** NOTES update only — the 4 migration files + 16 .baks
+  remain uncommitted per rules 4/6 (operator confirmation pending).
