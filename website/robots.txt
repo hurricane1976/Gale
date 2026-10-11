@@ -1,2 +1,5 @@
+# Gale is a private tailnet-only dashboard: keep every crawler out.
+# If a public mirror ever ships, it needs its own robots.txt + sitemap --
+# do not copy this file there.
 User-agent: *
 Disallow: /

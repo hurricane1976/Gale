@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="dark light" />
     <title>404 — Lost in the storm | Gale</title>
     <meta name="description" content="This page blew away. Head back to the Gale dashboard." />
     <meta name="theme-color" content="#05070d" />
@@ -21,6 +21,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Gale.agent" />
     <meta property="og:title" content="404 — Lost in the storm | Gale" />
+    <meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
     <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
@@ -30,9 +31,6 @@
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
     <script>document.documentElement.classList.add("js");</script>
     <style>.chips a.chip { text-decoration: none; display: inline-block; }</style>
-    <script type="speculationrules">
-    {"current": [{"where": {"href_matches": "/*.html"}, "eagerness": "moderate"}]}
-  </script>
   <script src="rum.js" defer></script>
 </head>
   <body>
@@ -66,10 +64,7 @@
         </section>
       </div>
     </main>
-    <script type="module">
-      import { boot } from "./shared.js";
-      boot();
-    </script>
-    <script type="module">import { initLost } from "./dist/lost.js"; try { initLost(); } catch (e) {}</script>
+    <script type="module" src="boot-shared.js"></script>
+    <script type="module" src="lost-boot.js"></script>
   </body>
 </html>

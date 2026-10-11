@@ -60,16 +60,27 @@ for (const name of readdirSync(root)) {
   if (name.endsWith(".html") || name === "sw.js") files.push(join(root, name));
 }
 
-// Stylesheets: content-hash copies (gale.<hash>.css) so nginx can serve them
-// immutable instead of revalidating on every page view. The unhashed
-// originals stay in the docroot (404.html imports, smoke, old SW caches).
+// Stylesheets: minified + content-hash copies (gale.<hash>.css) so nginx can
+// serve them immutable instead of revalidating on every page view. The repo
+// source stays readable (comments + formatting); minification happens here on
+// the DEPLOYED copy only: strip comments, collapse whitespace. The unhashed
+// originals stay in the docroot (404.html imports, smoke, old SW caches) and
+// are minified identically so both variants match byte-for-byte modulo the name.
 const CSS = ["gale", "fleet-tidal", "cinematic", "storm-scene", "mobile", "fonts"];
+const minifyCss = (src) => src
+  .replace(/\/\*[\s\S]*?\*\//g, "")
+  .replace(/\s+/g, " ")
+  .replace(/\s*([{}:;,>+~])\s*/g, "$1")
+  .replace(/;}/g, "}")
+  .trim();
 const cssMap = {};
 for (const n of CSS) {
   const f = join(root, n + ".css");
   if (!existsSync(f)) continue;
-  const h = createHash("sha256").update(readFileSync(f)).digest("hex").slice(0, 8);
-  copyFileSync(f, join(root, `${n}.${h}.css`));
+  const min = minifyCss(readFileSync(f, "utf8"));
+  writeFileSync(f, min);
+  const h = createHash("sha256").update(min).digest("hex").slice(0, 8);
+  writeFileSync(join(root, `${n}.${h}.css`), min);
   cssMap[n] = `${n}.${h}.css`;
 }
 const rewriteCss = (text) => {

@@ -18,6 +18,8 @@
       window.__galeRUM = samples.slice();
     };
     const push = (metric, value, unit = "ms", extra = {}) => {
+      // a page still in prerendering may never activate: don't record its timings
+      try { if (document.prerendering) return; } catch {}
       if (!Number.isFinite(value)) return;
       samples.push({ metric, value: Math.round(value * 1000) / 1000, unit, ...context, ...extra, ts: Date.now() });
       if (samples.length > LIMIT) samples.splice(0, samples.length - LIMIT);
@@ -70,6 +72,66 @@
     }
     addEventListener("error", (e) => { if (e instanceof ErrorEvent) push("JS_ERROR", 1, "count"); else if (e.target && e.target !== window) push("ASSET_ERROR", 1, "count"); }, true);
     addEventListener("unhandledrejection", () => push("REJECTION", 1, "count"));
+    /* Reporting API (review 2026-10-11): CSP violations, deprecations and
+       interventions otherwise only exist inside devtools. Count locally, and
+       mirror counts to the local collector (POST /api/fleet/report) at most
+       once a minute, batched, via fetchLater when available so the delivery
+       survives early tab closure. Metadata only: type + directive counts. */
+    const reportQueue = [];
+    let reportLastSent = 0;
+    const flushReports = () => {
+      if (!reportQueue.length) return;
+      const now = Date.now();
+      if (now - reportLastSent < 60000) return;
+      const batch = reportQueue.splice(0, 10);
+      reportLastSent = now;
+      const body = JSON.stringify(batch);
+      try {
+        if (typeof fetchLater === "function") {
+          fetchLater("/api/fleet/report", { method: "POST", headers: { "Content-Type": "application/json" }, body, activateAfter: 30000 });
+        } else {
+          fetch("/api/fleet/report", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+        }
+      } catch { /* reporting is enhancement-only */ }
+    };
+    if (window.ReportingObserver) {
+      try {
+        new ReportingObserver((reports) => {
+          for (const r of reports) {
+            const body = r.body || {};
+            push("REPORT_" + String(r.type || "unknown").toUpperCase().replace(/-/g, "_"), 1, "count",
+              body.effectiveDirective ? { directive: String(body.effectiveDirective) } : {});
+            reportQueue.push({ type: r.type || "unknown", body: {
+              effectiveDirective: String(body.effectiveDirective || "").slice(0, 60),
+              disposition: String(body.disposition || "").slice(0, 20),
+              statusCode: body.statusCode ?? null,
+              sourceFile: String(body.sourceFile || "").slice(0, 200),
+              lineNumber: body.lineNumber ?? null,
+            } });
+          }
+          flushReports();
+        }, { types: ["csp-violation", "deprecation", "intervention"], buffered: true }).observe();
+      } catch { /* unsupported type set on some engines */ }
+    }
+    /* bfcache: record restores and, on Chromium, WHY a back/forward restore
+       was blocked (blocked reasons are enumerable strings, not page data). */
+    addEventListener("pageshow", (e) => {
+      if (e.persisted) push("BFCACHE_RESTORE", 1, "events");
+      try {
+        const nav = performance.getEntriesByType("navigation")[0];
+        const reasons = nav && nav.notRestoredReasons && nav.notRestoredReasons.reasons;
+        if (reasons && reasons.length) push("BFCACHE_BLOCKED", reasons.length, "reasons", { first_reason: String(reasons[0].reason || "unknown").slice(0, 60) });
+      } catch {}
+    });
+    /* Prerender attribution: activationStart > 0 means this navigation was
+       prerendered and activated; the naive load timings would mislead. */
+    try {
+      const nav0 = performance.getEntriesByType("navigation")[0];
+      if (nav0 && nav0.activationStart > 0) {
+        context.prerendered = true;
+        push("PRERENDER_ACTIVATION", nav0.activationStart, "ms");
+      }
+    } catch {}
     let offlineAt = navigator.onLine ? 0 : Date.now();
     addEventListener("offline", () => { offlineAt = Date.now(); push("OFFLINE", 1, "events"); });
     addEventListener("online", () => { push("ONLINE", 1, "events"); if (offlineAt) push("OFFLINE_DURATION", Date.now() - offlineAt, "ms"); offlineAt = 0; });

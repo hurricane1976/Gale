@@ -7,14 +7,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Operations — fleet incidents and reporting | Gale</title>
-  <meta name="description" content="Gale reliability console: SLOs and error budgets, synthetic checks, RUM web-vitals, cost forecasts, backup freshness." />
+  <meta name="description" content="Fleet operations: incidents, reporting coverage, collection health, spend and recovery." />
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#02060d" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Gale" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Gale.agent" />
+    <meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
   <link rel="stylesheet" href="gale.css" />
@@ -56,6 +59,7 @@
 <main id="main" class="ops-main">
   <div class="ops-head"><div><span class="eyebrow">Fleet operations</span><h1 class="ops-title">Operations</h1><p class="lede">Reporting coverage, active incidents, task progress, spend, and recovery evidence.</p></div></div>
   <p id="ops-freshness" role="status">Loading fleet evidence…</p>
+  <p id="ops-watchdog" class="mini-note">Checking external heartbeat…</p>
   <div class="ops-board">
     <section class="ops-panel span-full"><h2 class="panel-title">Fleet readiness</h2><div id="ops-summary" class="vitals-grid"></div></section>
     <section class="ops-panel"><h2 class="panel-title">Refresh interval</h2><p class="mini-note">Expected 30-second page refresh compared with the observed gap between successful reads.</p><div id="ops-refresh-monitor" class="refresh-interval" role="status" aria-live="polite">Waiting for a second successful collection…</div></section>

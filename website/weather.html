@@ -13,10 +13,10 @@
 <meta property="og:site_name" content="Gale.agent" />
 <meta property="og:title" content="Weather Tracker — Gale" />
 <meta property="og:description" content="Gale weather tracker: live conditions, hourly + 7-day forecast, animated radar, alerts and air quality." />
-<meta property="og:image" content="http://100.66.39.59:8090/assets/og-image.jpg" />
+<meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
   <meta name="description" content="Gale weather tracker: live conditions, hourly + 7-day forecast, animated radar, alerts and air quality. Defaults to Woodbridge, VA — search anywhere." />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
   <meta name="theme-color" content="#02060d" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -24,7 +24,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
-  <link rel="preconnect" href="https://unpkg.com" crossorigin />
   <link rel="preconnect" href="https://api.open-meteo.com" />
   <link rel="preconnect" href="https://geocoding-api.open-meteo.com" />
   <link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com" />
@@ -34,15 +33,12 @@
   <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" />
   <link rel="stylesheet" href="gale.css" />
   <link rel="stylesheet" href="cinematic.css" />
   <link rel="stylesheet" href="mobile.css" />
   <script>document.documentElement.classList.add("js");</script>
   <script type="module" src="dist/weather.js"></script>
-  <script type="speculationrules">
-    {"current": [{"where": {"href_matches": "/*.html"}, "eagerness": "moderate"}]}
-  </script>
   <script src="rum.js" defer></script>
 </head>
   <body>
@@ -280,6 +276,6 @@
     </div>
   </footer>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="assets/vendor/leaflet/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" defer></script>
 </body>
 </html>

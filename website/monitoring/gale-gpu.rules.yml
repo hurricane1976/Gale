@@ -11,7 +11,7 @@ groups:
     annotations:
       summary: LAN Ollama server unreachable for 10m
       description: interactive Ollama host is down (qwen3.8:27b) -- interactive inference &amp; bench runs will fail until it's back
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
   - alert: GaleOllamaModelUnloaded
     expr: gale_ollama_model_loaded == 0
     for: 15m
@@ -21,7 +21,7 @@ groups:
     annotations:
       summary: no model resident in Ollama for 15m
       description: library still reachable but nothing loaded ({{ $value }} models) -- next wake eats a cold load
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
   - alert: GaleGpuCollectorDown
     expr: gale_gpu_collector_up == 0
     for: 15m
@@ -31,7 +31,7 @@ groups:
     annotations:
       summary: GPU collector (josh-desktop11 /gpu) unreachable
       description: no VRAM/temp/util telemetry -- collector or the desktop is down
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
   - alert: GaleGpuHot
     expr: gale_gpu_temp_c > 83
     for: 5m
@@ -41,7 +41,7 @@ groups:
     annotations:
       summary: GPU {{ $labels.gpu }} over 83C for 5m
       description: RTX 4090 throttles ~83C -- inference throughput degrades
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#telemetry
   - alert: GaleGpuVramNearFull
     expr: gale_gpu_vram_used_ratio > 0.95
     for: 15m
@@ -51,7 +51,7 @@ groups:
     annotations:
       summary: GPU {{ $labels.gpu }} VRAM >95% for 15m
       description: headroom shrinking -- a second model load would OOM the server
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#telemetry
   - alert: GaleGpuBridgeStale
     expr: (time() - gale_gpu_bridge_unixtime > 900) or absent(gale_gpu_bridge_unixtime)
     for: 5m
@@ -62,4 +62,4 @@ groups:
     annotations:
       summary: gpu_bridge stopped updating (15m+)
       description: gale_gpu.prom stale -- cron entry dead or bridge erroring (see journal)
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector

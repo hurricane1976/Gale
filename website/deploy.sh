@@ -33,7 +33,12 @@ fi
 # dist/<name>.js; the raw *.js in the repo are still deployed too, since
 # 404.html imports shared.js directly via an inline <script type=module>
 # esbuild never sees (not one of its declared entry points).
-( cd "$SCRIPT_DIR" && npm run build )
+# npm may be absent on this host (bare node) -- build.mjs is the same work.
+if command -v npm >/dev/null 2>&1; then
+  ( cd "$SCRIPT_DIR" && npm run build )
+else
+  ( cd "$SCRIPT_DIR" && node build.mjs )
+fi
 
 # deploy.sh is usually invoked under sudo, which would leave dist/ (and
 # node_modules caches) root-owned and break the next plain `npm run build`.
@@ -52,18 +57,34 @@ if [ -d /var/www/gale/dist ]; then
   done
 fi
 sudo mkdir -p /var/www/gale
-sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js /var/www/gale/
+# Hashed stylesheets (gale.<hash>.css etc, minted by rewrite-dist-refs.mjs)
+# have the same merge hazard as dist/: `cp *.css` merges, so every deploy
+# orphans the previous hashes (~120 stale files observed 2026-10-11). Remove
+# old hashed copies before copying the fresh unhashed originals; the rewriter
+# mints exactly one hash per name afterwards.
+sudo rm -f /var/www/gale/gale.*.css /var/www/gale/mobile.*.css \
+  /var/www/gale/fleet-tidal.*.css /var/www/gale/cinematic.*.css \
+  /var/www/gale/storm-scene.*.css /var/www/gale/fonts.*.css
+sudo cp -r "$SCRIPT_DIR"/*.html "$SCRIPT_DIR"/*.css "$SCRIPT_DIR"/*.js "$SCRIPT_DIR"/*.json /var/www/gale/
 # dist/ has content-hashed chunk filenames (esbuild code splitting) -- `cp -r`
 # into an existing dist/ *merges*, so a stale hashed chunk from a previous
 # build never gets removed. Replace the whole directory instead.
 sudo rm -rf /var/www/gale/dist
 sudo cp -r "$SCRIPT_DIR"/dist /var/www/gale/
+# Sourcemaps are a debug artifact: they double dist transfer size and expose
+# source. Never serve them from the docroot (review 2026-10-11 #3).
+sudo rm -f /var/www/gale/dist/*.map /var/www/gale/dist/chunks/*.map
 sudo cp "$SCRIPT_DIR"/robots.txt /var/www/gale/ 2>/dev/null || true
 sudo cp "$SCRIPT_DIR"/manifest.json /var/www/gale/ 2>/dev/null || true
 for icon in favicon.ico apple-touch-icon.png apple-touch-icon-precomposed.png icon-192.png icon-512.png icon-512-maskable.png; do
   sudo cp "$SCRIPT_DIR/$icon" /var/www/gale/ 2>/dev/null || true
 done
 sudo cp -r "$SCRIPT_DIR"/assets /var/www/gale/
+# PWA install screenshots live in pwa-screenshots/ (referenced by
+# manifest.json). They were never copied, so prod served 404s for both
+# (review 2026-10-11 #2). Ship them like assets/.
+sudo rm -rf /var/www/gale/pwa-screenshots
+sudo cp -r "$SCRIPT_DIR"/pwa-screenshots /var/www/gale/ 2>/dev/null || true
 # files that no longer exist in the repo shouldn't linger in the docroot
 for stale in app.js style.css; do sudo rm -f "/var/www/gale/$stale"; done
 # Entry bundles are content-hashed (dist/main-<hash>.js) so a stale cached
