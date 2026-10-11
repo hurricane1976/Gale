@@ -5139,3 +5139,142 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Backup:** chinook-20261010T125107Z.tar.gz (176K), gzip -t OK,
   ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean; 14-snapshot ceiling
   held.
+
+## 2026-10-11T00:50Z — waking #96 (scheduled :50 slot; 10-10 CLOSE-READ + reboot window post-mortem)
+
+- **Self-check (standing, from #61, window ~6h): FAIL → root-caused, no
+  silent back-fill possible, handled.** (a) backup within window? NO —
+  newest was #94's chinook-20261010T125107Z (~12h before this slot).
+  (b) newest NOTES entry = immediately-prior slot? NO — #94 was last;
+  the 18:50 slot (#95) wrote nothing. Root cause (verified from logs/
+  20261010T185001Z.log + .json): **#95 was NOT a plan-then-stop no-op —
+  it was a hard failure of the known exit-1 class shape but a NEW error:
+  `APIError 502 "ollama_shim upstream: <urlopen error [Errno 113] No
+  route to host>"` at 127.0.0.1:11435** — 3 attempts (18:50:01, 18:51:53,
+  18:53:47), all exit 1, retry path fired, **wake.sh ALERT reached the
+  operator on Telegram 18:55Z (msg_id 148)**. No ledger row, no backup,
+  no NOTES — correct exit-1-path behavior. Back-fill: this waking's
+  backup + entry cover the window; nothing more owed (no #59-style
+  partial session existed to back-fill).
+- **WHY the shim was in the path: 10-10 config churn (third model round).
+ ** Timeline reconstructed: 10-10 00:50/06:50/12:50 sessions ran glm
+  flash billing (ledger rows $0.036/$0.041/$0.101); ~16:28–16:30Z host
+  REBOOTED for kernel upgrade **6.8.0-142 → 6.8.0-146** (two boot
+  entries 16:28:09 + 16:30:18, first unclean — same shape as the 9/25
+  window; this is GALE's long-pending reboot-required flag landing, as
+  forecast in #92/#93/#94); operator SSH sessions from **192.168.1.55**
+  (pts/0 16:57, pts/1 23:10 — NEW IP vs the historic .197/.69 pattern;
+  recorded as data); ~17:04Z the working tree switched BACK to
+  `ollama/qwen3.8:27b` via gale-ollama-shim (wake.sh comment: "server
+  repaired"; 4 .bak-20261010-glmflash files saved at 17:04); the shim's
+  LAN upstream (192.168.1.197:11434) was UNREACHABLE at 18:55Z → my
+  #95 failure; ~20:08Z tree switched BACK to
+  `openrouter/~z-ai/glm-flash-latest` (current mtimes) — which this
+  session runs fine (**existence proof #12 for my lane**). Fleet-wide
+  blast radius (sibling ledgers, read-only): 10-10 evening slots LOST
+  for **BORA 18:25, ZEPHYR 17:25, CYCLONE 19:15, LEVANTE 19:40,
+  MAISTRAL 20:05, TEMPEST 16:10, CHINOOK 18:50** (~7 on-box slots);
+  OSTRO/PONIENTE/SIROCCO/SQUALL/TRAMONTANE/VORTEX/MAISTRAL-other slots
+  recovered post-20:08. GALE's 18:00:19 ran clean inside the window
+  (per-lane adoption timing differed). No further sibling failures
+  after ~21Z (10-11 00:00/00:25 rows: GALE $0.1359, BORA $0.0323 —
+  both back on billing lanes; recovery confirmed).
+- **check_replies:** (no new messages). ASK.md updated this waking: the
+  10-08 migration-confirm item now covers the 10-10 round (same ask:
+  "Yes I did it" → I commit the tree as-is). All 4 modified files
+  (`opencode.json`, `wake.sh`, `AGENT.md`, `chinook.cron`) + 11 .baks
+  stay **UNCOMMITTED** per rules 4/6 — no chat-id-verified word yet.
+  Note for Bora's lane: wake.sh line-3 comment still says "back to
+  ollama" while its operative line (49) runs glm-flash-latest — stale
+  wording, flagged, NOT edited by me (read-only on wake.sh, standing
+  rule).
+- **Peer inbox:** 32 unprocessed since #94 (12:46Z 10-10 → 00:46Z
+  10-11 — the poller survived the reboot; batches include the
+  10-10 18:00Z window while my waking was down): MOUNTAIN x7 (Rule-7
+  sweeps + 2 site-build latency + 2 MOUNTAIN-header/mesa-mesh-body
+  shared-lane msgs per the documented #46 baseline — not mismatches),
+  MEADOW x6 census, DELTA x5 link-verify, HARBOR x6 link-verify,
+  MESA x2, CANYON x2 (scribe passes #146/#147), RIVER x2. All
+  "no reply needed", zero operator content, zero acks owed (data per
+  rule 5). All 32 archived; inbox empty (1393→1425 in processed/).
+- **HOST HEALTH (post-reboot):** uptime 8h20m (boot 10-10 16:30:18Z,
+  kernel 6.8.0-146); load 0.16/0.27/0.35 on 16 cores (~2%, calm);
+  RAM 7.4G used / 51G avail (58G total); swap 0; disk `/` **48G used /
+  46G free (51%)** — DOWN 6G from #94's 54G (post-reboot cleanup of
+  /tmp + journal + snapd churn; watch stays CLOSED, re-open line 59G+
+  unchanged). reboot-required flag GONE (consumed by the upgrade).
+  Tailscale: tailscale0 holds 100.66.39.59/32, remote beacon peers
+  reachable (prism direct) — no TUN regression on the new kernel.
+  /var/log/syslog.1 is 605M (rotated at 10-11 00:00, awaiting the
+  next-cycle compress-out — same bounded churn as the #50–54 arc).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **65th consecutive alive sweep.**
+- **Spend — 10-10 CLOSE-READ (the deliverable #93/#94 scheduled for this
+  slot):** host-wide **$3.7815 / 49 runs** (GALE $0.5381/4, CHINOOK
+  $0.1782/3, MAISTRAL $0.4498/3, VORTEX $0.4295/4, PONIENTE $0.3850/4,
+  SIROCCO $0.3297/4, SQUALL $0.2883/4, TRAMONTANE $0.2620/4, BORA
+  $0.2031/3, TEMPEST $0.1639/3, CYCLONE $0.1538/3, LEVANTE $0.1203/3,
+  OSTRO $0.1483/4, ZEPHYR $0.1315/3). **Below the provisional band
+  ($4.5–6.0) — shortfall attributed: ~7 lost slots in the
+  16:10–20:08 reboot/shim-outage window ≈ +$0.5–0.6 had they run at
+  the host per-run avg ($0.077) → adjusted ≈ $4.3–4.4, i.e. INSIDE
+  $4–6.** Per #92's stated rule the floor drops: **provisional band
+  now $4–6/day (~$120–180/mo)**, pending the 10-11 close-read at #98
+  (00:50Z 10-12) — #97 (06:50Z) is an interim partial. Per-run host
+  avg $0.077 stable vs 10-08/09 ($0.082/$0.088) — **no per-run creep;
+  the miss is run-count (outage), not cost-per-run — no rule-4
+  anomaly** (the rule-4 trigger is cost jumping without run-count
+  change, or count jumping without schedule change; this is the
+  inverse: BOTH dropped, for a known cause, already operator-alerted).
+  Alert lines: $15/day at 25% — no breach; $5.00/run max lane avg
+  $0.14 — no breach.
+- **ZEPHYR watch line ($0.35/run):** 10-10 $0.1315/3 = $0.044/run —
+  **7th consecutive clean day**; line holds, watch continues low
+  priority.
+- **Cadence:** this waking fired 00:50:01Z on-grid (drift 0m) — 12th
+  scheduled slot under the 4x/day :50 grid; **the #84–#94 streak of 11
+  consecutive clean slots is broken by the #95 outage failure** (host/
+  config event, not the model-behavior class; no #59-style no-op).
+  Streak restarts at 1 with this waking. Backup coverage: 14 snaps,
+  oldest→newest spans ~3.75 days — the #95 gap means 10-10 18:50 →
+  10-11 00:51 had NO backup for ~12h (longest gap on record for my
+  lane; fixed by this waking's snapshot; not fixable retroactively).
+- **Forecast / thresholds:**
+  - Spend: provisional band $4–6/day; 10-11 close-read at #98
+    (00:50Z 10-12); alert lines unchanged ($15/day, $5.00/run).
+  - Disk: 48G/46G free (51%) — post-reboot trough; watch CLOSED
+    (re-open at 59G+); no crossing projectable (~30G headroom to the
+    80% line ~78G).
+  - Load/mem/swap: calm, no crossing.
+  - Cadence: next slots 06:50/12:50/18:50 today — watch 18:50
+    specifically (the #95 casualty slot; if it fails again with a
+    config error, that's a standing 18:50-class problem, not a one-off).
+  - GALE reboot forecast input: CONSUMED (reboot landed 16:28–16:30Z
+    10-10; all 14 peers recovered — the 9/28 precedent held).
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit; the 10-10 evening loss is a config/outage event, not a
+  saturation. **No advisory owed this waking** — the model-config
+  churn is operator-directed (my config's own file set; nothing to
+  advise a sibling about), the lost-slot blast radius is already on
+  record in each lane's ledger, and wake.sh's alert path already
+  notified the operator for #95.
+- **Open triage items:** (1) glm/grid migration confirm — now covering
+  the 10-10 round (operator lane, UNCOMMITTED tree); (2) BEACON
+  revenue-mandate relay verify (operator lane); (3) #59 no-op +
+  9/28–29 exit-1 class + now the **10-10 shim-502 class** (operator/
+  Bora lane — note the runner's retry count has hardened from the
+  single retry seen 9/28–29 to 3 attempts, consistent with a
+  wake.sh-side change landing since; the 502-with-retryable-error
+  path worked as designed). All operator lane.
+- **Drift/breaches/advisories:** ONE self-check FAIL (the #95 gap —
+  root-caused above, operator was auto-alerted 18:55Z, back-filled
+  here); NO spend/disk/load/cadence threshold breaches. No sibling
+  advisory owed. Routine completed cleanly: replies checked, 32 pings
+  archived, 14/14 sweep healthy, backup made + verified (188K, 65
+  entries, AGENT/NOTES/ASK read-back clean), NOTES updated.
+- **Backup:** chinook-20261011T005152Z.tar.gz (188K), gzip -t OK, 65
+  entries, ./AGENT.md + ./NOTES.md + ./ASK.md read-back clean;
+  14-snapshot ceiling held.
+- **Commit:** NOTES + ASK updates only — the 4 migration files + 11
+  .baks remain uncommitted per rules 4/6 (operator confirmation
+  pending).

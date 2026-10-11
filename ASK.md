@@ -20,9 +20,40 @@
   with a lane + Day-3 ship — do you want a reply from me, or silence?
   Default absent your word: routine unchanged, no reply.
 
-- **UPDATED 2026-10-08 00:50Z (waking #84, superseding the 10-05 muse item):
-  working-tree model/grid migration (2026-10-07) — please confirm via
-  Telegram so I can commit.** The 10-05 muse-spark item is moot: on
+- **UPDATED 2026-10-11 00:50Z (waking #96, superseding the 10-08 update):
+  working-tree model/grid migration — now a THIRD round (2026-10-10) —
+  please confirm via Telegram so I can commit.** On 10-10 the working tree
+  changed again: `opencode.json`/`wake.sh`/`AGENT.md` now →
+  `openrouter/~z-ai/glm-flash-latest` (mtime 20:08Z), `chinook.cron` touched
+  17:04Z, +6 new .bak snapshots (10-05qwen / 10-06muse / 10-07-pre-glm /
+  10-07ollama / 10-10ollama / 10-10-glmflash). During 17:04–20:08Z the tree
+  pointed BACK at `ollama/qwen3.8:27b` via the gale-ollama-shim
+  (127.0.0.1:11435) — my 18:50 slot (#95) failed 3× with `APIError 502
+  "ollama_shim upstream: No route to host"` (LAN upstream unreachable;
+  wake.sh retry + Telegram ALERT worked as designed, msg_id 148) — and ~6
+  sibling slots on-box appear to have been lost in the same window
+  (BORA 18:25, ZEPHYR 17:25, CYCLONE 19:15, LEVANTE 19:40, MAISTRAL 20:05,
+  TEMPEST 16:10 — from their ledgers, read-only). Context: host rebooted
+  16:28–16:30Z for a kernel upgrade (6.8.0-142 → 6.8.0-146 — the
+  reboot-required flag GALE was carrying since 10-09 landed; operator SSH
+  sessions from 192.168.1.55 at 16:57 and 23:10 — new IP vs the old
+  .197/.69 pattern, recorded as data). This session runs
+  glm-flash-latest and works (existence proof #12 for my lane), and
+  wake.sh's operative line runs the same model — though its line-3 comment
+  still says "back to ollama" (stale wording, flagged for Bora's lane, not
+  edited by me). All four modified files + 11 .baks remain **UNCOMMITTED**
+  per rules 4/6 (no chat-id-verified word yet). Reply "Yes I did it" (or
+  similar) and I will commit the working tree as-is, resolve this item,
+  and re-baseline the forecast (10-10 close-read is in NOTES.md #96:
+  $3.78/49 runs, shortfall = the lost slots, not per-run creep; band floor
+  dropped to $4–6/day per the #92 rule).
+  (Prior 10-08 context below, superseded but retained: the 10-07 round —
+  glm-5.3-flash grid re-baseline — was never Telegram-confirmed either;
+  both rounds are the same ask now.)
+
+  — Prior item text (2026-10-08 00:50Z, waking #84, superseding the 10-05
+  muse item): working-tree model/grid migration (2026-10-07) — please
+  confirm via Telegram so I can commit.** The 10-05 muse-spark item is moot: on
   2026-10-07 the working tree moved again — `opencode.json` + `wake.sh` →
   `opencode/glm-5.3-flash` (OpenCode Go), `AGENT.md` header Model line +
   cadence line updated (4x/day at `:50`, 14-agent 25-min staggered grid),
