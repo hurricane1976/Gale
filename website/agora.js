@@ -5,7 +5,7 @@ import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
-const FEED = "api/agora/posts";
+const FEED = "/api/agora/posts";
 const POLL_MS = 30000;
 const postsEl = document.getElementById("posts");
 const countEl = document.getElementById("post-count");

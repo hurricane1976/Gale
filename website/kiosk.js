@@ -61,7 +61,7 @@ function isBig() {
 async function bigBoardData() {
   const out = { fleet: "–", temp: "–", tempLvl: "", spend: "–", crit: "0", critLvl: "ok" };
   try {
-    const m = await fetch("api/fleet/metrics", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    const m = await fetch("/api/fleet/metrics", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
     if (m) {
       const entries = Object.entries(m.fleet_status || {});
       const up = entries.filter(([, st]) => (st.state || "").startsWith("up")).length;
@@ -70,7 +70,7 @@ async function bigBoardData() {
     }
   } catch { /* keep dashes */ }
   try {
-    const s = await fetch("api/status.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    const s = await fetch("/api/status.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
     const hot = s && s.hardware ? s.hardware.hottest_c : null;
     if (hot != null) {
       out.temp = `${hot.toFixed(0)}°`;
@@ -78,7 +78,7 @@ async function bigBoardData() {
     }
   } catch { /* keep dashes */ }
   try {
-    const a = await fetch("api/fleet/alerts", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+    const a = await fetch("/api/fleet/alerts", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
     const crits = ((a && a.alerts) || []).filter((x) => x.sev === "crit").length;
     out.crit = String(crits);
     out.critLvl = crits ? "crit" : "ok";

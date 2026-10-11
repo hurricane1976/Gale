@@ -107,7 +107,7 @@ export function initStormScene() {
   };
   async function refreshGeo() {
     try {
-      const m = await fetch("api/fleet/metrics", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+      const m = await fetch("/api/fleet/metrics", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
       const names = [...new Set((m.per_agent_24h || []).map((a) => a.agent).filter(Boolean))];
       if (names.length) {
         names.sort();
@@ -116,7 +116,7 @@ export function initStormScene() {
       }
     } catch { /* keep last roster */ }
     try {
-      const inc = await fetch("api/fleet/incidents", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+      const inc = await fetch("/api/fleet/incidents", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
       const hot = new Map();
       for (const a of (inc && inc.alerts) || []) {
         if (!a.agent) continue;
@@ -173,7 +173,7 @@ export function initStormScene() {
   async function refreshWakes() {
     let runs = null;
     try {
-      const w = await fetch("api/fleet/wakes", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
+      const w = await fetch("/api/fleet/wakes", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null));
       runs = (w && w.runs) || [];
     } catch { return; /* keep last seen-state */ }
     const latest = new Map();

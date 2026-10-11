@@ -5,7 +5,7 @@ import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
-const FEED = "api/fleet/metrics";
+const FEED = "/api/fleet/metrics";
 const POLL_MS = 30000;
 const HOST_ORDER = ["gale", "tidal", "mountain", "beacon"];
 const HOST_HUE = { gale: "#ff8a3d", tidal: "#3fc7ff", mountain: "#8593f0", beacon: "#ffc233" };

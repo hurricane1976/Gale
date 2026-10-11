@@ -47,11 +47,29 @@ async function refresh() {
   busy = true;
   try {
     if ($("home-ops-summary") && !$("ops-summary")) {
-      const d = await get("api/fleet/metrics");
+      const d = await get("/api/fleet/metrics");
       setText($("home-ops-summary"), `${d.coverage.reachable}/${d.coverage.expected} reachable · ${d.coverage.reporting}/${d.coverage.expected} reporting${d.coverage.missing.length ? ` · missing: ${d.coverage.missing.map(a=>a.agent).join(", ")}` : ""} · collected ${d.generated_at}`);
       return;
     }
-    const [data, incidents, tasks, exporters, history] = await Promise.all([get("api/fleet/reliability"), get("api/fleet/incidents"),get("api/fleet/tasks"),get("api/exporter-coverage.json").catch(()=>null),get("api/fleet/alerts/history").catch(()=>null)]);
+    const [data, incidents, tasks, exporters, history] = await Promise.all([get("/api/fleet/reliability"), get("/api/fleet/incidents"),get("/api/fleet/tasks"),get("/api/exporter-coverage.json").catch(()=>null),get("/api/fleet/alerts/history").catch(()=>null)]);
+    // External dead-man's switch (review 2026-10-11): the always-firing
+    // Watchdog alert pings healthchecks.io off-host; surface its live state
+    // so "heartbeat armed" is evidence, not an assumption.
+    const wd = incidents.watchdog || {};
+    const wdEl = $("ops-watchdog");
+    if (wdEl) {
+      if (wd.active === true) {
+        const age = Number.isFinite(wd.age_hours) ? ` · armed for ${wd.age_hours < 1 ? `${Math.round(wd.age_hours * 60)}m` : `${wd.age_hours}h`}` : "";
+        setText(wdEl, `External heartbeat armed (healthchecks.io via Alertmanager)${age} — a total Gale outage pages from outside this host.`);
+        wdEl.dataset.state = "ok";
+      } else if (wd.active === false) {
+        setText(wdEl, "External heartbeat NOT firing — the dead-man's switch is disarmed; check Prometheus rule evaluation.");
+        wdEl.dataset.state = "crit";
+      } else {
+        setText(wdEl, "External heartbeat state unknown — Alertmanager unreachable from the collector.");
+        wdEl.dataset.state = "unknown";
+      }
+    }
     const c=data.coverage;
     opsGeneratedAt = data.generated_at;
     const successAt = Date.now();
@@ -132,7 +150,7 @@ async function refresh() {
           }).join("")}
         </ol>
         ${ack?`<p class="inc-ack">Acknowledged until ${new Date(ack.until*1000).toISOString()}</p>`:""}
-        ${canWrite?`<div class="inc-acts"><button type="button" data-ack-key="${esc((a.kind+":"+a.text).slice(0,200))}" data-incident="${esc(a.id)}" class="btn btn-sm">Acknowledge 4h</button>${next?`<button type="button" data-stage-btn="${esc(next)}" data-id="${esc(a.id)}" class="btn btn-sm primary">Mark ${esc(next)}</button>`:""}${st==="verified"?'<button type="button" data-stage-btn="reset" data-id="'+esc(a.id)+'" class="btn btn-sm">Reset stage</button>':""}</div>`:""}
+        ${canWrite?`<div class="inc-acts"><button type="button" data-ack-key="${esc((a.kind+":"+a.text).slice(0,200))}" data-incident="${esc(a.id)}" data-kind="${esc(a.kind||"")}" data-owner="${esc(a.owner||"gale")}" data-host="${esc(a.host||"")}" data-agent="${esc(a.agent||"")}" data-text="${esc(a.text||"")}" class="btn btn-sm">Acknowledge 4h</button>${next?`<button type="button" data-stage-btn="${esc(next)}" data-id="${esc(a.id)}" class="btn btn-sm primary">Mark ${esc(next)}</button>`:""}${st==="verified"?'<button type="button" data-stage-btn="reset" data-id="'+esc(a.id)+'" class="btn btn-sm">Reset stage</button>':""}</div>`:""}
         <p class="inc-links"><a href="${esc(a.runbook||"runbooks.html")}">Runbook</a> · <a href="observability.html?agent=${encodeURIComponent(a.agent||"")}&failed=1">Failed runs</a> · <a href="status.html#alert-strip" data-incident="${esc(a.id)}">Alert strip</a></p>
       </article>`;
     }).join(""):'<p class="inc-none">No active incidents'+(agentFilter?" matching this filter":"")+'.<a href="#" id="inc-clear" class="inc-clear">Clear filter</a></p>');
@@ -165,7 +183,7 @@ document.addEventListener("click",async e=>{
     try{
       const stage=adv.dataset.stageBtn==="reset"?"reset":adv.dataset.stageBtn;
       const body=stage==="reset"?{incident_id:adv.dataset.id}:{incident_id:adv.dataset.id, stage};
-      const r=await tracedFetch("api/fleet/alerts/lifecycle",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+      const r=await tracedFetch("/api/fleet/alerts/lifecycle",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
       if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.error||`HTTP ${r.status}`);}
       await refresh();
     }catch(err){setText($("ops-access"),`Stage update failed: ${err.message}`);}finally{adv.disabled=false;}
@@ -174,9 +192,27 @@ document.addEventListener("click",async e=>{
   const b=e.target.closest("[data-ack-key]");if(!b)return;
   b.disabled=true;
   try{
-    const r=await tracedFetch("api/fleet/alerts/acks",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:b.dataset.ackKey,incident_id:b.dataset.incident,hours:4})});
+    const r=await tracedFetch("/api/fleet/alerts/acks",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:b.dataset.ackKey,incident_id:b.dataset.incident,hours:4})});
     if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    // Alertmanager keeps paging until silenced: for Alertmanager-sourced
+    // incidents, mirror the ack into a 4h silence (best-effort; the ack
+    // itself already saved). Matchers come from the incident's own labels;
+    // the alert name is parsed from our own "AM <name>: ..." format.
+    let silenceNote="";
+    if(b.dataset.kind==="alertmanager"){
+      try{
+        const matchers=[{name:"owner",value:b.dataset.owner||"gale"}];
+        const amName=(b.dataset.text||"").match(/^AM (\S+)/);
+        if(amName)matchers.push({name:"alertname",value:amName[1]});
+        if(b.dataset.host&&b.dataset.host!=="fleet")matchers.push({name:"host",value:b.dataset.host});
+        if(b.dataset.agent&&b.dataset.agent!=="fleet")matchers.push({name:"agent",value:b.dataset.agent});
+        const sr=await tracedFetch("/api/fleet/alerts/silences",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({matchers,hours:4,comment:`ack ${b.dataset.incident}`})});
+        const sj=await sr.json().catch(()=>({}));
+        silenceNote=sj.silenced?" · pager silenced 4h":" · pager NOT silenced (Alertmanager unreachable)";
+      }catch{silenceNote=" · pager NOT silenced (silence request failed)";}
+    }
     await refresh();
+    if(silenceNote)setText($("ops-access"),`Acknowledged 4h${silenceNote}`);
   }catch(e){setText($("ops-access"),`Acknowledgement failed: ${e.message}`);}finally{b.disabled=false;}
 });
 if ($("ops-agent-filter")) $("ops-agent-filter").addEventListener("change", (e) => { agentFilter = e.target.value; refresh(); });

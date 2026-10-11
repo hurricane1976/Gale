@@ -3,12 +3,12 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, setVitals, chartTooltip, skeleton, whenNear } from "./shared.js";
+import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, setVitals, chartTooltip, skeleton, whenNear, setHTML, setText, whenPageActive } from "./shared.js";
 
 boot();
 
-const SNAP_URL = "api/ollama/snapshot";
-const HIST_URL = "api/ollama/history?hours=24";
+const SNAP_URL = "/api/ollama/snapshot";
+const HIST_URL = "/api/ollama/history?hours=24";
 const POLL_SNAP_MS = 10000;
 const POLL_HIST_MS = 60000;
 const PALETTE = ["var(--gust)", "var(--m-gpt)", "var(--bolt)", "var(--m-muse)", "var(--m-claude)", "var(--storm-purple)"];
@@ -76,7 +76,7 @@ function closeConfirm() { pending = null; $("confirm-overlay").hidden = true; }
 
 async function postAction(body) {
   try {
-    const r = await tracedFetch("api/ollama/action", {
+    const r = await tracedFetch("/api/ollama/action", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
@@ -564,7 +564,7 @@ async function openShow(model) {
   $("show-body").innerHTML = `<p class="mini-note">loading&hellip;</p>`;
   $("show-overlay").hidden = false;
   try {
-    const r = await tracedFetch(`api/ollama/show?model=${encodeURIComponent(model)}`, { cache: "no-store" });
+    const r = await tracedFetch(`/api/ollama/show?model=${encodeURIComponent(model)}`, { cache: "no-store" });
     const d = await r.json();
     if (showOpenFor !== model) return;
     if (!d.ok) { $("show-body").innerHTML = `<div class="silent-err">${esc(d.error || "error")}</div>`; return; }
@@ -605,7 +605,7 @@ function startPullWatch(model) {
   $("pull-progress").hidden = false;
   const tick = async () => {
     try {
-      const r = await tracedFetch("api/ollama/pull/status", { cache: "no-store" });
+      const r = await tracedFetch("/api/ollama/pull/status", { cache: "no-store" });
       const st = await r.json();
       if (st.model !== model && st.state !== "running") { stopPullWatch(); return; }
       const pct = st.pct != null ? st.pct : null;
@@ -728,7 +728,7 @@ async function sendChat() {
   }
   let tick = null;
   try {
-    const r = await tracedFetch("api/ollama/chat/stream", {
+    const r = await tracedFetch("/api/ollama/chat/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ model, messages, options: collectChatOptions() }),
     });
@@ -825,7 +825,7 @@ $("ab-run").addEventListener("click", async () => {
   const runOne = async (side, model) => {
     const t0 = Date.now();
     try {
-      const r = await tracedFetch("api/ollama/chat", {
+      const r = await tracedFetch("/api/ollama/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model, messages, options }),
       });
@@ -981,7 +981,7 @@ async function loadErrlog() {
   const el = $("errlog");
   if (!el) return;
   try {
-    const r = await tracedFetch("api/ollama/errors", { cache: "no-store" });
+    const r = await tracedFetch("/api/ollama/errors", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     el.innerHTML = (d.errors || []).length
@@ -992,7 +992,7 @@ async function loadErrlog() {
 
 async function loadGpu() {
   try {
-    const r = await tracedFetch("api/ollama/gpu", { cache: "no-store" });
+    const r = await tracedFetch("/api/ollama/gpu", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     GPU = await r.json();
     GPUReceivedAt = Date.now();
@@ -1017,9 +1017,9 @@ setInterval(loadErrlog, 30000);
 /* Live push (fleet SSE pattern): snapshot deltas arrive the moment they
    change; the 10s poll above stays as the fallback (no EventSource / proxy
    that won't stream). A stream that errors 3x closes for good. */
-if (typeof EventSource !== "undefined") {
+if (typeof EventSource !== "undefined") whenPageActive().then(() => {
   let sseFailures = 0;
-  const es = new EventSource("api/ollama/snapshot/stream");
+  const es = new EventSource("/api/ollama/snapshot/stream");
   es.onmessage = (e) => {
     sseFailures = 0;
     try {
@@ -1033,4 +1033,4 @@ if (typeof EventSource !== "undefined") {
     } catch { /* malformed push -- next poll corrects */ }
   };
   es.onerror = () => { if (++sseFailures >= 3) es.close(); };
-}
+});

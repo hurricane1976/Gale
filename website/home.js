@@ -5,7 +5,7 @@ let busy=false;
 async function refresh(){
  if(busy)return;busy=true;
  try{
-  const response=await tracedFetch("api/fleet/home/status",{cache:"no-store",signal:AbortSignal.timeout(15000)});
+  const response=await tracedFetch("/api/fleet/home/status",{cache:"no-store",signal:AbortSignal.timeout(15000)});
   const data=await response.json();
   const states={pairing_required:"Home Assistant is installed. Create your account, pair devices, then connect selected entities to Gale.",not_configured:"Home Assistant is not installed or connected yet.",authentication_required:"Home data requires an authorized Tailscale operator connection. Use Home Assistant to sign in for device controls.",unavailable:"Home connection unavailable. Device states are unknown.",connected:"Home Assistant connected · monitoring selected devices."};
   setText($("home-status"),states[data.state]||"Home connection unknown.");

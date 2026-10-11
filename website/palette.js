@@ -52,13 +52,13 @@ async function opsItems(items) {
     hint: "POST api/push/test — lock-screen ping if subscribed",
     go: async () => {
       try {
-        const r = await fetch("api/push/test", { method: "POST" });
+        const r = await fetch("/api/push/test", { method: "POST" });
         alert(r.ok ? "push test sent — check the lock screen" : `push test failed (HTTP ${r.status})`);
       } catch { alert("push test failed — backend unreachable"); }
     },
   });
   try {
-    const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+    const r = await fetch("/api/fleet/alerts", { cache: "no-store" });
     if (!r.ok) return;
     const d = await r.json();
     for (const a of (d.alerts || []).filter((x) => x.sev === "crit" || x.sev === "warn").slice(0, 8)) {
@@ -69,7 +69,7 @@ async function opsItems(items) {
         hint: `${a.sev} · ${a.kind} · mutes 4h`,
         go: async () => {
           try {
-            await fetch("api/fleet/alerts/acks", {
+            await fetch("/api/fleet/alerts/acks", {
               method: "POST", headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ key, hours: 4 }),
             });

@@ -13,7 +13,7 @@ export async function initCadence3D() {
   const reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!gl || reduced || document.documentElement.dataset.saver === "1") return hide();
   try {
-    const r = await fetch("api/fleet/metrics", { cache: "no-store" });
+    const r = await fetch("/api/fleet/metrics", { cache: "no-store" });
     if (!r.ok) return hide();
     const d = await r.json(), view = mountBars3D(canvas, { yaw: 0.25, pitch: 0.55, fit: 1.0 });
     if (!view) return hide();

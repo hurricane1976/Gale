@@ -671,7 +671,7 @@ export function initTopology3D(opts = {}) {
 
   async function loadHeat() {
     try {
-      const r = await fetch("api/fleet/metrics", { cache: "no-store" });
+      const r = await fetch("/api/fleet/metrics", { cache: "no-store" });
       if (!r.ok) return;
       const d = await r.json();
       heatStats = new Map((d.per_agent_24h || [])
@@ -684,7 +684,7 @@ export function initTopology3D(opts = {}) {
       applyHeat();
     } catch { /* heat is optional decoration */ }
     try {
-      const s = await fetch("api/status.json", { cache: "no-store" });
+      const s = await fetch("/api/status.json", { cache: "no-store" });
       if (!s.ok) return;
       const d = await s.json();
       const ifs = (d.network && d.network.interfaces) || [];
@@ -887,7 +887,7 @@ export function initTopology3D(opts = {}) {
   // alert halos: any warn/crit alert text that names an agent lights that agent up
   async function loadAlerts() {
     try {
-      const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+      const r = await fetch("/api/fleet/alerts", { cache: "no-store" });
       if (!r.ok) return;
       const d = await r.json();
       alertSev.fill(0); alertText.clear();
@@ -930,7 +930,7 @@ export function initTopology3D(opts = {}) {
     const poll = async () => {
       try {
         if (canvas.hidden || document.hidden) return;
-        const r = await fetch("api/fleet/activity", { cache: "no-store" });
+        const r = await fetch("/api/fleet/activity", { cache: "no-store" });
         if (!r.ok) return;
         const evs = ((await r.json()).events || []).slice().sort((a, b) => String(a.ts).localeCompare(String(b.ts)));
         if (seen === null) { seen = evs.length ? evs[evs.length - 1].ts : ""; return; }   // first poll: just remember where we are

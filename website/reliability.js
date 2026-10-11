@@ -48,8 +48,8 @@ async function getJson(url) {
 }
 const tile = (label, value, sub, lv) => `<div class="vital" data-level="${lv}">${statusBadge(lv, lv)}<span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(value)}</span><span class="vital-sub">${esc(sub)}</span></div>`;
 async function coverage() {
-  const [exp, bk, pr, reg] = await Promise.all([getJson("api/exporter-coverage.json"), getJson("api/backup-proof.json"),
-    getJson("api/probes.json"), getJson("api/fleet/registry")]);
+  const [exp, bk, pr, reg] = await Promise.all([getJson("/api/exporter-coverage.json"), getJson("/api/backup-proof.json"),
+    getJson("/api/probes.json"), getJson("/api/fleet/registry")]);
   const tiles = [];
   if (exp && Array.isArray(exp.nodes)) {
     const machines = exp.nodes.filter((x) => !x.alias_of), n = machines.length, i = machines.filter((x) => x.instrumented).length, al = exp.nodes.length - n;
@@ -118,6 +118,8 @@ function rum() {
     ["CLS", "Layout shift", .1, .25, "score", true], ["FCP", "First content paint", 1800, 3000, "ms", true],
     ["TTFB", "Server response", 800, 1800, "ms", true], ["DOM_READY", "DOM ready", 2500, 5000, "ms", true],
     ["LOAD", "Page load", 4000, 8000, "ms", true], ["LONGTASK", "Long tasks", 50, 100, "ms", false],
+    ["LONG_ANIMATION_FRAME", "Long animation frames", 50, 100, "ms", false],
+    ["MODULE_ENTRY_MS", "Slowest page entry script", 800, 1800, "ms", true],
     ["RESOURCE_KB", "First party transfer", 700, 1400, "KB", true], ["RESOURCE_SLOW", "Slow first party requests", 0, 2, "count", false],
     ["JS_ERROR", "JavaScript errors", 0, 1, "count", false], ["ASSET_ERROR", "Asset errors", 0, 1, "count", false],
     ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["IMAGE_DECODE_ERROR", "Image decode failures", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
@@ -143,8 +145,9 @@ function rum() {
     const graph = history.length > 1 ? `<svg class="rum-spark" viewBox="0 0 100 22" role="img" aria-label="${esc(label)} recent trend"><polyline points="${points}"/></svg>` : "";
     const pages = [...new Set(entries.slice(-12).map((s) => s.page).filter(Boolean))];
     const scenes = [...new Set(entries.slice(-12).map((s) => s.scene).filter(Boolean))];
+    const actors = [...new Set(entries.slice(-12).map((s) => s.culprit || s.entry).filter(Boolean))];
     const showValue = value == null ? "No sample" : `${value.toFixed(unit === "score" ? 3 : 0)} ${unit}`;
-    return `<div class="vital rum-vital" data-level="${state}"><span class="vital-state" data-level="${state}">${esc(state)}</span><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(showValue)}</span>${graph}<span class="vital-sub">${entries.length} local sample${entries.length === 1 ? "" : "s"}${percentile ? (name === "SCENE_FPS" ? " · p05" : " · p95") : " · total"}${pages.length ? ` · ${esc(pages.join(", "))}` : ""}${scenes.length ? ` · ${esc(scenes.join(", "))}` : ""}</span></div>`;
+    return `<div class="vital rum-vital" data-level="${state}"><span class="vital-state" data-level="${state}">${esc(state)}</span><span class="vital-label">${esc(label)}</span><span class="vital-value">${esc(showValue)}</span>${graph}<span class="vital-sub">${entries.length} local sample${entries.length === 1 ? "" : "s"}${percentile ? (name === "SCENE_FPS" ? " · p05" : " · p95") : " · total"}${pages.length ? ` · ${esc(pages.join(", "))}` : ""}${scenes.length ? ` · ${esc(scenes.join(", "))}` : ""}${actors.length ? ` · ${esc(actors.join(", "))}` : ""}</span></div>`;
   }).join("");
   setHTML($("rum-grid"), cards);
   const routes = new Map();
@@ -282,6 +285,20 @@ async function clientRuntime() {
   } catch {}
   items.push(tile("WebGL graphics limits", glCaps ? `${glCaps.version} · ${glCaps.texture}px texture` : "Unavailable", glCaps ? `local limits · ${glCaps.renderbuffer}px renderbuffer · viewport ${glCaps.viewport.join(" × ")}` : "Scenes use 2D, CSS, SVG, or text fallbacks.", glCaps ? "ok" : "unknown"));
   items.push(tile("WebGPU renderer", navigator.gpu ? "Available" : "Not available", "The ambient shader is optional; CSS atmosphere remains the fallback.", navigator.gpu ? "ok" : "unknown"));
+  // Compute Pressure (review 2026-10-11): live OS-reported CPU pressure state
+  // that the auto graphics tier reacts to, before frame times degrade.
+  const pressureState = window.__galeCpuPressure || (typeof PressureObserver !== "undefined" ? "nominal (no event yet)" : "Not exposed");
+  items.push(tile("Compute pressure", pressureState, "Chromium Compute Pressure signal; drives the auto 3D tier down under sustained system load. Local only.", window.__galeCpuPressure === "critical" ? "crit" : window.__galeCpuPressure === "serious" ? "warn" : typeof PressureObserver !== "undefined" ? "ok" : "unknown"));
+  // Cross-origin isolation + storage durability (review 2026-10-11).
+  const isolated = !!window.crossOriginIsolated;
+  items.push(tile("Cross-origin isolation", isolated ? "Isolated" : "Not isolated", isolated ? "COOP + COEP credentialless active — precise JS memory measurement below." : "This browser treats COEP credentialless as unsafe-none, or a third-party subresource blocks isolation; the heap tile stays an estimate.", isolated ? "ok" : "unknown"));
+  if (navigator.storage && typeof navigator.storage.estimate === "function") {
+    try {
+      const est = await navigator.storage.estimate();
+      const persisted = navigator.storage.persisted ? await navigator.storage.persisted() : null;
+      items.push(tile("Storage persistence", persisted === true ? "Persisted" : persisted === false ? "Best-effort" : "Unknown", `Quota ${((est.quota || 0) / 1073741824).toFixed(1)} GB · used ${((est.usage || 0) / 1048576).toFixed(1)} MB — the offline wake queue and local diagnostics live here.`, persisted ? "ok" : "warn"));
+    } catch { items.push(tile("Storage persistence", "Unknown", "Storage quota estimate failed in this browser.", "unknown")); }
+  } else items.push(tile("Storage persistence", "Not exposed", "This browser does not expose the Storage API.", "unknown"));
   const canvas2d = !!document.createElement("canvas").getContext("2d");
   items.push(tile("2D canvas", canvas2d ? "Available" : "Unavailable", "Used by particle, weather-sky, and fallback scenes.", canvas2d ? "ok" : "unknown"));
   items.push(tile("Scene visibility observers", typeof IntersectionObserver === "function" ? "Available" : "Unavailable", "Pauses off-screen scene rendering when supported.", typeof IntersectionObserver === "function" ? "ok" : "warn"));
@@ -298,6 +315,14 @@ async function clientRuntime() {
     const heapLevel = heapPct >= 90 ? "crit" : heapPct >= 75 ? "warn" : "ok";
     items.push(tile("JavaScript heap estimate", `${(heap.usedJSHeapSize / 1048576).toFixed(0)} / ${(heap.jsHeapSizeLimit / 1048576).toFixed(0)} MB`, `${heapPct.toFixed(0)}% of browser-reported limit · local runtime estimate`, heapLevel));
   } else items.push(tile("JavaScript heap estimate", "Not exposed", "This browser does not provide a safe heap-size estimate.", "unknown"));
+  // Precise measurement (review 2026-10-11): with cross-origin isolation,
+  // measureUserAgentSpecificMemory() replaces the Chromium-only estimate.
+  if (window.crossOriginIsolated && typeof performance.measureUserAgentSpecificMemory === "function") {
+    try {
+      const mem = await performance.measureUserAgentSpecificMemory();
+      items.push(tile("JavaScript memory (measured)", `${(mem.bytes / 1048576).toFixed(1)} MB`, `${mem.breakdown?.length || 0} allocation site(s) · cross-origin-isolated measurement · local only`, "ok"));
+    } catch { /* transient isolation loss: the estimate tile above still shows */ }
+  }
   const motionReduced = !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   const cssPaused = document.documentElement.dataset.cssMotion === "paused";
   const motionState = cssPaused ? "CSS paused" : motionReduced ? "System reduced" : "Full CSS motion";
@@ -519,7 +544,7 @@ async function refresh() {
   if (busy) return;
   busy = true;
   try {
-    const response = await tracedFetch("api/fleet/reliability", { cache: "no-store", signal: AbortSignal.timeout(25000) });
+    const response = await tracedFetch("/api/fleet/reliability", { cache: "no-store", signal: AbortSignal.timeout(25000) });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (data.schema !== "fleet-reliability/v1" || !Array.isArray(data.slos)) throw new Error("invalid reliability payload");

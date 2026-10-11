@@ -1,11 +1,11 @@
 /* GALE — fleet activity stream: polls /api/fleet/activity, renders the last
    N real events oldest-first in a terminal-style panel (Beacon's pattern).
    Pause toggle stops re-rendering but never stops fetching. */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, whenPageActive } from "./shared.js";
 
 boot();
 
-const FEED = "api/fleet/activity";
+const FEED = "/api/fleet/activity";
 const POLL_MS = 30000;
 const AGENT_COLOR = { gale: "var(--fleet-glm)", zephyr: "var(--tide)", squall: "var(--flag)", tempest: "var(--fleet-chan-live)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--fleet-openai)", maistral: "var(--fleet-claude)", sirocco: "var(--fleet-muse)", bora: "var(--fleet-muse)", tramontane: "var(--fleet-muse)", ostro: "var(--fleet-muse)", poniente: "var(--fleet-muse)", levante: "var(--fleet-muse)", tidal: "var(--fleet-chan-tailscale)", mountain: "var(--fleet-chan-mountain)", beacon: "var(--fleet-claude)", river: "light-dark(#0f6a50, #4fd1a5)", creek: "light-dark(#76560c, #e0b45c)", stream: "light-dark(#8a2b80, #d98fd1)", meadow: "var(--fleet-glm)", brook: "var(--fleet-openai)", mist: "var(--fleet-openai)", highbeam: "var(--fleet-glm)", lantern: "var(--fleet-glm)", lightning: "var(--fleet-glm)", radar: "var(--fleet-glm)", prism: "var(--fleet-openai)", pulsar: "var(--fleet-claude)", canyon: "var(--fleet-glm)", ridge: "var(--fleet-glm)", harbor: "var(--fleet-glm)", delta: "var(--fleet-glm)", mesa: "var(--fleet-openai)", vista: "var(--fleet-openai)" };
 const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
@@ -116,6 +116,7 @@ function startPolling() {
 }
 
 if (typeof EventSource !== "undefined") {
+  await whenPageActive(); // don't open streams from a prerendering page
   let failures = 0;
   let es = new EventSource(FEED + "/stream");
   es.onmessage = (e) => {

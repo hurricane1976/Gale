@@ -30,6 +30,12 @@ feeds, the way Beacon's fleet page and Tidal's observability page do:
                        content stored verbatim but never executed -- the page
                        renders it as text and labels it data, per rule 5.
   GET  /health         liveness for sysmon's TARGETS.
+  GET  /reports/summary  aggregated browser report counts (CSP violations,
+                       deprecation/intervention) for the last 24h; metadata
+                       only -- directive/disposition/type counts, no URLs.
+  POST /report         browser report-to collector: accepts the browser's
+                       automatic report deliveries (metadata only, size-capped,
+                       same-origin only, rotating JSONL under API_DIR).
 
 Run mode: loop forever (systemd gale-fleet-api.service). `--once` prints the
 telemetry envelope and exits (manual checks).
@@ -1244,6 +1250,123 @@ def metrics_envelope():
 # --------------------------------------------------------------------------
 
 ALERTS_TTL_S = 60
+
+# --- watchdog heartbeat (dead-man's switch evidence) -------------------------
+# The always-firing Watchdog alert is routed to an external heartbeat
+# (healthchecks.io via /etc/alertmanager/watchdog_url). Surfaces its live
+# state from Alertmanager's API so Operations can show "external heartbeat
+# armed" rather than asserting it from memory. Fail-soft: Alertmanager being
+# unreachable yields unknown, never a fabricated green.
+_WATCHDOG = {"ts": 0.0, "data": None}
+_WATCHDOG_LOCK = threading.Lock()
+
+def watchdog_state():
+    with _WATCHDOG_LOCK:
+        if _WATCHDOG["data"] is not None and time.time() - _WATCHDOG["ts"] < 60:
+            return _WATCHDOG["data"]
+    state = {"active": None, "active_since": None, "age_hours": None, "source": "alertmanager"}
+    try:
+        req = urllib.request.Request(
+            "http://127.0.0.1:9093/api/v2/alerts?alertname=Watchdog",
+            headers={"Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            alerts = json.loads(resp.read().decode("utf-8"))
+        firing = [a for a in alerts if a.get("status", {}).get("state") in ("active", "suppressed")]
+        if firing:
+            since = firing[0].get("activeAt") or firing[0].get("startsAt")
+            state["active"] = True
+            state["active_since"] = since
+            try:
+                from datetime import datetime as _dt
+                t = _dt.fromisoformat(since.replace("Z", "+00:00"))
+                state["age_hours"] = round((datetime.now(timezone.utc) - t).total_seconds() / 3600, 1)
+            except Exception:
+                pass
+        else:
+            state["active"] = False
+    except Exception:
+        state["active"] = None
+    with _WATCHDOG_LOCK:
+        _WATCHDOG["ts"] = time.time()
+        _WATCHDOG["data"] = state
+    return state
+
+# --- browser report collector (CSP / deprecation / intervention) -------------
+# Receives the browser's automatic report-to deliveries. Metadata only: the
+# collector keeps directive/disposition/type/sample URLs' shape counts, never
+# page contents. Rotating JSONL under API_DIR (public dashboard dir but not
+# linked; nginx blocks /api/* dotfiles and the summary endpoint exposes only
+# aggregated counts).
+_REPORT_LOCK = threading.Lock()
+
+def _report_path():
+    return Path(API_DIR) / "csp-reports.jsonl"
+
+def report_post(payload):
+    reports = payload if isinstance(payload, list) else [payload]
+    kept = []
+    for rep in reports[:10]:
+        if not isinstance(rep, dict):
+            continue
+        body = rep.get("body") if isinstance(rep.get("body"), dict) else {}
+        kept.append({
+            "at": now_iso(),
+            "type": str(rep.get("type", ""))[:40],
+            "directive": str(body.get("effectiveDirective", ""))[:60],
+            "disposition": str(body.get("disposition", ""))[:20],
+            "sample": str(body.get("sample", ""))[:120],
+            "status_code": body.get("statusCode"),
+            "source_file": str(body.get("sourceFile", ""))[:200],
+            "line": body.get("lineNumber"),
+        })
+    if not kept:
+        return 400, {"error": "no usable reports"}
+    with _REPORT_LOCK:
+        p = _report_path()
+        try:
+            if p.exists() and p.stat().st_size > 256 * 1024:
+                p.replace(p.with_suffix(".jsonl.old"))
+        except OSError:
+            pass
+        try:
+            with p.open("a", encoding="utf-8") as f:
+                for row in kept:
+                    f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        except OSError:
+            return 500, {"error": "write failed"}
+    return 204, None
+
+def report_summary():
+    """Aggregated counts for the last 24h; metadata only."""
+    out = {"generated_at": now_iso(), "window_hours": 24, "by_type": {}, "by_directive": {}, "total": 0}
+    cutoff = time.time() - 24 * 3600
+    rows = []
+    for path in (_report_path(), _report_path().with_suffix(".jsonl.old")):
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        rows.append(json.loads(line))
+                    except ValueError:
+                        continue
+        except OSError:
+            continue
+    for row in rows:
+        try:
+            t = datetime.strptime((row.get("at") or "")[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+        except (ValueError, TypeError):
+            continue
+        if t < cutoff:
+            continue
+        out["total"] += 1
+        typ = row.get("type") or "unknown"
+        out["by_type"][typ] = out["by_type"].get(typ, 0) + 1
+        d = row.get("directive")
+        if d:
+            out["by_directive"][d] = out["by_directive"].get(d, 0) + 1
+    out["by_type"] = dict(sorted(out["by_type"].items(), key=lambda kv: -kv[1])[:12])
+    out["by_directive"] = dict(sorted(out["by_directive"].items(), key=lambda kv: -kv[1])[:12])
+    return out
 ALERTS_MAX = 12
 
 _SEV_RANK = {"crit": 0, "warn": 1, "info": 2}
@@ -1425,7 +1548,11 @@ def alerts_envelope():
         a.setdefault("host", named["host"] if named else "gale")
         a.setdefault("owner", named["owner"] if named else "gale")
         a.setdefault("id", hashlib.sha256(f'{a["kind"]}|{a.get("host")}|{a.get("agent")}'.encode()).hexdigest()[:24])
-        a.setdefault("runbook", "runbooks.html#telemetry" if a["kind"] in ("agent-stale", "agent-missed-wake") else "runbooks.html#tasks")
+        # deep links per alert family (runbooks.html anchors, review 2026-10-11)
+        _ANCHORS = {"node-down": "telemetry", "agent-stale": "telemetry", "agent-missed-wake": "telemetry",
+                    "synthetic": "collector", "source-stale": "collector", "exporter": "collector",
+                    "backup": "recovery", "drill": "recovery", "control": "controls"}
+        a.setdefault("runbook", "runbooks.html#" + _ANCHORS.get(a["kind"], "tasks"))
     alert_history_record(alerts)
     payload = {"schema": "fleet-alerts/v1", "count": len(alerts),
                "alerts": alerts, "generated_at": now_iso()}
@@ -1501,10 +1628,36 @@ def am_firing_alerts(now=None):
         name = s["labels"].get("alertname") or fp
         summary = s["annotations"].get("summary") or s["annotations"].get("description") or ""
         text = f"AM {name}" + (f": {summary[:120]}" if summary else "")
+        # Deep-link the runbook even while old generic annotations are still
+        # in flight (repeat_interval re-sends can lag hours): anchor by the
+        # alert name when the URL points at the bare runbooks page.
+        runbook = s["annotations"].get("runbook_url", "runbooks.html")
+        if runbook.rstrip("/").endswith("runbooks.html"):
+            _AM_ANCHORS = {"GalePeerDown": "telemetry", "GaleAgentSilent": "telemetry", "GaleRosterDrift": "telemetry",
+                           "GaleRosterCheckStale": "telemetry", "GaleTelemetrySourceStale": "telemetry",
+                           "GalePeerHostUnreachable": "telemetry", "GaleInfraDown": "collector",
+                           "GaleFleetApiDown": "collector", "GaleCollectorStale": "collector",
+                           "GaleMonitorBridgeStale": "collector", "GaleSynthFailing": "collector",
+                           "GaleSynthStale": "collector", "GaleSynthFastBurn": "collector",
+                           "GaleSynthSlowBurn": "collector", "RemoteNodeExporterDown": "collector",
+                           "NodeExporterDown": "collector", "GaleProbeStale": "collector",
+                           "GaleBridgeStale": "collector", "GaleGpuCollectorDown": "collector",
+                           "GaleGpuBridgeStale": "collector", "GaleLocalServiceDown": "collector",
+                           "GaleWakeMissed": "tasks", "GaleWakeSessionStuck": "tasks",
+                           "GaleWakeErrors": "tasks", "GaleWakeBridgeStale": "tasks",
+                           "GaleActiveTaskStalled": "tasks", "GaleBackupStale": "recovery",
+                           "GaleBackupStaleCritical": "recovery", "GaleRestoreDrillFailed": "recovery",
+                           "GaleRestoreDrillStale": "recovery", "GaleCredDrift": "controls",
+                           "GaleCredEnvChanged": "controls", "GaleCredDirGone": "controls",
+                           "GalePushNoReceipt": "controls", "GalePushSendErrors": "controls",
+                           "GalePushNoSubscribers": "controls", "WatchdogMissing": "collector"}
+            anchor = _AM_ANCHORS.get(name)
+            if anchor:
+                runbook = f"{runbook.rstrip('/')}#{anchor}"
         out.append({"sev": sev, "kind": "alertmanager", "text": text, "id": fp,
                     "host": s["labels"].get("fleet_host") or s["labels"].get("host"),
                     "agent": s["labels"].get("agent"), "owner": s["labels"].get("owner", "gale"),
-                    "started_at": s.get("starts"), "runbook": s["annotations"].get("runbook_url", "runbooks.html")})
+                    "started_at": s.get("starts"), "runbook": runbook})
     # Maintenance mute: drop any alert for the .197 inference host while it
     # is powered down until further notice (GaleOllamaDown,
     # GaleOllamaModelUnloaded, GaleGpuCollectorDown, or anything mentioning
@@ -1853,6 +2006,57 @@ def acks_post(payload):
 
 
 # --------------------------------------------------------------------------
+# Alertmanager silences from the Operations console (review 2026-10-11 #45):
+# acknowledging an incident mutes it in Gale's own stores, but Prometheus
+# keeps paging until someone silences Alertmanager. This endpoint is the
+# missing link: operator-only (same @guarded gate as acks), allowlisted
+# matcher names, hours capped, best-effort forward to the localhost
+# Alertmanager. It never fails the acknowledgement -- a down Alertmanager
+# returns silenced:false and the UI says pages continue.
+# --------------------------------------------------------------------------
+AM_SILENCE_URL = "http://127.0.0.1:9093/api/v2/silences"
+SILENCE_MATCHER_ALLOW = frozenset({
+    "alertname", "severity", "owner", "host", "fleet_host", "agent",
+    "instance", "gpu", "service",
+})
+SILENCE_MAX_HOURS = 24
+
+def silences_post(payload):
+    matchers = payload.get("matchers")
+    hours = payload.get("hours", 4)
+    comment = payload.get("comment", "")
+    if not isinstance(matchers, list) or not matchers or len(matchers) > 6:
+        return 400, {"ok": False, "error": "matchers must be a non-empty list (max 6)"}
+    clean = []
+    for m in matchers:
+        if not isinstance(m, dict):
+            return 400, {"ok": False, "error": "each matcher needs name/value"}
+        name, value = m.get("name"), m.get("value")
+        if name not in SILENCE_MATCHER_ALLOW or not isinstance(value, str) or not value or len(value) > 120:
+            return 400, {"ok": False, "error": f"bad matcher (allow: {sorted(SILENCE_MATCHER_ALLOW)})"}
+        clean.append({"name": name, "value": value, "isRegex": False})
+    if isinstance(hours, bool) or not isinstance(hours, (int, float)) or hours <= 0 or hours > SILENCE_MAX_HOURS:
+        return 400, {"ok": False, "error": f"hours must be 0..{SILENCE_MAX_HOURS}"}
+    if not isinstance(comment, str):
+        return 400, {"ok": False, "error": "comment must be a string"}
+    now = time.time()
+    body = json.dumps({
+        "matchers": clean,
+        "startsAt": now_iso(),
+        "endsAt": datetime.fromtimestamp(now + hours * 3600, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "createdBy": f"gale-ui:{payload.get('actor', 'unknown')}",
+        "comment": comment[:200] or "acknowledged in Gale Operations",
+    }).encode()
+    try:
+        req = urllib.request.Request(AM_SILENCE_URL, body, {"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            resp = json.loads(r.read().decode("utf-8") or "{}")
+        return 200, {"ok": True, "silenced": True, "silenceId": resp.get("silenceID")}
+    except Exception as e:
+        return 200, {"ok": True, "silenced": False, "error": f"alertmanager unreachable: {type(e).__name__}"}
+
+
+# --------------------------------------------------------------------------
 # Incident lifecycle (review #7): each incident carries a stable id and moves
 # through investigating -> root-caused -> remediated -> verified. "verified"
 # mutes the alert for a retention window so confirmed-recovered incidents stop
@@ -2056,20 +2260,31 @@ class Handler(BaseHTTPRequestHandler):
         disconnect during the handshake itself, e.g. a tab closed before
         the response headers even went out."""
         last_sig, started = None, time.time()
+        event_id = 0
         try:
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream; charset=utf-8")
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Accel-Buffering", "no")  # belt-and-suspenders vs nginx buffering
             self.end_headers()
+            # Tell EventSource to wait 3s (not the ~default jittered reconnect)
+            # before reconnecting after a drop. Event ids are monotonically
+            # increasing per connection for observability only: this is a
+            # STATE-snapshot stream, so replaying missed ids on Last-Event-ID
+            # would push stale snapshots over newer state. Reconnect freshness
+            # is covered by the immediate push below (last_sig starts None),
+            # and the client keeps its poll fallback.
+            self.wfile.write(b"retry: 3000\n\n")
+            self.wfile.flush()
             while time.time() - started < max_lifetime_s:
                 waited = 0.0
                 while waited < heartbeat_s:
                     sig = json.dumps(core_fn(), sort_keys=True)
                     if sig != last_sig:
                         last_sig = sig
+                        event_id += 1
                         body = json.dumps(envelope_fn())
-                        self.wfile.write(f"data: {body}\n\n".encode())
+                        self.wfile.write(f"id: {event_id}\ndata: {body}\n\n".encode())
                         self.wfile.flush()
                         break
                     time.sleep(poll_s)
@@ -2119,7 +2334,9 @@ class Handler(BaseHTTPRequestHandler):
                 incidents = alerts_envelope()
                 acknowledgements = acks_read()["acks"]
                 lifecycle = lifecycle_read()["lifecycle"]
-                return self._send(200, {**incidents, "acknowledgements": acknowledgements, "lifecycle": lifecycle, "access": access(self)})
+                return self._send(200, {**incidents, "acknowledgements": acknowledgements, "lifecycle": lifecycle, "watchdog": watchdog_state(), "access": access(self)})
+            if path == "/reports/summary":
+                return self._send(200, report_summary())
             if path == "/tasks":
                 return self._send(200, {"events": monitor.task_events(API_DIR), "generated_at": now_iso()})
             if path == "/registry":
@@ -2197,11 +2414,29 @@ class Handler(BaseHTTPRequestHandler):
                       (time.time() - started) * 1000,
                       {"http.status_code": getattr(self, "_last_code", 0) or 200})
 
-    @guarded({"/wake", "/alerts/acks", "/alerts/lifecycle"})
+    @guarded({"/wake", "/alerts/acks", "/alerts/lifecycle", "/alerts/silences"})
     def do_POST(self):
         path = urlsplit(self.path).path
-        if path not in ("/agora/posts", "/alerts/acks", "/wake", "/alerts/lifecycle"):
+        if path not in ("/agora/posts", "/alerts/acks", "/wake", "/alerts/lifecycle", "/alerts/silences", "/report"):
             return self._send(404, {"error": "not found"})
+        if path == "/report":
+            # Browser-generated reports arrive without operator credentials;
+            # same-origin only (the tailnet boundary + nginx rate limit apply).
+            site = self.headers.get("Sec-Fetch-Site")
+            if site and site != "same-origin":
+                return self._send(403, {"error": "cross-site reports rejected"})
+            try:
+                length = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                length = 0
+            if length <= 0 or length > 16384:
+                return self._send(400, {"error": "report body too large"})
+            try:
+                payload = json.loads(self.rfile.read(length).decode("utf-8"))
+            except Exception:
+                return self._send(400, {"error": "invalid JSON"})
+            code, resp = report_post(payload)
+            return self._send(code, resp)
         try:
             length = int(self.headers.get("Content-Length") or 0)
         except ValueError:
@@ -2212,10 +2447,12 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
         except Exception:
             return self._send(400, {"error": "invalid JSON"})
-        if path in ("/alerts/acks", "/alerts/lifecycle"):
+        if path in ("/alerts/acks", "/alerts/lifecycle", "/alerts/silences"):
             payload["actor"] = getattr(self, "_control_actor", "unknown")
         if path == "/alerts/acks":
             code, resp = acks_post(payload)
+        elif path == "/alerts/silences":
+            code, resp = silences_post(payload)
         elif path == "/alerts/lifecycle":
             code, resp = lifecycle_post(payload)
         elif path == "/wake":

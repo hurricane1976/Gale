@@ -4,7 +4,7 @@ import { boot, esc, refreshEffects } from "./shared.js";
 
 boot();
 
-const FEED = "api/fleet/metrics";
+const FEED = "/api/fleet/metrics";
 const POLL_MS = 30000;
 const HOST_ORDER = ["gale", "tidal", "mountain", "beacon"];
 const HOST_META = {
@@ -22,7 +22,7 @@ let alertCache = { at: 0, items: null };
 async function fetchAlerts() {
   if (Date.now() - alertCache.at < POLL_MS && alertCache.items) return alertCache.items;
   try {
-    const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+    const r = await fetch("/api/fleet/alerts", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     alertCache = { at: Date.now(), items: d.alerts || [] };

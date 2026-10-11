@@ -1,12 +1,12 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear, downloadFile } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear, downloadFile, whenPageActive } from "./shared.js";
 import { observabilityPayload, validate } from "./payloads.js";
 
 boot();
 
-const FEED = "api/fleet/observability";
+const FEED = "/api/fleet/observability";
 const POLL_MS = 30000;
 const FAM_COLOR = { claude: "var(--m-claude)", glm: "var(--m-glm)", gpt: "var(--m-gpt)", muse: "var(--m-muse)", gemini: "light-dark(#0a6288, #3fc7ff)", deepseek: "light-dark(#3846a6, #8593f0)" };
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tramontane: "var(--m-muse)", ostro: "var(--m-muse)", poniente: "var(--m-muse)", levante: "var(--m-muse)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)", beacon: "var(--m-claude)", river: "light-dark(#0f6a50, #4fd1a5)", creek: "light-dark(#76560c, #e0b45c)", stream: "light-dark(#8a2b80, #d98fd1)", meadow: "var(--m-glm)", brook: "var(--m-gpt)", mist: "var(--m-gpt)", highbeam: "var(--m-glm)", lantern: "var(--m-glm)", lightning: "var(--m-glm)", radar: "var(--m-glm)", prism: "var(--m-gpt)", pulsar: "var(--m-claude)", canyon: "var(--m-glm)", ridge: "var(--m-glm)", harbor: "var(--m-glm)", delta: "var(--m-glm)", mesa: "var(--m-gpt)", vista: "var(--m-gpt)" };
@@ -262,7 +262,7 @@ async function showDetail(id) {
   box.hidden = false;
   setText(box, "Loading run evidence…");
   try {
-    const response = await tracedFetch(`api/fleet/runs/detail?id=${encodeURIComponent(id)}`, {cache:"no-store"});
+    const response = await tracedFetch(`/api/fleet/runs/detail?id=${encodeURIComponent(id)}`, {cache:"no-store"});
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const d = await response.json(), r = d.run;
     setHTML(box, `<h3>${esc(r.agent)} · ${esc(r.host)} · ${esc(r.run_id)}</h3><p>Model ${esc(r.model || "unknown")} · terminal ${esc(r.terminal_reason || "unknown")} · failure class ${esc(r.failure_class || "none")} · task verification ${esc(r.verification || "unknown")}</p><p>Artifact start ${esc(r.ts)} · ${esc(r.source || "unknown")}</p>` +
@@ -326,6 +326,7 @@ function startPolling() {
    paint and go idle first, then start the feed. Node render-tests (no EventSource) start immediately. */
 async function startFeed() {
   if (typeof EventSource !== "undefined") {
+    await whenPageActive(); // don't open streams from a prerendering page
     let failures = 0;
     let es = new EventSource(FEED + "/stream");
     es.onmessage = (e) => {

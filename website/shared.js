@@ -8,6 +8,39 @@ export const raf = (fn) => requestAnimationFrame(fn);
 
 export const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 export const pad2 = (n) => String(n).padStart(2, "0");
+
+/* Prerender gating (review 2026-10-11): with speculation rules prerendering
+   a link target, the hidden page must not open SSE streams or start long
+   pollers before it is actually shown (document.prerendering -> activation).
+   Fetch-on-load stays unGated: warming caches is exactly what prerender is
+   for. Streams call `whenPageActive().then(...)` before creating their
+   EventSource. Resolves immediately everywhere prerendering doesn't exist. */
+export function whenPageActive() {
+  try {
+    if (typeof document !== "undefined" && document.prerendering) {
+      return new Promise((resolve) => document.addEventListener("prerenderingchange", () => resolve(), { once: true }));
+    }
+  } catch { /* no prerendering support */ }
+  return Promise.resolve();
+}
+/* Priority-aware scheduling (review 2026-10-11): scheduler.postTask when the
+   browser exposes it, requestIdleCallback next, setTimeout last. Data
+   rendering stays user-visible; heavy deferred work passes "background". */
+export function scheduleBackground(fn, opts = {}) {
+  if (typeof scheduler !== "undefined" && typeof scheduler.postTask === "function") {
+    try {
+      const p = scheduler.postTask(fn, { priority: opts.priority || "user-visible" });
+      if (p && typeof p.catch === "function") p.catch(() => {});
+      return;
+    } catch { /* fall through */ }
+  }
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(() => fn(), { timeout: opts.timeout || 3000 });
+    return;
+  }
+  setTimeout(fn, 0);
+}
+
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
@@ -922,7 +955,7 @@ export function initThemeEngine() {
   box.id = "fx-theme";
   box.style.cssText = "";
   box.innerHTML = `<summary class="mini-toggle" style="list-style:none;cursor:pointer;padding:8px 12px;min-height:32px">🎨 display</summary>
-    <div class="card" style="position:absolute;bottom:44px;left:0;width:220px;padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+    <div class="card fx-panel">
       <label style="font-size:.75rem;display:flex;gap:6px;align-items:center"><input type="checkbox" id="fx-auto"${auto ? " checked" : ""}> auto · time of day <span id="fx-tod" class="mono-dim"></span></label>
       <label style="font-size:.75rem;display:flex;flex-direction:column;gap:4px">ambient hue
         <input type="range" id="fx-hue" min="-40" max="40" step="1" value="${fx.hue}"></label>
@@ -1029,6 +1062,64 @@ export function initThemeEngine() {
     hue.value = p.hue; glow.value = Math.round(p.glow * 100);
     apply(fx); paintTod();
   }, 600000);
+}
+
+/* ---- Compute Pressure API (review 2026-10-11): real CPU pressure feeds
+   the auto graphics tier before frame times degrade, instead of reacting
+   after the fact. Only the AUTO mode listens (manual presets stay manual);
+   the observed state lands in RUM and on <html data-cpu-pressure> so the
+   Reliability console can show it. Enhancement-only: no observer, no change. ---- */
+export function initComputePressure() {
+  if (typeof window === "undefined" || typeof PressureObserver === "undefined") return;
+  const LEVELS = { nominal: 0, fair: 1, serious: 2, critical: 3 };
+  try {
+    const observer = new PressureObserver((records) => {
+      const last = records[records.length - 1];
+      const state = (last && last.state) || "nominal";
+      window.__galeCpuPressure = state;
+      if (document.documentElement && document.documentElement.dataset) {
+        document.documentElement.dataset.cpuPressure = state;
+      }
+      window.__galeRUMRecord?.("CPU_PRESSURE", LEVELS[state] ?? 0, "state");
+      window.dispatchEvent(new CustomEvent("gale:cpu-pressure", { detail: { state } }));
+    });
+    const maybePromise = observer.observe("cpu", { sampleInterval: 4000 });
+    if (maybePromise && typeof maybePromise.catch === "function") maybePromise.catch(() => {});
+  } catch { /* unsupported source name / permission policy */ }
+}
+
+/* ---- persistent storage (review 2026-10-11): the offline wake queue and
+   bounded RUM history live in IndexedDB/localStorage under best-effort
+   eviction; request persistence once there is real engagement (a control
+   action, or a sustained visit), and expose quota facts for Reliability.
+   No prompts, no collection — purely a durability upgrade. ---- */
+export function initStoragePersistence() {
+  if (typeof navigator === "undefined" || !navigator.storage || typeof navigator.storage.persist !== "function") return;
+  let requested = false;
+  const request = () => {
+    if (requested) return;
+    requested = true;
+    try {
+      navigator.storage.persisted?.().then((already) => {
+        window.__galeStoragePersisted = !!already;
+        if (already) return;
+        return navigator.storage.persist().then((ok) => { window.__galeStoragePersisted = !!ok; });
+      }).catch(() => {});
+    } catch { /* enhancement-only */ }
+  };
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target && target.closest && target.closest(".wake-chip, #gale-dock, .gale-mobile-nav")) request();
+  }, { capture: true });
+  setTimeout(() => { if (document.visibilityState === "visible") request(); }, 45000);
+  try {
+    navigator.storage.estimate?.().then((est) => {
+      if (est && Number.isFinite(est.quota)) {
+        window.__galeRUMRecord?.("STORAGE_QUOTA_MB", est.quota / (1024 * 1024), "MB quota");
+        window.__galeRUMRecord?.("STORAGE_USAGE_MB", (est.usage || 0) / (1024 * 1024), "MB used");
+      }
+    }).catch(() => {});
+  } catch { /* enhancement-only */ }
 }
 
 /* ---- storm canvas: DPR-aware, pauses when hidden, one static frame under
@@ -1494,7 +1585,7 @@ export function initClocks() {
   };
   const schedule = async () => {
     try {
-      const r = await fetch("api/fleet/registry", { cache: "no-store", signal: AbortSignal.timeout(10000) });
+      const r = await fetch("/api/fleet/registry", { cache: "no-store", signal: AbortSignal.timeout(10000) });
       if (!r.ok) throw new Error("schedule unavailable");
       const d = await r.json();
       WAKE_SECONDS = d.agents.find((a) => a.name === "gale")?.schedule?.seconds || [];
@@ -1635,7 +1726,7 @@ async function initPushBell() {
       test.addEventListener("click", async () => {
         test.disabled = true;
         try {
-          const r = await fetch("api/push/test", { method: "POST" });
+          const r = await fetch("/api/push/test", { method: "POST" });
           const d = await r.json();
           console.log("test push:", r.status, d);
         } catch {}
@@ -1683,7 +1774,7 @@ async function initPushBell() {
         // so the server log shows exactly what each device is running
         const sub = await reg.pushManager.getSubscription().catch(() => null);
         if (sub) {
-          fetch("api/push/diag", { method: "POST",
+          fetch("/api/push/diag", { method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ endpoint_tail: sub.endpoint.slice(-24),
               sw_version: pong.version, push_handler: pong.push }) }).catch(() => {});
@@ -1693,7 +1784,7 @@ async function initPushBell() {
     async function togglePush() {
       const sub = await reg.pushManager.getSubscription().catch(() => null);
       if (sub) {
-        await fetch("api/push/unsubscribe", { method: "POST",
+        await fetch("/api/push/unsubscribe", { method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {});
         await sub.unsubscribe().catch(() => {});
@@ -1704,12 +1795,12 @@ async function initPushBell() {
       const perm = await Notification.requestPermission();
       window.__galeRUMRecord?.(perm === "granted" ? "PUSH_PERMISSION_GRANTED" : "PUSH_PERMISSION_DENIED", 1, "events");
       if (perm !== "granted") return;
-      const res = await fetch("api/push/vapid-key").then((r) => r.json());
+      const res = await fetch("/api/push/vapid-key").then((r) => r.json());
       const newSub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: res.public,
       });
-      await fetch("api/push/subscribe", { method: "POST",
+      await fetch("/api/push/subscribe", { method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSub.toJSON()) });
       window.__galeRUMRecord?.("PUSH_SUBSCRIBED", 1, "events");
@@ -2198,7 +2289,7 @@ function initNavPulse() {
   }
   const paint = async () => {
     try {
-      const r = await fetch("api/fleet/alerts", { cache: "no-store" });
+      const r = await fetch("/api/fleet/alerts", { cache: "no-store" });
       if (!r.ok) throw new Error(r.status);
       const d = await r.json();
       const list = d.alerts || [];
@@ -2218,7 +2309,7 @@ function initNavPulse() {
       // recent open/close transitions (backend /alerts/history; absent on older backends -> block omitted)
       let histHTML = "";
       try {
-        const hr = await fetch("api/fleet/alerts/history", { cache: "no-store" });
+        const hr = await fetch("/api/fleet/alerts/history", { cache: "no-store" });
         if (hr.ok) {
           const hd = await hr.json();
           const ago = (iso) => { const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)); return m < 60 ? `${m}m ago` : m < 2880 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`; };
@@ -2287,12 +2378,16 @@ export function whenNear(el, margin = "400px 0px") {
 export function boot() {
   // WebGPU ambient sky (improvements #2): progressive enhancement -- the
   // CSS blobs stay as the fallback when WebGPU is missing or fails.
+  // Render loops wait for prerender activation (whenPageActive): a hidden
+  // prerendered page must not burn GPU/CPU before it is shown.
   if (typeof navigator !== "undefined" && navigator.gpu && !REDUCED && !isDataSaver()) {
-    import("./glsky.js").then((m) => m.initGlSky()).catch(() => {});
+    whenPageActive().then(() => import("./glsky.js").then((m) => m.initGlSky()).catch(() => {}));
   }
-  if (!isDataSaver()) initStormCanvas();
+  if (!isDataSaver()) whenPageActive().then(() => { initStormCanvas(); });
   initProgressFallback();
   initClocks();
+  initComputePressure();
+  initStoragePersistence();
   // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
@@ -2335,7 +2430,7 @@ if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
   const observer = new MutationObserver(applyAccess);
   observer.observe(document.documentElement, {childList:true,subtree:true});
   applyAccess();
-  fetch("api/fleet/access", {cache:"no-store"}).then(r=>r.ok?r.json():null).then(a=>{
+  fetch("/api/fleet/access", {cache:"no-store"}).then(r=>r.ok?r.json():null).then(a=>{
     writable = !!a?.can_write;
     if (writable) {
       observer.disconnect();

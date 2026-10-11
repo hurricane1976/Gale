@@ -10,7 +10,7 @@ export async function initHostMap() {
   const sec = document.getElementById("sec-hostmap");
   const fail = () => { if (sec) sec.hidden = true; };
   try {
-    const r = await fetch("api/fleet/metrics", { cache: "no-store" });
+    const r = await fetch("/api/fleet/metrics", { cache: "no-store" });
     if (!r.ok) return fail();
     const d = await r.json();
     const byHost = d.agents_by_host || {}, fs = d.fleet_status || {};
@@ -42,7 +42,7 @@ function initScrub(nodes) {
   if (!box || !range) return;
   box.hidden = false;
   let runs = null, loading = null, timer = 0;
-  const load = () => loading || (loading = fetch("api/fleet/telemetry", { cache: "no-store" }).then((r) => r.json()).then((d) => {
+  const load = () => loading || (loading = fetch("/api/fleet/telemetry", { cache: "no-store" }).then((r) => r.json()).then((d) => {
     const byAgent = new Map();
     for (const r of d.runs || []) {
       const a = String(r.agent || "").toLowerCase(), t = new Date(r.ts).getTime();

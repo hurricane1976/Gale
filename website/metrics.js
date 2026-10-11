@@ -1,11 +1,11 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear, downloadFile } from "./shared.js";
+import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear, downloadFile, whenPageActive } from "./shared.js";
 import { metricsPayload, validate } from "./payloads.js";
 
 boot();
 
-const FEED = "api/fleet/metrics";
+const FEED = "/api/fleet/metrics";
 const POLL_MS = 30000;
 const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)" };
 const AGENT_COLOR = { gale: "var(--m-glm)", zephyr: "var(--gust)", squall: "var(--warn)", tempest: "var(--ok)", vortex: "var(--flag)", chinook: "var(--bolt)", cyclone: "var(--m-gpt)", maistral: "var(--m-claude)", sirocco: "var(--m-muse)", bora: "var(--storm-purple)", tramontane: "var(--m-muse)", ostro: "var(--m-muse)", poniente: "var(--m-muse)", levante: "var(--m-muse)", tidal: "light-dark(#0a6288, #3fc7ff)", mountain: "light-dark(#3846a6, #8593f0)", beacon: "var(--m-claude)", river: "light-dark(#0f6a50, #4fd1a5)", creek: "light-dark(#76560c, #e0b45c)", stream: "light-dark(#8a2b80, #d98fd1)", meadow: "var(--m-glm)", brook: "var(--m-gpt)", mist: "var(--m-gpt)", highbeam: "var(--m-glm)", lantern: "var(--m-glm)", lightning: "var(--m-glm)", radar: "var(--m-glm)", prism: "var(--m-gpt)", pulsar: "var(--m-claude)", canyon: "var(--m-glm)", ridge: "var(--m-glm)", harbor: "var(--m-glm)", delta: "var(--m-glm)", mesa: "var(--m-gpt)", vista: "var(--m-gpt)" };
@@ -339,6 +339,7 @@ function startPolling() {
 }
 
 if (typeof EventSource !== "undefined") {
+  await whenPageActive(); // don't open streams from a prerendering page
   let failures = 0;
   let es = new EventSource(FEED + "/stream");
   es.onmessage = (e) => {

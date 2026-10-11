@@ -125,7 +125,7 @@ function initSearch() {
     if (q.length < 2) { box.hidden = true; return; }
     searchTimer = setTimeout(async () => {
       try {
-        const r = await fetch(`api/fleet/weather/geocode?name=${encodeURIComponent(q)}&count=7&language=en&format=json`);
+        const r = await fetch(`/api/fleet/weather/geocode?name=${encodeURIComponent(q)}&count=7&language=en&format=json`);
         const j = await r.json();
         const items = j.results || [];
         box.innerHTML = "";
@@ -209,11 +209,11 @@ async function loadAll(soft) {
   loadObservations();
   renderAlerts();
   const { lat, lon } = loc;
-  const fUrl = `api/fleet/weather/forecast?latitude=${lat}&longitude=${lon}` +
+  const fUrl = `/api/fleet/weather/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m` +
     `&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,uv_index_max,wind_speed_10m_max` +
     `&temperature_unit=celsius&wind_speed_unit=kmh&timezone=auto&forecast_days=7`;
-  const aqUrl = `api/fleet/weather/airquality?latitude=${lat}&longitude=${lon}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide&timezone=auto`;
+  const aqUrl = `/api/fleet/weather/airquality?latitude=${lat}&longitude=${lon}&current=us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide&timezone=auto`;
   try {
     const [f, aq] = await Promise.all([
       fetch(fUrl).then((r) => { if (!r.ok) throw new Error("forecast " + r.status); return r.json(); }),
@@ -594,7 +594,7 @@ async function loadObservations(){
   }
   async function air(){
     try{
-      const d=await jsonFetch(`api/fleet/weather/airnow?lat=${lat}&lon=${lon}`);
+      const d=await jsonFetch(`/api/fleet/weather/airnow?lat=${lat}&lon=${lon}`);
       if(request!==observationRequest)return;
       $("wx-airnow").textContent=d.readings.length?d.readings.map(r=>`${r.area}, ${r.state} · ${r.distance_km} km away · ${r.pollutant} AQI ${r.aqi} (${r.category}) · observed ${new Date(r.observed_at).toLocaleString()}${r.stale||d.state==="stale"?" · STALE":""}`).join("; "):"No AirNow observation within 100 km, or provider unavailable. Model air quality remains above.";
     }catch(e){if(request===observationRequest)$("wx-airnow").textContent="AirNow observations unavailable. Model air quality remains above.";}

@@ -86,7 +86,7 @@ topo.querySelectorAll(".topo-node").forEach((node) => {
    last-verified summary as fallback text (Tidal's pattern). */
 const statusEl = document.getElementById("mesh-status");
 if (statusEl) {
-  fetch("api/fleet/activity", { cache: "no-store" })
+  fetch("/api/fleet/activity", { cache: "no-store" })
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((d) => {
       const last = (d.events || []).slice(-3).reverse();
@@ -210,7 +210,7 @@ refreshEffects();
   };
   const measure = async () => {
     try {
-      const r = await fetch("api/status.json", { cache: "no-store" });
+      const r = await fetch("/api/status.json", { cache: "no-store" });
       if (!r.ok) return;
       const d = await r.json();
       const ifs = (d.network && d.network.interfaces) || [];

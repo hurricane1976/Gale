@@ -2,7 +2,7 @@ import { boot, esc, refreshEffects, chartTooltip, skeleton } from "./shared.js";
 boot();
 
 const $ = (id) => document.getElementById(id);
-const FEED = "api/fleet/net";
+const FEED = "/api/fleet/net";
 const POLL_MS = 30000;
 
 let DATA = null;
@@ -108,7 +108,7 @@ const TPUT_N = 20;
 const tputBuf = [];
 let tputIface = null;
 function sampleThroughput() {
-  return fetch("api/status.json", { cache: "no-store" })
+  return fetch("/api/status.json", { cache: "no-store" })
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => {
       const ifs = ((d && d.network && d.network.interfaces) || [])

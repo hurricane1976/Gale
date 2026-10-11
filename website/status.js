@@ -3,12 +3,12 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost, whenPageActive, scheduleBackground } from "./shared.js";
 import { statusPayload, metricsPayload, wakesPayload, asksPayload, validate } from "./payloads.js";
 
 boot();
 
-const FEED = "api/status.json";
+const FEED = "/api/status.json";
 const board = document.getElementById("board");
 // skeleton screens (#6): shimmer until the first fetch renders
 skeleton(document.getElementById("vitals-grid"), 4, 84);
@@ -393,7 +393,7 @@ function renderFullHosts(list) {
   }).join(""));
 }
 
-const FW_API = "api/firewalla";
+const FW_API = "/api/firewalla";
 let fwDeviceFilter = "";
 let lastFw = null;
 
@@ -892,7 +892,7 @@ function mapFleetAlerts(env) {
 
 async function fleetAlerts() {
   try {
-    const res = await tracedFetch("api/fleet/alerts", { cache: "no-store" });
+    const res = await tracedFetch("/api/fleet/alerts", { cache: "no-store" });
     if (!res.ok) return [];
     return mapFleetAlerts(await res.json());
   } catch { return []; }
@@ -993,7 +993,7 @@ const acks = new Map();
 let lastAlerts = [];
 
 function ackFetch() {
-  return tracedFetch("api/fleet/alerts/acks", { cache: "no-store" })
+  return tracedFetch("/api/fleet/alerts/acks", { cache: "no-store" })
     .then((r) => (r.ok ? r.json() : null))
     .catch(() => null);
 }
@@ -1009,7 +1009,7 @@ async function loadAcks() {
 
 async function setAck(key, hours) {
   try {
-    const res = await tracedFetch("api/fleet/alerts/acks", {
+    const res = await tracedFetch("/api/fleet/alerts/acks", {
       method: "POST", cache: "no-store",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key, hours }),
@@ -1120,10 +1120,7 @@ async function tick() {
   // critical paint path (idle callback, 3s ceiling), later ticks poll it.
   // The console panel rides along on the same schedule.
   const kick = () => { renderWakeHeatmap(); renderWakeConsole(); };
-  if (typeof requestIdleCallback === "function") {
-    if (!heatKicked) { heatKicked = true; requestIdleCallback(kick, { timeout: 3000 }); }
-    else kick();
-  } else if (!heatKicked) { heatKicked = true; setTimeout(kick, 1500); }
+  if (!heatKicked) { heatKicked = true; scheduleBackground(kick, { priority: "background", timeout: 3000 }); }
   else kick();
 }
 
@@ -1196,7 +1193,7 @@ async function fetchGpuHistory() {
     return gpuHistoryCache.data;
   }
   try {
-    const res = await tracedFetch("api/ollama/history?hours=24", { cache: "no-store" });
+    const res = await tracedFetch("/api/ollama/history?hours=24", { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     gpuHistoryCache.at = Date.now();
     gpuHistoryCache.data = await res.json();
@@ -1285,7 +1282,7 @@ async function refreshOllamaGpu(o) {
 }
 
 /* ---- fleet activity (24h) — polls api/fleet/metrics, one card per host ---- */
-const FLEET_FEED = "api/fleet/metrics";
+const FLEET_FEED = "/api/fleet/metrics";
 const FLEET_TTL = 30000;
 const FLEET_ORDER = ["gale", "tidal", "mountain", "beacon"];
 const FLEET_META = {
@@ -1446,7 +1443,7 @@ export async function renderFleet24h() {
    doesn't punch holes in the grid). Missed-wake ALERTING is deliberately
    not inferred here -- crontab cadence + grace math lives in
    tools/wake_bridge.py (gale_wake.prom); this panel shows raw history. */
-const HEAT_FEED = "api/fleet/wakes";
+const HEAT_FEED = "/api/fleet/wakes";
 const HEAT_TTL = 120e3;
 const HEAT_DAYS = 14;
 const HEAT_SLOTS = HEAT_DAYS * 4;
@@ -1570,7 +1567,7 @@ async function fetchAsks() {
     return { data: asksCache.data, err: asksCache.err };
   }
   try {
-    const res = await tracedFetch("api/fleet/asks", { cache: "no-store" });
+    const res = await tracedFetch("/api/fleet/asks", { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     asksCache = { at: Date.now(), data: validate(await res.json(), asksPayload), err: null };
   } catch (e) {
@@ -1645,7 +1642,7 @@ document.addEventListener("click", (e) => {
   let res = null;
   (async () => {
     try {
-      res = await tracedFetch("api/fleet/wake", {
+      res = await tracedFetch("/api/fleet/wake", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ agent }),
@@ -1698,9 +1695,9 @@ document.addEventListener("visibilitychange", () => {
 // EventSource global, still gets fresh data every tick). A push only
 // refreshes the parts it covers; on repeated stream errors we close the
 // source and let polling carry the page.
-if (typeof EventSource !== "undefined") {
+if (typeof EventSource !== "undefined") whenPageActive().then(() => {
   let alertsFailures = 0;
-  const esAlerts = new EventSource("api/fleet/alerts/stream");
+  const esAlerts = new EventSource("/api/fleet/alerts/stream");
   esAlerts.onmessage = (e) => {
     alertsFailures = 0;
     try {
@@ -1716,7 +1713,7 @@ if (typeof EventSource !== "undefined") {
   };
 
   let fleetFailures = 0;
-  const esFleet = new EventSource("api/fleet/metrics/stream");
+  const esFleet = new EventSource("/api/fleet/metrics/stream");
   esFleet.onmessage = (e) => {
     fleetFailures = 0;
     try {
@@ -1727,7 +1724,7 @@ if (typeof EventSource !== "undefined") {
   esFleet.onerror = () => {
     if (++fleetFailures >= 3) esFleet.close(); // polling keeps the cards fresh
   };
-}
+});
 
 
 /* host map (3D): loaded after the board has settled so it never competes with first paint. The panel is

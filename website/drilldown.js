@@ -5,8 +5,8 @@ import { boot, esc, refreshEffects, trapFocus } from "./shared.js";
 
 boot();
 
-const METRICS = "api/fleet/metrics";
-const OBS = "api/fleet/observability";
+const METRICS = "/api/fleet/metrics";
+const OBS = "/api/fleet/observability";
 const RECENT_RUNS = 5;
 
 const state = { metrics: null, obs: null, cacheT: 0 };

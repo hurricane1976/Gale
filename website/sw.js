@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v16";
+const CACHE_VERSION = "gale-v17";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const ASSET_META_CACHE = `${CACHE_VERSION}-asset-meta`;
@@ -42,7 +42,8 @@ const SHELL_ASSETS = [
   "/dist/drilldown.js", "/dist/hosts.js", "/dist/particles.js",
   "/dist/metrics.js", "/dist/network.js", "/dist/observability.js",
   "/dist/status.js", "/dist/weather.js", "/dist/agora.js", "/dist/ollama.js",
-  "/shared.js", "/rum.js",
+  "/shared.js", "/rum.js", "/boot-shared.js", "/lost-boot.js", "/runbooks-steps.js",
+  "/assets/vendor/leaflet/leaflet.css", "/assets/vendor/leaflet/leaflet.js",
   "/manifest.json", "/favicon.ico", "/apple-touch-icon.png",
   "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png",
   "/pwa-screenshots/gale-mobile.jpg", "/pwa-screenshots/gale-wide.jpg",
@@ -140,7 +141,7 @@ self.addEventListener("push", (event) => {
   const title = data.title || "GALE — fleet alert";
   event.waitUntil((async () => {
     try {
-      await fetch("api/push/receipt", { method: "POST",
+      await fetch("/api/push/receipt", { method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ seen: true, title,
           has_body: !!data.body, sev: data.sev || null,

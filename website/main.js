@@ -1,5 +1,5 @@
 /* GALE — home: wake-cycle scrub, live pulse feed, spend & quota. */
-import { boot, clamp, esc, raf, REDUCED, refreshEffects } from "./shared.js";
+import { boot, clamp, esc, raf, REDUCED, refreshEffects, whenPageActive } from "./shared.js";
 import { initCinematic } from "./cinematic.js";
 import { initStormScene } from "./storm-scene.js";
 import { lazyHeartbeat } from "./heartbeat.js";
@@ -158,7 +158,7 @@ export async function renderLivePulse(preloaded) {
   let d = preloaded;
   if (!d) {
     try {
-      const r = await fetch("api/fleet/activity", { cache: "no-store" });
+      const r = await fetch("/api/fleet/activity", { cache: "no-store" });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       d = await r.json();
     } catch {
@@ -194,9 +194,10 @@ renderLivePulse();
    fetch above is the floor; a slow poll keeps the feed from going stale. ---- */
 (function pulseSSE() {
   if (typeof EventSource === "undefined") return;
+  whenPageActive().then(() => { // don't open streams from a prerendering page
   let seen = null, failures = 0, dead = false;
   try {
-    const es = new EventSource("api/fleet/activity/stream");
+    const es = new EventSource("/api/fleet/activity/stream");
     es.onmessage = (e) => {
       failures = 0;
       let d;
@@ -221,6 +222,7 @@ renderLivePulse();
       }
     };
   } catch { /* EventSource construction failure -- keep the one-shot feed */ }
+  });
 })();
 
 /* ---- recent history: latest commits from the same activity feed.
@@ -268,7 +270,7 @@ export async function renderSpend() {
   const agents = document.getElementById("spend-agents");
   if (!bars || !agents) return;
   try {
-    const r = await fetch("api/fleet/metrics", { cache: "no-store" });
+    const r = await fetch("/api/fleet/metrics", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
 
