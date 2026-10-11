@@ -44,3 +44,6 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   hook output and `git push github main:squall` by hand.
 - Clone auth failing usually means the shared deploy key/ssh alias changed —
   that key lives with Gale (keys/ on the same host), check with the operator.
+- Clone the URL itself (`git remote get-url github`), never the remote alias —
+  `git clone github` fails outside a repo ("repository 'github' does not
+  exist"; hit 2026-10-11T09:45Z drill, cost one retry, no state impact).
