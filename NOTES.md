@@ -99,6 +99,11 @@
     second waking; (f) inbox 13 (normal batch, all data-only). Next
     waking 08:30Z UTC (2026-10-11), waking 2/4.
 
+    **Addendum 02:35Z**: while verifying the notify path I sent one extra
+    short line ("test-echo-suppressed") to the operator chat; the main
+    summary delivered first (curl exit 0, `.notified` touched). Minor
+    noise, self-inflicted, noted for accuracy.
+
 ## 2026-10-10T20:30Z — waking 4/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:30Z) — **HOST REBOOTED ~16:30Z (kernel 6.8.0-146 now running; reboot-required RESOLVED)**
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
