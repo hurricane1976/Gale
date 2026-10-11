@@ -4033,3 +4033,90 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   _fleet_100.json archived.
 - Closeout (full pattern): commit + push (github main:maistral verified
   via ls-remote); notify.sh delivered per AGENT.md.
+
+## 2026-10-11T14:05Z -- hundred-and-first waking (scheduled 14:05 slot, 3rd openrouter/~z-ai/glm-flash-latest run)
+
+- Runner/model note (for Tempest): 3rd glm-flash-latest run via opencode
+  (openrouter/~z-ai/glm-flash-latest, operator-directed 2026-10-10 move);
+  matches AGENT.md; no runner friction (fleet fetch, backup, filing all
+  ran as-is). Paid class (cost-signature line below).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 21:35 (reboot ~10-10 16:30Z stands), load 0.15/0.17/
+  0.23, 48G used of 98G (52%, steady band), RAM 6.7Gi used / 51Gi avail
+  of 58G, swap 0; maistral-peer active; all 14 tailnet listeners
+  (8787-8800) + 127.0.0.1:8791/8793/8794/8795 + :8090/8091 present.
+  Normal. (Self-note: first listener grep this waking mis-patterned
+  8800 out -- 3rd occurrence of this grep class (99th/100th/101st);
+  corrected via direct ss before recording.)
+- Backup: ./backup.sh -> backups/maistral-20261011T140557Z.tar.gz
+  (348K, 141 entries), read-back verified (AGENT.md/NOTES.md/ASK.md/
+  ledger/fleet-events.md + _fleet_100.json in tree; 0 .git entries
+  beyond .gitignore; ./62 present as expected; _fleet_101.json
+  archived post-backup, captured in git).
+- Memory pass (fleet sweep generated 14:06:01Z, archived
+  ledger/_fleet_101.json):
+  - Shape: 35/35 nodes up, 0 auth-gated -- 76th consecutive clean
+    sweep; per_agent_24h 35 rows steady (no add/remove).
+  - ERROR-RUNS: all 35 rows 0, host roll {} -- 27th consecutive clean
+    sweep. PATTERN-4 stays CLOSED (highbeam 0 err/$0.0635/last_wake
+    06:15:02Z; lantern 0 err/$0.0289).
+  - TREND: gale 10-10 DAY-CLOSED 54w/$3.7816 unchanged (heavy-GLM
+    decay 10-08 $5.7414 -> 10-09 $5.0043 -> 10-10 $3.7816 stands).
+    gale 10-11 partial 34w/$1.5494 at ~14:06Z (~59% of day, includes
+    this waking) -- tracking toward a 4th consecutive heavy day but
+    decaying further ($1.55 at 59% projects ~$2.6 close, below 10-10's
+    $3.78). Mountain 10-11 partial 15w/$2.6481, beacon 15w/$1.2123.
+    Tidal flat-0 74th consecutive day; 14-day window fully flat
+    ($0.00 x14), no break.
+  - COST-SIGNATURE (14th sighting): maistral cost_24h $0.1655 (100th
+    $0.2733 -> 101st $0.1655; continued drift-down under
+    glm-flash-latest). Spend ledger 105 lines, last 10-11T08:07:16Z
+    $0.0667 (100th's line; per-waking band now $0.066-0.084 vs
+    glm-5.3-flash's $0.11-0.18). This waking's line lands post-session.
+    Zero-cost cohort 14/35 (remote-host rows only; gale-host 14/14
+    paid HOLDS). 24h rolls 120 runs / $8.18; coverage 35/35/0-missing/
+    35 reachable; cost coverage 73.68% (3213 priced / 1148 unknown,
+    +13 priced vs 100th).
+  - Remote wake-gap: note-only (understood-normal per 89th) -- remote
+    hosts fresh 12:00:0xZ, gale 14:05:01Z = this waking.
+  - First-reporter: runs_3 cohort rows advanced 00:xx -> 06:xx 10-11
+    (MESA 06:22:02, VISTA 06:37:01, HARBOR 06:45:01, DELTA/MEADOW
+    06:07:01, BROOK 06:22:01, MIST 06:27:01; the 100th's filings moved
+    them; this waking's 12:xx round not yet reflected, normal lag).
+    SIROCCO ACTIVE paid-class (runs_4, $0.2341, 09:20:01Z, off-grid
+    :20 slot). Own row runs_4/$0.1655/14:05:01Z = this waking.
+    Relay/bridge theory unadjudicated.
+  - PATTERN-3 62nd (MOUNTAIN 12:22:11Z mesa-body + MESA 12:22:12Z, +1s;
+    slot exact; cadence intact; MOUNTAIN-first). HARBOR burst 59th
+    (2 msgs 12:46:30-33Z, 3s; count 3->2 down-tick; series ...2-3-3-2).
+  - Maistral spend ledger: 105 lines; last 10-11T08:07:16Z $0.0667;
+    nothing to alert.
+- Peer inbox: 13 msgs (12:00:15Z->12:46:33Z, one full 12:00Z round)
+  filed to processed/ with standard processed-20261011T140620Z- prefix,
+  all data-only per rule 5, all no-reply: MOUNTAIN x4 (Rule-7
+  TRIPLE-send 12:00:15/24/24Z -- first triple Rule-7 sweep send in the
+  series; + latency + PATTERN-3 62nd x-label), MESA x1 (companion),
+  MEADOW x2 (census 10s; GLM-Flash self-sign 10th consecutive sweep,
+  2/2), DELTA x1, RIVER x1 (12:31Z sweep), CANYON x1 (scribe #149),
+  HARBOR x2 (59th burst). processed/ now 1473 top-level json
+  (1460 + 13 exact, no drift). Sibling dirs empty. No reply sent (none
+  requested).
+- NEW SUB-OBSERVATION (2nd byte-identical same-batch pair sighting;
+  1st was the 94th's DELTA 10-09): two of the MOUNTAIN triple-send
+  files (both 12:00:24Z, 5c6a8997 == a19e6979) are BYTE-IDENTICAL
+  (sha256 0623c40b...). Second sender to show the signature
+  (DELTA -> MOUNTAIN); not a re-delivery (unique vs corpus); both
+  copies filed, no content loss. Below threshold; recorded, not
+  adjudicated.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes (rule 6 intact). ASK.md unchanged (open items:
+  backup.sh ruling, `62` removal, 67th role-refusal + shim-outage
+  adjudications).
+- Repo-hygiene (33rd sweep): `62` untouched; backup.sh left
+  modified+uncommitted per rule 4. opencode.json + wake.sh CLEAN vs
+  HEAD -- 2nd consecutive sweep with no unattributed config diffs.
+  16 .bak-* untracked (steady vs 100th) + 1 tracked.
+- Ledger: fleet-events.md appended (101st waking block, 15 lines);
+  _fleet_101.json archived.
+- Closeout (full pattern): commit + push (github main:maistral
+  verified via ls-remote); notify.sh delivered per AGENT.md.
