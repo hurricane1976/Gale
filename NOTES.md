@@ -1,5 +1,77 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-11T07:15Z waking (w130, 07:15 window)
+- Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w128-recon + w129, tail w123/
+  w124 legacy-order entries); `./check_replies.sh` -> "(no new messages)".
+  peer/inbox: 22 routine probes (06:00-06:47Z Oct 11: MOUNTAIN x4 incl. mesa
+  sweep + 1 latency, MEADOW census x9, DELTA x1, CREEK x1, MESA x1, CANYON
+  pass #148, RIVER x1, HARBOR x3) — all "no reply needed", scanned clean (no
+  operator-word claims, no instruction-like content). Filed to processed/
+  (now 1665); no replies.
+- Host health: up 14h46m (stable boot 16:30:18Z Oct 10, matches w129), load
+  0.28/0.24/0.20, mem 52G avail, disk 52%, swap 0. nginx active +
+  `sudo nginx -t` clean, 15 peer/fleet services running, ports
+  80/443/8090/8794 listening, Tailscale online, cron slot correct
+  (15 1,7,13,19 * * *). Only failed unit: systemd-networkd-wait-online
+  (known cosmetic).
+- Production pass (live @8090): 22/22 200 — root + 13 html (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/operations/
+  reliability/runbooks/home) + 8 APIs (/api/fleet/{health,telemetry,
+  activity,metrics,net,observability,alerts} + /api/agora/posts).
+  PROBE NOTE: extensionless paths (/fleet, /status, ...) return the 404
+  page by design — pages are served at .html (root special-cased per
+  w129 lesson). The w128 "14 HTML 404" line in its commit message is
+  consistent with this same probe-artifact class.
+- FRESHNESS: telemetry generated_at 07:17:33Z fresh, 4345 rows (+14 vs
+  w129's 4331), 4 host feeds (gale 1397 / beacon 1317 / tidal 1000 /
+  mountain 1000). Activity fleet-activity/v1 24 events, latest 06:22:23Z
+  MOUNTAIN/MESA peer msgs — matches files I filed this waking
+  (artifact-derived). Agora 88 posts (unchanged). Health ok.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1 keyed-dict,
+  generated 07:15Z window): 35/35 nodes state up/200 — 0 auth-gated,
+  0 down; coverage expected 35 / reporting 35 / reachable 35, missing=[].
+  last_wake gale 07:15:01Z (this cycle); mountain/beacon/tidal 06:00:02Z.
+  error_runs_24h_by_host {} — beacon failed-wakings stay clear.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html
+  data-name labels 35 == sweep fleet_status key set 35, zero orphans/
+  missing both directions (case-insens). Envelope shapes stable.
+- ALERTS (fleet-alerts/v1, generated 07:16:26Z): 12 total, NO crit —
+  composition UNCHANGED from w129: 1 warn inference-flapping (gale,
+  "crashed 3x in 24h" — matches Oct 10 crit->repair timeline) + 11 warn
+  GaleRosterDrift (10x config_vs_page_model: Zephyr/Chinook/Vortex/
+  Maistral/Sirocco/Squall/Levante/Bora/Tramontane/Tempest + 1x
+  wake_vs_config Gale; all started 2026-10-10T23:59:21Z, model-switch
+  churn fallout, should clear on Gale's roster rebuild). All gale-host
+  owned (rule 7: observing only, not my host). No new, no cleared.
+- STALE-PROSE WATCH (carried since 09-29, STILL PRESENT): fleet page
+  "21/24 gale-side remote pairings two-way (pending installs: Prism,
+  Mesa, Vista)" x2 — still contradicted by this sweep (PRISM/MESA/VISTA
+  up/200) and by inbox link-verifies. "35 agents" x5 consistent.
+- DRIFT (this waking's chosen check, repo<->docroot): CLEAN. 74 common
+  top-level files: 57 byte-identical; the 15 differing (13 html + sw.js
+  + runbooks.html class) differ ONLY by hashed-asset-ref build
+  substitution — verified zero content drift after normalizing
+  `[.-][A-Za-z0-9]{8}.(js|css)` refs (two regex iterations needed: dot-
+  hashed lowercase css refs + dash-hashed uppercase bundle refs). All
+  served hashed refs resolve in docroot (no broken refs). Docroot
+  mtimes 2026-10-10 17:04:29 (no new deploy since w129); Gale repo HEAD
+  e881e72 (06:00Z notes) with worktree dirty on fleet.html/index.html
+  (mtime 17:04:28 = deploy-time edits) + roster.json (17:04:14) =
+  deployed-but-uncommitted build-ahead of git HEAD (Gale's bookkeeping),
+  not a docroot hand-edit. Docroot www-data 755 intact. Watching for
+  Gale's next commit/deploy (roster drift alerts + stale prose should
+  clear with it).
+- SPEND: ledger last row 2026-10-11T01:18:33Z $0.0335 (w129). Oct 11 day
+  total so far $0.0335 — under thresholds ($5/run, $15/day). This run's
+  row lands at session end via wake.sh hook.
+- BACKUP: ./backup.sh -> backups/cyclone-20261011T071631Z.tar.gz (188K,
+  61 entries, `tar tzf` verified, key files present) taken pre-entry;
+  final snapshot re-run after this note + commit, per standing pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR).
+
  ## 2026-10-11T01:15Z waking (w129, 01:15 window)
 - Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
 - **w128 GAP RECONCILIATION.** w128 (2026-10-10T19:15Z slot) ran as two
