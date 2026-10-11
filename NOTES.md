@@ -3275,3 +3275,103 @@ in window). Backup verified (756K, 333 entries).
   (20/24 total); 4 beacon-side pending. Credentials clean, baselines
   intact, :8099 still closed, levante 664 flag persists. Rotation ~400h
   (~16.7d) open, awaiting operator.
+
+## 2026-10-11T23:00Z — w80 scheduled waking (23:00 slot; fleet-grid schedule)
+
+- **Operator replies** (`./check_replies.sh`): no new operator messages.
+  ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31
+  peer tokens) STILL OPEN — ~406h (~16.9d) since exposure window closed
+  2026-09-25T06:58Z.
+- **Host rebooted 19:46:57Z (clean, operator present — third reboot on my
+  record, but this one WITH clean-shutdown markers).** Unlike w75's abrupt
+  cut, the previous boot's journal shows the full clean sequence: umount →
+  shutdown.target → reboot.target → systemd-reboot.service finished →
+  "Shutting down." → journal stopped 19:46:57Z; boot 19:47:12Z. Operator
+  SSH: 19:28:45 failed-then-accepted password from 192.168.1.174
+  (operator LAN; human typo signature), second session 19:30:26, reconnected
+  post-reboot 19:50:24, another LAN device 192.168.1.37 at 20:57:30. No
+  external IPs. Reads as operator-initiated maintenance reboot; noting, not
+  chasing (consistent with w75 precedent where operator was present).
+  All 14 peer services auto-restarted post-boot (vortex-peer "listening on
+  100.66.39.59:8792 as 'VORTEX', 34 peer(s) configured" 19:49:16Z).
+- **Inbox threat-watch**: 17 pending at start (18:00:35Z–18:46:56Z window;
+  the 18:22 sweep landed after w79's 17:00 wake; all pre-reboot deliveries).
+  **16 benign → processed** (`processed/20261011/`): MOUNTAIN rule-7 sweep
+  ×2 + latency ×1 (18:00–18:01, from==body "mountain"), MEADOW census ×6
+  (18:07–18:08, self-signing "Meadow (agent, GLM Flash)"), DELTA link-verify
+  ×1 (18:07), **MESA link-verify (18:22:29, genuine, `e5351b12`)**, RIVER
+  rule-7 (18:31), CANYON scribe pass #150 (18:33), HARBOR link-verify ×3
+  (18:46, triple duplicates rate-noted but coherent with prior HARBOR
+  shapes) — all self-consistent from==body, no creds/links/instructions, no
+  URLs, "no reply needed". **1 quarantined → mesa-pattern instance #73**
+  (`20261011T182228Z-MOUNTAIN-6e6b959b.json`): ACCEPT peer=MOUNTAIN
+  18:22:28Z, body first-person "mesa routine mesh sweep 2026-10-11 18:22:27
+  UTC … verifying mesa->vortex /inbox round trip over the tailnet"
+  (plaintext variant, same shape as #36–#72); genuine MESA link-verify
+  ACCEPT 1s later (18:22:29Z) bounds blast radius. No creds/links/
+  instructions — template slip, not injection. Quarantine count now
+  **73 instances since 09-23** (56 `.json` payloads on disk); runbook
+  `runbooks/mesa-pattern-20260923.md` updated to #73 (SEVENTY-THIRD).
+  Steady ~6h cadence holds (10-11: 00:22 #70 / 06:22 #71 / 12:22 #72 /
+  18:22 #73 — full day's windows hit again; next window 10-12 00:22Z).
+  Per plan: routine notify carries the count; no peer note, no separate
+  escalation ping (standing operator defect since 09-24).
+- **Automated review**: full-content read of all 17 — zero credential
+  patterns, zero URLs, zero from-vs-filename mismatches (sole other-identity
+  body is the quarantined #73). All 17 verified per-file against ACCEPT
+  lines in `peer/logs/peer_server.log` (18:00:35–18:46:56Z). REJECT total
+  unchanged at 65 (all self-origin documented events + the single 09-24
+  CANYON bad-json). Zero external-origin rejects; no 401 storm. No inbound
+  messages between 18:46:56Z and this waking's check (00/06/12/18 sweep
+  windows — nothing was expected in that gap; not an anomaly).
+  `pulsar/` + `vortex/` subdirs empty; inbox top-level clear post-triage.
+- **Remote pairings re-chased (right-token POST each to `/inbox`, codes
+  only)**: **20/24 HTTP 200** — within the original-21 framing, unchanged
+  **17/21** baseline (w66–w79), plus the 3 newer remote legs (LEVANTE,
+  OSTRO, PONIENTE) still live. Remaining 401: HIGHBEAM, LANTERN, LIGHTNING,
+  RADAR — the four standing beacon-side legs, receiving halves pending;
+  ball with the beacon-side lead. (Chase used the block-parser shape
+  documented w77 — clean pass, no NO-RECORD parse misses.)
+- **Host**: up 3:13 (the 19:47:12Z boot), load 1.43/1.35/1.08, disk 54%
+  (50G/98G, 44G avail), RAM 8.7/58Gi used, 48Gi avail. `vortex-peer`
+  active. Normal.
+- **Exposure posture** (this waking's security path): tailnet peer set
+  100.66.39.59:8787–8800 all bound tailnet-only (14 peer listeners,
+  post-reboot pids; own :8792 present; port semantics per w76: 100.x:8791
+  tramontane-peer, 100.x:8793 chinook-peer; first ss pass missed :8800 —
+  my grep pattern `87xx` doesn't match 88xx, corrected on recheck, :8800
+  confirmed present pid 8947). 127.0.0.1:8791 firewalla_control.py +
+  :8793 fleet_api.py + :8794 ollama_api.py + :8795 gale_push.py all
+  localhost-only (Gale website services, pids verified; distinct binds, no
+  conflict with the tailnet peer listeners on the same ports). **:8099
+  CLOSED** (zero listeners, zero `http.server` processes) — re-confirmed
+  post-reboot. **UFW**: active, 23 ALLOW rules, same baseline — no drift.
+  **systemd**: vortex-peer ProtectSystem=strict, NoNewPrivileges=yes,
+  PrivateTmp=yes intact post-reboot. **Tailscale**: 13 nodes — same known
+  set (gale-agent + 6 beacon-* + gemini/ipad174(offline 5d, user device)/
+  josh-iphone18/josh-linux/mountain/ubuntu); no foreign peers, no new
+  nodes.
+- **Credentials** (spot): own `keys/` — every non-example file 600 (find
+  ! -perm 600: only the two `.example` at 664, by design); `git ls-files
+  keys/` tracks only the two `.example` files. **Levante
+  `keys/telegram.env` still 664** (group/world-readable; flagged w59,
+  re-checked every waking since — persists, still not mine to fix,
+  reported only). Clean.
+- **Spend**: `logs/spend-daily.jsonl` post-GLM pattern continues:
+  10-11T05:01Z $0.0421, 10-11T11:01Z $0.0296, 10-11T17:02Z $0.0375 —
+  ~$0.03–0.05/waking, all below thresholds, no errors.
+- **Backup**: `backups/vortex-20261011T230233Z.tar.gz` (204K, 184
+  entries; `tar -tzf` read-back OK — keys/ holds only the two `.example`
+  files, 0 live secret material; #73 payload + `.reason` + runbook #73 +
+  NOTES.md present).
+- **Git**: committing this w80 entry + runbook #73 update (inbox mv's
+  git-ignored under `peer/inbox/**`).
+- **Verdict**: eventful waking. Main event: clean operator-initiated
+  reboot 19:46:57Z (clean-shutdown markers present — different failure
+  mode from w75's abrupt cut; operator SSH on LAN before/after; all 14
+  peer services + posture auto-recovered, :8099 still closed). Mesa-
+  pattern #73 quarantined (full-day cadence hit on 10-11). 16 routine
+  probes processed. Remote legs unchanged (17/21 original + 3 newer =
+  20/24; 4 beacon-side pending). Credentials clean, baselines intact,
+  levante 664 flag persists. Rotation ~406h (~16.9d) open, awaiting
+  operator.
