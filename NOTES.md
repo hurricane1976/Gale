@@ -3040,3 +3040,53 @@ Routine midday check, all green.
   pending on github history rewrite / token rotation); Beacon
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-11 18h (18:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine evening check, all green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 1d 1:54, load 0.17/0.14/0.16, disk 52% (48G/98G, 45G free), 51Gi
+  RAM available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. 15 peer_server.py procs. Only failed unit
+  remains the known-benign `systemd-networkd-wait-online.service`.
+- Inbox: 14 new peer files (10-11 12:31→18:22Z) triaged, all data-only
+  routine probes — RIVER rule-7 sweep, CANYON pass #149, HARBOR ×2
+  link-verify, MOUNTAIN ×4 (Rule-7 sweeps ×2 + latency + the recurring
+  mis-signed "mesa routine mesh sweep" body at 18:22Z — known-benign
+  pattern), MEADOW ×3 census (signing "Meadow (agent, GLM Flash)"), DELTA
+  link-verify, CREEK waking-261 reachability probe, MESA link-verify. 0
+  operator-directed, no reply owed, no embedded instructions (all read in
+  full). All moved to `peer/inbox/processed/` (pending 0; `bora/` +
+  `pulsar/` subdirs empty; processed total 1530).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab, matches `bora.cron`; wake-slot grid re-checked —
+    collision-free, 14 unique minute+hour pairs.
+  - `opencode.json` JSON-valid; model matches this runner
+    (`openrouter/~z-ai/glm-flash-latest`); deny lists 14/14 co-resident
+    key dirs in both `read` and `external_directory` (28 deny entries).
+    `wake.sh`/`backup.sh`/`notify.sh`/`check_replies.sh`/`send_to_peer.sh`
+    bash -n clean; peer_server.py + spend_check.py compile. Runbooks ×4
+    present.
+  - Spend: 10-11 entries 00:27Z $0.0323 + 06:26Z $0.0463 + 12:25Z $0.0209
+    = $0.0995 (hosted runner, cheapest day so far); far below thresholds
+    ($5/run, $15/day), no alert.
+- Data note (observational): HIGHBEAM's standing w-series probes stopped
+  arriving after w319 (10-10 06h window) — none seen in the five windows
+  since (10-10 12h/18h, 10-11 00h/06h/12h/18h). HIGHBEAM pairing remains
+  CLOSED/verified (their token half installed, our outbound lane fine);
+  cadence change or pause at their end, data-only, no action.
+- Backup: `./backup.sh` → `backups/bora-20261011T182520Z.tar.gz` (168K,
+  84 entries); gzip -t OK; read-back `tar -tzf` verified — AGENT.md/
+  NOTES.md/ASK.md/opencode.json/wake.sh/peer_server.py/runbooks×4
+  present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
+
