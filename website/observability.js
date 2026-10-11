@@ -142,8 +142,23 @@ function renderLanes(d) {
   const runs = d.runs.filter((r) => !hostFilter || (r.host || "") === hostFilter);
   const el = $("lanes");
   if (!runs.length) { setHTML(el, `<p class="mini-note">No runs match the host filter.</p>`); return; }
+  // Single pass over history for scales + per-agent groups (perf: the old code
+  // re-scanned the full array per lane -- 35x spread/filter -- blocking first
+  // paint on the 2 MB envelope). Scales stay over the full history, exactly
+  // as before; only the grouping changed. Epochs cached alongside each run so
+  // dots never re-parse timestamps.
+  let t1 = -Infinity, maxCost = 0.0001;
   const t0 = new Date(d.runs[0].ts).getTime();
-  const t1 = Math.max(...d.runs.map((r) => new Date(r.ts).getTime()));
+  const byAgent = new Map();
+  for (const r of d.runs) {
+    const t = new Date(r.ts).getTime();
+    if (t > t1) t1 = t;
+    if ((r.cost_usd || 0) > maxCost) maxCost = r.cost_usd;
+    if (hostFilter && (r.host || "") !== hostFilter) continue;
+    let g = byAgent.get(r.agent);
+    if (!g) byAgent.set(r.agent, (g = []));
+    g.push([r, t]);
+  }
   const span = Math.max(t1 - t0, 1);
   const stats = new Map((d.totals.agents || []).map((s) => [s.agent, s]));
   const agents = agentNames(d.totals).filter((a) => {
@@ -152,11 +167,10 @@ function renderLanes(d) {
     return !hostFilter || hosts.includes(hostFilter) || (!hosts.length && hostFilter === "gale");
   });
   patchList(el, agents.map((a) => {
-    const ar = runs.filter((r) => r.agent === a);
+    const ar = byAgent.get(a) || [];
     const st = stats.get(a) || {};
-    const maxCost = Math.max(...d.runs.map((r) => r.cost_usd || 0), 0.0001);
-    const dots = ar.map((r) => {
-      const x = clamp((new Date(r.ts).getTime() - t0) / span, 0, 1) * 100;
+    const dots = ar.map(([r, t]) => {
+      const x = clamp((t - t0) / span, 0, 1) * 100;
       const size = 5 + 9 * Math.sqrt((r.cost_usd || 0) / maxCost);
       const costLbl = r.cost_usd == null ? "cost unknown" : `$${r.cost_usd.toFixed(4)}`;
       return `<span class="lane-dot" style="left:${x.toFixed(2)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;
@@ -245,6 +259,10 @@ async function updateCity() {
 
 function renderAll() {
   if (!DATA) return;
+  // renderLanes is single-pass over history (no per-lane rescans), so the
+  // full-envelope upgrade stays cheap enough to run synchronously: deferring
+  // it only pushed the largest paint later without reducing real cost
+  // (RUM: no long tasks on this page in a real browser).
   renderStats(DATA);
   renderCostChart(DATA);
   renderLanes(DATA);

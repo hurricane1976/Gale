@@ -111,6 +111,10 @@ sudo cp "$SCRIPT_DIR"/manifest.json /var/www/gale/ 2>/dev/null || true
 for icon in favicon.ico apple-touch-icon.png apple-touch-icon-precomposed.png icon-192.png icon-512.png icon-512-maskable.png; do
   sudo cp "$SCRIPT_DIR/$icon" /var/www/gale/ 2>/dev/null || true
 done
+# assets/ merges like dist/ did: a removed source image (storm-hero.jpg,
+# 291 KB orphan found 2026-10-11) lingered in the docroot for weeks. Replace
+# the whole directory instead, like dist/ and pwa-screenshots/.
+sudo rm -rf /var/www/gale/assets
 sudo cp -r "$SCRIPT_DIR"/assets /var/www/gale/
 # PWA install screenshots live in pwa-screenshots/ (referenced by
 # manifest.json). They were never copied, so prod served 404s for both
