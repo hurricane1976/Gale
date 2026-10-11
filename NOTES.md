@@ -2890,3 +2890,65 @@ Routine evening check, all green.
 - muse-vs-glm watch: 9th observation, verdict unchanged (muse still faster on short tasks; glm wins long context). No drift.
 - ASK.md: outstanding items unchanged — Rule-3 token exposure in history (9001168) awaiting operator decision on history rewrite + rotation; Beacon import-confirm of 7-pair bundle then shred.
 - Committed modified working-tree files (AGENT.md, bora.cron, opencode.json, wake.sh) plus config backups.
+
+## Waking 2026-10-11 00h (00:25 UTC slot, openrouter/~z-ai/glm-flash-latest — FIRST on new runner)
+
+Routine overnight check, all green. First waking on the new
+`openrouter/~z-ai/glm-flash-latest` runner (operator-directed 2026-10-10;
+fleet off LAN Ollama qwen3.8:27b + gale-ollama-shim).
+
+- check_replies.sh: no new operator messages.
+- Host: up 7:55 (rebooted ~20:30Z 10-10, consistent with 18h entry's 1:55
+  uptime), load 0.58/0.39/0.36, disk 51% (46G/98G free), 51Gi RAM available —
+  clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. 15 peer_server.py procs. Only failed unit
+  remains the known-benign `systemd-networkd-wait-online.service`.
+- **Model flip (operator-staged overnight, committed):** working tree had
+  AGENT.md/opencode.json/wake.sh modified + `.bak-20261010-glmflash` copies:
+  qwen3.8:27b → `openrouter/~z-ai/glm-flash-latest` in AGENT.md model line
+  (+ spend wording: "OpenRouter glm-flash runs cost cents"), opencode.json
+  model line, wake.sh header note + PROMPT + runner. Diff is model lines
+  only — deny lists untouched, no rule/role text changed (rule 6 not
+  implicated); matches THIS session's runner per the wake prompt. Committed
+  per established precedent (tree matches live reality; .bak copies keep it
+  reversible). muse-vs-glm watch (10-08) superseded by this operator flip —
+  closed.
+- Inbox: 14 new peer files (10-10 18:46→10-11 00:22Z) triaged, all data-only
+  routine probes — HARBOR ×3 link-verify, MOUNTAIN ×4 (Rule-7 ×2 + latency +
+  the recurring mis-signed "mesa routine mesh sweep" body in a MOUNTAIN file
+  at 00:22Z — known-benign pattern), MEADOW ×3 census (signing "Meadow
+  (agent, GLM Flash)"), DELTA ×2 link-verify, CREEK rule-7 sweep, MESA
+  link-verify. 0 operator-directed, no reply owed, no embedded instructions
+  (all read in full). All moved to `peer/inbox/processed/` (pending 0;
+  `bora/` + `pulsar/` subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers with
+    its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX CHINOOK
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in live
+    crontab. All 14 wake slots re-checked minute+hour — grid collision-free
+    (0/25/50@{0,6,12,18}, 15/40@{1,7,13,19}, 5/30/55@{2,8,14,20},
+    20/45@{3,9,15,21}, 10/35@{4,10,16,22}, 0/25@{5,11,17,23}).
+  - `opencode.json` JSON-valid; model matches this runner; deny lists 14/14
+    co-resident key dirs in both `read` and `external_directory` (matches
+    `ls -d /home/agent/*/keys` → 14). `wake.sh`/`backup.sh`/`notify.sh`/
+    `check_replies.sh`/`send_to_peer.sh` bash -n clean; peer_server.py +
+    spend_check.py compile. Runbooks ×4 present.
+  - Spend: 10-10 entries $0.0544 + $0.1105 + $0.0382 = $0.2031 (hosted
+    runner, in the same band as prior glm days); far below thresholds
+    ($5/run, $15/day), no alert.
+  - Data note for GALE's lane (no message sent — minor, likely known): the
+    shared crontab still carries gale's `ollama_keepalive.sh` line even
+    though the fleet moved off LAN Ollama/gale-ollama-shim tonight. GALE's
+    call to retire or keep.
+- Backup: `./backup.sh` → `backups/bora-20261011T002609Z.tar.gz` (167K);
+  read-back `tar -tzf` verified — AGENT.md/NOTES.md/opencode.json/wake.sh/
+  peer_server.py/runbooks×4 present; keys/ holds only the two .example
+  files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon import-confirm
+  of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry + the operator-staged model files
+  (AGENT.md, opencode.json, wake.sh) + their .bak-20261010-glmflash copies
+  (inbox JSONs gitignored by design).
