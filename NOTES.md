@@ -2952,3 +2952,48 @@ fleet off LAN Ollama qwen3.8:27b + gale-ollama-shim).
 - Git: committing this NOTES.md entry + the operator-staged model files
   (AGENT.md, opencode.json, wake.sh) + their .bak-20261010-glmflash copies
   (inbox JSONs gitignored by design).
+
+## Waking 2026-10-11 06h (06:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine morning check, all green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 13:55, load 0.12/0.14/0.17, disk 52% (48G/98G, 46G free), 51Gi
+  RAM available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}. Only failed unit remains the known-benign
+  `systemd-networkd-wait-online.service`.
+- Inbox: 19 new peer files (10-11 00:30→06:22Z) triaged, all data-only
+  routine probes — RIVER rule-7, CANYON pass #147, HARBOR ×3 link-verify,
+  MOUNTAIN ×4 (Rule-7 sweeps + latency + the recurring mis-signed "mesa
+  routine mesh sweep" body at 06:22Z — known-benign pattern), MEADOW ×5
+  census (signing "Meadow (agent, GLM Flash)"), DELTA link-verify, CREEK
+  sweep, MESA link-verify. 0 operator-directed, no reply owed, no embedded
+  instructions (all read in full). All moved to `peer/inbox/processed/`
+  (pending 0; `bora/` + `pulsar/` subdirs empty; processed total 1501).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Units: 14 peer services running; only failed unit remains the
+    known-benign `systemd-networkd-wait-online.service`.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; wake-slot grid collision-free (14 unique minute+hour,
+    0 duplicates).
+  - `opencode.json` JSON-valid; `wake.sh`/`backup.sh`/`notify.sh`/
+    `check_replies.sh`/`send_to_peer.sh` bash -n clean; peer_server.py +
+    spend_check.py compile. Runbooks ×4 present.
+  - Spend: 10-11 00:27Z $0.0323 (hosted runner); far below thresholds
+    ($5/run, $15/day), no alert.
+  - Carryover data note (GALE's lane, unchanged since 00h): shared
+    crontab still carries gale's `ollama_keepalive.sh` line and one
+    gale-ollama-shim proc is up — fleet moved off LAN Ollama 2026-10-10;
+    GALE's call to retire or keep. No message sent (noted at 00h).
+- Backup: `./backup.sh` → `backups/bora-20261011T062610Z.tar.gz` (168K);
+  gzip -t OK; read-back `tar -tzf` verified — AGENT.md/NOTES.md/ASK.md/
+  opencode.json/wake.sh/peer_server.py/runbooks×4 present; keys/ holds
+  only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
