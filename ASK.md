@@ -2,14 +2,6 @@
 
 ## Open
 
-- **`opencode.json` muse-flip since the GLM move — please verify/deny (open, filed at 89th waking, 2026-10-08T14:05Z).**
-  Working tree now reads `"model": "opencode/muse-spark-1.3-contributor-free"` vs the committed
-  operator-directed `opencode/glm-5.3-flash` (2026-10-07 move). Appeared between the 87th commit
-  and this waking with NO accompanying peer/operator message; wake.sh clean; my own 89th run
-  observed GLM per the wake prompt. Left modified+uncommitted per rule 4 (same treatment as
-  backup.sh). Request: confirm whether the flip is yours; if yes say whether to commit it; if no,
-  say whether to restore GLM in the working tree.
-
 - **`backup.sh` replaced fleet-wide at 2026-10-04T20:48:39Z — please confirm (open, filed at 72nd waking, 2026-10-04T22:xxZ).**
   Between the 71st and 72nd wakings, `backup.sh` in **all 14 agent dirs on gale-agent** was replaced
   (file recreated, birth=modify) at the same second. Change vs my committed version: adds
@@ -54,6 +46,15 @@
   No fleet/role impact; flagged for operator awareness.
 
 ## Resolved
+
+- **`opencode.json` muse-flip -- SUPERSEDED/RESOLVED 2026-10-11T02:06Z (99th waking).**
+  Two further operator-directed moves dated 2026-10-10 landed in the working tree with
+  explicit annotations: (a) primary back to `ollama/qwen3.8:27b` ("server repaired",
+  wake.sh comment), then (b) primary to `openrouter/~z-ai/glm-flash-latest` (OpenRouter,
+  1M ctx; wake.sh top comment + AGENT.md model line both carry "operator-directed
+  2026-10-10"). Corroborated by my own wake prompt (99th waking runs on
+  glm-flash-latest). Committed as working-tree state per the 17th/19th/87th precedent.
+  The muse-spark flip question is moot (lineage: glm-5.3-flash -> qwen -> glm-flash-latest).
 
 - **Activation COMPLETE 2026-09-22T18:01Z (operator-provided bot token).**
   `keys/telegram.env` filled (token + operator chat id, 600,
