@@ -1,5 +1,104 @@
 # NOTES.md — Ostro
 
+## 2026-10-11T02:30Z — waking 1/4 (Sharpness & Regression Watch; 02:30 slot, ran ~02:30Z) — **MODEL STACK UNIFIED: operator's ~20:08Z sweep put AGENT.md + wake.sh + opencode.json all on `openrouter/~z-ai/glm-flash-latest`; muse-contrib drift RESOLVED; previous waking's item 8 record-corrected**
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md:
+   muse-contrib ratification item RESOLVED this waking (see item 7); 14:44Z
+   qwen→muse migration item marked RESOLVED-BY-SUPERSESSION (moot after two
+   further stack rewrites); still PENDING: BEACON revenue-mandate
+   verification, LEVANTE+PONIENTE ratification.
+2. **Inbox triage — 13 new peer messages, all routine data-only, no reply
+   sent**: MOUNTAIN ×5 (2 identical Rule-7 sweeps, 5s stagger + 1 latency
+   check, clean in-name; **`002211Z` mesa-body = 88th** MOUNTAIN-filename/
+   foreign-body occurrence, mirrored 1s later by genuine MESA `969dfe00`;
+   **`003229Z` canyon-body (pass #147) = 89th**, mirrored 20s earlier by
+   genuine CANYON `ad117c4c` pass #147 — cadence #146→#147 clean, no
+   escalation), DELTA ×2 (identical link verification, 2s stagger), RIVER
+   ×1 (rule-7 sweep), CANYON ×1 (genuine pass #147), MESA ×1 (genuine),
+   HARBOR ×3 (identical body, ~2s stagger). No BEACON content, no
+   operator-attributed content. All 13 → `peer/inbox/processed/`
+   (1061→1074 total files); `peer/inbox/` clean.
+3. **Host health (02:30Z)**: uptime **10h00m** (boot 16:30:16Z 10-10 —
+   consistent with last waking; no new reboot); load **0.22/0.24/0.25**
+   (well inside the band); disk **52% (48G/98G)** — flat vs 20:30Z;
+   RAM 51Gi avail / 58Gi; swap 0B; kernel 6.8.0-146; `/var/run/
+   reboot-required` absent. `dmesg --level=err,warn` (sudo) → kauditd
+   callback-suppression + routine UFW BLOCK (UDP 1900 from .57, mDNS
+   from .71), benign. `/var/log` 2.9G (post-reboot rotation, down from
+   3.3G pre-reboot); `logs/` 25M flat; `backups/` 2.4M steady.
+4. **/tmp leak re-check (post-reboot baseline)**: **43 orphaned temp-`.so`
+   files / ~0.3G** vs 24/160M at 20:30Z → **+19 files / ~+0.14G in 6h**
+   (~500MB/day band, consistent with the pre-reboot ~400MB/day rate); 0
+   files past 48h (reboot reset the aging clock). Leak source still
+   active; holding at observation-only, operator cron-hygiene option
+   stays open.
+5. **Service liveness**: all 14 co-resident peer units (ostro + 13
+   siblings incl. chinook/levante/poniente) + `tailscaled` = **15/15
+   active**, zero failed. Sole failed unit remains the standing boot-time
+   `systemd-networkd-wait-online` (benign). Identical profile to 20:30Z.
+6. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`);
+   Ostro peer `100.66.39.59:8798/health` → 200
+   `{"status": "ok", "name": "OSTRO"}`. `/api/fleet/metrics` →
+   `generated_at 2026-10-11T02:32:47Z` (fresh — collector live). **Fleet
+   35/35 `up/200`, coverage 35/35 reporting, missing []. `error_runs_24h_
+   by_host` = {} — second consecutive empty waking (series
+   …5→4→3→2→{}→{}). Beacon cost_24h $1.63→$1.67.** `runs_24h_by_host` =
+   `{gale: 54, beacon: 22, mountain: 22, tidal: 22}` (window rollovers).
+   `cost_24h_by_host` = `{gale: $3.7010, beacon: $1.6693, mountain:
+   $3.8130, tidal: $0.0}`. Ostro `per_agent_24h`: runs_24h = 4,
+   `error_runs_24h` = 0, `cost_24h` = $0.1098, `last_wake
+   2026-10-11T02:30:01Z` (this waking), `total_wakings_14d` = 72,
+   cost coverage 100%. (Minor observation: one 7-waking day sits in the
+   14-day daily array — likely a manual/operator wake on 10-09/10-10;
+   grid days are otherwise 4.) **No regression on my host/website
+   dimensions vs 20:30Z baseline.**
+7. **Model/runner — THE EVENT: operator unified the stack on
+   `openrouter/~z-ai/glm-flash-latest` (~2026-10-10T20:08:17Z)**: all
+   three files (AGENT.md, wake.sh, opencode.json) share mtime
+   20:08:17Z 10-10 and all three now say glm-flash-latest (AGENT.md:7
+   carries the "operator-directed 2026-10-10" annotation; wake.sh PROMPT
+   + line-46 CLI pin + opencode.json:39 all agree). **Three-way
+   agreement for the first time since 10-08; the 13:32Z muse-contrib
+   config-only flip is superseded; ASK.md item resolved** (the operator
+   chose "everything follows glm via OpenRouter" by direct action).
+   **Record correction (mine, previous waking): the 20:30Z 10-10 NOTES
+   item 8 claimed `opencode.json:39` was still muse-spark — stale
+   template copy, wrong at write time; the 20:30Z waking's own commit
+   (a37aee7) contains the already-flipped glm opencode.json (verified
+   via `git show a37aee7:opencode.json`). The drift it described never
+   existed at 20:30Z.** Side effect of the same sweep: the
+   `*/5 … /home/agent/agent/ollama_keepalive.sh` crontab line (gale) is
+   BACK (count 0 since 10-06 → 1); LAN Ollama `192.168.1.197:11434/api/
+   tags` → 200. Production crontab `30 2,8,14,20` ostro wake line +
+   `*/5` telegram poller both present. This session runs the glm-flash
+   alias per the wake.sh pin.
+8. **Spend**: 10-10 closed with 4 rows ($0.0487, $0.0342, $0.0498,
+   $0.0156 — all `is_error false`; last session notably cheap); 10-11
+   opens with this session's row at close. Steady ~$0.02–0.05/session on
+   glm. No self-spike.
+9. **peers.env audit — 0 PEER blocks in all 14 dirs** (ostro + gale +
+   12 siblings; NAME=34 everywhere), mtimes unchanged (09-26/09-27) —
+   clean across the 20:08Z operator sweep; no unauthorized peer block
+   landed.
+10. **Backup**: `./backup.sh` → `backups/ostro-20261011T023258Z.tar.gz`
+    (195K, 73 entries verified by `tar -tzf`, 5/5 key files incl.
+    AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json). Git commit + push
+    to follow.
+11. **Verdict vs 20:30Z baseline**: **no regression on any
+    service/website/spend/peers/model dimension on my surfaces** — all
+    flat-or-better, and the standing model drift is now GONE. Deltas
+    this waking: (a) **operator's 20:08Z glm unification sweep —
+    three-way agreement, muse + 14:44Z ASK items closed
+    (supersession), record correction of the 20:30Z stale item 8**;
+    (b) **gale ollama_keepalive cron line restored (0→1), LAN Ollama
+    up**; (c) /tmp leak continues at the same rate post-reboot (+19
+    files/6h), aging clock reset; (d) MOUNTAIN foreign-body 88th/89th
+    (pattern continuing, no escalation); (e) beacon error map empty a
+    second waking; (f) inbox 13 (normal batch, all data-only). Next
+    waking 08:30Z UTC (2026-10-11), waking 2/4.
+
 ## 2026-10-10T20:30Z — waking 4/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:30Z) — **HOST REBOOTED ~16:30Z (kernel 6.8.0-146 now running; reboot-required RESOLVED)**
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md

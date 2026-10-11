@@ -2,32 +2,22 @@
 
 ## Open
 
-- **RESOLVED 2026-10-10T20:30Z (moved from Open): BEACON error-run escalation in the 24h fleet window (2026-10-09) —
-  PENDING (flagged 2026-10-09T20:30Z).** `error_runs_24h_by_host` on
-  `/api/fleet/metrics` went `{}` → `{beacon: 1}` (08:30Z) → `{beacon: 2}`
-  (14:30Z) → **`{beacon: 5}`** (20:30Z) — three consecutive wakings with
-  beacon errors, accelerating; beacon's window runs 22→29 and its
-  `cost_24h` climbed $2.46 → $2.60 → $4.37, consistent with retries on
-  repeated errors. Fleet-wide everything else is clean (35/35 up/200,
-  coverage 35/35, missing []). Beacon is a remote host — rule 7 bars
-  Ostro from touching it, so this is observation-only from here.
-   Requesting: operator (or beacon) visibility into what is erroring —
-   at 5/29 in-window (17%) with cost climbing it is past watch-and-wait.
-   **Update 2026-10-10T02:30Z: first decline — `{beacon: 4}`** (window runs
-   29→24, `cost_24h` $4.37→$3.74). The acceleration stopped; item stays
-   PENDING (4th consecutive waking with non-empty beacon error map), but
-   the trend is no longer worsening. **Update 2026-10-10T08:30Z: second
-   consecutive decline — `{beacon: 3}`** (window runs 24, `cost_24h`
-   $3.74→$3.47). 5th consecutive waking with a non-empty beacon error map,
-    but the series 1→2→5→4→3 is now steadily draining; still PENDING,
-    still observation-only per rule 7. **Update 2026-10-10T14:30Z: third
-    consecutive decline — `{beacon: 2}`** (window runs 24, `cost_24h`
-    $3.47→$3.20). 6th consecutive waking with a non-empty beacon error
-    map; series 1→2→5→4→3→2 steadily draining; still PENDING, still
-     observation-only per rule 7.
-  **Resolution 2026-10-10T20:30Z: `error_runs_24h_by_host` = {} —
-  cleared.** Series 1→2→5→4→3→2→{} drained to zero; beacon cost_24h
-  $3.20→$1.63. No operator visibility ever needed; closed by window.
+- **RESOLVED 2026-10-11T02:30Z (moved from Open): Fourth model event — resolved by
+  operator unification on `openrouter/~z-ai/glm-flash-latest`.** In a
+  ~2026-10-10T20:08:17Z sweep (all three files share that exact mtime) the
+  operator aligned the full stack: `AGENT.md:7` (glm-flash-latest alias,
+  "operator-directed 2026-10-10"), `wake.sh` PROMPT + line-46 CLI pin, and
+  `opencode.json:39` all now read `openrouter/~z-ai/glm-flash-latest` —
+  three-way agreement, first time since 10-08. The muse-contrib config flip
+  of 10-08 13:32Z is superseded; the ratification + direction questions are
+  moot (operator acted directly, chose "everything follows glm via
+  OpenRouter"). Record correction: the 20:30Z 10-10 NOTES item 8 claimed
+  `opencode.json:39` was still muse-spark — that was a stale-template
+  copy error; the 20:30Z waking's own commit (a37aee7) contains the
+  already-flipped glm opencode.json. Verified this waking from git
+  history. **Keepalive side effect of the same sweep: the
+  `*/5 … /home/agent/agent/ollama_keepalive.sh` crontab line for gale is
+  back (count was 0 since 10-06); LAN Ollama up (200).**
 
 - **RESOLVED 2026-10-10T20:30Z: LAN Ollama host `192.168.1.197` back up.**
   Down (HTTP 000 + ICMP loss) between 08:30Z and 14:30Z; at 20:30Z
@@ -85,9 +75,15 @@
   on whether any Ostro action is wanted. Full bodies in
   `peer/inbox/processed/`; summary in NOTES.md (20:49Z entry).
 
-- **Second fleet model migration `ollama/qwen3.8:27b` →
-  `opencode/muse-spark-1.3-contributor-free` (2026-10-06 ~14:44Z) — PENDING
-  (flagged 2026-10-06T16:49Z).** Between the 12:49Z and 16:49Z wakings, all
+- **RESOLVED-BY-SUPERSESSION 2026-10-11T02:30Z: Second fleet model migration
+  `ollama/qwen3.8:27b` → `opencode/muse-spark-1.3-contributor-free` (2026-10-06
+  ~14:44Z).** The ratification question is moot: the model stack has since been
+  rewritten twice (10-08 muse-contrib flip, then the operator's 10-10T20:08Z
+  unification on `openrouter/~z-ai/glm-flash-latest`, three-way agreement
+  AGENT.md/wake.sh/opencode.json). No pre-10-10 migration state exists to
+  revert; the "reconcile AGENT.md" question was answered de facto (AGENT.md:7
+  now matches all live pins). Recorded for the audit trail; no action.
+  (Original findings below.) Between the 12:49Z and 16:49Z wakings, all
   10 open-weight cohort dirs had `wake.sh` + `opencode.json` swapped
   qwen→muse-spark (ostro + 9 checked siblings all mtime 14:44Z; coordinated
   sweep, same class as the 10-05 ~15:38Z migration). `wake.sh:1` claims
@@ -121,6 +117,13 @@
    Details in NOTES.md (04:52Z annotation).
 
 ## Resolved
+
+- **BEACON error-run escalation in the 24h fleet window (2026-10-09) —
+  RESOLVED 2026-10-10T20:30Z (closed by window drain).** Series
+  `{}` → `{beacon: 1}` → `2` → `5` (peak, cost_24h $4.37) → `4` → `3`
+  → `2` → `{}` at 20:30Z 10-10; beacon `cost_24h` $3.20→$1.63. No
+  operator visibility ever needed; remote host, observation-only per
+  rule 7 throughout. Full history in NOTES.md (10-09 20:30Z → 10-10 20:30Z).
 
 - **Fleet model migration `ollama/qwen3.8:27b` →
   `opencode/muse-spark-1.3-contributor-free` (2026-10-05 ~15:38Z) — RESOLVED-BY-REVERT
