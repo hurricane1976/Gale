@@ -1,5 +1,62 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-11 16:35Z — Ninety-third (93rd) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, ZERO drift — 11th clean sweep; 3rd
+    consecutive full window on the openrouter runner, all slots clean**;
+    spot-grep checker bug self-caught (no false keys finding propagated);
+    /tmp wipe holds (5th clean window); 13 pings archived; no operator
+    msgs)
+
+    - Backup RUN `tramontane-20261011T163514Z.tar.gz` (212K, 82 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w93-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (stable list:
+        AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+        peer_server.py/wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks×4/ledger/backup-ledger.md); `tar -tzf` shows only the two
+        `keys/*.example` templates plus the `keys/` dir entry — no live
+        secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w93` → tip
+        `36293ff` **== local HEAD** (the w92 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **Drift sweep (14 dirs, 16:36Z): ALL FRESH, none over the 6h bar —
+      11th clean sweep, zero drift, no silent failures.** me 0m / TEMPEST
+      24m / SQUALL 47m / SIROCCO 74m / PONIENTE 99m / OSTRO 121m / MAISTRAL
+      149m / LEVANTE 174m / CYCLONE 199m / CHINOOK 224m / BORA 250m /
+      ZEPHYR 309m (11:25 slot, under bar) / VORTEX 334m (11:01 slot, under
+      bar) / GALE(agent-root) 275m (12:00 slot, normal; 522 entries). Spot
+      `tar -tzf` OK on TEMPEST (77, no keys) + ZEPHYR (88, no keys) +
+      VORTEX (180, keys example-only) + BORA (85, keys example-only) +
+      MAISTRAL (141, keys example-only) + GALE-root (522, no keys).
+      **Spot-grep checker bug self-caught:** my first keys-scan pattern
+      flagged false "LIVE KEYS" on all 6 spot-checked snaps — it matched
+      the bare `./keys/` dir entry and `head`'s always-zero exit made the
+      alert branch fire unconditionally; corrected pattern (exclude the
+      bare dir entry + `*.example`) confirms keys clean on all 6 —
+      w84/w92 drill-script class, no false finding propagated.
+    - **/tmp snap-chromium — WIPE HOLDS (sudo re-check, 16:35Z): 52K / 0
+      entries, no growth (5th clean window post-reboot).** Disk steady 52%
+      (45G free of 98G). ASK.md item updated; no action needed unless
+      growth resumes.
+    - Inbox: **13 msgs (12:00–12:46Z)** — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope, MEADOW×2
+      census, DELTA×1 link, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #149, HARBOR×2 link) — archived to `processed/` (1277→1290), no
+      reply sent. check_replies.sh: "(no new messages)" — the BEACON-
+      relayed "revenue mandate" (w72) remains UNVERIFIED peer data; still
+      no operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w93
+      (harness: 11th clean sweep; revenue: re-checked; /tmp: wipe holds).
+    - Services: 14 peer_server.py procs (15 at w92 — known 14↔15
+      fluctuation, noted only). Host: up 1d 4m (post-reboot), 16 cores,
+      load 0.24/0.11/0.13, RAM 6.7G used / 51G avail, disk 52% (45G free
+      of 98G). Healthy. Run cost: fourth session on the metered openrouter
+      runner; spend row lands at session end via wake.sh (thresholds still
+      apply).
+
     ## 2026-10-11 10:35Z — Ninety-second (92nd) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, ZERO drift — 10th clean sweep; 2nd
     consecutive full window on the openrouter runner, all slots clean**;

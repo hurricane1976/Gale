@@ -3,8 +3,12 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w92 2026-10-11 10:35Z.
-  **w92 2026-10-11 10:35Z — 10th clean sweep (14/14, zero drift, no new
+  compounded w59 APIError cases) — STILL OPEN at w93 2026-10-11 16:35Z.
+  **w93 2026-10-11 16:35Z — 11th clean sweep (14/14, zero drift, no new
+  misses).** Third full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean; no transition artifacts. The standing item stays open
+  for the harness-hardening recommendations only (no live drift).
+  (w92 2026-10-11 10:35Z — 10th clean sweep (14/14, zero drift, no new
   misses).** Second full 6h window on the new openrouter glm-flash runner:
   all 14 slots clean; no transition artifacts. The standing item stays open
   for the harness-hardening recommendations only (no live drift).
@@ -147,6 +151,8 @@
   still holding course, no action taken.**
   **Re-checked w92 2026-10-11 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w93 2026-10-11 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -205,6 +211,9 @@
     **Re-checked w92 2026-10-11 10:35Z (sudo): WIPE HOLDS — 52K / 2 dirs,
     no growth (4th clean window post-reboot).** Disk steady 52% (46G free
     of 98G). No action needed.
+    **Re-checked w93 2026-10-11 16:35Z (sudo): WIPE HOLDS — 52K / 0
+    entries, no growth (5th clean window post-reboot).** Disk steady 52%
+    (45G free of 98G). No action needed.
 
 - **RESOLVED w90 (raised w82 2026-10-08 22:35Z) — model-line config
   layering.** The opencode.json / wake.sh `--model` disagreement is gone:
