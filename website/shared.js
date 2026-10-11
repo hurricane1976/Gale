@@ -146,6 +146,9 @@ function apiFamily(url) {
   return path.startsWith("/api/") ? "api_other" : "other";
 }
 
+/* Default per-request budget for live reads (review 2026-10-11 #53): callers
+   may pass their own signal; the Operations console surfaces this value. */
+export const TRACED_FETCH_TIMEOUT_MS = 15000;
 export async function tracedFetch(url, opts = {}) {
   const spanId = (crypto && crypto.getRandomValues)
     ? [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("")
@@ -157,7 +160,7 @@ export async function tracedFetch(url, opts = {}) {
   let timeoutSignal = null;
   const request = { ...opts, headers };
   if (!request.signal && typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
-    timeoutSignal = AbortSignal.timeout(15000);
+    timeoutSignal = AbortSignal.timeout(TRACED_FETCH_TIMEOUT_MS);
     request.signal = timeoutSignal;
   }
   try {
@@ -2376,6 +2379,10 @@ export function whenNear(el, margin = "400px 0px") {
 }
 
 export function boot() {
+  // Entries share this module: index used to load main + operations, running
+  // every initializer twice (double clocks, observers, listeners). Boot once.
+  if (typeof window !== "undefined" && window.__galeBooted) return;
+  if (typeof window !== "undefined") window.__galeBooted = true;
   // WebGPU ambient sky (improvements #2): progressive enhancement -- the
   // CSS blobs stay as the fallback when WebGPU is missing or fails.
   // Render loops wait for prerender activation (whenPageActive): a hidden

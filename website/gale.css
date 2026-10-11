@@ -2222,3 +2222,117 @@ html[data-density="compact"] .vital-value { font-size: 1.45rem; }
 #color-vision-preview[data-mode="deutan"] { filter:url(#cv-deutan); }
 #color-vision-preview[data-mode="tritan"] { filter:url(#cv-tritan); }
 #color-vision-preview[data-mode="mono"] { filter:url(#cv-mono); }
+
+/* ---- modern platform layer (review 2026-10-11) ----------------------------
+   Baseline 2025/2026 capabilities, every rule guarded so engines without
+   support keep today's exact rendering. Order: dialogs/popover entry motion,
+   anchor-positioned Display panel, field-sizing filters, details-content
+   accordion animation, scroll-state sticky affordance, optical text trimming,
+   reduced-transparency and forced-colors accommodations. ---- */
+
+/* @starting-style: dialogs (palette, mobile page menu, scene focus) fade and
+   rise on open, and the ::backdrop fades with them; overlay/display use
+   transition-behavior: allow-discrete so the close transition runs before the
+   element leaves the top layer. Reduced-motion browsers keep instant open. */
+@media (prefers-reduced-motion: no-preference) {
+  dialog[open],
+  dialog[open]::backdrop {
+    transition: opacity 0.22s ease, translate 0.22s ease,
+      overlay 0.22s allow-discrete, display 0.22s allow-discrete;
+  }
+  dialog[open] { opacity: 1; translate: 0 0; }
+  dialog[open]::backdrop { opacity: 1; }
+  @starting-style {
+    dialog[open] { opacity: 0; translate: 0 12px; }
+    dialog[open]::backdrop { opacity: 0; }
+  }
+}
+
+/* Display panel: anchored to its own toggle (CSS anchor positioning). The
+   browser flips it above/below and left/right as the viewport demands, so it
+   can never clip at a screen edge; the unguarded rule below is byte-identical
+   to the previous inline styles. */
+#fx-theme > .fx-panel {
+  position: absolute; bottom: 44px; left: 0; width: 220px;
+  padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;
+}
+@supports (anchor-name: --gale-fx-toggle) {
+  #fx-theme > summary { anchor-name: --gale-fx-toggle; }
+  /* two ids + class outrank mobile.css's `#gale-dock #fx-theme > div` so the
+     anchored placement (not the legacy bottom/left offsets) wins */
+  #gale-dock #fx-theme > .fx-panel {
+    position: fixed; inset: auto;
+    position-anchor: --gale-fx-toggle;
+    position-area: block-start span-inline-start;
+    margin-block-end: 8px;
+    max-inline-size: calc(100vw - 16px);
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+}
+
+/* field-sizing: content — filter boxes size to their typed content instead of
+   a fixed width, in tight card headers on phones. */
+@supports (field-sizing: content) {
+  #roster-q, #agent-q, .fw-search { field-sizing: content; min-inline-size: 12ch; max-inline-size: 100%; }
+}
+
+/* interpolate-size + ::details-content: the fleet phone accordions animate
+   open/closed smoothly instead of snapping, where supported. */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+  @media (prefers-reduced-motion: no-preference) {
+    .fleet-mobile details::details-content {
+      height: 0; overflow: clip;
+      transition: height 0.3s ease, content-visibility 0.3s allow-discrete;
+    }
+    .fleet-mobile details[open]::details-content { height: auto; }
+  }
+}
+
+/* scroll-state() container query: the sticky topology legend shows a hairline
+   shadow only while it is actually stuck to the top (no scroll listener). */
+@supports (container-type: scroll-state) {
+  .topo-sticky-legend { container-type: scroll-state; }
+  .topo-sticky-legend > .stuck-line {
+    display: block; position: absolute; inset: auto 0 -1px; height: 1px;
+    background: var(--line-strong, #2a3a55);
+    box-shadow: 0 4px 10px -6px rgb(0 0 0 / 0.5);
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  @container scroll-state(stuck: top) {
+    .topo-sticky-legend > .stuck-line { opacity: 1; }
+  }
+}
+
+/* text-box-trim: optical alignment for the big numerals — cap-height trimming
+   keeps stat values on the same optical baseline as their labels. */
+@supports (text-box: trim-both cap alphabetic) {
+  .vital-value, .mc-name, .stat-card h3 { text-box: trim-both cap alphabetic; }
+}
+
+/* prefers-reduced-transparency: solid surfaces replace the glassmorphism
+   layers when the OS asks for less transparency. */
+@media (prefers-reduced-transparency: reduce) {
+  .fleet-header, .topo-sticky-legend, .gale-mobile-nav, #gale-dock,
+  dialog::backdrop, .gale-page-menu::backdrop {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .gale-mobile-nav, #gale-dock { background: var(--surface, #111a2e) !important; }
+}
+
+/* forced-colors: status chips keep an outline so state survives Windows High
+   Contrast (the text labels already carry the meaning; borders keep the grouping). */
+@media (forced-colors: active) {
+  .pill, .gale-status-badge, .mc-chip, .inc-sev, .freshness {
+    border: 1px solid CanvasText;
+  }
+  .slo-threshold .slo-track { fill: Canvas; stroke: CanvasText; }
+  .slo-threshold .slo-actual { fill: Highlight; }
+}
+
+/* paper runbooks stay usable with graphics off (review 2026-10-11 #44):
+   expand absolute URLs in console panels so a printed page carries them. */
+@media print {
+  main .ops-panel a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; word-break: break-all; }
+}

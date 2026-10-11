@@ -103,6 +103,22 @@ function buildWakeScrub() {
 buildWakeScrub();
 lazyHeartbeat();
 
+/* fleet ops summary: the operations entry boots itself on import when
+   #home-ops-summary exists (review 2026-10-11 #9). Load it lazily so index
+   ships one entry script and boot() runs once; same pattern as lazyCadence. */
+(function lazyOpsSummary() {
+  const slot = document.getElementById("home-ops-summary");
+  if (!slot) return;
+  const load = () => import("./operations.js").catch(() => {});
+  if (typeof IntersectionObserver !== "function") { load(); return; }
+  const io = new IntersectionObserver((es) => {
+    if (!es.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    load();
+  }, { rootMargin: "500px 0px" });
+  io.observe(slot);
+})();
+
 /* fleet cadence 3D: load when the section nears the viewport */
 (function lazyCadence() {
   const sec = document.getElementById("cadence");

@@ -47,6 +47,35 @@ if [ -n "${SUDO_USER:-}" ]; then
   sudo chown -R "$SUDO_USER:" "$SCRIPT_DIR/dist"
 fi
 
+# CSP inline-script drift gate (review 2026-10-11 #6): gale-sec.conf pins the
+# four static inline bootstraps by content hash. Any edit to an inline
+# <script> without a matching conf update breaks scripts site-wide, loudly.
+# Verify the SOURCE tree's inline hashes against the live conf BEFORE
+# snapshotting/copying anything, so a drift aborts with a message instead
+# of shipping a self-bricking deploy (the csp browser gate would catch it
+# post-reload, but failing fast here keeps the docroot untouched).
+python3 - "$SCRIPT_DIR" <<'PY' || exit 1
+import base64, hashlib, re, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+conf_hashes = set(re.findall(r"'sha256-([^']+)'", Path("/etc/nginx/snippets/gale-sec.conf").read_text()))
+missing = []
+for html in sorted(root.glob("*.html")):
+    for m in re.finditer(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html.read_text(), re.S):
+        body = m.group(1)
+        if not body.strip():
+            continue
+        h = base64.b64encode(hashlib.sha256(body.encode()).digest()).decode()
+        if h not in conf_hashes:
+            missing.append(f"{html.name}: sha256-{h}")
+if missing:
+    print("deploy: CSP HASH DRIFT -- inline <script> not pinned in gale-sec.conf:")
+    print("\n".join(f"  {x}" for x in missing))
+    print("Add the hash(es) to script-src in /etc/nginx/snippets/gale-sec.conf (and the repo template), then redeploy.")
+    sys.exit(1)
+print(f"deploy: CSP inline hashes pinned ({len(conf_hashes)} in conf)")
+PY
+
 sudo mkdir -p /var/www/gale "$RELEASES"
 if [ -d /var/www/gale/dist ]; then
   snap="$RELEASES/$(date -u +%Y%m%dT%H%M%SZ)"

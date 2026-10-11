@@ -1,4 +1,4 @@
-import { boot, esc, setHTML, setText, setVitals, tracedFetch } from "./shared.js";
+import { boot, esc, setHTML, setText, setVitals, tracedFetch, TRACED_FETCH_TIMEOUT_MS } from "./shared.js";
 boot();
 const $ = (id) => document.getElementById(id);
 let busy = false;
@@ -25,7 +25,7 @@ function paintRefreshMonitor() {
   const level = opsObservedIntervalS == null ? "unknown" : opsObservedIntervalS <= 40 ? "ok" : opsObservedIntervalS <= 65 ? "warn" : "crit";
   const observed = opsObservedIntervalS == null ? "collecting baseline" : `${opsObservedIntervalS.toFixed(1)}s observed`;
   el.dataset.level = level;
-  el.innerHTML = `<div class="refresh-interval-label"><strong>Expected 30s</strong><span>${observed} · last success ${age}s ago${opsProblem ? " · latest request failed" : ""}</span></div><div class="refresh-interval-track" role="img" aria-label="Expected refresh 30 seconds; observed ${esc(observed)}"><i style="width:${Math.min(100, (opsObservedIntervalS || 0) / 90 * 100)}%"></i><b aria-hidden="true"></b></div>`;
+  el.innerHTML = `<div class="refresh-interval-label"><strong>Expected 30s</strong><span>${observed} · last success ${age}s ago · request budget ${Math.round(TRACED_FETCH_TIMEOUT_MS/1000)}s${opsProblem ? " · latest request failed" : ""}</span></div><div class="refresh-interval-track" role="img" aria-label="Expected refresh 30 seconds; observed ${esc(observed)}"><i style="width:${Math.min(100, (opsObservedIntervalS || 0) / 90 * 100)}%"></i><b aria-hidden="true"></b></div>`;
 }
 function renderSeverityHistogram(alerts = []) {
   const groups = [["", "All"], ["crit", "Critical"], ["warn", "Warning"], ["info", "Info"], ["unknown", "Unknown"]];
