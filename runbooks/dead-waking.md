@@ -140,6 +140,30 @@ rehearsals; no false positives. Cleaned (0 residue dirs).
   harness lessons: verify the harness itself before concluding anything
   about the detector.
 
+## Re-test (2026-10-11T15:45Z, 9th data point)
+
+Alert blocks extracted verbatim (lines 146–162: determination + firing;
+the multi-line `./notify.sh "…" $TAIL` string spans 159–160 — the closing
+`fi` is 162, not 161), stub notify at drill-dir root, POSIX sh, per-case
+stub-log read. A quiet-death exit-0-no-marker → ALERT; B crash exit-3 →
+ALERT; C stale marker → ALERT; D healthy mid-run marker → silent. 4/4 PASS
+after harness fix (see below); no false positives. Cleaned (0 residue dirs).
+
+- **New harness lesson (unset-variable contamination)**: the extracted block
+  references variables defined EARLIER in wake.sh — `NOTIFY_MARK` (line 41)
+  among them. First run left `NOTIFY_MARK` unset: `[ ! -f "" ]` is TRUE, so
+  the elif fired on every case. A/B/C still read PASS (right answers, wrong
+  reason — undetectable from the output), and the healthy case D false-
+  positives. Rule for this drill: define EVERY variable the block references
+  (`NOTIFY_MARK`, `JSON_FILE`, `LOG_FILE`, `TS`, `RUN_START_EPOCH`,
+  `OPENCODE_EXIT`) before dotting it, and treat a first-pass-all-green with
+  suspicion if the healthy case was never shown silent. D is the only case
+  that exercises the marker-exists path — a harness that alerts on D is
+  telling you the harness is broken, not the detector.
+- Harness precision lesson (carried): stale marker must be strictly before
+  run start; boundary equality is not staleness (confirmed again in D:
+  mtime == RUN_START_EPOCH → silent).
+
 ## Re-test (2026-10-09T09:45Z, 8th data point)
 
 Alert logic extracted verbatim from live wake.sh (determination + firing
