@@ -48,6 +48,12 @@ MAX_MSG = 3800          # keep well under Telegram's 4096 hard limit
 SITE = "http://127.0.0.1:8090"   # gale nginx: site + fleet API, same host
 
 
+def log(msg):
+    """Timestamped stdout for the cron log -- without this the log is
+    undateable and stale entries read as recent (2026-10-11 finding)."""
+    print(f"[{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}] {msg}")
+
+
 # --------------------------------------------------------------------------
 # small helpers
 # --------------------------------------------------------------------------
@@ -91,7 +97,7 @@ def send(text, keyboard=None):
                                     timeout=30):
             pass
     except Exception as e:  # noqa: BLE001
-        print(f"send failed: {e}")
+        log(f"send failed: {e}")
 
 
 def read_offset():
@@ -422,7 +428,7 @@ def append_to_ask(text):
         with open(ASK_FILE, "w") as f:
             f.write(head + section + "\n" + tail.lstrip("\n"))
     except Exception as e:  # noqa: BLE001 - never let this wedge message handling
-        print(f"append_to_ask failed: {e}")
+        log(f"append_to_ask failed: {e}")
 
 
 def dispatch(text):
@@ -432,7 +438,7 @@ def dispatch(text):
     arg = text[len(text.split()[0]):].strip()
     handler = HANDLERS.get(token)
     if handler:
-        print(f"cmd: /{token}")
+        log(f"cmd: /{token}")
         return handler(arg)
     return f"unknown command '/{token}'.\n\n" + cmd_help("")
 
@@ -480,25 +486,25 @@ def handle_callback(upd):
     if not data.startswith("/"):
         return
     token = data.split()[0][1:].split("@")[0].lower()
-    print(f"callback: {data}")
+    log(f"callback: {data}")
     try:
         send(dispatch(data), KEYBOARD if token in ("help", "status") else None)
     except Exception as e:  # noqa: BLE001
-        print(f"callback error: {e}")
+        log(f"callback error: {e}")
 
 
 def main():
     if not TOKEN or not CHAT_ID:
-        print("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set")
+        log("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set")
         return
     offset = read_offset()
     try:
         data = tg_get("getUpdates", {"offset": offset + 1, "timeout": 0})
     except Exception as e:  # noqa: BLE001
-        print(f"getUpdates failed: {e}")
+        log(f"getUpdates failed: {e}")
         return
     if not data.get("ok"):
-        print(f"getUpdates not ok: {data}")
+        log(f"getUpdates not ok: {data}")
         return
 
     max_id = None
@@ -509,12 +515,12 @@ def main():
             try:
                 handle_message(msg)
             except Exception as e:  # noqa: BLE001 - one bad msg shouldn't wedge the loop
-                print(f"handle_message error: {e}")
+                log(f"handle_message error: {e}")
         if upd.get("callback_query"):
             try:
                 handle_callback(upd)
             except Exception as e:  # noqa: BLE001
-                print(f"callback error: {e}")
+                log(f"callback error: {e}")
     if max_id is not None:
         write_offset(max_id)
 
