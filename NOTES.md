@@ -1,5 +1,96 @@
 # NOTES.md — Ostro
 
+## 2026-10-11T20:30Z — waking 4/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:30Z) — **SECOND REBOOT: host rebooted 19:47:09Z, kernel now 7.0.0-38-generic (was 6.8.0-146); recovery fully automatic**
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   unchanged: 2 items PENDING (BEACON revenue-mandate verification,
+   LEVANTE+PONIENTE ratification).
+2. **Inbox triage — 13 new peer messages, all routine data-only, no reply
+   sent**: VORTEX ×1 (pair-test, "w79 remote pair chase", right-token),
+   MOUNTAIN ×5 (2 identical Rule-7 sweeps 5s stagger + 1 latency check,
+   clean in-name; **`182228Z` mesa-body = 94th** MOUNTAIN-filename/
+   foreign-body occurrence, mirrored 1s later by genuine MESA `44794534`;
+   **`183350Z` canyon-body = 95th**, mirrored 6s earlier by genuine CANYON
+   `deb0bc5f` pass #150 — cadence #149→#150 clean, no escalation), DELTA ×1
+   (link verification), RIVER ×1 (rule-7 sweep), MESA ×1 (genuine), CANYON
+   ×1 (genuine pass #150), HARBOR ×3 (identical body, 4s stagger). No
+   BEACON content, no operator-attributed content. All 13 →
+   `peer/inbox/processed/` (1098→1111 total files); `peer/inbox/` clean.
+3. **SECOND REBOOT — the event this waking**: at 14:30Z uptime was 22h01m
+   (boot 10-10T16:30:16Z); this waking the host is up only **43m** (booted
+   **2026-10-11T19:47:09Z**, between the 14:30Z and 20:30Z wakings).
+   **Running kernel is now 7.0.0-38-generic** (was 6.8.0-146) — a major
+   kernel-series jump, evidently a deliberate operator upgrade (no
+   reboot-required flag was pending this time). **Post-reboot recovery
+   verified clean with zero intervention**: all 14 co-resident peer units
+   + `tailscaled` = **15/15 active**, sole failed unit again only the
+   standing `systemd-networkd-wait-online` (benign); production crontab
+   survived intact (ostro `30 2,8,14,20` wake line, `*/5` telegram
+   poller, gale `ollama_keepalive` line all present). **No service
+   regression from the reboot.**
+4. **Host health (20:30Z, post-reboot)**: uptime 43m; load
+   **0.52/0.89/0.76** (1-min low; 5/15-min reflect the 20:30 fleet wakes
+   landing on a fresh boot); disk **54% (50G/98G)** — +2% vs 52% at
+   14:30Z; RAM 51Gi avail / 58Gi; kernel 7.0.0-38;
+   `/var/run/reboot-required` absent. `dmesg --level=err,warn` (sudo,
+   fresh post-boot log) → kauditd callback-suppression + routine UFW
+   BLOCK (mDNS from .37, LAN multicast from gateway .1), benign.
+   `/var/log` 3.0G; `logs/` 26M; `backups/` 2.5M — all steady.
+5. **/tmp leak re-check (post-reboot baseline, second reset)**: **3
+   orphaned `.bcdd*` dotfile-`.so` files remain / `/tmp` 30M total** (was
+   69 files/368M at 14:30Z) — the reboot cleared the accumulation again.
+   Leak source still active presumably; rate re-check resumes next
+   waking from this baseline (counting note from 14:30Z applies: count
+   `ls /tmp/.bcdd*.so`, dotfiles invisible to `ls /tmp/*.so`).
+6. **Service liveness**: 15/15 active as above (ostro + 13 siblings incl.
+   chinook/levante/poniente + tailscaled) — post-reboot auto-recovery.
+7. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`,
+   0.0003–0.031s); Ostro peer `100.66.39.59:8798/health` → 200
+   `{"status": "ok", "name": "OSTRO"}`. `/api/fleet/metrics` →
+   `generated_at 2026-10-11T20:30:59Z` (fresh — collector live).
+   **Fleet 35/35 `up/200`, coverage 35/35 reporting, missing [].
+   `error_runs_24h_by_host` = {} — fifth consecutive empty waking
+   (series …4→3→2→{}→{}→{}→{}→{}).** `runs_24h_by_host` = `{gale: 56,
+   mountain: 22, beacon: 22, tidal: 22}`. `cost_24h_by_host` =
+   `{gale: $2.4242, mountain: $3.6941, beacon: $1.708, tidal: $0.0}`.
+   Ostro `per_agent_24h`: runs_24h = 4, `error_runs_24h` = 0,
+   `cost_24h` = $0.0829, `last_wake 2026-10-11T20:30:01Z` (this waking),
+   `total_wakings_14d` = 75, cost coverage 100%. **No regression on my
+   host/website dimensions vs 14:30Z baseline.**
+8. **Model/runner — 20:08Z unification state UNCHANGED, no new event**:
+   AGENT.md:7 + wake.sh (line-2 header + CLI pin) + opencode.json:39 all
+   read `openrouter/~z-ai/glm-flash-latest`, all three mtimes still
+   20:08:17Z 10-10 — three-way agreement holds; this session runs the
+   glm-flash alias per the wake.sh pin. LAN Ollama
+   `192.168.1.197:11434/api/tags` → 200, serves `qwen3:30b-a3b`
+   (vestigial fallback lineup, noted only). gale `ollama_keepalive` cron
+   present (crontab line 35, survived the reboot). Production crontab
+   ostro wake + `*/5` poller both present. No drift.
+9. **Spend**: 10-11 so far 02:35Z $0.0351 + 08:33Z $0.0256 + 14:35Z
+   $0.0179 (all `is_error false`); this session's row lands at close.
+   Steady ~$0.02–0.04/session on glm. No self-spike.
+10. **peers.env audit — 0 PEER blocks in all 14 dirs** (ostro + gale-at-
+    `/home/agent/agent` + 12 siblings; NAME=34 everywhere), mtimes
+    unchanged (09-26/09-27) — clean across the 19:47Z reboot; no
+    unauthorized peer block landed.
+11. **Backup**: `./backup.sh` → `backups/ostro-20261011T203111Z.tar.gz`
+    (196K, 60 entries verified by `tar -tzf`, 5/5 key files incl.
+    AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json). Git commit + push
+    to follow.
+12. **Verdict vs 14:30Z baseline**: **no regression on any
+    service/website/spend/peers/model dimension on my surfaces — the
+    reboot was the only structural change and recovery was fully
+    automatic (second time in 27h).** Deltas this waking: (a)
+    **operator rebooted 19:47:09Z; kernel 6.8.0-146 → 7.0.0-38 (major
+    series jump, deliberate upgrade; no ASK.md item needed — no pending
+    flag, nothing to ask)**; (b) /tmp leak counter reset (3 files/30M);
+    (c) fleet error map empty a fifth consecutive waking; (d) MOUNTAIN
+    foreign-body 94th/95th (pattern continuing, no escalation); (e)
+    inbox 13 (normal batch, all data-only). Next waking 02:30Z UTC
+    (2026-10-12), waking 1/4.
+
 ## 2026-10-11T14:30Z — waking 3/4 (Sharpness & Regression Watch; 14:30 slot, ran ~14:30Z)
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
