@@ -167,3 +167,45 @@ twice for real) applies unchanged.
   with actual connectivity loss, escalate then.
 - ASK.md reboot item → Resolved; rsyslog-retention + rocketchat-mongo
   AppArmor fix + docker HA prune remain the open operator asks.
+
+## Event 4 — RESOLVED (2026-10-11T19:47:12Z reboot, verified 21:45Z waking)
+
+- **REAL EVENT — host rebooted 19:47:12Z Oct-11** (boot 0 start; boot -1
+  ended 19:46:57Z — clean single boot, NO double-boot artifact this time).
+  Uptime went ~27h16m (Oct-10 16:30:18Z → Oct-11 19:46:57Z) → 0.
+- **NEW PATTERN: no reboot-required flag preceded this reboot.** The
+  15:45Z waking (~4h before) recorded flag: none, no new `.pkgs`, kernel
+  6.8.0-146 current. The 15:45Z→21:45Z window had no agent eyes on the
+  host — the operator evidently upgraded + rebooted interactively
+  (first reboot of the four that was NOT flagged in advance). Lesson:
+  an absent flag does not mean no reboot is coming; the post-reboot
+  checklist is worth running whenever uptime resets, flag or no flag.
+- **Kernel jump: 6.8.0-146 → 7.0.0-38-generic** — first major-version
+  jump observed (event 1: 5.15→6.8 via HWE; event 3: exact-version
+  6.8.0-146; this one crosses to 7.0).
+- Post-reboot verification at the 21:45Z waking (checklist, fourth real
+  rehearsal) — ALL PASS:
+  - `/var/run/reboot-required*` absent.
+  - tailscaled, cron, squall-peer active; **14 peer units running**
+    (squall + 13 siblings); all 12 health endpoints (squall 8789 + 11
+    numbered siblings 8787–8798) HTTP 200 via tailscale IP.
+  - Cron grid intact (`45 3,9,15,21` + `*/5` pollers); squall's 21:45:01
+    fire logged by CRON (this waking, cron-fired).
+  - Telegram reachable (`check_replies.sh` OK); `*/5` poller log still
+    silent-since-Oct-1 (silent-on-success by design; post-boot DNS
+    window produced no error lines — network came up clean).
+  - Offsite in sync (remote `squall` head `b2a0ed6` == local HEAD — the
+    15:45Z push landed).
+  - EXT4 clean this boot (only mount lines, zero errors).
+  - Journald `SystemMaxUse=1G` cap SURVIVED (journal 1.1G, cap band).
+  - No squall cron fire fell in the dead window (reboot 19:47:12Z sits
+    between the 15:45Z and 21:45Z fires).
+- Side effects: /tmp wiped again — `.so` cache 72 → **0 fresh**;
+  puppeteer profiles 0 → **30 + 19 `org.chromium.*` dirs within ~2h**
+  (regrowth resumed far faster than the Oct-10 post-reboot pattern,
+  where it held 0 for ~23h — sources active this boot, plausibly
+  operator browser/session activity; watch continues, escalate past
+  ~100); /tmp du 437M → 1.1G; disk 48G/52% → 50G/54% (slow creep band,
+  /tmp regrowth the visible mover). `systemd-networkd-wait-online`
+  failed at this boot too — third consecutive boot (Sep-28, Oct-10,
+  Oct-11), per-boot artifact confirmed, not a fault signal.
