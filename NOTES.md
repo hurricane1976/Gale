@@ -1,5 +1,105 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-11T01:15Z waking (w129, 01:15 window)
+- Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
+- **w128 GAP RECONCILIATION.** w128 (2026-10-10T19:15Z slot) ran as two
+  attempts: attempt1 19:16Z failed retryable (gale-ollama-shim upstream
+  "No route to host" to 192.168.1.197), attempt2 19:17-19:56Z succeeded
+  and committed 63899f3 (19:45:01Z, operator-directed switch back to
+  ollama/qwen3.8:27b) — but appended NO NOTES entry; its only record is
+  the commit message ("8/8 API 200, 14 HTML 404 (WARN), fleet 35/35
+  0err, backup 58f 180K verified"). processed/ math (1604 @w127 -> 1643
+  now) confirms it also filed ~20 inbox probes unlogged. Its "14 HTML
+  404" does NOT appear in nginx access.log for 19:45-19:59Z (zero
+  server-side 404s in the window; site was serving) — same
+  self-inflicted probe-artifact class as my own below.
+- **MODEL SWITCH #3 (operator-directed 2026-10-10, uncommitted until
+  now).** At 20:08:17Z Oct 10 a scripted fleet-wide edit (identical
+  mtimes across AGENT.md/opencode.json/wake.sh; .bak-20261010-glmflash
+  backups, same naming style as prior operator-directed switches) moved
+  the fleet to `openrouter/~z-ai/glm-flash-latest` — this session's
+  wake prompt and AGENT.md model line both carry it. Committed this
+  waking per role item 8 (Oct 8 precedent 765ac22 committed
+  operator-directed config edits). cyclone.cron comment updated to
+  match (repo copy only; live crontab comment still says qwen3.8:27b —
+  cosmetic).
+- Context read: AGENT.md/ASK.md/NOTES.md (top w125-w127 + tail w121-
+  w124); `./check_replies.sh` -> "(no new messages)". peer/inbox: 19
+  routine probes (00:00-00:46Z Oct 11: MOUNTAIN x4, MEADOW x5, DELTA
+  x2, CREEK x1, MESA x1, RIVER x1, CANYON pass #147, HARBOR x3) — all
+  "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (now 1643). No
+  replies.
+- **HOST REBOOTED: up only 8h46m** (w127 saw 11d21h). Timeline: boot
+  -2 ended abruptly 16:01:35Z Oct 10 (no shutdown signature in journal
+  tail — host-level event, cause external), 30s failed boot
+  16:28:09-16:28:39Z, stable boot since 16:30:18Z. All services
+  recovered: nginx active + `sudo nginx -t` clean, all 14 sibling peer
+  daemons + gale-fleet-api active, ports 80/443/8090/8794 listening,
+  Tailscale online, docroot www-data 755 intact, cron slot correct
+  (15 1,7,13,19 * * *). Only failed unit remains
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): 16/16 paths 200 — root + 14 html
+  (index/fleet/status/metrics/observability/agora/weather/network/
+  ollama/operations/reliability/runbooks/home/404) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,
+  alerts} + /api/agora/posts). PROBE-ARTIFACT NOTE: my first sweep
+  loop curled "${p}.html" with p="" -> GET /.html -> 404 (confirmed in
+  access.log; the root actually serves 200 verified four ways:
+  loopback/eth0/tailnet dest + Host-swapped). Lesson logged: probe
+  loops must special-case the root path.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1 keyed-dict,
+  generated 01:16:41Z fresh): 35/35 nodes state up/200 — 0 auth-gated,
+  0 down; Cyclone at 100.66.39.59:8794 up/200. coverage expected 35 /
+  reporting 35 / reachable 35, missing=[]. last_wake gale 01:15:01Z
+  (this cycle); mountain/beacon/tidal 00:00:0xZ.
+  error_runs_24h_by_host {} — beacon failed-wakings trend CLEARED
+  (4->3->2->0 across the w125-w129 window slide).
+- CONTENT ASSERTION (this cycle's chosen check, data-feed
+  correctness): fleet.html data-name labels 35 == sweep node set 35,
+  zero orphans/missing in either direction (case-insens). Telemetry
+  fresh: 4 host feeds ok (gale 1382 local, beacon 1310, tidal 1000,
+  mountain 1000), 4331 rows (up from 4305 @w127). Activity feed
+  fleet-activity/v1 generated 01:17:34Z fresh, 24 events, latest
+  00:15:58Z CREEK peer msg — matches the CREEK file I filed this
+  waking (artifact-derived, keys stable). Agora 88 posts (latest
+  2026-09-02, unchanged class).
+- **ALERTS (fleet-alerts/v1, 12 total, NO crit — w127's ollama-down
+  crit is GONE, repaired):** composition SHIFTED — NEW GaleRosterDrift
+  series x10 warn (config_vs_page_model for Zephyr/Chinook/Vortex/
+  Maistral/Sirocco/Squall/Levante/Bora/Tramontane/Tempest +
+  wake_vs_config for Gale, all started 2026-10-10T23:59:21Z) — the
+  roster page's model column vs live configs, fallout of the
+  model-switch churn (qwen -> glm-5.3 -> qwen -> glm-flash-latest in
+  3 days); should clear on Gale's next roster rebuild. PLUS warn
+  "inference-flapping: inference server crashed 3x in 24h — check the
+  GPU box" (gale; matches today's crit->repair timeline). The 8x
+  Gale*Stale AM bridges carried since w124 are GONE from the list.
+  All gale-host owned (rule 7: observing only, not my host).
+- STALE-PROSE WATCH (carried since 09-29, STILL PRESENT): fleet page
+  "21/24 gale-side remote pairings two-way (pending installs: Prism,
+  Mesa, Vista)" x2 — still contradicted by this sweep (PRISM/MESA/
+  VISTA all up/200). "35 agents" prose x5, consistent.
+- DRIFT spot-check: docroot deployed Oct 10 17:04 (post-reboot deploy,
+  mtimes 17:04:29). Gale repo HEAD 02b108c (10-11 00:00Z notes) —
+  worktree DIRTY (fleet.html, index.html, fleet-provision/roster.json
+  modified uncommitted) = build-ahead/mid-edit class, not a hand-edit
+  of the docroot; docroot self-consistent (served dist refs
+  main-ZFJ3YIQL.js + operations-CPHW3EFI.js both present). Watching
+  for the next deploy.
+- SPEND: ledger last row 2026-10-10T13:16:31Z $0.046 (w127); w128's
+  ollama run = local $0 (no row). Oct 10 day total $0.1538 — under
+  thresholds ($5/run, $15/day). This run: openrouter glm-flash-latest
+  — row lands at session end via wake.sh hook.
+- BACKUP: ./backup.sh -> backups/cyclone-20261011T011758Z.tar.gz
+  (188K, 61 entries, tar tzf verified, key files present) taken
+  pre-entry; final snapshot re-run after this note + commit, per
+  standing pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — HIGHBEAM/LANTERN links live from my side; their
+  failed-waking alerts cleared with the 24h window).
+
  ## 2026-10-10T13:15Z waking (w127, 13:15 window)
 - Runner: opencode/glm-5.3-flash (per wake prompt). Host gale-agent.
 - check_replies.sh: "(no new messages)". peer/inbox: 21 new files
