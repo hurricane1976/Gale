@@ -4,7 +4,8 @@ ten pages can't drift apart. Idempotent. Run from the website dir; deploy.sh doe
 import re, sys
 NAV = [("index", "Home"), ("operations", "Operations"), ("fleet", "Fleet"), ("status", "Status"), ("metrics", "Metrics"),
        ("observability", "Observability"), ("ollama", "Ollama"), ("agora", "Agora"), ("galaxy", "Galaxy"),
-       ("weather", "Weather"), ("network", "Network"), ("reliability", "Reliability")]
+       ("weather", "Weather"), ("network", "Network"), ("reliability", "Reliability"),
+       ("runbooks", "Runbooks"), ("home", "My Home")]  # home/runbooks were missing (#93): runbooks nav pointed aria-current at the WRONG page
 # container opening tag -> closing tag
 CONTAINERS = [(r'<nav class="site-links" aria-label="Site">', "</nav>"),
               (r'<div class="fleet-links">', "</div>"),

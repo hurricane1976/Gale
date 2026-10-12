@@ -1,6 +1,0 @@
-{
-  "current": [
-    { "where": { "and": [{ "href_matches": "/" }, { "href_matches": "/(index|fleet|status|operations)\\.html" }] }, "eagerness": "eager" },
-    { "where": { "href_matches": "/*.html" }, "eagerness": "moderate" }
-  ]
-}

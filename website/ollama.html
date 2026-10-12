@@ -8,12 +8,13 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
   <title>Ollama — Gale</title>
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gale.agent" />
 <meta property="og:title" content="Ollama — Gale" />
 <meta property="og:description" content="Gale's Ollama admin panel: live status, VRAM and residency history, model management, and a prompt playground." />
-<meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
+<meta property="og:image" content="/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
@@ -67,6 +68,8 @@
         <a href="weather.html">Weather</a>
         <a href="network.html">Network</a>
         <a href="reliability.html">Reliability</a>
+        <a href="runbooks.html">Runbooks</a>
+        <a href="home.html">My Home</a>
         <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
       </nav>
     </div>
@@ -148,6 +151,7 @@
       <section class="reveal ops-panel span-full" aria-labelledby="h-models">
         <h2 class="panel-title" id="h-models">Installed models <span><span id="model-count">&ndash;</span> models &middot; <span id="disk-total">&ndash;</span> on disk</span></h2>
         <div class="ol-model-tools"><label for="model-filter">Find model</label><input id="model-filter" class="obs-filter" type="search" placeholder="Name, quantization, capability…" autocomplete="off" /><label for="model-state-filter">State</label><select id="model-state-filter" class="obs-filter"><option value="all">All states</option><option value="resident">Resident</option><option value="disk">Disk only</option></select><span id="model-visible-count" class="mini-note" role="status" aria-live="polite">Showing all models</span></div>
+        <div id="bench-history"></div>
         <div class="fw-table-scroll">
           <div class="table-scroll"><table class="ops-table" id="models-table">
             <thead><tr><th>model</th><th>params</th><th>quant</th><th>size</th><th>context</th><th>capabilities</th><th>status</th><th>modified</th><th>actions</th></tr></thead>

@@ -160,14 +160,15 @@ void main(){
 }`;
 const COMP_FS = `#version 300 es
 precision highp float;
-in vec2 vUv; out vec4 o; uniform sampler2D uScene, uBloom; uniform float uT, uBloomAmt, uAbe;
+in vec2 vUv; out vec4 o; uniform sampler2D uScene, uBloom, uNeb; uniform float uT, uBloomAmt, uAbe;
 float h(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 void main(){
   vec2 c = vUv - 0.5; float rr = dot(c, c);
   vec2 off = c * rr * uAbe;
   vec3 s = vec3(texture(uScene, vUv - off).r, texture(uScene, vUv).g, texture(uScene, vUv + off).b);
   vec3 b = texture(uBloom, vUv).rgb;
-  vec3 col = s + b * uBloomAmt;
+  vec3 n = texture(uNeb, vUv).rgb;
+  vec3 col = s + b * uBloomAmt + n;
   col = 1.0 - exp(-col * 1.35);
   col *= 1.0 - smoothstep(0.18, 0.62, rr) * 0.7;
   col += (h(vUv * 900.0 + uT) - 0.5) * 0.018;
@@ -371,7 +372,7 @@ function init() {
     W = w; H = h; canvas.width = w; canvas.height = h;
     freeTargets();
     const q = (k) => Math.max(2, Math.round(k));
-    T = { scene: mkTarget(w, h), a: mkTarget(q(w / 4), q(h / 4)), b: mkTarget(q(w / 4), q(h / 4)) };
+    T = { scene: mkTarget(w, h), a: mkTarget(q(w / 4), q(h / 4)), b: mkTarget(q(w / 4), q(h / 4)), c: mkTarget(q(w / 4), q(h / 4)) };
     dirty = true;
   }
 
@@ -462,7 +463,7 @@ function init() {
 
     /* camera motion */
     if (cam.intro < 1) { cam.intro = Math.min(1, cam.intro + dt / 3.4); const e = 1 - Math.pow(1 - cam.intro, 3); cam.dist = 6 + (HOME.dist - 6) * e; cam.pitch = 1.15 + (HOME.pitch - 1.15) * e; cam.yaw += dt * 0.12 * (1 - e); dirty = true; }
-    if (!dragging) { cam.yaw += cam.vy; cam.pitch = Math.min(1.45, Math.max(-1.45, cam.pitch + cam.vp)); cam.vy *= 0.94; cam.vp *= 0.94; if (Math.abs(cam.vy) + Math.abs(cam.vp) > 1e-4) dirty = true; }
+    if (!dragging) { cam.yaw += cam.vy; cam.pitch = Math.min(1.45, Math.max(-1.45, cam.pitch + cam.vp)); const dec = Math.pow(0.94, dt * 60); cam.vy *= dec; cam.vp *= dec; if (Math.abs(cam.vy) + Math.abs(cam.vp) > 1e-4) dirty = true; }
     const idle = performance.now() - lastInteract > 4000;
     if (animate && idle && !selected && !dragging && cam.intro >= 1) { cam.yaw += dt * 0.045; }
     // pointer parallax (#34): while idle (not dragging, nothing selected), the
@@ -523,13 +524,18 @@ function init() {
     if (pointer.in && !dragging) { const h = pick(); if (h !== hover) { hover = h; canvas.style.cursor = h ? "pointer" : ""; } } else if (!pointer.in) hover = null;
 
     const px = H / 900 * 1.0 * (lite ? 1.1 : 1);
-    /* pass 1: scene */
-    gl.bindFramebuffer(gl.FRAMEBUFFER, T.scene.fb); gl.viewport(0, 0, W, H); gl.disable(gl.BLEND);
+    /* pass 0: nebula at QUARTER res (#78) — 3x warped 5-octave fbm per pixel
+       at full res was the largest GPU line item on mobile; the field is
+       low-frequency by construction and blooms identically from 1/4 res */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, T.b.fb); gl.viewport(0, 0, T.b.w, T.b.h); gl.disable(gl.BLEND);
     gl.useProgram(progs.neb); gl.bindVertexArray(vaoEmpty);
     gl.uniform3fv(u("neb", "uF"), view.f); gl.uniform3fv(u("neb", "uR"), view.s); gl.uniform3fv(u("neb", "uU"), view.u);
     gl.uniform1f(u("neb", "uAsp"), asp); gl.uniform1f(u("neb", "uT"), t); gl.uniform1f(u("neb", "uAlert"), alertLevel);
     gl.uniform3fv(u("neb", "uCol[0]"), colArr);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    /* pass 1: scene (nebula no longer re-rendered here) */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, T.scene.fb); gl.viewport(0, 0, W, H); gl.disable(gl.BLEND);
 
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
     gl.useProgram(progs.part); gl.bindVertexArray(vaoPart);
@@ -548,12 +554,13 @@ function init() {
     gl.useProgram(progs.bright); tex(0, T.scene); gl.uniform1i(u("bright", "uTex"), 0); gl.uniform2f(u("bright", "uTexel"), 1 / W, 1 / H); gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.useProgram(progs.blur); gl.uniform1i(u("blur", "uTex"), 0);
     const blur = (src, dst, dx, dy) => { gl.bindFramebuffer(gl.FRAMEBUFFER, dst.fb); gl.viewport(0, 0, dst.w, dst.h); tex(0, src); gl.uniform2f(u("blur", "uDir"), dx / src.w, dy / src.h); gl.drawArrays(gl.TRIANGLES, 0, 3); };
-    blur(T.a, T.b, 1, 0); blur(T.b, T.a, 0, 1); blur(T.a, T.b, 2.2, 0); blur(T.b, T.a, 0, 2.2);
+    // T.b holds the nebula now; blur ping-pongs a<->c
+    blur(T.a, T.c, 1, 0); blur(T.c, T.a, 0, 1); blur(T.a, T.c, 2.2, 0); blur(T.c, T.a, 0, 2.2);
 
     /* composite to screen */
     gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
-    gl.useProgram(progs.comp); tex(0, T.scene); tex(1, T.a);
-    gl.uniform1i(u("comp", "uScene"), 0); gl.uniform1i(u("comp", "uBloom"), 1);
+    gl.useProgram(progs.comp); tex(0, T.scene); tex(1, T.a); tex(2, T.b);
+    gl.uniform1i(u("comp", "uScene"), 0); gl.uniform1i(u("comp", "uBloom"), 1); gl.uniform1i(u("comp", "uNeb"), 2);
     gl.uniform1f(u("comp", "uT"), t % 100); gl.uniform1f(u("comp", "uBloomAmt"), 1.6 + alertLevel * 0.3); gl.uniform1f(u("comp", "uAbe"), 0.012);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.activeTexture(gl.TEXTURE0);

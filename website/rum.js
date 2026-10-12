@@ -3,18 +3,33 @@
 (function () {
   try {
     if (typeof window === "undefined") return;
-    const KEY = "gale-rum-v2", LIMIT = 120;
+    const KEY = "gale-rum-v2", LIMIT = 120, TTL_MS = 30 * 864e5;
     const load = () => { try { const x = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(x) ? x.filter((s) => s && typeof s.metric === "string" && Number.isFinite(s.value) && typeof s.page === "string").slice(-LIMIT) : []; } catch { return []; } };
     const samples = load();
-    const pageFiles = new Set(["index.html", "fleet.html", "status.html", "metrics.html", "observability.html", "ollama.html", "agora.html", "weather.html", "network.html", "reliability.html", "operations.html", "home.html", "runbooks.html", "404.html"]);
+    // age-based expiry (#11): count-bounded history alone lets months-old
+    // samples with stale contexts linger on sparse-visit browsers
+    while (samples.length && Date.now() - (samples[0].ts || 0) > TTL_MS) samples.shift();
+    const pageFiles = new Set(["index.html", "fleet.html", "status.html", "metrics.html", "observability.html", "ollama.html", "agora.html", "weather.html", "network.html", "reliability.html", "operations.html", "home.html", "runbooks.html", "404.html", "galaxy.html"]);
     const requestedPage = location.pathname.split("/").pop() || "index.html";
     const context = {
       page: pageFiles.has(requestedPage) ? requestedPage : "404.html",
-      viewport: innerWidth < 600 ? "phone" : innerWidth < 1000 ? "tablet" : "desktop",
+      // viewport recomputed per push (#14): sessions span resizes/orientation
+      // flips; the load-time class skewed per-viewport breakdowns
+      get viewport() { return innerWidth < 600 ? "phone" : innerWidth < 1000 ? "tablet" : "desktop"; },
       motion: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduced" : "full",
     };
-    const publish = () => {
+    // coalesced publish (#9): serialize the history on a trailing timer, not
+    // once per sample — longtask/LoAF bursts were stringifying 120 samples
+    // dozens of times per second. pagehide/visibilitychange still flush.
+    let publishTimer = 0;
+    const publishNow = () => {
+      clearTimeout(publishTimer); publishTimer = 0;
       try { localStorage.setItem(KEY, JSON.stringify(samples.slice(-LIMIT))); } catch {}
+      window.__galeRUM = samples.slice();
+    };
+    const publish = () => {
+      if (publishTimer) return;
+      publishTimer = setTimeout(publishNow, 2000);
       window.__galeRUM = samples.slice();
     };
     const push = (metric, value, unit = "ms", extra = {}) => {
@@ -27,7 +42,7 @@
     };
     window.__galeRUM = samples.slice();
     window.__galeRUMRecord = (metric, value, unit, scene) => push(metric, value, unit, scene ? { scene } : {});
-    window.__galeRUMClear = () => { samples.length = 0; try { localStorage.removeItem(KEY); } catch {} publish(); };
+    window.__galeRUMClear = () => { samples.length = 0; try { localStorage.removeItem(KEY); } catch {} publishNow(); };
     const recordVisualInventory = () => {
       push("VIS_CANVAS", document.querySelectorAll("canvas").length, "canvases");
       push("VIS_SVG", document.querySelectorAll("svg").length, "SVG");
@@ -73,7 +88,11 @@
     observe("largest-contentful-paint", (es) => { const e = es.at(-1); if (e) push("LCP", e.startTime); });
     let cls = 0;
     observe("layout-shift", (es) => { for (const e of es) if (!e.hadRecentInput) cls += e.value || 0; push("CLS", cls, "score"); });
-    observe("event", (es) => { const worst = Math.max(0, ...es.map((e) => e.duration || 0)); if (worst) push("INP", worst, "ms approx"); }, { durationThreshold: 40 });
+    // INP (#10): the SLO panel reads the session WORST interaction, so keep
+    // the max in memory and push once when the page hides — keyboard-heavy
+    // sessions were emitting one sample per Event Timing batch otherwise.
+    let inpMax = 0;
+    observe("event", (es) => { inpMax = Math.max(inpMax, Math.max(0, ...es.map((e) => e.duration || 0))); }, { durationThreshold: 40 });
     observe("long-animation-frame", (es) => { for (const e of es) push("LONG_ANIMATION_FRAME", e.duration, "ms"); });
     observe("paint", (es) => { const e = es.find((x) => x.name === "first-contentful-paint"); if (e) push("FCP", e.startTime); });
     observe("longtask", (es) => {
@@ -93,7 +112,14 @@
       document.fonts.ready.then(() => push("FONT_READY", performance.now() - fontsStarted));
       document.fonts.addEventListener("loadingerror", () => push("FONT_ERROR", 1, "count"));
     }
-    addEventListener("error", (e) => { if (e instanceof ErrorEvent) push("JS_ERROR", 1, "count"); else if (e.target && e.target !== window) push("ASSET_ERROR", 1, "count"); }, true);
+    // single capture-phase error listener: JS vs asset vs image errors
+    addEventListener("error", (e) => {
+      if (e instanceof ErrorEvent) { push("JS_ERROR", 1, "count"); return; }
+      const target = e.target;
+      if (!target || target === window) return;
+      push("ASSET_ERROR", 1, "count");
+      if (target.tagName === "IMG") push("IMAGE_ERROR", 1, "count");
+    }, true);
     addEventListener("unhandledrejection", () => push("REJECTION", 1, "count"));
     /* Reporting API (review 2026-10-11): CSP violations, deprecations and
        interventions otherwise only exist inside devtools. Count locally, and
@@ -105,17 +131,20 @@
     const flushReports = () => {
       if (!reportQueue.length) return;
       const now = Date.now();
-      if (now - reportLastSent < 60000) return;
+      if (now - reportLastSent < 60000) return; // overflow stays queued for the next window (#13)
       const batch = reportQueue.splice(0, 10);
       reportLastSent = now;
       const body = JSON.stringify(batch);
+      const requeue = () => { // send failure must not drop the batch
+        if (reportQueue.length < 40) reportQueue.unshift(...batch);
+      };
       try {
         if (typeof fetchLater === "function") {
           fetchLater("/api/fleet/report", { method: "POST", headers: { "Content-Type": "application/json" }, body, activateAfter: 30000 });
         } else {
-          fetch("/api/fleet/report", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+          fetch("/api/fleet/report", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(requeue);
         }
-      } catch { /* reporting is enhancement-only */ }
+      } catch { requeue(); }
     };
     if (window.ReportingObserver) {
       try {
@@ -159,11 +188,6 @@
     addEventListener("offline", () => { offlineAt = Date.now(); push("OFFLINE", 1, "events"); });
     addEventListener("online", () => { push("ONLINE", 1, "events"); if (offlineAt) push("OFFLINE_DURATION", Date.now() - offlineAt, "ms"); offlineAt = 0; });
     document.addEventListener("webglcontextlost", () => push("WEBGL_LOSS", 1, "events"), true);
-    addEventListener("error", (e) => {
-      if (e instanceof ErrorEvent) return;
-      const target = e.target;
-      if (target && target.tagName === "IMG") push("IMAGE_ERROR", 1, "count");
-    }, true);
     const decodedImageSrc = new WeakMap();
     const inspectImageDecode = (img) => {
       if (!img || img.tagName !== "IMG" || !img.complete || !img.naturalWidth || typeof img.decode !== "function") return;
@@ -232,7 +256,7 @@
       push("RESOURCE_KB", rs.reduce((n, e) => n + (e.transferSize || 0), 0) / 1024, "KB");
       push("RESOURCE_SLOW", rs.filter((e) => e.duration > 1500).length, "count >1.5s");
     }, { once: true });
-    addEventListener("pagehide", publish, { once: true });
-    document.addEventListener("visibilitychange", () => { if (document.hidden) publish(); });
+    addEventListener("pagehide", () => { if (inpMax) { push("INP", inpMax, "ms approx"); inpMax = 0; } publishNow(); }, { once: true });
+    document.addEventListener("visibilitychange", () => { if (document.hidden) publishNow(); });
   } catch { /* enhancement-only; never interrupts page boot */ }
 })();

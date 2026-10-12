@@ -15,6 +15,7 @@ const query = new URLSearchParams(typeof location !== "undefined" ? location.sea
 let filter = query.get("agent") || "";
 let failedOnly = query.get("failed") === "1", periodHours = 0, modelFilter = "";
 let hostFilter = "";
+let explorerSort = "", explorerDir = "desc";
 
 const fmtCost = (c) => (c == null ? "&ndash;" : `$${c.toFixed(4)}`);
 const fmtWake = (w) => (w == null ? "&ndash;" : `w${w}`);
@@ -79,7 +80,13 @@ function renderStats(d) {
   ]);
 }
 
+let lastChartSig = "";
 function renderCostChart(d) {
+  // signature guard (#43): the 400-rect SVG was rebuilt (and re-laid-out)
+  // every 30s even when nothing changed
+  const sig = `${d.runs.length}|${d.runs.at(-1)?.run_id || d.runs.at(-1)?.ts || ""}|${d.runs.at(-1)?.cost_usd ?? ""}`;
+  if (sig === lastChartSig) return;
+  lastChartSig = sig;
   // Fleet scale (~2k runs) is unreadable as one bar per run, so the chart
   // shows the last 400 runs; the explorer table carries the full history
   // (capped at 300 displayed rows) and the lanes carry every agent.
@@ -122,6 +129,10 @@ function renderCostChart(d) {
   </svg></div>`);
 }
 
+// filtered runs helper (#40): exports now match what the explorer shows
+function filteredRuns(d) {
+  return d.runs.filter((r) => (!filter || r.agent === filter) && (!hostFilter || (r.host || "") === hostFilter) && (!failedOnly || r.is_error) && (!modelFilter || r.model === modelFilter) && (!periodHours || Date.parse(r.ts) >= Date.now() - periodHours * 3600e3));
+}
 document.querySelectorAll("[data-observability-export]").forEach((button) => button.addEventListener("click", () => {
   if (!DATA) return;
   if (button.dataset.observabilityExport === "svg") {
@@ -134,7 +145,7 @@ document.querySelectorAll("[data-observability-export]").forEach((button) => but
   }
   const fields = ["ts", "host", "agent", "model", "model_family", "cost_usd", "waking_count"];
   const cell = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
-  const rows = [fields, ...DATA.runs.slice(-400).map((run) => fields.map((field) => run[field]))];
+  const rows = [fields, ...filteredRuns(DATA).slice(-400).map((run) => fields.map((field) => run[field]))];
   downloadFile("gale-observability-cost.csv", rows.map((row) => row.map(cell).join(",")).join("\n"), "text/csv;charset=utf-8");
 }));
 
@@ -173,14 +184,21 @@ function renderLanes(d) {
       const x = clamp((t - t0) / span, 0, 1) * 100;
       const size = 5 + 9 * Math.sqrt((r.cost_usd || 0) / maxCost);
       const costLbl = r.cost_usd == null ? "cost unknown" : `$${r.cost_usd.toFixed(4)}`;
-      return `<span class="lane-dot" style="left:${x.toFixed(2)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;
+      // focusable with a text label (#42): title-only dots had no keyboard
+      // or touch path to the per-run value
+      return `<span class="lane-dot" role="img" tabindex="0" aria-label="${esc(`${r.host || "?"} ${a} — ${costLbl}`)}" style="left:${x.toFixed(2)}%;width:${size.toFixed(1)}px;height:${size.toFixed(1)}px;
         background:${famColor(r.model_family)}" title="${esc(`${r.host || "?"} ${a} ${fmtWake(r.waking_count)} — ${costLbl}`)}"></span>`;
     }).join("");
-    // latency attribution (#18): wall-clock p50/p95 + error count per lane
-    const lat = st.p50_ms != null
-      ? ` · p50 ${fmtDur(st.p50_ms)}${st.p95_ms != null ? ` / p95 ${fmtDur(st.p95_ms)}` : ""}` : "";
-    const err = st.errors ? ` · <span class="tag-err">${st.errors} err</span>` : "";
-    const burn = st.burn_tok_per_h ? ` · ${fmtTok(st.burn_tok_per_h * 24)}/d` : "";
+    // latency attribution recomputed from the lane's own (host-filtered)
+    // runs (#42): fleet-wide totals contradicted the dots on the lane
+    const times = ar.map(([r]) => r.duration_ms).filter((v) => v != null).sort((x, y) => x - y);
+    const p50 = times.length ? times[Math.floor((times.length - 1) * 0.5)] : null;
+    const p95 = times.length ? times[Math.min(times.length - 1, Math.ceil(times.length * 0.95) - 1)] : null;
+    const laneErrors = ar.filter(([r]) => r.is_error).length;
+    const laneBurn = ar.reduce((s, [r]) => s + (r.total_tokens || 0), 0) / Math.max(1, (t1 - t0) / 3600e3);
+    const lat = p50 != null ? ` · p50 ${fmtDur(p50)}${p95 != null ? ` / p95 ${fmtDur(p95)}` : ""}` : "";
+    const err = laneErrors ? ` · <span class="tag-err">${laneErrors} err</span>` : "";
+    const burn = laneBurn > 0 ? ` · ${fmtTok(laneBurn * 24)}/d` : "";
     const hostLbl = (st.hosts && st.hosts.length ? st.hosts.join(",") : st.host || "");
     return {
       key: `lane-${a || "?"}`,
@@ -204,12 +222,41 @@ function renderExplorer(d) {
   if (hsel) setHTML(hsel, `<option value="">all hosts</option>` + hosts.map((h) => `<option${h === hcur ? " selected" : ""}>${esc(h || "?")}</option>`).join(""));
   const models = [...new Set(d.runs.map(r=>r.model).filter(Boolean))].sort();
   if ($("model-filter")) setHTML($("model-filter"), `<option value="">all models</option>` + models.map(m=>`<option${m===modelFilter?" selected":""}>${esc(m)}</option>`).join(""));
-  const rows = d.runs.filter((r) => (!filter || r.agent === filter) && (!hostFilter || (r.host || "") === hostFilter) && (!failedOnly || r.is_error) && (!modelFilter || r.model === modelFilter) && (!periodHours || Date.parse(r.ts) >= Date.now()-periodHours*3600e3)).slice().reverse().slice(0, 300);
+  let rows = filteredRuns(d);
+  // column sort (#41): click a th to sort; aria-sort announces the order
+  const sorters = {
+    ts: (a, b) => Date.parse(a.ts) - Date.parse(b.ts),
+    cost: (a, b) => (a.cost_usd || 0) - (b.cost_usd || 0),
+    duration: (a, b) => (a.duration_ms || 0) - (b.duration_ms || 0),
+    tokens: (a, b) => ((a.input_tokens || 0) + (a.output_tokens || 0)) - ((b.input_tokens || 0) + (b.output_tokens || 0)),
+  };
+  if (explorerSort && sorters[explorerSort]) {
+    rows = rows.slice().sort(sorters[explorerSort]);
+    if (explorerDir === "desc") rows.reverse();
+  } else rows = rows.slice().reverse();
+  rows = rows.slice(0, 300);
   setText($("run-count"), rows.length < d.count ? `${d.count} (showing ${rows.length})` : String(d.count));
+  const sortCol = { ts: 0, host: 1, agent: 2, duration: 5, tokens: 6, cost: 7 };
+  const ths = $("runs-table")?.querySelectorAll("th") || [];
+  ths.forEach((th, i) => {
+    const name = Object.entries(sortCol).find(([, col]) => col === i)?.[0];
+    if (!name) { th.removeAttribute("aria-sort"); return; }
+    th.setAttribute("aria-sort", explorerSort === name ? (explorerDir === "asc" ? "ascending" : "descending") : "none");
+    th.style.cursor = "pointer";
+    if (!th.dataset.sortBound) {
+      th.dataset.sortBound = "1";
+      th.addEventListener("click", () => {
+        if (explorerSort === name) explorerDir = explorerDir === "asc" ? "desc" : "asc";
+        else { explorerSort = name; explorerDir = "desc"; }
+        if (DATA) renderExplorer(DATA);
+      });
+    }
+  });
   patchList($("runs-table").querySelector("tbody"), rows.length ? rows.map((r) => {
     const dur = r.duration_ms == null ? "&ndash;" : `${fmtDur(r.duration_ms)}${r.measured ? "*" : ""}`;
     return {
-      key: `run-${r.ts}-${r.agent}-${r.host || "?"}`,
+      // run_id disambiguates two runs with the same ts (#41 key collision)
+      key: `run-${r.run_id || `${r.ts}-${r.agent}-${r.host || "?"}`}`,
       html: `<tr${r.is_error ? ' class="err-row"' : ""}>
       <td>${r.run_id ? `<a href="?run=${encodeURIComponent(r.run_id)}" data-run="${esc(r.run_id)}">${esc((r.ts || "").slice(5, 16).replace("T", " "))}</a>` : esc((r.ts || "").slice(5, 16).replace("T", " "))}</td>
       <td>${esc(r.host || "?")}</td>
@@ -293,7 +340,7 @@ for(const id of ["failed-only","period-filter","model-filter"]) {
   if(id==="failed-only")el.checked=failedOnly;
   el.addEventListener("change",()=>{failedOnly=!!$("failed-only")?.checked;periodHours=Number($("period-filter")?.value || 0);modelFilter=$("model-filter")?.value || "";if(DATA)renderExplorer(DATA);});
 }
-let fullTimer = 0;
+let fullTimer = 0, sseRetry = 0;
 async function load(first = false) {
   try {
     // first paint: the newest 400 runs only (the full history is ~1.6 MB); the rest follows right after.
@@ -334,7 +381,10 @@ document.getElementById("board").hidden = false;
 // loop if EventSource doesn't exist (old browsers) or keeps failing (a
 // proxy that won't stream). The render-test harness has no EventSource
 // global, so it naturally exercises the polling path.
+let pollStarted = false;
 function startPolling() {
+  if (pollStarted) return; // reconnect path could otherwise stack pollers
+  pollStarted = true;
   load(true);
   setInterval(load, POLL_MS);
 }
@@ -359,6 +409,13 @@ async function startFeed() {
       if (++failures >= 3) {
         es.close();
         startPolling();
+        // slow reconnect (#44): polling took over forever after 3 failures;
+        // a 5-min retry restores live push when the proxy recovers
+        if (!sseRetry) {
+          sseRetry = setInterval(() => {
+            if (!document.hidden) { clearInterval(sseRetry); sseRetry = 0; startFeed(); }
+          }, 300000);
+        }
       }
     };
     await load(true); // paint immediately (newest runs first, full history right after) instead of waiting for the first push

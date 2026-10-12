@@ -1,7 +1,7 @@
 /* GALE — fleet cost trend + agent cost leaderboard: polls api/fleet/metrics,
    renders a 14-day per-host cost chart with fleet-total line, and a top-6
    agent cost leaderboard with per-agent cost sparklines. */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, tracedFetch, chartTooltip, whenPageActive } from "./shared.js";
 
 boot();
 
@@ -18,6 +18,7 @@ const lbGrid = document.getElementById("leaderboard-grid");
 const lbFresh = document.getElementById("leaderboard-fresh");
 let selectedHost = null;
 let lastData = null;
+let showAllAgents = false;
 
 export function money(v) {
   if (v == null || !isFinite(v)) return "–";
@@ -67,7 +68,15 @@ export function trendChart(d) {
   }).join("");
   const tPts = totals.map((t, i) => `${X(i).toFixed(1)},${Y(t).toFixed(1)}`).join(" ");
   const total = `<polyline class="ct-total" points="${tPts}"><title>${esc(`fleet total 14d: ${money(totals.reduce((s, v) => s + v, 0))}`)}</title></polyline>`;
-  return `<div class="ct-scroll"><svg class="ct-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="14-day fleet cost trend per host">${grid}${xlabels}${lines}${total}</svg></div>`;
+  const svg = `<div class="ct-scroll"><svg class="ct-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="14-day fleet cost trend per host">${grid}${xlabels}${lines}${total}</svg></div>`;
+  // crosshair readout (#46): same shared chart-cursor as the other pages
+  if (chartEl) queueMicrotask(() => {
+    try {
+      chartTooltip(chartEl.querySelector("svg"), days.map((_, i) => ({ x: X(i) })),
+        (i) => `${days[i]} · fleet ${money(totals[i])}${selectedHost ? "" : ""}`);
+    } catch {}
+  });
+  return svg;
 }
 
 function trendLegend(d) {
@@ -82,6 +91,13 @@ function trendLegend(d) {
       `<i class="ct-swatch" style="background:${hue(h)}"></i>${esc(h)} <b>${esc(money(t))}</b></button>`;
   }).join("") + `<span class="ct-key ct-key-total"><i class="ct-swatch ct-swatch-total"></i>fleet total</span>`;
 }
+
+if (lbGrid) lbGrid.addEventListener("click", (e) => {
+  const btn = e.target.closest(".lb-expand");
+  if (!btn) return;
+  showAllAgents = btn.dataset.expanded !== "1";
+  if (lastData) lbGrid.innerHTML = leaderboard(lastData, showAllAgents);
+});
 
 if (legendEl) {
   legendEl.addEventListener("click", (e) => {
@@ -118,9 +134,15 @@ function miniSpark(vals, color) {
     `<circle class="lb-spark-dot" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" style="--lc:${color}"/></svg>`;
 }
 
-export function leaderboard(d) {
-  const rows = [...(d.per_agent_24h || [])].sort((a, b) => (b.cost_24h || 0) - (a.cost_24h || 0)).slice(0, LEAD_N);
+export function leaderboard(d, all = false) {
+  const sorted = [...(d.per_agent_24h || [])].sort((a, b) => (b.cost_24h || 0) - (a.cost_24h || 0));
+  const rows = all ? sorted : sorted.slice(0, LEAD_N);
   if (!rows.length) return `<p class="hosts-wait">no agent costs yet</p>`;
+  // "show all" expander (#47): agents beyond the top 6 were invisible even
+  // though the feed carries them
+  const expand = sorted.length > LEAD_N
+    ? `<button type="button" class="btn btn-sm lb-expand" data-expanded="${all ? "1" : "0"}">${all ? "Show top " + LEAD_N : "Show all " + sorted.length + " agents"}</button>`
+    : "";
   const hostOf = agentHostMap(d);
   return rows.map((a, i) => {
     const h = hostOf[String(a.agent || "").toLowerCase()] || "";
@@ -137,7 +159,7 @@ export function leaderboard(d) {
       miniSpark(series, hue(h)) +
       `<div class="lb-meta"><span>${a.runs_24h ?? "–"} runs</span><span>${a.last_wake ? esc(ago(a.last_wake)) : "–"}</span></div>` +
       `</article>`;
-  }).join("");
+  }).join("") + expand;
 }
 
 export function weekSummary(d) {
@@ -212,7 +234,7 @@ export function render(d) {
   lastData = d;
   if (chartEl) chartEl.innerHTML = trendChart(d);
   if (legendEl) trendLegend(d);
-  if (lbGrid) lbGrid.innerHTML = leaderboard(d);
+  if (lbGrid) lbGrid.innerHTML = leaderboard(d, showAllAgents);
   weekSummary(d);
   const famEl = document.getElementById("fam-strip");
   if (famEl) famEl.innerHTML = familyStrip(d);
@@ -239,9 +261,11 @@ function setErr(msg) {
   else if (lbFresh) lbFresh.textContent = `telemetry stale — ${msg}`;
 }
 
+let pollTimer = 0, sseFailures = 0, started = false;
+
 async function tick() {
   try {
-    const r = await fetch(FEED, { cache: "no-store" });
+    const r = await tracedFetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     render(d);
@@ -252,7 +276,33 @@ async function tick() {
   }
 }
 
-if (chartEl || lbGrid) {
+// SSE-first (#45): hosts.js and this module each polled the same feed with
+// plain fetch every 30s; both now consume one shared stream, poll fallback
+// stays for old browsers. hosts.js subscribes via gale:metrics-data events.
+function start() {
+  if (started) return;
+  started = true;
   tick();
-  setInterval(tick, POLL_MS);
+  if (typeof EventSource === "undefined") { pollTimer = setInterval(tick, POLL_MS); return; }
+  const es = new EventSource(FEED + "/stream");
+  es.onmessage = (e) => {
+    sseFailures = 0;
+    try {
+      const d = JSON.parse(e.data);
+      render(d);
+      if (chartEl) chartEl.dataset.loaded = "1";
+      if (lbGrid) lbGrid.dataset.loaded = "1";
+      window.dispatchEvent(new CustomEvent("gale:metrics-data", { detail: d }));
+    } catch { /* malformed payload */ }
+  };
+  es.onerror = () => {
+    if (++sseFailures >= 3) { es.close(); if (!pollTimer) pollTimer = setInterval(tick, POLL_MS); }
+  };
 }
+
+if (chartEl || lbGrid) {
+  whenPageActive().then(start).catch(start);
+}
+
+// hosts.js piggybacks on the poll path (SSE dispatches gale:metrics-data)
+window.addEventListener("gale:metrics-poll", () => tick());

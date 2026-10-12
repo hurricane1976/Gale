@@ -86,16 +86,21 @@ topo.querySelectorAll(".topo-node").forEach((node) => {
    last-verified summary as fallback text (Tidal's pattern). */
 const statusEl = document.getElementById("mesh-status");
 if (statusEl) {
-  fetch("/api/fleet/activity", { cache: "no-store" })
-    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-    .then((d) => {
-      const last = (d.events || []).slice(-3).reverse();
-      if (!last.length) return;
-      statusEl.innerHTML =
-        `<strong style="color:var(--teal)">live mesh feed</strong> — ` +
-        last.map((e) => `${esc((e.ts || "").slice(5, 16).replace("T", " "))} ${esc(e.agent || "?")}: ${esc(e.text || "")}`).join(" &middot; ");
-    })
-    .catch(() => { /* keep the static fallback */ });
+  // interval refresh (#69): a one-shot "live" line went stale for hours
+  const meshRefresh = () => {
+    fetch("/api/fleet/activity", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((d) => {
+        const last = (d.events || []).slice(-3).reverse();
+        if (!last.length) return;
+        statusEl.innerHTML =
+          `<strong style="color:var(--teal)">live mesh feed</strong> — ` +
+          last.map((e) => `${esc((e.ts || "").slice(5, 16).replace("T", " "))} ${esc(e.agent || "?")}: ${esc(e.text || "")}`).join(" &middot; ");
+      })
+      .catch(() => { /* keep the last feed or static fallback */ });
+  };
+  meshRefresh();
+  setInterval(() => { if (!document.hidden) meshRefresh(); }, 60000);
 }
 
 /* pointer glow on the static roster cards (wired here so the shared
@@ -146,7 +151,15 @@ refreshEffects();
   if (want) {
     q.value = want;
     apply();
-    requestAnimationFrame(() => q.closest("section, .member-group, div")?.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" }));
+    requestAnimationFrame(() => {
+      // mobile accordion (#70): the target agent sits inside a collapsed
+      // <details> on phones — open every containing one before scrolling
+      document.querySelectorAll("details:not([open])").forEach((d) => {
+        if (d.querySelector(`[data-agent="${CSS.escape(want)}"], [data-name="${CSS.escape(want)}"]`) ||
+            [...d.querySelectorAll(".mc-name")].some((el) => (el.textContent || "").trim().toLowerCase() === want.toLowerCase())) d.open = true;
+      });
+      q.closest("section, .member-group, div")?.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+    });
   }
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey &&
@@ -224,11 +237,17 @@ refreshEffects();
   };
   let last = performance.now();
   let running = true;
+  let inView = true; // viewport gate (#71): the rAF ran at full rate even
+  // when the topology was scrolled far off-screen (only document.hidden and
+  // offsetParent were checked — offsetParent stays non-null while rendered)
+  if (typeof IntersectionObserver === "function") {
+    new IntersectionObserver((es) => { inView = es.some((e) => e.isIntersecting); }, { rootMargin: "120px" }).observe(svg);
+  }
   const tick = (now) => {
     if (!running) return;
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
-    if (!document.hidden && svg.offsetParent !== null) {
+    if (!document.hidden && inView && svg.offsetParent !== null) {
       const speed = Math.min(220, 50 + state.mbps * 10); // px/s
       for (const lane of state.dots) {
         const { link: l } = lane;

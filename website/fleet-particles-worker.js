@@ -58,12 +58,16 @@ function pointAt(t, entry) {
 }
 
 function spawn() {
-  const t = trunks[Math.floor(Math.random() * trunks.length)];
+  // length-weighted pick (#87)
+  const total = trunks.reduce((s, t) => s + t.len, 0);
+  let r = Math.random() * total, t = trunks[0];
+  for (const cand of trunks) { r -= cand.len; if (r <= 0) { t = cand; break; } }
   if (!t) return;
   const boost = 0.6 + Math.min(2.4, live.mbps / 2);
   dots.push({
     trunk: t, p: Math.random(), speed: ((40 + Math.random() * 60) * boost) / t.len,
-    size: 1 + Math.random() * 1.6, color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    size: 1 + Math.random() * 1.6,
+    color: COLORS[trunks.indexOf(t) % COLORS.length], // stable per-trunk hue (#87)
   });
 }
 
@@ -80,15 +84,17 @@ function frame(ts) {
     d.p += d.speed * d.trunk.len * dt * 0.06;
     if (d.p > 1) { dots.splice(i, 1); continue; }
     const pt = pointAt(d.p, d.trunk);
-    const tail = 10;
     const dim = d.trunk.interHost ? live.dimFactor : 1;
-    const grad = ctx.createLinearGradient(pt.x - tail, pt.y, pt.x, pt.y);
+    // tangent tail (#86): the hardcoded horizontal tail detached from the
+    // path on vertical/curved trunks; sample a point slightly behind
+    const back = pointAt(Math.max(0, d.p - 8 / (d.trunk.len || 1)), d.trunk);
+    const grad = ctx.createLinearGradient(back.x, back.y, pt.x, pt.y);
     grad.addColorStop(0, `rgba(${d.color},0)`);
     grad.addColorStop(1, `rgba(${d.color},${0.55 * d.trunk.opacity * 2 * dim})`);
     ctx.strokeStyle = grad;
     ctx.lineWidth = d.size;
     ctx.beginPath();
-    ctx.moveTo(pt.x - tail, pt.y);
+    ctx.moveTo(back.x, back.y);
     ctx.lineTo(pt.x, pt.y);
     ctx.stroke();
     ctx.fillStyle = `rgba(${d.color},${0.9 * d.trunk.opacity * 2 * dim})`;

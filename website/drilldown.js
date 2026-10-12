@@ -1,7 +1,7 @@
 /* GALE — agent drill-down: click a member card or timeline tag to open a
    side panel with 24h stats, a 14-day sparkline, and recent runs.
    Data: /api/fleet/metrics (per_agent_24h) + /api/fleet/observability (runs). */
-import { boot, esc, refreshEffects, trapFocus } from "./shared.js";
+import { boot, esc, refreshEffects, trapFocus, tracedFetch } from "./shared.js";
 
 boot();
 
@@ -31,8 +31,8 @@ async function getData() {
   const needO = !fresh(state.obs);
   if (needM || needO) {
     const jobs = [];
-    if (needM) jobs.push(fetch(METRICS).then((r) => r.ok ? r.json() : null).then((d) => (state.metrics = d)).catch(() => {}));
-    if (needO) jobs.push(fetch(OBS).then((r) => r.ok ? r.json() : null).then((d) => (state.obs = d)).catch(() => {}));
+    if (needM) jobs.push(tracedFetch(METRICS).then((r) => r.ok ? r.json() : null).then((d) => (state.metrics = d)).catch(() => {}));
+    if (needO) jobs.push(tracedFetch(OBS).then((r) => r.ok ? r.json() : null).then((d) => (state.obs = d)).catch(() => {}));
     await Promise.all(jobs);
     state.cacheT = Date.now();
   }
@@ -109,7 +109,9 @@ export function render(agent) {
     : [];
   runs.sort((a, b) => (b.ts || "").localeCompare(a.ts || ""));
   const recent = runs.slice(0, RECENT_RUNS);
-  const cost = `$${Number(agent.cost_24h || 0).toFixed(2)}`;
+  const c24 = Number(agent.cost_24h || 0);
+  // sub-cent costs read as $0.00 with 2dp (#49)
+  const cost = c24 > 0 && c24 < 0.01 ? `$${c24.toFixed(4)}` : `$${c24.toFixed(2)}`;
   const w14 = agent.total_wakings_14d || 0;
   const c14 = (agent.daily_cost_14d || []).reduce((s, v) => s + (Number(v) || 0), 0);
   const host = agentHost(agent.agent) || (runs[0] && runs[0].host) || "";
@@ -130,7 +132,7 @@ export function render(agent) {
     const wk = hasW ? agent.daily_wakings_14d : arrayZeros(14);
     const ck = hasC ? agent.daily_cost_14d : arrayZeros(14);
     spark += `<div class="dd-spark">${sparkline(wk, "tide")}
-      <div class="spark-cap"><span>${w14} wakings</span><span>$${c14.toFixed(2)} spent</span></div></div>`;
+      <div class="spark-cap"><span>${w14} wakings</span><span>$${c14 >= 0.01 || c14 === 0 ? c14.toFixed(2) : c14.toFixed(4)} spent</span></div></div>`;
     const best = Math.max(...agent.daily_wakings_14d);
     const bestIdx = agent.daily_wakings_14d.indexOf(best);
     const m = Math.round(14 - bestIdx);
@@ -147,7 +149,7 @@ export function render(agent) {
       <li class="dd-run">
         <span class="rr-time">${fmtTime(r.ts)}</span>
         <span class="rr-model">${esc(r.model_family || r.model || "?")}</span>
-        <span class="rr-cost">$${(Number(r.cost_usd) || 0).toFixed(2)}</span>
+        <span class="rr-cost">$${(() => { const c = Number(r.cost_usd) || 0; return c > 0 && c < 0.01 ? c.toFixed(4) : c.toFixed(2); })()}</span>
         ${r.is_error ? '<span class="rr-err">err</span>' : ""}
       </li>`).join("") + `</ul>`;
   } else {
@@ -230,10 +232,6 @@ async function openFromHash() {
 openFromHash();
 window.addEventListener("hashchange", openFromHash);
 
-async function tryOpen(name) {
-  openDrilldown(name);
-}
-
 document.addEventListener("keydown", (e) => {
   if ((e.key === "Enter" || e.key === " ") && e.target instanceof Element &&
       e.target.matches(".mc-name, .fleet-term-tag[data-agent]")) {
@@ -252,8 +250,14 @@ document.addEventListener("click", async (e) => {
     name = (tagEl.textContent || "").trim();
   }
   if (!name) return;
-  tagEl.style.cursor = "pointer";
   lastTrigger = tagEl;
+  // skeleton-first (#49): the panel used to appear only after the network
+  // round-trip; open instantly with the shared shimmer, then hydrate
+  import("./shared.js").then(({ skeleton }) => skeleton(panel, 3, 64)).catch(() => {});
+  backdrop.classList.add("open");
+  panel.classList.add("open");
+  document.body.style.overflow = "hidden";
+  panel.querySelector(".dd-close")?.focus();
   await getData();
   if (!findAgent(name)) {
     const tmp = document.createElement("div");
@@ -268,7 +272,3 @@ document.addEventListener("click", async (e) => {
   openDrilldown(name);
 });
 
-document.addEventListener("click", (e) => {
-  const tag = e.target.closest(".mc-name");
-  if (tag) tag.style.cursor = "pointer";
-});

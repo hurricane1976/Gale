@@ -8,12 +8,13 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
   <title>Ops Status — Gale</title>
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gale.agent" />
 <meta property="og:title" content="Ops Status — Gale" />
 <meta property="og:description" content="Gale's live system/network operations board: host vitals, services, listening ports, security posture, and fleet health checks." />
-<meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
+<meta property="og:image" content="/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
@@ -67,6 +68,8 @@
         <a href="weather.html">Weather</a>
         <a href="network.html">Network</a>
         <a href="reliability.html">Reliability</a>
+        <a href="runbooks.html">Runbooks</a>
+        <a href="home.html">My Home</a>
         <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
       </nav>
     </div>
@@ -150,7 +153,7 @@
       <section class="reveal ops-panel span-full" id="sec-vitals" aria-labelledby="h-vitals">
         <h2 id="h-vitals" class="panel-title">Host vitals &middot; <span id="hostname">&ndash;</span></h2>
         <div class="vitals-grid" id="vitals-grid"></div>
-        <p class="mini-note" id="disk-forecast-note"></p>
+        <ul class="disk-forecast-list" id="disk-forecast-note"></ul>
       </section>
 
       <section class="reveal ops-panel" aria-labelledby="h-host">
@@ -166,7 +169,8 @@
       <section class="reveal ops-panel" id="sec-hardware" aria-labelledby="h-hardware">
         <h2 id="h-hardware" class="panel-title">Hardware &middot; <span id="hardware-hottest">&ndash;</span></h2>
         <div class="table-scroll"><table class="ops-table" id="hardware-table">
-          <thead><tr><th>Sensor</th><th>Reading</th></tr></thead>
+            <caption class="sr-only" id="cap-hardware-table">Host hardware: temperature, load, memory, disk usage</caption>
+          <thead><tr><th scope="col">Sensor</th><th scope="col">Reading</th></tr></thead>
           <tbody></tbody>
         </table></div>
         <p class="mini-note" id="hardware-nvme"></p>
@@ -175,7 +179,8 @@
       <section class="reveal ops-panel" aria-labelledby="h-net">
         <h2 id="h-net" class="panel-title">Network interfaces</h2>
         <div class="table-scroll"><table class="ops-table" id="net-table">
-          <thead><tr><th>Interface</th><th>Address</th><th>Rx</th><th>Tx</th><th>Total</th></tr></thead>
+            <caption class="sr-only" id="cap-net-table">Host network interfaces and throughput</caption>
+          <thead><tr><th scope="col">Interface</th><th scope="col">Address</th><th scope="col">Rx</th><th scope="col">Tx</th><th scope="col">Total</th></tr></thead>
           <tbody></tbody>
         </table></div>
         <p class="mini-note" id="tailscale-line"></p>
@@ -184,7 +189,8 @@
       <section class="reveal ops-panel" id="sec-services" aria-labelledby="h-services">
         <h2 id="h-services" class="panel-title">Services</h2>
         <div class="table-scroll"><table class="ops-table" id="services-table">
-          <thead><tr><th>Unit</th><th>State</th><th>Restarts</th><th>Memory</th><th>Active since</th></tr></thead>
+            <caption class="sr-only" id="cap-services-table">System services and their active state</caption>
+          <thead><tr><th scope="col">Unit</th><th scope="col">State</th><th scope="col">Restarts</th><th scope="col">Memory</th><th scope="col">Active since</th></tr></thead>
           <tbody></tbody>
         </table></div>
       </section>
@@ -202,7 +208,8 @@
       <section class="reveal ops-panel" aria-labelledby="h-ports">
         <h2 id="h-ports" class="panel-title">Listening ports</h2>
         <div class="table-scroll"><table class="ops-table" id="ports-table">
-          <thead><tr><th>Port</th><th>Process</th><th>Fleet role</th><th>Address</th></tr></thead>
+            <caption class="sr-only" id="cap-ports-table">Listening ports and owning processes</caption>
+          <thead><tr><th scope="col">Port</th><th scope="col">Process</th><th scope="col">Fleet role</th><th scope="col">Address</th></tr></thead>
           <tbody></tbody>
         </table></div>
         <button class="mini-toggle" id="ports-toggle" type="button" hidden></button>
@@ -229,7 +236,8 @@
               <h3 class="fw-subtitle">Loaded models (<span id="ollama-loaded-count">0</span>)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="ollama-loaded-table">
-                  <thead><tr><th>Model</th><th>Params</th><th>Quant</th><th>VRAM</th><th>Context</th><th>Unloads in</th></tr></thead>
+            <caption class="sr-only" id="cap-ollama-loaded-table">Ollama models currently loaded in GPU or memory</caption>
+                  <thead><tr><th scope="col">Model</th><th scope="col">Params</th><th scope="col">Quant</th><th scope="col">VRAM</th><th scope="col">Context</th><th scope="col">Unloads in</th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -238,7 +246,8 @@
               <h3 class="fw-subtitle">Model inventory (<span id="ollama-inv-count">0</span>)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="ollama-inv-table">
-                  <thead><tr><th>Model</th><th>Params</th><th>Quant</th><th>Size</th><th>Capabilities</th></tr></thead>
+            <caption class="sr-only" id="cap-ollama-inv-table">Ollama model inventory with sizes and modification dates</caption>
+                  <thead><tr><th scope="col">Model</th><th scope="col">Params</th><th scope="col">Quant</th><th scope="col">Size</th><th scope="col">Capabilities</th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -261,11 +270,12 @@
           <div class="vitals-grid" id="fw-vitals"></div>
           <div class="fw-cols">
             <div>
-              <h3 class="fw-subtitle">Devices (<span id="fw-device-count">0</span> online / <span id="fw-device-total">0</span>)</h3>
+              <h3 class="fw-subtitle">Devices (<span id="fw-device-count">0</span> online / <span id="fw-device-total">0</span>) <span class="mono-dim" id="fw-device-note"></span></h3>
               <input type="search" id="fw-device-search" class="fw-search" placeholder="Filter by name, IP, or MAC&hellip;" aria-label="Filter devices by name, IP, or MAC" />
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-devices-table">
-                  <thead><tr><th>Device</th><th>IP</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
+            <caption class="sr-only" id="cap-fw-devices-table">Firewalla devices with online state and block controls</caption>
+                  <thead><tr><th scope="col">Device</th><th scope="col">IP</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -274,7 +284,8 @@
               <h3 class="fw-subtitle">Rules (<span id="fw-rule-count">0</span>)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-rules-table">
-                  <thead><tr><th>Target</th><th>Scope</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
+            <caption class="sr-only" id="cap-fw-rules-table">Firewalla rules with pause and resume controls</caption>
+                  <thead><tr><th scope="col">Target</th><th scope="col">Scope</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -292,7 +303,8 @@
           <h3 class="fw-subtitle" style="font-size:0.85rem; margin-top:14px">Top talkers (last 2h)</h3>
           <div class="fw-table-scroll">
             <div class="table-scroll"><table class="ops-table" id="fw-talkers-table">
-              <thead><tr><th>Device</th><th>Traffic</th><th><span class="sr-only">Actions</span></th></tr></thead>
+            <caption class="sr-only" id="cap-fw-talkers-table">Top bandwidth talkers in the last 24 hours</caption>
+              <thead><tr><th scope="col">Device</th><th scope="col">Traffic</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
               <tbody></tbody>
             </table></div>
           </div>
@@ -306,7 +318,8 @@
               <h3 class="fw-subtitle" style="font-size:0.85rem">VPN profiles on the box (<span id="fw-vpn-online">0</span> online / <span id="fw-vpn-total">0</span>)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-vpn-table">
-                  <thead><tr><th>Profile</th><th>Type</th><th>Session</th><th>IP</th><th>Traffic 24h</th></tr></thead>
+            <caption class="sr-only" id="cap-fw-vpn-table">VPN profiles and their current state</caption>
+                  <thead><tr><th scope="col">Profile</th><th scope="col">Type</th><th scope="col">Session</th><th scope="col">IP</th><th scope="col">Traffic 24h</th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>
@@ -315,7 +328,8 @@
               <h3 class="fw-subtitle" style="font-size:0.85rem">VPN tunnel activity (24h, common ports 51820/1194)</h3>
               <div class="fw-table-scroll">
                 <div class="table-scroll"><table class="ops-table" id="fw-tunnel-table">
-                  <thead><tr><th>Device</th><th>Direction</th><th>Proto</th><th>Flows</th><th>Bytes</th><th>Last seen</th></tr></thead>
+            <caption class="sr-only" id="cap-fw-tunnel-table">VPN tunnel flows in the last 24 hours</caption>
+                  <thead><tr><th scope="col">Device</th><th scope="col">Direction</th><th scope="col">Proto</th><th scope="col">Flows</th><th scope="col">Bytes</th><th scope="col">Last seen</th></tr></thead>
                   <tbody></tbody>
                 </table></div>
               </div>

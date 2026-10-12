@@ -395,6 +395,7 @@ function renderFullHosts(list) {
 
 const FW_API = "/api/firewalla";
 let fwDeviceFilter = "";
+let fwSearchTimer = 0;
 let lastFw = null;
 
 function fwRuleLabel(r) {
@@ -478,7 +479,14 @@ function renderFirewall(fw) {
   const filtered = q
     ? devices.filter((d) => [d.name, d.ip, d.mac].some((v) => (v || "").toLowerCase().includes(q)))
     : devices;
-  const sorted = filtered.slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0));
+  // stable secondary sort by name (#27): online/offline alone let equal-status
+  // devices reshuffle on every poll (patchList follows array order)
+  const sorted = filtered.slice().sort((a, b) =>
+    ((b.online ? 1 : 0) - (a.online ? 1 : 0)) ||
+    String(a.name || "").localeCompare(String(b.name || "")));
+  // truncation honesty (#26): the 300-row cap was silent
+  setText(document.getElementById("fw-device-note"), sorted.length > 300
+    ? ` · showing first 300 of ${sorted.length}${q ? " matches — refine the search to narrow" : ""}` : "");
 
   const devRows = sorted.slice(0, 300).map((d) => {
     const mac = (d.mac || d.id || "").toUpperCase();
@@ -639,7 +647,8 @@ function renderVpn(fw) {
 
 async function fwRefresh() {
   try {
-    const res = await fetch(`${FW_API}/status`, { cache: "no-store" });
+    // traced (#31): the firewall feed participates in the RUM latency trend
+    const res = await tracedFetch(`${FW_API}/status`, { cache: "no-store" });
     const data = await res.json();
     if (data.ok) renderFirewall(data);
   } catch (e) {
@@ -650,7 +659,11 @@ async function fwRefresh() {
 
 document.getElementById("fw-device-search").addEventListener("input", (e) => {
   fwDeviceFilter = e.target.value;
-  if (lastFw) renderFirewall(lastFw);
+  // debounced + devices-only (#25): every keystroke rebuilt 300 rows, both
+  // rule tables, the VPN panel and the talkers chart. After 150ms of quiet,
+  // patch just the devices tbody (rules/VPN/chart never depend on the query).
+  clearTimeout(fwSearchTimer);
+  fwSearchTimer = setTimeout(() => { if (lastFw) renderFirewall(lastFw); }, 150);
 });
 
 document.getElementById("fw-body").addEventListener("click", (e) => {
@@ -783,6 +796,7 @@ const CHIP_TARGETS = {
   ufw: "sec-security", reboot: "sec-security",
   service: "sec-services", temp: "sec-hardware", cert: "sec-hygiene", backup: "sec-hygiene",
   node: "sec-fleet-24h",
+  kernel: "sec-vitals", drift: "sec-security",
   agent: "fleet.html#hosts", errors: "fleet.html#hosts",
   cost: "fleet.html#cost-trend",
   wakeup: "fleet.html#activity", quarantine: "fleet.html#activity",
@@ -1044,7 +1058,7 @@ function renderAlertStrip(all) {
     const muted = isAcked(a);
     return {
       key,
-      html: `<button type="button" class="alert-chip alert-chip--${esc(a.sev)}${muted ? " acked" : ""}" data-target="${esc(CHIP_TARGETS[a.kind] || "")}" data-kind="${esc(a.kind)}" data-ackkey="${esc(ackKey)}" title="${esc(a.kind)}${muted ? " (muted — click to un-mute)" : ""}" style="--i:${chipOrder.get(key)}">
+      html: `<button type="button" class="alert-chip alert-chip--${esc(a.sev)}${muted ? " acked" : ""}" data-target="${esc(CHIP_TARGETS[a.kind] || "")}" data-kind="${esc(a.kind)}" data-ackkey="${esc(ackKey)}" title="${esc(a.kind)}${muted ? " (muted — click to un-mute)" : " — press M to mute for "}${muted ? "" : `${ACK_HOURS}h`}" style="--i:${chipOrder.get(key)}">
       <i class="alert-dot" aria-hidden="true"></i>
       <span class="alert-text">${esc(a.text)}</span>
       ${muted ? "" : `<b class="chip-ack" data-ackkey="${esc(ackKey)}" title="Mute for ${ACK_HOURS}h" aria-label="Mute this alert">&times;</b>`}
@@ -1093,6 +1107,16 @@ chipsEl.addEventListener("click", (e) => {
   const el = document.getElementById(t);
   if (el) el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
 });
+// keyboard mute (#29): the × ack control is not focusable inside the chip
+// button, so a focused chip accepts M to mute (announced in the chip title)
+chipsEl.addEventListener("keydown", (e) => {
+  if (e.key !== "m" && e.key !== "M") return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const btn = e.target.closest(".alert-chip");
+  if (!btn || btn.classList.contains("acked")) return;
+  e.preventDefault();
+  setAck(btn.dataset.ackkey, ACK_HOURS);
+});
 
 let heatKicked = false;
 let firstPainted = false;
@@ -1132,17 +1156,24 @@ function renderDiskForecast(d) {
   const el = document.getElementById("disk-forecast-note");
   if (!el) return;
   const list = (d.host && d.host.disk_forecast) || [];
-  if (!list.length) { setText(el, ""); return; }
+  if (!list.length) { el.innerHTML = ""; return; }
+  // per-mount list (#32), soonest-to-full first: one joined line hid the
+  // urgent mount mid-string with 3+ entries
   const label = (m) => m === "mem" ? "RAM" : m === "swap" ? "swap" : `disk ${m}`;
-  setText(el, "Capacity forecast: " + list.map((f) => {
+  const order = (f) => f.days_to_full == null ? Infinity : f.days_to_full;
+  el.innerHTML = list.slice().sort((a, b) => order(a) - order(b)).map((f) => {
+    let text, lvl = "ok";
     if (f.samples < 3 || (f.span_days || 0) < 3) {
-      return `${label(f.mount)}: gathering history (${f.samples} samples)`;
+      text = `${label(f.mount)}: gathering history (${f.samples} samples)`;
+      lvl = "info";
+    } else if (f.days_to_full == null) {
+      text = `${label(f.mount)} steady (${f.slope_pct_per_day >= 0 ? "+" : ""}${f.slope_pct_per_day}%/day)`;
+    } else {
+      text = `${label(f.mount)} +${f.slope_pct_per_day}%/day &rarr; full in ~${Math.round(f.days_to_full)}d`;
+      if (f.days_to_full < 30) lvl = "crit"; else if (f.days_to_full < 90) lvl = "warn";
     }
-    if (f.days_to_full == null) {
-      return `${label(f.mount)} steady (${f.slope_pct_per_day >= 0 ? "+" : ""}${f.slope_pct_per_day}%/day)`;
-    }
-    return `${label(f.mount)} +${f.slope_pct_per_day}%/day &rarr; full in ~${Math.round(f.days_to_full)}d`;
-  }).join(" · "));
+    return `<li data-level="${lvl}">${esc(text)}</li>`;
+  }).join("");
 }
 
 /* ---- 90-day uptime ledger (item: SLA view) ----
@@ -1167,12 +1198,15 @@ function renderUptime(u) {
     const known = (vals || []).filter((v) => v != null);
     const up = known.filter((v) => v === 0).length;
     const pct = known.length ? Math.round((up / known.length) * 100) : null;
+    // row-level accessibility (#33): the cells are title-only glyphs; the row
+    // carries the whole summary so screen readers skip cell-by-cell hunting
+    const aria = `${esc(name)}: ${pct == null ? "no data" : pct + "% of " + known.length + " days up"}`;
     return {
       key: `up-${name}`,
-      html: `<div class="uptime-row" data-sev="${pct == null ? "nodata" : pct === 100 ? "ok" : "warn"}">
-        <span class="uptime-name">${esc(name)}</span>
-        <span class="uptime-cells">${cells}</span>
-        <span class="uptime-pct">${pct == null ? "–" : pct + "%"}</span>
+      html: `<div class="uptime-row" data-sev="${pct == null ? "nodata" : pct === 100 ? "ok" : "warn"}" role="img" aria-label="${aria}">
+        <span class="uptime-name" aria-hidden="true">${esc(name)}</span>
+        <span class="uptime-cells" aria-hidden="true">${cells}</span>
+        <span class="uptime-pct" aria-hidden="true">${pct == null ? "–" : pct + "%"}</span>
       </div>`,
     };
   });
@@ -1198,7 +1232,9 @@ async function fetchGpuHistory() {
     gpuHistoryCache.at = Date.now();
     gpuHistoryCache.data = await res.json();
   } catch (e) {
-    gpuHistoryCache.at = Date.now();
+    // failed fetches get a short TTL (#28): stamping a null result with the
+    // full 60s cache time froze the chart for a minute on one transient 500
+    gpuHistoryCache.at = Date.now() - (GPU_HISTORY_TTL - 8000);
     gpuHistoryCache.data = null;
   }
   return gpuHistoryCache.data;
@@ -1462,7 +1498,8 @@ async function fetchWakes() {
     const env = validate(await res.json(), wakesPayload);
     heatCache = { at: Date.now(), data: env, err: null };
   } catch (e) {
-    heatCache = { at: Date.now(), data: null, err: String(e.message || e) };
+    // short error TTL (#28): one failed poll paused the heatmap for 2 min
+    heatCache = { at: Date.now() - (HEAT_TTL - 8000), data: null, err: String(e.message || e) };
   }
   return { data: heatCache.data, err: heatCache.err };
 }
@@ -1571,7 +1608,8 @@ async function fetchAsks() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     asksCache = { at: Date.now(), data: validate(await res.json(), asksPayload), err: null };
   } catch (e) {
-    asksCache = { at: Date.now(), data: null, err: String(e.message || e) };
+    // short error TTL (#28): recovery retries in 8s instead of after 120s
+    asksCache = { at: Date.now() - (ASKS_TTL - 8000), data: null, err: String(e.message || e) };
   }
   return { data: asksCache.data, err: asksCache.err };
 }

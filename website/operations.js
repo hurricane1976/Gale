@@ -27,6 +27,32 @@ function paintRefreshMonitor() {
   el.dataset.level = level;
   el.innerHTML = `<div class="refresh-interval-label"><strong>Expected 30s</strong><span>${observed} · last success ${age}s ago · request budget ${Math.round(TRACED_FETCH_TIMEOUT_MS/1000)}s${opsProblem ? " · latest request failed" : ""}</span></div><div class="refresh-interval-track" role="img" aria-label="Expected refresh 30 seconds; observed ${esc(observed)}"><i style="width:${Math.min(100, (opsObservedIntervalS || 0) / 90 * 100)}%"></i><b aria-hidden="true"></b></div>`;
 }
+function renderIncident(shown, incidents, freshIds) {
+  const lifemap = incidents.lifecycle || {};
+  return shown.map(a=>{
+    const ack=incidents.acknowledgements.find(x=>x.incident_id===a.id);
+    const st=(lifemap[a.id]||{}).stage;
+    const stale=STALE_KINDS.has(a.kind);
+    const idx=st?LIFECYCLE_STAGES.indexOf(st):-1;
+    const next=idx>=0 && idx<LIFECYCLE_STAGES.length-1?LIFECYCLE_STAGES[idx+1]:null;
+    const canWrite=!!incidents.access.can_write;
+    return `<article class="target-card${freshIds && freshIds.has(a.id) ? " incident-arrival" : ""}" data-level="${esc(a.sev)}" data-id="${esc(a.id)}">
+      <div class="inc-head"><strong>${esc(a.text)}</strong><span class="inc-sev sev-${esc(a.sev)}">${esc(a.sev).toUpperCase()}</span></div>
+      <p class="inc-meta">Owner ${esc(a.owner)} · ${esc(a.host||"fleet")} · agent ${esc(a.agent||"fleet")} · <code title="stable id">${esc(a.id)}</code></p>
+      <p class="inc-kind ${stale?"inc-kind--stale":"inc-kind--fail"}">${stale?"Telemetry gap / stale — not necessarily a failure.":"Active failure signal."}${a.note?` ${esc(a.note)}`:""}</p>
+      <ol class="lc-track" data-stage="${st||""}">
+        ${LIFECYCLE_STAGES.map(s=>{
+          const done=idx>=0 && LIFECYCLE_STAGES.indexOf(s)<idx;
+          const cur=st===s;
+          return `<li class="lc-step${done?" is-done":""}${cur?" is-current":""}"><span class="lc-dot" aria-hidden="true">${done?"✓":""}</span><span class="lc-label">${s}</span></li>`;
+        }).join("")}
+      </ol>
+      ${ack?`<p class="inc-ack">Acknowledged until ${new Date(ack.until*1000).toISOString()}</p>`:""}
+      ${canWrite?`<div class="inc-acts"><button type="button" data-ack-key="${esc((a.kind+":"+a.text).slice(0,200))}" data-incident="${esc(a.id)}" data-kind="${esc(a.kind||"")}" data-owner="${esc(a.owner||"gale")}" data-host="${esc(a.host||"")}" data-agent="${esc(a.agent||"")}" data-text="${esc(a.text||"")}" class="btn btn-sm">Acknowledge 4h</button>${next?`<button type="button" data-stage-btn="${esc(next)}" data-id="${esc(a.id)}" class="btn btn-sm primary">Mark ${esc(next)}</button>`:""}${st==="verified"?'<button type="button" data-stage-btn="reset" data-id="'+esc(a.id)+'" class="btn btn-sm">Reset stage</button>':""}</div>`:""}
+      <p class="inc-links"><a href="${esc(a.runbook||"runbooks.html")}">Runbook</a> · <a href="observability.html?agent=${encodeURIComponent(a.agent||"")}&failed=1">Failed runs</a> · <a href="status.html#alert-strip" data-incident="${esc(a.id)}">Alert strip</a></p>
+    </article>`;
+  }).join("");
+}
 function renderSeverityHistogram(alerts = []) {
   const groups = [["", "All"], ["crit", "Critical"], ["warn", "Warning"], ["info", "Info"], ["unknown", "Unknown"]];
   const counts = new Map(groups.map(([key]) => [key, key ? 0 : alerts.length]));
@@ -73,8 +99,21 @@ function renderExporterCoverage(snapshot) {
   }).join("");
   setHTML(root, summary + (rows || '<p>No exporter inventory rows.</p>'));
 }
+// slow-moving feeds get a client TTL (#38): exporter inventory and alert
+// history don't change on 30s cadences; refetching them every cycle wasted
+// two requests per tick.
+const SLOW_TTL = 300e3;
+const slowCache = new Map();
+async function getSlow(path, fn) {
+  const hit = slowCache.get(path);
+  if (hit && Date.now() - hit.at < SLOW_TTL) return hit.data;
+  const data = await fn().catch(() => null);
+  if (data !== null) slowCache.set(path, { at: Date.now(), data });
+  return data;
+}
 async function get(path) {
-  const r = await tracedFetch(path, {cache:"no-store", signal:AbortSignal.timeout(25000)});
+  // actual timeout now matches the displayed request budget (#34)
+  const r = await tracedFetch(path, {cache:"no-store", signal:AbortSignal.timeout(TRACED_FETCH_TIMEOUT_MS + 10000)});
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.json();
 }
@@ -87,7 +126,7 @@ async function refresh() {
       setText($("home-ops-summary"), `${d.coverage.reachable}/${d.coverage.expected} reachable · ${d.coverage.reporting}/${d.coverage.expected} reporting${d.coverage.missing.length ? ` · missing: ${d.coverage.missing.map(a=>a.agent).join(", ")}` : ""} · collected ${d.generated_at}`);
       return;
     }
-    const [data, incidents, tasks, exporters, history] = await Promise.all([get("/api/fleet/reliability"), get("/api/fleet/incidents"),get("/api/fleet/tasks"),get("/api/exporter-coverage.json").catch(()=>null),get("/api/fleet/alerts/history").catch(()=>null)]);
+    const [data, incidents, tasks, exporters, history] = await Promise.all([get("/api/fleet/reliability"), get("/api/fleet/incidents"),get("/api/fleet/tasks"),getSlow("/api/exporter-coverage.json", () => get("/api/exporter-coverage.json")),getSlow("/api/fleet/alerts/history", () => get("/api/fleet/alerts/history"))]);
     // The alert feed proves the Alertmanager Watchdog rule is active. It cannot
     // prove that the remote receiver delivered a notification; keep that
     // distinction visible until a peer-side receipt is available.
@@ -117,7 +156,10 @@ async function refresh() {
     setVitals($("ops-summary"), [["Reachable",`${c.reachable}/${c.expected}`],["Reporting",`${c.reporting}/${c.expected}`],["Incidents",String(incidents.count)],["Task verification",`${data.outcomes.verified_runs} verified`]].map(([name,value])=>`<div class="vital"><span class="vital-label">${esc(name)}</span><span class="vital-value">${esc(value)}</span></div>`).join(""));
     const timeline = history?.events || [];
     const duration = (ms) => { const mins = Math.max(0, Math.floor(ms / 60000)); return mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins / 60)}h ${mins % 60}m` : `${Math.floor(mins / 1440)}d ${Math.floor(mins % 1440 / 60)}h`; };
-    setHTML($("ops-incident-timeline"), timeline.length ? timeline.map((event) => {
+    // cap the timeline (#39): history grows forever; show the newest 50
+    const timelineShown = timeline.slice(-50);
+    const timelineOlder = timeline.length - timelineShown.length;
+    setHTML($("ops-incident-timeline"), timeline.length ? (timelineOlder > 0 ? `<p class="mini-note">${timelineOlder} older event${timelineOlder === 1 ? "" : "s"} not shown.</p>` : "") + timelineShown.map((event) => {
       const start = Date.parse(event.since || event.ts), end = Date.parse(event.ts);
       const span = event.event === "close" && Number.isFinite(start) && Number.isFinite(end) ? ` · open ${duration(end - start)}` : "";
       const when = Number.isFinite(end) ? new Date(end).toLocaleString() : "time unknown";
@@ -129,68 +171,31 @@ async function refresh() {
     const lifemap = incidents.lifecycle || {};
     const agents = Array.from(new Set(incidents.alerts.map(a=>a.agent||"fleet")));
     if ($("ops-agent-filter")) {
+      // rebuild the select only when the agent set changes (#36): an innerHTML
+      // wipe every 30s closed the open dropdown mid-interaction
       const f = $("ops-agent-filter");
-      f.innerHTML = `<option value="">All agents (${incidents.alerts.length})</option>` +
-        agents.filter(Boolean).map(n=>{
-          const n_ = incidents.alerts.filter(a=>(a.agent||"fleet")===n).length;
-          return `<option value="${esc(n)}" ${agentFilter===n?"selected":""}>${esc(n)} (${n_})</option>`;
-        }).join("") +
-        `<option value="__stale" ${agentFilter==="__stale"?"selected":""}>Stale telemetry only</option>` +
-        `<option value="__fail" ${agentFilter==="__fail"?"selected":""}>Failed signals only</option>`;
+      const setKey = agents.filter(Boolean).join(",") + `|${incidents.alerts.length}`;
+      if (f.dataset.setKey !== setKey) {
+        f.dataset.setKey = setKey;
+        const sel = f.value;
+        f.innerHTML = `<option value="">All agents (${incidents.alerts.length})</option>` +
+          agents.filter(Boolean).map(n=>{
+            const n_ = incidents.alerts.filter(a=>(a.agent||"fleet")===n).length;
+            return `<option value="${esc(n)}" ${sel===n?"selected":""}>${esc(n)} (${n_})</option>`;
+          }).join("") +
+          `<option value="__stale" ${sel==="__stale"?"selected":""}>Stale telemetry only</option>` +
+          `<option value="__fail" ${sel==="__fail"?"selected":""}>Failed signals only</option>`;
+      }
     }
-    const summary = $("ops-filter-summary");
-    if (summary) {
-      const active = [];
-      if (agentFilter) active.push(agentFilter === "__stale" ? "Stale telemetry only" : agentFilter === "__fail" ? "Failed signals only" : `Agent: ${agentFilter}`);
-      if (severityFilter) active.push(`Severity: ${severityFilter}`);
-      summary.hidden = active.length === 0;
-      summary.innerHTML = active.length ? `<span>${active.map(esc).join(" · ")}</span><button type="button" class="btn btn-sm" id="ops-clear-filters">Clear filters</button>` : "";
-    }
-    const shownAll = incidents.alerts.filter(a=>{
-      if (severityFilter && (a.sev || "unknown") !== severityFilter) return false;
-      if (agentFilter==="__stale") return STALE_KINDS.has(a.kind);
-      if (agentFilter==="__fail") return !STALE_KINDS.has(a.kind);
-      if (agentFilter) return (a.agent||"fleet")===agentFilter;
-      return true;
-    });
     const currentIncidentIds = new Set(incidents.alerts.map((alert) => alert.id));
     const freshIncidentIds = knownIncidentIds ? new Set([...currentIncidentIds].filter((id) => !knownIncidentIds.has(id))) : new Set();
     knownIncidentIds = currentIncidentIds;
     // partition so "verified" (terminal, muted) incidents don't masquerade as active
-    const shown = [], muted = [];
-    for (const a of shownAll) { ((lifemap[a.id]||{}).stage==="verified" ? muted : shown).push(a); }
-    const mutedEl = $("ops-muted-note");
-    if (mutedEl) {
-      if (muted.length) {
-        mutedEl.hidden = false;
-        setHTML(mutedEl, `${muted.length} verified (muted) incident${muted.length>1?"s":""} hidden from this list${agentFilter?" (matches the active filter)":""} — re-open for investigation: ` +
-          muted.map(a=>`<span class="inc-muted-pill">${esc(a.agent||a.id)} <button type="button" data-stage-btn="reset" data-id="${esc(a.id)}" class="btn btn-sm inc-unmute">re-open</button></span>`).join(" "));
-      } else mutedEl.hidden = true;
-    }
-    setHTML($("ops-incidents"),shown.length?shown.map(a=>{
-      const ack=incidents.acknowledgements.find(x=>x.incident_id===a.id);
-      const st=(lifemap[a.id]||{}).stage;
-      const stale=STALE_KINDS.has(a.kind);
-      const idx=st?LIFECYCLE_STAGES.indexOf(st):-1;
-      const next=idx>=0 && idx<LIFECYCLE_STAGES.length-1?LIFECYCLE_STAGES[idx+1]:null;
-      const canWrite=!!incidents.access.can_write;
-      return `<article class="target-card${freshIncidentIds.has(a.id) ? " incident-arrival" : ""}" data-level="${esc(a.sev)}" data-id="${esc(a.id)}">
-        <div class="inc-head"><strong>${esc(a.text)}</strong><span class="inc-sev sev-${esc(a.sev)}">${esc(a.sev).toUpperCase()}</span></div>
-        <p class="inc-meta">Owner ${esc(a.owner)} · ${esc(a.host||"fleet")} · agent ${esc(a.agent||"fleet")} · <code title="stable id">${esc(a.id)}</code></p>
-        <p class="inc-kind ${stale?"inc-kind--stale":"inc-kind--fail"}">${stale?"Telemetry gap / stale — not necessarily a failure.":"Active failure signal."}${a.note?` ${esc(a.note)}`:""}</p>
-        <ol class="lc-track" data-stage="${st||""}">
-          ${LIFECYCLE_STAGES.map(s=>{
-            const done=idx>=0 && LIFECYCLE_STAGES.indexOf(s)<idx;
-            const cur=st===s;
-            return `<li class="lc-step${done?" is-done":""}${cur?" is-current":""}"><span class="lc-dot" aria-hidden="true">${done?"✓":""}</span><span class="lc-label">${s}</span></li>`;
-          }).join("")}
-        </ol>
-        ${ack?`<p class="inc-ack">Acknowledged until ${new Date(ack.until*1000).toISOString()}</p>`:""}
-        ${canWrite?`<div class="inc-acts"><button type="button" data-ack-key="${esc((a.kind+":"+a.text).slice(0,200))}" data-incident="${esc(a.id)}" data-kind="${esc(a.kind||"")}" data-owner="${esc(a.owner||"gale")}" data-host="${esc(a.host||"")}" data-agent="${esc(a.agent||"")}" data-text="${esc(a.text||"")}" class="btn btn-sm">Acknowledge 4h</button>${next?`<button type="button" data-stage-btn="${esc(next)}" data-id="${esc(a.id)}" class="btn btn-sm primary">Mark ${esc(next)}</button>`:""}${st==="verified"?'<button type="button" data-stage-btn="reset" data-id="'+esc(a.id)+'" class="btn btn-sm">Reset stage</button>':""}</div>`:""}
-        <p class="inc-links"><a href="${esc(a.runbook||"runbooks.html")}">Runbook</a> · <a href="observability.html?agent=${encodeURIComponent(a.agent||"")}&failed=1">Failed runs</a> · <a href="status.html#alert-strip" data-incident="${esc(a.id)}">Alert strip</a></p>
-      </article>`;
-    }).join(""):'<p class="inc-none">No active incidents'+(agentFilter?" matching this filter":"")+'.<a href="#" id="inc-clear" class="inc-clear">Clear filter</a></p>');
+    lastIncidents = incidents;
+    lastFreshIncidentIds = freshIncidentIds;
+    applyFilters();
     setHTML($("ops-missing"),c.missing.length?c.missing.map(a=>`<p><strong>${esc(a.agent)}</strong> · ${esc(a.host)} · ${esc(a.listener_state)}</p>`).join(""):'<p>All active agents report runs.</p>');
+
     setHTML($("ops-sources"),Object.entries(data.sources).map(([name,s])=>{
       const level = s.state === "ok" ? "ok" : s.state === "degraded" ? "warn" : s.state === "stale" ? "crit" : "unknown";
       const health = s.state === "ok" ? "fresh" : s.state === "degraded" ? "delayed" : s.state === "stale" ? "stale" : "unavailable";
@@ -202,17 +207,69 @@ async function refresh() {
     setHTML($("ops-tasks"),tasks.events.length?tasks.events.slice(-15).reverse().map(e=>`<p><a href="observability.html?run=${encodeURIComponent(e.run_id)}">${esc(e.agent)} ${esc(e.event)}</a> · ${esc(e.at)}${e.tool?` · tool ${esc(e.tool)}`:""}</p>`).join(""):'<p>No instrumented task events yet.</p>');
     renderExporterCoverage(exporters);
   } catch(e) {
+    // keep last-good panels with a stale marker (#37): one failed fetch used
+    // to blank every panel including the still-relevant incident list
     opsProblem = e.message;
     if (opsGeneratedAt) paintOpsFreshness();
     else setText($("ops-freshness")||$("home-ops-summary"),`Monitoring unavailable: ${e.message}; previous values are stale.`);
-    for(const id of ["ops-summary","ops-missing","ops-sources","ops-cost","ops-backup","ops-incidents","ops-tasks"]) if($(id)) { $(id).dataset.level="unknown"; setText($(id), "Unknown — monitoring feed unavailable."); }
+    const staleNote = (id, keep = false) => {
+      const el = $(id);
+      if (!el) return;
+      if (keep) { el.dataset.level = "stale"; el.title = `Last refresh failed: ${e.message}`; }
+      else { el.dataset.level = "unknown"; setText(el, "Unknown — monitoring feed unavailable."); }
+    };
+    // incidents are the operator's working state: never blank them
+    staleNote("ops-incidents", true);
+    for (const id of ["ops-missing","ops-sources","ops-cost","ops-backup","ops-tasks"]) {
+      const el = $(id);
+      if (el && !el.innerHTML.trim()) { el.dataset.level = "unknown"; setText(el, "Unknown — monitoring feed unavailable."); }
+      else if (el) { el.dataset.level = "stale"; el.title = `Last refresh failed: ${e.message}`; }
+    }
   } finally {busy=false;}
 }
+// filters act on the in-memory incident list (#35): the data is already
+// here — a network refetch per filter click added ~1-2s latency per click
+// and hammered five endpoints. Re-render from last data; mutations still
+// refetch. Filter application + render is factored into applyFilters().
+let lastIncidents = null, lastFreshIncidentIds = null;
+function applyFilters() {
+  if (!lastIncidents) return;
+  const incidents = lastIncidents;
+  renderSeverityHistogram(incidents.alerts);
+  const summary = $("ops-filter-summary");
+  if (summary) {
+    const active = [];
+    if (agentFilter) active.push(agentFilter === "__stale" ? "Stale telemetry only" : agentFilter === "__fail" ? "Failed signals only" : `Agent: ${agentFilter}`);
+    if (severityFilter) active.push(`Severity: ${severityFilter}`);
+    summary.hidden = active.length === 0;
+    summary.innerHTML = active.length ? `<span>${active.map(esc).join(" · ")}</span><button type="button" class="btn btn-sm" id="ops-clear-filters">Clear filters</button>` : "";
+  }
+  const shownAll = incidents.alerts.filter(a=>{
+    if (severityFilter && (a.sev || "unknown") !== severityFilter) return false;
+    if (agentFilter==="__stale") return STALE_KINDS.has(a.kind);
+    if (agentFilter==="__fail") return !STALE_KINDS.has(a.kind);
+    if (agentFilter) return (a.agent||"fleet")===agentFilter;
+    return true;
+  });
+  const lifemap = incidents.lifecycle || {};
+  const shown = [], muted = [];
+  for (const a of shownAll) { ((lifemap[a.id]||{}).stage==="verified" ? muted : shown).push(a); }
+  const mutedEl = $("ops-muted-note");
+  if (mutedEl) {
+    if (muted.length) {
+      mutedEl.hidden = false;
+      setHTML(mutedEl, `${muted.length} verified (muted) incident${muted.length>1?"s":""} hidden from this list${agentFilter?" (matches the active filter)":""} — re-open for investigation: ` +
+        muted.map(a=>`<span class="inc-muted-pill">${esc(a.agent||a.id)} <button type="button" data-stage-btn="reset" data-id="${esc(a.id)}" class="btn btn-sm inc-unmute">re-open</button></span>`).join(" "));
+    } else mutedEl.hidden = true;
+  }
+  const listEl = $("ops-incidents");
+  if (listEl) setHTML(listEl, shown.length?renderIncident(shown, incidents, lastFreshIncidentIds):'<p class="inc-none">No active incidents'+(agentFilter?" matching this filter":"")+'.<a href="#" id="inc-clear" class="inc-clear">Clear filter</a></p>');
+}
 document.addEventListener("click",async e=>{
-  if (e.target.closest("#ops-clear-filters")) { agentFilter=""; severityFilter=""; await refresh(); return; }
-  if (e.target.closest("#inc-clear")) { e.preventDefault(); agentFilter=""; severityFilter=""; await refresh(); return; }
+  if (e.target.closest("#ops-clear-filters")) { agentFilter=""; severityFilter=""; applyFilters(); return; }
+  if (e.target.closest("#inc-clear")) { e.preventDefault(); agentFilter=""; severityFilter=""; applyFilters(); return; }
   const sev = e.target.closest("[data-severity]");
-  if (sev) { severityFilter = sev.dataset.severity; await refresh(); return; }
+  if (sev) { severityFilter = sev.dataset.severity; applyFilters(); return; }
   const adv=e.target.closest("[data-stage-btn]");
   if (adv) {
     adv.disabled=true;
@@ -251,5 +308,5 @@ document.addEventListener("click",async e=>{
     if(silenceNote)setText($("ops-access"),`Acknowledged 4h${silenceNote}`);
   }catch(e){setText($("ops-access"),`Acknowledgement failed: ${e.message}`);}finally{b.disabled=false;}
 });
-if ($("ops-agent-filter")) $("ops-agent-filter").addEventListener("change", (e) => { agentFilter = e.target.value; refresh(); });
+if ($("ops-agent-filter")) $("ops-agent-filter").addEventListener("change", (e) => { agentFilter = e.target.value; applyFilters(); });
 if ($("ops-summary") || $("home-ops-summary")) { refresh(); setInterval(refresh, 30000); setInterval(paintOpsFreshness, 1000); }

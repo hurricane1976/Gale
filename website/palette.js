@@ -14,6 +14,10 @@ const PAGES = [
   ["Weather", "weather.html", "radar · forecast"],
   ["Network", "network.html", "interfaces · firewalla"],
   ["Reliability", "reliability.html", "SLOs · synthetics · RUM · forecasts"],
+  ["Operations", "operations.html", "incidents · acks · lifecycle"],
+  ["Home bridge", "home.html", "Home Assistant devices"],
+  ["Runbooks", "runbooks.html", "step-by-step ops procedures"],
+  ["Galaxy", "galaxy.html", "3D fleet galaxy"],
 ];
 
 const ICON_PAGE = "→", ICON_SECTION = "§", ICON_AGENT = "◆";
@@ -162,7 +166,7 @@ export function initPalette() {
   dlg.id = "palette";
   dlg.setAttribute("aria-label", "Command palette");
   dlg.innerHTML = `
-    <input id="palette-input" type="text" role="combobox" aria-expanded="true"
+    <input id="palette-input" type="text" role="combobox" aria-expanded="false"
       aria-controls="palette-list" aria-autocomplete="list"
       placeholder="Go to page, section, agent…" autocomplete="off" spellcheck="false">
     <ul id="palette-list" role="listbox" aria-label="Results"></ul>
@@ -186,6 +190,16 @@ export function initPalette() {
     return 99;
   };
 
+  // match highlighting (#19): wrap the matched range of the label in <mark>
+  // so the query→result link is visible (input is escaped before slicing)
+  const markLabel = (label, q) => {
+    const s = String(label ?? "");
+    if (!q) return escP(s);
+    const idx = s.toLowerCase().indexOf(q);
+    if (idx < 0) return escP(s);
+    return escP(s.slice(0, idx)) + "<mark>" + escP(s.slice(idx, idx + q.length)) + "</mark>" + escP(s.slice(idx + q.length));
+  };
+
   const render = () => {
     const q = input.value.trim().toLowerCase();
     filtered = q ? items
@@ -196,12 +210,16 @@ export function initPalette() {
       .slice(0, 12)
     : items.slice(0, 12);
     active = Math.min(active, Math.max(filtered.length - 1, 0));
+    input.setAttribute("aria-expanded", "true");
+    // combobox contract (#15): id each option and point aria-activedescendant
+    // at the highlighted row so screen readers announce the moving highlight
     list.innerHTML = filtered.map((it, i) => `
-      <li role="option" data-i="${i}" aria-selected="${i === active}" class="${i === active ? "on" : ""}">
+      <li role="option" id="palette-opt-${i}" data-i="${i}" aria-selected="${i === active}" class="${i === active ? "on" : ""}">
         <span class="palette-icon" aria-hidden="true">${escP(it.icon)}</span>
-        <span class="palette-label">${escP(it.label)}</span>
+        <span class="palette-label">${markLabel(it.label, q)}</span>
         <span class="palette-hint">${escP(it.hint || "")}</span>
       </li>`).join("") || `<li class="palette-none">no matches</li>`;
+    input.setAttribute("aria-activedescendant", filtered.length ? `palette-opt-${active}` : "");
     // preview pane: what ↵ will do with the highlighted row
     const cur = filtered[active];
     foot.innerHTML = cur
@@ -216,15 +234,21 @@ export function initPalette() {
     it.go();
   };
 
+  // item cache (#18): every open was re-fetching fleet.html + the alerts
+  // feed and the first open rendered an empty list while it waited. Cache
+  // for 60s; render the cache immediately, refresh in the background.
+  let cachedItems = null, cachedAt = 0;
   const open = () => {
     input.value = "";
     active = 0;
+    if (cachedItems) { items = cachedItems; }
     render();
     dlg.showModal();
     input.focus();
+    if (cachedItems && Date.now() - cachedAt < 60000) return;
     collectItems().then((fresh) => {
       if (!dlg.open) return;
-      items = fresh;
+      items = fresh; cachedItems = fresh; cachedAt = Date.now();
       render();
     });
   };
@@ -240,12 +264,20 @@ export function initPalette() {
     const li = e.target.closest("li[data-i]");
     if (li) choose(+li.dataset.i);
   });
+  // hover moves the highlight without re-rendering the list (#17): rebuilds
+  // churned the whole <ul> per pixel of mouse travel
   list.addEventListener("mousemove", (e) => {
     const li = e.target.closest("li[data-i]");
-    if (li && +li.dataset.i !== active) {
-      active = +li.dataset.i;
-      render();
-    }
+    if (!li || +li.dataset.i === active) return;
+    const prev = list.querySelector("li.on");
+    if (prev) { prev.classList.remove("on"); prev.setAttribute("aria-selected", "false"); }
+    li.classList.add("on"); li.setAttribute("aria-selected", "true");
+    active = +li.dataset.i;
+    input.setAttribute("aria-activedescendant", li.id || "");
+    const cur = filtered[active];
+    foot.innerHTML = cur
+      ? `${FOOT_KEYS} — <span class="palette-icon" aria-hidden="true">${escP(cur.icon)}</span> ${escP(cur.label)} · ${escP(cur.hint || "")}`
+      : FOOT_KEYS;
   });
   input.addEventListener("input", () => { active = 0; render(); });
   input.addEventListener("keydown", (e) => {

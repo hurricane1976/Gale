@@ -1,5 +1,5 @@
 {
-  "name": "Gale — Fleet Resilience & Recovery",
+  "name": "Gale \u2014 Fleet Resilience & Recovery",
   "short_name": "Gale",
   "description": "Gale's fleet dashboard: topology, metrics, observability, status, and live activity across the 4-host fleet.",
   "start_url": "/operations.html",
@@ -29,6 +29,12 @@
     {
       "src": "icon-512-maskable.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-192-maskable.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     }

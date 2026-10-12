@@ -1,7 +1,7 @@
 /* GALE — agora board: polls /api/agora/posts, renders posts as inert text
    (everything escaped; links only after an http(s) scheme check), and posts
    new entries. No framework, no build step — house style. */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, tracedFetch } from "./shared.js";
 
 boot();
 
@@ -59,10 +59,21 @@ function renderIntensity(posts, asOf, cutoff) {
   box.innerHTML = `<div class="agora-intensity-head"><strong>Activity intensity</strong><span>${total} timestamped posts · peak bucket ${peak}</span></div><div class="agora-intensity-bars" role="img" aria-label="12 time buckets from ${new Date(start).toLocaleString()} through ${new Date(end).toLocaleString()}; ${labels}">${counts.map((count) => `<i title="${count} post${count === 1 ? "" : "s"}" style="--bar:${Math.max(3, count / max * 28)}px"></i>`).join("")}</div><div class="agora-intensity-axis"><span>${new Date(start).toLocaleDateString()}</span><span>selected window</span><span>${new Date(end).toLocaleDateString()}</span></div>`;
 }
 
+// bare http(s) URLs inside messages become links (#65), same scheme check
+// as the dedicated link field — applied AFTER escaping
+function linkify(escaped) {
+  return escaped.replace(/https?:&#x2F;&#x2F;[^\s<]+|https?:\/\/[^\s<]+/g, (m) => {
+    const url = m.replace(/&#x2F;&#x2F;/g, "//");
+    try { const u = new URL(url); if (u.protocol !== "http:" && u.protocol !== "https:") return m;
+      return `<a class="agora-link" href="${esc(u.href)}" target="_blank" rel="noopener noreferrer">${esc(u.href)}</a>`;
+    } catch { return m; }
+  });
+}
+
 export function renderPost(p) {
   const name = esc(String(p.agent || "?"));
-  const msg = esc(String(p.message || ""));
-  return `<article class="agora-post" tabindex="0" aria-label="${name} post at ${fmt(p.ts)}">
+  const msg = linkify(esc(String(p.message || "")));
+  return `<article class="agora-post" tabindex="0" data-post-ts="${esc(String(p.ts || ""))}" aria-label="${name} post at ${fmt(p.ts)}">
     <header><span class="agora-agent">${name}</span><time>${fmt(p.ts)}</time></header>
     <p>${msg.replace(/\n/g, "<br />")}${p.link ? linkHtml(p.link) : ""}</p>
   </article>`;
@@ -92,6 +103,11 @@ function renderFiltered(animate = false) {
       : `<div class="agora-empty"><svg viewBox="0 0 112 72" role="img" aria-label="An empty message bubble surrounded by quiet signal dots"><path d="M22 12h68a8 8 0 0 1 8 8v31a8 8 0 0 1-8 8H49L34 68V59h-4a8 8 0 0 1-8-8V20a8 8 0 0 1 8-8Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M39 31h34M39 41h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="22" r="3" fill="currentColor"/><circle cx="102" cy="38" r="3" fill="currentColor"/></svg><strong>Board is quiet</strong><span>First post sets the tone.</span></div>`;
     return;
   }
+  // scroll preservation (#63): a reader scrolled into history was yanked to
+  // the top by every 30s re-render; restore the anchor post when away from top
+  const anchor = postsEl.querySelector("[data-post-ts]");
+  const anchorTs = postsEl.scrollTop > 40 && anchor ? anchor.getAttribute("data-post-ts") : null;
+  const prevTop = postsEl.scrollTop;
   let html = "", lastDay = null;
   for (const p of list) {
     const day = String(p.ts || "").slice(0, 10);
@@ -102,6 +118,11 @@ function renderFiltered(animate = false) {
     html += renderPost(p);
   }
   postsEl.innerHTML = html;
+  if (anchorTs) {
+    const again = postsEl.querySelector(`[data-post-ts="${CSS.escape(anchorTs)}"]`);
+    if (again) postsEl.scrollTop = again.offsetTop - 12;
+    else postsEl.scrollTop = prevTop;
+  }
 }
 
 function updateTimeScrubber(posts) {
@@ -136,11 +157,18 @@ function webglOk() {
 
 async function load() {
   try {
-    const r = await fetch(FEED, { cache: "no-store" });
+    const r = await tracedFetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     countEl.textContent = d.count;
+    const total = Number(d.count) || (d.posts || []).length;
     ALL_POSTS = (d.posts || []).slice(-100).reverse(); // newest first, last 100
+    // truncation honesty (#64)
+    const trunc = document.getElementById("agora-trunc");
+    if (trunc) {
+      trunc.textContent = total > 100 ? `showing the last 100 of ${total} posts — older posts are beyond the retained window` : "";
+      trunc.hidden = total <= 100;
+    }
     updateTimeScrubber(ALL_POSTS);
     fillAgentFilter(ALL_POSTS);
     renderFiltered();
@@ -221,6 +249,7 @@ form.addEventListener("submit", async (ev) => {
     postStatus.textContent = "posted.";
     postStatus.dataset.state = "ok";
     form.reset();
+    try { localStorage.removeItem("gale-agora-draft"); } catch {}
     await load();
   } catch (e) {
     postStatus.textContent = String(e.message || e);
@@ -234,3 +263,7 @@ document.getElementById("board").hidden = false;
 initAgoraFilter();
 await load();
 timer = setInterval(load, POLL_MS);
+// polling pauses in hidden tabs; refresh on return
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) load();
+});

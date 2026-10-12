@@ -44,14 +44,27 @@
   letter-spacing: -0.035em; line-height: 0.98;
   transform: translate3d(0, calc(var(--hero-p, 0) * 60px), 0) scale(calc(1 - var(--hero-p, 0) * 0.06));
   opacity: calc(1 - var(--hero-p, 0) * 0.55);
-  filter: blur(calc(var(--hero-p, 0) * 7px)) brightness(calc(1 - var(--hero-p, 0) * 0.18));
-  will-change: transform, opacity, filter;
+  /* animated blur is the expensive term on phones (#79): wide screens get
+     the full treatment, small/coarse devices keep the cheap transform+fade */
+  filter: brightness(calc(1 - var(--hero-p, 0) * 0.18));
+  will-change: transform, opacity;
+}
+@media (min-width: 900px) and (pointer: fine) {
+  #hero .hero-title {
+    filter: blur(calc(var(--hero-p, 0) * 7px)) brightness(calc(1 - var(--hero-p, 0) * 0.18));
+    will-change: transform, opacity, filter;
+  }
 }
 #hero .lede, #hero .chips, #hero .meta, #hero .eyebrow {
   transform: translate3d(0, calc(var(--hero-p, 0) * 34px), 0);
   opacity: calc(1 - var(--hero-p, 0) * 0.75);
-  filter: blur(calc(var(--hero-p, 0) * 4px));
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
+}
+@media (min-width: 900px) and (pointer: fine) {
+  #hero .lede, #hero .chips, #hero .meta, #hero .eyebrow {
+    filter: blur(calc(var(--hero-p, 0) * 4px));
+    will-change: transform, opacity, filter;
+  }
 }
 /* lightning-synced flash (shared.js sets --flash 1→0 on each bolt) */
 .blob { opacity: calc(0.45 + var(--storm-level, 0.35) * 0.7 + var(--flash, 0) * 0.3); }

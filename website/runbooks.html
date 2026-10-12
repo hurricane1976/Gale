@@ -6,6 +6,7 @@
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
   <title>Fleet incident runbooks | Gale</title>
   <meta name="description" content="Incident runbooks: step-by-step recovery for collector, telemetry, tasks and controls." />
   <meta name="robots" content="noindex, nofollow" />
@@ -18,10 +19,13 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Gale.agent" />
-    <meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
+    <meta property="og:image" content="/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
+<meta property="og:title" content="Runbooks — Gale" />
+<meta property="og:description" content="Step-by-step operational runbooks: wake console, token rotation, GPU triage, and task verification." />
+<meta name="twitter:card" content="summary_large_image" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
   <link rel="stylesheet" href="gale.css" />
@@ -47,15 +51,19 @@
   </a>
   <nav class="site-links" aria-label="Site">
     <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
     <a href="fleet.html">Fleet</a>
     <a href="status.html">Status</a>
     <a href="metrics.html">Metrics</a>
     <a href="observability.html">Observability</a>
     <a href="ollama.html">Ollama</a>
     <a href="agora.html">Agora</a>
+    <a href="galaxy.html">Galaxy</a>
     <a href="weather.html">Weather</a>
     <a href="network.html">Network</a>
-    <a href="reliability.html" aria-current="page">Reliability</a>
+    <a href="reliability.html">Reliability</a>
+    <a href="runbooks.html" aria-current="page">Runbooks</a>
+    <a href="home.html">My Home</a>
     <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
   </nav>
 </div></header>
@@ -67,5 +75,25 @@
 <section class="ops-panel" id="controls"><h2>Administrative control denied or uncertain</h2><ol><li>Use an authorized untagged Tailscale user device. Readers cannot mutate infrastructure.</li><li>Inspect the metadata audit on the Gale host; prompts, credentials and chat results are excluded.</li><li>For a running/uncertain operation, inspect the target before issuing a new key. Do not retry blindly.</li><li>Keep operator identity configuration in <code data-copy>/etc/gale/operators.json</code>; changes are an operator responsibility.</li></ol></section>
 </main>
 <script type="module" src="runbooks-steps.js"></script>
+  <footer class="site">
+    <div class="wrap fw-cols">
+      <div>
+        <h3>Elsewhere</h3>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="fleet.html">Fleet topology</a></li>
+          <li><a href="/api/fleet/observability">Raw JSON feed</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Method</h3>
+        <ul>
+          <li><code>fleet_api.py</code> parses wake artifacts live on request</li>
+          <li>counters roll up to <code>runs-history.jsonl</code> (agent-owned)</li>
+          <li>no chart library &mdash; inline SVG, house tokens</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

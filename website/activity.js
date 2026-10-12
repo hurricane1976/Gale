@@ -1,7 +1,7 @@
 /* GALE — fleet activity stream: polls /api/fleet/activity, renders the last
    N real events oldest-first in a terminal-style panel (Beacon's pattern).
    Pause toggle stops re-rendering but never stops fetching. */
-import { boot, esc, refreshEffects, whenPageActive } from "./shared.js";
+import { boot, esc, refreshEffects, whenPageActive, tracedFetch } from "./shared.js";
 
 boot();
 
@@ -48,11 +48,31 @@ function dayParts(ts) {
   return { date, label, ms: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).getTime() };
 }
 
+let pausedNoticeEl = null, pausedNotice = null;
 export function render(d) {
   countEl.textContent = d.events.length;
   const sig = JSON.stringify(d.events);
-  if (paused || sig === lastRendered) return;
+  if (paused) {
+    // paused-mode honesty (#48): incoming events vanished silently; count them
+    const prevCount = (lastRendered.match(/tl-item/g) || []).length;
+    const nowCount = d.events.length;
+    if (nowCount > prevCount && pausedNotice === null) pausedNotice = nowCount - prevCount;
+    else if (nowCount > prevCount) pausedNotice += nowCount - prevCount;
+    if (pausedNotice > 0) {
+      if (!pausedNoticeEl) {
+        pausedNoticeEl = document.createElement("span");
+        pausedNoticeEl.id = "stream-paused-note";
+        pausedNoticeEl.className = "mini-note";
+        toggle?.insertAdjacentElement?.("afterend", pausedNoticeEl);
+      }
+      pausedNoticeEl.textContent = ` +${pausedNotice} while paused`;
+    }
+    return;
+  }
+  if (sig === lastRendered) return;
   lastRendered = sig;
+  if (pausedNoticeEl) { try { pausedNoticeEl.remove(); } catch {} pausedNoticeEl = null; }
+  pausedNotice = null;
   const days = new Map();
   for (const ev of d.events) {
     const key = (ev.ts || "").slice(0, 10);
@@ -82,12 +102,13 @@ export function render(d) {
       </li>`;
     }).join("") + `</ul>`;
   }
-  body.innerHTML = html;
+  // empty state (#48): an empty window used to render a blank panel
+  body.innerHTML = html || `<p class="mini-note" style="padding:14px">No activity events in the retained window.</p>`;
 }
 
 async function load() {
   try {
-    const r = await fetch(FEED, { cache: "no-store" });
+    const r = await tracedFetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     render(await r.json());
     refreshEffects();

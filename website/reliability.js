@@ -416,6 +416,15 @@ $("tap-target-scan")?.addEventListener("click", () => {
   setHTML($("tap-target-results"), `<div class="target-card" data-level="${level}"><strong>${undersized.length} below 44px · ${below24.length} below 24px · ${tight} close target pairs</strong><span class="mono-dim">This local estimate checks visible block controls; inline text links are excluded.</span></div>${sample}`);
   window.__galeRUMRecord?.("TAP_TARGET_SCAN", undersized.length, "controls below 44px");
 });
+// scan label + progress max derive from SITE_PAGES (#100): the hardcoded
+// "14 pages" desynced when home.html was added
+{
+  const btn = $("site-link-scan"), prog = $("site-link-progress");
+  const n = SITE_PAGES.length;
+  if (btn) { btn.textContent = `Scan ${n} pages`; btn.setAttribute("aria-label", `Scan ${n} local pages and their fragment links`); }
+  if (prog) prog.max = n;
+  const orig = btn?.textContent;
+}
 $("site-link-scan")?.addEventListener("click", async (event) => {
   const button = event.currentTarget, status = $("site-link-status"), results = $("site-link-results");
   const progress = $("site-link-progress");
@@ -457,7 +466,7 @@ $("site-link-scan")?.addEventListener("click", async (event) => {
     setText(status, `Link audit complete · ${issues.length} broken links · ${orphans.length} orphan pages.`);
   } catch (error) {
     setText(status, `Link audit could not finish: ${error.message}`);
-  } finally { button.disabled = false; button.textContent = "Scan 14 pages"; if (progress) progress.hidden = true; }
+  } finally { button.disabled = false; button.textContent = `Scan ${SITE_PAGES.length} pages`; if (progress) progress.hidden = true; }
 });
 function buildLocalDiagnosticsBundle() {
   const samples = window.__galeRUM || [];

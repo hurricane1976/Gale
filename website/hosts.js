@@ -1,6 +1,6 @@
 /* GALE — per-host fleet boards: polls /api/fleet/metrics, renders one
    board per host (14-day sparkline, 24h stats, agent roster). */
-import { boot, esc, refreshEffects } from "./shared.js";
+import { boot, esc, refreshEffects, tracedFetch } from "./shared.js";
 
 boot();
 
@@ -22,7 +22,7 @@ let alertCache = { at: 0, items: null };
 async function fetchAlerts() {
   if (Date.now() - alertCache.at < POLL_MS && alertCache.items) return alertCache.items;
   try {
-    const r = await fetch("/api/fleet/alerts", { cache: "no-store" });
+    const r = await tracedFetch("/api/fleet/alerts", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
     alertCache = { at: Date.now(), items: d.alerts || [] };
@@ -40,7 +40,7 @@ function renderAlerts(items) {
   alertBox.innerHTML =
     `<span class="fleet-alerts-h">${crit ? `${crit} critical` : `${items.length} notice${items.length === 1 ? "" : "s"}`}</span>` +
     items.slice(0, 6).map((a) =>
-      `<a class="fleet-alert-chip" data-sev="${esc(a.sev || "warn")}" href="status.html" title="${esc(a.kind || "fleet")}">${esc(a.text || "")}</a>`
+      `<a class="fleet-alert-chip" data-sev="${esc(a.sev || "warn")}" href="status.html#alert-strip" title="${esc(a.kind || "fleet")}">${esc(a.text || "")}</a>`
     ).join("") +
     (items.length > 6 ? `<span class="fleet-alerts-more">+${items.length - 6} more on status →</span>` : "");
 }
@@ -138,11 +138,26 @@ function setErr(msg) {
   grid.innerHTML = `<p class="hosts-wait">${esc(msg || "waiting for telemetry…")}</p>`;
 }
 
+// shared loader (#45): cost.js owns one SSE-first subscription to
+// /api/fleet/metrics and re-broadcasts as gale:metrics-data; this module
+// renders from that instead of a second 30s poll of the same feed.
+let lastMetricsData = null;
+function renderFrom(d) { try { render(d); } catch {} }
+
+window.addEventListener("gale:metrics-data", (e) => { lastMetricsData = e.detail; if (e.detail) e.detail._galeRcvd = Date.now(); renderFrom(e.detail); });
+
 async function tick() {
+  // if the shared stream fed us within the poll interval, skip this fetch (#45)
+  if (lastMetricsData && Date.now() - (lastMetricsData._galeRcvd || 0) < POLL_MS - 2000) {
+    renderAlerts(await fetchAlerts());
+    return;
+  }
   try {
-    const r = await fetch(FEED, { cache: "no-store" });
+    const r = await tracedFetch(FEED, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
+    d._galeRcvd = Date.now();
+    lastMetricsData = d;
     render(d);
     renderAlerts(await fetchAlerts());
     grid.dataset.loaded = "1";

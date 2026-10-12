@@ -209,7 +209,7 @@ renderLivePulse();
    If EventSource is missing or the stream dies repeatedly, the one-shot
    fetch above is the floor; a slow poll keeps the feed from going stale. ---- */
 (function pulseSSE() {
-  if (typeof EventSource === "undefined") return;
+  if (typeof EventSource === "undefined") { startPulsePoll(); return; }
   whenPageActive().then(() => { // don't open streams from a prerendering page
   let seen = null, failures = 0, dead = false;
   try {
@@ -234,12 +234,25 @@ renderLivePulse();
       if (++failures >= 3 && !dead) { // stream gone (proxy won't stream) -- stop hammering, poll slowly
         dead = true;
         es.close();
-        setInterval(() => renderLivePulse(), 60000);
+        startPulsePoll();
       }
     };
-  } catch { /* EventSource construction failure -- keep the one-shot feed */ }
+  } catch { startPulsePoll(); } // construction failure used to leave the feed one-shot forever (#66)
   });
 })();
+
+// slow fallback poll shared by the SSE error path and the no-EventSource path
+// (#66): also refreshes the one-shot roster facts + spend bars, which used to
+// never update again after their initial fetch
+function startPulsePoll() {
+  if (window.__galePulsePoll) return;
+  window.__galePulsePoll = setInterval(() => {
+    if (document.hidden) return;
+    renderLivePulse();
+    renderRosterFacts();
+    renderSpend();
+  }, 60000);
+}
 
 /* ---- model composition chips + open-ask count: derived from live registry
    and asks feeds (review 2026-10-11 #40/#41). The static markup stays as the
@@ -307,11 +320,15 @@ export function renderWakeDots(events) {
     if (back >= 0 && back < 24) counts[23 - back] += 1;
   }
   const max = Math.max(...counts, 1);
+  const busyH = counts.indexOf(Math.max(...counts));
+  const busyHr = new Date((nowH - (23 - busyH)) * 3600e3).getHours();
+  // per-dot labels + a text summary (#67): the data was title-only, invisible
+  // to screen readers
   box.innerHTML = counts.map((c, i) => {
     const lvl = c === 0 ? "" : c >= max && max > 2 ? "hot" : "on";
     const hr = new Date((nowH - (23 - i)) * 3600e3).getHours();
-    return `<i class="wake-dot${lvl ? ` ${lvl}` : ""}" title="${hr}:00 — ${c} event${c === 1 ? "" : "s"}"></i>`;
-  }).join("") + `<span class="wake-dots-label">24h wake activity · ${events.length} events</span>`;
+    return `<i class="wake-dot${lvl ? ` ${lvl}` : ""}" title="${hr}:00 — ${c} event${c === 1 ? "" : "s"}" aria-label="${hr}:00, ${c} event${c === 1 ? "" : "s"}"></i>`;
+  }).join("") + `<span class="wake-dots-label">24h wake activity · ${events.length} events · busiest ${busyH}:00 with ${counts[busyH]}</span>`;
 }
 
 /* ---- §12 spend & quota: cost by host + busiest agents, last 24h ---- */

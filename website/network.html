@@ -8,12 +8,13 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
   <title>Network — Gale</title>
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gale.agent" />
 <meta property="og:title" content="Network — Gale" />
 <meta property="og:description" content="Gale's live network state on this host: interfaces, ARP table and TCP/UDP sockets, straight from iproute2." />
-<meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
+<meta property="og:image" content="/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
@@ -67,6 +68,8 @@
         <a href="weather.html">Weather</a>
         <a href="network.html" aria-current="page">Network</a>
         <a href="reliability.html">Reliability</a>
+        <a href="runbooks.html">Runbooks</a>
+        <a href="home.html">My Home</a>
         <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
       </nav>
     </div>
@@ -118,7 +121,8 @@
         <h2 class="panel-title" id="h-ifaces">Interfaces <span><span id="iface-count">&ndash;</span> interfaces &middot; from <code>ip -br addr</code></span></h2>
         <div class="fw-table-scroll">
           <div class="table-scroll"><table class="ops-table" id="ifaces-table">
-            <thead><tr><th>interface</th><th>state</th><th>addresses</th></tr></thead>
+            <caption class="sr-only" id="cap-ifaces-table">Network interfaces with addresses and state</caption>
+            <thead><tr><th scope="col">interface</th><th scope="col">state</th><th scope="col">addresses</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </div>
@@ -128,17 +132,20 @@
         <h2 class="panel-title" id="h-arp">ARP table <span><span id="arp-count">&ndash;</span> entries &middot; from <code>ip neigh</code></span></h2>
         <div class="fw-table-scroll">
           <div class="table-scroll"><table class="ops-table" id="arp-table">
-            <thead><tr><th>dst</th><th>dev</th><th>lladdr</th><th>state</th></tr></thead>
+            <caption class="sr-only" id="cap-arp-table">ARP neighbor table</caption>
+            <thead><tr><th scope="col">dst</th><th scope="col">dev</th><th scope="col">lladdr</th><th scope="col">state</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </div>
       </section>
 
       <section class="reveal ops-panel span-full" aria-labelledby="h-socks">
-        <h2 class="panel-title" id="h-socks">Sockets <span><span id="sock-count">&ndash;</span> rows &middot; <label for="sock-filter" class="sr-only">filter</label><select id="sock-filter" class="obs-filter"><option value="">all</option><option value="tcp">tcp</option><option value="udp">udp</option></select> &middot; from <code>ss -p</code></span></h2>
+        <h2 class="panel-title" id="h-socks">Sockets <span><span id="sock-count">&ndash;</span> rows &middot; <label for="sock-filter" class="sr-only">filter</label><select id="sock-filter" class="obs-filter"><option value="">all</option><option value="tcp">tcp</option><option value="udp">udp</option></select>
+<input id="sock-search" class="obs-filter" type="search" placeholder="Filter sockets (state, address, process)…" aria-label="Filter sockets" /> &middot; from <code>ss -p</code></span></h2>
         <div class="fw-table-scroll">
           <div class="table-scroll"><table class="ops-table" id="socks-table">
-            <thead><tr><th>proto</th><th>state</th><th>local</th><th>peer</th><th>process</th></tr></thead>
+            <caption class="sr-only" id="cap-socks-table">Active network sockets</caption>
+            <thead><tr><th scope="col">proto</th><th scope="col">state</th><th scope="col">local</th><th scope="col">peer</th><th scope="col">process</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </div>

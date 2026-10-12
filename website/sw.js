@@ -15,7 +15,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v17";
+const CACHE_VERSION = "gale-v18";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const ASSET_META_CACHE = `${CACHE_VERSION}-asset-meta`;
@@ -43,6 +43,10 @@ const SHELL_ASSETS = [
   "/dist/metrics.js", "/dist/network.js", "/dist/observability.js",
   "/dist/status.js", "/dist/weather.js", "/dist/agora.js", "/dist/ollama.js",
   "/shared.js", "/rum.js", "/boot-shared.js", "/lost-boot.js", "/runbooks-steps.js",
+  "/storm-scene.css",
+  /* dynamically imported modules (never bundled): palette, cinematic layer,
+     kiosk mode, WebGPU sky, and the 404 map scene must survive offline too */
+  "/palette.js", "/cinematic.js", "/cinematic.css", "/kiosk.js", "/glsky.js", "/lost.js",
   "/assets/vendor/leaflet/leaflet.css", "/assets/vendor/leaflet/leaflet.js",
   "/manifest.json", "/favicon.ico", "/apple-touch-icon.png",
   "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png",
@@ -68,6 +72,19 @@ self.addEventListener("activate", (event) => {
       .then((keys) => Promise.all(
         keys.filter((k) => !k.startsWith(CACHE_VERSION)).map((k) => caches.delete(k))
       ))
+      // startup prune (#4): over-TTL wake entries are dead weight when
+      // Background Sync never fires (Safari/Firefox) — drop at activation.
+      .then(async () => {
+        try {
+          const items = await tx("readonly", (s) => s.getAll());
+          const keys = await tx("readonly", (s) => s.getAllKeys());
+          for (let i = 0; i < (items || []).length; i++) {
+            if (Date.now() - Number(items[i].at || 0) > WAKE_TTL_MS) {
+              await tx("readwrite", (s) => s.delete(keys[i]));
+            }
+          }
+        } catch { /* queue is optional */ }
+      })
       .then(() => self.clients.claim())
   );
 });
@@ -84,11 +101,17 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(SHELL_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); });
+          // only durable successes may enter the shell cache: a transient 500/404
+          // HTML must never become the offline fallback for this URL (#1)
+          if (res.ok) {
+            const copy = res.clone();
+            // register the write with waitUntil so SW termination can't drop it (#5)
+            event.waitUntil(caches.open(SHELL_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); }));
+          }
           return res;
         })
-        .catch(() => caches.match(request).then((r) => r || caches.match("/index.html")))
+        // ignoreSearch: ?kiosk=20 and the bare path are the same shell page (#2)
+        .catch(() => caches.match(request, { ignoreSearch: true }).then((r) => r || caches.match("/index.html", { ignoreSearch: true })))
     );
     return;
   }
@@ -106,11 +129,11 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res.ok) {
             const copy = res.clone();
-            caches.open(RUNTIME_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); });
+            event.waitUntil(caches.open(RUNTIME_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); }));
           }
           return res;
         })
-        .catch(() => caches.match(request))
+        .catch(() => caches.match(request, { ignoreSearch: true }))
     );
     return;
   }
@@ -121,7 +144,7 @@ self.addEventListener("fetch", (event) => {
         .then((res) => {
           if (res.ok) {
             const copy = res.clone();
-            caches.open(RUNTIME_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); });
+            event.waitUntil(caches.open(RUNTIME_CACHE).then(async (c) => { await c.put(request, copy); await recordCacheTime(request); }));
           }
           return res;
         })
@@ -140,16 +163,6 @@ self.addEventListener("push", (event) => {
   try { data = event.data ? event.data.json() : {}; } catch { /* keep defaults */ }
   const title = data.title || "GALE — fleet alert";
   event.waitUntil((async () => {
-    try {
-      await fetch("/api/push/receipt", { method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seen: true, title,
-          has_body: !!data.body, sev: data.sev || null,
-          ts: new Date().toISOString() }) });
-    } catch { /* beacon is best-effort */ }
-    // showNotification FIRST and alone -- on iOS, if anything before it in
-    // the waitUntil chain rejects or hangs, the push is consumed silently
-    // (Apple shows nothing and reports nothing). Badge after, best-effort.
     const opts = {
       body: data.body || "A fleet alert fired.",
       badge: "/icon-192.png",
@@ -179,9 +192,21 @@ self.addEventListener("push", (event) => {
         await self.navigator.setAppBadge(Math.max(1, data.count));
       }
     } catch { /* badge is cosmetic */ }
+    // receipt beacon AFTER showNotification: a slow/hanging beacon must never
+    // hold the waitUntil chain past the push delivery window (#3; the comment
+    // above always demanded this order). Fire-and-forget with a 3s deadline.
+    try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 3000);
+      await fetch("/api/push/receipt", { method: "POST", signal: ctl.signal,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seen: true, title,
+          has_body: !!data.body, sev: data.sev || null,
+          ts: new Date().toISOString() }) });
+      clearTimeout(timer);
+    } catch { /* beacon is best-effort */ }
   })());
 });
-self.addEventListener("push", (event) => { /* legacy handler removed -- single push listener above */ });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
@@ -220,6 +245,16 @@ self.addEventListener("message", (event) => {
       } catch { event.source?.postMessage({ type: "gale:wake-queue-status", unavailable: true }); }
     })());
   }
+  // page asks the worker to drain the offline wake queue now (browsers without
+  // Background Sync never fire the sync event, so the page triggers the drain
+  // when connectivity returns — see shared.js connectivity hook)
+  if (event.data === "gale:drain-wake-queue") {
+    event.waitUntil(drainWakeQueue().catch(() => {}));
+  }
+  // offline-tapped wake queued by the page (same consolidated listener, #7)
+  if (event.data && event.data.type === "gale:queue-wake" && event.data.agent) {
+    event.waitUntil(queueWake(String(event.data.agent), false));
+  }
   // version handshake so the page can verify the ACTIVE sw has push support.
   // (self.PushManager doesn't exist in worker scope and the SW global has no
   // "push" property -- the honest check is feature-detection on the
@@ -244,12 +279,13 @@ self.addEventListener("message", (event) => {
    but only within WAKE_TTL_MS, since waking an agent 3 hours late on a
    stale tap would be a surprise. The server allowlist/flock still decides. */
 const WAKE_TTL_MS = 15 * 60 * 1000;
-const idb = () => new Promise((res, rej) => {
+let idbPromise = null;
+const idb = () => (idbPromise ||= new Promise((res, rej) => {
   const r = indexedDB.open("gale-sw", 1);
   r.onupgradeneeded = () => r.result.createObjectStore("wakeq", { autoIncrement: true });
   r.onsuccess = () => res(r.result);
   r.onerror = () => rej(r.error);
-});
+}));
 const tx = async (mode, fn) => {
   const db = await idb();
   return new Promise((res, rej) => {
@@ -280,9 +316,4 @@ async function drainWakeQueue() {
 }
 self.addEventListener("sync", (event) => {
   if (event.tag === "gale-wake") event.waitUntil(drainWakeQueue());
-});
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "gale:queue-wake" && event.data.agent) {
-    event.waitUntil(queueWake(String(event.data.agent), false));
-  }
 });

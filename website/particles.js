@@ -52,19 +52,22 @@ if (canvas && wrap && svg && !REDUCED && !SAVER) {
     return paths;
   }
 
+  // DPR cap (#77): raw devicePixelRatio hit 3x on modern phones while every
+  // other scene caps — 3x particles at 3x pixels for decoration
+  const PART_DPR_CAP = 2;
+  const partDpr = () => Math.min(devicePixelRatio || 1, PART_DPR_CAP);
   function syncSize() {
     const r = wrap.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
-    if (worker) worker.postMessage({ type: "size", w, h, dpr: devicePixelRatio || 1 });
+    if (worker) worker.postMessage({ type: "size", w, h, dpr: partDpr() });
     return { w, h };
   }
 
   if (workerSupported) {
     worker = new Worker(new URL("./fleet-particles-worker.js", import.meta.url), { type: "module" });
     const off = canvas.transferControlToOffscreen();
-    const { w, h } = syncSize();
-    worker.postMessage({ type: "init", canvas: off, dpr: devicePixelRatio || 1 }, [off]);
-    worker.postMessage({ type: "size", w, h, dpr: devicePixelRatio || 1 });
+    const { w, h } = syncSize(); // syncSize already posts size; the duplicate init-time post is gone (#77)
+    worker.postMessage({ type: "init", canvas: off, dpr: partDpr() }, [off]);
     worker.postMessage({ type: "trunks", paths: sampleTrunks() });
     new ResizeObserver(() => {
       const size = syncSize();
@@ -112,21 +115,27 @@ if (canvas && wrap && svg && !REDUCED && !SAVER) {
       });
     }
     function syncSizeFallback() {
+      const dpr = partDpr();
       const r = wrap.getBoundingClientRect();
-      canvas.width = r.width * devicePixelRatio;
-      canvas.height = r.height * devicePixelRatio;
-      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      canvas.width = r.width * dpr;
+      canvas.height = r.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       collectTrunks();
     }
     const COLORS = ["34,230,255", "192,132,252", "255,46,196", "0,255,178", "255,176,32"];
     const dots = [];
     function spawn() {
-      const t = trunks[Math.floor(Math.random() * trunks.length)];
+      // length-weighted pick (#87): uniform-per-trunk overrepresented stubs
+      const total = trunks.reduce((s, t) => s + t.len, 0);
+      let r = Math.random() * total, t = trunks[0];
+      for (const cand of trunks) { r -= cand.len; if (r <= 0) { t = cand; break; } }
       if (!t) return;
       const boost = 0.6 + Math.min(2.4, live.mbps / 2);
       dots.push({
         trunk: t, p: Math.random(), speed: ((40 + Math.random() * 60) * boost) / t.len,
-        size: 1 + Math.random() * 1.6, color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        size: 1 + Math.random() * 1.6,
+        // stable hue per trunk (#87): lanes read as lanes
+        color: COLORS[trunks.indexOf(t) % COLORS.length],
       });
     }
     let last = 0;
@@ -143,16 +152,18 @@ if (canvas && wrap && svg && !REDUCED && !SAVER) {
         if (laneDim <= 0.2 && Math.random() < 0.9) { dots.splice(i, 1); continue; }
         d.p += d.speed * d.trunk.len * dt * 0.06;
         if (d.p > 1) { dots.splice(i, 1); continue; }
+        // tangent tail (#86): fallback samples behind the head along the
+        // path too (getPointAtLength only for the small tail sample)
         const pt = d.trunk.path.getPointAtLength(d.p * d.trunk.len);
-        const tail = 10;
+        const back = d.trunk.path.getPointAtLength(Math.max(0, (d.p * d.trunk.len) - 8));
         const dim = d.trunk.interHost ? live.dimFactor : 1;
-        const grad = ctx.createLinearGradient(pt.x - tail, pt.y, pt.x, pt.y);
+        const grad = ctx.createLinearGradient(back.x, back.y, pt.x, pt.y);
         grad.addColorStop(0, `rgba(${d.color},0)`);
         grad.addColorStop(1, `rgba(${d.color},${0.55 * d.trunk.opacity * 2 * dim})`);
         ctx.strokeStyle = grad;
         ctx.lineWidth = d.size;
         ctx.beginPath();
-        ctx.moveTo(pt.x - tail, pt.y);
+        ctx.moveTo(back.x, back.y);
         ctx.lineTo(pt.x, pt.y);
         ctx.stroke();
         ctx.fillStyle = `rgba(${d.color},${0.9 * d.trunk.opacity * 2 * dim})`;

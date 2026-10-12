@@ -11,9 +11,9 @@ check() { # url expected_code
 has() { # url pattern
   if curl -s --max-time 10 "$BASE/$1" | grep -q "$2"; then echo "ok   $1 ~ $2"; else echo "FAIL $1 missing /$2/"; fail=1; fi
 }
-for p in index fleet status metrics observability ollama agora weather network reliability operations runbooks galaxy 404; do check "$p.html" 200; done
-for f in shared main cinematic storm-scene fleet hosts cost activity drilldown metrics status observability network agora galaxy weather ollama reliability operations rum particles; do check "$f.js" 200; done
-for f in gale.css fonts.css mobile.css cinematic.css storm-scene.css fleet-tidal.css assets/og-image.jpg robots.txt manifest.json pwa-screenshots/gale-mobile.jpg pwa-screenshots/gale-wide.jpg specrules.json; do check "$f" 200; done
+for p in index fleet status metrics observability ollama agora weather network reliability operations runbooks galaxy home 404; do check "$p.html" 200; done
+for f in shared main cinematic storm-scene fleet hosts cost activity drilldown metrics status observability network agora galaxy weather ollama reliability operations rum particles home; do check "$f.js" 200; done
+for f in gale.css fonts.css mobile.css cinematic.css storm-scene.css fleet-tidal.css assets/og-image.jpg robots.txt manifest.json pwa-screenshots/gale-mobile.jpg pwa-screenshots/gale-wide.jpg; do check "$f" 200; done
 # Sourcemaps must never ship to the docroot (debug artifact, 2x bytes + source leak):
 # take the hashed entry the deployed index actually references and require its .map to 404.
 entry=$(curl -s --max-time 10 "$BASE/index.html" | grep -o 'dist/[a-z0-9-]*-[A-Z0-9]*\.js' | head -1)

@@ -10,6 +10,7 @@
    Node-safe: no top-level DOM access. */
 
 import { REDUCED } from "./shared.js";
+import { motionPaused } from "./shared-gl.js";
 
 /* WMO weather-code buckets the scene reacts to */
 const RAIN_LITE = [51, 53, 55, 56, 57], RAIN = [61, 63, 80, 81], RAIN_HEAVY = [65, 66, 67, 82];
@@ -24,6 +25,11 @@ const rgba = (c, a) => `rgba(${Math.round(c[0])},${Math.round(c[1])},${Math.roun
 const DAY = [[38, 90, 166], [93, 140, 201], [168, 198, 232], [223, 233, 242]];
 const NIGHT = [[5, 8, 20], [10, 16, 34], [20, 29, 52], [24, 34, 58]];
 const SLATE = [88, 98, 114];
+// dawn/dusk palette (#82): warm horizon stops blended in around sunrise/sunset
+const TWILIGHT = [[40, 48, 96], [110, 74, 110], [206, 110, 84], [240, 160, 92]];
+let skyTimes = null;   // { rise, set } epoch ms — set by update() (#80/#82)
+let moonPhase = 0.5;   // 0=new, 0.5=full, 1=new (#81)
+let moonPhaseSprite = null;
 
 function mulberry(seed) {
   let a = seed >>> 0;
@@ -114,6 +120,30 @@ export function initWxSky() {
     }
     return { cv, w: Wc, h: Hc };
   }
+  /* phase mask (#81): alpha covers the SHADOWED part of the disc; drawn with
+     destination-out over the full moon disc. ellipse half-width follows the
+     phase: 1=new (fully covered), 0=full (no mask). */
+  function bakePhaseMask(phase) {
+    // terminator x-radius: cos of the phase angle; which side is lit flips
+    // waxing/waning
+    const k = Math.cos(phase * Math.PI * 2); // 1 at new, -1 at full
+    const waxing = phase < 0.5;
+    return bake(64, 64, (c) => {
+      c.fillStyle = "rgba(0,0,0,1)";
+      c.beginPath();
+      // shadow = far side beyond the terminator ellipse
+      if (waxing) {
+        // lit on the right: shadow covers the left half + ellipse bulge
+        c.rect(0, 0, 32, 64);
+        c.ellipse(32, 32, Math.max(0.5, Math.abs(k) * 12.5), 12.5, 0, 0, Math.PI * 2);
+      } else {
+        c.rect(32, 0, 32, 64);
+        c.ellipse(32, 32, Math.max(0.5, Math.abs(k) * 12.5), 12.5, 0, 0, Math.PI * 2);
+      }
+      c.fill();
+    });
+  }
+
   function bakeSprites() {
     sunSprite = bake(300, 300, (c) => {
       const g = c.createRadialGradient(150, 150, 0, 150, 150, 150);
@@ -177,6 +207,7 @@ export function initWxSky() {
     ];
   }
 
+  let lastBakeKey = "";
   function build() {
     const r = canvas.getBoundingClientRect();
     if (r.width < 40 || r.height < 40) return; // hidden/not laid out yet
@@ -185,11 +216,18 @@ export function initWxSky() {
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     skyKey = ""; // recompute gradient
-    bakeSprites();
-    bakeHills();
-    stars = Array.from({ length: Math.floor(W * H / 16000) + 40 }, () => ({
-      x: rand() * W, y: rand() * H * 0.5, r: 0.4 + rand() * 1.1, ph: rand() * 6.3, sp: 0.6 + rand() * 1.6,
-    }));
+    // incremental bake (#84): update()/preview() used to re-run the full
+    // bake (sun/moon/star/fog sprites + all 10 clouds) on every hover; only
+    // geometry or the day/night class actually require a re-bake
+    const bakeKey = `${W}x${H}@${DPR}|${wx.day ? 1 : 0}`;
+    const geometryChanged = bakeKey !== lastBakeKey;
+    if (geometryChanged) {
+      lastBakeKey = bakeKey;
+      bakeSprites();
+      bakeHills();
+      stars = Array.from({ length: Math.floor(W * H / 16000) + 40 }, () => ({
+        x: rand() * W, y: rand() * H * 0.5, r: 0.4 + rand() * 1.1, ph: rand() * 6.3, sp: 0.6 + rand() * 1.6,
+      }));
     const bands = [
       { n: 4, s: [0.55, 0.8], v: [5, 10], y: [0.04, 0.24] },
       { n: 3, s: [0.85, 1.15], v: [8, 15], y: [0.10, 0.34] },
@@ -212,18 +250,30 @@ export function initWxSky() {
       vx: 4 + rand() * 7, a: 0.05 + rand() * 0.06, ph: rand() * 6.3,
     }));
     drops = []; flakes = [];
+    } // end geometry-only re-bake (#84)
     if (REDUCED) drawFrame(true);
   }
 
+  // twilight factor (#82): 1 within ±45min of sunrise/sunset, 0 otherwise
+  function twilightF() {
+    if (!skyTimes) return 0;
+    const now = Date.now();
+    const near = (t) => Math.abs(now - t) < 45 * 60000 ? 1 - Math.abs(now - t) / (45 * 60000) : 0;
+    return Math.max(near(skyTimes.rise), near(skyTimes.set));
+  }
   function skyGradient() {
-    const key = `${wx.day ? 1 : 0}|${Math.round(wx.cloud * 6)}|${Math.round(wx.dark * 4)}`;
+    const tw = Math.round(twilightF() * 4);
+    const key = `${wx.day ? 1 : 0}|${Math.round(wx.cloud * 6)}|${Math.round(wx.dark * 4)}|${tw}`;
     if (key === skyKey && skyGrad) return skyGrad;
     skyKey = key;
     const night = wx.day ? 0 : 1;
     const cloudT = Math.min(1, wx.cloud * (wx.day ? 0.75 : 0.42) + wx.dark * 0.5);
+    const twk = tw / 4;
     skyGrad = ctx.createLinearGradient(0, 0, 0, H);
     for (let i = 0; i < 4; i++) {
       let c = mix3(DAY[i], NIGHT[i], night);
+      // warm horizon blend strongest at the bottom stops (#82)
+      c = mix3(c, TWILIGHT[i], twk * (i / 3));
       c = mix3(c, SLATE, cloudT);
       if (wx.dark) c = mix3(c, [30, 34, 44], wx.dark);
       skyGrad.addColorStop(i / 3, rgba(c, 1));
@@ -299,15 +349,42 @@ export function initWxSky() {
       ctx.globalAlpha = 1;
     }
     // sun / moon: a broad glow that survives cloud, and a crisp disc that
-    // only shows when the sky is clear enough to actually see it
-    const bx = W * 0.78, by = H * 0.22;
+    // only shows when the sky is clear enough to actually see it.
+    // Arc position (#80): the body used to sit at one spot all day; it now
+    // travels east→west by the fraction of daylight elapsed (sun) or night
+    // elapsed (moon), dipping at dawn/dusk.
+    let bx = W * 0.78, by = H * 0.22;
+    if (skyTimes) {
+      const { rise, set } = skyTimes;
+      const nowMs = Date.now();
+      const f = wx.day
+        ? Math.min(1, Math.max(0, (nowMs - rise) / Math.max(1, set - rise)))
+        : Math.min(1, Math.max(0, (nowMs - set) / Math.max(1, rise + 864e5 - set)));
+      bx = W * (0.12 + 0.76 * f);
+      by = H * (0.34 - 0.22 * Math.sin(Math.PI * f)); // arcs up mid-window
+    }
     const glowA = wx.day ? Math.max(0.08, (1 - wx.cloud * 0.75) * 0.9) : Math.max(0.3, 1 - wx.cloud * 0.55);
     ctx.globalAlpha = glowA;
     ctx.drawImage(wx.day ? sunSprite : moonSprite, bx - 130, by - 130, 260, 260);
     const discA = wx.day ? Math.max(0, 1 - wx.cloud * 1.25) : Math.max(0, 1 - wx.cloud * 0.95);
     if (discA > 0.03) {
       ctx.globalAlpha = discA;
-      ctx.drawImage(wx.day ? sunDisc : moonDisc, bx - 22, by - 22, 44, 44);
+      if (wx.day || !moonPhaseSprite) {
+        ctx.drawImage(sunDisc, bx - 22, by - 22, 44, 44);
+      } else {
+        // true phase (#81): synodic approximation from a known new moon
+        ctx.drawImage(moonDisc, bx - 22, by - 22, 44, 44);
+        if (Math.abs(moonPhase - 0.5) > 0.04) { // skip at full moon
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(bx - 22, by - 22, 44, 44);
+          ctx.clip();
+          ctx.globalCompositeOperation = "destination-out";
+          ctx.drawImage(moonPhaseSprite, bx - 22, by - 22, 44, 44);
+          ctx.restore();
+          ctx.globalAlpha = discA;
+        }
+      }
     }
     ctx.globalAlpha = 1;
 
@@ -317,7 +394,7 @@ export function initWxSky() {
     const show = Math.round(2 + wx.cloud * 7); // retain open sky even on a cloudy day
     const far = sorted.slice(0, Math.ceil(show / 2)), near = sorted.slice(Math.ceil(show / 2), show);
     const drawCloud = (c) => {
-      c.x += c.vx * windK * 0.016 * (wx.snow ? 0.6 : 1);
+      c.x += c.vx * windK * dt * (wx.snow ? 0.6 : 1);
       if (c.x > W + 8) { c.x = -c.bw - 8; c.y = H * (0.04 + Math.random() * 0.4); }
       if (c.x < -c.bw - 8) { c.x = W + 8; c.y = H * (0.04 + Math.random() * 0.4); }
       ctx.globalAlpha = Math.min(0.82, c.a * (0.24 + wx.cloud * 0.58));
@@ -328,7 +405,7 @@ export function initWxSky() {
 
     // horizon fog band + hills
     for (const f of fogs) {
-      f.x += f.vx * 0.016 * windK;
+      f.x += f.vx * dt * windK;
       if (f.x - f.w > W) f.x = -f.w;
       ctx.globalAlpha = Math.min(1, f.a * (0.7 + wx.fog * 1.6) * (wx.day ? 0.8 : 0.55));
       ctx.drawImage(fogSprite, f.x, f.y - f.h, f.w, f.h * 2);
@@ -406,10 +483,19 @@ export function initWxSky() {
   }
 
   function loopOn() {
-    if (REDUCED || !running) { running = false; return; }
+    // dock pause (#75): one static frame, loop rests; released on toggle
+    if (REDUCED || motionPaused() || !running) {
+      if (motionPaused() && !REDUCED) drawFrame(true);
+      running = false; return;
+    }
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
   }
+  window.addEventListener("gale:css-motion", (e) => {
+    if (e.detail?.paused) running = false;
+    else if (visible && !REDUCED && !document.hidden) { running = true; loopOn(); }
+  });
+  if (motionPaused()) running = false;
 
   let rsz = 0;
   window.addEventListener("resize", () => {
@@ -418,13 +504,13 @@ export function initWxSky() {
   const io = typeof IntersectionObserver === "function"
     ? new IntersectionObserver((es) => {
       visible = es.some((e) => e.isIntersecting);
-      if (visible && !running && !REDUCED) { running = true; raf = requestAnimationFrame(frame); }
+      if (visible && !running && !REDUCED && !motionPaused()) { running = true; raf = requestAnimationFrame(frame); }
       else if (!visible && running) { running = false; cancelAnimationFrame(raf); }
     }, { rootMargin: "120px" }) : null;
   if (io) io.observe(canvas);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState !== "visible" && running) { running = false; cancelAnimationFrame(raf); }
-    else if (document.visibilityState === "visible" && visible && !REDUCED) { running = true; raf = requestAnimationFrame(frame); }
+    else if (document.visibilityState === "visible" && visible && !REDUCED && !motionPaused()) { running = true; raf = requestAnimationFrame(frame); }
   });
 
   build();
@@ -436,9 +522,21 @@ export function initWxSky() {
       if (!cur) return;
       const code = Number(cur.weather_code) || 0;
       wx.day = !!cur.is_day;
+      // solar geometry (#80/#82): rise/set feed the body arc + twilight blend
+      if (daily && daily.sunrise && daily.sunset) {
+        skyTimes = { rise: new Date(daily.sunrise[0]).getTime(), set: new Date(daily.sunset[0]).getTime() };
+        // synodic phase (#81): known new moon 2000-01-06 18:14 UTC, 29.53d period
+        const SYNODIC = 29.530588 * 864e5;
+        moonPhase = (((Date.now() - Date.UTC(2000, 0, 6, 18, 14)) % SYNODIC) / SYNODIC + 1) % 1;
+        moonPhaseSprite = bakePhaseMask(moonPhase);
+      }
       wx.cloud = Math.min(1, Math.max(0.06, ((cur.cloud_cover ?? 40) / 100)));
-      wx.rain = RAIN_LITE.includes(code) ? 0.3 : RAIN.includes(code) ? 0.6 : RAIN_HEAVY.includes(code) ? 1 : THUNDER.includes(code) ? 0.8
-        : cur.precipitation > 0 ? Math.min(0.8, 0.3 + cur.precipitation / 10) : 0;
+      // rain density blends the WMO bucket with the ACTUAL mm/h (#83):
+      // 1mm drizzle and 8mm heavy rain in the same bucket now differ
+      const bucket = RAIN_LITE.includes(code) ? 0.3 : RAIN.includes(code) ? 0.6 : RAIN_HEAVY.includes(code) ? 1 : THUNDER.includes(code) ? 0.8 : 0;
+      const mmTerm = cur.precipitation > 0 ? Math.min(0.85, 0.25 + cur.precipitation / 9) : 0;
+      wx.rain = bucket ? Math.min(1, bucket * 0.65 + mmTerm * 0.5)
+        : mmTerm;
       wx.snow = SNOW.includes(code);
       wx.storm = THUNDER.includes(code) ? 1 : 0;
       wx.fog = FOG.includes(code) ? 1 : 0;

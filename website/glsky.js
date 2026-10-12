@@ -7,11 +7,11 @@
 import { STORM } from "./shared.js";
 
 const WGSL = /* wgsl */`
-struct U { time: f32, intensity: f32, aspect: f32, seed: f32 };
+struct U { time: f32, intensity: f32, width: f32, height: f32 };
 @group(0) @binding(0) var<uniform> u: U;
 
 fn hash(p: vec2f) -> f32 {
-  let h = fract(sin(dot(p, vec2f(127.1, 311.7)) + u.seed) * 43758.5453);
+  let h = fract(sin(dot(p, vec2f(127.1, 311.7)) + 7.0) * 43758.5453);
   return h;
 }
 fn vnoise(p: vec2f) -> f32 {
@@ -31,8 +31,13 @@ fn fbm(p: vec2f) -> f32 {
   return vec4f(p[i], 0.0, 1.0);
 }
 
+// uv is normalized by the ACTUAL framebuffer size (width/height travel in
+// the uniform), so pattern density and vignette centering are identical at
+// every window size and DPR — the old code divided by a hardcoded 1280, so
+// at DPR 2 the noise field compressed 2x and the vignette drifted off-center.
 @fragment fn fs(@builtin(position) pos: vec4f) -> @location(0) vec4f {
-  let uv = vec2f(pos.x / 1280.0 * u.aspect, pos.y / 1280.0);
+  let fsize = max(vec2f(u.width, u.height), vec2f(1.0));
+  let uv = pos.xy / fsize * 720.0; // fixed 720p-tall reference world scale
   let t = u.time * (0.008 + u.intensity * 0.03);
   let drift = vec2f(t * 1.7, t * 0.4);
   let n = fbm(uv * 3.0 + drift);
@@ -42,8 +47,8 @@ fn fbm(p: vec2f) -> f32 {
   // teal wash on the ridges, ember accent when hot
   col += vec3f(0.05, 0.35, 0.42) * smoothstep(0.55, 0.95, n2) * (0.25 + u.intensity * 0.9);
   col += vec3f(0.55, 0.16, 0.08) * smoothstep(0.72, 1.0, n * n2 * 1.6) * u.intensity;
-  // vignette to keep content readable
-  let d = distance(uv, vec2f(u.aspect * 0.5, 0.28));
+  // vignette to keep content readable (centered on the true framebuffer)
+  let d = distance(pos.xy / fsize, vec2f(0.5, 0.28));
   col *= 1.0 - 0.55 * smoothstep(0.2, 0.95, d);
   return vec4f(col, 1.0);
 }
@@ -91,26 +96,40 @@ export async function initGlSky() {
     resize();
     window.addEventListener("resize", resize, { passive: true });
     const t0 = performance.now();
-    let active = true, frameId = 0;
+    let active = true, running = false, frameId = 0, lostRetried = false;
     device.addEventListener("uncapturederror", () => {
       window.__galeRUMRecord?.("WEBGPU_UNCAPTURED_ERROR", 1, "events", "glsky");
     });
+    // hidden tabs stop scheduling entirely (#21): the old loop re-armed rAF
+    // and only skipped the draw, waking the GPU process for nothing.
+    const stop = () => { if (running) { running = false; cancelAnimationFrame(frameId); } };
+    const start = () => { if (active && !running && !document.hidden) { running = true; frameId = requestAnimationFrame(loop); } };
+    const onVis = () => { if (document.hidden) stop(); else start(); };
+    document.addEventListener("visibilitychange", onVis);
+    // transient device loss gets ONE retry (#21): a driver reset used to
+    // kill the sky for the whole session; a fresh init recovers the common
+    // case (guarded so a persistent loss can't loop).
     device.lost.then((info) => {
       if (!active) return;
-      active = false;
-      cancelAnimationFrame(frameId);
+      active = false; stop();
+      document.removeEventListener("visibilitychange", onVis);
       document.documentElement.classList.remove("gl-sky-on");
       canvas.remove();
       window.__galeRUMRecord?.("WEBGPU_DEVICE_LOSS", 1, "events", "glsky");
       console.warn("gl-sky device lost", info.reason);
+      if (!lostRetried) {
+        lostRetried = true;
+        setTimeout(() => { initGlSky().catch(() => {}); }, 2000);
+      }
     }).catch(() => {});
     document.documentElement.classList.add("gl-sky-on");
     const loop = () => {
-      if (!active) return;
-      if (document.hidden) { frameId = requestAnimationFrame(loop); return; }
+      if (!active || document.hidden) { running = false; return; }
       resize();
       const t = (performance.now() - t0) / 1000;
-      device.queue.writeBuffer(uniformBuf, 0, new Float32Array([t, STORM.level, window.innerWidth / Math.max(1, window.innerHeight), 7.0]));
+      // uniform now carries the real framebuffer size (width, height) for
+      // the size-correct uv in the shader (see WGSL fs comment)
+      device.queue.writeBuffer(uniformBuf, 0, new Float32Array([t, STORM.level, canvas.width, canvas.height]));
       const enc2 = device.createCommandEncoder();
       const pass2 = enc2.beginRenderPass({
         colorAttachments: [{ view: ctx.getCurrentTexture().createView(), loadOp: "clear", storeOp: "store" }],
@@ -122,7 +141,7 @@ export async function initGlSky() {
       device.queue.submit([enc2.finish()]);
       frameId = requestAnimationFrame(loop);
     };
-    frameId = requestAnimationFrame(loop);
+    start();
     return true;
   } catch (e) {
     window.__galeRUMRecord?.("WEBGPU_INIT_FAILURE", 1, "events", "glsky");

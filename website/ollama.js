@@ -147,7 +147,9 @@ function renderDiagnostics() {
   const cells = Array.from({ length: BUCKETS }, () => ({ ok: 0, down: 0 }));
   for (const x of s) {
     const age = nowMs - new Date(x.ts).getTime();
-    const idx = BUCKETS - 1 - Math.floor(Math.max(0, Math.min(SPAN - 1, age)) / bw);
+    // pre-window samples were clamped into the oldest bucket (#58), marking
+    // recent-looking cells "down"; drop samples older than the window
+    if (age >= SPAN) continue;
     if (x.reachable) cells[idx].ok++; else cells[idx].down++;
   }
   strip.innerHTML = cells.map((c) => {
@@ -354,6 +356,11 @@ function renderVramChart() {
     <text x="${pad.l}" y="${H - 6}" class="obs-tick">${esc(fmtClock(HIST.series[0].ts))} UTC</text>
     <text x="${W - pad.r}" y="${H - 6}" text-anchor="end" class="obs-tick">${esc(fmtClock(HIST.series[HIST.series.length - 1].ts))} UTC</text>
   </svg>`;
+  // crosshair (#54): the thermal ribbon had one; these charts did not
+  try {
+    chartTooltip(el.querySelector("svg"), series.map((s) => ({ x: clamp(xAt(s.ts, t0, span)) * (W - pad.l - pad.r) + pad.l })),
+      (i) => `${esc(fmtClock(series[i].ts))} UTC · ${((series[i].vram_bytes || 0) / 1e9).toFixed(2)} GB${series[i].latency_ms != null ? ` · ${series[i].latency_ms}ms` : ""}`);
+  } catch {}
 }
 
 $("vram-table-toggle")?.addEventListener("click", (event) => {
@@ -387,6 +394,11 @@ function renderLatencyChart() {
     <polyline points="${pts.join(" ")}" fill="none" stroke="var(--gust)" stroke-width="1.4" opacity="0.9"/>
     <text x="${W - pad.r}" y="${(y(last.latency_ms || 0) - 4).toFixed(1)}" text-anchor="end" class="obs-tick obs-tick-top">${last.latency_ms} ms now</text>
   </svg>`;
+  // crosshair (#54)
+  try {
+    chartTooltip(el.querySelector("svg"), series.map((s) => ({ x: clamp(xAt(s.ts, t0, span)) * (W - pad.l - pad.r) + pad.l })),
+      (i) => `${esc(fmtClock(series[i].ts))} UTC · ${series[i].latency_ms}ms`);
+  } catch {}
 }
 
 /* ---------------- residency lanes ---------------- */
@@ -476,6 +488,7 @@ function renderModels() {
     </tr>`;
   }).join("");
   $("models-table").querySelector("tbody").innerHTML = rows || `<tr><td colspan="9" class="mini-note">No models installed.</td></tr>`;
+  applyModelSort();
   [...$("models-table").querySelectorAll("tbody tr")].forEach((row, index) => {
     const model = models[index];
     if (!model) return;
@@ -500,6 +513,31 @@ function applyModelFilters() {
   setText($("model-visible-count"), query || state !== "all" ? `Showing ${shown} of ${total} models` : `Showing all ${total} models`);
 }
 
+// click-to-sort (#60): feed order only, before — name/params/size/modified
+let modelSort = null, modelSortDir = 1;
+function applyModelSort() {
+  const tb = $("models-table")?.querySelector("tbody");
+  if (!tb || !modelSort) return;
+  const idx = { name: 0, params: 1, size: 3, modified: 7 }[modelSort];
+  if (idx == null) return;
+  const coll = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+  [...tb.querySelectorAll("tr[data-model-search]")]
+    .sort((a, b) => coll.compare(a.children[idx]?.textContent || "", b.children[idx]?.textContent || "") * modelSortDir)
+    .forEach((tr) => tb.appendChild(tr));
+}
+$("models-table")?.querySelectorAll("th").forEach((th, i) => {
+  const names = ["name", "params", null, "size", null, null, null, "modified"];
+  if (!names[i]) return;
+  th.style.cursor = "pointer";
+  th.title = `sort by ${names[i]}`;
+  th.addEventListener("click", () => {
+    if (modelSort === names[i]) modelSortDir *= -1;
+    else { modelSort = names[i]; modelSortDir = 1; }
+    $("models-table").querySelectorAll("th").forEach((t) => t.removeAttribute("aria-sort"));
+    th.setAttribute("aria-sort", modelSortDir === 1 ? "ascending" : "descending");
+    applyModelSort();
+  });
+});
 $("model-filter")?.addEventListener("input", applyModelFilters);
 $("model-state-filter")?.addEventListener("change", applyModelFilters);
 
@@ -519,17 +557,34 @@ $("models-table").addEventListener("click", async (e) => {
   }
   if (act === "benchmark") {
     BUSY = true;
+    // per-row pending feedback (#55): the global BUSY flag gave the operator
+    // no idea WHICH benchmark was running for minutes
+    btn.disabled = true;
+    const oldLabel = btn.textContent;
+    btn.textContent = "…";
     note(`benchmarking ${model} (loads if needed, 64 tokens, up to a few minutes on CPU)…`);
     const res = await postAction({ action: "benchmark", model });
     BUSY = false;
+    btn.disabled = false;
+    btn.textContent = oldLabel;
     if (!res.ok) { note(`benchmark failed: ${res.error}`, "err"); return; }
     const st = res.stats || {};
-    note([
+    const line = [
       st.load_duration_ns ? `load ${(st.load_duration_ns / 1e9).toFixed(1)}s` : null,
       st.prompt_eval_tok_s ? `prompt ${st.prompt_eval_tok_s} tok/s` : null,
       st.eval_tok_s ? `eval ${st.eval_tok_s} tok/s (${st.eval_count} tok)` : null,
       st.total_duration_ns ? `total ${(st.total_duration_ns / 1e9).toFixed(1)}s` : null,
-    ].filter(Boolean).join(" · ") || "benchmark done", "ok");
+    ].filter(Boolean).join(" · ") || "benchmark done";
+    note(line, "ok");
+    // persistent last-benchmarks (#55): results used to evaporate with the
+    // transient single-line note
+    try {
+      const key = "gale-ollama-benchmarks";
+      const list = JSON.parse(localStorage.getItem(key) || "[]");
+      list.unshift({ model, at: new Date().toISOString(), line });
+      localStorage.setItem(key, JSON.stringify(list.slice(0, 8)));
+      renderBenchPanel();
+    } catch {}
     return;
   }
   if (act === "keep_alive") {
@@ -556,6 +611,19 @@ $("vitals-grid").addEventListener("click", async (e) => {
   else note(`unload_all failed: ${res.error}`, "err");
   await loadSnap();
 });
+
+/* persistent benchmark results (#55) */
+function renderBenchPanel() {
+  const host = $("bench-history");
+  if (!host) return;
+  try {
+    const list = JSON.parse(localStorage.getItem("gale-ollama-benchmarks") || "[]");
+    host.innerHTML = list.length
+      ? `<details class="ol-think"><summary>recent benchmarks (${list.length})</summary><div>${list.map((b) => `<p>${esc(b.model)} · ${esc(b.line)} · ${esc((b.at || "").slice(0, 16).replace("T", " "))}</p>`).join("")}</div></details>`
+      : "";
+  } catch { host.innerHTML = ""; }
+}
+renderBenchPanel();
 
 /* ---------------- show drawer ---------------- */
 async function openShow(model) {
@@ -597,12 +665,28 @@ $("pull-btn").addEventListener("click", async () => {
   const res = await postAction({ action: "pull", model });
   if (!res.ok) { note(`pull failed: ${res.error}`, "err"); return; }
   note(`pulling ${model}…`, "ok");
+  // pull UX (#56): input locked during a pull, elapsed timer, cancel path
+  $("pull-name").disabled = true;
+  $("pull-btn").textContent = "Cancel";
+  $("pull-btn").dataset.cancel = "1";
   startPullWatch(model);
 });
+$("pull-btn")?.addEventListener("click", (e) => {
+  if (e.currentTarget?.dataset?.cancel && PULLING) {
+    e.stopPropagation();
+    stopPullWatch();
+    postAction({ action: "pull_cancel" }).catch(() => {});
+    note("pull cancelled", "err");
+    $("pull-name").disabled = false;
+    delete $("pull-btn").dataset.cancel;
+    $("pull-btn").textContent = "Pull";
+  }
+}, true); // capture so the cancel click wins over the start handler
 
 function startPullWatch(model) {
   PULLING = true;
   $("pull-progress").hidden = false;
+  const startedAt = Date.now(); // elapsed readout (#56)
   const tick = async () => {
     try {
       const r = await tracedFetch("/api/ollama/pull/status", { cache: "no-store" });
@@ -610,7 +694,8 @@ function startPullWatch(model) {
       if (st.model !== model && st.state !== "running") { stopPullWatch(); return; }
       const pct = st.pct != null ? st.pct : null;
       $("pullbar-fill").style.width = `${pct != null ? pct : 2}%`;
-      $("pull-status").textContent = `${pct != null ? `${pct}%` : ""} ${st.status || ""}`.trim();
+      const mins = Math.floor((Date.now() - startedAt) / 60000), secs = Math.floor((Date.now() - startedAt) / 1000) % 60;
+      $("pull-status").textContent = `${pct != null ? `${pct}%` : ""} ${st.status || ""} · ${mins}m${String(secs).padStart(2, "0")}s`.trim();
       if (st.state === "done") { note(`pulled ${model} — now installed`, "ok"); stopPullWatch(); await loadSnap(); await loadHist(); }
       else if (st.state === "failed") { note(`pull failed: ${st.error}`, "err"); stopPullWatch(); }
       else if (st.state !== "running") stopPullWatch();
@@ -622,6 +707,9 @@ function startPullWatch(model) {
 }
 function stopPullWatch() {
   PULLING = false;
+  $("pull-name").disabled = false; // (#56)
+  delete $("pull-btn").dataset.cancel;
+  $("pull-btn").textContent = "Pull";
   clearInterval(window.__pullIv);
   setTimeout(() => { if (!PULLING) { $("pull-progress").hidden = true; $("pullbar-fill").style.width = "0%"; } }, 4000);
 }
@@ -636,13 +724,21 @@ let refreshChatModelSelect = function () {
 function renderThread() {
   const el = $("chat-thread");
   if (!THREAD.length) { el.innerHTML = `<p class="mini-note">Send a message to start the thread.</p>`; return; }
+  const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 48; // #52
   el.innerHTML = THREAD.map((m) => {
     if (m.role === "user") return `<div class="ol-bubble ol-bubble-user"><span class="ol-who">you</span>${esc(m.content)}</div>`;
     const think = m.thinking ? `<details class="ol-think"><summary>reasoning</summary><div>${esc(m.thinking)}${m.streaming && !m.content ? '<span class="ol-cursor">▍</span>' : ""}</div></details>` : "";
     const st = m.stats ? `<span class="ol-stats">${esc(m.stats)}</span>` : "";
-    return `<div class="ol-bubble ol-bubble-ai"><span class="ol-who">${esc(m.model || "assistant")}</span>${think}${esc(m.content)}${m.streaming && m.content ? '<span class="ol-cursor">▍</span>' : ""}${st}</div>`;
+    // per-message copy + failed-bubble retry (#51)
+    const acts = m.streaming ? "" :
+      `<span class="ol-msg-acts"><button type="button" class="mini-toggle" data-msg-copy="${esc(m.content.slice(0, 4000))}">copy</button>` +
+      (m.stats === "failed" ? `<button type="button" class="mini-toggle" data-msg-retry="1">retry</button>` : "") +
+      `</span>`;
+    return `<div class="ol-bubble ol-bubble-ai"><span class="ol-who">${esc(m.model || "assistant")}</span>${think}<span class="ol-content-text">${esc(m.content)}${m.streaming && m.content ? '<span class="ol-cursor">▍</span>' : ""}</span>${st}${acts}</div>`;
   }).join("");
-  el.scrollTop = el.scrollHeight;
+  // autoscroll only when the reader is already at the bottom (#52): streaming
+  // repaints used to yank the view back down every 33ms
+  if (nearBottom) el.scrollTop = el.scrollHeight;
 }
 
 function chatStatsLine(st, doneReason, wallMs) {
@@ -662,6 +758,15 @@ function chatStatsLine(st, doneReason, wallMs) {
 /* Chat options: temperature/max-tokens are first-class inputs; the rest
    live in the details drawer. Non-empty values only; presets per model in
    localStorage. */
+function validateChatOptions(o) {
+  const warns = [];
+  if (o.temperature != null && (o.temperature < 0 || o.temperature > 2)) warns.push("temperature should be 0–2");
+  if (o.top_p != null && (o.top_p < 0 || o.top_p > 1)) warns.push("top_p should be 0–1");
+  for (const k of ["num_ctx", "num_predict", "top_k", "seed"]) {
+    if (o[k] != null && (!Number.isInteger(o[k]) || o[k] < 0)) warns.push(`${k} should be a non-negative integer`);
+  }
+  return warns;
+}
 function collectChatOptions() {
   const num = (id) => {
     const v = $(id).value.trim();
@@ -706,15 +811,25 @@ $("chat-clear-preset").addEventListener("click", () => {
 });
 $("chat-model").addEventListener("change", loadPreset);
 
+let chatAbort = null; // Stop control (#50)
+let failedReply = null; // per-bubble retry (#51)
+
 async function sendChat() {
   if (BUSY) return;
   const input = $("chat-input");
   const text = input.value.trim();
   const model = $("chat-model").value;
   if (!text || !model) return;
+  const optWarns = validateChatOptions(collectChatOptions());
+  if (optWarns.length) {
+    // inline warning before send (#59); errors used to surface only from the server
+    const noteEl = $("preset-note");
+    if (noteEl) noteEl.textContent = `option check: ${optWarns.join("; ")} — sending anyway`;
+  }
   BUSY = true;
   $("chat-send").disabled = true;
   input.value = "";
+  try { localStorage.setItem("gale-chat-draft", ""); } catch {}
   THREAD.push({ role: "user", content: text });
   const reply = { role: "assistant", content: "", thinking: "", model, streaming: true };
   THREAD.push(reply);
@@ -727,10 +842,16 @@ async function sendChat() {
     messages.push({ role: m.role, content: m.content });
   }
   let tick = null;
+  chatAbort = new AbortController();
+  // Stop swaps in during generation (#50)
+  const sendBtn = $("chat-send");
+  sendBtn.textContent = "Stop";
+  sendBtn.dataset.stop = "1";
   try {
     const r = await tracedFetch("/api/ollama/chat/stream", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ model, messages, options: collectChatOptions() }),
+      signal: chatAbort.signal,
     });
     if (!r.ok || !r.body) {
       const d = await r.json().catch(() => ({}));
@@ -739,18 +860,38 @@ async function sendChat() {
     const reader = r.body.getReader();
     const dec = new TextDecoder();
     let buf = "";
-    const paint = () => { renderThread(); tick = null; };
+    // streaming bubble patch (#52): renderThread() rebuilt ALL bubbles every
+    // ~33ms, collapsing any opened <details class="ol-think"> and costing
+    // O(n) per frame. Patch only the streaming bubble's text nodes.
+    const paintStreaming = () => {
+      const nodes = $("ol-thread")?.querySelectorAll(".ol-bubble-ai");
+      const el = nodes && nodes[nodes.length - 1];
+      if (el) {
+        const think = el.querySelector(".ol-think > div");
+        if (think) think.textContent = reply.thinking;
+        // content: last text node after the who/think spans
+        const target = el.querySelector(".ol-content-text") || el;
+        target.textContent = reply.content;
+        const st = el.querySelector(".ol-stats");
+        if (st && reply.stats) st.textContent = reply.stats;
+      } else renderThread();
+      tick = null;
+    };
+    const paint = () => { if (reply.streaming) paintStreaming(); else renderThread(); tick = null; };
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       buf += dec.decode(value, { stream: true });
+      // spec-complete frame split (#53): CRLF-tolerant
       let idx;
-      while ((idx = buf.indexOf("\n\n")) !== -1) {
+      while ((idx = buf.search(/\r?\n\r?\n/)) !== -1) {
         const frame = buf.slice(0, idx);
-        buf = buf.slice(idx + 2);
-        if (!frame.startsWith("data: ")) continue;
+        buf = buf.slice(idx).replace(/^\r?\n\r?\n/, "");
+        // multi-line data: fields are spec-legal (#53): join their lines
+        const dataLines = frame.split(/\r?\n/).filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trimStart());
+        if (!dataLines.length) continue; // event:/id:/retry: fields ignored
         let ev;
-        try { ev = JSON.parse(frame.slice(6)); } catch { continue; }
+        try { ev = JSON.parse(dataLines.join("\n")); } catch { continue; }
         if (ev.error) throw new Error(ev.error);
         if (ev.content) reply.content += ev.content;
         if (ev.thinking) reply.thinking += ev.thinking;
@@ -768,19 +909,135 @@ async function sendChat() {
     renderThread();
   } catch (e) {
     reply.streaming = false;
-    reply.content = reply.content || `⚠ ${String(e.message || e)}`;
-    reply.stats = "failed";
+    if (e && e.name === "AbortError") {
+      // user Stop (#50): keep the partial text, mark it stopped
+      reply.stats = (reply.stats || "") + " · stopped".trim();
+      if (!reply.content) reply.content = "⏹ stopped before any output";
+    } else {
+      reply.content = reply.content || `⚠ ${String(e.message || e)}`;
+      reply.stats = "failed";
+      failedReply = { messages, model }; // retry affordance (#51)
+    }
     renderThread();
   }
+  chatAbort = null;
   BUSY = false;
-  $("chat-send").disabled = false;
+  sendBtn.disabled = false;
+  sendBtn.textContent = "Send";
+  delete sendBtn.dataset.stop;
 }
 
-$("chat-send").addEventListener("click", sendChat);
+$("chat-thread").addEventListener("click", (e) => {
+  const copy = e.target.closest("[data-msg-copy]");
+  if (copy) {
+    navigator.clipboard?.writeText(copy.dataset.msgCopy || "").then(() => {
+      copy.textContent = "✓"; setTimeout(() => { copy.textContent = "copy"; }, 1200);
+    }).catch(() => {});
+    return;
+  }
+  if (e.target.closest("[data-msg-retry]") && failedReply) {
+    const { messages, model } = failedReply;
+    failedReply = null;
+    // retry re-requests the same conversation without duplicating the user turn
+    BUSY = true;
+    const reply = { role: "assistant", content: "", thinking: "", model, streaming: true };
+    THREAD.push(reply);
+    renderThread();
+    retryStream(messages, model, reply);
+    return;
+  }
+});
+
+// retry path shared with sendChat (#51)
+async function retryStream(messages, model, reply) {
+  let tick = null;
+  $("chat-send").disabled = true;
+  $("chat-send").textContent = "Stop";
+  $("chat-send").dataset.stop = "1";
+  chatAbort = new AbortController();
+  try {
+    const r = await tracedFetch("/api/ollama/chat/stream", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model, messages, options: collectChatOptions() }),
+      signal: chatAbort.signal,
+    });
+    if (!r.ok || !r.body) throw new Error(`HTTP ${r.status}`);
+    const reader = r.body.getReader();
+    const dec = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let idx;
+      while ((idx = buf.search(/\r?\n\r?\n/)) !== -1) {
+        const frame = buf.slice(0, idx);
+        buf = buf.slice(idx).replace(/^\r?\n\r?\n/, "");
+        const dataLines = frame.split(/\r?\n/).filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trimStart());
+        if (!dataLines.length) continue;
+        let ev;
+        try { ev = JSON.parse(dataLines.join("\n")); } catch { continue; }
+        if (ev.error) throw new Error(ev.error);
+        if (ev.content) reply.content += ev.content;
+        if (ev.thinking) reply.thinking += ev.thinking;
+        if (ev.done && ev.stats) {
+          reply.streaming = false;
+          reply.stats = chatStatsLine(ev.stats, ev.done_reason, ev.wall_ms) || null;
+          renderThread();
+          continue;
+        }
+        if (!tick) tick = setTimeout(() => { renderThread(); tick = null; }, 33);
+      }
+    }
+    reply.streaming = false;
+    renderThread();
+  } catch (e) {
+    reply.streaming = false;
+    if (e && e.name === "AbortError") { if (!reply.content) reply.content = "⏹ stopped"; }
+    else { reply.content = reply.content || `⚠ ${String(e.message || e)}`; reply.stats = "failed"; failedReply = { messages, model }; }
+    renderThread();
+  }
+  chatAbort = null;
+  BUSY = false;
+  const sendBtn = $("chat-send");
+  sendBtn.disabled = false;
+  sendBtn.textContent = "Send";
+  delete sendBtn.dataset.stop;
+}
+
+$("chat-send").addEventListener("click", () => {
+  if ($("chat-send").dataset.stop) { chatAbort?.abort(); return; } // #50
+  sendChat();
+});
 $("chat-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); }
 });
-$("chat-clear").addEventListener("click", () => { THREAD = []; renderThread(); });
+// one-undo clear (#51): the thread was unrecoverable on a single click
+$("chat-clear").addEventListener("click", () => {
+  if (!THREAD.length) return;
+  const saved = THREAD;
+  THREAD = [];
+  renderThread();
+  const note = $("preset-note");
+  if (note) {
+    note.textContent = "thread cleared — undo";
+    note.innerHTML = 'thread cleared — <button type="button" class="mini-toggle" id="chat-undo">undo</button>';
+    document.getElementById("chat-undo")?.addEventListener("click", () => {
+      THREAD = saved;
+      renderThread();
+      note.textContent = "restored";
+    }, { once: true });
+    setTimeout(() => { if (note.textContent.includes("undo")) note.textContent = "thread cleared"; }, 6000);
+  }
+});
+// composer draft survives reloads (#51/#59)
+try {
+  const draft = localStorage.getItem("gale-chat-draft");
+  if (draft) $("chat-input").value = draft;
+  $("chat-input").addEventListener("input", () => {
+    try { localStorage.setItem("gale-chat-draft", $("chat-input").value); } catch {}
+  });
+} catch {}
 
 /* ---------------- A/B compare (same prompt, two models) ---------------- */
 function refreshAbSelects() {
@@ -845,7 +1102,11 @@ $("ab-run").addEventListener("click", async () => {
   $("ab-note").textContent = `done — ${modelA} vs ${modelB}`;
   $("ab-run").disabled = false;
   BUSY = false;
-  $("chat-input").value = "";
+  // clear only when at least one leg succeeded (#59): a double failure kept
+  // the prompt but the composer was wiped anyway
+  const aOk = $(`ab-stats-a`).textContent !== "failed";
+  const bOk = $(`ab-stats-b`).textContent !== "failed";
+  if (aOk || bOk) { $("chat-input").value = ""; try { localStorage.setItem("gale-chat-draft", ""); } catch {} }
 });
 
 /* ---------------- confirm overlay wiring ---------------- */
@@ -999,9 +1260,20 @@ async function loadGpu() {
     renderGpu(GPU);
     update3D();
   } catch {
-    previousGpuMemory = new Map();
+    // keep the last good render + a stale-since badge (#57): one transient
+    // failure used to blank the panel AND reset the memory-delta baseline
     const box = $("gpu-wrap");
-    if (box) box.innerHTML = '<div class="gpu-empty gpu-err">gpu feed unreachable</div>';
+    if (box && box.innerHTML.trim()) {
+      let badge = document.getElementById("gpu-stale-note");
+      if (!badge) {
+        badge = document.createElement("p");
+        badge.id = "gpu-stale-note";
+        badge.className = "mini-note";
+        badge.style.color = "var(--warn)";
+        box.prepend(badge);
+      }
+      badge.textContent = `gpu feed unreachable since ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} — showing last known values`;
+    } else if (box) box.innerHTML = '<div class="gpu-empty gpu-err">gpu feed unreachable</div>';
   }
 }
 

@@ -1435,7 +1435,14 @@ export function initStormCanvas() {
     rafId = raf(tick);
   };
 
-  window.addEventListener("resize", resize, { passive: true });
+  // debounced resize (#23): the full rebuild re-spawns every particle and
+  // re-renders all 13 cloud sprites (~12 radial gradients each) — dragging
+  // a window edge fired that continuously. Rebuild on settle instead.
+  let resizeTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 150);
+  }, { passive: true });
   resize();
 
   if (REDUCED) return;
@@ -1955,6 +1962,9 @@ function initCssMotionControl() {
     const paused = document.documentElement.dataset.cssMotion === "paused";
     try { localStorage.setItem("gale-css-motion", paused ? "running" : "paused"); } catch {}
     paint();
+    // broadcast so 2D canvas scenes (storm-scene, wxsky, particles) rest too —
+    // the pause previously reached only the shared WebGL loops (#75)
+    window.dispatchEvent(new CustomEvent("gale:css-motion", { detail: { paused: !paused } }));
   });
   dockAdd(btn);
   paint();
@@ -1999,6 +2009,7 @@ const MOBILE_PAGES = [
   ["Ollama", "ollama.html"], ["Agora", "agora.html"], ["Weather", "weather.html"],
   ["Network", "network.html"], ["Reliability", "reliability.html"],
   ["Runbooks", "runbooks.html"], ["My Home", "home.html"],
+  ["Galaxy", "galaxy.html"], // was desktop-nav-only (#92)
 ];
 let deferredInstallPrompt = null;
 
@@ -2215,6 +2226,9 @@ function initConnectivityStatus() {
     } else if (wasOffline) {
       wasOffline = false; banner.dataset.state = "restored";
       message.textContent = "Connection restored · reload to refresh live data."; refresh.hidden = false; banner.hidden = false;
+      // drain the offline wake queue now — browsers without Background Sync
+      // rely on this page-side trigger (sw.js "gale:drain-wake-queue")
+      try { navigator.serviceWorker?.controller?.postMessage("gale:drain-wake-queue"); } catch {}
       setTimeout(() => { if (navigator.onLine && banner.dataset.state === "restored") banner.hidden = true; }, 15000);
     } else if (limited) {
       banner.dataset.state = "limited"; message.textContent = "Limited connection · open More → Display & accessibility controls for Data saver."; refresh.hidden = true; banner.hidden = false;
@@ -2441,6 +2455,15 @@ export function whenNear(el, margin = "400px 0px") {
   });
 }
 
+/* boot-step isolation (#22): one failing initializer can never take down
+   the rest of boot (palette/kiosk/SW registration used to be casualty #1). */
+function runStep(name, fn) {
+  try { fn(); } catch (e) {
+    try { console.warn(`boot: ${name} failed`, e); } catch {}
+    window.__galeRUMRecord?.("BOOT_STEP_FAIL", 1, "events", name);
+  }
+}
+
 export function boot() {
   // Entries share this module: index used to load main + operations, running
   // every initializer twice (double clocks, observers, listeners). Boot once.
@@ -2453,11 +2476,14 @@ export function boot() {
   if (typeof navigator !== "undefined" && navigator.gpu && !REDUCED && !isDataSaver()) {
     whenPageActive().then(() => import("./glsky.js").then((m) => m.initGlSky()).catch(() => {}));
   }
-  if (!isDataSaver()) whenPageActive().then(() => { initStormCanvas(); });
-  initProgressFallback();
-  initClocks();
-  initComputePressure();
-  initStoragePersistence();
+  if (!isDataSaver()) whenPageActive().then(() => { runStep("storm-canvas", initStormCanvas); });
+  // per-init isolation (#22): one throwing initializer used to abort
+  // everything after it — including the palette, cinematic layer, kiosk
+  // and service-worker registration. Failures are recorded to local RUM.
+  runStep("progress-fallback", initProgressFallback);
+  runStep("clocks", initClocks);
+  runStep("compute-pressure", initComputePressure);
+  runStep("storage-persistence", initStoragePersistence);
   // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
@@ -2481,19 +2507,19 @@ export function boot() {
     const hr = new Date().getHours();
     // gentle ambience drift: midday and small hours lean opposite directions, ±14°
     rootStyle?.setProperty?.("--blob-hue", `${(Math.cos((hr - 13) / 24 * Math.PI * 2) * -14).toFixed(1)}deg`);
-    initMobileNavigation();
-    initConnectivityStatus();
-    initPWAChromeTheme();
-    initMobileTableHints();
-    initGroupedNavigation();
-    initNavPulse();
-    initThemeToggle();
-    initContrastMode();
-    initDataSaver();
-    initSaverSceneOptIn();
-    initCssMotionControl();
-    initCodeCopy();
-    initThemeEngine();
+    runStep("mobile-nav", initMobileNavigation);
+    runStep("connectivity", initConnectivityStatus);
+    runStep("pwa-theme", initPWAChromeTheme);
+    runStep("table-hints", initMobileTableHints);
+    runStep("grouped-nav", initGroupedNavigation);
+    runStep("nav-pulse", initNavPulse);
+    runStep("theme-toggle", initThemeToggle);
+    runStep("contrast", initContrastMode);
+    runStep("data-saver", initDataSaver);
+    runStep("saver-opt-in", initSaverSceneOptIn);
+    runStep("css-motion", initCssMotionControl);
+    runStep("code-copy", initCodeCopy);
+    runStep("theme-engine", initThemeEngine);
     import("./palette.js").then((m) => m.initPalette()).catch(() => {});
     // cinematic layer site-wide (Apple/ILM): dynamic so Node render-tests stay DOM-free
     import("./cinematic.js").then((m) => { try { m.initCinematic && m.initCinematic(); } catch {} }).catch(() => {});
@@ -2501,9 +2527,9 @@ export function boot() {
       import("./kiosk.js").then((m) => m.initKiosk()).catch(() => {});
     }
   }
-  initHeroParallax();
-  refreshEffects();
-  registerServiceWorker();
+  runStep("hero-parallax", initHeroParallax);
+  runStep("refresh-effects", refreshEffects);
+  runStep("sw-registration", registerServiceWorker);
 }
 
 
@@ -2521,7 +2547,18 @@ if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {
   const observer = new MutationObserver(applyAccess);
   observer.observe(document.documentElement, {childList:true,subtree:true});
   applyAccess();
-  fetch("/api/fleet/access", {cache:"no-store"}).then(r=>r.ok?r.json():null).then(a=>{
+  // capability cache (#24): the probe ran on every page load; a 5-minute
+  // sessionStorage TTL serves both tabs and reloads without lying long
+  let accessTtl = 0;
+  try { accessTtl = Number(sessionStorage.getItem("gale-access-ts") || 0); } catch {}
+  const accessFresh = accessTtl && Date.now() - accessTtl < 300000;
+  let cachedAccess = null;
+  try { cachedAccess = JSON.parse(sessionStorage.getItem("gale-access") || "null"); } catch {}
+  if (accessFresh && cachedAccess) {
+    writable = !!cachedAccess?.can_write;
+    if (writable) { observer.disconnect(); for (const b of document.querySelectorAll(selector)) if (b.title === "Read-only: use an authorized Tailscale user device") { b.disabled = false; b.title = ""; } }
+  } else fetch("/api/fleet/access", {cache:"no-store"}).then(r=>r.ok?r.json():null).then(a=>{
+    try { sessionStorage.setItem("gale-access", JSON.stringify(a)); sessionStorage.setItem("gale-access-ts", String(Date.now())); } catch {}
     writable = !!a?.can_write;
     if (writable) {
       observer.disconnect();

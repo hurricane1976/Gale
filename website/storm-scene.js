@@ -13,6 +13,7 @@
    STORM.wind). Node-safe: no top-level DOM access (render-test imports
    stay green). */
 import { STORM, REDUCED } from "./shared.js";
+import { motionPaused } from "./shared-gl.js";
 
 function mulberry(seed) {
   let a = seed >>> 0;
@@ -533,6 +534,9 @@ export function initStormScene() {
 
   function frame() {
     if (!running) return;
+    // dock pause (#75): the Display pause covered WebGL only; the 2D hero
+    // kept animating. One static frame is drawn, then the loop rests.
+    if (motionPaused()) { rafId = 0; return; }
     try {
       drawFrame();
     } catch (e) {
@@ -541,6 +545,16 @@ export function initStormScene() {
     }
     rafId = requestAnimationFrame(frame);
   }
+  // viewport pause (#74): the hero canvas rendered full-rate after the
+  // viewer scrolled past the 100svh hero; wxsky already had this guard
+  let sceneVisible = true;
+  if (typeof IntersectionObserver === "function") {
+    new IntersectionObserver((es) => {
+      sceneVisible = es.some((e) => e.isIntersecting);
+      if (sceneVisible && !running && !motionPaused() && rafId === 0 && document.visibilityState === "visible") rafId = requestAnimationFrame(frame);
+    }, { rootMargin: "160px" }).observe(hero);
+  }
+  const wasRunning = () => running;
 
   function drawFrame() {
     const now = performance.now();
@@ -580,7 +594,7 @@ export function initStormScene() {
     const windK = 0.5 + STORM.wind * 1.4;
 
     for (const c of far) {
-      c.x += c.vx * windK * 0.016;
+      c.x += c.vx * windK * dt;
       if (c.x > w + 8) { c.x = -c.bw - 8; c.y = h * (c.yMin + Math.random() * (c.yMax - c.yMin)); }
       ctx.globalAlpha = c.a * (0.55 + STORM.level * 0.45);
       ctx.drawImage(c.cv, c.x + (mx - 0.5) * -18, c.y + Math.sin(t * c.bobS * 8 + c.bobP) * c.bobA);
@@ -592,7 +606,7 @@ export function initStormScene() {
 
     // valley fog between mid and near ridge
     for (const f of fog) {
-      f.x += f.vx * 0.016 * windK;
+      f.x += f.vx * dt * windK;
       if (f.x - f.w > w) f.x = -f.w;
       ctx.save();
       ctx.globalAlpha = Math.min(1, f.a * (0.6 + STORM.level * 0.6));
@@ -603,7 +617,7 @@ export function initStormScene() {
     ctx.globalAlpha = 1;
 
     for (const c of near) {
-      c.x += c.vx * windK * 0.016;
+      c.x += c.vx * windK * dt;
       if (c.x > w + 8) { c.x = -c.bw - 8; c.y = h * (c.yMin + Math.random() * (c.yMax - c.yMin)); }
       const dark = 0.5 + STORM.level * 0.5;
       ctx.globalAlpha = Math.min(1, c.a * dark + 0.1);
@@ -644,7 +658,7 @@ export function initStormScene() {
     // drifting mist sparks in the foreground
     ctx.fillStyle = "rgba(190,210,240,0.5)";
     for (const p of mist) {
-      p.x += p.vx * 0.016 * windK; p.y += p.vy * 0.016;
+      p.x += p.vx * dt * windK; p.y += p.vy * dt;
       if (p.x > w + 4) { p.x = -4; p.y = Math.random() * h; }
       if (p.y < -4) p.y = h + 4;
       ctx.globalAlpha = p.a;
@@ -745,9 +759,16 @@ export function initStormScene() {
   }, { passive: true });
   document.addEventListener("visibilitychange", () => {
     const vis = document.visibilityState === "visible";
-    if (vis && !running) { running = true; rafId = requestAnimationFrame(frame); }
+    if (vis && !running && !motionPaused() && sceneVisible) { running = true; rafId = requestAnimationFrame(frame); }
     else if (!vis && running) { running = false; cancelAnimationFrame(rafId); }
   });
+  // react to dock-pause/release (#75)
+  window.addEventListener("gale:css-motion", (e) => {
+    if (e.detail?.paused && running) { running = false; cancelAnimationFrame(rafId); }
+    else if (!e.detail?.paused && !running && document.visibilityState === "visible" && sceneVisible) { running = true; rafId = requestAnimationFrame(frame); }
+  });
+  // respect a pause that was already engaged before this module loaded (#75)
+  if (motionPaused()) { running = false; }
 
   refreshGeo();
   setInterval(refreshGeo, 60000);

@@ -67,17 +67,25 @@ for (const name of readdirSync(root)) {
 // originals stay in the docroot (404.html imports, smoke, old SW caches) and
 // are minified identically so both variants match byte-for-byte modulo the name.
 const CSS = ["gale", "fleet-tidal", "cinematic", "storm-scene", "mobile", "fonts"];
-const minifyCss = (src) => src
-  .replace(/\/\*[\s\S]*?\*\//g, "")
-  .replace(/\s+/g, " ")
-  .replace(/\s*([{}:;,>+~])\s*/g, "$1")
-  .replace(/;}/g, "}")
-  .trim();
+// esbuild CSS minify (#97): the hand-rolled regex collapsed whitespace INSIDE
+// quoted strings and data-URIs (fleet-tidal's SVG noise data-URI contains
+// literal spaces). esbuild is already a devDependency and is grammar-aware.
+const { minify: esbuildMinifyCss } = await import("esbuild").catch(() => ({ minify: null }));
+const minifyCss = async (src) => {
+  if (!esbuildMinifyCss) return src; // plain copy beats corrupted minify
+  try {
+    const r = await esbuildMinifyCss(src, { loader: "css", minify: true });
+    return r.code;
+  } catch (e) {
+    console.warn("rewrite-dist-refs: esbuild CSS minify failed, copying unminified:", e.message);
+    return src;
+  }
+};
 const cssMap = {};
 for (const n of CSS) {
   const f = join(root, n + ".css");
   if (!existsSync(f)) continue;
-  const min = minifyCss(readFileSync(f, "utf8"));
+  const min = await minifyCss(readFileSync(f, "utf8"));
   writeFileSync(f, min);
   const h = createHash("sha256").update(min).digest("hex").slice(0, 8);
   writeFileSync(join(root, `${n}.${h}.css`), min);

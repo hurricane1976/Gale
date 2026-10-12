@@ -8,12 +8,13 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
   <title>Agentic observability — Gale</title>
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Gale.agent" />
 <meta property="og:title" content="Agentic observability — Gale" />
 <meta property="og:description" content="Gale's agent-run observability: cost, tokens and wall-clock for every unattended waking on this host." />
-<meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
+<meta property="og:image" content="/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
@@ -67,6 +68,8 @@
         <a href="weather.html">Weather</a>
         <a href="network.html">Network</a>
         <a href="reliability.html">Reliability</a>
+        <a href="runbooks.html">Runbooks</a>
+        <a href="home.html">My Home</a>
         <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
       </nav>
     </div>
@@ -125,7 +128,8 @@
           <div class="mini-note"><label><input type="checkbox" id="failed-only"> Failed only</label> · <label>Period <select id="period-filter"><option value="0">all history</option><option value="24">24 hours</option><option value="168">7 days</option></select></label> · <label>Model <select id="model-filter"><option value="">all models</option></select></label></div>
           <div id="run-detail" class="ops-panel" hidden></div>
           <div class="table-scroll"><table class="ops-table" id="runs-table">
-            <thead><tr><th>when</th><th>host</th><th>agent</th><th>wake</th><th>model</th><th>wall-clock</th><th>tokens in/out</th><th>cost</th><th>turns</th><th>status</th></tr></thead>
+            <caption class="sr-only" id="cap-runs-table">Agent run explorer: time, host, agent, model, cost</caption>
+            <thead><tr><th scope="col">when</th><th scope="col">host</th><th scope="col">agent</th><th scope="col">wake</th><th scope="col">model</th><th scope="col">wall-clock</th><th scope="col">tokens in/out</th><th scope="col">cost</th><th scope="col">turns</th><th scope="col">status</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </div>

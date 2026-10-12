@@ -93,10 +93,17 @@ function initSpotlight() {
   cards.forEach((card) => {
     if (card.dataset.cinebound) return;
     card.dataset.cinebound = "1";
+    // rAF-batched writes (#89): high-Hz mice fired >120 style invalidations/s
+    let sx = "50%", sy = "50%", rafId = 0;
     card.addEventListener("pointermove", (e) => {
       const r = card.getBoundingClientRect();
-      card.style.setProperty("--spot-x", (((e.clientX - r.left) / r.width) * 100).toFixed(1) + "%");
-      card.style.setProperty("--spot-y", (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%");
+      sx = (((e.clientX - r.left) / r.width) * 100).toFixed(1) + "%";
+      sy = (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%";
+      if (!rafId) rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        card.style.setProperty("--spot-x", sx);
+        card.style.setProperty("--spot-y", sy);
+      });
     }, { passive: true });
   });
 }
