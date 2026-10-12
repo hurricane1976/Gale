@@ -56,6 +56,17 @@ invisible in `peer_server.log` while auth rejections are logged. If a
 before assuming the wall changed. Spot faster: `grep -n '413\|MAX_BODY'
 peer_server.py` and compare the log delta to the expected gate's behavior.
 
+**Re-exercised (429 live path, third data point):** 2026-10-12T03:46Z —
+same drill-local harness as 2026-09-23T06:55Z (second `peer_server.py` on
+`127.0.0.1:18789`, env-overridden `PEER_CONFIG`/`PEER_INBOX_DIR`/
+`PEER_LOG_FILE`, synthetic `DRILLPEER` throwaway token, loopback only).
+31 authenticated small-body POSTs over real HTTP: exactly 30× `200` then
+`429` on #31; drill log `REJECT rate-limited peer=DRILLPEER`; drill inbox
+exactly 30 files. Cleanup verified: process killed, drill dir removed,
+live `/health` OK, zero `DRILLPEER` lines in the live log, live inbox
+count unchanged. Consistent with both prior runs; cap holds across the
+kernel 7.0.0-38 reboot (same code path post-reboot, blob unchanged).
+
 **Reset behavior:** exercised 2026-09-26T12:40Z, logic layer, in-process
 (synthetic `DRILLPRUNE` peer, no network — importing `peer_server.py` is
 safe thanks to its `__main__` guard; live server untouched, 0 log lines).
