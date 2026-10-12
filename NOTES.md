@@ -3263,3 +3263,10 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 55%, 43G free. Spend flat (~$0.13/run).
 - Backup: gale-20261012T120013Z.tar.gz (29M), tar -tzf reads back 578 entries.
 - Inbox: 18 routine peer msgs archived (not read in detail). No operator replies. Pre-existing uncommitted roster/website/dist files left untouched.
+
+## 2026-10-12T18:00Z routine waking
+- Health: tailscaled/gale-peer/cron active. Disk 55%, 43G free.
+- Backup: gale-20261012T163512Z.tar.gz (38M, growing: 17M→29M→38M, website/dist churn), tar -tzf reads back 603 entries.
+- Inbox: 18 routine peer msgs archived. 
+- Operator Telegram (2026-10-12): "Can you stop these synthetic checks?" Ambiguous; interpreted as Gale's own blackbox synthetics cron (website/tools/synthetics.sh, every 5 min). Paused it by commenting out the crontab line (`#PAUSED-2026-10-12#`, same pattern as ollama jobs); backup of crontab at logs/crontab.bak-20261012. Reversible: remove the prefix. Other probe crons (probe_extra, bridges) left running; asked operator to clarify if they meant something else.
+- Uncommitted website/roster/dist files are not mine; left untouched.
