@@ -36,32 +36,6 @@ groups:
       description: critical alerts only reach Telegram; re-enable the bell on the
         PWA
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#controls
-- name: gale-synth-burn
-  interval: 60s
-  rules:
-  - alert: GaleSynthFastBurn
-    expr: (1 - avg_over_time(gale_synth_green_ratio[1h])) > (14.4 * 0.001000) and
-      (1 - avg_over_time(gale_synth_green_ratio[5m])) > (14.4 * 0.001000)
-    for: 2m
-    labels:
-      severity: critical
-      owner: gale
-    annotations:
-      summary: synthetic checks burning error budget 14x too fast
-      description: 14.4x burn of the shared 99.9% target; inspect HTTPS synthetics
-        and source freshness.
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
-  - alert: GaleSynthSlowBurn
-    expr: (1 - avg_over_time(gale_synth_green_ratio[6h])) > (6 * 0.001000) and (1
-      - avg_over_time(gale_synth_green_ratio[30m])) > (6 * 0.001000)
-    for: 15m
-    labels:
-      severity: warning
-      owner: gale
-    annotations:
-      summary: synthetic checks steadily burning error budget (6x)
-      description: 6x burn of the shared 99.9% target over paired windows.
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
 - name: gale-restore-drill
   interval: 5m
   rules:

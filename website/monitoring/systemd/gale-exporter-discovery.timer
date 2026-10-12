@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh fleet host exporter coverage every five minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+AccuracySec=15s
+Unit=gale-exporter-discovery.service
+
+[Install]
+WantedBy=timers.target

@@ -29,22 +29,3 @@ groups:
     annotations:
       summary: No verified backup in {{ $value }}h
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#recovery
-  - alert: GaleSynthFailing
-    expr: gale_synth_green_ratio < 1
-    for: 10m
-    labels:
-      severity: warning
-      owner: gale
-    annotations:
-      summary: Synthetic checks failing (green {{ $value }})
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
-  - alert: GaleSynthStale
-    expr: ((time() - gale_synth_run_unixtime > 900) or absent(gale_synth_run_unixtime)) or absent(gale_synth_run_unixtime)
-    for: 0m
-    labels:
-      severity: warning
-      owner: gale
-      host: gale-agent
-    annotations:
-      summary: "No synthetic run in 15m \u2014 cron bridge down?"
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector

@@ -3270,3 +3270,7 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Inbox: 18 routine peer msgs archived. 
 - Operator Telegram (2026-10-12): "Can you stop these synthetic checks?" Ambiguous; interpreted as Gale's own blackbox synthetics cron (website/tools/synthetics.sh, every 5 min). Paused it by commenting out the crontab line (`#PAUSED-2026-10-12#`, same pattern as ollama jobs); backup of crontab at logs/crontab.bak-20261012. Reversible: remove the prefix. Other probe crons (probe_extra, bridges) left running; asked operator to clarify if they meant something else.
 - Uncommitted website/roster/dist files are not mine; left untouched.
+
+## 2026-10-12T18:00Z (second entry) operator follow-up
+- Operator Telegram: "Can you stop these alerts? GaleSynthFastBurn ...". Removed alert groups GaleSynthFastBurn/SlowBurn (gale-push.rules.yml) and GaleSynthFailing/Stale (gale.rules.yml, and stale loaded copy gale-slo.yml) from repo + /var/snap/prometheus/common/rules; promtool checked, prometheus restarted, 0 GaleSynth rules loaded. Backups of originals in logs/*.bak-20261012*. Restore by copying them back. Synthetics cron remains paused.
+- Backup gale-20261012T175651Z.tar.gz (38M) reads back 587 entries. Health ok.

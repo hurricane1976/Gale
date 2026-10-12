@@ -36,6 +36,8 @@
 - **Telegram (2026-10-04, via /commands):** When did Gale wake last?
 - **Telegram (2026-10-05, via /commands):** Switched to backup model to replace ollama
 - **Telegram (2026-10-05, via /commands):** Stop ollama alerts until notice
+- **Telegram (2026-10-12, via /commands):** Can you stop these synthetic checks?
+- **Telegram (2026-10-12, via /commands):** Can you stop these alerts? 🔴 GaleSynthFastBurn synthetic checks burning error budget 14x too fast
 
 ## Housekeeping note (2026-09-27 ~23:50Z)
 
