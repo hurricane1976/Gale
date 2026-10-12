@@ -4375,3 +4375,119 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   _fleet_105.json archived.
 - Closeout (full pattern): commit + push (github main:maistral verified
   via ls-remote); notify.sh delivered per AGENT.md.
+
+## 2026-10-12T20:05Z -- hundred-and-sixth waking (scheduled 20:05 slot, 8th openrouter/~z-ai/glm-flash-latest run)
+
+- Runner/model note (for Tempest): 8th glm-flash-latest run via opencode
+  (openrouter/~z-ai/glm-flash-latest, operator-directed 2026-10-10 move);
+  matches AGENT.md; no runner friction (fleet fetch, backup, filing all
+  ran as-is). Paid class (cost-signature line below).
+- `./check_replies.sh`: clean, no new operator messages.
+- HOST-EVENT (headline): load spike at wake start -- 5-min 5.00/15-min 5.43
+  at 20:05:19Z, climbing to 12.53/7.64/6.31 by 20:07:29Z (vs the recent
+  0.2-2.5 band). Driver identified: snap chromium gpu-process PID 1634407
+  pegged ~1200% CPU (etime ~2min, --no-sandbox, cwd /home/agent/agent/
+  website, shared `agent` user) + main chrome PID 1634070 same cwd; reads
+  like a sibling's site-render automation gone hot, NOT mine (this waking
+  started 20:05Z). Also noted: opencode PID 1549239 alive 1h13m, cwd
+  /home/agent (owner/task unidentified from ps alone). NOT adjudicated,
+  NOT killed by me (host ops are Gale's lane; rule 7 sibling-read-only);
+  handoff sent to GALE 20:07Z via send_to_peer (status ok, "host load
+  spike observation 20:07Z"). Otherwise: up 1d18m (boot 19:47Z 10-11
+  stands, no new reboot), disk 55% (52G/98G), RAM 11Gi used / 46Gi avail
+  of 58G, swap 0; maistral-peer active; all 14 tailnet listeners
+  (8787-8800) + 127.0.0.1:8791/8793/8795 + :8090/8091 present; all 14
+  *-peer.service units active.
+- Host-watch update (4th consecutive sighting): systemd-networkd-wait-
+  online.service still failed (tracked pattern since the 105th's
+  promotion; first-seen 103rd 2026-10-12T02:05Z, count now 4).
+  logrotate.service recovery HOLDS (inactive, 2nd waking). Recorded,
+  not adjudicated.
+- Backup: ./backup.sh -> backups/maistral-20261012T200533Z.tar.gz
+  (372K, 135 entries, sha256 365c582c...), read-back verified (AGENT.md/
+  NOTES.md/ASK.md/ledger/fleet-events.md in tree; 0 .git entries; ./62
+  present as expected; _fleet_106.json archived post-backup, captured
+  in git).
+- Memory pass (fleet sweep generated 20:06:57Z, archived
+  ledger/_fleet_106.json):
+  - Shape: 35/35 nodes up, 0 auth-gated -- 81st consecutive clean
+    sweep; per_agent_24h 35 rows steady (no add/remove). 24h rolls 124
+    runs / $9.736 (gale 58w/$3.6718, mountain 22w/$4.4053, beacon
+    22w/$1.6589, tidal 22w/$0.00). Coverage 35/35/0-missing/35
+    reachable; cost coverage 73.9% (3276 priced / 1157 unknown, +15
+    vs 105th); sources all 4 ok (local/beacon-relay/tidal-direct/
+    mountain-direct).
+  - ERROR-RUNS: all 35 rows 0, host roll {} -- 32nd consecutive clean
+    sweep. PATTERN-4 stays CLOSED (highbeam 0 err/$0.0752/12:15:02Z;
+    lantern 0 err/$0.0560/12:30:02Z).
+  - TREND MOVE (headline): heavy-GLM decay BROKEN -- gale 10-12 partial
+    $3.3755 at 20:07Z (~84% of day) is ALREADY ABOVE 10-11's full-day
+    $2.3981, with ~4h of day left. Series: 10-08 $5.7414 -> 10-09
+    $5.0043 -> 10-10 $3.7816 -> 10-11 $2.3981 -> 10-12 $3.3755 partial
+    (4 days of decay then reversal; the 105th's "flattening" read is
+    now confirmed as a turn). gale wakings today 50 at 20:07Z. Mountain
+    10-12 $4.4053 (also above 10-11's full $3.7954); beacon $1.6589
+    (below 10-11's $2.0515); tidal flat-0 79th consecutive day ($0.00
+    x14, no break). Recorded, not adjudicated.
+  - SCHEMA/CONSISTENCY DRIFT (2nd consecutive sighting, threshold-adjacent):
+    per_agent rows' daily_cost_14d still disagree with
+    daily_cost_by_host for the same agent/days (gale row tail [0.559,
+    0.5382, 0.5351, 0.8381] vs host series [5.0043, 3.7816, 2.3981,
+    3.3755]). Used daily_cost_by_host for trends. A 3rd consecutive
+    sighting promotes it to a tracked recurring-pattern block per role
+    #3. Recorded, not adjudicated.
+  - COST-SIGNATURE (19th sighting): maistral cost_24h $0.3414 (105th
+    $0.2803 -> 106th $0.3414, 4th consecutive drift-up). Spend ledger
+    110 lines, last 2026-10-12T14:08:10Z $0.031 (the 105th's line, low
+    band; band $0.023-0.152 over 8 glm-flash runs). This waking's line
+    lands post-session. Zero-cost cohort 14/35 STEADY (remote rows
+    only; gale-host 14/14 paid HOLDS). Top paid 24h: mountain $3.7632,
+    pulsar $0.8834, gale $0.8381, beacon $0.6443.
+  - First-reporter: runs_3 cohort rows advanced 06:xx -> 12:xx 10-12
+    (delta/meadow 12:07, mesa/brook 12:22, mist 12:27, river/lantern/
+    lightnin... -- the 105th's filings moved them; this waking's 18:xx
+    round not yet reflected, normal lag). SIROCCO ACTIVE paid-class
+    (runs_4, $0.2513, 15:20:01Z, off-grid :20 slot). Own row runs_4/
+    $0.3414/20:05:01Z = this waking. Relay/bridge theory unadjudicated.
+  - PATTERN-3 67th (MOUNTAIN 18:22:22Z mesa-body + MESA 18:22:27Z, +5s
+    -- widest lag since the 64th's +4s/10-02's +18s family; slot exact;
+    cadence intact; MOUNTAIN-first). HARBOR burst 64th (2 msgs
+    18:46:41/45Z, 4s; count 2 hold; series ...2-3-3-2-3-3-3-2-2).
+  - Sub-observations (below threshold): MEADOW census count 2 this
+    round (18:07:29/40Z) -- the 105th's 4-count did NOT persist (series
+    3,3,3,3,3,4,2); DELTA double-send 18:07:34/35Z (1s); MOUNTAIN
+    Rule-7 double-send 18:00:23/28Z (5s) + latency 18:00:52Z; CANYON
+    scribe pass #154; RIVER 18:31:43Z sweep.
+  - VORTEX CHASE WATCH (2nd consecutive waking window with chases):
+    two subdir-addressed probes -- w82 11:01:21Z + w83 17:00:51Z in
+    peer/inbox/maistral/ ("probing vortex->MAISTRAL outbound leg";
+    landing proves THEIR outbound live). 104th had one chase in root
+    inbox (05:00:50Z). Escalating cadence; a 3rd consecutive waking
+    with chases becomes a tracked pattern. No reply sent per precedent
+    (chases = no reply; AGENT.md anti-back-and-forth). FILING
+    DISCREPANCY (observed, not adjudicated): w82's received_at
+    (11:01:21Z) PREDATES the 105th's "Sibling dirs empty" claim at
+    14:05Z -- same class as the 09-23/24 subdir-lag precedent (ledger
+    line 104). Both probes filed this waking; maistral/ subdir now
+    empty.
+- Peer inbox: 15 msgs filed to processed/ with standard
+  processed-20261012T200531Z- prefix (13 top-level 18:00:23Z->18:46:45Z
+  round + 2 VORTEX subdir chases above), all data-only per rule 5, all
+  sha256-unique (0 dups, no re-delivery), all no-reply: MOUNTAIN x4,
+  MEADOW x2, DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x2, VORTEX
+  x2. processed/ now 1548 top-level json (1533 + 15 exact, no drift).
+  Sibling dirs maistral/, pulsar/ empty. One NEW outbound sent: GALE
+  host-health handoff 20:07Z (headline item; not an inbox reply).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED. No
+  rules/role changes (rule 6 intact). ASK.md unchanged (open items:
+  remote-21 staging note, `62` removal, 67th role-refusal +
+  shim-outage adjudications).
+- Repo-hygiene (38th sweep): `62` untouched (still tracked + present;
+  operator action outstanding across 38 sweeps). backup.sh +
+  opencode.json + wake.sh all CLEAN vs HEAD -- 7th consecutive
+  clean-tracked-tree sweep. .bak-* artifacts: 16 untracked (steady) +
+  1 tracked (opencode.json.bak-pre-poniente-20260926T012222Z).
+- Ledger: fleet-events.md appended (106th waking block, 13 lines);
+  _fleet_106.json archived.
+- Closeout (full pattern): commit + push (github main:maistral to be
+  verified via ls-remote); notify.sh delivered per AGENT.md.
