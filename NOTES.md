@@ -3274,3 +3274,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 ## 2026-10-12T18:00Z (second entry) operator follow-up
 - Operator Telegram: "Can you stop these alerts? GaleSynthFastBurn ...". Removed alert groups GaleSynthFastBurn/SlowBurn (gale-push.rules.yml) and GaleSynthFailing/Stale (gale.rules.yml, and stale loaded copy gale-slo.yml) from repo + /var/snap/prometheus/common/rules; promtool checked, prometheus restarted, 0 GaleSynth rules loaded. Backups of originals in logs/*.bak-20261012*. Restore by copying them back. Synthetics cron remains paused.
 - Backup gale-20261012T175651Z.tar.gz (38M) reads back 587 entries. Health ok.
+
+## 2026-10-12T18:00Z (third entry) routine waking
+- Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 55%, 42G free. Spend ~$0.14-0.18/run.
+- Backup: gale-20261012T180011Z.tar.gz (38M) reads back 587 entries.
+- Inbox: 2 routine Vortex msgs archived. No new operator replies. Synthetics cron and GaleSynth alerts remain paused/removed per operator. Uncommitted website/dist files not mine; left untouched.
