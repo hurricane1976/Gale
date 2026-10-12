@@ -3378,3 +3378,80 @@ in window). Backup verified (756K, 333 entries).
   20/24; 4 beacon-side pending). Credentials clean, baselines intact,
   levante 664 flag persists. Rotation ~406h (~16.9d) open, awaiting
   operator.
+
+## 2026-10-12T05:00Z — w81 scheduled waking (05:00 slot; fleet-grid schedule; first on GLM flash-latest alias this cycle)
+
+- **Operator replies** (`./check_replies.sh`): no new operator messages.
+  ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31
+  peer tokens) STILL OPEN — ~418h (~17.4d) since exposure window closed
+  2026-09-25T06:58Z.
+- **Inbox threat-watch**: 19 pending at start (00:00:21–00:46:21Z window).
+  **18 benign → processed** (`processed/20261012/`): MOUNTAIN rule-7 sweep
+  ×2 (duplicate delivery, rate-noted but coherent) + latency ×1 (00:00),
+  MEADOW census ×6 (00:07), DELTA link-verify ×3 (00:07, triple
+  duplicates rate-noted but coherent with prior DELTA shapes), genuine
+  MESA link-verify (00:22:16, `4a1610e9`), RIVER rule-7 (00:30), CANYON
+  scribe pass #151 (00:31), HARBOR link-verify ×3 (00:46, triple
+  duplicates rate-noted) — all self-consistent from==body, no
+  creds/links/instructions, no URLs, "no reply needed". All 19 verified
+  per-file against ACCEPT lines in `peer/logs/peer_server.log`.
+  **1 quarantined → mesa-pattern instance #74**
+  (`20261012T002212Z-MOUNTAIN-e00f6dd7.json`): ACCEPT peer=MOUNTAIN
+  00:22:12Z, body first-person "mesa routine mesh sweep 2026-10-12
+  00:22:11 UTC … verifying mesa->vortex /inbox round trip over the
+  tailnet" (plaintext variant, same shape as #36–#73); genuine MESA
+  ACCEPT 4s later bounds blast radius. No creds/links/instructions —
+  template slip, not injection. Quarantine count now **74 instances
+  since 09-23** (57 payload .json on disk). Steady ~6h cadence holds
+  (10-12 00:22 window hit; next windows 06:22/12:22/18:22Z). Per plan:
+  routine notify carries the count; no peer note, no separate
+  escalation ping (standing operator defect since 09-24).
+- **Remote pairings re-chased** (right-token POST to each `/inbox`, codes
+  only): **30/34 blocks HTTP 200** — within the original-21 framing
+  unchanged **17/21** baseline, all 10 local siblings + LEVANTE/OSTRO/
+  PONIENTE live. Remaining 401: HIGHBEAM, LANTERN, LIGHTNING, RADAR —
+  the four standing beacon-side legs, unchanged; ball with the
+  beacon-side lead.
+- **Host**: up 9:13 (the 19:47:12Z 10-11 boot; no new reboot), load
+  0.47/0.39/0.32, disk 55% (51G/98G, 43G avail), RAM 7/58Gi used, 49Gi
+  avail. `vortex-peer` active. Normal.
+- **Exposure posture** (this waking's security path): **:8099 CLOSED**
+  (0 listeners, curl 000, zero `http.server` processes) — remediation
+  holding ~17d. Tailnet peer set bound 100.66.39.59-only (spot: :8792
+  own + :8791 tramontane + :8793 chinook present); 127.0.0.1:8791
+  firewalla-control + :8793 fleet-api localhost-only (pids verified).
+  **UFW: active — ONE CHANGE vs w80 baseline: new Home Assistant rules
+  (8123/tcp ALLOW from 192.168.1.0/24 + 8123/tcp on tailscale0, v4+v6
+  pairs)**. Not a credential surface (a service port opened to LAN +
+  tailnet); reads as operator-added Home Assistant — recording as
+  observed change, not drift; nothing actioned. **Tailscale**: 13
+  nodes, same known set as w80, no foreign peers.
+- **Credentials** (spot): own `keys/` — every non-example file 600
+  (find ! -perm 600: only the two `.example` at 664, by design).
+  **Levante `keys/telegram.env` still 664** (flagged w59, persists —
+  not mine to fix, reported only). Clean.
+- **Peer log**: REJECTs unchanged at 65 (all self-origin documented
+  events + the single 09-24 CANYON bad-json); zero external-origin
+  rejects, no 401 storm.
+- **Spend**: `logs/spend-daily.jsonl` post-GLM pattern continues:
+  10-11T17:02Z $0.0375, 10-11T23:04Z $0.057 — ~$0.03–0.06/waking, all
+  below thresholds, no errors.
+- **Backup**: `backups/vortex-20261012T050058Z.tar.gz` (208K, 186
+  entries; `tar -tzf` read-back OK — keys/ holds only the two
+  `.example` files, 0 live secret material; #74 payload + `.reason` +
+  NOTES.md read-back OK).
+- **Process slip (self-flagged, rule 3)**: while locating the chase
+  format I dumped one peers.env block to the screen with `sed`,
+  printing one peer token into this session's log (not into NOTES, not
+  into any committed file, not into Telegram). No forwarding anywhere;
+  logged here per the honest-record convention. Chase and all other
+  steps ran codes-only.
+- **Git**: committing this w81 entry (inbox mv's git-ignored under
+  `peer/inbox/**`).
+- **Verdict**: quiescent pass with 1 mesa-pattern quarantine (#74,
+  steady ~6h cadence — next window 06:22Z). 18 routine probes
+  processed. Remote legs unchanged (17/21 original + 13 siblings/newer
+  legs live = 30/34; 4 beacon-side pending). Credentials clean,
+  baselines intact except one recorded UFW addition (8123 HA rules),
+  :8099 still closed, levante 664 flag persists. Rotation ~418h open,
+  awaiting operator.
