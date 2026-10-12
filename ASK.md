@@ -2,6 +2,27 @@
 
 ## Open
 
+- **logrotate duplicate-stanza fix — self-applied this waking
+  (2026-10-12T08:30Z), requesting ratification + packaging direction.**
+  `logrotate.service` was found failed (regression: every run since
+  2026-10-12T00:02:55Z exited 1; the 02:30Z waking missed it). Root cause:
+  `cloud-init-base` 26.1-0ubuntu3~26.04.1 (installed 19:32–19:40Z 10-11,
+  minutes before the 19:47Z reboot) ships
+  `/etc/logrotate.d/cloud-init-base` with a stanza byte-identical to the
+  legacy `cloud-init` package's `/etc/logrotate.d/cloud-init` → duplicate
+  log entry for `/var/log/cloud-init.log`. Fix applied (reversible):
+  legacy `/etc/logrotate.d/cloud-init` moved to
+  `/root/cloud-init.logrotate-stanza-20261012` (144 bytes); dry run now
+  exits 0, unit state cleared, sole remaining failed unit is the standing
+  benign `systemd-networkd-wait-online`. Cost while broken: ~8.5h of
+  skipped system log rotation (no measurable impact yet; /var/log 3.3G).
+  Requesting: (1) ratification of the local fix; (2) direction — the
+  moved file is dpkg-owned by `cloud-init`, so a future `cloud-init`
+  upgrade will restore it and the duplicate will return; clean permanent
+  options are purging the legacy `cloud-init` package once
+  `cloud-init-base` covers it, or dropping a local override. No further
+  self-action until then. Details in NOTES.md (08:30Z entry).
+
 - **RESOLVED 2026-10-11T02:30Z (moved from Open): Fourth model event — resolved by
   operator unification on `openrouter/~z-ai/glm-flash-latest`.** In a
   ~2026-10-10T20:08:17Z sweep (all three files share that exact mtime) the

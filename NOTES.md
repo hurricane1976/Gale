@@ -1,5 +1,91 @@
 # NOTES.md — Ostro
 
+## 2026-10-12T08:30Z — waking 2/4 (Sharpness & Regression Watch; 08:30 slot, ran ~08:32Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   was 2 PENDING (BEACON revenue-mandate verification, LEVANTE+PONIENTE
+   ratification) — **now 3 PENDING, one added this waking** (logrotate
+   fix ratification, item 5).
+2. **Inbox triage — 15 new peer messages earlier this waking, all routine
+   data-only, no reply sent**: VORTEX ×1, MOUNTAIN ×4, DELTA ×3, MESA ×1,
+   RIVER ×1, CANYON ×1, HARBOR ×3 (link-verification/ping/sweep patterns,
+   incl. the recurring MOUNTAIN-filename/foreign-body appearance). No
+   BEACON content, no operator-attributed content. `./check_replies.sh`
+   re-run at close → still no new operator messages.
+3. **Host health (08:31Z)**: uptime 12h45m (boot still 10-11T19:47:09Z,
+   kernel 7.0.0-38); load 0.43/0.44/0.34 (low); disk 55% (51G/98G, +0%
+   vs 02:30Z); RAM 49Gi avail; NO `/var/run/reboot-required`; `/var/log`
+   3.3G (3.2G at 02:30Z).
+4. **/tmp leak data point (queued at 02:30Z)**: **44 orphaned dotfile
+   `.so` files / `/tmp` 286M** (23 files/206M at 02:30Z) — +21 files
+   /+80M in ~6.1h ≈ 3.4 files/h, same band as the pre-reboot leak rate
+   (~3.1 files/h) and the 02:30Z reading; leak source still active.
+   Next data point at 14:30Z.
+5. **REGRESSION FOUND + FIXED: `logrotate.service` failed since
+   2026-10-12T00:02:55Z — first failing run after the 19:47Z reboot.**
+   Error: `cloud-init-base:1 duplicate log entry for
+   /var/log/cloud-init.log` → every logrotate invocation exits 1.
+   Root cause: dpkg log shows `cloud-init-base 26.1-0ubuntu3~26.04.1`
+   installed 19:32–19:40Z 10-11 (minutes before the 19:47Z reboot); it
+   ships `/etc/logrotate.d/cloud-init-base` byte-identical (both 144B,
+   same glob + options) to the legacy `cloud-init` package's
+   `/etc/logrotate.d/cloud-init`. Oct 11 00:00:04 run passed (pre-
+   upgrade); Oct 12 00:02:55 run was the first after install+reboot.
+   **The 02:30Z waking MISSED this** (its item 5 said "sole failed unit
+   again only the standing benign networkd-wait-online"; logrotate had
+   failed ~2.5h before that entry — recorded so future wakings check
+   full `systemctl list-units --failed`, not just the known-benign
+   units). **Fix applied this waking (reversible)**: legacy
+   `/etc/logrotate.d/cloud-init` moved to
+   `/root/cloud-init.logrotate-stanza-20261012` (144 bytes, exact
+   restore = `sudo mv` back); `logrotate --debug` dry run now exits 0;
+   unit state reset; only `systemd-networkd-wait-online` remains failed.
+   Consequence while broken: ~8.5h of skipped system log rotation —
+   /var/log grew 3.2→3.3G (mild, no material impact yet). ASK.md item
+   added for ratification + direction (dpkg will restore the moved file
+   on next `cloud-init` upgrade, re-creating the duplicate; permanent
+   options = purge legacy `cloud-init` package or drop a local override).
+6. **Service liveness**: 15/15 peer units + nginx + tailscaled + cron
+   active (ostro-peer since 19:49:16Z 10-11, n_restarts 0). Failed-unit
+   map after fix: only the standing benign
+   `systemd-networkd-wait-online`. No restarts, no drift.
+7. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`);
+   Ostro peer `100.66.39.59:8798/health` → 200
+   `{"status": "ok", "name": "OSTRO"}`. `/api/fleet/metrics`
+   `generated_at 2026-10-12T08:40:05Z` (fresh). **Fleet 35/35
+   reporting/reachable, `error_runs_24h_by_host` = {} — seventh
+   consecutive empty waking.** `runs_24h_by_host` = `{gale: 56,
+   mountain: 22, tidal: 22, beacon: 22}`. `cost_24h_by_host` = `{gale:
+   $2.7228, mountain: $3.937, beacon: $1.6523, tidal: $0.0}`. Ostro
+   `per_agent_24h`: runs_24h = 4, error_runs_24h = 0, cost_24h =
+   $0.1857, last_wake 2026-10-12T08:30:01Z (this waking),
+   total_wakings_14d = 71, cost coverage 100%. (Mid-waking suspicion of
+   "total: 0 hosts" in metrics did NOT reproduce — full payload fresh
+   and complete; no regression vs 02:30Z baseline.)
+8. **Model/runner — unification state UNCHANGED**: AGENT.md:7 + wake.sh
+   (line-45 PROMPT + line-48 CLI pin) + opencode.json:39 all read
+   `openrouter/~z-ai/glm-flash-latest`; this session runs the glm-flash
+   alias. ostro crontab `30 2,8,14,20` wake line + `*/5` telegram
+   poller both present.
+9. **Spend**: latest `logs/spend-daily.jsonl` row 2026-10-12T02:35:03Z
+   $0.0393 (is_error false); this session's row lands at close. No
+   self-spike (ostro mean $0.046/session).
+10. **peers.env audit**: `keys/peers.env` at 34 peer NAME blocks +
+    SELF_NAME=OSTRO (= the 35-agent fleet roster), no new/unknown
+    blocks this waking.
+11. **Backup**: `./backup.sh` (earlier this waking) →
+    `backups/ostro-20261012T083120Z.tar.gz`.
+12. **Verdict vs 02:30Z baseline**: **one regression found and fixed
+    in-session (logrotate duplicate stanza, item 5); all other
+    dimensions flat** — services 15/15, website 6/6 200, fleet 35/35,
+    error map {} (7th), spend normal, model pins agreed, peers.env
+    unchanged. Deltas: (a) logrotate regression + reversible local
+    fix (operator ratification pending in ASK.md); (b) /tmp leak
+    continuing at expected rate (44 files/286M, next point 14:30Z);
+    (c) disk flat at 55%. Git commit + push + notify to follow.
+
 ## 2026-10-12T02:30Z — waking 1/4 (Sharpness & Regression Watch; 02:30 slot, ran ~02:30Z)
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
