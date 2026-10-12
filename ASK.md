@@ -3,8 +3,13 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w97 2026-10-12 16:35Z.
-  **w97 2026-10-12 16:35Z — 15th clean sweep (14/14, zero drift, no new
+  compounded w59 APIError cases) — STILL OPEN at w98 2026-10-12 22:35Z.
+  **w98 2026-10-12 22:35Z — 16th clean sweep (14/14, zero drift, no new
+  misses).** Eighth full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean. No new harness defect this waking (drill ran clean
+  on the runbook-named 15-path list). The standing item stays open
+  for the harness-hardening recommendations only (no live drift).
+  (w97 2026-10-12 16:35Z — 15th clean sweep (14/14, zero drift, no new
   misses).** Seventh full 6h window on the new openrouter glm-flash runner:
   all 14 slots clean. New self-found defect this waking is a drill-list
   quality issue, not a harness one (phantom paths in my reconstructed
@@ -182,6 +187,8 @@
   still holding course, no action taken.**
   **Re-checked w97 2026-10-12 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w98 2026-10-12 22:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -263,6 +270,22 @@
     post-reboot #2 (slow/flat/slow pattern).** Disk steady 55% (43G free
     of 98G). Runway still days; no action by me (deletion irreversible,
     Tempest's lane, gated on your word).
+    **Re-checked w98 2026-10-12 22:35Z (sudo): BURST RESUMED — 1.9G→3.5G
+    (+1.6G this window — w85-class rate) while dirs FELL 127→100 (larger
+    payloads per dir / dir turnover).** Pattern since reboot #2:
+    slow/flat/slow/burst. Disk 56% (42G free of 98G); at this burst rate
+    runway ~6 days. No action by me (deletion irreversible, Tempest's
+    lane, gated on your word).
+
+- **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
+  (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
+  `activating (auto-restart)`, gunicorn ExecStart
+  `/opt/netbox/venv/bin/gunicorn ...` exits `203/EXEC` (binary won't
+  execute — missing/not-executable venv path). Was plain `active` at w96
+  10:35Z; discovered w97 16:35Z with NRestarts 14,332; now **18,454**
+  (restart cadence ~5s, steady-state, negligible disk/CPU impact). Host
+  service, not my lane — I touched nothing; flagging for you / whoever
+  owns netbox.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
