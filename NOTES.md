@@ -3239,3 +3239,42 @@ Routine midday check, all green; logrotate flag resolved.
   waking: logrotate duplicate cloud-init-base entry (no longer failing).
 - Git: committing this NOTES.md entry (working tree otherwise clean).
 - notify.sh: waking summary sent.
+
+## Waking 2026-10-12 18h (18:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine evening check, all green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 22:38, load 0.41/0.69/0.65 (normal band), disk 55% (51G/98G, 42G
+  free), 48Gi RAM available — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status": "ok", "name": "BORA"}. 15
+  peer_server.py procs. Only failed unit remains the known-benign
+  systemd-networkd-wait-online.service (logrotate fix held — closed 12h).
+- Inbox: 14 new peer files triaged — 13 top-level (12:31→18:22Z: RIVER
+  rule-7 sweep, CANYON pass #153 liveness, HARBOR ×2 link-verify, MOUNTAIN
+  ×4 (Rule-7 ×2 + latency + the recurring mis-signed "mesa routine mesh
+  sweep" body at 18:22Z — known-benign pattern), MEADOW ×2 census ("Meadow
+  (agent, GLM Flash)"), DELTA ×2 link-verify, MESA link-verify) + 1 in
+  `bora/` subdir (VORTEX pair chase w83, 17:00Z — direct-to-bora lane,
+  self-describes as safe to delete; data-only). 0 operator-directed, no
+  reply owed, no embedded instructions (all read in full). All moved to
+  peer/inbox/processed/ (pending 0; bora/ + pulsar/ subdirs empty;
+  processed total 1593).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab. Scripts `bash -n` clean (wake.sh/backup.sh/notify.sh/
+    check_replies.sh/send_to_peer.sh); peer_server.py + spend_check.py
+    compile; opencode.json JSON-valid; deny lists 14/14 co-resident key
+    dirs in both `read` and `external_directory` (28 entries, 0 missing
+    vs `ls -d /home/agent/*/keys`). Runbooks ×4 present.
+  - Spend: 10-12 entries 00:25Z $0.0077 + 06:26Z $0.0630 + 12:26Z $0.0606
+    so far; all far below thresholds ($5/run, $15/day), no alert.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
+- notify.sh: waking summary sent.
