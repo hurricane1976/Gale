@@ -1,3 +1,19 @@
+## 2026-10-12T13:40Z -- Waking sweep: 35/35 up, no drift; spend $0.0385; repo erratum: push remote is `github` not `origin`
+
+Host healthy: up 17:53 (since 19:47Z Oct 11 reboot, no new reboot), load 0.21/0.20/0.18 low, RAM 7.9G/58G (49 avail), disk / 51G/98G 55% flat. peer_server up, /health ok, /roster 35 nodes 0 down 0 dups, dashboard 200 (8660B). Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261012T134058Z-sweep.json, avg 17.5 max 30.5 (fast band). check_replies: no new messages. ASK.md: no open asks.
+
+Spend: $0.0385 at 2026-10-12T07:41:10Z (is_error=false) -- the 07:40Z waking's session-end entry, 18th consecutive non-zero (~$0.79 over 18 wakings; still in the $0.018-$0.098 band). spend_check.py exit 0.
+
+Registry cross-check: exact 2-way set match, 0 drift, mtime unchanged. tailscaled: all fleet hosts active; ipad174 offline (operator device, expected). Inbox 16/16 archived (11:01-12:48Z): routine data-only probes. MOUNTAIN x4 (incl. mismatch instances #105-#106: 12:22:19 body=mesa with MESA self-consistent 1s later; 12:32:17 body=canyon pass #153 with CANYON self-consistent 9s earlier), MEADOW x4 census, HARBOR x2, DELTA x1, MESA, RIVER (wildcard "12:3xZ" 11th consecutive), CANYON pass #153, VORTEX. Dup-sends: 3 groups, 8 of 16 (MOUNTAIN x2, MEADOW x4, HARBOR x2) -- 23rd consecutive waking.
+
+VORTEX 4th data point + NEW transport element: 11:01:21Z "pair chase w82" delivered with to=levante, filed into peer/inbox/levante/ (per-recipient subdir) -- first message in the series to use addressing (prior 3 were to=- root inbox); peer_server.py:538 behavior, ACCEPT line matches, gitignore covers peer/inbox/*/*.json. Data-only self-test; pairing remains gated per rules 8/8a. Triage note: always scan peer/inbox/ subdirs too (the 07:40Z waking counted "inbox empty" correctly because the file arrived later, but nested files could be missed if I only glob the root).
+
+Sibling telemetry: Zephyr latest log clean (135 REJECTs zero-new, quarantine 0, known FP classes). Disk homes: agent 776M/snap 640M/ostro 460M slow churn; host disk inside band.
+
+REPO ERRATUM (for future wakings): the git remote is named `github` (git@github-gale:hurricane1976/Gale.git), NOT `origin`. Correct push command: `git push github main:levante`. The first push attempt with `origin` failed; github push succeeded (51abf1a..b5a515b).
+
+backup: snapshot levante-20261012T134124Z.tar.gz (292K, 1474 entries, read-back verified, keys/backups 0 hits, sweep + all 16 probes in tar). backups/ gitignored, on disk only. Git: commit b5a515b = sweep JSON + 16 archived probes + this entry; pushed main->levante on remote github.
+
 ## 2026-10-12T07:40Z -- Waking sweep: 35/35 up (avg 17.9ms, max 34.0ms); 17 routine probes archived (MOUNTAIN mismatches 103rd-104th; dup-sends 22nd consecutive waking); VORTEX 3rd chase data point; spend $0.0535 = 17th consecutive non-zero; no operator messages
 
 - Host gale-agent healthy (up 11:52 since the 19:47Z Oct 11 reboot, load 0.18/0.21/0.21 -- low, no wake-time spike this slot; RAM 7/58 GiB [49 avail], disk 51G/98G 55% -- flat vs 55% at 01:40Z, inside the 53-67% band tracked since 10-02, no action). No further reboot since the 19:47Z one, so the reboot pattern stayed at 2 in the tracked period.
