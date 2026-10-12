@@ -31,11 +31,11 @@ feeds, the way Beacon's fleet page and Tidal's observability page do:
                        renders it as text and labels it data, per rule 5.
   GET  /health         liveness for sysmon's TARGETS.
   GET  /reports/summary  aggregated browser report counts (CSP violations,
-                       deprecation/intervention) for the last 24h; metadata
-                       only -- directive/disposition/type counts, no URLs.
+                       deprecation/intervention) for the last 24h; aggregate
+                       counts only, with bounded private metadata retention.
   POST /report         browser report-to collector: accepts the browser's
                        automatic report deliveries (metadata only, size-capped,
-                       same-origin only, rotating JSONL under API_DIR).
+                       same-origin only, 30-day / 1024-row bounded JSONL).
 
 Run mode: loop forever (systemd gale-fleet-api.service). `--once` prints the
 telemetry envelope and exits (manual checks).
@@ -70,6 +70,7 @@ import sys
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections import deque
 import weather_data
@@ -1292,15 +1293,77 @@ def watchdog_state():
     return state
 
 # --- browser report collector (CSP / deprecation / intervention) -------------
-# Receives the browser's automatic report-to deliveries. Metadata only: the
-# collector keeps directive/disposition/type/sample URLs' shape counts, never
-# page contents. Rotating JSONL under API_DIR (public dashboard dir but not
-# linked; nginx blocks /api/* dotfiles and the summary endpoint exposes only
-# aggregated counts).
+# Receives automatic Reporting API deliveries. Keep only bounded metadata:
+# source URLs and sample excerpts can contain paths or inline source text.
+# The private JSONL is retained for at most 30 days / 1024 records; the public
+# endpoint exposes aggregate counts only.
 _REPORT_LOCK = threading.Lock()
+_REPORT_RETENTION_S = 30 * 86400
+_REPORT_MAX_ROWS = 1024
 
 def _report_path():
     return Path(API_DIR) / "csp-reports.jsonl"
+
+def _report_source_name(value):
+    """Reduce a reported source URL/path to a filename, dropping query/host."""
+    raw = str(value or "")[:500]
+    try:
+        path = urllib.parse.urlsplit(raw).path if "://" in raw else raw.split("?", 1)[0].split("#", 1)[0]
+        name = Path(path).name
+        return name[:80]
+    except (TypeError, ValueError):
+        return ""
+
+def _report_record_time(row):
+    try:
+        return datetime.strptime((row.get("at") or "")[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    except (ValueError, TypeError, AttributeError):
+        return 0
+
+def _sanitize_report_row(row):
+    """Normalize old as well as new collector rows before retaining them."""
+    return {
+        "at": str(row.get("at", ""))[:40],
+        "type": str(row.get("type", ""))[:40],
+        "directive": str(row.get("directive", ""))[:60],
+        "disposition": str(row.get("disposition", ""))[:20],
+        "status_code": row.get("status_code") if isinstance(row.get("status_code"), int) else None,
+        "source_file": _report_source_name(row.get("source_file", "")),
+        "line": row.get("line") if isinstance(row.get("line"), int) else None,
+    }
+
+def _compact_report_store(extra=()):
+    """Migrate old rows to the privacy schema and apply age/count bounds.
+
+    Caller holds _REPORT_LOCK. Both historic filename locations are read so a
+    deploy can safely upgrade the pre-bounded rotating collector in place.
+    """
+    p = _report_path()
+    cutoff = time.time() - _REPORT_RETENTION_S
+    prior = []
+    for source in (p, p.with_suffix(".jsonl.old")):
+        try:
+            with source.open("r", encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        row = json.loads(line)
+                        if isinstance(row, dict) and _report_record_time(row) >= cutoff:
+                            prior.append(_sanitize_report_row(row))
+                    except ValueError:
+                        continue
+        except OSError:
+            continue
+    prior = (prior + [_sanitize_report_row(row) for row in extra])[-_REPORT_MAX_ROWS:]
+    tmp = p.with_suffix(".jsonl.tmp")
+    with tmp.open("w", encoding="utf-8") as f:
+        for row in prior:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    os.replace(tmp, p)
+    try:
+        p.with_suffix(".jsonl.old").unlink()
+    except FileNotFoundError:
+        pass
+    return len(prior)
 
 def report_post(payload):
     reports = payload if isinstance(payload, list) else [payload]
@@ -1314,24 +1377,15 @@ def report_post(payload):
             "type": str(rep.get("type", ""))[:40],
             "directive": str(body.get("effectiveDirective", ""))[:60],
             "disposition": str(body.get("disposition", ""))[:20],
-            "sample": str(body.get("sample", ""))[:120],
             "status_code": body.get("statusCode"),
-            "source_file": str(body.get("sourceFile", ""))[:200],
+            "source_file": _report_source_name(body.get("sourceFile", "")),
             "line": body.get("lineNumber"),
         })
     if not kept:
         return 400, {"error": "no usable reports"}
     with _REPORT_LOCK:
-        p = _report_path()
         try:
-            if p.exists() and p.stat().st_size > 256 * 1024:
-                p.replace(p.with_suffix(".jsonl.old"))
-        except OSError:
-            pass
-        try:
-            with p.open("a", encoding="utf-8") as f:
-                for row in kept:
-                    f.write(json.dumps(row, ensure_ascii=False) + "\n")
+            _compact_report_store(kept)
         except OSError:
             return 500, {"error": "write failed"}
     return 204, None

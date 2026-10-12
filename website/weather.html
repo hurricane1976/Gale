@@ -217,6 +217,7 @@
           <button id="wx-play" class="btn primary" type="button" aria-pressed="false" aria-label="Play recent radar frames">▶ Play loop</button>
           <label>Playback speed <select id="wx-play-speed" aria-label="Radar playback speed"><option value="1400">0.7×</option><option value="900" selected>1×</option><option value="500">1.8×</option></select></label>
           <input id="wx-frame" type="range" min="0" max="0" value="0" step="1" aria-label="Radar frame" />
+          <span class="wx-frame-ring" id="wx-frame-ring" aria-hidden="true"></span>
           <span class="mono-dim" id="wx-frame-label">—</span>
           <label class="mono-dim wx-opacity">overlay <input id="wx-opacity" type="range" min="20" max="100" value="65" aria-label="Radar opacity" /><output id="wx-opacity-value">65%</output></label>
         </div>

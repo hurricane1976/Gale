@@ -74,10 +74,10 @@ class MonitoringTests(unittest.TestCase):
         for path in list(root.glob('*.rules.yml')) + [root / 'gale.rules.yml']:
             rules.extend(r for g in yaml.safe_load(path.read_text())['groups'] for r in g['rules'] if 'alert' in r)
         self.assertTrue(all(r['labels']['severity'] in ('critical', 'warning', 'info') for r in rules))
-        target_error = f'{1 - monitor.policy()["synthetic_target_pct"] / 100:.6f}'
-        burns = [r for r in rules if r['alert'] in ('GaleSynthFastBurn', 'GaleSynthSlowBurn')]
-        self.assertEqual(len(burns), 2)
-        self.assertTrue(all(target_error in r['expr'] for r in burns))
+        # synthetic burn-rate alerts were removed 2026-10-12 (operator paused
+        # synthetics; commit 062a89f) -- assert they stay gone rather than
+        # assert a count of rules that intentionally no longer exist
+        self.assertEqual([r for r in rules if 'GaleSynth' in r['alert']], [])
         config = yaml.safe_load((root/'alertmanager.yml').read_text())
         self.assertIn('severity="critical"', config['route']['routes'][0]['matchers'])
         self.assertTrue(all(r.get('equal') for r in config['inhibit_rules']))

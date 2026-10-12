@@ -9,11 +9,24 @@ const PAGES = [["Dashboard", "index.html"], ["Fleet", "fleet.html"], ["Status", 
 export function initLost() {
   const wrap = document.getElementById("lost-map");
   if (!wrap) return;
-  let gl = null;
-  try { gl = document.createElement("canvas").getContext("webgl"); } catch {}
+  const fallback = document.getElementById("lost-map-fallback");
+  const canvas = document.getElementById("topo-3d-canvas");
+  const toggle = document.getElementById("topo-3d-toggle");
   const reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!gl || reduced || document.documentElement.dataset.saver === "1") { wrap.hidden = true; return; }
+  if (reduced || document.documentElement.dataset.saver === "1" || !toggle || !canvas) return;
   const nodes = PAGES.map(([name, href]) => ({ name, host: "the site", model: "", listener: "", href, color: [0.45, 0.7, 1.0] }));
   nodes.push({ name: "this page", host: "lost", model: "404", listener: "", color: [1.0, 0.35, 0.38] });
-  if (!initTopology3D({ nodes, noHeat: true, noActivity: true, autoOpen: true, onActivate: (n) => { if (n.href) location.href = n.href; } })) wrap.hidden = true;
+  toggle.hidden = false;
+  toggle.textContent = "Open interactive 3D map";
+  if (fallback) {
+    const syncFallback = () => { fallback.hidden = !canvas.hidden; };
+    new MutationObserver(syncFallback).observe(canvas, { attributes: true, attributeFilter: ["hidden"] });
+    syncFallback();
+  }
+  let started = false;
+  toggle.addEventListener("click", () => {
+    if (started) return;
+    started = true;
+    initTopology3D({ nodes, noHeat: true, noActivity: true, autoOpen: true, fallbackMessage: "WebGL is unavailable; use the site map links below.", onActivate: (n) => { if (n.href) location.href = n.href; } });
+  });
 }

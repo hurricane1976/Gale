@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    /* pre-paint theme: apply the persisted choice before first render */
+    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Fleet Galaxy — Gale</title>
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Gale.agent" />
+<meta property="og:title" content="Fleet Galaxy — Gale" />
+<meta property="og:description" content="A live 3D galaxy of the Gale fleet: every host a spiral arm, every agent a star, alerts as pulsing flares." />
+<meta property="og:image" content="https://gale-agent.tail2f1671.ts.net/assets/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Gale fleet operations dashboard" />
+<meta name="twitter:card" content="summary_large_image" />
+  <meta name="description" content="A live 3D galaxy of the Gale fleet: every host a spiral arm, every agent a star, alerts as pulsing flares." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e8eef7" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02060d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gale" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="fonts.css" />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script type="module" src="dist/galaxy.js"></script>
+  <script src="rum.js" defer></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="progress" aria-hidden="true"></div>
+
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+          <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+        </svg>
+        GALE
+      </a>
+      <nav class="site-links" aria-label="Site">
+        <a href="index.html">Home</a>
+        <a href="operations.html">Operations</a>
+        <a href="fleet.html">Fleet</a>
+        <a href="status.html">Status</a>
+        <a href="metrics.html">Metrics</a>
+        <a href="observability.html">Observability</a>
+        <a href="ollama.html">Ollama</a>
+        <a href="agora.html">Agora</a>
+        <a href="galaxy.html" aria-current="page">Galaxy</a>
+        <a href="weather.html">Weather</a>
+        <a href="network.html">Network</a>
+        <a href="reliability.html">Reliability</a>
+        <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="galaxy-main">
+    <section class="galaxy-stage" id="galaxy-stage" aria-label="Fleet galaxy">
+      <canvas id="galaxy-canvas" role="img" aria-label="Interactive 3D galaxy of the fleet. Four spiral arms, one per host, with a bright star for every agent. Drag to orbit, scroll to zoom. Alerting agents flare red or amber. The agent list beside the scene is the keyboard-accessible version."></canvas>
+      <div class="galaxy-labels" id="galaxy-labels" aria-hidden="true"></div>
+      <div class="galaxy-hud">
+        <span class="eyebrow"><span class="dot"></span>Live &middot; 4 hosts &middot; <span id="galaxy-count">35</span> stars</span>
+        <h1 class="galaxy-title grad-text">Fleet Galaxy</h1>
+        <p class="galaxy-sub">Each host is a spiral arm; each agent a star. Flares are live alerts. Drag to orbit, scroll to zoom, pick a star to fly to it.</p>
+        <p class="galaxy-feed-state" id="galaxy-feed-state" role="status" aria-live="polite">Alert feed · connecting</p>
+        <div class="galaxy-key" aria-label="Galaxy legend"><span><i class="galaxy-key-star" aria-hidden="true"></i>Agent</span><span><i class="galaxy-key-host" aria-hidden="true"></i>Host</span><span><i class="galaxy-key-warn" aria-hidden="true"></i>Warning</span><span><i class="galaxy-key-crit" aria-hidden="true"></i>Critical</span></div>
+        <p class="galaxy-card" id="galaxy-card" aria-live="polite">Nothing selected.</p>
+        <button type="button" class="galaxy-reset" id="galaxy-reset">Reset view</button>
+      </div>
+      <nav class="galaxy-list" id="galaxy-list" aria-label="Agents by host"></nav>
+      <p class="galaxy-fallback" id="galaxy-fallback" hidden>This view needs WebGL2 and motion. The agent list still works, and the Fleet page has the 2D map.</p>
+    </section>
+  </main>
+
+  <footer class="site">
+    <div class="wrap fw-cols">
+      <div>
+        <h3>Elsewhere</h3>
+        <ul>
+          <li><a href="index.html">Gale dashboard</a></li>
+          <li><a href="fleet.html">Fleet topology</a></li>
+          <li><a href="/api/fleet/alerts">Live alerts JSON</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Method</h3>
+        <ul>
+          <li>Raw WebGL2: instanced spiral-arm particles, domain-warped nebula, multi-pass bloom</li>
+          <li>Alerts from <code>/api/fleet/alerts</code>, refreshed every 30 s</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

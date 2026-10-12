@@ -45,6 +45,54 @@ let radarSource = store.get("gale-wx-radar", "noaa"), radarRequest = 0, observat
 const NOAA_RADAR = "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer";
 const NOAA_WARNINGS = "https://mapservices.weather.noaa.gov/eventdriven/services/WWA/watch_warn_adv/MapServer/WMSServer";
 let playTimer = null, frameIdx = 0, playDelay = 900;
+let radarFadeRaf = 0, noaaTilesClass = null, radarSwapTimer = 0;
+
+/* NOAA tiles are a per-frame rasterId ImageServer layer; the class extend is
+   lazy because L itself loads after this module (radar map is deferred). */
+function noaaTiles() {
+  if (!noaaTilesClass) noaaTilesClass = L.TileLayer.extend({ getTileUrl(coords) {
+    const size = this.getTileSize(), nw = map.options.crs.project(map.unproject(L.point(coords.x * size.x, coords.y * size.y), coords.z)), se = map.options.crs.project(map.unproject(L.point((coords.x + 1) * size.x, (coords.y + 1) * size.y), coords.z));
+    const q = new URLSearchParams({ f: "image", bbox: [nw.x, se.y, se.x, nw.y].join(","), bboxSR: "3857", imageSR: "3857", size: "256,256", format: "png32", transparent: "true", mosaicRule: JSON.stringify({ mosaicMethod: "esriMosaicLockRaster", lockRasterIds: [this.options.rasterId] }) });
+    return `${NOAA_RADAR}/exportImage?${q}`;
+  } });
+  return noaaTilesClass;
+}
+const makeRadarLayer = (frame, opacity) => radarSource === "noaa"
+  ? new (noaaTiles())("", { rasterId: frame.id, opacity, zIndex: 10, maxZoom: 18, attribution: "Radar: NOAA / NWS" })
+  : L.tileLayer(`${radarHost}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`, { opacity, zIndex: 10, maxNativeZoom: 7, maxZoom: 18, attribution: "Radar: RainViewer" });
+const onRadarTileError = () => {
+  radarTileErrors++;
+  $("wx-radar-status").textContent = `Radar imagery unavailable · ${radarTileErrors} tile error${radarTileErrors === 1 ? "" : "s"}`;
+  $("wx-radar-retry").hidden = false;
+};
+/* crossfade (#26): autoplay frames swap tiles hard today; layer the incoming
+   frame underneath, fade it over the old one, then retire the old layer. */
+function fadeToFrame(f) {
+  const target = Number($("wx-opacity").value) / 100;
+  const next = makeRadarLayer(f, 0);
+  next.on("tileerror", onRadarTileError);
+  next.addTo(map);
+  let done = false;
+  const swap = () => {
+    if (done) return;
+    done = true;
+    const old = radarOverlay;
+    radarOverlay = next;
+    const t0 = performance.now(), D = 350;
+    cancelAnimationFrame(radarFadeRaf);
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / D);
+      next.setOpacity(target * k);
+      if (old) old.setOpacity(target * (1 - k));
+      if (k < 1) radarFadeRaf = requestAnimationFrame(step);
+      else if (old) old.remove();
+    };
+    radarFadeRaf = requestAnimationFrame(step);
+  };
+  next.once("load", swap);
+  clearTimeout(radarSwapTimer);
+  radarSwapTimer = setTimeout(swap, 900); // tiles stalled: fade anyway
+}
 
 function setMapState(message, ready = false) {
   const el = $("wx-map-state");
@@ -110,6 +158,9 @@ function setLocation(p) {
   store.set("gale-wx-loc", loc);
   rememberRecent(loc);
   renderPresets();
+  // sky swap crossfade (#41): the scenic canvas re-tints for the new location;
+  // a brief dip keeps the change from feeling like a hard cut
+  document.documentElement.classList.add("wx-sky-swap");
   loadAll();
   if (map) loadRadarFrames();  // before the map exists, initMap() loads the frames
   if (map) { map.setView([loc.lat, loc.lon], 8); placeMarker(); }
@@ -229,9 +280,11 @@ async function loadAll(soft) {
     const staleMin = f && f._gale && f._gale.stale_age_s ? Math.round(f._gale.stale_age_s / 60) : 0;
     $("wx-updated").textContent = "updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" }) + (staleMin ? ` (cached, ${staleMin}min old)` : "");
     $("wx-error").hidden = true;
+    document.documentElement.classList.remove("wx-sky-swap");
   } catch (e) {
     if(request!==forecastRequest)return;
     showError("Weather fetch failed (" + e.message + "). Check connection — retrying automatically.");
+    document.documentElement.classList.remove("wx-sky-swap");
   }
 }
 
@@ -270,6 +323,15 @@ function renderCurrent(f) {
   $("wx-hum").textContent = `${c.relative_humidity_2m}%`;
   $("wx-uv").textContent = d.uv_index_max?.[0] != null ? Number(d.uv_index_max[0]).toFixed(1) : "—";
   $("wx-precip").textContent = c.precipitation > 0 ? `${c.precipitation} mm now` : `${d.precipitation_probability_max?.[0] ?? 0}% today`;
+
+  // sky accent (#9): page chrome follows the real sky — twilight amber,
+  // daytime teal, night bolt-violet (consumed by .wx-hero/.wx-hcell.now CSS)
+  try {
+    const nowMs = new Date(c.time).getTime();
+    const near = (iso) => iso ? Math.abs(new Date(iso).getTime() - nowMs) < 75 * 60000 : false;
+    const phase = !c.is_day ? "night" : (near(d.sunrise?.[0]) || near(d.sunset?.[0])) ? "twilight" : "day";
+    document.documentElement.style.setProperty("--sky-accent", { night: "var(--bolt)", twilight: "var(--warn)", day: "var(--gust)" }[phase] || "var(--flag)");
+  } catch {}
 
   $("d-wind").textContent = `${wnd(c.wind_speed_10m)} (${Math.round(c.wind_speed_10m)} km/h)`;
   $("d-gust").textContent = wnd(c.wind_gusts_10m);
@@ -545,37 +607,30 @@ async function loadRadarFrames() {
     if(!frames.length){$("wx-frame-label").textContent="No radar coverage here — try RainViewer.";$("wx-radar-status").textContent=`${selected==="noaa"?"NOAA / NWS":"RainViewer"}: no observed frames`;return;}
     radarFrames=frames;
     if(!map)return;
-    if(selected==="noaa"){
-      const NoaaTiles=L.TileLayer.extend({getTileUrl(coords){
-        const size=this.getTileSize(),nw=map.options.crs.project(map.unproject(L.point(coords.x*size.x,coords.y*size.y),coords.z)),se=map.options.crs.project(map.unproject(L.point((coords.x+1)*size.x,(coords.y+1)*size.y),coords.z));
-        const q=new URLSearchParams({f:"image",bbox:[nw.x,se.y,se.x,nw.y].join(","),bboxSR:"3857",imageSR:"3857",size:"256,256",format:"png32",transparent:"true",mosaicRule:JSON.stringify({mosaicMethod:"esriMosaicLockRaster",lockRasterIds:[this.options.rasterId]})});
-        return `${NOAA_RADAR}/exportImage?${q}`;
-      }});
-      radarOverlay=new NoaaTiles("",{rasterId:frames.at(-1).id,opacity:$("wx-opacity").value/100,zIndex:10,maxZoom:18,attribution:"Radar: NOAA / NWS"});
-    }else radarOverlay=L.tileLayer(`${radarHost}${frames.at(-1).path}/256/{z}/{x}/{y}/2/1_1.png`,{opacity:$("wx-opacity").value/100,zIndex:10,maxNativeZoom:7,maxZoom:18,attribution:"Radar: RainViewer"});
-    radarOverlay.on("tileerror", () => {
-      radarTileErrors++;
-      $("wx-radar-status").textContent = `Radar imagery unavailable · ${radarTileErrors} tile error${radarTileErrors === 1 ? "" : "s"}`;
-      $("wx-radar-retry").hidden = false;
-    });
+    radarOverlay=makeRadarLayer(frames.at(-1), $("wx-opacity").value/100);
+    radarOverlay.on("tileerror", onRadarTileError);
     radarOverlay.addTo(map);
     $("wx-play").disabled=frames.length<2;$("wx-frame").disabled=false;
     $("wx-frame").max=frames.length-1;showFrame(frames.length-1);
     $("wx-radar-status").textContent=`${selected==="noaa"?"NOAA / NWS":"RainViewer"} · observed radar · frames collected ${new Date().toLocaleTimeString()} · warning polygons: current NWS feed`;
   }catch(e){if(request===radarRequest){$("wx-frame-label").textContent="Radar unavailable — try the other source.";$("wx-radar-status").textContent=`${selected}: ${e.message}`;}}
 }
-function showFrame(i) {
+function showFrame(i, fade = false) {
   if(!map||!radarFrames.length||!radarOverlay)return;
   frameIdx=Math.max(0,Math.min(i,radarFrames.length-1));const f=radarFrames[frameIdx];
   radarTileErrors=0;
   $("wx-radar-retry").hidden=true;
-  if(radarSource==="noaa"){radarOverlay.options.rasterId=f.id;radarOverlay.redraw();}
+  const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (fade && !reducedMotion) fadeToFrame(f);
+  else if(radarSource==="noaa"){radarOverlay.options.rasterId=f.id;radarOverlay.redraw();}
   else radarOverlay.setUrl(`${radarHost}${f.path}/256/{z}/{x}/{y}/2/1_1.png`);
   $("wx-frame").value=frameIdx;
   const age=Math.round((Date.now()/1000-f.time)/60);
   const frameText = new Date(f.time*1000).toLocaleString() + " · " + (frameIdx+1) + "/" + radarFrames.length + " · " + age + " min old" + (age>30 ? " · STALE" : "");
   $("wx-frame").setAttribute("aria-valuetext", frameText);
   $("wx-frame-label").textContent=frameText;
+  const ring=$("wx-frame-ring");
+  if (ring) ring.style.setProperty("--frame-p", String(radarFrames.length > 1 ? frameIdx / (radarFrames.length - 1) : 0));
 }
 async function loadObservations(){
   const request=++observationRequest,{lat,lon}=loc;
@@ -610,7 +665,7 @@ function togglePlay() {
   $("wx-play").setAttribute("aria-label", "Pause radar animation");
   let i = 0;
   showFrame(i);
-  playTimer = setInterval(() => { i = (i + 1) % radarFrames.length; showFrame(i); }, playDelay);
+  playTimer = setInterval(() => { i = (i + 1) % radarFrames.length; showFrame(i, true); }, playDelay);
 }
 function stopPlay() {
   clearInterval(playTimer); playTimer = null;
@@ -624,7 +679,7 @@ $("wx-play-speed").addEventListener("change", (e) => {
   playDelay = next;
   if (playTimer) {
     clearInterval(playTimer);
-    playTimer = setInterval(() => showFrame((frameIdx + 1) % radarFrames.length), playDelay);
+    playTimer = setInterval(() => showFrame((frameIdx + 1) % radarFrames.length, true), playDelay);
   }
 });
 

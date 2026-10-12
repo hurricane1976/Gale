@@ -7,7 +7,7 @@
    motion or data-saver: nothing mounts and the per-card SVG ECGs stay.
    Node-safe: no top-level DOM access (render-test imports stay green). */
 
-import { program, Quality, dprCap, createGraphicsHud, motionPaused } from "./shared-gl.js";
+import { program, Quality, fitCanvas, createGraphicsHud, motionPaused } from "./shared-gl.js";
 
 const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -130,13 +130,7 @@ export function initPulseWall(canvas) {
   }
 
   function resize() {
-    const dpr = dprCap((innerWidth < 1200 ? 1.5 : 2) * q.scale());
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (w < 2 || h < 2) return false;
-    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
-      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-    }
-    return true;
+    return fitCanvas(canvas, innerWidth < 1200 ? 1.5 : 2, q).sized; // shared DPR/quality policy (#36)
   }
   function camMatrix(aspect) {
     const yaw = 0.10 * Math.sin(performance.now() / 5200); // slow drift for depth readability

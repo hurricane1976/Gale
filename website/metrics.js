@@ -175,7 +175,7 @@ function stackedBars(series, labelFmt) {
       if (!v) return;
       const hgt = (v / max) * (H - pad.t - pad.b);
       y -= hgt;
-      segs += `<rect class="bar-rise" style="--i:${i}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${hgt.toFixed(1)}"
+      segs += `<rect class="bar-rise" style="--i:${i}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw}" height="${hgt.toFixed(1)}" data-host="${esc(h)}"
         fill="${hostColor(h)}" opacity="0.88" rx="1.5"><title>${esc(`${day} ${h}: ${labelFmt(v)}`)}</title></rect>`;
     });
     const totalLbl = labelFmt(total) === "0" ? "" : labelFmt(total);
@@ -218,6 +218,23 @@ document.addEventListener("click", (event) => {
   const set = hiddenSeries[button.dataset.series];
   set.has(button.dataset.host) ? set.delete(button.dataset.host) : set.add(button.dataset.host);
   if (DATA) renderAll();
+});
+
+/* legend↔series hover linking (#21): hovering a legend chip lifts its host's
+   bars and dims the rest — opacity-only emphasis, safe under reduced motion */
+const seriesChart = (name) => $(name === "cost" ? "cost-chart" : "wakings-chart");
+document.addEventListener("mouseover", (e) => {
+  const b = e.target.closest?.(".metric-series-toggle");
+  if (!b) return;
+  const chart = seriesChart(b.dataset.series);
+  if (!chart) return;
+  for (const rect of chart.querySelectorAll("rect[data-host]"))
+    rect.style.opacity = rect.dataset.host === b.dataset.host ? "1" : "0.25";
+});
+document.addEventListener("mouseout", (e) => {
+  if (!e.target.closest?.(".metric-series-toggle")) return;
+  const chart = seriesChart(e.target.closest(".metric-series-toggle").dataset.series);
+  if (chart) for (const rect of chart.querySelectorAll("rect[data-host]")) rect.style.opacity = "";
 });
 
 /* Day-total crosshair (#2): the per-bar <title>s already name host values;

@@ -5,6 +5,7 @@ const $ = (id) => document.getElementById(id);
 let busy = false, last = null;
 let rumPage = "";
 let rumRetentionHours = 24;
+let firstSloRender = true;
 const money = (n) => Number.isFinite(n) ? `$${n.toFixed(2)}` : "unknown";
 function render(data) {
   const feed = freshness(data);
@@ -16,8 +17,13 @@ function render(data) {
     const actualX = Math.max(0, Math.min(100, Number(s.actual) || 0)), targetX = Math.max(0, Math.min(100, Number(s.target) || 0));
     const actualLabel = Number.isFinite(Number(s.actual)) ? Number(s.actual).toFixed(2) : "unknown";
     const threshold = `<svg class="slo-threshold" viewBox="0 0 100 14" role="img" aria-label="${esc(s.name)} actual ${actualLabel} percent against ${Number(s.target).toFixed(2)} percent target"><rect x="0" y="4" width="100" height="6" rx="3" class="slo-track"/><rect x="0" y="4" width="${actualX}" height="6" rx="3" class="slo-actual"/><line x1="${targetX}" y1="1" x2="${targetX}" y2="13" class="slo-target"/></svg>`;
-    return `<div class="vital" data-level="${state}"><span class="vital-label">${esc(s.name)} · target ${s.target}%</span><span class="vital-value">${value}</span>${threshold}<span class="vital-sub">${esc(s.detail)} · ${budget}${s.coverage_pct != null ? ` · history coverage ${s.coverage_pct}%` : ""}</span></div>`;
+    // #18: .slo-armed (first render only) plays the one-time draw-in;
+    // .slo-breach pulses tiles whose error budget is exhausted
+    const breached = s.budget_remaining_pct != null && s.budget_remaining_pct < 0;
+    const cls = `vital${firstSloRender ? " slo-armed" : ""}${breached ? " slo-breach" : ""}`;
+    return `<div class="${cls}" data-level="${state}"><span class="vital-label">${esc(s.name)} · target ${s.target}%</span><span class="vital-value">${value}</span>${threshold}<span class="vital-sub">${esc(s.detail)} · ${budget}${s.coverage_pct != null ? ` · history coverage ${s.coverage_pct}%` : ""}</span></div>`;
   }).join(""));
+  firstSloRender = false;
   const c = data.coverage;
   setHTML($("coverage-proof"), `<p>${c.reachable}/${c.expected} reachable · <strong>${c.reporting}/${c.expected} reporting</strong></p>` +
     (c.missing.length ? `<ul>${c.missing.map((a) => `<li>${esc(a.agent)} · ${esc(a.host)} · listener ${esc(a.listener_state)} · owner ${esc(a.owner)}</li>`).join("")}</ul>` : "<p>All active agents report runs.</p>") +
@@ -124,6 +130,8 @@ function rum() {
     ["JS_ERROR", "JavaScript errors", 0, 1, "count", false], ["ASSET_ERROR", "Asset errors", 0, 1, "count", false],
     ["IMAGE_ERROR", "Image errors", 0, 1, "count", false], ["IMAGE_DECODE_ERROR", "Image decode failures", 0, 1, "count", false], ["REJECTION", "Unhandled rejections", 0, 1, "count", false],
     ["WEBGL_LOSS", "WebGL context loss", 0, 1, "events", false], ["OFFLINE", "Offline events", 0, 1, "events", false],
+    ["WEBGPU_INIT_FAILURE", "WebGPU scene initialization failures", 0, 1, "events", false],
+    ["WEBGPU_DEVICE_LOSS", "WebGPU device loss", 0, 1, "events", false], ["WEBGPU_UNCAPTURED_ERROR", "WebGPU uncaptured errors", 0, 1, "events", false],
     ["SCENE_START", "3D scene starts", 999999, 999999, "events", false], ["SCENE_FALLBACK", "3D scene fallbacks", 0, 1, "events", false],
     ["SCENE_SKIP", "Scenes skipped by browser preference or hardware", 0, 1, "events", false], ["SCENE_INIT_FAILURE", "Graphics scene initialization failures", 0, 1, "events", false], ["SCENE_TIER", "Adaptive graphics quality tier", 1, 2, "tier (1=full)", true],
     ["API_HTTP_ERROR", "API HTTP errors", 0, 1, "responses", false], ["API_4XX", "API client errors", 0, 1, "responses", false],
@@ -540,6 +548,33 @@ $("color-vision-mode")?.addEventListener("change", (event) => {
   if (preview) preview.dataset.mode = mode;
   setText($("color-vision-description"), labels[mode] || labels.normal);
 });
+/* reporting heat (#20): runs per host per day for the last 14 days, fed from
+   the same tiny telemetry summary the fleet heartbeat uses — the per-day
+   evidence behind the coverage totals above. Best-effort decoration. */
+async function coverageHeat() {
+  const box = $("coverage-heat");
+  if (!box) return;
+  try {
+    const s = await fetch("/api/telemetry-summary.json", { cache: "no-store" });
+    if (!s.ok) throw new Error(`HTTP ${s.status}`);
+    const j = await s.json();
+    if (j.schema !== "fleet-telemetry-summary/v1" || !Array.isArray(j.runs)) throw new Error("unexpected payload");
+    const days = 14;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const hosts = [...new Set(j.runs.map((r) => r.host).filter(Boolean))].sort();
+    if (!hosts.length) throw new Error("no run rows");
+    const backDays = (ts) => { const d = new Date(ts); d.setHours(0, 0, 0, 0); return Math.round((today - d) / 864e5); };
+    const grid = hosts.map((host) => {
+      const counts = new Array(days).fill(0);
+      for (const r of j.runs) if (r.host === host) { const back = backDays(r.ts); if (back >= 0 && back < days) counts[days - 1 - back]++; }
+      const cells = counts.map((n, i) => `<i data-n="${Math.min(4, n)}" title="${esc(host)} · ${days - 1 - i}d ago · ${n} run${n === 1 ? "" : "s"}"></i>`).join("");
+      return `<div class="cov-heat-row"><span class="cov-heat-name">${esc(host)}</span><span class="cov-heat-cells">${cells}</span><b class="cov-heat-sum">${counts.reduce((a, b) => a + b, 0)}</b></div>`;
+    }).join("");
+    box.innerHTML = `<div class="cov-heat" role="img" aria-label="Runs per host per day over the last ${days} days">${grid}</div><p class="mini-note">Runs per host per day, last ${days} days — the reporting evidence behind the coverage totals above.</p>`;
+  } catch (e) {
+    box.innerHTML = `<p class="mini-note">Per-day run heat unavailable (${esc(String(e.message || e))}).</p>`;
+  }
+}
 async function refresh() {
   if (busy) return;
   busy = true;
@@ -557,6 +592,7 @@ async function refresh() {
 }
 refresh();
 coverage();
+coverageHeat();
 clientRuntime();
 offlineShellReport();
 setInterval(refresh, 30000);

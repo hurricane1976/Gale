@@ -37,6 +37,42 @@ function renderSeverityHistogram(alerts = []) {
     return `<button type="button" class="ops-severity-filter" data-severity="${key}" aria-pressed="${String(severityFilter === key)}"><span>${label}</span><span class="ops-severity-track" aria-hidden="true"><i style="width:${Math.round(count / max * 100)}%"></i></span><strong>${count}</strong></button>`;
   }).join(""));
 }
+function renderExporterCoverage(snapshot) {
+  const root = $("ops-exporters");
+  if (!root) return;
+  const nodes = Array.isArray(snapshot?.nodes) ? snapshot.nodes : null;
+  if (!nodes) { setHTML(root, '<p>Exporter coverage unknown.</p>'); return; }
+  const machines = new Map();
+  for (const node of nodes) {
+    const key = node.machine || `${node.host || "unknown"}:${node.address || "unknown"}`;
+    const group = machines.get(key) || { machine: node.machine || "Machine identity unknown", hosts: new Set(), rows: [] };
+    if (node.host) group.hosts.add(node.host);
+    group.rows.push(node);
+    machines.set(key, group);
+  }
+  const counts = { up: 0, down: 0, unknown: 0 };
+  for (const group of machines.values()) {
+    const states = group.rows.map((row) => row.scrape_up);
+    const checked = group.rows.map((row) => Date.parse(row.scrape_checked_at || "")).filter(Number.isFinite).sort((a, b) => b - a)[0] || 0;
+    group.scrapeAgeMs = checked ? Math.max(0, Date.now() - checked) : Infinity;
+    group.scrapeFresh = group.scrapeAgeMs <= 15 * 60 * 1000;
+    group.state = !group.scrapeFresh ? "unknown" : states.includes(1) || states.includes(true) ? "up" : states.includes(0) || states.includes(false) ? "down" : "unknown";
+    counts[group.state]++;
+  }
+  const addressCount = nodes.length;
+  const summary = `<p class="mini-note">${machines.size} unique machine${machines.size === 1 ? "" : "s"} · ${counts.up} scrape up · ${counts.down} down · ${counts.unknown} unknown · ${addressCount} discovered address${addressCount === 1 ? "" : "es"}</p>`;
+  const rows = [...machines.values()].sort((a, b) => a.machine.localeCompare(b.machine)).map((group) => {
+    const aliases = group.rows.map((row) => row.address).filter(Boolean);
+    const discovered = group.rows.some((row) => row.instrumented);
+    const state = group.state;
+    const label = state === "up" ? "scrape up" : state === "down" ? "scrape down" : !group.scrapeFresh ? "scrape status stale" : discovered ? "exporter found · scrape unknown" : "exporter not found";
+    const detail = aliases.length > 1 ? `${aliases.length} addresses: ${aliases.join(", ")}` : `address ${aliases[0] || "unknown"}`;
+    const check = group.rows.map((row) => row.scrape_checked_at).filter(Boolean).sort().at(-1);
+    const ageText = Number.isFinite(group.scrapeAgeMs) ? ` · checked ${Math.floor(group.scrapeAgeMs / 60000)}m ago` : " · check time unknown";
+    return `<p class="target-card" data-level="${state === "up" ? "ok" : state === "down" ? "crit" : "unknown"}"><strong>${esc([...group.hosts].join(" / ") || "Unknown host")}</strong> · ${esc(group.machine)} <span class="pill" data-level="${state === "up" ? "ok" : state === "down" ? "crit" : "unknown"}">${label}</span><br><span class="mono-dim">${esc(detail)}${check ? ` · scrape checked ${esc(check)}${ageText}` : " · live scrape state not provided"}</span></p>`;
+  }).join("");
+  setHTML(root, summary + (rows || '<p>No exporter inventory rows.</p>'));
+}
 async function get(path) {
   const r = await tracedFetch(path, {cache:"no-store", signal:AbortSignal.timeout(25000)});
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -52,15 +88,15 @@ async function refresh() {
       return;
     }
     const [data, incidents, tasks, exporters, history] = await Promise.all([get("/api/fleet/reliability"), get("/api/fleet/incidents"),get("/api/fleet/tasks"),get("/api/exporter-coverage.json").catch(()=>null),get("/api/fleet/alerts/history").catch(()=>null)]);
-    // External dead-man's switch (review 2026-10-11): the always-firing
-    // Watchdog alert pings healthchecks.io off-host; surface its live state
-    // so "heartbeat armed" is evidence, not an assumption.
+    // The alert feed proves the Alertmanager Watchdog rule is active. It cannot
+    // prove that the remote receiver delivered a notification; keep that
+    // distinction visible until a peer-side receipt is available.
     const wd = incidents.watchdog || {};
     const wdEl = $("ops-watchdog");
     if (wdEl) {
       if (wd.active === true) {
         const age = Number.isFinite(wd.age_hours) ? ` · armed for ${wd.age_hours < 1 ? `${Math.round(wd.age_hours * 60)}m` : `${wd.age_hours}h`}` : "";
-        setText(wdEl, `External heartbeat armed (healthchecks.io via Alertmanager)${age} — a total Gale outage pages from outside this host.`);
+        setText(wdEl, `Alertmanager Watchdog is firing${age} · external receiver is configured; delivery receipt is not available here.`);
         wdEl.dataset.state = "ok";
       } else if (wd.active === false) {
         setText(wdEl, "External heartbeat NOT firing — the dead-man's switch is disarmed; check Prometheus rule evaluation.");
@@ -164,7 +200,7 @@ async function refresh() {
     const b=data.backup;
     setHTML($("ops-backup"),`<p>Archive ${b.backup_age_h??"unknown"}h old · ${esc(b.backup_name||"unknown")}</p><p>Restore ${b.drill_ok==null?"unknown":b.drill_ok?"passed":"failed"} · ${b.drill_age_h??"unknown"}h old · collector ${esc(b.collector.state)}</p>`);
     setHTML($("ops-tasks"),tasks.events.length?tasks.events.slice(-15).reverse().map(e=>`<p><a href="observability.html?run=${encodeURIComponent(e.run_id)}">${esc(e.agent)} ${esc(e.event)}</a> · ${esc(e.at)}${e.tool?` · tool ${esc(e.tool)}`:""}</p>`).join(""):'<p>No instrumented task events yet.</p>');
-    setHTML($("ops-exporters"),exporters?exporters.nodes.map(e=>`<p>${esc(e.host)} · ${esc(e.address)} · ${e.alias_of?`same machine as ${esc(e.alias_of)} (${esc(e.machine)}), scraped once`:e.instrumented?`host metrics enabled${e.machine?` · ${esc(e.machine)}`:""}`:"exporter unavailable; host setup required"}</p>`).join(""):'<p>Exporter coverage unknown.</p>');
+    renderExporterCoverage(exporters);
   } catch(e) {
     opsProblem = e.message;
     if (opsGeneratedAt) paintOpsFreshness();

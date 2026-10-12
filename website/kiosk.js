@@ -122,6 +122,18 @@ export function initKiosk() {
   enterFullscreen();
   document.addEventListener("pointerdown", enterFullscreen, { once: true });
 
+  // idle vignette (#50): after five idle minutes the decorative layers dim
+  // (gale.css keys off html[data-kiosk-dim]); any input restores instantly.
+  // Telemetry panels keep full contrast, so the board stays readable.
+  let idleTimer = 0;
+  const kioskWake = () => {
+    delete document.documentElement.dataset.kioskDim;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => { document.documentElement.dataset.kioskDim = "1"; }, 300000);
+  };
+  for (const ev of ["pointerdown", "pointermove", "keydown"]) document.addEventListener(ev, kioskWake, { passive: true });
+  kioskWake();
+
   kioskBanner(left);
   const iv = setInterval(() => {
     if (document.hidden) return;                 // don't advance in background tabs

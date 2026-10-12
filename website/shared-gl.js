@@ -32,6 +32,18 @@ export function program(gl, vs, fs, label = "program") {
 export const dprCap = (base) => Math.min(window.devicePixelRatio || 1, base);
 export const motionPaused = () => document.documentElement.dataset.cssMotion === "paused";
 
+/* one resize/DPR policy (#36): client size x DPR cap x quality scale, so
+   engines stop drifting apart on rounding and Safari DPR fixes land once. */
+export function fitCanvas(canvas, baseDpr, quality) {
+  const dpr = dprCap(baseDpr * (quality ? quality.scale() : 1));
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (w < 2 || h < 2) return { dpr, w, h, sized: false };
+  if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+  }
+  return { dpr, w, h, sized: true };
+}
+
 /* Optional diagnostics HUD for local renderer triage: append ?graphics=debug.
    It is absent from normal views and never writes telemetry by itself. */
 export function createGraphicsHud(canvas, scene, quality) {
@@ -136,12 +148,13 @@ export const LIGHT = [-0.45, 0.85, 0.35];
 
 /* Quality: EMA of frame delta drives a tier ladder. Sustained slowness
    (hold frames over downMs) steps DOWN; sustained ease (longer hold over
-   upMs) steps back UP; cooldown between moves stops flapping. dt spikes
+   upMs) steps back UP; a 4 s cooldown between moves stops tier/HUD badge
+   flapping on marginal devices (graphics pass 2026-10-12 #37). dt spikes
    over 250ms are tab-return artifacts and ignored. */
 export class Quality {
   static SCALES = [1, 0.8, 0.65, 0.5];
 
-  constructor({ downMs = 23, upMs = 14, hold = 60, coolMs = 2000, maxTier = 3 } = {}) {
+  constructor({ downMs = 23, upMs = 14, hold = 60, coolMs = 4000, maxTier = 3 } = {}) {
     this.downMs = downMs; this.upMs = upMs; this.hold = hold;
     this.coolMs = coolMs; this.maxTier = maxTier;
     this.ema = 16.7; this.tier = 0;

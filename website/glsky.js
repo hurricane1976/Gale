@@ -63,9 +63,12 @@ export async function initGlSky() {
       document.body.prepend(canvas);
     }
     const ctx = canvas.getContext("webgpu");
-    if (!ctx) return false;
+    if (!ctx) { canvas.remove(); return false; }
     const format = navigator.gpu.getPreferredCanvasFormat();
     const module = device.createShaderModule({ code: WGSL });
+    const compilation = await module.getCompilationInfo();
+    const shaderErrors = compilation.messages.filter((message) => message.type === "error");
+    if (shaderErrors.length) throw new Error(`WGSL compilation failed (${shaderErrors.length} errors)`);
     const pipeline = device.createRenderPipeline({
       layout: "auto",
       vertex: { module, entryPoint: "vs" },
@@ -88,9 +91,23 @@ export async function initGlSky() {
     resize();
     window.addEventListener("resize", resize, { passive: true });
     const t0 = performance.now();
+    let active = true, frameId = 0;
+    device.addEventListener("uncapturederror", () => {
+      window.__galeRUMRecord?.("WEBGPU_UNCAPTURED_ERROR", 1, "events", "glsky");
+    });
+    device.lost.then((info) => {
+      if (!active) return;
+      active = false;
+      cancelAnimationFrame(frameId);
+      document.documentElement.classList.remove("gl-sky-on");
+      canvas.remove();
+      window.__galeRUMRecord?.("WEBGPU_DEVICE_LOSS", 1, "events", "glsky");
+      console.warn("gl-sky device lost", info.reason);
+    }).catch(() => {});
     document.documentElement.classList.add("gl-sky-on");
-    requestAnimationFrame(function loop() {
-      if (document.hidden) { requestAnimationFrame(loop); return; }
+    const loop = () => {
+      if (!active) return;
+      if (document.hidden) { frameId = requestAnimationFrame(loop); return; }
       resize();
       const t = (performance.now() - t0) / 1000;
       device.queue.writeBuffer(uniformBuf, 0, new Float32Array([t, STORM.level, window.innerWidth / Math.max(1, window.innerHeight), 7.0]));
@@ -103,10 +120,14 @@ export async function initGlSky() {
       pass2.draw(3);
       pass2.end();
       device.queue.submit([enc2.finish()]);
-      requestAnimationFrame(loop);
-    });
+      frameId = requestAnimationFrame(loop);
+    };
+    frameId = requestAnimationFrame(loop);
     return true;
   } catch (e) {
+    window.__galeRUMRecord?.("WEBGPU_INIT_FAILURE", 1, "events", "glsky");
+    document.documentElement.classList.remove("gl-sky-on");
+    document.getElementById("gl-sky")?.remove();
     console.warn("gl-sky unavailable", e);
     return false;
   }

@@ -49,6 +49,30 @@ function card(host, info, last, h, cells) {
 
 let wallView = null;
 
+/* column crosshair (#25): hovering one hour cell highlights that same hour
+   across every host card, so the fleet's wake cadence reads as one timeline.
+   Delegated at document level: the grid re-renders every 2 minutes. */
+let hotCol = -1;
+const setHotCol = (idx) => {
+  if (idx === hotCol) return;
+  hotCol = idx;
+  for (const wrap of document.querySelectorAll(".hb-24h")) {
+    [...wrap.children].forEach((c, i) => c.classList.toggle("hb-col-hot", i === idx));
+  }
+};
+if (typeof document !== "undefined") {
+  document.addEventListener("mouseover", (e) => {
+    const cell = e.target.closest ? e.target.closest(".hb-24h i") : null;
+    if (!cell || !cell.parentElement) { setHotCol(-1); return; }
+    setHotCol([...cell.parentElement.children].indexOf(cell));
+  });
+  document.addEventListener("mouseout", (e) => {
+    const from = e.target.closest ? e.target.closest(".hb-24h") : null;
+    const to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest(".hb-24h") : null;
+    if (from && from !== to) setHotCol(-1);
+  });
+}
+
 export async function renderHeartbeat() {
   const mount = document.getElementById("heartbeat-grid");
   if (!mount) return;

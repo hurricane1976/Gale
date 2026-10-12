@@ -17,10 +17,12 @@ attribute float a_scale;
 uniform mat4 u_mvp;
 uniform float u_size;
 varying vec3 v_color;
+varying float v_depth;
 void main() {
   gl_Position = u_mvp * vec4(a_pos, 1.0);
   gl_PointSize = u_size * a_scale;
   v_color = a_color;
+  v_depth = gl_Position.w; // clip w == view-space depth for a perspective projection
 }`;
 
 // u_mode 0 = hard-edged core disc; 1 = soft gaussian halo, drawn additively
@@ -29,12 +31,18 @@ void main() {
 const FRAG = `
 precision mediump float;
 varying vec3 v_color;
+varying float v_depth;
 uniform float u_mode;
+uniform float u_camDist;
 void main() {
   vec2 d = gl_PointCoord - vec2(0.5);
   float r2 = dot(d, d);
   if (u_mode > 0.5) {
     float a = exp(-r2 * 14.0) * 0.5;
+    // depth-of-field (#28): glow behind the camera's focal centre fades off;
+    // crisp cores below keep full brightness, so structure stays readable
+    float rel = v_depth / max(u_camDist, 0.001);
+    a *= clamp(1.35 - rel * 0.35, 0.35, 1.0);
     gl_FragColor = vec4(v_color * a, a);
     return;
   }
@@ -45,18 +53,30 @@ void main() {
 const LINE_VS = `
 attribute vec3 a_pos;
 attribute vec4 a_color;
+attribute float a_flow;
 uniform mat4 u_mvp;
 varying vec4 v_color;
-void main() { gl_Position = u_mvp * vec4(a_pos, 1.0); v_color = a_color; }`;
+varying float v_flow;
+void main() { gl_Position = u_mvp * vec4(a_pos, 1.0); v_color = a_color; v_flow = a_flow; }`;
 
+// packet dashes (#29): a_flow carries the edge's phase at vert A and
+// phase+1 at vert B, so fract(v_flow) is a clean 0..1 param along the line;
+// a bright window rides it at u_time's pace (frozen when motion is reduced).
 const LINE_FRAG = `
 precision mediump float;
 varying vec4 v_color;
-void main() { gl_FragColor = v_color; }`;
+varying float v_flow;
+uniform float u_time;
+uniform float u_flowAmp;
+void main() {
+  float u = fract(v_flow - u_time * 0.25);
+  float packet = smoothstep(0.0, 0.08, u) * (1.0 - smoothstep(0.16, 0.26, u)) * u_flowAmp;
+  gl_FragColor = vec4(v_color.rgb * (1.0 + packet * 0.9), v_color.a);
+}`;
 
 const esc3d = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-import { program, Quality, dprCap, createGraphicsHud, motionPaused } from "./shared-gl.js";
+import { program, Quality, fitCanvas, createGraphicsHud, motionPaused } from "./shared-gl.js";
 
 const REDUCED3D = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -177,7 +197,8 @@ export function initTopology3D(opts = {}) {
   const hasPairing = nodes.some((n) => n.state);
 
   const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
-  if (!gl) { window.__galeRUMRecord?.("SCENE_INIT_FAILURE", 1, "events", "topology3d"); toggle.hidden = true; noteSceneChoice("WebGL is unavailable; the interactive SVG map remains active.", "webgl-unavailable"); return; }
+  if (!gl) { window.__galeRUMRecord?.("SCENE_INIT_FAILURE", 1, "events", "topology3d"); toggle.hidden = true; noteSceneChoice(opts.fallbackMessage || "WebGL is unavailable; the interactive SVG map remains active.", "webgl-unavailable"); return; }
+  toggle.hidden = false;
 
   // --- simulation state: sphere-seeded positions settle into clusters ---
   const rng = mulberry32(0x6a1e);
@@ -202,7 +223,8 @@ export function initTopology3D(opts = {}) {
   const posBuf = gl.createBuffer();
   const colBuf = gl.createBuffer();
   const lineBuf = gl.createBuffer();
-  const lineData = new Float32Array(edges.length * 14); // 2 verts * (pos3+color4) = 7 floats/vert, matches the 28-byte stride
+  const lineData = new Float32Array(edges.length * 16); // 2 verts * (pos3+color4+flow1) = 8 floats/vert, 32-byte stride
+  const edgePhase = edges.map((_, e) => (e * 0.61803398875) % 1); // packet stagger (#29)
   const nodeColors = new Float32Array((N + H) * 3);
   nodes.forEach((n, i) => nodeColors.set(n.color, i * 3));
   nodeColors.set(hubColors, N * 3);
@@ -251,6 +273,7 @@ export function initTopology3D(opts = {}) {
   let fitLocked = false; // user zoomed: stop auto-fitting
   const cam = [0, 0, 0], camGoal = [0, 0, 0];      // orbit target (eases to a focused node)
   let focusIdx = -1, focusDist = 4.2, lastInteract = performance.now();
+  let hoverIdx = -1;
   let pinchActive = false;
   const alertSev = new Uint8Array(N);              // 0 none, 1 warn, 2 crit (from /api/fleet/alerts)
   const alertText = new Map();                     // node index -> alert text
@@ -298,12 +321,8 @@ export function initTopology3D(opts = {}) {
   }
 
   const resize = () => {
-    const dpr = dprCap((LITE ? 1.5 : 2) * (q ? q.scale() : 1));
-    backingDpr = dpr;
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
-      canvas.width = w * dpr; canvas.height = h * dpr;
-    }
+    const r = fitCanvas(canvas, LITE ? 1.5 : 2, q); // shared DPR/quality policy (#36)
+    backingDpr = r.dpr;
   };
 
   // host labels: DOM text projected from each hub every frame (textContent only)
@@ -327,7 +346,10 @@ export function initTopology3D(opts = {}) {
   let lastFrame = 0, lastRumSample = 0;
   const draw = () => {
     if (canvas.hidden || document.hidden || !sceneVisible) { raf = 0; return; }
-    raf = requestAnimationFrame(draw);
+    // reduced motion (#38): no continuous loop — render only the frames
+    // interaction asks for (kick() below), so the scene rests as a still
+    // image between gestures instead of running an always-on rAF
+    if (REDUCED3D) raf = 0; else raf = requestAnimationFrame(draw);
     if (motionPaused()) return;
     if ((LITE || (q && q.tier >= 2)) && (frameN++ & 1)) return; // 30 fps on phones / tier-2 rescue
     const nowMs = performance.now();
@@ -372,14 +394,16 @@ export function initTopology3D(opts = {}) {
     const m = camMatrix();
 
     // lines
-    let k = 0;
+    let k = 0, ei = 0;
     for (const [a, b, kind] of edges) {
       const col = kind ? TRUNK : spokeFor(a);
       const pend = !kind && /half minted|pending/i.test(nodes[a].state || "");
       const dimmed = !kind && isDown(a);
-      for (const v of [a, b]) {
-        lineData.set([pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2], col[0], col[1], col[2], dimmed ? col[3] * 0.3 : pend && !REDUCED3D ? col[3] * (0.55 + 0.45 * Math.sin(performance.now() / 380)) : col[3]], k);
-        k += 7;
+      const alpha = dimmed ? col[3] * 0.3 : pend && !REDUCED3D ? col[3] * (0.55 + 0.45 * Math.sin(performance.now() / 380)) : col[3];
+      const phase = edgePhase[ei++];
+      for (const [v, off] of [[a, 0], [b, 1]]) {
+        lineData.set([pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2], col[0], col[1], col[2], alpha, phase + off], k);
+        k += 8;
       }
     }
     gl.useProgram(lineProg);
@@ -388,11 +412,16 @@ export function initTopology3D(opts = {}) {
     const lp = lineProg;
     const la = gl.getAttribLocation(lp, "a_pos");
     const la2 = gl.getAttribLocation(lp, "a_color");
+    const la3 = gl.getAttribLocation(lp, "a_flow");
     gl.enableVertexAttribArray(la);
     gl.enableVertexAttribArray(la2);
-    gl.vertexAttribPointer(la, 3, gl.FLOAT, false, 28, 0);
-    gl.vertexAttribPointer(la2, 4, gl.FLOAT, false, 28, 12);
+    gl.enableVertexAttribArray(la3);
+    gl.vertexAttribPointer(la, 3, gl.FLOAT, false, 32, 0);
+    gl.vertexAttribPointer(la2, 4, gl.FLOAT, false, 32, 12);
+    gl.vertexAttribPointer(la3, 1, gl.FLOAT, false, 32, 28);
     gl.uniformMatrix4fv(gl.getUniformLocation(lp, "u_mvp"), false, m);
+    gl.uniform1f(gl.getUniformLocation(lp, "u_time"), nowMs / 1000);
+    gl.uniform1f(gl.getUniformLocation(lp, "u_flowAmp"), REDUCED3D ? 0 : 1);
     gl.drawArrays(gl.LINES, 0, edges.length * 2);
 
     // nodes
@@ -412,6 +441,7 @@ export function initTopology3D(opts = {}) {
     gl.enableVertexAttribArray(na2);
     gl.vertexAttribPointer(na2, 3, gl.FLOAT, false, 0, 0);
     gl.uniformMatrix4fv(gl.getUniformLocation(np, "u_mvp"), false, m);
+    gl.uniform1f(gl.getUniformLocation(np, "u_camDist"), dist); // DOF reference (#28)
     const dpr3 = backingDpr; // point sizes follow the ACTUAL backing scale
     const uMode = gl.getUniformLocation(np, "u_mode");
     const uSize = gl.getUniformLocation(np, "u_size");
@@ -435,7 +465,7 @@ export function initTopology3D(opts = {}) {
     gl.uniform1f(uSize, 16 * dpr3);
     gl.drawArrays(gl.POINTS, N, H);
 
-    // everything below (stars, alert halos, focus ring, flow dots) is unscaled: constant a_scale = 1
+    // everything below (stars, cluster halos, alert halos, focus ring, flow dots) is unscaled: constant a_scale = 1
     gl.disableVertexAttribArray(ns);
     gl.vertexAttrib1f(ns, 1);
     // starfield: tiny dim cores
@@ -448,6 +478,16 @@ export function initTopology3D(opts = {}) {
       gl.blendFunc(additive ? gl.ONE : gl.SRC_ALPHA, additive ? gl.ONE : gl.ONE_MINUS_SRC_ALPHA);
       gl.uniform1f(uMode, mode); gl.uniform1f(uSize, size); gl.drawArrays(gl.POINTS, 0, count);
     };
+    // cluster halos (#32): one huge, ultra-faint additive sprite per hub
+    // grounds each host cloud in a volume of light (colour pre-multiplied)
+    if (!REDUCED3D && H) {
+      const hubGlowPos = new Float32Array(H * 3), hubGlowCol = new Float32Array(H * 3);
+      for (let h = 0; h < H; h++) {
+        hubGlowPos.set([pos[(N + h) * 3], pos[(N + h) * 3 + 1], pos[(N + h) * 3 + 2]], h * 3);
+        hubGlowCol.set([hubColors[h * 3] * 0.05, hubColors[h * 3 + 1] * 0.05, hubColors[h * 3 + 2] * 0.05], h * 3);
+      }
+      drawPts(hubGlowPos, hubGlowCol, H, 240 * dpr3, 1, true);
+    }
     drawPts(starPos, starCol, starN, 2 * dpr3, 0, false);
     // alert halos: agents with an open warn/crit alert pulse amber/red (additive halo + tinted core)
     const tNow = performance.now(), pulse = REDUCED3D ? 1 : 1 + 0.35 * Math.sin(tNow / 330);
@@ -468,6 +508,12 @@ export function initTopology3D(opts = {}) {
       const fp = new Float32Array([pos[focusIdx * 3], pos[focusIdx * 3 + 1], pos[focusIdx * 3 + 2]]);
       drawPts(fp, new Float32Array([0.55, 0.75, 1.0]), 1, 96 * dpr3 * pulse, 1, true);
       drawPts(fp, new Float32Array([1, 1, 1]), 1, (focusIdx >= N ? 20 : 12) * dpr3, 0, false);
+    }
+    // hover highlight (#31): a quiet additive ring in the same perspective
+    // space as the node (the DOM tooltip alone didn't say WHICH node)
+    if (hoverIdx >= 0 && hoverIdx !== focusIdx) {
+      const hp = new Float32Array([pos[hoverIdx * 3], pos[hoverIdx * 3 + 1], pos[hoverIdx * 3 + 2]]);
+      drawPts(hp, new Float32Array([0.35, 0.7, 1.0]), 1, 44 * dpr3, 1, true);
     }
 
     // live-activity ripples: an expanding, fading ring from the agent that just did something
@@ -524,8 +570,15 @@ export function initTopology3D(opts = {}) {
     labelBox.style.display = canvas.hidden ? "none" : "";
     if (!canvas.hidden) {
       const kx = canvas.clientWidth / gl.drawingBufferWidth, ky = canvas.clientHeight / gl.drawingBufferHeight;
-      // host labels sit under their hubs; when two would collide, nudge the lower one down (no overlap smear)
-      const placed = labels.map((el, h) => { const [sx, sy] = project(N + h, m); return { el, x: sx * kx, y: sy * ky + 14, w: el.offsetWidth || 90 }; })
+      // host labels sit under their hubs; when two would collide, nudge the lower one down (no overlap smear).
+      // depth-aware opacity (#30): hubs nearer than the orbit centre read at full
+      // strength, hubs behind it recede — matching the shader DOF on the glows.
+      const camD = Math.max(dist, 0.001);
+      const placed = labels.map((el, h) => {
+        const [sx, sy] = project(N + h, m);
+        const wClip = Math.max(m[3] * pos[(N + h) * 3] + m[7] * pos[(N + h) * 3 + 1] + m[11] * pos[(N + h) * 3 + 2] + m[15], 0.001);
+        return { el, x: sx * kx, y: sy * ky + 14, w: el.offsetWidth || 90, fade: Math.max(0.35, Math.min(1, 1.35 - (wClip / camD) * 0.35)) };
+      })
         .sort((a, b) => a.y - b.y);
       placed.forEach((p, i) => {
         for (let j = 0; j < i; j++) {
@@ -534,6 +587,7 @@ export function initTopology3D(opts = {}) {
         }
         p.el.style.left = `${p.x}px`;
         p.el.style.top = `${p.y}px`;
+        p.el.style.opacity = p.fade.toFixed(2);
       });
       if (focusIdx >= 0) {
         const [fx, fy] = project(focusIdx, m);
@@ -543,10 +597,16 @@ export function initTopology3D(opts = {}) {
     }
   };
 
+  const kick = () => { if (!raf && !canvas.hidden && !document.hidden && sceneVisible && !motionPaused()) raf = requestAnimationFrame(draw); };
   function syncDraw() {
     const shouldRun = !canvas.hidden && !document.hidden && sceneVisible;
-    if (shouldRun && !raf) raf = requestAnimationFrame(draw);
+    if (shouldRun && !raf) { if (REDUCED3D) kick(); else raf = requestAnimationFrame(draw); }
     else if (!shouldRun && raf) { cancelAnimationFrame(raf); raf = 0; }
+  }
+  // reduced-motion repaints: interaction-driven single frames (#38)
+  if (REDUCED3D) {
+    for (const ev of ["pointerdown", "pointermove", "pointerup", "wheel", "keydown"]) canvas.addEventListener(ev, kick, { passive: true });
+    window.addEventListener("gale:scrub", kick);
   }
   const sceneIO = typeof IntersectionObserver === "function"
     ? new IntersectionObserver((es) => { sceneVisible = es.some((e) => e.isIntersecting); syncDraw(); }, { rootMargin: "120px" }) : null;
@@ -772,10 +832,11 @@ export function initTopology3D(opts = {}) {
   }
 
   canvas.addEventListener("pointermove", (e) => {
-    if (dragging) { tip.hidden = true; return; }
+    if (dragging) { tip.hidden = true; hoverIdx = -1; return; }
     const rect = canvas.getBoundingClientRect();
     lastInteract = performance.now();
     const best = pickAt(e.clientX, e.clientY, false);
+    hoverIdx = best;
     canvas.style.cursor = best === -1 ? "grab" : "pointer";
     if (best === -1) { tip.hidden = true; return; }
     const n = nodes[best];
@@ -787,7 +848,7 @@ export function initTopology3D(opts = {}) {
     tip.style.left = `${Math.min(e.clientX - rect.left + 14, rect.width - 190)}px`;
     tip.style.top = `${Math.max(e.clientY - rect.top - 10, 4)}px`;
   });
-  canvas.addEventListener("pointerleave", () => { tip.hidden = true; });
+  canvas.addEventListener("pointerleave", () => { tip.hidden = true; hoverIdx = -1; });
 
   /* ---- picking, click-to-focus, alert halos, auto-open ---- */
   // nearest node (or, with hubs=true, host hub) to a client point, by projected screen distance

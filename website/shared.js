@@ -1850,13 +1850,21 @@ export function initThemeToggle() {
   btn.addEventListener("click", () => {
     const cur = mode();
     const next = cur === "auto" ? "light" : cur === "light" ? "dark" : "auto";
-    if (next === "auto") {
-      delete document.documentElement.dataset.theme;
-      try { localStorage.removeItem("gale-theme"); } catch {}
-    } else {
-      document.documentElement.dataset.theme = next;
-      try { localStorage.setItem("gale-theme", next); } catch {}
-    }
+    const apply = () => {
+      if (next === "auto") {
+        delete document.documentElement.dataset.theme;
+        try { localStorage.removeItem("gale-theme"); } catch {}
+      } else {
+        document.documentElement.dataset.theme = next;
+        try { localStorage.setItem("gale-theme", next); } catch {}
+      }
+    };
+    // crossfade the token flip (#10) with the view-transition machinery the
+    // site already uses for navigation; reduced motion keeps the instant snap
+    if (!REDUCED && typeof document.startViewTransition === "function") {
+      const t = document.startViewTransition(apply);
+      if (t) for (const k of ["finished", "ready", "updateCallbackDone"]) if (t[k] && t[k].catch) t[k].catch(() => {});
+    } else apply();
     label();
   });
   dockAdd(btn);
@@ -2198,6 +2206,9 @@ function initConnectivityStatus() {
   const update = () => {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const limited = !!connection?.saveData || ["slow-2g", "2g"].includes(connection?.effectiveType);
+    // reconnect affordance (#49): freshness dots spin while the connection is down
+    if (navigator.onLine) delete document.documentElement.dataset.net;
+    else document.documentElement.dataset.net = "offline";
     if (!navigator.onLine) {
       wasOffline = true; banner.dataset.state = "offline";
       message.textContent = "Offline · live telemetry is paused. Cached pages remain available."; refresh.hidden = true; banner.hidden = false;
@@ -2360,6 +2371,58 @@ function initNavPulse() {
   setInterval(paint, 60000);
 }
 
+/* Reduce desktop navigation noise using native details/summary menus. The
+   existing links are moved intact, so current-page semantics and hrefs stay
+   canonical. Mobile navigation uses its separate tab bar and More dialog. */
+function initGroupedNavigation() {
+  const nav = document.querySelector(".site-links, .fleet-links, .topnav-links");
+  if (!nav || nav.dataset.grouped === "true") return;
+  const anchors = [...nav.querySelectorAll(":scope > a")];
+  const pulse = anchors.find((a) => a.id === "nav-pulse");
+  const pages = anchors.filter((a) => a !== pulse && /\.html(?:$|[?#])/.test(a.getAttribute("href") || ""));
+  if (pages.length < 8) return;
+  const byPage = new Map(pages.map((a) => [a.getAttribute("href").split(/[?#]/)[0].split("/").pop(), a]));
+  const definitions = [
+    ["Overview", ["index.html", "home.html", "operations.html", "status.html"]],
+    ["Fleet", ["fleet.html", "galaxy.html", "network.html"]],
+    ["Insights", ["metrics.html", "observability.html", "reliability.html"]],
+    ["Services", ["ollama.html", "agora.html", "weather.html", "runbooks.html"]],
+  ];
+  const grouped = new Set();
+  for (const [label, names] of definitions) {
+    const links = names.map((name) => byPage.get(name)).filter(Boolean);
+    if (!links.length) continue;
+    const group = document.createElement("details");
+    group.className = "nav-group";
+    const current = links.find((a) => a.getAttribute("aria-current") === "page");
+    group.dataset.active = String(!!current);
+    const summary = document.createElement("summary");
+    summary.textContent = label;
+    if (current) summary.setAttribute("aria-label", `${label} · current page ${current.textContent.trim()}`);
+    const menu = document.createElement("div");
+    menu.className = "nav-group-menu";
+    for (const link of links) { grouped.add(link); menu.appendChild(link); }
+    group.append(summary, menu);
+    group.addEventListener("toggle", () => {
+      if (group.open) nav.querySelectorAll("details.nav-group[open]").forEach((item) => { if (item !== group) item.open = false; });
+    });
+    nav.appendChild(group);
+  }
+  for (const link of pages) if (!grouped.has(link)) link.remove();
+  if (pulse && pulse.parentElement !== nav) nav.appendChild(pulse);
+  nav.dataset.grouped = "true";
+  document.addEventListener("pointerdown", (event) => {
+    if (!nav.contains(event.target)) nav.querySelectorAll("details.nav-group[open]").forEach((item) => { item.open = false; });
+  });
+  nav.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const opened = nav.querySelector("details.nav-group[open]");
+    if (!opened) return;
+    opened.open = false;
+    opened.querySelector("summary")?.focus();
+  });
+}
+
 /* stamp the print header with the print time (CSS reads data-printed; see mobile.css @media print) */
 if (typeof window !== "undefined" && window.addEventListener) {
   window.addEventListener("beforeprint", () => {
@@ -2398,10 +2461,31 @@ export function boot() {
   // command palette (Ctrl/Cmd+K), dynamically imported so plain-Node
   // render-test imports of this module stay DOM-free
   if (typeof document !== "undefined" && document.body) {
+    // graphics pass 2026-10-12: once-per-session hero cascade (#4), one shared
+    // skeleton shimmer phase (#39), per-route accent (#8), hour-tinted
+    // ambient blob hue (#11)
+    try {
+      if (!sessionStorage.getItem("gale-hero-seen")) {
+        document.documentElement.classList.add("first-visit");
+        sessionStorage.setItem("gale-hero-seen", "1");
+      }
+    } catch {}
+    const rootStyle = document.documentElement.style; // render-test stubs may omit .style
+    rootStyle?.setProperty?.("--skel-phase", `-${Math.round(performance.now() % 1400)}ms`);
+    const PAGE_ACCENTS = {
+      fleet: "var(--storm-purple)", weather: "var(--gust)", ollama: "var(--bolt)",
+      agora: "var(--gust)", observability: "var(--bolt)", 404: "var(--bolt)",
+    };
+    const pageKey = (location.pathname.split("/").pop() || "index.html").replace(/\.html$/, "").toLowerCase();
+    if (PAGE_ACCENTS[pageKey]) rootStyle?.setProperty?.("--page-accent", PAGE_ACCENTS[pageKey]);
+    const hr = new Date().getHours();
+    // gentle ambience drift: midday and small hours lean opposite directions, ±14°
+    rootStyle?.setProperty?.("--blob-hue", `${(Math.cos((hr - 13) / 24 * Math.PI * 2) * -14).toFixed(1)}deg`);
     initMobileNavigation();
     initConnectivityStatus();
     initPWAChromeTheme();
     initMobileTableHints();
+    initGroupedNavigation();
     initNavPulse();
     initThemeToggle();
     initContrastMode();

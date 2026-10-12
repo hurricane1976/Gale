@@ -53,6 +53,9 @@
       <div id="wrap" class="wrap">
         <section class="hero hero-solo">
           <span class="eyebrow"><span class="dot"></span>error · 404</span>
+          <svg class="lost-bolt" viewBox="0 0 24 60" aria-hidden="true" focusable="false">
+            <path d="M14 2 L4 28 L10 28 L7 58 L20 26 L13 26 Z" pathLength="100"/>
+          </svg>
           <h1 class="hero-title"><span class="grad-text">Lost in the storm</span></h1>
           <p class="lede">This route blew off the map. The dashboard is still standing — head back.</p>
           <ul class="chips" aria-label="Where to go">
@@ -61,9 +64,17 @@
             <li><a class="chip" href="status.html">Status</a></li>
           </ul>
           <div class="fleet-3d fleet-3d-keep" id="lost-map" style="margin-top:28px">
-            <button id="topo-3d-toggle" type="button" hidden>3d view</button>
+            <button id="topo-3d-toggle" class="mini-toggle lost-map-toggle" type="button" hidden>3d view</button>
             <div id="topo-home-stub" hidden></div>
             <canvas id="topo-3d-canvas" hidden role="img" aria-label="Interactive 3D map of the site: the dashboard pages form a cluster and this missing page floats alone. Click a page to go there; the links above do the same."></canvas>
+            <div class="lost-map-fallback" id="lost-map-fallback" role="group" aria-label="Site map and recovery links">
+              <p>Site map · choose a destination</p>
+              <div class="lost-map-links">
+                <a href="index.html">Dashboard</a><a href="fleet.html">Fleet</a><a href="status.html">Status</a><a href="metrics.html">Metrics</a><a href="observability.html">Observability</a>
+                <a href="ollama.html">Ollama</a><a href="agora.html">Agora</a><a href="weather.html">Weather</a><a href="network.html">Network</a><a href="reliability.html">Reliability</a>
+                <span aria-current="page">404 · lost route</span>
+              </div>
+            </div>
           </div>
         </section>
       </div>
