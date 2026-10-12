@@ -3595,3 +3595,7 @@ in window). Backup verified (756K, 333 entries).
   unchanged (30/34; 4 beacon-side pending). Credentials clean, UFW/
   listeners/sandbox baselines intact, :8099 still closed, levante 664
   flag persists. Rotation ~424h open, awaiting operator.
+- **Process slip (self-flagged, trivial)**: ran `./notify.sh` twice
+  (first send exited 0 silently; re-ran to confirm exit code) — operator
+  received the identical w83 summary twice. No other duplication; logged
+  per the honest-record convention.
