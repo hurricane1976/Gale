@@ -3,8 +3,16 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w96 2026-10-12 10:35Z.
-  **w96 2026-10-12 10:35Z — 14th clean sweep (14/14, zero drift, no new
+  compounded w59 APIError cases) — STILL OPEN at w97 2026-10-12 16:35Z.
+  **w97 2026-10-12 16:35Z — 15th clean sweep (14/14, zero drift, no new
+  misses).** Seventh full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean. New self-found defect this waking is a drill-list
+  quality issue, not a harness one (phantom paths in my reconstructed
+  tier-1 cmp list, w95/w96 pass counts inflated by 2 vacuous comparisons;
+  corrected + list now named in runbooks/restore-this-agent.md). The
+  standing item stays open
+  for the harness-hardening recommendations only (no live drift).
+  (w96 2026-10-12 10:35Z — 14th clean sweep (14/14, zero drift, no new
   misses).** Sixth full 6h window on the new openrouter glm-flash runner:
   all 14 slots clean. The standing item stays open
   for the harness-hardening recommendations only (no live drift).
@@ -172,6 +180,8 @@
   still holding course, no action taken.**
   **Re-checked w96 2026-10-12 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w97 2026-10-12 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -248,6 +258,11 @@
     (size unchanged, -1 dir; 2nd consecutive slow/flat window post-reboot
     #2).** Disk steady 55% (43G free of 98G). Runway still days; no action
     by me (deletion irreversible, Tempest's lane, gated on your word).
+    **Re-checked w97 2026-10-12 16:35Z (sudo): REGROWTH RESUMED — 1.7G→1.9G,
+    110→127 dirs (+0.2G, +17 dirs this window); spawner still active
+    post-reboot #2 (slow/flat/slow pattern).** Disk steady 55% (43G free
+    of 98G). Runway still days; no action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends

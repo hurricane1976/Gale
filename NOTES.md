@@ -1,5 +1,77 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-12 16:35Z — Ninety-seventh (97th) waking (backup+drill PASS
+    two-tier with a CORRECTED 15-path list; **drill-list defect self-caught —
+    2 phantom paths in my reconstructed list never existed; w95/w96 "16/16"
+    claims were inflated; stable list now named in the runbook**; fleet
+    14/14 fresh, ZERO drift — 15th clean sweep; 7th full openrouter window;
+    **netbox NEW failure mode 203/EXEC crash-loop (host service, not my
+    lane)**; /tmp regrowth resumed 1.9G; 15 pings archived + 1 acked; no
+    operator msgs)
+
+    - Backup RUN `tramontane-20261012T163535Z.tar.gz` (220K, 84 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w97-XXXXXX`;
+        first attempt ran a 16-path list I reconstructed from NOTES' "runbooks×4"
+        shorthand — **self-caught 2 phantom paths** (`runbooks/restore-a-sibling-agent.md`;
+        `runbooks/tmp-puppeteer-leak-maxdepth-blindspot.md` — the latter is
+        TEMPEST's runbook, not mine). `git log --all` confirms neither ever
+        existed in this tree, so **w95/w96's "16/16" were inflated the same
+        way** (14 real files + 2 vacuous comparisons; the w92 row had fixed
+        one such typo, then the shorthand let it regress). Re-ran with a
+        corrected, explicit 15-path list and per-path existence checks:
+        `cmp` **15/15** byte-identical to live; `tar -tzf` shows only the two
+        `keys/*.example` templates plus the `keys/` dir entry — no live
+        secrets; scratch cleaned. **Runbook updated** (`runbooks/restore-
+        this-agent.md` now names the 15-path stable list + the
+        existence-check requirement) so this reconstruction cycle ends.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w97` → tip
+        `0dba4a4` **== local HEAD** (the w96 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **Drift sweep (14 dirs, 16:36Z): ALL FRESH, none over the 6h bar —
+      15th clean sweep, zero drift, no silent failures.** me 0m / TEMPEST
+      24m / SQUALL 50m / SIROCCO 71m / PONIENTE 99m / OSTRO 113m / MAISTRAL
+      150m / LEVANTE 174m (1474 entries — known benign larger-tree class) /
+      CYCLONE 200m / CHINOOK 225m / BORA 250m / ZEPHYR 310m (11:25 slot,
+      under bar) / VORTEX 334m (11:01 slot, under bar) / GALE(agent-root)
+      0m (16:35 slot just ran; 603 entries, 37M). Spot keys-clean (w93
+      corrected pattern) on TEMPEST + ZEPHYR + VORTEX + MAISTRAL + GALE-root.
+    - Seventh consecutive full 6h window on the openrouter glm-flash runner
+      — all 14 slots clean, no transition artifacts.
+    - **netbox: NEW failure mode (read-only observation, host service not my
+      lane): `activating (auto-restart)`, gunicorn ExecStart exits
+      `203/EXEC`** — the venv binary at `/opt/netbox/venv/bin/gunicorn`
+      will not execute (NRestarts=14,332; was plain `active` at w96
+      10:35Z, so this broke between 10:35Z and now). Different from the
+      Sept-25 "No module named gunicorn" python-path class. I touched
+      nothing; flagging for the operator / whoever owns it.
+    - **/tmp snap-chromium — REGROWTH RESUMED (sudo re-check, 16:35Z):
+      1.7G→1.9G, 110→127 dirs (+0.2G, +17 dirs) this window** — the spawner
+      is still active post-reboot #2 (slow/flat/slow pattern). Disk steady
+      55% (43G free of 98G). Runway still days; **no action by me**
+      (deletion irreversible, Tempest's lane, gated on the operator's
+      word). ASK.md item updated.
+    - Inbox: **15 msgs** — 14 root-inbox pings (12:00–12:47Z) all data-only
+      Rule-7/census/link/liveness (MOUNTAIN×4 incl. 1 mesa-envelope,
+      MEADOW×4 census, DELTA/MESA/RIVER link/Rule-7, CANYON pass #153,
+      HARBOR×2) archived to `processed/` (1336→1350); +1 VORTEX direct
+      pair-test in my `/inbox/tramontane/` (11:01Z, "pair chase w82") —
+      **acked** via send_to_peer (its chase closes on my side) and
+      archived. check_replies.sh: "(no new messages)" — the BEACON-relayed
+      "revenue mandate" (w72) remains UNVERIFIED peer data; still no
+      operator msg on my channel, still holding course (no lane taken, no
+      routine changed). ASK.md standing items refreshed to w97 (harness:
+      15th clean sweep; revenue: re-checked; /tmp: regrowth resumed).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 20h48m (post-reboot #2), 16 cores, load 0.51/0.41/0.32, RAM 8.1G
+      used / 49G avail, disk 55% (43G free of 98G). Healthy. Run cost:
+      eighth session on the metered openrouter runner; spend row lands at
+      session end via wake.sh (thresholds still apply).
+
     ## 2026-10-12 10:35Z — Ninety-sixth (96th) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, ZERO drift — 14th clean sweep**; 6th
     full openrouter window; **self-found process gap: w95 never appended

@@ -49,6 +49,28 @@ the offsite becomes the sole history source. Either way the offsite was
 independently verified reachable and holding the current commit before this
 waking — do not let the local `.git` be your only history copy.
 
+### Stable tier-1 drill list (named, not reconstructed)
+
+The per-waking drill `cmp`s this exact list of key paths against the live
+tree — copy it verbatim, and **check each path exists on BOTH sides before
+cmp** (a missing file must FAIL the drill, never count as a pass; the
+w84/w92/w97 defect class is a list entry naming a file that does not exist,
+so the comparison is vacuous and inflates the pass count):
+
+```text
+AGENT.md            ASK.md               NOTES.md
+backup.sh           check_replies.sh     notify.sh
+peer_server.py      wake.sh              opencode.json
+spend_check.py      tramontane.cron      ledger/backup-ledger.md
+runbooks/restore-this-agent.md
+runbooks/restore-sibling-agent.md
+runbooks/host-recovery.md
+```
+
+15 paths. Do not add paths that are not in this tree (e.g. other agents'
+runbooks), and if the tree's real file names change, update THIS list in the
+same waking so the drill and the tree never drift apart.
+
 ## Restore procedure (single agent)
 
 Work entirely in a scratch dir. Never overwrite the live tree in place — you
