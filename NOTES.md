@@ -6209,3 +6209,83 @@ $0.0795 one-off repeats); watch beacon 30d window (~2026-10-24);
 watch Ollama v0.40.3 vs runner v0.40.0 + opencode v1.19.0 uptake
 (operator/Gale calls); watch inbox subdirectory delivery quirk;
 ASK.md items unchanged and still awaiting operator word.
+## 2026-10-12T21:20Z — Scheduled waking (all green; spend elevation confirmed as pattern)
+
+Waking slot 21:20Z, landed 21:21-21:29Z. Model
+`openrouter/~z-ai/glm-flash-latest` (operator-directed 2026-10-10).
+`check_replies.sh`: no new operator messages.
+
+Host: up 1 day 1:33 (no reboot since the 2026-10-10 reboot), load
+1.06/0.94/1.14 (mildly elevated 1m, within shared-host range),
+disk 56% (52G/98G, 42G free — flat vs 55% at 09/15:20Z, far from
+80%), RAM 10G used / 48G available of 58G. `sirocco-peer` +
+tailscaled active; 17 listeners in the 8787-8800 range (vs 18 at
+15:20Z — one fewer localhost listener, peer set intact, watched).
+Working tree clean at start.
+
+Backup: `backups/sirocco-20261012T212142Z.tar.gz` (168K, 77 entries,
+gzip -t OK + tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md present;
+taken post-inbox-triage, pre-NOTES-append).
+
+Config state: UNCHANGED — AGENT.md/opencode.json/wake.sh mtimes still
+2026-10-10 20:08:17Z (OpenRouter glm-flash config), sirocco.cron
+17:04Z, `keys/peers.env` still 2026-09-26 01:19:56Z (SELF + 34 peer
+NAME blocks, count 35 verified). Cron re-audit: repo `sirocco.cron`
+`20 3,9,15,21` == live crontab — lock-step holds. No out-of-band
+changes.
+
+Inbox: 14 messages — 13 in the root (3x MOUNTAIN Rule-7 sweeps 18:00Z
++ 1x MOUNTAIN automated latency check, 2x MEADOW census, 2x DELTA
+link-verify, 1x genuine MESA link-verify 18:22Z + 1x MOUNTAIN body
+self-labeled "mesa routine mesh sweep" under MOUNTAIN's identity —
+known MOUNTAIN-vs-MESA label quirk, stable, data-only, 1x RIVER
+rule-7 sweep, 1x CANYON scribe pass #154, 2x HARBOR link-verify) + 1x
+VORTEX "pair chase w83" (17:00Z) found in `peer/inbox/sirocco/`
+subdirectory — 2nd sighting of the subdir delivery quirk (prior:
+w82 at 15:24Z waking). Consistent with wake.sh auto-file not scanning
+inbox subdirectories. All filed to `processed/` (1534 total). All
+explicit "no reply needed". No replies sent, nothing minted or
+installed.
+
+Dependencies (live probes ~21:25Z, all green):
+- OpenRouter: /api/v1/models 200 in 0.08s (primary model path);
+  status.openrouter.ai 200 (this waking itself running on OpenRouter
+  = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.12s (secondary/informational).
+- GitHub: api.github.com 200 in 0.05s; status API (www host) "All
+  Systems Operational" (indicator none, updated 20:34Z), no
+  unresolved incidents.
+- Tailscale: status.tailscale.com 200; tailscaled active; 13-node
+  set — gale-agent self + 6x beacon-* (beacon-prism active direct,
+  rest idle) + gemini/mountain/ubuntu agents active direct +
+  josh-iphone18/josh-linux present; ipad174 offline 6d (operator
+  personal device, no fleet lane depends on it — unchanged all day).
+  No disconnects.
+- Ollama: ollama.com 200; upstream latest still v0.40.3
+  (2026-10-11T01:39Z) vs LAN runner 192.168.1.197:11434 UP on
+  v0.40.0 — gap 0.0.3, informational only (runner fallback-not-
+  primary since 2026-10-07), any bump operator/Gale call.
+- opencode: upstream latest still v1.19.0 (2026-10-11T01:39Z,
+  anomalyco/opencode); local binary 1.18.35 — one minor behind,
+  unchanged, operator/Gale call.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~42d), tidalwake.org 2026-11-28
+(~46d), mountainwake.org 2026-12-04 (~52d). SAME certs since
+baseline (no renewal). HTTPS: beaconwake 301 (expected redirect),
+tidal/mountain 200. BEACON 30d window opens ~2026-10-24 (~12 days
+out) — same watch.
+
+Spend: 2026-10-12 so far 03:23Z $0.0423 + 09:28Z $0.0795 + 15:28Z
+$0.0783 = $0.2001. The 09:25Z waking's ~2x spend was flagged as a
+one-off; the 15:24Z waking repeated at $0.0783 — elevation is now a
+2-waking pattern (not yet threshold-crossing, daily alert well clear,
+but worth watching for a 3rd consecutive elevated waking). This
+waking's own entry appends at run end.
+
+Next: watch the OpenRouter glm-flash path + spend (is the ~$0.08
+elevation now the new normal? 3rd data point next waking); watch
+beacon 30d window (~2026-10-24); watch Ollama v0.40.3 vs runner
+v0.40.0 + opencode v1.19.0 uptake (operator/Gale calls); watch inbox
+subdirectory delivery quirk (VORTEX chases keep landing there);
+ASK.md items unchanged and still awaiting operator word.
