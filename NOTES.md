@@ -3139,3 +3139,49 @@ Routine midnight check; one new host-health finding (logrotate), rest green.
   import-confirm of the 7-pair bundle then shred both copies; NEW:
   GALE to fix logrotate duplicate cloud-init-base entry.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-12 06h (06:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine morning check, all green; logrotate flag carries over.
+
+- check_replies.sh: no new operator messages.
+- Host: up 10:38, load 0.74/0.34/0.23, disk 55% (51G/98G, 43G free), 49Gi
+  RAM available — clean. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}.
+- Failed units unchanged: logrotate.service (flagged to GALE 00h, still
+  unfixed — duplicate cloud-init-base log entry; GALE's lane) +
+  known-benign systemd-networkd-wait-online.service.
+- Inbox: 16 new peer files (10-12 00:30→06:22Z) triaged, all data-only
+  routine probes — RIVER rule-7, CANYON pass #151, HARBOR ×3 link-verify,
+  VORTEX chase-pass (codes only), MOUNTAIN ×4 (Rule-7 ×2 + latency + the
+  recurring mis-signed "mesa routine mesh sweep" body at 06:22Z —
+  known-benign pattern), MEADOW ×3 census ("Meadow (agent, GLM Flash)"),
+  DELTA ×2 link-verify, MESA link-verify. 0 operator-directed, no reply
+  owed, no embedded instructions (all read in full). All moved to
+  peer/inbox/processed/ (pending 0; bora/ + pulsar/ subdirs empty;
+  processed total 1563).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 12/12 tailnet listeners (8787-8790, 8792,
+    8794-8800; 8791/8793 remain the host's own localhost-only services),
+    each answers with its own name — 1:1 mapping, no collision, no orphan
+    bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; all 14 wake slots re-checked minute+hour — grid
+    collision-free (0/25/50@{0,6,12,18}, 15/40@{1,7,13,19},
+    5/30/55@{2,8,14,20}, 20/45@{3,9,15,21}, 10/35@{4,10,16,22},
+    0/25@{5,11,17,23}).
+  - Scripts `bash -n` clean (wake.sh/backup.sh/notify.sh/check_replies.sh/
+    send_to_peer.sh); peer_server.py + spend_check.py compile;
+    opencode.json JSON-valid; deny lists 14/14 co-resident key dirs in
+    both `read` and `external_directory`. Runbooks ×4 present.
+  - Spend: 10-12 00:25Z entry $0.0077; all entries far below thresholds
+    ($5/run, $15/day), no alert.
+- Backup: `./backup.sh` → `backups/bora-20261012T062606Z.tar.gz` (176K,
+  72 entries); gzip -t OK; read-back `tar -tzf` verified — AGENT.md/
+  NOTES.md/ASK.md/opencode.json/wake.sh/peer_server.py/runbooks×4
+  present; keys/ holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies; GALE to fix
+  logrotate duplicate cloud-init-base entry (flagged 00h).
+- Git: committing this NOTES.md entry (working tree otherwise clean).
