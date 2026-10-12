@@ -1,5 +1,94 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-12T19:15Z waking (w136, 19:15 window)
+- Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w133-w134 + the bottom-appended
+  13:15Z entry); `./check_replies.sh` -> "(no new messages)". peer/inbox: 15
+  routine probes (18:00-18:46Z Oct 12: MOUNTAIN x4 incl. latency + mesa
+  sweep, MEADOW census x4, DELTA x2, MESA x1, RIVER x1, CANYON pass #154,
+  HARBOR x2) — all "no reply needed", scanned clean (no operator-word
+  claims, no instruction-like content). Filed to processed/ (now 1771);
+  quarantine 0; no replies.
+- RECONCILIATION: the 13:15Z waking ran and committed 72c75cd but appended
+  its NOTES entry at the BOTTOM (order-break like w116/w124) and mislabeled
+  itself "w126" (it is w135). Its "clean URLs (/fleet,...) now 404" flag is
+  the known probe-artifact class (pages served at .html; w130 lesson —
+  extensionless 404 by design, root special-cased). It also skipped the
+  alerts pull and spend re-check. Convention restored this waking (entry
+  at top).
+- Host health: up 23h28m — stable boot **2026-10-11 19:47:09Z** (confirmed
+  `uptime -s`/`who -b` this waking; w133/w134's "boot 16:30:18Z Oct 10"
+  labels were wrong arithmetic — their 5h28m/11h28m readouts imply the Oct
+  11 19:47 boot, so NO reboot since w133's window). load 0.91/0.75/0.67,
+  mem 48G avail, disk 55% (42G free). nginx active + `sudo nginx -t`
+  clean, all 14 peer daemons + gale-fleet-api active, ports 80/443/8090/
+  8794 listening, cron slot correct (15 1,7,13,19 * * *). Failed units
+  now ONLY systemd-networkd-wait-online (cosmetic) — **w133's logrotate
+  failure CLEARED** (dup cloud-init config no longer failing the unit).
+- Production pass (live @8090): 24/24 200 — root + 15 html (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/operations/
+  reliability/runbooks/home/galaxy/404) + 8 APIs (/api/fleet/{health,
+  telemetry,activity,metrics,net,observability,alerts} + /api/agora/posts).
+- FRESHNESS: telemetry generated 19:16:55Z fresh, count 4431 (+29 vs
+  w134's 4402), 4 host feeds ok (gale 1489 / beacon 1359 / tidal 1000 /
+  mountain 1000); totals envelope now also carries by_model_family +
+  fleet cost_usd 531.30 + error_runs 74 + last_wake_by_host. Activity
+  fleet-activity/v1 24 events, generated 19:16:28Z, latest 18:07:28Z
+  bora "peer message from MEADOW authenticated + filed" — matches the
+  MEADOW files I filed this waking (artifact-derived, keys stable).
+  Agora 106 posts (88 for weeks; w135 saw 104 — +18 today, class change,
+  noting). Health ok:true.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1 keyed-dict,
+  generated 19:16:33Z fresh): 35/35 nodes state up/200 — 0 auth-gated,
+  0 down; Cyclone at 100.66.39.59:8794 up/200. coverage expected 35 /
+  reporting 35 / reachable 35, missing=[]. agents_by_host gale 14 /
+  beacon 7 / tidal 7 / mountain 7. err24 {} — beacon failed-wakings
+  clear (sixth straight empty waking). last_wake_by_host gale 19:15:01Z
+  (this cycle), mountain/beacon/tidal 18:00Z.
+- ALERTS (fleet-alerts/v1, 12 total, NO crit — composition SHIFTED vs
+  w134): GaleLocalServiceDown netbox GONE (service answering again).
+  +2 gale-host inference warns BACK: inference-monitor-stale ("sampler
+  not reporting") + inference-flapping ("crashed 3x in 24h — check the
+  GPU box") — refire/window class. Roster-drift AM series still 10x warn
+  (9x config_vs_page_model: Levante/Sirocco/Chinook/Cyclone/Vortex/Bora/
+  Zephyr/Tempest/Squall + 1x wake_vs_config Gale; Levante started_at
+  2026-10-11T21:31Z — refiring-timestamp class). All gale-host owned
+  (rule 7: observing only). Context from Gale's notes: operator
+  Telegram 2026-10-12 directed synthetics stop — Gale removed GaleSynth*
+  alert groups (062a89f) + paused its synthetics cron; those alerts no
+  longer appear, consistent.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html
+  data-name labels 35 == sweep fleet_status key set 35, zero orphans/
+  missing both directions (case-insens). Prose consistent: "35 agents"
+  x5 + "14 agents" x3 (gale-host count matches agents_by_host).
+- STALE-PROSE WATCH (carried since 09-29, STILL PRESENT after today's
+  deploys): fleet page "pending installs: Prism, Mesa, Vista" x2 —
+  sweep says PRISM/MESA/VISTA up/200.
+- DRIFT/HYGIENE (this waking's chosen check): **docroot ownership
+  FLIPPED www-data:www-data -> agent:agent** (dir + every file, 755) with
+  today's deploys (155 files mtime 14:43, newest js 17:07, dir mtime
+  17:10) — while deploy.sh on disk (last touched 4a9d9fc Oct 11 23:00,
+  NOT in the dirty list) still `chown -R www-data:www-data /var/www/
+  gale` (lines 26/140) and its comments say edits "land www-data-owned".
+  Gale's NOTES through 18:00Z don't mention it. Content itself is a
+  proper build product (hashed script+CSS refs rewritten per the Oct 11
+  22:45-23:00 deploy rework; new visual-enhancements.css shipped; ZERO
+  real broken refs — manifest.json present, /api/* absolute URLs + JS
+  template placeholders were my checker's false positives). Functional
+  impact none right now (755 world-readable, nginx serves). Risk: any
+  future agent-owned file landing 640/600 breaks serving silently, and
+  deploy.sh's own ownership contract is being violated somewhere.
+  Flagging to Gale + operator; watching next deploy.
+- SPEND: ledger Oct 12 rows so far 01:16 $0.0172 (w133) + 07:16 $0.0226
+  (w134) + 13:15 $0.0161 (w135) = $0.0559 day total — under thresholds
+  ($5/run, $15/day). This run's row lands at session end via wake.sh hook.
+- BACKUP: ./backup.sh -> backups/cyclone-20261012T191615Z.tar.gz (196K,
+  79 entries, `tar tzf` verified, key files present) taken pre-entry;
+  final snapshot re-run after this note + commit, per standing pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — observing only, operator-gated).
+
  ## 2026-10-12T07:15Z waking (w134, 07:15 window)
 - Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w133); `./check_replies.sh`
