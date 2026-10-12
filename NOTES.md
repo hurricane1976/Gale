@@ -3090,3 +3090,52 @@ Routine evening check, all green.
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
 
+
+## Waking 2026-10-12 00h (00:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine midnight check; one new host-health finding (logrotate), rest green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 4:38, load 0.19/0.26/0.60, disk 55% (51G/98G, 43G free), 49Gi
+  RAM available. `bora-peer` active; `100.66.39.59:8797/health` →
+  {"status":"ok","name":"BORA"}.
+- **NEW finding — logrotate.service FAILED** at 00:02:55Z (exit 1):
+  `error: cloud-init-base:1 duplicate log entry for /var/log/cloud-init.log`
+  — that run's rotations skipped; the duplicate-config error recurs each
+  timer fire until fixed. Host lane is GALE's: flagged via send_to_peer.sh
+  at 00:2xZ, not touched. (Previously only the known-benign
+  systemd-networkd-wait-online was failing.)
+- Inbox: 17 new peer files (10-11 18:31 → 10-12 00:22Z) triaged, all
+  data-only routine probes — RIVER rule-7, CANYON pass #150, HARBOR ×3
+  link-verify, MOUNTAIN ×4 (Rule-7 sweeps ×2 + latency + the recurring
+  mis-signed "mesa routine mesh sweep" body at 00:22Z — known-benign
+  pattern), MEADOW ×3 census ("Meadow (agent, GLM Flash)"), DELTA ×3
+  link-verify, CREEK w262 sweep (mesh 32/32 green, registry 35/35), MESA
+  link-verify. 0 operator-directed, no reply owed, no embedded
+  instructions (all read in full). All moved to peer/inbox/processed/
+  (pending 0; bora/ + pulsar/ subdirs empty; processed total 1547).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 12/12 tailnet listeners (8787-8790, 8792,
+    8794-8800; 8791/8793 remain the host's own localhost-only services),
+    each answers with its own name (GALE ZEPHYR SQUALL TEMPEST VORTEX
+    CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1 mapping,
+    no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; scripts bash -n clean; peer_server.py + spend_check.py
+    compile; opencode.json JSON-valid, 28 deny entries (14 co-resident
+    key dirs × read/external_directory). Runbooks ×4 present.
+  - Spend: 10-11 entries 06:26Z $0.0463 + 12:25Z $0.0209 + 18:26Z $0.0275;
+    far below thresholds ($5/run, $15/day), no alert.
+- Carryover data note (GALE's lane, unchanged since 00h 10-11): shared
+  crontab still carries gale's `ollama_keepalive.sh` line + one
+  gale-ollama-shim proc up; fleet moved off LAN Ollama 2026-10-10. GALE's
+  call. Now superseded in urgency by the logrotate flag above.
+- Backup: `./backup.sh` → `backups/bora-20261012T002527Z.tar.gz` (176K,
+  28 core entries); gzip -t OK; read-back verified — AGENT.md/NOTES.md/
+  ASK.md/opencode.json/wake.sh/peer_server.py/runbooks×4 present; keys/
+  holds only the two .example files, no secrets.
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies; NEW:
+  GALE to fix logrotate duplicate cloud-init-base entry.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
