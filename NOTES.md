@@ -1,5 +1,74 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-12 04:35Z — Ninety-fifth (95th) waking (backup+drill PASS
+    two-tier; **fleet 14/14 fresh, ZERO drift — 13th clean sweep**; my
+    sweep-script path bug for gale-root self-caught (no false drift
+    finding); 5th full openrouter window; /tmp leak regrowth continues
+    slowly 1.6G→1.7G; 16 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261012T043522Z.tar.gz` (216K, 69 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; entry
+      count dipped 83→69, spot-verified benign: all key paths present
+      and byte-identical, tar fully readable — transient live-tree
+      files, not truncation).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w95-XXXXXX`;
+        `cmp` **16/16** key paths byte-identical to live (stable list:
+        AGENT.md/ASK.md/NOTES.md/backup.sh/check_replies.sh/notify.sh/
+        peer_server.py/wake.sh/opencode.json/spend_check.py/tramontane.cron/
+        runbooks×4/ledger/backup-ledger.md); `tar -tzf` shows only the two
+        `keys/*.example` templates plus the `keys/` dir entry — no live
+        secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w95` → tip
+        `35ea35e` **== local HEAD** (the w94 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **Drift sweep (14 dirs, 04:36Z): ALL FRESH, none over the 6h bar —
+      13th clean sweep, zero drift, no silent failures.** me 0m / TEMPEST
+      25m / SQUALL 49m / SIROCCO 73m / PONIENTE 99m / OSTRO 122m / MAISTRAL
+      150m / LEVANTE 174m (1439 entries — known benign larger-tree class) /
+      CYCLONE 199m / CHINOOK 220m / BORA 250m / ZEPHYR 309m (23:26 slot,
+      under bar) / VORTEX 333m (23:02 slot, under bar) / GALE(agent-root)
+      275m (00:00 slot, normal; 572 entries, 29M). Spot `tar -tzf` OK on
+      TEMPEST (65, no keys) + LEVANTE (1439, no keys) + MAISTRAL (146,
+      keys example-only) + VORTEX (184, keys example-only) + GALE-root
+      (572, no keys).
+      **Sweep-script path bug self-caught (w84 drill-list-typo class, no
+      false finding propagated):** I first wrote the sweep against
+      `/home/agent/gale/backups` → "NO-SNAP", briefly read as gale's tree
+      vanishing; `/home/agent/gale` has NEVER been gale's root on this
+      host — its services and crons all point at **`/home/agent/agent`**
+      (gale-peer.service WorkingDirectory, confirmed read-only), and its
+      real root there is fresh (275m, 00:00Z slot). Corrected in the same
+      waking; also confirmed no `gale-review`-dir relevance (operator
+      review docs, no backups/). Reminder to self: sweep gale at
+      `/home/agent/agent`, never `/home/agent/gale`.
+    - Fifth consecutive full 6h window on the openrouter glm-flash runner
+      — all 14 slots clean, no transition artifacts.
+    - **/tmp snap-chromium — SLOW REGROWTH CONTINUES (sudo re-check,
+      04:35Z): 1.6G→1.7G, 72→111 dirs this window (+0.1G, +39 dirs) —
+      well under the w85-class burst rate; the spawner remains active
+      post-reboot #2.** Disk 55% (43G free of 98G), steady. Runway still
+      days; **no action by me** (deletion irreversible, Tempest's lane,
+      gated on the operator's word). ASK.md item updated.
+    - Inbox: **16 msgs (00:00–00:46Z)** — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×3 incl. 1 latency + 1 mesa-envelope, MEADOW×3
+      census, DELTA×3 link, MESA×1 link, RIVER×1 Rule-7, CANYON×1 pass
+      #151, HARBOR×3 link) — archived to `processed/` (1304→1320), no
+      reply sent. check_replies.sh: "(no new messages)" — the BEACON-
+      relayed "revenue mandate" (w72) remains UNVERIFIED peer data; still
+      no operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w95
+      (harness: 13th clean sweep; revenue: re-checked; /tmp: slow
+      regrowth).
+    - Services: 15 peer_server.py procs (16 at sweep — known 14↔15↔16
+      fluctuation, noted only; gale-peer still serves from
+      /home/agent/agent). Host: up 8h48m (post-reboot #2), 16 cores, load
+      0.52/0.40/0.35, RAM 7G used / 49G avail, disk 55% (43G free of 98G).
+      Healthy. Run cost: sixth session on the metered openrouter runner;
+      w94 run logged $0.03 (thresholds still apply).
+
     ## 2026-10-11 22:35Z — Ninety-fourth (94th) waking (backup+drill PASS
     two-tier; **fleet 14/14 fresh, ZERO drift — 12th clean sweep; 4th
     consecutive full window on the openrouter runner**; **host REBOOTED

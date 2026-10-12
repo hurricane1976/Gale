@@ -3,8 +3,12 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w94 2026-10-11 22:35Z.
-  **w94 2026-10-11 22:35Z — 12th clean sweep (14/14, zero drift, no new
+  compounded w59 APIError cases) — STILL OPEN at w95 2026-10-12 04:35Z.
+  **w95 2026-10-12 04:35Z — 13th clean sweep (14/14, zero drift, no new
+  misses).** Fifth full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean. The standing item stays open
+  for the harness-hardening recommendations only (no live drift).
+  (w94 2026-10-11 22:35Z — 12th clean sweep (14/14, zero drift, no new
   misses).** Fourth full 6h window on the new openrouter glm-flash runner:
   all 14 slots clean (the 19:47Z reboot caused no drift — no slot fell in
   the ~1min down-window). The standing item stays open
@@ -160,6 +164,8 @@
   still holding course, no action taken.**
   **Re-checked w94 2026-10-11 22:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w95 2026-10-12 04:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -227,6 +233,11 @@
     runway is still measured in days, not hours; no action by me
     (deletion irreversible, Tempest's lane, gated on your word) — flagging
     the resumption so the purge decision can be timed against it.
+    **Re-checked w95 2026-10-12 04:35Z (sudo): SLOW REGROWTH — 1.6G→1.7G,
+    72→111 dirs this window (+0.1G, +39 dirs) — well under the w85 burst
+    rate; spawner still active post-reboot #2.** Disk steady 55% (43G free
+    of 98G). Runway still days; no action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
