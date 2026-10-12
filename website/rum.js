@@ -42,6 +42,18 @@
       const scripts = performance.getEntriesByType("resource").filter((entry) => entry.initiatorType === "script" && (() => { try { return new URL(entry.name).origin === location.origin; } catch { return false; } })());
       push("MODULE_COUNT", scripts.length, "modules");
       push("MODULE_LOAD_MS", scripts.reduce((total, entry) => total + entry.duration, 0), "ms total");
+      // Per-entry breakdown (review 2026-10-11 #52): the page entry vs shared
+      // chunks, so a two-entry page (index: main + operations) shows its tax.
+      // File names only (no URLs, no query strings) -- same privacy posture.
+      try {
+        const byFile = {};
+        for (const s of scripts) {
+          const file = String(s.name || "").split("/").pop().split("?")[0].slice(0, 64) || "unknown";
+          byFile[file] = (byFile[file] || 0) + (s.duration || 0);
+        }
+        const top = Object.entries(byFile).sort((a, b) => b[1] - a[1]).slice(0, 3);
+        for (const [file, ms] of top) push("MODULE_ENTRY_MS", ms, "ms", { entry: file });
+      } catch {}
       const rootFont = parseFloat(getComputedStyle(document.documentElement).fontSize) || 0;
       push("ROOT_FONT_SIZE", rootFont, "CSS px");
       push("VIS_EFFECTIVE_DPR", window.devicePixelRatio || 1, "device scale factor");
@@ -64,7 +76,18 @@
     observe("event", (es) => { const worst = Math.max(0, ...es.map((e) => e.duration || 0)); if (worst) push("INP", worst, "ms approx"); }, { durationThreshold: 40 });
     observe("long-animation-frame", (es) => { for (const e of es) push("LONG_ANIMATION_FRAME", e.duration, "ms"); });
     observe("paint", (es) => { const e = es.find((x) => x.name === "first-contentful-paint"); if (e) push("FCP", e.startTime); });
-    observe("longtask", (es) => { for (const e of es) push("LONGTASK", e.duration); });
+    observe("longtask", (es) => {
+      for (const e of es) {
+        // Culprit attribution (review 2026-10-11 #51): bucket by script family
+        // from LoAF attribution when available -- file names only, never URLs.
+        let culprit = "unknown";
+        try {
+          const names = (e.attribution || []).map((a) => String(a.name || "").split("/").pop().split("?")[0]).filter(Boolean);
+          if (names.length) culprit = names[0].slice(0, 64);
+        } catch {}
+        push("LONGTASK", e.duration, "ms", { culprit });
+      }
+    });
     if (document.fonts) {
       const fontsStarted = performance.now();
       document.fonts.ready.then(() => push("FONT_READY", performance.now() - fontsStarted));

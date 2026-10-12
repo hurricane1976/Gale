@@ -11,7 +11,7 @@ groups:
     annotations:
       summary: '{{ $labels.agent }} keys/ drifted from baseline'
       description: dir/file modes or the file set changed vs cred-baseline.json -- verify it was intentional, then --reseed
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#controls
   - alert: GaleCredEnvChanged
     expr: gale_cred_changed == 1
     for: 0m
@@ -21,7 +21,7 @@ groups:
     annotations:
       summary: 'live .env changed on disk: {{ $labels.agent }}/{{ $labels.file }}'
       description: mtime moved since the last bridge run -- verify the rotation/edit was expected
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#controls
   - alert: GaleCredDirGone
     expr: gale_cred_dirs_scanned < 14
     for: 15m
@@ -31,4 +31,4 @@ groups:
     annotations:
       summary: only {{ $value }} keys/ dirs visible (was 14)
       description: a sibling's keys/ dir vanished or became unreadable -- audit before assuming cleanup
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#controls

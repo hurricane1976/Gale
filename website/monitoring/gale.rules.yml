@@ -10,7 +10,7 @@ groups:
       owner: gale
     annotations:
       summary: 'Peer listener down: {{ $labels.unit }}'
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#telemetry
   - alert: GaleInfraDown
     expr: gale_service_up{unit=~"nginx|tailscaled|cron"} == 0
     for: 3m
@@ -19,7 +19,7 @@ groups:
       owner: gale
     annotations:
       summary: 'Infra unit down: {{ $labels.unit }}'
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
   - alert: GaleBackupStale
     expr: gale_backup_age_hours > 36
     for: 0m
@@ -28,7 +28,7 @@ groups:
       owner: gale
     annotations:
       summary: No verified backup in {{ $value }}h
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#recovery
   - alert: GaleSynthFailing
     expr: gale_synth_green_ratio < 1
     for: 10m
@@ -37,7 +37,7 @@ groups:
       owner: gale
     annotations:
       summary: Synthetic checks failing (green {{ $value }})
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
   - alert: GaleSynthStale
     expr: ((time() - gale_synth_run_unixtime > 900) or absent(gale_synth_run_unixtime)) or absent(gale_synth_run_unixtime)
     for: 0m
@@ -47,4 +47,4 @@ groups:
       host: gale-agent
     annotations:
       summary: "No synthetic run in 15m \u2014 cron bridge down?"
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector

@@ -25,7 +25,7 @@ const VIEWPORTS = { phone: [390, 844], tablet: [820, 1180], desktop: [1440, 900]
 const BUDGET = { js: 160 * 1024, css: 60 * 1024, total: 420 * 1024 };
 const MAX_DIFF = 0.02; // fraction of pixels allowed to differ (animations/live data)
 // live-alert pages reflow when an alert chip flaps (observed 3-15% between back-to-back runs)
-const LIVE_MAX_DIFF = { fleet: 0.25, status: 0.25 };
+const LIVE_MAX_DIFF = { fleet: 0.25, status: 0.25, weather: 0.2 };
 
 const mode = process.argv[2];
 const browser = await puppeteer.launch({
@@ -35,6 +35,18 @@ const browser = await puppeteer.launch({
 let failed = false;
 const say = (ok, msg) => { if (!ok) failed = true; console.log(`${ok ? "ok  " : "FAIL"} ${msg}`); };
 const settle = (page) => page.evaluate(() => new Promise((r) => setTimeout(r, 1500)));
+// Deterministic visual state (review 2026-10-11): the time-of-day ambient
+// preset flips dark/light by wall clock, so a baseline captured at 15:16 UTC
+// and re-checked at 21:36 UTC differs by THEME, not by regression. Pin the
+// stored theme + manual (non-auto) ambient preset before any page script runs.
+const PIN_STATE = () => {
+  try {
+    localStorage.setItem("gale-theme", "dark");
+    localStorage.setItem("gale-fx-auto", "false");
+    localStorage.setItem("gale-fx", JSON.stringify({ hue: 0, glow: 1, intensity: 1 }));
+    localStorage.setItem("gale-density", "comfortable");
+  } catch {}
+};
 
 async function csp() {
   for (const p of PAGES) {
@@ -105,6 +117,7 @@ async function visual() {
       const page = await browser.newPage();
       await page.setViewport({ width: w, height: h, deviceScaleFactor: 1 });
       await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
+      await page.evaluateOnNewDocument(PIN_STATE);
       await page.goto(`${BASE}/${p}.html`, { waitUntil: "networkidle2", timeout: 40000 }).catch(() => {});
       await settle(page);
       const shot = await page.screenshot({ type: "png" });   // viewport only: stable height

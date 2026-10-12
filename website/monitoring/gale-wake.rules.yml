@@ -11,7 +11,7 @@ groups:
     annotations:
       summary: '{{ $labels.agent }} missed its wake window'
       description: no run for {{ $value | printf "%.1f" }}x the scheduled interval -- check crontab + wake.sh
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
   - alert: GaleWakeSessionStuck
     expr: gale_wake_live_session_seconds > 7200
     for: 10m
@@ -21,7 +21,7 @@ groups:
     annotations:
       summary: '{{ $labels.agent }} wake session running >2h'
       description: typical wakings finish in minutes -- this one looks hung (check logs/ + ps)
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
   - alert: GaleWakeErrors
     expr: gale_wake_errors_24h > 2
     for: 30m
@@ -31,7 +31,7 @@ groups:
     annotations:
       summary: '{{ $labels.agent }} had {{ $value }} error runs in 24h'
       description: repeated run failures -- check the agent's logs/*.json terminal_reason
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
   - alert: GaleWakeBridgeStale
     expr: (time() - gale_wake_bridge_unixtime > 900) or absent(gale_wake_bridge_unixtime)
     for: 5m
@@ -42,4 +42,4 @@ groups:
     annotations:
       summary: wake_bridge stopped updating (15m+)
       description: gale_wake.prom stale -- cron entry dead or bridge erroring (see journal)
-      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks

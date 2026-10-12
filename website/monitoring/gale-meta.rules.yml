@@ -11,6 +11,20 @@ groups:
       owner: gale
     annotations:
       summary: Always-firing dead-man's switch (heartbeat to an external checker)
+  # Dual check (review 2026-10-11): if the always-firing Watchdog alert ever
+  # disappears -- rule group unloaded, Prometheus evaluation wedged, rule file
+  # mis-deployed -- this fires. The external heartbeat alone can't distinguish
+  # "everything fine" from "evaluator silently dead"; this can.
+  - alert: WatchdogMissing
+    expr: absent(ALERTS{alertname="Watchdog", alertstate="firing"})
+    for: 10m
+    labels:
+      severity: critical
+      owner: gale
+    annotations:
+      summary: The always-firing Watchdog alert is absent - rule evaluation is broken
+      description: The external heartbeat only proves health while this alert keeps firing. Its absence means the meta-monitoring path itself is broken.
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
   - alert: PrometheusTsdbSizeHigh
     expr: prometheus_tsdb_storage_blocks_bytes > 8e9
     for: 30m

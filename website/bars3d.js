@@ -161,7 +161,8 @@ export function mountBars3D(canvas, opts = {}) {
   function matrix() {
     const yw = yaw + sway * 0.4 * Math.sin(performance.now() / 3200);
     const eye = [center[0] + dist * Math.cos(pitch) * Math.sin(yw), dist * Math.sin(pitch) + topY * 0.2, center[2] + dist * Math.cos(pitch) * Math.cos(yw)];
-    return mul(perspective(0.85, canvas.width / Math.max(1, canvas.height), 0.1, 200), lookAt(eye, [center[0], topY * 0.3, center[2]], [0, 1, 0]));
+    const f = Math.max(200, (dist + topY + extent) * 2);
+    return mul(perspective(0.85, canvas.width / Math.max(1, canvas.height), 0.1, f), lookAt(eye, [center[0], topY * 0.3, center[2]], [0, 1, 0]));
   }
   const project = (m, x, y, z) => {
     const w = m[3] * x + m[7] * y + m[11] * z + m[15];

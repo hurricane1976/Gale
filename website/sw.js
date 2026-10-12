@@ -34,7 +34,7 @@ async function recordCacheTime(request) {
 const SHELL_ASSETS = [
   "/",
   "/index.html", "/fleet.html", "/status.html", "/metrics.html",
-  "/observability.html", "/ollama.html", "/agora.html", "/weather.html",
+  "/observability.html", "/ollama.html", "/agora.html", "/galaxy.html", "/weather.html",
   "/network.html", "/reliability.html", "/operations.html", "/home.html",
   "/runbooks.html", "/404.html",
   "/gale.css", "/fleet-tidal.css", "/mobile.css", "/cinematic.css", "/fonts.css", "/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2",

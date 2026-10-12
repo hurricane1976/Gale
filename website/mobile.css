@@ -391,3 +391,63 @@ main:has(#cost-chart) #lanes { min-height: 260px; }
   }
 }
 @media (prefers-reduced-motion: reduce) { .gale-mobile-tab,.gale-page-links a { scroll-behavior:auto; transition:none !important; } }
+
+/* ===== Fleet Galaxy (galaxy.html) + site-wide page-warp transitions ===== */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+@keyframes gale-warp-out { to { opacity: 0; transform: scale(1.045); filter: blur(7px) brightness(1.5); } }
+@keyframes gale-warp-in { from { opacity: 0; transform: scale(0.965); filter: blur(7px) brightness(1.5); } }
+::view-transition-old(root) { animation: 260ms cubic-bezier(.4, 0, 1, 1) both gale-warp-out; }
+::view-transition-new(root) { animation: 420ms cubic-bezier(0, 0, .2, 1) 80ms both gale-warp-in; }
+
+.galaxy-cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; padding: 11px 20px; min-height: 44px; border-radius: 999px;
+  color: #eaf2ff; text-decoration: none; font-weight: 600; letter-spacing: .01em; background: rgba(8, 12, 24, .72);
+  border: 1px solid rgba(120, 170, 255, .45); box-shadow: 0 0 0 0 rgba(90, 150, 255, .5), 0 10px 40px -10px rgba(70, 120, 255, .6);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.galaxy-cta:hover, .galaxy-cta:focus-visible { transform: translateY(-2px); border-color: #9cc4ff; box-shadow: 0 0 0 6px rgba(90, 150, 255, .18), 0 14px 48px -8px rgba(90, 150, 255, .85); }
+.galaxy-cta-orb { width: 16px; height: 16px; border-radius: 50%; flex: none;
+  background: radial-gradient(circle at 35% 35%, #fff, #7fd0ff 35%, #7a5cff 70%, transparent 72%); animation: galaxy-orb 6s linear infinite; }
+@keyframes galaxy-orb { to { transform: rotate(360deg); } }
+
+.galaxy-main { padding: 0; max-width: none; }
+.galaxy-stage { position: relative; width: 100%; height: calc(100vh - 64px); height: calc(100svh - 64px); min-height: 520px; overflow: hidden; background: #03050c; isolation: isolate; }
+.galaxy-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.galaxy-stage canvas:active { cursor: grabbing; }
+.galaxy-stage[data-mode="list"] canvas { display: none; }
+.galaxy-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.galaxy-label { position: absolute; left: 0; top: 0; padding: 2px 9px; border-radius: 999px; white-space: nowrap; font: 600 12px/1.5 var(--font-mono, ui-monospace, monospace);
+  color: #eef4ff; background: rgba(4, 7, 16, .88); border: 1px solid rgba(150, 190, 255, .35); will-change: transform; }
+.galaxy-label.is-host { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.galaxy-label.is-host[data-host="tidal"] { border-color: #4dccff; } .galaxy-label.is-host[data-host="beacon"] { border-color: #ffc84d; }
+.galaxy-label.is-host[data-host="mountain"] { border-color: #b886ff; } .galaxy-label.is-host[data-host="gale"] { border-color: #4a9eff; }
+.galaxy-label.is-sel { border-color: #fff; box-shadow: 0 0 22px rgba(160, 200, 255, .7); }
+.galaxy-hud { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left)); top: 18px; max-width: min(420px, calc(100% - 32px)); pointer-events: none; text-shadow: 0 2px 18px #000; }
+.galaxy-hud .eyebrow { color: #cfe0ff; }
+.galaxy-title { margin: 6px 0 4px; font-size: clamp(34px, 6vw, 64px); line-height: 1; }
+.galaxy-sub { margin: 0 0 10px; color: #c3d2ee; font-size: 14px; max-width: 38ch; }
+.galaxy-card { margin: 0; padding: 8px 12px; display: inline-block; border-radius: 10px; background: rgba(4, 7, 16, .86); border: 1px solid rgba(150, 190, 255, .28); color: #eef4ff; font-size: 13px; }
+.galaxy-list { position: absolute; z-index: 3; right: max(12px, env(safe-area-inset-right)); top: 14px; bottom: 14px; width: 232px; overflow: auto; padding: 10px; border-radius: 14px;
+  background: rgba(4, 7, 16, .86); border: 1px solid rgba(150, 190, 255, .22); backdrop-filter: blur(10px); scrollbar-width: thin; }
+.galaxy-group h2 { margin: 10px 0 4px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #9db4dd; font-weight: 700; }
+.galaxy-group:first-child h2 { margin-top: 0; }
+.galaxy-pick { display: inline-flex; align-items: center; gap: 4px; margin: 2px 3px 2px 0; min-height: 28px; padding: 3px 10px; border-radius: 999px; cursor: pointer; font: 600 12px/1 var(--font-mono, ui-monospace, monospace);
+  color: #eaf1ff; background: rgba(20, 30, 54, .9); border: 1px solid rgba(150, 190, 255, .3); }
+.galaxy-pick[data-host="tidal"] { border-color: #2f89ad; } .galaxy-pick[data-host="beacon"] { border-color: #ad8a2f; }
+.galaxy-pick[data-host="mountain"] { border-color: #7d5bb3; } .galaxy-pick[data-host="gale"] { border-color: #2f6cb3; }
+.galaxy-pick:hover, .galaxy-pick:focus-visible, .galaxy-pick[aria-pressed="true"] { background: #fff; color: #05070d; outline: 2px solid #9cc4ff; outline-offset: 1px; }
+.galaxy-pick[data-alert="1"] { border-color: #ffb830; } .galaxy-pick[data-alert="2"] { border-color: #ff4d44; }
+.galaxy-tag { font-weight: 700; } .galaxy-pick[data-alert="1"] .galaxy-tag { color: #ffb830; } .galaxy-pick[data-alert="2"] .galaxy-tag { color: #ff6a60; }
+.galaxy-pick[aria-pressed="true"] .galaxy-tag { color: #8a3b00; }
+.galaxy-fallback { position: absolute; z-index: 3; left: 16px; bottom: 16px; margin: 0; padding: 10px 14px; border-radius: 10px; background: rgba(4, 7, 16, .9); color: #eaf1ff; border: 1px solid rgba(150, 190, 255, .3); max-width: 46ch; }
+.galaxy-stage[data-mode="list"] .galaxy-list { position: relative; inset: auto; width: auto; margin: 96px 16px 16px; }
+@media (max-width: 760px) {
+  .galaxy-list { top: auto; right: 8px; left: 8px; bottom: 8px; width: auto; max-height: 34%; }
+  .galaxy-hud { top: 10px; } .galaxy-sub { display: none; }
+}
+@media print { .galaxy-stage canvas, .galaxy-labels { display: none; } .galaxy-stage { height: auto; } .galaxy-list, .galaxy-hud { position: static; width: auto; } }
+/* the galaxy page is always night: pin the dark palette so chrome matches the scene in either OS theme */
+body:has(.galaxy-main) { --bg: #070b16; --bg-deep: #03050c; --surface: #0f1730; --text: #eaf1ff; --text-dim: #b4c3df; --text-faint: #8fa3c4;
+  --line: rgba(160, 185, 230, .14); --line-strong: rgba(160, 185, 230, .3); --flag: #5aa2ff; --bolt: #a08cff; --gust: #4de0c8;
+  background: #03050c; color: var(--text); color-scheme: dark; }
+body:has(.galaxy-main) header.site, body:has(.galaxy-main) footer.site { background: rgba(5, 8, 18, .86); }
+body:has(.galaxy-main) .galaxy-title { background: linear-gradient(100deg, #fff 0%, #9cc4ff 45%, #c9a8ff 100%); -webkit-background-clip: text; background-clip: text; animation: none; }

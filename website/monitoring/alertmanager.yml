@@ -1,5 +1,18 @@
 templates:
 - /etc/alertmanager/templates/*.tmpl
+# Maintenance windows (review 2026-10-11): planned work silences the routine
+# route; the critical route deliberately stays outside the mute so a real
+# outage during maintenance still pages. Windows live here so the UI's
+# acknowledgement system and this file can't drift apart silently.
+time_intervals:
+- name: gale-maintenance
+  time_intervals:
+  # Sunday early-UTC window, aligned with the lowest-traffic slot in the
+  # fleet's wake schedule (00:00-06:00Z cycle runs before it).
+  - times:
+    - start_time: '03:00'
+      end_time: '05:00'
+    weekdays: ['sunday']
 route:
   receiver: default
   group_by:
@@ -17,12 +30,21 @@ route:
     repeat_interval: 1h
   # Dead-man's switch: kept off the pager; pings an external heartbeat
   # (URL in /etc/alertmanager/watchdog_url, root:alertmanager 0640, not in repo).
+  # MUST route before the muted catch-all: the heartbeat may never be muted,
+  # or the dead-man's switch would itself go dark during maintenance.
   - matchers:
     - alertname="Watchdog"
     receiver: watchdog
     group_wait: 0s
     group_interval: 1m
     repeat_interval: 5m
+  # Routine (warning/info) alerts pass through the maintenance-mute wrapper.
+  # The root default stays unmuted for anything that matches neither route.
+  - matchers:
+    - severity=~"warning|info"
+    receiver: default
+    mute_time_intervals:
+    - gale-maintenance
 inhibit_rules:
 - source_matchers:
   - alertname="GaleInfraDown"

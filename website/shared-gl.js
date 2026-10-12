@@ -146,9 +146,23 @@ export class Quality {
     this.coolMs = coolMs; this.maxTier = maxTier;
     this.ema = 16.7; this.tier = 0;
     this._slow = 0; this._fast = 0; this._coolAt = -1e9;
+    this._pressureTier = 0; // Compute Pressure floor (auto mode only)
     let mode = "auto";
     try { mode = localStorage.getItem("gale-graphics-quality") || "auto"; } catch {}
     this.setMode(mode);
+    // Compute Pressure (review 2026-10-11): "serious"/"critical" system CPU
+    // pressure steps the AUTO tier down ahead of measured frame time and
+    // relaxes back when pressure clears. Manual modes are untouched.
+    if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") {
+      window.addEventListener("gale:cpu-pressure", (event) => {
+        const state = event.detail && event.detail.state;
+        this._pressureTier = state === "critical" ? 3 : state === "serious" ? 2 : 0;
+        if (this.mode === "auto" && this._pressureTier > this.tier) {
+          this.tier = this._pressureTier;
+          this._coolAt = (typeof performance !== "undefined" ? performance.now() : Date.now());
+        }
+      });
+    }
   }
 
   setMode(mode) {
@@ -167,6 +181,12 @@ export class Quality {
     if (!(dtMs > 0) || dtMs > 250) return this.scale();
     this.ema += (dtMs - this.ema) * 0.1;
     if (this.mode !== "auto") return this.scale();
+    // sustained system pressure holds the ladder down even while frames look fine
+    if (this._pressureTier > this.tier) {
+      this.tier = this._pressureTier;
+      this._coolAt = now;
+      return this.scale();
+    }
     if (now - this._coolAt < this.coolMs) return this.scale();
     if (this.ema > this.downMs) {
       this._slow++; this._fast = 0;
@@ -175,7 +195,7 @@ export class Quality {
       }
     } else if (this.ema < this.upMs) {
       this._fast++; this._slow = 0;
-      if (this._fast >= this.hold * 2 && this.tier > 0) {
+      if (this._fast >= this.hold * 2 && this.tier > Math.max(0, this._pressureTier)) {
         this.tier--; this._fast = 0; this._coolAt = now;
       }
     } else {

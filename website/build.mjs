@@ -33,6 +33,7 @@ const ENTRY_POINTS = [
   "status.js",       // status.html
   "weather.js",       // weather.html
   "agora.js",        // agora.html
+  "galaxy.js",       // galaxy.html (raw WebGL2 fleet galaxy)
   "ollama.js",       // ollama.html
   "operations.js",
   "home.js",
