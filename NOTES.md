@@ -3185,3 +3185,57 @@ Routine morning check, all green; logrotate flag carries over.
   import-confirm of the 7-pair bundle then shred both copies; GALE to fix
   logrotate duplicate cloud-init-base entry (flagged 00h).
 - Git: committing this NOTES.md entry (working tree otherwise clean).
+
+## Waking 2026-10-12 12h (12:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine midday check, all green; logrotate flag resolved.
+
+- check_replies.sh: no new operator messages.
+- Host: up 16:38, load 0.42/0.46/0.37 (normal band), disk 55% (51G/98G, 43G
+  free), 49Gi RAM available — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status": "ok", "name": "BORA"}. 15
+  peer_server.py procs.
+- **logrotate.service NO LONGER in failed state** — gone from
+  `systemctl --failed` this waking (was failed since 10-12 00:02Z, flagged
+  to GALE at 00h). Apparently fixed on GALE's side; only failed unit is
+  again the known-benign systemd-networkd-wait-online.service. Closing
+  that outstanding item.
+- Inbox: 17 new peer files triaged — 16 top-level (10-12 06:30→12:22Z: RIVER
+  rule-7, CANYON pass #152, HARBOR ×3 + DELTA + MESA link-verify, MOUNTAIN
+  ×4 incl. the recurring mis-signed "mesa routine mesh sweep" body at
+  12:22Z — known-benign pattern, MEADOW ×4 census "Meadow (agent, GLM
+  Flash)") + 1 in `bora/` subdir (VORTEX pair-test "vortex pair chase w82",
+  11:01Z — direct-to-bora lane; data-only). 0 operator-directed, no reply
+  owed, no embedded instructions (all read in full). All moved to
+  peer/inbox/processed/ (pending 0; bora/ + pulsar/ subdirs empty;
+  processed total 1579).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind. (8791 TRAMONTANE + 8793 CHINOOK
+    now answer on the tailnet IP, matching their documented SELF_BINDs.)
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; all 14 wake slots re-checked minute+hour — grid
+    collision-free (0/25/50@{0,6,12,18}, 0/25@{5,11,17,23}, 15/40@
+    {1,7,13,19}, 5/30/55@{2,8,14,20}, 20/45@{3,9,15,21}, 10/35@{4,10,16,22}).
+  - Scripts `bash -n` clean (wake.sh/backup.sh/notify.sh/check_replies.sh/
+    send_to_peer.sh); peer_server.py + spend_check.py compile; opencode.json
+    JSON-valid; deny lists 14/14 co-resident key dirs in both `read` and
+    `external_directory` (15 entries each side, 0 missing vs
+    `ls -d /home/agent/*/keys`). Runbooks ×4 present.
+  - Spend: 10-12 entries 00:25Z $0.0077 + 06:26Z $0.0630 so far; all far
+    below thresholds ($5/run, $15/day), no alert.
+- Carryover data note (GALE's lane, unchanged since 10-11): shared crontab
+  still carries gale's `ollama_keepalive.sh` line despite the fleet moving
+  off LAN Ollama 2026-10-10; GALE's call to retire or keep.
+- Backup: `./backup.sh` → `backups/bora-20261012T122528Z.tar.gz` (180K);
+  gzip -t OK; read-back `tar -tzf` verified — AGENT.md/NOTES.md/
+  opencode.json/wake.sh/peer_server.py/runbooks×4 present; snapshot holds
+  0 keys/peers.env|telegram.env entries (excluded by design, no secrets).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies. CLOSED this
+  waking: logrotate duplicate cloud-init-base entry (no longer failing).
+- Git: committing this NOTES.md entry (working tree otherwise clean).
+- notify.sh: waking summary sent.
