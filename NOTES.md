@@ -5733,3 +5733,82 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   read-back clean; 14-snapshot ceiling held.
 - **Commit:** NOTES update only — the 16 .bak files stay untracked
   (uncommitted per rules 4/6 pending operator word on d94c27b).
+
+## 2026-10-12T18:50Z — waking #103 (scheduled :50 slot; streak 8)
+
+- **Self-check (standing, from #61): PASS.** (a) backup: #102's
+  chinook-20261012T125031Z at 12:50Z (~6h prior — normal grid spacing);
+  (b) newest NOTES entry = #102. No no-op, no back-fill owed. Fired
+  ~18:50:0xZ on-grid (drift 0m) — 19th scheduled slot under the 4x/day
+  :50 grid; streak 8 since the #96 restart.
+- **check_replies.sh: no new messages** (checked twice, start + pre-notify).
+  ASK.md items unchanged, all operator lane: (1) migration commit d94c27b
+  provenance confirm; (2) BEACON revenue-mandate relay verify; (3) #59
+  no-op / exit-1 / shim-502 classes. Noted: operator WAS active on Telegram
+  today ~18:00Z — but to GALE (synthetics/alerts request, seen in Gale's
+  own NOTES tail during read-only context check), nothing to me. No change
+  to my open items; noted as context, not as a channel to me.
+- **Peer inbox:** 13 unprocessed since #102 (12:47→18:46Z): MOUNTAIN x4
+  (Rule-7 sweeps x2 + site-build latency + one MOUNTAIN-envelope/mesa-body
+  msg per the documented #46 baseline), MEADOW x2 census, DELTA x2
+  link-verify, HARBOR x2 link-verify, MESA, RIVER (rule-7), CANYON (scribe
+  pass #154). All "no reply needed", zero operator content, zero acks owed
+  (data per rule 5). All 13 archived; inbox empty (1514→1527 in
+  processed/). Stray `chinook/` + `pulsar/` subdirs remain (documented #39
+  artifact).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **72nd consecutive alive sweep.**
+- **HOST HEALTH:** uptime 23h03m (kernel 7.0.0-38, booted 10-11 19:47Z);
+  load 0.33/0.44/0.49 on 16 cores (~2–3%, calm); RAM 8.8G used / 48G avail
+  (57G total); swap 0. Tailscale holds 100.66.39.59/32 — **~23h hold on
+  the 7.0 kernel, no TUN regression**. Disk `/` **52G used / 42G free
+  (55%)** — flat vs #102 (51G); watch stays CLOSED (re-open line 59G+/80%).
+  Disk detail: /home/agent flat 14G; GALE's backup tarball growing
+  17M→29M→38M over two days on website/dist churn (Gale's NOTES attribute
+  it to an uncommitted website/dist rebuild) — small vs 27G headroom to
+  the 80% line, monitoring only. No reboot-required flag.
+- **SPEND — CLOSE-READ RESOLVED (the #102 flag): per-run "reduced rate"
+  claim REVISED.** 10-12 partial to 18:50Z: host-wide **$3.1835 / 46 runs
+  = $0.0692/run** — ≥$0.065 through ~19h of day, meeting #102's own
+  criterion. Per-run band re-widens: **$0.043–0.077** (10-11 $0.0428 was
+  the low outlier; 10-10 $0.0772, 10-12 $0.0692 partial — two of three
+  days near the top). The #100/#101 "reduced rate is stable at $0.043–
+  0.052" claim is revised to: alias cutover removed the ollama $0 floor
+  but per-run cost oscillates with session depth; the honest planning band
+  is **$0.043–0.077/run → $2.5–4/day host-wide at 50–57 runs**. Projected
+  close today ~$3.5–3.7 (46 runs by 18:50 + remaining slots; 10-11 closed
+  at 57) — at/above the old $2–3.5 band top, ~24% of the $15/day alert
+  line. No rule-4 anomaly: max single run $0.1847 (GALE), max lane avg
+  $0.1396/run (GALE) vs $5.00 line. Alert lines unchanged: $15/day,
+  $5.00/run. 10-13 full-day read confirms the band.
+- **MAISTRAL watch — CLOSED, no advisory sent:** third window (14:08Z)
+  came in **$0.031/run**, declining monotonically (02:11 $0.1523 → 08:07
+  $0.1021 → 14:08 $0.031) back inside its band. Criterion from #102
+  ("persists a third window") NOT met → data, not breach. Baseline
+  correction on record: MAISTRAL's GLM-era (post-10-09) per-run is
+  ~$0.06–0.15 (all-time $0.0180/run is ollama-era and the wrong baseline
+  for GLM comparisons; its 02:11 first-run-of-day is consistently the
+  largest — context re-warm).
+- **GALE run-count explained (checked before flagging):** 6 rows today
+  vs its usual 4 = scheduled 00/06/12/18 slots + extra sessions at
+  16:35/17:57 that Gale's NOTES attribute to operator Telegram requests
+  (pause synthetics cron, remove GaleSynth alert groups — done and
+  documented reversible on Gale's side). Scheduled slots on-grid; per-run
+  steady $0.13–0.18. Not a rule-4 run-count anomaly; noted for the series.
+- **Cadence:** no lost slots — all lanes recording on the :50 grid; no
+  gap in any sibling ledger for the 12:50–18:50 window.
+- **Forecast / thresholds:** spend in-band under the revised band (close-
+  read 10-13 for confirmation); disk 52G/55% flat, ~27G headroom to the
+  80% line — no crossing projectable; load/mem/swap calm; cadence on-grid,
+  drift 0m.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit. **No advisory owed this waking** (MAISTRAL watch closed without
+  firing).
+- **Drift/breaches/advisories:** none. Routine completed cleanly: replies
+  checked (none), 13 pings archived, 14/14 sweep healthy, backup made +
+  verified (200K, 80 entries, gzip OK, ./AGENT.md read-back clean), NOTES
+  updated.
+- **Backup:** chinook-20261012T185056Z.tar.gz (200K), gzip -t OK, 80
+  entries, read-back clean; 14-snapshot ceiling held.
+- **Commit:** NOTES update only — the 16 .bak files stay untracked
+  (uncommitted per rules 4/6 pending operator word on d94c27b).
