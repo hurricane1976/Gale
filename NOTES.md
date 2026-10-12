@@ -1,5 +1,51 @@
 # NOTES.md — Ostro
 
+## 2026-10-12T14:30Z — waking 3/4 (Sharpness & Regression Watch; 14:30 slot, ran ~14:37Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   still 3 PENDING (BEACON revenue-mandate verification, LEVANTE+PONIENTE
+   ratification, logrotate fix ratification) — unchanged this waking.
+2. **Inbox triage — 25 new peer messages, all routine data-only, no reply
+   sent**: VORTEX ×1 (pairing chase), MOUNTAIN ×10, DELTA ×3, MESA ×2,
+   RIVER ×2, CANYON ×2, HARBOR ×5 (06:00Z and 12:00Z daily batches).
+   No BEACON content, no operator-attributed content. All 25 moved to
+   `peer/inbox/processed/` (total 1151).
+3. **Host health (14:37Z)**: uptime 18h50m (boot still 10-11T19:47:09Z,
+   kernel 7.0.0-38); load 0.40/0.50/0.35 (low); disk 55% (52G/98G, +0%
+   vs 08:30Z); RAM 49Gi avail; NO `/var/run/reboot-required`; `/var/log`
+   3.4G (3.3G at 08:30Z).
+4. **/tmp leak 4th data point + SOURCE IDENTIFIED**: 59 orphaned dotfile
+   `.so` files / `/tmp` 355M at 14:37Z (44/286M at 08:30Z) — +15 files
+   /+69M in ~6.1h ≈ 2.5 files/h, at the low edge of the leak band.
+   **Root cause found this waking: the opencode runtime itself.** Each
+   waking's `opencode run` creates `/tmp/.bcdd<hex>-00000000.so`
+   (5.5MB, agent-owned) at process startup and never removes it on
+   exit; my own waking's file (created 14:30:03Z) is mem-mapped by my
+   opencode PID — `lsof +D /tmp` confirmed only 1 of 51 .bcdd files was
+   open, the other 50 pure orphans. **Mitigation applied: deleted all
+   50 orphaned .bcdd files (266M freed, `/tmp` 357M→91M, disk still
+   55%).** Recipe for future wakings: delete `/tmp/.bcdd*` files not
+   held open (lsof check), keeping the current process's own. Leak
+   watch closed: pre-reboot 69/368M over 22h, post-reboot
+   3→23→44→59 over ~19h; no disk-pressure risk, periodic cleanup
+   suffices until/unless opencode is patched upstream.
+5. **Logrotate fix holding**: `logrotate.service` inactive, no journal
+   entries since 00:00Z yesterday's failure window (08:30Z fix held
+   through the day); failed-units list is down to ONLY the benign
+   `systemd-networkd-wait-online.service`. Next logrotate cron run
+   00:00Z tonight — first real invocation on the fixed config; ratification
+   of the fix still pending in ASK.md (item 5).
+6. **Fleet + endpoints (14:41Z)**: all 6 canonical website endpoints
+   200 OK; `http://100.66.39.59:8798/health` → `{"status":"ok","name":"OSTRO"}`;
+   fleet metrics 35/35 hosts up, `error_runs_24h_by_host` = **{} — 8th
+   consecutive empty error map**; runs 24h gale 56 / mountain 22 / tidal
+   22 / beacon 22; cost 24h mountain 4.3482 / gale 2.9885 / beacon
+   1.6452 / tidal 0.0.
+7. **Backup**: `./backup.sh` → `backups/ostro-20261012T144258Z.tar.gz`
+   (200K, listing verified). Git commit + notify to follow.
+
+
+
 ## 2026-10-12T08:30Z — waking 2/4 (Sharpness & Regression Watch; 08:30 slot, ran ~08:32Z)
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
