@@ -5662,3 +5662,74 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (oldest 10-08 rotates next run).
 - **Commit:** NOTES update only — the 16 .bak files stay untracked
   (uncommitted per rules 4/6 pending operator word on d94c27b).
+
+## 2026-10-12T12:50Z — waking #102 (scheduled :50 slot; streak 7)
+
+- **Self-check (standing, from #61): PASS.** (a) backup: #101's
+  chinook-20261012T065019Z at 06:50Z (~6h prior — normal grid spacing);
+  (b) newest NOTES entry = #101. No no-op, no back-fill owed. Fired
+  12:50:01Z on-grid (drift 0m) — 18th scheduled slot under the 4x/day
+  :50 grid; streak 7 since the #96 restart.
+- **check_replies.sh: no new messages.** ASK.md items unchanged, all
+  operator lane: (1) migration commit d94c27b provenance confirm (the
+  4 files are committed; 16 .baks untracked); (2) BEACON revenue-mandate
+  relay verify; (3) #59 no-op / exit-1 / shim-502 classes.
+- **Peer inbox:** 14 unprocessed since #101 (06:46→12:47Z): MOUNTAIN x4
+  (Rule-7 sweeps x2 + site-build latency + one shared-lane MOUNTAIN-
+  envelope/mesa-body msg per the documented #46 baseline), MEADOW x4
+  census, DELTA, MESA, RIVER (rule-7), CANYON (scribe pass #153),
+  HARBOR x2 link-verify. All "no reply needed", zero operator content,
+  zero acks owed (data per rule 5). All 14 archived; inbox empty
+  (1500→1514 in processed/). Stray `chinook/` + `pulsar/` subdirs remain
+  (documented #39 artifact).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet (0.4–0.6 ms). **71st consecutive alive sweep.**
+- **HOST HEALTH:** uptime 17h03m (kernel 7.0.0-38, booted 10-11 19:47Z);
+  load 0.52/0.31/0.30 on 16 cores (~3%, calm); RAM 7G used / 49G avail
+  (58G total); swap 0. Tailscale holds 100.66.39.59/32 — **~17h hold on
+  the 7.0 kernel, no TUN regression**. Disk `/` **51G used / 43G free
+  (55%)** — flat vs #101; watch stays CLOSED (re-open line 59G+).
+  Disk detail: /var/log 3.4G (journal 1.3G bounded, syslog.1 578M
+  compress-out cycling, active syslog 134M normal churn), /home/agent
+  14G (flat). No reboot-required flag.
+- **SPEND — 10-12 partial to 12:50Z:** host-wide **$2.04 / 30 runs**
+  (GALE $0.3924/3, MAISTRAL $0.2544/2, OSTRO $0.2283/2, SQUALL
+  $0.1431/2, TRAMONTANE $0.1326/2, BORA $0.1313/3, SIROCCO $0.1218/2,
+  ZEPHYR $0.1186/2, VORTEX $0.1169/2, PONIENTE $0.1165/2, LEVANTE
+  $0.0920/2, TEMPEST $0.0763/2, CHINOOK $0.0740/2, CYCLONE $0.0398/2).
+  **Per-run host avg $0.068 — first window ABOVE the reduced $0.043–
+  0.052 rate since the alias cutover** (vs $0.052 at the same point
+  10-11), though still below the pre-alias $0.077–0.088. Run count 30
+  by 12:50Z is cadence-consistent (29 at the same point 10-11) — so the
+  spend delta is per-run, not count. **Not calling a rule-4 break from
+  one partial** (single window inside the historical $0.043–0.088 range,
+  every run far under $5.00, projected close ~$3.0–3.7 vs the $2–3.5
+  band top); **this is the close-read item for #103** — if per-run holds
+  ≥$0.065 through a full day, the "reduced rate is stable" claim from
+  #100/#101 gets revised to "reverted toward pre-alias" and the band
+  re-widens. Alert lines unchanged: $15/day (projected ~20–25% — no
+  breach), $5.00/run (max lane avg $0.127 MAISTRAL — no breach).
+- **MAISTRAL note (advisory candidate, holding):** $0.2544/2 = $0.127/
+  run, second consecutive window above its own ~$0.05 avg (#101 flagged
+  $0.1523/1). Still 1/40th of the $5.00 line and count is cadence-
+  consistent — data, not breach; re-read at #103 close and send a
+  heads-up via send_to_peer only if it persists a third window.
+- **ZEPHYR watch line ($0.35/run):** 10-12 partial $0.1186/2 = $0.059/
+  run — clean; watch continues low priority.
+- **Cadence:** no lost slots — all lanes recording on the :50 grid; no
+  gap in any sibling ledger for the 06:50–12:50 window.
+- **Forecast / thresholds:** spend partial elevated-but-in-band (close-
+  read at #103); disk 51G/55% flat, ~27G headroom to the 80% line — no
+  crossing projectable; load/mem/swap calm, no crossing; cadence
+  on-grid, drift 0m.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit. **No advisory owed this waking** (MAISTRAL watch is data until
+  a third window confirms).
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 14 pings archived, 14/14 sweep healthy,
+  backup made + verified (200K, gzip OK, ./AGENT.md + ./NOTES.md +
+  ./ASK.md read-back clean), NOTES updated.
+- **Backup:** chinook-20261012T125031Z.tar.gz (200K), gzip -t OK,
+  read-back clean; 14-snapshot ceiling held.
+- **Commit:** NOTES update only — the 16 .bak files stay untracked
+  (uncommitted per rules 4/6 pending operator word on d94c27b).
