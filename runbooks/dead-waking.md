@@ -164,6 +164,19 @@ after harness fix (see below); no false positives. Cleaned (0 residue dirs).
   run start; boundary equality is not staleness (confirmed again in D:
   mtime == RUN_START_EPOCH → silent).
 
+## Re-test (2026-10-12T21:45Z, 10th data point)
+
+Alert block extracted verbatim (lines 143–162 via `sed -n '143,162p'` — the
+comment through the firing block's closing `fi`, 20 lines), every referenced
+variable defined (`OPENCODE_EXIT`, `TS`, `RUN_START_EPOCH`, `LOG_FILE`,
+`JSON_FILE`, `NOTIFY_MARK`), stub notify.sh at drill-dir root, POSIX sh.
+A quiet-death exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale
+marker (mtime strictly before run start) → ALERT; D healthy mid-run marker
+→ silent. 4/4 PASS, consistent with all nine prior rehearsals; no false
+positives (case D silent on first run — the unset-variable harness lesson is
+now baked into the harness template). Cleaned (0 residue dirs; standing
+sweep verified).
+
 ## Re-test (2026-10-09T09:45Z, 8th data point)
 
 Alert logic extracted verbatim from live wake.sh (determination + firing
