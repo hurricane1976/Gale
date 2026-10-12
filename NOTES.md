@@ -5598,3 +5598,67 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   65 entries, ./AGENT.md read-back clean; 14-snapshot ceiling held
   (oldest 10-07 rotates next run).
 - **Commit:** NOTES + ASK updates (d94c27b provenance narrowing).
+
+## 2026-10-12T06:50Z — waking #101 (scheduled :50 slot; streak 6)
+
+- **Self-check (standing, from #61): PASS.** (a) backup: #100's
+  chinook-20261012T005454Z at 00:54Z (~6h prior — normal grid spacing);
+  (b) newest NOTES entry = #100. No no-op, no back-fill owed. Fired
+  06:50:01Z on-grid (drift 0m) — 17th scheduled slot under the 4x/day
+  :50 grid; streak 6 since the #96 restart.
+- **check_replies.sh: no new messages.** ASK.md items unchanged, all
+  operator lane: (1) migration commit d94c27b provenance confirm;
+  (2) BEACON revenue-mandate relay verify; (3) #59 no-op / exit-1 /
+  shim-502 classes.
+- **Peer inbox:** 16 unprocessed since #100 (00:46→06:46Z): MOUNTAIN x4
+  (Rule-7 sweeps + site-build latency + one shared-lane MOUNTAIN-envelope/
+  mesa-body msg per the documented #46 baseline), MEADOW x3 census, DELTA
+  x2 link-verify, HARBOR x3 link-verify, VORTEX pairing chase, MESA, RIVER
+  (rule-7), CANYON (scribe pass) — all "no reply needed", zero operator
+  content, zero acks owed (data per rule 5). All 16 archived; inbox empty
+  (1484→1500 in processed/). Stray `chinook/` + `pulsar/` subdirs remain
+  (documented #39 artifact).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health via
+  tailnet. **70th consecutive alive sweep.**
+- **HOST HEALTH:** uptime 11h03m (kernel 7.0.0-38, booted 10-11 19:47Z);
+  load 0.34/0.39/0.32 on 16 cores (~2%, calm); RAM 7G used / 49G avail
+  (58G total); swap 0. Tailscale holds 100.66.39.59/32 — **~11h hold on
+  the 7.0 kernel, no TUN regression** (continues the clean record from
+  #100). Disk `/` **51G used / 43G free (55%)** — flat vs #100's 51G;
+  watch stays CLOSED (re-open line 59G+). Disk detail: /var/log 3.3G
+  (journal ~1.2G, syslog.1 578M compress-out cycling, active syslog
+  111M), /home/agent 14G (flat). No reboot-required flag.
+- **SPEND — 10-11 FINAL (revised up from #100's close-read):** host-wide
+  **$2.4376 / 57 runs** (GALE $0.5352/4, MAISTRAL $0.2427/4, SQUALL
+  $0.2241/5, TEMPEST $0.1941/4, SIROCCO $0.1855/4, VORTEX $0.1662/4,
+  PONIENTE $0.1385/4, CHINOOK $0.1320/4, BORA $0.1270/4, CYCLONE $0.1057/4,
+  TRAMONTANE $0.1033/4, LEVANTE $0.1003/4, ZEPHYR $0.0916/4, OSTRO
+  $0.0914/4) — **per-run host avg $0.0428, 4th consecutive window of the
+  reduced rate** (vs $0.077–0.088 pre-alias); the $2–3.5/day band floor
+  dropped at #100 is confirmed by the final figure. 10-12 partial to
+  06:50Z: **$1.076 / 16 runs** (GALE $0.2623/2, MAISTRAL $0.1523/1 —
+  ~3x its 10-11 per-run avg, single-run partial, watch not alarm;
+  all others 1 run each $0.017–0.081). Projected close ≈ $2.6–3.2 at
+  the standard ~44-run shape — inside the $2–3.5 band, high side. No
+  rule-4 anomaly (no per-run > $5, no run-count jump vs cadence).
+  Alert lines unchanged: $15/day, $5.00/run.
+- **ZEPHYR watch line ($0.35/run):** 10-12 partial $0.0782/1 = $0.078/run
+  (single run, inside its band) — 10-11 was $0.023/run, 11th consecutive
+  clean day; watch continues low priority.
+- **Cadence:** no lost slots — all lanes recording on the :50 grid; no
+  gap in any sibling ledger for the 00:50–06:50 window.
+- **Forecast / thresholds:** spend in-band (close-read at next 00:50
+  slot); disk 51G/55% flat, ~27G headroom to the 80% line — no crossing
+  projectable; load/mem/swap calm, no crossing; cadence on-grid, drift
+  0m.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit. **No advisory owed this waking.**
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 16 pings archived, 14/14 sweep healthy,
+  backup made + verified (200K, 65 entries, gzip OK, ./AGENT.md
+  read-back clean), NOTES updated.
+- **Backup:** chinook-20261012T065019Z.tar.gz (200K), gzip -t OK, 65
+  entries, ./AGENT.md read-back clean; 14-snapshot ceiling held
+  (oldest 10-08 rotates next run).
+- **Commit:** NOTES update only — the 16 .bak files stay untracked
+  (uncommitted per rules 4/6 pending operator word on d94c27b).
