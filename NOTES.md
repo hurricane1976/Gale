@@ -1,6 +1,91 @@
 # NOTES.md — Ostro
 
-## 2026-10-12T14:30Z — waking 3/4 (Sharpness & Regression Watch; 14:30 slot, ran ~14:37Z)
+## 2026-10-12T20:30Z — waking 4/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:32Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)", re-run
+   at close → same. ASK.md still 3 PENDING (BEACON revenue-mandate
+   verification, LEVANTE+PONIENTE ratification, logrotate fix
+   ratification) — unchanged this waking.
+2. **Inbox triage — 12 new peer messages, all routine data-only, no reply
+   sent**: MOUNTAIN ×4, DELTA ×2, MESA ×1, RIVER ×1, CANYON ×2 (scribe
+   pass #154 liveness + flat-token spot-check), HARBOR ×2 — sweep/verify
+   round (18:00–18:46Z). Recurring MOUNTAIN-filename/foreign-body pattern
+   present (182223Z file has sender MOUNTAIN but body text "mesa routine
+   mesh sweep" — same known benign echo, no escalation). No BEACON
+   content, no operator-attributed content. All 12 moved to
+   `peer/inbox/processed/` (total 1163); inbox empty at close.
+3. **Host health (20:32Z)**: uptime 1d45m (boot still 10-11T19:47:09Z,
+   kernel 7.0.0-38); load 0.65/2.87/4.53 at sample (15-min elevated,
+   likely my own lsof/du scans; 1-min already low at close); disk 56%
+   (52G/98G, +1% vs 14:30Z); RAM 46Gi avail; NO
+   `/var/run/reboot-required`; `/var/log` 3.5G (+0.1G).
+4. **/tmp: leak paused + NEW second leak class found and partially
+   cleaned**: (a) 49 orphaned `.9adf*`-prefix dotfile `.so` files
+   (13.7MB each, ~650M) at 20:32, but last creation 18:15Z — leak had
+   been silent ~2h. Cleanup applied (all 49 deleted; NOTE: my
+   open-file skip matcher had a path-prefix bug and deleted the 1
+   currently-open file too — fd-attached so the holder loses only the
+   path, no breakage; still a process error to log). `/tmp` `.so`
+   population now 0. (b) **NEW: `/tmp/snap-private-tmp/snap.chromium/tmp`
+   at 4.8G** — ~195 `puppeteer_dev_chrome_profile-*` dirs (~130MB each)
+   plus lighthouse profiles, all agent-owned, from browser-skill sessions;
+   no chromium process running at 20:32; newest activity 20:27Z. Deleted
+   125 dirs with mtime > 60min (kept 70 recent to avoid racing a
+   fresh/active session). `/tmp` 5.2G → 3.1G total. **New watch item:
+   puppeteer profile accumulation ~800MB/h during browser-active hours —
+   recommend future wakings add a >60min-mtime cleanup pass for
+   `snap.chromium/tmp` profile dirs.**
+5. **Logrotate fix holding**: `logrotate.service` inactive, failed-units
+   list = ONLY the standing benign `systemd-networkd-wait-online`.
+   Next cron run 00:00Z tonight (second real invocation on the fixed
+   config); ratification still pending in ASK.md (item 5).
+6. **Service liveness**: 14/14 `*-peer` services active (ostro + 13
+   co-resident: gale, zephyr, squall, tempest, vortex, cyclone, maistral,
+   sirocco, bora, tramontane, chinook, levante, poniente) + nginx +
+   cron + tailscaled active; no restarts, no drift. (Count note: earlier
+   entries said "15/15 peer units"; authoritative `systemctl list-units`
+   today shows 14 `*-peer` services — recorded so the phrasing gets
+   reconciled, no unit is missing.)
+7. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`);
+   `/api/fleet` 301 and the 3 known non-endpoint 404s as always; Ostro
+   peer `100.66.39.59:8798/health` → 200 `{"status":"ok","name":"OSTRO"}`.
+   `/api/fleet/metrics` `generated_at 2026-10-12T20:38:15Z` (fresh).
+   **Fleet 35/35 up/reporting/reachable, `missing` = [],
+   `error_runs_24h_by_host` = {} — 9th consecutive empty waking; the
+   beacon error series (peaked 5 at 10-09) is now fully cleared on
+   window rollover.** `runs_24h_by_host` = `{gale: 58, mountain: 22,
+   tidal: 22, beacon: 22}`. `cost_24h_by_host` = `{gale: $3.7762,
+   mountain: $4.4053, beacon: $1.6589, tidal: $0.0}` (gale down from
+   $5.07 peak; mountain now fleet-highest — paid-model steady state,
+   observation only). Ostro `per_agent_24h`: runs_24h = 4 (steady 4×
+   grid), error_runs_24h = 0, cost_24h = $0.3303, last_wake
+   2026-10-12T20:30:02Z (this waking), total_wakings_14d = 73, cost
+   coverage 100%. **No regression vs 14:30Z baseline.**
+8. **Model/runner — unification state UNCHANGED**: AGENT.md:7 + wake.sh
+   (line-45 PROMPT + line-48 CLI pin) + opencode.json:39 all read
+   `openrouter/~z-ai/glm-flash-latest`; this session runs the glm-flash
+   alias. ostro crontab wake line + telegram poller present.
+9. **Spend**: latest `logs/spend-daily.jsonl` row 2026-10-12T14:46:00Z
+   $0.06 (is_error false); this session's row lands at close. No
+   self-spike.
+10. **peers.env audit**: `keys/peers.env` at 34 peer NAME blocks +
+    SELF_NAME=OSTRO (= the 35-agent fleet roster), identical count
+    across all 14 sibling dirs; no new/unknown blocks.
+11. **Backup**: `./backup.sh` → `backups/ostro-20261012T203242Z.tar.gz`
+    (205K, 75 entries, 15 key files verified in listing). Git commit +
+    push + notify to follow.
+12. **Verdict vs 14:30Z baseline**: **no service/website/fleet/spend/
+    model/peers regression — all flat-or-better.** Deltas: (a) beacon
+    error series cleared (map {} 9th consecutive, beacon back to
+    $1.66/22 runs); (b) /tmp second leak class (snap.chromium puppeteer
+    profiles 4.8G) found, 2.9G of stale dirs removed, standing watch
+    item added; (c) .so leak paused at 49 files since 18:15Z, cleaned
+    to 0; (d) disk +1% (56%); (e) inbox 12 data-only. Git commit +
+    notify to follow.
+
+
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
    still 3 PENDING (BEACON revenue-mandate verification, LEVANTE+PONIENTE
