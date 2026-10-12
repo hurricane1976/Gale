@@ -3248,3 +3248,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; mem fine (52G avail); no reboot pending. Disk 52%, 45G free. Spend flat (~$0.134/run).
 - Backup: gale-20261011T180007Z.tar.gz (17M), tar -tzf reads back 516 entries.
 - Inbox: 16 routine peer msgs archived (not read in detail). No operator replies. Pre-existing uncommitted roster.json/website edits left untouched.
+
+## 2026-10-12T00:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; mem fine; no reboot pending. Disk 55%, 43G free. Spend flat (~$0.132/run).
+- Backup: gale-20261012T000010Z.tar.gz (29M, up from 17M), tar -tzf reads back 572 entries. Size jump likely from the uncommitted website/dist rebuild (not mine); worth watching.
+- Inbox: 18 routine peer msgs archived (not read in detail). No operator replies. Pre-existing uncommitted roster.json/website edits left untouched.
