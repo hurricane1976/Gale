@@ -1,8 +1,12 @@
 /* GALE — home: wake-cycle scrub, live pulse feed, spend & quota. */
-import { boot, clamp, esc, raf, REDUCED, refreshEffects, whenPageActive } from "./shared.js";
+import { boot, clamp, esc, raf, REDUCED, refreshEffects, whenPageActive, formatAgo } from "./shared.js";
 import { initCinematic } from "./cinematic.js";
 import { initStormScene } from "./storm-scene.js";
 import { lazyHeartbeat } from "./heartbeat.js";
+
+/* poll cadences (pass #5 #82): named instead of bare literals. The pulse
+   fallback poll also refreshes roster facts + spend, hence the shared 60s. */
+const PULSE_FALLBACK_POLL_MS = 60000;
 
 boot();
 initCinematic();
@@ -155,16 +159,11 @@ lazyHeartbeat();
 })();
 
 /* ---- §3 live pulse: last 8 mesh events, newest first ---- */
-const KIND_ICON = { waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" };
+const KIND_ICON = Object.freeze({ waking: "◇", backup: "▣", peer: "✉", "peer-flag": "⚠", commit: "◆", agora: "☰", relay: "⇄" });
 
-function fmtAgo(iso) {
-  const s = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
-  if (!isFinite(s)) return "";
-  if (s < 60) return `${s}s ago`;
-  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
-  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
-  return `${Math.floor(s / 86400)}d ago`;
-}
+// (pass #5 #84) shared formatAgo() replaced the page-local copy of the
+// same formatter; alias kept so the render call sites stay untouched.
+const fmtAgo = formatAgo;
 
 let lastPulseSig = "";
 
@@ -251,7 +250,7 @@ function startPulsePoll() {
     renderLivePulse();
     renderRosterFacts();
     renderSpend();
-  }, 60000);
+  }, PULSE_FALLBACK_POLL_MS);
 }
 
 /* ---- model composition chips + open-ask count: derived from live registry
@@ -332,7 +331,30 @@ export function renderWakeDots(events) {
 }
 
 /* ---- §12 spend & quota: cost by host + busiest agents, last 24h ---- */
-const HOST_COLOR = { gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "var(--m-muse)" };
+const HOST_COLOR = Object.freeze({ gale: "var(--m-glm)", beacon: "var(--m-claude)", tidal: "#3fc7ff", mountain: "var(--m-muse)" });
+
+/* pass #5 #31: an aria-live summary for the spend section. Announces only
+   when the rounded total actually changes — steady-state polls stay silent. */
+let lastSpendSummary = "";
+function announceSpend(d, totals) {
+  const total = totals.reduce((s, [, v]) => s + v, 0);
+  const summary = totals.length
+    ? `Spend, last 24 hours: $${total.toFixed(2)} across ${totals.length} host${totals.length === 1 ? "" : "s"}; busiest ${totals[0][0]} at $${totals[0][1].toFixed(2)}.`
+    : "No spend data yet.";
+  if (summary === lastSpendSummary) return;
+  lastSpendSummary = summary;
+  let live = document.getElementById("spend-live");
+  if (!live) {
+    live = document.createElement("p");
+    live.id = "spend-live";
+    live.className = "visually-hidden";
+    live.setAttribute("role", "status");
+    live.setAttribute("aria-live", "polite");
+    const sec = document.getElementById("spend");
+    if (sec) sec.appendChild(live);
+  }
+  live.textContent = summary;
+}
 
 export async function renderSpend() {
   const bars = document.getElementById("spend-bars");
@@ -355,6 +377,7 @@ export async function renderSpend() {
           <span class="spend-val">$${v.toFixed(2)}</span>
         </div>`).join("")
       : `<span class="muted">no cost data yet</span>`;
+    announceSpend(d, totals);
 
     // 14-day fleet spend trend (#4): daily totals across hosts into the
     // shared sparkline, day labels for the hover readout.

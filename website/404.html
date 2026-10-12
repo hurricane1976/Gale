@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
   <script>
-    /* pre-paint theme: apply the persisted choice before first render */
-    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    /* pre-paint theme: ?theme= URL param wins, then the persisted choice */
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
 
     <meta charset="utf-8" />
@@ -21,6 +21,7 @@
   <meta name="apple-mobile-web-app-title" content="Gale" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Gale.agent" />
     <meta property="og:title" content="404 — Lost in the storm | Gale" />
@@ -30,8 +31,8 @@
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
 <meta property="og:description" content="This route blew off the map. The Gale dashboard is still standing — head back." />
 <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" fetchpriority="high" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
     <link rel="stylesheet" href="gale.css" />
     <link rel="stylesheet" href="cinematic.css" />
@@ -61,12 +62,13 @@
             <path d="M14 2 L4 28 L10 28 L7 58 L20 26 L13 26 Z" pathLength="100"/>
           </svg>
           <h1 class="hero-title"><span class="grad-text">Lost in the storm</span></h1>
-          <p class="lede">This route blew off the map. The dashboard is still standing — head back.</p>
+          <p class="lede" role="status" aria-live="polite">This route blew off the map. The dashboard is still standing — head back.</p>
           <ul class="chips" aria-label="Where to go">
             <li><a class="chip" href="index.html">Dashboard</a></li>
             <li><a class="chip" href="fleet.html">Fleet</a></li>
             <li><a class="chip" href="status.html">Status</a></li>
           </ul>
+          <p class="mini-note" style="margin-top:10px">Tip: press <kbd>Ctrl</kbd>+<kbd>K</kbd> (or <kbd>/</kbd>) anywhere on Gale to jump to any page from the command palette.</p>
           <div class="fleet-3d fleet-3d-keep" id="lost-map" style="margin-top:28px">
             <button id="topo-3d-toggle" class="mini-toggle lost-map-toggle" type="button" hidden>3d view</button>
             <div id="topo-home-stub" hidden></div>
@@ -83,6 +85,7 @@
         </section>
       </div>
     </main>
+    <link rel="preload" href="boot-shared.js" as="script" />
     <script type="module" src="boot-shared.js"></script>
     <script type="module" src="lost-boot.js"></script>
   </body>

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <script>
-    /* pre-paint theme: apply the persisted choice before first render */
-    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    /* pre-paint theme: ?theme= URL param wins, then the persisted choice */
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
 
   <meta charset="UTF-8" />
@@ -29,9 +29,10 @@
   <meta name="apple-mobile-web-app-title" content="Gale" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
-  <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
   <link rel="stylesheet" href="gale.css" />
   <link rel="stylesheet" href="cinematic.css" />
@@ -76,6 +77,9 @@
   </header>
 
   <main id="main" class="ops-main">
+    <!-- pass #5 #56: sticky chapter rail (built by cinematic.js when >=4
+         sections; retired automatically on short pages) -->
+    <nav class="chapter-nav" id="chapters" aria-label="Page chapters"></nav>
     <div class="ops-head">
       <div>
         <span class="eyebrow"><span class="dot"></span>Internal &middot; tailnet-only &middot; operator view</span>
@@ -105,6 +109,7 @@
 
       <section class="reveal ops-panel span-full" id="sec-fleet-24h" aria-labelledby="h-fleet-24h">
         <h2 id="h-fleet-24h" class="panel-title">Fleet activity &middot; 24h</h2>
+        <p class="mini-note" id="fleet-24h-legend">Each card's coloured dot and accent identify the host: gale amber, tidal blue, mountain indigo, beacon gold. The spark line shows 24h wake cadence; the same totals are in Metrics.</p>
         <p class="sec-lede" style="margin-top:-6px">Per-host runs, cost and last wake from <code>api/fleet/metrics</code> &mdash; full sparklines and agent rosters live on <a href="fleet.html">fleet.html</a>.</p>
         <div id="fleet-live-strip" class="fleet-live-strip" role="status" aria-live="polite"></div>
         <div id="fleet-24h-grid" class="fleet-24h-grid"></div>

@@ -33,6 +33,39 @@ const CHROME_FLAGS = ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage
 const round = (score) => (score == null ? "n/a" : String(Math.round(score * 100)));
 
 let failed = false;
+
+/* pass #5 #100: static source gates alongside the Lighthouse run —
+   (a) offline.html exists and is precached by sw.js (the offline promise),
+   (b) no console.log left in page scripts (RUM/diagnostics go through
+   __galeRUMRecord/__galeToast, console.warn/error remain allowed),
+   (c) every page ships the apple-touch-icon link (iOS install surface). */
+{
+  const { readFileSync, existsSync } = await import("node:fs");
+  const root = new URL("..", import.meta.url).pathname;
+  const problems = [];
+  if (!existsSync(root + "offline.html")) problems.push("offline.html missing");
+  const sw = readFileSync(root + "sw.js", "utf8");
+  if (!sw.includes('"/offline.html"')) problems.push("sw.js does not precache /offline.html");
+  for (const page of PAGES) {
+    const html = readFileSync(root + page, "utf8");
+    if (!html.includes('rel="apple-touch-icon"')) problems.push(`${page}: missing apple-touch-icon link`);
+    if (!html.includes("<html lang=")) problems.push(`${page}: missing <html lang>`);
+  }
+  const { readdirSync } = await import("node:fs");
+  for (const f of readdirSync(root)) {
+    if (!f.endsWith(".js") || ["sw.js", "rum.js", "boot-shared.js", "lost-boot.js", "runbooks-steps.js", "offline.js", "zod-lite.js", "shared.js"].includes(f)) continue;
+    const src = readFileSync(root + f, "utf8");
+    if (/\bconsole\.log\(/.test(src)) problems.push(`${f}: console.log found (use __galeToast / __galeRUMRecord)`);
+  }
+  if (problems.length) {
+    for (const p of problems) console.log(`fail   static-gate: ${p}`);
+    failed = true;
+  } else {
+    console.log(`ok     static-gate: offline shell + apple-touch-icon + lang + no console.log across ${PAGES.length} pages`);
+  }
+}
+
+
 const chrome = await chromeLauncher.launch({
   chromePath: CHROME,
   chromeFlags: CHROME_FLAGS,

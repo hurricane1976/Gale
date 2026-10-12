@@ -22,6 +22,41 @@ const PAGES = [
 
 const ICON_PAGE = "→", ICON_SECTION = "§", ICON_AGENT = "◆";
 
+/* keyboard-shortcuts help dialog (#51): one native <dialog> listing every
+   site-wide shortcut, opened from the palette or the "?" key. Built lazily
+   on first open so plain-Node render tests stay DOM-free. */
+const SHORTCUTS = Object.freeze([
+  ["Ctrl / ⌘ + K", "Open or close the command palette"],
+  ["/", "Open the command palette (single-key trigger)"],
+  ["?", "This shortcut help"],
+  ["↑ ↓", "Palette: move between results"],
+  ["↵", "Palette: open the selected result"],
+  ["Esc", "Close palette / dialogs / unpinned tooltips"],
+  ["← → Home End", "Charts: step the crosshair when a chart is focused"],
+  ["← →", "Tables: scroll horizontally when a table region is focused"],
+  ["M", "Status board: mute the focused alert chip"],
+  ["Ctrl / ⌘ + D", "Bookmark (browser) — noted here to avoid surprise"],
+]);
+let helpDlg = null;
+function openHelp() {
+  if (!helpDlg) {
+    helpDlg = document.createElement("dialog");
+    helpDlg.id = "gale-shortcuts";
+    helpDlg.setAttribute("aria-label", "Keyboard shortcuts");
+    helpDlg.innerHTML = `
+      <h2>Keyboard shortcuts</h2>
+      <dl class="shortcut-list">
+        ${SHORTCUTS.map(([k, v]) => `<dt><kbd>${k}</kbd></dt><dd>${v}</dd>`).join("")}
+      </dl>
+      <p class="mini-note">Press <kbd>Esc</kbd> to close.</p>`;
+    document.body.appendChild(helpDlg);
+    helpDlg.addEventListener("click", (e) => { if (e.target === helpDlg) helpDlg.close(); });
+  }
+  if (typeof helpDlg.showModal === "function") { if (!helpDlg.open) helpDlg.showModal(); }
+  else helpDlg.setAttribute("open", "");
+}
+export { openHelp };
+
 /* kiosk toggle: only shown when not already in kiosk mode */
 function kioskItem(items) {
   if (new URLSearchParams(location.search).has("kiosk")) return;
@@ -253,10 +288,25 @@ export function initPalette() {
     });
   };
 
+  input.setAttribute("aria-keyshortcuts", "Control+K Meta+K /"); // pass #5 #40
   document.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
       dlg.open ? dlg.close() : open();
+    }
+    // "/" opens the palette too, when the user isn't already typing (#65):
+    // browsers reserve Ctrl+K for the address bar on some layouts, and a
+    // single keystroke trigger is the dashboard power-user norm.
+    else if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const t = e.target;
+      const typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+      if (!typing && !dlg.open) { e.preventDefault(); open(); }
+    }
+    // "?" opens the keyboard-shortcuts help dialog (#51)
+    else if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const t = e.target;
+      const typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+      if (!typing) { e.preventDefault(); openHelp(); }
     }
   });
   dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });

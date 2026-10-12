@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <script>
-    /* pre-paint theme: apply the persisted choice before first render */
-    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    /* pre-paint theme: ?theme= URL param wins, then the persisted choice */
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
 
   <meta charset="UTF-8" />
@@ -29,9 +29,10 @@
   <meta name="apple-mobile-web-app-title" content="Gale" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
-  <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
   <link rel="stylesheet" href="gale.css" />
   <link rel="stylesheet" href="cinematic.css" />
@@ -83,6 +84,7 @@
         <span class="eyebrow"><span class="dot"></span>Live &middot; 4 hosts &middot; <span id="galaxy-count">35</span> stars</span>
         <h1 class="galaxy-title grad-text">Fleet Galaxy</h1>
         <p class="galaxy-sub">Each host is a spiral arm; each agent a star. Flares are live alerts. Drag to orbit, scroll to zoom, pick a star to fly to it.</p>
+        <p class="mini-note">Keyboard: Tab to the agent list below the scene — every star has a labelled control there; the canvas itself is pointer-only by design.</p>
         <p class="galaxy-feed-state" id="galaxy-feed-state" role="status" aria-live="polite">Alert feed · connecting</p>
         <div class="galaxy-key" aria-label="Galaxy legend"><span><i class="galaxy-key-star" aria-hidden="true"></i>Agent</span><span><i class="galaxy-key-host" aria-hidden="true"></i>Host</span><span><i class="galaxy-key-warn" aria-hidden="true"></i>Warning</span><span><i class="galaxy-key-crit" aria-hidden="true"></i>Critical</span></div>
         <p class="galaxy-card" id="galaxy-card" aria-live="polite">Nothing selected.</p>

@@ -3,7 +3,7 @@
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
    model name, unload always asks once — shared infrastructure, not toys. */
-import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, setVitals, chartTooltip, skeleton, whenNear, setHTML, setText, whenPageActive } from "./shared.js";
+import { tracedFetch, boot, esc, clamp, refreshEffects, trapFocus, REDUCED, setVitals, chartTooltip, skeleton, whenNear, setHTML, setText, whenPageActive, safeJSONParse } from "./shared.js";
 
 boot();
 
@@ -580,7 +580,7 @@ $("models-table").addEventListener("click", async (e) => {
     // transient single-line note
     try {
       const key = "gale-ollama-benchmarks";
-      const list = JSON.parse(localStorage.getItem(key) || "[]");
+      const list = safeJSONParse(localStorage.getItem(key), []);
       list.unshift({ model, at: new Date().toISOString(), line });
       localStorage.setItem(key, JSON.stringify(list.slice(0, 8)));
       renderBenchPanel();
@@ -617,7 +617,7 @@ function renderBenchPanel() {
   const host = $("bench-history");
   if (!host) return;
   try {
-    const list = JSON.parse(localStorage.getItem("gale-ollama-benchmarks") || "[]");
+    const list = safeJSONParse(localStorage.getItem("gale-ollama-benchmarks"), []);
     host.innerHTML = list.length
       ? `<details class="ol-think"><summary>recent benchmarks (${list.length})</summary><div>${list.map((b) => `<p>${esc(b.model)} · ${esc(b.line)} · ${esc((b.at || "").slice(0, 16).replace("T", " "))}</p>`).join("")}</div></details>`
       : "";
@@ -1295,7 +1295,7 @@ if (typeof EventSource !== "undefined") whenPageActive().then(() => {
   es.onmessage = (e) => {
     sseFailures = 0;
     try {
-      SNAP = JSON.parse(e.data);
+      SNAP = safeJSONParse(e.data, null);
       $("srv-url").textContent = SNAP.url || "192.168.1.197:11434";
       renderVitals();
       renderModels();

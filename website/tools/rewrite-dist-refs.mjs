@@ -107,7 +107,7 @@ const rewriteCss = (text) => {
 // inline hashes are unaffected. Originals stay (smoke checks, old SW caches).
 // shared.js is intentionally excluded: boot scripts import it relatively at
 // runtime, so renaming it would require editing file contents.
-const JS_UNHASHED = ["runbooks-steps", "boot-shared", "lost-boot", "rum"];
+const JS_UNHASHED = ["runbooks-steps", "boot-shared", "lost-boot", "rum", "offline"];
 const jsMap = {};
 for (const n of JS_UNHASHED) {
   const f = join(root, n + ".js");

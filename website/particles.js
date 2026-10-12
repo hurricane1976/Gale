@@ -10,7 +10,7 @@
    the browser supports it (review 2026-10-11): the main thread only samples
    SVG trunk geometry (DOM-bound) and forwards live-throughput updates.
    Same-file main-thread fallback keeps older engines identical. */
-import { isDataSaver } from "./shared.js";
+import { DEVICE_TIER, isDataSaver } from "./shared.js";
 const canvas = document.querySelector(".fleet-particles");
 const wrap = document.querySelector(".fleet-topo-wrap");
 const svg = document.querySelector(".fleet-topo-svg");
@@ -144,7 +144,8 @@ if (canvas && wrap && svg && !REDUCED && !SAVER) {
       last = ts;
       const w = wrap.clientWidth, h = wrap.clientHeight;
       ctx.clearRect(0, 0, w, h);
-      const target = Math.min(26, trunks.length * 4) * (0.5 + Math.min(1.5, live.mbps / 3));
+      // pass #5 #66: device-tier scaling on the packet-dot budget
+    const target = Math.min(26, trunks.length * 4) * (0.5 + Math.min(1.5, live.mbps / 3)) * DEVICE_TIER;
       while (dots.length < target) spawn();
       for (let i = dots.length - 1; i >= 0; i--) {
         const d = dots[i];

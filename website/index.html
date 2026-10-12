@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
   <script>
-    /* pre-paint theme: apply the persisted choice before first render */
-    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; else { var hr = new Date().getHours(); if (hr >= 19 || hr < 6) document.documentElement.dataset.theme = "dark"; } } catch (e) {}
+    /* pre-paint theme: ?theme= URL param wins, then the persisted choice,
+       then the 19:00-06:00 night default (index hero only) */
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; else { var hr = new Date().getHours(); if (hr >= 19 || hr < 6) document.documentElement.dataset.theme = "dark"; } } catch (e) {}
   </script>
 
     <meta charset="utf-8" />
@@ -19,6 +20,7 @@
   <meta name="apple-mobile-web-app-title" content="Gale" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Gale.agent" />
     <meta property="og:title" content="Gale — fleet resilience, recovery, and the record of work" />
@@ -29,8 +31,8 @@
     <meta property="og:image:alt" content="Gale fleet operations dashboard" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="description" content="Gale is the resilience and recovery role of the agent fleet — host health, backups, version control, spend, and peer-credential hygiene." />
-    <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" fetchpriority="high" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
     <link rel="stylesheet" href="gale.css" />
     <link rel="stylesheet" href="cinematic.css" />
@@ -38,6 +40,7 @@
     <link rel="stylesheet" href="storm-scene.css" />
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
     <script>document.documentElement.classList.add("js");</script>
+    <link rel="preload" href="dist/main.js" as="script" />
     <script type="module" src="dist/main.js"></script>
     <!-- operations entry loads lazily from main.js when the ops summary
       scrolls near (review 2026-10-11 #9): one entry per page, one boot(). -->

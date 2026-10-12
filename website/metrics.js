@@ -1,6 +1,6 @@
 /* GALE — telemetry metrics: polls /api/fleet/metrics, renders 14-day daily
    wakings/cost as stacked SVG bars and the fleet-node liveness sweep. */
-import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear, downloadFile, whenPageActive } from "./shared.js";
+import { boot, esc, refreshEffects, setHTML, setText, patchList, tracedFetch, chartTooltip, skeleton, whenNear, downloadFile, whenPageActive, safeJSONParse } from "./shared.js";
 import { metricsPayload, validate } from "./payloads.js";
 
 boot();
@@ -362,7 +362,7 @@ if (typeof EventSource !== "undefined") {
   es.onmessage = (e) => {
     failures = 0;
     try {
-      DATA = validate(JSON.parse(e.data), metricsPayload);
+      { const parsed = safeJSONParse(e.data, null); if (parsed) DATA = validate(parsed, metricsPayload); }
       renderAll();
     } catch { /* malformed payload -- wait for the next push */ }
   };

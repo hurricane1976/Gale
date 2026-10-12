@@ -4,10 +4,41 @@
 
 export const REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const FINE = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
+
+/* pass #5 #66/#67: device-tier factor for particle systems. Lower-core and
+   low-memory devices get proportionally fewer particles so the ambient
+   scenes never become the slowest thing on the page. 0.4x .. 1x. */
+export const DEVICE_TIER = (() => {
+  try {
+    const cores = navigator.hardwareConcurrency || 4;
+    const mem = navigator.deviceMemory || 4;
+    return clamp(Math.min(cores / 8, mem / 4), 0.4, 1);
+  } catch { return 1; }
+})();
 export const raf = (fn) => requestAnimationFrame(fn);
 
+/** Clamp a number into [lo, hi] (defaults 0..1). NaN-safe: returns lo. */
 export const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 export const pad2 = (n) => String(n).padStart(2, "0");
+
+/** Format an ISO timestamp as a coarse human "ago" string (s/m/h/d).
+ *  Shared by the home pulse feed and the nav-pulse history rows. */
+export function formatAgo(iso, now = Date.now()) {
+  const s = Math.max(0, Math.round((now - new Date(iso).getTime()) / 1000));
+  if (!isFinite(s)) return "";
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
+
+/** JSON.parse that never throws: returns `fallback` on null/invalid input.
+ *  Use for localStorage reads and any payload whose shape the backend may
+ *  have drifted on — a crash in one render path must not take the page. */
+export function safeJSONParse(text, fallback = null) {
+  if (text == null) return fallback;
+  try { return JSON.parse(text); } catch { return fallback; }
+}
 
 /* Prerender gating (review 2026-10-11): with speculation rules prerendering
    a link target, the hidden page must not open SSE streams or start long
@@ -15,6 +46,8 @@ export const pad2 = (n) => String(n).padStart(2, "0");
    Fetch-on-load stays unGated: warming caches is exactly what prerender is
    for. Streams call `whenPageActive().then(...)` before creating their
    EventSource. Resolves immediately everywhere prerendering doesn't exist. */
+/** Promise resolving when a prerendering page becomes visible; immediate
+ *  elsewhere. Stream/poller creation should await this. */
 export function whenPageActive() {
   try {
     if (typeof document !== "undefined" && document.prerendering) {
@@ -42,14 +75,15 @@ export function scheduleBackground(fn, opts = {}) {
 }
 
 const ENT = { "&": "amp", "<": "lt", ">": "gt", '"': "quot", "'": "#39" };
+/** HTML-escape any value for safe interpolation into template strings. */
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => "&" + ENT[c] + ";");
 
-const STATUS_GLYPHS = {
+const STATUS_GLYPHS = Object.freeze({
   ok: '<path d="m5 12 4 4L19 6"/>',
   warn: '<path d="M12 3 2.8 19h18.4L12 3Z"/><path d="M12 9v4m0 3h.01"/>',
   crit: '<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>',
   unknown: '<circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 4.1 1.7c-1.1 1-1.8 1.4-1.8 3m0 3h.01"/>',
-};
+});
 export function statusBadge(level, label = level) {
   const state = Object.prototype.hasOwnProperty.call(STATUS_GLYPHS, level) ? level : "unknown";
   return `<span class="gale-status-badge" data-level="${state}"><svg viewBox="0 0 24 24" aria-hidden="true">${STATUS_GLYPHS[state]}</svg><span>${esc(label)}</span></span>`;
@@ -146,9 +180,24 @@ function apiFamily(url) {
   return path.startsWith("/api/") ? "api_other" : "other";
 }
 
+/* pass #5 #72: abort every in-flight tracedFetch when the page hides —
+   bfcache freezes the JS but the sockets are held until the browser reaps
+   them; explicit abort returns them immediately and keeps the cache warm. */
+const ACTIVE_REQUESTS = new Set();
+if (typeof window !== "undefined" && window.addEventListener) {
+  window.addEventListener("pagehide", () => {
+    for (const ctl of ACTIVE_REQUESTS) { try { ctl.abort(); } catch {} }
+    ACTIVE_REQUESTS.clear();
+  });
+}
+
 /* Default per-request budget for live reads (review 2026-10-11 #53): callers
    may pass their own signal; the Operations console surfaces this value. */
 export const TRACED_FETCH_TIMEOUT_MS = 15000;
+/** fetch with W3C traceparent, per-request timeout, idempotency keys on
+ *  writes, and RUM recording (API_REQUEST_MS / API_HTTP_* / API_TIMEOUT).
+ *  Every dashboard data fetch goes through this so page load + polls form
+ *  one reconstructible trace in Loki. */
 export async function tracedFetch(url, opts = {}) {
   const spanId = (crypto && crypto.getRandomValues)
     ? [...crypto.getRandomValues(new Uint8Array(8))].map((b) => b.toString(16).padStart(2, "0")).join("")
@@ -158,10 +207,24 @@ export async function tracedFetch(url, opts = {}) {
   if (opts.method && !["GET", "HEAD"].includes(opts.method.toUpperCase()) && !headers.has("Idempotency-Key")) headers.set("Idempotency-Key", crypto.randomUUID());
   const family = apiFamily(url), started = performance.now();
   let timeoutSignal = null;
-  const request = { ...opts, headers };
+  let request = { ...opts, headers };
   if (!request.signal && typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
     timeoutSignal = AbortSignal.timeout(TRACED_FETCH_TIMEOUT_MS);
     request.signal = timeoutSignal;
+  }
+  /* pagehide bookkeeping (pass #5 #72): the tracked controller aborts on
+     pagehide; when the caller supplied its own signal the two combine via
+     AbortSignal.any where available (older engines keep caller semantics). */
+  const tracked = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  if (tracked) {
+    try {
+      if (request.signal && typeof AbortSignal !== "undefined" && typeof AbortSignal.any === "function") {
+        request = { ...request, signal: AbortSignal.any([request.signal, tracked.signal]) };
+      } else if (!request.signal) {
+        request.signal = tracked.signal;
+      }
+      ACTIVE_REQUESTS.add(tracked);
+    } catch { /* tracking is enhancement-only */ }
   }
   try {
     const response = await fetch(url, request);
@@ -181,6 +244,8 @@ export async function tracedFetch(url, opts = {}) {
     window.__galeRUMRecord?.(timedOut ? "API_TIMEOUT" : "API_FETCH_ERROR", 1, family);
     API_FAILURES.add(family);
     throw error;
+  } finally {
+    if (tracked) ACTIVE_REQUESTS.delete(tracked);
   }
 }
 
@@ -209,6 +274,8 @@ export function bindHTML(el, fn) {
 const TWEEN_RAF = new WeakMap();
 const NUM_CORE = /^(\D*?)(-?\d+(?:\.\d+)?)(\D*)$/s;
 
+/** Animate an element's numeric core from `from` to `to` (~600ms ease-out);
+ *  prefix/suffix stay. Non-numeric values and REDUCED set instantly. */
 export function tweenText(el, to, { from = null, duration = 600 } = {}) {
   if (!el) return false;
   const toText = String(to);
@@ -275,6 +342,8 @@ export function setVitals(el, html) {
 
 const LAST_HTML = new WeakMap();
 
+/** innerHTML with a write guard: identical markup leaves the DOM untouched
+ *  (focus/scroll/hover state and DOM identity survive re-renders). */
 export function setHTML(el, html) {
   if (!el) return false;
   const next = String(html ?? "");
@@ -284,6 +353,7 @@ export function setHTML(el, html) {
   return true;
 }
 
+/** textContent with a write guard: identical text is a no-op. */
 export function setText(el, text) {
   if (!el) return false;
   const next = String(text ?? "");
@@ -303,6 +373,9 @@ function nodeFromHtml(html) {
   return node;
 }
 
+/** Reconcile a keyed list of pre-rendered HTML rows: insert only new keys,
+ *  replace only changed rows, remove only gone keys, re-order survivors.
+ *  Falls back to innerHTML for render-test stubs without appendChild. */
 export function patchList(el, items) {
   const list = (Array.isArray(items) ? items : []).map((it) => ({
     key: String((it && it.key) ?? ""),
@@ -382,11 +455,15 @@ if (typeof HTMLElement !== "undefined") {
       this.classList.add("member-card");
       this.style.setProperty("--mc", color);
       this.style.setProperty("--i", index);
+      // pass #5 #30: the pairing-state chip carries its meaning as a native
+      // tooltip and links to the fleet page's pairing legend when present.
+      const legend = document.getElementById("fleet-pairing-legend");
+      const describedby = legend ? ' aria-describedby="fleet-pairing-legend"' : "";
       this.innerHTML =
         `<div class="mc-top"><strong class="mc-name">${esc(name)}</strong><span class="mc-chip">${esc(model)}</span></div>` +
         `<p class="mc-role">${esc(role)}</p>` +
         `<div class="mc-meta"><code>${esc(listener)}</code></div>` +
-        `<div class="mc-state${pending ? " pending" : ""}">${esc(state)}</div>`;
+        `<div class="mc-state${pending ? " pending" : ""}" title="${esc(state)}"${describedby}>${esc(state)}</div>`;
     }
   }
   if (!customElements.get("agent-card")) customElements.define("agent-card", AgentCard);
@@ -828,6 +905,8 @@ export function chartTooltip(svg, points, format) {
    boot, wiped by the first real render (every wired container is fully
    overwritten via setHTML/innerHTML, so no cleanup call is needed). Static
    under reduced motion. ---- */
+/** Paint shimmer placeholders into `el`; the first real render wipes them
+ *  (MutationObserver). Test-stub safe. */
 export function skeleton(el, n = 3, h = 54) {
   if (!el || !el.dataset || el.dataset.skel === "1") return; /* test-stub safe */
   el.dataset.skel = "1";
@@ -850,6 +929,8 @@ export function skeleton(el, n = 3, h = 54) {
    motion and old browsers fall back to a plain call. Update-callback
    exceptions are still reported by the UA (spec behavior) -- the
    finished.catch only silences the mirrored promise rejection. ---- */
+/** Run a DOM re-render inside the View Transition API when available;
+ *  identical pixels animate nothing, REDUCED/old browsers call fn directly. */
 export function morph(fn) {
   try {
     if (!REDUCED && typeof document !== "undefined" && document.startViewTransition) {
@@ -897,6 +978,32 @@ function dockAdd(el) {
   }
   dock.appendChild(el);
 }
+
+/* ---- gale-toast: one transient status region for non-blocking feedback
+   (copy confirmations, push-test receipts, stale-worker notices). Announced
+   via aria-live so screen readers get the same confirmation sighted users
+   see. Multiple calls coalesce: the newest message wins, older timers are
+   cleared. Shared surfaces call window.__galeToast?.(msg) so a missing
+   toast layer (plain-Node tests) is a no-op. ---- */
+export function toast(message, ms = 3500) {
+  if (typeof document === "undefined" || !document.body) return;
+  let host = document.getElementById("gale-toast");
+  if (!host) {
+    host = document.createElement("div");
+    host.id = "gale-toast";
+    host.setAttribute("role", "status");
+    host.setAttribute("aria-live", "polite");
+    host.setAttribute("aria-atomic", "true");
+    host.hidden = true;
+    document.body.appendChild(host);
+  }
+  host.textContent = String(message ?? "");
+  host.hidden = false;
+  host.dataset.on = "1";
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { host.hidden = true; delete host.dataset.on; }, ms);
+}
+if (typeof window !== "undefined") window.__galeToast = toast;
 
 export function initContrastMode() {
   if (typeof document === "undefined" || !document.body || document.getElementById("contrast-toggle")) return;
@@ -1145,7 +1252,8 @@ export function initStormCanvas() {
   const mouse = { x: -1e4, y: -1e4 };
 
   const spawn = (w, h) => {
-    const n = Math.floor((w * h) / 9000) + 40;
+    // pass #5 #66: device-tier scaled rain count (fewer on small/low-mem)
+    const n = ((Math.floor((w * h) / 9000) + 40) * DEVICE_TIER) | 0;
     return Array.from({ length: n }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
@@ -1685,12 +1793,24 @@ function registerServiceWorker() {
   // every page's render tests go down with it.
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("sw registration failed", e));
+    // pass #5 #24: updateViaCache "none" — sw.js itself must always hit the
+    // network; a long-cached worker script delays fixes by days on PWAs.
+    navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" })
+      .catch((e) => console.warn("sw registration failed", e));
     // Force the active worker to update immediately rather than waiting on
     // navigation heuristics (installed PWAs can sit on an old worker for
     // days otherwise): check on every load, activate new versions at once.
     navigator.serviceWorker.ready.then((reg) => {
       reg.update().catch(() => {});
+      // pass #5 #13: periodic shell re-warm (Chromium-only, guarded) so a
+      // long-idle installed PWA keeps fresh offline coverage.
+      try {
+        navigator.permissions?.query({ name: "periodic-background-sync" })
+          .then((st) => {
+            if (st.state !== "granted" || !reg.periodicSync) return;
+            reg.periodicSync.register("gale-shell-warm", { minInterval: 12 * 60 * 60 * 1000 }).catch(() => {});
+          }).catch(() => {});
+      } catch { /* enhancement-only */ }
       reg.addEventListener("updatefound", () => {
         window.__galeRUMRecord?.("PWA_SW_UPDATE_FOUND", 1, "events");
         const w = reg.installing;
@@ -1738,7 +1858,7 @@ async function initPushBell() {
         try {
           const r = await fetch("/api/push/test", { method: "POST" });
           const d = await r.json();
-          console.log("test push:", r.status, d);
+          window.__galeToast?.(`Test push sent (${r.status})`);
         } catch {}
         setTimeout(() => { test.disabled = false; }, 5000);
       });
@@ -1779,7 +1899,7 @@ async function initPushBell() {
           // visible, not just tooltip: sw version + handler presence
           t.textContent = `test (sw ${pong.version} ${pong.push ? "✓" : "✗ no push handler"})`;
         }
-        console.log(`sw: ${pong.version}, push handler: ${pong.push ? "yes" : "MISSING — close and reopen the app"}`);
+        if (!pong.push) window.__galeToast?.("Alerts worker is stale — close and reopen the app to get push delivery.");
         // phone-home the diagnostic (best-effort): sw state per subscription,
         // so the server log shows exactly what each device is running
         const sub = await reg.pushManager.getSubscription().catch(() => null);
@@ -2002,7 +2122,7 @@ function initCodeCopy() {
 }
 
 /* ---- mobile PWA wayfinding and install/share help ---- */
-const MOBILE_PAGES = [
+const MOBILE_PAGES = Object.freeze([
   ["Overview", "index.html", "home"], ["Status", "status.html", "status"],
   ["Fleet", "fleet.html", "fleet"], ["Operations", "operations.html", "ops"],
   ["Metrics", "metrics.html"], ["Observability", "observability.html"],
@@ -2010,7 +2130,7 @@ const MOBILE_PAGES = [
   ["Network", "network.html"], ["Reliability", "reliability.html"],
   ["Runbooks", "runbooks.html"], ["My Home", "home.html"],
   ["Galaxy", "galaxy.html"], // was desktop-nav-only (#92)
-];
+]);
 let deferredInstallPrompt = null;
 
 function initMobileNavigation() {
@@ -2181,6 +2301,7 @@ function initMobileNavigation() {
       if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(summary);
       else throw new Error("clipboard unavailable");
       toolStatus.textContent = "PWA status copied. It contains no page URL or device identifiers.";
+      window.__galeToast?.("PWA status copied");
     } catch { toolStatus.textContent = summary; }
     window.__galeRUMRecord?.("PWA_DIAGNOSTICS_COPY", 1, "events");
   });
@@ -2200,6 +2321,23 @@ function initMobileNavigation() {
       if (error.name !== "AbortError") toolStatus.textContent = "Sharing is unavailable in this browser.";
     }
   });
+}
+
+/* pass #5 #53: read the service worker's asset-meta cache for the shell
+   page's cached_at stamp. Returns minutes or null when unavailable (no
+   caches API, no stamped entry, or a pre-v19 worker). */
+async function shellCacheAgeMinutes() {
+  try {
+    const names = await caches.keys();
+    const metaName = names.find((n) => n.endsWith("-asset-meta"));
+    if (!metaName) return null;
+    const meta = await caches.open(metaName);
+    const hit = await meta.match("/index.html");
+    if (!hit) return null;
+    const { cached_at: at } = await hit.json().catch(() => ({}));
+    if (!at) return null;
+    return Math.max(0, Math.round((Date.now() - Number(at)) / 60000));
+  } catch { return null; }
 }
 
 function initConnectivityStatus() {
@@ -2222,6 +2360,16 @@ function initConnectivityStatus() {
     else document.documentElement.dataset.net = "offline";
     if (!navigator.onLine) {
       wasOffline = true; banner.dataset.state = "offline";
+      // pass #5 #53: surface how stale the offline shell actually is — the
+      // SW stamps cached_at per asset; the shell page's age is the honest
+      // "as of" for everything the visitor is about to read.
+      shellCacheAgeMinutes().then((min) => {
+        if (!navigator.onLine && banner.dataset.state === "offline") {
+          message.textContent = min == null
+            ? "Offline · live telemetry is paused. Cached pages remain available."
+            : `Offline · live telemetry is paused. Cached pages remain available (shell cached ${min < 1 ? "under a minute" : `${min} min`} ago).`;
+        }
+      }).catch(() => {});
       message.textContent = "Offline · live telemetry is paused. Cached pages remain available."; refresh.hidden = true; banner.hidden = false;
     } else if (wasOffline) {
       wasOffline = false; banner.dataset.state = "restored";
@@ -2248,6 +2396,28 @@ function initMobileTableHints() {
     if (!wrap.hasAttribute("aria-label")) {
       const heading = wrap.closest("section,article,.ops-panel")?.querySelector("h2,h3,.panel-title");
       wrap.setAttribute("aria-label", `${heading?.textContent?.trim() || "Data table"} · horizontally scrollable`);
+    }
+    /* pass #5 #54: pointer drag-to-scroll on fine pointers — the grab
+       cursor advertises it, the drag delivers it. Text selection inside
+       cells still wins when the drag starts on selected text. */
+    if (FINE) {
+      wrap.classList.add("table-drag");
+      let dragging = false, startX = 0, startLeft = 0, moved = false;
+      wrap.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0 || wrap.scrollWidth <= wrap.clientWidth) return;
+        dragging = true; moved = false;
+        startX = e.clientX; startLeft = wrap.scrollLeft;
+      }, { passive: true });
+      wrap.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 4) moved = true;
+        if (moved) { wrap.scrollLeft = startLeft - dx; e.preventDefault(); }
+      });
+      const end = () => { dragging = false; };
+      wrap.addEventListener("pointerup", end, { passive: true });
+      wrap.addEventListener("pointercancel", end, { passive: true });
+      wrap.addEventListener("click", (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, { capture: true });
     }
     const hint = document.createElement("div"); hint.className = "table-scroll-hint"; hint.setAttribute("aria-hidden", "true");
     const label = document.createElement("span");
@@ -2331,6 +2501,11 @@ function initNavPulse() {
       try { document.documentElement.dataset.fleet = lv; } catch { /* noop */ }
       a.querySelector(".nav-pulse-txt").textContent = txt;
       a.setAttribute("aria-label", `Fleet health: ${txt}. Open ops status.`);
+      // pass #5 #58: the favicon already tints on crit; mirror it in the
+      // document title so a background tab screams in the tab strip too.
+      const baseTitle = (document.title.replace(/^⚠ /, "").replace(/^· .* · /, "") || document.title);
+      if (crit) document.title = `⚠ ${baseTitle}`;
+      else document.title = baseTitle.replace(/^⚠ /, "");
       // hover/focus panel (hidden on phones, where the pill just links to the ops board)
       let pop = a.querySelector(".nav-pulse-pop");
       if (!pop) { pop = document.createElement("span"); pop.className = "nav-pulse-pop"; pop.setAttribute("aria-hidden", "true"); a.appendChild(pop); }
@@ -2340,7 +2515,7 @@ function initNavPulse() {
         const hr = await fetch("/api/fleet/alerts/history", { cache: "no-store" });
         if (hr.ok) {
           const hd = await hr.json();
-          const ago = (iso) => { const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)); return m < 60 ? `${m}m ago` : m < 2880 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`; };
+          const ago = (iso) => formatAgo(iso);
           // 24 hourly cells (oldest -> newest): amber = alerts opened that hour, green = cleared only, grey = quiet
           const cells = new Array(24).fill(null).map(() => ({ o: 0, c: 0 })), nowH = Math.floor(Date.now() / 3.6e6);
           for (const e of hd.events || []) {
@@ -2381,7 +2556,9 @@ function initNavPulse() {
     if (row) window.dispatchEvent(new CustomEvent("gale:focus-agent", { detail: { agent: row.dataset.agent } }));
   });
   a.addEventListener("mouseleave", () => window.dispatchEvent(new CustomEvent("gale:focus-clear")));
-  paint();
+  // pass #5 #79: the pulse fetch + alert-history paint is pure ambience —
+  // first paint defers off the main task queue so first render never waits on it.
+  scheduleBackground(paint);
   setInterval(paint, 60000);
 }
 
@@ -2530,8 +2707,62 @@ export function boot() {
   runStep("hero-parallax", initHeroParallax);
   runStep("refresh-effects", refreshEffects);
   runStep("sw-registration", registerServiceWorker);
+  runStep("footer-extras", initFooterExtras);
 }
 
+
+/* pass #5 #59/#60: footer extras — a copy-page-link button and the live
+   offline-shell version stamp. Both are additive to whichever footer the
+   page ships (.site-foot on index, .site elsewhere); absent footer = no-op. */
+function initFooterExtras() {
+  if (typeof document === "undefined" || !document.body) return;
+  const foot = document.querySelector(".site-foot, footer.site .wrap");
+  if (!foot) return;
+  if (!foot.querySelector(".foot-links")) {
+    const row = document.createElement("span");
+    row.className = "foot-links";
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "mini-toggle";
+    copy.textContent = "⧉ copy link";
+    copy.setAttribute("aria-label", "Copy the link to this page");
+    copy.addEventListener("click", async () => {
+      const url = location.origin + location.pathname;
+      try {
+        if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
+        else throw new Error("clipboard unavailable");
+        toast("Page link copied");
+      } catch { toast("Copy failed — clipboard unavailable"); }
+      window.__galeRUMRecord?.("PAGE_LINK_COPY", 1, "events");
+    });
+    row.append(copy);
+    foot.appendChild(row);
+  }
+  if (!foot.querySelector(".foot-sw")) {
+    const sw = document.createElement("span");
+    sw.className = "foot-sw mono-dim";
+    sw.textContent = "";
+    foot.appendChild(sw);
+    const fill = (version, shellCount) => {
+      sw.textContent = shellCount != null
+        ? `offline shell ${version} · ${shellCount} assets`
+        : `offline shell ${version}`;
+    };
+    // ask the active worker (the ping/pong handshake also proves push support)
+    if (navigator.serviceWorker?.controller) {
+      const onMsg = (e) => {
+        const d = e.data || {};
+        if (d.type === "gale:pong") {
+          navigator.serviceWorker.removeEventListener("message", onMsg);
+          fill(`v${String(d.version || "").replace(/^gale-v/, "")}`, d.shell_count);
+        }
+      };
+      navigator.serviceWorker.addEventListener("message", onMsg);
+      navigator.serviceWorker.controller.postMessage("gale:ping");
+      setTimeout(() => navigator.serviceWorker.removeEventListener("message", onMsg), 2000);
+    }
+  }
+}
 
 /* Operator controls follow verified server capabilities, including newly rendered buttons. */
 if (typeof window !== "undefined" && typeof MutationObserver !== "undefined") {

@@ -73,7 +73,12 @@ function initHeroScrub() {
 function initChapters() {
   const nav = document.getElementById("chapters");
   if (!nav || !("IntersectionObserver" in window)) return;
-  const secs = [...document.querySelectorAll("main .block[id]")].slice(0, 10);
+  // pass #5 #56: status.html uses .ops-panel sections (no .block) — the
+  // selector now covers both long-page layouts.
+  const secs = [...document.querySelectorAll("main .block[id], main section.ops-panel[id]")].slice(0, 10);
+  /* pass #5 #70/#56: a 2-dot rail is noise, not navigation — retire the nav
+     on short pages instead of shipping an empty landmark. */
+  if (secs.length < 4) { nav.remove(); return; }
   nav.innerHTML = secs.map((s) =>
     `<a href="#${s.id}" aria-label="${s.id}" data-sec="${s.id}"></a>`).join("");
   const links = [...nav.querySelectorAll("a")];

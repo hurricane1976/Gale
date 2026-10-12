@@ -285,6 +285,11 @@ main:has(#cost-chart) #lanes { min-height: 260px; }
 @media print {
   /* night hero + dark fleet theme: print as dark-on-white */
   #storm-scene, .storm-fallback, .storm-vignette, .storm-rays, .storm-scrim, .scroll-cue, .cine-wave, .blob { display: none !important; }
+  /* pass #5 #42: the runbook filter bar is screen-only; step checkboxes
+     print as "✓ done" markers so paper copies keep the state readable. */
+  .runbook-filter, .runbook-filter-count { display: none !important; }
+  .runbook-step-check { visibility: hidden !important; width: 0 !important; margin: 0 !important; }
+  li.runbook-step-done::after { content: " ✓ done"; color: #111; font-size: 8pt; }
   .hero-storm .lede, .hero-storm .meta, .hero-storm .meta li, .hero-storm .eyebrow, .hero-storm .hero-title,
   .hero-storm .hero-title .grad-text { color: #111 !important; -webkit-text-fill-color: #111 !important; background: none !important; }
   .hero-storm .chips .chip { color: #111 !important; background: #fff !important; border: 0.6pt solid #666 !important; }

@@ -3,7 +3,7 @@
    No framework, no build step — same house style as the rest of the site.
    This page's content is genuinely live-data-only (unlike index/fleet,
    which have a full static fallback); see the <noscript> notice. */
-import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost, whenPageActive, scheduleBackground } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost, whenPageActive, scheduleBackground, safeJSONParse } from "./shared.js";
 import { statusPayload, metricsPayload, wakesPayload, asksPayload, validate } from "./payloads.js";
 
 boot();
@@ -1379,9 +1379,9 @@ function fleetSpark(vals) {
    via the component's update(), so a poll looks like the data breathing
    rather than cards re-flashing. */
 function fleetCardSkeleton(h, meta) {
-  return `<article class="fleet-24h-card" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}">
+  return `<article class="fleet-24h-card" data-glow data-host="${esc(h)}" style="--fh:${meta.hue}" aria-describedby="fleet-24h-legend">
       <header class="fleet-24h-head">
-        <span class="fleet-24h-dot" aria-hidden="true"></span>
+        <span class="fleet-24h-dot" aria-hidden="true" title="${esc(meta.note)}" data-tooltip="${esc(meta.note)}"></span>
         <strong class="fleet-24h-name"><a href="fleet.html#hosts">${esc(h)}</a></strong>
         <span class="fleet-24h-note">${esc(meta.note)} · <span data-slot="agents">&ndash;</span> agents</span>
       </header>
@@ -1739,7 +1739,7 @@ if (typeof EventSource !== "undefined") whenPageActive().then(() => {
   esAlerts.onmessage = (e) => {
     alertsFailures = 0;
     try {
-      liveFleetAlerts = mapFleetAlerts(JSON.parse(e.data));
+      liveFleetAlerts = mapFleetAlerts(safeJSONParse(e.data, null));
       refreshStrip(liveFleetAlerts, lastStatus);
     } catch { /* malformed payload -- wait for the next push */ }
   };
@@ -1755,7 +1755,7 @@ if (typeof EventSource !== "undefined") whenPageActive().then(() => {
   esFleet.onmessage = (e) => {
     fleetFailures = 0;
     try {
-      fleetCache = { at: Date.now(), data: validate(JSON.parse(e.data), metricsPayload), err: null };
+      { const parsed = safeJSONParse(e.data, null); if (parsed) fleetCache = { at: Date.now(), data: validate(parsed, metricsPayload), err: null }; }
       renderFleet24h();
     } catch { /* malformed payload -- wait for the next push */ }
   };

@@ -1,7 +1,7 @@
 /* GALE — fleet activity stream: polls /api/fleet/activity, renders the last
    N real events oldest-first in a terminal-style panel (Beacon's pattern).
    Pause toggle stops re-rendering but never stops fetching. */
-import { boot, esc, refreshEffects, whenPageActive, tracedFetch } from "./shared.js";
+import { boot, esc, refreshEffects, safeJSONParse, whenPageActive, tracedFetch } from "./shared.js";
 
 boot();
 
@@ -143,7 +143,7 @@ if (typeof EventSource !== "undefined") {
   es.onmessage = (e) => {
     failures = 0;
     try {
-      render(JSON.parse(e.data));
+      render(safeJSONParse(e.data, null));
       refreshEffects();
       setFresh(true);
     } catch { /* malformed payload -- wait for the next push */ }

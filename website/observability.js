@@ -1,7 +1,7 @@
 /* GALE — agentic observability: polls /api/fleet/observability and renders
    cost/tokens/wall-clock counters as inline SVG + tables. No chart library,
    house tokens only. Counters only — the feed carries no message content. */
-import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear, downloadFile, whenPageActive } from "./shared.js";
+import { boot, esc, clamp, refreshEffects, setHTML, setText, patchList, tracedFetch, whenNear, downloadFile, whenPageActive, safeJSONParse } from "./shared.js";
 import { observabilityPayload, validate } from "./payloads.js";
 
 boot();
@@ -400,7 +400,7 @@ async function startFeed() {
     es.onmessage = (e) => {
       failures = 0;
       try {
-        DATA = validate(JSON.parse(e.data), observabilityPayload);
+        { const parsed = safeJSONParse(e.data, null); if (parsed) DATA = validate(parsed, observabilityPayload); }
         renderAll();
       } catch { /* malformed payload -- wait for the next push */ }
     };

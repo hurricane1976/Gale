@@ -139,6 +139,25 @@ sudo /usr/bin/node "$SCRIPT_DIR/tools/rewrite-dist-refs.mjs" \
   --root /var/www/gale --manifest "$SCRIPT_DIR/dist/.entry-manifest.json"
 sudo chown -R www-data:www-data /var/www/gale
 sudo chmod -R 755 /var/www/gale
+# pass #5 #77: precompressed brotli+gzip twins next to every text asset —
+# nginx brotli_static/gzip_static serve them without per-request CPU. The
+# docroot already has brotli_static on (conf.d/gale-compress.conf), so from
+# this deploy on the static files actually exist for it to find.
+sudo /usr/bin/env bash -c '
+  set -e
+  cd /var/www/gale
+  found=0
+  for f in *.html *.css *.js *.json manifest.json sw.js dist/*.js dist/chunks/*.js; do
+    [ -f "$f" ] || continue
+    case "$f" in *.br|*.gz) continue ;; esac
+    if command -v brotli >/dev/null 2>&1; then brotli -q 7 -c "$f" > "$f.br" 2>/dev/null && found=1 || rm -f "$f.br"; fi
+    gzip -9 -c "$f" > "$f.gz" 2>/dev/null && found=1 || rm -f "$f.gz"
+  done
+  [ "$found" = 1 ] && echo "deploy: precompressed $(find . -name "*.br" | wc -l) .br / $(find . -name "*.gz" | wc -l) .gz assets"
+'
+# precompressed twins must be readable too
+sudo chown -R www-data:www-data /var/www/gale
+sudo chmod -R 755 /var/www/gale
 sudo nginx -t
 # Best-effort 10 min Alertmanager silence for the synthetic-probe alerts so a
 # normal deploy blip (GaleSynthFailing fired 2026-10-02 18:31-18:40) does not

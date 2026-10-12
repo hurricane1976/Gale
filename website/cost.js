@@ -1,7 +1,7 @@
 /* GALE — fleet cost trend + agent cost leaderboard: polls api/fleet/metrics,
    renders a 14-day per-host cost chart with fleet-total line, and a top-6
    agent cost leaderboard with per-agent cost sparklines. */
-import { boot, esc, refreshEffects, tracedFetch, chartTooltip, whenPageActive } from "./shared.js";
+import { boot, esc, refreshEffects, safeJSONParse, tracedFetch, chartTooltip, whenPageActive } from "./shared.js";
 
 boot();
 
@@ -288,7 +288,7 @@ function start() {
   es.onmessage = (e) => {
     sseFailures = 0;
     try {
-      const d = JSON.parse(e.data);
+      const d = safeJSONParse(e.data, null);
       render(d);
       if (chartEl) chartEl.dataset.loaded = "1";
       if (lbGrid) lbGrid.dataset.loaded = "1";

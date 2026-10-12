@@ -2,6 +2,9 @@ node_modules/
 tools/browser/
 *.pyc
 __pycache__/
+tools/tmp/
 tools/disk_history.jsonl
 tools/podman_logs.txt
-tools/tmp/
+tools/visual-baseline/*.tmp.png
+.push_metrics.json
+reviews-tmp/

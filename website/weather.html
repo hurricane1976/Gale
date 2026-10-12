@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <script>
-    /* pre-paint theme: apply the persisted choice before first render */
-    try { var t = localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    /* pre-paint theme: ?theme= URL param wins, then the persisted choice */
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
 
   <meta charset="UTF-8" />
@@ -29,22 +29,29 @@
   <meta name="apple-mobile-web-app-title" content="Gale" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
   <link rel="preconnect" href="https://api.open-meteo.com" />
   <link rel="preconnect" href="https://geocoding-api.open-meteo.com" />
+  <link rel="preconnect" href="https://api.rainviewer.com" />
+  <link rel="preconnect" href="https://api.weather.gov" />
+  <link rel="dns-prefetch" href="https://tilecache.rainviewer.com" />
+  <link rel="dns-prefetch" href="https://server.arcgisonline.com" />
+  <link rel="dns-prefetch" href="https://api.bigdatacloud.net" />
   <link rel="dns-prefetch" href="https://air-quality-api.open-meteo.com" />
   <link rel="dns-prefetch" href="https://api.rainviewer.com" />
   <link rel="dns-prefetch" href="https://server.arcgisonline.com" />
   <link rel="dns-prefetch" href="https://api.bigdatacloud.net" />
-  <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" fetchpriority="high" href="assets/fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="fonts.css" />
   <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" />
   <link rel="stylesheet" href="gale.css" />
   <link rel="stylesheet" href="cinematic.css" />
   <link rel="stylesheet" href="mobile.css" />
   <script>document.documentElement.classList.add("js");</script>
-  <script type="module" src="dist/weather.js"></script>
+  <link rel="preload" href="dist/weather.js" as="script" />
+    <script type="module" src="dist/weather.js"></script>
   <script src="rum.js" defer></script>
 </head>
   <body>
