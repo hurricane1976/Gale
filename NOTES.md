@@ -6150,3 +6150,62 @@ Next: watch the OpenRouter glm-flash path + spend each waking; watch
 beacon 30d window (~2026-10-24); watch Ollama v0.40.3 vs runner
 v0.40.0 + opencode v1.19.0 uptake (operator/Gale calls); ASK.md
 items unchanged and still awaiting operator word.
+
+## 2026-10-12T15:24Z — Scheduled waking (all green; 1 unfiled VORTEX chase)
+
+Waking slot 15:20Z, landed 15:21-15:24Z. Model
+`openrouter/~z-ai/glm-flash-latest` (operator-directed 2026-10-10).
+`check_replies.sh`: no new operator messages.
+
+Host: up 19:36 (no reboot since the 2026-10-10 reboot), load 0.33,
+disk 55% (51G/98G — flat), RAM 49G avail of 57G. `sirocco-peer`
+(pid 8949, 100.66.39.59:8796) + tailscaled active. Working tree
+clean at start.
+
+Backup: two snapshots this waking —
+`sirocco-20261012T152135Z.tar.gz` + `sirocco-20261012T152412Z.tar.gz`
+(the second taken to re-capture the VORTEX message filed below);
+both gzip -t OK, latest verified 64 entries with
+AGENT/NOTES/ASK present.
+
+Inbox: 15 messages this waking — 14 auto-filed by the earlier pass
+(1506-1519 range) + 1 VORTEX "pair-test" (11:01Z, "vortex pair
+chase w82") found in `peer/inbox/sirocco/` subdirectory — first
+sighting of a peer delivery landing in an inbox subdir rather than
+the inbox root; same routine right-token chase pattern as prior
+VORTEX passes (no reply needed), filed to `processed/` (1520 total).
+Note for Gale/watch: wake.sh auto-file may not scan inbox
+subdirectories. No replies sent, nothing minted or installed.
+
+Dependencies (live probes ~15:22Z, all green):
+- OpenRouter: /api/v1/models 200 in 0.08s, 458 models, glm-flash
+  lineup present (primary model path).
+- OpenCode Zen: opencode.ai 200 in 0.12s (secondary/informational).
+- GitHub: status API "All Systems Operational" (indicator none,
+  updated 15:19Z), no unresolved incidents.
+- Tailscale: status.tailscale.com 200; tailscaled active; 13-node
+  set, peers active/direct; ipad174 (100.99.106.7) offline 6d
+  (operator personal device, no fleet lane depends on it).
+- Ollama: upstream latest still v0.40.3 (2026-10-11T01:39Z) vs LAN
+  runner 192.168.1.197:11434 on v0.40.0 — gap 0.0.3, informational
+  only (runner fallback-not-primary), any bump operator/Gale call.
+- opencode: local binary 1.18.35 vs upstream v1.19.0 — one minor
+  behind, unchanged, operator/Gale call.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 (~42d), tidalwake.org 2026-11-28
+(~47d), mountainwake.org 2026-12-04 (~53d). SAME certs since
+baseline (no renewal). BEACON 30d window opens ~2026-10-24 (~12
+days out) — same watch.
+
+Spend: 2026-10-12 so far 03:23Z $0.0423 + 09:28Z $0.0795 — the
+09:25Z waking ran ~2x the usual ~$0.04-0.05 (likely the transient
+OpenRouter 503 re-probe + longer session, no threshold crossed);
+noted as a one-off unless it recurs. This waking's own entry
+appends at run end.
+
+Next: watch the OpenRouter glm-flash path + spend (incl. whether the
+$0.0795 one-off repeats); watch beacon 30d window (~2026-10-24);
+watch Ollama v0.40.3 vs runner v0.40.0 + opencode v1.19.0 uptake
+(operator/Gale calls); watch inbox subdirectory delivery quirk;
+ASK.md items unchanged and still awaiting operator word.
