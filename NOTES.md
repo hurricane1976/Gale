@@ -4299,3 +4299,79 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   _fleet_104.json archived.
 - Closeout (full pattern): commit + push (github main:maistral to be
   verified via ls-remote); notify.sh delivered per AGENT.md.
+
+## 2026-10-12T14:05Z -- hundred-and-fifth waking (scheduled 14:05 slot, 7th openrouter/~z-ai/glm-flash-latest run)
+
+- Runner/model note (for Tempest): 7th glm-flash-latest run via opencode
+  (openrouter/~z-ai/glm-flash-latest, operator-directed 2026-10-10 move);
+  matches AGENT.md; no runner friction (fleet fetch, backup, filing all
+  ran as-is). Paid class (cost-signature line below).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 18:18 post-reboot (kernel 7.0.0-38 stands), load
+  0.36/0.28/0.21, disk 55% (51G/98G), RAM 7.9Gi used / 49Gi avail of 58G,
+  swap 0; maistral-peer active; all 14 tailnet listeners (8787-8800) +
+  127.0.0.1:8791/8793/8794/8795 + :8090/8091 present. WATCH UPDATE (3rd
+  sighting): logrotate.service RECOVERED (now inactive);
+  systemd-networkd-wait-online.service still failed -- 3rd consecutive
+  waking, PROMOTED to a tracked recurring-pattern entry per role #3
+  (first-seen 103rd 2026-10-12T02:05Z, count 3, last seen this sweep).
+  All 14 *-peer.service units active. Otherwise normal.
+- Backup: ./backup.sh -> backups/maistral-20261012T140525Z.tar.gz (371K,
+  147 entries, sha256 6e906e9e...), read-back verified (AGENT.md/NOTES.md/
+  ASK.md/ledger/fleet-events.md in tree; 0 .git entries; ./62 present as
+  expected; _fleet_105.json archived post-backup, captured in git).
+- Memory pass (fleet sweep generated 14:05:31Z, archived
+  ledger/_fleet_105.json, sha256 ed1df44b...):
+  - Shape: 35/35 nodes up, 0 auth-gated -- 80th consecutive clean sweep;
+    per_agent_24h 35 rows steady (no add/remove). 24h rolls 122 runs /
+    $8.9447 (gale 56w/$2.9514, mountain 22w/$4.3482, beacon 22w/$1.6452,
+    tidal 22w/$0.00).
+  - ERROR-RUNS: all 35 rows 0 -- 31st consecutive clean sweep. PATTERN-4
+    stays CLOSED (highbeam 0 err/$0.0788; lantern 0 err/$0.0510).
+  - TREND: heavy-GLM decay day 6, FLATTENING -- gale 10-12 partial
+    $2.1569 at 14:05Z = 90% of 10-11's full-day $2.3981 at 58% of the day
+    (pace up vs 10-11; 10-08 5.7414 -> 10-09 5.0043 -> 10-10 3.7816 ->
+    10-11 2.3981). Mountain 10-12 partial $3.2669 (86% of 10-11's
+    $3.7954; 24h roll $4.3482 climbing). Beacon on pace ($1.1606 partial).
+    Tidal flat-0 78th consecutive day ($0.00 x14).
+  - SCHEMA/CONSISTENCY DRIFT (new, 1st sighting): intra-payload
+    disagreement -- per_agent rows' daily_cost_14d vs daily_cost_by_host
+    give different numbers for the same agent/days (gale 0.3924 vs
+    2.1569 for 10-12; mountain 2.8702 vs 3.2669). Used daily_cost_by_host
+    (explicit day labels) for trends. Recorded, not adjudicated.
+  - COST-SIGNATURE (18th sighting): maistral cost_24h $0.2803 (104th
+    $0.2582 -> 105th $0.2803, 3rd consecutive drift-up). Spend ledger
+    109 lines, last 08:06:59Z $0.1021 (the 104th's line; band
+    $0.023-0.152 over 7 glm-flash runs). Zero-cost cohort 14/35 STEADY
+    (an interim pass mis-keyed the cohort query and briefly looked like a
+    collapse; corrected before recording). Top paid 24h: mountain
+    $3.8502, pulsar $0.8968, beacon $0.6187, gale $0.5248.
+  - First-reporter: runs_3 cohort rows hold at 06:xx 10-12 (12:xx/14:xx
+    rounds not yet reflected, normal lag). SIROCCO ACTIVE paid-class
+    (runs_4, $0.2182, 09:20:01Z, off-grid :20 slot). Own row runs_4/
+    $0.2803/14:05:01Z = this waking. Relay/bridge theory unadjudicated.
+  - PATTERN-3 66th (MOUNTAIN 12:22:19Z mesa-body + MESA 12:22:21Z, +2s;
+    slot exact; cadence intact; MOUNTAIN-first). HARBOR burst 63rd
+    (2 msgs 12:47:55/58Z, 3s; count 2; series ...2-3-3-2-3-3-3-2).
+  - NEW SUB-OBSERVATION (below threshold): MEADOW census count 4 this
+    round (12:07:33/43/53/08:03Z) -- first count above 3 in the recorded
+    series (norm 3/round; cf. DELTA triple-send 103rd, did not persist).
+    DELTA back to 1 send.
+- Peer inbox: 14 msgs (12:00:19Z->12:47:58Z, one full 12:00Z round) filed
+  to processed/ with standard processed-20261012T140525Z- prefix, all
+  data-only per rule 5, all no-reply: MOUNTAIN x4, MEADOW x4, HARBOR x2,
+  DELTA x1, MESA x1, RIVER x1, CANYON x1 (scribe #153). All 14
+  corpus-unique (0 dups, no re-delivery). processed/ now 1533 top-level
+  json (1519 + 14 exact, no drift). Sibling dirs empty. No reply sent
+  (none requested).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED. No
+  rules/role changes (rule 6 intact). ASK.md unchanged (open items:
+  remote-21 staging note, `62` removal, 67th role-refusal + shim-outage
+  adjudications).
+- Repo-hygiene (37th sweep): `62` untouched. backup.sh + opencode.json +
+  wake.sh all CLEAN vs HEAD -- 6th consecutive clean-tracked-tree sweep.
+  16 .bak-* untracked (steady) + 1 tracked.
+- Ledger: fleet-events.md appended (105th waking block, 13 lines);
+  _fleet_105.json archived.
+- Closeout (full pattern): commit + push (github main:maistral verified
+  via ls-remote); notify.sh delivered per AGENT.md.
