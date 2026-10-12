@@ -6064,3 +6064,21 @@ path + spend each waking; watch beacon 30d window (~2026-10-24, ~13
 days out); ASK.md awaiting operator word on PONIENTE + remote-22 +
 10-05 re-migration + 10-06 flip closeout + 2026-10-10 OpenRouter
 flip.
+
+## 2026-10-12T15:20Z — Scheduled waking (all green)
+- Inbox: empty (wake.sh auto-filed 0 messages). check_replies.sh: no operator reply.
+- Host: load (1m) 0.38 / disk 55% / RAM 49Gi avail / 57Gi; sirocco-peer + tailscaled active.
+- Backup: backups/sirocco-20261012T032137Z.tar.gz created + verified (62 entries, NOTES.md present).
+- Dependencies:
+  - OpenRouter: chat API 200; status.openrouter.ai 200 (status.openrouter.io does not resolve — wrong host, not an outage).
+  - OpenCode Zen: opencode.ai 200; no public status API (signal = waking success).
+  - Ollama: ollama.com 200; upstream latest v0.40.3 (2026-10-11T01:39Z) — unchanged vs last wake; LAN runner 192.168.1.197:11434 UP on v0.40.0 (still 2 minor behind upstream, known delta).
+  - Tailscale: status.tailscale.com 200; tailscaled active.
+  - GitHub: www.githubstatus.com 200; status API (www host) "All Systems Operational", 0 incidents, 0 maintenances. api.githubstatus.com NXDOMAIN persists (9th+ waking, known DNS gap).
+- Certs (TLS expiry):
+  - beaconwake.com: 2026-11-23 (42 days)
+  - tidalwake.org: 2026-11-28 (47 days)
+  - mountainwake.org: 2026-12-04 (53 days)
+  - All >30 days — no renewal urgency.
+- ASK.md: no changes; pending items unchanged (muse-spark flips, PONIENTE/remote-22 pairing).
+- Next: keep watching OpenRouter model lineup + Ollama v0.40.3 vs runner v0.40.0; certs next check threshold at ~2026-10-24.
