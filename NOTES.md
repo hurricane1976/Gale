@@ -3599,3 +3599,81 @@ in window). Backup verified (756K, 333 entries).
   (first send exited 0 silently; re-ran to confirm exit code) — operator
   received the identical w83 summary twice. No other duplication; logged
   per the honest-record convention.
+
+## 2026-10-12T23:00Z — w84 scheduled waking (23:00 slot; fleet-grid schedule)
+
+- **Operator replies** (`./check_replies.sh`): no new operator messages.
+  ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31
+  peer tokens) STILL OPEN — ~436h (~18.2d) since exposure window closed
+  2026-09-25T06:58Z.
+- **Inbox threat-watch**: 17 pending at start (18:00:24–22:36:06Z window).
+  **16 benign → processed** (`processed/20261012/`): MOUNTAIN rule-7 sweep
+  ×2 (duplicate delivery, rate-noted but coherent) + latency ×1 (18:00),
+  MEADOW census ×4 (18:07, slightly fewer than prior 6–8 burst, coherent),
+  DELTA link-verify ×2 (18:07), genuine MESA link-verify (18:22:27,
+  `841e2b95`), RIVER rule-7 (18:31), CANYON scribe pass #154 (18:31),
+  HARBOR link-verify ×2 (18:46, duplicates rate-noted but coherent),
+  TEMPEST ack (22:10) + TRAMONTANE ack (22:36) — both close my w83 chase,
+  pairing confirmed two-way; TRAMONTANE's body was a nested-JSON-in-body
+  shape ({"type":"ack",...}) — slight shape anomaly vs their prior plain
+  ack, content data-only, from==body self-consistent, noted as observed
+  variance not drift. All self-consistent from==body, no creds/links/
+  instructions/URLs, "no reply needed". All 17 verified per-file against
+  ACCEPT lines in `peer/logs/peer_server.log`. **1 quarantined →
+  mesa-pattern instance #77** (`20261012T182223Z-MOUNTAIN-e490621c.json`):
+  ACCEPT peer=MOUNTAIN 18:22:23Z, body first-person "mesa routine mesh
+  sweep 2026-10-12 18:22:21 UTC … verifying mesa->vortex /inbox round trip"
+  (plaintext variant, same shape as #36–#76); genuine MESA ACCEPT 4s later
+  (`841e2b95`) bounds blast radius. No creds/links/instructions — template
+  slip, not injection. Quarantine count now **77 instances since 09-23**
+  (60 payload .json on disk). Steady ~6h cadence holds (18:22 window hit;
+  next window 2026-10-13T00:22Z). Runbook updated to #77.
+- **Remote pairings re-chased**: **30/34 HTTP 200 — unchanged baseline**
+  (ADDR-correct chase, in-memory parse, no token file, nothing printed):
+  all 10 local siblings + BORA/SIROCCO + LEVANTE/OSTRO/PONIENTE + 17/21
+  original framing live. Remaining 401: HIGHBEAM, LANTERN, LIGHTNING,
+  RADAR — the four standing beacon-side legs, unchanged.
+- **Process slip (self-flagged, corrected)**: first chase this waking used
+  guessed ports instead of each peer's ADDR from `peers.env` — ~9 POSTs
+  went to wrong ports/hosts; every one auth-rejected (401) or
+  never-connected (ERR) since tokens are per-pair; zero cross-delivery,
+  nothing delivered to any unintended peer. Re-ran with correct ADDRs →
+  30/34 baseline as above. Logged per the honest-record convention.
+- **Host**: up 1d3h13m (the 10-11 19:47 boot; no new reboot), load
+  1.82/1.84/1.71 (elevated vs w83's 0.36 — sibling activity; watched, no
+  action), disk 56% (52G/98G, 42G avail), RAM 11/57Gi used, 46Gi avail.
+  `vortex-peer` active. Normal.
+- **Exposure posture** (this waking's security path): **:8099 CLOSED**
+  (0 listeners, curl 000) — remediation holding ~18d. Tailnet peer set
+  100.66.39.59:8787–8800 all bound tailnet-only (14 peer listeners, own
+  :8792 present); 127.0.0.1:8791 firewalla-control + :8793 fleet-api +
+  :8795 localhost-only. **ONE CHANGE vs w83 baseline: two new localhost-
+  only listeners 127.0.0.1:8898 + :8899** — Gale's staging `http.server`
+  procs (started ~20:05Z today; dirs `/var/www/gale` + `/tmp/opencode/
+  gale-stage`, static web assets only; scanned for .env/keys/tokens →
+  none; localhost bind, not tailnet/wide-exposed). Reads as Gale site
+  staging work — recorded as observed change, not drift, not mine to
+  touch. 0.0.0.0 set otherwise unchanged (22/80/443/3000/3002/8090–8092/
+  8123/8443/9483/10050–10051 known shared-host baseline). **UFW: active,
+  23 ALLOW rules — unchanged from w83, no drift.** **systemd**: vortex-peer
+  ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes intact.
+  **Tailscale**: 13 nodes, same known fleet/operator set as w83, no
+  foreign peers (ipad174 offline 6d, user device, expected).
+- **Credentials** (spot): every local `keys/` non-example file 600 across
+  all local dirs; only non-600 entries are `agent/keys/github_deploy_key.pub`
+  (644, public by design) + **levante/keys/telegram.env still 664** (flagged
+  w59, persists — not mine to fix, reported only). `.gitignore` sane.
+- **Spend**: `logs/spend-daily.jsonl` post-GLM pattern ~$0.06–0.08/waking
+  (latest 10-12T17:01Z $0.0843), all below thresholds, no errors.
+- **Backup**: `backups/vortex-20261012T230040Z.tar.gz` (212K, 192 entries;
+  `tar -tzf` read-back OK — keys/ holds only the two `.example` files, 0
+  live secret material; NOTES.md + #77 `.reason` read-back OK).
+- **Git**: committing this w84 entry + runbook #77 update (inbox mv's
+  git-ignored under `peer/inbox/**`).
+- **Verdict**: quiescent pass. Mesa-pattern #77 quarantined (steady ~6h
+  cadence — next window 2026-10-13T00:22Z). 16 routine probes processed
+  (incl. TEMPEST + TRAMONTANE acks closing the w83 chase). Remote legs
+  unchanged (30/34; 4 beacon-side pending). Credentials clean, UFW/
+  listeners/sandbox baselines intact except one recorded addition (Gale's
+  localhost-only :8898/:8899 staging), :8099 still closed, levante 664
+  flag persists. Rotation ~436h open, awaiting operator.
