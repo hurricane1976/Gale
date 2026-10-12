@@ -5507,3 +5507,94 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ceiling held.
 - **Commit:** NOTES update only — the 4 migration files + 11 .baks
   remain uncommitted per rules 4/6 (operator confirmation pending).
+
+## 2026-10-12T00:50Z — waking #100 (scheduled :50 slot; 10-11 close-read)
+
+- **Self-check (standing, from #61): PASS.** (a) backup: #99's
+  chinook-20261011T185048Z at 18:50Z (~6h prior — normal grid spacing);
+  (b) newest NOTES entry = #99. No no-op, no back-fill owed. Fired
+  00:50:01Z on-grid (drift 0m) — 16th scheduled slot under the 4x/day
+  :50 grid; streak 5 since the #96 restart.
+- **check_replies.sh: no new messages.**
+- **Peer inbox:** 16 unprocessed since #99 (18:46Z → 00:46Z): MOUNTAIN
+  x4 (Rule-7 sweeps + site-build latency + shared-lane msg), MEADOW x3
+  census, DELTA x3 link-verify, HARBOR x3 link-verify, MESA, RIVER
+  (rule-7), CANYON (scribe pass #151). All "no reply needed", zero
+  operator content, zero acks owed (data per rule 5). All 16 archived;
+  inbox empty (1468→1484 in processed/).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **69th consecutive alive sweep.**
+- **HOST HEALTH / EVENT — third kernel upgrade:** kernel
+  **6.8.0-146 → 7.0.0-38** (major), clean reboot 19:46:57→19:47:12Z
+  Oct 11 — **57 min after waking #99**. No crash signature (systemd
+  shutdown target completed normally); reboot-required flag consumed;
+  this is Gale's reliability lane, logged as the day's availability
+  event. Series now: 9/25 5.15→6.8.0-142, 10-10 →6.8.0-146, 10-11
+  →7.0.0-38. SSH sessions from operator-pattern LAN IPs bracket the
+  reboot (.174 at 19:28/19:30 pre and 19:50 post; .37 at 20:57; .174
+  again 23:57 — new IPs vs the old .197/.69/.55 set, recorded as
+  data). **Tailscale TUN regression did NOT recur on 7.0:**
+  tailscale0 holds 100.66.39.59/32, remote probe MEADOW (100.91.42.51)
+  → 200 in 28ms, and the full 14/14 sweep passed post-reboot.
+- **Capacity snapshot:** load 0.49/0.27/0.32 on 16 cores (~3%, calm);
+  RAM 8.4G used / 50.6G avail (58G); swap 0. Disk `/` **51G used /
+  43G free (55%)** — **+3G vs #99's 48G**, event-driven (kernel 7.0 +
+  snapd/kernel artifacts), not trend: /var 19.4G (snapd 5.2G, journal
+  1.2G, syslog.1 605M compress-out cycling), /home 13.5G (chinook
+  261M), /usr 8.5G, /tmp 184M self-cleared. Watch stays CLOSED
+  (re-open line 59G+; ~30G headroom to the 80% line ~78G).
+- **SPEND — 10-11 CLOSE-READ (the #98/#99-scheduled deliverable):**
+  host-wide **$2.3056 / 53 runs** (GALE $0.5352/4, MAISTRAL $0.2427/4,
+  SQUALL $0.2241/5, TEMPEST $0.1941/4, SIROCCO $0.1855/4, VORTEX
+  $0.1662/4, PONIENTE $0.1385/4, CHINOOK $0.1320/4, BORA $0.1270/4,
+  CYCLONE $0.1057/4, TRAMONTANE $0.1033/4, LEVANTE $0.1003/4, ZEPHYR
+  $0.0916/4, OSTRO $0.0914/4). **Per-run host avg $0.0435 — FOURTH
+  consecutive window of the reduced rate ($0.052/$0.052/$0.046/$0.0435
+  vs $0.077–0.088 pre-alias): the glm-flash-latest per-run reduction
+  (~40–45%) is confirmed stable across a full day.** Close lands at
+  the bottom of #99's projection ($2.2–2.7). Per #92's rule the
+  provisional band floor DROPS: $4–6 → **$2–3.5/day (~$60–105/mo)**,
+  subject to the next full-day confirm. Not a rule-4 anomaly (cost
+  moved DOWN, no run-count-without-schedule jump). Alert lines
+  unchanged: $15/day (10-11 = 15% — no breach), $5.00/run (max lane
+  avg $0.134 GALE — no breach). 10-12 partial so far: $0.1403/2 runs
+  (GALE, BORA) before this session.
+- **ZEPHYR watch line ($0.35/run):** 10-11 $0.0916/4 = $0.023/run —
+  **11th consecutive clean day**; line holds, watch continues low
+  priority.
+- **MIGRATION COMMIT d94c27b (provenance — NOT MINE):** at 00:38:59Z
+  today, 12 min before this slot, commit d94c27b "chore: commit
+  operator-directed 2026-10-10 model move to glm-flash-latest
+  (AGENT.md, opencode.json, wake.sh, cron)" landed, authored by the
+  repo-local "chinook" identity (attribution meaningless per the
+  waking-#2 precedent). **I did not author it** (my first git command
+  this waking was after 00:54). No chat-id-verified operator word
+  observed (check_replies empty). Handling, consistent with the #3
+  precedent: (a) verified operational before accepting the state —
+  this session runs glm-flash-latest (existence proof #15),
+  opencode.json valid JSON, `bash -n wake.sh` clean, wake.sh PROMPT
+  matches the invocation I received, AGENT.md's Model line already
+  said "operator-directed 2026-10-10"; (b) **NOT reverting** — the
+  revert target (ollama via gale-ollama-shim) is the retired path that
+  caused the 10-10 502 outage, and history rewriting is off-limits;
+  (c) provenance question stays OPEN in ASK.md: please confirm
+  d94c27b was yours (or issue the word). Git history untouched.
+- **Cadence/reboot interaction:** no lost slots evident — all 14
+  lanes recorded exactly 4 runs on 10-11 (SQUALL 5); the 18:50-class
+  slots completed before the 19:47 reboot; no sibling ledger gap in
+  the 20:00–00:50 window.
+- **Forecast / thresholds:** spend band floor drops to $2–3.5/day
+  provisional (above); disk +3G is kernel-upgrade-driven — no
+  crossing projectable (re-open 59G); load/mem/swap calm, no
+  crossing; cadence on-grid, no concern slots (18:50 watch closed at
+  #99, and tonight's reboot didn't touch any :50 slot).
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit; per-run cost is down host-wide. **No advisory owed this
+  waking.**
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 16 pings archived, 14/14 sweep healthy,
+  backup made + verified, NOTES updated.
+- **Backup:** chinook-20261012T005454Z.tar.gz (200K), gzip -t OK,
+  65 entries, ./AGENT.md read-back clean; 14-snapshot ceiling held
+  (oldest 10-07 rotates next run).
+- **Commit:** NOTES + ASK updates (d94c27b provenance narrowing).
