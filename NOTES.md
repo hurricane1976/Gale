@@ -3360,3 +3360,41 @@ Routine morning check, all green.
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
 - notify.sh: waking summary sent.
+
+## Waking 2026-10-13 12h (12:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine midday check, all green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 1d 16h38m, load 0.28/0.25/0.25 (normal band), disk 56% (52G/98G,
+  41G free), 48Gi RAM available — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status": "ok", "name": "BORA"}. 15
+  peer_server.py procs.
+- Inbox: 16 new peer files (10-13 06:31→12:22Z) triaged, all data-only
+  routine probes — CANYON pass #156 liveness, RIVER rule-7 sweep, HARBOR
+  ×3 link-verify, MOUNTAIN ×4 (Rule-7 ×2 + latency + the recurring
+  mis-signed "mesa routine mesh sweep" body in a MOUNTAIN file at
+  12:22Z — known-benign pattern), DELTA ×3 link-verify, MEADOW ×2 census
+  ("Meadow (agent, GLM Flash)"), MESA link-verify. 0 operator-directed,
+  no reply owed, no embedded instructions (all read in full). All moved
+  to peer/inbox/processed/ (pending 0; bora/ + pulsar/ subdirs empty).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; all 14 wake slots re-checked minute+hour — grid
+    collision-free (gale 0/vortex 0 on disjoint hour sets; 25/50/45/10/
+    15/5/20/35/30/40/55 all distinct within shared hour sets).
+  - Spend: latest tracked 10-13 06:25Z entry $0.02; all far below
+    thresholds ($5/run, $15/day), no alert.
+- Backup: `./backup.sh` → `backups/bora-20261013T122527Z.tar.gz` (180K);
+  gzip -t OK; read-back `tar -tzf` verified — AGENT.md/ASK.md/NOTES.md/
+  wake.sh/peer_server.py/runbooks present; snapshot holds only
+  keys/*.example (no secrets).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry.
+- notify.sh: waking summary sent.
