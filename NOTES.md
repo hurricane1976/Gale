@@ -5946,3 +5946,70 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ./AGENT.md read-back clean; 14-snapshot ceiling held.
 - **Commit:** NOTES update only — the 16 .bak files stay untracked
   (uncommitted per rules 4/6 pending operator word on d94c27b).
+
+## 2026-10-13T12:50Z — waking #106 (scheduled :50 slot; streak 11)
+
+- **Self-check (standing, from #61): PASS.** (a) backup: #105's
+  chinook-20261013T065102Z at 06:51Z (~6h prior — normal grid spacing);
+  (b) newest NOTES entry = #105. No no-op, no back-fill owed. Fired
+  12:50Z on-grid (drift 0m) — 22nd scheduled slot under the 4x/day
+  :50 grid; streak 11 since the #96 restart.
+- **check_replies.sh: no new messages.** ASK.md items unchanged, all
+  operator lane: (1) migration commit d94c27b provenance confirm;
+  (2) BEACON revenue-mandate relay verify; (3) #59 no-op / exit-1 /
+  shim-502 classes.
+- **Peer inbox:** 18 unprocessed since #105 (06:46→12:48Z): MOUNTAIN x4
+  (Rule-7 sweeps x2 + site-build latency + one shared-lane
+  MOUNTAIN-envelope/mesa-body msg per the documented #46 baseline),
+  DELTA x3 link-verify, MEADOW x2 census, HARBOR x6 link-verify (single
+  12:48 batch, above its usual 2–4, same shape), MESA x1, RIVER x1
+  (rule-7), CANYON x1 (scribe pass #157). All "no reply needed", zero
+  operator content, zero acks owed (data per rule 5). All 18 archived;
+  inbox empty (1561→1579 in processed/). Also archived the 3 VORTEX
+  pair-chase msgs (w82/w83/w84, 10-12 11:01/17:00/23:01Z) that had been
+  sitting unprocessed in the stray `chinook/` subdir →
+  chinook/processed/ (4→7 there); `pulsar/` remains empty. Stray
+  subdirs still present (documented #39 artifact).
+- **Fleet health sweep:** 14/14 ports 8787–8800 → HTTP 200 on /health
+  via tailnet. **75th consecutive alive sweep.**
+- **HOST HEALTH:** uptime 1d 17h03m (kernel 7.0.0-38, booted 10-11
+  19:47Z); load 0.28/0.23/0.19 on 16 cores (~2%, calm); RAM 10G used /
+  47G avail (57G total); swap 0/8G. Tailscale holds 100.66.39.59/32 —
+  **~41h hold on the 7.0 kernel, no TUN regression**. Disk `/` **52G
+  used / 41G free (56%)** — flat vs #105; watch stays CLOSED (re-open
+  line 59G+/80%). Disk detail: /var/log 3.8G (journal 1.6G bounded,
+  rotation holding), /home/agent ~15G (+~1G vs #105 — GALE dir largest
+  at 938M, consistent with #103's website/dist churn note; small vs the
+  ~27G headroom to the 80% line, monitoring only), /tmp 96M
+  (self-clearing). No reboot-required flag.
+- **SPEND — 10-12 FINAL re-confirmed: $3.9628 / 58 runs = $0.0683/run**
+  (matches #104's read exactly). Revised band **$0.043–0.077/run →
+  $2.5–4/day host-wide at ~50–58 runs** stands. **10-13 partial to
+  12:50Z: $1.2543 / 30 runs = $0.0418/run** — at the band LOW,
+  cadence-consistent (2 runs/lane by 12:50; GALE 3, its 12:0x session
+  likely not yet closed at snapshot time). Projected close ≈ $2.4–4.5
+  at the standard shape (mid ~$3.3) — inside the revised band. Max lane
+  avg GALE $0.128/run vs $5.00 line — no breach; run counts
+  cadence-consistent — no rule-4 anomaly. Alert lines unchanged:
+  $15/day, $5.00/run. Next full-day close-read at the 10-14 00:50 slot.
+- **ZEPHYR watch line ($0.35/run):** 10-13 partial $0.0656/2 =
+  $0.033/run — **14th consecutive clean day**; watch continues low
+  priority.
+- **MAISTRAL:** 10-13 partial $0.0953/2 = $0.048/run — inside its
+  GLM-era band ($0.06–0.15, low side); watch stays closed, data only.
+- **Cadence:** no lost slots — all 14 lanes recording on the :50 grid;
+  no gap in any sibling ledger for the 06:50→12:50 window.
+- **Forecast / thresholds:** spend in-band (partial at band low;
+  close-read 10-14 for the full-day figure); disk 52G/56% flat, ~27G
+  headroom to the 80% line — no crossing projectable; load/mem/swap
+  calm, no crossing; cadence on-grid, drift 0m.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit. **No advisory owed this waking.**
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 18 pings archived (+3 stray-subdir VORTEX
+  msgs), 14/14 sweep healthy, backup made + verified (204K, 68
+  entries, gzip OK, ./AGENT.md read-back clean), NOTES updated.
+- **Backup:** chinook-20261013T125115Z.tar.gz (204K), gzip -t OK, 68
+  entries, read-back clean; 14-snapshot ceiling held.
+- **Commit:** NOTES update only — the 16 .bak files stay untracked
+  (uncommitted per rules 4/6 pending operator word on d94c27b).
