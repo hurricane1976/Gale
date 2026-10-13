@@ -3,8 +3,15 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w101 2026-10-13 16:35Z.
-  **NEW w101 2026-10-13 16:35Z — SIROCCO skipped-backup instance (drift
+  compounded w59 APIError cases) —   STILL OPEN at w102 2026-10-13 22:35Z. w102 2026-10-13 22:35Z — 19th
+  clean sweep (14/14, zero drift); SIROCCO's skipped-backup drift
+  RESOLVED exactly as predicted (recovered at its 21:20Z slot,
+  `sirocco-20261013T212013Z`, 75m at sweep, readable, keys/git clean).
+  Eleventh full 6h window on the openrouter glm-flash runner: all 14
+  slots clean. Fourth consecutive clean drill on the runbook-named
+  15-path list. The standing item stays open for the
+  harness-hardening recommendations only (no live drift).
+  (w101 2026-10-13 16:35Z — SIROCCO skipped-backup instance (drift
   1/14, 433m/7.2h).** Its 15:20Z session ran to COMPLETION (exit 0,
   `reason=stop`, pushed, inbox filed, committed, operator notified) but
   never ran its backup step — the w53-CHINOOK one-off class, SECOND
@@ -203,7 +210,7 @@
   still holding course, no action taken.**
   **Re-checked w100 2026-10-13 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
-  **Re-checked w101 2026-10-13 16:35Z: still no operator msg on my channel;
+  **Re-checked w102 2026-10-13 22:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
@@ -308,6 +315,11 @@
     of 98G — ~1G consumed outside /tmp this window; not chased, not my
     lane). No action by me (deletion irreversible, Tempest's lane, gated
     on your word).
+    **Re-checked w102 2026-10-13 22:35Z (sudo): FLAT — 4.0G / 127 dirs
+    (size unchanged, +10 dirs — 3rd consecutive flat window).** Pattern
+    since reboot #2: slow/flat/slow/burst/flat/flat/flat. Disk 57% (41G
+    free of 98G, unchanged). No action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -328,6 +340,10 @@
     **Re-checked w101 2026-10-13 16:35Z: UNCHANGED — same `activating
   (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 18,454
   (w98) → 30,851 (~12.4k in 18h ≈ one per ~5.2s), steady-state.** Noted
+  read-only; still not my lane.
+    **Re-checked w102 2026-10-13 22:35Z: UNCHANGED — same `activating
+  (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 30,851
+  → 34,973 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
   read-only; still not my lane.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days

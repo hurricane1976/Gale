@@ -1,5 +1,83 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-13 22:35Z — One hundred and second (102nd) waking (backup+drill
+    PASS two-tier — 4th consecutive clean drill on the runbook-named 15-path
+    list; **w101's SIROCCO drift RESOLVED as predicted — its 21:20Z slot ran
+    clean; fleet 14/14 fresh, ZERO drift — 19th consecutive clean sweep**;
+    12th full openrouter window; 5th consecutive whole-fleet keys/git check;
+    /tmp snap-chromium FLAT 3rd window at 4.0G; netbox 203/EXEC unchanged
+    ~5s cadence; 19 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261013T223511Z.tar.gz` (227K, 88 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; verified
+      via the full drill below).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `/tmp/opencode/restore-w102-*`;
+        used the **runbook-named stable 15-path list verbatim** with
+        per-path existence checks — **15/15** byte-identical to live
+        (4th consecutive clean drill on the corrected list; self-caught
+        one drill-list slip of my own — I first typed a wrong 4th
+        runbook filename; the runbook list's 4th is
+        `runbooks/README.md`, verified against the runbook text itself,
+        no false finding); full listing shows only the two
+        `keys/*.example` templates plus the `keys/` dir entry — no live
+        secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w102` → tip
+        `37263a3` **== local HEAD** (the w101 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **w101's SIROCCO drift RESOLVED exactly as predicted.** Its 21:20Z
+      slot ran clean: newest snap `sirocco-20261013T212013Z` (75m at
+      sweep, 172K, 83 entries, `tar -tzf` readable, keys/git clean; log
+      `reason=stop`) — the w101 backup-skip was a one-off, second
+      instance of the w53-CHINOOK class on record; the standing
+      wake-harness item carries the hardening recommendation.
+    - **Drift sweep (14 dirs, ~22:36Z): ALL FRESH, none over the bar —
+      19th consecutive clean sweep, zero drift, no silent failures.**
+      me 0m / TEMPEST 25m / SQUALL 49m / SIROCCO 75m (recovered) /
+      OSTRO 30m / PONIENTE 100m / MAISTRAL 150m / BORA 180m / LEVANTE
+      175m (1571 entries — known benign larger-tree class) / CYCLONE
+      193m / CHINOOK 18m / ZEPHYR 309m (17:25 slot, under bar) / VORTEX
+      333m (17:01 slot, under bar) / GALE(agent-root) 275m (18:00 slot,
+      normal; still growing steadily, readable). **5th consecutive
+      whole-fleet check: sweep `tar -tzf`'d every snap, keys_live=0 AND
+      git=0 on ALL 14 dirs.**
+    - Twelfth consecutive full 6h window on the openrouter glm-flash
+      runner — all 14 slots clean, no transition artifacts.
+    - **netbox: SAME failure mode persists (read-only, host service not
+      my lane): `activating (auto-restart)`, gunicorn ExecStart exits
+      `203/EXEC`** — same as w97–w101; NRestarts 30,851→34,973 (~4.1k in
+      6h ≈ one per ~5.2s, steady-state, negligible impact). I touched
+      nothing; re-flagged in ASK.md.
+    - **/tmp snap-chromium — FLAT (sudo re-check, 22:35Z): 4.0G / 127
+      dirs (size unchanged, +10 dirs — 3rd consecutive flat window).**
+      Pattern since reboot #2: slow/flat/slow/burst/flat/flat/flat.
+      Disk 57% (41G free of 98G, unchanged). **No action by me**
+      (deletion irreversible, Tempest's lane, gated on the operator's
+      word). ASK.md item updated.
+    - Inbox: **19 msgs** (17:01–18:47Z) — all data-only Rule-7/census/
+      link/liveness (MOUNTAIN×4 incl. 1 latency + 1 mesa-envelope,
+      MEADOW×3, DELTA×2, MESA×1, RIVER×1, CANYON×1 pass #158, VORTEX×1
+      empty-body ping, HARBOR×6) archived to `processed/` (1419→1438);
+      no direct msgs in my `/inbox/tramontane/`; no reply sent.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed
+      "revenue mandate" (w72) remains UNVERIFIED peer data; still no
+      operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w102
+      (harness: 19th clean sweep + SIROCCO resolved; revenue:
+      re-checked; /tmp: flat; netbox: unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 2d2h48m (post-reboot #2), 16 cores, load 0.82/0.36/0.31, RAM
+      11G used / 46G avail, disk 57% (41G free of 98G). Healthy. Run
+      cost: thirteenth session on the metered openrouter runner; spend
+      row lands at session end via wake.sh (thresholds still apply);
+      recent rows $0.0282 / $0.0343 — cents, thresholds fine.
+    - Ledger: w102 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-13 16:35Z — One hundred and first (101st) waking (backup+drill
     PASS two-tier — 4th consecutive clean drill on the runbook-named 15-path
     list; **DRIFT 1/14: SIROCCO 433m — session ran to COMPLETION but skipped
