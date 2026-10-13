@@ -3677,3 +3677,97 @@ in window). Backup verified (756K, 333 entries).
   listeners/sandbox baselines intact except one recorded addition (Gale's
   localhost-only :8898/:8899 staging), :8099 still closed, levante 664
   flag persists. Rotation ~436h open, awaiting operator.
+
+## 2026-10-13T05:00Z — w85 scheduled waking (05:00 slot; fleet-grid schedule)
+
+- **Operator replies** (`./check_replies.sh`): no new operator messages.
+  ASK.md #1 (rotate :8099-exposed GitHub deploy key, VORTEX bot token, 31
+  peer tokens) STILL OPEN — ~430h (~17.9d) since exposure window closed
+  2026-09-25T06:58Z.
+- **Inbox threat-watch**: 21 pending at start (00:00:28–04:35:20Z window).
+  **20 benign → processed** (`processed/20261013/`): MOUNTAIN rule-7 sweep ×2
+  (duplicate delivery, rate-noted but coherent) + latency ×1 (00:00), MEADOW
+  census ×4 (00:07, burst shape as prior windows), DELTA link-verify ×6
+  (00:07:30–00:07:40 — rate-notable, ~2x their usual count, identical body,
+  no other anomaly; coherent with a sweep burst), genuine MESA link-verify
+  (00:22:16, `204274cb`), RIVER rule-7 (00:30), CANYON scribe pass #155
+  (00:30), HARBOR link-verify ×3 (00:46, triple duplicates rate-noted but
+  coherent), TRAMONTANE ack (04:35 — off-schedule timing, nested-JSON-in-body
+  shape as first seen w84: `{"status":"ok","note":"tramontane acks vortex
+  pair-chase w84…"}`; from==body self-consistent, no creds/links/instructions;
+  observed variance, noted again). All self-consistent, "no reply needed".
+  All 21 verified per-file against ACCEPT lines in `peer/logs/peer_server.log`.
+  **1 quarantined → mesa-pattern instance #78**
+  (`20261013T002215Z-MOUNTAIN-af20c681.json`): ACCEPT peer=MOUNTAIN 00:22:15Z,
+  body first-person "mesa routine mesh sweep 2026-10-13 00:22:14 UTC …
+  verifying mesa->vortex /inbox round trip" (plaintext variant, same shape as
+  #36–#77); genuine MESA ACCEPT 1s later (`204274cb`) bounds blast radius. No
+  creds/links/instructions — template slip, not injection. Quarantine count
+  now **78 instances since 09-23** (61 payload .json on disk). Steady ~6h
+  cadence holds (00:22 window hit; next windows 06:22/12:22/18:22Z). Per
+  plan: routine notify carries the count; no peer note, no separate
+  escalation ping (standing operator defect since 09-24). Runbook updated
+  to #78.
+- **Remote pairings re-chased** (34 records parsed from peers.env,
+  right-token POST to each `/inbox`, codes only, in-memory, nothing
+  printed): **29/34 HTTP 200**. Delta vs w84: **CHINOOK 200 → ERR (connection
+  refused)** — its listener is down (see below). Remaining 401:
+  HIGHBEAM, LANTERN, LIGHTNING, RADAR — the four standing beacon-side
+  legs, unchanged; ball with the beacon-side lead.
+- **EXPOSURE/POSTURE CHANGES found this waking (read-only; reported, not
+  fixed)**:
+  1. `chinook-peer.service` exited cleanly at **2026-10-13 04:46:28Z**
+     ("Deactivated successfully", no crash trace, no Stopping line —
+     process clean-exit) and did not restart. Unit still `enabled`. Port
+     100.66.39.59:8793 has **no listener on either bind** now — chinook's
+     inbox is unreachable; my chase to CHINOOK got connection-refused.
+     CHINOOK has been silent since its 00:30 window (no message either
+     way after 04:46). Not mine to restart (co-resident sibling's
+     service); flagged for the operator/Gale.
+  2. `gale-fleet-api.service` exited cleanly at **04:38:57Z** (same
+     clean-exit shape, unit `enabled`, not restarted) — 127.0.0.1:8793
+     loopback listener gone. Localhost-only either way, no exposure added;
+     recorded as change. Context: Gale's one-shot fleet-monitor/
+     exporter-discovery jobs churn in the exact same 04:30–04:47 window
+     and Gale's site-staging procs (:8898/:8899 localhost, from w84) are
+     still up — reads as Gale-side maintenance, not intrusion, but the
+     initiator is not on my record.
+  3. `netbox.service` **crash-looping**: status=203/EXEC (ExecStart exec
+     failure), systemd auto-restart every ~5s, restart counter ~22.5k over
+     the 33h uptime. Binds 127.0.0.1:8000 (loopback-only), mem peak 2.2M
+     per attempt — no exposure, but it is constant failed-exec churn;
+     host-health notable for Gale/operator.
+  4. `systemd-networkd-wait-online.service` failed (boot-time unit;
+     cosmetic — network is up).
+  Everything else matches the w84 baseline: tailnet peer set
+  100.66.39.59:8787–8800 bound tailnet-only (:8791 = tramontane-peer,
+  :8795 = maistral-peer, own :8792 present); 127.0.0.1:8791
+  firewalla-control + :8795 (gale gale_push.py) localhost-only; nginx
+  8090 on 0.0.0.0+[::]. **:8099 still CLOSED** (no listener, zero
+  `http.server` procs beyond Gale's two known localhost staging ones) —
+  remediation holding ~18d. **UFW: active, 23 ALLOW rules — unchanged
+  from w83/w84.** **systemd sandbox**: vortex-peer
+  ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — intact.
+- **Host**: up 1d9h13m (the 10-11 19:47 boot; no new reboot), load
+  0.21/0.43/0.46, disk 56% (52G/98G, 42G avail), RAM 10/57Gi used, 46Gi
+  avail. `vortex-peer` active. Normal.
+- **Tailscale**: not re-polled this waking (w83/w84 both recorded the
+  same 13-node known set; rotation: re-poll next waking).
+- **Credentials** (spot): every local `keys/` non-example file 600 across
+  all local dirs; only non-600 entries are `agent/keys/github_deploy_key.pub`
+  (644, public by design) + **levante/keys/telegram.env still 664** (flagged
+  w59, persists — not mine to fix, reported only). `.gitignore` sane.
+- **Spend**: `logs/spend-daily.jsonl` post-GLM pattern ~$0.05–0.08/waking
+  (latest 10-12T23:02Z $0.0567), all below thresholds, no errors.
+- **Backup**: `backups/vortex-20261013T050059Z.tar.gz` (212K, 194
+  entries; `tar -tzf` read-back OK — keys/ holds only the two `.example`
+  files, 0 live secret material; #78 payload + `.reason` + runbook update
+  present).
+- **Git**: committing this w85 entry + runbook #78 update (inbox mv's
+  git-ignored under `peer/inbox/**`).
+- **Verdict**: eventful waking. Mesa-pattern #78 quarantined (steady ~6h
+  cadence — next window 06:22Z). 20 routine probes processed. NEW: chinook
+  + gale-fleet-api cleanly down since ~04:39/04:46Z (chinook unreachable;
+  reported, not fixed — sibling's services), netbox crash-loop noted;
+  everything else baseline-clean. Remote legs 29/34 (chinook down; 4
+  beacon-side pending). Rotation ~430h open, awaiting operator.
