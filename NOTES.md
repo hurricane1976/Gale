@@ -4465,3 +4465,69 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
 - Model line consistent: openrouter/~z-ai/glm-flash-latest (AGENT.md/opencode.json/wake.sh match).
 - External DNS gale-agent.tail44ca.ts.net unresolved from host (HTTP 000) — known limitation, local endpoints healthy.
 - Backup ostro-20261013T143736Z (204K). Commit 66b57f1. Verdict: all-green, no regression.
+
+## 2026-10-13T22:30Z — waking 4/4 (Sharpness & Regression Watch; 22:05 slot, ran ~22:08Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md
+   still 3 PENDING (BEACON revenue-mandate verification, LEVANTE+PONIENTE
+   ratification, logrotate fix ratification) — unchanged this waking.
+2. **Inbox triage**: `peer/inbox/ostro/` empty (previous messages already
+   processed). No new peer messages this waking.
+3. **Host health (22:05Z)**: uptime 2d2h (boot 10-11T19:47:09Z, kernel
+   7.0.0-38); load 1.46/0.55/0.38 (saw spike, settling); disk 57%
+   (53G/98G, +2% vs 20:30Z — due to .so accumulation before cleanup);
+   RAM 47Gi avail; NO `/var/run/reboot-required`; `/var/log` 4.0G
+   (+0.5G since 20:30Z — notable growth).
+4. **/tmp**: `.9adf` .so leak 13 files (182M) at start of waking — 12
+   orphaned (last creation ~14:23Z, ~8h stale), 1 open (opencode's own).
+   Cleaned 12 orphans, 1 open retained. `/tmp` 517M total now.
+   Chromium puppeteer profile dirs: 0 dirs (clean at 22:05, down from
+   70 at 20:30 — likely gc'd by snapd or timed out). `.bcdd` files: 0
+   (clean).
+5. **Service liveness**: 13/13 `*-peer` services active (ostro, gale,
+   zephyr, squall, tempest, vortex, cyclone, maistral, sirocco, bora,
+   tramontane, levante, poniente). **Chinook-peer INACTIVE** — still down,
+   same as 20:30Z (Chinook killed by TERM at 19:17Z; up at 14:30Z).
+   This is a **2nd consecutive waking** with Chinook down.
+   Tailscaled + nginx + cron:
+   all active.
+6. **Website + fleet (regression half)**: all 6 canonical endpoints → 200.
+   Ostro peer `100.66.39.59:8798/health` → 200 `{"status":"ok","name":"OSTRO"}`.
+   **Fleet: 34/35 up, 1 down** — Chinook down (http 0). This is a
+    **regression from 20:30Z baseline** where Chinook was also down (first
+    detected 20:30Z, now 2nd consecutive). `error_runs_24h_by_host` = {}
+   (empty — no agent errors, just Chinook unreachable).
+   `cost_24h_by_host` = `{gale: $2.0408, mountain: $3.6627, beacon: $1.7494, tidal: $0.0}`.
+   Ostro per_agent_24h: runs_24h=5, error_runs_24h=0, cost_24h=$0.0668,
+   last_wake=2026-10-13T22:05:01Z, total_wakings_14d=72, cost_coverage
+   100%.
+7. **Model/runner — UNIFIED on freetoken/Qwen3.6-35B-A3B-NVFP4**: AGENT.md:7,
+   wake.sh:46 (PROMPT) + line-49 (CLI pin), opencode.json:39 all match.
+   Fleet model divergence still present: Gale/Zephyr/Squall/Tempest/Vortex/
+   Tramontane on `openrouter/~z-ai/glm-flash-latest`; Cyclone/Maistral/Sirocco/
+   Bora on `freetoken/Qwen3.6-35B-A3B-NVFP4` (same as Ostro); Chinook
+   uncheckable (down). This divergence was introduced 2026-10-13 — operator-directed
+   shift (noted in Cyclone/Maistral/Sirocco/Bora AGENT.md: "operator-directed
+   2026-10-13; fleet moved off OpenRouter glm-flash"). **No self-action:
+   this is an observed operator migration, not a drift.**
+8. **peers.env audit**: ostro at 35 blocks, SELF_NAME=OSTRO. All checked
+   siblings (zephyr, squall, tempest, vortex, cyclone, maistral, sirocco,
+   bora, tramontane) at 35 blocks — consistent. Gale keys dir missing
+   from sweep (accessible?); all others uniform.
+9. **Logrotate**: `logrotate.service` still inactive (self-applied fix
+   pending ratification — see ASK.md item 1). Only failed unit: benign
+   `systemd-networkd-wait-online`.
+10. **LAN Ollama**: `192.168.1.197:11434` → 200 with models list present,
+    serving `llama3.2:1b` (and presumably others). Healthy.
+11. **Spend**: latest `spend-daily.jsonl` row at 20:31Z — $0.1447 (no
+    error); current session will write its row at close. No self-spike.
+12. **Backup**: `./backup.sh` → `backups/ostro-20261013T220512Z.tar.gz`
+    (209K, 64 entries, structure intact). Git commit + push + notify to follow.
+13. **Verdict vs 14:30Z baseline**: **Chinook down (2nd consecutive
+     waking, killed by TERM at 19:17Z — up at 14:30Z)** — this is a
+     regression worth noting. `/var/log` grew +0.5G
+    since 20:30Z (3.5G→4.0G) — needs watch next waking. Otherwise flat:
+    6/6 endpoints 200, 13/13 peer services up, 34/35 fleet up, model
+    unification stable, no operator messages, no inbox. Git commit + notify
+    to follow.
+
