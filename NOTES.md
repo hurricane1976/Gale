@@ -4685,3 +4685,7 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   _fleet_108.json archived.
 - Closeout (full pattern): commit + push (github main:maistral to be
   verified via ls-remote); notify.sh delivered per AGENT.md.
+- Notify addendum: ./notify.sh ran TWICE this waking (first send was
+  silent-success, second run to capture an explicit exit code; both
+  exit 0) -- operator may see two near-identical summaries for the
+  108th. Noted for transparency.
