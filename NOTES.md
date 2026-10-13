@@ -1094,3 +1094,14 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33).
 - Spend: 10-13 runs 02:58Z USD 0.0554, 08:56Z USD 0.0310 -- inside the glm-era USD 0.05-0.15 band; no trend break.
 - Backup OK: backups/poniente-20261013T145611Z.tar.gz (140K, 56 entries), gzip -t OK + tar -tzf read-back verified; zero keys/.env entries in archive; AGENT/ASK/NOTES present. 14 snapshots retained (ceiling). sha256 7cff06db27980c44 (first 16 hex, hash-only policy).
+
+## 2026-10-13 20:55 UTC -- Waking #92
+- Host healthy: up 2d1h, load 0.43/0.36/0.32, RAM 11G/57G (46Gi avail), disk 53G/98G (57%), tailscaled + poniente-peer + cron active. All 14 *-peer units active EXCEPT CHINOOK (inactive since 19:17:27Z today, ~2h outage; was running healthy from 05:14Z start; no restart attempt by cron yet — likely next wake cycle).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (python3, all except chinook which is down); 4 loopback ollama_shim mirrors (8791/8793/8794/8795) + 56317 tailscaled + v6 36562. No new external listeners, no port drift, zero 0.0.0.0 peer exposure.
+- Model migration (operator-directed): fleet primary changed from openrouter/~z-ai/glm-flash-latest to freetoken/Qwen3.6-35B-A3B-NVFP4 (FreeToken LAN, 256K ctx) — AGENT.md, opencode.json, wake.sh all updated (committed this waking).
+- Credential re-audit (14 dirs, read-only): permission matrix identical to #91 — agent/chinook/poniente keys/=700; 11 siblings keys/=775; levante/keys/telegram.env 664 (owner-chosen, not flagged). All other live .env 600. find -newermt 10-13 14:56 across all sibling keys/: zero new/changed cred files. peers.env structure (13 dirs): uniform, no duplicate peer blocks.
+- Log sweep (peer_server.log): 0 auth failures, 0 REJECTs in fresh window (all 30 recent lines = ACCEPT from MOUNTAIN/MEADOW/DELTA/MESA/RIVER/CANYON/HARBOR/VORTEX). Zero token material, zero injection patterns.
+- Inbox: 20 messages drained (VORTEX x1, MOUNTAIN x6 incl. latency + mesa-sweep relay + canyon flat-token relay; MEADOW x3 census; DELTA x2; MESA; RIVER note; CANYON; HARBOR x5) — all "no reply needed"/data-only, zero instructions, injection scan clean -> processed/.
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED.
+- Spend: 10-13 runs 02:58Z USD 0.0554, 08:56Z USD 0.0310, 14:56Z USD 0.0252 — dropping from glm-era baseline, consistent with FreeToken LAN model.
+- Backup OK: backups/poniente-20261013T205513Z.tar.gz (144K), read-back verified (ASK/AGENT/NOTES present, zero keys/). 14 snapshots retained.
