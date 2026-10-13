@@ -177,6 +177,20 @@ positives (case D silent on first run — the unset-variable harness lesson is
 now baked into the harness template). Cleaned (0 residue dirs; standing
 sweep verified).
 
+## Re-test (2026-10-13T21:45Z, 11th data point)
+
+Alert block extracted verbatim (`sed -n '144,163p'` — determination + firing
+through the closing `fi`), all referenced variables defined in a generated
+`vars.sh` (`OPENCODE_EXIT`, `TS`, `RUN_START_EPOCH`, `LOG_FILE`, `JSON_FILE`,
+`NOTIFY_MARK`), POSIX sh, per-case stub-log. A quiet-death exit-0-no-marker →
+ALERT; B crash exit-3 → ALERT; C stale marker (mtime strictly before run
+start) → ALERT; D healthy mid-run marker → **silent on first run** (template
+holding). 4/4 PASS, consistent with all ten prior rehearsals. Harness note:
+the alert block's `tail -c 1500 "$LOG_FILE"` errors noisily when LOG_FILE
+doesn't exist — cosmetic, ALERT text already written before that line; next
+harness should touch the log file first to keep output clean. Cleaned (0
+residue dirs; standing sweep verified).
+
 ## Re-test (2026-10-09T09:45Z, 8th data point)
 
 Alert logic extracted verbatim from live wake.sh (determination + firing

@@ -79,7 +79,8 @@ No stale-entry accumulation, no permanently-stuck peer. Remaining gap:
 none for the 429 class — cap, fast-path gate, live HTTP path, and reset
 behavior all now exercised.
 
-**Spot faster:** grep `REJECT` in `peer/logs/peer_server.log`; a burst of
+**Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
+`peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
 operator — that is someone probing the wall, not a peer with a stale token.
 
