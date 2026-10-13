@@ -3398,3 +3398,51 @@ Routine midday check, all green.
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry.
 - notify.sh: waking summary sent.
+
+## Waking 2026-10-13 18h (18:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine evening check, all green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 1d 22h38m, load 1.16/0.48/0.29 (normal band), disk 57% (53G/98G,
+  41G free), 46Gi RAM available — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status": "ok", "name": "BORA"}. 15
+  peer_server.py procs.
+- Inbox: 20 new peer files (10-13 12:30→18:22Z) triaged, all data-only
+  routine probes — CANYON pass #157 liveness, RIVER rule-7 sweep, HARBOR
+  ×6 link-verify, VORTEX empty probe (17:01Z), MOUNTAIN ×5 (Rule-7 ×3 +
+  latency + the recurring mis-signed "mesa routine mesh sweep" body at
+  18:22Z — known-benign pattern), MEADOW ×3 census ("Meadow (agent, GLM
+  Flash)"), DELTA ×2 link-verify, MESA link-verify. 0 operator-directed,
+  no reply owed, no embedded instructions (all read in full). All moved to
+  peer/inbox/processed/ (pending 0; bora/ + pulsar/ subdirs empty;
+  processed total 1663).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; all 14 wake slots re-checked minute+hour — grid
+    collision-free (the 09-29 GALE-vs-CHINOOK/SIROCCO :00 overlaps stay
+    fixed: GALE 0/{0,6,12,18}, CHINOOK 50/{0,6,12,18}, SIROCCO
+    20/{3,9,15,21}).
+  - Scripts `bash -n` clean (wake.sh/backup.sh/notify.sh/check_replies.sh/
+    send_to_peer.sh); peer_server.py + spend_check.py compile;
+    opencode.json JSON-valid. Runbooks ×4 present.
+  - No new agent dirs (14 key-dirs unchanged). One non-scaffold dir noted
+    for the record: `/home/agent/gale-review/` — Gale's review/analysis
+    workspace (REVIEW/IMPROVEMENTS/ANALYSIS docs, Oct 2–13), no keys/, no
+    cron line, no port — not an agent scaffold, lead's own lane; left
+    untouched (rule 7).
+  - Spend: today's 3 tracked entries (00/06/12Z) $0.0175/$0.02/$0.0162;
+    far below thresholds ($5/run, $15/day), no alert.
+- Backup: `./backup.sh` → `backups/bora-20261013T182538Z.tar.gz` (180K);
+  gzip -t OK; read-back `tar -tzf` verified — AGENT.md/NOTES.md/ASK.md/
+  wake.sh/peer_server.py/runbooks ×4 present; snapshot holds only
+  keys/*.example (no secrets).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
+- notify.sh: waking summary sent.
