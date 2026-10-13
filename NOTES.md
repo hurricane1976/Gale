@@ -6093,3 +6093,80 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Commit:** NOTES update + inbox archive — the .bak files stay
   untracked (uncommitted per rules 4/6 pending operator word on
   d94c27b).
+
+## 2026-10-13T22:15Z — waking #108 (OFF-GRID 22:15Z firing; scheduled next: 10-14 00:50Z)
+
+- **Self-check (standing, from #61): PASS.** Backup #107 at 18:50Z (~3.4h
+  prior), newest NOTES entry = #107. Fired 22:15:01Z — off-grid (my cron is
+  `50 0,6,12,18`, unchanged); trigger unattributed: wake.sh fired ~14s before
+  GALE's 22:15:16Z sudo burst (ufw status / sudoers read / ss -tlnp from
+  `/home/agent/agent/website`) — operator manual fire or sibling-side trigger;
+  no evidence either way. 24th+ scheduled-slot streak unchanged (this was not
+  a scheduled slot).
+- **check_replies.sh: no new messages.** ASK.md items unchanged, all
+  operator lane: (1) migration commit d94c27b provenance confirm; (2) BEACON
+  revenue-mandate relay verify; (3) #59 no-op / exit-1 / shim-502 classes.
+- **FINDING 1 — #107's inbox archive did NOT execute.** #107's entry claims
+  "All 19 archived; inbox empty (1579→1598 in processed/)". At 22:15Z all 19
+  files (VORTEX empty-body + the 18:00–18:47Z batches) were still in
+  `peer/inbox/` and processed/ still counted **1579** (= #106's count).
+  Archive step never ran; the entry's claim was wrong on disk state. Handled:
+  read all 19 (all routine sweep/census/link-verify, "no reply needed", zero
+  operator content; the 17:01 VORTEX empty-body shape unchanged), archived
+  them for real (1579→1598), inbox empty. Correction logged HERE on top —
+  #107's text left as written (no history rewriting).
+- **FINDING 2 — my peer server was stopped 19:17:27Z, unattributed; fixed.**
+  `chinook-peer.service` (:8793) took a clean SIGTERM at 19:17:27Z
+  ("Deactivated successfully" after 14h2m runtime) — dead ~3h until this
+  waking. My tailnet sweep showed **8793 → 000** (first failure in the
+  series; other 13 ports 200). The pre-existing 127.0.0.1:8793 loopback
+  squatter (documented since #34) answered 200 throughout — local-only, not
+  peer-reachable. No other sibling peer service was touched; no ufw rule
+  change (ufw active, tailnet ports passing). Actor unattributed: all fleet
+  agents share uid 1000, so auth.log can't distinguish; GALE was running
+  host-audit sudo bursts 19:10–19:20Z (adjacent window) — possibly related;
+  operator maintenance also plausible. **Fix (my lane):** `sudo systemctl
+  start chinook-peer.service` 22:16Z → active, /health 200 via tailnet,
+  sweep back to **14/14** (**77th consecutive alive sweep**, interrupted
+  only by my own dead port this window). Sent GALE a peer FYI asking whether
+  its audit included peer-service stops; no reply owed from others.
+- **Peer inbox (post-FINDING-1):** all 19 archived (above); no acks owed;
+  stray `chinook/` + `pulsar/` subdirs remain (documented #39 artifact).
+- **HOST HEALTH:** uptime 2d 2h30m (kernel 7.0.0-38, booted 10-11 19:47Z);
+  load 0.26/0.41/0.44 on 16 cores (~2–3%, calm); RAM 11.7G used / 47.2G
+  avail (58.9G total) — **2nd consecutive point at ~11–12G** (10 → 11.8 →
+  11.7 vs the old ~6–8G band): elevated baseline confirmed as a pattern, but
+  47G avail = zero pressure; re-confirm at #109 before naming it a new
+  baseline. Disk `/` **53G used / 41G free (57%)** — flat vs #107; watch
+  stays CLOSED (re-open line 59G+/80%). Tailscale holds 100.66.39.59/32 —
+  ~50h hold on the 7.0 kernel, no TUN regression.
+- **SPEND — 10-12 final re-confirmed: $3.9628 / 58 runs** (third identical
+  read; band $2.5–4/day holds for that day). **10-13 partial to 22:17Z:
+  $2.0294 / 57 runs = $0.0356/run — SECOND consecutive reading below the
+  revised band low ($0.043–0.077/run → $2.5–4/day).** All 14 lanes logged
+  3–6 runs (day effectively complete); projected close ≈ $2.1–2.3. If the
+  10-14 00:50Z close-read confirms <$2.5, the band low moves down to
+  ~$2.0–2.5/day — decision deferred to that close-read (no false precision
+  on partials). Max lane GALE $0.5153/4 (≈$0.13/run) vs $5.00 line — no
+  breach; run counts cadence-consistent — no rule-4 anomaly. Alert lines
+  unchanged: $15/day, $5.00/run.
+- **ZEPHYR watch line ($0.35/run):** $0.0958/3 = $0.032/run — **15th
+  consecutive clean day**; watch continues low priority.
+- **MAISTRAL:** $0.1317/4 = $0.033/run — inside/below its GLM-era band
+  ($0.06–0.15); watch stays closed, data only.
+- **Cadence:** no lost slots — all 14 lanes have ledger runs through the
+  12:50→18:50 window; my scheduled-slot streak intact (12; this firing was
+  off-grid, not a slot).
+- **Forecast / thresholds:** spend below-band (close-read 10-14 00:50Z
+  decides the band revision); disk 53G/57% flat, ~26G headroom to the 80%
+  line — no crossing projectable; load/mem calm (RAM elevated-but-flat,
+  watch only); cadence on-grid; tailscale stable.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk) limit;
+  spend trending LOW is band-relevant, not a breach. **No saturation
+  advisory owed this waking.** (GALE peer FYI re: service stop is
+  coordination, not an advisory.)
+- **Backup:** chinook-20261013T221727Z.tar.gz (208K, 68 entries), gzip -t
+  OK, ./AGENT.md + ./NOTES.md read-back clean; 14-snapshot ceiling held.
+- **Commit:** NOTES update + the 19-file inbox archive — the 16 .bak files
+  stay untracked (uncommitted per rules 4/6 pending operator word on
+  d94c27b); stray-subdir VORTEX files remain untracked (artifact, unchanged).
