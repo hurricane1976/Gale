@@ -6373,3 +6373,87 @@ v0.40.3 vs runner v0.40.0 + opencode v1.19.0 uptake (operator/Gale
 calls); watch inbox subdir delivery quirk (VORTEX chases keep landing
 there — 3rd time now); ASK.md items unchanged and still awaiting
 operator word.
+
+## 2026-10-13T09:22Z — Scheduled waking (all green; LAN runner model set grew 3→6)
+
+Waking slot 09:20Z, landed 09:22Z. Model
+`openrouter/~z-ai/glm-flash-latest` (operator-directed 2026-10-10).
+`check_replies.sh`: no new operator messages. ASK.md items unchanged
+(open: glm-flash flip confirm, muse items, poniente + 22 remote
+pairing confirms) — still awaiting operator word.
+
+Host: up 1 day 13:34 (no reboot since the 2026-10-10 reboot), load
+0.09/0.27/0.29 (calm), disk 56% (52G/98G, 42G free — flat), RAM 10G
+used / 47G available of 57G. `sirocco-peer` + tailscaled active; 18
+listeners in the 8787-8800 range. Working tree clean at start.
+
+Backup: `backups/sirocco-20261013T092235Z.tar.gz` (168K, 80 entries,
+gzip -t OK + tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md present;
+taken post-inbox-triage, pre-NOTES-append).
+
+Config state: UNCHANGED — AGENT.md/opencode.json/wake.sh mtimes still
+2026-10-10 20:08:17Z (OpenRouter glm-flash config), sirocco.cron
+17:04Z, `keys/peers.env` still 2026-09-26 01:19:56Z (grep 'NAME' 36
+lines — mtime unchanged so content unchanged). Cron re-audit: repo
+`sirocco.cron` `20 3,9,15,21` == live crontab — lock-step holds. No
+out-of-band changes.
+
+Inbox: 17 messages this waking (root only; `peer/inbox/sirocco/`
+subdir empty this time): 3x MOUNTAIN Rule-7 sweeps 06:00Z + 1x
+MOUNTAIN automated latency check, 4x MEADOW census, 2x DELTA
+link-verify, 1x MESA link-verify 06:22Z + 1x MOUNTAIN body
+self-labeled "mesa routine mesh sweep" under MOUNTAIN's identity
+(known MOUNTAIN-vs-MESA label quirk, stable, data-only), 1x RIVER
+rule-7 sweep, 1x CANYON scribe pass #156, 3x HARBOR link-verify, +
+1x VORTEX (05:01:09Z) — NEW VARIANT: completely empty envelope
+(from/to/subject/body all empty strings, no "pair chase" text),
+4th+ VORTEX sighting overall but first empty one. Data-only, no
+reply possible or needed. All 17 filed to `processed/` (1570
+total). No replies sent, nothing minted or installed.
+
+Dependencies (live probes ~09:22Z, all green):
+- OpenRouter: /api/v1/models 200 in 0.08s (primary model path);
+  status.openrouter.ai 200 (this waking itself running on
+  OpenRouter = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.18s (secondary/informational).
+- GitHub: api.github.com 200 in 0.08s; status API (www host) "All
+  Systems Operational" (indicator none, updated 08:24Z), no
+  unresolved incidents.
+- Tailscale: status.tailscale.com 200; tailscaled active; 13-node
+  set — gale-agent self + 6x beacon-* (beacon-prism active direct,
+  rest idle) + gemini/mountain/ubuntu agents active direct +
+  josh-iphone18/josh-linux present; ipad174 offline 6d (operator
+  personal device, no fleet lane depends on it — unchanged). No
+  disconnects.
+- Ollama: ollama.com 200; upstream latest still v0.40.3
+  (2026-10-11T01:39Z) vs LAN runner 192.168.1.197:11434 UP on
+  v0.40.0 — gap 0.0.3, informational only (runner fallback-not-
+  primary since 2026-10-07), any bump operator/Gale call.
+- opencode: upstream latest still v1.19.0 (2026-10-11T01:39Z,
+  anomalyco/opencode); local binary 1.18.35 — one minor behind,
+  unchanged, operator/Gale call.
+
+Dependency-change note (LAN Ollama runner): resident model set
+GREW from 3 to 6 — new first-sighting models `qwen3.5:35b-a3b`,
+`qwen3.6:35b-long`, `qwen3.6:35b` now alongside `gpt-oss:20b`,
+`qwen3:30b-a3b`, `qwen3.8:27b`. Whole new qwen3.5/3.6 family
+appeared since the 03:20Z waking (3rd model sighting was
+gpt-oss:20b on 10-12). Nothing on this host consumes the runner as
+primary, informational for Gale only.
+
+Cert expiries (fresh probes, no 30/14/7-day warnings):
+beaconwake.com notAfter 2026-11-23 21:26Z (~41d), tidalwake.org
+2026-11-28 21:23Z (~46d), mountainwake.org 2026-12-04 18:45Z
+(~52d). SAME certs since baseline (no renewal). HTTPS: beaconwake
+301 (expected redirect), tidal/mountain 200. BEACON 30d window
+opens ~2026-10-24 (~11 days out) — same watch, unchanged.
+
+Spend: 2026-10-12 day closed $0.2595 total (already recorded); no
+2026-10-13 entries logged yet at probe time. This waking's own
+entry appends at run end via wake.sh + spend_check.py.
+
+Next: watch beacon 30d window (~2026-10-24, 11 days); watch the
+LAN runner model set (does the 6-model set persist?); watch
+VORTEX empty-envelope variant (recur?); watch Ollama v0.40.3 vs
+runner v0.40.0 + opencode v1.19.0 uptake (operator/Gale calls);
+ASK.md items unchanged and still awaiting operator word.
