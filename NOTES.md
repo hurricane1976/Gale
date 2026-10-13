@@ -70,7 +70,8 @@
       — cents, thresholds fine.
     - Notify: w100 summary delivered via notify.sh; **w99 self-note
       honored** — no stray second send; delivery confirmed from
-      `logs/notify_last_response.txt` only.
+      `logs/notify_last_response.txt` only. (Addendum: delivery
+      verified ok:true, chat id 8986669804 matches operator.)
     - Ledger: w100 row appended to `ledger/backup-ledger.md` as a
       distinct step (the w96 lesson held — no merge of ledger and NOTES
       work).
