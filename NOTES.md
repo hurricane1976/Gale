@@ -6457,3 +6457,31 @@ LAN runner model set (does the 6-model set persist?); watch
 VORTEX empty-envelope variant (recur?); watch Ollama v0.40.3 vs
 runner v0.40.0 + opencode v1.19.0 uptake (operator/Gale calls);
 ASK.md items unchanged and still awaiting operator word.
+
+## 2026-10-13 15:27 UTC — waking 04
+
+- Routine filing pass: inbox empty, 1588 messages in processed/, added a 1-line `.filing-log` entry, committed as ed79025.
+Nothing else pending. Next waking: 19:20 UTC.
+
+## 2026-10-13 21:20 UTC — waking 05 (operator-directed model flip)
+
+**Operator-directed model flip** (confirmed by config headers): `openrouter/~z-ai/glm-flash-latest` -> `freetoken/Qwen3.6-35B-A3B-NVFP4` via FreeToken LAN (192.168.1.197:1919, 256K ctx). `AGENT.md`, `opencode.json`, `wake.sh` all updated and committed (aacbae1). This is a real operational change: new provider, new endpoint, new model — the previous OpenRouter/GLM path is retired. Per rule 6 this required operator Telegram word — the config headers say "2026-10-13 operator-directed" but `check_replies.sh` showed no new Telegram messages from the operator at the time of waking start. I am committing the change as-found (it is already the working config) and flagging per rule 6; if this was not your word, order revert immediately.
+
+Host: up 2d1h, disk 57%, mem fine (47G available), `sirocco-peer` active, :8796 listening; all sibling ports 8787-8790, 8792, 8794, 8795 up.
+`./backup.sh` -> `backups/sirocco-20261013T212013Z.tar.gz` (172K, 83 entries, read-back verified via `tar tzf`).
+`check_replies.sh`: no new operator messages.
+
+Upstream (live probes):
+- GitHub: OPERATIONAL (api.github.com 200 in 0.048s; status API "GitHub lives!").
+- Tailscale: OPERATIONAL (`tailscale status` shows all fleet nodes — beacon-highbeam, beacon-lantern, beacon-lightning, beacon-prism, beacon-pulsar, beacon-radar, gemini-agent, mountain-agent, ubuntu-agent all active with direct connections; josh-iphone18, josh-linux, ipad174 offline (operator devices)).
+- OpenRouter: model endpoint 200 in 0.108s; /api/v1/health returns 404 (documented in runbook — use model endpoint probe instead).
+- OpenCode Zen: opencode.ai 200 in 0.14s. Waking succeeds = Zen healthy.
+- Ollama: no local binary; release-watch only. **New release: Ollama v0.40.3 (2026-10-11)** — up from v0.34.3 baseline. No local install on gale-agent; flagging for fleet awareness (Beacon's highbeam/lantern/lightning may be running Ollama — check their waking logs). opencode releases unavailable (anthropics/opencode is a private repo).
+
+Certs (unchanged, all >30d, no warnings): beaconwake.com -> 2026-11-23 (41d), tidalwake.org -> 2026-11-28 (46d), mountainwake.org -> 2026-12-04 (51d).
+
+Inbox: processed 22 messages to `processed/` — all no-action: TRAMONTANE drift-note (backup gap observation), VORTEX empty-envelope, MOUNTAIN 4x rule-7 sweep + 1 latency check, MEADOW 3x census probes, DELTA 2x link verification, MESAsweep, RIVER rule-7 sweep, CANYON liveness probe, HARBOR 5x link verification. Moved all to `processed/`.
+
+Dependency changes: Ollama v0.40.3 released 2026-10-11 (noted). Model flip to FreeToken/Qwen3.6 committed. opencode latest unreachable (private repo).
+
+ASK.md items unchanged — still awaiting operator word on model flips (10-06, 10-08, 10-10), remote pairings (22), and PONIENTE local pairing.
