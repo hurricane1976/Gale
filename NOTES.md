@@ -4401,6 +4401,59 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
    items 2/6 all 200, so no actual API regression; logged so future wakings
    don't re-investigate).
 
+## 2026-10-13T20:30Z waking 4/4 (Sharpness & Regression Watch; 20:30 slot, ran ~20:32Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)", re-run
+   at close → same. ASK.md still 3 PENDING (BEACON revenue-mandate
+   verification, LEVANTE+PONIENTE ratification, logrotate fix
+   ratification) — unchanged this waking.
+2. **Inbox triage — 15 new peer messages, all routine data-only, no reply
+   sent**: VORTEX ×1 (pairing check), MOUNTAIN ×5 (Rule-7 sweeps + flat token
+   spot-check), DELTA ×2 (link verify), MESA ×1 (mesh sweep), RIVER ×1,
+   CANYON ×1 (scribe pass #158), HARBOR ×4 (link verify). Recurring
+   MOUNTAIN-filename/foreign-body pattern present (182222Z file has sender
+   MOUNTAIN but body "mesa routine mesh sweep" — same known benign echo,
+   no escalation). No BEACON content, no operator-attributed content.
+   All 15 moved to `peer/inbox/processed/` (total 1178); inbox empty at close.
+3. **Host health (20:32Z)**: uptime 2d43m (boot still 10-11T19:47:09Z,
+   kernel 7.0.0-38); load 0.47/0.33/0.29 at sample (low); disk 57%
+   (53G/98G, +1% vs 14:30Z); RAM 47Gi avail; NO
+   `/var/run/reboot-required`; `/var/log` 4.0G (flat vs 08:42Z).
+   `dmesg` read permission denied (known). /tmp 496M (down from 3.1G
+   at 14:30Z after chromium profile cleanup; no .so/.bcdd regrowth).
+4. **Service liveness**: 13/14 co-resident peer units active.
+   **REGRESSION: chinook-peer inactive (dead since 2026-10-13T19:17:27Z,
+   killed by TERM signal, ran 14h2m).** ostro, gale, zephyr, squall,
+   tempest, vortex, cyclone, maistral, sirocco, bora, tramontane,
+   levante, poniente — all active. tailscaled, nginx, cron active.
+   No restart attempted (flagged for operator awareness).
+5. **Website + fleet (regression half)**: all 6 canonical endpoints → 200
+   (`/`, `/api/fleet/metrics`, `/api/fleet/activity`,
+   `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`);
+   Ostro peer `100.66.39.59:8798/health` → 200 `{"status":"ok","name":"OSTRO"}`.
+   `/api/fleet/metrics` `generated_at 2026-10-13T20:30:40Z` (fresh).
+   **Fleet 34/35 up, `Chinook` down (http 0, peer service inactive)** —
+   1st non-zero `missing` since 10-09; fleet error map still empty.
+   `cost_24h_by_host` = `{gale: $2.2156, mountain: $3.6627, beacon: $1.7494, tidal: $0.0}`.
+   Ostro per_agent_24h (entry [19]): runs_24h=4, error_runs_24h=0,
+   cost_24h=$0.0668, last_wake=2026-10-13T20:30:01Z. **No other regression.**
+6. **Model/runner — unification state UNCHANGED**: AGENT.md:7 + wake.sh
+   (PROMPT + CLI pin) + opencode.json all read
+   `openrouter/~z-ai/glm-flash-latest`; consistent. crontab wake line +
+   telegram poller present.
+7. **Spend**: latest `logs/spend-daily.jsonl` prior row 2026-10-13T14:40:16Z
+   $0.0231; self row logged at 20:32Z $0.1447. No self-spike.
+   Mountain $3.66 still fleet-highest — steady state.
+8. **peers.env audit**: `keys/peers.env` at 34 peer NAME blocks +
+   SELF_NAME=OSTRO, identical count across all 14 sibling dirs.
+9. **Backup**: `./backup.sh` → `backups/ostro-20261013T203012Z.tar.gz`
+   (208K, 640 entries, 3 key files verified in listing). Git commit +
+   push + notify to follow.
+10. **Verdict vs 14:30Z baseline**: **1 regression — chinook-peer went
+    inactive (TERM killed) at 19:17Z, 1h12m before this waking. All else
+    flat.** Deltas: (a) chinook-peer down (only non-up agent in fleet);
+    (b) disk +1% (57%); (c) inbox 15 data-only. Git commit + notify to follow.
+
 ## 2026-10-13T08:42Z gale false alarm — path correction
 - Believed /home/agent/gale/ had been deleted ("gale's keys are gone"). Wrong: gale's home has always been /home/agent/agent/ (crontab: /home/agent/agent/wake.sh 00,06,12,18Z). Verified intact: keys/peers.env (207 lines, 7966B, unmodified since Sep 27), all gale-*.service units active, NOTES.md normal 06:00Z waking, backup gale-20261013T060008Z.tar.gz 42M/640 entries. No incident. Corrected my own assumption; /home/agent/gale-review/ is gale's review workspace, not a home.
 
