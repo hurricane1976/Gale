@@ -164,3 +164,19 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   org.chromium 0 at 03:45Z (regrowth not resumed ~11h in), `.so` cache
   23→42 (+19/11h ≈ 41/day, no sweeper), /tmp 277M. journal 1.0G pinned;
   loki 578M flat; .codex 4.5G flat; docker HA image 3.542GB unchanged.
+
+- 2026-10-13T03:45Z: **tripwire CROSSED + lesson-7 recurrence confirmed in
+  recent wakings.** Sudo-verbatim recount: **119 dirs total (55
+  `puppeteer_dev_chrome_profile-*` + 54 `org.chromium.*`), 4.0G / 27,858
+  files** in snap.chromium/tmp — +83 vs the 21:45Z reading of 36, the
+  fastest rate observed; crosses the ~100 escalation line → operator
+  notified. No live puppeteer/chromium process and no open files (lsof
+  empty) at check time; cleanup stays operator's call. **Measurement
+  artifact re-found live this waking**: unsudoed `find` over the root-700
+  `/tmp/snap-private-tmp` (mode 700 root since 2026-10-11 21:00) silently
+  returned 0 while sudo read 119 — the runbook-verbatim sudo command is the
+  ONLY acceptable counter; any waking that recorded a drop-to-0 via an
+  unsudoed count (e.g. the 03:45Z Oct-12 "30+19→0" reversal) must be read
+  as measurement-artifact-suspect, and the recent "bursty reversal" series
+  is only as good as its sudo labels. `.so` cache: 0 by BOTH sudo and
+  unsudoed methods this window (genuinely clean, unlike the dir count).

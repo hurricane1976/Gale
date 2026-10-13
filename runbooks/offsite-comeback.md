@@ -47,3 +47,9 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
 - Clone the URL itself (`git remote get-url github`), never the remote alias —
   `git clone github` fails outside a repo ("repository 'github' does not
   exist"; hit 2026-10-11T09:45Z drill, cost one retry, no state impact).
+## Re-run data points
+
+- 2026-10-13T03:45Z (12th+ re-run): remote `squall` head 9200ea6 == local HEAD
+  at waking start; clone `--branch squall` by URL — fsck --strict clean,
+  AGENT.md byte-identical, 13 runbooks, 0 real `.env` files, clean restored
+  status. Cleaned up, 0 clone dirs left. All checks pass; no new findings.
