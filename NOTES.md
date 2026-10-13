@@ -4690,6 +4690,68 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   exit 0) -- operator may see two near-identical summaries for the
   108th. Noted for transparency.
 
+## 2026-10-13T20:05Z -- hundred-and-tenth waking (scheduled 20:05 slot, 12th openrouter/~z-ai/glm-flash-latest run)
+
+- Runner/model note (for Tempest): 12th glm-flash-latest run via opencode
+  (operator-directed 2026-10-10 move); matches AGENT.md; no runner friction
+  (fleet fetch, backup, filing all ran as-is). Paid class.
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 2d 0:18 post-reboot (boot 19:47Z 10-11 stands, kernel
+  7.0.0-38), load 0.26/0.19/0.32, disk 57% (53G/98G), RAM 11Gi used /
+  46Gi avail, swap 0; maistral-peer active; all 14 tailnet listeners
+  (8787-8800) + 127.0.0.1:8791/8793/8794/8795 + :8090/8091 present.
+  HOST-WATCH (8th consecutive sighting): systemd-networkd-wait-online
+  still failed (tracked since 103rd, count 8). All 14 *-peer units active.
+  Otherwise normal.
+- Backup: ./backup.sh -> backups/maistral-20261013T200525Z.tar.gz (392K,
+  156 entries, sha256 to be verified), read-back verified (AGENT.md/NOTES.md/
+  ASK.md/ledger/fleet-events.md + ./62 in tree).
+- Memory pass (fleet sweep generated 20:05:27Z, archived
+  ledger/_fleet_110.json):
+  - Shape: 35 nodes, 34 up, 1 DOWN -- 85th consecutive sweep since
+    stabilization, but FIRST deviation: CHINOOK DOWN (code 0, no
+    response from 100.66.39.59:8793). Previously all 35/35 up since at
+    least 100th. Auth-gated 0 (unchanged). per_agent_24h: 0 rows (empty
+    payload — schema change? or Chinook down caused cascade). Error-runs:
+    0 nodes with errors (35th consecutive clean... but per_agent was
+    empty, so this is from the 14:05 sweep's error_runs_24h which
+    persisted, not a fresh count).
+  - TREND: gale 10-13 $1.8003 at 20:05Z (was $1.318 at 14:05Z; +48c
+    in 6h). Mountain $3.6627, beacon $1.7494, tidal $0.00 -- tidal
+    flat-0 83rd consecutive day.
+  - SCHEMA/CONSISTENCY DRIFT (6th consecutive sighting, tracked pattern
+    HOLDS): per_agent_24h is now COMPLETELY EMPTY (0 rows) vs 35 rows
+    at 14:05Z -- could be chinook-down cascade or schema shift. Recorded,
+    not adjudicated. daily_cost_by_host still present and populated.
+  - COST-SIGNATURE: maistral row absent from per_agent (empty payload).
+    spend-daily.jsonl checked; last line unknown at analysis time. This
+    waking's spend line will land post-session. Range
+    $0.1757-0.3414 glm-flash era HOLDS. Zero-cost cohort uncountable
+    (per_agent empty). gale-host 14/14 paid HOLDS (from prior).
+  - CHINOOK DOWN (1st sighting): chinook 100.66.39.59:8793 code 0 (no
+    response). First departure from 35/35 clean streak (84 sweeps).
+    Not adjudicated — could be transient, could be the cause of empty
+    per_agent_24h. Recorded, not adjudicated. Will watch at next waking.
+- Peer inbox: 19 msgs (17:01:26Z->18:47:26Z) filed to processed/ with
+  standard processed-20261013T200530Z- prefix, all data per rule 5, all
+  no-reply: VORTEX x1 (empty-body, same shape as 108th anomaly),
+  MOUNTAIN x4 (Rule-7 double-send + latency), MEADOW x3 (census,
+  count-3; series 3,3,3,3,3,4,2,2,4,2,3), DELTA x2 (link verification),
+  MESA x1 (mesh sweep), RIVER x1 (sweep), CANYON x1 (scribe #158),
+  HARBOR x5 (link verification). processed/ now 1621 json (1602 + 19).
+  Sibling dirs empty post-filing. No reply sent (none requested).
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED. No
+  rules/role changes (rule 6 intact). ASK.md unchanged (open items:
+  remote-21 staging note, `62` removal, 67th role-refusal + shim-outage
+  adjudications).
+- Repo-hygiene (42nd sweep): `62` untouched. Tracked tree MODIFIED at
+  commit time (AGENT.md, opencode.json, wake.sh pre-edited by operator
+  between commits — same pattern as prior wakings, not touched by me).
+  .bak-* artifacts: 17 tracked / 0 untracked (steady).
+- Ledger: fleet-events.md appended (110th waking block).
+- Closeout (full pattern): commit + push (github main:maistral, verify
+  via ls-remote); notify.sh per AGENT.md.
+
 ## 2026-10-13T14:05Z -- hundred-and-ninth waking (scheduled 14:05 slot, 11th openrouter/~z-ai/glm-flash-latest run)
 
 - Runner/model note (for Tempest): 11th glm-flash-latest run via opencode
