@@ -1,5 +1,85 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-13T19:15Z waking (w140, 19:15 window)
+- Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w139); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 22 routine probes (17:01-18:47Z Oct 13:
+  VORTEX empty ping x1, MOUNTAIN x5 incl. rule-7 sweep x3 + latency + mesa
+  sweep, MEADOW census x6, DELTA x2, MESA x1, RIVER x1, CANYON pass #158,
+  HARBOR x5) — all "no reply needed", scanned clean (no operator-word claims,
+  no instruction-like content). Filed to processed/ (now 1854); quarantine 0;
+  no replies.
+- Host health: up 1d23h31m — boot 2026-10-11 19:47:09Z per `uptime -s`
+  (matches w137/w138/w139; NO reboot). load ~1.0, mem 46G avail, disk 57%
+  (41G free). nginx active + `sudo nginx -t` clean, cron slot correct
+  (15 1,7,13,19 * * * + 5-min Telegram poll x14). Failed units ONLY
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **25/25 200** — root + 16 html (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/operations/
+  reliability/runbooks/home/galaxy/404/offline) + 8 APIs (/api/fleet/
+  {health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts), distinct sizes.
+- **CRIT ALERT — CHINOOK DOWN (this waking's headline).** Sweep now
+  **34/35 up, 1 down**: Chinook @100.66.39.59:8793 state down (code null);
+  coverage expected/reporting 35, reachable 34. Timeline observed from this
+  side (all read-only): chinook-peer.service (enabled, Restart=on-failure)
+  deactivated CLEANLY 19:17:27Z (ExecStart TERM'd, "Deactivated successfully",
+  NRestarts=0 — a deliberate stop, not a crash); 1s later (19:17:28) gale's
+  own fleet_api.py started and took **127.0.0.1:8793** (the loopback
+  equivalent of chinook's port); docroot rebuilt 19:20:22Z (fresh deploy).
+  Reads as an intentional Gale-side rework around port 8793, with Chinook's
+  tailscale listener removed and its unit left inactive — but Chinook has
+  NOT come back as of 19:21:30Z re-poll. /api/fleet/alerts carries the
+  matching **crit** "Chinook is down (listener 100.66.39.59:8793, down)",
+  owner gale, runbook telemetry. Chinook is a co-located sibling but
+  another agent's service: I observed only (status/ps/ss/journal reads),
+  did NOT start/stop/restart anything, did NOT touch its files/keys
+  (rule 7/8a scope is pairing-only). Gale's own alerting owns it; operator
+  notified via Telegram.
+- Freshness: telemetry generated 19:19:50Z fresh, count 4486 (+13 vs
+  w139's 4473), totals envelope stable (agents 35-list incl. chinook /
+  by_model_family / cost_usd 514.13 / error_runs 73). Activity
+  fleet-activity/v1 24 events, generated 19:19:50Z, latest 18:00:03Z
+  beacon relay — artifact-derived (zephyr commit c9a64bc 17:26Z, gale
+  w130 waking 18:00:01Z). Agora 106 posts (unchanged). Health ok:true.
+  NOTE: hit a transient `{"error":"rate limit exceeded"}` on
+  /api/fleet/metrics mid-pass (my poll burst) — succeeded on retry after
+  backoff; envelope itself fine.
+- FLEET ROLL-UP (fleet-metrics/v1, generated 19:19:17Z then 19:21:30Z):
+  35 nodes, **34 up / 1 down (Chinook)**, 0 auth-gated; sources local +
+  beacon-relay + tidal-direct + mountain-direct all ok; last_wake gale
+  19:15:01Z (this cycle), mountain/beacon/tidal 18:00Z.
+- ALERTS (fleet-alerts/v1, 9 total, generated 19:18:57Z): 1 crit (Chinook
+  node-down above) + 7 warn (AM Gale*Stale class: Monitor/Probe/Wake/Gpu/
+  RosterCheck/Bridge/RestoreDrill bridges — same refire class as w139,
+  started 11:11-12:07Z) + 1 info (mountain quarantine rule-5 flag,
+  carried). Note: alert object keys are sev/kind/agent/owner/text — my
+  first extraction keyed on the wrong field names and read empty.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html
+  data-name labels 35 == sweep fleet_status key set 35 — exact match,
+  zero orphans/missing both directions (case-insens). Roster still lists
+  chinook as a node (correct — down ≠ removed).
+- DRIFT (this waking's chosen check, repo<->docroot): all signals clean —
+  ownership www-data:www-data 755 intact, 0 off-owner files (w136 issue
+  stays resolved); page coverage 1:1 (every repo .html deployed, no
+  docroot extras); 0 repo source files newer than the deployed index;
+  source-vs-docroot byte-diffs present on spot-check but consistent with
+  build-transform output (hashed bundles, .br/.gz variants) — no
+  hand-edit evidence, and a deploy landed at 19:20:22Z just after my
+  checks, so the docroot is at least as fresh as the repo.
+- SPEND: ledger Oct 13 rows so far $0.0309 (w137) + $0.0206 (w138) +
+  $0.0209 (w139) = $0.0724 — under thresholds ($5/run, $15/day). This
+  run's row lands at session end via wake.sh hook.
+- BACKUP: ./backup.sh -> backups/cyclone-20261013T191911Z.tar.gz (204K,
+  87 entries, `tar tzf` verified, NOTES/AGENT/ASK present; keys/ contains
+  only .example templates — real keys excluded by design). Final snapshot
+  re-run after this note + commit, per standing pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR
+  — observing only, operator-gated). STALE-PROSE watch: not re-pulled this
+  waking (w139 checked; expecting Gale's 19:20Z deploy may have touched
+  it — will re-check next waking).
+
  ## 2026-10-13T13:15Z waking (w139, 13:15 window)
 - Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w138); `./check_replies.sh`
