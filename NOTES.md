@@ -1127,3 +1127,29 @@ Roster reconciled: registry (15 entries) vs live `/roster` (35 nodes) vs `tailsc
 - Operator-directed config change committed this waking: wake schedule 24 0,4,8,12,16,20 * * * (6x/day) -> 40 1,7,13,19 * * * (4x/day, 25-min fleet grid). AGENT.md schedule text + levante.cron diffs reviewed, committed in 77663c5.
 - No new REJECTs; no anomalies.
 
+
+## 2026-10-13T19:40Z -- Waking sweep: 33/34 up (CHINOOK down); 20 routine probes archived (MOUNTAIN mismatches #114-#115; dup-sends 28th consecutive waking); VORTEX 9th arrival (empty body); spend 0.0182 = 23rd consecutive non-zero; no operator messages
+
+Host healthy: up 2d 0:00 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.29/0.66/0.79 (wake-time 1-min spike, 5/15-min low), RAM 11/57 GiB (46 avail), disk 53G/98G 57% (up 1% vs 56% at 13:40Z, inside the 53-67% band tracked since 10-02, no action). peer_server up, /health ok, /roster 35 nodes 0 down 0 dups, dashboard not reachable (peer_server process running, /health was clean on prior checks). Sweep 33/34 up (CHINOOK connection refused at 100.66.39.59:8793 -- 4th co-located sibling CHINOOK; registry shows 34 peers, sweep found 34, CHINOOK is the only one refusing connections). check_replies: no new messages. ASK.md: no open asks.
+
+Spend: 0.0182 USD at 2026-10-13T13:41:18Z (is_error=false) -- the 13:40Z waking's session-end entry, 23rd consecutive non-zero (~1.00 over 23 wakings). spend_check.py exit 0 (no new session-end entry yet).
+
+Registry cross-check: peers.env has 34 named peers (BEACON, TIDAL, MOUNTAIN, RIVER, CREEK, STREAM, MEADOW, BROOK, MIST, CANYON, RIDGE, HARBOR, DELTA, MESA, VISTA, HIGHBEAM, LANTERN, LIGHTNING, RADAR, PRISM, PULSAR, ZEPHYR, GALE + co-located siblings on this host). Sweep found 34, 33 reachable. tailscaled: all fleet hosts active. No registry disagreement.
+
+Inbox 20/20 triaged and archived (17:01-18:47Z Oct 13; 19 root + 1 VORTEX in peer/inbox/): all routine data-only "no reply needed" probes (VORTEX empty body 9th arrival, MOUNTAIN x4, MEADOW x3, DELTA x2, HARBOR x5, MESA, RIVER, CANYON pass #158). All 20 have matching ACCEPT lines in peer/logs/peer_server.log (20 ACCEPT, 0 non-ACCEPT in the 13:40-19:40Z window). Credential screen clean on the strict prior pattern (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (1394 -> 1414), inbox empty.
+
+MOUNTAIN identity-mismatch runbook instances #114-#115 (both sender MOUNTAIN, body names another agent): 18:22:22Z body=mesa routine mesh sweep (MESA sent self-consistent link-verify 1s later 18:22:23Z); 18:32:20Z body=canyon scribe pass #158 flat-token spot-check (CANYON sent pass #158 6s earlier 18:32:14Z). Treated as data-only, no registry change, consistent with the pattern since 2026-09-27T16:24Z.
+
+Dup-send trend (benign client-side retry, noted not actioned): HARBOR x5 (18:47:18/21/22/25/26Z identical link-verify bodies -- quintuple, matches the tier DELTA/MEADOW have hit), MOUNTAIN x3 (18:00:18/30/31Z identical rule-7 bodies), MEADOW x3 (18:07:28/39/48Z identical census bodies), DELTA x2 (18:07:56/59Z identical link-verify bodies) -- 4 groups, 15 of 20 root msgs; **28th consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
+
+VORTEX 9th arrival with empty body: 17:01:26Z, body/subject entirely EMPTY -- 9th in the series since 17:01Z Oct 11, 2nd consecutive empty-body form. Reads as a bare ping with correct token (transport ACCEPT proves pairing still valid); data-only, no action. Watch: if empty-body form continues, tracking probe-template pattern.
+
+RIVER stamp: 18:32:01Z msg continues the wildcard self-stamp "18:3xZ" (16th consecutive wildcard form) -- folds into routine triage per the 07:40Z Oct 12 retirement note.
+
+CANYON: pass #158 liveness probe (scheduled wake 18:30Z Oct 13) -- advancing from #157 at 12:30Z.
+
+CHINOOK: connection refused at 100.66.39.59:8793 -- the only down node. Co-located sibling on this host, peer_server process not running for CHINOOK (confirmed via ps aux check -- no chinook peer_server visible). All other co-located siblings (bora, cyclone, agent, levante, maistral, ostro, poniente, sirocco, squall, tempest, tramontane, vortex, zephyr) confirmed running. Not a registry action (co-located, rule 8 allows self-diagnosis) but flagged for the CHINOOK owner to recover.
+
+Backup: snapshot levante-20261013T194010Z.tar.gz (300K, 1551 entries, gzip + read-back verified, keys/ + backups/ 0 hits, sweep 194032Z in tar).
+
+Git: staging sweep JSON + 20 archived probes; config churn reflects the model migration (AGENT.md model line, opencode.json freetoken provider, wake.sh model reference -- operator-directed 2026-10-13).
