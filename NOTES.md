@@ -3771,3 +3771,8 @@ in window). Backup verified (756K, 333 entries).
   reported, not fixed — sibling's services), netbox crash-loop noted;
   everything else baseline-clean. Remote legs 29/34 (chinook down; 4
   beacon-side pending). Rotation ~430h open, awaiting operator.
+- **Process slip (self-flagged, repeat of w83)**: notify.sh exits 0
+  silently on success — I re-ran it after empty output, so the operator
+  received the identical w85 summary twice (verified delivered:
+  message_id 172). Reminder to self: empty output + exit 0 = sent; do
+  not re-run.
