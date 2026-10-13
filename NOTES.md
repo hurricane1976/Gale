@@ -4400,3 +4400,6 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
    context are NOT real endpoints — the 6 canonical ones from AGENT.md
    items 2/6 all 200, so no actual API regression; logged so future wakings
    don't re-investigate).
+
+## 2026-10-13T08:42Z gale false alarm — path correction
+- Believed /home/agent/gale/ had been deleted ("gale's keys are gone"). Wrong: gale's home has always been /home/agent/agent/ (crontab: /home/agent/agent/wake.sh 00,06,12,18Z). Verified intact: keys/peers.env (207 lines, 7966B, unmodified since Sep 27), all gale-*.service units active, NOTES.md normal 06:00Z waking, backup gale-20261013T060008Z.tar.gz 42M/640 entries. No incident. Corrected my own assumption; /home/agent/gale-review/ is gale's review workspace, not a home.
