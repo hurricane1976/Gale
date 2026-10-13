@@ -3982,7 +3982,7 @@ in window). Backup verified (756K, 333 entries).
   verified in /tmp/opencode/vxverify — AGENT.md + NOTES.md sha256
   match the live files; `keys/` in archive holds only the two `.example`
   files, 0 live secret material; #81 payload + `.reason` + runbook update
-  present). Extract scratch dir left for cleanup on next waking.
+  present). Extract scratch dir verified then removed.
 - **Git**: committing this entry + runbook #81 update (inbox mv's
   git-ignored under `peer/inbox/**`).
 - **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
