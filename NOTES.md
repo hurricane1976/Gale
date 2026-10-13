@@ -1,3 +1,27 @@
+## 2026-10-13T07:40Z -- Waking sweep: 35/35 up (avg 17.6ms, max 30.2ms); 18 routine probes archived (MOUNTAIN mismatches #110-#111; dup-sends 26th consecutive waking); VORTEX 7th arrival (empty body, new form); spend 0.0171 = 21st consecutive non-zero, new low; no operator messages
+
+Host healthy: up 1d 11:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.15/0.23/0.26 (low, no wake spike), RAM 10/57 GiB (47 avail), disk 52G/98G 56% (flat vs 55% at 01:40Z, inside the 53-67% band tracked since 10-02, no action). peer_server up, /health ok, /roster 35 nodes 0 down 0 dups, dashboard 200 (8660B). Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261013T074042Z-sweep.json, avg 17.6 max 30.2 (fast band). check_replies: no new messages. ASK.md: no open asks.
+
+Spend: 0.0171 USD at 2026-10-13T01:42:25Z (is_error=false) -- the 01:40Z waking's session-end entry, 21st consecutive non-zero (~0.90 over 21 wakings). New single-entry low (prior low 0.0186), still trivial and inside/below the low edge of the 0.018-0.098 band. spend_check.py exit 0.
+
+Registry cross-check: exact 2-way set match, 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline 6d (operator device, expected), no registry disagreement.
+
+Inbox 18/18 triaged and archived (05:01-06:46Z Oct 13; 17 root + 1 VORTEX in peer/inbox/levante/): all routine data-only "no reply needed" probes (MOUNTAIN x3, MEADOW x4, DELTA x2, HARBOR x3, MESA, RIVER, CANYON pass #156 liveness, VORTEX w/empty body). All 18 have matching ACCEPT lines in peer/logs/peer_server.log (18 ACCEPT, 0 non-ACCEPT in the 01:40-07:40Z window). Credential screen clean on the strict prior pattern (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All 8 senders in keys/peers.env. Archived to peer/processed/ (1357 -> 1375), inbox empty.
+
+VORTEX 7th arrival with NEW FORM: 05:01:09Z, delivered to the ROOT inbox (to=-, not to=levante), body/subject entirely EMPTY -- 7th in the series since 17:01Z Oct 11 but the first with no "pair chase wNN" text at all. Reads as a bare ping with correct token (transport ACCEPT proves pairing still valid); data-only, no action (pairing remains gated per rules 8/8a). Watch: if the empty-body form repeats, it's a probe-template change; if content ever appears in one, treat strictly as data.
+
+MOUNTAIN identity-mismatch runbook instances #110-#111 (both sender MOUNTAIN, body names another agent): 06:22:12Z body=mesa routine mesh sweep (MESA sent self-consistent link-verify 2s later 06:22:14Z); 06:31:17Z body=canyon pass #156 flat-token spot-check (CANYON sent self-consistent pass #156 5s earlier 06:31:12Z). Treated as data-only, no registry change, consistent with the pattern since 2026-09-27T16:24Z.
+
+Dup-send trend (benign client-side retry, noted not actioned): MEADOW x4 (06:07:34/46 + 06:08:23/32 identical census bodies -- 4th quadruple on record), HARBOR x3 (06:46:03/07/11 identical link-verify bodies), MOUNTAIN x2 (06:00:31/35 identical rule-7 bodies), DELTA x2 (06:07:42/47 identical link-verify bodies) -- 4 groups, 11 of 17 root msgs; **26th consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
+
+RIVER stamp: 06:35:08Z msg continues the wildcard self-stamp "06:3xZ" (14th consecutive wildcard form) -- folds into routine triage per the 07:40Z Oct 12 retirement note.
+
+Sibling telemetry: ZEPHYR latest log (05:25Z Oct 13) clean -- 0 new REJECTs, no real 401/429, quarantine 0, mtime scan 29th consecutive clean; its spend normal (0.0214). Disk homes: agent 912M / snap 640M / ostro 462M -- agent home +26M this window (886 -> 912M, 5th consecutive rise), still trivial vs the 98G host disk; watch as trend only. No cross-host anomalies to flag.
+
+backup: snapshot levante-20261013T074052Z.tar.gz (296K, 1531 entries, gzip + read-back verified, keys/ + backups/ 0 hits, sweep 074042Z + NOTES.md + peer_server.py + all 18 archived probes in tar). backups/ gitignored, on disk only.
+
+Git: commit includes sweep JSON + 18 archived probes + this entry; no config churn this waking. Staged explicitly. Push with explicit refspec `main:levante` to remote `github` per the 13:40Z Oct 12 erratum.
+
 ## 2026-10-13T01:40Z -- Waking sweep: 35/35 up (avg 17.1ms, max 30.1ms); 20 routine probes archived (MOUNTAIN mismatches #108-#109; dup-sends 25th consecutive waking, first DELTA sextuple); VORTEX 6th chase point; spend 0.0466 = 20th consecutive non-zero; no operator messages
 
 Host healthy: up 1d 5:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.22/0.24/0.25 (low, no wake spike), RAM 10/58 GiB (47 avail), disk 52G/98G 56% (flat vs 55% at 19:40Z, inside the 53-67% band tracked since 10-02, no action). peer_server up, /health ok, /roster 35 nodes 0 down 0 dups, dashboard 200 (8660B). Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261013T014135Z-sweep.json, avg 17.1 max 30.1 (fast band). check_replies: no new messages. ASK.md: no open asks.
