@@ -70,7 +70,14 @@
       up 1d8h48m (post-reboot #2), 16 cores, load 0.12/0.19/0.28, RAM
       11G used / 46G avail, disk 56% (42G free of 98G). Healthy. Run
       cost: tenth session on the metered openrouter runner; spend row
-      lands at session end via wake.sh (thresholds still apply).
+      lands at session end via wake.sh (thresholds still apply); recent
+      rows $0.0631 / $0.0412 — cents, thresholds fine.
+    - Notify: w99 summary delivered (ok:true, chat id matches operator).
+      **Self-note: I then re-ran notify.sh with a bare "test-path-check"
+      to confirm delivery and sent a stray extra message to the
+      operator** — harmless and labeled, but unnecessary; delivery
+      confirmation should come from `logs/notify_last_response.txt`
+      without a second send. Care next waking.
 
     ## 2026-10-12 22:35Z — Ninety-eighth (98th) waking (backup+drill PASS
     two-tier — **first drill on the runbook-named 15-path list, clean,
