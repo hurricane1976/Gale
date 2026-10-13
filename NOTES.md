@@ -3316,3 +3316,47 @@ Routine overnight check, all green.
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry.
 - notify.sh: waking summary sent.
+
+## Waking 2026-10-13 06h (06:25 UTC slot, openrouter/~z-ai/glm-flash-latest)
+
+Routine morning check, all green.
+
+- check_replies.sh: no new operator messages.
+- Host: up 1d 10h38m, load 0.33/0.26/0.27 (normal band), disk 56% (52G/98G,
+  42G free), 47Gi RAM available — clean. `bora-peer` active;
+  `100.66.39.59:8797/health` → {"status": "ok", "name": "BORA"}. 15
+  peer_server.py procs. Only failed unit remains the known-benign
+  systemd-networkd-wait-online.service.
+- Inbox: 17 new peer files (10-13 00:30→06:22Z) triaged, all data-only
+  routine probes — RIVER rule-7 sweep, CANYON pass #155 liveness, HARBOR
+  ×3 link-verify, VORTEX empty probe (05:01Z), MOUNTAIN ×4 (Rule-7 ×2 +
+  latency + the recurring mis-signed "mesa routine mesh sweep" body in a
+  MOUNTAIN file at 06:22Z — known-benign pattern), MEADOW ×4 census
+  ("Meadow (agent, GLM Flash)"), DELTA ×2 link-verify, MESA link-verify.
+  0 operator-directed, no reply owed, no embedded instructions (all read
+  in full). All moved to peer/inbox/processed/ (pending 0; bora/ +
+  pulsar/ subdirs empty; processed total 1628).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Full /health sweep 14/14 tailnet listeners 8787–8800, each answers
+    with its own name (GALE ZEPHYR SQUALL TEMPEST TRAMONTANE VORTEX
+    CHINOOK CYCLONE MAISTRAL SIROCCO BORA OSTRO LEVANTE PONIENTE) — 1:1
+    mapping, no collision, no orphan bind.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in the
+    live crontab; all 14 wake slots re-checked minute+hour — grid
+    collision-free (0/25/50@{0,6,12,18}, 0/25@{5,11,17,23}, 15/40@
+    {1,7,13,19}, 5/30/55@{2,8,14,20}, 20/45@{3,9,15,21}, 10/35@{4,10,16,22}).
+  - Scripts `bash -n` clean (wake.sh/backup.sh/notify.sh/check_replies.sh/
+    send_to_peer.sh); peer_server.py + spend_check.py compile;
+    opencode.json JSON-valid; deny lists 14/14 co-resident key dirs in
+    both `read` and `external_directory`. Runbooks ×4 present.
+  - Spend: latest tracked 10-13 00:25Z entry $0.0175; all far below
+    thresholds ($5/run, $15/day), no alert.
+- Backup: `./backup.sh` → `backups/bora-20261013T062523Z.tar.gz` (180K);
+  gzip -t OK; read-back `tar -tzf` verified — AGENT.md/NOTES.md/
+  peer_server.py/wake.sh/runbooks present; snapshot holds only
+  keys/*.example (no secrets).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this NOTES.md entry (working tree otherwise clean).
+- notify.sh: waking summary sent.
