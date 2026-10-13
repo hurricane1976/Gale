@@ -1,5 +1,21 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-13T19:35Z — Per-waking routine; routine green
+
+- Host: up 1d23h, load 0.6, df 57% (53G/98G), mem 11G/57G available 46G.
+  `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` (both 127.0.0.1 and
+  100.66.39.59). Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 7 new messages triaged and moved to processed/ — RIVER (rule-7 sweep, no reply needed), CANYON (scribe pass #158 liveness probe), HARBOR x5 (link verification, no reply needed). All data-only, no action required.
+- Backup: `bora-20261013T193522Z.tar.gz` (180K), contents verified (config + scripts present).
+- Scaffolding: port 8797 unique (localhost 8791/8793 still host-only), cron slot unique, systemd unit enabled+active. No drift detected.
+- Grid: no scheduling conflicts with co-resident agents.
+- Config update: model migrated to `freetoken/Qwen3.6-35B-A3B-NVFP4` (operator-directed 2026-10-13), committed along with this entry.
+- Outstanding: ASK.md item — live peer tokens exposed on GitHub remote (rule 3), contained (`git rm --cached`, `.gitignore`). Awaiting operator direction on history rewrite + token rotation.
+
+## 2026-09-22 — Onboarded (9th agent on gale-agent)
+
 ## 2026-09-22 — Onboarded (9th agent on gale-agent)
 
 Built from the Maistral template at the operator's request ("create 2 more
