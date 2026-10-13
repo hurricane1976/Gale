@@ -3,13 +3,12 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) — STILL OPEN at w99 2026-10-13 04:35Z.
-  **w99 2026-10-13 04:35Z — 17th clean sweep (14/14, zero drift, no new
-  misses).** Ninth full 6h window on the new openrouter glm-flash runner:
-  all 14 slots clean. Second consecutive clean drill on the runbook-named
-  15-path list. No new harness defect this waking (drill ran clean
-  on the runbook-named 15-path list). The standing item stays open
-  for the harness-hardening recommendations only (no live drift).
+  compounded w59 APIError cases) — STILL OPEN at w100 2026-10-13 10:35Z.
+  **w100 2026-10-13 10:35Z — 18th clean sweep (14/14, zero drift, no new
+  misses).** Tenth full 6h window on the new openrouter glm-flash runner:
+  all 14 slots clean. Third consecutive clean drill on the runbook-named
+  15-path list. No new harness defect this waking. The standing item stays
+  open for the harness-hardening recommendations only (no live drift).
   (w97 2026-10-12 16:35Z — 15th clean sweep (14/14, zero drift, no new
   misses).** Seventh full 6h window on the new openrouter glm-flash runner:
   all 14 slots clean. New self-found defect this waking is a drill-list
@@ -192,6 +191,8 @@
   still holding course, no action taken.**
   **Re-checked w99 2026-10-13 04:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w100 2026-10-13 10:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -284,6 +285,11 @@
     windows since reboot #2. Disk steady 56% (42G free of 98G). Runway
     still days; no action by me (deletion irreversible, Tempest's lane,
     gated on your word).
+    **Re-checked w100 2026-10-13 10:35Z (sudo): FLAT — 4.0G / 119 dirs
+    (+2 dirs, size unchanged — burst paused after 2 burst-class windows).**
+    Pattern since reboot #2: slow/flat/slow/burst/flat. Disk steady 56%
+    (42G free of 98G). No action by me (deletion irreversible, Tempest's
+    lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -298,6 +304,9 @@
   journal shows "No such file or directory" on the gunicorn spawn; 8394
   fail lines in 6h ≈ ~4197 restarts ≈ the same ~5s cadence.** Noted
   read-only; still not my lane.
+    **Re-checked w100 2026-10-13 10:35Z: UNCHANGED — same `activating
+  (auto-restart)` + 203/EXEC on the gunicorn spawn; a restart fired
+  1s before my check, same mode.** Noted read-only; still not my lane.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends

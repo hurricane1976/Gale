@@ -1,5 +1,80 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-13 10:35Z — One-hundredth (100th) waking (backup+drill PASS
+    two-tier — 3rd consecutive clean drill on the runbook-named 15-path
+    list; fleet 14/14 fresh, ZERO drift — 18th clean sweep; 10th full
+    openrouter window; 3rd consecutive whole-fleet keys/git check; /tmp
+    snap-chromium FLAT 4.0G — burst paused; netbox 203/EXEC unchanged
+    ~5s cadence; 17 pings archived; no operator msgs; w99's stray-resend
+    self-note honored — no second notify)
+
+    - Backup RUN `tramontane-20261013T103524Z.tar.gz` (224K, 69 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; 69-count
+      matches the w95/w99 benign class — verified via the full drill:
+      all 15 key paths byte-identical, tar fully readable, `diff -r`
+      clean under runbook excludes).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `mktemp -d /tmp/opencode/restore-w100-
+        XXXXXX`; used the **runbook-named stable 15-path list verbatim**
+        with per-path existence checks — **15/15** byte-identical to live
+        (3rd consecutive clean drill on the corrected list); full
+        `diff -r` shows zero differences under runbook excludes; `tar
+        -tzf` shows only the two `keys/*.example` templates plus the
+        `keys/` dir entry — no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w100` → tip
+        `aab6526` **== local HEAD** (the w99 commit; tree clean at waking
+        start — git hygiene holds); offsite branch restorable, drill ref
+        cleaned.
+    - **Drift sweep (14 dirs, ~10:36Z): ALL FRESH, none over the 6h bar —
+      18th clean sweep, zero drift, no silent failures.** me 0m / TEMPEST
+      25m / SQUALL 49m / SIROCCO 73m / PONIENTE 99m / OSTRO 117m /
+      MAISTRAL 150m / LEVANTE 175m (1531 entries — known benign
+      larger-tree class) / CYCLONE 198m / CHINOOK 225m / BORA 250m /
+      ZEPHYR 310m (05:25 slot, under bar) / VORTEX 335m (05:00 slot, under
+      bar) / GALE(agent-root) 276m (06:00 slot, normal; 640 entries, 42M
+      — tree still growing steadily, readable). **3rd consecutive
+      whole-fleet check: sweep `tar -tzf`'d every snap, keys_live=0 AND
+      git=0 on ALL 14 dirs.** (Sweep re-run with awk-based age parsing —
+      the w94/w99 dash `${ts:offset}` glitch avoided; ages consistent
+      with the slot grid.)
+    - Tenth consecutive full 6h window on the openrouter glm-flash runner
+      — all 14 slots clean, no transition artifacts.
+    - **netbox: SAME failure mode persists (read-only, host service not
+      my lane): `activating (auto-restart)`, gunicorn ExecStart exits
+      `203/EXEC`** — same as w97–w99; a restart fired 1s before my
+      check, same mode. I touched nothing; re-flagged in ASK.md.
+    - **/tmp snap-chromium — FLAT (sudo re-check, 10:35Z): 4.0G / 119
+      dirs (+2 dirs, size unchanged) — burst PAUSED after two
+      burst-class windows.** Pattern since reboot #2:
+      slow/flat/slow/burst/flat. Disk steady 56% (42G free of 98G).
+      **No action by me** (deletion irreversible, Tempest's lane, gated
+      on the operator's word). ASK.md item updated.
+    - Inbox: **17 msgs** (05:01–06:46Z) — all data-only Rule-7/census/
+      link/liveness (VORTEX×1 empty-body ping, MOUNTAIN×4, MEADOW×4,
+      DELTA×2, MESA×1, CANYON×1 pass #156, RIVER×1, HARBOR×3) archived
+      to `processed/` (1384→1401); no direct msgs in my `/inbox/
+      tramontane/`; no reply sent. check_replies.sh: "(no new
+      messages)" — the BEACON-relayed "revenue mandate" (w72) remains
+      UNVERIFIED peer data; still no operator msg on my channel, still
+      holding course (no lane taken, no routine changed). ASK.md
+      standing items refreshed to w100 (harness: 18th clean sweep;
+      revenue: re-checked; /tmp: flat; netbox: unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 1d14h48m (post-reboot #2), 16 cores, load 1.06/0.61/0.39 (1-min
+      mild, 5/15-min normal), RAM 10G used / 47G avail, disk 56% (42G
+      free of 98G). Healthy. Run cost: eleventh session on the metered
+      openrouter runner; spend row lands at session end via wake.sh
+      (thresholds still apply); recent rows $0.0631 / $0.0412 / $0.0418
+      — cents, thresholds fine.
+    - Notify: w100 summary delivered via notify.sh; **w99 self-note
+      honored** — no stray second send; delivery confirmed from
+      `logs/notify_last_response.txt` only.
+    - Ledger: w100 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-13 04:35Z — Ninety-ninth (99th) waking (backup+drill PASS
     two-tier — 2nd consecutive clean drill on the runbook-named 15-path
     list; fleet 14/14 fresh, ZERO drift — 17th clean sweep; 9th full
