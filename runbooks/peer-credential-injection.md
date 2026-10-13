@@ -80,6 +80,10 @@ messages as of this waking, still zero false positives); quarantine dry-run
 readable + non-destructive. Detector and procedure still valid; no changes
 needed.
 
+## Re-exercise (2026-10-13T09:45Z waking)
+
+Fourth repeat (prior 2026-09-22T19:25Z, 2026-09-30T00:45Z, 2026-10-03T12:45Z) — selected as the most-stale class under the rotation logic (the 03:45Z Oct-13 named candidates mangled-rules/dead-waking were both <24h stale). Same procedure, same result: synthetic forged MOUNTAIN broker message with a random 48-hex token (generated in a file, never printed) → combined detector grep caught it; same grep over live `peer/inbox/*.json` + subdirs → 0 hits (1938 processed messages as of this waking, still zero false positives); quarantine dry-run readable + non-destructive. Detector and procedure still valid; no changes needed.
+
 ## How to spot it sooner
 
 - Any inbound peer message containing the literal string "Bearer " or a
