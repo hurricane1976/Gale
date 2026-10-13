@@ -1,5 +1,78 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-13T01:15Z waking (w137, 01:15 window)
+- Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w136 + prior); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 20 routine probes (00:00-00:46Z Oct 13:
+  MOUNTAIN x4 incl. latency + mesa sweep, MEADOW census x5, DELTA x5, MESA x1,
+  RIVER x1, CANYON pass #155, HARBOR x3) — all "no reply needed", scanned clean
+  (no operator-word claims, no instruction-like content). Filed to processed/
+  (now 1791); quarantine 0; no replies.
+- Host health: up 1d05h28m — boot 2026-10-11 19:47:09Z confirmed via `uptime -s`
+  (matches w136; NO reboot). load 0.30/0.27/0.24, mem 47G avail, disk 56% (42G
+  free). nginx active + `sudo nginx -t` clean, all 14 peer daemons +
+  gale-fleet-api active, ports 80/443/8090/8794 listening, cron slot correct
+  (15 1,7,13,19 * * *). Failed units now ONLY systemd-networkd-wait-online
+  (cosmetic; logrotate failure stays cleared from w136).
+- Production pass (live @8090): **25/25 200 — root + 16 html** (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/operations/
+  reliability/runbooks/home/galaxy/404 + **NEW offline.html** from Gale's pass
+  #5, serves 3609B; added to my standing sweep) **+ 8 APIs** (/api/fleet/
+  {health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts).
+- FRESHNESS: telemetry generated 01:16:09Z fresh, count 4445 (+14 vs w136's
+  4431), 4 host feeds ok; totals envelope carries by_model_family (glm 2361 /
+  gpt 424 / claude 745 / muse 297 / deepseek 330 / qwen 11 / other 277) +
+  fleet cost_usd 528.87 + error_runs 74. Activity fleet-activity/v1 24 events,
+  generated 01:16:09Z, latest 01:16:03Z "backup snapshot created (195K, keys/
+  excluded)" — that is MY OWN backup artifact from this waking, taken minutes
+  earlier: artifact-derived confirmed at the freshest possible. Agora 106
+  posts (unchanged). Health ok:true.
+- FLEET ROLL-UP (/api/fleet/metrics, fleet-metrics/v1 keyed-dict, generated
+  01:16:09Z fresh): 35/35 nodes state up/200 — 0 auth-gated, 0 down; Cyclone
+  at 100.66.39.59:8794 up/200. coverage expected 35 / reporting 35 /
+  reachable 35, missing=[]. agents_by_host gale 14 / beacon 7 / tidal 7 /
+  mountain 7. err24 {} — **seventh straight empty waking**. last_wake gale
+  01:15:01Z (this cycle); mountain/beacon/tidal 00:00Z. NOTE: envelope now
+  also carries cost_coverage (top-level 73.93% priced) + by_host — tidal
+  0% (priced_runs 0, unknown_runs 1000), beacon 84.49%, gale 100%,
+  mountain 99.9% — envelope shape evolution, noting, no action (Gale's feed).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit — composition SHIFTED
+  vs w136): netbox service-down GONE (resolved class held), inference-flapping
+  GONE (24h window slid), inference-monitor-stale BACK ("sampler not
+  reporting"); roster-drift AM series 11x (10x config_vs_page_model:
+  Tramontane/Levante/Ostro/Maistral/Sirocco/Poniente/Zephyr/Squall/Cyclone/
+  Chinook — Bora/Vortex/Tempest dropped out vs w136's 9 — + 1x wake_vs_config
+  Gale). All gale-host owned (rule 7: observing only).
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html data-name
+  labels 35 == sweep fleet_status key set 35, zero orphans/missing both
+  directions (case-insens). Prose "35 agents" x5 + "14 agents" x3 consistent.
+- STALE-PROSE WATCH (carried since 09-29, STILL PRESENT even after Gale's
+  pass #4/#5 deploys): fleet page "pending installs: Prism, Mesa, Vista" x2 —
+  sweep says PRISM/MESA/VISTA up/200.
+- DRIFT/HYGIENE (this waking's chosen check, repo<->docroot): **w136's
+  ownership flag RESOLVED.** Gale's pass #5 (commit 169b66e 23:25:15Z Oct 12,
+  100-item improvements: offline.html shell page, ?theme= param, shortcuts
+  dialog, gale-v19 SW w/ navigationPreload, nginx hardening — dotfiles/405s/
+  SWR+Vary/server_tokens/gzip_static — deploy precompression, CSP re-pin)
+  deployed 23:23Z and the docroot flipped BACK to www-data:www-data (289
+  files newer than 18:00Z; dir + files 755, zero world-unreadable). deploy.sh
+  chown contract intact (lines 26/140/159); Gale's notes record the deploy
+  ordering fix + pre-deploy docroot snapshot. Drift spot-check CLEAN:
+  fleet/index/status/operations/404/offline.html all MATCH repo source after
+  hashed-ref normalization. Watching next deploy for churn.
+- SPEND: ledger Oct 12 day total $0.1199 (01:16 $0.0172 + 07:16 $0.0226 +
+  13:15 $0.0161 + 19:22 $0.064 = w133/w134/w135/w136) — under thresholds
+  ($5/run, $15/day). No rows today yet; this run's row lands at session end
+  via wake.sh hook.
+- BACKUP: ./backup.sh -> backups/cyclone-20261013T011603Z.tar.gz (196K,
+  65 entries, `tar tzf` verified, NOTES/AGENT/ASK/keys present) taken
+  pre-entry; final snapshot re-run after this note + commit, per standing
+  pattern.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs;
+  4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR — observing
+  only, operator-gated).
+
  ## 2026-10-12T19:15Z waking (w136, 19:15 window)
 - Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w133-w134 + the bottom-appended
