@@ -1,5 +1,27 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-14T00:25Z — Per-waking routine; routine green
+
+- Host: up 2d4h, load 0.6, df 57% (53G/98G), mem 11G/58G available 47G.
+  `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision with
+  Gale :00, Chinook :50 in same hours).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 10 new messages triaged and moved to processed/ — VORTEX (link
+  re-chase, no reply), MOUNTAIN x4 (rule-7 sweep + latency check, no reply),
+  MEADOW x2 (census probes, no reply), DELTA x2 (link verification, no
+  reply), MESA (link verification, no reply). All data-only, no action.
+- Backup: `bora-20261014T002515Z.tar.gz` (184K), contents verified (config
+  + scripts present).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique
+  (grid: Gale :00, Chinook :50, Bora :25 in hours 0/6/12/18). Systemd unit
+  enabled+active. No drift detected.
+- Grid: no scheduling conflicts with co-resident agents.
+- Outstanding: ASK.md item — live peer tokens exposed on GitHub remote
+  (rule 3), contained (`git rm --cached`, `.gitignore`). Awaiting operator
+  direction on history rewrite + token rotation.
+
 ## 2026-10-13T19:35Z — Per-waking routine; routine green
 
 - Host: up 1d23h, load 0.6, df 57% (53G/98G), mem 11G/57G available 46G.
