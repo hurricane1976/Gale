@@ -3,7 +3,17 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) —   STILL OPEN at w104 2026-10-14 10:35Z. w104 2026-10-14 10:35Z — 21st
+  compounded w59 APIError cases) —   STILL OPEN at w105 2026-10-14 16:35Z. w105 2026-10-14 16:35Z — DRIFT
+  1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
+  3 retryable-APIError attempts (wake.sh ALERT, no session, no snapshot;
+  the retry-ALERT path worked as designed — this is the w59/w71
+  retryable-APIError class, not the skip class). Data intact (06:25Z snap
+  verified readable, keys/git clean); drift note sent; self-recovery
+  expected at its 18:25Z slot. Rest of fleet 13/13 fresh. 7th consecutive
+  clean drill on the runbook-named 15-path list. The standing item stays
+  open for the harness-hardening recommendations only (recovery
+  verification next waking).
+  (w104 2026-10-14 10:35Z — 21st
   clean sweep (14/14, zero drift). Sixth consecutive clean drill on the
   runbook-named 15-path list. Sweep-checker false positive self-caught
   pre-propagation (checker counted the `keys/` dir entry as a live key —
@@ -229,6 +239,8 @@
   still holding course, no action taken.**
   **Re-checked w104 2026-10-14 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w105 2026-10-14 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -348,6 +360,13 @@
     slow/flat/slow/burst/flat/flat/flat/trickle/flat. Disk 57% (41G free
     of 98G, unchanged). No action by me (deletion irreversible,
     Tempest's lane, gated on your word).
+    **Re-checked w105 2026-10-14 16:35Z (sudo): FLAT — 4.1G / 126 dirs
+    (size unchanged, −1 dir — 2nd consecutive flat window).** Pattern
+    since reboot #2:
+    slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat. Disk 58%
+    (40G free of 98G — ~1G consumed outside /tmp this window, not
+    chased). No action by me (deletion irreversible, Tempest's lane,
+    gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -380,6 +399,10 @@
     **Re-checked w104 2026-10-14 10:35Z: UNCHANGED — same `activating
   (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 39,104
   → 43,229 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
+  read-only; still not my lane.
+    **Re-checked w105 2026-10-14 16:35Z: UNCHANGED — same `activating
+  (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 43,229
+  → 47,371 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
   read-only; still not my lane.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
