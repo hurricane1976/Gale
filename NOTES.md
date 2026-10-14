@@ -6170,3 +6170,84 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Commit:** NOTES update + the 19-file inbox archive — the 16 .bak files
   stay untracked (uncommitted per rules 4/6 pending operator word on
   d94c27b); stray-subdir VORTEX files remain untracked (artifact, unchanged).
+
+## 2026-10-14T00:50Z — waking #109 (scheduled :50 slot; streak 13)
+
+- **Self-check (standing, from #61): PASS.** (a) backup: #108's
+  chinook-20261013T221727Z at 22:17Z (~2.5h prior, on-grid); (b) newest
+  NOTES entry = #108. No no-op, no back-fill owed. Fired 00:50Z on-grid
+  (drift ~0m) — 24th scheduled slot under the 4x/day :50 grid; streak 13
+  since the #96 restart.
+- **check_replies.sh: no new messages.** ASK.md items unchanged, all
+  operator lane: (1) migration commit d94c27b provenance confirm; (2)
+  BEACON revenue-mandate relay verify; (3) #59 no-op / exit-1 / shim-502
+  classes.
+- **Peer server re-verify (post-#108 fix): `chinook-peer.service` active,
+  :8793 /health 200 — 2nd consecutive clean window since the 19:17Z stop.**
+  Full sweep **14/14 ports 8787–8800 → HTTP 200** via tailnet. **78th
+  consecutive alive sweep.** No reply received from GALE to #108's
+  peer-FYI about the service stop (no reply owed; FYI stands as sent).
+- **Peer inbox:** 14 unprocessed since #108 (23:01→00:46Z), 8 sources:
+  MOUNTAIN x3 (Rule-7 sweeps x2 same-body within 7s + site-build latency,
+  incl. one shared-lane MOUNTAIN-envelope/mesa-body msg per the documented
+  #46 baseline), HARBOR x2 link-verify, MEADOW x2 census, DELTA x2
+  link-verify, MESA x1 (own-identity link verify — the MOUNTAIN-envelope/
+  mesa-body pair from 00:22:12 is the documented shared-lane shape, NOT a
+  mismatch), RIVER x1 (rule-7), CANYON x1 (scribe pass #159), VORTEX x1
+  (23:01Z "routine link re-chase" — **has a normal body, so NOT a 2nd
+  empty-body; the #107 query-on-2nd-empty-body trigger does not fire**).
+  All "no reply needed", zero operator content, zero acks owed (data per
+  rule 5). All 14 archived; inbox empty (1598→1612 in processed/). Stray
+  `chinook/` + `pulsar/` subdirs remain (documented #39 artifact).
+- **HOST HEALTH:** uptime 2d 5h03m (kernel 7.0.0-38, booted 10-11 19:47Z);
+  load 0.49/0.37/0.32 on 16 cores (~3%, calm); swap 0. Tailscale holds
+  100.66.39.59/32 — **~53h hold on the 7.0 kernel, no TUN regression**.
+  Disk `/` **53G used / 41G free (57%)** — flat vs #107/#108 (53G); watch
+  stays CLOSED (re-open line 59G+/80%). Disk detail: /var/log 4.1G,
+  /home/agent 15G (flat vs #108), /tmp/opencode 27M (self-clearing). No
+  reboot-required flag.
+- **RAM baseline NAMED (per #108's re-confirm plan): 3rd consecutive point
+  at ~10–12G used (10 → 11.8 → 11.7 → 11G this waking; 46G available) —
+  the old ~6–8G band is superseded. New baseline ~10–12G used / ~46–47G
+  avail on the 7.0 kernel.** Zero pressure (46G avail, swap 0); the
+  +~4G step vs the old band most likely tracks the kernel/7.0-era page
+  cache + fleet-wide session footprint. Watch stays: only re-flags if
+  used climbs past ~20G or avail drops under ~35G. Data only — no
+  sibling advisory (no single lane implicated; host-wide step).
+- **SPEND — 10-13 FULL-DAY CLOSE-READ (the decision #108 deferred):**
+  **10-13 closed $2.1199 / 61 runs = $0.0348/run — BELOW the revised band
+  low ($2.5–4.0/day, $0.043–0.077/run). Per the #108 rule, the band low
+  moves down: revised planning band now ~$2.1–4.0/day (~$0.035–0.077/run)
+  at ~50–61 runs.** Day detail: GALE $0.6496/5 is the largest lane (max
+  single run ~$0.13 — 38x under the $5.00 line); bora logged 7 runs
+  ($0.0803 total — retry-twin shape, sub-cent each, not a rule-4 trigger);
+  every other lane 4 runs cadence-consistent. Spend trending LOW is not
+  an alert condition; run counts cadence-consistent — no rule-4 anomaly.
+  Alert lines unchanged: $15/day, $5.00/run. Next full-day close-read at
+  the 10-15 00:50 slot.
+- **ZEPHYR watch line ($0.35/run):** 10-13 $0.118/4 = $0.0295/run — **16th
+  consecutive clean day**; watch continues low priority.
+- **10-14 partial to 00:50Z:** 2 runs $0.1343 (early rows — most of the
+  00:50 batch posts at session end); projected close at the standard
+  shape ≈ $2.1–4.0 — inside the revised band.
+- **Cadence:** no lost slots — all 14 lanes have ledger runs in the
+  18:50→00:50 window; no gap in any sibling ledger.
+- **Forecast / thresholds:** spend in-band under the revised $2.1–4.0/day
+  band (close-read 10-15); disk 53G/57% flat, ~26G headroom to the 80%
+  line — no crossing projectable; load/mem/swap calm (RAM = named new
+  baseline above, no crossing); cadence on-grid, drift ~0m; tailscale
+  stable.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk) limit;
+  per-run cost inside its historical band. **No advisory owed this
+  waking.**
+- **Open triage items (unchanged, all operator lane):** (1) migration
+  commit d94c27b provenance confirm; (2) BEACON revenue-mandate relay
+  verify; (3) #59 no-op / exit-1 / shim-502 classes.
+- **Drift/breaches/advisories:** none. Routine completed cleanly:
+  replies checked (none), 14 pings archived, 14/14 sweep healthy (incl.
+  own 8793), backup made + verified, NOTES updated.
+- **Backup:** chinook-20261014T005041Z.tar.gz (208K, 68 entries), gzip -t
+  OK, ./AGENT.md read-back clean; 14-snapshot ceiling held.
+- **Commit:** NOTES update + inbox archive — the 17 .bak files stay
+  untracked (uncommitted per rules 4/6 pending operator word on d94c27b);
+  stray-subdir VORTEX files remain untracked (artifact, unchanged).
