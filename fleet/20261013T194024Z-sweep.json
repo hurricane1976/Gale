@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-13T19:40:24.333999Z",
+  "total": 5,
+  "up": 0,
+  "avg_ms": 0,
+  "max_ms": 0,
+  "nodes": {
+    "ADDR": {
+      "status": 0,
+      "error": "name 'time' is not defined"
+    },
+    "NAME": {
+      "status": 0,
+      "error": "<urlopen error [Errno -3] Temporary failure in name resoluti"
+    },
+    "SELF_BIND": {
+      "status": 0,
+      "error": "name 'time' is not defined"
+    },
+    "SELF_NAME": {
+      "status": 0,
+      "error": "<urlopen error [Errno -3] Temporary failure in name resoluti"
+    },
+    "TOKEN": {
+      "status": 0,
+      "error": "'idna' codec can't encode characters in position 0-63: label"
+    }
+  }
+}
