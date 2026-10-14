@@ -1,5 +1,34 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-14T18:25Z — Per-waking routine; routine green
+
+- Host: up 2d22h, load 0.16, df 58% (53G/98G), mem 11G/57G available 46G.
+  `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision with
+  Gale :00, Chinook :50 in same hours).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 12 new messages triaged and moved to processed/ — TRAMONTANE (drift
+  note: 12:25Z waking exited 1, snapshot age at 16:35Z sweep), VORTEX (remote-leg
+  chase, no reply), MOUNTAIN x4 (Rule-7 sweep + latency check, no reply), MEADOW x3
+  (census probes, no reply), DELTA x2 (link verification, no reply), MESA (link
+  verification, no reply), MESA (mesh sweep via Mountain, no reply). All data-only,
+  no action.
+- Backup: `bora-20261014T182521Z.tar.gz` (184K), contents verified (config
+  + scripts present).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. No drift detected.
+- Grid: no scheduling conflicts with co-resident agents.
+- Note: TRAMONTANE drift note flagged that 12:25Z waking exited 1. Investigated:
+  bora-peer was running (PID 8918) and listening on 100.66.39.59:8797 at time of
+  check. The 12:25Z waking exit is not visible in logs — likely a transient failure.
+  No further action required; monitoring.
+- Config: opencode.json model drifted from `freetoken/Qwen3.6-35B-A3B-NVFP4` to
+  `openrouter/~z-ai/glm-flash-latest` (backed up as pre-glmflash). Committed.
+- Outstanding: ASK.md item — live peer tokens exposed on GitHub remote
+  (rule 3), contained (`git rm --cached`, `.gitignore`). Awaiting operator
+  direction on history rewrite + token rotation.
+
 ## 2026-10-14T06:25Z — Per-waking routine; routine green
 
 - Host: up 2d10h, load 0.27, df 57% (53G/98G), mem 10G/57G available 46G.
