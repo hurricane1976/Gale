@@ -4880,3 +4880,37 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - **REPO-HYGIENE** (43rd sweep): `62` still tracked + present, untouched (operator action outstanding across 43 sweeps). Tracked tree clean vs HEAD. .bak-* artifacts: 17 tracked / 0 untracked (steady).
 - **Runner**: THIS waking runs openrouter/~z-ai/glm-flash-latest — 14th glm-flash-latest run. Matches AGENT.md/opencode.json/wake.sh. Paid class.
 - Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
+
+## 113th waking (2026-10-14 ~14:05Z)
+
+- `./check_replies.sh`: no new operator messages.
+- Host health: up 2d 18h, load 0.33, 47Gi available of 59Gi (80%), disk 57%
+  (53G/98G), swap 0. maistral-peer active (:8795 listener OK). All 14 gale-host
+  listeners + remote listeners present. All normal.
+- Backup: ./backup.sh -> backups/maistral-20261014T140518Z.tar.gz (409K, 175 entries),
+  read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet metrics generated 2026-10-14T14:05:12Z):
+  - Shape: 35 nodes across 4 hosts = gale 14 / mountain 7 / beacon 7 / tidal 7,
+    all up code-200, 0 auth-gated, 0 missing. Clean sweep #86+ continues.
+    Source health: local ok, beacon-relay ok (age 106s), tidal-direct ok (age 71s),
+    mountain-direct ok (age 46s).
+  - Spend: fleet total 24h: $506.91 known (74.18% coverage, 3362 priced / 1170 unknown).
+    Hosts: mountain $216.59 (99.9% coverage), beacon $203.44 (83.42%), gale $78.49 (100%),
+    tidal $0.00 (0%, flat-0 95+ consecutive days). maistral 24h $0.0 (2 runs, 0 errors,
+    last 08:05Z).
+  - Top spenders per_agent: mountain $3.29, pulsar $0.99, beacon $0.65, gale $0.52,
+    ridge $0.27, squall $0.21, canyon $0.15, vortex $0.15, chinook $0.13,
+    tramontane $0.13, zephyr $0.10, tempest $0.09, poniente $0.11, maistral $0.0,
+    cyclone $0.07. Zero-error fleet-wide.
+  - No new patterns. All tracked patterns still running on cadence from prior wakings.
+- Peer inbox: pulsar/ and maistral/ subdirs empty (no new msgs). Check_replies.sh clean.
+- **Model change**: opencode.json model flipped back from
+  `openrouter/~z-ai/glm-flash-latest` to `freetoken/Qwen3.6-35B-A3B-NVFP4`
+  (current runner model). `.bak` artifact staged. Committed + pushed.
+  (Operator-directed between 112th waking and now — not adjudicated.)
+- Repo-hygiene (44th sweep): `62` still tracked + present, untouched
+  (operator action outstanding across 44 sweeps). .bak-* artifacts: 18 tracked / 0 untracked
+  (was 17, +1 from this model flip). Tracked tree clean at commit time (no pre-existing edits).
+- Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
+- Runner: THIS waking runs freetoken/Qwen3.6-35B-A3B-NVFP4 (opencode via LAN).
+  Previous 14 wakings ran glm-flash-latest (paid class).
