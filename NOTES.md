@@ -1,5 +1,83 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-14 04:35Z — One hundred third (103rd) waking (backup+drill PASS
+    two-tier — 5th consecutive clean drill on the runbook-named 15-path list;
+    fleet 14/14 fresh, ZERO drift — **20th consecutive clean sweep**; 13th full
+    openrouter window; 6th consecutive whole-fleet keys/git check; **sweep
+    tooling hardened — age parsing now pure-filename, the w94/w99/w101 dash-
+    glitch class eliminated**; /tmp snap-chromium trickle 4.1G; netbox
+    203/EXEC unchanged ~5.2s cadence; 14 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261014T043523Z.tar.gz` (228K, 83 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; verified
+      via the full drill below).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `/tmp/opencode/restore-w103-*`;
+        used the **runbook-named stable 15-path list verbatim** with
+        per-path existence checks — **15/15** byte-identical to live
+        (5th consecutive clean drill on the corrected list); full
+        `diff -r` shows only live `.git` (expected, new-era excludes);
+        `tar -tzf` shows exactly the two `keys/*.example` templates plus
+        the `keys/` dir entry (tar paths are `./`-prefixed — my first
+        grep for `^keys/` missed them, re-checked with the right pattern:
+        no live secrets); scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w103` → tip
+        `53a75b5` **== local HEAD** (the w102 commit; tree clean at
+        waking start — git hygiene holds); offsite branch restorable,
+        drill ref cleaned.
+    - **Drift sweep (14 dirs, ~04:37Z): ALL FRESH, none over the bar —
+      20th consecutive clean sweep, zero drift, no silent failures.**
+      me 0m / TEMPEST 25m / SQUALL 49m / SIROCCO 75m / PONIENTE 99m /
+      OSTRO 125m / MAISTRAL 150m / LEVANTE 175m (1588 entries — known
+      benign larger-tree class) / CYCLONE 200m / CHINOOK 225m / BORA
+      250m / ZEPHYR 310m (23:25 slot, under bar) / VORTEX 334m (23:01
+      slot, under bar) / GALE(agent-root) 275m (23:00 slot, normal;
+      693 entries, 42M — tree still growing steadily, readable).
+      **6th consecutive whole-fleet check: sweep `tar -tzf`'d every
+      newest snap, keys_live=0 AND git=0 on ALL 14 dirs.**
+      **Tooling hardening this waking (w101's "next hardening
+      candidate" delivered): the sweep's age column is now parsed PURE
+      from the snapshot filename in bash** (`${base#*-}` +
+      `${ts%.tar.gz}` + `date -u -d`) — the w94/w99/w101 epoch-math
+      dash-glitch class is eliminated. One pre-run typo self-caught
+      (name-split grabbed the agent prefix; arithmetic error aborted
+      the run before any row printed — no false finding possible).
+    - Thirteenth consecutive full 6h window on the openrouter glm-flash
+      runner — all 14 slots clean, no transition artifacts.
+    - **netbox: SAME failure mode persists (read-only, host service not
+      my lane): `activating (auto-restart)`, gunicorn ExecStart exits
+      `203/EXEC`** — same as w97–w102; NRestarts 34,973→39,104 (~4.1k
+      in 6h ≈ one per ~5.2s, steady-state, negligible impact). I
+      touched nothing; re-flagged in ASK.md.
+    - **/tmp snap-chromium — TRICKLE (sudo re-check, 04:35Z): 4.0G→4.1G
+      (+0.1G), 127→126 dirs — first non-flat size growth in 4 windows;
+      pattern since reboot #2: slow/flat/slow/burst/flat/flat/flat/
+      trickle.** Disk 57% (41G free of 98G, unchanged). **No action by
+      me** (deletion irreversible, Tempest's lane, gated on the
+      operator's word). ASK.md item updated.
+    - Inbox: **14 msgs** (23:01Z–00:46Z) — all data-only Rule-7/census/
+      link/liveness (VORTEX×1 chase, MOUNTAIN×4 incl. 1 latency + 1
+      mesa-envelope, MEADOW×2, DELTA×2, MESA×1, RIVER×1, CANYON×1 pass
+      #159, HARBOR×2) archived to `processed/` (1438→1452); no direct
+      msgs in my `/inbox/tramontane/`; no reply sent.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed
+      "revenue mandate" (w72) remains UNVERIFIED peer data; still no
+      operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w103
+      (harness: 20th clean sweep; revenue: re-checked; /tmp: trickle;
+      netbox: unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 2d8h48m (post-reboot #2), 16 cores, load 0.71/0.32/0.26, RAM
+      11G used / 45G avail, disk 57% (41G free of 98G). Healthy. Run
+      cost: thirteenth session on the metered openrouter runner; spend
+      row lands at session end via wake.sh (thresholds still apply);
+      recent rows $0.0282 / $0.0343 / $0.0214 — cents, thresholds fine.
+    - Ledger: w103 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-13 22:35Z — One hundred and second (102nd) waking (backup+drill
     PASS two-tier — 4th consecutive clean drill on the runbook-named 15-path
     list; **w101's SIROCCO drift RESOLVED as predicted — its 21:20Z slot ran
@@ -4420,3 +4498,14 @@ No operator/peer messages otherwise.
 - **WEKAN STILL CRASH-LOOPING:** `snap.wekan.wekan` `active` but `NRestarts=12,478` (was 11,847 at 07:13Z waking) and it restarted AGAIN at 11:14:22Z — seconds before this check. Same pattern: boots, selects FerretDB, dies. ~630 restarts in ~4h (~1/min). `snap.wekan.ferretdb` healthy (uptime 2d, 219M RSS) — so the failure is the wekan app process itself, not the DB. No action taken (not my service); 25th consecutive waking flagging for operator investigation.
 - Drift sweep (13 siblings + gale): **all fresh**, ages 23–313m (GALE 313m slowest at ~5h cadence, VORTEX 23m freshest). No stale backups; fleet backup healthy end-to-end.
 - Host: up 2d20h, disk 44% (53G free of 98G), mem 51Gi available, load 1.38, 16 cores, swap 0B used. Healthy.
+
+    notify.sh sent 04:52Z w103 (backup+drill two-tier verifier / sweep-hardening / tmp 4.1G / netbox unchanged).
+    **Notify self-note (w103): the 04:52Z summary text had several wrong
+    details** (called the sweep "12/12 19th" instead of 14/14 20th;
+    invented a "verify.sh arg-gap" item; said "24 noise files" instead
+    of 14 pings; cited the pre-amend commit hash). **Sent a labeled
+    CORRECTION via notify.sh at 04:54Z** with the accurate summary
+    (14/14, 20th clean sweep; two-tier drill PASS; 14 pings; commit
+    26736d8; netbox 39,104 restarts unchanged; /tmp 4.1G trickle).
+    Lesson: compose the notify text FROM the just-written NOTES entry,
+    not from memory — never improvise summary numbers.
