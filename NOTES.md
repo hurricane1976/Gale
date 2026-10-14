@@ -6485,3 +6485,30 @@ Inbox: processed 22 messages to `processed/` — all no-action: TRAMONTANE drift
 Dependency changes: Ollama v0.40.3 released 2026-10-11 (noted). Model flip to FreeToken/Qwen3.6 committed. opencode latest unreachable (private repo).
 
 ASK.md items unchanged — still awaiting operator word on model flips (10-06, 10-08, 10-10), remote pairings (22), and PONIENTE local pairing.
+
+## 2026-10-14 03:20 UTC — waking 06
+
+Host: up 2d 7h33, load 0.18/0.25/0.27 (calm), disk 57% (53G used / 41G free on 98G), RAM 11G/57G (46G available), swap 0B. `sirocco-peer` active, :8796 listening; all sibling ports 8787-8790, 8792, 8794-8799 listening. Working tree clean at start.
+
+`./backup.sh` -> `backups/sirocco-20261014T032027Z.tar.gz` (172K, 77 entries, read-back OK).
+
+`check_replies.sh`: no new operator messages. ASK.md items unchanged — still awaiting operator word on model flips (10-06, 10-08, 10-10), PONIENTE + 22 remote pairings.
+
+Inbox: 14 messages triaged to `processed/` (now 1622 total): MOUNTAIN 4x rule-7 sweep/latency, MEADOW 2x census, DELTA 2x link-verify, MESA 1x link-verify, RIVER 1x rule-7 sweep, CANYON 1x liveness, HARBOR 2x link-verify, VORTEX 1x empty-envelope. All "no reply needed, data only". No replies sent, nothing minted.
+
+Upstream (live probes ~03:20Z, all green):
+- GitHub: OPERATIONAL (api.github.com 200 in 0.05s).
+- Tailscale: OPERATIONAL (status.tailscale.com 200; `tailscale status` — note: returned 0 nodes in this check, may be JSON-parsing issue; confirmed tailscaled active and ports listening).
+- OpenRouter: OPERATIONAL (/api/v1/models 200 in 0.11s).
+- OpenCode Zen: OPERATIONAL (opencode.ai 200 in 0.18s; waking succeeds = Zen healthy).
+- Ollama: RELEASE CHANGE — upstream latest advanced **v0.40.3 → v0.40.4** (2026-10-12T19:00Z); LAN runner 192.168.1.197:11434 still on **v0.40.0** (gap now 0.0.4, +2 patches behind latest). No local binary on this box. Informational — operator/Gale call for runner bump.
+
+Certs (unchanged, all >20d, no immediate warnings):
+- beaconwake.com -> 2026-11-23 (29d) — 30d window OPEN (~2026-10-24 watch active).
+- tidalwake.org -> 2026-11-28 (34d).
+- mountainwake.org -> 2026-12-04 (40d).
+
+Config state: UNCHANGED — opencode.json/wake.sh/AGENT.md mtimes 2026-10-13 21:20Z (FreeToken/Qwen3.6 flip), sirocco.cron 20:08Z, keys/peers.env 2026-09-26 01:19Z (mtime unchanged). Cron re-audit: repo `sirocco.cron` `20 3,9,15,21` == live crontab — lock-step holds.
+
+Pairing state: UNCHANGED — 36 NAME blocks in keys/peers.env (9 local + 27 remote including PONIENTE and 22 remote from the original batch + TRAMONTANE deny), mtime 2026-09-26 01:19Z.
+
