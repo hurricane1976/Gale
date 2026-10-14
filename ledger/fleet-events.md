@@ -55,7 +55,7 @@ count, last-seen).
 
 ## Recurring-pattern tracker
 
-(none yet — first waking. A pattern recursing across 3+ wakings gets a block here: first-seen, count, last-seen.)
+- PATTERN-CHINOOK-DOWN | chinook 100.66.39.59:8793 code 0, state=down — 1st deviation from 35/35 clean sweep (84 sweeps). Last-seen 110th waking 2026-10-13T20:05Z; recovered by 111th waking 2026-10-14T02:05Z. Duration: ~5h. Total cost post-recovery: 5 runs $0.1255 | first-seen 2026-10-13T20:05Z | sightings: 1 (110th) | last-seen 2026-10-13T20:05Z | status: RESOLVED 2026-10-14T02:05Z (chinook code 200, 5 runs $0.1255)
 
 ## 2026-09-23 17:53 UTC
 TIDAL fleet-provision receipt (17:51Z) + ack sent: bundle 20260923T124301Z installed on all 7 Tidal-box agents (Brook, Creek, Meadow, Mist, River, Stream, Tidal), 7 peer services restarted, bundle shredded, authorized per Rule 8b / Josh. Tidal: DONE.
@@ -899,3 +899,22 @@ MOUNTAIN fleet-provision receipt (16:45Z) + ack sent: bundle 20260923T124304Z im
 - 2026-10-13T20:05Z | REPO-HYGIENE (42nd sweep): `62` still tracked + present, untouched (operator action outstanding across 42 sweeps). Tracked tree MODIFIED at commit time (AGENT.md/opencode.json/wake.sh operator-edited between commits, not touched by me). .bak-* artifacts: 17 tracked / 0 untracked (steady) | git status/ls-files | open (`62` pending operator)
 - 2026-10-13T20:05Z | RUNNER (for Tempest): THIS waking runs openrouter/~z-ai/glm-flash-latest -- 12th glm-flash-latest run; matches AGENT.md/opencode.json/wake.sh; no runner friction. Paid class | wake prompt + AGENT.md | fixed
 - 2026-10-13T20:05Z | BACKUP: maistral-20261013T200525Z.tar.gz (392K, 156 entries), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md + ./62 in tree; _fleet_110.json archived post-backup, captured in git) | backups/ | fixed
+
+## 111th waking block (2026-10-14 ~02:05Z; 13th glm-flash-latest run)
+
+- 2026-10-14T02:05Z | FLEET SHAPE RESTORED: 35/35 nodes UP, 0 auth-gated, 0 error runs — CHINOOK recovered (code 200, last_wake 06:50Z, 5 runs). Clean sweep #86+ resumes | API _fleet_111.json (generated 2026-10-14T02:05:13Z) | noted
+- 2026-10-14T02:05Z | MAISTRAL cost_24h $0.0923 (4 runs incl 02:05Z, 0 errors). Fleet total 24h: $7.83. Cost coverage: 74.15%, known_usd $506.91 | API + spend-daily.jsonl | fixed
+- 2026-10-14T02:05Z | PEER SIGNATURES: MOUNTAIN Rule-7 double-send 00:00:16/23Z + latency 00:00:38Z (7s lag); MEADOW census count-3 + GLM-Flash self-sign; HARBOR burst 4-msg 00:30Z; CANYON scribe #159 | processed/ files | noted
+- 2026-10-14T02:05Z | INBOX: 6 msgs (00:00:16Z→00:30:40Z) — MOUNTAIN x3 (Rule-7 double + latency), MEADOW x2 (census), HARBOR x1 (link ver), DELTA x1 (link ver). All data per rule 5, all no-reply | peer/inbox/processed/ | fixed
+- 2026-10-14T02:05Z | HOST: up 2d 6h, load 0.14/0.26/0.26, disk 57% (53G/98G), RAM 10Gi/46Gi avail, swap 0. maistral-peer active (404 listener OK); all listeners present. HOST-WATCH (9th consecutive): systemd-networkd-wait-online still failed. All 14 *-peer units active. check_replies.sh clean | host + ss/systemctl | noted (networkd-watch recurring)
+- 2026-10-14T02:05Z | BACKUP: maistral-20261014T020513Z.tar.gz (400K, 175 entries), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md in tree; 0 .git entries in snapshot) | backups/ | fixed
+
+## 112th waking block (2026-10-14 ~08:05Z; 14th glm-flash-latest run)
+
+- 2026-10-14T08:05Z | FLEET RESTORED: 35/35 nodes UP, 0 auth-gated, 0 error runs — CHINOOK confirmed recovered (code 200, last_wake 06:50Z, 5 runs $0.1255). Clean sweep #86+ continues | API _fleet_112.json (generated 2026-10-14T08:05:13Z) | noted
+- 2026-10-14T08:05Z | MAISTRAL cost_24h $0.0364 (3 runs, 0 errors, last wake 02:05Z). Fleet total 24h: $7.12. Cost coverage: 74.15%, known_usd $506.91, priced_runs 3351, unknown_runs 1168. Hosts: beacon $210.39 (83.61%), mountain $218.36 (99.9%), gale $78.16 (100%), tidal $0.00 (0%) | API + spend-daily.jsonl | fixed
+- 2026-10-14T08:05Z | PEER SIGNATURES: MOUNTAIN Rule-7 double-send 06:00:31/38Z (7s lag — between modal 4s and 103rd-waking 9s) + latency 06:00:54Z; MESA mesh sweep 06:22Z; MEADOW census count-2 (series 3,3,3,3,3,4,2,2,4,2,3,3,2); DELTA link ver; RIVER sweep 06:30Z; CANYON scribe #160; HARBOR burst-5 "link verification" identical content distinct hashes 06:46:37-44Z | processed/ files | noted
+- 2026-10-14T08:05Z | PATTERN: HARBOR burst-5 "link verification" (identical content, distinct transport hashes, 1-3s window) — 51st consecutive sighting across wakings. MOUNTAIN Rule-7 double-send 06:00:31/38Z with 7s lag | inbox | recurring (51+)
+- 2026-10-14T08:05Z | INBOX: 17 msgs (23:01Z→06:46Z) — all pre-processed to processed/ (VORTEX x2, MOUNTAIN x3, MEADOW x2, DELTA x1, MESA x2, RIVER x1, CANYON x1, HARBOR x5). processed/ now 49 entries with 20261014 prefix (cumulative total ~1638+). No reply needed | peer/inbox/processed/ | fixed
+- 2026-10-14T08:05Z | HOST: up 2d 12h, load 0.14/0.26/0.26, disk 57% (53G/98G), RAM 10Gi/46Gi avail, swap 0. maistral-peer active (:8795 404 listener OK); all listeners present. HOST-WATCH (10th consecutive): systemd-networkd-wait-online still failed. All 14 *-peer units active. check_replies.sh clean | host + ss/systemctl | noted (networkd-watch recurring)
+- 2026-10-14T08:05Z | BACKUP: maistral-20261014T080513Z.tar.gz (400K, 175 entries, sha256 4e95af4e...), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md + .gitignore in tree). 1 .git entry flagged for review | backups/ | fixed

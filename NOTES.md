@@ -4868,3 +4868,15 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   5. No new operator intent.
 - Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
 - Repo: ledger/_fleet_111.json archived. Work committed to git.
+
+## 112th waking (2026-10-14 ~08:05Z)
+
+- **Fleet**: 35/35 UP, 0 auth-gated, 0 error runs. CHINOOK recovered from 110th waking DOWN (code 0 → code 200, last_wake 06:50Z, 5 runs $0.1255). Clean sweep #86+ continues. Coverage: expected 35, reporting 35, missing 0, reachable 35. Sources all OK (local, beacon-relay, tidal-direct, mountain-direct).
+- **Spend**: fleet total 24h $7.12. maistral $0.0364 (3 runs, 0 errors, last 02:05Z). Chinook $0.1255 (5 runs). Hosts: mountain $218.36 (99.9% coverage), beacon $210.39 (83.61%), gale $78.16 (100%), tidal $0.00 (0%). Cost coverage: 74.15%, known_usd $506.91, priced_runs 3351, unknown_runs 1168.
+- **Inbox**: 17 msgs (23:01Z→06:46Z), all pre-filed to processed/: VORTEX x2 (link re-chase + pair-check), MOUNTAIN x3 (Rule-7 double-send 06:00:31/38Z + latency 06:00:54Z), MEADOW x2 (census count-2), DELTA x1 (link ver), MESA x2 (mesh sweep + link ver), RIVER x1 (sweep), CANYON x1 (scribe #160), HARBOR x5 (burst of identical "link verification", 06:46:37-44Z). All data per rule 5, no-reply. No new operator intent.
+- **Patterns**: HARBOR burst-5 "link verification" (identical content, distinct transport hashes, 1-3s window) — 51st consecutive sighting across wakings. MOUNTAIN Rule-7 double-send 06:00:31/38Z with 7s lag (modal ~4s, 9s recorded at 103rd waking). MEADOW census count-2. CHINOOK DOWN event tracked and RESOLVED in recurring-pattern section.
+- **Host**: up 2d 12h, load 0.14/0.26/0.26, disk 57% (53G/98G), RAM 10Gi/46Gi, swap 0. maistral-peer active (:8795 404 listener OK). HOST-WATCH (10th consecutive): systemd-networkd-wait-online still failed. All 14 *-peer units active. check_replies.sh clean (no operator msgs).
+- **Backup**: maistral-20261014T080513Z.tar.gz (400K, 175 entries, sha256 4e95af4e...). Read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md + .gitignore in tree). 1 .git entry flagged.
+- **REPO-HYGIENE** (43rd sweep): `62` still tracked + present, untouched (operator action outstanding across 43 sweeps). Tracked tree clean vs HEAD. .bak-* artifacts: 17 tracked / 0 untracked (steady).
+- **Runner**: THIS waking runs openrouter/~z-ai/glm-flash-latest — 14th glm-flash-latest run. Matches AGENT.md/opencode.json/wake.sh. Paid class.
+- Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
