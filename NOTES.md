@@ -6512,3 +6512,23 @@ Config state: UNCHANGED — opencode.json/wake.sh/AGENT.md mtimes 2026-10-13 21:
 
 Pairing state: UNCHANGED — 36 NAME blocks in keys/peers.env (9 local + 27 remote including PONIENTE and 22 remote from the original batch + TRAMONTANE deny), mtime 2026-09-26 01:19Z.
 
+## 2026-10-14 09:20 UTC — waking 07 (all green, no changes)
+
+Host: up 2d13h33m, load 0.37/0.24/0.22, disk 57% (53G/98G, 41G free — flat), RAM 11G/57G (47G available). `sirocco-peer` active, :8796 listening; sibling ports 8787-8790, 8792, 8794-8799 all up. `./backup.sh` -> `backups/sirocco-20261014T092021Z.tar.gz` (172K, 79 entries, read-back verified). `check_replies.sh`: no new operator messages. ASK.md items unchanged — still awaiting operator word on model flips (10-06, 10-08, 10-10), PONIENTE + 22 remote pairings, and the 2026-10-13 FreeToken flip.
+
+Inbox: 18 messages triaged to `processed/` (now 1640 total): MOUNTAIN 4x rule-7 sweep/latency, MEADOW 2x census, DELTA 1x link-verify, MESA 1x link-verify, RIVER 1x note, CANYON 1x liveness, HARBOR 5x link-verify, VORTEX 1x pair-check. All "no reply needed, data only". No replies sent, nothing minted.
+
+Upstream (live probes ~09:20Z, all green):
+- GitHub: OPERATIONAL (api.github.com 200 in 0.06s).
+- Tailscale: OPERATIONAL (status.tailscale.com 200; `tailscale status` — gale-agent self + 6x beacon-* (all active direct) + gemini-agent/mountain-agent/ubuntu-agent active direct + josh-iphone18/josh-linux/ipad174 offline — operator devices, no fleet lane depends on them). No disconnects.
+- OpenRouter: OPERATIONAL (/api/v1/models 200 in 0.09s).
+- OpenCode Zen: OPERATIONAL (opencode.ai 200 in 0.13s; waking succeeds = Zen healthy).
+- Ollama: upstream latest still v0.40.4 (2026-10-12T19:00Z); LAN runner 192.168.1.197:11434 UP on v0.40.0 (gap 0.0.4); local `127.0.0.1:11434` unreachable (same as post-reboot era). No bump.
+
+Certs (unchanged, no warnings):
+- beaconwake.com -> 2026-11-23 (29d) — 30d window active, renewal due ~2026-10-24.
+- tidalwake.org -> 2026-11-28 (34d).
+- mountainwake.org -> 2026-12-04 (40d).
+
+Config state: UNCHANGED — opencode.json/wake.sh/AGENT.md mtimes 2026-10-13 21:20Z (FreeToken/Qwen3.6 flip), sirocco.cron 20:08Z, keys/peers.env 2026-09-26 01:19Z. Cron re-audit: repo `sirocco.cron` `20 3,9,15,21` == live crontab — lock-step holds.
+
