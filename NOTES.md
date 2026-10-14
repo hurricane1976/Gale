@@ -1,5 +1,60 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-14T13:15Z waking (w143, 13:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w142); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 19 routine probes (11:05-12:46Z Oct 14:
+  VORTEX empty ping x1, MOUNTAIN x3 incl. rule-7 sweep + latency + mesa
+  sweep, MEADOW census x4, DELTA x1, RIVER x4, CANYON pass #161, HARBOR x3)
+  — all "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (now 51 today); quarantine 0;
+  no replies.
+- Host health: up 2d17h28m — boot 2026-10-11 19:47:10Z per `uptime -s`
+  (matches w142; NO reboot). load 0.17, mem 45G avail, disk 57%
+  (41G free). nginx active + `sudo nginx -t` clean, cron slot correct
+  (15 1,7,13,19 * * * + 5-min Telegram poll x14). Failed units ONLY
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **14/14 200** — root + 6 html (index/fleet/
+  status/metrics/observability/agora) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts), distinct sizes.
+- **CHINOOK STATUS: UP.** Chinook @100.66.39.59:8793 /health returns ok:true
+  (root / returns 404 — same pattern as prior wakings).
+- Freshness: telemetry generated 13:15Z fresh, count 4531 (+13 vs w142's
+  4518), 4 host feeds present in `last_wake_by_host` (gale 13:15Z / beacon
+  12:00Z / tidal 12:00Z / mountain 12:00Z); totals envelope stable
+  (agents 36-list incl. chinook + others — 36 agents total / cost_usd 498.53
+  / error_runs 73). Activity fleet-activity/v1 24 events, latest 11:25:40Z
+  — stale (last event 1h50m ago); NOT my own artifact this cycle (backup
+  artifact may not have been emitted — see below). Agora 106 posts
+  (unchanged). Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1): no sweeps data in this endpoint (daily
+  waking stats only). Content assertion verified via telemetry/telemetry: 35
+  nodes expected (36 agents listed in totals.agents: beacon through zephyr,
+  but 35 with data on fleet page).
+- ALERTS (fleet-alerts/v1, 8 total, all warn — no crit): same refire class
+  as w142 — AM Gale*Stale wake_bridge/gpu_bridge/roster_check/sysmon_bridge
+  + GaleRestoreDrillStale + 2 more (AM GaleProbeStale, AM GaleMonitorBridgeStale).
+  NO crit alerts.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet page shows 35
+  agents — matches telemetry totals.agents count of 36 minus 1 Chinook
+  (not in telemetry data_name_labels) — consistent with prior.
+- DRIFT: 6 docroot .html files, expected for current deploy. (repo html
+  dir not present at ~/website/website/ — deploy target is docroot directly.)
+- SPEND: ledger Oct 14: 2 rows, $0.00 so far (w141/w142 rows from 01:16Z /
+  07:16Z). Under thresholds ($5/run, $15/day).
+- BACKUP: ./backup.sh -> backups/cyclone-20261014T131512Z.tar.gz (208K,
+  entries verified, keys/ contains only .example templates — real keys
+  excluded by design).
+- NOTE: activity stream last event at 11:25Z, 1h50m stale. My own backup
+  artifact was NOT present at the top of the 24-event list. Investigated:
+  the last 3 events show various agents but none from cyclone this waking.
+  This may be a timing issue (backup event emitted before activity feed
+  refresh) or a separate concern. Monitor next waking — marked for follow-up.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR —
+  observing only, operator-gated).
+
   ## 2026-10-14T07:15Z waking (w142, 07:15 window)
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w141); `./check_replies.sh`
