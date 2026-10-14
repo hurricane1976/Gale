@@ -3992,3 +3992,67 @@ in window). Backup verified (756K, 333 entries).
   ~6h cadence, next window 00:22Z on 10-14); 20 routine probes processed;
   remote legs 30/34 unchanged; credentials clean, baselines intact, :8099
   still closed. Rotation ~446h open, awaiting operator.
+
+## 2026-10-14T05:00Z — w89 scheduled waking (00:48 slot, ran 05:00Z)
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md #1
+  STILL OPEN.
+- **Inbox threat-watch**: 15 messages triaged (10-14 00:00–00:46Z batch). **14
+  benign → processed** (`processed/20261014/`): MOUNTAIN 3 (Rule-7 sweeps
+  00:00:33–55Z), MEADOW 4 census probes (00:07:26–40Z), DELTA 2 link-verifies
+  (00:07:37/40Z), genuine MESA link-verify (00:22:12Z, own identity), RIVER
+  rule-7 (00:30Z), CANYON pass (00:32Z), HARBOR 2 link-verifies (00:46:28/32Z).
+  No credentials/links/instructions in any, "no reply needed".
+  **1 QUARANTINED — mesa-pattern instance #82**:
+  `20261014T002212Z-MOUNTAIN-1a70b64d.json` — transport-authenticated MOUNTAIN
+  (ACCEPT 00:22:12Z) with first-person "mesa routine mesh sweep ... mesa->vortex
+  /inbox round trip" body (same shape as #1–#81); genuine MESA ACCEPT same
+  second (df908273, 00:22:12Z) bounds it to the single file. Quarantine now
+  holds 65 payload .json files. Runbook `runbooks/mesa-pattern-20260923.md`
+  updated with #82. Standing defect with the operator since 09-24; per plan:
+  routine notify carries the count, no peer note, no separate escalation ping.
+- **Peer log**: 15 ACCEPTs on 10-14 00:00–00:46Z, all matching inbox files;
+  zero new REJECTs (last remains the documented 09-23..09-26 self-origin set);
+  no 401 storm, zero external-origin rejects.
+- **Remote pairings re-chased** (right-token POST to each `/inbox`, codes
+  only, tokens never printed): **30/34 HTTP 200 — unchanged**. Remaining 401:
+  HIGHBEAM (100.81.147.28), LANTERN (100.76.139.96), LIGHTNING (100.69.40.118),
+  RADAR (100.125.26.66) — all beacon-side; ASK.md item stands. (Chase note:
+  first parse pass matched 0 peers — my parser assumed per-peer env-var names
+  instead of the NAME=/ADDR=/TOKEN= block format, a repeat of the w88 trap;
+  re-ran with block parser. No requests sent on the failed pass. Not a signal.)
+- **Host health**: up 2d9h13m (10-11 19:47 boot; no new reboot), load
+  0.15/0.30/0.32, disk 57% (53G/98G, 41G avail), RAM 11/57Gi used, 45Gi avail.
+  `vortex-peer` active. Normal for gale-agent shared host.
+- **Listeners**: baseline held — tailnet 100.66.39.59:8787–:8800 peer services
+  all UP (own :8792 present), localhost :8791/:8793/:8794/:8795 unchanged,
+  nginx 8090 on 0.0.0.0+[::]. **`:8099` still CLOSED** (curl 000 localhost +
+  tailnet, no listener, no `http.server` on 8099) — remediation holding ~19d.
+  Gale's two documented localhost-only `http.server` staging procs (:8898/:8899)
+  present, benign, unchanged.
+- **UFW**: active, 23 ALLOW rules — unchanged, no drift.
+- **Tailscale**: 13 nodes visible — gale-agent (self) + 6 beacon-* +
+  gemini-agent, mountain-agent, ubuntu-agent, josh-iphone18, josh-linux,
+  ipad174. All known apacheshadow1972 namespace; no foreign peers.
+- **systemd sandboxing**: vortex-peer intact (ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes). No drift.
+- **Credential hygiene (perms spot-pass this waking)**: all six local `keys/`
+  trees — 220 non-example/non-pub files, every one 600, zero exceptions.
+  `keys/peers.env` 600, `telegram.env` 600, `.example` 664 by design.
+  `.gitignore` sane. Touched nothing outside this repo.
+- **Spend**: `logs/spend-daily.jsonl` — latest 10-13 23:06Z $0.0193, no
+  errors; well below thresholds (GLM flash via OpenRouter).
+- **Backup**: `backups/vortex-20261014T050031Z.tar.gz` (220K, 215 entries;
+  `tar -tzf` read-back OK — `keys/` in archive holds only the two `.example`
+  files, 0 live secret material; AGENT.md extract verified; #82 payload +
+  `.reason` + runbook update present after post-triage re-snapshot? — no:
+  snapshot predates this waking's triage moves; next waking's snapshot covers
+  them. Backup content verified for what it captured).
+- **Git**: committing this entry + runbook #82 update (inbox mv's git-ignored
+  under `peer/inbox/**`).
+- **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~466h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply.
+- **Verdict**: quiescent pass. 1 mesa-pattern quarantine (#82, expected ~6h
+  cadence, next window 06:22Z); 14 routine probes processed; remote legs
+  30/34 unchanged; credentials clean, baselines intact, :8099 still closed.
+  Rotation ~466h open, awaiting operator.
