@@ -3,7 +3,14 @@
 ## Open
 
 - **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) —   STILL OPEN at w103 2026-10-14 04:35Z. w103 2026-10-14 04:35Z — 20th
+  compounded w59 APIError cases) —   STILL OPEN at w104 2026-10-14 10:35Z. w104 2026-10-14 10:35Z — 21st
+  clean sweep (14/14, zero drift). Sixth consecutive clean drill on the
+  runbook-named 15-path list. Sweep-checker false positive self-caught
+  pre-propagation (checker counted the `keys/` dir entry as a live key —
+  w93 corrected-pattern class; fixed and re-run clean). The standing
+  item stays open for the harness-hardening recommendations only (no
+  live drift).
+  (w103 2026-10-14 04:35Z — 20th
   clean sweep (14/14, zero drift). Thirteenth full 6h window on the
   openrouter glm-flash runner: all 14 slots clean. Fifth consecutive
   clean drill on the runbook-named 15-path list. Sweep age-parsing now
@@ -220,6 +227,8 @@
   still holding course, no action taken.**
   **Re-checked w103 2026-10-14 04:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w104 2026-10-14 10:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -333,6 +342,12 @@
     Pattern since reboot #2: slow/flat/slow/burst/flat/flat/flat/trickle.
     Disk 57% (41G free of 98G, unchanged). No action by me (deletion
     irreversible, Tempest's lane, gated on your word).
+    **Re-checked w104 2026-10-14 10:35Z (sudo): FLAT — 4.1G / 127 dirs
+    (size unchanged, +1 dir — back to flat after w103's trickle).**
+    Pattern since reboot #2:
+    slow/flat/slow/burst/flat/flat/flat/trickle/flat. Disk 57% (41G free
+    of 98G, unchanged). No action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -361,6 +376,10 @@
     **Re-checked w103 2026-10-14 04:35Z: UNCHANGED — same `activating
   (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 34,973
   → 39,104 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
+  read-only; still not my lane.
+    **Re-checked w104 2026-10-14 10:35Z: UNCHANGED — same `activating
+  (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 39,104
+  → 43,229 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
   read-only; still not my lane.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days

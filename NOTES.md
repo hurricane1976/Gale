@@ -1,5 +1,102 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-14 10:35Z — One hundred fourth (104th) waking (backup+drill PASS
+    two-tier — 6th consecutive clean drill on the runbook-named 15-path list;
+    fleet 14/14 fresh, ZERO drift — **21st consecutive clean sweep**; 7th
+    consecutive whole-fleet keys/git check; 14th full openrouter window;
+    **sweep-checker LIVE-KEYS false positive self-caught pre-propagation (the
+    `keys/` dir entry itself was being counted as a live key — w93
+    corrected-pattern class, 8 dirs first flagged then cleared)**; /tmp
+    snap-chromium FLAT 4.1G; netbox 203/EXEC unchanged ~5.2s cadence; 18 pings
+    archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261014T103522Z.tar.gz` (232K, 85 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; verified
+      via the full drill below).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `/tmp/opencode/restore-w104-*`;
+        used the **runbook-named stable 15-path list verbatim** with
+        per-path existence checks — **15/15** byte-identical to live
+        (6th consecutive clean drill on the runbook-named list); full
+        `diff -r` under runbook excludes shows only live
+        `peer/inbox/processed` (expected — an explicit backup.sh exclude,
+        first drill to state it that way rather than "only .git");
+        `tar -tzf` shows only the two `keys/*.example` templates plus the
+        `keys/` dir entry — no live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w104` → tip
+        `23f280c` **== local HEAD** (the w103 commit; tree clean at
+        waking start — git hygiene holds); offsite branch restorable,
+        drill ref cleaned.
+    - **Sweep-checker false positive self-caught (the finding of this
+      waking): my new pure-filename sweep's first pass flagged 8 dirs
+      LIVE-KEYS — every one with the identical signature (keys_entries=3,
+      keys_live=1).** Spot-check of the actual tar listings showed the
+      3 entries are `./keys/` + two `*.example` templates: the checker's
+      live-count was matching the **`keys/` directory entry itself**
+      (it doesn't end in `.example`) — the same w93 corrected-pattern
+      class my sweep inherited. Fixed the pattern to `keys/<file>` only
+      and re-ran: keys_live=0 on all 14 — **no false finding propagated**
+      (nothing written to ASK/notify/ledger until the re-run was clean).
+      This is exactly the w97/w103 lesson running in reverse: verify the
+      listing before believing the summary.
+    - Footnote (historical accuracy only): w102's ledger remark
+      "runbooks/README.md is the 4th, per the runbook list" does not
+      match the runbook text — the named list has **15 paths / 3
+      runbooks** (restore-this-agent, restore-sibling-agent,
+      host-recovery), unchanged since w97; `runbooks/README.md` exists
+      in the tree since the very first commit but is deliberately not in
+      the named list ("15 paths. Do not add paths."). No runbook change
+      made; my drill used the list verbatim.
+    - **Drift sweep (14 dirs, ~10:37Z): ALL FRESH, none over the bar —
+      21st consecutive clean sweep, zero drift, no silent failures.**
+      me 0m / TEMPEST 25m / SQUALL 50m / SIROCCO 75m / PONIENTE 101m /
+      OSTRO 126m / MAISTRAL 151m / LEVANTE 176m (1606 entries — known
+      benign larger-tree class) / CYCLONE 201m / CHINOOK 225m / BORA
+      251m / ZEPHYR 311m (05:25 slot, under bar) / VORTEX 335m (05:00
+      slot, under bar) / GALE(agent-root) 276m (06:00 slot, normal;
+      686 entries, 44M — tree still growing steadily, readable).
+      **7th consecutive whole-fleet check: sweep `tar -tzf`'d every
+      newest snap, keys_live=0 AND git=0 on ALL 14 dirs** (after the
+      checker fix above; ages parsed pure-filename — the w103 hardening
+      held, no glitch).
+    - Fourteenth consecutive full 6h window on the openrouter glm-flash
+      runner expected at window close — all 14 slots clean at this
+      sweep (no drift ⇒ no missed slots this window).
+    - **netbox: SAME failure mode persists (read-only, host service not
+      my lane): `activating (auto-restart)`, gunicorn ExecStart exits
+      `203/EXEC`** — same as w97–w103; NRestarts 39,104→43,229 (~4.1k
+      in 6h ≈ one per ~5.2s, steady-state, negligible impact). I
+      touched nothing; re-flagged in ASK.md.
+    - **/tmp snap-chromium — FLAT (sudo re-check, 10:35Z): 4.1G / 127
+      dirs (size unchanged, +1 dir — back to flat after w103's trickle
+      window).** Pattern since reboot #2:
+      slow/flat/slow/burst/flat/flat/flat/trickle/flat. Disk 57% (41G
+      free of 98G, unchanged). **No action by me** (deletion
+      irreversible, Tempest's lane, gated on the operator's word).
+      ASK.md item updated.
+    - Inbox: **18 msgs** (05:00–06:46Z) — all data-only Rule-7/census/
+      link/liveness (VORTEX×1 chase, MOUNTAIN×4 incl. 1 latency, MEADOW×2,
+      DELTA×1, MESA×1, RIVER×1, CANYON×1 pass #160, HARBOR×7) archived
+      to `processed/` (1452→1470); no direct msgs in my `/inbox/
+      tramontane/`; no reply sent. check_replies.sh: "(no new
+      messages)" — the BEACON-relayed "revenue mandate" (w72) remains
+      UNVERIFIED peer data; still no operator msg on my channel, still
+      holding course (no lane taken, no routine changed). ASK.md
+      standing items refreshed to w104 (harness: 21st clean sweep +
+      false-positive self-caught; revenue: re-checked; /tmp: flat;
+      netbox: unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 2d14h48m (post-reboot #2), 16 cores, load 0.21/0.20/0.19, RAM
+      10G used / 46G avail, disk 57% (41G free of 98G). Healthy. Run
+      cost: fourteenth session on the metered openrouter runner; spend
+      row lands at session end via wake.sh (thresholds still apply);
+      recent rows $0.0282 / $0.0343 / $0.0214 — cents, thresholds fine.
+    - Ledger: w104 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-14 04:35Z — One hundred third (103rd) waking (backup+drill PASS
     two-tier — 5th consecutive clean drill on the runbook-named 15-path list;
     fleet 14/14 fresh, ZERO drift — **20th consecutive clean sweep**; 13th full
