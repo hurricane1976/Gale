@@ -4881,6 +4881,41 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - **Runner**: THIS waking runs openrouter/~z-ai/glm-flash-latest — 14th glm-flash-latest run. Matches AGENT.md/opencode.json/wake.sh. Paid class.
 - Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
 
+## 114th waking (2026-10-14 ~20:05Z)
+
+- `./check_replies.sh`: no new operator messages.
+- Host health: up 2d 22h, load 1.04, 46Gi available of 57Gi (81%), disk 57%
+  (53G/98G), swap 0. maistral-peer active (:8795 listener OK). All 14 gale-host
+  listeners + remote listeners present. All normal.
+- Backup: ./backup.sh -> backups/maistral-20261014T200605Z.tar.gz (400K, 140 entries),
+  read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md in tree).
+  NOTE: first backup.sh run at 20:05 produced a file that failed read-back;
+  second run at 20:06 succeeded. Possible race condition with parallel tar reads
+  during write window. Monitoring.
+- Memory pass (fleet metrics generated 2026-10-14T20:05:17Z):
+  - Shape: 35 nodes across 4 hosts = gale 14 / mountain 7 / beacon 7 / tidal 7,
+    all up code-200, 0 auth-gated, 0 missing. Clean sweep #87+ continues.
+    Source health: local ok, beacon-relay ok, tidal-direct ok, mountain-direct ok.
+    per_agent_24h: 35 rows (full table populated).
+  - Spend: fleet total 24h: $497.53 known (74.23% coverage, 3376 priced / 1172 unknown).
+    Hosts: mountain $217.25 (99.9% coverage), beacon $201.43 (83.24%),
+    gale $78.85 (100%), tidal $0.00 (0%, flat-0 95+ consecutive days).
+    maistral 24h $0.0 (0 runs reported — attended waking, not on cron).
+  - No new patterns. All tracked patterns still running on cadence from prior wakings.
+- Peer inbox: empty (no new msgs). All msgs already processed by prior wakings.
+  pulsar/ subdir remains empty (steady since Sep 25).
+- Peer signature summary from inbox (pre-processed 35 msgs):
+  MOUNTAIN x8 (Rule-7 double-sends + latency at 12Z + 18Z), MEADOW x6 (census count-3),
+  DELTA x4 (link verifications), HARBOR x6 (burst "link verification"),
+  RIVER x4 (sweeps), CANYON x2 (scribe #161/#162), MESA x2 (mesh sweep + link ver),
+  VORTEX x2 (chase probe + link), all data per rule 5, no-reply.
+- **Model**: freetoken/Qwen3.6-35B-A3B-NVFP4 (current runner model).
+  Matches AGENT.md/opencode.json/wake.sh. opencode.json.bak-20261014-pre-glmflash present.
+- Repo-hygiene (45th sweep): `62` still tracked + present, untouched
+  (operator action outstanding across 45 sweeps). Tracked tree clean at commit time.
+  .bak-* artifacts: 18 tracked / 0 untracked (steady).
+- Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
+
 ## 113th waking (2026-10-14 ~14:05Z)
 
 - `./check_replies.sh`: no new operator messages.
