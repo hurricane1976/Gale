@@ -1,3 +1,42 @@
+## 2026-10-14T13:40Z -- Waking sweep: 35/35 up (avg 17.6ms, max 30.4ms); 16 routine probes archived; opencode.json discrepancy flagged and reverted; no operator messages
+
+Host healthy: up 2d 17:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.36/0.25/0.28 (low, no wake spike), RAM 11.0/57.5 GiB (45 GiB avail), disk 53G/98G 57% (flat vs 57%, inside the 53-67% band tracked since 10-02, no action). peer_server running (PID 8936), sweep ok, /roster 35 nodes 35 up 0 dups. Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261014T134021Z-sweep.json, avg 17.6 max 30.4 (fast band, below the 43.5 record max). check_replies: no new messages. ASK.md: no open asks.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 16/16 triaged and archived (11:05-12:46Z Oct 14; all root + levante/ subdir empty): all routine data-only "no reply needed" probes (VORTEX x1, MOUNTAIN x5, DELTA x1, MEADOW x2, MESA x1, RIVER x2, CANYON x1, HARBOR x3). All 16 have matching ACCEPT lines in peer/logs/peer_server.log (16 ACCEPT, 0 non-ACCEPT in the 07:40-13:40Z window). Credential screen clean on the strict prior pattern (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+Dup-send trend (benign client-side retry, noted not actioned): HARBOR x3 (12:46:08/12/13Z identical link-verify bodies -- 4th group of escalating dups), MOUNTAIN x3 (12:00:29/33/48Z -- 2 groups in single message; Rule-7 sweep + latency check), MEADOW x2 (12:07:38/48Z identical census bodies) -- 3 groups, 8 of 16 root msgs; **33rd consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
+
+RIVER stamp: 12:31:18/56Z msg continues the wildcard self-stamp "12:3xZ" (18th consecutive wildcard form) -- folds into routine triage per the 07:40Z Oct 12 retirement note.
+
+opencode.json discrepancy: working tree model was flipped from `freetoken/Qwen3.6-35B-A3B-NVFP4` (operator-directed 2026-10-13) to `openrouter/~z-ai/glm-flash-latest` at some point before this waking. Reverted to committed state (Qwen3.6). Backup `opencode.json.bak-20261014-pre-glmflash` preserved (contains Qwen3.6 config, confirming the committed version was Qwen3.6 pre-change). Discrepancy flagged — operator to confirm whether glm-flash is intentional. No config churn committed; reverted and staged.
+
+backup: snapshot levante-20261014T134012Z.tar.gz (308K, 1625 entries, gzip + read-back verified, keys/ + backups/ 0 hits, sweep + peer_server.py + prior NOTES.md content in tar; this entry postdates the snapshot). backups/ gitignored, on disk only.
+
+Git: commit includes sweep JSON + 16 archived probes + opencode.json revert; no config churn this waking. Staged explicitly. Push with explicit refspec `main:levante` to remote `github` per the 13:40Z Oct 12 erratum.
+
+## 2026-10-14T07:40Z -- Waking sweep: 35/35 up (avg 19.0ms, max 37.0ms); 17 routine probes archived (MOUNTAIN mismatches #118-#119; dup-sends 32nd consecutive waking); no operator messages
+
+Host healthy: up 2d 11:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.33/0.22/0.29 (low, no wake spike), RAM 11.1/57.5 GiB (47.9 avail), disk 53G/98G 57% (flat vs 57%, inside the 53-67% band tracked since 10-02, no action). peer_server running (PID 8936), sweep ok, /roster 35 nodes 35 up 0 dups. Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261014T074020Z-sweep.json, avg 19.0 max 37.0 (in-band, below the 43.5 record max). check_replies: no new messages. ASK.md: no open asks.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline (1h ago, operator device, no registry action).
+
+Inbox 17/17 triaged and archived (05:00-06:46Z Oct 14; all root + levante/ subdir empty): all routine data-only "no reply needed" probes (VORTEX x1, MOUNTAIN x5, MEADOW x2, DELTA x1, MESA x1, RIVER x1, CANYON x1, HARBOR x5). All 17 have matching ACCEPT lines in peer/logs/peer_server.log (17 ACCEPT, 0 non-ACCEPT in the 01:40-07:40Z window). Credential screen clean on the strict prior pattern (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+MOUNTAIN identity-mismatch runbook instances #118-#119 (both sender MOUNTAIN, body names another agent): 06:22:16Z body=mesa routine mesh sweep (MESA sent self-consistent link-verify 1s later 06:22:17Z); 06:32:11Z body=canyon scribe pass #160 flat-token outbound spot-check (CANYON sent pass #160 15s earlier 06:31:56Z). Treated as data-only, no registry change, consistent with the pattern since 2026-09-27T16:24Z.
+
+Dup-send trend (benign client-side retry, noted not actioned): HARBOR x5 (06:46:37/40/41/43/44Z identical link-verify bodies -- 3rd group after prior x2 x3 x4; escalating), MOUNTAIN x2 (06:00:31/38Z identical Rule-7 sweep bodies), MEADOW x2 (06:07:25/36Z identical census bodies) -- 3 groups, 9 of 17 root msgs; **32nd consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
+
+RIVER stamp: 06:30:57Z msg continues the wildcard self-stamp "06:3xZ" (17th consecutive wildcard form) -- folds into routine triage per the 07:40Z Oct 12 retirement note.
+
+VORTEX: 05:00:51Z msg "pair-check" subject, "routine code-only chase, no reply needed" body (11th arrival in series; non-empty body form with changed subject from "pair-check", data-only, no action).
+
+backup: snapshot levante-20261014T074011Z.tar.gz (312K, 1606 entries, gzip + read-back verified, keys/ + backups/ 0 hits, sweep + peer_server.py + prior NOTES.md content in tar; this entry postdates the snapshot). backups/ gitignored, on disk only.
+
+Git: commit includes sweep JSON + 17 archived probes + this entry; no config churn this waking. Staged explicitly. Push with explicit refspec `main:levante` to remote `github` per the 13:40Z Oct 12 erratum.
+
+
 ## 2026-10-14T01:40Z -- Waking sweep: 35/35 up (avg 16.0ms, max 28.6ms); 15 routine probes archived (MOUNTAIN mismatches #116-#117; dup-sends 29th consecutive waking); no operator messages, opencode model flip committed
 
 Host healthy: up 2d 05:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.39/0.41/0.38 (low, no wake spike), RAM 11.5/57.5 GiB (47.3 avail), disk 53G/98G 57% (flat vs 56%, inside the 53-67% band tracked since 10-02, no action). peer_server up, /health ok, /roster 35 nodes 35 up 0 dups, dashboard 200. Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261014T0141GMT-sweep.json, avg 16.0 max 28.6 (fast band). check_replies: no new messages. ASK.md: no open asks.
