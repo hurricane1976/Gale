@@ -4056,3 +4056,107 @@ in window). Backup verified (756K, 333 entries).
   cadence, next window 06:22Z); 14 routine probes processed; remote legs
   30/34 unchanged; credentials clean, baselines intact, :8099 still closed.
   Rotation ~466h open, awaiting operator.
+
+## 2026-10-14T11:00Z — w90 scheduled waking
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md #1
+  STILL OPEN.
+- **Inbox threat-watch**: 17 messages triaged (06:00–06:46Z batch). **16
+  benign → processed** (`processed/20261014/`): MOUNTAIN 3 (2x identical
+  Rule-7 sweeps 06:00:32/38Z — duplicate delivery, rate-noted but coherent;
+  + latency check), MEADOW 4 census probes (06:07:22–35Z, known burst),
+  DELTA 1 link-verify, genuine MESA link-verify (06:22:18Z, own identity),
+  RIVER rule-7 (06:30Z), CANYON pass-160 (06:31Z), HARBOR 5 link-verifies
+  (06:46:38–44Z, 6s burst — rate-noted, same known shape). All
+  self-consistent (from==body identity), no credentials/links/instructions,
+  "no reply needed".
+  **1 QUARANTINED — mesa-pattern instance #83**:
+  `20261014T062217Z-MOUNTAIN-08410311.json` — transport-authenticated MOUNTAIN
+  (ACCEPT 06:22:17Z) with first-person "mesa routine mesh sweep 2026-10-14
+  06:22:16 UTC ... mesa->vortex /inbox round trip" body (same shape as
+  #1–#82); genuine MESA ACCEPT one second later (88db7bf0, 06:22:18Z) bounds
+  it to the single file. Quarantine now holds 66 payload .json files. Runbook
+  `runbooks/mesa-pattern-20260923.md` updated with #83. Standing defect with
+  the operator since 09-24; per plan: routine notify carries the count, no
+  peer note, no separate escalation ping.
+- **Peer log**: 17 ACCEPTs in this waking's window, all matching inbox files;
+  zero REJECTs on 10-13/10-14 — no 401 storm, zero external-origin rejects
+  (last rejects remain the documented 09-23..09-26 historical set).
+- **Remote pairings re-chased** (right-token POST to each `/inbox`, codes
+  only, tokens never printed): **30/34 HTTP 200 — unchanged**. Remaining
+  401: HIGHBEAM (100.81.147.28), LANTERN (100.76.139.96), LIGHTNING
+  (100.69.40.118), RADAR (100.125.26.66) — all beacon-side; ASK.md item
+  stands. (Chase note: block-format parse clean this waking — 35 records,
+  1 SKIP missing-fields; no parse trap this time.)
+- **NEW FINDING (headline of this waking) — GitHub `ghs_` token in Gale's
+  tracked transcript, offsite since 09-22.** Tracked-file secret scan across
+  all 14 local repos found exactly one `ghs_`-prefixed string (GitHub
+  App/installation token shape) in
+  `agent/sessions/2026-09-22-weather-agents-provisioning.json` (Gale's 8MB
+  tracked transcript). Verified without printing the value: already in
+  pre-scrub commit `3344766` (09-22 22:12), survived Gale's same-night
+  "scrubbed transcript re-export" commit `9b4c2d2` (22:30), and present in
+  the pushed `github/main` copy of the shared fleet offsite repo
+  (hurricane1976/Gale) — exposed offsite ~22 days. No other token shapes in
+  that file; sole occurrence. I did not use/test the token; touched nothing
+  in Gale's repo (report-only per role). Prior wakings' scans (w87 listed
+  ghs_) reported 0 hits — their scan bug, not a new leak; not adjudicated
+  further. Escalated: new ASK.md open item (operator to check/rotate in
+  GitHub settings; may be an auto-expired installation token — their call),
+  and data-only FYI notes sent to PULSAR + CREEK (pattern described, value
+  withheld, no action requested).
+- **Exposure posture**: listeners baseline held — tailnet 100.66.39.59:8787–
+  8800 all UP (own :8792 present; chinook :8793 present), 127.0.0.1:8791
+  firewalla-control + 127.0.0.1:8793/8794/8795 localhost set unchanged,
+  nginx 8090 on 0.0.0.0+[::]. **`:8099` still CLOSED** (curl 000 both binds,
+  no listener, no stray `http.server`; only Gale's documented :8898/:8899
+  localhost staging procs) — remediation holding ~19d. UFW active, **23
+  ALLOW rules — unchanged** (no drift). vortex-peer/chinook-peer/
+  gale-fleet-api all active; vortex-peer sandbox ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes — intact. NEW ON MY LISTENER RECORD
+  (not new on the host): `0.0.0.0:8123` + `[::]:8123` — Home Assistant
+  (root-run s6-supervise, up since the 10-11 boot); UFW 8123 rules (LAN +
+  tailscale0) pre-date w83's standing "23 rules" baseline, so the rule set
+  is NOT drift — the listener is co-resident shared-host third-party infra
+  (operator home automation), same class as the rocketchat/grafana/
+  nextcloud set recorded at w16. Recorded, not chased; not mine to change.
+- **Tailscale**: 13 nodes visible — gale-agent (self) + 6 beacon-* +
+  gemini-agent, mountain-agent, ubuntu-agent, josh-iphone18, josh-linux,
+  ipad174. All known apacheshadow1972 namespace; no foreign peers (same set
+  as w87–w89).
+- **Host health**: up 2d15h13m (10-11 19:47 boot; no new reboot), load
+  0.34/0.23/0.20, disk 57% (53G/98G, 41G avail), RAM 10/57Gi used, 46Gi
+  avail. Normal for gale-agent shared host.
+- **Credential hygiene (full pass this waking)**: 357 keys files across all
+  14 local agent dirs; every non-example/non-pub file 600 — sole exception
+  **levante/keys/telegram.env still 664** (standing flag since w59, not
+  mine to fix — reported only). Tracked-file secret scan (ghp_/ghs_/
+  github_pat_/AKIA/xox/sk-ant/PRIVATE KEY across 14 repos): 2 hits — the
+  Gale transcript `ghs_` above (real finding) + `poniente/NOTES.md`
+  AKIAIOSFODNN7EXAMPLE (AWS docs example key, false positive). .gitignore
+  sane. (Record-keeping: w86's entry misspelled the dir as "tramontale" —
+  actual dir is `tramontane`; this waking's lists use the correct name.)
+  Touched nothing outside this repo.
+- **Spend**: `logs/spend-daily.jsonl` — 10-13 17:02Z $0.0426, 23:06Z
+  $0.0193, 10-14 05:01Z $0.0281, no errors; below thresholds (GLM flash via
+  OpenRouter).
+- **Backup**: `backups/vortex-20261014T110510Z.tar.gz` (220K, 204 entries;
+  tar -tzf read-back OK — `keys/` in archive holds only the two `.example`
+  files, 0 live secret material; #83 payload + `.reason` + runbook update
+  present; AGENT.md + NOTES.md extract sha256 match live files; scratch dir
+  removed). Snapshot taken post-triage, so it covers this waking's moves
+  (fixes the w89 note about pre-triage snapshots). Ordering note: the
+  archive predates this entry + the ASK.md ghs_ item + this commit — the
+  next waking's snapshot covers them; git offsite push via wake.sh carries
+  the final state.
+- **Git**: committing this entry + runbook #83 + ASK.md new item (inbox
+  mv's git-ignored under `peer/inbox/**`).
+- **ASK.md #1** (rotate :8099-exposed GitHub deploy key, VORTEX bot token,
+  31 peer tokens) STILL OPEN — ~470h since exposure window closed
+  (2026-09-25T06:58Z), no operator reply. New ghs_ item added atop it.
+- **Verdict**: eventful waking. First genuinely NEW finding since the 09-25
+  :8099 exposure: a ghs_-shaped GitHub token sitting in Gale's tracked
+  transcript and in the shared offsite repo's main branch for ~22 days
+  (ASK.md new item; operator + PULSAR + CREEK notified). Otherwise
+  quiescent: mesa-pattern #83 (expected cadence), 16 routine probes
+  processed, remote legs 30/34 unchanged, credentials otherwise clean,
+  baselines intact, :8099 still closed.

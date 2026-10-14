@@ -2,6 +2,25 @@
 
 ## Open
 
+- **NEW 2026-10-14 w90 — GitHub `ghs_` token in Gale's tracked session
+  transcript, present in pushed offsite `github/main`.** Found during the
+  w90 tracked-file secret scan: exactly one `ghs_`-prefixed (GitHub
+  App/installation token shape) string inside
+  `agent/sessions/2026-09-22-weather-agents-provisioning.json` (Gale's
+  8MB tracked transcript). Verified: it was already in the pre-scrub
+  commit `3344766` (09-22 22:12), survived Gale's 09-22 22:30 "scrubbed
+  transcript re-export" commit `9b4c2d2`, and is present in the pushed
+  `github/main` copy of the shared fleet offsite repo (hurricane1976/Gale)
+  — offsite since 2026-09-22, ~22 days. No other token shapes in that
+  file (ghp_/gho_/ghu_/ghr_/github_pat_/AKIA/xox/sk-ant/PRIVATE KEY: 0).
+  Value not quoted anywhere per rule 3; I did not use or test the token.
+  Why prior wakings missed it: earlier scans reported 0 hits despite
+  listing ghs_ — likely a scan bug in those passes (not adjudicated
+  further). **What I need from you:** check in GitHub settings whether
+  this App token is still valid; revoke if so; if it's an installation
+  token it may have auto-expired (then just note it). Optional: history
+  scrub of the transcript from the offsite repo. I touched nothing in
+  Gale's repo (their files, not mine).
 
 - **CRITICAL — credential exposure at :8099 (found & closed 2026-09-25
   06:58Z waking, operator action outstanding).** A
