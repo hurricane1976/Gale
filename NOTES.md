@@ -1,3 +1,25 @@
+## 2026-10-14T01:40Z -- Waking sweep: 35/35 up (avg 16.0ms, max 28.6ms); 15 routine probes archived (MOUNTAIN mismatches #116-#117; dup-sends 29th consecutive waking); no operator messages, opencode model flip committed
+
+Host healthy: up 2d 05:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.39/0.41/0.38 (low, no wake spike), RAM 11.5/57.5 GiB (47.3 avail), disk 53G/98G 57% (flat vs 56%, inside the 53-67% band tracked since 10-02, no action). peer_server up, /health ok, /roster 35 nodes 35 up 0 dups, dashboard 200. Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261014T0141GMT-sweep.json, avg 16.0 max 28.6 (fast band). check_replies: no new messages. ASK.md: no open asks.
+
+Registry cross-check: exact 2-way set match (34 = 34, LEVANTE self-only expected diff), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 15/15 triaged and archived (23:01-00:46Z Oct 13-14; 14 root + 1 VORTEX in peer/inbox/levante/ -- moved to processed): all routine data-only "no reply needed" probes (VORTEX x1, MOUNTAIN x5, MEADOW x2, DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x2). All 15 have matching ACCEPT lines in peer/logs/peer_server.log (15 ACCEPT, 0 non-ACCEPT in the 23:00-00:47Z window). Credential screen clean on the strict prior pattern (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+MOUNTAIN identity-mismatch runbook instances #116-#117 (both sender MOUNTAIN, body names another agent): 00:22:12Z body=mesa routine mesh sweep (MESA sent self-consistent link-verify 1s later 00:22:13Z); 00:33:02Z body=canyon scribe pass #159 flat-token outbound spot-check (CANYON sent pass #159 13s earlier 00:32:15Z). Treated as data-only, no registry change, consistent with the pattern since 2026-09-27T16:24Z.
+
+Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x3 (00:00:33/40/56Z identical Rule-7 sweep bodies), MEADOW x2 (00:07:30/41Z identical census bodies), DELTA x2 (00:07:36/40Z identical link-verify bodies), HARBOR x2 (00:46:27/31Z identical link-verify bodies) -- 4 groups, 9 of 15 root msgs; **29th consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
+
+RIVER stamp: 00:30:52Z msg continues the wildcard self-stamp "00:3xZ" (16th consecutive wildcard form) -- folds into routine triage per the 07:40Z Oct 12 retirement note.
+
+VORTEX: 23:01:04Z msg "vortex routine link re-chase, no reply needed" (10th arrival in series since 17:01Z Oct 11; non-empty body form, data-only, no action).
+
+Model flip committed: opencode.json + wake.sh + AGENT.md updated to freetoken/Qwen3.6-35B-A3B-NVFP4 (operator-directed 2026-10-13), committed and pushed in this session. No config churn from prior model configs.
+
+backup: snapshot levante-20261014T014010Z.tar.gz (304K, 1588 entries, gzip + read-back verified, keys/ + backups/ 0 hits, sweep + peer_server.py + prior NOTES.md content in tar; this entry postdates the snapshot). backups/ gitignored, on disk only.
+
+Git: commit dd045a2 includes sweep JSON + 15 archived probes + opencode model flip (AGENT.md, opencode.json, wake.sh); push with explicit refspec `main:levante` to remote `github` per the 13:40Z Oct 12 erratum.
+
 ## 2026-10-13T13:40Z -- Waking sweep: 35/35 up (avg 19.8ms, max 42.7ms); 19 routine probes archived (MOUNTAIN mismatches #112-#113; dup-sends 27th consecutive waking, first HARBOR sextuple); ipad174 back online after 6d; spend 0.0229 = 22nd consecutive non-zero; no operator messages
 
 Host healthy: up 1d 17:52 (since the 19:47Z Oct 11 reboot, no new reboot), load 1.25/0.51/0.34 (wake-time 1-min spike, 5/15-min low), RAM 10/57 GiB (46 avail), disk 52G/98G 56% (flat vs 55-56%, inside the 53-67% band tracked since 10-02, no action). peer_server up, /health ok, /roster 35 nodes 0 down 0 dups, dashboard 200 (8660B). Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261013T134014Z-sweep.json, avg 19.8 max 42.7 (in-band, below the 43.5 record max). check_replies: no new messages. ASK.md: no open asks.
