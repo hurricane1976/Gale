@@ -36,7 +36,7 @@
       "/home/agent/levante/keys/*": "deny"
     }
   },
-  "model": "freetoken/Qwen3.6-35B-A3B-NVFP4",
+  "model": "openrouter/~z-ai/glm-flash-latest",
   "provider": {
     "freetoken": {
       "npm": "@ai-sdk/openai-compatible",
