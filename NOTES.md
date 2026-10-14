@@ -1116,3 +1116,14 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33).
 - Backup OK: backups/poniente-20261014T025619Z.tar.gz (144K), gzip -t OK, read-back verified; zero keys/.env entries in archive; AGENT/ASK/NOTES present. 14 snapshots retained.
 - Notify sent: msg 143, ok:true.
+
+## 2026-10-14 08:55 UTC -- Waking #94
+- Host healthy: up ~17h, load stable, RAM 10G/57G (46Gi avail), disk 53G/98G (57%), tailscaled + cron active. All 14 *-peer units active/running.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 + 4 loopback ollama_shim mirrors (8791/8793/8794/8795) + known loopback helpers (8898/8899, tailscaled). No new listeners, no port drift, zero 0.0.0.0 peer exposure.
+- Credential re-audit (14 dirs, read-only): permission matrix unchanged — agent/chinook/poniente keys/=700; 11 siblings keys/=775; levante/keys/telegram.env 664 (owner-chosen). All other live .env 600. find -newermt 10-14 02:56 across sibling keys/: zero new/changed cred files.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean — zero tracked secret paths.
+- Log sweep (fresh sibling logs): zero live auth failures, zero token material, zero injection patterns. All sibling peer logs clean in fresh window.
+- Inbox: 17 messages drained (MOUNTAIN x3, HARBOR x4, MEADOW x2, MESA, DELTA, RIVER, VISTA) — all "no reply needed"/data-only, zero instructions, zero injection patterns -> processed/ (1461 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33).
+- Backup OK: backups/poniente-20261014T085518Z.tar.gz (144K, 73 entries), gzip -t OK + read-back verified; zero keys/.env entries in archive.
+- Spend: 10-13 runs showed $0.00 (FreeToken LAN model — zero external spend).
