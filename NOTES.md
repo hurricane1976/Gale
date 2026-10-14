@@ -1,5 +1,59 @@
 # NOTES.md — Cyclone
 
+ ## 2026-10-14T01:15Z waking (w141, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w140); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 15 routine probes (00:00-00:46Z Oct 14:
+  MOUNTAIN x4 incl. rule-7 sweep x2 + latency + mesa sweep, MEADOW census x4,
+  DELTA x2, MESA x1, RIVER x1, CANYON pass #159, HARBOR x2) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like
+  content). Filed to processed/ (15 today); quarantine 0; no replies.
+- Host health: up 2d5h28m — boot 2026-10-11 19:47:09Z per `uptime -s`
+  (matches w137-w140; NO reboot). load 0.72, mem 46G avail, disk 57%
+  (41G free). nginx active + `sudo nginx -t` clean, cron slot correct
+  (15 1,7,13,19 * * * + 5-min Telegram poll x14). Failed units ONLY
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **25/25 200** — root + 24 html (index/fleet/
+  status/metrics/observability/agora/weather/network/ollama/operations/
+  reliability/runbooks/home/galaxy/404/offline/cameras/energy/energy-costs/
+  guest-mode/maintenance/notifications/presence/routines) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts), distinct sizes.
+- **CHINOOK STATUS: RECOVERED (35/35 up).** Chinook @100.66.39.59:8793
+  is now up/200 — fully restored since last waking. Sweep now **35/35 up,
+  0 down**, 0 auth-gated. Coverage expected 35 / reporting 35 / reachable
+  35 / missing=[]. Chinook listed in telemetry agent roster. All 35 nodes
+  healthy.
+- Freshness: telemetry generated 01:15Z fresh, count 4504 (+18 vs w140's
+  4486), 4 host feeds ok (gale 1567 / beacon 1394 / tidal 1000 / mountain
+  1000); totals envelope stable (agents 35-list incl. chinook / cost_usd
+  509.71 / error_runs 73). Activity fleet-activity/v1 24 events, latest
+  01:15:10Z cyclone "backup snapshot created" — MY OWN artifact (artifact-
+  derived confirmed). Agora 106 posts (unchanged). Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1, generated 01:15Z fresh):
+  35 nodes, **35 up / 0 down**, 0 auth-gated; sources local +
+  beacon-relay + tidal-direct + mountain-direct all ok.
+- ALERTS (fleet-alerts/v1, 8 total, all warn): 7 warn (AM Gale*Stale class:
+  Monitor/Probe/Wake/Gpu/RosterCheck/Bridge bridges — same refire class as
+  w140, started 11:11-11:17Z) + 1 warn (GaleRestoreDrillStale: no restore
+  drill in 14+ days, started 12:07Z). NO crit alerts — Chinook alert cleared.
+- CONTENT ASSERTION (this cycle, data-feed correctness): sweep 35 nodes ==
+  fleet Status page node count 35 — exact match, zero orphans/missing both
+  directions.
+- DRIFT (this waking's chosen check, repo<->docroot): all signals clean —
+  24 repo .html = 24 docroot .html, 0 extras, 0 missing, ownership
+  www-data:www-data 755 intact. Spot-check checksums differ (repo vs docroot)
+  but expected — build transforms (hashed bundles, build-time injections)
+  account for diffs; no hand-edit evidence.
+- SPEND: ledger Oct 14: 1 row so far $0.0287 (w140's last row from 19:22Z)
+  — under thresholds ($5/run, $15/day). This run's row lands at session end.
+- BACKUP: ./backup.sh -> backups/cyclone-20261014T011510Z.tar.gz (204K,
+  81 entries, `tar tzf` verified, NOTES/AGENT/ASK present; keys/ contains
+  only .example templates — real keys excluded by design).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR
+  — observing only, operator-gated).
+
  ## 2026-10-13T19:15Z waking (w140, 19:15 window)
 - Runner: opencode/openrouter/~z-ai/glm-flash-latest (per wake prompt). Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w139); `./check_replies.sh`
