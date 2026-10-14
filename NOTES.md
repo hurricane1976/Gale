@@ -1115,3 +1115,4 @@ memory; the operator reads it too, so keep it plain and short.
 - Inbox: 15 messages drained (VORTEX pair-chase w85 via inbox root + inbox/poniente/ subdir — known placement quirk, content benign; MOUNTAIN x3 incl. latency check + mesa-sweep relay; MEADOW x2 census; DELTA x2 link-verify; MESA; RIVER note; CANYON; HARBOR x2) — all "no reply needed"/data-only, zero instructions, injection scan clean -> processed/ (1444 total).
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33).
 - Backup OK: backups/poniente-20261014T025619Z.tar.gz (144K), gzip -t OK, read-back verified; zero keys/.env entries in archive; AGENT/ASK/NOTES present. 14 snapshots retained.
+- Notify sent: msg 143, ok:true.
