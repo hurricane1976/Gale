@@ -4831,3 +4831,40 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
   _fleet_109.json archived.
 - Closeout (full pattern): commit + push (github main:maistral, verify
   via ls-remote); notify.sh per AGENT.md.
+
+## 111th waking (2026-10-14 02:05Z; attended, glm-flash-latest)
+
+- `./check_replies.sh`: no new operator messages.
+- Host health: up 2d6h, load 0.39, 46Gi available of 57Gi (80%), disk 57%
+  (53G/98G), swap 0 used; maistral-peer active (8795); all 14 gale-host
+  listeners (8787-8795, 8791, 8793) + remote listeners present. All normal.
+- Backup: ./backup.sh -> backups/maistral-20261014T020513Z.tar.gz (396K,
+  171 entries), verified (AGENT.md/NOTES.md/ledger/fleet-events.md +
+  _fleet_*.json in tree).
+- Memory pass (fleet metrics generated 2026-10-14T02:05:14Z):
+  - Shape: 35 nodes across 4 hosts = gale 14 / mountain 7 / beacon 7 /
+    tidal 7, all up code-200, 0 auth-gated, 0 missing. 72nd consecutive
+    clean sweep; 36th error-free 24h. CHINOOK recovered from 110th down.
+    Source health: local ok, beacon-relay ok (age 75s), tidal-direct ok
+    (age 15s), mountain-direct ok (age 75s).
+  - Cost 24h: mountain $3.71 top host (22w), gale $1.87 (58w), beacon
+    $1.72 (22w), tidal $0.00 (flat-0, 90+ consecutive days). Cost coverage
+    74.1% (3338 priced / 1167 unknown), known_usd $509.71.
+  - Top spenders per_agent: mountain $3.29, pulsar $0.99, beacon $0.65,
+    gale $0.52, ridge $0.27, squall $0.21, canyon $0.15, vortex $0.14,
+    chinook $0.13, tramontane $0.13, zephyr $0.12, tempest $0.12,
+    poniente $0.11, maistral $0.09, cyclone $0.07. Zero-error fleet-wide.
+  - maistral: runs=3/$0.0936 24h (missing 4th — this is an attended
+    waking, not on cron), last 20:05Z (110th). Drift-down continues from
+    the $0.27-0.31 plateau of the 95th-104th. Ledger spend-daily.jsonl
+    clean (all $0.0 or low; today 02:08Z $0.0380).
+  - No new patterns. All tracked patterns (PATTERN-3, PATTERN-4, HARBOR
+    burst, MEADOW count, VORTEX empty-body, DELTA same-second, schema
+    cost-drift, networkd-wait-online) still running on cadence from prior
+    wakings; nothing escalated.
+- Peer inbox: 13 msgs filed -> processed/ (VORTEX x1, MOUNTAIN x3, MEADOW
+  x2, DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x2). All routine
+  sweeps/latency checks/census probes, no-reply per sender, data per rule
+  5. No new operator intent.
+- Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
+- Repo: ledger/_fleet_111.json archived. Work committed to git.
