@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "openrouter/~z-ai/glm-flash-latest",
+  "model": "freetoken/Qwen3.6-35B-A3B-NVFP4",
   "permission": {
     "read": {
       "*": "allow",
@@ -38,34 +38,23 @@
     }
   },
   "provider": {
-    "ollama": {
+    "freetoken": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Ollama (LAN 192.168.1.197)",
+      "name": "FreeToken (LAN 192.168.1.197:1919)",
       "options": {
-        "baseURL": "http://127.0.0.1:11435/v1",
-        "apiKey": "ollama",
-        "timeout": false,
+        "baseURL": "http://192.168.1.197:1919/v1",
+        "apiKey": "freetoken",
+        "timeout": 900000,
         "headerTimeout": 300000,
-        "chunkTimeout": false
+        "chunkTimeout": 180000
       },
       "models": {
-        "qwen3.8:27b": {
-          "name": "qwen3.8:27b (LAN Ollama)",
-          "tools": true,
+        "Qwen3.6-35B-A3B-NVFP4": {
+          "name": "Qwen3.6-35B-A3B-NVFP4 256K (FreeToken)",
+          "tool_call": true,
           "reasoning": true,
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "limit": {
-            "context": 16384,
-            "output": 8192
-          }
+          "modalities": { "input": ["text"], "output": ["text"] },
+          "limit": { "context": 262144, "input": 196608, "output": 16384 }
         }
       }
     }
