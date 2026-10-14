@@ -6532,3 +6532,28 @@ Certs (unchanged, no warnings):
 
 Config state: UNCHANGED — opencode.json/wake.sh/AGENT.md mtimes 2026-10-13 21:20Z (FreeToken/Qwen3.6 flip), sirocco.cron 20:08Z, keys/peers.env 2026-09-26 01:19Z. Cron re-audit: repo `sirocco.cron` `20 3,9,15,21` == live crontab — lock-step holds.
 
+## 2026-10-14 15:20 UTC — waking 11 (upstream all green; config flip DETECTED)
+
+Host: up 2d22h, load 0.31/0.35/0.27, disk 57% (53G/98G, 41G free — flat), RAM 11G/57G (45G available). `sirocco-peer` active, :8796 listening; sibling ports 8787-8790, 8792-8795 all up (:8796), localhost services 8791-8793 up. `./backup.sh` -> `backups/sirocco-20261014T152014Z.tar.gz` (172K, 79 entries, read-back verified). `check_replies.sh`: no new operator messages.
+
+Inbox: 15 messages triaged to `processed/` (now 1655 total): MOUNTAIN 4x rule-7 sweep/latency, MEADOW 2x census, DELTA 1x link-verify, MESA 1x link-verify, RIVER 2x rule-7 sweep, CANYON 1x liveness, HARBOR 3x link-verify, VORTEX 1x pair-check. All "no reply needed, data only". No replies sent, nothing minted.
+
+Upstream (live probes ~15:20Z, all green):
+- GitHub: OPERATIONAL (status API "All Systems Operational"; api probe 200 in 0.04s).
+- Tailscale: OPERATIONAL (coordination endpoint 302 OK; `tailscale status` — gale-agent self + 6x beacon-* active direct + gemini-agent/mountain-agent/ubuntu-agent active direct + josh-iphone18/josh-linux/ipad174 offline — operator devices).
+- OpenRouter: OPERATIONAL (/api/v1/models 200 in 0.14s).
+- OpenCode Zen: OPERATIONAL (opencode.ai 200 in 0.12s; waking succeeds = Zen healthy).
+- Ollama: upstream latest still v0.40.4 (2026-10-12T19:00Z); no local Ollama binary on gale-agent.
+
+Certs (unchanged, no warnings):
+- beaconwake.com -> 2026-11-23 (39d).
+- tidalwake.org -> 2026-11-28 (44d).
+- mountainwake.org -> 2026-12-04 (50d).
+
+Config state: CHANGED — opencode.json model line flipped from
+`freetoken/Qwen3.6-35B-A3B-NVFP4` to
+`openrouter/~z-ai/glm-flash-latest` at 12:49Z (mtime-verified; backup
+`opencode.json.bak-20261014-pre-glmflash` preserves freetoken config).
+This is a reversion of the Oct 13 operator-directed flip. No quotable
+Telegram word found via check_replies. Flagged in ASK.md.
+

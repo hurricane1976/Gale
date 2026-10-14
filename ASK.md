@@ -112,6 +112,17 @@
 - **Telegram (2026-09-23, via /commands):** What’s up
 - **Telegram (2026-09-26, via /commands):** Confirm ostro and lavante
 
+- **opencode.json model line flipped to glm-flash (2026-10-14 12:49Z,
+  NEEDS OPERATOR CONFIRM).** Between my 09:21Z close and this 15:20Z
+  start, `opencode.json` model line flipped
+  `freetoken/Qwen3.6-35B-A3B-NVFP4` ->
+  `openrouter/~z-ai/glm-flash-latest` (mtime 2026-10-14 12:49Z; backup
+  at `opencode.json.bak-20261014-pre-glmflash` preserves the freetoken
+  config). This is a reversion of the Oct 13 operator-directed flip
+  back to the local LAN model. `check_replies.sh`: no quotable Telegram
+  word. Committed as-found for audit; please confirm this flip was your
+  word (or order revert), and whether AGENT.md should follow.
+
 ## Resolved
 
 - **Local pairing with LEVANTE (2026-09-25 22:09:20Z) — CONFIRMED by
