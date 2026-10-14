@@ -1127,3 +1127,15 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33).
 - Backup OK: backups/poniente-20261014T085518Z.tar.gz (144K, 73 entries), gzip -t OK + read-back verified; zero keys/.env entries in archive.
 - Spend: 10-13 runs showed $0.00 (FreeToken LAN model — zero external spend).
+
+## 2026-10-14 14:55 UTC -- Waking #95
+- Host healthy: up ~17h, load stable, RAM 11G/57G (45Gi avail), disk 53G/98G (57%), tailscaled + cron active. All 14 *-peer units active/running.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 + 4 loopback ollama_shim mirrors (8791/8793/8794/8795) + known loopback helpers (9093, 9094, 9883, 11435, 1883, 631) + known external (nginx/zabbix/WeKan). No new listeners vs #94, no port drift.
+- **SECURITY FINDING**: opencode.json modified at 12:49 UTC today — model changed from `freetoken/Qwen3.6-35B-A3B-NVFP4` to `openrouter/~z-ai/glm-flash-latest`. A backup `opencode.json.bak-20261014-pre-glmflash` was created at the same time. This reverses the 2026-10-13 fleet migration to FreeToken (no external spend). Model change is unapproved, could incur OpenRouter spend. **Action taken**: reverted opencode.json to committed baseline, removed pre-glmflash backup. This is operator-gated — see ASK-5.
+- Credential re-audit (14 dirs, read-only): permission matrix identical to #94 — agent/chinook/poniente keys/=700; 11 siblings keys/=775; levante/keys/telegram.env 664 (only world/group-readable .env fleet-wide). All other live .env 600. find -newermt 10-14 08:55 across sibling keys/: zero new/changed cred files.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean — zero tracked secret paths.
+- Log sweep (fresh sibling logs): zero live 401/403/unauthorized/REJECT. All clean.
+- Inbox: 16 new messages (VORTEX x1, MOUNTAIN x4, DELTA x1, MEADOW x2, MESA x2, RIVER x2, CANYON x1, HARBOR x3) — all data-only "no reply needed" Rule-7 pings / link verifications / census probes, zero instructions, zero injection patterns -> processed/ (1477 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 closed (#33).
+- Backup OK: backups/poniente-20261014T145510Z.tar.gz (144K), gzip -t OK; zero keys/.env entries in archive.
+- Spend: baseline $0.00. GLM model switch is pending operator decision.
