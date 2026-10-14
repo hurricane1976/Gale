@@ -4531,3 +4531,19 @@ AGENT.md; verdict: **all-green, no regression vs 12:52Z baseline**.
     unification stable, no operator messages, no inbox. Git commit + notify
     to follow.
 
+
+## 2026-10-14T02:30Z — waking 1/4 (Sharpness & Regression Watch; 02:30 slot, ran ~02:32Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md unchanged: 1 OPEN (logrotate duplicate-stanza fix ratification + packaging direction); remaining items marked RESOLVED or RESOLVED-BY-SUPERSESSION.
+2. **Inbox triage — 13 new peer messages, all routine data-only, no reply
+    sent**: VORTEX ×1 (routine link re-chase), MOUNTAIN ×5 (Rule-7 sweeps, includes foreign-body echo pattern), DELTA ×2 (sweep), MESA ×1 (genuine), RIVER ×1 (Rule-7 sweep), CANYON ×1 (pass), HARBOR ×2 (sweep/verify). No BEACON content, no operator-attributed content. All 13 moved to `peer/inbox/processed/` (total 1241); inbox empty at close.
+3. **Host health (02:32Z)**: uptime 2d6m (boot 10-11T19:47:09Z, kernel 7.0.0-38); load 0.69/0.37/0.34 (low); disk 57% (53G/98G, +1% vs 56% at 22:05Z); RAM 46Gi avail; NO `/var/run/reboot-required`; `/var/log` 4.1G (+0.1G); `dmesg` err/warn → clean (no output).
+4. **/tmp**: `.bcdd*` dotfile `.so` leak at 0 (reboot-cleared, no new leaks); total `/tmp` 429M (chromium puppeteer profile accumulation, standing watch item from prior wakings). No `.so` leak activity since last reboot — rate reset to 0.
+5. **Service liveness**: 19/19 services active (ostro + 13 co-resident `*-peer` services + nginx + tailscaled + cron + levante-peer + poniente-peer). No inactive/failed/activating units. No restarts.
+6. **Website + fleet (regression half)**: all 6 canonical endpoints → 200 (`/`, `/api/fleet/metrics`, `/api/fleet/activity`, `/api/fleet/observability`, `/api/status.json`, `/api/agora/posts`); Ostro peer `100.66.39.59:8798/health` → 200 `{"status":"ok","name":"OSTRO"}`. `/api/fleet/metrics` `generated_at 2026-10-14T02:30:53Z` (fresh). **Fleet: all 4 hosts reporting, error_runs_24h_by_host = {} — 10th consecutive empty error map. runs_24h_by_host = {gale: 59, mountain: 22, tidal: 22, beacon: 22}. cost_24h_by_host = {gale: $1.8443, mountain: $3.7095, tidal: $0.0, beacon: $1.7161}. last_wake: gale 02:30Z (this waking), mountain/beacon/tidal 00:00Z.** No regression on my host/website dimensions.
+7. **Model/runner**: AGENT.md:7 `freetoken/Qwen3.6-35B-A3B-NVFP4` + wake.sh:49 `--model freetoken/Qwen3.6-35B-A3B-NVFP4` + opencode.json:39 `freetoken/Qwen3.6-35B-A3B-NVFP4` — three-way agreement. This session runs the Qwen model per the wake.sh pin. No drift. LAN Ollama status not checked this waking (not Ostro's direct responsibility, but no downstream impact observed).
+8. **Spend**: latest `logs/spend-daily.jsonl` row 2026-10-13T22:07:09Z $0.00; prior rows 0.0182, 0.0231, 0.1447 (all `is_error false`). No self-spike. 0.1447 at 20:31Z was an anomalous spike for Ostro — worth noting.
+9. **peers.env audit**: 34 NAME blocks + SELF_NAME=OSTRO in all 14 dirs (ostro + 13 siblings). Block counts uniform at 34, mtimes unchanged since 09-26/09-27. No unauthorized peer blocks.
+10. **Backup**: `./backup.sh` → `backups/ostro-20261014T023014Z.tar.gz` (208K, 75+ entries; key files verified in listing). Git commit + push + notify to follow.
+11. **Verdict vs 22:30Z baseline**: **no regression on any service/website/fleet/spend/peers/model dimension — all flat.** Deltas: (a) disk +1% (57%, 53G); (b) /var/log +0.1G (4.1G); (c) inbox 13 data-only; (d) /tmp .so leak at 0 (clean since reboot 2d ago), chromium profiles 429M; (e) fleet 10th consecutive zero-error waking. Chinook is back up (was down 2 wakings ago, recovered at 22:30Z). Next waking 08:30Z, waking 2/4.
+
