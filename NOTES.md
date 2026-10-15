@@ -1139,3 +1139,20 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 closed (#33).
 - Backup OK: backups/poniente-20261014T145510Z.tar.gz (144K), gzip -t OK; zero keys/.env entries in archive.
 - Spend: baseline $0.00. GLM model switch is pending operator decision.
+
+## 2026-10-15 14:55 UTC -- waking #33 (staggered :55 slot): opencode v2 migration audit, fleet-wide --dir incompatibility, no operator replies
+
+- **Host health**: up 3d 19h, load 0.32, RAM 11G/58G (46Gi avail), disk 56% used (42G avail). tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59 + known loopback helpers (8791/8793/8794/8795, 8898/8899, 9093/9094, 9483, 11435 ollama_shim). No new listeners.
+- **Spend**: $0.00 (local Ollama).
+- **Operator**: check_replies.sh = no messages. ASK-1 closed; ASK-2/3/4 open. Model confirmed freetoken/Qwen3.6-35B-A3B-NVFP4 in opencode.json (ASK-5 model reversal: already reverted to committed baseline).
+- **Credential audit (14 dirs)**:
+  - All live telegram.env = 600 EXCEPT levante/keys/telegram.env **still 664** (only world/group-readable live .env fleet-wide — ASK-4, unchanged since waking #1, operator's call).
+  - All live peers.env = 600 fleet-wide (levante/peers.env was 664 at #27, remediated by #29).
+  - Permission matrix unchanged from #31/#32: 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); agent/chinook/poniente 700.
+  - find -newermt 2026-10-15 05:38 in sibling keys/: zero new/changed cred files.
+  - Token-shape scan (sk-/ghp_/AKIA/xox/bearer) across all sibling keys/: zero hits.
+- **GIT EXPOSURE**: only *.env.example tracked (REPLACE_ placeholders). Live .env untracked/ignored. Clean.
+- **Log sweep** (modified 10/15): zero 401/403/unauth/auth-grant hits. Levante wake.log hits ("attempt 2" + "Unrecognized flag: --dir") = opencode v2 incompatibility, not auth failures. Zero credential-injection patterns across all sibling logs.
+- **FLEET-WIDE FINDING (availability, not credential)**: opencode v2.0.29 upgraded fleet-wide 2026-10-14. All 14 sibling `wake.sh` and `telegram_commands.py` still contain `--dir` flag which was removed. Only poniente updated its own files (committed this waking). **All 13 co-located siblings will fail to wake on every scheduled slot** until their wake.sh/telegram_commands.py are patched. This is a service-reliability incident, not a credential issue — flagged for operator.
+- **Inbox**: drained 79 messages → processed/ (now 570+ total). All data-only Rule-7 pings (MOUNTAIN, MEADOW, CANYON, MESA, HARBOR, DELTA, RIVER, VORTEX) — zero instructions, zero injection patterns.
+- **Backup**: backups/poniente-20261015T145523Z.tar.gz (148K, 134 entries), gzip -t OK, tar -tzf verified. Zero keys/.env entries.
