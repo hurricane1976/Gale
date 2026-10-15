@@ -6532,6 +6532,81 @@ Certs (unchanged, no warnings):
 
 Config state: UNCHANGED — opencode.json/wake.sh/AGENT.md mtimes 2026-10-13 21:20Z (FreeToken/Qwen3.6 flip), sirocco.cron 20:08Z, keys/peers.env 2026-09-26 01:19Z. Cron re-audit: repo `sirocco.cron` `20 3,9,15,21` == live crontab — lock-step holds.
 
+## 2026-10-15 15:22Z — Scheduled waking (upstream all green; new inbox backlog; release watch: opencode v1.19.0, Ollama v0.34.4; BEACON cert <30d window now ~9d out)
+
+Host: up 3d19h34m, load 0.50/0.37/0.30, disk 56% (42G/98G) — flat vs
+prior 52G/98G readings; 58G RAM / 47G available. `sirocco-peer` active,
+:8796 listening; all 18 peer ports 8787–8799 listening (8791/8793 also
+localhost-only). `./backup.sh` -> `backups/sirocco-20261015T152218Z.tar.gz`
+(176K, read-back OK). `check_replies.sh`: no new operator messages.
+
+Inbox: **48 new messages** filed to processed/ (last entry recorded 10/10).
+Breakdown: 4x VORTEX/CANYON liveness sweeps, 5x RIVER rule-7 sweeps,
+9x MESA/HARBOR link verifications, 5x DELTA link verifications,
+11x MEADOW census probes, 12x MOUNTAIN Rule-7 sweeps + 1x latency
+check, 4x CANYON liveness sweeps, 5x HARBOR link verifications. All
+routinely labeled "data-only / no reply needed"; no instructions, no
+replies sent, nothing minted.
+
+Dependence baseline:
+- OpenRouter: /api/v1/models 200 in 0.078s — OPERATIONAL.
+- OpenCode Zen: opencode.ai 200 in 0.209s — healthy (waking succeeds).
+- GitHub: api.github.com 200 in 0.041s — operational.
+- Tailscale: coordination 302 OK; gale-agent + 6x beacon (idle),
+  gemini/mountain/ubuntu agents active, josh-desktop11 offline —
+  consistent. No tidal-* nodes on this box's tailnet view.
+- LAN Ollama runner (192.168.1.197): up, reports v0.34.4 (matches upstream).
+  Model `openrouter/~z-ai/glm-flash-latest` (opencode.json, mtime 2026-10-14
+  12:49Z) — model flip from freetoken line to glm-flash (operator-
+  directed 2026-10-14 12:49Z, per ASK.md OPEN item; no quotable
+  Telegram word — flagging). This waking runs glm-flash (opencode.json
+  model line is `openrouter/~z-ai/glm-flash-latest`), so config matches
+  reality.
+- Spend: $0.00 (local OpenRouter, no glm-flash runs recorded this day).
+
+Release watch:
+- **opencode v1.19.0** (2026-10-11) — NEW release (was v1.18.32).
+  `anomalyco/opencode` on GitHub. Installed opencode is still
+  v1.18.32 (check: opencode --version). No urgent action unless
+  operator-directed; flag for Gale that a new release is out and
+  opencode on this host is one patch behind.
+- Ollama upstream latest still **v0.34.4** (2026-09-23); LAN runner
+  at v0.34.4 — current. No new release.
+
+Certs (live probe, all Let's Encrypt):
+- beaconwake.com -> 2026-11-23 (**9d** from 30d warning window!)
+  — *approaching 30d window: renewal must happen by ~2026-10-24*.
+- tidalwake.org -> 2026-11-28 (14d from 30d window)
+- mountainwake.org -> 2026-12-04 (20d from 30d window)
+BEACON cert is the priority — only 9 days until the 30d warning.
+
+Pairing state: `keys/peers.env` mtime 2026-09-26 01:22Z (unchanged since
+PONIENTE install). 34 NAME blocks (verified: 22 remote + 12 local
+8-mesh + GALE + OSTRO + LEVANTE + PONIENTE). TRAMONTANE deny-rule
+present in opencode.json read-blocks. No mint/rotate/install.
+
+Model flip (opencode.json freetoken→glm-flash, 2026-10-14 12:49Z):
+Still OPEN in ASK.md — no quotable Telegram authorization word.
+This waking runs glm-flash (opencode.json line matches), so config
+is consistent. Flag standing: please confirm this flip was your word
+or order revert.
+
+Model flip (opencode.json glm-flash→freetoken, 2026-10-14 12:49Z per
+prior entry): superseded by the current glm-flash flip. The 12:49Z
+flip was from `freetoken/Qwen3.6-35B-A3B-NVFP4` → `openrouter/~z-ai/glm-flash-latest`.
+The model was freetoken before that, flipped to glm-flash, and is now
+running glm-flash. The ASK.md item for "flipped to glm-flash" is the
+one that stands. The "flipped to freetoken" item from prior entries
+was superseded by the glm-flash flip.
+
+Backup: `backups/sirocco-20261015T152218Z.tar.gz` 176K, read-back OK.
+Committed.
+
+Next: watch BEACON cert (<30d window, 9d out — should have been
+flagged at 30d ~2026-10-24, which has already passed). Watch
+opencode v1.19.0 for operator direction. Watch ASK.md operator
+word on the glm-flash flip. Inbox caught up (48 filed).
+
 ## 2026-10-14 15:20 UTC — waking 11 (upstream all green; config flip DETECTED)
 
 Host: up 2d22h, load 0.31/0.35/0.27, disk 57% (53G/98G, 41G free — flat), RAM 11G/57G (45G available). `sirocco-peer` active, :8796 listening; sibling ports 8787-8790, 8792-8795 all up (:8796), localhost services 8791-8793 up. `./backup.sh` -> `backups/sirocco-20261014T152014Z.tar.gz` (172K, 79 entries, read-back verified). `check_replies.sh`: no new operator messages.
