@@ -4321,3 +4321,71 @@ in window). Backup verified (756K, 333 entries).
   operator asks added: confirm the wake.sh fix provenance, and get
   sirocco's wake.sh fixed before their next slot. ASK.md #1 rotation +
   ghs_ item still open.
+
+## 2026-10-15T23:00Z — w96 scheduled waking (first on-schedule wake on the committed v2 wake path)
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  #1 (:8099 rotation, ~506h open) + w90 ghs_ item remain open.
+- **Inbox threat-watch: 17 messages triaged (18:00–18:47Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #89**:
+  `quarantine/20261015T182213Z-MOUNTAIN-4229bcf6.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 18:22:13Z), first-person "mesa
+  routine mesh sweep 2026-10-15 18:22:12 UTC" body; genuine MESA link-verify
+  ACCEPT 18:22:14Z (1s later) bounds it to the single file. No credentials,
+  links, or instructions — template slip, not injection. Runbook updated to
+  #89 (trend 89x over ~22 days, steady ~6h cadence in the scheduled Mountain
+  sweep windows). Per plan: routine notify carries the count; no peer note,
+  no separate escalation ping (standing operator defect since 09-24).
+  **16 benign → processed** (`processed/20261015/`): 4x MOUNTAIN Rule-7
+  sweeps + 1 latency (18:00 window), 6x MEADOW census, DELTA link-verify,
+  genuine MESA link-verify, RIVER rule-7 sweep, CANYON scribe pass #166,
+  2x HARBOR link-verify. All 8 senders known, from==body identity on every
+  one; zero credentials, links, or instructions.
+- **Peer log**: 17 ACCEPTs match inbox files 1:1; REJECT count unchanged
+  (65 — all documented self-origin/historical 09-23..09-26 events). Zero
+  external-origin rejects, no 401 storm.
+- **NEW UNATTRIBUTED EDIT (2nd this week) — `--auto` flag added to wake.sh**:
+  found at this waking; file mtime 2026-10-15 17:30:37Z (~30min after my w95
+  commit at 17:00Z). Adds `--auto` ("Auto-approve permissions that are not
+  explicitly denied") to the `opencode run --standalone` line. No NOTES
+  entry, no operator word on record. Reads as a follow-on to the w95
+  v2-compat fix (v2 permission handling would otherwise stall unattended
+  runs on prompts), likely same author; explicit deny lists in opencode.json
+  (all agents' keys/ dirs, external_directory) still bind under `--auto`,
+  and this waking ran cleanly on it. Committed as evidence, provenance NOT
+  asserted — ASK.md w95 item extended to ask the operator to claim both
+  edits. I changed nothing in the file myself.
+- **Exposure posture (baseline re-verified)**: listeners unchanged —
+  tailnet 100.66.39.59:8787–:8800 all UP (own :8792, pid 8962), localhost
+  :8791/:8793, nginx 8090 on 0.0.0.0+[::]. **`:8099` still CLOSED** (curl
+  000, no listener) — remediation holding ~20d. UFW active, rule set
+  unchanged. vortex-peer active; sandbox intact (last spot-checked w95).
+- **Tailscale**: 13 nodes — gale-agent + 6 beacon-* + gemini-agent,
+  mountain-agent, ubuntu-agent, josh-iphone18, josh-linux, ipad174. All
+  known apacheshadow1972 namespace; no foreign peers (same set as w95).
+- **Host health**: up 4d3h (10-11 19:47 boot; no reboot), load
+  0.08/0.16/0.23, disk 57% (53G/98G, 41G avail), RAM 11/57Gi used, 46Gi
+  avail. Normal.
+- **Credential hygiene (this waking's pass, read-only)**: perms across 14
+  co-located keys/ trees — all 600 except ONE known observation:
+  `levante/keys/telegram.env` 664 (their own dir; first flagged w91,
+  unchanged — still flagged here only, not mine to chmod). Tracked-file
+  secret scan: 0 real hits (only pattern *names* in ASK.md/NOTES.md prose —
+  the documented w90 ghs_ item text and scan-pattern lists). .gitignore
+  sane (keys/* deny + .example exception; inbox/logs ignored). Git tracks
+  only the two `.example` files. Touched nothing outside this repo.
+- **Remote legs**: chase (v2 probe body) 30/34 HTTP 200, unchanged — 401:
+  HIGHBEAM, LANTERN, LIGHTNING, RADAR (the four standing beacon-side legs).
+- **Spend**: spend-daily.jsonl — no outage-slot anomalies since w95; this
+  waking records its own at end.
+- **Backup**: `backups/vortex-20261015T230036Z.tar.gz` (232K, 218 entries;
+  tar -tzf read-back OK — `keys/` in archive holds only the two `.example`
+  files, 0 live secret material; AGENT.md extract read-back OK; #89 payload
+  + .reason + runbook update present).
+- **Git**: committing this entry + runbook #89 + ASK.md w96 item + the
+  wake.sh `--auto` edit (as evidence, provenance not asserted).
+- **Verdict**: productive waking. 1 expected mesa-pattern quarantine (#89);
+  16 routine probes processed; legs 30/34 unchanged; credentials clean,
+  baselines intact, :8099 still closed. One new unattributed wake.sh edit
+  flagged (functioning, deny lists intact, provenance asked). ASK.md #1
+  rotation + ghs_ items remain the operator's open items.

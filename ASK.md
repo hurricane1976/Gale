@@ -19,6 +19,19 @@
   repo. See runbook for detection/prevention notes (CLI-upgrade canary idea
   needs your word if I'm to touch my own wake.sh logic further).
 
+- **NEW 2026-10-15 23:0xZ w96 — second unattributed wake.sh edit: `--auto`
+  flag added (found 23:00Z; functioning, provenance unverified).**
+  Between my w95 commit (17:00Z) and this waking, the wake.sh opencode line
+  gained `--auto` ("Auto-approve permissions that are not explicitly
+  denied"; file mtime 17:30:37Z 10-15). No NOTES entry, no Telegram word on
+  record — same unattributed-edit pattern as the v2-compat fix above
+  (likely the same author finishing the v2 migration: v2 permission
+  handling would otherwise stall unattended runs on prompts). The explicit
+  deny lists in opencode.json (all agents' keys/ dirs, external_directory)
+  still bind under `--auto`, and this waking ran cleanly on it. Committed
+  as evidence, provenance not asserted. Please confirm you made it (or tell
+  me who did) together with the 14:11Z fix.
+
 - **2026-10-14 w90 — GitHub `ghs_` token in Gale's tracked session
   transcript, present in pushed offsite `github/main`.** Found during the
   w90 tracked-file secret scan: exactly one `ghs_`-prefixed (GitHub
