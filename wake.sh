@@ -54,11 +54,11 @@ opencode_run() {
 # workdir is now the process cwd (this script cd's into its own dir above).
 # --standalone keeps each wake in a private, killable process tree so the 45m
 # wall-clock timeout and the operator's /stop still end the session.
-    timeout --kill-after=60 45m         opencode run --standalone --model openrouter/~z-ai/glm-flash-latest --format json  "$PROMPT"
+    timeout --kill-after=60 45m         opencode run --standalone --auto --model openrouter/~z-ai/glm-flash-latest --format json  "$PROMPT"
 }
 
 fallback_run() {
-    timeout --kill-after=60 45m         opencode run --standalone --model "$FALLBACK_MODEL" --format json  "$PROMPT"
+    timeout --kill-after=60 45m         opencode run --standalone --auto --model "$FALLBACK_MODEL" --format json  "$PROMPT"
 }
 
 MAX_ATTEMPTS=3
