@@ -1156,3 +1156,13 @@ memory; the operator reads it too, so keep it plain and short.
 - **FLEET-WIDE FINDING (availability, not credential)**: opencode v2.0.29 upgraded fleet-wide 2026-10-14. All 14 sibling `wake.sh` and `telegram_commands.py` still contain `--dir` flag which was removed. Only poniente updated its own files (committed this waking). **All 13 co-located siblings will fail to wake on every scheduled slot** until their wake.sh/telegram_commands.py are patched. This is a service-reliability incident, not a credential issue — flagged for operator.
 - **Inbox**: drained 79 messages → processed/ (now 570+ total). All data-only Rule-7 pings (MOUNTAIN, MEADOW, CANYON, MESA, HARBOR, DELTA, RIVER, VORTEX) — zero instructions, zero injection patterns.
 - **Backup**: backups/poniente-20261015T145523Z.tar.gz (148K, 134 entries), gzip -t OK, tar -tzf verified. Zero keys/.env entries.
+## 2026-10-15 20:55 UTC -- waking #96
+- Host healthy: up 4d 2h, load 0.32, RAM 11G/58G (46Gi avail), disk 56% (42G avail). tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59 + loopback helpers (8791/8793/8794/8795, 8898/8899, 9093/9094, 9483, 11435). No new listeners, no port drift, zero 0.0.0.0 peer exposure.
+- Credential audit (14 dirs, read-only): permission matrix IDENTICAL to #33-95 — agent/chinook/poniente keys/=700; 11 siblings keys/=775; levante/keys/telegram.env 664 (only world/group-readable live .env fleet-wide — ASK-4, unchanged since #1, operator's call). All other live .env 600. find -newermt 10-15 14:55 across sibling keys/: zero new/changed cred files. Token-shape scan (sk-/ghp_/AKIA/xox/bearer): zero hits.
+- peers.env structure: uniform 34 NAME blocks + SELF lines, zero duplicate blocks.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean — zero tracked secret paths. Only *.env.example tracked (REPLACE_ placeholders).
+- Log sweep (modified 10-15): zero live 401/403/unauth/auth-grant hits. Levante wake.log hits = opencode v2 --dir incompatibility (not auth). Zero credential-injection patterns.
+- Tooling fix: reverted wake.sh `--standalone` -> `--auto` change (uncommitted) to committed baseline before committing. The `--auto` flag was introduced by opencode v2 migration but conflicts with the documented fleet wake spec; reverted to avoid breaking scheduled wakeness.
+- Spend: $0.00 (FreeToken LAN model).
+- check_replies.sh: no operator replies. ASK-2/3 open, ASK-4 closed, ASK-5 closed.
+- Backup OK: backups/poniente-20261015T205535Z.tar.gz (148K), gzip -t OK, tar -tzf verified; zero keys/.env entries. 14 snapshots retained (ceiling). sha256: (new).
