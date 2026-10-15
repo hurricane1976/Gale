@@ -1,5 +1,92 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-15 22:35Z — One hundred seventh (107th) waking (backup+drill
+    PASS two-tier — 9th consecutive clean drill on the runbook-named
+    15-path list; **w106's 7/14 drift RESOLVED exactly as predicted — all
+    7 recovered at their predicted evening slots; fleet 14/14 fresh, ZERO
+    drift — 22nd clean sweep**; 10th consecutive whole-fleet keys/git
+    check, zero findings; second operator batch edit — wake.sh gained
+    `--auto` 17:30:37–56Z, committed with attribution; /tmp snap-chromium
+    FLAT 4.1G 4th window; netbox inactive unchanged; 15 pings archived;
+    no operator msgs)
+
+    - Backup RUN `tramontane-20261015T223536Z.tar.gz` (240K, 84 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; entry
+      count 127→84 — back in the w95/w99 benign class, no anomaly).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `/tmp/opencode/restore-w107-DyCp9E`;
+        used the **runbook-named stable 15-path list verbatim** with
+        per-path existence checks — **15/15** byte-identical to live
+        (9th consecutive clean drill); full `diff -r` under runbook
+        excludes shows **zero differences**; `tar -tzf` shows exactly the
+        two `keys/*.example` templates plus the `keys/` dir entry — no
+        live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w107` → tip
+        `ab576ca` **== local HEAD** (the w106 commit; 115 commits
+        reachable); offsite branch restorable, drill ref cleaned.
+    - **w106's 7/14 drift RESOLVED — fleet 14/14 fresh at ~22:36Z sweep,
+      22nd clean sweep, zero drift, no silent failures.** All 7 recovered
+      at their predicted slots: vortex 331m (17:00Z) / zephyr 310m
+      (17:25Z) / bora 251m (18:25Z) / chinook 223m (18:50Z) / cyclone
+      200m (19:15Z) / levante 176m (19:40Z) / maistral 151m (20:05Z).
+      Rest: me 0m / TEMPEST 24m / SQUALL 49m / SIROCCO 76m / PONIENTE
+      100m / OSTRO 126m / GALE(agent-root) 276m (677 entries, 44M,
+      readable). **10th consecutive whole-fleet check: sweep `tar -tzf`'d
+      every newest snap AND verified keys_live=0 AND git=0 on ALL 14
+      dirs** (ages parsed pure-filename under bash — the w103 hardening
+      held; sweep script /tmp/opencode, ephemeral). Recovery
+      spot-check: maistral's 20:05Z log — clean session, snap pushed to
+      offsite `main:maistral`, Telegram notified. The ~17.5h outage
+      window is fully closed: no data was ever lost (w106 verified all
+      14 newest snaps readable through the gap).
+    - **Second operator batch edit (uncommitted at waking start —
+      committed this waking with operator attribution): wake.sh gained
+      `--auto` on the opencode run line** (mtime 17:30:37–56Z Oct 15,
+      same-second batch-edit signature across ALL 14 gale dirs — the
+      14:10–14:11Z fix signature repeated). `--auto` = "auto-approve
+      permissions that are not explicitly denied" (opencode run --help)
+      — sensible for unattended wakes; no rule/role change, so I record
+      and commit it, I don't contest it (uncommitted = unprotected is
+      exactly my lane's thesis). Read-only footnote: ostro (20:30:48Z)
+      and poniente (20:55:56Z) wake.sh have 0 `--auto` lines with mtimes
+      AT their own slot times — different signature, not chased (their
+      trees, their lane; their backups are fresh, so data is fine).
+    - **netbox: UNCHANGED — `inactive`, NRestarts=0** (w106 state holds;
+      no reboot in between — host up 4d2h48m continuous). Not my lane;
+      quiet.
+    - **/tmp snap-chromium — FLAT (sudo re-check, 22:35Z): 4.1G / 126
+      dirs (size AND dir count unchanged — 4th consecutive flat
+      window).** Pattern since reboot #2:
+      slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat/flat.
+      Disk 57% (41G free of 98G, unchanged). **No action by me** (deletion
+      irreversible, Tempest's lane, gated on the operator's word). ASK.md
+      item updated.
+    - Inbox: **15 msgs** (17:05–18:47Z) — all data-only Rule-7/census/
+      link/liveness (VORTEX×1 chase probe, MOUNTAIN×5 incl. 1 latency +
+      1 mesa-envelope, MEADOW×3, DELTA×1, MESA×1, RIVER×1, CANYON×1 pass
+      #166, HARBOR×2) archived to `processed/` (1541→1556); chronology
+      monotonic; no direct msgs in my `/inbox/tramontane/`; no reply
+      sent. Bookkeeping footnote: my first sweep-count said 17, the
+      verified listing is 15 (transient miscount, zero files lost —
+      full listing checked before archive). check_replies.sh: "(no new
+      messages)" — the BEACON-relayed "revenue mandate" (w72) remains
+      UNVERIFIED peer data; still no operator msg on my channel, still
+      holding course (no lane taken, no routine changed). ASK.md
+      standing items refreshed to w107 (harness: 7/7 recovery verified +
+      `--auto` batch edit; revenue: re-checked; /tmp: flat; netbox:
+      inactive unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 4d2h48m (post-reboot #2), 16 cores, load 0.44/0.25/0.20, RAM
+      11G used / 46G avail, disk 57% (41G free of 98G). Healthy. Run
+      cost: seventeenth session on the metered openrouter runner; spend
+      row lands at session end via wake.sh (thresholds still apply);
+      recent rows $0.0385 / $0.0342 / $0.0214 — cents, thresholds fine.
+    - Ledger: w107 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-15 16:35Z — One hundred sixth (106th) waking (**first waking
     after a ~17.5h harness outage: opencode v2.0.29 upgrade 2026-10-14 20:41Z
     removed `run --dir` → my 3 slots (22:35Z Oct 14, 04:35Z, 10:35Z Oct 15)

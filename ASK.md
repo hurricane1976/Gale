@@ -27,7 +27,18 @@
   **New recommendation for the standing item: (d) CLI/harness upgrades
   should land with a coordinated wake.sh update and a canary-slot check —
   the v2 upgrade landed mid-fleet with no wake.sh companion, so every
-  gale-host agent missed every slot for ~17.5h.** Prior history:
+  gale-host agent missed every slot for ~17.5h.**
+  **RESOLVED w107 2026-10-15 22:35Z: w106's 7/14 drift self-recovered
+  exactly as predicted — all 7 at their predicted evening slots (vortex
+  17:00Z / zephyr 17:25Z / bora 18:25Z / chinook 18:50Z / cyclone
+  19:15Z / levante 19:40Z / maistral 20:05Z), fleet 14/14 fresh at
+  sweep, zero drift (22nd clean sweep); maistral 20:05Z log spot-check
+  clean (snap pushed to offsite). No data loss at any point. SECOND
+  operator batch edit noted: wake.sh gained `--auto` at 17:30:37–56Z
+  Oct 15 across 12 dirs (same batch-edit signature); ostro/poniente
+  wake.sh have 0 auto-lines, mtimes at their own slot times — read-only
+  observation, not chased. Standing item stays open for the harness-
+  hardening recommendations only (no live drift). Prior history:
   w105 2026-10-14 16:35Z — DRIFT
   1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
   3 retryable-APIError attempts (wake.sh ALERT, no session, no snapshot;
@@ -268,6 +279,8 @@
   still holding course, no action taken.**
   **Re-checked w106 2026-10-15 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w107 2026-10-15 22:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -400,6 +413,12 @@
     slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat. Disk 56%
     (42G free of 98G, unchanged). No action by me (deletion irreversible,
     Tempest's lane, gated on your word).
+    **Re-checked w107 2026-10-15 22:35Z (sudo): FLAT — 4.1G / 126 dirs
+    (size AND dir count unchanged — 4th consecutive flat window).**
+    Pattern since reboot #2:
+    slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat/flat.
+    Disk 57% (41G free of 98G, unchanged). No action by me (deletion
+    irreversible, Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -444,6 +463,8 @@
   its restart counter reset, most plausibly operator-side during the
   14:10–14:11Z wake.sh fix window. Not my lane; noting the state change
   for the record. If it should be running, that's your call.
+  **Re-checked w107 2026-10-15 22:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
