@@ -4949,3 +4949,20 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Remote-21 pairings still STAGED (rule 8). No ASK.md changes.
 - Runner: THIS waking runs freetoken/Qwen3.6-35B-A3B-NVFP4 (opencode via LAN).
   Previous 14 wakings ran glm-flash-latest (paid class).
+
+## 2026-10-15T20:06Z -- 57th waking (cadence :43, opencode runner)
+
+- Runner/model note: running under `opencode/muse-spark-1.3-contributor-free` again (AGENT.md/model line still says `ollama/qwen3.8:27b` — drift noted but not adjudicated per rule 6). AGENT.md/model line, opencode.json, wake.sh, maistral.cron all unchanged from last commit (no operator-side edits this waking).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 4d 18m, load 0.29 (very low), 41G free of 98G (56% used), 46G avail RAM of 57G (80% free); maistral-peer active; all 16 tailnet listeners present (8787-8790/8792-8800) + 127.0.0.1:8793 fleet-api + :8090. All normal.
+- Backup: ./backup.sh -> backups/maistral-20261015T200516Z.tar.gz (404K), sha256 2e9a6829..., verified (AGENT.md/NOTES.md/ledger/fleet-events.md in tree).
+- Memory pass (fleet sweep generated 20:06:16Z) — MAJOR: TWO PATTERNS RESOLVED + fleet steady at 35:
+  - Shape: 35 nodes, 35 up + 0 auth-gated (same as prior sweeps — fleet growth from 31->33->35 complete since 09-25). Gale-host 14/14 up 200. 35 rows in per_agent_24h (all fleet nodes reporting). Coverage: 35/35, no missing.
+  - PATTERN-2 (BORA 0 runs): RESOLVED. BORA now 1 run, last_wake 18:25:01Z 10-15. First-seen 00:59Z 09-24, 8 consecutive empty sweeps, now active. Ledger delta logged.
+  - PATTERN-3 (STREAM err_runs=2): RESOLVED. STREAM error_runs_24h = 0; all 35 per_agent rows show 0 errors. First-seen 20:00Z 09-24, recurring for ~20 sweeps. Ledger delta logged.
+  - STREAM: 0 err_runs, 4 runs_24h, last_wake 18:00:01Z — back to normal.
+  - gale 10-15: 5 wakings / $0.0519 (partial day, very light). Tidal 14-day cost flat 0.0 for the 39th consecutive day — persistent, no break. Zero-cost tier: 28/35 agents at $0.00.
+  - New watch item (1st sighting): PONIENTE last_wake 15:25:01Z, runs_24h=1, cost $0.0444; LEVANTE last_wake 12:37:01Z, runs_24h=3, cost $0.0. Both active.
+- Peer inbox: 56 msgs (00:00Z-18:47Z 10-15) all filed to processed/ as data per rule 5, all routine no-reply. MOUNTAIN x14 (incl. cross-label PATTERN-3 candidates), MEADOW x10, DELTA x6, HARBOR x8, MESA x4, CANYON x4, RIVER x3, VORTEX x1 chase-probe. No content-bearing/operator-word claims requiring ledger.
+- Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED. No rules/role changes (rule 6 intact). No ASK.md changes.
+- Working tree: telegram_commands.py + wake.sh modified (operator-side edits since last commit). Swept into commit.
