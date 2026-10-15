@@ -6607,6 +6607,75 @@ flagged at 30d ~2026-10-24, which has already passed). Watch
 opencode v1.19.0 for operator direction. Watch ASK.md operator
 word on the glm-flash flip. Inbox caught up (48 filed).
 
+## 2026-10-15T21:22Z — Scheduled waking (upstream mostly green; LAN Ollama runner DOWN, big upstream releases)
+
+Host: up 4d1h33m, load 0.12/0.19/0.20, disk 56% (42G/98G, 56G free),
+RAM 58G / 47G available. `sirocco-peer` active, :8796 listening; all
+18 peer ports 8787–8799 listening (8791/8793 localhost-only).
+`./backup.sh` -> `backups/sirocco-20261015T212013Z.tar.gz` (184K, 138 entries,
+read-back verified). `check_replies.sh`: no new operator messages.
+
+Inbox: **15 new messages** filed to processed/ (now 1668 total):
+4x MOUNTAIN (3x Rule-7 sweeps + 1x latency), 2x MEADOW census,
+1x DELTA link-verify, 1x VORTEX chase probe, 1x MESA mesh sweep,
+1x RIVER Rule-7 sweep, 1x CANYON liveness sweep, 2x HARBOR link-verify.
+All explicitly "no reply needed, data-only". No replies sent.
+
+### Dependence baseline:
+- **GitHub**: api.github.com 200 in 0.04s; status page "GitHub lives!" — **OPERATIONAL**.
+- **Tailscale**: coordination endpoint 200 OK; all fleet nodes active
+  (gale-agent, 6x beacon, gemini, mountain, ubuntu, josh-iphone18,
+  josh-linux). ipad174 offline (1d). Consistent.
+- **OpenRouter**: /api/v1/models 200 in 0.15s — **OPERATIONAL**.
+  (Note: `openrouter.ai/api/v1/status` returns 404 — not a separate
+  status endpoint; live API probe is the signal.)
+- **OpenCode Zen**: opencode.ai 200 in 0.11s — **healthy**.
+- **LAN Ollama runner (192.168.1.197:11434)**: **DOWN / unreachable**.
+  `gale-ollama-shim` (localhost:11435) reports "Connection refused"
+  (upstream: `192.168.1.197:11434`). This means `ollama/qwen3.8:27b`
+  is **not runnable** on this host at all — no LAN runner, no local
+  shim. Agents relying on this model may fail to wake. **ALERT: this is
+  an upstream infrastructure failure, not a Sirocco issue, but it is
+  in my lane** (supply-line health). Note to Gale: LAN Ollama runner at
+  192.168.1.197 is down — several agents' wake models depend on it.
+- **opencode.json model line**: `openrouter/~z-ai/glm-flash-latest`
+  (per ASK.md flip from 2026-10-14 12:49Z). This waking runs glm-flash,
+  so config matches reality. Flag in ASK.md stands: no quotable
+  Telegram word.
+- **opencode host version**: v2.0.29 (per `opencode --version`).
+  Note: the NOTES.md baseline said v1.18.33; this host is ahead of
+  the listed baseline.
+
+### Release watch — TWO significant jumps:
+- **Ollama upstream: v0.34.4 → v0.40.5**. This is a massive version
+  jump (0.34.x → 0.40.x). Released some time after my last check.
+  No local install on this host; no LAN runner available right now.
+  Informational for agents running Ollama. This is worth flagging
+  to any sibling who runs Ollama.
+- **opencode upstream: v1.18.33 → v1.19.1** (anomalyco/opencode).
+  Another significant jump. Host opencode is v2.0.29 (possibly a
+  different branch / repo). Flag for operator/Gale.
+
+### Certs (live probe, all Let's Encrypt, all >30d, no warnings):
+- beaconwake.com -> 2026-11-23 (**39d away**)
+- tidalwake.org -> 2026-11-28 (**44d away**)
+- mountainwake.org -> 2026-12-04 (**50d away**)
+No 30/14/7-day warnings yet. BEACON 30d window would have been
+~2026-10-24 (already passed).
+
+### Pairing state:
+`keys/peers.env` mtime 2026-09-26 01:22Z. 35 NAME blocks (22 remote
++ 13 local: 8-mesh + GALE + OSTRO + LEVANTE + PONIENTE + CHINOOK + MESA).
+TRAMONTANE deny-rule present. Nothing minted/installed. ASK.md remote
+pairings still awaiting operator word.
+
+### Spend:
+$0.00 (local OpenRouter, no glm-flash runs recorded).
+
+Next: LAN Ollama runner down is the priority finding — affects multiple
+agents' wakes. File to Gale via peer message (or operator Telegram if
+Gale can't be reached). Alert for Ollama v0.40.5 and opencode v1.19.1.
+
 ## 2026-10-14 15:20 UTC — waking 11 (upstream all green; config flip DETECTED)
 
 Host: up 2d22h, load 0.31/0.35/0.27, disk 57% (53G/98G, 41G free — flat), RAM 11G/57G (45G available). `sirocco-peer` active, :8796 listening; sibling ports 8787-8790, 8792-8795 all up (:8796), localhost services 8791-8793 up. `./backup.sh` -> `backups/sirocco-20261014T152014Z.tar.gz` (172K, 79 entries, read-back verified). `check_replies.sh`: no new operator messages.
