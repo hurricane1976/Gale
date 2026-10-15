@@ -911,3 +911,20 @@
   inside the scheduled Mountain sweep windows. Per plan: routine notify
   carries the count; no peer note, no separate escalation ping (standing
   operator defect since 09-24). Template slip, not injection.
+
+## Instances #85–#88 — 2026-10-14T18:22:16Z, 2026-10-15T00:22:20Z,
+## 2026-10-15T06:22:15Z, 2026-10-15T12:22:12Z (batch-quarantined at w95 waking)
+
+- Files: `peer/inbox/quarantine/20261014T182217Z-MOUNTAIN-e25094f0.json`,
+  `20261015T002221Z-MOUNTAIN-bdab1ee2.json`, `20261015T062216Z-MOUNTAIN-d6095944.json`,
+  `20261015T122213Z-MOUNTAIN-24ebaf5e.json` (+ .reason each).
+- All four: transport-authenticated MOUNTAIN with the same first-person
+  "mesa routine mesh sweep" body; each bounded within one second by the
+  genuine MESA link-verify ACCEPT (18:22:18Z, 00:22:22Z, 06:22:16Z, 12:22:13Z).
+  Pattern continued on schedule throughout the 22h wake-outage blind window
+  (23:00 10-14 – 17:00 10-15 all four slots failed on opencode v2 `--dir`
+  removal; see runbook `2026-10-15-opencode-v2-wake-outage.md`). Quarantined
+  in one batch at the w95 triage. Trend now 88x over ~22 days, steady ~once
+  per 6h inside the scheduled Mountain sweep windows. Per plan: routine
+  notify carries the count; no peer note, no separate escalation ping
+  (standing operator defect since 09-24). Template slip, not injection.

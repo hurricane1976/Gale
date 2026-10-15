@@ -4235,3 +4235,89 @@ in window). Backup verified (756K, 333 entries).
   processed; remote legs 30/34 unchanged; credentials clean, baselines
   intact, :8099 still closed. ASK.md #1 rotation + ghs_ item remain the
   operator's open items.
+
+## 2026-10-15T17:00Z — w95 scheduled waking (first successful wake after a 22h outage)
+
+- **INCIDENT — opencode v2 upgrade broke all scheduled wakes; ~24h blind
+  window, now closed.** opencode on gale-agent was upgraded to v2.0.29
+  (~2026-10-14 20:41Z), removing `opencode run --dir`. My 23:00 10-14,
+  05:00 and 11:00 10-15 slots all failed instantly (3 attempts + 30s
+  backoff each, "Unrecognized flag: --dir"); last complete waking w91
+  (17:07Z 10-14), first complete since: this one. Blind window ~24h: no
+  inbox triage, backup, commit, spend record, or leg chase for 3 slots.
+  Detection: wake.sh's own ALERT path — each failure delivered a Telegram
+  alert to the operator (verified delivered for 11:00); operator issued
+  7 /wake commands (telegram_commands.log, last ~16:30Z) and a fix landed:
+  my wake.sh + telegram_commands.py (/stop matcher) edited to the v2 form
+  (`opencode run --standalone ...`, cwd as workdir) between 13:57–14:11Z
+  10-15, **uncommitted and unattributed** — committed by me this waking as
+  evidence, provenance not asserted (operator or co-resident; ASK.md new
+  item asks them to claim it). 13/14 co-resident agents got the same fix;
+  **sirocco's wake.sh still has `--dir`** (not paired with me, so no
+  direct peer note possible — flagged via notify + ASK.md; not mine to
+  edit). Full timeline, detection, and prevention notes:
+  `runbooks/2026-10-15-opencode-v2-wake-outage.md`. No peer content was
+  lost or unquarantined due to the gap (verified below).
+- **Operator replies**: none (`check_replies.sh`: no new messages). The
+  /wake commands in the bot log are commands, not messages; operator chat
+  id verified on delivered alerts. ASK.md #1 (:8099 rotation, ~500h open)
+  and the w90 ghs_ item remain open.
+- **Inbox threat-watch (batch triage of the blind window, 10-14 18:00 →
+  10-15 12:47Z): 69 messages, all accounted.** **4 QUARANTINED —
+  mesa-pattern instances #85–#88** (18:22:16Z 10-14, 00:22:20Z, 06:22:15Z
+  and 12:22:12Z 10-15 — all transport-authenticated MOUNTAIN with the
+  first-person "mesa routine mesh sweep" body, each bounded within 1s by
+  the genuine MESA link-verify ACCEPT; on-schedule cadence held right
+  through the outage window; nothing new in the pattern). Runbook updated.
+  **65 benign → processed** (`processed/20261014/` 22 files,
+  `processed/20261015/` 43): MOUNTAIN Rule-7 sweeps + latency checks (2-3x
+  per 6h window), MEADOW census probes, DELTA link-verifies, genuine MESA
+  link-verifies, RIVER rule-7 sweeps (2 identical per window — rate-noted,
+  known shape), CANYON scribe passes #162–#165, HARBOR link-verifies
+  (3-4x, short bursts — rate-noted, known shape). All 7 senders known and
+  self-consistent (from==body identity); zero credentials, links, or
+  instructions; no unknown senders. Quarantine now holds 71 payloads.
+- **Peer log (blind window)**: 69 ACCEPTs match inbox files 1:1; **zero
+  REJECTs** 10-14 17:00Z → now — no 401 storm, nothing from non-paired
+  senders. telegram_commands.log shows transient host network errors
+  (DNS/connection-reset on getUpdates) — recovered before this waking.
+- **Exposure posture (this waking's hygiene check)**: listeners baseline
+  held — tailnet 100.66.39.59:8787–:8800 all UP (own :8792), localhost
+  :8791/:8793/:8794/:8795, nginx 8090 on 0.0.0.0+[::], HA 8123 (recorded
+  w90). **`:8099` still CLOSED** (curl 000, no listener) — remediation
+  holding ~20d. UFW active. vortex-peer active; sandbox
+  ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes intact.
+- **Tailscale**: 13 nodes — gale-agent + 6 beacon-* + gemini-agent,
+  mountain-agent, ubuntu-agent, josh-iphone18, josh-linux, ipad174
+  (ipad174 offline, last seen 22h — normal). All known apacheshadow1972
+  namespace; no foreign peers (same set as w90/w91).
+- **Host health**: up 3d21h (10-11 19:47 boot; no reboot through the
+  outage window), load 0.40/0.42/0.36, disk 56% (52G/98G, 41G avail), RAM
+  11/57Gi used, 46Gi avail. Normal.
+- **Remote legs**: chase (v2 probe body) 30/34 HTTP 200, unchanged (401:
+  HIGHBEAM, LANTERN, LIGHTNING, RADAR — the four standing beacon-side
+  legs).
+- **Credential hygiene**: covered this waking by the exposure-posture
+  pass above (alternating per plan); no keys-tree or tracked-file scan
+  drift expected — next full scan w96. `.gitignore` sane (inbox moves
+  git-ignored as designed).
+- **Spend**: spend-daily.jsonl has NO entries for the outage slots
+  (23:00/05:00/11:00 — "no cost in envelope", correct: no session ran);
+  last pre-gap entry 10-14 17:07Z $0.0483, no errors. This waking
+  records its own at end.
+- **Backup**: `backups/vortex-20261015T170427Z.tar.gz` (228K, 216
+  entries; tar -tzf read-back OK — `keys/` in archive holds only the two
+  `.example` files, 0 live secret material; AGENT.md extract sha256
+  matches live file; 71-quarantine + 4 runbooks + outage runbook present;
+  snapshot taken before this entry + commit — git offsite push via
+  wake.sh carries the final state).
+- **Git**: committing this entry + outage runbook + mesa runbook #85–#88 +
+  ASK.md new item + the wake.sh/telegram_commands.py v2-compat edits (as
+  evidence, provenance not asserted).
+- **Verdict**: availability incident, not a breach. 3 missed slots from an
+  upstream CLI upgrade, detected by wake.sh ALERTs + operator attention,
+  fixed mid-day 10-15; blind-window forensics show peer traffic stayed
+  entirely benign (69 msgs, 4 expected mesa quarantines, 0 rejects). Two
+  operator asks added: confirm the wake.sh fix provenance, and get
+  sirocco's wake.sh fixed before their next slot. ASK.md #1 rotation +
+  ghs_ item still open.

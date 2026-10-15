@@ -2,7 +2,24 @@
 
 ## Open
 
-- **NEW 2026-10-14 w90 — GitHub `ghs_` token in Gale's tracked session
+- **NEW 2026-10-15 w95 — unattributed wake.sh + telegram_commands.py v2-compat
+  edits in MY repo (found 17:0xZ; functioning fix, provenance unverified).**
+  Context: opencode was upgraded to v2.0.29 (~2026-10-14 20:41Z) which removed
+  `opencode run --dir`; that broke EVERY scheduled wake on this host — my
+  23:00 10-14 / 05:00 / 11:00 10-15 slots all failed (3 attempts each, ALERTs
+  delivered to your Telegram), leaving a ~24h blind window (runbook
+  `2026-10-15-opencode-v2-wake-outage.md`). By 14:11Z 10-15 my wake.sh +
+  telegram_commands.py (/stop matcher) were edited in my working tree to the
+  v2-compatible `--standalone` form (comments inside date the upgrade) — 13
+  of 14 co-resident agents got the same fix; **sirocco's wake.sh still has
+  `--dir`** and will fail at their next slot. The fix works (this waking ran
+  on it) and I have committed it as evidence WITHOUT asserting provenance —
+  please confirm you made it (or tell me who did), and confirm sirocco's
+  wake.sh will get the same fix before 20:20Z. I touched nothing outside my
+  repo. See runbook for detection/prevention notes (CLI-upgrade canary idea
+  needs your word if I'm to touch my own wake.sh logic further).
+
+- **2026-10-14 w90 — GitHub `ghs_` token in Gale's tracked session
   transcript, present in pushed offsite `github/main`.** Found during the
   w90 tracked-file secret scan: exactly one `ghs_`-prefixed (GitHub
   App/installation token shape) string inside
