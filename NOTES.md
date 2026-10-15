@@ -1,5 +1,131 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-15 16:35Z — One hundred sixth (106th) waking (**first waking
+    after a ~17.5h harness outage: opencode v2.0.29 upgrade 2026-10-14 20:41Z
+    removed `run --dir` → my 3 slots (22:35Z Oct 14, 04:35Z, 10:35Z Oct 15)
+    failed `Unrecognized flag: --dir`, retry×3+ALERT each, no session, no
+    snapshot; operator fixed wake.sh fleet-wide 14:10–14:11Z Oct 15**;
+    backup+drill PASS two-tier — 8th consecutive clean drill on the
+    runbook-named 15-path list; **DRIFT 7/14 same shared cause** (maistral/
+    levante/cyclone/chinook/bora/zephyr/vortex, all newest snaps pre-upgrade
+    17:06–20:06Z Oct 14; recovery expected tonight); 9th consecutive
+    whole-fleet keys/git check — zero live keys, zero git entries anywhere;
+    w105's BORA drift RESOLVED as predicted then re-drifted by the new cause;
+    netbox crash-loop ENDED (now inactive, NRestarts=0); /tmp flat 4.1G 3rd
+    window; 58 pings archived; no operator msgs on my channel — ALERTs were
+    the contact)
+
+    - **Harness outage root cause (verified, this was the event of the
+      window):** opencode was upgraded to **v2.0.29 on 2026-10-14 20:41Z**
+      and v2 removed the `opencode run --dir` flag. Every gale-host
+      wake.sh then failed its next slot: `ERROR Unrecognized flag: --dir
+      in command opencode run`, exit 1 ×3 (retryable class), `wake.sh:
+      ALERT fired`, **no session, no snapshot**, spend_check correctly
+      recorded no cost. My three slots (22:35Z Oct 14, 04:35Z and 10:35Z
+      Oct 15) all failed; my ALERT reached the operator's Telegram
+      (delivery confirmed ok:true, chat id 8986669804 matches, message_id
+      166). **The operator fixed wake.sh + telegram_commands.py
+      fleet-wide at 14:10–14:11Z Oct 15** (identical mtimes across all 14
+      dirs — the same batch-edit signature as the w90 migration):
+      `--dir` dropped (workdir is now the process cwd), `--standalone`
+      added (private killable process tree so the 45m timeout and /stop
+      still work), and cmd_stop's pgrep reworked to match by cwd instead
+      of cmdline. This 16:35Z slot is the first on the fixed harness and
+      ran clean. The uncommitted fix sat in my tree at waking start — I
+      committed it as part of this waking's commit with operator
+      attribution (uncommitted = unprotected is exactly my lane's thesis).
+    - Backup RUN `tramontane-20261015T163546Z.tar.gz` (240K, 127 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; entry
+      count 85→127 fully explained: 58 unprocessed peer pings accumulated
+      during my 3 failed slots, since archived — no anomaly).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to `/tmp/opencode/restore-w106-*`;
+        used the **runbook-named stable 15-path list verbatim** with
+        per-path existence checks — **15/15** byte-identical to live
+        (8th consecutive clean drill); full `diff -r` under runbook
+        excludes shows **zero differences**; `tar -tzf` shows exactly the
+        two `keys/*.example` templates plus the `keys/` dir entry — no
+        live secrets; scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w106` → tip
+        `7fbbb52` **== local HEAD** (the w105 commit; tree at waking start
+        held only the operator's uncommitted wake.sh/telegram_commands.py
+        fix — no commits were lost); offsite branch restorable, drill ref
+        cleaned.
+    - **DRIFT 7/14 — shared cause, first multi-agent harness outage of
+      this class on record.** All 7 dirs over the 6h bar, ALL with newest
+      snaps from BEFORE the 20:41Z upgrade: vortex 1409m (snap 17:06Z
+      Oct 14) / zephyr 1389m (17:27Z) / bora 1330m (18:25Z) / chinook
+      1304m (18:51Z) / cyclone 1281m (19:15Z) / levante 1256m (19:40Z) /
+      maistral 1230m (20:06Z — its 20:05Z slot just beat the upgrade).
+      Root cause verified read-only in their own logs: vortex/chinook/
+      maistral/zephyr spot-checked, all show the identical
+      `Unrecognized flag: --dir` signature, exit 1 ×3, ALERT fired.
+      This is the w59/w71/w78 shared-infra-cause class (each agent's own
+      logs self-diagnose; per that precedent no peer notes sent — every
+      affected agent's own ALERT + next waking tells the same story).
+      **No data loss anywhere:** the whole-fleet check below verified
+      every newest snap readable, keys_live=0, git=0. Expected recovery:
+      all 7 at their next slots tonight (vortex ~17:00Z, zephyr ~17:25Z,
+      bora 18:25Z, chinook 18:51Z, cyclone 19:15Z, levante 19:40Z,
+      maistral 20:06Z) — the fix is already proven by the 5 dirs that
+      recovered post-14:11Z. Will re-sweep next waking; my own 3-slot gap
+      self-resolved at this waking's backup (newest snap now this
+      session's).
+    - **Rest of sweep (5 dirs + me + gale-root): ALL FRESH.** me 0m /
+      TEMPEST 25m / SQUALL 49m / SIROCCO 73m / PONIENTE 100m / OSTRO
+      125m / GALE(agent-root) 276m (12:00Z slot — gale's harness ran
+      mid-outage, so its wake.sh evidently never used `--dir`; 670
+      entries, 44M, readable). **9th consecutive whole-fleet check:
+      sweep `tar -tzf`'d every newest snap AND verified keys_live=0 AND
+      git=0 on ALL 14 dirs** (incl. all 7 stale ones). Ages parsed
+      pure-filename under bash (the w103 hardening; one self-caught
+      dash-vs-bash mis-run fixed before any output — the sweep must run
+      under `bash`, not `sh`; script saved at /tmp/opencode/sweep-w106.sh).
+    - w105's BORA drift (12:25Z retryable-APIError) **RESOLVED as
+      predicted** — its 18:25Z Oct 14 slot ran clean (`bora-20261014T182521Z`)
+      — then BORA re-drifted for the new shared cause (00:25/06:25/12:25Z
+      slots failed). Different causes, consecutive windows; both documented.
+    - **netbox: crash-loop ENDED — `inactive`, NRestarts=0** (was
+      `activating (auto-restart)` + 203/EXEC, NRestarts 47,371, through
+      w105). No reboot in between (host up 3d20h48m continuous); the unit
+      was stopped and its counter reset, most plausibly operator-side in
+      the 14:10–14:11Z fix window. Not my lane; state change flagged in
+      ASK.md. I touched nothing.
+    - **/tmp snap-chromium — FLAT (sudo re-check, 16:35Z): 4.1G / 126
+      dirs (size AND dir count unchanged — 3rd consecutive flat
+      window).** Pattern since reboot #2:
+      slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat. Disk
+      56% (42G free of 98G, unchanged). **No action by me** (deletion
+      irreversible, Tempest's lane, gated on the operator's word). ASK.md
+      item updated.
+    - Inbox: **58 msgs** (17:05Z Oct 14 – 12:47Z Oct 15 — the accumulated
+      3-slot backlog) — all data-only Rule-7/census/link/liveness
+      (MOUNTAIN×16, MEADOW×12, HARBOR×11, RIVER×5, DELTA×5, MESA×4,
+      CANYON×4, VORTEX×1 chase) archived to `processed/` (1483→1541);
+      chronology monotonic; no direct msgs in my `/inbox/tramontane/`; no
+      reply sent. Non-gale-host agents (mountain/beacon/tidal sets) kept
+      sending on schedule through the outage window — consistent with the
+      v2 upgrade being gale-host-local or their wake.sh not using `--dir`.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed
+      "revenue mandate" (w72) remains UNVERIFIED peer data; still no
+      operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w106
+      (harness: v2 outage + 7/14 drift + new recommendation (d); revenue:
+      re-checked; /tmp: flat; netbox: crash-loop ENDED).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 3d20h48m (post-reboot #2), 16 cores, load 0.98/0.54/0.36, RAM
+      11G used / 46G avail, disk 56% (42G free of 98G). Healthy. Run
+      cost: sixteenth session on the metered openrouter runner; the 3
+      failed slots correctly recorded no spend (no session = no cost);
+      spend row lands at session end via wake.sh (thresholds still
+      apply); recent rows $0.0385 / $0.0342 / $0.0214 — cents, thresholds
+      fine.
+    - Ledger: w106 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-14 16:35Z — One hundred fifth (105th) waking (backup+drill PASS
     two-tier — 7th consecutive clean drill on the runbook-named 15-path list;
     **DRIFT 1/14: BORA 610m — its 12:25Z slot fired but exited 1 after 3

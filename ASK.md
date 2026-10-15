@@ -2,8 +2,33 @@
 
 ## Open
 
-- **Wake-harness hardening (standing, raised w58 03:36Z role-refusal,
-  compounded w59 APIError cases) —   STILL OPEN at w105 2026-10-14 16:35Z. w105 2026-10-14 16:35Z — DRIFT
+- **NEW w106 2026-10-15 16:35Z — opencode v2 upgrade broke every gale-host
+  wake.sh (~17.5h outage window); DRIFT 7/14; NO DATA LOSS; operator fix
+  verified working.** opencode v2.0.29 was installed 2026-10-14 20:41Z and
+  removed the `opencode run --dir` flag — every gale-host agent's wake.sh
+  then failed its next slot(s) with `Unrecognized flag: --dir in command
+  opencode run` (exit 1 ×3 retryable-class, ALERT fired, no session, no
+  snapshot; spend_check correctly recorded no cost). My slots 22:35Z Oct 14 /
+  04:35Z / 10:35Z Oct 15 all failed this way (ALERT delivery to your
+  Telegram confirmed: ok:true, chat id 8986669804, message_id 166). You
+  fixed wake.sh + telegram_commands.py fleet-wide at 14:10–14:11Z Oct 15
+  (identical mtimes across all 14 dirs — batch-edit signature; `--dir`
+  dropped, `--standalone` added, /stop reworked to match by cwd). This
+  slot (16:35Z) is the first on the fixed harness and ran clean.
+  **W106 sweep: 7/14 gale-host dirs over the bar** (maistral 1230m /
+  levante 1256m / cyclone 1281m / chinook 1304m / bora 1330m / zephyr
+  1389m / vortex 1409m — newest snaps all 17:06–20:06Z Oct 14, i.e.
+  pre-upgrade), every one root-caused read-only to the same signature
+  (spot-verified in vortex/chinook/maistral/zephyr logs). The 5 dirs whose
+  slots fired post-fix (tempest/squall/sirocco/poniente/ostro) + me all
+  recovered clean. **No data loss anywhere**: all 14 newest snaps verified
+  readable, keys_live=0, git=0. All 7 should self-recover at their next
+  slots tonight (17:00–20:06Z) — will re-sweep next waking.
+  **New recommendation for the standing item: (d) CLI/harness upgrades
+  should land with a coordinated wake.sh update and a canary-slot check —
+  the v2 upgrade landed mid-fleet with no wake.sh companion, so every
+  gale-host agent missed every slot for ~17.5h.** Prior history:
+  w105 2026-10-14 16:35Z — DRIFT
   1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
   3 retryable-APIError attempts (wake.sh ALERT, no session, no snapshot;
   the retry-ALERT path worked as designed — this is the w59/w71
@@ -241,6 +266,8 @@
   still holding course, no action taken.**
   **Re-checked w105 2026-10-14 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w106 2026-10-15 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -367,6 +394,12 @@
     (40G free of 98G — ~1G consumed outside /tmp this window, not
     chased). No action by me (deletion irreversible, Tempest's lane,
     gated on your word).
+    **Re-checked w106 2026-10-15 16:35Z (sudo): FLAT — 4.1G / 126 dirs
+    (size AND dir count unchanged — 3rd consecutive flat window).**
+    Pattern since reboot #2:
+    slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat. Disk 56%
+    (42G free of 98G, unchanged). No action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -404,6 +437,13 @@
   (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 43,229
   → 47,371 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
   read-only; still not my lane.
+  **Re-checked w106 2026-10-15 16:35Z: CHANGED — crash-loop ENDED.**
+  `systemctl is-active netbox` → `inactive`, NRestarts=0 (was
+  `activating (auto-restart)` with 47,371 restarts at w105). No reboot
+  in between (host up 3d20h48m continuous) — the unit was stopped and
+  its restart counter reset, most plausibly operator-side during the
+  14:10–14:11Z wake.sh fix window. Not my lane; noting the state change
+  for the record. If it should be running, that's your call.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
