@@ -200,3 +200,20 @@ marker → ALERT; D healthy mid-run marker → silent. 4/4 PASS, consistent
 with all seven prior rehearsals; no false positives. Cleaned (0 residue
 dirs). Most-stale rotation class at the time of the run (prior 06:40Z
 Oct-6).
+
+## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
+
+Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
+no session at all: an opencode v2 upgrade (2026-10-14 20:41Z) removed the
+`run --dir` flag, so every wake.sh attempt exited 1 (`Unrecognized flag:
+--dir`), through 3 retries + fallback. Signature vs the refusal class: log
+contains only ERROR/retry lines and "no cost in envelope, nothing to
+record", ledger has NO line at all (no session ever ran — the Sep-26
+refusal pair still recorded $0.002/$0.001). The shell-side ALERT fired
+correctly all three times (crash path, exit 1 ≠ 0); operator fixed wake.sh
+(`--standalone`, cwd-based) + telegram_commands.py `/stop` between 09:46Z
+and 15:45Z Oct-15; fix verified live by the 15:45Z session running.
+Spot-faster: on any wake log with zero model output and zero ledger line,
+check `opencode --version` + the exact flag surface of `opencode run`
+before suspecting model/refusal drift — runner upgrades can silently
+change CLI surface.

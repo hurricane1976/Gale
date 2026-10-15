@@ -50,11 +50,15 @@ PRIMARY_MODEL="openrouter/~z-ai/glm-flash-latest"
 FALLBACK_MODEL="opencode/glm-5.3-flash"
 
 opencode_run() {
-    timeout --kill-after=60 45m         opencode run --model openrouter/~z-ai/glm-flash-latest --format json --dir /home/agent/squall "$PROMPT"
+# opencode v2 (upgraded 2026-10-14 20:41Z): "run --dir" flag removed; the
+# workdir is now the process cwd (this script cd's into its own dir above).
+# --standalone keeps each wake in a private, killable process tree so the 45m
+# wall-clock timeout and the operator's /stop still end the session.
+    timeout --kill-after=60 45m         opencode run --standalone --model openrouter/~z-ai/glm-flash-latest --format json  "$PROMPT"
 }
 
 fallback_run() {
-    timeout --kill-after=60 45m         opencode run --model "$FALLBACK_MODEL" --format json --dir /home/agent/squall "$PROMPT"
+    timeout --kill-after=60 45m         opencode run --standalone --model "$FALLBACK_MODEL" --format json  "$PROMPT"
 }
 
 MAX_ATTEMPTS=3

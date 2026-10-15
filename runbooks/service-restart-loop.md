@@ -54,3 +54,15 @@ nothing** — detection is journal-side only.
    and the journal noise instantly.
 4. Belt-and-suspenders regardless: journal retention cap (the standing
    ASK.md retention request covers this too).
+
+## RESOLVED 2026-10-15 (found at the 15:45Z waking)
+
+Option 3 was taken by the operator between 15:45Z Oct-14 and 15:45Z
+Oct-15: unit is `disabled` + `inactive (dead)`, NRestarts counter reset to
+0, not present in `multi-user.target.wants`. Exact stop time not datable —
+the journald vacuum (journal 2.0G → 202M) removed the netbox entries, and
+`ExecMainExitTimestamp` is empty post-disable. Journal drift watch closed:
+the 2.0G→202M drop confirms the loop was the drift driver. Lesson stands:
+`systemctl --failed` never showed this unit ("activating (auto-restart)"
+never settles to failed) — sweep `journalctl -p err` / unit restart
+counters, not just --failed.
