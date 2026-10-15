@@ -6491,3 +6491,117 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   stay untracked (uncommitted per rules 4/6 pending operator word on
   d94c27b); stray-subdir VORTEX files remain untracked (artifact,
   unchanged).
+
+## 2026-10-15T18:50Z — waking #113 (scheduled :50 slot; 3 prior slots LOST to opencode v2 breakage — recovery waking)
+
+- **Self-check (standing, from #61): FAIL → back-fill performed.** Newest
+  NOTES entry was #112 (10-14 18:50Z) and the backup chain ended
+  chinook-20261014T185129Z — three scheduled slots (10-15 00:50/06:50/12:50)
+  produced NO session, NO ledger row, NO backup, NO NOTES entry. This waking
+  fired 18:50:01Z on-grid (drift ~0m; cron intact) and back-fills the gap:
+  full routine re-run, backup made, this entry. Streak counter (was 16)
+  resets; 28th scheduled slot under the 4x/day :50 grid.
+- **ROOT CAUSE (diagnosed from logs): opencode upgraded host-wide to
+  v2.0.29 on 10-14 20:41Z; `opencode run --dir` was removed.** All three
+  failed slots show the identical signature: `ERROR Unrecognized flag: --dir
+  in command opencode run`, 3 attempts each (30s apart), exit 1, spend_check
+  "no cost in envelope", shell-side ALERT fired per slot (Telegram msg_id
+  172 for 12:50Z). First failure window was actually 10-14 ~23:xx batch
+  (sibling logs corroborate); mine lost 00:50/06:50/12:50 today.
+- **Fleet scope (read-only sibling-log sweep): ~30 failed slots across the
+  13 non-GALE agents on this host** — bora/chinook/cyclone/levante ×3,
+  maistral/ostro/poniente/sirocco/squall/tempest/tramontane/vortex/zephyr
+  ×2 (plus maistral's 14:05 slot left NO log at all — flagged, single-slot
+  anomaly). GALE unaffected: 4/4 ledger runs on both days (its runner never
+  used `--dir`). Remote peers kept their schedules (CANYON scribe passes
+  #163–166 arrived on time all day).
+- **Fix (unattributed, in my tree, UNCOMMITTED per my 10-07 precedent):**
+  telegram_commands.py mtime 13:57:48Z (identical across all agent dirs —
+  single-writer batch); wake.sh ~14:10–14:11Z per zephyr's read (all 14
+  wake.sh mtimes now read 17:30:37–56Z — a second touch, content apparently
+  the same). Content: wake.sh drops `--dir` for `--standalone --auto`
+  (workdir = process cwd, documented in-file); telegram_commands.py `/stop`
+  re-matches v2 cmdlines by process cwd (safer than the old cmdline match).
+  Verified this waking: bash -n wake.sh OK, py_compile telegram_commands.py
+  OK, opencode.json still valid JSON, and THIS session is the existence
+  proof (first clean chinook run since the upgrade). ASK.md item opened
+  requesting operator confirm before I commit. ZEPHYR's 17:25Z recovery
+  waking independently diagnosed the same incident and committed their copy
+  with attribution (5c083ab) + runbooks/runner-flag-drift.md — cross-lane
+  corroboration on the record.
+- **check_replies.sh: no new messages** (checked twice — at start and
+  post-diagnosis). The three ALERTs are the only operator-side signal sent.
+- **Peer inbox: 56 unprocessed since #112 (10-14 18:47→10-15 18:47Z), 9
+  sources:** MOUNTAIN x12 (Rule-7 sweeps + site-build latency + the
+  documented shared-lane MOUNTAIN-envelope/mesa-body shape), MEADOW x10
+  census, DELTA x5, HARBOR x10 link-verify (batches at the usual shape),
+  MESA x3, RIVER x3 (rule-7), CANYON x3 (scribe #163–165 + one), VORTEX x1
+  (17:05Z chase probe with the NEW self-identifying body "vortex chase
+  probe (safe to delete)" — their template fix from #112 confirmed live),
+  + the 00:00–00:46Z overnight batch. All "no reply needed", zero operator
+  content, zero acks owed (data per rule 5). **Archived fail-loud per the
+  #112 commitment: mv each file with error check + immediate recount —
+  moved=56, processed/ 1661→1717, recount OK, inbox empty.** Stray
+  `chinook/` + `pulsar/` subdirs remain (documented #39 artifact).
+- **Fleet health sweep: 14/14 ports 8787–8800 → HTTP 200** via tailnet.
+  **82nd consecutive alive sweep** (my own :8793 000 during the outage
+  window was absence-of-session, not a service failure — chinook-peer
+  stayed active throughout; verified active this waking).
+- **HOST HEALTH:** uptime 3d 23h04m (kernel 7.0.0-38, booted 10-11 19:47Z
+  — no reboots through the incident); load 0.13/0.28/0.32 on 16 cores
+  (~2%, calm); RAM 11G used / 46G avail — **7th consecutive point in the
+  named ~10–12G baseline** (watch lines: used >~20G, avail <~35G); swap
+  0/8G. Tailscale holds 100.66.39.59/32 — **~95h hold on the 7.0 kernel,
+  no TUN regression**. Disk `/` **53G used / 41G free (57%)** — flat vs
+  #107–#112; watch stays CLOSED (re-open line 59G+/80%). Detail: /var/log
+  2.8G (journal down to 231M — the 7.0-kernel journald shrink continues;
+  disk total unaffected), /home/agent 16G (+1G vs #112), /tmp 827M.
+  No reboot-required flag.
+- **SPEND — 10-14 FULL-DAY CLOSE-READ (the one the failed 00:50 slot owed):
+  10-14 closed $1.1568 / 48 runs = $0.0241/run — below the revised band low
+  ($2.1–4.0/day).** Attribution: the shortfall is OUTAGE-SHAPED, not a cost
+  decline — 10-14 lost its ~23:xx batch to the v2 upgrade (5 paid lanes
+  logged 3 runs not 4: vortex/squall/tramontane/tempest/zephyr) and 10-15
+  lost 00:xx–13:xx slots fleet-wide. GALE remains the largest lane
+  ($0.5273/4 on 10-14, $0.1318/run — ~38x under the $5.00 line).
+  **10-15 partial to 18:52Z: $0.7329 / 16 runs** (GALE $0.5182/4 = 71% of
+  host spend; 5 zero-cost lanes recovered post-fix with $0 rows). Projected
+  10-15 close ≈ $1.0–1.3 — outage-suppressed. **Band decision DEFERRED per
+  the standing no-false-precision rule: today's totals can't separate
+  per-run cost decline from cadence loss; re-baseline after 2 clean full
+  days (10-16, 10-17 close-reads).** Alert lines unchanged: $15/day,
+  $5.00/run. No rule-4 anomaly (run-count DIP is not a trigger, but it is
+  the day's dominant capacity event).
+- **ZEPHYR watch line ($0.35/run):** 10-14 $0.0509/3 = $0.017/run —
+  **19th consecutive clean day**; watch continues low priority.
+- **Cadence:** cron fired all three lost slots ON TIME (00:50:01/06:50:01/
+  12:50:01 per log filenames) — the loss was the runner, not the scheduler.
+  Post-fix recoveries observed: sirocco 15:20, ostro 14:30, poniente 14:55,
+  squall 15:48, tempest 16:12, tramontane 16:38, vortex 17:08, zephyr 17:25,
+  bora 18:25, chinook 18:50. Awaiting first post-fix runs: cyclone (19:15),
+  levante (19:40), maistral (20:05).
+- **Forecast / thresholds:** disk 53G/57% flat, ~26G headroom to the 80%
+  line — no crossing projectable; load/mem/swap calm (RAM = named
+  baseline); cadence intact at the scheduler level; spend band re-baseline
+  deferred to 10-16/10-17 close-reads; outage run-rate dip self-corrects
+  as slots resume tonight.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk) limit;
+  the incident was a runner-compat break, not a resource saturation —
+  outside my advisory lane (scaffold = Bora's; fixes already landed
+  host-wide). **No advisory owed this waking.**
+- **Open triage items (unchanged, all operator lane):** (1) migration
+  commit d94c27b provenance confirm; (2) BEACON revenue-mandate relay
+  verify; (3) #59 no-op / exit-1 / shim-502 classes; (4) NEW: v2 fix-batch
+  confirm (above).
+- **Drift/breaches/advisories:** 3 lost slots (my lane, back-filled);
+  ~30 fleet-wide (logged, not mine to fix). No threshold breaches. Routine
+  completed cleanly on the back-fill: replies checked (none), 56 pings
+  archived fail-loud (recount OK), 14/14 sweep healthy, backup made +
+  verified, NOTES updated.
+- **Backup:** chinook-20261015T185228Z.tar.gz (216K, 68 entries), gzip -t
+  OK, ./AGENT.md + ./NOTES.md + ./ASK.md + ./wake.sh read-back present;
+  14-snapshot ceiling held. The backup captures the FIXED working tree.
+- **Commit:** NOTES + ASK updates only — wake.sh + telegram_commands.py
+  stay UNCOMMITTED (unattributed fix, operator confirm requested in
+  ASK.md); .bak files stay untracked; stray-subdir VORTEX files remain
+  untracked (artifact, unchanged).

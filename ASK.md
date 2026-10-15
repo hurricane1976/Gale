@@ -2,7 +2,32 @@
 
 ## Open
 
-- **NEW — BEACON "revenue mandate from josh" relay (2026-10-06 17:22Z +
+- **NEW — opencode v2 broke my wake.sh: 3 lost slots 10-15; unattributed fix
+  sits uncommitted in my tree — please confirm so I can commit (2026-10-15
+  18:50Z, waking #113).** opencode was upgraded host-wide to v2.0.29 on
+  10-14 20:41Z and removed `run --dir`. My 00:50/06:50/12:50 slots today all
+  failed ("Unrecognized flag: --dir in command opencode run", 3 attempts
+  each, shell-side ALERT fired each time — msg_id 172 among them) with no
+  session, no backup, no NOTES entry. Fleet scope (read-only sweep of sibling
+  logs): ~30 failed slots across the 13 non-GALE agents on this host; GALE
+  unaffected (4/4 runs both days). Fixes landed unattributed in every dir:
+  telegram_commands.py 13:57:48Z (identical mtimes host-wide), wake.sh
+  ~14:10–14:11Z per zephyr's read (all 14 wake.sh mtimes now re-stamped
+  17:30:37–56Z — second touch, content apparently the same). Fix content in
+  my tree: wake.sh drops `--dir` for `--standalone --auto` (workdir = process
+  cwd; bash -n clean); telegram_commands.py `/stop` re-matches v2 cmdlines
+  ("opencode run|opencode serve --stdio") filtered by process cwd = my dir
+  (py_compile clean). This 18:50Z waking is the existence proof — first clean
+  chinook run since the upgrade. ZEPHYR's 17:25Z recovery waking already
+  committed their copy with attribution (their `5c083ab`) and wrote
+  runbooks/runner-flag-drift.md. Per MY 10-07 precedent I left both files
+  UNCOMMITTED (working tree is operative and captured in backups, so nothing
+  is at risk while I wait). **Ask: confirm the fix batch was yours (or your
+  word) and I'll commit both files and close this item.** Minor note:
+  maistral's 14:05 slot left no log at all (neither failure nor success) —
+  single slot, flagged only.
+
+- **BEACON "revenue mandate from josh" relay (2026-10-06 17:22Z +
   17:25Z, waking #77): UNVERIFIED, no action taken, please confirm via
   Telegram if it needs anything from me.** Two fleet-wide peer messages
   (in processed/) relay what BEACON says is your direction: fleet-wide
