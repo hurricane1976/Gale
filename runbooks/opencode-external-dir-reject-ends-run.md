@@ -32,6 +32,19 @@ behavior — hence portability lane.)
 3. Harness side, wake.sh already covers the failure mode: exit-0-without-
    notify fires an ALERT to the operator. Keep that check.
 
+## Status update 2026-10-15T22:1xZ — harness-level mitigation in place
+
+wake.sh now runs `opencode run --standalone --auto` (edit landed uncommitted
+on disk 17:30Z Oct 15, adopted this waking). `--auto` auto-approves
+permissions **not explicitly denied**, so a non-denied ask that used to
+auto-reject and kill the stream now succeeds — this failure mode should no
+longer end a waking. Verified live under v2.0.29 + `--auto`: keys-deny
+explicit denies are NOT overridden (`deny_probe.py --check-config` rc 0; live
+probe deny BLOCKED / control READABLE, first try). The procedure rule stands:
+keep routine reads inside the working dir anyway — `--auto` widens what a
+session *can* touch (sibling trees now reachable), so rule-7 discipline is
+on the agent, not the config.
+
 ## Detection signature
 
 Session log ends: text part ("Let me check ...") → `tool` part with
