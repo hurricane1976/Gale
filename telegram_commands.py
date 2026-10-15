@@ -316,15 +316,27 @@ def cmd_wake(_arg):
 
 
 def cmd_stop(_arg):
-    """Operator escape hatch for a hung waking. The pgrep pattern embeds only
-    this agent's own directory -- never anything typed in the message."""
-    pattern = f"opencode run.*--dir {DIR}"
+    """Operator escape hatch for a hung waking. Processes are matched only by
+    their working directory being this agent's own -- never by anything typed
+    in a message. (opencode v2, upgraded 2026-10-14: wake cmdlines no longer
+    carry --dir; wakes use --standalone, so both the client and its private
+    server are matched and killed.)"""
     try:
-        p = subprocess.run(["pgrep", "-f", pattern], capture_output=True,
-                           text=True, timeout=20)
-        pids = [int(x) for x in p.stdout.split() if x.strip().isdigit()]
+        p = subprocess.run(
+            ["pgrep", "-f", "opencode run|opencode serve --stdio"],
+            capture_output=True, text=True, timeout=20)
+        cand = [int(x) for x in p.stdout.split() if x.strip().isdigit()]
     except Exception as e:  # noqa: BLE001
         return f"(pgrep failed: {e})"
+    want = os.path.realpath(DIR)
+    pids = []
+    for pid in cand:
+        try:
+            cwd = os.readlink(f"/proc/{pid}/cwd")
+        except OSError:
+            continue
+        if os.path.realpath(cwd) == want:
+            pids.append(pid)
     if not pids:
         return f"no running opencode wake found for {AGENT}"
     killed = []
