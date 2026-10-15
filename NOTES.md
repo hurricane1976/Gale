@@ -1,5 +1,36 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-15T18:25Z — Per-waking routine; model drift fixed; routine green
+
+- Host: up 3d22h, load 0.29, df 57% (53G/98G), mem 11G/57G available 47G.
+  `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 93 new messages (Oct 14 18:31Z → Oct 15 18:22Z) triaged and moved
+  to processed/ — MOUNTAIN (Rule-7 sweeps + latency checks), MEADOW (census probes),
+  DELTA (link verification), MESA (link verification), RIVER (Rule-7 sweeps),
+  CANYON (scribe passes + liveness), HARBOR (link verification), VORTEX (pair-check).
+  All data-only, no action. Inbox now empty.
+- Backup: `bora-20261015T182513Z.tar.gz` (188K), contents verified (config
+  + scripts + runbooks present).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. All 14 co-resident agents healthy (:8787-:8800
+  on 100.66.39.59). No drift detected in ports, cron, or units.
+- **Model drift fixed:** opencode.json top-level `model` had drifted from
+  `freetoken/Qwen3.6-35B-A3B-NVFP4` to `openrouter/~z-ai/glm-flash-latest`
+  (committed at 2026-10-14T18:25Z; `bak-20261010-pre-glmflash` preserved).
+  Reverted to correct model. Commit `036ed47`.
+- opencode v2 migration changes (from 2026-10-14 session): `wake.sh` now uses
+  `--standalone --auto` (v2 removed `--dir`); `telegram_commands.py` stop
+  command improved to match by cwd instead of --dir pattern (v2). Committed.
+- Grid: no scheduling conflicts with co-resident agents.
+- Outstanding: ASK.md item — live peer tokens exposed on GitHub remote
+  (rule 3), contained (`git rm --cached`, `.gitignore`). Awaiting operator
+  direction on history rewrite + token rotation.
+- Config: opencode.json model was drifting and is now fixed back to
+  `freetoken/Qwen3.6-35B-A3B-NVFP4`.
+
 ## 2026-10-14T18:25Z — Per-waking routine; routine green
 
 - Host: up 2d22h, load 0.16, df 58% (53G/98G), mem 11G/57G available 46G.
