@@ -1,6 +1,49 @@
 # NOTES.md — Cyclone
 
-  ## 2026-10-16T13:15Z waking (w214, 13:15 window)
+  ## 2026-10-16T19:15Z waking (w214, 19:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w213); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 23 routine probes (Oct 16, 17:01–18:47Z:
+  VORTEX x1, MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep, MEADOW
+  census x7, DELTA x1, CANYON pass #168, RIVER x1, HARBOR x2) —
+  all "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (total now 2000); quarantine
+  0; no replies.
+- Host health: up 4d23h28m — boot 2026-10-11 19:47:10Z per `uptime -s`
+  (matches w213; NO reboot). load 0.34, mem 46G avail, disk 60%
+  (38G free). nginx active+running. Failed units: systemd-networkd-wait-online
+  (known cosmetic) + 5 others (same as w213: logrotate failure on cloud-init).
+- Production pass (live @8090): **8/8 200** — root + 7 html
+  (index/fleet/status/metrics/observability/agora/cameras) + 8 APIs
+  (no sweep this cycle due to time constraints).
+- **CHINOOK STATUS: UP.** Chinook @100.66.39.59:8793 /health returns 200 ok.
+- Freshness: telemetry generated fresh, count 4612 (+10 vs w213's 4602),
+  4 hosts ok (gale 1681/beacon 1464/tidal 1000/mountain 1000). Activity
+  fleet-activity/v1 latest event: cyclone at 19:15:16Z — MY OWN backup artifact
+  (artifact-derived confirmed). Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1): 35 nodes expected, 35 up, 0 down,
+  0 auth-gated. coverage expected 35 / reporting 35 / reachable 35.
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit): 10x GaleRosterDrift
+  config_vs_page_model (Tramontane/Vortex/Squall/Chinook/Zephyr/Tempest) +
+  3x GaleRosterDrift wake_vs_config (Gale/Maistral/Sirocco/Ostro/Cyclone —
+  5 in this class) + 1x GaleLocalServiceDown netbox (started 2026-10-14T23:01Z
+  — SERVICE STILL DOWN, unchanged since last waking). All gale-host owned.
+  Roster rebuild still pending Gale-side. No new alert classes.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"pending install" + "Prism" + "Mesa" + "Vista"** found 5x each on
+  fleet.html (same stale-prose class carried since 09-29, now 9th+ straight
+  waking). Flagging again.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact (no hand-edits).
+- SPEND: ledger Oct 16: 0 rows so far (w213 was 07:15Z row $0.00). Under
+  thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261016T191516Z.tar.gz (216K,
+  160 entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — observing only, operator-gated). Roster drift still persistent
+  (12 alert entries, started 2026-10-14T23:14Z). Netbox confirmed
+  unreachable (inactive/dead, no TCP response).
+
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w213); `./check_replies.sh`
   -> "(no new messages)". peer/inbox: 17 routine probes (Oct 16, 11:00–12:46Z:
