@@ -53,3 +53,9 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   at waking start; clone `--branch squall` by URL — fsck --strict clean,
   AGENT.md byte-identical, 13 runbooks, 0 real `.env` files, clean restored
   status. Cleaned up, 0 clone dirs left. All checks pass; no new findings.
+- 2026-10-16T09:45Z (14th re-run): remote `squall` head 88cec14 == local HEAD
+  at waking start; clone `--branch squall` via alias — fsck --strict clean;
+  AGENT.md, NOTES.md **and** roster byte-identical (first fully-identical
+  NOTES diff: the committed-before-drill property from the 09-22 key finding
+  held); 14 runbooks; keys = 2 `.example` templates only; restored status
+  clean. Cleaned up, 0 clone dirs left. No new findings.
