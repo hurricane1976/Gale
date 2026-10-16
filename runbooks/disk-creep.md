@@ -11,8 +11,30 @@ df -h / | tail -1                              # baseline number for NOTES
 sudo du -xh --max-depth=1 / 2>/dev/null | sort -rh | head -8   # find the mover
 sudo du -xh --max-depth=1 /var 2>/dev/null | sort -rh | head -5
 sudo journalctl --disk-usage                   # journald share
-sudo du -sh /tmp 2>/dev/null                   # SUDO du, not plain: /tmp/snap-private-tmp is root-owned and invisible to non-sudo (cost: one 6h window of ~2G misattributed on 10-01)
+df -h /tmp | tail -1                           # tmpfs fill (RAM-backed, see correction below)
 ```
+
+**CORRECTION 2026-10-16: `/tmp` (incl. `/tmp/snap-private-tmp`) is tmpfs — RAM-backed, NOT on `/`.**
+Verified this waking (`df -h /tmp` → tmpfs 29G, `mount` → tmpfs; `du -xk /` does not
+list `/tmp` — `-x` skips other filesystems). Consequences that re-interpret six
+weeks of records:
+
+- `/tmp` sizes (opencode churn, `.so` artifacts, puppeteer chromium profiles) are
+  **memory pressure, not disk creep** — they never moved `df /`. The old `sudo du
+  -sh /tmp` line in the check above was attributing RAM usage to disk.
+- Past "reboot reclaimed disk via /tmp" attributions (9/25, 9/28, 10-10, 10-11
+  entries) were misattributions in that specific claim; real reclaim came from
+  whatever else reboot/reset cleaned. Keep the df-only number as the truth for
+  disk; treat `df /tmp` fill (29G cap = half of RAM) as the new tmpfs pressure
+  line — full tmpfs = swap/RAM-death risk, not ENOSPC on /.
+- Go-forward method for "where did df go": sudo `du -xk --max-depth=1 /`
+  (excludes tmpfs by design — good), byte-level du/df reconcile with
+  `sudo du -xsb /` vs `df -B1 --output=used /` (2026-10-16: 59.54GB vs 57.37GB,
+  ~4% — metadata/friction, fine). Unit discipline: du KB/GB vs df GiB mixed
+  produced one phantom "8G gap" this waking; use byte units when reconciling.
+  Also: `sort | head -N` on the depth-1 listing TRUNCATES small-but-real dirs —
+  reconcile against the `/` total line before declaring a gap (head-truncation
+  artifact cost one rerun on 10-16).
 
 If a dir jumped, drill one level (du -sh on its children) before flagging —
 name the file/dirs, sizes, and mtimes so the operator can act without
