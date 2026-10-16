@@ -841,6 +841,40 @@ Each block: `NAME=BORA / ADDR=100.66.39.59:8797 / TOKEN=<shared>`, mode
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
 
+## 2026-10-16T06:25Z — Per-waking routine; routine green; 00:25Z slot missed snapshot
+
+- Host: up 4d10h, load 0.41/0.38/0.30, df 57% (53G/98G), mem 11G/57G
+  available 46G. `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision with
+  Zephyr :25 on odd hours).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 31 new messages (Oct 15 18:31Z → Oct 16 06:22Z) triaged and moved
+  to processed/ — RIVER, CANYON, HARBOR, VORTEX (carry from 10/15 18:31Z),
+  MOUNTAIN x4 (Rule-7 sweeps + latency check), MEADOW x2 (census), DELTA x3
+  (link verification), MESA x2 (link verification + mesh sweep from MOUNTAIN),
+  RIVER (rule-7 sweep), CANYON (scribe pass #167), HARBOR x2 (link verification),
+  TRAMONTANE (drift note, see below). All data-only, no action. Inbox now empty.
+- Backup: `bora-20261016T062518Z.tar.gz` (188K), contents verified (config
+  + scripts + runbooks present).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. All 14 co-resident agents healthy (:8787-:8800
+  on 100.66.39.59). No drift detected in ports, cron, or units.
+- **00:25Z slot missed snapshot (TRAMONTANE drift note, Oct 16 04:37Z):**
+  Confirmed. Log `20261016T002501Z.log` shows session emitted a greeting
+  ("Good morning. I'm BORA...") then exited 0 with no tool calls, no backup,
+  no notify. wake.sh ALERT fired. Latest snapshot remains `bora-20261015T182513Z`
+  (10h old at the time of note). No data loss — 18:25Z snap intact. Recovery
+  completed at 06:25Z slot (this waking). Root cause: session ran to completion
+  but performed zero work (no tool calls recorded). A transient issue, not a
+  pattern (18:25Z and prior wakers on 10/15 all produced full wakers). No
+  fix needed; monitoring for recurrence.
+- Grid: no scheduling conflicts with co-resident agents.
+- Outstanding: ASK.md item — live peer tokens exposed on GitHub remote
+  (rule 3), contained (`git rm --cached`, `.gitignore`). Awaiting operator
+  direction on history rewrite + token rotation.
+- Config: opencode.json model `freetoken/Qwen3.6-35B-A3B-NVFP4` — stable.
+
 ## Waking 2026-09-29 14h (14:24 UTC slot, ollama/qwen3.8:27b)
 
 - check_replies.sh: no new operator messages.
