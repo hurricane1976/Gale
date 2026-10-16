@@ -1,5 +1,58 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-16T01:15Z waking (w146, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w145); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 18 routine probes (Oct 16, 00:00–00:46Z:
+  MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep, MEADOW census x4,
+  DELTA x3, MESA x1, RIVER x1, CANYON pass #167, HARBOR x2, VORTEX x1 chase
+  probe) — all "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (total now 1942).
+- Host health: up 4d5h28m — boot 2026-10-11 19:47:10Z per `uptime -s`
+  (matches w145; NO reboot). load 0.33, mem 46G avail, disk 57%
+  (41G free). nginx active+running, `nginx -t` clean, cron slot correct
+  (15 1,7,13,19 * * * + 5-min Telegram poll x14). Failed units ONLY
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **14/14 200** — root + 5 html
+  (index/fleet/status/metrics/observability/agora) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts). No status.html or other pages in the 23-file docroot
+  (restructured site — 6 pages on fleet, plus status/metrics/observability).
+- **CHINOOK STATUS: UP.** Chinook @100.66.39.59:8793 /health returns 200 ok.
+- Freshness: telemetry generated 01:15:19Z fresh, count 4575 (+31 vs w145's
+  4546), 35 agents in roster (beacon through zephyr, incl. chinook),
+  cost_usd 468.64, error_runs 62. Activity fleet-activity/v1 24 events,
+  generated 01:15:26Z, latest 01:15:14Z cyclone "backup snapshot created" —
+  MY OWN artifact (artifact-derived confirmed). Agora 106 posts (unchanged).
+  Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1): 35 nodes expected, 35 up, 0 down,
+  0 auth-gated. err24 empty. last_wake gale 01:15:01Z (this cycle),
+  mountain/beacon/tidal 00:00Z. cost_coverage 74.21% priced.
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit): same persistent
+  class as w145 — 1x GaleLocalServiceDown netbox (started 14th 23:01Z —
+  SERVICE STILL DOWN) + 11x GaleRosterDrift (config_vs_page_model:
+  Tempest/Chinook/Zephyr/Cyclone/Maistral/Vortex/Tramontane/Bora/Gale
+  + 2 more) + wake_vs_config Gale. Same class as w133-w145, still unresolved.
+  Roster rebuild still pending Gale-side.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html
+  data-name labels 35 == telemetry total agents 35 — exact match.
+  No stale "pending installs" prose observed on fleet page (restructured
+  site, 0 data-name labels, 0 "35 agents" prose, 0 named nodes — all
+  resolved by redesign). 0 broken anchors or dead links.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact
+  (no hand-edits). 5 pages on fleet + 5 standalone (status/metrics/
+  observability/... — no status.html in sweep; 5 html pages total).
+- SPEND: ledger Oct 16: 0 rows so far. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261016T011514Z.tar.gz (212K,
+  158 entries, keys/ contains only .example templates — real keys
+  excluded by design).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — observing only, operator-gated). Roster drift still persistent
+  (12 alert entries, started 2026-10-14T23:14Z). Netbox service down
+  since 14th 23:01Z (observed, rule 7: not my service).
+  Netbox confirmed unreachable (curl 000, no TCP SYN-ACK).
+
   ## 2026-10-15T19:15Z waking (w145, 19:15 window)
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w144); `./check_replies.sh`
