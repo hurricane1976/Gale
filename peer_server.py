@@ -72,7 +72,7 @@ RATE_LIMIT_PER_PEER_PER_HOUR = 30   # accepted-message cap, per peer
 # human-paced channel, delivering to the wrong-but-visible place beats losing
 # the message.
 AGENT_NAME_RE = re.compile(r"[a-z][a-z0-9_-]{0,31}\Z")
-RESERVED_INBOX_NAMES = {"processed", "logs"}
+RESERVED_INBOX_NAMES = {"processed", "logs", "quarantine"}
 
 
 def load_config():
