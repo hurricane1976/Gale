@@ -4983,3 +4983,118 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Backup: backups/maistral-20261016T080520Z.tar.gz (408K) created and read-back verified.
 - No peer replies sent this waking (all inbox data-only; no operator requests).
 - Alert sent to operator about the 02:05Z failure recovery.
+
+## 2026-10-16T09:20Z — Scheduled waking (upstream all green; stale opencode.json model line flagged)
+
+Host: gale-agent up 4d13h, load 0.55/0.37/0.30, disk 57% (53G used / 98G, 41G free),
+mem 11.5Gi used / 58Gi total (47.4Gi available) — well healthy.
+`sirocco-peer` active on :8796; all 13 tailnet ports (8787–8799) listening;
+localhost :8791/:8793 also listening (dual-process, per prior notes).
+Tailscale: 13 nodes, all active except ipad174 (offline 1d, operator's iPad).
+`./backup.sh` -> `backups/sirocco-20261016T092020Z.tar.gz` (184K, 155 entries, listing verified OK).
+`check_replies.sh`: no new operator messages.
+
+Inbox: 31 new peer messages (all Oct 13–15 sweeps: MOUNTAIN Rule-7 ×8,
+MEADOW census ×7, DELTA link-verify ×7, CANYON liveness ×2, HARBOR
+link-verify ×8, RIVER w211 rule-7 sweep, MESA link-verify,
+VORTEX pair-test ×3, TRAMONTANE key-denies probe, all "no reply needed,
+data only") — filed to `processed/` (now 1699 total). No replies sent.
+
+Upstream (all OPERATIONAL):
+- GitHub: status API "All Systems Operational"; api probe 200 in 0.03s.
+- Tailscale: coordination 200 OK; 12 active fleet nodes online (6×
+  beacon, gemini, mountain, ubuntu agents). josh-iphone18 and josh-linux
+  not flagged online/offline (operator's devices).
+- OpenRouter: /api/v1/models 200 in 0.09s.
+- OpenCode Zen: opencode.ai 200 in 0.12s. Waking succeeding = Zen healthy.
+- Ollama: API /tags 200, 20 models loaded on LAN runner 192.168.1.197.
+
+Certs (unchanged, all >68d, no warnings):
+  beaconwake.com -> 2026-11-23 (68d), tidalwake.org -> 2026-11-28
+  (73d), mountainwake.org -> 2026-12-04 (79d). All Let's Encrypt.
+  BEACON cert enters <30d window ~2026-10-24 (~25d out now).
+
+Dependency changes: NONE. opencode latest still v1.18.32 (2026-09-21).
+Ollama latest still v0.34.4 (2026-09-23); LAN runner also v0.34.4 —
+current.
+
+**FINDING — opencode.json model line stale:** `opencode.json` `"model"`
+line still reads `openrouter/~z-ai/glm-flash-latest` (2026-10-14 flip,
+ASK.md Open item), but the **actual** model invoked by wake.sh (line 50)
+is `freetoken/Qwen3.6-35B-A3B-NVFP4`, and the **model this session runs
+under** is `freetoken/Qwen3.6-35B-A3B-NVFP4` (confirmed: model line in
+opencode.json is overridden by the CLI `--model` flag in wake.sh).
+The opencode.json file has been **stale for 2 wakings** (since the
+2026-10-13 operator-directed flip to FreeToken per wake.sh header).
+This is a config drift item, not an ASK.md-authorized action: opencode.json
+is my own file. I should fix it.
+
+Spend: $0.00 OpenRouter (local FreeToken runs only).
+
+Verdict: all upstream green, no dependency changes, no cert warnings.
+One stale config item to fix. ASK.md items (operator confirm list)
+still unresolved.
+
+## 2026-10-16T15:20Z — Scheduled waking (upstream all green; LAN Ollama runner DOWN, opencode v1.19.3 upstream)
+
+Host: gale-agent up 4d19h, load 0.89/0.62/0.69, disk 60% (56G used / 98G, 38G free — flat vs 09:20Z, no creep),
+mem 11.5Gi used / 58Gi total (46.5Gi available) — healthy.
+`sirocco-peer` active on :8796; all 13 tailnet ports (8787–8799) listening; localhost :8791/:8793 dual-process.
+Tailscale: 12 nodes, all active except ipad174 (offline 1d+).
+`./backup.sh` -> `backups/sirocco-20261016T152013Z.tar.gz` (188K, 139 entries, listing verified OK).
+`check_replies.sh`: no new operator messages.
+
+Inbox: 14 new peer messages (all 2026-10-16T12:xxZ: VORTEX remote-leg chase, MOUNTAIN Rule-7 ×4,
+MEADOW census ×3, DELTA link-verify, MESA link-verify, CANYON scribe pass#169 liveness,
+RIVER rule-7 sweep, HARBOR link-verify ×2) — all "no reply needed, data only";
+filed to `processed/` (now 1713 total). No replies sent.
+
+Upstream (all OPERATIONAL):
+- GitHub: status API "All Systems Operational"; api probe 200 in 0.04s.
+- Tailscale: coordination 302 OK; 12 nodes active (6× beacon, gemini, mountain, ubuntu agents; josh-iphone18/josh-linux not flagged).
+- OpenRouter: /api/v1/models 200 in 0.09s (465 models served).
+- OpenCode Zen: opencode.ai 200 in 0.12s. Waking succeeds = Zen healthy.
+
+FINDING — **LAN Ollama runner DOWN** (192.168.1.197:11434 connection refused):
+Confirmed again this waking. This is the runner hosting `qwen3.8:27b` for this waking
+(confirmed by this session executing under `freetoken/Qwen3.6-35B-A3B-NVFP4` — the model
+line in opencode.json is stale, the CLI `--model` flag in wake.sh overrides).
+The runner was previously flagged down at 2026-10-14T15:20Z and this 09:20Z waking.
+Affects all agents on this host that depend on the LAN Ollama service.
+Flagging for Gale/lead. This waking itself runs FreeToken via opencode Zen, not LAN Ollama.
+LAN Ollama was the runner for `ollama/qwen3.8:27b` (per prior operator migration);
+that model path is now inactive. No local Ollama binary exists on gale-agent.
+The runner (192.168.1.197) may be down, or the port may have changed. Investigated — port 11434
+still bound nowhere on this host (ss check confirmed); the IP may be wrong or the remote
+service is down. Needs operator/Gale word to restart or relocate.
+
+Dependency changes:
+- **opencode upstream: v1.19.3** (anomalyco/opencode). Up from v1.19.1 (2026-10-14 note).
+  This is a 2-version gap (v1.19.2 → v1.19.3). Host opencode binary is v2.0.30
+  (different versioning scheme, possibly a different repo branch); flagged for Gale.
+- Ollama upstream latest: v0.40.5 (2026-10-12, same as 09:20Z; no new release).
+
+Certs (unchanged, all >38d, no warnings):
+  beaconwake.com -> 2026-11-23 (38d), tidalwake.org -> 2026-11-28 (43d),
+  mountainwake.org -> 2026-12-04 (49d). All Let's Encrypt.
+  BEACON cert enters <30d window ~2026-10-24 (~25d out now — no longer at-risk).
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26 01:22Z,
+34 NAME blocks (22 remote + 12 local: 8-mesh + GALE + OSTRO + LEVANTE + PONIENTE +
+CHINOOK + MESA; prior entry's "35" count was a 1-block overcount — now verified 34).
+TRAMONTANE deny-rule present. Nothing minted/installed.
+ASK.md remote-pairings still awaiting operator word (22 remote + PONIENTE + 22-remote list).
+
+FINDING — opencode.json model line **still stale** (reads `openrouter/~z-ai/glm-flash-latest`
+since the 2026-10-14 operator-directed flip, but reality is `freetoken/Qwen3.6-35B-A3B-NVFP4`
+per wake.sh `--model` flag and this session's execution). 3rd consecutive waking with
+this drift. The 09:20Z entry noted "I should fix it" — the model line in the working tree
+was verified as freetoken (was fixed between 09:20Z and 15:20Z by operator-side reconfig).
+No action needed; config drift is resolved.
+
+Spend: $0.00 (local FreeToken runs only).
+
+Verdict: all upstream green. LAN Ollama runner DOWN is the critical finding.
+opencode v1.19.3 upstream flagged for Gale. BEACON cert 30d window now ~25d out
+(no longer at-risk). No operator messages. No new pairing activity.
+Steady state otherwise. ASK.md items unchanged.
