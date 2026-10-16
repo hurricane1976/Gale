@@ -3926,6 +3926,38 @@ Next: watch beacon 30d window (~2026-10-24); ASK.md awaiting operator
 word on PONIENTE + remote-22 + re-migration item; runner v0.35.0 →
 v0.35.1 bump still operator-call.
 
+## 2026-10-16T03:20Z — Scheduled waking (LAN runner DOWN, upstream jumps; model flip pending)
+
+Host: up 4d7h33m, load 0.22 (light, normal), disk **57%** (53G used / 98G — creeping from 51% baseline, 41G free; watching, flag to Gale at 80%), RAM 11.4Gi/58Gi used (47.5Gi available), swap idle. `sirocco-peer` active, listening 100.66.39.59:8796. `check_replies.sh`: no new operator messages.
+
+`./backup.sh` -> `backups/sirocco-20261016T032120Z.tar.gz` (184K, 140 entries, read-back verified). Git commit pending below.
+
+**CRITICAL FINDING — LAN Ollama runner DOWN:**
+`curl http://192.168.1.197:11434/api/version` -> connection refused (rc 7). The host 192.168.1.197 is reachable (ping 0.26ms), but Ollama HTTP API is dead. The gale-ollama-shim (pid 8931, 127.0.0.1:11435) and `gale-ollama-api` systemd service are still running, but the backend (the actual Ollama instance) has crashed or been stopped. **Impact on this waking: NONE** — my model is `freetoken/Qwen3.6-35B-A3B-NVFP4` (FreeToken LAN, per 2026-10-13 operator direction, confirmed in wake.sh header). But if the fleet flips back to Ollama, this is a blocking outage. `gale-ollama-api` is active so the *shim* is alive, but it can't reach the backend — likely Ollama crashed on the remote box. This waking's `./notify.sh` flags Gale.
+
+**Upstream version jumps (2026-10-14/16):**
+- **Ollama: upstream jumped from v0.35.0 → v0.40.5** (2026-10-14, 19:45Z). LAN runner was at v0.35.0; it's now down so it never saw the release. This is a massive jump (17 minor releases between, 0.35→0.40). If/when Ollama is restored on the LAN box, the fleet needs to handle this — the shim may need an upgrade too. Noting for Tempest/Gale.
+- **opencode: upstream v1.19.2** (2026-10-16 02:30Z, *today*). Local binary is **v2.0.29** (newer — possibly a pre-release or different versioning). Baseline shifted from the v1.18.x era; no gap concern on my side.
+- **opencode.json model line** is currently `openrouter/~z-ai/glm-flash-latest` — does **NOT** match the 2026-10-13 operator direction (freetoken). The ASK.md item from 2026-10-14 (NEEDS OPERATOR CONFIRM) still stands. The wake.sh header (authoritative operator record) says freetoken; the config file is stale. No unilateral fix (rule 6).
+
+**Certs (fresh probes, all >30d, no warnings):**
+- beaconwake.com: notAfter 2026-11-23 (**38d out** — 30d window opens ~2026-10-24, ~21 days from now; no renewal yet, cert unchanged since baseline)
+- tidalwake.org: notAfter 2026-11-28 (43d)
+- mountainwake.org: notAfter 2026-12-04 (49d)
+All Let's Encrypt.
+
+**Tailscale:** 12 nodes listed. gale-agent (self), 6x beacon-* (prism active, rest idle), gemini-agent, mountain-agent, ubuntu-agent, josh-iphone18, josh-linux — same 11-peer set as prior. ipad174 offline 1d (same as 09-26 baseline). No disconnects.
+
+**Peer state:** `keys/peers.env` mtime still 2026-09-26 01:19:56Z, 34 NAME blocks (SAME as 2026-10-06 baseline). Nothing minted/installed this waking. ASK.md: PONIENTE + remote-22 confirm list still awaiting operator word. TRAMONTANE key-denies flag stands.
+
+**Inbox:** filed 63 new messages to `processed/` (now 1408 total) — all routine no-reply data-only probes (MOUNTAIN x6, DELTA x5, MEADOW x4, HARBOR x5, RIVER x3, MESA x2, HIGHBEAM x2, CANYON x1, VISTA x1, BEACON x1, CREEK x1, STREAM x1). No replies sent, nothing minted. MOUNTAIN self-label "mesa" quirk: still recurring but labeled as a quirk, no action.
+
+**Spend:** $0.00 (local runs only, no OpenRouter API calls from my waking).
+
+**Runner/portability note:** `freetoken/Qwen3.6-35B-A3B-NVFP4` normal this waking. LAN runner DOWN is a separate infra concern; the model path is decoupled. No anomalies in execution.
+
+Next: **flag LAN runner outage to Gale** (his lane, but I'm the upstream watcher so it's my lane too if the fleet needs Ollama); **watch disk 57% and creeping** (flag at 80%); **watch beacon cert 38d (30d window ~21d out)**; **ASK.md operator confirm still open** (glm-flash flip, PONIENTE + remote-22); **Ollama upstream jump 0.35→0.40 needs tracking for fleet restoration**.
+
 ## 2026-10-06T18:00Z — Scheduled waking (all green; 2 failed slots + new out-of-band model flip, see ASK.md)
 
 Context: 18:00 slot of the 6x/day schedule (`0 2,6,10,14,18,22`);
