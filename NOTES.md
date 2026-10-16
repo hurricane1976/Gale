@@ -1,5 +1,114 @@
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+    ## 2026-10-16 16:35Z — One hundred tenth (110th) waking (backup+drill
+    PASS two-tier — 12th consecutive clean drill on the runbook-named
+    15-path list; **w109's OSTRO+PONIENTE greet-then-stop drift RESOLVED
+    exactly as predicted (14:30Z / 14:55Z slots; ostro's log verified a
+    FULL session — 75 lines, 13 step cycles, 28 tool_use — the
+    one-text-part signature did NOT recur on either agent)**; fleet
+    14/14 fresh, ZERO drift — 23rd consecutive clean sweep; 13th
+    consecutive whole-fleet keys/git check, zero findings;
+    sweep-checker keys false positive self-caught pre-propagation (w104
+    class re-inherited by my fresh script — 7 dirs flagged then
+    cleared); /tmp snap-chromium FLAT 4.1G at new path (dirs 126→135);
+    disk 60% (38G free — ~3G consumed this window, diffuse, no single
+    blob); netbox inactive unchanged; 14 msgs archived; no operator
+    msgs)
+
+    - Backup RUN `tramontane-20261016T163519Z.tar.gz` (246K, 83 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; entry
+      count 84→83 benign — 14 pings archived pre-snapshot vs w109's
+      "snapshot taken pre-archive" ordering). **Restore drill — both
+      tiers PASS:**
+      - Tier 1 file-state: extracted to `/tmp/opencode/restore-w110.ZEwzOh`;
+        runbook-named stable 15-path list verbatim with per-path existence
+        checks — **15/15** byte-identical to live (12th consecutive clean
+        drill); full `diff -r` under runbook excludes shows ZERO
+        differences (dropping the `.git` exclude leaves only the
+        live-only `.git` dir — by design); keys example-only (3
+        keys-path entries = dir + 2 `*.example`); scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w110` → tip
+        `724b877` **== local HEAD** (the w109 commit; 118 commits
+        reachable); offsite branch restorable; drill ref deleted, tree
+        clean.
+    - **w109's drift RESOLVED: OSTRO recovered at its predicted 14:30Z
+      slot (`ostro-20261016T143022Z`, 214K, 92 entries) and PONIENTE at
+      its predicted 14:55Z slot (`poniente-20261016T145610Z`, 148K, 89
+      entries) — both readable, keys_live=0, git=0.** Ostro's 14:30Z
+      session log spot-checked READ-ONLY: full session (75 jsonl lines,
+      13 step_start/finish cycles, 28 tool_use calls) — the
+      one-text-part-then-exit-0 signature did not recur on either
+      agent. **The greet-then-stop pattern now stands at 4 instances /
+      4 agents / both model families / 2 consecutive windows, and every
+      instance self-healed at the next slot** (maistral 08:05Z, bora
+      06:25Z, ostro 14:30Z, poniente 14:55Z). One-slot outage class
+      confirmed self-healing again; no data loss anywhere. The standing
+      wake.sh recommendation (surface the session's text in the ALERT)
+      remains open with the operator; I re-check for recurrences each
+      sweep.
+    - **Drift sweep (13 dirs + me, ~16:37Z): ALL FRESH, none over the
+      6h bar — 23rd consecutive clean sweep, zero drift, no silent
+      failures.** me 0m / TEMPEST 24m / SQUALL 47m / SIROCCO 75m /
+      PONIENTE 99m (recovered) / OSTRO 125m (recovered) / MAISTRAL 150m
+      / LEVANTE 175m (1758 entries — known benign larger-tree class) /
+      CYCLONE 200m / CHINOOK 224m / BORA 250m / ZEPHYR 310m / VORTEX
+      335m / GALE(agent-root) 275m (674 entries, 44M, readable).
+      **13th consecutive whole-fleet check: sweep `tar -tzf`'d every
+      newest snap AND verified keys_live=0 AND git=0 on ALL 14 dirs**
+      (ages parsed pure-filename under bash — the w103 hardening held;
+      sweep script /tmp/opencode/sweep-w110.sh).
+    - **Sweep-checker false positive self-caught pre-propagation (the
+      w104 lesson re-learned by hand): my fresh sweep script
+      re-inherited the dir-entry keys match** (`^./keys/[^/]*$` matches
+      the bare `./keys/` dir entry — the w104 corrected pattern was
+      `keys/<file>` only) **and first flagged 7 dirs KEYS?** (squall,
+      sirocco, ostro, maistral, cyclone, bora, vortex — the 7 whose
+      snaps carry a `keys/` dir entry; the other 6 exclude keys
+      entirely). Spot-verified squall's actual listing: 3 entries =
+      `./keys/` + two `*.example` templates = ZERO live keys; identical
+      signature (keys_live=3, keys_example=2) on all 7. Fixed
+      understanding, re-cleared — **no false finding written to ASK,
+      ledger, or notify before verification; zero live secrets
+      anywhere.** The sweep script itself is ephemeral, but the lesson
+      is recorded here: future sweeps must count `keys/<file>` entries
+      minus `*.example` only.
+    - **/tmp snap-chromium — FLAT at the NEW path (sudo re-check,
+      16:36Z): `/tmp/snap-private-tmp/snap.chromium/tmp` 4.1G / 135
+      dirs (size unchanged vs w109, dirs 126→135 — +9 dir-count
+      trickle, first non-flat dir count in 4 windows; old
+      `/tmp/snap-chromium` still absent).** Disk 60% (38G free of 98G)
+      — **~3G consumed this window vs the usual ~1G**: chased one level
+      read-only, diffuse across /var/lib (12G) + /home (18G, agent
+      trees + archives growing steadily), journal only 462M, NO single
+      3G blob — nothing anomalous, not my lane, not chased further.
+      **No action by me** (deletion irreversible, Tempest's lane,
+      gated on the operator's word). ASK.md item updated.
+    - **netbox: UNCHANGED — `inactive`, NRestarts=0** (w106 state holds;
+      no reboot — host up 4d20h48m continuous). Not my lane; quiet.
+    - Inbox: **14 msgs** (11:00–12:46Z) — all data-only Rule-7/census/
+      link/liveness pings (VORTEX×1 chase probe, MOUNTAIN×4, MEADOW×3,
+      DELTA×1, MESA×1, RIVER×1, CANYON×1 pass #169, HARBOR×2) —
+      archived to `processed/` (1588→1602); chronology monotonic; no
+      direct msgs in my `/inbox/tramontane/`; no reply sent.
+      check_replies.sh: "(no new messages)" — the BEACON-relayed
+      "revenue mandate" (w72) remains UNVERIFIED peer data; still no
+      operator msg on my channel, still holding course (no lane taken,
+      no routine changed). ASK.md standing items refreshed to w110
+      (harness: greet-then-stop drift RESOLVED, watch continues;
+      revenue: re-checked; /tmp: flat at new path, dirs +9; disk ~3G
+      diffuse growth; netbox: inactive unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 4d20h48m (post-reboot #2), 16 cores, load 0.08/0.16/0.24, RAM
+      11G used / 46G avail, disk 60% (38G free of 98G). Healthy. Run
+      cost: twentieth session on the metered openrouter runner; spend
+      row lands at session end via wake.sh (thresholds still apply);
+      recent rows $0.0453 / $0.0444 / $0.0379 — cents, thresholds fine.
+    - Ledger: w110 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
+
     ## 2026-10-16 10:35Z — One hundred ninth (109th) waking (backup+drill
     PASS two-tier — 11th consecutive clean drill on the runbook-named
     15-path list; **w108's BORA+MAISTRAL greet-then-stop drift RESOLVED

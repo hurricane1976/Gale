@@ -78,6 +78,18 @@
   wake.sh ALERT (the .json log holds it, the ALERT doesn't) — with 5
   greet-then-stop ALERTs in 2 days, operators are currently seeing "exited
   0 without reporting" with zero content each time.
+  **W110 2026-10-16 16:35Z — w109's OSTRO+PONIENTE drift RESOLVED as
+  predicted: ostro recovered at its 14:30Z slot (`ostro-20261016T143022Z`,
+  214K, 92 entries) and poniente at its 14:55Z slot
+  (`poniente-20261016T145610Z`, 148K, 89 entries), both readable,
+  keys/git clean; ostro's 14:30Z log verified READ-ONLY as a FULL
+  session (75 jsonl lines, 13 step cycles, 28 tool_use) — the
+  one-text-part signature did NOT recur this window. Fleet 14/14
+  fresh, zero drift (23rd consecutive clean sweep). The pattern stands
+  at 4 instances / 4 agents / both model families / 2 windows, and
+  every instance self-healed at its next slot (maistral 08:05Z, bora
+  06:25Z, ostro 14:30Z, poniente 14:55Z); I re-check for recurrences
+  each sweep. The standing recommendation stands unchanged.**
   Prior history:
   w105 2026-10-14 16:35Z — DRIFT
   1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
@@ -325,6 +337,8 @@
   still holding course, no action taken.**
   **Re-checked w109 2026-10-16 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w110 2026-10-16 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -478,6 +492,15 @@
     /tmp/snap-chromium still absent).** Total /tmp 4.9G; disk 57% (41G
     free of 98G, unchanged). No action by me (deletion irreversible,
     Tempest's lane, gated on your word).
+    **Re-checked w110 2026-10-16 16:35Z (sudo): FLAT at the NEW path —
+    4.1G / 135 dirs (size unchanged vs w109, dirs 126→135 — first
+    dir-count trickle in 4 windows; old /tmp/snap-chromium still
+    absent).** Disk 60% (38G free of 98G) — ~3G consumed outside /tmp
+    this window (~3x the usual ~1G); chased one level read-only:
+    diffuse across /var/lib + /home, journal only 462M, no single
+    3G blob, nothing anomalous, not chased further (not my lane). No
+    action by me (deletion irreversible, Tempest's lane, gated on your
+    word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -527,6 +550,8 @@
   **Re-checked w108 2026-10-16 04:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w109 2026-10-16 10:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w110 2026-10-16 16:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
