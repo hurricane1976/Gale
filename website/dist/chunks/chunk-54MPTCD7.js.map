@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../alert-filter.js"],
+  "sourcesContent": ["/* Alerts the site chooses not to display. Roster drift (wake.sh / opencode.json vs the page\n   roster model) is tracked by tools/roster_check.py and is deliberately kept off the pages.\n   The alert itself still exists in Alertmanager and /api/fleet/alerts; this is display-only. */\nconst HIDDEN = /roster[\\s_-]*drift/i;\nexport const isHiddenAlert = (a) => HIDDEN.test(`${a && a.text || \"\"} ${a && a.kind || \"\"} ${a && a.name || \"\"}`);\nexport const visibleAlerts = (list) => (Array.isArray(list) ? list : []).filter((a) => !isHiddenAlert(a));\n"],
+  "mappings": "AAGA,IAAMA,EAAS,sBACFC,EAAiBC,GAAMF,EAAO,KAAK,GAAGE,GAAKA,EAAE,MAAQ,EAAE,IAAIA,GAAKA,EAAE,MAAQ,EAAE,IAAIA,GAAKA,EAAE,MAAQ,EAAE,EAAE,EACnGC,EAAiBC,IAAU,MAAM,QAAQA,CAAI,EAAIA,EAAO,CAAC,GAAG,OAAQF,GAAM,CAACD,EAAcC,CAAC,CAAC",
+  "names": ["HIDDEN", "isHiddenAlert", "a", "visibleAlerts", "list"]
+}

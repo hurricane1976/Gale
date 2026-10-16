@@ -77,6 +77,7 @@ void main() {
 const esc3d = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 import { program, Quality, fitCanvas, createGraphicsHud, motionPaused } from "./shared-gl.js";
+import { visibleAlerts } from "./alert-filter.js";
 
 const REDUCED3D = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -952,7 +953,7 @@ export function initTopology3D(opts = {}) {
       if (!r.ok) return;
       const d = await r.json();
       alertSev.fill(0); alertText.clear();
-      for (const a of d.alerts || []) {
+      for (const a of visibleAlerts(d.alerts)) {
         const sev = a.sev === "crit" ? 2 : a.sev === "warn" ? 1 : 0;
         if (!sev) continue;
         nodes.forEach((n, i) => {

@@ -195,6 +195,9 @@ html, body { overflow-x: clip; }
 .nav-pulse[data-level="crit"] { --np: #e5484d; }
 .nav-pulse { border-color: color-mix(in srgb, var(--np) 45%, transparent); }
 .nav-pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--np); box-shadow: 0 0 8px var(--np); }
+.nav-pulse[data-level="ok"]::after { content: ""; position: absolute; bottom: -3px; left: 10px; right: 10px; height: 2px; background: var(--np); border-radius: 1px; }
+.nav-pulse[data-level="warn"]::after { background: var(--np); }
+.nav-pulse[data-level="crit"]::after { background: var(--np); animation: np-throb 1.1s ease-in-out infinite; }
 .nav-pulse:hover { background: color-mix(in srgb, var(--np) 14%, transparent); }
 .site-links .nav-pulse::after, .fleet-links .nav-pulse::after, .topnav-links .nav-pulse::after { display: none; }
 @media (prefers-reduced-motion: no-preference) {
@@ -467,3 +470,22 @@ body:has(.galaxy-main) { --bg: #070b16; --bg-deep: #03050c; --surface: #0f1730; 
   background: #03050c; color: var(--text); color-scheme: dark; }
 body:has(.galaxy-main) header.site, body:has(.galaxy-main) footer.site { background: rgba(5, 8, 18, .86); }
 body:has(.galaxy-main) .galaxy-title { background: linear-gradient(100deg, #fff 0%, #9cc4ff 45%, #c9a8ff 100%); -webkit-background-clip: text; background-clip: text; animation: none; }
+
+/* Site-wide skip link + grouped nav menus. gale.css has these, but fleet.html
+   loads fleet-tidal.css instead, so without this the skip link sat visible and
+   the Overview/Fleet/Insights/Services groups rendered as raw <details>. */
+.skip { position: absolute; left: -999px; top: 10px; z-index: 200; padding: 8px 14px; border-radius: 8px;
+  background: var(--surface-2, var(--surface, #111a2e)); color: var(--text, #e8eefc); border: 1px solid var(--line-strong, #ffffff33); font-size: .85rem; }
+.skip:focus { left: 12px; }
+.fleet-links .nav-group { position: relative; flex: none; }
+.fleet-links .nav-group > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 5px 9px; border: 1px solid transparent; border-radius: 8px; color: var(--text-dim); cursor: pointer; list-style: none; white-space: nowrap; font-size: .86rem; }
+.fleet-links .nav-group > summary::-webkit-details-marker { display: none; }
+.fleet-links .nav-group > summary::after { content: "⌄"; color: var(--text-faint); font-size: .75em; transition: transform .16s ease; }
+.fleet-links .nav-group[open] > summary::after { transform: rotate(180deg); }
+.fleet-links .nav-group[data-active="true"] > summary { color: var(--text); border-color: color-mix(in srgb, var(--flag, #3b82f6) 42%, transparent); }
+.fleet-links .nav-group > summary:hover, .fleet-links .nav-group > summary:focus-visible, .fleet-links .nav-group[open] > summary { color: var(--text); background: color-mix(in srgb, var(--surface, #111a2e) 82%, transparent); outline: none; }
+.fleet-links .nav-group-menu { position: absolute; z-index: 90; top: calc(100% + 6px); inset-inline-end: 0; display: grid; min-width: 190px; gap: 2px; padding: 7px; border: 1px solid var(--line-strong); border-radius: 10px; background: color-mix(in srgb, var(--surface, #111a2e) 96%, var(--bg)); box-shadow: 0 16px 40px #0005; }
+.fleet-links .nav-group-menu a { display: flex; align-items: center; min-height: 40px; padding: 8px 10px; border: 0; border-radius: 7px; color: var(--text-dim); font-size: .84rem; }
+.fleet-links .nav-group-menu a::after { display: none; }
+.fleet-links .nav-group-menu a:hover { color: var(--text); background: color-mix(in srgb, var(--flag, #3b82f6) 12%, transparent); }
+.fleet-links .nav-group-menu a[aria-current="page"] { color: var(--text); background: color-mix(in srgb, var(--flag, #3b82f6) 12%, transparent); }

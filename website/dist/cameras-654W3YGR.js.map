@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../cameras.js"],
+  "sourcesContent": ["/* GALE \u2014 cameras.js (stub, not yet implemented). */\nimport {boot} from \"./shared.js\";\nboot();\n"],
+  "mappings": "kFAEAA,EAAK",
+  "names": ["boot"]
+}

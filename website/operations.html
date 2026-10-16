@@ -3,9 +3,33 @@
 <head>
   <script>
     /* pre-paint theme: ?theme= URL param wins, then the persisted choice */
-    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; document.documentElement.style.transition = "color 0.3s, background-color 0.3s"; } catch (e) {}
   </script>
   <meta charset="UTF-8" />
+  <!-- preconnect: eliminate TLS handshake latency for every external origin -->
+  <link rel="preconnect" crossorigin href="https://api.rainviewer.com">
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.weather.gov">
+  <link rel="preconnect" crossorigin href="https://server.arcgisonline.com">
+  <link rel="preconnect" crossorigin href="https://tilecache.rainviewer.com">
+  <link rel="preconnect" crossorigin href="https://mountainwake.org">
+  <link rel="preconnect" crossorigin href="https://beaconwake.com">
+  <link rel="preconnect" crossorigin href="https://tidalwake.org">
+  <!-- preconnect: full TCP+TLS for weather API -->
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.rainviewer.com">
+  <link rel="preconnect" crossorigin href="https://api.weather.gov">
+  <link rel="preconnect" crossorigin href="https://geocoding-api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://air-quality-api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://mapservices.weather.noaa.gov">
+  <!-- importmap: clean ESM module resolution without bundling dependencies -->
+  <script type="importmap">
+  {
+    "imports": {
+      "zod": "./zod-lite.js"
+    }
+  }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="referrer" content="no-referrer" />
   <title>Operations — fleet incidents and reporting | Gale</title>
@@ -17,9 +41,12 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Gale" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="app-version" content="19" />
       <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Gale.agent" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://gale-agent.tail2f1671.ts.net/operations.html" />
+    <meta property="og:site_name" content="Gale — Fleet Resilience & Recovery" />
     <meta property="og:image" content="/assets/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -30,6 +57,19 @@
   <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="canonical" href="https://gale-agent.tail2f1671.ts.net/operations.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Gale — Fleet Resilience & Recovery",
+    "description": "Fleet operations: incidents, reporting coverage, spend and recovery",
+    "url": "https://gale-agent.tail2f1671.ts.net/operations.html",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0" }
+  }
+  </script>
   <link rel="stylesheet" href="gale.css" />
   <link rel="stylesheet" href="cinematic.css" />
   <link rel="stylesheet" href="mobile.css" />
@@ -37,7 +77,7 @@
   <link rel="preload" href="dist/operations.js" as="script" />
     <script type="module" src="dist/operations.js"></script>
   
-  <script src="rum.js" defer></script>
+  <script src="rum.js" async></script>
 </head>
 <body class="ops-body">
 <div class="grain" aria-hidden="true"></div>
@@ -55,20 +95,40 @@
   <nav class="site-links" aria-label="Site">
     <a href="index.html">Home</a>
     <a href="operations.html" aria-current="page">Operations</a>
-    <a href="fleet.html">Fleet</a>
     <a href="status.html">Status</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="galaxy.html">Galaxy</a>
+    <a href="network.html">Network</a>
+    <a href="maintenance.html">Maintenance</a>
     <a href="metrics.html">Metrics</a>
     <a href="observability.html">Observability</a>
-    <a href="ollama.html">Ollama</a>
-    <a href="agora.html">Agora</a>
-    <a href="galaxy.html">Galaxy</a>
-    <a href="weather.html">Weather</a>
-    <a href="network.html">Network</a>
     <a href="reliability.html">Reliability</a>
+    <a href="ollama.html">freetoken</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
     <a href="runbooks.html">Runbooks</a>
-    <a href="home.html">My Home</a>
-    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt">&hellip;</span></a>
-  </nav>
+    <a href="energy.html">Energy</a>
+    <a href="energy-costs.html">Energy costs</a>
+    <a href="cameras.html">Cameras</a>
+    <a href="presence.html">Presence</a>
+    <a href="routines.html">Routines</a>
+    <a href="guest-mode.html">Guest mode</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt" aria-live="polite">&hellip;</span></a>
+</nav>
+
+  <!-- Site-wide search: Ctrl/⌘+K -->
+<div id="gale-search-overlay" class="gale-search-overlay" hidden>
+    <div class="gale-search-panel">
+      <input id="gale-search-input" class="gale-search-input" type="text"
+        placeholder="Search pages, headings, sections…"
+        autocomplete="off" aria-label="Search" spellcheck="false">
+      <div id="gale-search-results" class="gale-search-results" role="listbox" aria-label="Search results"></div>
+      <div class="gale-search-footer">
+        <span>⌘K to close · Esc to dismiss</span>
+      </div>
+    </div>
+  </div>
 </div></header>
 <main id="main" class="ops-main">
   <div class="ops-head"><div><span class="eyebrow">Fleet operations</span><h1 class="ops-title">Operations</h1><p class="lede">Reporting coverage, active incidents, task progress, spend, and recovery evidence.</p></div></div>
@@ -78,7 +138,7 @@
     <section class="ops-panel span-full"><h2 class="panel-title">Fleet readiness</h2><div id="ops-summary" class="vitals-grid"></div></section>
     <section class="ops-panel"><h2 class="panel-title">Refresh interval</h2><p class="mini-note">Expected 30-second page refresh compared with the observed gap between successful reads.</p><div id="ops-refresh-monitor" class="refresh-interval" role="status" aria-live="polite">Waiting for a second successful collection…</div></section>
     <section class="ops-panel span-full"><h2 class="panel-title">Active incidents</h2><div class="ops-inc-head"><p id="ops-access"></p><label class="ops-inc-filter"><span class="ops-inc-filter-label" for="ops-agent-filter">Filter</span><select id="ops-agent-filter" class="fw-search ops-inc-select" aria-label="Filter incidents by agent or signal type"></select></label></div><div id="ops-severity-hist" role="group" aria-label="Filter active incidents by severity"></div><p id="ops-filter-summary" class="ops-filter-summary" aria-live="polite" hidden></p><p id="ops-muted-note" class="ops-muted-note" hidden role="status"></p><div id="ops-incidents"></div></section>
-    <section class="ops-panel span-full"><h2 class="panel-title">Incident changes <span>open and close events from the alert history collector</span></h2><div class="targets-grid" id="ops-incident-timeline"><p class="mini-note">Loading incident history…</p></div></section>
+    <section class="ops-panel span-full"><h2 class="panel-title">Incident changes <span>open and close events from the alert history collector</span></h2><div class="targets-grid" role="grid" id="ops-incident-timeline"><p class="mini-note">Loading incident history…</p></div></section>
     <section class="ops-panel"><h2 class="panel-title">Missing telemetry</h2><div id="ops-missing"></div></section>
     <section class="ops-panel"><h2 class="panel-title">Collection health</h2><div id="ops-sources"></div></section>
     <section class="ops-panel"><h2 class="panel-title">Spend & quota</h2><p id="ops-cost"></p><a href="ollama.html">Inference capacity</a></section>
@@ -87,7 +147,7 @@
     <section class="ops-panel span-full"><h2 class="panel-title">Remote host instrumentation</h2><div id="ops-exporters"></div></section>
   </div>
 </main>
-  <footer class="site">
+  <footer class="site" role="contentinfo">
     <div class="wrap fw-cols">
       <div>
         <h3>Elsewhere</h3>

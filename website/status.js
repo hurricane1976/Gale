@@ -5,6 +5,7 @@
    which have a full static fallback); see the <noscript> notice. */
 import { boot, esc, clamp, refreshEffects, REDUCED, setHTML, setText, patchList, signal, effect, tracedFetch, tweenText, morph, skeleton, setAmbientHealth, setStormIntensity, stormLevelFromHost, whenPageActive, scheduleBackground, safeJSONParse } from "./shared.js";
 import { statusPayload, metricsPayload, wakesPayload, asksPayload, validate } from "./payloads.js";
+import { visibleAlerts } from "./alert-filter.js";
 
 boot();
 
@@ -898,7 +899,7 @@ let liveFleetAlerts = null;
 let lastStatus = null;
 
 function mapFleetAlerts(env) {
-  return ((env && env.alerts) || []).map((x) => ({
+  return visibleAlerts(env && env.alerts).map((x) => ({
     ...x,
     kind: String(x.kind || "").split("-")[0] || "fleet",
   }));
@@ -1217,7 +1218,7 @@ function renderUptime(u) {
 /* ---- ollama GPU · 24h (item: inference dashboard) ----
    The ollama admin service samples /api/ps + nvidia-smi every 30s into
    ollama-history.jsonl and serves /api/ollama/history?hours=24. Chart:
-   GPU util (inference proxy — Ollama exposes no server-wide tok/s),
+   GPU util (inference proxy — freetoken exposes no server-wide tok/s),
    temperature, and VRAM headroom. Nulls carry forward so gaps don't dip. */
 const GPU_HISTORY_TTL = 60e3;
 const gpuHistoryCache = { at: 0, data: null };
@@ -1724,6 +1725,7 @@ setInterval(() => { if (lastGeneratedAt) updateFreshness(lastGeneratedAt); }, 10
 tick();
 loadAcks();
 pollTimer = setInterval(tick, pollMs);
+
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") tick();
 });

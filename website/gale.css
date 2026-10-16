@@ -217,6 +217,10 @@ html.no-storm-ceiling::before { display: none; }
     radial-gradient(ellipse at 68% 42%, color-mix(in srgb, #7b90be 34%, transparent), transparent 72%);
   animation: blob-a 31s ease-in-out infinite alternate;
 }
+@media (prefers-reduced-motion: reduce) {
+  .blob-blue, .blob-storm { animation: none; }
+}
+body.tab-hidden *, body.tab-hidden .blob-blue, body.tab-hidden .blob-storm { animation: none !important; }
 
 #storm-canvas {
   position: fixed; inset: 0; z-index: -1;
@@ -448,7 +452,7 @@ h2.sec-title::before {
 }
 .wake-steps > span:last-child { border-bottom: 0; }
 
-.wake-scrub { display: none; }
+.wake-scrub { display: none; max-width: var(--narrow); width: 100%; }
 .scrub-live .wake-scrub { display: block; }
 .scrub-live .wake-steps { display: none; }
 
@@ -574,6 +578,8 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   margin: 0 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
 }
 .panel-title span { color: var(--text-faint); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 400; }
+.guest-exit-form { display: flex; gap: 8px; align-items: stretch; margin-top: 12px; flex-wrap: wrap; }
+.guest-exit-form .input-slim { flex: 1; min-width: 180px; }
 
 /* vitals: big tiles with a threshold-coloured meter bar */
 .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
@@ -929,6 +935,14 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   padding: 10px 12px; font: inherit; resize: vertical;
 }
 .agora-field input:focus, .agora-field textarea:focus { outline: 1px solid var(--gust); border-color: var(--gust); }
+.agora-field input[aria-invalid="true"], .agora-field textarea[aria-invalid="true"] { border-color: #e5484d; }
+.field-help { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.input-slim {
+  background: var(--bg-deep); color: var(--text);
+  border: 1px solid var(--line-strong); border-radius: var(--r-1);
+  padding: 10px 12px; font: inherit; min-height: 40px; width: 100%;
+}
+.input-slim:focus { outline: 1px solid var(--gust); border-color: var(--gust); }
 .agora-actions { display: flex; align-items: center; gap: 14px; }
 .agora-btn {
   background: var(--flag); color: #fff; border: none; border-radius: var(--r-1);
@@ -984,6 +998,8 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
 /* ---- weather tracker (weather.html) ---- */
 .wx-main { padding-bottom: 40px; }
 .wx-hero { padding-block: clamp(48px, 7vw, 88px) 8px; }
+/* #70: scroll-snap for weather page sections */
+.wx-scroll-snap { scroll-snap-type: y mandatory; scroll-snap-align: start; }
 .wx-title {
   font-family: var(--font-heading); font-weight: 600; letter-spacing: -0.02em;
   font-size: clamp(2rem, 5vw, 3rem); margin: 14px 0 12px;
@@ -1155,7 +1171,7 @@ footer.site a:hover { color: var(--gust); text-decoration: underline; text-under
   font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: 1.05; letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
-.stat-lab { display: block; margin-top: 6px; font-size: 0.82rem; color: var(--text-dim); }
+.stat-lab { display: block; margin-top: 6px; font-size: 0.82rem; color: var(--text-dim); overflow-wrap: break-word; max-width: 100%; }
 
 /* small caps label */
 .subtle {
@@ -2645,6 +2661,112 @@ html[data-kiosk-dim="1"] #kiosk-bar { opacity: 0.55; transition: opacity 1.6s ea
 
 /* paper runbooks stay usable with graphics off (review 2026-10-11 #44):
    expand absolute URLs in console panels so a printed page carries them. */
+
+/* ---- PWA update banner: fixed bar at bottom, dismissible. ---- */
+.gale-update-banner {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  z-index: 10000; display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; max-width: calc(100vw - 24px);
+  background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: 12px 12px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  font-size: 0.82rem; color: var(--text-dim);
+  animation: gale-slide-up 0.3s ease-out;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.gale-update-banner button {
+  flex-shrink: 0; cursor: pointer; white-space: nowrap;
+}
+.gale-update-banner .dismiss-btn {
+  background: none; border: 1px solid var(--line-strong); color: var(--text-dim);
+  padding: 4px 10px; border-radius: 6px; font-size: 0.78rem;
+}
+.gale-update-banner .dismiss-btn:hover { background: var(--glass); }
+@keyframes gale-slide-up {
+  from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gale-update-banner { animation: none; transform: none; }
+}
+@media (max-width: 600px) {
+  .gale-update-banner { flex-direction: column; gap: 6px; padding: 12px 16px; }
+}
+
+/* ---- paper runbooks stay usable with graphics off (review 2026-10-11 #44):
+   expand absolute URLs in console panels so a printed page carries them. */
 @media print {
   main .ops-panel a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; word-break: break-all; }
 }
+
+/* ═══ Global status banner ═══ */
+.status-banner {
+  padding: 6px 16px; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--line-strong, #2a3a55);
+}
+.status-banner[data-level="warn"] { background: rgba(248,180,50,.12); color: var(--warn, #f0c040); }
+.status-banner[data-level="crit"] { background: rgba(230,60,60,.15); color: var(--crit, #f06060); }
+.status-banner[data-level="ok"] { background: rgba(60,180,100,.08); color: var(--ok, #60e080); }
+.fleet-meta { font-size: 0.78rem; color: var(--text-muted, #5a6a84); margin-bottom: 8px; line-height: 1.4; }
+.stat-tip {
+  position: absolute; top: 4px; right: 6px; font-size: 0.65rem; opacity: 0.5; cursor: help;
+}
+.stat-card { position: relative; }
+.status-banner-inner {
+  max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 10px;
+}
+.status-banner-dismiss {
+  margin-left: auto; background: none; border: none; color: inherit; font-size: 1.1rem; cursor: pointer; padding: 0 4px;
+}
+.status-banner-dismiss:hover { opacity: 0.7; }
+
+/* ═══ Site-wide search overlay ═══ */
+.gale-search-overlay {
+  position: fixed; inset: 0; z-index: 9999; display: flex; align-items: flex-start; justify-content: center;
+  background: rgba(0,0,0,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  padding: 14vh 16px; box-sizing: border-box;
+  opacity: 0; transition: opacity 0.2s ease;
+}
+.gale-search-overlay[hidden] { display: none; }
+.gale-search-overlay:not(.gale-search-open) { pointer-events: none; }
+.gale-search-overlay.gale-search-open { opacity: 1; }
+.gale-search-panel {
+  width: min(680px, 95vw); background: var(--surface, #111a2e);
+  border: 1px solid var(--line-strong, #2a3a55); border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5); overflow: hidden;
+  display: flex; flex-direction: column; max-height: 60vh;
+}
+.gale-search-input {
+  width: 100%; padding: 18px 20px 14px; border: none; outline: none;
+  background: transparent; color: var(--text, #e6edf7); font-size: 1.05rem;
+  font-family: var(--body, "Inter", system-ui, sans-serif);
+}
+.gale-search-input::placeholder { color: var(--text-muted, #6b7a96); }
+.gale-search-results {
+  overflow-y: auto; max-height: calc(60vh - 100px); padding: 0 16px 8px;
+}
+.gale-search-results ul { list-style: none; margin: 0; padding: 0; }
+.gale-search-item { border-bottom: 1px solid var(--line, rgba(138,180,248,.1)); }
+.gale-search-item:last-child { border-bottom: none; }
+.gale-search-item a {
+  display: block; padding: 10px 6px; color: var(--text, #e6edf7);
+  text-decoration: none; font-size: 0.92rem; line-height: 1.35;
+}
+.gale-search-item a:hover, .gale-search-item a:focus {
+  background: rgba(138,180,248,.08); border-radius: 4px;
+}
+.gale-search-empty { display: block; padding: 20px; text-align: center; color: var(--text-muted, #6b7a96); font-size: 0.9rem; }
+.nav-more-btn {
+  display: none; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border: 1px solid var(--line-strong, #2a3a55);
+  border-radius: 6px; background: transparent; color: var(--text, #e6edf7);
+  margin-left: 8px; cursor: pointer;
+}
+.nav-more-btn:hover { background: rgba(138,180,248,.1); }
+.nav-more-btn svg { display: block; }
+@media (min-width: 901px) {
+  .nav-more-btn { display: flex; }
+}
+@media (max-width: 480px) {
+  #energy-chart, #metrics-chart { height: 180px !important; }
+}
+.gale-search-footer { padding: 8px 20px 12px; text-align: center; font-size: 0.78rem; color: var(--text-muted, #506080); }

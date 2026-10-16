@@ -11,6 +11,7 @@
    resolution and star count on slow GPUs instead of stuttering. */
 import { boot, REDUCED, isDataSaver } from "./shared.js";
 import { program, dprCap, motionPaused } from "./shared-gl.js";
+import { visibleAlerts } from "./alert-filter.js";
 
 boot();
 
@@ -286,7 +287,7 @@ function init() {
       alertUpdatedAt = Date.now();
       agents.forEach((a) => { a.alert = 0; a.alertText = ""; });
       let crit = 0;
-      for (const al of (d.alerts || [])) {
+      for (const al of visibleAlerts(d.alerts)) {
         const a = byName.get(String(al.agent || "").toLowerCase());
         if (!a) continue;
         const lvl = al.sev === "crit" ? 2 : al.sev === "warn" ? 1 : 0;

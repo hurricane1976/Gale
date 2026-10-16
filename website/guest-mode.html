@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; document.documentElement.style.transition = "color 0.3s, background-color 0.3s"; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <link rel="dns-prefetch" href="//api.rainviewer.com">
+  <link rel="dns-prefetch" href="//api.open-meteo.com">
+  <link rel="dns-prefetch" href="//api.weather.gov">
+  <link rel="dns-prefetch" href="//server.arcgisonline.com">
+  <link rel="dns-prefetch" href="//tilecache.rainviewer.com">
+  <link rel="dns-prefetch" href="//mountainwake.org">
+  <link rel="dns-prefetch" href="//beaconwake.com">
+  <link rel="dns-prefetch" href="//tidalwake.org">
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.rainviewer.com">
+  <link rel="preconnect" crossorigin href="https://api.weather.gov">
+  <link rel="preconnect" crossorigin href="https://geocoding-api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://air-quality-api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://mapservices.weather.noaa.gov">
+  <script type="importmap">
+  {
+    "imports": {
+      "zod": "./zod-lite.js"
+    }
+  }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Guest Mode — Gale</title>
+  <meta name="description" content="Gale guest mode: one-tap guest Wi-Fi, camera view, guest log." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e8eef7" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02060d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gale" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="app-version" content="20" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:url" content="https://gale-agent.tail2f1671.ts.net/guest-mode.html" />
+  <meta property="og:site_name" content="Gale — Fleet Resilience & Recovery" />
+  <meta property="og:image" content="/assets/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Gale guest mode" />
+  <meta property="og:title" content="Gale — Guest Mode" />
+  <meta property="og:description" content="Guest Wi-Fi, camera view, and guest activity log." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="canonical" href="https://gale-agent.tail2f1671.ts.net/guest-mode.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Gale — Guest Mode",
+    "description": "Guest mode: guest Wi-Fi, camera view, activity log",
+    "url": "https://gale-agent.tail2f1671.ts.net/guest-mode.html",
+    "applicationCategory": "HomeApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0" }
+  }
+  </script>
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preload" href="dist/guest-mode.js" as="script" />
+  <script type="module" src="dist/guest-mode.js"></script>
+  <script src="rum.js" async></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<div class="cine-vignette" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)" />
+      <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7" />
+    </svg>
+    GALE
+  </a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
+    <a href="status.html">Status</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="galaxy.html">Galaxy</a>
+    <a href="network.html">Network</a>
+    <a href="maintenance.html">Maintenance</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="reliability.html">Reliability</a>
+    <a href="ollama.html">freetoken</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
+    <a href="runbooks.html">Runbooks</a>
+    <a href="energy.html">Energy</a>
+    <a href="energy-costs.html">Energy costs</a>
+    <a href="cameras.html">Cameras</a>
+    <a href="presence.html">Presence</a>
+    <a href="routines.html">Routines</a>
+    <a href="guest-mode.html" aria-current="page">Guest mode</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt" aria-live="polite">&hellip;</span></a>
+</nav>
+
+  <!-- Site-wide search: Ctrl/⌘+K -->
+<div id="gale-search-overlay" class="gale-search-overlay" hidden>
+    <div class="gale-search-panel">
+      <input id="gale-search-input" class="gale-search-input" type="text"
+        placeholder="Search pages, headings, sections…"
+        autocomplete="off" aria-label="Search" spellcheck="false">
+      <div id="gale-search-results" class="gale-search-results" role="listbox" aria-label="Search results"></div>
+      <div class="gale-search-footer">
+        <span>⌘K to close · Esc to dismiss</span>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<main id="main" class="ops-main">
+  <div class="ops-head"><div>
+    <span class="eyebrow">Guest Access</span>
+    <h1 class="ops-title">Guest Mode</h1>
+    <p class="lede">Enable guest Wi-Fi, view cameras, and track guest activity.</p>
+    <!-- Guest Mode exit: password-protected return to admin (#14) -->
+    <div class="ops-panel span-full" id="guest-exit">
+      <h2 class="panel-title">Exit Guest Mode</h2>
+      <p>This view is for guests. To return to admin mode, enter the admin password.</p>
+      <form method="post" action="/api/guest/exit" class="guest-exit-form" aria-label="Exit guest mode">
+        <label for="guest-admin-pass" class="sr-only">Admin password</label>
+        <input type="password" id="guest-admin-pass" name="password" placeholder="Admin password"
+          autocomplete="current-password" class="input-slim" />
+        <button type="submit" class="btn btn-primary">Return to admin</button>
+      </form>
+    </div>
+  </div></div>
+
+  <!-- Guest mode toggle -->
+  <div class="ops-panel span-full" id="guest-status">
+    <h2 class="panel-title">Guest Mode</h2>
+    <p>Connecting…</p>
+  </div>
+
+  <!-- Guest cameras -->
+  <div class="ops-panel span-full" id="guest-cameras">
+    <h2 class="panel-title">Guest Cameras</h2>
+    <p>Loading cameras…</p>
+  </div>
+
+  <!-- Guest log -->
+  <div class="ops-panel span-full" id="guest-log-panel">
+    <h2 class="panel-title">Guest Log</h2>
+    <p>Loading…</p>
+  </div>
+</main>
+
+<footer class="site" role="contentinfo">
+  <div class="wrap fw-cols">
+    <div>
+      <h3>Elsewhere</h3>
+      <ul>
+        <li><a href="index.html">Gale dashboard</a></li>
+        <li><a href="guest-mode.html">Guest mode</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Guest mode</h3>
+      <ul>
+        <li>Guest Wi-Fi is isolated from main network</li>
+        <li>Privacy areas hidden from guest view</li>
+        <li>Guest activity logged locally</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

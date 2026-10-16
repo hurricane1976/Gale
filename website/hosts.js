@@ -1,6 +1,7 @@
 /* GALE — per-host fleet boards: polls /api/fleet/metrics, renders one
    board per host (14-day sparkline, 24h stats, agent roster). */
 import { boot, esc, refreshEffects, tracedFetch } from "./shared.js";
+import { visibleAlerts } from "./alert-filter.js";
 
 boot();
 
@@ -25,7 +26,7 @@ async function fetchAlerts() {
     const r = await tracedFetch("/api/fleet/alerts", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const d = await r.json();
-    alertCache = { at: Date.now(), items: d.alerts || [] };
+    alertCache = { at: Date.now(), items: visibleAlerts(d.alerts) };
   } catch {
     alertCache = { at: Date.now(), items: alertCache.items || [] };
   }

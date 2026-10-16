@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; document.documentElement.style.transition = "color 0.3s, background-color 0.3s"; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <link rel="dns-prefetch" href="//api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <script type="importmap">
+  { "imports": { "zod": "./zod-lite.js" } }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Energy Costs — Gale</title>
+  <meta name="description" content="Track energy spending with configurable electricity rates.">
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://gale-agent.tail2f1671.ts.net/energy-costs.html" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02060d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gale" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preload" href="dist/energy-costs.js" as="script" />
+  <script type="module" src="dist/energy-costs.js"></script>
+  <script src="rum.js" async></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)"/>
+      <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7"/>
+    </svg>
+    GALE
+  </a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
+    <a href="status.html">Status</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="galaxy.html">Galaxy</a>
+    <a href="network.html">Network</a>
+    <a href="maintenance.html">Maintenance</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="reliability.html">Reliability</a>
+    <a href="ollama.html">freetoken</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
+    <a href="runbooks.html">Runbooks</a>
+    <a href="energy.html">Energy</a>
+    <a href="energy-costs.html" aria-current="page">Energy costs</a>
+    <a href="cameras.html">Cameras</a>
+    <a href="presence.html">Presence</a>
+    <a href="routines.html">Routines</a>
+    <a href="guest-mode.html">Guest mode</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt" aria-live="polite">&hellip;</span></a>
+</nav>
+
+  <!-- Site-wide search: Ctrl/⌘+K -->
+<div id="gale-search-overlay" class="gale-search-overlay" hidden>
+    <div class="gale-search-panel">
+      <input id="gale-search-input" class="gale-search-input" type="text"
+        placeholder="Search pages, headings, sections…"
+        autocomplete="off" aria-label="Search" spellcheck="false">
+      <div id="gale-search-results" class="gale-search-results" role="listbox" aria-label="Search results"></div>
+      <div class="gale-search-footer">
+        <span>⌘K to close · Esc to dismiss</span>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<main id="main" class="ops-main">
+  <div class="ops-head"><div>
+    <span class="eyebrow">Energy Costs</span>
+    <h1 class="ops-title">Energy Costs</h1>
+    <p class="lede">Track energy spending with configurable rates.</p>
+  </div>
+  <span class="freshness" id="energy-cost-freshness"><span class="freshness-dot"></span>Loading…</span>
+  </div>
+
+  <!-- Cost summary cards -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Spending</h2>
+    <div class="vitals-grid" id="cost-summary">
+      <div class="vital"><div class="vital-label">Today</div><div class="vital-value" id="cost-today">–</div></div>
+      <div class="vital"><div class="vital-label">This Week</div><div class="vital-value" id="cost-week">–</div></div>
+      <div class="vital"><div class="vital-label">This Month</div><div class="vital-value" id="cost-month">–</div></div>
+      <div class="vital"><div class="vital-label">Total</div><div class="vital-value" id="cost-total">–</div></div>
+    </div>
+  </div>
+
+  <!-- Rate configuration -->
+  <div class="ops-panel"><h2 class="panel-title">Rate Configuration</h2>
+    <div style="padding:12px 22px">
+      <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+        <div>
+          <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Electricity rate ($/kWh)</label>
+          <input id="cost-rate" type="number" step="0.01" min="0" max="1" value="0.15"
+                 style="width:100px;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body);font-size:0.92rem">
+        </div>
+        <button type="button" class="mini-toggle" id="cost-rate-save">update</button>
+      </div>
+      <p style="margin:8px 0 0;font-size:0.78rem;color:var(--text-faint)">Set your local electricity rate to calculate costs from energy usage data.</p>
+    </div>
+  </div>
+
+  <!-- Cost trend chart -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Daily Cost Trend</h2>
+    <svg id="cost-chart" viewBox="0 0 800 250" style="width:100%;height:250px" aria-label="Daily energy cost chart">
+      <text x="400" y="130" text-anchor="middle" fill="var(--text-faint)" font-size="14">No cost data available yet.</text>
+    </svg>
+  </div>
+
+  <!-- Device cost breakdown -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Device Cost Estimate</h2>
+    <div id="cost-devices">
+      <p class="mono-dim">Device cost estimates derived from power/energy sensors.</p>
+    </div>
+  </div>
+
+  <div class="ops-panel span-full"><h2 class="panel-title">Connection</h2>
+    <p id="cost-status" style="margin:0">Connecting to Home Assistant…</p>
+  </div>
+</main>
+
+<footer class="site" role="contentinfo">
+  <div class="wrap fw-cols">
+    <div><h3>Elsewhere</h3><ul>
+      <li><a href="energy.html">Energy monitoring</a></li>
+      <li><a href="/api/fleet/home/energy">Energy JSON feed</a></li>
+    </ul></div>
+    <div><h3>Method</h3><ul>
+      <li>Rate stored in <code>localStorage</code> (default $0.15/kWh)</li>
+      <li>Costs calculated from energy readings × rate</li>
+      <li>Polling from HA energy sensors when available</li>
+    </ul></div>
+  </div>
+</footer>
+</body>
+</html>

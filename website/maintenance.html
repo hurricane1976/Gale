@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; document.documentElement.style.transition = "color 0.3s, background-color 0.3s"; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <script type="importmap">
+  { "imports": { "zod": "./zod-lite.js" } }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Maintenance — Gale</title>
+  <meta name="description" content="Home maintenance tracker: filter changes, service dates, reminders, and tasks.">
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://gale-agent.tail2f1671.ts.net/maintenance.html" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02060d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gale" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preload" href="dist/maintenance.js" as="script" />
+  <script type="module" src="dist/maintenance.js"></script>
+  <script src="rum.js" async></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)"/>
+      <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7"/>
+    </svg>
+    GALE
+  </a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
+    <a href="status.html">Status</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="galaxy.html">Galaxy</a>
+    <a href="network.html">Network</a>
+    <a href="maintenance.html" aria-current="page">Maintenance</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="reliability.html">Reliability</a>
+    <a href="ollama.html">freetoken</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
+    <a href="runbooks.html">Runbooks</a>
+    <a href="energy.html">Energy</a>
+    <a href="energy-costs.html">Energy costs</a>
+    <a href="cameras.html">Cameras</a>
+    <a href="presence.html">Presence</a>
+    <a href="routines.html">Routines</a>
+    <a href="guest-mode.html">Guest mode</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt" aria-live="polite">&hellip;</span></a>
+</nav>
+
+  <!-- Site-wide search: Ctrl/⌘+K -->
+<div id="gale-search-overlay" class="gale-search-overlay" hidden>
+    <div class="gale-search-panel">
+      <input id="gale-search-input" class="gale-search-input" type="text"
+        placeholder="Search pages, headings, sections…"
+        autocomplete="off" aria-label="Search" spellcheck="false">
+      <div id="gale-search-results" class="gale-search-results" role="listbox" aria-label="Search results"></div>
+      <div class="gale-search-footer">
+        <span>⌘K to close · Esc to dismiss</span>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<main id="main" class="ops-main">
+  <div class="ops-head"><div>
+    <span class="eyebrow">Maintenance & Tasks</span>
+    <h1 class="ops-title">Maintenance</h1>
+    <p class="lede">Filter changes, service dates, seasonal tasks, and reminders.</p>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <button type="button" class="mini-toggle" id="maint-add-btn">+ add task</button>
+    <button type="button" class="mini-toggle" id="maint-refresh">refresh</button>
+  </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Summary</h2>
+    <div class="vitals-grid" id="maint-summary">
+      <div class="vital"><div class="vital-label">Pending</div><div class="vital-value" id="maint-pending">–</div></div>
+      <div class="vital"><div class="vital-label">Overdue</div><div class="vital-value" id="maint-overdue">–</div></div>
+      <div class="vital"><div class="vital-label">Done (30d)</div><div class="vital-value" id="aint-done">–</div></div>
+      <div class="vital"><div class="vital-label">Total</div><div class="vital-value" id="maint-total">–</div></div>
+    </div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="ops-panel span-full" style="padding:12px 22px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap" id="maint-filters"></div>
+  </div>
+
+  <!-- Task list -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Tasks</h2>
+    <div id="maint-list">
+      <p class="mono-dim">No tasks yet. Add one to get started.</p>
+    </div>
+  </div>
+</main>
+
+<!-- Add task dialog -->
+<dialog id="task-dialog" aria-label="Add task">
+  <h3 style="margin:0 0 16px;font-family:var(--font-heading);font-weight:600">Add Task</h3>
+  <form method="dialog" style="display:grid;gap:12px;min-width:320px;max-width:500px">
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Title</label>
+      <input id="task-title" type="text" required placeholder="e.g. Change HVAC filter"
+             style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Category</label>
+      <select id="task-category" style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+        <option value="filter">Filter / HVAC</option>
+        <option value="appliance">Appliance</option>
+        <option value="seasonal">Seasonal</option>
+        <option value="repair">Repair</option>
+        <option value="maintenance">General Maintenance</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Due Date</label>
+      <input id="task-due" type="date"
+             style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Notes</label>
+      <textarea id="task-notes" rows="3" placeholder="Additional details…"
+                style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body);resize:vertical"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button type="button" class="mini-toggle" id="task-cancel">cancel</button>
+      <button type="button" class="btn primary" id="task-save">add task</button>
+    </div>
+  </form>
+</dialog>
+
+<footer class="site" role="contentinfo">
+  <div class="wrap fw-cols">
+    <div><h3>Elsewhere</h3><ul>
+      <li><a href="/api/fleet/home/maintenance">Tasks JSON feed</a></li>
+    </ul></div>
+    <div><h3>Method</h3><ul>
+      <li>Tasks stored in <code>home-maintenance.json</code></li>
+      <li>Local persistence — no cloud dependency</li>
+    </ul></div>
+  </div>
+</footer>
+</body>
+</html>

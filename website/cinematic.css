@@ -382,3 +382,18 @@ html[data-saver="1"] .chapter-nav { display: none !important; }
     }
   }
 }
+
+/* #65: stop all cinematic animations when tab is hidden */
+body.tab-hidden .js .cine-line span, 
+body.tab-hidden .marquee-track, 
+body.tab-hidden .js #hero .eyebrow, 
+body.tab-hidden .js #hero .lede, 
+body.tab-hidden .js #hero .chips, 
+body.tab-hidden .js #hero .meta, 
+body.tab-hidden .liquid-morph, 
+body.tab-hidden .ripple, 
+body.tab-hidden .progress-shimmer, 
+body.tab-hidden .filmstrip-track, 
+body.tab-hidden .cine-wave path, 
+body.tab-hidden .lens-flare, 
+body.tab-hidden .wake-dot.on { animation: none !important; }

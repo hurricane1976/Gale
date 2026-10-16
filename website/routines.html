@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; document.documentElement.style.transition = "color 0.3s, background-color 0.3s"; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <link rel="dns-prefetch" href="//api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <script type="importmap">
+  { "imports": { "zod": "./zod-lite.js" } }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Routines — Gale</title>
+  <meta name="description" content="Home routines: multi-step sequences triggered by single actions.">
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://gale-agent.tail2f1671.ts.net/routines.html" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02060d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gale" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preload" href="dist/routines.js" as="script" />
+  <script type="module" src="dist/routines.js"></script>
+  <script src="rum.js" async></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)"/>
+      <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7"/>
+    </svg>
+    GALE
+  </a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
+    <a href="status.html">Status</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="galaxy.html">Galaxy</a>
+    <a href="network.html">Network</a>
+    <a href="maintenance.html">Maintenance</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="reliability.html">Reliability</a>
+    <a href="ollama.html">freetoken</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
+    <a href="runbooks.html">Runbooks</a>
+    <a href="energy.html">Energy</a>
+    <a href="energy-costs.html">Energy costs</a>
+    <a href="cameras.html">Cameras</a>
+    <a href="presence.html">Presence</a>
+    <a href="routines.html" aria-current="page">Routines</a>
+    <a href="guest-mode.html">Guest mode</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt" aria-live="polite">&hellip;</span></a>
+</nav>
+
+  <!-- Site-wide search: Ctrl/⌘+K -->
+<div id="gale-search-overlay" class="gale-search-overlay" hidden>
+    <div class="gale-search-panel">
+      <input id="gale-search-input" class="gale-search-input" type="text"
+        placeholder="Search pages, headings, sections…"
+        autocomplete="off" aria-label="Search" spellcheck="false">
+      <div id="gale-search-results" class="gale-search-results" role="listbox" aria-label="Search results"></div>
+      <div class="gale-search-footer">
+        <span>⌘K to close · Esc to dismiss</span>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<main id="main" class="ops-main">
+  <div class="ops-head"><div>
+    <span class="eyebrow">Routines</span>
+    <h1 class="ops-title">Routines</h1>
+    <p class="lede">Multi-step sequences triggered by single actions.</p>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+    <button type="button" class="mini-toggle" id="routine-add-btn">+ new routine</button>
+    <button type="button" class="mini-toggle" id="routine-refresh">refresh</button>
+  </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Summary</h2>
+    <div class="vitals-grid" id="routine-summary">
+      <div class="vital"><div class="vital-label">Active</div><div class="vital-value" id="routine-active">–</div></div>
+      <div class="vital"><div class="vital-label">Total</div><div class="vital-value" id="routine-total">–</div></div>
+      <div class="vital"><div class="vital-label">Last Run</div><div class="vital-value" id="routine-last">–</div></div>
+    </div>
+  </div>
+
+  <!-- Routines list -->
+  <div class="ops-panel span-full"><h2 class="panel-title">Routines</h2>
+    <div id="routine-list">
+      <p class="mono-dim">No routines yet. Create one to chain multiple device actions.</p>
+    </div>
+  </div>
+</main>
+
+<!-- Routine editor dialog -->
+<dialog id="routine-dialog" aria-label="Routine editor">
+  <h3 id="routine-dialog-title" style="margin:0 0 16px;font-family:var(--font-heading);font-weight:600">New Routine</h3>
+  <div style="display:grid;gap:12px;min-width:320px;max-width:520px">
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Name</label>
+      <input id="routine-name" type="text" required placeholder="e.g. Good Morning"
+             style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Description</label>
+      <input id="routine-desc" type="text" placeholder="e.g. Morning greeting sequence"
+             style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Icon (emoji)</label>
+      <input id="routine-icon" type="text" maxlength="4" placeholder="☀️"
+             style="width:80px;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body);font-size:1.2rem">
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Trigger Type</label>
+      <select id="routine-trigger-type" style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+        <option value="time">Time (HH:MM)</option>
+        <option value="daily">Daily (repeat)</option>
+        <option value="presence_change">Presence change</option>
+        <option value="state_change">Device state change</option>
+      </select>
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:4px">Trigger Value</label>
+      <input id="routine-trigger-value" type="text" placeholder="e.g. 07:00 or person.john home"
+             style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body)">
+    </div>
+    <div>
+      <label style="font-size:0.82rem;color:var(--text-dim);display:block;margin-bottom:8px">Steps</label>
+      <div id="routine-steps-list" style="margin-bottom:8px"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <input id="routine-step-entity" type="text" placeholder="entity_id (e.g. light.kitchen)"
+               style="flex:1;min-width:160px;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body);font-size:0.82rem">
+        <input id="routine-step-state" type="text" placeholder="state (e.g. on, 70, open)"
+               style="flex:1;min-width:160px;padding:8px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-1);color:var(--text);font-family:var(--font-body);font-size:0.82rem">
+        <button type="button" class="mini-toggle" id="routine-add-step">+ step</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button type="button" class="mini-toggle" id="routine-cancel">cancel</button>
+      <button type="button" class="btn primary" id="routine-save">save routine</button>
+    </div>
+  </div>
+</dialog>
+
+<footer class="site" role="contentinfo">
+  <div class="wrap fw-cols">
+    <div><h3>Elsewhere</h3><ul>
+      <li><a href="energy.html">Energy</a></li>
+    </ul></div>
+    <div><h3>Method</h3><ul>
+      <li>Routines stored in <code>localStorage</code></li>
+      <li>Steps call Home Assistant service calls sequentially</li>
+      <li>Runs logged locally — no cloud dependency</li>
+    </ul></div>
+  </div>
+</footer>
+</body>
+</html>

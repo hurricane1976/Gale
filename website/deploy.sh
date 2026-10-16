@@ -122,7 +122,8 @@ sudo cp -r "$SCRIPT_DIR"/assets /var/www/gale/
 sudo rm -rf /var/www/gale/pwa-screenshots
 sudo cp -r "$SCRIPT_DIR"/pwa-screenshots /var/www/gale/ 2>/dev/null || true
 # files that no longer exist in the repo shouldn't linger in the docroot
-for stale in app.js style.css; do sudo rm -f "/var/www/gale/$stale"; done
+# (My Home tab removed 2026-10-14: home.html/js + voice/home-presence modules)
+for stale in app.js style.css home.html home.js voice-home.js home-presence-nav.js; do sudo rm -f "/var/www/gale/$stale" "/var/www/gale/$stale.br" "/var/www/gale/$stale.gz"; done
 # Entry bundles are content-hashed (dist/main-<hash>.js) so a stale cached
 # entry can never import a deleted chunk -- the observability page-break fix.
 # build.mjs wrote the stable->hashed map to dist/.entry-manifest.json; the HTML

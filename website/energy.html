@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    try { var q = new URLSearchParams(location.search).get("theme"); var t = (q === "light" || q === "dark") ? q : localStorage.getItem("gale-theme"); if (t) document.documentElement.dataset.theme = t; document.documentElement.style.transition = "color 0.3s, background-color 0.3s"; } catch (e) {}
+  </script>
+  <meta charset="UTF-8" />
+  <link rel="dns-prefetch" href="//api.open-meteo.com">
+  <link rel="preconnect" crossorigin href="https://api.open-meteo.com">
+  <script type="importmap">
+  { "imports": { "zod": "./zod-lite.js" } }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Energy — Gale</title>
+  <meta name="description" content="Home energy monitoring: usage trends, costs, and breakdowns.">
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://gale-agent.tail2f1671.ts.net/energy.html" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#02060d" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Gale" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="%2302060d"/><rect x="4.5" y="4.5" width="15" height="6.4" fill="%23e8482c"/><rect x="4.5" y="13.1" width="15" height="6.4" fill="none" stroke="%23e8482c" stroke-width="1.6"/></svg>' />
+  <link rel="stylesheet" href="gale.css" />
+  <link rel="stylesheet" href="cinematic.css" />
+  <link rel="stylesheet" href="mobile.css" />
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preload" href="dist/energy.js" as="script" />
+  <script type="module" src="dist/energy.js"></script>
+  <script src="rum.js" async></script>
+</head>
+<body class="ops-body">
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="7.2" fill="var(--flag)"/>
+      <rect x="3.5" y="13.3" width="17" height="7.2" fill="none" stroke="var(--flag)" stroke-width="1.7"/>
+    </svg>
+    GALE
+  </a>
+  <nav class="site-links" aria-label="Site">
+    <a href="index.html">Home</a>
+    <a href="operations.html">Operations</a>
+    <a href="status.html">Status</a>
+    <a href="notifications.html">Notifications</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="galaxy.html">Galaxy</a>
+    <a href="network.html">Network</a>
+    <a href="maintenance.html">Maintenance</a>
+    <a href="metrics.html">Metrics</a>
+    <a href="observability.html">Observability</a>
+    <a href="reliability.html">Reliability</a>
+    <a href="ollama.html">freetoken</a>
+    <a href="agora.html">Agora</a>
+    <a href="weather.html">Weather</a>
+    <a href="runbooks.html">Runbooks</a>
+    <a href="energy.html" aria-current="page">Energy</a>
+    <a href="energy-costs.html">Energy costs</a>
+    <a href="cameras.html">Cameras</a>
+    <a href="presence.html">Presence</a>
+    <a href="routines.html">Routines</a>
+    <a href="guest-mode.html">Guest mode</a>
+    <a id="nav-pulse" class="nav-pulse" href="status.html" data-level="unknown" aria-label="Fleet health: checking"><span class="nav-pulse-dot" aria-hidden="true"></span><span class="nav-pulse-txt" aria-live="polite">&hellip;</span></a>
+</nav>
+
+  <!-- Site-wide search: Ctrl/⌘+K -->
+<div id="gale-search-overlay" class="gale-search-overlay" hidden>
+    <div class="gale-search-panel">
+      <input id="gale-search-input" class="gale-search-input" type="text"
+        placeholder="Search pages, headings, sections…"
+        autocomplete="off" aria-label="Search" spellcheck="false">
+      <div id="gale-search-results" class="gale-search-results" role="listbox" aria-label="Search results"></div>
+      <div class="gale-search-footer">
+        <span>⌘K to close · Esc to dismiss</span>
+      </div>
+    </div>
+  </div>
+</div></header>
+
+<main id="main" class="ops-main">
+  <div class="ops-head"><div>
+    <span class="eyebrow">Energy Monitoring</span>
+    <h1 class="ops-title">Energy</h1>
+    <p class="lede">Track usage trends, costs, and breakdowns over time.</p>
+  </div>
+  <span class="freshness" id="energy-freshness"><span class="freshness-dot"></span>Loading…</span>
+  </div>
+
+  <div class="ops-board">
+    <!-- Energy summary cards -->
+    <section class="ops-panel"><h2 class="panel-title">Overview</h2>
+      <div class="vitals-grid" id="energy-summary">
+        <div class="vital"><div class="vital-label">Today</div><div class="vital-value" id="energy-today">–</div></div>
+        <div class="vital"><div class="vital-label">This Week</div><div class="vital-value" id="energy-week">–</div></div>
+        <div class="vital"><div class="vital-label">This Month</div><div class="vital-value" id="energy-month">–</div></div>
+        <div class="vital"><div class="vital-label">Daily Avg</div><div class="vital-value" id="energy-avg">–</div></div>
+      </div>
+    </section>
+
+    <!-- Energy chart -->
+    <section class="ops-panel span-full"><h2 class="panel-title">Energy Trend</h2>
+      <svg id="energy-chart" viewBox="0 0 800 250" style="width:100%;height:250px" aria-label="Energy usage trend chart" role="img">
+        <text x="400" y="130" text-anchor="middle" fill="var(--text-faint)" font-size="14">No energy data recorded yet.</text>
+      </svg>
+    </section>
+
+    <!-- Device breakdown -->
+    <section class="ops-panel"><h2 class="panel-title">Power Draw</h2>
+      <div class="targets-grid" role="grid" id="energy-devices"><p class="mono-dim">Discovered from Home Assistant power/energy sensors.</p></div>
+    </section>
+
+    <!-- Weather-aware -->
+    <section class="ops-panel"><h2 class="panel-title">Weather Impact</h2>
+      <div id="energy-weather"><p class="mono-dim">Correlate energy usage with outdoor temperature.</p></div>
+    </section>
+  </div>
+
+  <div class="ops-panel span-full"><h2 class="panel-title">Connection</h2>
+    <p id="energy-status" style="margin:0">Connecting to Home Assistant…</p>
+  </div>
+</main>
+
+<footer class="site" role="contentinfo">
+  <div class="wrap fw-cols">
+    <div><h3>Elsewhere</h3><ul>
+      <li><a href="weather.html">Weather</a></li>
+      <li><a href="/api/fleet/home/energy">Energy JSON feed</a></li>
+    </ul></div>
+    <div><h3>Method</h3><ul>
+      <li>Energy readings stored in <code>home-energy.json</code></li>
+      <li>Polling from HA energy sensors when available</li>
+    </ul></div>
+  </div>
+</footer>
+</body>
+</html>

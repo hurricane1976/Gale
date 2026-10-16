@@ -1,3 +1,4 @@
+import { visibleAlerts, isHiddenAlert } from "./alert-filter.js";
 import { boot, esc, setHTML, setText, setVitals, tracedFetch, TRACED_FETCH_TIMEOUT_MS } from "./shared.js";
 boot();
 const $ = (id) => document.getElementById(id);
@@ -130,6 +131,8 @@ async function refresh() {
     // The alert feed proves the Alertmanager Watchdog rule is active. It cannot
     // prove that the remote receiver delivered a notification; keep that
     // distinction visible until a peer-side receipt is available.
+    incidents.alerts = visibleAlerts(incidents.alerts); // roster drift is kept off the pages (alert-filter.js)
+    if (incidents.count != null) incidents.count = incidents.alerts.length;
     const wd = incidents.watchdog || {};
     const wdEl = $("ops-watchdog");
     if (wdEl) {
@@ -154,7 +157,7 @@ async function refresh() {
     opsProblem = "";
     paintOpsFreshness();
     setVitals($("ops-summary"), [["Reachable",`${c.reachable}/${c.expected}`],["Reporting",`${c.reporting}/${c.expected}`],["Incidents",String(incidents.count)],["Task verification",`${data.outcomes.verified_runs} verified`]].map(([name,value])=>`<div class="vital"><span class="vital-label">${esc(name)}</span><span class="vital-value">${esc(value)}</span></div>`).join(""));
-    const timeline = history?.events || [];
+    const timeline = (history?.events || []).filter((e) => !isHiddenAlert(e));
     const duration = (ms) => { const mins = Math.max(0, Math.floor(ms / 60000)); return mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins / 60)}h ${mins % 60}m` : `${Math.floor(mins / 1440)}d ${Math.floor(mins % 1440 / 60)}h`; };
     // cap the timeline (#39): history grows forever; show the newest 50
     const timelineShown = timeline.slice(-50);

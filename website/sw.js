@@ -18,7 +18,7 @@
    also re-checks this file byte-for-byte on its own schedule and updates
    if it differs, but a version bump forces immediate cache invalidation
    on activate. */
-const CACHE_VERSION = "gale-v19";
+const CACHE_VERSION = "gale-v22";
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const ASSET_META_CACHE = `${CACHE_VERSION}-asset-meta`;
@@ -39,18 +39,18 @@ const SHELL_ASSETS = [
   "/",
   "/index.html", "/fleet.html", "/status.html", "/metrics.html",
   "/observability.html", "/ollama.html", "/agora.html", "/galaxy.html", "/weather.html",
-  "/network.html", "/reliability.html", "/operations.html", "/home.html",
+  "/network.html", "/reliability.html", "/operations.html",
   "/runbooks.html", "/404.html", "/offline.html",
-  "/gale.css", "/fleet-tidal.css", "/mobile.css", "/cinematic.css", "/fonts.css", "/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2",
-  "/dist/main.js", "/dist/fleet.js", "/dist/activity.js", "/dist/cost.js",
-  "/dist/drilldown.js", "/dist/hosts.js", "/dist/particles.js",
-  "/dist/metrics.js", "/dist/network.js", "/dist/observability.js",
-  "/dist/status.js", "/dist/weather.js", "/dist/agora.js", "/dist/ollama.js",
-  "/shared.js", "/rum.js", "/boot-shared.js", "/lost-boot.js", "/runbooks-steps.js", "/offline.js",
-  "/storm-scene.css",
+  "/gale.c9d57184.css", "/fleet-tidal.201e4c05.css", "/mobile.4ed871f7.css", "/cinematic.6e6d866c.css", "/fonts.8c3b44d8.css", "/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2",
+  "/dist/main-I53ENRFI.js", "/dist/fleet-YX7JNKN7.js", "/dist/activity-H3WQ7GAO.js", "/dist/cost-4CBMBQNY.js",
+  "/dist/drilldown-SFYB53A7.js", "/dist/hosts-RXNJWONT.js", "/dist/particles-ZDC6PABK.js",
+  "/dist/metrics-YH3FDVEU.js", "/dist/network-C4I7LXJ3.js", "/dist/observability-5SAWYSAM.js",
+  "/dist/status-BC5SGHXR.js", "/dist/weather-RZ24VUJB.js", "/dist/agora-QK4UI333.js", "/dist/ollama-3V77WDEM.js",
+  "/shared.js", "/rum.9e589d08.js", "/boot-shared.4afd0838.js", "/lost-boot.14702d65.js", "/runbooks-steps.169f32db.js", "/offline.94a17f6a.js",
+  "/storm-scene.10695056.css",
   /* dynamically imported modules (never bundled): palette, cinematic layer,
      kiosk mode, WebGPU sky, and the 404 map scene must survive offline too */
-  "/palette.js", "/cinematic.js", "/cinematic.css", "/kiosk.js", "/glsky.js", "/lost.js",
+  "/palette.js", "/cinematic.js", "/cinematic.6e6d866c.css", "/kiosk.js", "/glsky.js", "/lost.js",
   "/assets/vendor/leaflet/leaflet.css", "/assets/vendor/leaflet/leaflet.js",
   "/manifest.json", "/favicon.ico", "/apple-touch-icon.png",
   "/icon-192.png", "/icon-512.png", "/icon-512-maskable.png", "/icon-192-maskable.png",

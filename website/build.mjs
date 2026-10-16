@@ -35,10 +35,17 @@ const ENTRY_POINTS = [
   "agora.js",        // agora.html
   "galaxy.js",       // galaxy.html (raw WebGL2 fleet galaxy)
   "ollama.js",       // ollama.html
-  "operations.js",
-  "home.js",
-  "reliability.js",  // reliability.html
-  "lost.js",         // 404.html 3D page map
+   "operations.js",
+   "reliability.js",  // reliability.html
+   "energy.js",       // energy.html
+    "maintenance.js",  // maintenance.html
+    "cameras.js",      // cameras.html
+    "notifications.js",  // notifications.html
+    "lost.js",         // 404.html 3D page map
+    "presence.js",     // presence.html
+     "guest-mode.js",   // guest-mode.html
+      "routines.js",     // routines.html
+      "energy-costs.js", // energy-costs.html
 ];
 
 const watch = process.argv.includes("--watch");
