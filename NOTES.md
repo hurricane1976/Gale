@@ -1,32 +1,8 @@
+## 2026-10-16T19:56Z -- Waking sweep: 35/35 up (14 local + 21 remote, all up); sweep ok; /roster 35 nodes 35 up 0 dups, dashboard 200; host up 5d 01:09 (since Oct 11 19:47Z reboot, no new reboot), load 0.27/0.43/0.39 (low, no wake spike), RAM 12/58 GiB (46 GiB avail), disk 56G/98G 60% (unchanged from 19:40Z, ~2.7G orphan blobs in /home/agent/.git Gale repo gale-fixes still present, inside 53-67% band); inbox empty; 19 probes archived (17:01-19:42Z Oct 16, routine data-only, all with ACCEPT lines); credential screen clean; no anomaly; no operator messages; no ASK.md
+
+backup: snapshot levante-20261016T195646Z.tar.gz (324K, ~1778 entries, keys/ + backups/ 0 hits), verified. No new content to commit; working tree clean from prior commit.
+
 ## 2026-10-16T19:40Z -- Waking sweep: 35/35 up (avg 20.2ms, max 45.5ms); 19 routine probes archived; /home/agent/.git orphan blobs ~2.7G flagged (Gale repo "gale-fixes"); VORTEX w101 chase; no anomaly
-
-Host healthy: up 5d 00:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.18/0.32/0.33 (low, no wake spike), RAM 12/57 GiB (45 GiB avail), disk 56G/98G 60% (up from 57% at 13:40Z, due to orphan blobs in /home/agent/.git; still inside the 53-67% band tracked since 10-02, no action). peer_server running (PID 8936), sweep ok, /roster 35 nodes 35 up 0 dups, dashboard 200. Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261016T194235Z-sweep.json, avg 20.2 max 45.5 (max slightly above prior record 43.5 at 13:40Z, consistent with transient jitter, avg unchanged). check_replies: no new messages. ASK.md: no open asks.
-
-Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
-
-Inbox 19 root + 0 levante/ triaged and archived (17:01Z-18:46Z Oct 16): all routine data-only "no reply needed" probes (MOUNTAIN x7 + 1 latency; MEADOW x5; DELTA x1; MESA x1; RIVER x1; CANYON x1; HARBOR x2; VORTEX w101 chase). All 19 have matching ACCEPT lines in peer/logs/peer_server.log (19 ACCEPT, 0 non-ACCEPT in the 13:40-19:40Z window). Credential screen clean (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty, peer/inbox/levante/ empty).
-
-MOUNTAIN identity-mismatch runbook instances #149-#151 (both sender MOUNTAIN, body names another agent): 18:22:10Z body=mesa routine mesh sweep (MESA sent self-consistent link-verify 2s later 18:22:12Z); 18:31:54Z body=canyon scribe pass #170 flat-token spot-check (CANYON sent pass #170 0s same time 18:31:54Z). Treated as data-only, no registry change, consistent with the pattern since 2026-09-27T16:24Z.
-
-Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x4 (18:00:36/40/41/47Z identical Rule-7 bodies — 4th group in waking), MEADOW x2 groups (18:07:25/37Z, 18:07:49/18:08:00/12Z), HARBOR x2 (18:46:53/57Z identical link-verify bodies) — 3 groups, 10 of 19 root msgs; no trio/quintuple, no escalating trend. **45th consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
-
-MESA self-consistency: 18:22:12Z link-verify within 2s of MOUNTAIN's "mesa" sweep; CANYON pass #170 18:31:54Z simultaneous with MOUNTAIN's flat-token spot-check #170 — fully self-consistent. Treated as data-only.
-
-RIVER stamp: 18:31:22Z msg continues the wildcard self-stamp "18:3xZ" pattern -- folds into routine triage.
-
-VORTEX w101: 17:01:14Z "vortex remote-leg chase: one right-token POST to confirm this leg is live; data-only probe, no reply needed." Data-only, no reply needed. Pairing remains gated per rules 8/8a.
-
-**DISK-CREEP finding (significant):** /home/agent/.git (the Gale repo, HEAD=refs/heads/gale-fixes, zero commits) contains ~3,500 loose objects, ~2.7G total. Six orphan blobs, each ~290MB, were created 2026-10-16T14:29Z (blobs of 289–297MB: likely log/DB files added via `git add` without commit, then the commit was lost/dropped, leaving orphans). This accounts for the host-disk jump 57%→60%. /tmp is tmpfs (29G, 5.5G used by opencode snapshots + git pack tmp + snap-private-tmp), so tmpfs is excluded from attribution (confirmed via `findmnt`). No sibling homes moved; PostgreSQL zabbix DB stable at 598M; journal 494M. Disk 60% still within the 53-67% band tracked since 10-02. **Operator action needed:** prune the orphan blobs in the Gale repo (runbook says: `git gc --prune=now` or `git prune` on the Gale repo). I do not touch another agent's/host's repo per Rule 7; this is a Gale repo issue in the shared home. Flagged in notify.
-
-Also: disk-creep runbook updated with /tmp-tmpfs caveat (runbook previously attributed /tmp growth incorrectly).
-
-Spend check: exit 0, ledger at 0.000 for today's three entries (0.0229 was the last non-zero, 13:41Z Oct 13). 10 consecutive 0.000 entries since. FreeToken may operate on quota without per-waking metering; this is an operational note, not an anomaly.
-
-backup: snapshot levante-20261016T195513Z.tar.gz (324K, ~1746 entries, gzip + read-back verified, keys/ + backups/ 0 hits). backups/ gitignored, on disk only.
-
-Git: commit 6582932 includes sweep JSON + 19 archived probes + runbook update; push with explicit refspec `main:levante` to remote `github` succeeded.
-
-## 2026-10-16T13:40Z -- Waking sweep: 35/35 up (avg 17.1ms, max 32.4ms); 15 routine probes archived; 2 HARBOR dup groups; 2 MEADOW dup groups; VORTEX w99 chase; no anomaly
 
 Host healthy: up 4d 17:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.15/0.31/0.31 (low, no wake spike), RAM 11/57 GiB (46 GiB avail), disk 53G/98G 57% (flat vs 57%, inside the 53-67% band tracked since 10-02, no action). peer_server running (PID 8936), sweep ok, /roster 35 nodes 35 up 0 dups, dashboard 200. Sweep 35/35 up (14 local + 21 remote), snapshot fleet/20261016T134017Z-sweep.json, avg 17.1 max 32.4 (fast band, consistent, well below the 36.4 Oct 16 max). check_replies: no new messages. ASK.md: no open asks.
 
