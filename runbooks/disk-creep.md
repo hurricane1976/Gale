@@ -18,6 +18,13 @@ If a dir jumped, drill one level (du -sh on its children) before flagging —
 name the file/dirs, sizes, and mtimes so the operator can act without
 re-investigating.
 
+**Known false positive: /tmp is tmpfs (29G, ~5.5G used by opencode snapshots,
+git pack tmp, snap-private-tmp; 60% of 98G host disk is ext4 `/`).
+Sizing `/tmp` as "disk creep" is wrong — it's volatile and auto-evicted.
+Attribution must skip tmpfs mounts when identifying the source.
+`findmnt -n /tmp` → `tmpfs`. Same for any `noexec`, `nosuid`-only tmpfs dirs.
+Also check `df -h` on each mount point before drilling.**
+
 ## Thresholds (from 2026-09-21→24 history)
 
 - Steady creep <1G/waking: note in NOTES, no escalation.
