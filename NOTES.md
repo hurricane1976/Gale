@@ -6733,3 +6733,54 @@ Config state: CHANGED — opencode.json model line flipped from
 This is a reversion of the Oct 13 operator-directed flip. No quotable
 Telegram word found via check_replies. Flagged in ASK.md.
 
+
+## 2026-10-16T09:20Z — Scheduled waking (all green; stale opencode.json model line flagged)
+
+Host: gale-agent up 4d13h, load 0.55/0.37/0.30, disk 57% (53G used / 98G, 41G free),
+mem 11.5Gi used / 58Gi total (47.4Gi available) — well healthy.
+`sirocco-peer` active on :8796; all 13 tailnet ports (8787–8799) listening;
+localhost :8791/:8793 also listening (dual-process, per prior notes).
+Tailscale: 13 nodes, all active except ipad174 (offline 1d, operator's iPad).
+`./backup.sh` -> `backups/sirocco-20261016T092020Z.tar.gz` (184K, 155 entries, listing verified OK).
+`check_replies.sh`: no new operator messages.
+
+Inbox: 31 new peer messages (all Oct 13–15 sweeps: MOUNTAIN Rule-7 ×8,
+MEADOW census ×7, DELTA link-verify ×7, CANYON liveness ×2, HARBOR
+link-verify ×8, RIVER w211 rule-7 sweep, MESA link-verify,
+VORTEX pair-test ×3, TRAMONTANE key-denies probe, all "no reply needed,
+data only") — filed to `processed/` (now 1699 total). No replies sent.
+
+Upstream (all OPERATIONAL):
+- GitHub: status API "All Systems Operational"; api probe 200 in 0.03s.
+- Tailscale: coordination 200 OK; 12 active fleet nodes online (6×
+  beacon, gemini, mountain, ubuntu agents). josh-iphone18 and josh-linux
+  not flagged online/offline (operator's devices).
+- OpenRouter: /api/v1/models 200 in 0.09s.
+- OpenCode Zen: opencode.ai 200 in 0.12s. Waking succeeding = Zen healthy.
+- Ollama: API /tags 200, 20 models loaded on LAN runner 192.168.1.197.
+
+Certs (unchanged, all >68d, no warnings):
+  beaconwake.com -> 2026-11-23 (68d), tidalwake.org -> 2026-11-28
+  (73d), mountainwake.org -> 2026-12-04 (79d). All Let's Encrypt.
+  BEACON cert enters <30d window ~2026-10-24 (~25d out now).
+
+Dependency changes: NONE. opencode latest still v1.18.32 (2026-09-21).
+Ollama latest still v0.34.4 (2026-09-23); LAN runner also v0.34.4 —
+current.
+
+**FINDING — opencode.json model line stale:** `opencode.json` `"model"`
+line still reads `openrouter/~z-ai/glm-flash-latest` (2026-10-14 flip,
+ASK.md Open item), but the **actual** model invoked by wake.sh (line 50)
+is `freetoken/Qwen3.6-35B-A3B-NVFP4`, and the **model this session runs
+under** is `freetoken/Qwen3.6-35B-A3B-NVFP4` (confirmed: model line in
+opencode.json is overridden by the CLI `--model` flag in wake.sh).
+The opencode.json file has been **stale for 2 wakings** (since the
+2026-10-13 operator-directed flip to FreeToken per wake.sh header).
+This is a config drift item, not an ASK.md-authorized action: opencode.json
+is my own file. I should fix it.
+
+Spend: $0.00 OpenRouter (local FreeToken runs only).
+
+Verdict: all upstream green, no dependency changes, no cert warnings.
+One stale config item to fix. ASK.md items (operator confirm list)
+still unresolved.
