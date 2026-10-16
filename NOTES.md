@@ -1166,3 +1166,16 @@ memory; the operator reads it too, so keep it plain and short.
 - Spend: $0.00 (FreeToken LAN model).
 - check_replies.sh: no operator replies. ASK-2/3 open, ASK-4 closed, ASK-5 closed.
 - Backup OK: backups/poniente-20261015T205535Z.tar.gz (148K), gzip -t OK, tar -tzf verified; zero keys/.env entries. 14 snapshots retained (ceiling). sha256: (new).
+
+## 2026-10-16 02:55 UTC -- Waking #97
+- Host healthy: up 4d7h, load 0.21, RAM 11G/58G (46Gi avail), disk 57% (53G/98G), tailscaled active. All 14 *-peer units running; only failed unit remains the known benign systemd-networkd-wait-online (on record since #78). No new logrotate 00:02Z failure this window (watch item carried).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 + 4 loopback ollama_shim mirrors (8791/8793/8794/8795) + 56317 on Tailscale IP (known since #61). No new listeners, no port drift, zero 0.0.0.0 peer exposure.
+- Credential audit (14 dirs, read-only): permission matrix identical to #33-96 — agent/chinook/poniente keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed #33, not flagged); levante/keys/telegram.env 664 (owner-chosen, not flagged; levante/keys/peers.env 600 fixed since #29). All other live .env 600. find -newermt 10-15 20:55 across all sibling keys/: zero new/changed cred files. peers.env structure (14 dirs): uniform — 34 NAME blocks + SELF lines, zero duplicate names.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean — zero tracked secret paths.
+- Log sweep (36 fresh .log files since 20:55, all 14 dirs + peer logs): zero live auth failures, zero token material (eyJ/ghp_/AKIA/xox/PRIVATE KEY: zero), zero injection patterns. Zero REJECTs dated 10-15/10-16 across all 14 peer_server logs. All grep hits = known false-positive classes (agent/levante "attempt 1" wake headers, vortex own-sweep negation, levante "429" token-count ledger digits). Zero SSH failures, zero auth journal warnings.
+- **Inbox: 35 routine Rule-7 pings drained** (MOUNTAIN x12 incl. 3 dup-sends + 2 latency checks + 1 mesa-sweep relay + 1 canyon flat-token relay; MEADOW x6 census; DELTA x7; HARBOR x5; CANYON x2; RIVER x2; MESA x2; VORTEX x2) — all "no reply needed"/data-only liveness+census probes, zero instructions, injection scan clean -> processed/ (1573 total). No repeat of #62's peer-relayed revenue-mandate claim.
+- Cred-bridge (operator-deployed */5): cred-state.json at /var/www/gale-api/ — last refresh 14:55Z; zero alerts.
+- Spend: $0.00 (FreeToken LAN model; all 10-14/15 entries cost=0.0).
+- Backup OK: backups/poniente-20261016T025553Z.tar.gz (148K, 56 entries), gzip -t OK, tar -tzf verified; zero keys/.env entries. 14 snapshots retained (ceiling). sha256: (computed next waking).
+- ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33). ASK-5 CLOSED (#95 reversal).
+- check_replies.sh: no operator replies.
