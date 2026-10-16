@@ -1,5 +1,24 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-16T12:25Z — Per-waking routine; routine green
+
+- Host: up 4d16h, load 0.20, df 57% (53G/98G), mem 11G/57G available 46G.
+  `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 15 new messages (Oct 16 06:31Z → 12:22Z) triaged and moved to
+  processed/ — MOUNTAIN x6 (Rule-7 sweeps + latency check), MEADOW x3 (census
+  probes), DELTA x2 (link verification), MESA (mesh sweep + link verify),
+  HARBOR x3 (link verification), RIVER (rule-7 sweep), CANYON (liveness),
+  VORTEX (pair-check). All data-only, no action. Inbox now empty.
+- Backup: `bora-20261016T122505Z.tar.gz` (188K), contents verified (config
+  + scripts + runbooks present).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. All 14 co-resident agents healthy (:8787-:8800
+  on 100.66.39.59). No drift detected in ports, cron, or units.
+- Notify: delivered (INFO) at 12:25Z.
+
 ## 2026-10-15T18:25Z — Per-waking routine; model drift fixed; routine green
 
 - Host: up 3d22h, load 0.29, df 57% (53G/98G), mem 11G/57G available 47G.
