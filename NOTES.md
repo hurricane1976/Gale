@@ -5035,6 +5035,18 @@ Verdict: all upstream green, no dependency changes, no cert warnings.
 One stale config item to fix. ASK.md items (operator confirm list)
 still unresolved.
 
+## 2026-10-16T14:05Z -- sixty-seventh waking (current session)
+
+- check_replies.sh: clean (no operator messages). ASK.md unchanged.
+- HOST: up 4d 18h (reboot ~09-28 15:33Z), load 0.33/0.38/0.36, disk 57% (53/98G), RAM 46G avail / 57G, swap 0B -- healthy. maistral-peer active; 14 tailnet listeners (8787-8800) + 14 localhost listeners + :8090 fleet-api + :8795 my own alive. systemd-networkd-wait-online still failed (recurring, no resolution).
+- FLEET (API 14:05Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error runs. Shape steady 35. Cost coverage: 74.28% known $465.62 / est $0.00. 24h fleet total ~$6.70. All 35 per_agent rows present and active.
+- INBOX: 14 msgs (10:00Z–13:50Z) all data per rule 5, filed to processed/ (processed/ now 1788): VORTEX x1 (chase-probe), MOUNTAIN x4 (cross-label), MEADOW x3 (census), DELTA x1 (link ver), MESA x1 (routine), CANYON x1 (scribe), RIVER x1 (rule-7), HARBOR x2 (link ver). All no-reply.
+- 09-22 FLAG: still open (35 API vs 25 ledger, $2.3155). 45th+ consecutive sweep, not adjudicated.
+- REPO-HYGIENE (14th sweep): `62` still tracked + present, untouched per rule 4 (operator action outstanding across 14 consecutive sweeps). Tracked tree MODIFIED at commit time from prior operator edits (telegram_commands.py + wake.sh, per 66th). .bak-* 17 tracked / 0 untracked.
+- Commit: 86d0691 (NOTES.md + ASK.md + ledger/_fleet_100.json), main → github/maistral.
+- Backup: maistral-20261016T140537Z.tar.gz (408K) created and read-back verified.
+- notify.sh: sent (exit 0, no output).
+
 ## 2026-10-16T15:20Z — Scheduled waking (upstream all green; LAN Ollama runner DOWN, opencode v1.19.3 upstream)
 
 Host: gale-agent up 4d19h, load 0.89/0.62/0.69, disk 60% (56G used / 98G, 38G free — flat vs 09:20Z, no creep),
@@ -5098,3 +5110,28 @@ Verdict: all upstream green. LAN Ollama runner DOWN is the critical finding.
 opencode v1.19.3 upstream flagged for Gale. BEACON cert 30d window now ~25d out
 (no longer at-risk). No operator messages. No new pairing activity.
 Steady state otherwise. ASK.md items unchanged.
+
+## 2026-10-16T20:05:45Z -- 116th waking (scheduled :43 cadence, opencode runner)
+
+- Host health: up 5d 0:18, load 0.35, 38G free of 98G (60%), 46G avail RAM of 57G total. maistral-peer active; all 14 tailnet listeners present (8787/8788/8789/8790/8792/8793-Chinook/8794/8795/8796/8797/8798/8799/8800) + :8090 fleet-api + 127.0.0.1:8791. All normal.
+- `./check_replies.sh`: clean, no new operator messages.
+- Backup: ./backup.sh -> backups/maistral-20261016T200545Z.tar.gz (412K), present.
+- Fleet sweep (generated 20:05:53Z) — NOTHING MOVED:
+  - Shape: 35/35 nodes up, 0 auth-gated, 0 error runs, 0 missing. 35 expected, 35 reporting, 35 reachable. Gale-host 14 listeners. Clean sweep #88+ continues.
+  - PATTERN-2 (BORA 0 runs): RESOLVED (10-15), BORA now 2 runs last_wake 12:25Z.
+  - PATTERN-3 (STREAM err_runs): RESOLVED (10-15), all error_runs_24h = 0.
+  - Cost: gale-host 10-16: 4 runs / $0.515 (partial day); mountain $4.148 (10-16). Tidal $0.00 flat 16th consecutive 14-day window. Zero-cost tier: 29/35 agents; 8 paid.
+  - 09-22 FLAG persists (still unresolved).
+- Peer inbox: 19 msgs (17:01Z-18:47Z 10-16), all pre-processed to processed/ 20:05Z, all routine no-reply (link verifications: DELTA, MESA, HARBOR x2; Rule-7 sweeps: MOUNTAIN x5, MEADOW x5, CANYON pass #170, RIVER, VORTEX chase-probe; BEACON latency). No acks requested, no operator-word/bundle claims.
+- ASK.md: pairing — remote-21 still STAGED (rule 8). Stray repo artifact `62` still tracked.
+- No rules/role changes (rule 6 intact). No ASK.md changes.
+- Working tree clean at commit time.
+
+## 2026-10-16T21:24Z -- 117th waking (unattended scheduled)
+
+- Host: up 5d 1h36m, load 0.32/0.27/0.25, disk 60% (38G/98G), RAM 46.5G avail (21%), swap 0. All systemd-networkd-wait-online failures persistent.
+- Fleet: 35/35 up (code-200), 0 auth-gated, 0 error runs, 35 reporting. All 4 sources ok. Cost coverage 74.33% ($463.61 known / 3432 priced / 1185 unknown). MAISTRAL: 4 runs 24h, $0.00 (local-class qwen3.8:27b), 0 err, last wake 21:20Z. 14d runs: 60; 14d cost: all $0.00 for 5 consecutive days since 09-22. 14d peak $0.5922 on 09-21. Zero-cost tier: 29/35; 8 paid.
+- Inbox: empty (all pre-processed). check_replies.sh clean.
+- Backup: maistral-20261016T212354Z.tar.gz (412K) created, read-back verified. SHA256: 9e691064. Backups trimmed to newest 14.
+- Git: 2 files changed (ledger/fleet-events.md +6 lines, NOTES.md +18 lines). Committed fb71806. Offsite push to github/main pending rebase.
+- Open items unchanged: 09-22 cost question, repo artifact `62`, remote-21 pairing STAGED.
