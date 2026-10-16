@@ -38,7 +38,31 @@
   Oct 15 across 12 dirs (same batch-edit signature); ostro/poniente
   wake.sh have 0 auto-lines, mtimes at their own slot times — read-only
   observation, not chased. Standing item stays open for the harness-
-  hardening recommendations only (no live drift). Prior history:
+  hardening recommendations only (no live drift).
+  **NEW w108 2026-10-16 04:35Z — DRIFT 2/14, new "greet-then-stop" failure
+  signature (BORA + MAISTRAL).** Both dirs over the 6h bar at sweep: bora
+  610m (newest snap 18:25Z Oct 15 — its 00:25Z slot produced no snapshot)
+  and maistral 510m (newest snap 20:05Z Oct 15 — its 02:05Z slot produced
+  none). Root-caused READ-ONLY in their own logs: identical signature in
+  both — session starts, emits exactly ONE text part (bora: "Good morning.
+  I'm BORA. Let me start by reading my operating rules…"; maistral: "Waking
+  up as MAISTRAL on gale-agent. Starting the routine."), then exits 0 with
+  NO tool calls, NO backup, NO notify; wake.sh ALERT fired ("exited 0
+  without reporting"), spend_check recorded no cost. **Not model-specific**
+  (bora=freetoken/Qwen3.6-35B-A3B-NVFP4, maistral=glm-flash — my own model
+  class) and **not a fleet-wide window**: the 10 other siblings' latest
+  slots ran full sessions (36–124 text parts) BETWEEN and AROUND the two
+  failures (chinook 00:50Z, cyclone 01:15Z, levante 01:40Z, ostro 02:30Z,
+  poniente 02:55Z, sirocco 03:20Z, squall 03:45Z, tempest 04:10Z all
+  clean). Same exit-0-no-report ALERT class as the old MAISTRAL
+  role-refusal one-off, but the content is a greeting-then-stop, not a
+  refusal — looks like the model ended its turn after one line. Data
+  intact: both newest snaps verified readable, keys/git clean. Drift notes
+  sent to both (data-only). Recovery expected at their next slots (bora
+  06:25Z, maistral 08:05Z) — will re-sweep next waking. This instance
+  reinforces the standing recommendation: surface the session's own text
+  in the wake.sh ALERT (the .json log holds it, the ALERT doesn't).
+  Prior history:
   w105 2026-10-14 16:35Z — DRIFT
   1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
   3 retryable-APIError attempts (wake.sh ALERT, no session, no snapshot;
@@ -281,6 +305,8 @@
   still holding course, no action taken.**
   **Re-checked w107 2026-10-15 22:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w108 2026-10-16 04:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -419,6 +445,16 @@
     slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat/flat.
     Disk 57% (41G free of 98G, unchanged). No action by me (deletion
     irreversible, Tempest's lane, gated on your word).
+    **Re-checked w108 2026-10-16 04:35Z (sudo): PATH CHANGED —
+    /tmp/snap-chromium NO LONGER EXISTS; the payload now lives at
+    `/tmp/snap-private-tmp/snap.chromium/tmp` — SAME 4.1G, same shape
+    (puppeteer_dev_chrome_profile dirs). No reboot (host up 4d8h48m
+    continuous), so this was a move/rename in place, most plausibly a
+    chromium snap refresh relocating its private tmp. Total /tmp 4.9G;
+    disk 57% (41G free of 98G, unchanged — nothing grew, the data just
+    moved). Watch item continues at the NEW path; will compare against
+    4.1G next waking. No action by me (deletion irreversible, Tempest's
+    lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -464,6 +500,8 @@
   14:10–14:11Z wake.sh fix window. Not my lane; noting the state change
   for the record. If it should be running, that's your call.
   **Re-checked w107 2026-10-15 22:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w108 2026-10-16 04:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
