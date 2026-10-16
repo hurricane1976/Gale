@@ -4449,3 +4449,80 @@ in window). Backup verified (756K, 333 entries).
   credential baselines intact, :8099 still closed. No new unattributed
   edits in my tree. ASK.md #1 rotation + ghs_ + wake.sh-provenance items
   remain the operator's open items.
+
+## 2026-10-16T11:00Z — w98 scheduled waking (11:00 slot)
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  #1 (:8099 rotation, ~21d open), w90 ghs_ item, and w95/w96 wake.sh
+  provenance asks remain open.
+- **Inbox threat-watch: 16 messages triaged (06:00–06:46Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #91**:
+  `quarantine/20261016T062213Z-MOUNTAIN-b6a9939b.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 06:22:13Z), first-person "mesa
+  routine mesh sweep 2026-10-16 06:22:12 UTC" body; genuine MESA
+  link-verify ACCEPT 06:22:14Z (1s later) bounds it to the single file.
+  No credentials, links, or instructions — template slip, not injection.
+  Runbook updated to #91 (trend 91x over ~23 days, steady ~6h cadence in
+  the scheduled Mountain sweep windows). Per plan: routine notify carries
+  the count; no peer note, no separate escalation ping (standing operator
+  defect since 09-24). **15 benign → processed** (`processed/20261016/`):
+  3x MOUNTAIN Rule-7 sweeps + 1 latency (06:00 window), 4x MEADOW census,
+  2x DELTA link-verify, genuine MESA link-verify, RIVER rule-7 sweep,
+  CANYON scribe pass #168, 3x HARBOR link-verify. All 8 senders known,
+  from==body identity on every benign one; zero credentials, links, or
+  instructions; no unknown senders. Quarantine now holds 74 payloads;
+  live inbox 0.
+- **Peer log**: 16 ACCEPTs match inbox files 1:1; **zero REJECTs** on
+  2026-10-16 (total REJECT count 65 unchanged — all documented
+  self-origin/historical 09-23..09-26 events). No 401 storm, nothing
+  from non-paired senders.
+- **Exposure posture**: `:8099` still CLOSED (curl 000, zero listeners)
+  — remediation holding ~21d. Tailnet 100.66.39.59:8787–:8800 all UP
+  (own :8792); firewalla_control (:8791), fleet_api (:8793),
+  ollama_api (:8794), gale_push (:8795) localhost-only; nginx 8090 on
+  0.0.0.0+[::]. UFW active, rule set unchanged. vortex-peer active;
+  sandbox ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes
+  intact. Tailscale 13 nodes, all known apacheshadow1972 namespace
+  (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents +
+  josh-iphone18/josh-linux + ipad174 offline 1d) — no foreign peers.
+  **NEWLY-NOTED, assessed benign**: two `python3 -m http.server`
+  processes up since Oct 12 — `127.0.0.1:8899` (Gale stage,
+  `/tmp/opencode/gale-stage`) and `127.0.0.1:8898` (`/var/www/gale`).
+  Both **loopback-only binds** (unlike the 09-25 :8099 incident, which
+  was 0.0.0.0 + keys/ in path): served trees contain html/js assets
+  only, zero key material (find for .env/keys/.pem/id_*/token: 0 hits),
+  not tailnet-reachable. Recording on the exposure record; not drift,
+  no action.
+- **Credential hygiene (this waking's rotating pass; 14 co-located dirs,
+  read-only)**: every non-example/non-.pub `keys/` file 600 in agent,
+  zephyr, squall, tempest, vortex, cyclone, maistral, sirocco, bora,
+  chinook, tramontane, ostro, poniente — **EXCEPT one drift finding:
+  `/home/agent/levante/keys/telegram.env` is 664 (rw-rw-r--, group+
+  world-readable), mtime Sep 25 22:27, 94 B.** Per rule: reported only,
+  not touched — Levante's file, their fix (chmod 600) plus operator
+  awareness; noted in notify. Live-secret content not read or printed.
+  Tracked-file secret scan in my repo: 0 real hits (NOTES.md matches are
+  prior wakings' self-referential pattern prose + the AWS docs example
+  key documented at line 4135). `.gitignore` sane (keys/* deny +
+  !keys/*.example + peer/inbox/**).
+- **Host health**: up 4d15h (10-11 19:47 boot; no reboot), load
+  0.08/0.24/0.27, disk 57% (53G/98G, 41G avail), RAM 11/57Gi used, 46Gi
+  avail. Normal.
+- **Remote legs**: chase 30/34 HTTP 200, unchanged — 401: HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR (the four standing beacon-side legs), via
+  `chase_remote.py` v2 probe shape.
+- **Spend**: spend-daily.jsonl — last entries 10-15 17:08Z $0.0383,
+  23:01Z $0.0283, 10-16 05:01Z $0.0249; no errors, no outage slots.
+- **Backup**: `backups/vortex-20261016T110046Z.tar.gz` (236K, 222
+  entries; tar -tzf OK — `keys/` in archive holds only the two
+  `.example` files, 0 live secret material; AGENT.md extract sha256
+  matches live file; #91 payload + .reason present).
+- **Git**: committing this entry + runbook #91. Inbox moves git-ignored
+  as designed.
+- **Verdict**: routine waking with one minor finding. 1 expected
+  mesa-pattern quarantine (#91, trend steady); 15 routine probes
+  processed; legs 30/34 unchanged; exposure baselines intact, :8099
+  still closed, new loopback http.servers assessed benign. **New item:
+  levante/keys/telegram.env at 664 — perm drift on a sibling secret,
+  reported not touched.** ASK.md #1 rotation + ghs_ + wake.sh-provenance
+  items remain the operator's open items.
