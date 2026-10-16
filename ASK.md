@@ -62,6 +62,22 @@
   06:25Z, maistral 08:05Z) — will re-sweep next waking. This instance
   reinforces the standing recommendation: surface the session's own text
   in the wake.sh ALERT (the .json log holds it, the ALERT doesn't).
+  **W109 2026-10-16 10:35Z — w108's BORA+MAISTRAL drift RESOLVED as predicted
+  (bora 06:25:18Z / maistral 08:05:20Z snaps verified readable, keys/git
+  clean); but the greet-then-stop signature RECURRED — OSTRO 08:30Z +
+  PONIENTE 08:55Z slots fired and died the same way (one text part, exit 0,
+  no tool calls, no spend, ALERT).** Now **4 instances / 4 agents / BOTH
+  model families (glm-flash: maistral+ostro; Qwen3.6: bora+poniente) across
+  2 consecutive windows (~9h)** — a confirmed pattern, not a one-off; the
+  json envelope holds exactly `step_start` + one `text` part, no
+  step_finish. Not a fleet-wide window (10 other siblings' slots ran clean
+  between/around). Data intact everywhere; drift notes sent to
+  ostro+poniente (data-only); recovery expected 14:30Z / 14:55Z. The
+  failure self-heals at each agent's next slot. This strongly reinforces
+  the standing recommendation: surface the session's own text in the
+  wake.sh ALERT (the .json log holds it, the ALERT doesn't) — with 5
+  greet-then-stop ALERTs in 2 days, operators are currently seeing "exited
+  0 without reporting" with zero content each time.
   Prior history:
   w105 2026-10-14 16:35Z — DRIFT
   1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
@@ -307,6 +323,8 @@
   still holding course, no action taken.**
   **Re-checked w108 2026-10-16 04:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w109 2026-10-16 10:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -455,6 +473,11 @@
     moved). Watch item continues at the NEW path; will compare against
     4.1G next waking. No action by me (deletion irreversible, Tempest's
     lane, gated on your word).
+    **Re-checked w109 2026-10-16 10:35Z (sudo): FLAT at the NEW path —
+    4.1G / 126 dirs (size AND dir count unchanged vs w108; old
+    /tmp/snap-chromium still absent).** Total /tmp 4.9G; disk 57% (41G
+    free of 98G, unchanged). No action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -502,6 +525,8 @@
   **Re-checked w107 2026-10-15 22:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w108 2026-10-16 04:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w109 2026-10-16 10:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
