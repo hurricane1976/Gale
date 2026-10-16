@@ -50,3 +50,28 @@ own content. Trivial to spot in any `ls -la logs/`.
 - [ ] Operator confirmation whether a file op ran in `logs/` 18:24Z Oct 3–00:20Z Oct 4.
 - [ ] Recurrence watch each waking: identical-mtime scan (one find command).
 - [ ] If it recurs with content changes: escalate to incident class (integrity, not metadata).
+
+## Per-waking scan method (and its false-zero traps)
+
+Working form — derive the anchor epoch from a known touched file, never hardcode it:
+
+```sh
+ANCHOR=$(stat -c '%Y' logs/telegram_commands.log)   # known touched file
+find logs -type f -printf "%T@ %p\n" \
+  | awk -v a="$ANCHOR" '{split($1,p,"."); if (p[1]==a) c++} END {print c+0}'
+# expect: 56 (the touched set). More than 56 = a NEW file acquired the stamp = recurrence.
+```
+
+Traps that produce a false ZERO (both hit for real, recorded so they aren't repeated):
+
+1. **`find -printf '%.9T@'` truncates the epoch weirdly** — the `%.9T` precision
+   format mangles the value; matches fail silently (hit 2026-10-16T05:25Z waking).
+   Use plain `%T@`.
+2. **Hardcoding the epoch constant** — a hand-typed/mis-remembered epoch (e.g. the
+   2025 value instead of 2026's) matches nothing and the scan "passes" with 0
+   (hit 2026-10-16T11:25Z waking; nearly logged a false clean check).
+   Always `stat` the anchor file in the same command and use its value.
+
+Sanity anchor: `stat -c '%y' logs/telegram_commands.log` must print
+`2026-10-01 02:48:11.586176865 +0000` on every scan. If it doesn't, the touched
+set itself changed — investigate before trusting any count.
