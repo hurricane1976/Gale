@@ -90,6 +90,42 @@
   every instance self-healed at its next slot (maistral 08:05Z, bora
   06:25Z, ostro 14:30Z, poniente 14:55Z); I re-check for recurrences
   each sweep. The standing recommendation stands unchanged.**
+  **NEW w111 2026-10-16 22:35Z — DRIFT 2/14 with a NEW first-observed class:
+  SIROCCO's tree identity-clobbered by its own session's git conflict
+  "recovery" (reset --hard to MAISTRAL's tip); plus greet-then-stop
+  RECURRED on BORA (5th instance).**
+  (1) SIROCCO 435m over the bar and self-reinforcing: sirocco's 15:20Z
+  session hit a non-fast-forward pushing local `main` to the shared offsite
+  `main` branch (both sirocco and maistral sessions habitually push bare
+  `main` — the only pair that does; every other agent's wake.sh pushes
+  `main:<agent>`) and "recovered" via `git checkout github/main -b main` +
+  `git reset --hard github/main` (its own transcript, tool calls #45–51) —
+  overwriting its AGENT.md (now "You are Maistral", :8795), wake.sh (now
+  byte-identical to maistral's: `cd /home/agent/maistral`), opencode.json
+  and NOTES.md with maistral's committed state (mtimes 15:21:57–15:22:07Z,
+  mid-session). Its 21:20Z cron slot then ran MAISTRAL's wake.sh → a
+  duplicate maistral session ran in maistral's dir from sirocco's cron
+  (maistral snaps 21:20:18Z + 21:23:54Z, log "117th waking", notify 21:26Z)
+  and SIROCCO itself got no backup — **at the current state every sirocco
+  cron slot backs up maistral instead; sirocco's drift grows 6h per slot
+  (next slots 03:20Z/09:20Z Oct 17) until its wake.sh is fixed.**
+  NO DATA LOST — recovery anchors verified by me: (a) local snapshot
+  `sirocco-20261016T152013Z.tar.gz` (188K, 139 entries, taken ~2 min BEFORE
+  the destructive reset) holds sirocco's true AGENT.md ("You are Sirocco",
+  :8796), wake.sh (PROMPT as SIROCCO) and opencode.json; (b) keys/ untouched
+  (gitignored; peers.env mtime 09-26, telegram.env 09-23 — peer/telegram
+  auth intact); (c) offsite `refs/heads/sirocco` tip `e4083d4`
+  (09:20:54Z Oct 16, sirocco-authored) is clean sirocco history. Si's tree
+  is otherwise untouched since 15:22:54Z. I touched nothing (rule 7); the
+  fix is sirocco's to make (restore its identity files from the snapshot /
+  offsite branch, fix wake.sh, and stop pushing bare `main`). Per rule 7 I
+  sent data-only notes to both agents with the evidence and anchors.
+  (2) BORA 610m — its 18:25Z slot greet-then-stopped AGAIN (2nd instance on
+  bora; 5th overall: maistral 02:05Z, bora 00:25Z Oct 16, ostro 08:30Z,
+  poniente 08:55Z, bora 18:25Z), same one-text-part-then-exit-0 signature
+  verified in its log/json (ALERT fired, no spend); data intact; recovery
+  expected at its 00:25Z Oct 17 slot. The standing wake.sh recommendation
+  (surface the session's text in the ALERT) now has 5 supporting ALERTs.
   Prior history:
   w105 2026-10-14 16:35Z — DRIFT
   1/14: BORA 610m over the bar — its 12:25Z slot fired and exited 1 after
@@ -339,6 +375,8 @@
   still holding course, no action taken.**
   **Re-checked w110 2026-10-16 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w111 2026-10-16 22:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -501,6 +539,11 @@
     3G blob, nothing anomalous, not chased further (not my lane). No
     action by me (deletion irreversible, Tempest's lane, gated on your
     word).
+    **Re-checked w111 2026-10-16 22:35Z (sudo): BURST — 4.1G→4.7G, 135→182
+    dirs (+0.6G / +47 dirs — largest single-window growth since reboot
+    #2).** Disk steady 60% (38G free of 98G); total /tmp 5.5G. Runway
+    still days at this rate; no action by me (deletion irreversible,
+    Tempest's lane, gated on your word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -552,6 +595,8 @@
   **Re-checked w109 2026-10-16 10:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w110 2026-10-16 16:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w111 2026-10-16 22:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
