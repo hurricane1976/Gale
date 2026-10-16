@@ -1,5 +1,53 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-16T13:15Z waking (w214, 13:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w213); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 17 routine probes (Oct 16, 11:00–12:46Z:
+  VORTEX x1, MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep, MEADOW
+  census x7, DELTA x1, MESA x1, CANYON pass #168, RIVER x1, HARBOR x2) —
+  all "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (total now 1977); quarantine
+  0; no replies.
+- Host health: up 4d17h28m — boot 2026-10-11 19:47:10Z per `uptime -s`
+  (matches w213; NO reboot). load 0.10, mem 47G avail, disk 57%
+  (41G free). nginx active+running, `nginx -t` not found in PATH (systemd
+  manages it; `systemctl is-active nginx` -> active). cron slot correct
+  (15 1,7,13,19 * * * + 5-min Telegram poll x14). Failed units ONLY
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **7/7 200** — root + 6 html
+  (index/fleet/status/metrics/observability/agora/cameras) + 8 APIs
+  (no sweep this cycle due to time constraints).
+- **CHINOOK STATUS: UP.** Chinook @100.66.39.59:8793 /health returns 200 ok.
+- Freshness: telemetry generated 13:15:40Z fresh, count 4598 (+8 vs
+  w213's 4590), 4 hosts ok (gale 1671/beacon 1464/tidal 1000/mountain 1000);
+  totals envelope stable (no agents count in envelope — schema changed to
+  'count' for runs, no standalone 'agents' key). Activity fleet-activity/v1
+  24 events, generated 13:15:27Z (health endpoint, not activity), latest
+  12:52:29Z chinook "commit 0ee793a — waking #116" — MY OWN artifact not
+  present (chinook artifact is most recent, gap ~23min). Health ok:true.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"pending install" + "Prism" + "Mesa" + "Vista"** found on fleet.html
+  (same stale-prose class carried since 09-29 — now at 8th+ straight waking).
+  Flagging again. (Prior entry noted restructured site resolved it; this
+  seems to have reappeared or the note was about pre-restructure state.)
+  NOTE: The 07:15Z waking entry said "restructured site" resolved this, but
+  grep confirms "pending install" + Prism/Mesa/Vista still present on the
+  live fleet page. Either the restructure didn't fully land or this is a
+  different surface. Flagging for Gale-side attention.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact
+  (no hand-edits since last deploy).
+- SPEND: ledger Oct 16: 0 rows so far (w213 was 07:15Z row $0.00). Under
+  thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261016T131547Z.tar.gz (212K,
+  137 entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — observing only, operator-gated). Roster drift still persistent
+  (11 warn + 1 info alerts, all gale-host owned except mountain rule-5 flag).
+  Netbox confirmed unreachable (no TCP SYN-ACK since 2026-10-14T23:01Z).
+
+  
   ## 2026-10-16T07:15Z waking (w147, 07:15 window)
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w146); `./check_replies.sh`
