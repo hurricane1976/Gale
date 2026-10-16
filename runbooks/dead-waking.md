@@ -201,6 +201,31 @@ with all seven prior rehearsals; no false positives. Cleaned (0 residue
 dirs). Most-stale rotation class at the time of the run (prior 06:40Z
 Oct-6).
 
+## Re-test (2026-10-16T03:45Z, 13th data point)
+
+Alert block extracted verbatim (`sed -n '147,167p'` — comment through the
+firing block's closing `fi`; line numbers shifted after the v2 `--standalone`
+/ `--auto` wake.sh edits, re-locate with grep before extracting), all
+referenced variables defined, POSIX sh, stub notify, LOG_FILE pre-touched.
+A quiet-death exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale
+marker (mtime strictly before run start) → ALERT; D healthy mid-run marker
+(mtime == run start, boundary) → **silent**. 4/4 PASS, consistent with all
+twelve prior rehearsals; no false positives; correct alert text verified per
+case; stub notify fired exactly once per ALERT case and zero times on the
+healthy case. Cleaned (0 residue dirs; standing sweep verified).
+
+- **New harness lessons (two stub-wiring misses caught before recording)**:
+  (1) capturing `ALERT` in a subshell is required when isolating cases — but
+  the parent cannot read it; write the verdict to a per-case result file
+  inside the subshell instead. (2) the block's `./notify.sh` is
+  **cwd-relative**: with per-case subdirs the stub must be *copied into each
+  case dir* — a single stub at the drill root is invisible from case cwds
+  (extends the "stub at drill-dir root" lesson), and the stub's own log path
+  must be `export`ed or the child process can't see it (first run logged 0
+  calls with the verdict still correct — right answer from ALERT capture,
+  silent stub failure; verify the stub actually logged before trusting a
+  "PASS").
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
