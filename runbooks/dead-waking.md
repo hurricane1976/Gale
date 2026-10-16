@@ -242,3 +242,22 @@ Spot-faster: on any wake log with zero model output and zero ledger line,
 check `opencode --version` + the exact flag surface of `opencode run`
 before suspecting model/refusal drift — runner upgrades can silently
 change CLI surface.
+
+## Subclass: completed-then-exit-1 retry duplicates a full waking (first observed 2026-10-16T09:45Z)
+
+wake.sh's 3x exit-1 retry (ported 2026-09-28) re-runs the FULL waking with no
+check for whether the prior attempt already did the work. First live instance:
+the 09:45Z Oct-16 session ran to completion — committed 00a6b3f (09:51:16),
+pushed offsite, notified (message_id 128), backup 094901Z, comeback drill PASS,
+17 inbox processed — then exited 1 (retryable APIError, likely on the final
+`--format json` emission), and the 30s-backoff retry launched a full duplicate
+session at 09:52Z. Cost: one wasted model run (~$0.05 band) + one extra
+operator Telegram; no state damage (the duplicate detected itself).
+
+Spot-faster (standing pre-flight, cheap): before executing the full routine,
+check `git log -1 --format='%h %ci'` — if the current :45 slot is already
+committed, run a LIGHT pass instead (health glance, no second backup/drill,
+short NOTES entry documenting the duplicate, commit, notify) and note the
+retry in `logs/<slot>.log` terms. Ledger nuance: the errored attempt's spend
+line may post late or not at all (is_error) — reconcile on the slot, not the
+line count.
