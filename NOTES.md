@@ -389,6 +389,20 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261001T053722Z.tar.gz (460K, 331 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 8f26819d3b28d8ea (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
 
+## 2026-10-16 20:55 UTC -- waking #123: security alert + routine sweep
+- Host healthy: up 5d 1h, load 0.07, RAM 12.5G/58G (47Gi avail), disk 56G/98G (60%), tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59 /health 200. ollama_shim loopback mirrors 8791/8793/8794/8795 up. External stack unchanged (9483, 0.0.0.0:8443, 0.0.0.0:9483, 0.0.0.0:10051, 56317). No new listeners.
+- **CRITICAL SECURITY FINDING**: /home/agent/.git (2.7GB) at home-dir level, created 2026-10-16 14:29Z. 259 loose object dirs + 837M in-progress tmp_pack. HEAD=refs/heads/gale-fixes (dangling, no commits). Index empty (nothing staged). No remote configured (nothing pushed). However: no .gitignore at home level, and git add . would have read sibling keys/ dirs into objects — potential credential material in loose git objects. Zero active git processes. Report sent to operator via Telegram. zephyr's log at line 18 of 20261016T172501Z.log pre-reported this.
+- Credential audit (14 dirs): permission matrix identical to last wake — 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); agent/chinook/poniente 700. All live .env 600 EXCEPT levante/keys/telegram.env still 664 (only world/group-readable live credential fleet-wide — ASK-4, unchanged since waking #1, operator's call). No new/changed cred files.
+- peers.env structure (my dir): 102 NAME= blocks, 0 drift; keys/ 700.
+- Git exposure (all 14 repos): clean. poniente repo clean.
+- Log sweep: zephyr found the .git incident at 17:25Z (line 18); tramontane/poniente/agent log hits re-read as scan-echo/prose. Zero live 401/403/unauthorized/token-exfiltration/injection.
+- Inbox: 19 messages drained (VORTEX chase probe, MOUNTAIN x7 sweep/latency, MEADOW x5 census, DELTA link-verify, MESA link-verify, RIVER sweep, CANYON liveness, MOUNTAIN flat-token spot-check, HARBOR x2 link-verify) — all data-only "no reply needed", zero instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-1 closed (09-28); ASK-2 (13 sibling pairings, rule-8a go-ahead) and ASK-3 (21 remote peer sign-offs) still open. ASK-4 (levante telegram.env 664 + 11x keys/ 775) still open, operator's call.
+- Operator notified of .git finding; awaiting word.
+- Backup OK: backups/poniente-20261016T205522Z.tar.gz (148K), gzip -t verified; zero keys/.env entries. 14 snapshots retained.
+- Spend: $0.00 (local Ollama).
+- Peer/inbox/processed/ count: ~517+ (accumulated since 09-26).
+
 ## 2026-10-01 05:56 UTC
 - Waking #32 (staggered :56 slot). Host healthy: up 2d14h, load 0.24/0.31/0.24, RAM 6.5G/58G (52Gi avail), disk 49G/98G (52%), tailscaled active. 13 sibling peer ports 8787-8799 + own 8800 up on 100.66.39.59 (all live at poll, vs #31 where most were down at their own sleep offset); ollama_shim loopback mirrors 8791/8793/8794/8795 unchanged; 0.0.0.0:9483 sampler (agent-owned, known). No new listeners/regressions.
 - **OPERATOR REPLY (first engagement since ASK-1 closed)**: queued via command poller, "What is ask-4" — answered on Telegram (notify.sh, delivered, ok:true). Explained ASK-4 = 11x sibling keys/ 775 + levante/keys/telegram.env 664; go/no pending. Awaiting operator decision.
