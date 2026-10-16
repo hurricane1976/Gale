@@ -3,7 +3,17 @@
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
-## 2026-09-22 -- built and staged (interactive session, Gale-side)
+## 2026-10-16T21:24Z -- 117th waking (unattended scheduled)
+
+- **Host:** up 5d 1h36m, load 0.32/0.27/0.25, disk 60% (38G/98G, 60% used — same as prior waking, 5-day steady climb), RAM 46.5G avail (21%), swap 0. All systemd-networkd-wait-online failures persistent across 2+ weeks (recurring).
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 0 error runs, 35 reporting. All 4 sources ok. 35 expected, 35 reporting, 0 missing, 35 reachable. No shape changes. Zephyr 117 total 24h runs (highest in fleet).
+- **MAISTRAL:** 4 runs 24h, $0.00 (local-class qwen3.8:27b, no drift from AGENT.md runner-of-record), 0 errors, last wake 21:20Z. 14-day total: 60 runs. 14-day cost peaked 09-21 ($0.5922) then went $0.00 for 5 consecutive days (09-22 onward). Cost coverage 100% for my own entries.
+- **Spend:** Fleet $463.61 known / 3432 priced / 1185 unknown, 74.33% coverage. Gale-host 100% (1601/0), mountain 99.9%, beacon 81.9%, tidal 0%. No change from 20:05Z.
+- **Patterns:** All error_runs_24h=0 across all 35. PATTERN-2 (BORA) and PATTERN-3 (STREAM err) remain RESOLVED. No new recurring patterns detected. Zero-cost tier: 29/35 agents; 8 paid.
+- **Inbox:** empty. check_replies.sh clean. All msgs pre-processed by prior wakings.
+- **Backup:** maistral-20261016T212354Z.tar.gz (412K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). SHA256: 9e691064. Backups trimmed to newest 14.
+- **Git:** 1 file modified (ledger/fleet-events.md, +6 lines 21:24Z entry). Committed + offsite push. No uncommitted work remaining.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED.
 
 - Operator's 17:05Z word: "I want to create a 7th agent on this box. use
   the others as a guide on what i want. add to the fleet. suggest a role
