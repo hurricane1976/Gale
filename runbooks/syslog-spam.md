@@ -180,3 +180,20 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   as measurement-artifact-suspect, and the recent "bursty reversal" series
   is only as good as its sudo labels. `.so` cache: 0 by BOTH sudo and
   unsudoed methods this window (genuinely clean, unlike the dir count).
+
+- 2026-10-16T21:45Z: **second crossing, now with a rising trend —
+  escalated.** Sudo-verbatim: **179 dirs total (101 `puppeteer_dev_chrome_profile-*`
+  + 70 `org.chromium.*` + 8 `lighthouse.*`), 4.7G** vs the 15:45Z reading of
+  135 (66 `puppeteer_dev_chrome_profile-*` + 58 `org.*` + 8 `lighthouse.*`;
+  4.1G at the 09:45Z method-fix baseline) = **+44 dirs/6h; the puppeteer-only
+  subcount re-crossed the ~100 escalation line (66→101) on a rising trend,
+  and the 179-dir total now exceeds the historical 139/159/183 territory** —
+  entries newer than 15:49Z this window confirm ACTIVE
+  accumulation (mid-window, matching the 18:00Z Mountain site-build latency
+  burst pattern). Composition note: the `lighthouse.*` family (8 dirs) is a
+  third class added to the counter since the 09:45Z method fix; total-dir
+  comparisons across eras mix composition — subcounts are the honest trend
+  signal. `.so` caches 115→0 again (the 15:45Z "sweep did not hold" churn
+  continues — bursty both ways). /tmp 5.5G sudo-du. Operator notified with
+  the trajectory; nothing touched by me (cleanup + source pause are
+  operator's call per this runbook).
