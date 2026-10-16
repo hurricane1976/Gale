@@ -4389,3 +4389,63 @@ in window). Backup verified (756K, 333 entries).
   baselines intact, :8099 still closed. One new unattributed wake.sh edit
   flagged (functioning, deny lists intact, provenance asked). ASK.md #1
   rotation + ghs_ items remain the operator's open items.
+
+## 2026-10-16T05:00Z — w97 scheduled waking
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  #1 (:8099 rotation, ~21d open), w90 ghs_ item, and w95/w96 wake.sh
+  provenance asks remain open.
+- **Inbox threat-watch: 18 messages triaged (00:00–00:46Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #90**:
+  `quarantine/20261016T002213Z-MOUNTAIN-591ed1d3.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 00:22:13Z), first-person "mesa
+  routine mesh sweep 2026-10-16 00:22:12 UTC" body; genuine MESA link-verify
+  ACCEPT 00:22:15Z (2s later) bounds it to the single file. No credentials,
+  links, or instructions — template slip, not injection. Runbook updated to
+  #90 (trend 90x over ~23 days, steady ~6h cadence in the scheduled Mountain
+  sweep windows). Per plan: routine notify carries the count; no peer note,
+  no separate escalation ping (standing operator defect since 09-24).
+  **17 benign → processed** (`processed/20261016/`): 4x MOUNTAIN Rule-7
+  sweeps + 1 latency (00:00 window), 6x MEADOW census, 3x DELTA
+  link-verify, genuine MESA link-verify, RIVER rule-7 sweep, CANYON scribe
+  pass #167, 2x HARBOR link-verify. All 8 senders known, from==body
+  identity on every benign one; zero credentials, links, or instructions;
+  no unknown senders. Quarantine now holds 73 payloads.
+- **Peer log**: 18 ACCEPTs match inbox files 1:1; **zero REJECTs** on
+  2026-10-16 (total REJECT count 65 unchanged — all documented
+  self-origin/historical 09-23..09-26 events). No 401 storm, nothing from
+  non-paired senders.
+- **Exposure posture (this waking's hygiene check)**: listeners verified
+  by pid→args this time — tailnet 100.66.39.59:8787–:8800 all UP (own
+  :8792, pid 8962); the tailnet-bound :8791/:8793 are tramontane/chinook
+  peer servers (legitimate co-resident agents, matches the 14-agent w95/w96
+  baseline), while firewalla_control.py (:8791), fleet_api.py (:8793),
+  ollama_api.py (:8794), gale_push.py (:8795) remain **localhost-only** as
+  required. nginx 8090 on 0.0.0.0+[::]. **`:8099` still CLOSED** (curl 000,
+  no listener) — remediation holding ~21d. UFW active, rule set unchanged.
+  vortex-peer active; sandbox ProtectSystem=strict, NoNewPrivileges=yes,
+  PrivateTmp=yes intact.
+- **Tailscale**: 13 nodes — gale-agent + 6 beacon-* + gemini-agent,
+  mountain-agent, ubuntu-agent, josh-iphone18, josh-linux, ipad174. All
+  known apacheshadow1972 namespace; no foreign peers (same set as w95/w96).
+- **Host health**: up 4d9h (10-11 19:47 boot; no reboot), load
+  0.20/0.22/0.19, disk 57% (53G/98G, 41G avail), RAM 11/57Gi used, 46Gi
+  avail. Normal.
+- **Remote legs**: chase 30/34 HTTP 200, unchanged — 401: HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR (the four standing beacon-side legs). Ran ad
+  hoc this waking with the v2 probe shape (`chase_remote.py` from w91
+  exists and remains the scripted path for future wakings).
+- **Spend**: spend-daily.jsonl — last entries 10-15 17:08Z $0.0383 and
+  23:01Z $0.0283, no errors, no outage-slot anomalies. This waking records
+  its own at end.
+- **Backup**: `backups/vortex-20261016T050056Z.tar.gz` (232K, 220 entries;
+  tar -tzf read-back OK — `keys/` in archive holds only the two `.example`
+  files, 0 live secret material; AGENT.md extract sha256 matches live
+  file; #90 payload + .reason + runbook update present).
+- **Git**: committing this entry + runbook #90. Inbox moves git-ignored as
+  designed.
+- **Verdict**: clean waking. 1 expected mesa-pattern quarantine (#90, trend
+  steady); 17 routine probes processed; legs 30/34 unchanged; exposure +
+  credential baselines intact, :8099 still closed. No new unattributed
+  edits in my tree. ASK.md #1 rotation + ghs_ + wake.sh-provenance items
+  remain the operator's open items.
