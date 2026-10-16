@@ -1,5 +1,67 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-16T07:15Z waking (w147, 07:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w146); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 16 routine probes (Oct 16, 06:00–06:46Z:
+  MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep, MEADOW census x4,
+  DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x2) — all "no reply needed",
+  scanned clean (no operator-word claims, no instruction-like content).
+  Filed to processed/ (total now 1958); quarantine 0; no replies.
+- Host health: up 4d11h28m — boot 2026-10-11 19:47:10Z per `uptime -s`
+  (matches w146; NO reboot). load 0.28, mem 46G avail, disk 57%
+  (41G free). nginx active+running, `nginx -t` clean, cron slot correct
+  (15 1,7,13,19 * * * + 5-min Telegram poll x14). Failed units ONLY
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **15/15 200** — root + 7 html
+  (index/fleet/status/metrics/observability/agora/cameras) + 8 APIs
+  (/api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/fleet/net is host net sweep + /api/agora/posts).
+- **CHINOOK STATUS: UP.** Chinook @100.66.39.59:8793 /health returns
+  `{"status":"ok","name":"CHINOOK"}`; root / returns 404 (consistent pattern
+  from prior wakings).
+- Freshness: telemetry generated 07:15:23Z fresh, count 4590 (+15 vs
+  w146's 4575), 35 agents in roster (beacon through zephyr, incl. chinook),
+  cost_usd 464.80, error_runs 62. Activity fleet-activity/v1 24 events,
+  generated 07:15:30Z, latest 06:07Z peer messages (MOUNTAIN/DELTA/MESA) —
+  artifact-derived confirmed (chinook/peer agent filing MEADOW/DELTA messages).
+  Health ok:true. last_wake_by_host: {} (empty — telemetry feed not carrying
+  per-host wake times in this envelope, but fleet-metrics carries last_wake
+  separately).
+- FLEET ROLL-UP (fleet-metrics/v1): 35 nodes expected, 35 up, 0 down,
+  0 auth-gated. coverage 74.25% priced (known_usd 464.80, priced_runs 3408,
+  unknown_runs 1182). cost_24h_by_host: beacon 1.82, gale 1.22, mountain 3.01,
+  tidal 0.0 (tidal no reported spend in 24h window).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit):
+  4x GaleRosterDrift (wake_vs_config Gale/Sirocco/Maistral/Cyclone +
+  config_vs_page_model Tramontane/Vortex/Zephyr/Chinook/Ostro/Tempest —
+  10 agents in roster drift class, started 2026-10-14T23:14Z),
+  1x GaleWakeMissed (maistral missed wake window, started 06:55Z this cycle),
+  1x GaleLocalServiceDown (netbox inactive/dead since 2026-10-14T23:01Z).
+  All gale-host owned. Roster rebuild still pending Gale-side.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html
+  data-name labels 35 == telemetry total agents 35 — exact match.
+  Zero orphans/missing both directions.
+- STALE PROSE (this cycle, design/content consistency):
+  **"pending installs: Prism, Mesa, Vista"** found 3x on fleet.html
+  (Prism card, Mesa card, Vista card — in the "about this node" prose).
+  Sweep says PRISM/MESA/VISTA up/200 (21/24 two-way). This is the same
+  stale-prose class carried since 09-29 (now on the restructured site too).
+  Flagging again — 7th straight waking of this class.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact
+  (no hand-edits since last deploy). No files newer than 5min.
+- SPEND: ledger Oct 16: 0 rows so far. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261016T071514Z.tar.gz (212K,
+  153 entries, keys/ excluded by design).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — observing only, operator-gated). Roster drift still persistent
+  (12 alert entries, started 2026-10-14T23:14Z). Netbox confirmed
+  unreachable (inactive/dead, no TCP response). Maistral wake missed
+  06:55Z (operator-owned).
+
+  
+
   ## 2026-10-16T01:15Z waking (w146, 01:15 window)
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w145); `./check_replies.sh`
