@@ -4597,3 +4597,75 @@ in window). Backup verified (756K, 333 entries).
   levante/keys/telegram.env 664 persists — second waking reporting it.**
   Minor: disk +3G/6h creep, monitor. ASK.md #1 rotation + ghs_ +
   wake.sh-provenance items remain the operator's open items.
+
+## 2026-10-16T23:00Z — w100 scheduled waking (23:00 slot)
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  #1 (:8099 rotation, ~21d open), w90 ghs_ item, and w95/w96 wake.sh
+  provenance asks remain open.
+- **Inbox threat-watch: 22 messages triaged (18:00–18:46Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #93**:
+  `quarantine/20261016T182211Z-MOUNTAIN-992ac2c2.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 18:22:11Z), first-person "mesa
+  routine mesh sweep 2026-10-16 18:22:10 UTC" body; genuine MESA
+  link-verify ACCEPT 18:22:12Z (1s later) bounds it to the single file.
+  No credentials, links, or instructions — template slip, not injection.
+  Runbook updated to #93 (trend 93x over ~23 days, steady ~6h cadence in
+  Mountain sweep windows). Per plan: routine notify carries the count; no
+  peer note, no separate escalation ping. **21 benign → processed**
+  (`processed/20261016/`): 5x MOUNTAIN Rule-7 sweeps + 1 latency check
+  (18:00 window), 10x MEADOW census, DELTA link-verify, genuine MESA
+  link-verify, RIVER rule-7 sweep, CANYON scribe pass #170, 2x HARBOR
+  link-verify. All 7 senders known, from==body identity on every benign
+  one; zero credentials, links, or instructions; no unknown senders.
+  **Minor rate note**: MEADOW census burst was 10 identical probes in
+  ~50s (w98/w99 saw 6) — same benign data-only shape from a known peer,
+  logged as an uptick observation, not quarantined. Quarantine now holds
+  76 payloads; live inbox 0.
+- **Peer log**: 22 ACCEPTs in the 18:xx window match inbox files 1:1
+  (72 ACCEPTs total on 2026-10-16); **zero REJECTs** today (total REJECT
+  count 65 unchanged — all documented self-origin/historical 09-23..09-26
+  events). No 401 storm, nothing from non-paired senders.
+- **Credential hygiene (this waking's rotating pass; 14 co-located dirs,
+  read-only)**: every non-example/non-.pub `keys/` file 600 across agent,
+  zephyr, squall, tempest, vortex, cyclone, maistral, sirocco, bora,
+  chinook, tramontane, ostro, poniente — **EXCEPT the carry-over finding:
+  `/home/agent/levante/keys/telegram.env` STILL 664 (rw-rw-r--),
+  mtime unchanged Sep 25 22:27 — third waking flagging it (w98 found,
+  w99 confirmed, still unresolved ~30h).** Their file, their fix (chmod
+  600); reported only, not touched; flag persists in notify. Live-secret
+  content not read or printed. Tracked-file secret scan in my repo:
+  0 real hits (matches are prior wakings' self-referential prose in
+  NOTES.md/ASK.md + the AWS docs example key documented at line 4135).
+  `.gitignore` sane (keys/* deny + !keys/*.example + peer/inbox/**).
+- **Exposure spot-check (full posture was w99)**: `:8099` still CLOSED
+  (curl 000, zero listeners) — remediation holding ~21d. The two loopback
+  `http.server`s noted at w98 (127.0.0.1:8899 Gale stage,
+  127.0.0.1:8898 /var/www/gale) unchanged, still loopback-only, benign.
+  firewalla_control (:8791), fleet_api (:8793), ollama_api (:8794),
+  gale_push (:8795) all confirmed 127.0.0.1-bound; tailnet peer listeners
+  on 100.66.39.59 up. No new listeners vs baseline.
+- **Host health**: up 5d3h (10-11 19:47 boot; no reboot), load
+  0.27/0.26/0.22, disk **60%** (56G/98G, 38G avail — unchanged from w99;
+  the +3G/6h creep did not continue), RAM 12/57Gi used, 45Gi avail.
+  vortex-peer active; sandbox ProtectSystem=strict, NoNewPrivileges=yes,
+  PrivateTmp=yes intact. Normal.
+- **Remote legs**: chase 30/34 HTTP 200, unchanged — 401: HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR (the four standing beacon-side legs), via
+  `chase_remote.py` v2 probe shape.
+- **Spend**: spend-daily.jsonl — 10-16 05:01Z $0.0249, 11:01Z $0.0291,
+  17:01Z $0.0225; no errors, no outage slots. This waking records its own
+  at session end (wake.sh invokes spend_check.py).
+- **Backup**: `backups/vortex-20261016T230045Z.tar.gz` (236K, 226
+  entries; tar -tzf read-back OK — `keys/` in archive holds only the two
+  `.example` files, 0 live secret material; AGENT.md extract sha256
+  matches live file; #93 payload + .reason + runbook update present).
+- **Git**: committing this entry + runbook #93. Inbox moves git-ignored
+  as designed.
+- **Verdict**: routine waking. 1 expected mesa-pattern quarantine (#93,
+  trend steady); 21 routine probes processed (MEADOW burst 10x noted,
+  benign); legs 30/34 unchanged; exposure baselines intact, :8099 still
+  closed. **Carry-over finding: levante/keys/telegram.env 664 persists —
+  third waking flagging it.** Disk creep paused at 60%. ASK.md #1
+  rotation + ghs_ + wake.sh-provenance items remain the operator's open
+  items.
