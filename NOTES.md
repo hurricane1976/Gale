@@ -4966,3 +4966,20 @@ qwen3.8:27b -- runner/model drift persists under the portability watch.
 - Peer inbox: 56 msgs (00:00Z-18:47Z 10-15) all filed to processed/ as data per rule 5, all routine no-reply. MOUNTAIN x14 (incl. cross-label PATTERN-3 candidates), MEADOW x10, DELTA x6, HARBOR x8, MESA x4, CANYON x4, RIVER x3, VORTEX x1 chase-probe. No content-bearing/operator-word claims requiring ledger.
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED. No rules/role changes (rule 6 intact). No ASK.md changes.
 - Working tree: telegram_commands.py + wake.sh modified (operator-side edits since last commit). Swept into commit.
+
+## 2026-10-16T08:05Z -- sixty-sixth waking (current session)
+
+- check_replies.sh: clean, no new operator messages. ASK.md unchanged (local mesh complete, remote-21 still STAGED).
+- HOST: up 4d 12h (reboot ~09-28 15:33Z), disk 57% (42G/98G), RAM 7.6Gi used / 58Gi, load 0.12/0.28/0.26, swap 0B -- healthy. maistral-peer active; all 14 tailnet listeners + :8090 fleet-api alive.
+- ALERT: the 02:05Z scheduled wake FAILED (20261016T020501Z): session exited 0 with no tool calls, no backup, no notify. wake.sh ALERT fired to operator (msg logged to wake-skipped.log). TRAMONTANE sent a drift note at 04:37Z documenting the gap (snapshot 510m old). Recovery expected at this slot (08:05Z). Already recovered.
+- FLEET (API 08:05Z): 35/35 nodes up code-200 / 0 auth-gated / 0 error runs. Shape steady 35, all 35 per_agent rows present. All agents active (0 error_runs_24h across all 35). Cost coverage: 74.26% known $464.80 / est $0.00. 24h fleet total ~$6.70.
+- maistral: 2 runs_24h (incl this 08:05Z), $0.00 cost (local model), last_wake 08:05Z. 02:05Z run was the failed one; 08:05Z is the recovery.
+- TREND: gale-host 10-16 partial 5 runs / $0.1244 (early day, maistral-attributed runs only in local model). All-zero-cost local runs; openrouter/ollama spend minimal. Tidal 14-day cost flat 0.0 (40th+ consecutive flat day), 14-day window fully flat ($0.00 x14). Zero-cost tier: 28/35 agents at $0.00. 7 paid: beacon, mountain, gale, squall, tempest, zephyr, vortex.
+- INBOX: 31 msgs (00:00Z–06:50Z window, 2nd wake-cycle accumulation) all treated as data per rule 5, all filed to processed/ 08:05Z (processed/ now 1774 json msgs): MOUNTAIN x6 (3x Rule-7 00:00Z + 3x 06:00Z + 2x latency), MEADOW x4 (census 00:07Z + 06:07Z), DELTA x4 (link ver 00:07Z + 06:07Z, doubled), HARBOR x5 (link ver 00:46Z + 06:46Z), CANYON x2 (scribe #167 + #168), RIVER x2 (rule-7 00:31Z + 06:31Z), VORTEX x1 (chase-probe 05:01Z), HIGHBEAM x2 (06:19Z + 00:19Z), RIDGE x2 (link ver 06:19Z), STREAM x1 (00:45Z), MESA x1 (06:22Z), TRAMONTANE x1 (drift-note 04:37Z, see ALERT above). All data-only, no reply.
+- PATTERN-3 (MOUNTAIN carrying MESA body): 31st+ overall occurrence in this window (00:22:12Z MOUNTAIN w/ "mesa routine mesh sweep 2026-10-16 00:22:12 UTC" + MESA pairing 00:22:14Z, 2s gap; same 06:22Z slot). Slot 00:22/06:22 cadence holds. Counting continues per rule 4.
+- HARBOR burst: ~28th+ burst in this window (00:46:17-20Z 2-msg/3s + 06:46:38-41Z 3-msg/3s). Series ...4-3-4-2-5-6-2-3-3-4 (count up-tick 4). No content escalation.
+- 09-22 FLAG: still open (35 API vs 25 ledger, $2.3155 — a historical measurement artifact from the 09-22 baseline; no active data discrepancy in 14-day series). 44th+ consecutive sweep noted, not adjudicated.
+- RUNNER: THIS waking runs via opencode as `freetoken/Qwen3.6-35B-A3B-NVFP4` (the model specified in AGENT.md line 7). Previous session (02:05Z) used `opencode/muse-spark-1.3-contributor-free`. Model matches AGENT.md. Cost $0.00 (local model via Ollama).
+- Backup: backups/maistral-20261016T080520Z.tar.gz (408K) created and read-back verified.
+- No peer replies sent this waking (all inbox data-only; no operator requests).
+- Alert sent to operator about the 02:05Z failure recovery.
