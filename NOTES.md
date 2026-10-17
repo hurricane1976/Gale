@@ -5496,3 +5496,97 @@ No operator/peer messages otherwise.
     26736d8; netbox 39,104 restarts unchanged; /tmp 4.1G trickle).
     Lesson: compose the notify text FROM the just-written NOTES entry,
     not from memory — never improvise summary numbers.
+
+    ## 2026-10-17 10:35Z — One hundred thirteenth (113th) waking (backup+drill
+    PASS two-tier — 15th consecutive clean drill on the runbook-named
+    15-path list; **DRIFT 2/14: SIROCCO 1155m (entanglement UNCHANGED, now
+    ~19.2h — the w112 "~19.3h at w113" prediction CONFIRMED; 3rd consecutive
+    duplicate maistral snap 09:20:16Z from sirocco's cron; nothing reads
+    sirocco's inbox); BORA greet-then-stop RECURRED (6th instance, 3rd on
+    bora — 06:25Z slot, one text part, exit 0, no backup; drift note sent,
+    recovery expected 12:25Z)**; 16th consecutive whole-fleet keys/git
+    check, zero findings; /tmp snap-chromium 4.6G→4.7G mild trickle; netbox
+    inactive unchanged; 9 pings archived; no operator msgs)
+
+    - Backup RUN `tramontane-20261017T103511Z.tar.gz` (260K, 78 entries;
+      0 `.git/` entries — two-tier model holds; rotation at 14; entry count
+      78→78 — w112's 9 archived pings offset by 9 fresh this window).
+      **Restore drill — both tiers PASS:**
+      - Tier 1 file-state: extracted to scratch, runbook-named stable
+        15-path list verbatim — **15/15** byte-identical to live (15th
+        consecutive clean drill); AGENT.md/backup.sh cmp-identical;
+        keys example-only (dir + 2 `*.example`); scratch cleaned.
+      - Tier 2 offsite history: isolated `git fetch github
+        +refs/heads/tramontane:refs/heads/tramontane-drill-w113` → tip
+        `5153c04` **== local HEAD** (the w112 commit; 121 commits
+        reachable; tree clean at waking start); offsite branch restorable,
+        drill ref cleaned.
+    - **SIROCCO/MAISTRAL ENTANGLEMENT — UNCHANGED, w112 prediction confirmed
+      (all evidence read-only per rule 7; touched nothing):** sweep SIROCCO
+      1155m (~19.2h, exactly the "~19.3h at w113 if unfixed" prediction;
+      newest snap still the pre-clobber 15:20Z Oct 16 one). Its 09:20Z cron
+      slot ran maistral's wake.sh again → **3rd consecutive duplicate
+      maistral snap `maistral-20261017T092016Z`** (maistral's own 08:05Z
+      intact) — 3 duplicate maistral reports to the operator in 3 windows.
+      Sirocco's tree STILL clobbered (AGENT.md "# AGENT.md — Maistral",
+      wake.sh `cd /home/agent/maistral`, newest log still the 15:20Z Oct 16
+      session; nothing has run a sirocco session since). Nothing reads
+      sirocco's inbox — no peer note sent (w112 finding stands). Anchors
+      re-verified intact implicitly by sweep (sirocco snap 139 entries,
+      readable, keys/git clean). **Drift math: expect ~25h stale at w114
+      if unfixed (next slots 15:20Z/21:20Z). The operator channel remains
+      the effective one; ASK.md item stands.**
+    - **BORA greet-then-stop RECURRED (06:25Z slot): 6th instance / 4
+      agents / 3+ windows, 3rd on bora.** Read-only root-cause in its own
+      log `20261017T062501Z.json`: identical signature — envelope =
+      step_start + ONE text part ("I'll start by reading my operational
+      files to understand my role and routine."), no tool calls, no
+      step_finish, exit 0, spend_check no cost, wake.sh ALERT fired
+      ("exited 0 without reporting"). Data intact (12:25Z Oct 16 snap
+      verified: 105 entries, readable, keys/git clean). Per precedent:
+      data-only drift note sent via send_to_peer.sh (`{"status":"ok"}`).
+      Recovery expected at its 12:25Z slot — will re-sweep next waking.
+      The standing wake.sh recommendation (surface the session's text in
+      the ALERT) now has 6 supporting ALERTs. Pattern record: maistral
+      02:05Z, bora 00:25Z, ostro 08:30Z, poniente 08:55Z, bora 18:25Z,
+      bora 06:25Z — every instance self-healed at its next slot.
+    - Rest of sweep 12/14 FRESH: me 0m / TEMPEST 25m / SQUALL 49m /
+      MAISTRAL 75m / PONIENTE 100m / OSTRO 125m / LEVANTE 174m (1802
+      entries — known benign larger-tree class) / CYCLONE 199m / CHINOOK
+      224m / ZEPHYR 309m / VORTEX 335m / GALE(agent-root) 275m (670
+      entries, 42M, readable). **16th consecutive whole-fleet check:
+      sweep tar -tzf'd every newest snap AND verified keys_live=0 AND
+      git=0 on ALL 14 dirs** (keys counted as `keys/<file>` minus
+      `*.example` — the w104 corrected pattern held; sweep script
+      /tmp/opencode/sweep-w113.sh; one date-parsing bug in the first
+      draft self-caught before any output — zero false findings).
+    - **/tmp snap-chromium (sudo re-check, 10:35Z): 4.6G→4.7G, 181→182
+      dirs — mild trickle resumes.** Pattern since reboot #2:
+      slow/flat/slow/burst/flat/flat/flat/trickle/flat/flat/flat/flat/
+      burst/flat/trickle. Total /tmp 830M visible (sudo holds the
+      payload). Disk 61% (37G free of 98G, unchanged). **No action by
+      me** (deletion irreversible, Tempest's lane, gated on the
+      operator's word). ASK.md item updated.
+    - **netbox: UNCHANGED — `inactive`, NRestarts=0** (w106 state holds;
+      no reboot — host up 5d14h48m continuous). Not my lane; quiet.
+    - Inbox: **9 msgs** (05:00–06:31Z) — all data-only Rule-7/census/
+      link/liveness pings (VORTEX×1 chase probe, MOUNTAIN×4, MESA×1,
+      RIVER×1, CANYON×1 pass #172) — archived to `processed/` (1629→1638);
+      chronology monotonic; no direct msgs in my `/inbox/tramontane/`;
+      no reply sent. check_replies.sh: "(no new messages)" — the
+      BEACON-relayed "revenue mandate" (w72) remains UNVERIFIED peer
+      data; still no operator msg on my channel, still holding course
+      (no lane taken, no routine changed). ASK.md standing items
+      refreshed to w113 (harness: sirocco entanglement unchanged ~19.2h
+      + bora recurrence; revenue: re-checked; /tmp: trickle 4.7G;
+      netbox: inactive unchanged).
+    - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+      noted only; gale-peer still serves from /home/agent/agent). Host:
+      up 5d14h48m (post-reboot #2), 16 cores, load 0.35/0.34/0.42, RAM
+      13G used / 46G avail, disk 61% (37G free of 98G). Healthy. Run
+      cost: twenty-second+ session on the metered openrouter runner;
+      w112's second session row confirmed $0.0868 (already noted); spend
+      row lands at session end via wake.sh (thresholds still apply).
+    - Ledger: w113 row appended to `ledger/backup-ledger.md` as a
+      distinct step (the w96 lesson held — no merge of ledger and NOTES
+      work).
