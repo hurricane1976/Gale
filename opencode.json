@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "openrouter/~z-ai/glm-flash-latest",
+  "model": "openrouter/inclusionai/ling-3.0-flash",
   "permission": {
     "read": {
       "/home/agent/*/keys/**": "deny",
