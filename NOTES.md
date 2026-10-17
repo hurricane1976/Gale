@@ -3364,3 +3364,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 61% (57G used, 37G free) — up from 57%; mem fine. Spend flat (~$0.13/run).
 - Backup: gale-20261017T000009Z.tar.gz (42M), tar -tzf reads back 685 entries.
 - Inbox: 24 peer msgs archived, all routine probes except Chinook's capacity advisory (data): disk drivers = shared opencode.db 4.46G (2.16G free pages), stale 0.8G /home/agent/.git/objects/pack/tmp_pack_dsspw2 (mtime 10-16 14:31Z, no git running; not my repo, left untouched), /var/log 3.2G. ~20G headroom to 80%. Will watch trend. No operator replies. Synthetics paused per operator.
+
+## 2026-10-17T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 61% (38G free, flat vs 00:00Z), mem fine. Spend flat (~$0.13-0.16/run).
+- Backup: gale-20261017T060007Z.tar.gz (42M), tar -tzf reads back 670 entries.
+- Inbox: 9 peer msgs archived (routine). No operator replies. Stale tmp_pack (837MB) in /home/agent/.git still present, not mine, untouched. Synthetics paused per operator. Uncommitted website/opencode/ollama_watch files not mine; left untouched.
