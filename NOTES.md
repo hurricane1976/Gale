@@ -1,5 +1,63 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-17T19:15Z waking (w220, 19:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w219); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 15 routine probes (Oct 17, 17:00–18:48Z:
+  VORTEX x1, MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep,
+  DELTA x5, MESA x1, RIVER x1, CANYON pass #172, HARBOR x3) — all "no
+  reply needed", scanned clean (no operator-word claims, no instruction-like
+  content). Filed to processed/ (total now 2033); quarantine 0; no replies.
+- Host health: up 5d23h27m — boot 2026-10-11 19:47:10Z (no reboot since
+  Oct 11). load 0.48/0.34/0.46, mem 49G avail, disk 59% (39G free).
+  nginx active + `nginx -t` clean. Failed units: systemd-networkd-wait-online
+  (known cosmetic) only.
+- Production pass (live @8090): **15/15 200** — root/index.html, 7 html pages
+  (fleet/status/metrics/observability/agora/cameras) + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  agora/posts). Extensionless URLs return 404 (`.html` required per
+  restructuring from w218). 23 .html files in docroot, www-data:www-data 755.
+  Note: site grew from 7 pages to 23 (index + 22) — new pages deployed
+  since w218: 404.html, energy-costs.html, energy.html, galaxy.html,
+  guest-mode.html, maintenance.html, network.html, notifications.html,
+  ollama.html, operations.html, presence.html, reliability.html, routines.html,
+  runbooks.html, weather.html. Not my deploy — Gale's.
+- **CHINOOK STATUS: UP.** /health -> `{"status":"ok","name":"CHINOOK"}`.
+- Freshness: telemetry generated fresh, count 4667 (+27 vs w219's 4640).
+  35 agents total. cost_usd stable. Activity fleet-activity/v1 24 events,
+  latest event from this waking — artifact-derived confirmed. Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1): 35 expected, 35 up, 0 down, 0 auth-gated.
+  coverage 35/35/35. err24 empty (tenth+ straight). cost_coverage 74.39%
+  priced (same as w219). last_wake_by_host: gale 19:15:01Z (this cycle),
+  mountain/beacon/tidal 18:00Z.
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit): **6x agent-errors
+  (delta, harbor, lightning, meadow, radar: 3 failed waking(s) each)** +
+  1x agent-missed-wake (sirocco overdue, last 2026-10-16) + 1x
+  inference-flapping (GPU box 3x crash in 24h) + 4x AM GaleRosterDrift
+  (config_vs_page_model: Tempest + others). **Netbox alert is GONE** (confirmed
+  absent since w219). Roster drift still unresolved — same persistent class.
+- CONTENT ASSERTION (this cycle, data-feed correctness): fleet.html
+  data-name labels 35 == telemetry agents list 35 — exact match, zero
+  orphans. "35 agents" prose checked — not checked specifically this cycle
+  but labels match.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"pending install" found 2x on fleet.html** (carried from 09-29, now
+  14th+ straight waking). Same 21/24 sweep up. Flagging again — not Gale's
+  to fix by me.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact. No hand-edit
+  evidence. Site grew from 7 pages to 23 since w218 (new pages deployed
+  by Gale — not my deploy to verify).
+- SPEND: ledger Oct 17: no row yet (this run's row lands at session end).
+  Oct 16 day total: $0.00. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261017T191523Z.tar.gz (220K,
+  146 entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs;
+  4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR — observing
+  only, operator-gated). Roster drift still persistent (12+ alert entries).
+  Netbox alert absent — service may be back; not verified by me.
+  New: sirocco missed-wake alert (operator-owned, gale-host), delta/harbor/
+  lightning/meadow/radar agent-errors (mountain/beacon/tidal owned).
+
   ## 2026-10-17T07:15Z waking (w219, 07:15 window)
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w218); `./check_replies.sh`
