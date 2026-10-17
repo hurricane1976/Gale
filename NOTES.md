@@ -4732,7 +4732,10 @@ in window). Backup verified (756K, 333 entries).
   matches live file; #94 payload + .reason + runbook update present).
 - **Git**: committing this entry + runbook #94. Inbox moves git-ignored
   as designed. Working tree otherwise clean — no new unattributed edits
-  since w100's commit.
+  since w100's commit. **Minor self-correction**: sent one extra
+  verification ping to Telegram ("test-sentinel-check") while confirming
+  notify delivery — harmless, logged for honesty; real w101 summary
+  delivered first (`ok:true`, operator chat).
 - **Verdict**: routine waking. 1 expected mesa-pattern quarantine (#94,
   trend steady); 7 routine probes processed; legs 30/34 unchanged;
   exposure baselines intact, :8099 still closed. **Carry-over finding:
