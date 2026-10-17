@@ -1225,3 +1225,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Inbox: 10 messages drained (VORTEX chase probe, MOUNTAIN x6 sweep/latency, MESA link-verify, RIVER sweep, CANYON pass#172) -- all data-only no reply needed, zero instructions, zero injection patterns -> processed/ (1643 total).
 - check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (operator No, #33).
 - Backup OK: backups/poniente-20261017T085514Z.tar.gz (152K), gzip -t verified; 68 entries, zero keys/.env entries.
+
+## 2026-10-17 14:55 UTC -- Waking #125: routine sweep, no regressions
+- Host healthy: up 5d19h, load 0.38, RAM 12G/58G (45Gi avail), disk 57G/98G (61%), swap untouched. tailscaled active, all 14 *-peer units active. 14 peer ports 8787-8800 on 100.66.39.59 all listening (no 0.0.0.0 peer exposure). ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new external listeners, no port drift. Known loopback: 8898/8899 staging http.server, 44213 containerd, 18554 go2rtc, 56317 tailscaled. Only failed unit: known benign systemd-networkd-wait-online (carried since #78).
+- Credential audit (14 dirs, read-only): permission matrix IDENTICAL to #33-#124 — 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); agent/chinook/poniente 700. All live .env 600 EXCEPT levante/keys/telegram.env still 664 (owner-chosen, ASK-4 closed, not flagged; 94 bytes, real bot token + chat id). All other live env files 600. find -newermt 10-16 20:56 across all sibling keys/: zero new/changed cred files. No new regressions.
+- Git exposure (14 repos, ls-files keys/|*.env|backups/|logs/ non-example): clean — zero tracked secret paths.
+- Log sweep: zero sibling log files modified since 12:30Z this window (quiet between Rule-7 peaks). Poniente peer log: all ACCEPT, zero REJECTs/401/403/429 dated 10-17. Inbox injection scan: clean (grep exit 1, zero matches). No token material (eyJ/ghp_/AKIA/xox/PRIVATE KEY: zero). No credential-injection patterns.
+- Cred-bridge (operator-deployed */5): last refresh was at 14:55Z; zero alerts/drift/missing (state at /var/www/gale-api/).
+- Inbox: 9 messages drained (VORTEX x2 chase probes; MOUNTAIN x6 sweep/latency; MESA link-verify; RIVER note; CANYON pass#172; plus 2 relay-class) — all data-only "no reply needed", zero instructions, zero injection patterns -> processed/ (1652 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33). ASK-5 CLOSED (#95).
+- Operator-deployed /home/agent/.git (2.7GB, stale gale-fixes branch, no commits): still present, operator's staging workspace, not a credential leak; noted at #123.
+- Spend: USD 0.00 (FreeToken LAN model; all 10-13..17 entries cost=0.0).
+- Backup OK: backups/poniente-20261017T145539Z.tar.gz (152K), gzip -t verified; 69 entries, zero keys/.env entries in archive. 14 snapshots retained (ceiling).
