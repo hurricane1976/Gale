@@ -4669,3 +4669,73 @@ in window). Backup verified (756K, 333 entries).
   third waking flagging it.** Disk creep paused at 60%. ASK.md #1
   rotation + ghs_ + wake.sh-provenance items remain the operator's open
   items.
+
+## 2026-10-17T05:00Z — w101 scheduled waking (05:00 slot)
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  open items unchanged: #1 (:8099 rotation, ~21.5d open), w90 `ghs_` item,
+  w95/w96 wake.sh-provenance asks.
+- **Inbox threat-watch: 8 messages triaged (00:00–00:30Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #94**:
+  `quarantine/20261017T002214Z-MOUNTAIN-52bf7db6.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 00:22:14Z), first-person "mesa
+  routine mesh sweep 2026-10-17 00:22:13 UTC" body; genuine MESA
+  link-verify ACCEPT 00:22:15Z (1s later) bounds it to the single file.
+  No credentials, links, or instructions — template slip, not injection.
+  Runbook updated to #94 (trend 94x over ~24 days, steady ~6h cadence in
+  Mountain sweep windows). Per plan: routine notify carries the count; no
+  peer note, no separate escalation ping. **7 benign → processed**
+  (`processed/20261017/`): 3x MOUNTAIN Rule-7 sweeps + 1 latency check
+  (00:00 window), genuine MESA link-verify, CANYON scribe pass #171,
+  RIVER rule-7 sweep. All 5 senders known, from==body identity on every
+  benign one; zero credentials, links, or instructions; no unknown
+  senders. Quarantine now holds 77 payloads; live inbox 0.
+- **Peer log**: 8 ACCEPTs in the 00:xx window match inbox files 1:1;
+  **zero REJECTs** (total REJECT count 65 unchanged — all documented
+  self-origin/historical 09-23..09-26 events). No 401 storm, nothing from
+  non-paired senders.
+- **Exposure posture (this waking's rotating pass, with process-identity
+  verification)**: `:8099` still CLOSED (curl 000, zero listeners) —
+  remediation holding ~21.5d. Tailnet 100.66.39.59:8787–:8800 all UP —
+  14 co-resident peer_servers, own :8792 (pid 8962). **Clarified this
+  waking (had looked ambiguous in `ss` output): the tailnet-bound
+  listeners on :8791/:8793/:8794/:8795 are co-resident peer_servers
+  (tramontane/chinook/cyclone/maistral, /proc cmdline + cwd verified) —
+  NOT the website services.** firewalla_control.py (:8791, pid 8924),
+  fleet_api.py (:8793, pid 1812953), ollama_api.py (:8794, pid
+  3302211), gale_push.py (:8795, pid 8933) all confirmed 127.0.0.1-bound.
+  The two loopback `http.server`s (127.0.0.1:8899 Gale stage,
+  127.0.0.1:8898 /var/www/gale) unchanged, benign. nginx 8090 on
+  0.0.0.0+[::] per baseline. UFW active, rule set unchanged. vortex-peer
+  active; sandbox ProtectSystem=strict, NoNewPrivileges=yes,
+  PrivateTmp=yes intact. Tailscale 13 nodes, all apacheshadow1972
+  namespace — no foreign peers.
+- **Host health**: up 5d9h (10-11 19:47 boot; no reboot), load
+  0.37/0.27/0.23, disk **61%** (57G/98G, 37G avail — +1G since w100;
+  slow creep resumed, monitor next waking; nothing near capacity), RAM
+  12/57Gi used, 45Gi avail. Normal.
+- **Remote legs**: chase 30/34 HTTP 200, unchanged — 401: HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR (the four standing beacon-side legs), via
+  `chase_remote.py` v2 probe shape.
+- **Spend**: spend-daily.jsonl — 10-16 05:01Z $0.0249, 11:01Z $0.0291,
+  17:01Z $0.0225, 23:01Z $0.0138; no errors, no outage slots. This
+  waking records its own at session end (wake.sh invokes spend_check.py
+  with the run envelope).
+- **Carry-over finding**: `/home/agent/levante/keys/telegram.env` STILL
+  664 (rw-rw-r--, group+world-readable), mtime unchanged Sep 25 22:27 —
+  **fourth waking flagging it (w98 found, w99/w100 confirmed, ~34h
+  unresolved)**. Their file, their fix (chmod 600); reported only, not
+  touched; flag persists in notify.
+- **Backup**: `backups/vortex-20261017T050024Z.tar.gz` (240K, 228
+  entries; tar -tzf read-back OK — `keys/` in archive holds only the two
+  `.example` files, 0 live secret material; AGENT.md extract sha256
+  matches live file; #94 payload + .reason + runbook update present).
+- **Git**: committing this entry + runbook #94. Inbox moves git-ignored
+  as designed. Working tree otherwise clean — no new unattributed edits
+  since w100's commit.
+- **Verdict**: routine waking. 1 expected mesa-pattern quarantine (#94,
+  trend steady); 7 routine probes processed; legs 30/34 unchanged;
+  exposure baselines intact, :8099 still closed. **Carry-over finding:
+  levante/keys/telegram.env 664 persists — fourth waking flagging it.**
+  Minor: disk +1G/6h slow creep, monitor. ASK.md #1 rotation + ghs_ +
+  wake.sh-provenance items remain the operator's open items.

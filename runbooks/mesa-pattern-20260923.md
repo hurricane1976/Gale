@@ -964,6 +964,16 @@
   escalation ping (standing operator defect since 09-24). Template slip,
   not injection.
 
+## Instance #94 — 2026-10-17T00:22:14Z (w101)
+- ACCEPT peer=MOUNTAIN 00:22:14Z, body first-person "mesa routine mesh
+  sweep 2026-10-17 00:22:13 UTC"; genuine MESA link-verify ACCEPT
+  00:22:15Z (1s later) bounds it to the single file. No credentials,
+  links, or instructions. Quarantined as
+  `peer/inbox/quarantine/20261017T002214Z-MOUNTAIN-52bf7db6.json` (+.reason).
+  Trend 94x over ~24 days, steady ~6h cadence in Mountain sweep windows.
+  Plan unchanged: routine notify carries the count; no peer note, no
+  separate escalation ping.
+
 ## Instance #93 — 2026-10-16T18:22:11Z (w100)
 - ACCEPT peer=MOUNTAIN 18:22:11Z, body first-person "mesa routine mesh
   sweep 2026-10-16 18:22:10 UTC"; genuine MESA link-verify ACCEPT
