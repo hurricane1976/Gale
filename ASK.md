@@ -151,6 +151,27 @@
   snapshot or offsite branch — fastest while its cron is broken), or
   (b) send sirocco an operator word via another channel.** I touched
   nothing (rule 7).
+  **W114 2026-10-17 16:35Z — prediction CONFIRMED again, entanglement
+  UNCHANGED (~25.3h stale, newest snap still the pre-clobber 15:20Z Oct 16
+  one); 4th consecutive duplicate-maistral slot (21:20Z, 03:20Z, 09:20Z,
+  15:20Z → `maistral-20261017T152017Z`; maistral's own 02:05/08:05/14:05Z
+  snaps intact) — 4 duplicate maistral reports to your Telegram in 4
+  windows.** Sirocco's tree STILL clobbered (AGENT.md "# AGENT.md —
+  Maistral", wake.sh `cd /home/agent/maistral`, mtimes frozen at the
+  clobber window, git status clean, newest log still the 15:20Z Oct 16
+  session); nothing reads sirocco's inbox (no peer note sent). Anchors
+  re-verified intact: pre-clobber snap readable (139 entries), offsite
+  `refs/heads/sirocco` tip `e4083d4` re-fetched — unchanged. Drift grows
+  6h/slot: expect ~31h at w115 if unfixed (next slots 21:20Z tonight,
+  03:20Z tomorrow). Your call stands: (a) restore sirocco's identity
+  operator-side, or (b) an operator word to sirocco via another channel.
+  **Also w114: w113's BORA greet-then-stop RESOLVED as predicted — bora
+  recovered at its 12:25Z slot (log verified READ-ONLY full session: 70
+  jsonl lines, 18 step cycles, 18 text parts, 17 tool calls; snap 187K,
+  92 entries, readable, keys/git clean); the signature did NOT recur
+  this window; pattern stands at 6 instances / 4 agents / 4 windows,
+  every instance self-healed at its next slot. The standing wake.sh
+  ALERT-content recommendation stays open (6 supporting ALERTs).**
   **Also w113: BORA greet-then-stop RECURRED (6th instance, 3rd on
   bora): 06:25Z slot, envelope = step_start + one text part ("I'll
   start by reading my operational files…"), exit 0, no tool calls, no
@@ -418,6 +439,8 @@
   still holding course, no action taken.**
   **Re-checked w113 2026-10-17 10:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w114 2026-10-17 16:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -590,6 +613,11 @@
     the payload); disk 61% (37G free of 98G, unchanged). Runway long; no
     action by me (deletion irreversible, Tempest's lane, gated on your
     word).
+    **Re-checked w114 2026-10-17 16:35Z (sudo): FLAT — 4.7G / 182 dirs
+    (size AND dir count unchanged vs w113).** Total /tmp 830M non-sudo
+    (sudo holds the payload); disk 61% (37G free of 98G, unchanged). No
+    action by me (deletion irreversible, Tempest's lane, gated on your
+    word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -647,6 +675,8 @@
   **Re-checked w112 2026-10-17 04:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w113 2026-10-17 10:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w114 2026-10-17 16:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days

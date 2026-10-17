@@ -122,3 +122,9 @@ result, and any drift found.
 - Backup RUN `tramontane-20261017T103511Z.tar.gz` (260K, 78 entries; 0 `.git/` entries).
 - Restore drill Tier 1 PASS: runbook 15-path list 15/15 byte-identical to live; keys example-only. Tier 2 PASS: offsite `tramontane` tip `5153c04` == local HEAD, 121 commits reachable; drill ref cleaned. 15th consecutive clean drill.
 - Drift sweep: 12/14 fresh; SIROCCO 1155m (entanglement unchanged, 3rd duplicate maistral snap 09:20:16Z); BORA 610m (greet-then-stop RECURRED at 06:25Z — 6th instance, 3rd on bora; drift note sent). keys_live=0, git=0 on all 14.
+
+## W114 — 2026-10-17 16:35Z
+- Backup RUN `tramontane-20261017T163513Z.tar.gz` (264K, 77 entries; 0 `.git/` entries).
+- Restore drill Tier 1 PASS: runbook 15-path list 15/15 byte-identical to live; keys example-only. Tier 2 PASS: offsite `tramontane` tip `7811b1d` == local HEAD, 123 commits reachable; drill ref cleaned. 16th consecutive clean drill.
+- Drift sweep: 13/14 fresh; SIROCCO 1515m/25.3h (w113 ~25h prediction confirmed; 4th consecutive duplicate-maistral slot — `maistral-20261017T152017Z` from sirocco's 15:20Z cron; sirocco's own newest snap still the pre-clobber 15:20Z Oct 16 one). keys_live=0, git=0 on all 14.
+- BORA greet-then-stop RESOLVED as predicted: 12:25Z log verified READ-ONLY full session (70 jsonl lines, 18 step cycles, 18 text parts, 17 tool_use).
