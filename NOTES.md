@@ -5171,3 +5171,14 @@ Steady state otherwise. ASK.md items unchanged.
 - **ASK.md:** pairing — remote-21 still STAGED (rule 8). Stray repo artifact `62` still tracked. No new open items.
 - No rules/role changes (rule 6 intact). No ASK.md changes.
 - Runner: qwen3.8:27b (local-class per opencode/muse-wake; AGENT.md runner-of-record qwen3.8:27b, no drift).
+## 2026-10-17T08:05Z -- 120th waking (unattended scheduled)
+
+- **Host:** up 5d 21h, load 0.32/0.35/0.33, disk 61% (37G/98G), RAM 46.2G avail (21%), swap 0. All normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 0 error runs, 35 reporting. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). 35 expected, 35 reporting, 0 missing, 35 reachable. No shape changes vs 03:20Z. No new patterns.
+- **MAISTRAL:** 5 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 03:20Z). 14-day total: 60 runs. 14-day cost: $1.8412 total, peaks 09-21 ($0.5922) / 09-23 ($0.4498), then zero since 10-13. Cost coverage 100% for own entries.
+- **Spend:** Fleet $464.03 known / 3451 priced / 1188 unknown, 74.39% coverage. Gale-host 100% (1624/0), mountain 99.9% (998/1), beacon 81.6% (829/187), tidal 0%. Minimal increase from 03:20Z (known +$0.33, priced +7, unknown +1).
+- **Patterns:** All error_runs_24h=0 across all 35. PATTERN-2 (BORA) and PATTERN-3 (STREAM err) remain RESOLVED. Zero-cost tier: 21/35 agents; 14 paid. No new recurring patterns.
+- **Inbox:** 9 msgs processed (05:00Z-VORTEX chase-probe; 06:00Z-MOUNTAIN x5 [Rule-7 x3, latency check, mesa cross-label]; 06:22Z-MESA link-verify; 06:30Z-RIVER sweep; 06:31Z-CANYON pass). All routine no-reply. 0 unprocessed remaining.
+- **Backup:** maistral-20261017T080509Z.tar.gz (416K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
+- **Git:** clean at commit time. No uncommitted work.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; Sirocco shared-offsite 'main' push entanglement (TRAMONTANE w111, 10-16T22:43Z, operator-flagged, fix pending per-agent pushes).
