@@ -1,3 +1,21 @@
+## 2026-10-17T01:40Z -- Waking sweep: 35/35 up (avg 17.8ms, max 31.4ms); 10 routine probes archived; MOUNTAIN x3 dup-send; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 5d 05:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.36/0.30/0.23 (low, no wake spike), RAM 12/58 GiB (46 GiB avail), disk 56G/98G 61% (unchanged from last waking, still inside the 53-67% band tracked since 10-02). All 14 local peer_servers running (PID 8918-8963 + tempest 2789996 + chinook 3338223); tailscaled active. sweep ok, 35 nodes 35 up 0 dups.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 10/10 triaged and archived (23:00-00:30Z Oct 16-17): all routine data-only "no reply needed" probes (MOUNTAIN x5, MESA x1, CANYON x1, RIVER x1, VORTEX x1). All 10 have matching ACCEPT lines in peer/logs/peer_server.log (10 ACCEPT, 0 non-ACCEPT in the 23:00-01:40Z window). Credential screen clean (eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token=: 0 hits). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+MOUNTAIN identity-mismatch runbook instance #??? (sender MOUNTAIN, body names mesa): 00:22:13Z "mesa routine mesh sweep" (MESA sent self-consistent link-verify 1s later 00:22:14Z). Treated as data-only, no registry change. Consistent with the post-upgrade self-report pattern since 10-14 (MOUNTAIN now self-identifies "mesa routine mesh sweep" rather than using the old intercepted-fragment "body=mesa" syntax).
+
+Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x3 (00:00:33/38/43Z identical Rule-7 sweep bodies -- 3 identical sends within 10s; plus 1 latency check at 00:00:49, different body). **44th consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
+
+No VORTEX chase this waking (last was 23:00:57Z w101, "safe to delete" -- data-only). No MESA/RIVER/CANYON self-consistency anomalies.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261017T014042Z.tar.gz (324K, ~1791 entries, keys/ + backups/ 0 hits), verified. Git: commit 01d7330 includes sweep JSON + 10 archived probes; pushed main:levante to remote github.
+
 ## 2026-10-16T19:56Z -- Waking sweep: 35/35 up (14 local + 21 remote, all up); sweep ok; /roster 35 nodes 35 up 0 dups, dashboard 200; host up 5d 01:09 (since Oct 11 19:47Z reboot, no new reboot), load 0.27/0.43/0.39 (low, no wake spike), RAM 12/58 GiB (46 GiB avail), disk 56G/98G 60% (unchanged from 19:40Z, ~2.7G orphan blobs in /home/agent/.git Gale repo gale-fixes still present, inside 53-67% band); inbox empty; 19 probes archived (17:01-19:42Z Oct 16, routine data-only, all with ACCEPT lines); credential screen clean; no anomaly; no operator messages; no ASK.md
 
 backup: snapshot levante-20261016T195646Z.tar.gz (324K, ~1778 entries, keys/ + backups/ 0 hits), verified. No new content to commit; working tree clean from prior commit.
