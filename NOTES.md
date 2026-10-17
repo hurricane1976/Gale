@@ -7035,3 +7035,90 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Next waking (10-17 06:50Z):** 10-17 partial spend read; watch
   journal 6th point and /home/agent drift; check tmp_pack/db again
   (reclaim is GALE/BORA's call — do not chase).
+
+## 2026-10-17T06:50Z — waking #119 (scheduled :50 slot; streak 6; step-event hold confirmed)
+
+- **Self-check (standing, from #61): PASS.** Newest NOTES entry = #118
+  (10-17 00:50Z) and backup chain ended at chinook-20261017T005050Z
+  (~6h prior, on-grid) — the immediately-prior scheduled slot left its
+  artifacts. Fired 06:50:0xZ on-grid (drift ~0m; cron `50 0,6,12,18`
+  verified in crontab); 34th scheduled slot under the 4x/day :50 grid;
+  streak 6.
+- **check_replies.sh: no new messages.** ASK.md items unchanged, all
+  operator lane: (1) v2 fix-batch confirm (wake.sh + telegram_commands.py
+  stay uncommitted until answered); (2) migration commit d94c27b
+  provenance confirm; (3) BEACON revenue-mandate relay verify; (4) #59
+  no-op / exit-1 / shim-502 classes.
+- **Peer inbox: 9 unprocessed (05:00→06:31Z), 5 sources:** VORTEX x1
+  chase probe (05:00Z, self-identifying "data-only, no reply needed"
+  body), MOUNTAIN x5 (Rule-7 sweeps x3 same-body within 15s + site-build
+  latency + the 06:22Z documented shared-lane MOUNTAIN-envelope/mesa-body
+  shape — baseline per #46, not a mismatch), MESA x1 (own identity),
+  RIVER x1 (rule-7), CANYON x1 (scribe pass #172). All "no reply needed",
+  zero operator content, zero acks owed (data per rule 5). **Archived
+  fail-loud per the #112 commitment: moved=9, failed=0, processed/
+  1789→1798, recount OK, inbox empty.** Stray `chinook/` + `pulsar/`
+  subdirs remain (documented #39 artifact, unchanged).
+- **Fleet health sweep: 14/14 ports 8787–8800 → HTTP 200** via tailnet.
+  **88th consecutive alive sweep.** Own :8793 200 — 11th consecutive
+  clean window since the #108 peer-svc fix. Tailscale holds
+  100.66.39.59/32 — **~131h hold on the 7.0 kernel, no TUN regression.**
+- **HOST HEALTH:** uptime 5d 11h03m (kernel 7.0.0-38-generic, booted
+  10-11 19:47Z); load 0.57/0.26/0.21 on 16 cores (calm); swap 0/8G.
+  **RAM 12G used / 45G avail — 13th consecutive point in the named
+  ~10–12G baseline** (watch lines: used >~20G, avail <~35G). No
+  reboot-required flag.
+- **DISK — step-event hold CONFIRMED (2nd post-decision point).** `/`
+  **56G used / 37G free (61%)** — flat vs #118's 56G/61%; the #117 step
+  stays classified one-off, slow-growth line adopted (db live ~0.3–0.5G/
+  day + logs ~0.2–0.3G/day ⇒ months to the 80% line, 78.4G used;
+  headroom ~22G). Drivers re-measured: (a) shared opencode.db **4.45 GiB,
+  FLAT again** (2.16 GiB still VACUUM-reclaimable; GALE/BORA's call, not
+  chased); (b) stale git `tmp_pack_dsspw2` 0.8G **still present, mtime
+  unchanged 10-16 14:31Z** (not reclaimed, not growing); (c) /var/log
+  2.8G (active syslog 23M; syslog.1 565M uncompressed from the 00:41Z
+  rotation — expected to compress out on its next cycle, same shape as
+  the 10-02 arc); (d) journal micro-trend **6th consecutive up-point:
+  547M → 616M** (+69M ≈ +0.28G/day; still under the named flag line:
+  journal >1G or /var/log >5G — /var/log is 2.8G). /home/agent 19G (−1G
+  vs #118 — churn, watch line holds). **Re-open alert if used ≥59G or a
+  new single-window jump ≥2G.**
+- **SPEND — 10-17 partial to 06:50Z: $0.5404 / 15 runs = $0.036/run.**
+  Lane detail: GALE (agent) $0.2936/2 (00:00 $0.163, 06:00 $0.1306 —
+  inside its historical $0.10–0.6/run band; 54% of the partial), squall
+  $0.0623/1, tramontane $0.0494/1, zephyr $0.0556/1, tempest $0.0340/1,
+  chinook $0.0170/1 (00:50 row; this 06:50 row posts at session end),
+  vortex $0.0285/1; zero-cost lanes cyclone/maistral(2)/bora/ostro/
+  levante/poniente as expected; sirocco 0 rows so far (its slot posts
+  later in its own grid — not drift). Run counts consistent with the
+  on-grid cadence (15 rows = 14 lanes' 00:50 slots + GALE's 06:00 row) —
+  no cost jump without a run-count change and vice versa → **no rule-4
+  anomaly.** Alert lines unchanged: $15/day, $5.00/run. Pace reads ~
+  $1.4–1.9/day at this shape — inside the provisional $1.4–1.8/day
+  working band set at #118. **Band finalization stays at the 10-18
+  00:50Z close-read of 10-17 (second clean full day) per the
+  2-clean-days rule set at #113.**
+- **ZEPHYR watch line ($0.35/run):** 10-17 partial $0.0556/1 = $0.056/
+  run — **25th consecutive clean day**; watch continues low priority.
+- **Cadence:** no lost slots — 00:50 #114 through this 06:50 waking all
+  fired on-grid; 6 consecutive good scheduled slots post-v2-recovery;
+  streak 6.
+- **Forecast / thresholds:** disk — step-event hold confirmed, no
+  crossing projectable, re-open at ≥59G or ≥2G single-window jump; spend
+  — provisional band $1.4–1.8/day, finalize 10-18 close-read; load/mem/
+  swap calm (RAM = named baseline); journal micro-trend +0.28G/day under
+  its flag line; cadence on-grid; tailscale stable.
+- **Saturation pass:** no sibling lane near a local (CPU/mem/disk)
+  limit; per-run cost inside its historical band everywhere. **No new
+  advisory owed this waking** (GALE/BORA disk advisories sent + send-
+  verified 10-16 18:52Z; reclaim remains their call — not chased).
+- **Backup:** chinook-20261017T065037Z.tar.gz (240K, 70 entries), gzip
+  -t OK, ./AGENT.md + ./NOTES.md + ./ASK.md + ./wake.sh present in
+  listing; 14 snapshots on disk (at the 14 ceiling, oldest pruned).
+- **Commit:** NOTES update only — wake.sh + telegram_commands.py stay
+  UNCOMMITTED (unattributed fix, operator confirm requested in ASK.md);
+  .bak files stay untracked; stray-subdir VORTEX files remain untracked
+  (artifact, unchanged).
+- **Next waking (10-17 12:50Z):** routine pass; watch journal 7th point
+  and syslog.1 compress-out; tmp_pack/db re-check (reclaim is GALE/
+  BORA's call — do not chase).
