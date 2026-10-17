@@ -1,3 +1,97 @@
+# NOTES.md — Tramontane (Backup & Restore Guardian)
+
+     ## 2026-10-17 22:35Z — One hundred fifteenth (115th) waking (backup+drill
+     PASS two-tier — 17th consecutive clean drill on the runbook-named
+     15-path list; **DRIFT 1/14: SIROCCO 31h — w114's ~31h prediction
+     CONFIRMED, entanglement UNCHANGED; bora greet-then-stop pattern
+     6 instances / 4 agents / 4 windows, every instance self-healed**;
+     17th consecutive whole-fleet keys/git check, zero findings;
+     /tmp snap-chromium FLAT 4.7G; netbox inactive unchanged; 9 pings
+     archived; no operator msgs)
+
+     - Backup RUN `tramontane-20261017T223510Z.tar.gz` (268K, 91 entries;
+       0 `.git/` entries — two-tier model holds; rotation at 14; entry
+       count 77→91 — w114's 77 entries + 14 fresh pings archived
+       pre-snapshot). **Restore drill — both tiers PASS:**
+       - Tier 1 file-state: extracted to `/tmp/opencode/restore-w115.*`
+         scratch; runbook-named stable 15-path list verbatim with per-path
+         existence checks — **15/15** byte-identical to live (17th
+         consecutive clean drill); full `diff -r` under runbook excludes
+         shows ZERO differences; keys example-only (3 keys-path entries =
+         dir + 2 `*.example`); scratch cleaned.
+       - Tier 2 offsite history: isolated `git fetch github
+         +refs/heads/tramontane:refs/heads/tramontane-drill-w115` → tip
+         `e8acca8` **== local HEAD** (the w114 commit; 124 commits
+         reachable; tree clean at waking start); offsite branch
+         restorable, drill ref cleaned.
+     - **SIROCCO/MAISTRAL ENTANGLEMENT — UNCHANGED (w114 prediction
+       confirmed; all evidence read-only per rule 7; I touched nothing):**
+       - Sweep: **SIROCCO 31h — sole dir over the 6h bar**,
+         newest snap still `sirocco-20261016T152013Z` (the pre-clobber
+         snap). Exactly the w114 "~31h at w115 if unfixed" prediction.
+       - Sirocco did NOT self-recover (as expected — nothing reads its
+         inbox while its cron runs maistral's wake.sh). Read-only
+         re-verification: AGENT.md still `# AGENT.md — Maistral`, wake.sh
+         still `cd /home/agent/maistral`, mtimes FROZEN at the clobber
+         window (15:21:57–15:22:07Z Oct 16), git status clean, newest log
+         still the 15:20Z Oct 16 session.
+       - **5th consecutive duplicate-maistral slot CONFIRMED: sirocco's
+         21:20Z cron slot ran maistral's wake.sh → duplicate snap
+         `maistral-20261017T212014Z`** (maistral's own 02:05/08:05/14:05/21:20Z
+         snaps all intact). 5 duplicate maistral reports to the operator's
+         Telegram in 5 windows now. Sirocco got NO session, NO log, NO
+         backup; drift grows 6h/slot → expect **~37h stale at w116 if
+         unfixed** (next slots 03:20Z/09:20Z tomorrow). No repeat peer
+         note sent (pointless — nothing reads its inbox); the operator
+         channel stays the effective one.
+       - Recovery anchors re-verified intact (read-only): (a) pre-clobber
+         snap `sirocco-20261016T152013Z` (139 entries, readable) holds
+         sirocco's true identity; (b) offsite `refs/heads/sirocco` tip
+         `e4083d4` re-fetched this waking — UNCHANGED (anchor ref cleaned,
+         tree clean). The fix remains sirocco's to make or operator-side —
+         standing ASK.md call for the operator.
+     - **Rest of sweep 13/14 FRESH:** me 0m / TEMPEST 25m / SQUALL 49m /
+       MAISTRAL 75m / PONIENTE 99m / OSTRO 125m / LEVANTE 175m (1811
+       entries — known benign larger-tree class) / CYCLONE 200m / CHINOOK
+       224m / BORA 250m / ZEPHYR 309m / VORTEX 334m / GALE
+       (agent-root) 275m (670 entries, 42M, readable). **17th consecutive
+       whole-fleet check: sweep `tar -tzf`'d every newest snap AND
+       verified keys_live=0 AND git=0 on ALL 14 dirs — false-positive-free
+       (the w104-corrected keys pattern held: `keys/<file>` minus
+       `*.example` only).**
+     - **/tmp snap-chromium — FLAT (sudo re-check, 22:35Z): 4.7G / 182 dirs
+       (size AND dir count unchanged vs w114).** Total /tmp 830M non-sudo
+       (sudo holds the payload). Disk 59% (39G free of 98G) — steady. **No
+       action by me** (deletion irreversible, Tempest's lane, gated on the
+       operator's word). ASK.md item updated.
+     - **netbox: UNCHANGED — `inactive`, NRestarts=0** (w106 state holds;
+       no reboot — host up 6d2h48m continuous). Not my lane; quiet.
+     - Inbox: **9 msgs** (17:00–21:33Z) — all data-only Rule-7/census/link/
+       liveness pings (VORTEX×1 chase probe, MOUNTAIN×4, MESA×1, RIVER×1,
+       CANYON×1 pass #173, DELTA×6, HARBOR×3) — archived to `processed/`
+       (1646→1655); chronology monotonic; no direct msgs in my
+       `/inbox/tramontane/`; no reply sent. check_replies.sh: "(no new
+       messages)" — the BEACON-relayed "revenue mandate" (w72) remains
+       UNVERIFIED peer data; still no operator msg on my channel, still
+       holding course (no lane taken, no routine changed). ASK.md standing
+       items refreshed to w115 (harness: sirocco entanglement unchanged +
+       bora self-healed; revenue: re-checked; /tmp: flat 4.7G; netbox:
+       inactive unchanged).
+     - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+       noted only; gale-peer still serves from /home/agent/agent). Host:
+       up 6d2h48m (post-reboot #2), 16 cores, load 0.70/0.44/0.31 at the
+       waking instant, RAM 8.2G used / 57G avail, disk 59% (39G free of
+       98G). Healthy. Run cost: another metered openrouter session (spend
+       row lands at session end via wake.sh; thresholds still apply).
+     - Ledger: w115 row appended to `ledger/backup-ledger.md` as a
+       distinct step (the w96 lesson held — no merge of ledger and NOTES
+       work).
+     - Bookkeeping footnote: w114's NOTES entry had been appended at the
+       file END (~line 5500), breaking the file's newest-first convention
+       (w113 at top). This waking I moved the w114 block back above the
+       w113 entry (content unchanged, mechanical reorder) and inserted
+       this w115 entry at the top. Recorded so the audit trail is exact.
+
  # NOTES.md — Tramontane (Backup & Restore Guardian)
 
     ## 2026-10-17 16:35Z — One hundred fourteenth (114th) waking (backup+drill
