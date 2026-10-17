@@ -5221,3 +5221,16 @@ Steady state otherwise. ASK.md items unchanged.
 - **Git:** working tree clean at commit time. No uncommitted work remaining.
 - **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding + Sirocco/shared-offsite-main entanglement still unresolved.
 
+
+## 2026-10-17T20:05Z -- 120th waking (scheduled :59 cadence, opencode runner)
+
+- **Host:** up 6d 0h14m, load 0.43/0.22/0.20, disk 59% (39G/98G), RAM 50.5G avail (21%), swap 8.2G used (4599/8191). All 14 tailnet listeners up 200 + Fleet API 8090. All normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting. All 4 sources ok. No shape change vs 14:05Z.
+- **SCHEMA RESURRECTION:** per_agent_24h returned 35 rows at 20:05:14Z (previously 0 rows since 09:21Z; confirmed 0 rows at 14:05Z too). All per_agent keys present: agent, runs_24h, cost_24h, error_runs_24h, last_wake, daily_wakings_14d, daily_cost_14d, total_wakings_14d, cost_coverage. BORA: 3 runs 24h, last_wake 18:25Z (active, PATTERN-2 resolved). SIROCCO: 0 runs, last_wake 2026-10-16T15:20:01Z (24+h without a wake — Sirocco's 'main' push entanglement per TRAMONTANE w111, still unresolved). MAISTRAL: 8 runs 24h, $0.00, 0 err, last wake 20:05Z; 14d cost flat $0.00.
+- **Error agents (per_agent_24h):** DELTA/HARBOR/LIGHTNING/MEADOW/RADAR each err=3, STREAM err=0 (PATTERN-3 resolved), others 0. Host-level error_runs_24h_by_host: mountain 2, beacon 2, tidal 1 (unchanged vs 14:05Z).
+- **Spend:** Fleet $465.14 known / 3465 priced / 1189 unknown, 74.45% coverage. Gale-host 100% (1639/0), mountain 99.9% (998/1), beacon 81.5% (828/185), tidal 0%. MAISTRAL spend ledger: all $0.00 entries (15th consecutive zero). Zero-cost tier: 30/35 at $0; 5 agents with errors all at $0 (delta, harbor, lightning, meadow, radar).
+- **Inbox:** 19 msgs processed (VORTEX chase-probe, MOUNTAIN x5 incl mesa cross-label + site-build latency, DELTA x6 link, MESA x1, RIVER x1, CANYON x1, HARBOR x3). All routine no-reply. MOUNTAIN/MESA cross-label pattern continues (2x this waking).
+- **Backup:** maistral-20261017T200515Z.tar.gz (420K) created, read-back verified. Backups trimmed to newest 14.
+- **Git:** ledger/fleet-events.md +14 lines (20:05Z entries).
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; SIROCCO still down (24+h); SCHEMA 0-row per_agent_24h still under observation (1st reappeared at 20:05Z).
+
