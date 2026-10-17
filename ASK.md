@@ -136,11 +136,27 @@
   the operator channel is the effective one. Anchors re-verified intact:
   pre-clobber snap 15:20:13Z (true identity), keys gitignored untouched,
   **offsite `refs/heads/sirocco` tip `e4083d4` re-fetched — unchanged**.
-  Drift grows 6h/slot: expect ~19.3h at w113 if unfixed (next slots
-  09:20Z/15:20Z). **Your call whether to (a) restore sirocco's identity
-  files operator-side (from its 15:20:13Z snapshot or offsite branch —
-  fastest while its cron is broken), or (b) send sirocco an operator word
-  via another channel.** I touched nothing (rule 7).
+  **W113 2026-10-17 10:35Z — prediction CONFIRMED, entanglement UNCHANGED
+  (~19.2h stale, newest snap still the pre-clobber 15:20Z Oct 16 one);
+  3rd consecutive duplicate-maistral slot (21:20Z, 03:20Z, 09:20Z →
+  `maistral-20261017T092016Z`; maistral's own 08:05Z intact) — 3
+  duplicate maistral reports to your Telegram in 3 windows.** Sirocco's
+  tree STILL clobbered (AGENT.md "# AGENT.md — Maistral", wake.sh
+  `cd /home/agent/maistral`, newest log still the 15:20Z Oct 16
+  session); nothing reads sirocco's inbox (no peer note sent — repeat
+  notes pointless). Anchors still intact (sirocco snap 139 entries,
+  readable, keys/git clean). Drift grows 6h/slot: expect ~25h at w114
+  if unfixed (next slots 15:20Z/21:20Z). **Your call whether to (a)
+  restore sirocco's identity files operator-side (from its 15:20:13Z
+  snapshot or offsite branch — fastest while its cron is broken), or
+  (b) send sirocco an operator word via another channel.** I touched
+  nothing (rule 7).
+  **Also w113: BORA greet-then-stop RECURRED (6th instance, 3rd on
+  bora): 06:25Z slot, envelope = step_start + one text part ("I'll
+  start by reading my operational files…"), exit 0, no tool calls, no
+  backup, ALERT fired. Data intact (12:25Z Oct 16 snap verified);
+  drift note sent; recovery expected 12:25Z. The standing
+  ALERT-content recommendation now has 6 supporting ALERTs.**
   **Also w112: w111's BORA greet-then-stop RESOLVED as predicted — bora
   recovered at its 00:25Z slot (192K, 105 entries, readable, keys/git
   clean); the signature did NOT recur on bora this window; pattern stands
@@ -400,6 +416,8 @@
   still holding course, no action taken.**
   **Re-checked w112 2026-10-17 04:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w113 2026-10-17 10:35Z: still no operator msg on my channel;
+  still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -567,11 +585,11 @@
     #2).** Disk steady 60% (38G free of 98G); total /tmp 5.5G. Runway
     still days at this rate; no action by me (deletion irreversible,
     Tempest's lane, gated on your word).
-    **Re-checked w112 2026-10-17 04:35Z (sudo): FLAT — 4.6G / 181 dirs
-    (4.7G→4.6G, 182→181 — w111's burst paused; old /tmp/snap-chromium
-    still absent).** Total /tmp 5.4G; disk 61% (37G free of 98G — ~1G
-    trickle outside /tmp this window, normal). Runway long; no action by
-    me (deletion irreversible, Tempest's lane, gated on your word).
+    **Re-checked w113 2026-10-17 10:35Z (sudo): TRICKLE — 4.6G→4.7G,
+    181→182 dirs (+0.1G, +1 dir).** Total /tmp 830M non-sudo (sudo holds
+    the payload); disk 61% (37G free of 98G, unchanged). Runway long; no
+    action by me (deletion irreversible, Tempest's lane, gated on your
+    word).
 
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
@@ -627,6 +645,8 @@
   **Re-checked w111 2026-10-16 22:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w112 2026-10-17 04:35Z: UNCHANGED — still `inactive`,
+  NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w113 2026-10-17 10:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
