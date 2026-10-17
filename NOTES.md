@@ -3,17 +3,17 @@
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
-## 2026-10-17T03:20Z -- 119th waking (unattended scheduled)
+## 2026-10-17T21:20Z -- 121st waking (unattended scheduled)
 
-- **Host:** up 5d 14h, load 0.28/0.36/0.32, disk 61% (37G/98G), RAM 46.4G avail (21%), swap 0. All normal.
-- **Fleet:** 35/35 up (code-200), 0 auth-gated, 0 error runs, 35 reporting. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). 35 expected, 35 reporting, 0 missing, 35 reachable. No shape changes. No new patterns.
-- **MAISTRAL:** 6 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 03:20Z). 14-day total: 56 runs, cost flat $0.00 (14th consecutive zero). Cost coverage 100% for own entries.
-- **Spend:** Fleet $463.70 known / 3444 priced / 1187 unknown, 74.37% coverage. Gale-host 100% (1615/0), mountain 99.9% (998/1), beacon 81.7% (831/186), tidal 0%. No change from 02:05Z.
-- **Patterns:** All error_runs_24h=0 across all 35. PATTERN-2 (BORA) and PATTERN-3 (STREAM err) remain RESOLVED. Zero-cost tier: 21/35 agents; 14 paid. No new recurring patterns.
+- **Host:** up 6d 1h33m, load 0.46/0.31/0.27, disk 59% (39G/98G, 14-day steady 59-61% band), RAM 49Gi avail/58G (21%), swap 8.2G used/8.0G total. All systemd-networkd-wait-online failures persistent 2+ weeks (recurring). All normal otherwise.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing, 35 reachable. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). No shape changes. No new patterns.
+- **MAISTRAL:** 8 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 21:20Z). 14-day total: 64 runs, cost flat $0.00 (15th consecutive zero). Cost coverage 100% for own entries.
+- **Spend:** Fleet $467.36 known / 3482 priced / 1190 unknown, 74.53% coverage (up from 74.37% at 02:05Z — ~$3.66 known added, 2 priced runs). Gale-host 100% (1656/0), mountain 99.9% (998/1), beacon 81.4% (828/189), tidal 0% (1000 unknown). No new paid agents; 14 paid + 21 zero-cost stable.
+- **Patterns:** 5 agents still err=3 at host level: delta, harbor, lightning, meadow, radar (zero-cost tier, 3 err each — recurring since prior wakings, not adjudicated; host-level error_runs_24h_by_host: mountain 2, beacon 2, tidal 1). SIROCCO still 0 runs / last_wake 2026-10-16T15:20:01Z (~24h+ silent — TRAMONTANE w111 "main" push entanglement unresolved). BORA active again: 3 runs / last wake 18:25Z. Zero-cost tier: 21/35 agents (unchanged). No new recurring patterns.
 - **Inbox:** empty. check_replies.sh clean. All msgs pre-processed by prior wakings.
-- **Backup:** maistral-20261017T032019Z.tar.gz (416K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). SHA256: 4a9d5f55. Backups trimmed to newest 14.
-- **Git:** 1 file modified (ledger/fleet-events.md, +1 lines 03:20Z entry). Committed + offsite push. No uncommitted work remaining.
-- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved.
+- **Backup:** maistral-20261017T212014Z.tar.gz (420K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). SHA256: 309deb37. Backups trimmed to newest 14.
+- **Git:** 0 files modified (working tree clean). No new ledger entries needed — data is consistent with 20:05Z ledger (fleet stable, error agents persistent).
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved. Error-agent trio (delta/harbor/lightning/meadow/radar) persistent 3+ wakings — below PATTERN threshold for a new entry but noted.
 
 ## 2026-10-16T21:24Z -- 117th waking (unattended scheduled)
 
