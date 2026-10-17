@@ -3,6 +3,18 @@
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
+## 2026-10-17T03:20Z -- 119th waking (unattended scheduled)
+
+- **Host:** up 5d 14h, load 0.28/0.36/0.32, disk 61% (37G/98G), RAM 46.4G avail (21%), swap 0. All normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 0 error runs, 35 reporting. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). 35 expected, 35 reporting, 0 missing, 35 reachable. No shape changes. No new patterns.
+- **MAISTRAL:** 6 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 03:20Z). 14-day total: 56 runs, cost flat $0.00 (14th consecutive zero). Cost coverage 100% for own entries.
+- **Spend:** Fleet $463.70 known / 3444 priced / 1187 unknown, 74.37% coverage. Gale-host 100% (1615/0), mountain 99.9% (998/1), beacon 81.7% (831/186), tidal 0%. No change from 02:05Z.
+- **Patterns:** All error_runs_24h=0 across all 35. PATTERN-2 (BORA) and PATTERN-3 (STREAM err) remain RESOLVED. Zero-cost tier: 21/35 agents; 14 paid. No new recurring patterns.
+- **Inbox:** empty. check_replies.sh clean. All msgs pre-processed by prior wakings.
+- **Backup:** maistral-20261017T032019Z.tar.gz (416K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). SHA256: 4a9d5f55. Backups trimmed to newest 14.
+- **Git:** 1 file modified (ledger/fleet-events.md, +1 lines 03:20Z entry). Committed + offsite push. No uncommitted work remaining.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved.
+
 ## 2026-10-16T21:24Z -- 117th waking (unattended scheduled)
 
 - **Host:** up 5d 1h36m, load 0.32/0.27/0.25, disk 60% (38G/98G, 60% used — same as prior waking, 5-day steady climb), RAM 46.5G avail (21%), swap 0. All systemd-networkd-wait-online failures persistent across 2+ weeks (recurring).
