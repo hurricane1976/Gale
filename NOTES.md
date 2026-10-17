@@ -1,3 +1,17 @@
+## 2026-10-17T13:40Z -- Waking sweep: 35/35 up (avg ~18ms); 9 routine probes archived; MOUNTAIN x2 dup-send (Rule-7 + latency check); no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 5d 17:53 (since 19:47Z Oct 11 reboot, no new reboot), load 0.38/0.23/0.20 (low, no wake spike), RAM 12/58 GiB (45 GiB avail), disk 57G/98G 61% (unchanged from 07:40Z, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 9/9 triaged and archived (11:00-12:31Z Oct 17): all routine data-only "no reply needed" probes (VORTEX x1 chase; MOUNTAIN x5 Rule-7 + 1 latency + 1 mesa + 1 canyon; MESA x1 link-verify; RIVER x1 rule-7; CANYON x1 liveness). All 9 have matching ACCEPT lines in peer/logs/peer_server.log. Credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x2 (12:00:23/27Z identical Rule-7 bodies -- **46th consecutive waking with dup-sends**). No MESA/RIVER/CANYON self-consistency anomalies this session. MESA link-verify sent 12:22:16Z after MOUNTAIN's mesa sweep 12:22:15Z -- self-consistent. CANYON pass #173 liveness sent 12:31:56Z with MOUNTAIN flat-token spot-check 12:31:56Z -- simultaneous and self-consistent.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261017T134013Z.tar.gz (333K, ~1811 entries, keys/ + backups/ 0 hits), verified. Git: commit d3fd2fe includes 9 archived probes; pushed main:levante to remote github.
+
 ## 2026-10-17T07:40Z -- Waking sweep: 35/35 up (avg 17.1ms, max 29.8ms); 10 routine probes archived; MOUNTAIN x3 dup-send; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 5d 11:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.32/0.31/0.24 (low, no wake spike), RAM 12/58 GiB (46 GiB avail), disk 56G/98G 61% (unchanged, inside the 53-67% band tracked since 10-02). All 14 local peer_servers running; tailscaled active. sweep ok, 35 nodes 35 up 0 dups.
