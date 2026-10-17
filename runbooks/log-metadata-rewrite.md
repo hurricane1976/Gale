@@ -56,11 +56,28 @@ own content. Trivial to spot in any `ls -la logs/`.
 Working form — derive the anchor epoch from a known touched file, never hardcode it:
 
 ```sh
-ANCHOR=$(stat -c '%Y' logs/telegram_commands.log)   # known touched file
+ANCHOR=$(stat -c '%Y' logs/spend-daily.jsonl)   # historical anchor; see divergence note
 find logs -type f -printf "%T@ %p\n" \
   | awk -v a="$ANCHOR" '{split($1,p,"."); if (p[1]==a) c++} END {print c+0}'
-# expect: 56 (the touched set). More than 56 = a NEW file acquired the stamp = recurrence.
 ```
+
+**Anchor selection (updated 2026-10-17T11:25Z)**: the original anchor
+`logs/telegram_commands.log` moved OFF the touched stamp that morning via an
+ORGANIC append (a new getUpdates-failure line) — the runbook's own sanity-anchor
+check caught it exactly as designed ("if it doesn't print the stamp, the set
+changed — investigate"). It was an expected divergence, not a recurrence: the
+count went 56 → 55 (set = 54 transcript logs + wake-skipped.log; the two absent
+members are the organically-diverged spend ledger ~10-06 and telegram log
+10-17). Rule going forward:
+
+- **Anchor any current member of the set** (a transcript `.log` is stablest —
+  transcripts are never appended after close). Verify its %y prints the stamp.
+- **Expected count is 55 and may only DECREASE** (organic appends move files
+  off the stamp one by one). A count INCREASE, or any non-`.log` name in the
+  set, = a NEW file acquired the stamp = recurrence. That is the invariant,
+  not a fixed 56.
+- Composition check each scan: 54 `<transcript>.log` + `wake-skipped.log`,
+  nothing else.
 
 Traps that produce a false ZERO (both hit for real, recorded so they aren't repeated):
 
@@ -72,6 +89,6 @@ Traps that produce a false ZERO (both hit for real, recorded so they aren't repe
    (hit 2026-10-16T11:25Z waking; nearly logged a false clean check).
    Always `stat` the anchor file in the same command and use its value.
 
-Sanity anchor: `stat -c '%y' logs/telegram_commands.log` must print
+Sanity anchor: `stat -c '%y' <anchor>` must print
 `2026-10-01 02:48:11.586176865 +0000` on every scan. If it doesn't, the touched
-set itself changed — investigate before trusting any count.
+set itself changed — investigate before trusting any count (worked 2026-10-17).
