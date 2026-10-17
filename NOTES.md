@@ -4805,3 +4805,79 @@ in window). Backup verified (756K, 333 entries).
   credential pass clean except the standing levante 664 (5th flag);
   exposure baselines intact, :8099 still closed. ASK.md #1 rotation +
   ghs_ + wake.sh-provenance items remain the operator's open items.
+
+## 2026-10-17T17:00Z — w103 scheduled waking (17:00 slot; fleet-grid schedule)
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  open items unchanged: #1 (:8099 rotation, ~22d open), w90 `ghs_` item,
+  w95/w96 wake.sh-provenance asks.
+- **Inbox threat-watch: 7 messages triaged (12:00–12:32Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #96**:
+  `quarantine/20261017T122215Z-MOUNTAIN-8d35e4fe.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 12:22:15Z), first-person "mesa
+  routine mesh sweep 2026-10-17 12:22:14 UTC" body; genuine MESA
+  link-verify ACCEPT 12:22:16Z (1s later, `56a10e53`) bounds it to the
+  single file. No credentials, links, or instructions — template slip,
+  not injection. Runbook updated to #96 (trend 96x over ~24 days, steady
+  ~6h cadence in Mountain sweep windows). Per plan: routine notify
+  carries the count; no peer note, no separate escalation ping (standing
+  operator defect since 09-24). **6 benign → processed**
+  (`processed/20261017/`): 2x MOUNTAIN Rule-7 sweeps + 1 latency check
+  (12:00 window, from==body "mountain"), genuine MESA link-verify
+  (12:22:16), RIVER rule-7 sweep (12:31), CANYON scribe pass #173
+  (12:31). All 4 senders known, from==body identity on every benign one;
+  zero credentials, links, or instructions; no unknown senders.
+  Quarantine now holds 79 payloads; live inbox 0 (`pulsar/` + `vortex/`
+  subdirs empty).
+- **Peer log**: all 7 inbox files verified 1:1 against ACCEPT lines in
+  `peer/logs/peer_server.log` (12:00:24–12:31:56Z); **zero new REJECTs**
+  (total REJECT count 65 unchanged — all documented self-origin/
+  historical 09-23..09-26 events). No 401 storm, nothing from
+  non-paired senders.
+- **Remote legs**: chase via `chase_remote.py` v2 probe shape — 30/34
+  HTTP 200, unchanged — 401: HIGHBEAM, LANTERN, LIGHTNING, RADAR (the
+  four standing beacon-side legs, ball with the beacon-side lead).
+- **Host health**: up 5d21h (10-11 19:47 boot; no reboot), load
+  0.37/0.26/0.27, disk 61% (57G/98G, 37G avail — unchanged from w102,
+  creep paused), RAM 12/57Gi used, 45Gi avail. `vortex-peer` active.
+  Normal.
+- **Exposure posture (this waking's rotating pass)**: `:8099` still
+  CLOSED (curl 000 localhost + tailnet, absent from ss, zero
+  `http.server` processes on 8099) — remediation holding ~22d. The two
+  loopback `http.server`s (127.0.0.1:8899 Gale stage, 127.0.0.1:8898
+  /var/www/gale) unchanged, benign, documented w98. Tailnet peer set
+  100.66.39.59:8787–8800 all bound tailnet-only (own :8792 pid 8962;
+  tailnet-bound :8791/:8793 are tramontane/chinook peer servers per the
+  w101 clarification); firewalla_control (:8791), fleet_api (:8793),
+  ollama_api (:8794), gale_push (:8795) all 127.0.0.1-bound. nginx 8090
+  on 0.0.0.0+[::] per baseline. **UFW**: active (`sudo -n ufw status`),
+  23 ALLOW rules, same baseline incl. the 8123 Home Assistant rules —
+  no drift. **systemd**: vortex-peer active; ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes intact. Sole failed unit remains
+  the known cosmetic `systemd-networkd-wait-online` (documented w85).
+- **Tailscale**: 13 nodes — gale-agent + 6 beacon-* (highbeam, lantern,
+  lightning, prism, pulsar, radar) + gemini-agent, mountain-agent,
+  ubuntu-agent, josh-iphone18, josh-linux, ipad174. All known
+  apacheshadow1972 namespace; no foreign peers, no new nodes.
+- **Credential hygiene**: covered by exposure-posture path this waking
+  (rotating; w102 ran the full 14-dir perms pass — levante 664 flag
+  persists as that entry's 5th consecutive report). No new key files
+  observed on my own tree; `.gitignore` sane.
+- **Spend**: spend-daily.jsonl — 10-16 23:01Z $0.0138, 10-17 05:01Z
+  $0.0285, 11:01Z $0.0259; no errors, no outage slots; well below
+  thresholds (GLM flash via OpenRouter). This waking records its own at
+  session end (wake.sh invokes spend_check.py).
+- **Backup**: `backups/vortex-20261017T170106Z.tar.gz` (240K, 232
+  entries; tar -tzf read-back OK — `keys/` in archive holds only the two
+  `.example` files, 0 live secret material; #96 payload + `.reason`
+  present in archive; runbook + NOTES.md present). Snapshot taken before
+  this entry + commit lands (established pattern; git offsite push via
+  wake.sh carries the final state).
+- **Git**: committing this entry + runbook #96 update (inbox mv's +
+  quarantine artifacts git-ignored under `peer/inbox/**`, live on disk +
+  in backup, consistent with prior wakings).
+- **Verdict**: routine waking. 1 expected mesa-pattern quarantine (#96,
+  trend steady); 6 routine probes processed; legs 30/34 unchanged;
+  exposure baselines intact, :8099 still closed, no drift anywhere.
+  ASK.md #1 rotation + ghs_ + wake.sh-provenance items remain the
+  operator's open items.
