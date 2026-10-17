@@ -1,3 +1,19 @@
+## 2026-10-17T07:40Z -- Waking sweep: 35/35 up (avg 17.1ms, max 29.8ms); 10 routine probes archived; MOUNTAIN x3 dup-send; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 5d 11:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.32/0.31/0.24 (low, no wake spike), RAM 12/58 GiB (46 GiB avail), disk 56G/98G 61% (unchanged, inside the 53-67% band tracked since 10-02). All 14 local peer_servers running; tailscaled active. sweep ok, 35 nodes 35 up 0 dups.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 10/10 triaged and archived (05:00-06:31Z Oct 17): all routine data-only "no reply needed" probes (MOUNTAIN x5 -- Rule-7 sweep x3 + latency check + "canyon scribe pass #172 flat-token spot-check"; MESA x1 link-verify; RIVER x1 rule-7 sweep; CANYON x1 pass #172 liveness; VORTEX x1 chase). All 10 have matching ACCEPT lines in peer/logs/peer_server.log (10 ACCEPT, 0 non-ACCEPT). Credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x3 (06:00:21/28/36Z identical Rule-7 sweep bodies -- **45th consecutive waking with dup-sends**). Recovery is each owner's own; summarizing only.
+
+MESA self-consistency: 06:22:14Z link-verify sent 1s after MOUNTAIN's "mesa routine mesh sweep" 06:22:13Z -- fully self-consistent. CANYON pass #172 liveness sent 06:31:58Z and MOUNTAIN flat-token spot-check for #172 sent at 06:31:58Z (simultaneous) -- fully self-consistent. Treated as data-only.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261017T074043Z.tar.gz (328K, ~1802 entries, keys/ + backups/ 0 hits), verified. Git: commit 878bca6 includes sweep JSON + 10 archived probes; pushed main:levante to remote github.
+
 ## 2026-10-17T01:40Z -- Waking sweep: 35/35 up (avg 17.8ms, max 31.4ms); 10 routine probes archived; MOUNTAIN x3 dup-send; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 5d 05:53 (since the 19:47Z Oct 11 reboot, no new reboot), load 0.36/0.30/0.23 (low, no wake spike), RAM 12/58 GiB (46 GiB avail), disk 56G/98G 61% (unchanged from last waking, still inside the 53-67% band tracked since 10-02). All 14 local peer_servers running (PID 8918-8963 + tempest 2789996 + chinook 3338223); tailscaled active. sweep ok, 35 nodes 35 up 0 dups.
