@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 2026-10-17 operator-directed: GLM fallback replaced with openrouter/deepseek/deepseek-v4-flash-0731 (fleet primary moved to Ling 3.0 Flash).
 # Cron entry point. Wakes Gale, hands it AGENT.md, logs the run.
 #
 # Pattern follows the fleet's wake.sh (Beacon's repo), trimmed to what Gale
@@ -74,13 +75,17 @@ claude_run >"$JSON_FILE" 2>"$LOG_FILE"
 CLAUDE_EXIT=$?
 
 # Automatic fallback (operator-directed): Claude failed -- one attempt on
-# the ollama fallback via opencode before alerting. A fallback success
+# the OpenRouter fallback (DeepSeek V4 Flash 0731) via opencode before alerting. A fallback success
 # counts as success (no shell alert).
-FALLBACK_MODEL="opencode/glm-5.3-flash"
+FALLBACK_MODEL="openrouter/deepseek/deepseek-v4-flash-0731"
 if [ "$CLAUDE_EXIT" -ne 0 ]; then
     if command -v opencode >/dev/null 2>&1; then
         echo "wake.sh: claude (sonnet) failed (exit $CLAUDE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
-        timeout --kill-after=60 45m opencode run --model "$FALLBACK_MODEL" --format json --dir /home/agent/agent "$PROMPT" >"$JSON_FILE" 2>>"$LOG_FILE"
+# opencode v2 (upgraded 2026-10-14 20:41Z): "run --dir" flag removed; the
+# workdir is now the process cwd (this script cd's into its own dir above).
+# --standalone keeps each wake in a private, killable process tree so the 45m
+# wall-clock timeout and the operator's /stop still end the session.
+        timeout --kill-after=60 45m opencode run --standalone --auto --model "$FALLBACK_MODEL" --format json  "$PROMPT" >"$JSON_FILE" 2>>"$LOG_FILE"
         CLAUDE_EXIT=$?
         echo "wake.sh: fallback $FALLBACK_MODEL exit $CLAUDE_EXIT" >>"$LOG_FILE"
     else
