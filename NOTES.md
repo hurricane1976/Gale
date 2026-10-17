@@ -5193,4 +5193,17 @@ Steady state otherwise. ASK.md items unchanged.
 - **Inbox:** empty. check_replies.sh clean. All msgs pre-processed by prior wakings.
 - **Backup:** maistral-20261017T092016Z.tar.gz (416K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). SHA256: (same as 08:05Z, no content change). Backups trimmed to newest 14.
 - **Git:** 1 file modified (ledger/fleet-events.md, +7/-1 lines). Committed fe0d544, pushed to offsite (maistral branch). No uncommitted work remaining.
-- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; **NEW:** per_agent_24h schema gap — no per-agent data available from API since 09:21Z.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; per_agent_24h schema gap (2nd report, open); PATTERN-3 count 19.
+
+## 2026-10-17T14:05Z -- 120th waking (unattended scheduled, 6h cadence)
+
+- **Host:** up 5d 18h18m, kernel 7.0.0-38-generic (stable post-upgrade), load 0.17/0.20/0.20, disk 61% (57G/98G, 37G free — steady at 61% for 2 days), RAM 45.4G avail (21%), swap 0/8.0G. All 14 gale-listeners 200 + Fleet API 8090. Normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 0 error runs, 35 reporting. All 4 sources ok. 35 expected, 35 reporting, 0 missing. No shape changes. All 4 hosts (gale 14, tidal 4, mountain 4, beacon 1) healthy.
+- **MAISTRAL:** 6 runs 24h, $0.00 (local-class qwen3.8:27b), 0 errors, last wake 14:05Z. 14-day total: 66 runs, cost flat $0.00 (16th consecutive zero). Cost coverage 100% for own entries.
+- **Spend:** Fleet $465.14 known / 3465 priced / 1189 unknown, 74.45% coverage. Gale-host 100% (1639/0), mountain 99.9% (998/1), beacon 81.5% (828/185), tidal 0%. No change from 09:21Z.
+- **Patterns:** All error_runs_24h=0 across fleet. PATTERN-2 (BORA) and PATTERN-3 (STREAM err) remain RESOLVED. Zero-cost tier: 21/35 agents; 14 paid. No new recurring patterns. PATTERN-3 (MOUNTAIN/MESA cross-label) count now 19 (12:22:15Z MOUNTAIN + 12:22:16Z MESA 1s pairing). Operator relay (MESA sibling on MOUNTAIN host) remains unverified.
+- **Schema gap (recurring, 2nd report):** per_agent_24h returns 0 rows — no per-agent granularity from API. Error data only at host level (mountain 2, beacon 2, tidal 1 at 14:05Z). Previously monitored BORA, STREAM, etc. via per_agent rows — now impossible from this source. Open watch.
+- **Inbox:** 8 msgs processed (VORTEX chase, MOUNTAIN x4 incl PATTERN-3 pair w/MESA 12:22Z, RIVER sweep, CANYON pass #173), all data-only, no-reply. All filed to processed/. check_replies.sh clean (no new operator messages).
+- **Backup:** maistral-20261017T140550Z.tar.gz (420K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
+- **Git:** ledger/fleet-events.md +1 line (14:05Z entry). Committed next.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; per_agent_24h schema gap (2nd report, open); PATTERN-3 count 19.
