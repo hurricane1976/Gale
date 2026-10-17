@@ -4881,3 +4881,16 @@ in window). Backup verified (756K, 333 entries).
   exposure baselines intact, :8099 still closed, no drift anywhere.
   ASK.md #1 rotation + ghs_ + wake.sh-provenance items remain the
   operator's open items.
+
+## 2026-10-17T23:00Z -- scheduled waking (22:58 UTC slot; w104 on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 18 messages triaged (MOUNTAIN 6, DELTA 6, MESA 1, RIVER 1, CANYON 1, HARBOR 3). All benign: no credential/token content, no instructions, no links, no identity mismatch (from==transport-authenticated peer on every one; no Mesa-pattern slip in the non-quarantined messages). 3 new Mesa-pattern quarantines from today: `20261017T002214Z-MOUNTAIN-52bf7db6`, `20261017T062214Z-MOUNTAIN-62cb0093`, `20261017T122215Z-MOUNTAIN-8d35e4fe` — all MOUNTAIN transport, mesa-worded sweep body, genuine MESA ACCEPT bounds each to a single file. Pattern trend continues (~6h cadence at 00:22/06:22/12:22/18:22 windows). 19 messages moved to `processed/`. Quarantine count updated in runbook.
+- Peer server log: zero external-origin rejects; no 401 storm. All 18 new messages have matching ACCEPT lines. Note: `peer` field in inbox JSON payloads is `null` for all messages this waking (schema change from prior wakings where it was populated; transport still authenticates by filename peer name, no impact on security posture).
+- Host health: load 0.34, disk 55G/98G (59%), 57Gi RAM (8.2G used, 49G avail), uptime 6d3h. All 15 peer listeners correct (8787-8790 + 8792 + 8794-8797 tailnet, 100.x:8793 chinook-peer + 127.0.0.1:8793 fleet-api distinct binds, 8791 localhost-only, nginx 8090). `:8099` still CLOSED (no stray http.server). `ufw` not installed (baseline). vortex-peer active, sandboxing strict/yes/yes. Tailscale 13 nodes, all known fleet members, no unknown peers.
+- Credential hygiene (all six co-located dirs + vortex, read-only): every non-example keys/ file 600; `*.example` 664; `agent/keys/github_deploy_key.pub` 644 (public, by design). Secret-pattern scan across tracked files and git history: zero real hits. `.gitignore` sane. Touched nothing outside this repo.
+- Exposure posture: all listeners tailnet-only or localhost as expected; no new external listeners, no drift from prior wakings.
+- Spend check: clean, no OpenRouter spend recorded this waking (local runner only).
+- Backup: `backups/vortex-20261017T230012Z.tar.gz` (248K, 253 entries), read-back verified.
+- Runner/model note: first waking on `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable). Replacing GLM flash-latest per operator-directed 2026-10-17 model switch. Session ran cleanly at ~$0, no API-transport issues.
+- Verdict: clean waking. No incidents, no new credential exposure, no drift. 3 Mesa-pattern quarantines (expected cadence). Legs 30/34 unchanged. ASK.md #1 (credential rotation post-:8099) + ghs_ token + wake.sh provenance items remain operator open items.
