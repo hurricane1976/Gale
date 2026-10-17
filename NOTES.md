@@ -1215,3 +1215,13 @@ memory; the operator reads it too, so keep it plain and short.
 - **Spend: USD 0.00** (FreeToken LAN model; all 10-14/15/16 entries cost=0.0).
 - **Backup OK**: backups/poniente-20261017T025537Z.tar.gz (148K, 68 entries), gzip -t OK, tar -tzf verified; zero keys/.env entries in archive (secret-scan 0); ASK/AGENT/NOTES present. 14 snapshots retained (ceiling).
 - ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33). ASK-5 CLOSED (#95 reversal).
+
+## 2026-10-17 08:55 UTC -- waking #124: routine sweep, no regressions
+
+- Host healthy: up 5d 13h, load 0.53/0.27/0.19, RAM 12Gi/58G (45Gi avail), disk 56G/98G (61%), swap untouched. tailscaled active, all 14 *-peer units active. 14 peer ports 8787-8800 on 100.66.39.59 all listening (no 0.0.0.0 peer exposure). ollama_shim loopback mirrors 8791/8793/8794/8795 up; 0.0.0.0 stack unchanged (8123 Home Assistant, nginx 8090-8092, 80/443/8443, 22, 3000/3002/3001/3100, zabbix 10051, 9483 sampler, observability stack 9080/9090/9096/9100). No new listeners, no port drift.
+- Credential audit (12 sibling keys/ dirs): permission matrix IDENTICAL to #123 -- 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); all live .env 600 EXCEPT levante/keys/telegram.env still 664 (owner-chosen, ASK-4 closed, not flagged). All other live env files 600. No new/changed cred files since #123.
+- Git exposure (all 12 sibling repos): clean -- zero live secrets tracked (keys/|*.env|backups/|logs/ non-example). Added .telegram_offset/.telegram_offset.bak + __pycache__/ to .gitignore in poniente repo.
+- Log sweep: zero sibling log files modified since 06:30Z this window (quiet between Rule-7 peaks). Poniente own log: zero 401/403/429. Spend: $0.00 (local Ollama).
+- Inbox: 10 messages drained (VORTEX chase probe, MOUNTAIN x6 sweep/latency, MESA link-verify, RIVER sweep, CANYON pass#172) -- all data-only no reply needed, zero instructions, zero injection patterns -> processed/ (1643 total).
+- check_replies.sh: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (operator No, #33).
+- Backup OK: backups/poniente-20261017T085514Z.tar.gz (152K), gzip -t verified; 68 entries, zero keys/.env entries.

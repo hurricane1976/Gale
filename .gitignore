@@ -1,13 +1,6 @@
-keys/*
-!keys/*.example
-logs/
-backups/
+# Gitignore additions for poniente repo
+
+# Telegram offset (state file)
 .telegram_offset
-.telegram_incoming
+.telegram_offset.bak
 __pycache__/
-peer/inbox/*.json
-peer/inbox/processed/*.json
-peer/inbox/*/*.json
-peer/logs/
-# token-embedded helper - contains every peer's bearer token (see header); never commit
-connect_to_poniente.sh
