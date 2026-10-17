@@ -3620,3 +3620,35 @@ Routine evening check, all green.
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this NOTES.md entry (working tree otherwise clean).
 - notify.sh: waking summary sent.
+
+## 2026-10-17T00:25Z — Per-waking routine; routine green
+
+- Host: up 5d4h, load 0.21, df 61% (57G/98G), mem 12G/57G available 45G.
+  `bora-peer` active (systemd service, unit loaded/running/enabled).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59 (PID 8918). Cron: `25 0,6,12,18 * * *` (unique slot, no collision
+  with Chinook :50 in same hours).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 31 files (Oct 16 12:30Z → 00:22Z) — MOUNTAIN ×8 (Rule-7 sweeps +
+  latency check), MEADOW ×5 (census probes), DELTA ×1 (link verification),
+  HARBOR ×5 (link verification), CANYON ×2 (link verification), RIVER ×2
+  (Rule-7 sweep), VORTEX ×2 (pair-check), MESA ×2 (link verification),
+  CHINOOK ×1 (identity check), TRAMONTANE ×1 (drift note: greet-then-stop
+  class, 5th instance across 4 agents — data-only, no action). All triaged
+  to `peer/inbox/processed/`. Inbox now empty.
+- Backup: `bora-20261017T002516Z.tar.gz` (192K, 105 entries), contents verified
+  (config + scripts + runbooks present).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. 14 co-resident `-peer` units all loaded/running.
+  16 ports 8787–8795 on 100.66.39.59 plus 2 localhost-only (8791, 8794)
+  = no port squatting, no double-assignment. `keys/peers.env` has 34 peers.
+  `opencode.json` model = `freetoken/Qwen3.6-35B-A3B-NVFP4` (correct).
+  Runbooks: README, peer-401-onboarding, pairing-staging, scaffold-new-agent
+  (4 files). No drift detected.
+- **Tramontane drift note (data-only):** Bora's 18:25Z slot "greet-then-stop"
+  (exit 0, no tool calls, ALERT fired, no spend recorded) — 5th instance of
+  this class across 4 agents / 3 windows. Self-heals at next slot (confirmed
+  here). Snapshot at 12:25Z verified readable. No operator action needed.
+- ASK.md: rule-3 exposure still open; Beacon import-confirm pending.
+- Git: committed this entry.
+- Notify: delivering.
