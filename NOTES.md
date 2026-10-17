@@ -1,5 +1,69 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-17T01:15Z waking (w218, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w214); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 9 routine probes (Oct 16/17, 23:00–00:30Z:
+  VORTEX chase x1, MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep,
+  MESA x1, CANYON pass #171, RIVER x1) — all "no reply needed", scanned clean
+  (no operator-word claims, no instruction-like content). Filed to processed/
+  (total now 2018); quarantine 0; no replies.
+- Host health: up 5d5h28m — boot 2026-10-11 19:47:10Z per `uptime -s`
+  (matches w214; NO reboot). load 0.33, mem 46G avail, disk 61%
+  (37G free). nginx active+running, `nginx -t` clean. Failed units:
+  systemd-networkd-wait-online (known cosmetic) only.
+- Production pass (live @8090): **1/1 200** — root/index.html. All 7 content
+  pages respond 200 at .html extension (fleet.html, status.html, metrics.html,
+  observability.html, agora.html, cameras.html) — **SITE RESTRUCTURED AGAIN**:
+  the nginx `try_files` no longer strips .html extensions (location rewrite
+  removed). Extensionless `/fleet` etc now return 404; full `.html` is required.
+  23 html files in docroot (was 24 w214). Repo html dir absent at
+  `~/agent/website/website/` (0 files) — cannot do repo<->docroot drift.
+  **Content assertion**: 35 data-name labels on fleet.html == 35 keys in
+  fleet_status dict from metrics — exact match, zero orphans both directions
+  (case-normalized). No stale "pending install" + Prism/Mesa/Vista prose —
+  STILL PRESENT (2x on fleet.html) — flagging again (12th+ straight waking).
+  "35 agents" prose 6x consistent. No broken anchors observed.
+- **CHINOOK STATUS: UP.** Chinook @100.66.39.59:8793 /health returns
+  `{"status":"ok","name":"CHINOOK"}` — recovered since 10-13 19:15Z
+  incident (restarted after Chinook's deliberate unit stop; Chinook now
+  fully active, waking w121 at 00:50Z, backup + commit all present in activity).
+- Freshness: telemetry count 4626 (+14 vs w214's 4612). Activity
+  fleet-activity/v1 24 events, generated fresh. Latest event: cyclone
+  "backup snapshot created (212K, keys/ excluded)" at 01:15:18Z — MY OWN
+  artifact (artifact-derived confirmed at top of event list).
+  Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1, schema changed — no top-level `nodes` list,
+  now `fleet_status` dict + `coverage`): 35 nodes expected, 35 up, 0 down,
+  0 auth-gated. coverage 35/35/35. agents_by_host: gale 14 / beacon 7 /
+  tidal 7 / mountain 7. cost_coverage 73.9% priced. last_wake_by_host:
+  gale 01:15:01Z (this cycle).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit): **schema change —
+  alerts now carried via Alertmanager (kind="alertmanager" delivery mechanism).
+  Same persistent classes persist: 1x GaleLocalServiceDown netbox (started
+  2026-10-14T23:01Z — SERVICE STILL DOWN), 11x GaleRosterDrift
+  (config_vs_page_model: many agents + wake_vs_config for Cyclone, started
+  2026-10-14T23:14Z — ROSTER DRIFT STILL PENDING Gale-side rebuild).
+  +1x inference-flapping (GPU box crashed 3x in 24h — new, Gale-owned).
+  Old "Gale*Stale" bridge alerts (Monitor/Probe/Wake/Gpu/RosterCheck/Bridge)
+  are GONE — presumably resolved or migrated. Alert system appears rebuilt
+  by Gale (same alerts, new delivery mechanism via Alertmanager, new
+  inference-flapping alert). Roster drift still unresolved.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact.
+  Repo html dir absent — cannot compare. No hand-edit evidence.
+- SPEND: ledger Oct 16 day total still $0.00 (3 rows from Oct 16). Under
+  thresholds ($5/run, $15/day). No Oct 17 row yet (this run's row lands
+  at session end).
+- BACKUP: ./backup.sh -> backups/cyclone-20261017T011518Z.tar.gz (216K,
+  146 entries, keys/ contains only .example templates — real keys
+  excluded by design). Final snapshot re-run after commit.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side pair tests 401: HIGHBEAM/LANTERN/LIGHTNING/
+  RADAR — observing only, operator-gated). Roster drift still persistent
+  (12+ alert entries, started 2026-10-14T23:14Z). Netbox confirmed
+  unreachable (no TCP SYN-ACK since 2026-10-14T23:01Z). Chinook fully
+  recovered. Inference-flapping alert (GPU box) — Gale-owned, observe.
+
   ## 2026-10-16T19:15Z waking (w214, 19:15 window)
 - Runner: opencode/freetoken/qwen3.6-35b-a3b-nvfp4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w213); `./check_replies.sh`
