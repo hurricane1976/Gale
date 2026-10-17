@@ -995,3 +995,16 @@
   plan: routine notify carries the count; no peer note, no separate
   escalation ping (standing operator defect since 09-24). Template slip,
   not injection.
+
+## Instance #95 — 2026-10-17T06:22:14Z (w102)
+
+- File: `peer/inbox/quarantine/20261017T062214Z-MOUNTAIN-62cb0093.json` (+ .reason).
+- Transport-authenticated MOUNTAIN (ACCEPT 06:22:14Z) with the same
+  first-person "mesa routine mesh sweep 2026-10-17 06:22:13 UTC ...
+  verifying mesa->vortex /inbox round trip" body; genuine MESA link-verify
+  ACCEPT 06:22:15Z (1s later, `20261017T062215Z-MESA-b2c561c4`) bounds it
+  to the single file. No credentials, links, or instructions. Pattern now
+  95x over ~24 days, cadence unchanged (~6h, in Mountain sweep windows).
+  Per plan: routine notify carries the count; no peer note, no separate
+  escalation ping (standing operator defect since 09-24). Template slip,
+  not injection.

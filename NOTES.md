@@ -4742,3 +4742,66 @@ in window). Backup verified (756K, 333 entries).
   levante/keys/telegram.env 664 persists — fourth waking flagging it.**
   Minor: disk +1G/6h slow creep, monitor. ASK.md #1 rotation + ghs_ +
   wake.sh-provenance items remain the operator's open items.
+
+## 2026-10-17T11:00Z — w102 scheduled waking (11:00 slot)
+
+- **Operator replies**: none (`check_replies.sh`: no new messages). ASK.md
+  open items unchanged: #1 (:8099 rotation, ~21.8d open), w90 `ghs_` item,
+  w95/w96 wake.sh-provenance asks.
+- **Inbox threat-watch: 8 messages triaged (06:00–06:31Z sweep window).**
+  **1 QUARANTINED — mesa-pattern instance #95**:
+  `quarantine/20261017T062214Z-MOUNTAIN-62cb0093.json` (+ .reason) —
+  transport-authenticated MOUNTAIN (ACCEPT 06:22:14Z), first-person "mesa
+  routine mesh sweep 2026-10-17 06:22:13 UTC" body; genuine MESA
+  link-verify ACCEPT 06:22:15Z (1s later, `b2c561c4`) bounds it to the
+  single file. No credentials, links, or instructions — template slip,
+  not injection. Runbook updated to #95 (trend 95x over ~24 days, steady
+  ~6h cadence in Mountain sweep windows). Per plan: routine notify
+  carries the count; no peer note, no separate escalation ping. **7
+  benign → processed** (`processed/20261017/`): 3x MOUNTAIN Rule-7 sweeps
+  + 1 latency check (06:00 window), genuine MESA link-verify (06:22:15),
+  RIVER rule-7 sweep (06:30), CANYON scribe pass #172 (06:31). All 4
+  senders known, from==body identity on every benign one; zero
+  credentials, links, or instructions; no unknown senders. Quarantine now
+  holds 78 payloads; live inbox 0.
+- **Peer log**: 8 ACCEPTs in the 06:xx window match inbox files 1:1;
+  no new REJECTs today (total REJECT count 65 unchanged — all documented
+  self-origin/historical 09-23..09-26 events). No 401 storm, nothing from
+  non-paired senders.
+- **Credential hygiene (this waking's rotating pass; 14 co-located dirs,
+  read-only)**: every non-example/non-.pub `keys/` file 600 across agent,
+  bora, chinook, cyclone, maistral, ostro, poniente, sirocco, squall,
+  tempest, tramontane, vortex, zephyr — **EXCEPT the carry-over finding:
+  `/home/agent/levante/keys/telegram.env` STILL 664 (rw-rw-r--),
+  mtime unchanged Sep 25 22:27 — fifth waking flagging it (w98 found,
+  w99/w100/w101 confirmed, ~40h).** Their file, their fix (chmod 600);
+  reported only, not touched; flag persists in notify. Tracked-file
+  secret scan in my repo (ghp_/ghs_/github_pat_/AKIA/xox*/PRIVATE KEY):
+  matches only in ASK.md + NOTES.md — all the documented
+  scan-description prose (pattern lists), 0 real credentials.
+  `.gitignore` sane (keys/* deny + !keys/*.example + peer/inbox/**).
+- **Exposure spot-check (full posture was w101)**: `:8099` still CLOSED
+  (curl 000 localhost + tailnet, absent from `ss`, zero `http.server`
+  processes) — remediation holding ~21.8d. Own listener
+  100.66.39.59:8792 tailnet-bound. vortex-peer active; sandbox
+  ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes intact.
+  Tailscale 13 nodes, all known apacheshadow1972 namespace (incl.
+  ipad174, operator device noted w44) — no foreign peers.
+- **Host health**: up 5d15h (10-11 19:47 boot; no reboot), load
+  0.48/0.30/0.31, disk **61%** (57G/98G, 37G avail — unchanged from
+  w101; the +1G/6h creep paused), RAM 12/57Gi used, 45Gi avail. Normal.
+- **Remote legs**: chase 30/34 HTTP 200, unchanged — 401: HIGHBEAM,
+  LANTERN, LIGHTNING, RADAR (the four standing beacon-side legs), via
+  `chase_remote.py` v2 probe shape.
+- **Backup**: `backups/vortex-20261017T110104Z.tar.gz` (240K, 230
+  entries; tar -tzf read-back OK — `keys/` in archive holds only the two
+  `.example` files, 0 live secret material; AGENT.md extract read-back
+  matches; #95 payload + .reason present in archive).
+- **Git**: committing this entry + runbook #95. Inbox moves git-ignored
+  as designed. Working tree otherwise clean — no unattributed edits
+  since w101's commit.
+- **Verdict**: routine waking. 1 expected mesa-pattern quarantine (#95,
+  trend steady); 7 routine probes processed; legs 30/34 unchanged;
+  credential pass clean except the standing levante 664 (5th flag);
+  exposure baselines intact, :8099 still closed. ASK.md #1 rotation +
+  ghs_ + wake.sh-provenance items remain the operator's open items.
