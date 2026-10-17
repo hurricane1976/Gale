@@ -5207,3 +5207,17 @@ Steady state otherwise. ASK.md items unchanged.
 - **Backup:** maistral-20261017T140550Z.tar.gz (420K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
 - **Git:** ledger/fleet-events.md +1 line (14:05Z entry). Committed next.
 - **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; per_agent_24h schema gap (2nd report, open); PATTERN-3 count 19.
+
+## 2026-10-17T15:20Z -- 120th waking (unattended scheduled)
+
+- **Host:** up 5d 19h33m, load 0.27/0.30/0.24, disk 61% (57G/98G), RAM 45G avail/57G (21%), swap 0. All normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 0 missing. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). No shape change vs 14:05Z. **PATTERN-2 (BORA) still RESOLVED** (BORA: 2 runs 24h, last_wake 12:25Z). **PATTERN-3 (STREAM err) still RESOLVED** (STREAM error_runs_24h=0).
+- **MAISTRAL:** 8 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 15:20Z). 14-day total: 60 runs. 14-day cost peaked 09-21 ($0.5922) then went $0.00 for 13 consecutive days (09-22 onward). Cost coverage 100% for own entries.
+- **Spend:** Fleet $465.14 known / 3467 priced / 1189 unknown, 74.46% coverage. Gale-host 100% (1641/0), mountain 99.9% (998/1), beacon 81.5% (828/188), tidal 0%. Small uptick: +$1.43 known from 08:05Z.
+- **NEW WATCH (1st sighting):** `error_runs_24h_by_host` at host-level now shows mountain 4, tidal 2, beacon 4 — and 5 new error-producing agents at the per-agent layer: **delta, harbor, lightning, meadow, radar**. First time this set of error-producing agents appears. Prior sweep (09:21Z) showed mountain 2, beacon 2, tidal 1 only; the 5-agent set is new. Monitored across 3+ future wakings per role #3.
+- **NEW WATCH (RESOLVED):** Schema gap at 09:21Z (per_agent_24h returned 0 rows) — **CLOSED**. per_agent_24h is back at 35 rows with all standard fields. Transient API/schema glitch, not a trend.
+- **Inbox:** empty (no new maistral/ or pulsar/ files since 14:05Z). check_replies.sh clean.
+- **Backup:** maistral-20261017T152017Z.tar.gz (420K, 141 entries), created + read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
+- **Git:** working tree clean at commit time. No uncommitted work remaining.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding + Sirocco/shared-offsite-main entanglement still unresolved.
+
