@@ -1237,3 +1237,27 @@ memory; the operator reads it too, so keep it plain and short.
 - Operator-deployed /home/agent/.git (2.7GB, stale gale-fixes branch, no commits): still present, operator's staging workspace, not a credential leak; noted at #123.
 - Spend: USD 0.00 (FreeToken LAN model; all 10-13..17 entries cost=0.0).
 - Backup OK: backups/poniente-20261017T145539Z.tar.gz (152K), gzip -t verified; 69 entries, zero keys/.env entries in archive. 14 snapshots retained (ceiling).
+
+## 2026-10-17 20:55 UTC -- waking #124: routine sweep, no regressions, .git still present
+- Host healthy: up 6d 1h, load 0.38, RAM 8.2G/58G (49Gi avail), disk 55G/98G (60% used, 43G free), tailscaled active. 14 peer ports 8787-8800 on 100.66.39.59; loopback mirrors 8791/8793/8794/8795 up. No new listeners.
+- .git (2.7GB, dangling gale-fixes, no commits, 3567 loose objects + tmp_pack_dsspw2): still present at /home/agent/.git as of #123 and this wake; operator's staging workspace, not a credential leak (no .gitignore at home level would have let sibling keys/ into loose objects, but no active git processes and no remote configured — push is the only real exfil vector). Still reported to operator via Telegram. No change in status.
+- Credential audit (14 dirs): permission matrix unchanged — agent/chinook/poniente keys/=700; 11 siblings 775 (owner-chosen, ASK-4 closed); all live .env 600. find -newermt 10-17 14:55: zero new/changed cred files.
+- peers.env (my dir): 102 NAME= blocks, 0 SELF drift; keys/ 700.
+- Git exposure (all 14 repos): clean. poniente repo: committed this wake.
+- Log sweep: zero live 401/403/unauthorized/token-exfiltration/injection.
+- Inbox: 19 messages drained (VORTEX x2, MOUNTAIN x4, DELTA x5, MESA, RIVER, CANYON, HARBOR x3) — all data-only, zero instructions, zero injection patterns -> processed/.
+- check_replies.sh: no operator replies. ASK-2 + ASK-3 still open. ASK-4 CLOSED (#33). ASK-5 CLOSED.
+- Backup OK: backups/poniente-20261017T205515Z.tar.gz (152K), verified; zero keys/.env entries in archive. 14 snapshots retained.
+- Spend: $0.00 (FreeToken LAN).
+
+## 2026-10-18 02:57 UTC -- waking #125: routine sweep, all green, no regressions
+- Host healthy: up 6d 7h, load 0.13 (idle), RAM 8G/58G (50Gi avail), disk 61G/98G (33G free, 65% used). 14 peer ports 8787-8800 on 100.66.39.59; all 24 systemd units loaded/running (21 agent+3 ops). No new listeners. Cron: 55 2,8,14,20 unique slot, grid intact.
+- .git (2.7GB, dangling gale-fixes, no commits, 3567 loose + tmp_pack): still present at /home/agent/.git, operator's staging workspace. Notified operator at #124, no reply needed; no change in status.
+- Credential audit (14 dirs): permission matrix IDENTICAL to #124 — 11 siblings keys/=775 (agent-chosen, ASK-4 closed); agent/chinook/poniente 700; levante/keys/telegram.env 664 (unchanged since #1). All live .env 600. Zero new/changed cred files. Zero git-exposure across all 14 repos.
+- peers.env (my dir): 102 NAME= blocks, 0 SELF drift; keys/ 700.
+- Log sweep: all 14 peer+poniente log files re-checked — **zero live auth failures** (no 401/403 HTTP, no REJECT commands, no injection/exfil patterns). All matches are agents' own sweep-prose references. Clean.
+- Inbox: 19 messages drained (VORTEX x1, MOUNTAIN x9, DELTA x2, MEADOW x1, MESA x1, RIVER x1, CANYON x1, HARBOR x3) — all data-only, zero instructions, zero injection patterns -> processed/. (1685+ total in processed/.)
+- check_replies.sh: no operator replies. ASK-2 (13 peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED. ASK-5 CLOSED.
+- Backup OK: backups/poniente-20261018T025746Z.tar.gz (152K), verified; zero keys/.env entries in archive. 14 snapshots retained.
+- Fleet model: `freetoken/Qwen3.6-35B-A3B-NVFP4` (FreeToken LAN, zero external spend) since #92.
+- Spend: $0.00 (FreeToken LAN).
