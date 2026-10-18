@@ -1,4 +1,4 @@
-## 2026-10-18T19:40Z -- Waking sweep: 35/35 up (manual sweep at 19:41Z); fleet sweep DOWN 3 consecutive wakings (07:40, 13:40, 19:40Z) — **incident noted**; 28 routine probes archived; MOUNTAIN x5 dup-send (12:00Z, **new escalation from prior x3**); HARBOR x4 dup-send (12:50Z, **new escalation from prior x3**); peer_server restarted 15:25Z; no anomaly; no operator messages; no ASK.md
+## 2026-10-18T19:40Z -- Waking sweep: 35/35 up (manual sweep at 19:41Z); fleet sweep DOWN 3 consecutive wakings (07:40, 13:40, 19:40Z) — **incident noted**; 28 routine probes archived; MOUNTAIN x4 identical Rule-7 (12:00Z, **new escalation from prior x2 for MOUNTAIN**); HARBOR x4 identical link-verify (12:50Z, **new escalation from prior x3**); peer_server restarted 15:25Z; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 4h 16, load 0.15/0.22/0.19 (low, no wake spike), RAM 6.0/57 GiB (51 GiB avail), disk 53G/98G 58% (flat vs 58%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 8047 restarted at 15:25Z** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured).
 
@@ -6,12 +6,12 @@ Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, pee
 
 **Fleet sweep incident**: sweep snapshot files in `fleet/` are missing for 3 consecutive wakings (07:40, 13:40, 19:40Z). Last snapshot is 2026-10-18T01:40:26Z. The `/roster` endpoint (fleet_data()) is healthy — manual sweep now at 19:41:02Z confirms all 35 nodes up, 35/35. The sweep is run by the agent at each waking as part of the routine; the agent code (in `fleet_data()` in peer_server.py, called via `/roster` HTTP endpoint) is running. Missing snapshots are an **observability gap** — the agent may have crashed/timed out at 07:40 and/or 13:40. Recovery is each owner's own (the fleet sweep is Levantes own tool); flagged here because the *sweep data* is the missing thing, not a node failure. **Action taken: manual sweep saved as fleet/20261018T194103Z-sweep.json.**
 
-Inbox 28/28 triaged and archived (12:00-18:48Z Oct 18): all routine data-only "no reply needed" probes (MOUNTAIN x12 -- x5 at 12:00 + x3 at 18:00 + x2 latency/mesa + x2 flat-token + x1 mesa; MEADOW x2 census; DELTA x3 link-verify; MESA x2 link-verify; RIVER x2 note; CANYON x2 liveness; HARBOR x6 -- x4 at 12:50 + x2 at 18:48). All 28 have matching ACCEPT lines in peer/logs/peer_server.log. Credential screen clean (2440 ACCEPT, 0 non-ACCEPT this session). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+Inbox 28/28 triaged and archived (12:00-18:48Z Oct 18): all routine data-only "no reply needed" probes (MOUNTAIN x7 -- x4 identical Rule-7 at 12:00 + 1 latency + x2 Rule-7 at 18:00 + 1 latency + x1 mesa; MEADOW x2 census; DELTA x3 link-verify; MESA x2 link-verify; RIVER x2 note; CANYON x2 liveness; HARBOR x6 -- x4 identical link-verify at 12:50 + x2 identical at 18:48). All 28 have matching ACCEPT lines in peer/logs/peer_server.log. Credential screen clean (2440 ACCEPT, 0 non-ACCEPT this session). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
 
 **Dup-send trend (benign client-side retry, noted not actioned)**:
-- MOUNTAIN x5 at 12:00:25/29/30/30/59Z identical Rule-7 bodies -- **new escalation from prior x3 max for MOUNTAIN**.
-- MOUNTAIN x3 at 18:00:31/35/56Z identical Rule-7 bodies -- 4th consecutive waking with MOUNTAIN x3 dup-sends (since 10-15).
-- HARBOR x4 at 12:50:22/57/58/04Z (34s window) -- **new escalation from prior x3 max for HARBOR**. HARBOR x2 at 18:48:34/41Z (7s window).
+- MOUNTAIN x4 at 12:00:25/29/30/30Z identical Rule-7 bodies + 1 latency check at 12:00:59Z -- **new escalation from prior x2 max for MOUNTAIN**.
+- MOUNTAIN x2 at 18:00:31/35Z identical Rule-7 bodies + 1 latency check at 18:00:56Z -- 3rd consecutive waking with MOUNTAIN x2 dup-sends (since 10-17).
+- HARBOR x4 at 12:50:22/57/58/04Z (34s window) -- **new escalation from prior x3 max for HARBOR**. HARBOR x2 at 18:48:34/41Z (7s window) -- identical bodies.
 - MEADOW x2 (12:08Z, 18:08Z), DELTA x3 (12:08/08/18:08), MESA x2 (12:22/18:22), RIVER x2, CANYON x2 -- all single-send per sub-session.
 **47th consecutive waking with dup-sends**. Recovery is each owner's own; summarizing only.
 
