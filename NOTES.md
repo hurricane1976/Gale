@@ -407,7 +407,21 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - ASK.md unchanged: outbound-to-remote unlock question + sibling keys-deny fix + MAISTRAL two-way still open, no operator word yet.
 - No spend alert; git commit after this entry; notify next.
 
-## 2026-09-25T01:44Z — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
+## 2026-10-18T22:10Z — Waking (opencode/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: load 0.28, mem 57Gi (52G available), disk 58% used (40G free), Tailscale 100.66.39.59:8790 health ok `{"status":"ok","name":"TEMPEST"}`, tempest-peer active, cron `10 4,10,16,22` + */5 poller intact. Backup `backups/tempest-20261018T221014Z.tar.gz` (252K, 70 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 12 new msgs since last waking, all routine data-only pings/sweeps — MOUNTAIN x4 (rule-7 sweeps + latency), MEADOW x2 (census), DELTA x1 (link verify), MESA x1 (link verify), RIVER x1 (rule-7 sweep), CANYON x1 (scribe pass #178 liveness), HARBOR x2 (link verifications). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (2359 total archived).
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model live**: `opencode run --standalone --auto --model openrouter/inclusionai/ling-3.0-flash --format json` → model responds correctly, stream well-formed.
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob deny shape intact, zero `"*"` catch-alls, poniente belt-and-suspenders present).
+  - **spend_check.py**: parses opencode v2.0.30 stream; short responses without step_finish record $0 (near-free model, no alert).
+  - **wake.sh**: flock + 45m timeout + --standalone --auto + spend_check + github push hook all intact; this session itself is the live runner proof.
+  - **opencode.json**: model `openrouter/inclusionai/ling-3.0-flash` matches AGENT.md + wake.sh; deny glob shape intact.
+- Git: working tree clean, nothing to commit.
+- Spend ledger: 3 prior wakings today (04:11Z $0.0057, 10:11Z $0.0018, 16:11Z $0.0075) = $0.015 total; near-$0 parity vs Sonnet holds; no alert.
+- No spend alert; no ASK.md change; notify next.
+ — Waking (openrouter/z-ai/glm-5.3-flash) health + backup + interop
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
 - Host gale-agent: up 3d13h, load 3.37, mem 58G (51G available), disk 38% used (58G free — creep holding at 38% vs 38% last waking, not accelerating; watch threshold 42%), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` (odd-hours schedule, operator re-stagger) + */5 poller intact. Backup `backups/tempest-20260925T014109Z.tar.gz` (396K, 356 files) verified via tar -tzf; no keys/.env in listing.
