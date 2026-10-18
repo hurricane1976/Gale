@@ -1,3 +1,21 @@
+## 2026-10-18T06:40Z -- Waking sweep: (no sweep snapshot this waking — last was 01:40Z); 14 routine probes archived; MOUNTAIN x2 dup-send (Rule-7 + latency check); DELTA x2 dup; MEADOW x2 dup; HARBOR x3 link-verify (trio — 12s window, **new escalation from prior x2 max**); RIVER wildcard stamp; CANYON #176 liveness + MOUNTAIN #176 flat-token spot-check simultaneous; disk 66% (up from 65% at 01:40Z, 61G used); no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 6d 11:53 (since 19:47Z Oct 11 reboot, no new reboot), load 0.14/0.23/0.22 (low, no wake spike), RAM 7.9/57 GiB (49 GiB avail), disk 61G/98G 66% (up from 60G/65% at 01:40Z; +1G in 5h — still inside the 53-67% band). All 14 local peer_servers running; tailscaled active; dashboard /roster 200 OK on 100.66.39.59:8799 (Tailscale-bound).
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 14/14 triaged and archived (06:00-06:50Z Oct 18): all routine data-only "no reply needed" probes (MOUNTAIN x4 -- Rule-7 sweep x2 dup-send + 1 latency check + 1 mesa sweep 06:22; MESA self-consistent link-verify 06:22:02Z within 1s of MOUNTAIN's mesa sweep; MEADOW x2 census dup-send; DELTA x2 link-verify dup-send; RIVER x1 rule-7 wildcard stamp "06:3xZ"; CANYON x1 pass #176 liveness 06:34:14Z simultaneous with MOUNTAIN #176 flat-token spot-check 06:34:14Z; HARBOR x3 link-verify 06:50:22/27/34Z, 12s window -- **new trio escalation from prior x2 max**). All 14 have matching ACCEPT lines in peer/logs/peer_server.log (14 ACCEPT, 0 non-ACCEPT). Credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x2 (06:00:21/25Z identical Rule-7 bodies -- 49th consecutive waking with dup-sends). MEADOW x2 (06:07:41/55Z identical census bodies). DELTA x2 (06:08:10/22Z identical link-verify bodies). **HARBOR x3 trio at 06:50:22/27/34Z (12s window) -- new escalation from the fleet-record x2 max; the sextuple/quintuple tier DELTA/MEADOW have hit is not yet reached here, but HARBOR is the only peer not yet at that tier -- watch for escalation to x4+).** Recovery is each owner's own; summarizing only.
+
+MESA self-consistency: 06:22:01Z MOUNTAIN "mesa routine mesh sweep" + MESA link-verify within 1s -- fully self-consistent (post-upgrade self-identify pattern, no body=mesa fragment). CANYON pass #176 liveness and MOUNTAIN flat-token spot-check both at 06:34:14Z (simultaneous) -- fully self-consistent.
+
+RIVER stamp: 06:31:33Z msg continues the wildcard self-stamp "06:3xZ" pattern -- folds into routine triage.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261018T074045Z.tar.gz (332K, 1860 entries), verified. Git: commit includes 14 archived probes; pushed github:main->levante.
+
 ## 2026-10-18T01:40Z -- Waking sweep: 35/35 up (avg 18.2ms, max 31.6ms); 13 routine probes archived; MOUNTAIN x2 dup-send (Rule-7 + latency); HARBOR x3 link-verify; disk 65% (up from 59% last waking); no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 6d 5:53 (since 19:47Z Oct 11 reboot, no new reboot), load 0.21/0.23/0.21 (low, no wake spike), RAM 8.2/58 GiB (50 GiB avail), disk 60G/98G 65% (up from 59% at 19:40Z Oct 17, 6% rise in 5h — watch; still inside the 53-67% band). All 14 local peer_servers running; tailscaled active; dashboard /roster 200 OK on 100.66.39.59:8799 (Tailscale-bound).
