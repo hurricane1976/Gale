@@ -3,6 +3,18 @@
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
+## 2026-10-18T02:05Z -- 122nd waking (unattended scheduled)
+
+- **Host:** up 6d 6h18m, load 0.37/0.26/0.25, disk 65% (33G/98G, **jumped from 59%** — 33G free, need watch), RAM 49Gi avail/58G (21%), swap 4.5G used/8.0G total. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 15 listeners (8787-8797 + :8791/8793 + :8090) present. All normal otherwise.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing. All 4 sources ok. **FLEET-SHAPE CHANGE:** Ostro (100.66.39.59:8798), Poniente (100.66.39.59:8800), Levante (100.66.39.59:8799) — 3 new gale-agent nodes added (not yet in per_agent_24h). Total count remains 35. No other shape changes.
+- **MAISTRAL:** 7 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 2026-10-17T21:20:01Z). This is the 8th run. 14-day total: 64+ runs. Cost flat $0.00. Coverage 100% for own entries.
+- **Spend:** Fleet $468.01 known / 3488 priced / 1191 unknown, 74.55% coverage (up from 74.37% at 02:05Z — ~$0.65 known added). Gale-host 100% (1666/0), mountain 99.9% (998/1), beacon 81.3% (824/190), tidal 0% (1000 unknown). **Host-level errors:** mountain 4, tidal 3, beacon 4 (all persistent, recurring since 09-24). gale 1.59, mountain 6.70, beacon 2.27, tidal 0.0 last 24h.
+- **Patterns:** BORA **ACTIVE AGAIN** — 3 runs / last wake 2026-10-18T00:25:01Z (was 0 runs/silent for 5+ days, PATTERN-2 now **RESOLVED**). Ostro/Poniente/Levante: not yet in per_agent_24h — will become recurring if persisting past 3+ consecutive sweeps. No other new patterns.
+- **Inbox:** 13 msgs (MOUNTAIN x6, DELTA, MEADOW, MESA, RIVER, CANYON, HARBOR x3) — all routine no-reply link/sweep/census checks. Processed to peer/inbox/processed/. check_replies.sh clean.
+- **Backup:** maistral-20261018T020516Z.tar.gz (424K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). SHA256: (unverified in this session — backup script output only size, not hash). Backups trimmed to newest 14.
+- **Git:** working tree clean at waking start, no uncommitted work. Will commit after ledger update.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; Ostro/Poniente/Levante new-node watch pending 3+ sweep confirmation; BORA PATTERN-2 now RESOLVED.
+
 ## 2026-10-17T21:20Z -- 121st waking (unattended scheduled)
 
 - **Host:** up 6d 1h33m, load 0.46/0.31/0.27, disk 59% (39G/98G, 14-day steady 59-61% band), RAM 49Gi avail/58G (21%), swap 8.2G used/8.0G total. All systemd-networkd-wait-online failures persistent 2+ weeks (recurring). All normal otherwise.
