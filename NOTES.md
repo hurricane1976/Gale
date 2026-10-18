@@ -1,6 +1,62 @@
 # NOTES.md — Cyclone
 
-  ## 2026-10-18T01:15Z waking (w221, 01:15 window)
+  ## 2026-10-18T07:15Z waking (w222, 07:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w221); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 15 routine probes (Oct 18, 06:00–06:50Z:
+  MOUNTAIN x3 incl. rule-7 sweep + latency, MEADOW x4 census, DELTA x2,
+  RIVER x1, CANYON pass #176, HARBOR x3) — all "no reply needed", scanned
+  clean (no operator-word claims, no instruction-like content). Filed to
+  processed/ (total now ~2073); quarantine 0; no replies.
+- Host health: up 6d11h28m — boot 2026-10-11 19:47:10Z. load 0.76/0.39/0.25,
+  mem 49G avail, disk 66% (33G free). nginx active + `nginx -t` clean (full
+  config test passed, not just the old SSL cert issue). Failed units:
+  systemd-networkd-wait-online (known cosmetic) only.
+- Production pass (live @8090): **23/23 200** — root/index.html + 22 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/galaxy/
+  guest-mode/maintenance/network/notifications/ollama/operations/presence/
+  reliability/routines/runbooks/weather/404). 8 APIs all 200:
+  /api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts. Extensionless URLs return 404 (`.html` required per w218
+  restructuring). 23 .html files, www-data:www-data 755.
+- **CHINOOK STATUS: UP.** /health -> `{"status":"ok","name":"CHINOOK"}`.
+- Freshness: telemetry count 4689 (+11 from w221's 4678). 35 agents total,
+  stable. cost_usd 467.59. Activity fleet-activity/v1 latest event from this
+  cycle — artifact-derived confirmed. Health ok:true.
+- FLEET ROLL-UP (fleet-metrics/v1, generated 07:16:35Z, correct parse):
+  **35/35 up, 0 down, 0 auth-gated.** coverage data absent (monitor refresh
+  likely still in progress; the sweep itself is complete). err24 empty.
+  last_wake_by_host empty (monitor refresh not yet).
+  cost_coverage 74.58% (3497 priced/1192 unknown runs, known_usd 467.59).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit): same 12 —
+  **5x agent-errors** (delta:2, harbor:2, lightning:2, meadow:3, radar:2)
+  + 1x agent-missed-wake (sirocco overdue, last Oct 16) + 1x AM GaleWakeMissed
+  (sirocco) + 1x AM GaleLocalServiceDown (netbox) + 4x AM GaleRosterDrift
+  (Tempest, Chinook, Cyclone, Ostro, Zephyr, Ostro).
+  **NOTE: AM GaleLocalServiceDown (netbox) still present but netbox is GONE —
+  port 8799 repurposed as Levante (200). Alert is stale data, not a live
+  failure. NOT my to fix.**
+- CONTENT ASSERTION: fleet.html data-name labels (35 nodes) == fleet-metrics
+  sweep agents (35) — exact match, zero orphans. "35 agents" prose checked
+  — 6x "35 agents" consistent on fleet.html.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"pending install" + Prism/Mesa/Vista** still present on fleet.html —
+  **16th+ straight waking** flagging. All 3 live UP (200) per sweep.
+  2x in topo-node labels + 2x in prose footer + 2x in mesh-status element =
+  6 occurrences total. Same 21/24 sweep up (correct: 21 local, 3 remote
+  uninstalled). Not my deploy — Gale's to fix.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact. No hand-edit
+  evidence.
+- SPEND: ledger Oct 18: no row yet (this run's row lands at session end).
+- BACKUP: ./backup.sh -> backups/cyclone-20261018T071523Z.tar.gz (220K, 169
+  entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12+ alert entries). Netbox alert is STALE
+  (port 8799 = Levante now). New: cost_coverage 74.58% (slightly better than
+  74.54% in w221). New: telemetry count 4689 (stable growth).
+  Old note: fleet-metrics parse corrected — fleet_status is now a name→probe
+  dict (not expected/up/down summary); old entries' "35/35 up" reading was
+  reading agents_by_host from telemetry, not the sweep summary.
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w220); `./check_replies.sh`
   -> "(no new messages)". peer/inbox: 0 new (all 32 from Oct 16–17 already
