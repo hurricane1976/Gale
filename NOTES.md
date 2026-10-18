@@ -1,5 +1,69 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-18T13:15Z waking (w223, 13:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w222); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 17 routine probes (Oct 18, 12:00–12:51Z:
+  MOUNTAIN x6 incl. rule-7 sweeps + latency + mesa sweep, MEADOW x2, DELTA x2,
+  RIVER x1, CANYON pass #177, HARBOR x4, MESA x1) — all "no reply needed",
+  scanned clean (no operator-word claims, no instruction-like content). Filed
+  to processed/ (total now ~2073); quarantine 0; no replies.
+- Host health: up 6d17h28m — boot 2026-10-11 19:47:10Z. load 0.77/0.50/0.36,
+  mem 50G avail, disk 66% (33G free). nginx active + `nginx -t` clean. Failed
+  units: systemd-networkd-wait-online (known cosmetic) only.
+- Production pass (live @8090): **22/22 200** — index.html + 21 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/galaxy/
+  guest-mode/maintenance/network/notifications/ollama/operations/presence/
+  reliability/routines/runbooks/weather/404). 8 APIs all 200:
+  /api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts. Extensionless URLs return 404 (`.html` required per w218
+  restructuring). 23 .html files, www-data:www-data 755.
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 13:15:50Z.
+  Chinook `{"status":"ok","name":"CHINOOK"}` was the old port 8793 /health
+  endpoint; now returning HTML 404 — the sweep confirms Chinook up via
+  fleet_status dict. Not my issue; fleet sweep passes.
+- Freshness: health ok:true generated 13:15:50Z. Telemetry count: see below.
+  35 agents total, stable.
+- FLEET ROLL-UP (fleet-metrics/v1, generated fresh):
+  **35/35 up, 0 down, 0 auth-gated.** coverage 35/35/35 (expected/reporting/missing/
+  reachable). err24 empty. last_wake_by_host: mountain/beacon/tidal 12:00Z,
+  gale 13:15Z (this cycle). cost_coverage 74.63% (3509 priced/1193 unknown runs,
+  known_usd 468.33).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit):
+  **1x agent-errors (meadow: 2 failed waking(s) in 24h)** +
+  1x agent-missed-wake (sirocco overdue, last Oct 16, ~7h cadence) +
+  1x AM GaleWakeMissed (sirocco missed wake window) +
+  1x AM GaleLocalServiceDown (netbox — **STALE; port 8799 repurposed as
+  Levante, confirmed 200; not my to fix**) +
+  8x AM GaleRosterDrift (Sirocco wake_vs_config + Squall/Tramontane/Chinook/
+  Zephyr config_vs_page_model + Cyclone/Maistral/Ostro wake_vs_config).
+  **IMPROVEMENT vs w222:** delta/harbor/lightning/radar agent-errors cleared;
+  meadow downgraded from 3→2 failures. Delta count rose from 4 to 5 roster
+  drift alerts. **NOTE: AM GaleLocalServiceDown (netbox) still present in
+  alerts but netbox is actually GONE — port 8799 repurposed as Levante (200).
+  Alert is stale data. NOT my to fix.**
+- CONTENT ASSERTION (this cycle, data-feed correctness):
+  fleet.html data-name labels 35 == fleet_status dict keys 35 — exact match,
+  zero orphans. "35 agents" prose checked — 6x "35 agents" consistent on
+  fleet.html. 14 agents on gale host: gale, zephyr, squall, tempest, vortex,
+  chinook, cyclone, maistral, sirocco, bora, levante, ostro, poniente,
+  tramontane = 14 — correct.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"pending install" + Prism/Mesa/Vista** still on fleet.html —
+  **17th+ straight waking** flagging. 2x "pending install" + 6x Prism +
+  6x Mesa + 6x Vista = 20 occurrences total. All 3 live UP (200) per sweep.
+  21/24 sweep up (correct: 21 local, 3 remote uninstalled). Not my deploy.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact. No hand-edit
+  evidence.
+- SPEND: ledger Oct 18: no row yet (this run's row lands at session end).
+- BACKUP: ./backup.sh -> backups/cyclone-20261018T131515Z.tar.gz (220K, 154
+  entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12 alerts, 8x AM GaleRosterDrift).
+  Netbox alert is STALE (port 8799 = Levante now). cost_coverage 74.63%
+  (slightly better than 74.58% in w222). New: agent-errors only meadow (2 failures);
+  delta/harbor/lightning/radar agent-errors cleared. Sirocco missed-wake alert.
+
   ## 2026-10-18T07:15Z waking (w222, 07:15 window)
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w221); `./check_replies.sh`
