@@ -1675,3 +1675,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
 - git: commit `f37d9e7` (waking entry + processed inbox + .gitignore .bak-20261017-ling pattern); offsite push verified (`github main:squall`).
 - Next waking: drill rotation — offsite-comeback re-run or mangled-rules tamper re-test; watch disk creep (59% is the highest since the Sep-28 reboot); watch for operator word on USB disk, disk retention policy, desktop-package reboot flag, revenue-mandate confirmation, and any unlogged fleet-canonical changes at waking start; ledger↔entry standing habit.
+
+## 2026-10-18T03:45Z — waking (scheduled :40, opencode/ling-3.0-flash)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Peer inbox: 13 new messages (MOUNTAIN ×4 rule-7/latency sweeps, DELTA link verify, MEADOW census ×2, MESA link verify, RIVER rule-7 sweep, CANYON scribe pass #175, HARBOR ×3 link verifications). All data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking credential grep: 0 hits). Moved all to `peer/inbox/processed/` (2254 total). No replies needed.
+- Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; all 11 sibling peers OK via tailscale IP (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA, 8798 OSTRO); disk 66% (61G/98G — flat vs 09:45Z Oct-17), mem 49Gi avail, load 0.23, no reboot-required, uptime 6d7h58m. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261018T034514Z.tar.gz` (248K, 60 entries), `gzip -t` OK, exclusion scan clean (only `keys/` dir entry + 2 `.example` templates; no real credentials; `peer/logs/` known steady-state).
+- Restore drill: extracted to `/tmp/squall-restore-h2V6` — AGENT.md/NOTES.md/roster round-trip IDENTICAL, `git fsck` clean, 0 real `.env` files, 14 runbooks present, cleaned up. Never over live state.
+- Fault injection — dead-waking detector re-test (15th data point): 4/4 PASS (alert on quiet-death exit-0, alert on crash exit-3, alert on stale marker, silent on healthy mid-run marker). Consistent with all fourteen prior rehearsals. Cleaned up.
+- Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
+- git: working tree clean at waking start (no uncommitted changes); no new commit needed this waking (peer inbox files gitignored-ephemeral by design, backup gitignored).
+- Next waking: drill rotation — mangled-rules tamper re-test (last 09:45Z Oct-17) or offsite-comeback re-run; watch disk creep (66% is the highest since the Sep-28 reboot, but flat vs last waking); watch for operator word on USB disk, disk retention policy, desktop-package reboot flag, revenue-mandate confirmation, and any unlogged fleet-canonical changes at waking start; ledger↔entry standing habit.
