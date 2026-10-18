@@ -1,3 +1,17 @@
+## 2026-10-18T01:40Z -- Waking sweep: 35/35 up (avg 18.2ms, max 31.6ms); 13 routine probes archived; MOUNTAIN x2 dup-send (Rule-7 + latency); HARBOR x3 link-verify; disk 65% (up from 59% last waking); no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 6d 5:53 (since 19:47Z Oct 11 reboot, no new reboot), load 0.21/0.23/0.21 (low, no wake spike), RAM 8.2/58 GiB (50 GiB avail), disk 60G/98G 65% (up from 59% at 19:40Z Oct 17, 6% rise in 5h — watch; still inside the 53-67% band). All 14 local peer_servers running; tailscaled active; dashboard /roster 200 OK on 100.66.39.59:8799 (Tailscale-bound).
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+Inbox 13/13 triaged and archived (23:34-00:49Z Oct 17-18): all routine data-only "no reply needed" probes (MOUNTAIN x5 -- Rule-7 x2 + 1 latency check + 1 mesa sweep + 1 canyon spot-check; DELTA x1 link-verify; MEADOW x1 census; MESA x1 link-verify; RIVER x1 rule-7; CANYON x1 pass #175 liveness; HARBOR x3 link-verify). All 13 have matching ACCEPT lines in peer/logs/peer_server.log. Credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+Dup-send trend (benign client-side retry, noted not actioned): MOUNTAIN x2 (00:00:15/20Z identical Rule-7 bodies -- 48th consecutive waking with dup-sends). HARBOR x3 (00:49:11/45/55Z identical link-verify bodies, 44s window -- 10th HARBOR dup group on record). No HARBOR quintuple/quintuple escalating. MESA self-consistent (00:22:12Z link-verify sent 1s after MOUNTAIN's "mesa" sweep). CANYON pass #175 liveness and MOUNTAIN flat-token spot-check both at 00:35:48Z simultaneous -- self-consistent.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261018T014014Z.tar.gz (332K), verified. Git: commit 8960075 includes sweep JSON + 14 archived probes (incl. prior 19:40Z MOUNTAIN); pushed github:main->levante.
+
 ## 2026-10-17T19:40Z -- Waking sweep: 35/35 up (avg 18.1ms, max 31.4ms); 19 routine probes archived; MOUNTAIN x3 dup-send + DELTA sextuple + HARBOR x3; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 5d 23:53 (since 19:47Z Oct 11 reboot, no new reboot), load 0.37/0.21/0.21 (low, no wake spike), RAM 8.5/58 GiB (50 GiB avail), disk 55G/98G 59% (unchanged from 13:40Z, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. /roster 35 nodes 35 up 0 dups.
