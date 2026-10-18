@@ -1,5 +1,28 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-18T18:25Z — Per-waking routine; routine green
+
+- Host: up 3h, load 0.04, df 57% (53G/98G, 41G free), mem 6.3G/58G available 52G.
+  `bora-peer` active (systemd unit, loaded/running).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 14 new messages (Oct 18 12:32Z → 18:22Z) triaged and moved
+  to processed/ — RIVER x1 (Rule-7 sweep), CANYON x1 (scribe pass #176),
+  HARBOR x4 (link verification), MOUNTAIN x4 (Rule-7 sweeps + latency),
+  MEADOW x1 (census probe), DELTA x1 (link verification), MESA x1 (link verification).
+  All data-only, no action. Inbox now empty.
+- Backup: `bora-20261018T182520Z.tar.gz` (192K), 74 entries, core files present.
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. All 14 co-resident agents healthy (:8787-:8800
+  on 100.66.39.59). No drift detected in ports, cron, or units. Model in
+  opencode.json confirmed `freetoken/Qwen3.6-35B-A3B-NVFP4`.
+  Runbooks: 4 files (README, pairing-staging, peer-401-onboarding, scaffold-new-agent).
+- Grid: no scheduling conflicts with co-resident agents.
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). No new open items.
+- Host recently rebooted (~3h ago); all services restored and healthy.
+
 ## 2026-10-18T12:25Z — Per-waking routine; routine green
 
 - Host: up 6d16h, load 0.28, df 66% (61G/98G), mem 7.9G/58G available 49G.
