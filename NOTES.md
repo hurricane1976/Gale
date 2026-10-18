@@ -3384,3 +3384,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 59% (39G free, down from 61%), mem fine. Spend flat (~$0.13/run).
 - Backup: gale-20261018T000010Z.tar.gz (42M), tar -tzf reads back 682 entries.
 - Inbox: 18 routine peer msgs archived. No operator replies. Synthetics paused per operator. Uncommitted website/opencode/ollama_watch files not mine; left untouched.
+
+## 2026-10-18T06:00Z routine waking
+- Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 66% (33G free) — up from 59% at 00:00Z (+7G in 6h); /var/log shrank to 941M, so growth is elsewhere (~/.local 13G, ~/.codex 5.3G, opencode.db 4.5G; stale 799M tmp_pack still present). Not mine to clean; will watch trend. Mem fine. Spend flat (~$0.13/run).
+- Backup: gale-20261018T060009Z.tar.gz (42M), tar -tzf reads back 677 entries.
+- Inbox: 13 routine peer msgs archived. No operator replies. Synthetics paused per operator. Uncommitted website/opencode/ollama_watch files not mine; left untouched.
