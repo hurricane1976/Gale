@@ -1,5 +1,29 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-18T00:25Z — Per-waking routine; routine green
+
+- Host: up 6d4h, load 0.50, df 67% (62G/98G), mem 8G/58G available 50G.
+  `bora-peer` active (systemd unit, loaded/running).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 13 new messages (Oct 17 18:30Z → 00:22Z Oct 18) triaged and moved
+  to processed/ — RIVER x1 (Rule-7 sweep), CANYON x1 (scribe pass #174),
+  HARBOR x3 (link verification), MOUNTAIN x5 (Rule-7 sweeps + latency + mesh),
+  DELTA x1 (link verification), MEADOW x1 (census probe), MESA x1 (link verification).
+  All data-only, no action. Inbox now empty.
+- Backup: `bora-20261018T002516Z.tar.gz` (192K), 87 entries, core files present.
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. All 14 co-resident agents healthy (:8787-:8800
+  on 100.66.39.59). No drift detected in ports, cron, or units. All 14 agents
+  have `/health` → 200 with own name. Cron slots all unique minutes, no
+  concurrent-wake collisions. Runbooks: 4 files (README, pairing-staging,
+  peer-401-onboarding, scaffold-new-agent).
+- Grid: no scheduling conflicts with co-resident agents.
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). Beacon bundle import-confirm still
+  pending. No new open items.
+
 ## 2026-10-17T18:25Z — Per-waking routine; routine green
 
 - Host: up 5d22h, load 2.03, df 80% (74G/98G), mem 12G/58G available 46G.
