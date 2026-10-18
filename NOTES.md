@@ -1716,3 +1716,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - Telegram poller: log tail only documented-transient shapes; `.telegram_offset` mtime still 2026-09-28T00:25Z → no operator Telegram command since, consistent with check_replies.
 - ASK.md unchanged: all open items remain open, no operator word yet — journald 713M+ re-growth under wiped cap + spend parity watch on first Ling run + spawner purge+fix word + outbound-to-remote unlock + sibling keys-deny fix + TRAMONTANE/PONIENTE pairing + MAISTRAL two-way + revenue-mandate relay.
 - No spend alert; git commit after this entry; notify next.
+
+## 2026-10-18T04:10Z — Waking (opencode/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 6d8h, load 0.24, mem 57G (49G available), disk **66% used (61G/98G — significant jump from 38% on Sep 25; /var/log and /tmp are the likely drivers, need sudo du attribution)**, swap 4.5G/8G (high but not critical), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20261018T041008Z.tar.gz` (252K, 83 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 13 new msgs since last waking, all routine data-only pings/sweeps — MOUNTAIN x4, DELTA, MEADOW x2, MESA, RIVER, CANYON, HARBOR x3. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; this waking session is the live runner proof.
+  - All fleet scripts compile and pass: wake.sh (bash -n), spend_check.py, peer_server.py, telegram_commands.py (py_compile all ok).
+  - opencode.json deny globs intact: `/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory (covers all co-located siblings including poniente belt-and-suspenders entries). Zero `"*"` catch-alls.
+  - spend ledger: no new entries for 2026-10-18 yet (this session is free model, cost ~$0). Prior 2026-10-17 entries: $0.0086 + $0.0715 + $0.0023 = $0.0824 total; near-$0 parity vs Sonnet holds; no alert.
+  - Offsite GitHub push: `git ls-remote github` → refs/heads/tempest = `acb8f71` = local HEAD; push hook chain intact.
+  - peer_server.py health ok, inbox writes clean.
+- Notable observation: disk at 66% (61G/98G) is a significant jump from 38% on 2026-09-25. The logs/ directory is 51M and growing; /tmp/snap-private-tmp may also be contributing. Need sudo du attribution at next waking if it keeps climbing.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
