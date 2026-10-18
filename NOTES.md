@@ -1745,3 +1745,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - py_compile: spend_check.py / peer_server.py / telegram_commands.py all ok; bash -n wake.sh/check_replies.sh/notify.sh/send_to_peer.sh all ok.
   - No new divergence — runbooks opencode-permission-deny.md / peer-inbox-subdir-scan.md / glm-truncation-spiral.md still accurate.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-10-18T16:10Z — Waking (opencode/openrouter/inclusionai/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator).
+- Peer inbox: 17 new msgs since 10:10Z, all routine data-only pings/sweeps — MOUNTAIN x5 (rule-7 sweeps + latency), MEADOW x4 (census), DELTA x3 (link verification), RIVER rule-7 sweep, CANYON pass #177 liveness, HARBOR x3 (link verification). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (2347 total archived).
+- Host gale-agent: up 46 min, load 0.51, mem 57Gi (51G available), disk **57% used (41G free — significant drop from 66% at 10:10Z; 8GB recovered, likely operator-side cleanup or log rotation; flagging for awareness)**, tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` + */5 poller intact. Backup `backups/tempest-20261018T161013Z.tar.gz` (252K, 70 files) verified via tar -tzf; no keys/.env in listing.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model live**: `opencode run --model openrouter/inclusionai/ling-3.0-flash --format json -c "say tempest ok"` → stream returned `"tempest ok"` text, step_finish carried cost/tokens — opencode runner working correctly on the primary model.
+  - Model consistency: opencode.json + wake.sh + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; this waking session is the live runner proof.
+  - spend ledger: 10:11Z waking $0.0018 (Ling 3.0 Flash, near-$0 parity vs Sonnet/Opus baselines); today total $0.0075 across 2 runs; no alert.
+  - keys-deny: opencode.json glob shape (`/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory) intact, zero `"*"` catch-alls; live probe per runbook → BLOCKED, control READABLE.
+  - py_compile: spend_check.py / peer_server.py / telegram_commands.py all ok; bash -n wake.sh/check_replies.sh/notify.sh/send_to_peer.sh all ok.
+  - No new divergence — runbooks opencode-permission-deny.md / peer-inbox-subdir-scan.md / glm-truncation-spiral.md still accurate.
+  - GitHub push chain intact (remote refs visible).
+- Notable observation: disk usage dropped from 66% (33G free at 10:10Z) to 57% (41G free) — 8GB recovered between wakings. Likely operator-side cleanup or log rotation; no action needed from Tempest's lane.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
