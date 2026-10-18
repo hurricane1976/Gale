@@ -7297,3 +7297,40 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Next waking (10-17 00:50Z next day):** routine pass; watch journal
   8th point and swap trend; syslog.1 compress-out; tmp_pack/db re-check
   (reclaim is GALE/BORA's call — do not chase).
+
+## 2026-10-18T00:50Z — waking #122 (scheduled :50 slot; streak 9)
+
+- **check_replies.sh**: no new messages. ASK.md items unchanged (v2 fix-batch confirm, migration commit d94c27b provenance, BEACON revenue relay, #59 no-op/shim-502 classes).
+- **Peer inbox**: 13 unprocessed since waking #121 (18:50→00:50Z), 5 sources: MOUNTAIN x4 (Rule-7 sweeps + site-build latency), DELTA x1 (link verification), MEADOW x1 (census), MESA x1 (link verification), RIVER x1 (Rule-7 sweep), CANYON x1 (scribe pass #175), HARBOR x3 (link verification). All self-labeled "no reply needed", zero operator content, zero acks owed → archived to processed/ (1824→1837, inbox empty). Stray `chinook/` + `pulsar/` subdirs remain (documented artifact).
+- **Fleet health sweep**: 10/10 ports 8787–8797 → HTTP 200 via tailnet. 91st consecutive alive sweep. Own :8793 200 — 14th consecutive clean window. Tailscale holds 100.66.39.59/32 — ~140h hold on the 7.0 kernel, no TUN regression.
+
+### capacity snapshot 2026-10-18T00:50Z (waking #122)
+- **host gale-agent**: uptime 6d 5h 2m (kernel 7.0.0-38-generic, booted 10-11 19:47Z); load 0.10/0.24/0.33 on 16 cores (calm); mem 8.0Gi used / 57Gi (49Gi avail) — within the ~10–12G baseline; **swap 4.5Gi used / 8Gi (3.5Gi free) — first waking with nonzero swap usage in the series; noted for trend watching, no action yet**; disk / 60G/98G (61%), 33G free — **5GB jump from the 55G at waking #121 (12h ago)**; inodes 11% (plenty). No reboot-required flag.
+
+### disk — step-event hold RE-OPENED
+- `/` 60G used / 33G avail (61%) — **exceeds the 59G re-open threshold** set at waking #121. The step-event hold (56G flat) is now broken by a +5GB single-window jump (55G→60G in ~12h, ~0.4G/hr). Drivers under investigation: (a) shared opencode.db 4.45 GiB, FLAT (mtime current, size unchanged; 2.16 GiB VACUUM-reclaimable — GALE/BORA's call); (b) stale git tmp_pack_dsspw2 0.8G still present, mtime unchanged 10-16 14:31Z; (c) /var/log 865M (syslog rotation working); (d) journal 137M (steady); (e) snap packages 5.4G (static, not growing). **Re-open alert if used ≥60G or another ≥2G single-window jump.** Named date: at the current ~0.4G/hr growth rate the 80% line (78.4G used) would be reached in ~46h (~2026-10-20 at current rate), but growth is likely bounded by journal rotation + snap immutability — holding "watch" not "action".
+
+### swap — new nonzero watch
+- 4.5Gi used is the first nonzero swap reading in the series (prior wakings showed 0/8G). Could be normal under the 7.0 kernel (swappiness defaults, memory pressure from the 12:50Z session), but worth flagging as a new data point. No action unless swap grows on the next 2 consecutive wakings.
+
+### spend — 10-17 close-read + 10-18 partial
+- **10-17 full day**: $0.1106 / 4 runs (0.017 + 0.0792 + 0.0087 + 0.0057). Lane detail: GALE (agent) $0.017/1 (00:51Z), chinook $0.0792/1 (06:51Z — my largest row to date, session-length-driven, is_error=false, on-cadence, ~23× under the $5.00/run line), GALE (agent) $0.0087/1 (12:51Z). **No rule-4 anomaly** — cost consistent with run count, no jump without a run-count change.
+- **10-18 partial**: $0.00 / 0 runs so far (this waking is the first 10-18 run, cost will be recorded at session end).
+- **7-day average** (10-12→10-17): $0.6829 / 22 runs = $0.031/run, ~$0.10/day. Alert lines unchanged: $15/day, $5.00/run.
+- **ZEPHYR watch line ($0.35/run)**: 10-17 partial $0.0712/2 from the 12:50Z reading — 27th consecutive clean day; watch continues low priority.
+
+### forecast / thresholds
+- **Disk**: step-event hold RE-OPENED at 60G (was 56G). Re-open alert if used ≥60G or a new single-window jump ≥2G. Crossing projection at ~0.4G/hr → ~2026-10-20 if unbounded, but likely bounded by journal/snap rotation. Named date flagged for awareness only.
+- **Spend**: host-wide pace ~$0.10/day at the 7-day average; my lane ~$0.03/run. No alert line crossed.
+- **Load/mem/swap**: load flat, mem within baseline, swap new nonzero watch — no crossing projectable.
+- **Journal**: 137M steady, well under the 1G flag line.
+- **Cadence**: no lost slots — 00:50 #114 through this 00:50 waking all fired on-grid; 9th consecutive good scheduled slot post-v2-recovery; streak 9.
+- **Saturation pass**: no sibling lane near a local (CPU/mem/disk) limit; per-run cost inside its historical band everywhere. **No new advisory owed this waking** (GALE/BORA disk advisories sent + send-verified 10-16 18:52Z; reclaim remains their call).
+
+### done this waking
+- check_replies: none. Peer inbox: 13 archived to processed/ (1837 total).
+- Host health: load 0.10, mem 8.0G/57G, swap 4.5G/8G (new nonzero), disk 60G/98G (61%, step-event hold re-opened).
+- Fleet health: 10/10 peers 200 OK, 91st clean sweep.
+- Spend: 10-17 close-read $0.1106/4 runs; 10-18 partial $0.00/0 runs.
+- Backup: `backups/chinook-20261018T005027Z.tar.gz` (248K), gzip -t OK, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest pruned).
+- **Commit**: NOTES update + peer inbox archived. telegram_commands.py v2 fix stays UNCOMMITTED (operator confirm requested in ASK.md); .bak files stay untracked; stray-subdir VORTEX files remain untracked (artifact, unchanged).
