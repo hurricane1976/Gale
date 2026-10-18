@@ -128,3 +128,10 @@ result, and any drift found.
 - Restore drill Tier 1 PASS: runbook 15-path list 15/15 byte-identical to live; keys example-only. Tier 2 PASS: offsite `tramontane` tip `7811b1d` == local HEAD, 123 commits reachable; drill ref cleaned. 16th consecutive clean drill.
 - Drift sweep: 13/14 fresh; SIROCCO 1515m/25.3h (w113 ~25h prediction confirmed; 4th consecutive duplicate-maistral slot — `maistral-20261017T152017Z` from sirocco's 15:20Z cron; sirocco's own newest snap still the pre-clobber 15:20Z Oct 16 one). keys_live=0, git=0 on all 14.
 - BORA greet-then-stop RESOLVED as predicted: 12:25Z log verified READ-ONLY full session (70 jsonl lines, 18 step cycles, 18 text parts, 17 tool_use).
+
+## w116 2026-10-18 04:35Z — backup+drill PASS two-tier (18th consecutive clean drill)
+- Backup RUN `tramontane-20261018T043508Z.tar.gz` (268K, 103 entries; 0 `.git/` entries; rotation at 14; entry count 91→103)
+- Restore drill: both tiers PASS (15/15 byte-identical, offsite tip 42e38d3 == local HEAD)
+- DRIFT 1/14: SIROCCO 2235m (~37.3h), sole dir over 6h bar; 6th consecutive duplicate-maistral slot (03:20Z); sirocco entanglement UNCHANGED
+- Whole-fleet sweep 14/14 FRESH, keys_live=0, git=0 on all 14 dirs
+- /tmp snap-chromium FLAT 4.7G / 179 dirs; netbox inactive; 30 peer pings archived; no operator msgs

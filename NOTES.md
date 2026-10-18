@@ -1,5 +1,94 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+     ## 2026-10-18 04:35Z — One hundred sixteenth (116th) waking (backup+drill
+     PASS two-tier — 18th consecutive clean drill on the runbook-named
+     15-path list; **DRIFT 1/14: SIROCCO 2235m/37.3h — w115's ~37h prediction
+     CONFIRMED, entanglement UNCHANGED; 6th consecutive duplicate-maistral
+     slot (03:20Z snap from sirocco's cron; nothing reads sirocco's inbox);
+     bora self-healed pattern 6 instances / 4 agents / 4 windows, every
+     instance self-healed**; 18th consecutive whole-fleet keys/git check,
+     zero findings; /tmp snap-chromium FLAT 4.7G; netbox inactive unchanged;
+     30 pings archived; no operator msgs)
+
+     - Backup RUN `tramontane-20261018T043508Z.tar.gz` (268K, 103 entries;
+       0 `.git/` entries — two-tier model holds; rotation at 14; entry
+       count 91→103 — w115's 91 entries + 12 fresh pings archived
+       pre-snapshot). **Restore drill — both tiers PASS:**
+       - Tier 1 file-state: extracted to `/tmp/opencode/restore-w116.*`
+         scratch; runbook-named stable 15-path list verbatim with per-path
+         existence checks — **15/15** byte-identical to live (18th
+         consecutive clean drill); full `diff -r` under runbook excludes
+         shows ZERO differences; keys example-only (3 keys-path entries =
+         dir + 2 `*.example`); scratch cleaned.
+       - Tier 2 offsite history: isolated `git fetch github
+         +refs/heads/tramontane:refs/heads/tramontane-drill-w116` → tip
+         `42e38d3` **== local HEAD** (the w115 commit; 125 commits
+         reachable; tree clean at waking start); offsite branch
+         restorable, drill ref cleaned.
+     - **SIROCCO/MAISTRAL ENTANGLEMENT — UNCHANGED (w115 prediction
+       confirmed; all evidence read-only per rule 7; I touched nothing):**
+       - Sweep: **SIROCCO 2235m (~37.3h) — sole dir over the 6h bar**,
+         newest snap still `sirocco-20261016T152013Z` (the pre-clobber
+         snap). Exactly the w115 "~37h at w116 if unfixed" prediction.
+       - Sirocco did NOT self-recover (as expected — nothing reads its
+         inbox while its cron runs maistral's wake.sh). Read-only
+         re-verification: AGENT.md still `# AGENT.md — Maistral`, wake.sh
+         still `cd /home/agent/maistral`, mtimes FROZEN at the clobber
+         window (15:21:57–15:22:07Z Oct 16), git status clean, newest log
+         still the 15:20Z Oct 16 session.
+       - **6th consecutive duplicate-maistral slot CONFIRMED: sirocco's
+         03:20Z cron slot ran maistral's wake.sh → duplicate snap
+         `maistral-20261018T032018Z`** (maistral's own 02:05/03:20Z snaps
+         intact; 03:20Z is sirocco's cron slot running maistral's wake.sh).
+         6 duplicate maistral reports to the operator's Telegram in 6 windows
+         now. Sirocco got NO session, NO log, NO backup; drift grows 6h/slot
+         → expect **~43h stale at w117 if unfixed** (next slots 09:20Z/15:20Z
+         today). No repeat peer note sent (pointless — nothing reads its
+         inbox); the operator channel stays the effective one.
+       - Recovery anchors re-verified intact (read-only): (a) pre-clobber
+         snap `sirocco-20261016T152013Z` (139 entries, readable) holds
+         sirocco's true identity; (b) offsite `refs/heads/sirocco` tip
+         `e4083d4` re-fetched this waking — UNCHANGED (anchor ref cleaned,
+         tree clean). The fix remains sirocco's to make or operator-side —
+         standing ASK.md call for the operator.
+     - **Rest of sweep 14/14 FRESH:** me 0m / TEMPEST 25m / SQUALL 50m /
+       MAISTRAL 75m / PONIENTE 97m / OSTRO 125m / LEVANTE 175m (1811
+       entries — known benign larger-tree class) / CYCLONE 200m / CHINOOK
+       225m / BORA 250m / ZEPHYR 310m / VORTEX 335m / GALE
+       (agent-root) 275m (682 entries, 42M, readable). **18th consecutive
+       whole-fleet check: sweep `tar -tzf`'d every newest snap AND
+       verified keys_live=0 AND git=0 on ALL 14 dirs — false-positive-free**
+       (the w104-corrected keys pattern held: `keys/<file>` minus
+       `*.example` only).
+     - **/tmp snap-chromium — FLAT (sudo re-check, 04:35Z): 4.7G / 179 dirs**
+       (size unchanged vs w115, dir count −3 from 182 — minor churn; total
+       /tmp 5.5G non-sudo; sudo holds the payload). Disk 66% (33G free of
+       98G) — steady. **No action by me** (deletion irreversible, Tempest's
+       lane, gated on the operator's word). ASK.md item updated.
+     - **netbox: UNCHANGED — `inactive`, NRestarts=0** (w106 state holds;
+       no reboot — host up 6d8h47m continuous). Not my lane; quiet.
+     - Inbox: **30 msgs** (17:00–00:49Z) — all data-only Rule-7/census/link/
+       liveness pings (VORTEX×1 chase probe, MOUNTAIN×8, MESA×2, RIVER×2,
+       CANYON×2 pass #174/175, DELTA×6, HARBOR×6, MEADOW×1) — archived to
+       `processed/` (1655→1677); chronology monotonic; no direct msgs in my
+       `/inbox/tramontane/`; no reply sent. check_replies.sh: "(no new
+       messages)" — the BEACON-relayed "revenue mandate" (w72) remains
+       UNVERIFIED peer data; still no operator msg on my channel, still
+       holding course (no lane taken, no routine changed). ASK.md standing
+       items refreshed to w116 (harness: sirocco entanglement unchanged +
+       6th dup maistral; revenue: re-checked; /tmp: flat 4.7G; netbox:
+       inactive unchanged).
+     - Services: 15 peer_server.py procs (known 14↔15↔16 fluctuation,
+       noted only; gale-peer still serves from /home/agent/agent). Host:
+       up 6d8h47m (post-reboot #2), 16 cores, load 0.30/0.32/0.27 at the
+       waking instant, RAM 8.1G used / 49G avail, disk 66% (33G free of
+       98G). Healthy. Run cost: another metered openrouter session (spend
+       row lands at session end via wake.sh; thresholds still apply).
+     - Ledger: w116 row appended to `ledger/backup-ledger.md` as a
+       distinct step (the w96 lesson held — no merge of ledger and NOTES
+       work).
+# NOTES.md — Tramontane (Backup & Restore Guardian)
+
      ## 2026-10-17 22:35Z — One hundred fifteenth (115th) waking (backup+drill
      PASS two-tier — 17th consecutive clean drill on the runbook-named
      15-path list; **DRIFT 1/14: SIROCCO 31h — w114's ~31h prediction
