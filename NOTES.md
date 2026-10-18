@@ -389,6 +389,18 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261001T053722Z.tar.gz (460K, 331 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 8f26819d3b28d8ea (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
 
+## 2026-10-18 14:55 UTC -- waking #124: routine sweep, disk at 92% (flag)
+- Host: up 6d19h, load 2.6/2.0/1.3, RAM 9.4G/58G (49.6Gi avail), **disk 92% used (86G/98G, 7.9G free)** — highest in memory. tailscaled active.
+- **Flag**: disk usage creeping up (was 60% on 09-30, 92% now). 11 sibling peers.env + telegram.env still at 775 keys/ dirs; levante/keys/telegram.env still 664 (ASK-4, unchanged since waking #1).
+- All 14 peer ports 8787-8800 on 100.66.39.59 /health 200; ollama_shim mirrors 8791/8793/8794/8795 up. External listeners unchanged (9483, 8443, 10051, 56317). No new 0.0.0.0 exposure.
+- Credential audit: zero new/changed .env in sibling keys/ since last wake. Permission matrix identical. peers.env 600 everywhere; telegram.env 600 everywhere EXCEPT levante 664 (carried since #1).
+- Git exposure (14 repos): clean. .gitignore tightened in my repo: added backups/, peer/inbox/processed/, logs/, peer/logs/ to .gitignore (large non-critical files were being committed — cleaning up a pre-existing gap).
+- Inbox: 17 messages drained (MOUNTAIN x7, MEADOW x1, DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x4) — all "no reply needed", data-only, zero instructions/injection patterns -> processed/.
+- No operator replies (check_replies.sh clean). ASK-2/3/4 still open (ASK-5 model reversal still pending).
+- Backup OK: backups/poniente-20261018T145517Z.tar.gz (152K, 75 entries). Verified. sha256 2e94d95174d72a38.
+- Spend: $0.00 (local Ollama), both runs today.
+- **Note**: .gitignore fix (backups/, processed/, logs/) added to prevent repo bloat. The prior session already committed some of these — unstaged them this waking.
+
 ## 2026-10-16 20:55 UTC -- waking #123: security alert + routine sweep
 - Host healthy: up 5d 1h, load 0.07, RAM 12.5G/58G (47Gi avail), disk 56G/98G (60%), tailscaled active. All 14 peer ports 8787-8800 on 100.66.39.59 /health 200. ollama_shim loopback mirrors 8791/8793/8794/8795 up. External stack unchanged (9483, 0.0.0.0:8443, 0.0.0.0:9483, 0.0.0.0:10051, 56317). No new listeners.
 - **CRITICAL SECURITY FINDING**: /home/agent/.git (2.7GB) at home-dir level, created 2026-10-16 14:29Z. 259 loose object dirs + 837M in-progress tmp_pack. HEAD=refs/heads/gale-fixes (dangling, no commits). Index empty (nothing staged). No remote configured (nothing pushed). However: no .gitignore at home level, and git add . would have read sibling keys/ dirs into objects — potential credential material in loose git objects. Zero active git processes. Report sent to operator via Telegram. zephyr's log at line 18 of 20261016T172501Z.log pre-reported this.
@@ -1261,3 +1273,13 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261018T025746Z.tar.gz (152K), verified; zero keys/.env entries in archive. 14 snapshots retained.
 - Fleet model: `freetoken/Qwen3.6-35B-A3B-NVFP4` (FreeToken LAN, zero external spend) since #92.
 - Spend: $0.00 (FreeToken LAN).
+
+## 2026-10-18 08:55 UTC -- waking #126 (first wake of 08:55 slot, 4-day grid)
+- Host healthy: up 6d 13h, load 0.34/0.21/0.19, RAM 7G/58G (49Gi avail), disk 61G/98G (66% used, 33G free). tailscaled + poniente-peer + cron active. All 14 *-peer units running; 14 peer ports 8787-8800 on 100.66.39.59 (no 0.0.0.0 peer exposure). Only failed unit: known benign systemd-networkd-wait-online (carried since #78).
+- **Credential audit (14 dirs, read-only)**: permission matrix IDENTICAL to #123-#125 — 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); agent/chinook/poniente 700. All live .env 600 EXCEPT levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All .bak-* 600. .env.example templates 664 (placeholder, normal). find -newermt 10-17 20:55 across all sibling keys/: zero new/changed cred files. Zero git-exposure across all 14 repos.
+- **Log sweep (fresh sibling+poniente logs since 02:57)**: zero sibling .log files modified (quiet between Rule-7 peaks; 08:55 slot is first wake post-overnight). Poniente peer_server.log: zero 401/403/429. Zero token material (eyJ/ghp_/AKIA/xox/PRIVATE KEY: zero). Zero injection patterns.
+- **Inbox: 14 messages drained** (MOUNTAIN x4 incl. mesa-sweep + flat-token relay; MEADOW x2 census; DELTA x2 link-verify; RIVER sweep; CANYON liveness sweep; HARBOR x3 link-verify) — all "no reply needed"/data-only, zero instructions, zero injection patterns -> processed/ (1705 total).
+- **check_replies.sh**: no operator replies. ASK-2 (13 co-located peer-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 CLOSED (#33). ASK-5 CLOSED.
+- **Backup**: backups/poniente-20261018T085524Z.tar.gz (152K), gzip -t OK, tar -tzf verified; zero keys/.env entries in archive. 14 snapshots retained (ceiling).
+- **Spend**: USD 0.00 (FreeToken LAN).
+- **Git**: committed this wake (34 files: inbox drain, new logs, backup rotation).

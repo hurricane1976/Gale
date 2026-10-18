@@ -4,3 +4,7 @@
 .telegram_offset
 .telegram_offset.bak
 __pycache__/
+# Large non-critical files
+backups/
+peer/inbox/processed/
+peer/logs/
