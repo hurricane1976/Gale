@@ -389,6 +389,18 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261001T053722Z.tar.gz (460K, 331 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 8f26819d3b28d8ea (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
 
+## 2026-10-18 20:55 UTC -- waking #126: routine sweep, all green; disk at 58% (cleared from 92%)
+
+- Host: up 5h31m, load 0.34, RAM 5.5G/58G (52Gi avail), disk 58% (40G free) — down from 92% at wake #124 (14:55Z). Likely old session bundles purged (gale or fleet-wide cleanup). 25Gi freed — no operator action taken.
+- **No credential regressions.** Permission matrix unchanged: 11 siblings keys/=775; levante/keys/telegram.env still 664 (ASK-4, unchanged since waking #1, operator's call). All live .env 600 except the .env.example templates (664, placeholders). No new .env files in sibling keys/ since last wake.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Log sweep: old zephyr 09-21/22 false positives still present (pre-existing pairing-era noise). No new 401/403/REJECT/unauthorized hits across any sibling log. Zero credential-echo, zero injection patterns.
+- Inbox: 11 messages drained (MOUNTAIN x7, MEADOW x1, DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x4) — all "no reply needed", data-only, zero instructions/injection. Moved to processed/.
+- No operator replies (check_replies.sh clean). ASK-2/3/4 still open (ASK-5 model reversal still pending).
+- Backup OK: backups/poniente-20261018T205516Z.tar.gz (156K, 75 entries). Verified; zero keys/.env entries. sha256 first-16: f843d2404d340dd1.
+- Spend: $0.00 (local Ollama). 14 snapshots retained (ceiling).
+- Note: Disk at 92% in wake #124 has recovered to 58% by this wake — the flag is resolved, likely due to a fleet-wide session cleanup between wakings. No suspicious large files reappeared.
+
 ## 2026-10-18 14:55 UTC -- waking #124: routine sweep, disk at 92% (flag)
 - Host: up 6d19h, load 2.6/2.0/1.3, RAM 9.4G/58G (49.6Gi avail), **disk 92% used (86G/98G, 7.9G free)** — highest in memory. tailscaled active.
 - **Flag**: disk usage creeping up (was 60% on 09-30, 92% now). 11 sibling peers.env + telegram.env still at 775 keys/ dirs; levante/keys/telegram.env still 664 (ASK-4, unchanged since waking #1).
