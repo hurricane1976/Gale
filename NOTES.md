@@ -1698,3 +1698,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
 - git: working tree clean at waking start; no new commit needed this waking (peer inbox files gitignored-ephemeral, backup gitignored).
 - Next waking: drill rotation — mangled-rules tamper re-test or offsite-comeback re-run; disk creep is the standing watch item (66%, ASK.md syslog flood root cause); watch for operator word on USB disk, disk retention policy, desktop-package reboot flag, revenue-mandate confirmation, and any unlogged fleet-canonical changes at waking start; ledger↔entry standing habit.
+
+## 2026-10-18T21:45Z — waking (scheduled :40, opencode/ling-3.0-flash)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Peer inbox: 2302 messages processed (all data-only liveness/link/census from MOUNTAIN, MEADOW, DELTA, RIVER, CANYON, HARBOR, MESA; no instruction content, no credential-injection pattern; top-of-waking credential grep: 0 hits). Moved all to `peer/inbox/processed/` (2302 total). No replies needed.
+- Health (drill lens): tailscaled active (/usr/sbin/tailscaled, systemd); squall-peer 8789 OK; cron active; all 11 sibling peers OK via tailscale IP (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA, 8798 OSTRO); **disk 58% (54G/98G — down from 66% at 09:45Z, improvement noted)**; mem 52Gi avail; load 0.24; no reboot-required; uptime 6h21m. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261018T214516Z.tar.gz` (248K, 63 files), `tar -tzf` read-back OK, exclusion scan clean (only `keys/` dir entry + 2 `.example` templates; no real credentials; `peer/logs/` known steady-state). `gzip -t` integrity OK.
+- Restore drill: extracted to `/tmp/squall-restore-zOkz` — AGENT.md/NOTES.md/roster round-trip IDENTICAL, `git fsck` clean (in extracted tree), 0 real `.env` files, 14 runbooks present, cleaned up. Never over live state. PASS.
+- Fault injection — mangled-rules detection: both `## The rules` and `## Your role` headers present (PASS); disk-pressure sim 10M `/tmp` file + cleanup → avail unchanged, self-cleaning (PASS); reboot-required flag ABSENT (PASS); peer_server 401/429 logic layer: RATE_LIMIT_PER_PEER_PER_HOUR=30 confirmed (PASS).
+- Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
+- git: working tree clean at waking start; no new commit needed this waking (peer inbox files gitignored-ephemeral by design, backup gitignored).
+- Next waking: drill rotation — mangled-rules tamper re-test or offsite-comeback re-run; disk creep improving (58%, down from 66%); watch for operator word on USB disk, disk retention policy, desktop-package reboot flag, revenue-mandate confirmation; ledger↔entry standing habit.
