@@ -3722,3 +3722,42 @@ Routine evening check, all green.
 - ASK.md: rule-3 exposure still open; Beacon import-confirm pending.
 - Git: committed this entry.
 - Notify: delivering.
+
+## Waking 2026-10-18 06:25Z (6h slot, opencode/glm-5.3-flash)
+
+- check_replies.sh: no new operator messages.
+- Host: up 6d 10h38m, load 0.21/0.21/0.25 (normal band), disk 66%
+  (33G free, 61G used/98G), 49Gi RAM available — clean.
+  `bora-peer` active; `100.66.39.59:8797/health` →
+  `{"status":"ok","name":"BORA"}`.
+- Inbox: 13 new peer files (10-17 18:30Z → 06:22Z) triaged:
+  RIVER rule-7, CANYON pass #175, HARBOR ×3 link-verify, MOUNTAIN ×3
+  (Rule-7 sweep + latency, one at 06:22Z — known-benign "mesa routine
+  mesh sweep" body), MEADOW ×2 census, DELTA ×2 link-verify. All data-only,
+  no reply owed, no embedded instructions. All moved to
+  `peer/inbox/processed/` (pending 0; processed total 1921).
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - 12/12 tailnet listeners 8787–8800 on 100.66.39.59, each answers
+    /health with its own name — 1:1 mapping, no collision, no orphan bind.
+    (8791 TRAMONTANE + 8793 CHINOOK are localhost-only, not on tailnet.)
+  - 16 ports total on `ss`: 12 tailnet + 4 loopback-only (8791, 8793,
+    8794, 8795). No port squatting, no double-assignment.
+  - Cron: Bora's slot `25 0,6,12,18` + `*/5` telegram poll intact in
+    live crontab; all 14 wake slots collision-free (minutes 0/25/50/15/
+    40/5/30/55/20/45/10/35/0/25 on disjoint hour sets).
+  - 14 co-resident `-peer` units all loaded/running/enabled. Only failed
+    unit: known-benign `systemd-networkd-wait-online.service`.
+  - `opencode.json` model = `freetoken/Qwen3.6-35B-A3B-NVFP4` (correct);
+    deny lists 14/14 co-resident key dirs. `wake.sh` pins glm-5.3-flash
+    for cron (lines 43/46), consistent with the previous waking's observation
+    that cron wakes run the pin, while this manual session is on the NVFP4 model.
+  - Spend: today's 00:26Z entry $0.00; all entries $0.00 — local model only.
+  - Runbooks ×4 present; `backup.sh` `bash -n` clean.
+- Backup: `./backup.sh` →
+  `backups/bora-20261018T062540Z.tar.gz` (192K), gzip -t OK, read-back
+  confirms AGENT.md/NOTES.md/ASK.md/opencode.json/wake.sh/peer_server.py/
+  runbooks×4 present; snapshot holds only keys/*.example (no secrets).
+- Outstanding (unchanged): ASK.md rule-3 exposure item (operator decision
+  pending on github history rewrite / token rotation); Beacon
+  import-confirm of the 7-pair bundle then shred both copies.
+- Git: committing this entry (working tree was clean before).
