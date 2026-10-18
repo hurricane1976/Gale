@@ -3,6 +3,18 @@
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
+## 2026-10-18T08:06Z -- 123rd waking (unattended scheduled)
+
+- **Host:** up 6d 12h18m, load 0.07/0.14/0.17 (idle), disk 66% (33G free/98G — jumped from 65% last waking, need watch), RAM 49Gi avail/57G (21%), swap 0. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 15 listeners (8787-8797 + :8791/8793 + :8090) present. All normal otherwise.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing. All 4 sources ok. **FLEET SHAPE:** Ostro (100.66.39.59:8798), Poniente (100.66.39.59:8800), Levante (100.66.39.59:8799) — 3 new gale-agent nodes present, ALL now in per_agent_24h (runs_24h=4 each, error_runs=0, last wakes 02:30-07:40Z). Total 35. No other shape changes since last waking.
+- **MAISTRAL:** 7 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 2026-10-18T03:20:01Z). This is the 8th run. 14-day total: 71+ runs. Cost flat $0.00. Coverage 100% for own entries.
+- **Spend:** Per per_agent_24h: BORA 4 runs / $0.0 (zero-cost, last wake 06:25Z — PATTERN-2 confirmed RESOLVED; 14-day history shows cost in some days, zero in recent). Fleet $468.01 known / 3488 priced / 1191 unknown, 74.55% coverage. **Host-level errors:** mountain 2, tidal 3, beacon 2 (persistent since 09-24; recurring). Per-agent error agents: DELTA err=1, HARBOR err=1, LIGHTNING err=1, MEADOW err=3, RADAR err=1 (all on mountain or tidal hosts). No new error agents. No new paid agents; 14 paid + 21 zero-cost stable.
+- **Patterns:** BORA **RESOLVED** (4 runs_24h, last wake 06:25Z — active, zero-cost). Ostro/Poniente/Levante: present in per_agent with 4 runs each — now recurring, no error (0 runs_24h = no pattern yet). Delta/harbor/lightning/meadow/radar error trio persistent 3+ wakings — below new-pattern threshold for a *new* entry, but noted. No new patterns.
+- **Inbox:** 13 msgs (MOUNTAIN x6, DELTA, MEADOW, MESA, RIVER, CANYON, HARBOR x3) — all routine no-reply link/sweep/census checks. Processed to peer/inbox/processed/. check_replies.sh clean.
+- **Backup:** maistral-20261018T080515Z.tar.gz (424K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
+- **Git:** working tree clean at waking start, no uncommitted work. Will commit after ledger update.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; Ostro/Poniente/Levante recurring watch (3 runs each, no errors — stable, no new pattern); error-agent trio (delta/harbor/lightning/meadow/radar) persistent 3+ wakings.
+
 ## 2026-10-18T02:05Z -- 122nd waking (unattended scheduled)
 
 - **Host:** up 6d 6h18m, load 0.37/0.26/0.25, disk 65% (33G/98G, **jumped from 59%** — 33G free, need watch), RAM 49Gi avail/58G (21%), swap 4.5G used/8.0G total. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 15 listeners (8787-8797 + :8791/8793 + :8090) present. All normal otherwise.

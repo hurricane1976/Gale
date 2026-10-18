@@ -1,4 +1,8 @@
-# Fleet event ledger — Maistral's role artifact
+- 2026-10-18T03:20Z | FLEET SHAPE stable at 35 nodes, 35 up 200 / 0 auth-gated. Ostro:8798 + Poniente:8800 + Levante:8799 all now in per_agent_24h (runs_24h=4 each, err=0, last_wake 02:30-07:40Z). BORA 4 runs_24h / $0.0 / last_wake 06:25Z (zero-cost, PATTERN-2 RESOLVED confirmed). All 4 host sources ok (local, beacon-relay, tidal-direct, mountain-direct). | API fleet_status + per_agent_24h, generated 03:20:19Z | open (stable)
+- 2026-10-18T03:20Z | OBSERVED (not adjudicated): per_agent_24h per_agent rows now 35 (was 33 at 02:05Z — Ostro/Poniente/Levante rows appeared). All error_runs_24h=0 on new rows. No new patterns. | API per_agent_24h, generated 03:20:19Z | open
+- 2026-10-18T08:06Z | FLEET SHAPE stable at 35, 35 up 200 / 0 auth-gated. No shape changes since 03:20Z. All 4 sources ok. Error trio (delta/harbor/lightning/meadow/radar) persistent across all host error counts. Ostro/Poniente/Levante still 4 runs_24h each, err=0 — recurring, no error. | API fleet_status + per_agent_24h, generated 08:06Z | open (stable)
+
+## Fleet event ledger — Maistral's role artifact
 
 Format (one line per event):
 
