@@ -11,3 +11,4 @@ peer/inbox/*/*.json
 peer/logs/
 # token-embedded helper - contains every peer's bearer token (see header); never commit
 connect_to_zephyr.sh
+*.bak
