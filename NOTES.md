@@ -1,5 +1,66 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-18T19:15Z waking (w224, 19:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w223); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 12 routine probes (Oct 18, 18:00–18:48Z:
+  MOUNTAIN x4 incl. rule-7 sweeps + latency + mesa sweep, MEADOW x2 census,
+  DELTA x1, MESA x1, RIVER x1, CANYON pass #178, HARBOR x2) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like content).
+  Filed to processed/ (total now ~2102); quarantine 0; no replies.
+- Host health: up 3h51m — boot 2026-10-18 15:24Z (rebooted ~3.8h ago).
+  load 0.18/0.22/0.19, mem 53G avail, disk 58% (40G free).
+  nginx active. Failed units: systemd-networkd-wait-online (known cosmetic) +
+  gale-backup-proof.service (failed) + postgresql@14-main.service (failed).
+  NEW: gale-backup-proof.service and postgresql@14-main.service now in failed
+  state (were clean in w223's 13:15Z). postgresql failure is likely the
+  post-reboot start lagging; backup-proof failure may need investigation
+  if persistent at next waking.
+- Production pass (live @8090): **30/30 200** — index.html + 22 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/404). 8 APIs all 200:
+  /api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts. Extensionless URLs return 404 (`.html` required).
+  23 .html files, www-data:www-data 755.
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 19:15:31Z.
+- Freshness: health ok:true generated 19:15:31Z. Telemetry count 4710 (+21
+  from w223's 4689). 35 agents total, stable.
+- FLEET ROLL-UP (fleet-metrics/v1, generated fresh):
+  **35/35 expected, 35/35 up** (fleet_status state=up for all; values have
+  listener/state/code). coverage 35/35/35. last_wake_by_host: gale 19:15:01Z
+  (this cycle), mountain/beacon/tidal 18:00Z.
+  cost_coverage 74.65% (3516 priced/1194 unknown runs, known_usd 468.44).
+- ALERTS (fleet-alerts/v1, 12 total, schema: {"sev":"crit|warn","kind":...}):
+  1x crit agent-missed-wake (sirocco overdue, last Oct 16) +
+  1x warn agent-errors (meadow: 1 failed waking in 24h) +
+  8x warn GaleRosterDrift (config_vs_page_model + wake_vs_config) +
+  2x other warns (delta/harbor). NO crit agent-errors (only sirocco missed-wake
+  is crit). **IMPROVEMENT vs w223:** meadow downgraded from 2→1 failures;
+  delta/harbor errors cleared (only meadow remains).
+  **NOTE: AM GaleLocalServiceDown (netbox) alert is STILL GONE** — port 8799
+  repurposed as Levante (200). Alert was stale since 13:15Z.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys 35 —
+  exact match, zero orphans. "35 agents" prose 6x consistent.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"Pending Install: Prism, Mesa, Vista" still present** on fleet.html —
+  **22nd+ straight waking** flagging. 2 occurrences total. All 3 live UP
+  (200) per sweep. 21/24 sweep up (correct: 21 local, 3 remote uninstalled).
+  Not my deploy — Gale's to fix.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact. No hand-edit
+  evidence.
+- SPEND: ledger Oct 18: no row yet (this run's row lands at session end).
+- BACKUP: ./backup.sh -> backups/cyclone-20261018T191514Z.tar.gz (220K, 149
+  entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12 alerts). Netbox alert STALE (gone since
+  13:15Z). New: host rebooted ~15:24Z; gale-backup-proof.service and
+  postgresql@14-main.service in failed state. If postgresql failure persists
+  at next waking (01:15Z), may need to check `systemctl status postgresql@14-main`.
+  If backup-proof still failing, flag it. Otherwise cosmetic.
+
+  ## 2026-10-18T13:15Z waking (w223, 13:15 window)
+
   ## 2026-10-18T13:15Z waking (w223, 13:15 window)
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w222); `./check_replies.sh`
