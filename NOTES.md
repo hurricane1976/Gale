@@ -7409,3 +7409,31 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Spend: 10-17 close-read $0.1106/4 runs; 10-18 partial $0.0121/2 runs; no anomaly.
 - Backup: `backups/chinook-20261018T125008Z.tar.gz` (252K), gzip -t OK, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest pruned).
 - Commit: NOTES update + peer inbox archived. telegram_commands.py v2 fix stays UNCOMMITTED (operator confirm requested in ASK.md); .bak files stay untracked; stray-subdir VORTEX files remain untracked (artifact, unchanged).
+
+## 2026-10-18T18:51Z — waking #125
+
+### capacity snapshot 2026-10-18T18:51Z (waking #125)
+- host gale-agent: load 0.40/0.24/0.20 (very low, ~2.5% on 16 cores), mem 6.2G/57G used (51G avail), swap 0/8G (nonzero watch cleared — 3rd consecutive waking at 0 swap), disk 53G/98G (57%, 40G free), up 3:26 (post-reboot since 9/25 6.8 kernel).
+- peers: 10/10 /health -> 200, latency <1 ms (all co-located on 100.66.39.59).
+- spend: 10-18 partial $0.0221/3 runs (00:51 $0.0052, 06:51 $0.0069, 12:52 $0.01); this waking on local Ling 3.0 Flash (glm-flash-latest) records at session end (~$0.00 expected); total day ~$0.03. No rule-4 anomaly.
+- cadence: cron fired on-slot at 18:50:01Z (drift 0m). 6x/day grid confirmed live in crontab.
+- disk note: 53G/98G (57%), down from 61G/98G (66%) at #124's 12:50Z — the opencode snapshot cleanup cron (every 30 min, delete if >5GB) appears to have freed ~8G since the last waking. opencode.db at 4.7GB in /home/agent/.local/share/opencode/ is the main growth driver; the cleanup is managing the 5GB threshold. No crossing projectable on current arc.
+- peer inbox: 14 messages (HARBOR×4, MOUNTAIN×4, MEADOW, DELTA, MESA, RIVER, CANYON) — all routine liveness/link/Rule-7 sweeps, "no reply needed" → archived to processed/ (1864+ total); inbox empty.
+- check_replies: none. No operator messages.
+- no threshold breaches: load, mem, disk, spend, latency, cadence all inside lines.
+
+### forecast / thresholds
+- disk: 53G/98G (57%), 40G free. The opencode.db (4.7GB) is the dominant growth axis; the snapshot cleanup cron is active and appears effective. At the ~0.9G/day net growth rate (from the 22-day arc since 9/26), the 80% line (~78G) is ~25 days out, but growth is bounded by the cleanup script. Hold "no action". Named-date: if cleanup stalls and growth continues unbounded at the worst-case 0.5 G/hr, the 80% line would be reached ~2026-11-12 — but this is the unbounded worst case, not the expected arc.
+- spend: ~$0.03/day so far; well under per-run $5.00 / daily $15.00 thresholds. No anomaly. GALE remains the only real cost driver fleet-wide.
+- load/mem: flat, in band. No crossing projectable.
+- swap: zero — the nonzero watch from #124 (3rd consecutive) has cleared. No further watch needed absent a return to nonzero.
+- No sibling near a local (CPU/mem/disk) limit; per-run cost inside historical band everywhere. No advisory owed this waking.
+
+### done this waking
+- check_replies: none. Peer inbox: 14 archived to processed/; inbox empty.
+- Host health: load 0.40, mem 6.2G/57G, swap 0, disk 53G/98G (57%).
+- Fleet health: 10/10 peers 200 OK, 94th clean sweep.
+- Spend: 10-18 partial $0.0221/3 runs; no anomaly.
+- Backup: `backups/chinook-20261018T185021Z.tar.gz` (252K), gzip -t OK, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest pruned).
+- Git: committed as waking #125 (46eb09f).
+- NOTES entry appended.
