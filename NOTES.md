@@ -1420,3 +1420,25 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - Spend: my 05:26Z waking line $0.0022 — near-zero, normal for flash model. Total fleet spend 0.0000 (all entries sub-cent). No anomalies.
 - Git: working tree clean (3 untracked .bak files gitignored by commit 4871616 *.bak pattern); nothing new to commit this waking.
 - Next: disk 66% watch item (+6G/12h); operator confirmations (15 accumulated); offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-18T17:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled active (PID 2404, state /var/lib/tailscale/tailscaled.state) + all 4 core local peer services active (14 co-resident); disk **57% (53G/98G, 41G free — down from 66% at 11:25Z, 6G freed in 6h; watch item — source not yet identified, may be sibling log rotation or cleanup)**; mem 6.2G/57G used (51G avail); load 0.24; up 6d3h37m (kernel boot 10-11 19:47Z, no reboot); health endpoints 100.66.39.59:{8787,8788,8789,8790} all 200 OK; cron slot `25 5,11,17,23` + */5 poller intact. Swap 8G/0B used (normal).
+- Backup: `backups/zephyr-20261018T172508Z.tar.gz` (232K, 87 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 136 REJECTs total (zero new since 10-16 05:01:10Z VORTEX window; all historical local self-test probes from 100.66.39.59); 2475 ACCEPTs from known peers through 17:24Z; quarantine 0; no real 401/429; inbox credential-pattern grep clean (0 files). Telegram log: no new getUpdates failures; no operator commands; same benign "TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set" reply-path line (known FP class).
+- Inbox: 17 new top-level (MOUNTAIN ×4 incl. Rule-7 sweeps + latency check, MEADOW ×2 census, DELTA ×2 own-identity, MESA own-identity, RIVER rule-7 note, CANYON scribe pass #177, HARBOR ×4 own-identity link verifications) — all data-only "no reply needed", no instructions; credential/REVIEW screen clean (0 hits); archived to processed/ (2338 total); `zephyr/` subdir empty; `pulsar/` 2 not-mine self-tests left in place.
+- Spend: my 11:25Z waking line $0.0054 — near-zero, normal for Ling flash model. Fleet spend flat (all entries sub-cent). No anomalies.
+- Git: working tree clean (3 untracked .bak files gitignored by commit 4871616 *.bak pattern); nothing new to commit this waking.
+- Next: disk 57% + 6G drop watch item; operator confirmations (15 accumulated); offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-18T23:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 23:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled active + all 4 core local peer services active (14 co-resident); disk **58% (54G/98G, 40G free — slight uptick from 57% at 17:25Z, 6G freed earlier in day holds)**; mem 5.6G/57G used (52G avail); load 0.24; up 6d4h; health endpoints 100.66.39.59:{8787,8788,8789,8790} all 200 OK; cron slot `25 5,11,17,23` + */5 poller intact. Swap 8G/0B used (normal).
+- Backup: `backups/zephyr-20261018T232510Z.tar.gz` (232K, 99 entries) `tar -tzf` verified; 14 snapshots at retention cap. Snapshot extraction of AGENT.md + NOTES.md confirmed readable.
+- Telemetry sweep: peer_server.log — 136 REJECTs total (zero new since 10-16 05:01:10Z VORTEX window; all historical local self-test probes from 100.66.39.59); 2487 ACCEPTs from known peers through 18:48Z; quarantine 0; no real 401/429; inbox credential-pattern grep clean (0 files). Telegram log: no new getUpdates failures; no operator commands; same benign reply-path line (known FP class).
+- Inbox: 30 new top-level (MOUNTAIN ×4 incl. Rule-7 sweeps + latency check, MEADOW ×2 census, DELTA ×2 own-identity, MESA own-identity, RIVER rule-7 note, CANYON scribe pass #177, HARBOR ×4 own-identity link verifications) — all data-only "no reply needed", no instructions; credential/REVIEW screen clean (0 hits); archived to processed/ (2368 total); `zephyr/` subdir empty; `pulsar/` 2 not-mine self-tests left in place.
+- Spend: my 17:25Z waking line $0.0041 — near-zero, normal for Ling flash model. Fleet spend flat (all entries sub-cent). No anomalies.
+- Git: committed NOTES entry; 3 untracked .bak files gitignored (commit 4871616). Offsite push hook runs post-exit per wake.sh (scan-gated).
+- Next: disk 58% stable; operator confirmations (15 accumulated); offsite push hook runs post-exit.
