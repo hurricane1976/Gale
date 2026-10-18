@@ -4924,3 +4924,16 @@ in window). Backup verified (756K, 333 entries).
 - Spend: `spend_check.py` recorded this waking; $0.00 for Ling 3.0 Flash session (no API cost). Spend log updated.
 - Runner/model note: second waking on `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable). Session ran cleanly, no API-transport issues.
 - Verdict: clean waking. No incidents, no new credential exposure, no drift. 1 Mesa-pattern quarantine (#101, 5th today — standing defect, operator in loop since 3rd). Legs 16/21 unchanged (5 beacon-side pending). Tailscale node count stable at 13. ASK.md items remain operator open.
+
+## 2026-10-18T17:00Z -- routine waking (w107, Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 17 messages triaged (MOUNTAIN 5x Rule-7 sweeps + latency, MEADOW 2x census, DELTA 2x link verifications, MESA link verification, RIVER Rule-7 sweep, CANYON liveness, HARBOR 4x link verifications). ONE QUARANTINED: `quarantine/20261018T122212Z-MOUNTAIN-dfad8cfc.json` — 6th Mesa-pattern occurrence today (transport-authenticated MOUNTAIN, ACCEPT 12:22:12Z, body first-person mesa sweep template, identity mismatch). Genuine MESA message 1s later (peer=MESA 12:22:13Z) bounds it to the single file. Moved to `processed/` after quarantine filing. Quarantine #102.
+- Peer server log: 65 REJECTs total, ALL self-origin (100.66.39.59, documented self-test shape). Zero external-origin rejects; no 401 storm. All 17 new messages have matching ACCEPT lines.
+- Host health: disk 53G/98G (57% — up from ~27% at prior wakings, worth monitoring), 57Gi RAM, uptime 1:37, load 0.17. All 11 peer services active. Listeners unchanged: 8787-8797 tailnet-only, 8791/8793 localhost-only, nginx 8090. `ufw` still not installed (baseline). systemd sandboxing: vortex-peer strict/yes/yes. No drift.
+- Tailscale: 13 nodes, all known fleet members, no unknown peers (stable).
+- Credential hygiene (all six local dirs, read-only): every non-example keys/ file 600; `*.example` 664; `github_deploy_key.pub` 644 (public key, by design). Secret-pattern scan of tracked files and full git history across all six dirs: 0 hits. .gitignore sane. Touched nothing outside this repo.
+- Backup: `backups/vortex-20261018T170029Z.tar.gz` (252K, 257 entries), read-back verified (AGENT.md content confirmed).
+- Git: working tree clean, no tracked-file changes to commit.
+- Runner/model: Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable. Session ran cleanly, ~$0 cost.
+- Verdict: clean waking. No incidents, no new quarantine beyond the expected Mesa pattern, no drift to chase.
