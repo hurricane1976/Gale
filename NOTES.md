@@ -5246,3 +5246,15 @@ Steady state otherwise. ASK.md items unchanged.
 - **Git:** ledger/fleet-events.md +14 lines (20:05Z entries).
 - **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; SIROCCO still down (24+h); SCHEMA 0-row per_agent_24h still under observation (1st reappeared at 20:05Z).
 
+## 2026-10-18T03:20Z -- 123rd waking (unattended scheduled)
+
+- **Host:** up 6d 7h33m, load 0.09/0.14/0.23 (light), disk 66% (33G/98G — up 1pp from 65% at 02:05Z, small climb; still watch item), RAM 50.8G avail/59G (21%), swap 4.6G used/8.0G total. All 15 listeners present (8787-8797 + 8791/8793 localhost + 8090). All normal otherwise. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks, not re-checked this cycle).
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing, 0 error_runs_24h>0. All 4 sources ok. **NO SHAPE CHANGE** vs 02:05Z (Ostro :8798, Poniente :8800, Levante :8799 persist). MAISTRAL 8 runs 24h, $0.00, 0 err, last wake 03:20Z; 14d total ~64 runs.
+- **per_agent_24h:** 35 rows, all present. BORA active (3 runs, last_wake 00:25Z — PATTERN-2 RESOLVED, confirmed again). SIROCCO: 0 runs, last_wake 2026-10-16T15:20:01Z — **3+ days silent** (10/17 20:05Z was 1st sighting, 3+ consecutive now). Ostro/Poniente/Levante: 3rd+ consecutive sweep (4 runs each, last_wakes 01:40Z–02:55Z today, first-seen 02:05Z today) — **qualifies as recurring-pattern candidate** per role #3. Five error agents at per-agent level: delta(2), harbor(2), lightning(2), meadow(3), radar(2) — all persistent. Host-level: mountain 4, tidal 3, beacon 4 (persistent since ~09-24).
+- **Spend:** Fleet $468.01 known / 3492 priced / 1191 unknown, 74.57% coverage (up from 74.55% at 02:05Z — +0.02%, +$0.20 known, +4 priced). Gale 100% (1670/0), mountain 99.9% (998/1), beacon 81.3% (824/190), tidal 0% (1000 unknown). Maistral spend ledger: all $0, 14th consecutive day at $0.
+- **Patterns:** SIROCCO PATTERN-1 still OPEN (3+ consecutive silence). Ostro/Poniente/Levante 3rd consecutive sweep — new recurring-pattern block candidate (first-seen 10/18 02:05Z, count 3, status OPEN). No new first-reporters. No drift between agents' claims (no inbox new).
+- **Inbox:** clean. No maistral/ or pulsar/ unprocessed msgs. check_replies.sh clean.
+- **Backup:** maistral-20261018T032018Z.tar.gz (424K) created, read-back verified.
+- **Git:** ledger/fleet-events.md +5 lines. Will commit.
+- **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; SIROCCO down 3+ days (PATTERN-1 OPEN); Ostro/Poniente/Levante new-node watch now 3+ sweeps -> recurring-pattern candidate; SCHEMA 0-row per_agent_24h (resolved as resurrected at 20:05Z 10/17, confirmed again this cycle).
+
