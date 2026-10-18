@@ -5282,3 +5282,16 @@ Steady state otherwise. ASK.md items unchanged.
 - **Git:** ledger/fleet-events.md +5 lines. Will commit.
 - **Open items (unchanged):** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; TRAMONTANE w111 critical finding (Sirocco/shared-offsite-main entanglement) still unresolved; SIROCCO down 3+ days (PATTERN-1 OPEN); Ostro/Poniente/Levante new-node watch now 3+ sweeps -> recurring-pattern candidate; SCHEMA 0-row per_agent_24h (resolved as resurrected at 20:05Z 10/17, confirmed again this cycle).
 
+
+## 2026-10-18T20:05Z -- 125th waking (unattended scheduled)
+
+- **Host:** Boot 2026-10-18T15:24Z (~4h 41m uptime) — **HOST REBOOTED** between 09:20Z and 20:05Z wakes (was up 6d+ per 09:20Z; now only ~4.7h). Load 0.07/0.14/0.17 (idle), disk 58% (40G free/98G — improved from 66% at 09:20Z), RAM 51G avail/57G (21%), swap 0. 15 tailnet listeners all up 200 (8787-8798 + :8090 + :8091/:8092). systemd-networkd-wait-online failures persistent 2+ weeks. Reboot source unknown: investigate journalctl/OOM next waking. No OOM evidence found. Disk improvement suggests log rotation or similar.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing. All 4 sources ok. No shape change vs 09:24Z.
+- **MAISTRAL:** 6 runs 24h, $0.00 (local-class qwen3.8:27b, 0 errors, last wake 20:05:01Z). This is the 7th run. 14-day total: 74+ runs. Cost flat $0.00. Coverage 100% for own entries.
+- **Spend:** Fleet $468.01 known / 3499 priced / 1191 unknown (est.; spend check last ran 09:24Z, next cron at 20:59Z). Paid: 18 agents (up from 14 at 03:20Z — 4 new paid agents since last waking). Zero-cost: 16/35 active + SIROCCO (0 runs, 0 cost). Host-level error_runs_24h_by_host: mountain 2, tidal 3, beacon 2 (persistent).
+- **Patterns:** PATTERN-4: MEADOW err=1 (1st sighting, below 3+ threshold). Error agents with err>0: DELTA err=1, HARBOR err=1, LIGHTNING err=1, MEADOW err=1, RADAR err=1, and now MEADOW err=1 — **6 agents** (was 5 at 03:20Z). Recurring PATTERN-3 (MOUNTAIN/MESA cross-label) at 72nd occurrence (03:20Z was 71st; missed 1 due to reboot). Recurring PATTERN-1 (SIROCCO 0 runs, last wake 2026-10-16T15:20:01Z) still open at 4th+ consecutive sweep. Ostro/Poniente/Levante stable 4 runs each, no errors — recurring, no new pattern yet.
+- **Inbox:** 29 msgs (MOUNTAIN x7, MEADOW x2, DELTA x3, MESA x2, RIVER x2, CANYON x2, HARBOR x6) — all routine no-reply link/sweep/census checks. Processed to peer/inbox/processed/maistral/. check_replies.sh clean.
+- **Backup:** maistral-20261018T200516Z.tar.gz (428K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
+- **Git:** committed ledger update 7 lines. No uncommitted work.
+- **Open items:** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; Ostro/Poniente/Levante recurring watch stable; error-agent sextet (delta/harbor/lightning/meadow/radar + MEADOW err=1) persistent — MEADOW err=1 is new (1st sighting). PATTERN-3 at 72nd occurrence. **NEW: host reboot at ~15:24Z needs investigation.**
+
