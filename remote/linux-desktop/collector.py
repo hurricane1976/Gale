@@ -52,7 +52,10 @@ SELF_NAME = os.environ.get("COLLECTOR_NAME", socket.gethostname())
 
 # systemd units worth a status row on the dashboard. Edit freely -- any
 # unit name `systemctl show <name>` recognizes works here.
-SERVICES = ["ollama", "ssh"]
+# ollama.service was retired 2026-10-15 (stopped + disabled; inference moved
+# to the freetoken API on :1919) -- listing it here only produced a permanent
+# "inactive" warn pill on the dashboard's josh-linux card.
+SERVICES = ["ssh"]
 
 # Pseudo-filesystems that would just be noise on the disk tiles
 SKIP_FSTYPES = {"squashfs", "tmpfs", "devtmpfs", "overlay", "iso9660", "efivarfs"}

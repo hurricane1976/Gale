@@ -129,12 +129,20 @@ FULL_TARGET_TIMEOUT_S = 3.0
 # models + committed VRAM + the model inventory (see collect_ollama()).
 OLLAMA_ADDR = os.environ.get("OLLAMA_ADDR", "192.168.1.197:11434")
 OLLAMA_TIMEOUT_S = 3.0
+# Native Ollama was retired 2026-10-15 (service stopped + disabled on
+# josh-linux); inference now serves from freetoken (vLLM-style OpenAI API)
+# on :1919. collect_ollama() probes native first, then falls back to
+# freetoken, so the board reports the endpoint that is actually serving --
+# same rule as ollama_api.py's snapshot (":11434 down + :1919 healthy ==
+# up, not down"). Missing this fallback left the status page crying
+# "ollama unreachable" for days after the migration.
+FREETOKEN_ADDR = os.environ.get("FREETOKEN_ADDR", "192.168.1.197:1919")
 
 # Maintenance mute for the 192.168.1.197 inference host (ollama :11434 +
 # GPU collector :8792). Same flag file as fleet_api.py: env
 # OLLAMA_MAINTENANCE=1 or API_DIR/ollama-maintenance.json {"maintenance":
 # true}. While set, collect_ollama() stamps maintenance:true so status.js
-# shows "maintenance" instead of firing the "ollama unreachable" crit, and
+# shows "maintenance" instead of firing the "freetoken unreachable" crit, and
 # the josh-linux full-target card shows maintenance instead of down.
 OLLAMA_MAINTENANCE_PATH = os.path.join(API_DIR, "ollama-maintenance.json")
 
@@ -886,6 +894,12 @@ def _ollama_get(path, timeout=OLLAMA_TIMEOUT_S):
         return json.loads(r.read())
 
 
+def _freetoken_get(path, timeout=OLLAMA_TIMEOUT_S):
+    url = f"http://{FREETOKEN_ADDR}{path}"
+    with urllib.request.urlopen(url, timeout=timeout) as r:
+        return json.loads(r.read())
+
+
 def _fmt_bytes(n):
     b = int(n or 0)
     for unit, div in (("GB", 1e9), ("MB", 1e6), ("KB", 1e3)):
@@ -899,6 +913,7 @@ def collect_ollama():
     data = {"ok": False, "addr": OLLAMA_ADDR, "reachable": False,
             "version": None, "loaded": [], "inventory": [],
             "models_total": 0, "vram_loaded_gb": 0.0, "error": None,
+            "backend": "ollama",
             "maintenance": _ollama_maintenance()}
     try:
         ver = _ollama_get("/api/version")
@@ -953,8 +968,37 @@ def collect_ollama():
             })
 
         data["ok"] = True
-    except Exception as e:
-        data["error"] = f"{type(e).__name__}: {e}"
+    except Exception as native_err:
+        # Native Ollama down is the expected steady state since the freetoken
+        # migration -- fall back before declaring the backend unreachable.
+        # Freetoken reports no per-model VRAM/context, so those stay 0/None
+        # (the GPU card carries the real VRAM numbers, same as the ollama
+        # page's freetoken view).
+        try:
+            health = _freetoken_get("/health")
+            if not (isinstance(health, dict) and health.get("status") == "ok"):
+                raise ValueError(f"/health status={health.get('status')!r}")
+            ids = [m.get("id") for m in (_freetoken_get("/v1/models").get("data") or [])
+                   if m.get("id")]
+            if not ids and health.get("model"):
+                ids = [health["model"]]
+            data.update({
+                "ok": True, "reachable": True, "backend": "freetoken",
+                "addr": FREETOKEN_ADDR, "version": health.get("version"),
+                "error": None,
+                "loaded": [{"name": i, "params": None, "quant": None,
+                            "size": 0, "size_human": None, "size_vram": 0,
+                            "vram_human": None, "context": None,
+                            "expires_minutes": None} for i in ids],
+                "inventory": [{"name": i, "params": None, "quant": None,
+                               "size": 0, "size_human": None,
+                               "context": None, "caps": []} for i in ids],
+                "models_total": len(ids),
+            })
+        except Exception as ft_err:
+            # Both endpoints down: report against the serving endpoint
+            # (freetoken) -- that is the outage that pages.
+            data["error"] = f"freetoken {type(ft_err).__name__}: {ft_err}"
     return data
 
 
