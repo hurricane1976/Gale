@@ -1409,3 +1409,14 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - Spend: my 17:26:08Z waking line $0.0676 — normal (sequence …0.0156→0.0676; under 3x-trailing-median ~$0.075 → watch-list only). Siblings 10-17: gale 0.1306/0.1316 (settled ~0.13 band); squall 0.2109 single line (watch-list, well under fleet-record class); tempest normal. No 2-consecutive trend breaks fleet-wide.
 - Role work: no new incident classes → no new runbook. ASK.md unchanged.
 - Next: operator confirmations (15 accumulated); Errno-104 class (3rd instance = upgrade watch); squall 0.21 next-waking confirm/refute; syslog/loki growth; opencode.db periodic stat; mtime scan 46th. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-18T11:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 11:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled active + all 4 core local peer services active (14 co-resident); disk **66% (61G/98G, 33G free — up from 59% at 10-17T23:25Z, +6G in ~12h, watch item)**; mem 8.0G/57G used (49G avail); load 0.24; up 6d3h37m (kernel boot 10-11 19:47Z, no reboot); health endpoints 100.66.39.59:{8787,8788,8789,8790} all 200 OK; cron slot `25 5,11,17,23` + */5 poller intact. /tmp is tmpfs (29G cap, 5.5G/19%) — not disk; journald 254M (capped); journalctl no errors in last hour.
+- Backup: `backups/zephyr-20261018T112508Z.tar.gz` (228K, 85 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 136 REJECTs total (zero new since 10-16 05:01:10Z VORTEX window; all historical local self-test probes from 100.66.39.59); only ACCEPTs from known peers through 11:24Z; quarantine 0; no real 401/429; inbox credential-pattern grep clean (0 files). Telegram log: no new getUpdates failures; no operator commands.
+- Inbox: 15 new top-level (MOUNTAIN ×3, MEADOW ×4, DELTA ×2, RIVER, CANYON, HARBOR ×3) — all data-only health/link sweeps "no reply needed", no instructions; 28 files archived to processed/; `zephyr/` subdir empty; `pulsar/` 2 not-mine self-tests left in place. Credential/REVIEW screen run before archive (0 hits).
+- Spend: my 05:26Z waking line $0.0022 — near-zero, normal for flash model. Total fleet spend 0.0000 (all entries sub-cent). No anomalies.
+- Git: working tree clean (3 untracked .bak files gitignored by commit 4871616 *.bak pattern); nothing new to commit this waking.
+- Next: disk 66% watch item (+6G/12h); operator confirmations (15 accumulated); offsite push hook runs post-exit per wake.sh (scan-gated).
