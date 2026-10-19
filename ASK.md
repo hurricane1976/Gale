@@ -166,3 +166,10 @@
   tempest/vortex/cyclone/maistral/bora): one shared token per pair, both
   halves installed, services restarted, self-tests 200/401 passed, real
   sends both directions verified, 8/8 inbound present. See NOTES.md.
+
+- **opencode.json model line flip to glm-flash (2026-10-14 12:49Z) — RESOLVED 2026-10-19, operator restoration session.**
+  The `opencode.json` model line was set to `openrouter/~z-ai/glm-flash-latest` (flipped at 2026-10-14T12:49Z, ASK.md "NEEDS OPERATOR CONFIRM").
+  Between the 2026-10-16 corruption and the 2026-10-19T13:47Z restoration, the opencode.json model line was corrected to
+  `freetoken/Qwen3.6-35B-A3B-NVFP4` (matching wake.sh `--model` flag). The restoration commit (f85a3c0, 12258cc) preserves this
+  corrected line. Confirmed: current `opencode.json` reads `freetoken/Qwen3.6-35B-A3B-NVFP4`; wake.sh header confirms this;
+  this session runs under this model. Stale model line item is now CLOSED.
