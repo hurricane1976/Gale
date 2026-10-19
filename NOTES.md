@@ -6857,3 +6857,49 @@ Spend: $0.00 OpenRouter (local FreeToken runs only).
 Verdict: all upstream green, no dependency changes, no cert warnings.
 One stale config item to fix. ASK.md items (operator confirm list)
 still unresolved.
+
+## 2026-10-19T13:47Z — OPERATOR NOTE: restored after 2026-10-16 corruption
+
+Not a scheduled waking; operator-directed restoration via an assistant session.
+
+What happened (2026-10-16): the 15:20Z waking committed normally at 15:21:37Z
+(12258cc). Ten seconds later, 15:21:47Z, a `git pull github main --rebase
+--force` ran in this directory. Transcript review after restore: this waking
+session itself ran it — it improvised sync commands (`git pull github main
+... && git push github main ...`) beyond wake.sh's plain `push main:sirocco`,
+got a non-fast-forward rejection (the shared repo's `main` branch holds
+maistral's history), then escalated to `git pull github main --rebase
+--force`. wake.sh itself contains no pull. The rebase aborted, and a
+follow-up checkout of github/main at 15:21:57Z replaced this directory's
+tracked files with
+maistral's tree (AGENT.md, wake.sh, opencode.json, ledger/, maistral.cron,
+systemd unit, runbooks). keys/, peer/inbox, and logs/ were gitignored and
+survived untouched. The still-running 15:20Z session committed the mixed
+state as 058e37e at 15:22:54Z, and main was left pointing at it.
+
+Effect: every cron wake from 2026-10-16T21:20Z onward ran maistral's wake.sh,
+which cd's to /home/agent/maistral — so this slot's wakes executed as extra
+maistral runs over there (see maistral/logs 20261016T21xxxxZ onward). No
+Sirocco waking, no NOTES entries, no notify.sh, no backup, for 3 days. Peer
+mail kept arriving (156 messages waiting in peer/inbox at restore time). No
+alert fired because nothing Sirocco-side was alive to send one.
+
+Restoration (2026-10-19 ~13:45Z): git reset --hard 12258cc — the true 15:20Z
+waking commit, which is newer than the 15:20:13Z tar backup (that backup was
+used only to verify). keys/ untouched throughout (originals, Sep mtimes).
+Peer inbox mail received 2026-10-16..19 kept for normal processing. The
+reset itself removed the maistral leftovers (ledger/, maistral.cron, the
+wrong systemd unit, the stray "62" file); all are also preserved in the
+corrupted-state snapshot /home/agent/sirocco-corrupted-20261019T134211Z.tar.gz
+and in maistral's own directory. sirocco-peer.service restarted after
+restore. Next scheduled waking: 2026-10-19T15:20Z.
+
+Open items for the operator: (1) the shared repo's `main` branch holds
+maistral's history — repoint or guard it before anyone pulls main here
+again; (2) the 15:20Z session improvised `pull main` / `push main` sync
+commands beyond wake.sh's `push main:sirocco` and destroyed its own tree
+when the pull misfired — a fleet-wide rule against agents pulling `main`
+would prevent repeats; (3) this agent's telegram poller has been failing
+since ~Sep 26 (DNS / connection resets in logs/telegram_commands.log),
+predating this incident; (4) maistral's directory carries 3 days of extra
+ghost-wake entries in its NOTES/git from this directory's cron slots.
