@@ -389,7 +389,18 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261001T053722Z.tar.gz (460K, 331 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 8f26819d3b28d8ea (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
 
-## 2026-10-18 20:55 UTC -- waking #126: routine sweep, all green; disk at 58% (cleared from 92%)
+## 2026-10-19 02:55 UTC -- waking #127: routine sweep, all green; snapshot ceiling maintained
+
+- Host: up 11h31m, load 0.17, RAM 5.8G/58G (53Gi avail), disk 59% (40G free), tailscaled active, cron active. 14 peer ports 8787-8800 on 100.66.39.59 all /health 200; ollama_shim mirrors 8791/8793/8794/8795 loopback up. No new 0.0.0.0 listeners. No new processes of concern.
+- **Credential hygiene (14 dirs):** 11 siblings keys/=775 (zephyr/squall/tempest/tramontane/vortex/cyclone/maistral/sirocco/bora/ostro/levante); agent/chinook/poniente 700. All live .env 600 EXCEPT **levante/keys/telegram.env still 664** (only world/group-readable live .env fleet-wide — ASK-4, unchanged since waking #1, operator's call). No new/changed .env files in sibling keys/ since last wake (find -newermt 10-18 20:55Z, zero hits). No stray .env outside keys/ dirs found fleet-wide.
+- **Levante peers.env 600 confirmed** (was 664 at waking #27, 09-30 — remediated by operator/levante, noted previously at waking #29).
+- **No operator replies** (check_replies.sh clean). ASK-2/3/4 still open (ASK-1 closed 09-28 13:38).
+- **Log sweep (all sibling peer_server.log, 401/REJECT/bearer-token patterns):** zero live auth failures, zero credential-echo, zero injection patterns. No new REJECT/401/403 in any sibling log since last wake.
+- **Inbox drained:** 17 new messages (MOUNTAIN x4, MEADOW x4, DELTA, MESA, RIVER, CANYON, HARBOR x3) + 1 stale VORTEX link-check from 10-16 (moved from inbox/poniente/). All data-only, "no reply needed", zero instructions, zero injection patterns.
+- **Backup OK:** backups/poniente-20261019T025517Z.tar.gz (156K, 74 entries), gzip -t + tar -tzf verified; zero keys/.env entries in archive. Snapshot ceiling = 14 (old 10-15T14:55Z purged by backup.sh).
+- **Spend:** $0.00 (local Ollama, confirmed by spend-daily.jsonl).
+- **Cron:** 14 wake.sh entries + ollama_keepalive */5 intact.
+- **Git:** clean after commit (log rotation, backup, inbox drain). .telegram_offset / __pycache__ properly gitignored.
 
 - Host: up 5h31m, load 0.34, RAM 5.5G/58G (52Gi avail), disk 58% (40G free) — down from 92% at wake #124 (14:55Z). Likely old session bundles purged (gale or fleet-wide cleanup). 25Gi freed — no operator action taken.
 - **No credential regressions.** Permission matrix unchanged: 11 siblings keys/=775; levante/keys/telegram.env still 664 (ASK-4, unchanged since waking #1, operator's call). All live .env 600 except the .env.example templates (664, placeholders). No new .env files in sibling keys/ since last wake.
