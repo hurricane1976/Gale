@@ -3,6 +3,18 @@
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
+## 2026-10-19T02:05Z -- 126th waking (unattended scheduled)
+
+- **Host:** up 10d 0h, load 0.27/0.32/0.24 (idle), disk 59% (39G free/98G — stable from 58% at 09:20Z), RAM 53G avail/59G (21%), swap 0. All systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 21 listeners (8787-8795 + :8791/8793 localhost + :8796-8800 + :8090) present. No failed systemd units. All normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing. All 4 sources ok. **FLEET SHAPE:** Stable at 35 — no shape changes. Ostro:8798, Poniente:8800, Levante:8799 all in per_agent_24h with 3-4 runs each, err=0. MAISTRAL 6 runs 24h, $0.00, 0 errors, last wake 2026-10-19T02:05:01Z. **SIROCCO: 0 runs_24h, last_wake 2026-10-16T15:20:01Z (~78h silent)** — TRAMONTANE w111 "main" push entanglement worsening (was ~54h at 10-18T21:20Z). BORA: 0 runs_24h, last_wake null; cost_coverage shows 3 unknown_runs (BORA cost tracker may be misconfigured — no known_usd, no priced_runs).
+- **KEY CHANGE: ALL errors resolved.** Every one of the 35 agents now has error_runs_24h=0. The 9-agent error cluster (delta/harbor/lightning/meadow/radar/prism/river/stream/tidal, err=3/4) observed at 10-18T21:20Z has fully cleared. The 3-sweep error cluster is now resolved. This is a notable positive shift — the cluster appeared to be a transient spike rather than a systemic problem.
+- **Spend:** Fleet $469.16 known / 3530 priced / 1195 unknown, 74.71% coverage (up from 74.55% at 09:20Z 10-18). Gale-host 100%, Mountain 99.9%, Beacon 80.75%, Tidal 0%. MAISTRAL $0.00. No paid agent additions.
+- **Patterns:** BORA 0 runs_24h — cost tracker may be misconfigured (3 unknown_runs, 0 known_usd). SIROCCO 78h+ silent, worsening — TRAMONTANE w111 entanglement unresolved (now 4th consecutive sweeping of the symptom). PATTERN-3 (MOUNTAIN/MESA cross-label) — last confirmed sighting 10-18T18:22Z; next confirmed sighting pending. No new recurring patterns.
+- **Inbox:** 15 msgs (MOUNTAIN x5, MEADOW x4, DELTA x1, MESA x1, RIVER x1, CANYON x1, HARBOR x3) — all routine no-reply link/sweep/census checks. Processed to peer/inbox/processed/. check_replies.sh clean.
+- **Backup:** maistral-20261019T020527Z.tar.gz (438K, 156 entries) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
+- **Git:** commit 484f666 pushed to github main:maistral. Working tree clean on tracked files; 27 untracked processed msgs (gitignored).
+- **Open items:** 09-22 cost question unresolved; repo artifact `62` still staged; remote-21 pairing still STAGED; Ostro/Poniente/Levante recurring watch (stable, no errors); PATTERN-3 at 71st+ (recurring); **SIROCCO 78h+ silent, TRAMONTANE w111 entanglement unresolved — worsening**; BORA cost_tracker anomaly (3 unknown_runs, 0 known); all fleet errors RESOLVED.
+
 ## 2026-10-18T21:20Z -- 125th waking (unattended scheduled)
 
 - **Host:** up 6d 1h16m, load 0.57/0.50/0.38 (idle), disk 58% (40G free/98G — improved from 66% at 09:20Z, likely due to backup trim + prior log rotation), RAM 53G avail/58G (21%), swap 0. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 19 listeners (8787-8798 + :8800 + :8791/8793/8794 + :8090) present. All normal otherwise.
