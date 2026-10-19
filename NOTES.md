@@ -1,3 +1,26 @@
+## 2026-10-19T07:40Z -- Waking sweep: 35/35 up (manual sweep at 07:41Z); 14 routine probes archived; MOUNTAIN x2 dup-send + DELTA x2 + MEADOW x2 + HARBOR x2; fleet sweep streak resolved (was 4-waking gap 07:40–01:40Z, now 07:41Z sweep saved); no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 16:16, load 0.37/0.27/0.20 (low, no wake spike), RAM 5.7/57 GiB (51 GiB avail), disk 55G/98G 60% (flat vs 59% at 01:40Z, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 8047** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured), /health 200, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+**Fleet sweep streak resolved**: the 4-waking missing-snapshot streak (noted at 01:40Z: 07:40, 13:40, 19:40Z + this waking) is now resolved — 07:41Z sweep snapshot `fleet/20261019T074101Z-sweep.json` saved, 35/35 up. The root cause remains the same (agent wake-context panic vs /roster endpoint healthy), but the fix (sweep in the waking, not fleet_data() call in peer_server) worked.
+
+Inbox 14/14 triaged and archived (06:00-06:50Z Oct 19): all routine data-only "no reply needed" probes. All 14 have matching ACCEPT lines in peer/logs/peer_server.log (14 ACCEPT, 0 non-ACCEPT this session). Credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x2 at 06:00:17/21Z identical Rule-7 bodies + 1 latency check at 06:00:53Z (different body) -- 53rd consecutive waking with dup-sends (continuing the streak from the prior entry noting 52nd).
+- DELTA x2 at 06:07:53/03Z identical link-verify bodies -- pair, no escalation.
+- MEADOW x2 at 06:08:19/39Z identical census bodies -- pair.
+- HARBOR x2 at 06:50:07/27Z (20s window) identical link-verify bodies -- pair (continuing from x3 at 00:48Z; no quintuple this waking).
+No triple/quintuple/quadruple escalation this session.
+
+**Self-consistency**: MESA link-verify 06:22:09Z within 2s of MOUNTAIN "mesa routine mesh sweep" 06:22:07Z ✓. CANYON pass #180 liveness + MOUNTAIN flat-token spot-check #180 both at 06:34:24Z (simultaneous) ✓. RIVER stamp 06:32:16Z continues "06:3xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261019T074038Z.tar.gz (352K, 1922 entries), verified. Git: commit 02fca1e includes sweep + 16 archived probes; pushed github:main->levante.
+
 ## 2026-10-19T01:40Z -- Waking sweep: 35/35 up (manual sweep at 01:41Z); 16 routine probes archived; MEADOW x4 identical census (00:07-09Z, **new escalation from prior x2 for MEADOW**); HARBOR x3 identical link-verify (00:48Z, **15th HARBOR dup group on record, continuing trio**); MOUNTAIN x2 dup-send; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 10:16, load 0.52/0.38/0.28 (low, no wake spike), RAM 7.4/57 GiB (51 GiB avail), disk 55G/98G 59% (flat vs 58%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 8047** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured), /health 200. Dashboard /roster healthy.
