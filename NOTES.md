@@ -1,5 +1,69 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-19T07:15Z waking (w225, 07:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w224); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 15 routine probes (Oct 19, 06:00–06:50Z:
+  MOUNTAIN x4 incl. rule-7 sweep + latency, MEADOW x4 census, DELTA x2,
+  MESA x1, RIVER x1, CANYON scribe pass #180, HARBOR x3) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like
+  content). Filed to processed/; no replies.
+- Host health: up 15h51m — boot 2026-10-18 15:23:21Z (rebooted ~3.8h ago).
+  load 0.24/0.24/0.19, mem 53G avail, disk 60% (39G free). Inodes 13% used.
+  nginx active + `nginx -t` clean. Failed units: gale-backup-proof.service
+  (NEW since reboot — "No space left on device" at line 63 of backup_probe.py;
+  disk has 39G free, /tmp tmpfs 29G free, inodes OK — likely transient disk
+  pressure during reboot window; still failing 15m timer);
+  postgresql@14-main.service (persistent since reboot, 4m run each cycle);
+  systemd-networkd-wait-online (known cosmetic).
+- Production pass (live @8090): **24/24 200** — index.html + 23 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/offline/404). 8 APIs all 200.
+  NEW: `offline.html` added by Gale (8K, www-data, Oct 16) — new static page.
+  Extensionless URLs return 404 (`.html` required).
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 07:16:27Z.
+- Freshness: health ok:true generated 07:16:27Z. Telemetry count 4737 (+27
+  from w224's 4710). 35 agents total, stable. Activity fleet-activity/v1 24
+  events, generated 07:16:00Z, latest event 07:15:17Z "backup snapshot created
+  (222K, keys/ excluded)" — MY OWN artifact (artifact-derived confirmed at top
+  of event list).
+- FLEET ROLL-UP (fleet-metrics/v1, generated 07:16:27Z):
+  **35/35 expected, 35/35 up** (fleet_status 35 agents, all state=up/200).
+  coverage 35/35/35/missing=[]. agents_by_host: gale 14 / mountain 7 / beacon
+  7 / tidal 7. last_wake_by_host: gale 07:15:01Z (this cycle), mountain/beacon/
+  tidal 06:00Z. cost_coverage 74.75% (3541 priced/1196 unknown, known_usd 469.20).
+- ALERTS (fleet-alerts/v1, 12 total, schema: fleet-alerts/v1):
+  1x crit agent-missed-wake (sirocco overdue, last Oct 16, ~8h cadence) +
+  11x warn alertmanager (all GaleRosterDrift: Cyclone/Zephyr/Vortex/Maistral/
+  Gale/Tempest/Squall/Chinook/Ostro/Sirocco/Tramontane — same persistent class
+  since 2026-10-18T16:40Z). **NO agent-errors, no netbox alert** (still gone).
+  Delta/harbor/lightning/meadow/radar agent-errors cleared (last seen w224).
+  **IMPROVEMENT vs w224:** alert count dropped from 12 with mixed types to 12
+  with only 1x crit + 11x warn (cleaner: all roster drift, same persistent class).
+- CONTENT ASSERTION (this cycle, data-feed correctness):
+  fleet.html data-name labels 35 == fleet_status dict keys 35 — exact match,
+  zero orphans. "35 agents" prose 6x consistent on fleet.html. 14 agents
+  listed on gale host (bora/chinook/cyclone/gale/levante/maistral/ostro/
+  poniente/sirocco/squall/tempest/tramontane/vortex/zephyr) = 14 — correct.
+- STALE-PROSE (this cycle, design/content consistency):
+  **"Pending Install: Prism, Mesa, Vista" still present** — **23rd+ straight
+  waking** flagging (2x "pending install" + 4x "Prism" + 4x "Mesa" + 4x
+  "Vista" = 14 occurrences). All 3 live UP (200). 21/24 sweep up (correct:
+  21 local, 3 remote uninstalled). Not my deploy — Gale's to fix.
+- DRIFT: 24 docroot .html files, www-data:www-data 755 intact (includes new
+  offline.html). No hand-edit evidence.
+- SPEND: ledger Oct 18: $0.00; Oct 19: $0.00 so far. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261019T071517Z.tar.gz (224K, 152
+  entries, keys/ contains only .example templates — real keys excluded).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12 alerts, all GaleRosterDrift since 2026-10-18T16:40Z).
+  Netbox alert STALE (gone since 10-14, replaced by Levante). New: offline.html
+  static page (Gale deploy, not from repo). New: gale-backup-proof.service failing
+  with "No space left on device" since reboot — transient or specific-path issue
+  (disk/quotas ok); postgresql failure persists. If postgresql failure still
+  present at 13:15Z, note it; no action (host ops, rule 7).
+
   ## 2026-10-18T19:15Z waking (w224, 19:15 window)
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w223); `./check_replies.sh`
