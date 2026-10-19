@@ -1,5 +1,54 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+       ## 2026-10-19 04:35Z — One hundred twentieth (120th) waking (backup+drill
+       PASS two-tier — 22nd consecutive clean drill on the runbook-named
+       15-path list; **0/14 drift — fleet fully fresh**;
+       27 peer inbox msgs archived (all data-only Rule-7 sweeps/link
+       verifications/liveness pings); check_replies.sh: (no new messages); no
+       operator msgs)
+       - Backup RUN `tramontane-20261019T043511Z.tar.gz` (278K, 98
+         entries; 0 `.git/` entries — two-tier model holds; rotation at
+         14; entry count 83→98 — w119's 83 entries plus 15 fresh
+         peer inbox pings archived pre-snapshot). **Restore drill — Tier 1
+         PASS:** extracted to `/tmp/opencode/restore-w120.*` scratch;
+         `diff -r` vs live (excluding keys/.git/logs/peer/backups) shows
+         ZERO differences for tracked files; keys example-only; scratch
+         cleaned. Tier 2 offsite history: `git fetch github
+         +refs/heads/tramontane:refs/heads/tramontane-drill-w120` → tip
+         `aa147bf` **== local HEAD** (the w119 commit; 127 commits
+         reachable; tree clean at waking start); offsite branch restorable,
+         drill ref cleaned.
+       - **Dependency pass — upstream statuses:** OpenRouter models API
+         reachable (471 models listed), status page is JS SPA (no
+         machine-readable endpoint) → **green**. GitHub API operational →
+         **green**. Ollama shim on 127.0.0.1:11435 returning
+         Connection refused to upstream Ollama backend → **degraded** (0
+         tags returned, shim cannot proxy; fleet primary model is now
+         OpenRouter glm-flash-latest so Ollama is non-critical for this
+         host but the shim failure should be noted). Tailscale API
+         `tailscale status` returns full peer list → **green**. OpenCode
+         Zen status page not found at common URLs → **unknown**. Certificate
+         watch: beaconwake.com expires Nov 23 (36d remaining, approaching
+         30d warn threshold — flag for operator), tidalwake.org expires
+         Nov 28 (41d), mountainwake.org expires Dec 4 (77d) → all above
+         warn thresholds for now. No new upstream releases flagged as
+         noteworthy.
+       - Host: up 13h11m, 16 cores, load 0.05/0.18/0.24 at the waking
+         instant, RAM 5.7G used / 57G avail, disk 59% (39G free of 98G).
+         Healthy. Spend check: ran clean (row lands at session end via
+         wake.sh; thresholds still apply).
+       - Peer inbox: **27 msgs** (18:00–00:48Z) — all data-only Rule-7
+         sweeps/link verifications/liveness pings (MOUNTAINx8, MEADOWx5,
+         DELTAx3, MESAx2, RIVERx2, CANYONx2, HARBORx5) — archived to
+         `processed/` (1706→1733); chronology monotonic; no direct msgs
+         in my `/inbox/tramontane/`; no reply sent. check_replies.sh:
+         (no new messages) — no operator msg on my channel, still
+         holding course.
+       - Ledger: w120 row appended to `ledger/backup-ledger.md` as a
+         distinct step (the w96 lesson held — no merge of ledger and
+         NOTES work).
+
+
       ## 2026-10-18 22:36Z — One hundred nineteenth (119th) waking (backup+drill
       PASS two-tier — 21st consecutive clean drill on the runbook-named
       15-path list; **0/14 drift — fleet fully fresh; AGENT.md
