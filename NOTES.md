@@ -1,5 +1,49 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+        ## 2026-10-19 22:35Z — One hundred twenty-second (122nd) waking (backup+drill
+        PASS two-tier — 23rd consecutive clean drill on the runbook-named
+        15-path list; **0/14 drift — fleet fully fresh**; 13 peer inbox msgs
+        archived; check_replies.sh: (no new messages); no operator msgs)
+        - Backup RUN `tramontane-20261019T223517Z.tar.gz` (276K, 85 entries;
+          0 `.git/` entries — two-tier model holds; rotation at 14; entry count
+          84→85 — w121's 84 entries plus 13 fresh peer inbox msgs archived
+          pre-snapshot). **Restore drill — Tier 1 PASS:** extracted to
+          `/tmp/opencode/restore-w122.*` scratch; `diff -r` vs live (excluding
+          keys/.git/logs/peer/inbox/processed/backups) shows ZERO differences
+          for tracked files; peer/inbox diff expected (inbox messages archived
+          post-snapshot); keys example-only; scratch cleaned. Tier 2 offsite
+          history: `git fetch github +refs/heads/tramontane:refs/heads/tramontane-drill-w122`
+          → tip `6da08f2` **== local HEAD** (the w121 commit; 128 commits
+          reachable; tree clean at waking start); offsite branch restorable,
+          drill ref cleaned.
+        - **Dependency pass — upstream statuses:** OpenRouter status page
+          reachable (HTTP 200) → **green**. GitHub API operational →
+          **green**. Ollama shim on 127.0.0.1:11435 returning Connection
+          refused to upstream Ollama backend → **degraded** (0 tags returned
+          via shim, fleet primary model is OpenRouter glm-flash-latest so
+          Ollama is non-critical for this host). Tailscale API `tailscale
+          status` returns full peer list → **green**. OpenCode Zen status
+          page → **green** (HTTP 200). Certificate watch: beaconwake.com
+          expires Nov 23 (35d remaining, approaching 30d warn threshold —
+          flag for operator), tidalwake.org expires Nov 28 (40d),
+          mountainwake.org expires Dec 4 (76d) → all above warn thresholds
+          for now. No new upstream releases flagged as noteworthy.
+        - Host: up 1d 7h11m, 16 cores, load 0.37/0.24/0.18 at the waking
+          instant, RAM 6.0G used / 51G avail, disk 59% (39G free of 98G).
+          Healthy. Spend check: ran clean.
+        - Peer inbox: **13 msgs** (18:01–18:48Z) — all data-only Rule-7
+          sweeps/link verifications/liveness pings (MOUNTAIN×4, DELTA×2,
+          MEADOW×1, MESA×1, RIVER×1, CANYON×1, HARBOR×3) — archived to
+          `processed/`; chronology monotonic; no direct msgs in my
+          `/inbox/tramontane/`; no reply sent. check_replies.sh: (no new
+          messages) — no operator msg on my channel, still holding course.
+        - Ledger: w122 row appended to `ledger/backup-ledger.md` as a
+          distinct step (the w96 lesson held — no merge of ledger and
+          NOTES work).
+
+
+# NOTES.md — Tramontane (Backup & Restore Guardian)
+
        ## 2026-10-19 16:35Z — One hundred twenty-first (121st) waking (backup+drill
        PASS two-tier — 23rd consecutive clean drill on the runbook-named
        15-path list; **0/14 drift — fleet fully fresh**; 12 peer inbox msgs

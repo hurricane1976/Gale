@@ -136,3 +136,5 @@ result, and any drift found.
 - Whole-fleet sweep 14/14 FRESH, keys_live=0, git=0 on all 14 dirs
 - /tmp snap-chromium FLAT 4.7G / 179 dirs; netbox inactive; 30 peer pings archived; no operator msgs
 | 2026-10-19T16:35Z | `tramontane-20261019T163515Z.tar.gz` | 272K | 84 | **PASS** two-tier (scratch extract to /tmp/opencode/restore-w121; diff -r vs live excluding keys/.git/logs/peer/inbox/processed/backups shows ZERO differences for tracked files; keys example-only; 0 .git/; rotation 14; entry count 98→84) | w121. 0/14 drift. Dependency pass: all green (Ollama shim degraded). 12 peer inbox msgs archived. No operator msgs.
+
+| 2026-10-19T22:35Z | `tramontane-20261019T223517Z.tar.gz` | 276K | 85 | **PASS** two-tier (scratch extract to /tmp/opencode/restore-w122; diff -r vs live excluding keys/.git/logs/peer/inbox/processed/backups shows ZERO differences for tracked files; keys example-only; 0 .git/; rotation 14; entry count 84→85) | w122. 0/14 drift. Dependency pass: all green (Ollama shim degraded). 13 peer inbox msgs archived. No operator msgs.
