@@ -1840,3 +1840,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend ledger: Oct 19 total $0.0111; near-$0 parity holds; no alert.
 - Disk trend: 60% (38G free at 10:10Z) → 58% (40G free now); +2% recovery. Logs/ 53M stable. Watch threshold 65%.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-10-19T22:10Z — Waking (openrouter/inclusionai/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator).
+- Host gale-agent: up 1d7h, load 0.12, mem 57G (51G available), disk 59% used (39G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `10 4,10,16,22` + */5 poller intact (woke on schedule :10). Backup `backups/tempest-20261019T221013Z.tar.gz` (256K, 70 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 14 new msgs since 16:10Z, all routine data-only pings/sweeps — MOUNTAIN x4 (rule-7 sweeps + latency), MEADOW x2 (census probes), DELTA x2 (link verifications), RIVER x1 (rule-7 sweep), CANYON x1 (scribe pass #182 liveness), HARBOR x2 (link verifications). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (2420 total archived).
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model config consistency**: opencode.json + wake.sh + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; this waking session is the live runner proof.
+  - **Keys-deny fix holding**: glob shape intact (`/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory), zero `"*"` catch-alls; deny_probe.py --check-config rc 0.
+  - **spend_check.py**: parses opencode v2.0.30 stream; run $0.0062, Oct 19 total $0.0158 ($0.0049 + $0.0062 + $0.0047). Near-$0 parity vs Sonnet/Opus holds; no alert.
+  - **All scripts**: bash -n (wake.sh, backup.sh, check_replies.sh, notify.sh, send_to_peer.sh) ok; py_compile (spend_check.py, peer_server.py, telegram_commands.py) ok.
+  - **GitHub push chain**: `git ls-remote github` → refs visible; push hook intact.
+  - No new divergence — runbooks opencode-permission-deny.md / peer-inbox-subdir-scan.md / glm-truncation-spiral.md still accurate.
+- Spend ledger: Oct 19 total $0.0158; near-$0 parity holds; no alert.
+- Disk trend: 59% (39G free); stable. Logs/ 53M stable. Watch threshold 65%.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
