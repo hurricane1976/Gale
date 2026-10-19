@@ -6903,3 +6903,93 @@ would prevent repeats; (3) this agent's telegram poller has been failing
 since ~Sep 26 (DNS / connection resets in logs/telegram_commands.log),
 predating this incident; (4) maistral's directory carries 3 days of extra
 ghost-wake entries in its NOTES/git from this directory's cron slots.
+## 2026-10-19T15:20Z — Scheduled waking (recovery + all green; LAN runner DOWN, Ollama jump to v0.40.6)
+
+Context: this is the first scheduled waking after the 2026-10-16 corruption incident.
+Restored by operator at ~13:45Z (git reset --hard 12258cc, the true 15:20Z commit).
+The 3-day gap (2026-10-16T21:20Z → 2026-10-19T13:47Z) produced no Sirocco
+waking, no NOTES entries, no notify, no backup — and 156 peer messages backed up
+in `peer/inbox/`. All 156 + 1 VORTEX straggler now filed to `processed/` (total
+processed ~1886). Peer inbox now clean.
+
+`check_replies.sh`: no new operator messages.
+
+Host health (gale-agent): up 23h58m (rebooted ~2026-10-18T15:20Z; the 13:45Z
+restore was a git reset, not a reboot), load 0.69, disk 58% (54G/98G, 40G free
+— same as last pre-corruption reading, no creep), RAM 5.9G/58G used (51G free).
+`sirocco-peer` active on 100.66.39.59:8796. All sibling ports 8787-8800 listening.
+
+**`./backup.sh` -> `backups/sirocco-20261019T152016Z.tar.gz` (198K, 295 entries,
+AGENTS.md/NOTES.md/ASK.md/wake.sh/opencode.json/runbooks/* confirmed present; read-back OK).
+Final verified snapshot (post-inbox-cleanup): backups/sirocco-20261019T152057Z.tar.gz — same size,
+key files intact; gzip OK.
+
+Upstream (live probes + vendor status, 2026-10-19 ~15:22Z):
+- GitHub: status API "All Systems Operational"; api.github.com 200 in 0.04s.
+- Tailscale: status.tailscale.com 200 (200 OK). Coordination 200 OK.
+  12 active fleet nodes online (6× beacon, gemini, mountain, ubuntu agents).
+- OpenRouter: /api/v1/models 200 in 0.09s. Operational.
+- OpenCode Zen: opencode.ai 200 in 0.12s. Waking succeeding = model path healthy.
+- **LAN Ollama runner (192.168.1.197:11434): DOWN — curl exit 7 (connection refused).
+  `gale-ollama-api.service` + `gale-ollama-shim.service` are active on gale-agent,
+  but the remote runner at 192.168.1.197 is not accepting connections. `ss` shows
+  nothing bound on 11434 locally; `ps` shows no local ollama process.
+  This is the runner that backs `ollama/qwen3.8:27b` — **affects Tempest's model
+  path** (who runs qwen3.8:27b via this LAN). My own waking (freetoken/Qwen3.6)
+  is unaffected. Flagging to Gale/Tempest: LAN inference server 192.168.1.197
+  down; upstream Ollama releases also show a massive version gap (see below).**
+
+Certs (unchanged, all >65d, no warnings):
+  beaconwake.com -> 2026-11-23 (65d), tidalwake.org -> 2026-11-28 (70d),
+  mountainwake.org -> 2026-12-04 (76d). All Let's Encrypt.
+  **BEACON cert enters <30d window ~2026-10-24 (~5d out) — IN THE WINDOW.**
+  Watching for renewal behavior.
+
+Dependency changes:
+- **Ollama upstream: v0.40.6** (released 2026-10-12 per GitHub releases). This is a
+  MASSIVE jump from the previous baseline of v0.35.0/v0.35.1 (5 minor releases
+  accumulated during the corruption gap). The LAN runner (192.168.1.197) has been
+  running v0.35.0 and is now DOWN — leaving any version-bump question moot until
+  it's back online. The 5-release gap warrants operator attention.
+- opencode: upstream v1.19.3 (same as the last pre-corruption baseline; confirmed
+  via GitHub releases 302 → tag v1.19.3). No new release.
+- LAN runner: DOWN; no version info available from remote host.
+
+Model line: `opencode.json` `"model"` line now correctly reads
+`freetoken/Qwen3.6-35B-A3B-NVFP4` (matching wake.sh reality and this session's
+model). The stale `openrouter/~z-ai/glm-flash-latest` line from 2026-10-14 was
+fixed by the operator's restoration session (confirmed by `git show 12258cc:opencode.json`).
+Stale model line item in ASK.md is now RESOLVED.
+
+Spend: $0.00 OpenRouter (local FreeToken runs only).
+
+**FINDING — LAN Ollama runner 192.168.1.197 DOWN (2026-10-19):**
+The remote Ollama inference server (192.168.1.197:11434) is not accepting
+connections. `gale-ollama-api.service` and `gale-ollama-shim.service` are running
+on gale-agent itself (they are admin/monitoring shims, not the inference server).
+The actual inference binary is on 192.168.1.197 and appears to have gone down.
+Impact: Tempest's model path (`ollama/qwen3.8:27b`) is broken. This is a
+significant upstream dependency failure — the LAN inference server is a shared
+infrastructure dependency. Flagging to Gale (host health lane) and Tempest.
+
+Inbox: 156 messages from the 2026-10-16 corruption gap (20261016T050112Z-20261019T124924Z)
+all triaged and filed to `processed/`. 1 VORTEX straggler from `sirocco/` subdirectory
+also filed. 1 empty `sirocco/` subdir removed. Inbox clean.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime 2026-09-26 01:19:56Z, 34 NAME blocks.
+ASK.md: PONIENTE + 22 remote pairings still awaiting operator word (OSTRO + LEVANTE resolved).
+No mint/rotate/install this waking.
+
+ASK.md open items (unchanged from pre-corruption):
+- PONIENTE local pairing + 22 remote pairings awaiting operator word (rule 8).
+- (Stale model line item — RESOLVED in this waking, opencode.json now correct.)
+- (Model line flip to glm-flash at 2026-10-14 12:49Z — RESOLVED in this waking,
+  opencode.json now matches wake.sh reality.)
+
+Runner/portability note for Tempest: LAN runner DOWN, model path `ollama/qwen3.8:27b`
+unavailable. This is a significant outage for Tempest's lane. Uptime for LAN runner:
+unknown (could be intermittent). Uptime for gale-agent: 23h58m (stable).
+
+Next: re-check LAN runner on next waking; confirm beaconwake.com renewal behavior
+(as BEACON cert is now inside the 30d window, ~5d out); keep polling ASK.md operator
+answers; no new action items.
