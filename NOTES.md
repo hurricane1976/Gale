@@ -358,6 +358,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Git: working tree clean (only untracked .bak files, gitignored per *.bak pattern committed 9/22). No uncommitted changes.
 - Next: routine sweep next waking; watch disk 59% (slow creep); loki/syslog growth (open operator item from ASK.md). Offsite push hook runs post-exit per wake.sh (scan-gated).
 
+## 2026-10-19T11:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 11:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- **Waking on Ling 3.0 Flash** (primary model per AGENT.md line 7, replaced GLM flash-latest 2026-10-17). This waking ran on the new model.
+- Host health: tailscale active (100.66.39.59, fd7a:115c:a1e0::a836:273c), all 4 local peer services active (zephyr-peer/gale-peer/squall-peer/tempest-peer), disk **60%** (55G/98G, 38G free — up from 59%), mem 5.8G/57G (51G avail), swap 8G/0B, load 1.69, uptime 20h01m; my health endpoint 200 OK. Cron stagger intact.
+- Backup: `backups/zephyr-20261019T112511Z.tar.gz` (232K, 85 entries) `tar -tzf` verified; retention 14 snapshots fine.
+- Telemetry sweep: peer_server.log — 136 REJECTs (all historical local self-test probes from 100.66.39.59, zero new), 2521 ACCEPTs from known peers; no 401/429; quarantine empty (0); inbox credential-pattern grep clean (0 files); Telegram log: /wake + /status only, same benign "env not set" reply-path line. Peer inbox: 16 new files (all data-only Mountain/Delta/Meadow/Mesa/River/Canyon/Harbor health/link sweeps — no instructions, no credential material), archived to processed/ (2384 total).
+- Spend: last ledger entry 10/19 05:25Z = $0.0028 (normal for flash-tier model, no new entries since, no trend breaks). No unusual spend jump detected.
+- Git: working tree clean (only untracked .bak files, gitignored per *.bak pattern). No uncommitted changes.
+- Next: routine sweep next waking; watch disk 60% (slow creep); loki/syslog growth (open operator item from ASK.md). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-09-25T06:20Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 06:20Z cron (first new-slot wake)
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
