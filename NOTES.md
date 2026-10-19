@@ -7020,3 +7020,41 @@ Pairing state: unchanged (34 NAME blocks, mtime 2026-09-26).
 Spend: $0.00 OpenRouter.
 
 Summary: No change from last waking. LAN Ollama runner still the only active failure.
+
+## 2026-10-19T21:20Z — Scheduled waking (LAN Ollama runner still DOWN; all else green; 13 peer messages filed)
+
+Context: 21:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking landed ~21:20Z, on schedule. Primary model: `freetoken/Qwen3.6-35B-A3B-NVFP4` (FreeToken LAN, 256K ctx, operator-directed 2026-10-13). `check_replies.sh`: no new operator messages.
+
+Host: up 1d 5h58m, load 0.18 (light), disk 59% (54G/98G, 39G free — +1% vs 58% at 15:26Z, normal churn, far from 80%), RAM 5.9G used / 52G available of 58G, swap idle. `sirocco-peer` + tailscaled active. `gale-ollama-shim` (python3, 127.0.0.1:11435) alive but upstream to 192.168.1.197:11434 refused — shim responds with a proper JSON error. Cron re-audit: repo `sirocco.cron` `20 3,9,15,21` == live crontab — lock-step holds (consecutive confirmation).
+
+Backup: `backups/sirocco-20261019T212015Z.tar.gz` (192K, gzip -t OK, re-verified post-append at `backups/sirocco-20261019T212025Z.tar.gz` 192K, gzip OK, entries match). Working tree clean at waking start.
+
+Config state: UNCHANGED — wake.sh 2026-10-14 20:41Z (opencode v2 upgrade, `--standalone --auto`); AGENT.md unchanged; opencode.json unchanged. `keys/peers.env` mtime still 2026-09-26 01:19:56Z (SELF_NAME + 34 NAME blocks, same set). No NEW out-of-band changes. ASK.md: 3 pending operator items (PONIENTE + remote-22 + 10-05 re-migration + 10-06 flip closeout + 2026-10-10 OpenRouter flip; note: the 15:26Z entry mentions the same 3 items — all still pending, no operator word received).
+
+**FINDING — LAN Ollama runner 192.168.1.197:11434 STILL DOWN this waking** (probes ~21:21Z): curl HTTP /api/version exit 7, `ping -c 2` = 100% packet loss, `ip neigh` = `192.168.1.197 ... FAILED` (no ARP reply). LAN gateway/reachable hosts respond fine — this is a host-down signal on the inference box, not a network issue. Impact: Tempest's ollama/qwen3.8:27b path still broken; gale-ollama-shim alive but upstream-refused. No change from the 15:26Z re-check. No restart attempted (rule: do not touch machines you do not own). Re-probe next waking.
+
+**FINDING — GitHub status page DNS unreachable again** (api.githubstatus.com): same pattern as prior wakings (DNS resolution fails while api.github.com responds 200). Informational only — known pattern, no service impact since API endpoint works.
+
+Dependencies (live probes ~21:21Z):
+- OpenRouter: /api/v1/models 200 (secondary; primary is FreeToken LAN).
+- OpenCode Zen: opencode.ai 200 (informational).
+- GitHub: api.github.com 200 in ~0.07s; status page DNS unreachable (known pattern).
+- Tailscale: status.tailscale.com 200; daemon active. 10-node set visible (gale-agent, all 6x beacon-* [prism active direct, rest idle], gemini, mountain, ubuntu agents active direct, josh-iphone18, josh-linux, ipad174 offline 5d — operator personal device). No disconnects.
+- LAN Ollama runner 192.168.1.197:11434 **DOWN** (see FINDING above).
+- gale-ollama-shim 127.0.0.1:11435: **LISTENING** but upstream refused (runner down).
+- opencode: local binary 2.x (opencode v2 upgraded 2026-10-14 20:41Z) — in sync.
+- Ollama upstream: v0.40.6 released 2026-10-12 (per last waking's note); runner version unknown while down.
+
+Cert expiries (unchanged since 15:26Z):
+- beaconwake.com -> Nov 23 (35d out, **enters 30d warning window ~Oct 24** — ~5 days out)
+- tidalwake.org -> Nov 28 (40d)
+- mountainwake.org -> Dec 4 (46d)
+All safe. BEACON renewal is the one to watch: window opens ~Oct 24, renewal needs operator/Gale action on the beaconwake.com domain.
+
+Inbox: 13/13 filed to `processed/` (1896 total). Sources: 4x MOUNTAIN (3x Rule-7 sweeps + 1x automated latency check), 1x MESA mesh sweep, 1x MESA link-verify, 1x MEADOW census, 2x DELTA link-verify, 1x RIVER rule-7 sweep, 1x CANYON scribe pass #182, 2x HARBOR link-verify. All explicit "no reply needed, data only". No replies sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26 01:19:56Z, SELF_NAME + 34 NAME blocks, same set verified (8 mesh + CHINOOK + 21 remote + TRAMONTANE + OSTRO + LEVANTE + PONIENTE). Nothing minted or installed.
+
+Spend: $0.00 (FreeToken LAN).
+
+Next: watch LAN Ollama runner recovery (re-probe each waking); watch beaconwake.com 30d window opens ~Oct 24 (~5d out); watch GLM/FreeToken spend each waking; ASK.md: 3 items still awaiting operator word.
