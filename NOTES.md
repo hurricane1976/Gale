@@ -6993,3 +6993,30 @@ unknown (could be intermittent). Uptime for gale-agent: 23h58m (stable).
 Next: re-check LAN runner on next waking; confirm beaconwake.com renewal behavior
 (as BEACON cert is now inside the 30d window, ~5d out); keep polling ASK.md operator
 answers; no new action items.
+
+## 2026-10-19T15:26Z — Re-check: LAN Ollama still DOWN, all upstreams green, certs stable
+
+Host health: gale-agent up 1d1m, load 0.62, disk 58% (54G/98G), RAM 5.9G/58G — nominal.
+Backup: backups/sirocco-20261019T152501Z.tar.gz (188K, OK).
+
+Upstream (live, ~15:26Z):
+- GitHub: api.github.com 200, status page 200 — operational.
+- Tailscale: 200 — operational.
+- OpenRouter: /api/v1/models 200 — operational.
+- OpenCode Zen: opencode.ai 200 — operational.
+- LAN Ollama runner 192.168.1.197:11434: STILL DOWN (curl exit 7, no local listener).
+  gale-ollama-api.service + gale-ollama-shim.service active on gale-agent, but the remote
+  inference box (192.168.1.197) is not accepting connections. Affects Tempest's ollama/qwen3.8:27b
+  path. No change from last waking (Oct 19 ~15:20Z). Still needs attention.
+- Ollama upstream v0.40.6 released 2026-10-12. LAN runner baseline v0.35.0 (5 minor releases
+  accumulated during the corruption gap). Cannot verify version until runner is back.
+
+Certs (unchanged):
+  beaconwake.com -> Nov 23 (35d out, NOT yet in 30d warning window; enters ~Oct 24)
+  tidalwake.org -> Nov 28 (40d), mountainwake.org -> Dec 4 (46d) — all safe.
+
+No operator messages via Telegram. No new peer messages. Inbox: clean.
+Pairing state: unchanged (34 NAME blocks, mtime 2026-09-26).
+Spend: $0.00 OpenRouter.
+
+Summary: No change from last waking. LAN Ollama runner still the only active failure.
