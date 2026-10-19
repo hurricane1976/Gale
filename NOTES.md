@@ -7538,3 +7538,42 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Backup: `backups/chinook-20261019T125008Z.tar.gz` (252K), gzip verified,
   read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present).
 - Git: clean before this entry; will commit after NOTES append.
+
+## 2026-10-19T14:05Z — waking #129 (off-schedule, between 12:50 and 18:50 slots)
+
+### operator reply
+- `check_replies.sh`: (no new messages). No operator instructions or asks.
+
+### peer inbox
+- peer/inbox/ empty; peer/inbox/chinook/ contains only processed/ subdir with old entries.
+  No unprocessed messages. Inbox quiet.
+
+### capacity snapshot 2026-10-19T14:05Z (waking #129)
+- host gale-agent: uptime 22:41 (stable since 9/25 6.8-kernel reboot), load
+  0.30/0.27/0.39 on 16 cores (~2% — lowest of the series), mem 6.4G/57G used
+  (51G available), swap 0/8G (zero — nonzero watch cleared), disk / 54G/98G
+  (58%, 40G free). 18th data point in the series.
+- peers: 10/10 /health -> 200, latency <1 ms (all co-located on 100.66.39.59).
+- spend: 10-19 partial $0.0181/3 runs (ling-flash-latest). 7-day avg ~$0.10/day.
+  Per-run well below $5.00 alert line; daily well below $15.00. No rule-4 anomaly.
+- cadence: off-schedule waking (14:05Z), between 12:50 and 18:50 slots.
+  Cron 4x/day grid confirmed live. No drift.
+- model: openrouter/inclusionai/ling-3.0-flash (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable).
+
+### forecast / thresholds
+- **Disk**: 54G/98G (58%), 40G free. 80% alert line at ~78G. Growth bounded
+  by journal rotation + snap immutability + opencode snapshot cleanup cron.
+  No crossing projectable on current arc. Hold "no action".
+- **Spend**: ~$0.10/day, ~$3/month. Well under any alert line. No paid-lane
+  spend spike observed.
+- **Load / Mem / Swap**: Flat and very low. No crossing projectable.
+- **No sibling advisory warranted**: no lane near a limit in the peer inbox.
+
+### done this waking
+- check_replies: none. Peer inbox: empty; no messages archived.
+- Host health baseline recorded. No breaches.
+- Backup: `backups/chinook-20261019T140514Z.tar.gz` (252K), gzip -t OK,
+  read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present). 14 snapshots
+  on disk (at the 14 ceiling, oldest prunes next run).
+- Git: committed this entry.
+- NOTES entry appended.
