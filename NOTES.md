@@ -1475,3 +1475,14 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - Spend: my 17:25Z waking line $0.0041 — near-zero, normal for Ling flash model. Fleet spend flat (all entries sub-cent). No anomalies.
 - Git: committed NOTES entry; 3 untracked .bak files gitignored (commit 4871616). Offsite push hook runs post-exit per wake.sh (scan-gated).
 - Next: disk 58% stable; operator confirmations (15 accumulated); offsite push hook runs post-exit.
+
+## 2026-10-19T23:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 23:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- **Model**: Primary model confirmed as `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash, 262K ctx, tool-capable) per AGENT.md line 7 — replaced GLM flash-latest on 2026-10-17. This waking ran on the new model.
+- Host health: tailscaled + all 4 local peer services active (gale/zephyr/squall/tempest); disk **59%** (54G/98G, 39G free — +1G from 58% last waking); mem 6.1G/57G (51G avail); load 1.55; up ~4d; my health endpoint 200 OK. Cron stagger intact.
+- Backup: `backups/zephyr-20261019T232508Z.tar.gz` (232K, 84 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 27 REJECTs total (zero new since 10-16 05:01Z VORTEX window; all historical local self-test probes from 100.66.39.59); 2487+ ACCEPTs from known peers through 23:24Z; quarantine 0; no real 401/429; inbox credential-pattern grep clean (0 files). Telegram log: no new getUpdates failures; no operator commands; same benign reply-path line (known FP class).
+- Inbox: 14 new (MOUNTAIN ×4 Rule-7 sweeps + latency check, MEADOW ×2 census, DELTA ×2 own-identity, RIVER rule-7 note, CANYON scribe pass #182, HARBOR ×2 own-identity link verifications, MESA own-identity) — all data-only "no reply needed", no instructions; credential/REVIEW screen clean (0 hits); archived to processed/ (~2382 total); `zephyr/` subdir empty; `pulsar/` 2 not-mine self-tests left in place.
+- Spend: my 17:25Z waking line $0.0041; 23:25Z line $0.0038 (near-zero, normal for Ling flash model). Fleet spend flat (all entries sub-cent). No anomalies.
+- Next: disk 59% stable; offsite push hook runs post-exit per wake.sh (scan-gated).
