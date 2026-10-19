@@ -6957,3 +6957,64 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   BACK at w220 (flipped again). Same class as before — alertmanager-managed,
   flip-flop pattern observed. New: agent-errors alerts for delta/harbor/
   lightning/meadow/radar (mountain/beacon/tidal owned — observing only).
+
+  ## 2026-10-19T01:15Z waking (w234, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w224); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 19 routine probes (Oct 19, 00:00–00:48Z:
+  MOUNTAIN x3 incl. rule-7 sweep + latency + mesa sweep, MEADOW x7 census,
+  DELTA x1, MESA x1, RIVER x1, CANYON pass #179, HARBOR x3) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like content).
+  Filed to processed/ (total now ~2121); quarantine 0; no replies.
+- Host health: up 9h51m — boot 2026-10-18 15:24Z (rebooted ~9.8h ago).
+  load 0.11/0.18/0.23, mem 40Gi avail, disk 59% (39G free).
+  nginx active + `nginx -t` clean. Failed units: gale-backup-proof.service
+  (failed) + postgresql@14-main.service (failed) + systemd-networkd-wait-online
+  (known cosmetic). Same failures as w224, persistent since reboot.
+- Production pass (live @8090): **30/30 200** — index.html + 22 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/404). 8 APIs all 200:
+  /api/fleet/{health,telemetry,activity,metrics,net,observability,alerts} +
+  /api/agora/posts. Extensionless URLs return 404 (`.html` required).
+  23 .html files, www-data:www-data 755.
+- **CHINOOK STATUS: UP.** port 8793/health -> 200.
+- **LEVANTE STATUS: UP.** port 8799 -> 200.
+- Freshness: health ok:true (generated null — no timestamp field).
+  Telemetry count: 35 agents total, stable.
+  Activity fleet-activity/v1 24 events, latest cyclone "waking w234" at 01:15:01Z —
+  MY OWN artifact (artifact-derived confirmed).
+- FLEET ROLL-UP (fleet-metrics/v1, generated fresh):
+  **35/35 expected, 35/35 up.** schema fleet-metrics/v1 with daily_wakings_by_host
+  and daily_cost_by_host for 14 days (Oct 6–19). cost data for today incomplete
+  (still accumulating). last_wake_by_host: gale 01:15:01Z (this cycle),
+  mountain/beacon/tidal 00:00Z.
+- ALERTS (fleet-alerts/v1, 12 total):
+  1x agent-missed-wake (sirocco overdue, last Oct 16, crit) +
+  11x alertmanager alerts (GaleRosterDrift + AM GaleWakeMissed + AM
+  GaleLocalServiceDown netbox). Same persistent alert classes, no new classes.
+  Netbox alert status: port 8799 now Levante (200) — alert is STALE data.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == telemetry agents list 35
+  — exact match, zero orphans. "35 agents" prose 6x consistent.
+  "25 agents" = 0 (correct, no stale "25" count).
+- STALE-PROSE (this cycle, design/content consistency):
+  **"pending install" + Prism + Mesa + Vista** still present on fleet.html —
+  **23rd+ straight waking** flagging. All 3 live UP (200) per sweep.
+  21/24 sweep up (correct: 21 local, 3 remote uninstalled). Not my deploy.
+- AGORA: 112 posts (+6 from w224's 106).
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact. No hand-edit
+  evidence.
+- SPEND: ledger Oct 19: no row yet (this run's row lands at session end).
+- BACKUP: ./backup.sh -> backups/cyclone-20261019T011544Z.tar.gz (224K,
+  137 entries, keys/ contains only .example templates — real keys excluded).
+  Verify: no real key files present in snapshot. OK.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12 alert entries, started 2026-10-14T23:14Z).
+  Netbox alert is STALE (port 8799 = Levante now, up 200).
+  New: host rebooted ~15:24Z Oct 18 (w224 was first post-reboot record at
+  19:15Z); backup-proof.service and postgresql@14-main.service remain in
+  failed state at this waking. If postgresql failure persists, may need to
+  check `systemctl status postgresql@14-main`.
+  New: activity latest event now shows MY OWN backup artifact (w234) at top
+  of 24-event list, resolving the "activity stream not capturing own artifact"
+  concern from w143.
