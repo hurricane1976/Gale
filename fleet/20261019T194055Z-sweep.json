@@ -1,0 +1,251 @@
+{
+  "timestamp": "20261019T194055Z",
+  "nodes": [
+    {
+      "name": "BORA",
+      "host": "100.66.39.59",
+      "port": 8797,
+      "up": true,
+      "latency_ms": 0.7
+    },
+    {
+      "name": "CHINOOK",
+      "host": "100.66.39.59",
+      "port": 8793,
+      "up": true,
+      "latency_ms": 0.6
+    },
+    {
+      "name": "CYCLONE",
+      "host": "100.66.39.59",
+      "port": 8794,
+      "up": true,
+      "latency_ms": 0.5
+    },
+    {
+      "name": "GALE",
+      "host": "100.66.39.59",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 0.5
+    },
+    {
+      "name": "LEVANTE",
+      "host": "100.66.39.59",
+      "port": 8799,
+      "up": true,
+      "latency_ms": 0.6
+    },
+    {
+      "name": "MAISTRAL",
+      "host": "100.66.39.59",
+      "port": 8795,
+      "up": true,
+      "latency_ms": 0.5
+    },
+    {
+      "name": "OSTRO",
+      "host": "100.66.39.59",
+      "port": 8798,
+      "up": true,
+      "latency_ms": 0.5
+    },
+    {
+      "name": "PONIENTE",
+      "host": "100.66.39.59",
+      "port": 8800,
+      "up": true,
+      "latency_ms": 0.4
+    },
+    {
+      "name": "SIROCCO",
+      "host": "100.66.39.59",
+      "port": 8796,
+      "up": true,
+      "latency_ms": 0.5
+    },
+    {
+      "name": "SQUALL",
+      "host": "100.66.39.59",
+      "port": 8789,
+      "up": true,
+      "latency_ms": 0.5
+    },
+    {
+      "name": "TEMPEST",
+      "host": "100.66.39.59",
+      "port": 8790,
+      "up": true,
+      "latency_ms": 0.4
+    },
+    {
+      "name": "TRAMONTANE",
+      "host": "100.66.39.59",
+      "port": 8791,
+      "up": true,
+      "latency_ms": 0.4
+    },
+    {
+      "name": "VORTEX",
+      "host": "100.66.39.59",
+      "port": 8792,
+      "up": true,
+      "latency_ms": 0.6
+    },
+    {
+      "name": "ZEPHYR",
+      "host": "100.66.39.59",
+      "port": 8788,
+      "up": true,
+      "latency_ms": 0.6
+    },
+    {
+      "name": "BEACON",
+      "host": "100.99.217.90",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 25.9
+    },
+    {
+      "name": "BROOK",
+      "host": "100.91.42.51",
+      "port": 8792,
+      "up": true,
+      "latency_ms": 26.9
+    },
+    {
+      "name": "CANYON",
+      "host": "100.114.14.116",
+      "port": 8791,
+      "up": true,
+      "latency_ms": 29.3
+    },
+    {
+      "name": "CREEK",
+      "host": "100.91.42.51",
+      "port": 8789,
+      "up": true,
+      "latency_ms": 26.0
+    },
+    {
+      "name": "DELTA",
+      "host": "100.114.14.116",
+      "port": 8794,
+      "up": true,
+      "latency_ms": 34.0
+    },
+    {
+      "name": "HARBOR",
+      "host": "100.114.14.116",
+      "port": 8793,
+      "up": true,
+      "latency_ms": 26.1
+    },
+    {
+      "name": "HIGHBEAM",
+      "host": "100.81.147.28",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 26.7
+    },
+    {
+      "name": "LANTERN",
+      "host": "100.76.139.96",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 28.4
+    },
+    {
+      "name": "LIGHTNING",
+      "host": "100.69.40.118",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 41.6
+    },
+    {
+      "name": "MEADOW",
+      "host": "100.91.42.51",
+      "port": 8791,
+      "up": true,
+      "latency_ms": 26.4
+    },
+    {
+      "name": "MESA",
+      "host": "100.114.14.116",
+      "port": 8795,
+      "up": true,
+      "latency_ms": 29.1
+    },
+    {
+      "name": "MIST",
+      "host": "100.91.42.51",
+      "port": 8793,
+      "up": true,
+      "latency_ms": 26.1
+    },
+    {
+      "name": "MOUNTAIN",
+      "host": "100.114.14.116",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 27.5
+    },
+    {
+      "name": "PRISM",
+      "host": "100.100.158.42",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 29.2
+    },
+    {
+      "name": "PULSAR",
+      "host": "100.70.91.55",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 27.4
+    },
+    {
+      "name": "RADAR",
+      "host": "100.125.26.66",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 27.6
+    },
+    {
+      "name": "RIDGE",
+      "host": "100.114.14.116",
+      "port": 8792,
+      "up": true,
+      "latency_ms": 26.6
+    },
+    {
+      "name": "RIVER",
+      "host": "100.91.42.51",
+      "port": 8788,
+      "up": true,
+      "latency_ms": 26.9
+    },
+    {
+      "name": "STREAM",
+      "host": "100.91.42.51",
+      "port": 8790,
+      "up": true,
+      "latency_ms": 27.0
+    },
+    {
+      "name": "TIDAL",
+      "host": "100.91.42.51",
+      "port": 8787,
+      "up": true,
+      "latency_ms": 26.4
+    },
+    {
+      "name": "VISTA",
+      "host": "100.114.14.116",
+      "port": 8796,
+      "up": true,
+      "latency_ms": 26.0
+    }
+  ],
+  "summary": "35/35 up, avg 17.1ms, max 41.6ms"
+}
