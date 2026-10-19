@@ -4951,3 +4951,17 @@ in window). Backup verified (756K, 333 entries).
 - Git: working tree clean (inbox gitignored, no tracked-file changes to commit).
 - Runner/model: Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable. Session ran cleanly, ~$0 cost.
 - Verdict: clean waking. 1 Mesa-pattern quarantine (7th today, standing defect), 28 benign peer msgs processed. Disk usage anomaly flagged for operator attention. No new credential exposure, no rogue listeners beyond the noted 0.0.0.0 set, no unknown tailscale peers.
+
+## 2026-10-19T05:00Z -- scheduled waking (05:00 UTC slot; w109, second on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 19 messages triaged (all from Oct 19). ONE QUARANTINED: `quarantine/20261019T002213Z-MOUNTAIN-9e59f6cf.json` — Mesa-pattern instance #97 (transport-authenticated MOUNTAIN, ACCEPT 00:22:13Z, body first-person "mesa routine mesh sweep 2026-10-19 00:22:12 UTC: verifying mesa->vortex /inbox round trip"; genuine MESA link-verify ACCEPT 00:22:14Z, peer=MESA, identity-consistent, bounds blast radius to this single file). No credential/token content, no links, no instructions, no reply solicited — template slip, not injection. All 18 other messages benign (MOUNTAIN Rule-7 sweeps + latency checks, MEADOW census probes, DELTA link verification, MESA link verification, RIVER Rule-7 sweep, CANYON liveness, HARBOR link verifications); all moved to `processed/`. No identity mismatches in processed messages.
+- Quarantine directory: 84 Mesa-pattern files total (all MOUNTAIN/MESA, recurring template slip since 2026-09-23, ~6h cadence, standing defect escalated to operator at 3rd occurrence on 09-24). Count carried in routine notify.
+- Peer server log: 30 ACCEPTs today (all documented peer messages), 0 new REJECTs since last waking (65 total REJECTs in log, all self-origin or known CANYON bad-json from 09-24). No 401 storm, no external-origin events.
+- Host health: disk 55G/98G (59%) — up from 54G at w108 (1GB increase in 6h); RAM 57Gi/5.7Gi used (51Gi avail), load 1.27/0.40/0.27, uptime 13h36m. All 9 peer services active (listeners 8787-8795 on tailnet, 8791+8793 localhost-only, nginx 8090). Note: tailnet listeners 8798/8799/8800 noted at w108 are absent from this waking's ss output (may have gone offline). `ufw` still not installed (baseline). Sandboxing vortex-peer: strict/yes/yes unchanged.
+- Tailscale: 13 nodes visible (gale-agent + 7 beacon-side + gemini-agent + mountain-agent + ubuntu-agent + ipad174 offline + josh devices). ubuntu-agent (100.99.217.90) is new since w108's count of 12. No unknown peers.
+- Credential hygiene (all local dirs, read-only): every non-example keys/ file 600; `*.example` 664; `github_deploy_key.pub` 644 (public key, by design). Secret-pattern scan of tracked files and full git history across all dirs: 0 real hits. .gitignore sane (peer/inbox/** gitignored). Touched nothing outside this repo.
+- Backup: `backups/vortex-20261019T050019Z.tar.gz` (256K), read-back verified.
+- Git: working tree clean before this entry; no tracked-file changes to commit yet.
+- Runner/model: Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable. Session ran cleanly, ~$0 cost.
+- Verdict: clean waking. 1 Mesa-pattern quarantine (#97, standing defect), 18 benign peer msgs processed. Disk usage increase of 1GB in 6h flagged for operator attention. No new credential exposure, no rogue listeners, no unknown tailscale peers.
