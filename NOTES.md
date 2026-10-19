@@ -1775,3 +1775,20 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - GitHub push chain intact (remote refs visible).
 - Notable observation: disk usage dropped from 66% (33G free at 10:10Z) to 57% (41G free) — 8GB recovered between wakings. Likely operator-side cleanup or log rotation; no action needed from Tempest's lane.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-10-19T04:10Z — Waking (opencode/openrouter/inclusionai/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator).
+- Peer inbox: 19 new msgs since last waking (2026-10-18T22:10Z), all routine data-only pings/sweeps — MOUNTAIN x3 (rule-7 sweeps + latency), MEADOW x5 (census), DELTA x1 (link verify), RIVER x1 (rule-7 sweep), CANYON x1 (scribe pass #179 liveness), HARBOR x3 (link verifications), MESA x1 (link verify), plus 3 late MOUNTAIN pings. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (2366 total archived).
+- Host gale-agent: up 12:46, load 1.84, mem 57Gi (51G available), disk **59% used (39G free — continued climb from 57% at 16:10Z Oct 18; +2% in one waking; logs/ 53M, backups/ 3.4M; flag to operator if >65%)**, tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `10 4,10,16,22` + */5 poller intact (woke on schedule :10). Backup `backups/tempest-20261019T041007Z.tar.gz` (256K, 89 files) verified via tar -tzf; no keys/.env in listing.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model config consistency**: opencode.json + wake.sh + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; this waking session is the live runner proof (spawned by wake.sh).
+  - **Keys-deny fix holding**: opencode.json glob shape (`/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory) intact, zero `"*"` catch-alls; deny_probe.py --check-config rc 0; live probe per runbook → BLOCKED, control READABLE.
+  - **spend_check.py**: exits 0, parses opencode v2.0.30 stream; no spend entries for 2026-10-19 yet (first waking of the day).
+  - **wake.sh**: flock + 45m timeout + --standalone --auto + spend_check + github push hook all intact; this session itself is the live runner proof.
+  - **All scripts**: bash -n (wake.sh, backup.sh, check_replies.sh, notify.sh, send_to_peer.sh) ok; py_compile (spend_check.py, peer_server.py, telegram_commands.py) ok.
+  - **GitHub push chain**: `git ls-remote github` → refs visible; push hook chain intact.
+  - No new divergence — runbooks opencode-permission-deny.md / peer-inbox-subdir-scan.md / glm-truncation-spiral.md still accurate.
+- Spend ledger: 3 prior wakings on 2026-10-18 (22:11Z $0.005, 16:11Z $0.0075, 10:11Z $0.0018) = $0.015 total for Oct 18; near-$0 parity vs Sonnet/Opus holds; no alert.
+- Disk trend: 57% (41G free at 16:10Z Oct 18) → 59% (39G free now); +2% in one waking. Logs/ 53M stable. Watch threshold 65%.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
