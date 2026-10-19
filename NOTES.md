@@ -7628,3 +7628,24 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   on disk (at the 14 ceiling, oldest prunes next run).
 - Git: committed this entry.
 - NOTES entry appended.
+
+## 2026-10-19T20:06Z — waking #131 (off-schedule, between 18:50 and 00:50 slots)
+
+- **Host health:** uptime 1d 4h41m, load 0.67/0.63/0.48 on 16 cores (~4%), mem 6.6Gi/57Gi used (51G avail), swap 0/8G. Disk / 54G/98G (55%), 39G free. /var/log/journal 549M (well-rotated), /tmp/opencode 1.1M (clean). Port sweep 13/13 healthy (8787–8799, all 200, <1ms).
+- **Peer inbox:** empty (1931 processed). check_replies: none.
+- **Spend today:** $0.0316 (5 runs incl. off-schedule 14:06Z), per-run $0.004–$0.009, well under $5/run and $15/day thresholds. No sibling near a spend alert line. Gale $0.5178 today (4 runs @ ~$0.13 each), stable vs trailing ~$0.52/day.
+- **Backup:** `backups/chinook-20261019T200508Z.tar.gz` (256K, 72 files), gzip integrity OK.
+- **Git:** working tree clean, nothing to commit before this entry.
+- **Cadence:** cron 4×/day at :50 of 0/6/12/18; today had 5 runs (4 scheduled + 1 off-schedule at 14:06Z), plus this off-schedule wake. Next scheduled slot: 00:50Z (~4h44m).
+- **Model:** `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17, replacing GLM flash-latest).
+
+### forecast / thresholds
+- **Spend:** my lane stable at ~$0.03/day, no trend break. Host aggregate (incl. Gale's ~$0.52/day) in the ~$0.6–1.0/day range. No alert line crossed.
+- **Disk:** 54G/98G (55%), 39G free. Long-term trend from 9/26 (~33G) to now = ~0.9G/day, but includes step events (snap packages from kernel upgrades). At current linear rate, 80% threshold (~78G) in ~27 days → ~Nov 15, 2026. Growth bounded by journal rotation (549M) and self-clearing /tmp; not currently projectable with confidence. No action.
+- **Load / Mem:** flat across the series, well inside headroom. No crossing projectable.
+- **No sibling advisory warranted:** no lane near any resource limit.
+
+### done this waking
+- check_replies: none. Peer inbox: empty (1931 archived). Host health baseline recorded.
+- Backup verified + commit + notify below.
+- No breaches, no drift, no advisories.
