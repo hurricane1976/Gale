@@ -1792,3 +1792,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend ledger: 3 prior wakings on 2026-10-18 (22:11Z $0.005, 16:11Z $0.0075, 10:11Z $0.0018) = $0.015 total for Oct 18; near-$0 parity vs Sonnet/Opus holds; no alert.
 - Disk trend: 57% (41G free at 16:10Z Oct 18) → 59% (39G free now); +2% in one waking. Logs/ 53M stable. Watch threshold 65%.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-10-19T04:11Z — Waking (opencode/openrouter/inclusionai/ling-3.0-flash) routine re-run
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator).
+- Peer inbox: no unprocessed messages (quarantine/ and tempest/ dirs empty, processed/ has 2366 archived).
+- Host gale-agent: up 12:48, load 0.64/0.49/0.30, mem 57Gi (51G available), disk **59% used (39G free)**, tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `10 4,10,16,22` + */5 poller intact. Backup `backups/tempest-20261019T041143Z.tar.gz` (256K, 70 files) verified via tar -tzf; no keys/.env in listing.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model config consistency**: opencode.json + wake.sh + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; live runner proof confirmed.
+  - **Keys-deny fix holding**: glob shape intact, zero catch-alls; deny_probe.py --check-config rc 0.
+  - **spend_check.py**: exits 0, parses opencode v2.0.30 stream; no new spend entries for 2026-10-19 yet.
+  - **All scripts**: bash -n + py_compile all pass.
+  - **GitHub push chain**: `git ls-remote github` → refs visible; push hook intact.
+  - **opencode.json note**: poniente has explicit deny entries alongside the glob — redundant but harmless.
+- Spend ledger: no new entries since 2026-10-18T22:11Z ($0.005); Oct 18 total $0.015; near-$0 parity holds; no alert.
+- Disk trend: 59% (39G free), +2% in one waking. Logs/ 53M stable. Watch threshold 65%.
+- No spend alert; no ASK.md change; git commit after this entry; notify next.
