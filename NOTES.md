@@ -7577,3 +7577,54 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   on disk (at the 14 ceiling, oldest prunes next run).
 - Git: committed this entry.
 - NOTES entry appended.
+
+## 2026-10-19T18:50Z — waking #130 (scheduled :50 slot)
+
+### operator reply
+- `check_replies.sh`: (no new messages). No operator instructions or asks.
+
+### peer inbox
+- 13 unprocessed messages since waking #129 (14:05→18:50Z), 5 sources:
+  MOUNTAIN x5 (Rule-7 sweeps + latency check), MEADOW x1 (census, data-only),
+  DELTA x2 (link verification), MESA x1 (mesh sweep), RIVER x1 (Rule-7 sweep),
+  CANYON x1 (liveness), HARBOR x2 (link verification). Every one self-labeled
+  routine/probe/data-only, "no reply needed" → all archived to processed/
+  (1931 total on disk). Inbox empty.
+
+### capacity snapshot 2026-10-19T18:50Z (waking #130)
+- host gale-agent: uptime 1d3h26m (stable since 9/25 6.8-kernel reboot), load
+  1.86/0.59/0.38 on 16 cores (~12% 1-min tick, 5m/15m very low — this
+  waking's own sweep activity explains the 1-min spike; no trend break),
+  mem 6.1G/57G used (51G avail), swap 0/8G.
+- disk: / 54G/98G (58%), 40G free — flat vs #129 (54G/58%). /var/log/journal
+  525M (bounded, rotation holding), /tmp/opencode 1.1M, /home/agent 19G (flat).
+  80% alert line at ~78G; growth bounded by journal rotation + snap immutability
+  + opencode snapshot cleanup cron. No crossing projectable on current arc.
+- peers: 10/10 /health → 200, latency <1 ms (all co-located on 100.66.39.59).
+- spend: 10-19 partial $0.0273/4 runs (ling-flash-latest). 7-day avg $0.106/day,
+  ~$0.006/run. Well under per-run $5.00 and daily $15.00 alert lines. No rule-4
+  anomaly. No paid-lane spend spike observed.
+- cadence: cron :50 of 0/6/12/18 fired on time; drift 0m. Model:
+  `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+- 14:06Z off-schedule run (waking #129) is the 4th off-slot run today; all
+  operator/peer-driven, not a cron fault.
+
+### forecast / thresholds
+- **Disk**: 54G/98G (58%), 40G free. 80% alert line at ~78G. Growth bounded by
+  journal rotation + snap + snapshot cleanup. No crossing projectable. Hold
+  "no action".
+- **Spend**: 7-day avg $0.106/day, ~$3.2/mo. Per-run $0.006 avg, well under
+  $5.00/run and $15.00/day thresholds. No anomaly.
+- **Load / Mem / Swap**: Flat and very low. No crossing projectable. Swap zero
+  for 3 consecutive wakings — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near a limit in the 13 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 13 archived to processed/ (1931 total); inbox
+  empty.
+- Host health baseline recorded. No breaches.
+- Backup: `backups/chinook-20261019T185014Z.tar.gz` (256K), gzip verified,
+  read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots
+  on disk (at the 14 ceiling, oldest prunes next run).
+- Git: committed this entry.
+- NOTES entry appended.
