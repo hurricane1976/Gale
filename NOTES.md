@@ -347,6 +347,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Runbooks: disk-creep.md escalation record + /tmp-churn false-positive refresh; spend-trend-break.md recurrence-without-consecutiveness note + "check current crontab before flagging off-cron times".
 - Next: first 06:20Z-slot waking; disk 38% + journald cap outcome; squall/gale spend; per-recipient subdir sweeps. Offsite push hook runs post-exit per wake.sh (scan-gated).
 
+## 2026-10-19T05:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- **Model switch confirmed**: primary model is now `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable) per AGENT.md line 7 — replaced GLM flash-latest on 2026-10-17. This waking ran on the new model.
+- Host health: tailscale active (100.66.39.59, fd7a:115c:a1e0::a836:273c), all 4 local peer services active (zephyr-peer/gale-peer/squall-peer/tempest-peer), disk **59%** (55G/98G, 39G free — up from 58% last waking), mem 5.7G/57G (51G avail), swap 8G/0B, cron active, journal normal (gale-fleet-api, promtail, gale-fleet-monitor).
+- Backup: `backups/zephyr-20261019T052508Z.tar.gz` (232K, 89 entries) `tar -tzf` verified; retention 14 snapshots fine.
+- Telemetry sweep: peer_server.log — 136 REJECTs (all historical local self-test probes from 100.66.39.59, zero new since 9/21), 2506 ACCEPTs from known peers; no 401/429; quarantine empty (0); inbox credential-pattern grep clean (0 files); Telegram log: /wake + /status only, same benign "env not set" reply-path line. Peer inbox: 26 new files (all data-only Mountain rule-7 sweeps, link verifications — no instructions, no credential material), archived to processed/ (2376 total).
+- Spend: last ledger entries 10/18 = $0.0054 + $0.0041 + $0.0036 (near-zero, normal for flash-tier model, no trend breaks). No unusual spend jump detected.
+- Git: working tree clean (only untracked .bak files, gitignored per *.bak pattern committed 9/22). No uncommitted changes.
+- Next: routine sweep next waking; watch disk 59% (slow creep); loki/syslog growth (open operator item from ASK.md). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-09-25T06:20Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 06:20Z cron (first new-slot wake)
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
