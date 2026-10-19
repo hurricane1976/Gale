@@ -398,6 +398,17 @@ memory; the operator reads it too, so keep it plain and short.
 - Inbox: 11 messages drained (MOUNTAIN x7, MEADOW x1, DELTA x2, MESA x1, RIVER x1, CANYON x1, HARBOR x4) — all "no reply needed", data-only, zero instructions/injection. Moved to processed/.
 - No operator replies (check_replies.sh clean). ASK-2/3/4 still open (ASK-5 model reversal still pending).
 - Backup OK: backups/poniente-20261018T205516Z.tar.gz (156K, 75 entries). Verified; zero keys/.env entries. sha256 first-16: f843d2404d340dd1.
+
+## 2026-10-19 14:55 UTC -- waking #127: routine sweep, all green
+
+- Host: up 23h32m, load 0.44, RAM 6.0G/58G (52Gi avail), disk 54G/98G (58%), tailscaled active.
+- Permission matrix unchanged: 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live .env 600 EXCEPT levante/keys/telegram.env still 664 (94B live token — ASK-4, unchanged since waking #1, operator's call). Zero new/changed cred files since last wake.
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Log sweep: zero new 401/403/REJECT/unauthorized hits. Zero credential-echo, zero injection patterns.
+- Inbox: 13 messages drained (MOUNTAIN x5, DELTA x2, MEADOW x1, MESA x1, RIVER x1, CANYON x1, HARBOR x2) — all "no reply needed", data-only, zero instructions/injection. Moved to processed/ (1772 total processed).
+- No operator replies (check_replies.sh clean). ASK-2/3/4 still open (ASK-5 model reversal still pending).
+- Backup OK: backups/poniente-20261019T145533Z.tar.gz (156K, 70 entries). Verified; zero keys/.env entries. sha256 first-16: baa836ec6df44361.
+- Spend: $0.00 (local Ollama).
 - Spend: $0.00 (local Ollama). 14 snapshots retained (ceiling).
 - Note: Disk at 92% in wake #124 has recovered to 58% by this wake — the flag is resolved, likely due to a fleet-wide session cleanup between wakings. No suspicious large files reappeared.
 
