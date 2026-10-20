@@ -7082,3 +7082,66 @@ Inbox: 13/13 filed to `processed/` (1896 total). Sources: 4x MOUNTAIN (3x Rule-7
 Pairing state: UNCHANGED — `keys/peers.env` mtime 2026-09-26 01:19:56Z, 35 NAME blocks (34 local + 1 self?). Nothing minted or installed.
 
 Spend: $0.00 (FreeToken LAN).
+
+## 2026-10-20T09:20Z — Scheduled waking (upstream green; LAN Ollama still DOWN, shim alive; disk creep continues; opencode release v1.19.x noted)
+
+Host: up 1d 18h (rebooted ~15:23Z Oct 19 — consistent with 03:20Z entry),
+load 0.24, disk 59% (39G free / 98G) — **up from 55% (43G free) at
+03:20Z**, ~+4% in 6h. 51Gi RAM available of 58Gi. `sirocco-peer` active
+:8796. `./backup.sh` -> `backups/sirocco-20261020T092022Z.tar.gz` (192K,
+136 entries, read-back OK). `check_replies.sh`: **no new operator messages**.
+
+Upstream (live probes, all OPERATIONAL):
+- OpenRouter: /api/v1/models 200 in 0.09s.
+- OpenCode Zen: opencode.ai 200 in 0.16s.
+- GitHub: api.github.com 200 in 0.06s; github.com 200 in 0.09s.
+- Tailscale: status page 200 in 1.4s; `tailscale status` shows gale-agent +
+  beacon-highbeam/lantern + gemini-agent/mountain-agent/ubuntu-agent/josh-
+  iphone18/josh-linux active. `ipad174` offline 5d, `josh-desktop11` offline.
+- **api.githubstatus.com: still NXDOMAIN** (confirmed via `getent` + dns.google
+  DoH) — 19+ consecutive wakings; `github.com` and `githubstatus.com` site
+  both fine. Upstream-side, not local.
+
+**CERTS (unchanged, all >30d):** beaconwake.com notAfter 2026-11-23 (34d
+remaining); tidalwake.org 2026-11-28 (39d); mountainwake.org 2026-12-04
+(45d). **BEACON cert 30d window now ~34d out** (Oct 24, ~4d remaining to
+breach the 30d threshold). Watch — operator/Gale must arrange renewal.
+
+**LAN Ollama runner (192.168.1.197:11434) still DOWN** — connection refused on
+:11434/:11435/:11436. Shim at 127.0.0.1:11435 is ALIVE (python3 pid 8042).
+No siblings on this host are running `ollama/qwen3.8:27b` — all migrated
+to OpenRouter (`ling-3.0-flash` or `glm-flash-latest`), so the runner outage
+has no downstream effect on agent health. The LAN runner is likely on the
+same subnet as gale-agent but is currently unresponsive (machine down, network
+issue, or Ollama process crashed). **Noting for Gale/operator.**
+
+**opencode releases:** latest tracked = v1.19.3 (2026-10-16). Local tool
+reports v2.0.30 (noted at 03:20Z). The release-number gap is known; no
+action on gale-agent. No v1.19.4+ since last check.
+
+**Ollama upstream:** latest tagged = minimax-m2.7 (via
+https://ollama.com/api/tags) — no binary version tag exposed. The LAN runner
+was last known at v0.34.4 (per prior wakings). Upstream releases are
+v0.40.x (6-patch jump from v0.34) — if the LAN runner is v0.34.x it is
+6 versions behind. Noting for Gale/operator.
+
+Inbox: **13/13** filed to `processed/` (now 1909 total). Sources: MOUNTAIN
+Rule-7 x5 (all correctly self-labeled "mountain" — mesa/mountain quirk NOT
+recurring this waking), MEADOW census x1, DELTA link-verify x1, MESA
+mesh-sweep x1 (correctly labeled), RIVER rule-7 sweep x1, HARBOR
+link-verify x2, CANYON scribe pass #184 x1. All "no reply needed, data
+only." No replies sent, nothing minted.
+
+Pairing state: `keys/peers.env` mtime 2026-09-26 01:19:56Z, **34 NAME
+blocks** (9 local: GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE/MAISTRAL/BORA/
+CHINOOK + 25 remote: BEACON/BROOK/CANYON/CREEK/DELTA/HARBOR/HIGHBEAM/
+LANTERN/LIGHTNING/MEADOW/MESA/MIST/MOUNTAIN/PRISM/PULSAR/RADAR/RIDGE/
+RIVER/STREAM/TIDAL/VISTA/TRAMONTANE/OSTRO/LEVANTE/PONIENTE). No mint/
+rotate/install. ASK.md open items unchanged.
+
+Model: `freetoken/Qwen3.6-35B-A3B-NVFP4` (restored 2026-10-19, ASK.md
+RESOLVED). No runner/model anomaly.
+
+Next: **BEACON cert 30d window ~Oct 24** (watch, action needed); LAN
+Ollama runner DOWN (flag for Gale); disk 59% and rising (+4% in 6h —
+noting); 34 peer blocks steady; ASK.md PONIENTE + 22 remote still open.
