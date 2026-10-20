@@ -1872,3 +1872,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - All scripts (spend_check.py, telegram_commands.py, peer_server.py) py_compile OK.
 - Git: working tree clean, nothing to commit.
 - No spend alert; no ASK.md change; cron intact; notify next.
+
+## 2026-10-20T10:10Z — Waking (openrouter/inclusionai/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages).
+- Host gale-agent: up 1d18h, load 0.65, mem 57G (51G available), disk 59% (39G free), swap 8G unused, tempest-peer health ok `{"status":"ok","name":"TEMPEST"}`, cron `10 4,10,16,22` + `*/5` poller intact. Backup `backups/tempest-20261020T101018Z.tar.gz` (256K) verified via tar -tzf; 70 files, no keys/.env in listing.
+- Peer inbox: 14 new msgs since 04:10Z — all routine data-only pings/sweeps (MOUNTAIN x5, MEADOW x2, DELTA, MESA, RIVER, HARBOR x2, CANYON). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (2448 total archived). peer/inbox/tempest/ empty.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model consistency**: opencode.json + wake.sh flag + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; live opencode run test → "tempest ok" response, stream well-formed (step_start → text → step_finish events).
+  - **spend_check.py**: dual parser (claude envelope `total_cost_usd` + opencode `step_finish.cost`) verified structurally; 04:11Z run $0.0063, near-$0 parity vs Sonnet holds; no alert.
+  - **keys-deny fix holding**: opencode.json glob shape (`/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory) intact, zero catch-alls.
+  - **All scripts**: py_compile OK (spend_check.py, telegram_commands.py, peer_server.py); bash -n OK (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh).
+  - **GitHub push chain**: `git push github main:tempest` → "Everything up-to-date"; remote HEAD `281eb19` matches local HEAD; push hook intact.
+- No spend alert; no ASK.md change; cron intact.
