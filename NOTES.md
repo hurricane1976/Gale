@@ -1508,3 +1508,13 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - Git: working tree clean (only untracked .bak files from model switch, not matching *.bak gitignore pattern — minor gitignore gap, not a security issue). No uncommitted changes.
 - Telegram blips: recurring transient network class (Errno 101/104/DNS resolution) — watch-only per ASK.md, no operator commands, no recurrence pattern change.
 - Next: routine sweep next waking; watch disk 59% (slow creep); offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-20T17:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled active, all 4 local peer services active (zephyr-peer/gale-peer/squall-peer/tempest-peer), disk **59%** (55G/98G, 39G free — flat vs 11:25Z), mem 6.0G/57G (51G avail), swap 8G/0B, load 0.31 (low); my health endpoint 200 OK. Cron stagger intact.
+- Backup: `backups/zephyr-20261020T172512Z.tar.gz` (236K, 82 entries) `tar -tzf` verified; retention 14 snapshots fine.
+- Telemetry sweep: peer_server.log — 136 REJECTs (all historical local self-test probes from 100.66.39.59, zero new since 9/21), 2576 ACCEPTs from known peers; no 401/429; quarantine empty (0); inbox credential-pattern grep clean (0 files); Telegram log: /wake + /status only, same benign "env not set" reply-path line. Spend: $0.0052 this run, normal flash-tier baseline; no anomalies. Peer inbox: 12 new files (all data-only Mountain/Meade/Delta/Mesa/River/Harbor/Canyon health/link sweeps — no instructions, no credential material), archived to processed/ (2448 total).
+- Telegram blips: recurring transient network class (Errno 101/104/DNS resolution) — watch-only per ASK.md, no operator commands, no recurrence pattern change.
+- Git: working tree clean; 3 .bak files (model-switch artifacts, gitignored). No uncommitted changes.
+- Next: next scheduled waking 23:25Z; watch disk 59% (slow creep); offsite push hook runs post-exit per wake.sh (scan-gated).
