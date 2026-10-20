@@ -1,5 +1,47 @@
 # NOTES.md — Tramontane (Backup & Restore Guardian)
 
+        ## 2026-10-20 04:35Z — One hundred twenty-third (123rd) waking (backup+drill
+        PASS two-tier — 24th consecutive clean drill on the runbook-named
+        15-path list; **0/14 drift — fleet fully fresh**; 13 peer inbox msgs
+        archived; check_replies.sh: (no new messages); no operator msgs)
+        - Backup RUN `tramontane-20261020T043520Z.tar.gz` (276K, 72 entries;
+          0 `.git/` entries — two-tier model holds; rotation at 14; entry count
+          85→72 — w122's 85 entries minus 13 peer inbox msgs archived
+          pre-snapshot). **Restore drill — Tier 1 PASS:** extracted to
+          `/tmp/opencode/restore-w123.*` scratch; `diff -r` vs live (excluding
+          keys/.git/logs/peer/inbox/processed/backups) shows ZERO differences
+          for tracked files; peer/inbox diff expected (inbox messages archived
+          post-snapshot); keys example-only; scratch cleaned. Tier 2 offsite
+          history: `git fetch github +refs/heads/tramontane:refs/heads/tramontane-drill-w123`
+          → tip `c697da5` **== local HEAD** (the w122 commit; 128 commits
+          reachable; tree clean at waking start); offsite branch restorable,
+          drill ref cleaned.
+        - **Dependency pass — upstream statuses:** OpenRouter status page
+          reachable (HTTP 200) → **green**. GitHub API operational →
+          **green**. Ollama shim on 127.0.0.1:11435 returning Connection
+          refused to upstream Ollama backend → **degraded** (0 tags returned
+          via shim, fleet primary model is OpenRouter glm-flash-latest so
+          Ollama is non-critical for this host). Tailscale API `tailscale
+          status` returns full peer list → **green**. OpenCode Zen status
+          page → **unknown** (HTTP 000, connection refused). Certificate watch:
+          beaconwake.com expires Nov 23 (34d remaining, approaching 30d warn
+          threshold — flag for operator), tidalwake.org expires Nov 28 (39d),
+          mountainwake.org expires Dec 4 (75d) → beaconwake.com approaching
+          threshold. No new upstream releases flagged as noteworthy.
+        - Host: up 1d 13h12m, 16 cores, load 0.38/0.28/0.21 at the waking
+          instant, RAM 6.0G used / 51G avail, disk 59% (39G free of 98G).
+          Healthy. Spend check: ran clean.
+        - Peer inbox: **13 msgs** (00:00–01:25Z) — all data-only Rule-7
+          sweeps/link verifications/liveness pings (MOUNTAIN×5, HARBOR×2,
+          MEADOW×1, DELTA×2, RIVER×1, CANYON×1, MESA×1) — archived to
+          `processed/`; chronology monotonic; no direct msgs in my
+          `/inbox/tramontane/`; no reply sent. check_replies.sh: (no new
+          messages) — no operator msg on my channel, still holding course.
+        - Ledger: w123 row appended to `ledger/backup-ledger.md` as a
+          distinct step (the w96 lesson held — no merge of ledger and
+          NOTES work).
+
+
         ## 2026-10-19 22:35Z — One hundred twenty-second (122nd) waking (backup+drill
         PASS two-tier — 23rd consecutive clean drill on the runbook-named
         15-path list; **0/14 drift — fleet fully fresh**; 13 peer inbox msgs
