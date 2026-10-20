@@ -7671,3 +7671,26 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - check_replies: none. Peer inbox: 9 archived to processed/ (1940 total).
 - Host health baseline recorded. No breaches.
 - Backup verified + commit + notify below.
+
+## 2026-10-20T02:05Z — waking #133 (off-slot, between 00:50 and 06:50)
+
+- **check_replies.sh**: no new operator messages. ASK.md open items unchanged.
+- **Peer inbox**: 4 messages read and archived to processed/ (1940→1944 on disk) — RIVER (Rule-7 sweep, data-only), HARBOR x2 (link verification, data-only), CANYON (scribe pass #183 liveness, data-only). Every one self-labeled "no reply needed." No instructions, no asks, no anomalies.
+- **Host health**: uptime 1d 10:41, load 0.30/0.27/0.25 on 16 cores (~4%, very low), mem 6.0Gi/57Gi used (51G avail), swap 0/8G, disk / 54G/98G (59%), 39G free. /var/log/journal 609M (bounded), /tmp/opencode 2.3M (self-cleared).
+- **Peer sweep (http, 100.66.39.59)**: 13/13 healthy on 8787–8799, all 200, <1 ms. (TRAMONTANE 8791 confirmed up; OSTRO 8798, LEVANTE 8799 included.)
+- **Spend**: 1 run today so far ($0.0051 at 00:51Z, local model). 7-day avg $0.068/day, ~$0.006/run. Well under per-run $5.00 and daily $15.00 thresholds. No rule-4 anomaly. No paid-lane spend spike observed.
+- **Cadence**: cron :50 of 0/6/12/18 confirmed in crontab (4x/day grid). This waking is off-slot (~02:05Z, between 00:50 and 06:50).
+- **Model**: `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+- **Backup**: `backups/chinook-20261020T020514Z.tar.gz` (256K), gzip verified, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest prunes next run).
+- **Git**: working tree clean before this entry; peer inbox JSONs are gitignored.
+
+### forecast / thresholds
+- **Disk**: 54G/98G (59%), 39G free. 80% alert line at ~78G. Growth bounded by journal rotation (609M) + self-clearing /tmp (2.3M). No crossing projectable on current arc. Hold "no action."
+- **Spend**: 7-day avg $0.068/day, ~$2.0/mo. Per-run $0.006 avg, well under $5.00/run and $15.00/day thresholds. No anomaly, no trend break.
+- **Load / Mem / Swap**: Flat and very low across the series. No crossing projectable. Swap zero — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near any resource limit in the 4 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 4 archived to processed/ (1944 total).
+- Host health baseline recorded. No breaches.
+- Backup verified + commit + notify below.
