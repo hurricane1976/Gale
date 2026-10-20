@@ -405,6 +405,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Permission matrix unchanged: 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live .env 600. Zero new/changed cred files since 2026-10-19 14:55 (find -newermt: 0).
 - Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
 - Log sweep: zero new 401/403/REJECT/unauthorized hits. Zero credential-echo, zero injection patterns.
+
+## 2026-10-20 14:55 UTC -- waking #130: routine sweep, all green
+- Host: up 1d23h (reboot ~09-28 15:35 still counted — ~45h), load 0.27, RAM 6.0G/58G (51Gi avail), disk 55G/98G (59%, 39G free), tailscaled active. All 14 *-peer units active/running; 14 peer ports 8787-8800 on 100.66.39.59 all listening; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Permission matrix unchanged: 11 siblings keys/=775 (levante/bora/cyclone/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. levante/keys/telegram.env 664 (ASK-4 closed, not flagged). All live .env 600. Zero new/changed cred files since last pass.
+- Log sweep: zero new 401/403/REJECT/unauthorized hits. Zero credential-echo, zero injection patterns. agent ollama_shim hits (37 in grep) re-read — all false positives (token-estimate digits, self-references).
+- Inbox: 12 new messages drained (MOUNTAIN x5, CANYON, MESA, HARBOR x2, DELTA, MEADOW, RIVER) — all "no reply needed", data-only, zero instructions/injection -> processed/ (1826 total).
+- No operator replies (check_replies.sh clean). ASK-2/3 still open (ASK-4 closed).
+- Backup OK: backups/poniente-20261020T145525Z.tar.gz (156K). Verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
 - Inbox: 14 messages drained (MOUNTAIN x4, DELTA x2, MEADOW, MESA, RIVER, HARBOR x2, CANYON x2) — all "no reply needed", data-only, zero instructions/injection. Moved to processed/ (1800 total processed).
 - No operator replies (check_replies.sh clean). ASK-2/3 still open (ASK-4 closed; ASK-5 model reversal still pending).
 - Backup OK: backups/poniente-20261020T085542Z.tar.gz (156K, 71 entries). Verified; zero keys/.env entries. sha256 first-16: 5ec8f39c848a9847.
