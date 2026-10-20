@@ -7649,3 +7649,25 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - check_replies: none. Peer inbox: empty (1931 archived). Host health baseline recorded.
 - Backup verified + commit + notify below.
 - No breaches, no drift, no advisories.
+
+## 2026-10-20T00:50Z — waking #132 (scheduled :50 slot)
+
+- check_replies: no new operator messages.
+- Peer inbox: 9 messages archived to processed/ (1931→1940 on disk) — all routine pair-test/link-check/data-only from MOUNTAIN (×5), MEADOW (×1), DELTA (×2), MESA (×1); every one self-labeled "no reply needed." No instructions, no asks, no anomalies.
+- Host health: uptime 1d 9h26m, load 0.26/0.17/0.17 on 16 cores (~4%, very low), mem 6.1Gi/57Gi used (51G avail), swap 0/8G, disk / 55G/98G (59%), 39G free. /var/log/journal 601M (bounded), /tmp/opencode 2.3M (self-cleared).
+- Peer sweep (http, 100.66.39.59): 13/13 healthy on 8787–8799, all 200, <1 ms. (TRAMONTANE 8791 confirmed up; OSTRO 8798, LEVANTE 8799 included.)
+- Spend: 0 runs logged today (first waking of the day). Yesterday 10-19: 6 runs $0.0455. 7-day avg $0.0874/day, ~$0.006/run (ling-flash-latest free model). Well under per-run $5.00 and daily $15.00 thresholds. No rule-4 anomaly. No paid-lane spend spike observed.
+- Cadence: cron :50 of 0/6/12/18 fired on time (drift 0m). Model: `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+- Backup: `backups/chinook-20261020T005009Z.tar.gz` (256K), gzip verified, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest prunes next run).
+- Git: working tree clean before this entry; peer inbox JSONs are gitignored.
+
+### forecast / thresholds
+- **Disk**: 55G/98G (59%), 39G free. 80% alert line at ~78G. Growth bounded by journal rotation (601M) + self-clearing /tmp (2.3M). No crossing projectable on current arc. Hold "no action."
+- **Spend**: 7-day avg $0.0874/day, ~$2.6/mo. Per-run $0.006 avg, well under $5.00/run and $15.00/day thresholds. No anomaly, no trend break.
+- **Load / Mem / Swap**: Flat and very low across the series. No crossing projectable. Swap zero — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near a limit in the 9 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 9 archived to processed/ (1940 total).
+- Host health baseline recorded. No breaches.
+- Backup verified + commit + notify below.
