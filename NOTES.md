@@ -1,5 +1,17 @@
 # NOTES.md — Vortex
 
+## 2026-10-20T23:00Z -- scheduled waking (23:00 UTC slot; w111, fourth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 14 messages triaged, all Oct 20 18:00-19:16Z. ONE QUARANTINED: `quarantine/20261020T182214Z-MOUNTAIN-61e9e7da.json` (+ .reason) — Mesa-pattern (transport-authenticated MOUNTAIN, body first-person "mesa routine mesh sweep 18:22:13 UTC"; genuine MESA link-verify follows 18:22:26Z, identity-consistent). No credentials, no links, no instructions. Other 13 benign (MOUNTAIN sweeps + latency, DELTA/MEADOW/RIVER/CANYON/HARBOR probes) → `processed/`. Quarantine now 91 Mesa-pattern files (standing defect since 2026-09-23, ~6h cadence, already escalated). Peer log: 0 new 401/rejects.
+- **Host grew: 14 agents now live here.** Peer servers 8787-8800 tailnet-only: gale zephyr squall tempest vortex cyclone + NEW siblings maistral(:8795) chinook(:8793) tramontane(:8791) bora(:8797) ostro(:8798) levante(:8799) poniente(:8800) sirocco(:8796, PID started later than the 2026-10-18 15:25Z reboot that spawned the rest). AGENT.md co-resident list (line 109) is stale — flagging in ASK.md, not editing role text myself (rule 6).
+- **w110 drift report corrected** (ASK.md): firewalla-control(:8791)/fleet-api(:8793) remain 127.0.0.1-only as designed; w110 conflated the new tramontane/chinook tailnet binds with those services. No actual exposure drift. nginx :8090 unchanged baseline. Localhost extras (ollama_api :8794, gale_push :8795) localhost-only, fine. ufw still absent (baseline). Sandboxing intact (ProtectSystem=strict, NoNewPrivileges, PrivateTmp on gale-firewalla, gale-fleet-api, cyclone-peer spot-checks).
+- **Hygiene scan (all 14 local dirs + read-only):** keys/ perms all 600 except by-design (`agent/keys/github_deploy_key.pub` 644) and **levante/keys/telegram.env 664 (untracked — perms drift vs house 600, their repo, reported only)**. Secret-pattern scan of tracked files + history: **poniente commits keys/peers.env + 33 .bak snapshots locally** (commit 2026-10-17); offsite `github/poniente` branch last pushed 09-27 contains only `keys/*.example` — nothing leaked offsite yet, one push away. Poniente's 122 tracked logs hit patterns but all values are 4-char redaction prefixes or the canonical AWS example key (verified by length histogram + distinct-value check; no real tokens). Gale's known `ghs_` transcript hit unchanged (open ASK.md item). My own repo's 2 hits = ASK/NOTES text mentions of token shapes, no values. Detailed item in ASK.md; data-only note sent to PONIENTE.
+- Host: disk 55G/98G (59%), RAM 51Gi avail, load 0.22, uptime 2d7h (rebooted 2026-10-18 15:25Z). Tailscale: 13 nodes, all expected, none unknown.
+- Backup: `backups/vortex-20261020T230025Z.tar.gz` (260K, 260 entries), read-back verified (AGENT.md content confirmed).
+- Git: ASK/NOTES updates + quarantine reason committed this waking (inbox/quarantine gitignored).
+- Verdict: mostly clean; 1 Mesa quarantine (standing defect). Two operator items: poniente local keys-in-git (no offsite leak yet) + levante telegram.env perms; w110 drift report corrected — no real exposure drift.
+
 ## 2026-10-19T11:01Z -- scheduled waking (11:00 UTC slot; w110, third on Ling 3.0 Flash)
 
 - Operator replies: none (`check_replies.sh` clean).

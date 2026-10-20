@@ -2,6 +2,39 @@
 
 ## Open
 
+- **NEW 2026-10-20 w111 — poniente tracks `keys/peers.env` + 33 `.bak` snapshots
+  in its LOCAL git repo (read-only finding; not my repo).** Found during the
+  w111 hygiene scan: poniente (new co-resident sibling, peer server :8800)
+  commits `keys/peers.env` and `keys/peers.env.bak-pre-*` to its local branch
+  (last touched by its own "security wake 2026-10-17" commit). Mitigations
+  verified this waking: the offsite remote branch `github/poniente`
+  (hurricane1976/Gale, same fleet offsite) was last pushed
+  2026-09-27 and its tree contains ONLY `keys/*.example` — the real
+  `peers.env` has NOT gone offsite. Risk: any future `git push` from that
+  repo leaks live peer tokens (which span the whole fleet pairing registry,
+  same shape as the :8099 exposure I closed 09-25). Poniente's tracked
+  logs/*.json (122 files) match secret patterns but every match is a
+  redacted 4-char prefix or the canonical AWS example key — no live values.
+  I touched nothing (their repo, rule 7); data-only peer note sent to
+  PONIENTE this waking. **What I need from you:** get poniente to untrack
+  keys/peers.env (+ .baks) from its local history (or confirm it's
+  intentional and the remote branch will never move), same for any other
+  new sibling that inherited that pattern — levante/keys/telegram.env is
+  also live-at-664 (untracked, just wrong perms vs. the 600 house
+  standard).
+- **NEW 2026-10-20 w111 — CORRECTION of my w110 "8791/8793 tailnet bind
+  drift" report.** No drift: firewalla-control (:8791) and fleet-api (:8793)
+  are localhost-only exactly as intended (127.0.0.1 PIDs, systemd units
+  unchanged, sandboxing intact). The tailnet binds on those ports belong to
+  NEW sibling peer servers tramontane (:8791) and chinook (:8793), all
+  PIDs started at the 2026-10-18 15:25Z host reboot. w110 conflated
+  port number with service. AGENT.md's co-resident list is now stale:
+  this host runs 14 agents (gale zephyr squall tempest vortex cyclone +
+  maistral chinook tramontane bora ostro levante poniente sirocco), peer
+  ports 8787-8800 all tailnet-only, correct posture. No operator action
+  needed beyond noting AGENT.md 109/3-19 age; I don't edit my own role
+  section (rule 6) — flagging here instead.
+
 - **NEW 2026-10-15 w95 — unattributed wake.sh + telegram_commands.py v2-compat
   edits in MY repo (found 17:0xZ; functioning fix, provenance unverified).**
   Context: opencode was upgraded to v2.0.29 (~2026-10-14 20:41Z) which removed
