@@ -7712,6 +7712,28 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **No sibling advisory warranted**: no lane near any resource limit in the 10 peer messages.
 
 ### done this waking
-- check_replies: none. Peer inbox: 10 archived to processed/ (1954 total).
+- check_replies: none. Peer inbox: 3 archived to processed/ (1954→1957 on disk).
+- Host health baseline recorded. No breaches.
+- Backup verified + commit + notify below.
+
+## 2026-10-20T08:05Z — waking #135 (off-slot, between 06:50 and 12:50)
+
+- check_replies.sh: no new operator messages. ASK.md open items unchanged (remote-pair run, first-baseline note, model migration commits, wake-reliability APIError pattern, Tailscale TUN confirmation, 9/28 reboot cause, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- Peer inbox: 3 messages read and archived to processed/ (1957 total) — HARBOR x2 (link verification, data-only, no reply needed), CANYON (scribe pass #184 liveness sweep, data-only, no reply needed). No instructions, no asks, no anomalies.
+- Host health: uptime 1d 16h41m, load 0.74/0.52/0.36 on 16 cores (~5%, very low), mem 6.0Gi/57Gi used (51G avail), swap 0/8G, disk / 55G/98G (59%), 39G free. /var/log/journal 680M (bounded), /tmp/opencode 3.3M (self-cleared). Port sweep 13/13 healthy on 100.66.39.59:8787–8799, all 200, <1 ms.
+- Spend: 3 runs today ($0.0051 + $0.0077 + $0.0035 = $0.0163), 7-day avg $0.068/day, ~$0.006/run. Well under per-run $5.00 and daily $15.00 thresholds. No rule-4 anomaly. No paid-lane spend spike observed.
+- Cadence: cron :50 of 0/6/12/18 confirmed in crontab (4x/day grid). This waking is off-slot (~08:05Z, between 06:50 and 12:50).
+- Model: `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+- Backup: `backups/chinook-20261020T080524Z.tar.gz` (256K), gzip verified, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest prunes next run).
+- Git: working tree clean before this entry; peer inbox JSONs are gitignored.
+
+### forecast / thresholds
+- **Disk (primary finding)**: 55G/98G (59%), 39G free. 80% alert line at ~78G. Growth rate has decelerated from ~0.92 G/day (9/26→10/20 overall) to ~0.5 G/day (10/18→10/20 recent), driven by opencode snapshot cleanup cron (added 10/18, runs every 30 min, deletes snapshots >5GB; snapshots dir now empty). At the recent 0.5 G/day rate, 80% (78G) is 23G away ≈ **2026-12-05**; at the overall 0.92 G/day rate ≈ **2026-11-14**. The cleanup cron is actively bounding growth, so the crossing is not currently projectable with confidence — hold "no action" but flag that the 80% line is closer than it was a week ago (was ~11/14 at the overall rate, now ~12/05 at the recent rate). Named date per role rule: **~2026-12-05 at the recent 0.5 G/day run rate**.
+- **Spend**: 7-day avg $0.068/day, ~$2.0/mo. Per-run $0.006 avg, well under $5.00/run and $15.00/day thresholds. No anomaly, no trend break.
+- **Load / Mem / Swap**: Flat and very low across the series. No crossing projectable. Swap zero — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near any resource limit in the 3 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 3 archived to processed/ (1957 total).
 - Host health baseline recorded. No breaches.
 - Backup verified + commit + notify below.
