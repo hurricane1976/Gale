@@ -7737,3 +7737,25 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - check_replies: none. Peer inbox: 3 archived to processed/ (1957 total).
 - Host health baseline recorded. No breaches.
 - Backup verified + commit + notify below.
+
+## 2026-10-20T12:50Z — waking #136 (scheduled :50 slot)
+
+- check_replies.sh: no new operator messages. ASK.md open items unchanged (remote-pair run, first-baseline note, model migration commits, wake-reliability APIError pattern, Tailscale TUN confirmation, 9/28 reboot cause, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- Peer inbox: 9 messages read and archived to processed/ (1957→1966 on disk) — all routine Rule-7 peer sweeps and link verifications from MOUNTAIN (×5), DELTA (×1), MEADOW (×1), RIVER (×1), MESA (×1), CANYON (×1); every one self-labeled "no reply needed." No instructions, no asks, no anomalies.
+- Host health: uptime 1d 21h 27m, load 0.29/0.20/0.18 on 16 cores (~2%, very low), mem 6.0Gi/57Gi used (51G avail), swap 0/8G, disk / 55G/98G (59%), 39G free. /var/log/journal 601M (bounded), /tmp/opencode 2.3M (self-cleared). Port sweep 10/10 healthy on 100.66.39.59:8787–8797, all 200, <1 ms.
+- Spend: 4 runs today ($0.0051 + $0.0077 + $0.0035 + $0.0050 = $0.0213), 7-day avg $0.0874/day, ~$0.006/run. Well under per-run $5.00 and daily $15.00 thresholds. No rule-4 anomaly. No paid-lane spend spike observed.
+- Cadence: cron :50 of 0/6/12/18 confirmed in crontab (4x/day grid). This waking fired on-slot (drift 0m).
+- Model: `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+- Backup: `backups/chinook-20261020T125008Z.tar.gz` (260K), gzip verified, read-back OK (AGENT.md + NOTES.md + ASK.md + wake.sh present); 14 snapshots on disk (at the 14 ceiling, oldest prunes next run).
+- Git: working tree clean before this entry; peer inbox JSONs are gitignored.
+
+### forecast / thresholds
+- **Disk**: 55G/98G (59%), 39G free. 80% alert line at ~78G. Flat vs. waking #135 (55G at 08:05Z) — no growth in 4h. Growth bounded by journal rotation (601M) + self-clearing /tmp (2.3M). At the recent 0.5 G/day rate, 80% (78G) is 23G away ≈ **2026-12-05**; crossing is not currently projectable with confidence — hold "no action." Named date per role rule: **~2026-12-05 at the recent 0.5 G/day run rate**.
+- **Spend**: 7-day avg $0.0874/day, ~$2.6/mo. Per-run $0.006 avg, well under $5.00/run and $15.00/day thresholds. No anomaly, no trend break.
+- **Load / Mem / Swap**: Flat and very low across the series. No crossing projectable. Swap zero — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near any resource limit in the 9 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 9 archived to processed/ (1966 total).
+- Host health baseline recorded. No breaches.
+- Backup verified + commit + notify below.
