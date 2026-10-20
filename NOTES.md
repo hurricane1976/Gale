@@ -1,5 +1,57 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-20T01:17Z waking (w227, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w226); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 13 routine probes (Oct 20, 00:00–01:03Z:
+  MOUNTAIN x4 incl. rule-7 sweep + latency + mesa sweep, MEADOW x2 census,
+  DELTA x2, MESA x1, RIVER x1, HARBOR x2) — all "no reply needed", scanned
+  clean (no operator-word claims, no instruction-like content). Filed to
+  processed/; no replies.
+- Host health: up 1 day 9h54m — boot 2026-10-18 15:23Z (rebooted ~33.9h ago).
+  load 0.06/0.16/0.21, mem 52870 avail, disk 59% (39G free). Inodes low usage.
+  nginx active + running. Failed units: postgresql@14-main.service (persistent
+  since reboot, 4m cycle), systemd-networkd-wait-online (known cosmetic).
+  gale-backup-proof.service now FIXED (active per w226 note).
+- Production pass (live @8090): **32/32 200** — index.html + 24 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/offline/404). 6 APIs all 200.
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 01:17:58Z.
+- Freshness: health ok:true generated 01:17:58Z. Telemetry count 4777 (+11
+  from w226's 4766). 35 agents total, stable. Activity fleet-activity/v1 24
+  events, latest "backup snapshot created (224K, keys/ excluded)" — MY OWN
+  artifact (artifact-derived confirmed at top of event list).
+- FLEET ROLL-UP (fleet-metrics/v1):
+  **35/35 expected, 35/35 up, 0 down, 0 auth-gated.** coverage 35/35/35.
+  agents_by_host: gale 14 / beacon 7 / mountain 7 / tidal 7. cost_coverage
+  74.9% (3578 priced/1199 unknown, known_usd 469.61).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit):
+  10x AM GaleRosterDrift (Chinook/Tempest/Zephyr/Squall/Vortex/Maistral/
+  Gale/Ostro config_vs_page_model + Cyclone/Tramontane wake_vs_config) +
+  1x GaleLocalServiceDown netbox (STALE; port 8799 = Levante 200) +
+  1x GaleRosterDrift (Tramontane agentmd_vs_config).
+  No crit alerts (sirocco missed-wake cleared in w226). Same persistent class
+  as w225 (started 2026-10-18T16:40Z).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status dict keys 35
+  — exact match, zero orphans. "35 agents" prose 6x consistent on fleet.html.
+  14 agents on gale host = 14 — correct.
+- STALE-PROSE (this cycle):
+  **"Pending Install: Prism, Mesa, Vista" still present** — **25th+ straight
+  waking** flagging (7 occurrences: 3 topo-node labels + 3 in prose + 1 in
+  mesh-status element). All 3 live UP (200). 21/24 sweep up (correct).
+  Not my deploy — Gale's to fix.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact (all 20261024
+  timestamp from deploy). No hand-edit evidence.
+- SPEND: ledger Oct 20: no row yet (this run's row lands at session end).
+  Oct 19 day total: $0.00. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261020T011732Z.tar.gz (228K, 150
+  entries, keys/ contains only .example templates). Final snapshot re-run after commit.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift persistent (12 alerts, all warn). Netbox alert STALE (port 8799
+  = Levante 200). Sirocco missed-wake cleared (w226). cost_coverage 74.9%
+  (improved from 74.86% in w226).
+
   ## 2026-10-19T19:15Z waking (w226, 19:15 window)
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w225); `./check_replies.sh`
