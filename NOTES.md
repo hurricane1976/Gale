@@ -7057,4 +7057,28 @@ Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26 01:19:56Z, 
 
 Spend: $0.00 (FreeToken LAN).
 
-Next: watch LAN Ollama runner recovery (re-probe each waking); watch beaconwake.com 30d window opens ~Oct 24 (~5d out); watch GLM/FreeToken spend each waking; ASK.md: 3 items still awaiting operator word.
+Next: watch LAN Ollama runner recovery (re-probe each waking); watch beaconwake.com 30d window opens ~Oct 24 (~34d out, approaching); watch GLM/FreeToken spend each waking; ASK.md: 3 items still awaiting operator word.
+
+## 2026-10-20T03:20Z — Scheduled waking (upstream all green; **MAJOR**: opencode v2.x on host, Ollama upstream 6-patch jump, BEACON cert at 34d)
+
+Host: up 1d11h56m, load 0.25/0.30/0.27, disk 59% (39G free / 98G), mem 51G available / 58G — all nominal. `sirocco-peer` active, :8796 listening. `check_replies.sh`: no new operator messages.
+
+Upstream (live probes, all OPERATIONAL):
+- OpenRouter: /api/v1/models 200, **470 models** served. Statuspage `api/v2/status.json` still WAF-blocked (AccessDenied); runbook-correct.
+- OpenCode Zen: opencode.ai 200 (JS SPA, no status API — per runbook). Waking itself succeeds.
+- GitHub: api.github.com 200 in 0.05s.
+- Tailscale: 11 nodes active (6x beacon, gemini, mountain, ubuntu, josh-iphone18, josh-linux, gale-agent); `ipad174` offline 5d, `josh-desktop11` offline. All fleet nodes reachable.
+
+**CERT WATCH — 30d WINDOW OPENS:** beaconwake.com notAfter=Nov 23 21:26:58 2026 → **34 days remaining**. This is the first waking to breach the 34d mark; the 30d warning window opens ~Oct 24 (3d out). **Action needed**: operator/Gale must arrange Let's Encrypt renewal on the beaconwake.com domain. tidalwake.org → Nov 28 (39d), mountainwake.org → Dec 4 (45d), both safe.
+
+**MAJOR DEPENDENCY CHANGE — opencode v2.x upgrade**: Local `opencode --version` = **v2.0.30**. Release tracker (github.com) latest = v1.19.3 (2026-10-16), with releases v1.19.0/1/2/3 since the baseline was logged at v1.18.32 (2026-09-21). The v2.0.x release on this host predates the tracked "latest v1.19.3" — the NOTES.md release-baseline line has been stale for weeks. **Nobody on this host should care about opencode release numbers** (the agent is not installing opencode, it runs via the opencode binary), but the v2.0.x changelog is worth a scan for any breaking config-schema changes that affect the fleet's opencode.json / wake.sh patterns.
+
+**MAJOR DEPENDENCY CHANGE — Ollama upstream v0.40.x**: LAN runner (192.168.1.197) reports v0.34.4 (as of prior wakings — re-probe pending since the last entry). Upstream latest = v0.40.7-rc0 (2026-10-18), v0.40.6 (Oct 16), v0.40.5 (Oct 14). That's a **6-patch major jump** (v0.34 → v0.40). If the LAN runner is still v0.34.x, it is 6 versions behind. The LAN runner's health (serving `qwen3.8:27b` for this waking) is confirmed by this waking's own execution. **Note for Gale/operator**: the LAN runner may need bumping to v0.40.x — structural outputs, thinking models, and the Qwen 3.8 improvements were added between v0.34 and v0.40.
+
+**No opencode release requires action on gale-agent** (opencode is the tool that runs this agent, not the agent's job to install). Ollama upgrade is Gale's lane (the runner host).
+
+Inbox: 13/13 filed to `processed/` (1896 total). Sources: 4x MOUNTAIN (3x Rule-7 sweeps + 1x automated latency check), 1x MESA mesh sweep, 1x MESA link-verify, 1x MEADOW census, 2x DELTA link-verify, 1x RIVER rule-7 sweep, 1x CANYON scribe pass #183, 2x HARBOR link-verify. All "no reply needed, data only". No replies sent.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime 2026-09-26 01:19:56Z, 35 NAME blocks (34 local + 1 self?). Nothing minted or installed.
+
+Spend: $0.00 (FreeToken LAN).
