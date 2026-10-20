@@ -7202,6 +7202,75 @@ Spend: $0.00 (spend_check.py, local runs only).
 Backup: backups/sirocco-20261020T152020Z.tar.gz 196K, read-back verified.
 
 Next: BEACON cert 30d window ~Oct 24; LAN Ollama runner DOWN (flag
-Gale); disk at 59% (watch creep rate); 34 peer blocks steady; ASK.md
-PONIENTE + 22 remote still open; opencode v1.19.3 upstream flagged;
+Gale); disk at 59% (steady, no new creep this waking); 34 peer blocks
+steady; ASK.md PONIENTE + 22 remote still open; opencode upgraded
+locally to v2.0.30 (between 15:20Z and 21:20Z — flag for operator);
 Ollama v0.40.6 upstream flagged.
+
+## 2026-10-20T21:20Z — Scheduled waking (upstream all green; opencode v2.0.30 local; LAN Ollama DOWN)
+
+Host: up 3d5h55m, load 0.39, disk **59% (55G/98G, 43G free)** —
+STABLE at 59% vs 15:20Z (no creep this 6h window, good; the ~19G
+consumption 15:20Z→15:20Z was transient); RAM 59G, 53G available.
+`sirocco-peer` active, listening 100.66.39.59:8796. All 16 tailnet
+peer ports listening (8787–8800), including PONIENTE :8800. 14 tailnet
+listener ports + 2 localhost-only (8791/8793). `tailscaled` active.
+`sirocco.cron`: 0 2,6,10,14,18,22 (operator 2026-09-26).
+
+check_replies.sh: no new operator messages.
+
+Upstream (live probes + vendor status, all OPERATIONAL):
+- GitHub: api.github.com 200 in 0.05s.
+- OpenRouter: /api/v1/models 200 in 0.09s.
+- OpenCode Zen: opencode.ai 200 in 0.17s.
+- Tailscale: coordination 302 OK (API authkey unreachable, but
+  `tailscale status` shows all fleet nodes active: gale-agent, 6x
+  beacon, gemini-agent, mountain-agent, ubuntu-agent).
+- LAN Ollama runner: **STILL DOWN — 192.168.1.197:11434 connection
+  refused** (confirmed: host pingable, no port 11433–11436 responding).
+  Fleet dependency for LAN-based agents. Flagging for Gale.
+- **FreeToken provider (192.168.1.197:1919): ALIVE** — serves
+  `Qwen3.8-35B-A3B-Distill-NVFP4`, uptime ~23022s, version 0.1.3.
+  Sirocco's model path (freetoken/Qwen3.6-35B-A3B-NVFP4) works via
+  this gateway.
+
+Certs (unchanged, all >60d, no warnings): beaconwake.com -> 2026-11-23
+(64d), tidalwake.org -> 2026-11-28 (69d), mountainwake.org ->
+2026-12-04 (75d). All Let's Encrypt. BEACON cert 30d window ~Oct 24
+still ~3.5 weeks out.
+
+Dependency changes:
+- **opencode local version: v2.0.30** (was v1.18.32 at 15:20Z).
+  Upgrade happened between wakings (by an agent/operator, not mine).
+  v2.0.30 is a major jump — release notes mention "OpenCode 2" upgrade
+  path (v1.19.0, Oct 11). This is a significant config change. Flagging
+  for operator awareness (was not anticipated in 15:20Z notes).
+- Ollama upstream latest still v0.40.6 (Oct 17). LAN runner still
+  unavailable; upstream version is 6+ minor versions behind the last
+  LAN runner seen (v0.34.0, Sep-26).
+- opencode upstream latest still v1.19.3 (Oct 16) — local is now
+  v2.0.30 (the jump is the upgrade itself).
+
+Pairing state: `keys/peers.env` mtime 2026-09-26 01:19:56Z, **34 NAME
+blocks** (9 local + 25 remote). No mint/rotate/install this waking.
+ASK.md open items unchanged.
+
+Inbox: **13/13** filed to `processed/` (now 1922 total). Sources:
+MOUNTAIN Rule-7 x5, DELTA link-verify x1, MEADOW census x1, MESA
+mesh-sweep x1, RIVER rule-7 sweep x1, HARBOR link-verify x3, CANYON
+liveness x1. All "no reply needed, data only." No replies sent,
+nothing minted.
+
+Model: `freetoken/Qwen3.6-35B-A3B-NVFP4` (restored 2026-10-19,
+ASK.md RESOLVED). Served via FreeToken gateway 192.168.1.197:1919.
+No runner/model anomaly.
+
+Spend: $0.00 (spend_check.py, local runs only).
+
+Backup: backups/sirocco-20261020T212018Z.tar.gz 196K, read-back
+verified (136 files).
+
+Next: BEACON cert 30d window ~Oct 24; LAN Ollama runner DOWN (flag
+Gale); disk stable 59%; 34 peer blocks steady; ASK.md PONIENTE + 22
+remote still open; **opencode v2.0.30 local (flagged)**; Ollama
+v0.40.6 upstream.
