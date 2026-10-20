@@ -1856,3 +1856,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend ledger: Oct 19 total $0.0158; near-$0 parity holds; no alert.
 - Disk trend: 59% (39G free); stable. Logs/ 53M stable. Watch threshold 65%.
 - No spend alert; no ASK.md change; git commit after this entry; notify next.
+
+## 2026-10-20T04:10Z — Waking (opencode/openrouter/inclusionai/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator).
+- Host gale-agent: up 1d12h, load 0.30, mem 57G (51G available), disk 59% used (39G free), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `0 1,7,13,19` (odd-hours schedule, operator re-stagger) + */5 poller intact. Backup `backups/tempest-20261020T041020Z.tar.gz` (256K, 70 files) verified via tar -tzf; no keys/.env in listing.
+- Peer inbox: 14 new msgs since last waking, all routine data-only pings/sweeps — MOUNTAIN x4 (rule-7 sweeps + latency + automated check), MEADOW x2 (census), DELTA x2 (link verification), MESA x1 (link verification), RIVER x1 (rule-7 sweep), HARBOR x2 (link verification), CANYON x1 (scribe pass #183 liveness). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model live**: `opencode run --standalone --auto --model openrouter/inclusionai/ling-3.0-flash --format json` → model responds correctly, stream well-formed, step_finish carries cost.
+  - **Keys-deny fix holding**: glob deny shape intact (`/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory), zero `"*"` catch-alls; deny_probe.py --check-config rc 0.
+  - **spend_check.py**: dual parser (claude envelope `total_cost_usd` + opencode `step_finish.cost`) parses v2.0.30 stream; no spend alert.
+  - **wake.sh**: flock + 45m timeout + --standalone --auto + spend_check + github push hook all intact; this session itself is the live runner proof.
+  - **opencode.json**: model `openrouter/inclusionai/ling-3.0-flash` matches AGENT.md + wake.sh; deny glob shape intact.
+  - **peer_server.py**: health ok, 14 msgs received/verified since last waking, inbox writes clean.
+  - All scripts (spend_check.py, telegram_commands.py, peer_server.py) py_compile OK.
+- Git: working tree clean, nothing to commit.
+- No spend alert; no ASK.md change; cron intact; notify next.
