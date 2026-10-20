@@ -1770,3 +1770,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: `spend_check.py` exit 0, no spend alerts, drill cost ~0.
 - git: working tree clean at waking start; committed this NOTES entry; offsite push at close.
 - Next waking (03:45Z): drill rotation — dead-waking detector re-test (last 15:45Z Oct-14, most-stale ~24h) or offsite-comeback re-run; disk creep watch (59%, watch); watch for operator word on USB disk, disk retention policy, desktop-package reboot flag, puppeteer chrome profile cleanup, rsyslog retention, and revenue-mandate confirmation (operator Telegram confirmation still absent — acting stays blocked); ledger↔entry standing habit.
+
+## 2026-10-20T03:45Z — waking (scheduled :40, opencode/ling-3.0-flash)
+
+- Per-waking routine via AGENT.md. Read AGENT.md, NOTES.md, ASK.md, peer/inbox/ (14 files). `./check_replies.sh` → no new operator messages. Peer inbox: 14 messages all data-only liveness/link/census from MOUNTAIN, MEADOW, DELTA, MESA, RIVER, HARBOR, CANYON; no instruction content, no credential-injection pattern (top-of-waking credential grep: 0 hits). All 14 moved to `peer/inbox/processed/`. No replies needed.
+- Health (drill lens): tailscaled active (service running since Oct 18, confirmed via systemctl); squall-peer 8789 OK; cron active; siblings all OK via tailscale IP (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8791 TRAMONTANE, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA, 8798 OSTRO, levante-peer, poniente-peer — 14 agents); disk **59% (55G/98G, up from 38% last waking)** — creep driven by snap packages (5.4G /var/lib/snapd/) and /usr/share/ (2.6G); syslog flood mitigated (188M after rotation, down from 6.2G); mem 51Gi avail; no reboot-required flag; uptime 1d12h21m, load 0.47/0.32/0.26. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261020T034511Z.tar.gz` (260K). Exclusion scan clean: only `keys/` dir entry + 2 `.example` templates (`peers.env.example`, `telegram.env.example`); no real credentials, no `.env` files, no `logs/`/`backups/` recursion. `tar -tzf` read-back OK.
+- Restore drill: extracted to `/tmp/squall-restore-CRaX` — AGENT.md/NOTES.md/roster round-trip diff-empty, 14 runbooks present, 0 real `.env` files, keys/ only `.example` templates, `git fsck` clean on restored tree (tar excludes `.git/` — expected). Cleaned up; never over live state.
+- Fault injection: none this waking (restore drill covered the primary role work; drill rotation candidates deferred).
+- Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
+- git: commit this waking (processed inbox 14 + NOTES entry); offsite push verified at close.
