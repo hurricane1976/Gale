@@ -2,6 +2,50 @@
 
 ## Open
 
+- **NEW w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
+  content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
+  MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
+  inbox while its wake.sh cd's into chinook's dir.** Discovered read-only at
+  the w127 sweep: maistral's committed AGENT.md says "# AGENT.md — Chinook" /
+  "directory (/home/agent/chinook) persists", its wake.sh does
+  `cd /home/agent/chinook`, and its git history is chinook's wakings (#122–124,
+  Oct 18 12:50Z last) — a duplicate-chinook run from maistral's 20:05Z slot
+  produced `chinook-20261020T200508Z` (fresh-looking chinook row = the
+  entangled slot, verified by slot-time mismatch). Maistral's own last snap
+  is `maistral-20261019T080520Z` (154 entries, readable, keys/git clean);
+  its dir's last log is 09:20Z Oct 19 (3× retryable APIError, exit 1, ALERT
+  fired, github push failed non-fast-forward) — every slot since has produced
+  no maistral session/snap. **Recovery anchors verified intact (read-only):**
+  (a) the 08:05Z Oct 19 snap; (b) offsite `refs/heads/maistral` tip `8c95afd`
+  (checked via `git ls-remote` from MY repo — no writes to maistral's tree).
+  NO DATA LOST. I touched nothing (rule 7); no peer note sent (nothing reads
+  maistral's inbox while its cron runs chinook's wake.sh — the operator
+  channel is the effective one). **Your call: (a) restore maistral's identity
+  files operator-side from its Oct 19 08:05Z snapshot or the offsite
+  `refs/heads/maistral` branch (fastest while its cron is broken), or (b) an
+  operator word to maistral via another channel.** Also recommend: whatever
+  process produced the sirocco fix (~13:47Z Oct 19) applied fleet-side would
+  fix maistral the same way — and both clobbers came from a session's own
+  git-conflict "recovery" (reset --hard to a sibling's tip), so the
+  standing recommendation stands: wake.sh should never `reset --hard` a
+  sibling branch onto main, and push targets should stay `main:<agent>`.
+  **Correction recorded (w127):** my w124–w126 sweep rows claimed "0/14 drift
+  fleet fully fresh / MAISTRAL 75m fresh" — that is contradicted by the
+  on-disk evidence (no maistral snap since Oct 19 08:05Z); those prior sweep
+  numbers for maistral were stale-template errors. The w127 sweep above is
+  the authoritative one; I will re-verify each row's snap filename fresh
+  every waking going forward.
+
+- **SIROCCO ENTANGLEMENT — RESOLVED (w127 2026-10-20 22:35Z, verified
+  read-only).** Sirocco's identity is restored: AGENT.md "# AGENT.md —
+  Sirocco" again, wake.sh `cd /home/agent/sirocco`, mtimes 13:47:42Z Oct 19
+  (fix signature, same class as the operator's batch edits), git history
+  sirocco-authored (wakings 2026-10-20 15:20Z/21:20Z), fresh snaps at its own
+  09:20/15:20/21:20Z slots (75m at my sweep), offsite pushes resumed. The
+  standing item below (w111–w114) is now history; drift is closed at
+  ~85h total (Oct 16 15:20Z → Oct 19 13:47Z). No data was ever lost
+  (pre-clobber snap + offsite branch held throughout).
+
 - **NEW w106 2026-10-15 16:35Z — opencode v2 upgrade broke every gale-host
   wake.sh (~17.5h outage window); DRIFT 7/14; NO DATA LOSS; operator fix
   verified working.** opencode v2.0.29 was installed 2026-10-14 20:41Z and
@@ -441,6 +485,9 @@
   still holding course, no action taken.**
   **Re-checked w114 2026-10-17 16:35Z: still no operator msg on my channel;
   still holding course, no action taken.**
+  **Re-checked w127 2026-10-20 22:35Z: still no operator msg on my channel;
+   still holding course, no action taken. (w115-w126 re-checks appear in
+   the NOTES.md entries of those wakings.)**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -619,6 +666,10 @@
     action by me (deletion irreversible, Tempest's lane, gated on your
     word).
 
+    **Re-checked w127 2026-10-20 22:35Z (sudo): PATH GONE — `/tmp/snap-
+    private-tmp/snap.chromium` no longer exists; total /tmp only 28M
+    (was 4.7G at w118). The leak is fully cleared — item CLOSED unless
+    growth reappears. No action by me.**
 - **INFORMATIONAL (w98 2026-10-12 22:35Z) — netbox service crash-looping
   (`203/EXEC`), persistent across two wakings.** `systemctl status netbox`:
   `activating (auto-restart)`, gunicorn ExecStart
@@ -678,6 +729,8 @@
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w114 2026-10-17 16:35Z: UNCHANGED — still `inactive`,
   NRestarts=0.** Not my lane; quiet unless it changes again.
+  **Re-checked w127 2026-10-20 22:35Z: UNCHANGED — still `inactive`,
+   NRestarts=0.** Not my lane; quiet unless it changes again.
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
