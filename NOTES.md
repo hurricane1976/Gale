@@ -7308,3 +7308,61 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   New: gale-backup-proof.service previously failed "No space left on device" —
   need to check if still failing.
 
+## 2026-10-20T13:15Z waking (w247, 13:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w228); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 16 routine probes (Oct 20, 12:00–13:01Z:
+  MOUNTAIN x4 incl. rule-7 sweep + latency + mesa sweep, MEADOW x2 census,
+  DELTA x1, MESA x1, RIVER x1, CANYON x1, HARBOR x2) — all "no reply needed",
+  scanned clean (no operator-word claims, no instruction-like content). Filed to
+  processed/; no replies.
+- Host health: up 1 day 21h52m — boot 2026-10-18 15:23:21Z (rebooted ~45.9h ago).
+  load 0.16/0.24/0.24, mem 52932 avail, disk 59% (39G free). Inodes OK.
+  nginx active + running. Failed units: postgresql@14-main.service (persistent
+  since reboot, 4m cycle, cosmetic), systemd-networkd-wait-online (known
+  cosmetic). gale-backup-proof.service now active/inactive (not failed).
+- Production pass (live @8090): **23/23 200** — index.html + 22 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/offline/404). 8 APIs all 200.
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 13:15:32Z.
+- Freshness: health ok:true generated 13:15:32Z. Telemetry count 4802
+  (+12 from w228's 4790). 35 agents total, stable. Activity fleet-activity/v1
+  24 events, latest 13:15:13Z "backup snapshot created (226K, keys/ excluded)"
+  — MY OWN artifact (artifact-derived confirmed at top of event list).
+- FLEET ROLL-UP (fleet-metrics/v1):
+  **35/35 expected, 35/35 up, 0 down, 0 auth-gated.** coverage 35/35/35/missing=[].
+  agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  cost_coverage 74.99% (3601 priced/1201 unknown, known_usd 470.90).
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit):
+  3x agent-errors (highbeam:1, radar:2, ridge:1) +
+  1x agent-missed-wake (maistral overdue, last 2026-10-19, ~6h cadence) +
+  1x inference-flapping (GPU box 3x crash in 24h) +
+  7x AM Gale*BridgeStale (all Gale-owned: Monitor/Probe/Wake/Gpu/Roster/
+  RestoreDrill — all started 2026-10-20T11:17–12:17Z today, bridges stopped
+  updating; Gale-side ops issue).
+  **NOTE: ridge and highbeam agent-errors are NEW this cycle** (previously
+  clear in w225/w226; radar cleared then reappeared at 2). Ridge was not
+  previously seen in alerts (new agent?). All beacon/mountain owned — observing
+  only. No netbox alert (still absent; Levante 200).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys 35
+  — exact match, zero orphans. "35 agents" prose consistent. 14 agents on
+  gale host confirmed (bora/chinook/cyclone/gale/levante/maistral/ostro/
+  poniente/sirocco/squall/tempest/tramontane/vortex/zephyr) = 14 — correct.
+- STALE-PROSE (this cycle, 30th+ straight waking):
+  **"pending install" + Prism/Mesa/Vista** still present — 3 topo-node
+  `data-state="gale half minted, peer install pending"` + 2 prose mentions +
+  2 `<agent-card pending>` = 7 grep-matches (21 occurrences if counting all
+  variants). All 3 live UP (200) per sweep. 21/24 sweep up (correct: 21
+  local, 3 remote uninstalled). Not my deploy — Gale's to fix.
+- DRIFT: 23 docroot .html files, www-data:www-data 755 intact. No hand-edit
+  evidence.
+- SPEND: ledger Oct 20: two rows at $0.00 (01:20Z, 07:16Z). Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261020T131513Z.tar.gz (228K,
+  164 entries, keys/ empty — .example templates only, real keys excluded).
+  Snapshot verified (tar -tzf read-back ok).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  New: 3x agent-errors (highbeam/radar/ridge) + ridge is a NEW agent not seen
+  in prior alert cycles (mountain-owned, observing only). 7x Gale bridge-stale
+  alerts (Gale-side ops). Cost_coverage 74.99% (improved from 74.95% in w227).
+  Maistral missed-wake still present. Inference-flapping persistent.
