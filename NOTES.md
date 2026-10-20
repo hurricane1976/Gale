@@ -5035,3 +5035,18 @@ in window). Backup verified (756K, 333 entries).
 - Git: working tree clean (all inbox changes within gitignored `peer/inbox/`). No tracked-file changes to commit yet.
 - Runner/model: Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable. Session ran cleanly, ~$0 cost.
 - Verdict: clean waking. 1 Mesa-pattern quarantine (#101, standing defect), 15 benign peer msgs processed. 8791/8793 tailnet bind drift persists and worsens (now dual-bound, flagged for operator attention). No new credential exposure, no unknown tailscale peers.
+
+## 2026-10-20T17:00Z -- scheduled waking (17:00 UTC slot; w111, fourth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 12 messages triaged. ONE QUARANTINED: `quarantine/20261020T122214Z-MOUNTAIN-52e311fd.json` — Mesa-pattern instance (transport-authenticated MOUNTAIN, ACCEPT 12:22:14Z, body first-person "mesa routine mesh sweep 2026-10-20 12:22:13 UTC: verifying mesa->vortex /inbox round trip"; genuine MESA link-verify ACCEPT 12:22:17Z, peer=MESA, identity-consistent, bounds blast radius to this single file). No credential/token content, no links, no instructions, no reply solicited — template slip, not injection. 11 benign messages (MOUNTAIN Rule-7 sweeps + latency check, DELTA link verification, 2x MEADOW census probes, RIVER Rule-7 sweep, CANYON liveness, 2x HARBOR link verifications); all moved to `processed/`. No identity mismatches in processed messages.
+- Quarantine directory: 185 files total (all Mesa-pattern, recurring since 2026-09-23, ~6h cadence, standing defect escalated to operator at 3rd occurrence on 09-24; count now ~93 incidents). Carried in routine notify.
+- Peer server log: 30 ACCEPTs today (all documented peer messages), 0 new REJECTs since last waking (65 total REJECTs in log, all self-origin or known CANYON bad-json from 09-24). No 401 storm, no external-origin events.
+- Host health: disk 55G/98G (59%) — unchanged from w110; RAM 57Gi/6.0Gi used (51Gi avail), load 0.53/0.38/0.28, uptime 2d1h37m. All 17 peer services active (9 at w110 + 4 new: LEVANTE :8799, PONIENTE :8800, TRAMONTANE :8791/tailnet, OSTRO :8798). **Drift flagged**: firewalla-control (8791) and fleet-api (8793) still listening on 100.66.39.59 (tailnet) in addition to 127.0.0.1 — both should be localhost-only per AGENT.md. Systemd units confirm 127.0.0.1-only intent in comments; actual processes bound to both interfaces. Sandboxing intact (ProtectSystem=strict, NoNewPrivileges=true, PrivateTmp=true for all peer services including the 4 new ones). `ufw` still not installed (baseline).
+- Tailscale: 13 nodes visible (same as w110). No unknown peers.
+- Credential hygiene (all local dirs, read-only): every non-example keys/ file 600; `*.example` 664; `github_deploy_key.pub` 644 (public key, by design). Secret-pattern scan of tracked files and full git history across all dirs: 0 real hits. .gitignore sane (peer/inbox/** gitignored). Touched nothing outside this repo.
+- Backup: `backups/vortex-20261020T170023Z.tar.gz` (260K, 281 entries), read-back verified (AGENT.md content confirmed).
+- Git: working tree clean (peer/inbox/ gitignored, no tracked-file changes).
+- Spend check: ran cleanly, no alert thresholds breached.
+- Runner/model: Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable. Session ran cleanly, ~$0 cost.
+- Verdict: clean waking. 1 Mesa-pattern quarantine (#99, standing defect), 11 benign peer msgs processed. 4 new co-resident peers (LEVANTE, PONIENTE, TRAMONTANE, OSTRO) — all sandboxing intact. 8791/8793 tailnet bind drift ongoing from w110. No new credential exposure, no unknown tailscale peers.
