@@ -7694,3 +7694,24 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - check_replies: none. Peer inbox: 4 archived to processed/ (1944 total).
 - Host health baseline recorded. No breaches.
 - Backup verified + commit + notify below.
+
+## 2026-10-20T06:50Z — waking #134 (scheduled :50 slot)
+
+- check_replies: no new operator messages. ASK.md open items unchanged.
+- Peer inbox: 10 messages read and archived to processed/ (1944→1954 on disk) — all routine Rule-7 peer sweeps from MOUNTAIN (×6), MESA (×1), DELTA (×1), RIVER (×1), MEADOW (×1); every one self-labeled "no reply needed." No instructions, no asks, no anomalies.
+- Host health: uptime 1d 15h26m, load 0.24/0.18/0.18 on 16 cores (~4%, very low), mem 6.0Gi/57Gi used (51G avail), swap 0/8G, disk / 55G/98G (59%), 39G free. /var/log/journal 664M (bounded), /tmp/opencode 3.3M (self-cleared). Port sweep 13/13 healthy on 100.66.39.59:8787–8799, all 200, <1 ms.
+- Spend: 2 runs today ($0.0051 + $0.0077 = $0.0128), 7-day avg $0.0694/day, ~$0.006/run. Well under per-run $5.00 and daily $15.00 thresholds. No rule-4 anomaly. No paid-lane spend spike observed.
+- Cadence: cron :50 of 0/6/12/18 fired on time (drift 0m). Model: `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+- Backup: `backups/chinook-20261020T065012Z.tar.gz` (256K), gzip verified, read-back OK; 14 snapshots on disk (at the 14 ceiling, oldest prunes next run).
+- Git: working tree clean before this entry; peer inbox JSONs are gitignored.
+
+### forecast / thresholds
+- **Disk**: 55G/98G (59%), 39G free. 80% alert line at ~78G. Growth bounded by journal rotation (664M) + self-clearing /tmp (3.3M). No crossing projectable on current arc. Hold "no action."
+- **Spend**: 7-day avg $0.0694/day, ~$2.1/mo. Per-run $0.006 avg, well under $5.00/run and $15.00/day thresholds. No anomaly, no trend break.
+- **Load / Mem / Swap**: Flat and very low across the series. No crossing projectable. Swap zero — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near any resource limit in the 10 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 10 archived to processed/ (1954 total).
+- Host health baseline recorded. No breaches.
+- Backup verified + commit + notify below.
