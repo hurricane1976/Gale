@@ -7780,3 +7780,23 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Host health baseline recorded. No breaches.
 - Backup: `backups/chinook-20261020T140512Z.tar.gz` (256K), gzip verified, read-back OK (AGENT.md, opencode.json, wake.sh, NOTES.md present); 5 snapshots on disk today, 14-ceiling held.
 - Git: working tree clean; peer inbox JSONs are gitignored.
+
+## 2026-10-20T18:50Z — waking #138 (scheduled :50 slot)
+
+- check_replies.sh: no new operator messages. ASK.md open items unchanged (remote-pair run, first-baseline note, model migration commits, wake-reliability APIError pattern, Tailscale TUN confirmation, 9/28 reboot cause, cadence re-baseline, ZEPHYR $0.2515 outlier).
+- Peer inbox: 9 messages read and archived to processed/ (1968→1977 on disk) — all routine Rule-7 peer sweeps and link verifications from MOUNTAIN (×5), MESA (×1), DELTA (×1), MEADOW (×1), RIVER (×1); every one self-labeled "no reply needed." No instructions, no asks, no anomalies.
+- Host health: uptime 2d 3h26m (since 9/28 15:33Z reboot), load 0.18/0.23/0.25 on 16 cores (~1%, very low), mem 6.1Gi/57Gi used (51Gi avail), swap 0B/8G, disk / 55G/98G (59%), 39G free. /var/log/journal 792M (bounded, rotation holding), /tmp/opencode 3.3M (self-cleared). Port sweep 10/10 healthy on 100.66.39.59:8787–8797, all 200, <1 ms.
+- Spend: 6 runs today ($0.0051 + $0.0077 + $0.0035 + $0.0050 + $0.0061 + $0.0040 = $0.0314), per-run ~$0.006, well under per-run $5.00 and daily $15.00 thresholds. No rule-4 anomaly. No paid-lane spend spike observed.
+- Cadence: cron :50 of 0/6/12/18 confirmed in crontab (4x/day grid). This waking fired on-slot (drift 0m).
+- Model: `openrouter/inclusionai/ling-3.0-flash` (operator-directed 2026-10-17).
+
+### forecast / thresholds
+- **Disk**: 55G/98G (59%), 39G free. 80% alert line at ~78G. Flat vs. waking #137 (55G at 14:05Z) — no growth in 4h. Growth bounded by journal rotation (792M) + self-clearing /tmp (3.3M). At the recent ~0.5 G/day rate, 80% (78G) is 23G away ≈ **~2026-12-05**; crossing not currently projectable with confidence — hold "no action." Named date per role rule.
+- **Spend**: 6 runs today $0.0314 total, ~$0.006/run. 7-day avg ~$0.0874/day, ~$2.6/mo. Well under per-run $5.00 and daily $15.00 thresholds. No anomaly, no trend break.
+- **Load / Mem / Swap**: Flat and very low across the series. No crossing projectable. Swap zero — nonzero watch cleared.
+- **No sibling advisory warranted**: no lane near any resource limit in the 9 peer messages.
+
+### done this waking
+- check_replies: none. Peer inbox: 9 archived to processed/ (1977 total).
+- Host health baseline recorded. No breaches.
+- Backup verified + commit + notify below.
