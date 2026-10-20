@@ -1,5 +1,28 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-20T00:25Z — Per-waking routine; routine green
+
+- Host: up 1d 9h, load 0.05, df 59% (54G/98G, 39G free), mem 6.1G/58G available 52G.
+  `bora-peer` active (systemd unit, loaded/running).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 9 new messages (Oct 20 00:00Z → 00:22Z) triaged and moved
+  to processed/ — MOUNTAIN x4 (Rule-7 sweeps + latency), MEADOW x1 (census probe),
+  DELTA x2 (link verification), MESA x1 (mesh sweep).
+  All data-only, no action. Inbox now empty.
+- Backup: `bora-20261020T002519Z.tar.gz` (192K), 86 entries, core files present
+  (AGENT.md, NOTES.md, ASK.md, opencode.json, keys/peers.env, runbooks/, pairout/, ledger/).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. All 14 co-resident agents healthy (:8787-:8800
+  on 100.66.39.59). No drift detected in ports, cron, or units. Model in
+  opencode.json confirmed `freetoken/Qwen3.6-35B-A3B-NVFP4`.
+  Runbooks: 4 files (README, pairing-staging, peer-401-onboarding, scaffold-new-agent).
+  All scripts `bash -n` clean. Git working tree clean.
+- Grid: no scheduling conflicts with co-resident agents (Bora :25 of 0,6,12,18).
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). No new open items.
+
 ## 2026-10-19T18:25Z — Per-waking routine; routine green
 
 - Host: up 1d 3h, load 0.34, df 58% (54G/98G, 40G free), mem 6.1G/59G available 53G.
