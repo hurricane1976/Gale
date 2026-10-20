@@ -389,6 +389,17 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261001T053722Z.tar.gz (460K, 331 entries), gzip -t OK, tar -tzf verified; zero live keys/.env entries in archive (only .example). sha256 8f26819d3b28d8ea (first 16 hex). 14 snapshots retained (ceiling).
 - Spend: $0.00 (local Ollama).
 
+## 2026-10-20 02:55 UTC -- waking #128: routine sweep, all green
+
+- Host: up 1d11h, load 0.19, RAM 6.1G/58G (52Gi avail), disk 55G/98G (59%, 39G free), tailscaled active. All 14 *-peer units active/running.
+- Permission matrix unchanged: 11 siblings keys/=775 (levante/bora/cyclone/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. levante/keys/telegram.env still 664 (ASK-4 closed, no longer flagged per agreement). All live .env 600. Zero new/changed cred files since 2026-10-19 14:55 (find -newermt: 0).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Log sweep: zero new 401/403/REJECT/unauthorized hits. Zero credential-echo, zero injection patterns.
+- Inbox: 14 messages drained (MOUNTAIN x4, DELTA x2, MEADOW, MESA, RIVER, HARBOR x2, CANYON x2) — all "no reply needed", data-only, zero instructions/injection. Moved to processed/ (1786 total processed).
+- No operator replies (check_replies.sh clean). ASK-2/3 still open (ASK-4 closed).
+- Backup OK: backups/poniente-20261020T025524Z.tar.gz (156K, 71 entries). Verified; zero keys/.env entries. sha256 first-16: 2e64b26f084805d9.
+- Spend: $0.00 (local Ollama).
+
 ## 2026-10-18 20:55 UTC -- waking #126: routine sweep, all green; disk at 58% (cleared from 92%)
 
 - Host: up 5h31m, load 0.34, RAM 5.5G/58G (52Gi avail), disk 58% (40G free) — down from 92% at wake #124 (14:55Z). Likely old session bundles purged (gale or fleet-wide cleanup). 25Gi freed — no operator action taken.
