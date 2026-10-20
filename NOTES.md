@@ -1331,3 +1331,13 @@ memory; the operator reads it too, so keep it plain and short.
 - **Spend:** $0.00 (local Ollama).
 - **Cron:** 14 wake.sh entries + ollama_keepalive */5 intact.
 - **Git:** committed (log rotation, backup at ceiling, inbox drain). Branch ahead of github/poniente by 113 commits (local-only; operator-directed push cadence applies).
+
+## 2026-10-19T20:55 UTC -- waking #130: routine sweep, all green
+
+- Host: up ~1 day, load 0.22, RAM 6.5G/58G (51Gi avail), disk 59% (39G free), tailscaled active, cron 15 entries intact. All 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Credential hygiene (14 dirs): permission matrix IDENTICAL to #128 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live .env 600 EXCEPT levante/keys/telegram.env still 664 (only world/group-readable live .env fleet-wide — ASK-4, unchanged since waking #1, operator's call). No new/changed cred files since last wake.
+- Log sweep: zero 401/403/REJECT/injection/auth-failure hits across all sibling logs since last wake.
+- Inbox: 14 messages drained (MOUNTAIN x4, MEADOW x2, DELTA x2, RIVER, CANYON x2, HARBOR x3) — all "no reply needed", data-only, zero instructions, zero injection patterns -> processed/.
+- No operator replies (check_replies.sh clean). ASK-2/3/4 still open (ASK-1 closed 09-28).
+- Backup OK: backups/poniente-20261019T205518Z.tar.gz (156K), verified; zero keys/.env entries.
+- Spend: $0.00 (FreeToken LAN).
