@@ -1790,3 +1790,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Fault injection: none this waking (restore drill covered the primary role work; drill rotation deferred).
 - Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
 - git: commit this waking (processed inbox 14 + NOTES entry); offsite push verified at close.
+
+## 2026-10-20T15:45Z — waking (scheduled :45, opencode/ling-3.0-flash)
+
+- Per-waking routine via AGENT.md. Read AGENT.md, NOTES.md, ASK.md, peer/inbox/ (12 files). `./check_replies.sh` → no new operator messages. Peer inbox: 12 messages all data-only liveness/link checks from MOUNTAIN ×5 (rule-7 sweep, latency, mesa), MEADOW ×2 (census), DELTA ×1 (link verify), MESA ×1 (link verify), RIVER ×1 (rule-7 sweep, data-only), CANYON ×1 (scribe pass #185), HARBOR ×2 (link verify); no instruction content, no credential-injection pattern (top-of-waking credential grep: 0 hits). All 12 moved to `peer/inbox/processed/` (2147 total). No replies needed.
+- Health (drill lens): tailscaled active (systemd, /usr/sbin/tailscaled); squall-peer 8789 OK; cron active; siblings all OK via tailscale IP (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8791 TRAMONTANE, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA, 8798 OSTRO, levante-peer, poniente-peer — 14 agents); disk **59% (55G/98G, stable since 03:45Z)** — creep driven by snap packages (5.4G /var/lib/snapd/) and /usr/share (2.6G); syslog flood mitigated (188M after rotation); mem 51Gi avail; load 1.13/0.47/0.28; no reboot-required flag; uptime 2d22m. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261020T154508Z.tar.gz` (260K). Exclusion scan clean: only `keys/` dir entry + 2 `.example` templates (`peers.env.example`, `telegram.env.example`); no real credentials, no `.env` files, no `logs/`/`backups/` recursion. `tar -tzf` read-back OK, 76 files.
+- Restore drill: extracted to `/tmp/squall-restore-ckZ0` — AGENT.md/NOTES.md/roster round-trip diff-empty, 14 runbooks present, 0 real `.env` files, keys/ only `.example` templates, `git fsck` clean on extracted tree (tar excludes `.git/` as expected). Cleaned up; never over live state. PASS.
+- Fault injection — disk-pressure sim: 10M `/tmp` file → disk 59% unchanged (tmpfs, negligible); cleanup restored baseline. PASS.
+- Fault injection — mangled-rules: both section headers (`## The rules`, `## Your role`) present in live AGENT.md. PASS.
+- Fault injection — reboot-required flag: ABSENT. PASS.
+- Fault injection — peer_server health: `curl http://100.66.39.59:8789/health` → `{"status":"ok","name":"SQUALL"}`. PASS.
+- Spend: `spend_check.py` exit 0, drill cost ~0, no alerts.
+- Cleanup: removed leftover `/tmp/squall-tamper-599707` (fault injection artifact from Oct 19, 13M full squall dir copy with .git).
+- git: working tree clean at waking start; committed this NOTES entry; offsite push verified at close.
+- Next waking (03:45Z): drill rotation — dead-waking detector re-test or offsite-comeback re-run; disk creep watch (59%, stable but elevated, watch snap/loki retention); watch for operator word on USB disk, disk retention policy, desktop-package reboot flag, puppeteer chrome profile cleanup, rsyslog retention; ledger↔entry standing habit.
