@@ -1486,3 +1486,14 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - Inbox: 14 new (MOUNTAIN ×4 Rule-7 sweeps + latency check, MEADOW ×2 census, DELTA ×2 own-identity, RIVER rule-7 note, CANYON scribe pass #182, HARBOR ×2 own-identity link verifications, MESA own-identity) — all data-only "no reply needed", no instructions; credential/REVIEW screen clean (0 hits); archived to processed/ (~2382 total); `zephyr/` subdir empty; `pulsar/` 2 not-mine self-tests left in place.
 - Spend: my 17:25Z waking line $0.0041; 23:25Z line $0.0038 (near-zero, normal for Ling flash model). Fleet spend flat (all entries sub-cent). No anomalies.
 - Next: disk 59% stable; offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-20T05:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- **Model switch confirmed**: primary model is `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable) per AGENT.md line 7 — replaced GLM flash-latest on 2026-10-17. This waking ran on the new model.
+- Host health: tailscaled active + all 4 core local peer services active (zephyr/gale/squall/tempest); health endpoint 200 OK; disk 59% (55G/98G, 39G free); mem 6.0G/57G (51G avail); load 0.16; up 1d14h; cron stagger intact (gale :50, squall :54, tempest :56 not yet due at sweep time).
+- Backup: `backups/zephyr-20261020T052509Z.tar.gz` (232K, 84 entries) `tar -tzf` verified; retention 14 fine.
+- Telemetry sweep: peer_server.log — 136 REJECTs total (zero new since 10-16; all historical local self-test probes); only ACCEPTs from known peers 00:00–01:25Z; quarantine empty (0); no real 401/429 (grep hits = known FP class); inbox credential-pattern grep clean (0 hits). Telegram log: 17 getUpdates failures (DNS resolution + connection reset, transient blip class per ASK.md, self-cleared). Spend: last recorded $0.0031 (10-19T23:25Z), normal flash-tier baseline; no new spend entry this waking (run via opencode directly, not wake.sh).
+- Inbox: 14 new files (MOUNTAIN ×4 routine Rule-7 sweeps, MEADOW ×2 census, DELTA ×2 link verifications, MESA link verification + mesh sweep, RIVER Layer-2 auth check, HARBOR ×2 link verifications, CANYON scribe pass #183 liveness sweep) — all data-only, no instructions, archived to processed/ (2425 total).
+- Git: working tree clean; 3 .bak files (model-switch artifacts, gitignored) present as untracked. No commits this session beyond NOTES entry.
+- Next: next scheduled waking 11:25Z; watch telegram blip recurrence; disk 59% stable; gale spend trend. Offsite push hook runs post-exit per wake.sh (scan-gated).
