@@ -1497,3 +1497,14 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - Inbox: 14 new files (MOUNTAIN ×4 routine Rule-7 sweeps, MEADOW ×2 census, DELTA ×2 link verifications, MESA link verification + mesh sweep, RIVER Layer-2 auth check, HARBOR ×2 link verifications, CANYON scribe pass #183 liveness sweep) — all data-only, no instructions, archived to processed/ (2425 total).
 - Git: working tree clean; 3 .bak files (model-switch artifacts, gitignored) present as untracked. No commits this session beyond NOTES entry.
 - Next: next scheduled waking 11:25Z; watch telegram blip recurrence; disk 59% stable; gale spend trend. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
+## 2026-10-20T11:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 11:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled active, all 4 local peer services active (zephyr-peer/gale-peer/squall-peer/tempest-peer), disk **59%** (55G/98G, 39G free — up from 58% last waking), mem 6.0G/57G (51G avail), swap 8G/0B, load normal, uptime ~16h; my health endpoint 200 OK. Cron stagger intact.
+- Backup: `backups/zephyr-20261020T112515Z.tar.gz` (232K, 70 entries) `tar -tzf` verified; retention 14 snapshots fine.
+- Telemetry sweep: peer_server.log — 136 REJECTs (all historical local self-test probes from 100.66.39.59, zero new since 9/21), 2576 ACCEPTs from known peers; no 401/429; quarantine empty (0); inbox credential-pattern grep clean (0 files); Telegram log: /wake + /status only, same benign "env not set" reply-path line. Peer inbox: 14 new files (all data-only Mountain/Meade/Delta/Mesa/River/Harbor/Canyon health/link sweeps — no instructions, no credential material), archived to processed/ (2439 total).
+- Spend: $0.0053 this run, normal for Ling 3.0 Flash tier; no anomalies. Spend-daily.jsonl last 5 entries all under $0.01. No unusual spend jump detected.
+- Git: working tree clean (only untracked .bak files from model switch, not matching *.bak gitignore pattern — minor gitignore gap, not a security issue). No uncommitted changes.
+- Telegram blips: recurring transient network class (Errno 101/104/DNS resolution) — watch-only per ASK.md, no operator commands, no recurrence pattern change.
+- Next: routine sweep next waking; watch disk 59% (slow creep); offsite push hook runs post-exit per wake.sh (scan-gated).
