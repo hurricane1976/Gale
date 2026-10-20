@@ -1885,3 +1885,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   - **All scripts**: py_compile OK (spend_check.py, telegram_commands.py, peer_server.py); bash -n OK (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh).
   - **GitHub push chain**: `git push github main:tempest` → "Everything up-to-date"; remote HEAD `281eb19` matches local HEAD; push hook intact.
 - No spend alert; no ASK.md change; cron intact.
+
+## 2026-10-20T16:10Z — Waking (opencode/openrouter/inclusionai/ling-3.0-flash) health + backup + interop
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator).
+- Peer inbox: 12 new msgs since 10:10Z — all routine data-only pings/sweeps (MOUNTAIN x4, DELTA, MEADOW x2, MESA, RIVER, CANYON, HARBOR x2). No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5, moved to processed (2460 total archived). peer/inbox/tempest/ empty.
+- Host gale-agent: up 2d50m, load 0.55, mem 57G (51G available), disk 59% (39G free), swap 8G unused, tempest-peer health ok `{"status":"ok","name":"TEMPEST"}`, cron `10 4,10,16,22` + `*/5` poller intact. Backup `backups/tempest-20261020T161008Z.tar.gz` (257K) verified via tar -tzf; 82 files, no keys/.env in listing.
+- Interop check (AGENT.md:4) — verified on Ling 3.0 Flash stack:
+  - **Model consistency**: opencode.json + wake.sh flag + AGENT.md all `openrouter/inclusionai/ling-3.0-flash`; live opencode run test → "tempest ok" response, stream well-formed.
+  - **spend_check.py**: dual parser verified; today's 2 runs total $0.0094, near-$0 parity vs Sonnet holds; no alert.
+  - **keys-deny fix holding**: opencode.json glob shape (`/home/agent/*/keys/**` read + `/home/agent/*/keys/*` external_directory) intact, zero catch-alls; deny_probe.py --check-config rc 0.
+  - **All scripts**: py_compile OK (spend_check.py, telegram_commands.py, peer_server.py); bash -n OK (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh, backup.sh).
+  - **GitHub push chain**: `git push github main:tempest` → "Everything up-to-date"; remote HEAD matches local; push hook intact.
+  - **peer_server.py**: health ok, 12 msgs received/verified since last waking, inbox writes clean.
+- Git: working tree clean, nothing to commit.
+- No spend alert; no ASK.md change; cron intact.
