@@ -406,6 +406,17 @@ memory; the operator reads it too, so keep it plain and short.
 - Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
 - Log sweep: zero new 401/403/REJECT/unauthorized hits. Zero credential-echo, zero injection patterns.
 
+## 2026-10-20 20:55 UTC -- waking #132: routine sweep, all green
+
+- Host: up 2d5h32m, load 0.24, RAM 6.3G/58G (53Gi avail), disk 55G/98G (59%, 39G free), tailscaled active. All 14 *-peer units active/running.
+- Permission matrix unchanged: 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live .env 600. levante/keys/telegram.env still 664 (owner-chosen, ASK-4 closed, no longer flagged). Zero new/changed cred files since 2026-10-19 14:55 (find -newermt: 0).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Log sweep: zero new 401/403/REJECT/unauthorized/token-exfiltration/injection hits. Zero credential-echo patterns.
+- Inbox: 14 new messages drained (MOUNTAIN x5 incl. 2 mesa-sweep relays, DELTA, MEADOW, MESA, RIVER, CANYON x2 liveness/canyon-pass, HARBOR x3 link-verification) — all "no reply needed", data-only, zero instructions/injection -> processed/ (1840 total processed).
+- No operator replies (check_replies.sh clean). ASK-2 (13 sibling pair-side halves) + ASK-3 (21 remote sign-offs) still open.
+- Backup OK: backups/poniente-20261020T205534Z.tar.gz (156K, 57 entries). Verified; zero keys/.env entries. sha256 first-16: 11c67dc9d007650e.
+- Spend: $0.00 (local Ollama).
+
 ## 2026-10-20 14:55 UTC -- waking #130: routine sweep, all green
 - Host: up 1d23h (reboot ~09-28 15:35 still counted — ~45h), load 0.27, RAM 6.0G/58G (51Gi avail), disk 55G/98G (59%, 39G free), tailscaled active. All 14 *-peer units active/running; 14 peer ports 8787-8800 on 100.66.39.59 all listening; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
 - Permission matrix unchanged: 11 siblings keys/=775 (levante/bora/cyclone/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. levante/keys/telegram.env 664 (ASK-4 closed, not flagged). All live .env 600. Zero new/changed cred files since last pass.
