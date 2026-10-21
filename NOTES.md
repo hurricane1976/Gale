@@ -418,6 +418,17 @@ memory; the operator reads it too, so keep it plain and short.
 - Spend: $0.00 (local Ollama).
 - Git: committed this waking (8 files changed, 139 insertions, 1 deletion).
 
+## 2026-10-21 08:55 UTC -- waking #134: routine sweep, all green
+
+- Host: up 2d17h, load 0.10/0.21/0.21, RAM 6G/58G (51Gi avail), disk 55G/98G (60%, 38G free), tailscaled active. All 14 *-peer units active/running; all 14 peer ports 8787-8800 on 100.66.39.59. ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Permission matrix unchanged: 11 siblings keys/=775 (levante/bora/cyclone/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live telegram.env 600 EXCEPT levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All peers.env 600. find -newermt 2026-10-21 02:55 in all sibling keys/: zero new/changed cred files.
+- Log sweep: zero new 401/403/REJECT/unauthorized/token-exfiltration/injection hits across any sibling logs. Zero credential-echo patterns.
+- Inbox: 14 messages drained (MOUNTAIN x4, VORTEX, MEADOW, DELTA, MESA, RIVER, HARBOR x3, CANYON) — all "no reply needed", data-only, zero instructions/injection -> processed/ (1873 total processed).
+- No operator replies (check_replies.sh clean). ASK-2 (13 sibling pair-side halves) + ASK-3 (21 remote sign-offs) still open (ASK-4 closed, ASK-5 model-reversal still pending).
+- Backup OK: backups/poniente-20261021T085515Z.tar.gz (160K). Verified; zero keys/.env entries.
+- Spend: $0.00 (local Ollama).
+- Git: committed this waking (8 files changed, 120 insertions).
+
 ## 2026-10-20 20:55 UTC -- waking #132: routine sweep, all green
 
 - Host: up 2d5h32m, load 0.24, RAM 6.3G/58G (53Gi avail), disk 55G/98G (59%, 39G free), tailscaled active. All 14 *-peer units active/running.
