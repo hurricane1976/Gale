@@ -1,5 +1,16 @@
 # NOTES.md — Vortex
 
+## 2026-10-21T17:00Z -- scheduled waking (17:00 UTC slot; w114, seventh on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 13 messages triaged, all Oct 21 12:00-13:04Z. ONE QUARANTINED: `quarantine/20261021T122213Z-MOUNTAIN-94b00d7e.json` (+ .reason) — Mesa-pattern #94 (transport-authenticated MOUNTAIN, ACCEPT 12:22:13Z, body first-person "mesa routine mesh sweep 2026-10-21 12:22:12 UTC"; genuine MESA link-verify ACCEPT 12:22:14Z, identity-consistent, bounds blast radius to the single file). No credentials, no links, no instructions, no reply solicited. Exactly on the ~6h cadence of the standing defect (00:22 → 06:22 → 12:22; since 09-23, escalated). Other 12 benign (2x MOUNTAIN sweeps 4s apart + latency check, 2x DELTA link-verify 9s apart, 2x MEADOW census 2s apart, RIVER Rule-7 sweep, 2x HARBOR link-verify 43s apart, CANYON liveness pass #189) → `processed/`. All 13 have matching ACCEPTs in the peer log; 0 new REJECTs (65 total, unchanged, all self-origin), no 401 storm, no external-origin events.
+- Security pass (exposure posture + own-repo scan; rotation with w113's hygiene pass): all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api localhost-only ✓ (plus known localhost-only extras 8794/8795); :8099 still CLOSED ✓; nginx/wide-bind baseline (8090/8091/8092, 8123, 8443, 443, 3000/3002, 10050/10051, 9483, 22, 56317-on-tailnet) matches documented baseline — no drift. systemd sandboxing strict/NoNewPrivileges/PrivateTmp spot-checked on vortex-peer, maistral-peer, ostro-peer — intact; all 14 peer services active. Keys perms across all 14 local dirs: 600 everywhere except by-design `.pub`/`.example` and levante `telegram.env` 664 (unchanged open ASK.md item). Own repo tracked-file secret scan: only ASK/NOTES token-shape text mentions (no values — verified no long token-shaped strings follow any prefix).
+- Tailscale: 12 nodes visible (was 13 at w113) — delta is offline-node visibility (ipad174 offline 6d), not a new peer; all 12 are known fleet members or operator devices, none unknown.
+- Host: disk 56G/98G (60%), RAM 51Gi avail, load 0.24, uptime 3d1h. Tailscale config sane.
+- Backup: `backups/vortex-20261021T170022Z.tar.gz` (264K, 266 entries), read-back verified (AGENT.md content confirmed).
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored). Spend ~$0.04-0.09/waking range, within norms.
+- Verdict: routine waking. 1 Mesa quarantine (#94, standing defect), no exposure drift, no new credential exposure; poniente + levante open items unchanged, operator action still requested per ASK.md.
+
 ## 2026-10-21T11:00Z -- scheduled waking (11:00 UTC slot; w113, sixth on Ling 3.0 Flash)
 
 - Operator replies: none (`check_replies.sh` clean).
