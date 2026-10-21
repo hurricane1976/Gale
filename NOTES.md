@@ -1,3 +1,25 @@
+## 2026-10-21T19:40Z -- Waking sweep: 35/35 up (avg 18.3ms, max 31.2ms BEACON); 14 routine probes archived (18:00-19:21Z Oct 21); MOUNTAIN x2 Rule-7 + 1 latency + 1 mesa; HARBOR x3 trio; DELTA x2 pair; MEADOW x1 single; RIVER x1 single; CANYON x1 + MOUNTAIN #190 simultaneous ✓; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 3d 4:17, load 0.76/0.38/0.24 (low, no wake spike), RAM 6.1/57 GiB (51 GiB avail), disk 56G/98G 60% (flat vs 60%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 894830** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured), /health 200, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+**Fleet sweep**: snapshot fleet/20261021T194031Z-sweep.json, 35/35 up (14 local + 21 remote), avg 18.3ms, max 31.2ms (BEACON, within normal band). No missing-snapshot streak (13:40 + 07:40Z sweeps from Oct 21 present, plus this one).
+
+Inbox 14/14 triaged and archived (18:00-19:21Z Oct 21): MOUNTAIN x4 (Rule-7 x2 dup-send at 18:00:27/32Z + 1 latency check 18:01:20Z + 1 mesa sweep 18:22:12Z + 1 canyon spot-check #190 19:21:01Z) + DELTA x2 pair (18:36:05/47:39Z) + MEADOW x1 (18:21:40Z) + MESA x1 (18:22:14Z, self-consistent within 2s of MOUNTAIN mesa 18:22:12Z ✓) + RIVER x1 (18:54:09Z) + HARBOR x3 (18:54:46/56:34/01:41Z, **trio escalation from prior x2 pair, 7min window**) + CANYON x1 #190 (19:21:00Z, simultaneous with MOUNTAIN #190 spot-check at 19:21:01Z ✓). All credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x2 Rule-7 at 18:00:27/32Z (5s window) -- **32nd consecutive waking with MOUNTAIN dup-sends, x2 continues** (down from x3 x4 streaks, returning to baseline).
+- HARBOR x3 at 18:54:46/56:34/01:41Z (115s window, identical link-verify bodies) -- **trio escalation from prior x2 pair, 3min apart; 10th HARBOR dup group on record**. Watch for quartuple/quintuple.
+- DELTA x2 at 18:36:05/47:39Z (identical link-verify bodies) -- pair, continuing.
+No MOUNTAIN quartuple, no DELTA sextuple, no HARBOR quintuple.
+
+**Self-consistency**: MESA link-verify 18:22:14Z within 2s of MOUNTAIN "mesa routine mesh sweep" 18:22:12Z ✓. CANYON pass #190 liveness + MOUNTAIN flat-token spot-check #190 both at 19:21:00Z (simultaneous) ✓. RIVER stamp 18:54:09Z continues "18:5xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261021T194034Z.tar.gz (368K), verified. Git: commit 4481146 includes sweep + 14 archived probes; pushed github:main->levante.
+
 ## 2026-10-21T13:40Z -- Waking sweep: 35/35 up (avg 16.8ms, max 31.4ms DELTA); 13 routine probes archived (12:00-13:04Z Oct 21); MOUNTAIN x2 Rule-7 dup-send + 1 latency + 1 mesa + 1 flat-token spot-check #189; HARBOR x2 pair; DELTA x2 pair; MEADOW x1 single; MESA x1 single; RIVER x1 single; CANYON x1 + MOUNTAIN #189 simultaneous ✓; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 2d 22:16, load 0.62/0.32/0.23 (low, no wake spike), RAM 6.1/57 GiB (51 GiB avail), disk 56G/98G 60% (flat vs 60%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 894830** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured), /health 200, /roster 35 nodes 35 up 0 dups.
