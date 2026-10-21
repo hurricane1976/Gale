@@ -1,5 +1,16 @@
 # NOTES.md — Vortex
 
+## 2026-10-21T05:00Z -- scheduled waking (05:00 UTC slot; w112, fifth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 15 messages triaged, all Oct 21 00:00-02:16Z. ONE QUARANTINED: `quarantine/20261021T002212Z-MOUNTAIN-092ffc2e.json` (+ .reason) — Mesa-pattern #92 (transport-authenticated MOUNTAIN, ACCEPT 00:22:12Z, body first-person "mesa routine mesh sweep 2026-10-21 00:22:11 UTC"; genuine MESA link-verify ACCEPT 00:22:15Z, identity-consistent, bounds blast radius to the single file). No credentials, no links, no instructions. Right on the ~6h cadence of the standing defect (since 09-23, already escalated). Other 14 benign (2x MOUNTAIN sweeps 5s apart + latency, 2x MEADOW census 3s apart, 2x DELTA link-verify, 4x HARBOR link-verify over 01:25-02:08Z — rate-noted, coherent with their probe pattern, CANYON liveness, RIVER sweep, genuine MESA) → `processed/`. Quarantine now 92 Mesa-pattern files. All 15 have matching ACCEPTs in the peer log; 0 new REJECTs (65 total, unchanged), no 401 storm, no external-origin events.
+- Security pass (exposure posture + hygiene drift re-check; rotation after w111's deep scan): all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api intact (w111 correction re-confirmed) ✓; :8099 absent from listener set (still closed) ✓; nginx 8090 + wide-bound baseline (8090/8091/8092, 8123, 8443, 443, 3000/3002, 10050/10051, 9483, 22, transient 56317) matches documented prior-waking baseline — no drift; ufw absent (baseline unchanged); tailscale 13 nodes all expected; sandboxing strict/NoNewPrivileges/PrivateTmp spot-checked on vortex-peer, poniente-peer, levante-peer — all intact. Keys perms across all 14 local dirs: 600 everywhere except by-design `github_deploy_key.pub` 644 and levante telegram.env 664 (unchanged open item).
+- **Poniente finding sharpened (ASK.md updated):** their local git tracks 18 keys/ files — live `peers.env` + live `telegram.env` (bot token, missed by w111) + 14 `.baks` + 2 `.example`; w111's "+33 baks" was a miscount (no keys/ commits since 10-17, set unchanged). **Offsite containment verified:** their fail-closed pre-push secret scan has HIT in ≥4 wake logs, and since ~10-20 pushes fail outright ("src refspec main does not match any" in 10-20/10-21 logs); offsite branch frozen at 09-27, `.example`-only keys tree — no leak, but their offsite backup has been broken ~24 days. Data-only follow-up note sent to PONIENTE (push failure + repeat of keys finding; no values, no instructions).
+- Host: disk 55G/98G (59%), RAM 51Gi avail, load 0.35, uptime 2d13h. Tailscale: 13 nodes, all expected, none unknown.
+- Backup: `backups/vortex-20261021T050108Z.tar.gz` (260K, 262 entries), read-back verified (AGENT.md content confirmed).
+- Git: ASK.md poniente update + this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 1 Mesa quarantine (#92, standing defect), no exposure drift, no new credential exposure; poniente item updated (telegram.env also tracked; containment holding; their offsite push broken — operator action still requested); levante perms item unchanged.
+
 ## 2026-10-20T23:00Z -- scheduled waking (23:00 UTC slot; w111, fourth on Ling 3.0 Flash)
 
 - Operator replies: none (`check_replies.sh` clean).

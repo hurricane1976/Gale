@@ -2,26 +2,33 @@
 
 ## Open
 
-- **NEW 2026-10-20 w111 — poniente tracks `keys/peers.env` + 33 `.bak` snapshots
-  in its LOCAL git repo (read-only finding; not my repo).** Found during the
-  w111 hygiene scan: poniente (new co-resident sibling, peer server :8800)
-  commits `keys/peers.env` and `keys/peers.env.bak-pre-*` to its local branch
-  (last touched by its own "security wake 2026-10-17" commit). Mitigations
-  verified this waking: the offsite remote branch `github/poniente`
-  (hurricane1976/Gale, same fleet offsite) was last pushed
-  2026-09-27 and its tree contains ONLY `keys/*.example` — the real
-  `peers.env` has NOT gone offsite. Risk: any future `git push` from that
-  repo leaks live peer tokens (which span the whole fleet pairing registry,
-  same shape as the :8099 exposure I closed 09-25). Poniente's tracked
-  logs/*.json (122 files) match secret patterns but every match is a
-  redacted 4-char prefix or the canonical AWS example key — no live values.
+- **NEW 2026-10-20 w111, updated w112 — poniente tracks live keys/ files
+  (`peers.env` + `telegram.env` + 14 `.bak` snapshots) in its LOCAL git repo
+  (read-only finding; not my repo).** Found during the w111 hygiene scan and
+  re-verified w112 with corrected figures: poniente (co-resident sibling,
+  peer server :8800) commits 18 keys/ files to its local branch — the live
+  `keys/peers.env` (fleet-wide pairing registry), the live
+  `keys/telegram.env` (their bot token — **new detail w111 missed**), 14
+  `.bak` snapshots, and 2 `.example` files. (w111's "+33 .bak snapshots" was
+  a miscount: git log shows no keys/ commits since 10-17, so the tracked
+  set is unchanged; 14, not 33.) **Offsite containment verified w112:**
+  the offsite branch `github/poniente` was last pushed 09-27 and its tree
+  contains ONLY `keys/*.example` — no leak offsite. Their wake.sh carries
+  the fleet-standard fail-closed pre-push secret scan (added 09-23 after
+  RIVER's leak alert), and it has been doing its job: scan HITs appear in
+  ≥4 of their wake logs, and since ~10-20 pushes fail outright
+  (`src refspec main does not match any` in their 10-20/10-21 wake logs) —
+  so the offsite branch is frozen, not one step from leaking. Cost: poniente's
+  offsite backup has been broken ~24 days (push fails every waking). Their
+  tracked logs/*.json (122 files) match secret patterns but every match is
+  a redacted 4-char prefix or the canonical AWS example key — no live values.
   I touched nothing (their repo, rule 7); data-only peer note sent to
-  PONIENTE this waking. **What I need from you:** get poniente to untrack
-  keys/peers.env (+ .baks) from its local history (or confirm it's
-  intentional and the remote branch will never move), same for any other
-  new sibling that inherited that pattern — levante/keys/telegram.env is
-  also live-at-664 (untracked, just wrong perms vs. the 600 house
-  standard).
+  PONIENTE (w111 keys finding, w112 push-failure follow-up). **What I need
+  from you:** get poniente to untrack keys/peers.env + keys/telegram.env
+  (+ .baks) from its local history, fix their push refspec so their offsite
+  backup resumes, and confirm the remote branch policy — levante's
+  keys/telegram.env is also live-at-664 (untracked, just wrong perms vs.
+  the 600 house standard), unchanged this waking.
 - **NEW 2026-10-20 w111 — CORRECTION of my w110 "8791/8793 tailnet bind
   drift" report.** No drift: firewalla-control (:8791) and fleet-api (:8793)
   are localhost-only exactly as intended (127.0.0.1 PIDs, systemd units
