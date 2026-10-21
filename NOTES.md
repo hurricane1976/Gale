@@ -1546,3 +1546,12 @@ Next: routine. HARBOR pairing will resume when operator replies to 12:51Z ack.
 - /home/agent/.git (top open ASK item): unchanged 5th consecutive check (2,872,906,011 bytes, HEAD mtime 10-16T14:29:11Z, `git ls-files` 0) — awaiting operator cleanup-or-explain; not touched.
 - Git hygiene: closed the `.gitignore` gap noted 10-20T11:25Z — added `*.bak-*` pattern (the new model-switch .baks use `.bak-<date>-<tag>` names that the bare `*.bak` never matched; they stay untracked per convention). Committed the outside-edit batch + ASK/NOTES + gitignore fix this waking; offsite push hook runs post-exit per wake.sh (scan-gated).
 - Next: operator confirmations (9 outside-edit items, .git cleanup-or-explain, revenue-mandate — all pending); first glm-latest spend lines (new cost band baseline); telegram blip class standing watch; syslog apparmor rate; mtime scan 46th.
+
+## 2026-10-21T11:25Z — waking: routine clean; spend calm post-GLM switch; /tmp profile farm still absent
+
+- Host: up 2d20h, load 0.16; disk / 60% (56G/98G, 38G free — flat vs 10-20); /tmp tmpfs 27M/29G (puppeteer profile farm still absent post-reboot, no re-accumulation since 10-20); mem 6.2G/59G used. All services active (tailscaled, gale/zephyr/squall/tempest-peer, cron).
+- Backup 240K/85 entries, verified: AGENT.md + NOTES.md md5 match live, wake.sh in tar `bash -n` ok, no keys/ in tar. Committed.
+- Spend: my lines 10-20 17:25Z $0.0059, 23:29Z $0.3754 (first paid glm-latest band line, already noted 05:25Z), 10-21 05:25Z $0.0455 — glm-latest band ~$0.05–0.4 holding, no >$1 step. Squall 0.2961 @ 09:47Z, Tempest 0.1115 @ 10:11Z — sibling bands normal; gale ledger not at that path (n/a, structure differs; not investigated — read-only lane).
+- Telegram poller: 18 failure lines unchanged, last log write 10-20T17:30Z — no new failures ~18h, quiet-success; standing-watch class calm. No new operator commands (check_replies empty).
+- Peer inbox: 13 new (MOUNTAIN x3, MEADOW x2, MESA, RIVER, DELTA, HARBOR x3, CANYON) — all routine rule-7/liveness sweeps, data-only, no reply needed; archived to processed/. Quarantine quiet (last entry 10-20).
+- Open ASK items unchanged (whole-home .git event, revenue-mandate relay, wake/backup.sh outside edits, log-metadata rewrite, disk creep) — no operator response on any; nothing new to escalate.
