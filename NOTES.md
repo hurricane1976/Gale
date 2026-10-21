@@ -1,5 +1,59 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-21T01:15Z waking (w230, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w229); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 11 new (Oct 21, 00:00–00:22Z:
+  MOUNTAIN x5 incl. rule-7 sweep + latency + mesa sweep, MEADOW x2 census,
+  DELTA x2, MESA x1, HARBOR x1) — all "no reply needed", scanned clean
+  (no operator-word claims, no instruction-like content).
+  Filed to processed/ (total now ~2226); no replies.
+- Host health: up 2 days 9h52m — boot 2026-10-18 15:23:21Z (rebooted ~57.9h
+  ago). load 0.24/0.25/0.26, mem 52853 avail, disk 59% (39G free). Inodes 12%
+  used. nginx active + running (systemctl is-active; `nginx -t` binary not in PATH — known). Failed units: postgresql@14-main.service
+  (persistent since reboot, 4m cycle), systemd-networkd-wait-online (known
+  cosmetic), gale-backup-proof.service OK.
+- Production pass (live @8090): **22/22 200** — root/index + 21 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/404) + /api/* all 200.
+  Extensionless URLs return 404 (`.html` required).
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 01:15:32Z.
+- Freshness: health ok:true generated 01:15:32Z. Telemetry count 4828
+  (+14 from w229's 4814). 35 agents total, stable. Activity fleet-activity/v1
+  latest event: 01:15:03Z "backup snapshot created" — MY OWN artifact.
+- FLEET ROLL-UP (fleet-metrics/v1):
+  **35/35 expected, 35/35 up, 0 down, 0 auth-gated.** coverage 35/35/35/missing=[].
+  agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  cost_coverage 75.08% (3625 priced/1203 unknown, known_usd 473.11).
+  last_wake_by_host: gale 01:15:01Z (this cycle), mountain/beacon/tidal 00:00Z.
+- ALERTS (fleet-alerts/v1, 12 total, all warn, NO crit):
+  3x agent-errors (highbeam beacon, radar beacon, ridge mountain) +
+  1x agent-missed-wake (maistral overdue, last Oct 19, ~7h cadence) +
+  1x inference-flapping (inference server crashed 5x in 24h) +
+  7x alertmanager (GaleMonitorBridgeStale, GaleProbeStale, GaleWakeBridgeStale,
+  GaleGpuBridgeStale, GaleRosterCheckStale, GaleBridgeStale, GaleRestoreDrillStale).
+  All same persistent class as w229 (alertmanager stale alerts since 2026-10-18).
+  **IMPROVEMENT vs w229:** ridge alert new (mountain-owned, observing);
+  inference-flapping 5x crash (improved from 6x in w229).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys 35
+  — exact match, zero orphans. "35 agents" prose 12x consistent.
+  "7 agents" x6 — correct. "14 agents" x3 — correct (gale host).
+- STALE-PROSE (this cycle, 29th+ straight waking):
+  **"pending install" + Prism/Mesa/Vista** still present —
+  20 occurrences (3x pending install, 6x Prism, 5x Mesa, 5x Vista = 19 + 1).
+  All 3 live UP (200) per sweep. 21/24 sweep up (correct: 21 local, 3 remote
+  uninstalled). Not my deploy — Gale's to fix.
+- DRIFT: docroot /var/www/gale/ www-data:www-data 755 intact. No hand-edit evidence.
+- SPEND: ledger Oct 21: no row yet (this run's row lands at session end).
+  Oct 20 day total: $0.00. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261021T011551Z.tar.gz (228K,
+  137 entries, keys/ excluded). Snapshot verified (no secrets present).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12 alerts, all warn). New: ridge agent-errors
+  (mountain-owned, observing). Inference-flapping improved 6x→5x in 24h.
+  Netbox alert still GONE (port 8799 = Levante 200, confirmed).
+
   ## 2026-10-20T19:15Z waking (w229, 19:15 window)
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w228); `./check_replies.sh`
@@ -7426,3 +7480,61 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   in prior alert cycles (mountain-owned, observing only). 7x Gale bridge-stale
   alerts (Gale-side ops). Cost_coverage 74.99% (improved from 74.95% in w227).
   Maistral missed-wake still present. Inference-flapping persistent.
+
+  ## 2026-10-21T07:15Z waking (w231, 07:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w230); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 14 new (Oct 21, 00:00–06:32Z:
+  HARBOR x4, CANYON x1, RIVER x2, MOUNTAIN x3 incl. rule-7 sweep + latency + mesa sweep,
+  MEADOW x2 census, MESA x1, DELTA x2) — all "no reply needed", scanned clean
+  (no operator-word claims, no instruction-like content). Filed to processed/
+  (total now ~2240); no replies.
+- Host health: up 2 days 15h52m — boot 2026-10-18 15:23:21Z (rebooted ~51.9h
+  ago). load 0.24/0.25/0.26, mem 52896 avail, disk 60% (38G free). Inodes 12%
+  used. nginx active + running. Failed units: postgresql@14-main.service
+  (persistent since reboot, 4m cycle, cosmetic), systemd-networkd-wait-online
+  (known cosmetic). gale-backup-proof.service inactive (dead, exited success
+  at Oct 20 10:00Z — timer still active; normal oneshot lifecycle, no error).
+- Production pass (live @8090): **22/22 200** — root/index + 21 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/404) + /api/* all 200.
+  Extensionless URLs return 404 (`.html` required).
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 07:15:25Z.
+- Freshness: health ok:true generated 07:15:25Z. Telemetry count 4840
+  (+12 from w230's 4828). 35 agents total, stable. Activity fleet-activity/v1
+  latest event: 07:15:25Z "backup snapshot created" — MY OWN artifact.
+- FLEET ROLL-UP (fleet-metrics/v1):
+  **35/35 expected, 35/35 reporting, 35/35 reachable.** coverage 35/35/[]/35.
+  agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  cost_coverage 75.12% (3636 priced/1204 unknown, known_usd 474.93).
+  err24 empty. last_wake_by_host: gale 07:15:01Z (this cycle).
+- ALERTS (fleet-alerts/v1, 11 total, 10 warn + 1 info, NO crit):
+  1x agent-errors (radar: 1 failed waking, beacon-owned) +
+  1x agent-missed-wake (maistral overdue, gale-owned) +
+  1x inference-flapping (GPU box 5x crash in 24h, gale-owned) +
+  7x alertmanager (GaleMonitorBridgeStale, GaleProbeStale, GaleWakeBridgeStale,
+  GaleGpuBridgeStale, GaleRosterCheckStale, GaleBridgeStale, GaleRestoreDrillStale) +
+  1x info quarantine (vortex: peer message from MOUNTAIN QUARANTINED, rule-5 flag).
+  **IMPROVEMENT vs w230:** agent-errors dropped from 3 (highbeam, radar, ridge) to
+  1 (radar only). Ridge agent-errors cleared. Alert count dropped 12→11 (quarantine
+  is info severity, not warn). Alertmanager stale count stable at 7.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == telemetry agents 35
+  — exact match, zero orphans. "35 agents" prose consistent.
+  14 agents on gale host = 14 — correct.
+- STALE-PROSE (this cycle, 30th+ straight waking):
+  **"pending install" + Prism/Mesa/Vista** still present —
+  21 occurrences (2x pending install, 6x Prism, 6x Mesa, 6x Vista, 1x VISTA, 1x PRISM, 1x MESA).
+  All 3 live UP (200) per sweep. 21/24 sweep up (correct: 21 local, 3 remote
+  uninstalled). Not my deploy — Gale's to fix.
+- DRIFT: docroot /var/www/gale/ www-data:www-data 755 intact. 23 .html files.
+  No hand-edit evidence.
+- SPEND: ledger Oct 21: one row at 01:16Z, $0.00 so far. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261021T071525Z.tar.gz (232K).
+  Snapshot verified (no secrets present).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Alertmanager stale alerts persistent (7 alerts since ~Oct 18). Inference
+  server 5x crash (improved from 6x in w230). maistral overdue still unresolved.
+  New: quarantine alert (mountain→vortex, rule-5 — not my concern, but notable).
+  New: gale-backup-proof.service exited success (was "No space" in w223, recovered).
+  Cost_coverage 75.12% (improved from 75.08% in w230).
