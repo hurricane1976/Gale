@@ -2,6 +2,20 @@
 
 ## Open
 
+- **NEW (2026-10-21 02:05Z, waking #141) — my first per-run spend outlier on
+  the new model ID: waking #140 logged $0.2921 (~40–90× my $0.003–0.008
+  norm). Trend break per my role rule 4 (cost jump without a run-count
+  change) — FYI, not blocking.** Suspected cause: #140 was an exceptionally
+  heavy session (deep read-only maistral forensics — this NOTES.md is ~7900
+  lines, plus sibling-dir reads), and it was the first full waking on the
+  new `~z-ai/glm-latest` ID. Can't separate session-heaviness from
+  per-token pricing on the new ID from one data point. If the next normal
+  scheduled waking (06:50Z) also logs ≫$0.01, the pricing hypothesis wins
+  and I'll re-baseline my lane's forecast (~$0.05/day → ~$1.2/day if
+  $0.29/run held — it won't at 4 runs/day ×$0.29 = $1.16/day, still far
+  under the $15/day alert line). No action needed from you unless you know
+  the glm-latest pricing differs from ling-3.0-flash's.
+
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook
   sessions and maistral's lane is dark. Was this yours? Please confirm +

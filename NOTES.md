@@ -7922,3 +7922,70 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   files read back, 14-snapshot ceiling held.
 - Git: NOTES + ASK.md committed; migration files stay uncommitted pending
   operator confirmation.
+
+## 2026-10-21T02:05Z — waking #141 (ACCIDENTAL slot: maistral's corrupted cron fired chinook — this session IS the 02:05Z predicted run)
+
+### headline: the predicted accidental run happened; maistral still corrupted; no operator reply yet
+
+- **This waking fired at 02:05:12Z = maistral's cron slot (`5 2,8,14,20`)** —
+  exactly the #140 prediction ("next accidental chinook run via its cron:
+  02:05Z"). This session is one of the accidental maistral-cron→chinook
+  runs: #141 = 7th accidental run (#129,131,133,135,137,139,141). My own
+  06:50Z slot remains armed and unaffected.
+- **check_replies: none new.** Both ASK.md items (maistral overwrite
+  disposition; 10-20 20:08Z fleet model-ID batch) still await operator
+  word. No action beyond the standing flags.
+- **Maistral (read-only re-check):** still the frozen chinook copy —
+  AGENT.md header "# AGENT.md — Chinook", wake.sh `cd /home/agent/chinook`,
+  mtimes re-stamped by the 10-20 20:08Z fleet batch (same batch as mine).
+  Its inbox backlog grew 83 → **88** unprocessed. Its peer_server still
+  answers /health:8795 → 200 (transport liveness masks the dark lane; sweep
+  can't see it). Nothing touched per rule 7; recovery sources unchanged
+  (its own 10-19 backups + github branch; see ASK.md item).
+- **Spend trend break logged:** waking #140 recorded **$0.2921** vs my
+  $0.003–0.008/run norm (~40–90×; ledger row 2026-10-21T00:56:33Z).
+  Suspected cause: #140's heavy forensics session (long NOTES.md reads) +
+  first full waking on the new `~z-ai/glm-latest` ID — can't separate
+  session-heaviness from new-ID pricing on one point. Per role rule 4:
+  ASK.md item added + Telegram mention this waking. Discriminator: if the
+  06:50Z normal waking logs ≫$0.01, pricing changed; if ~$0.005, it was
+  session-heaviness. Either way far under the $15/day alert line.
+
+### capacity snapshot 2026-10-21T02:05Z (waking #141)
+
+- host gale-agent: up 2d10h42m (boot 10-18 15:23Z, stable since), load
+  0.26/0.23/0.19 on 16 cores (~2%), mem 6G/57G used (51G avail), swap 0/7G,
+  disk / 55G/98G (59%, 39G free) — flat vs #140 (55G for 4 days now).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, all <1 ms.
+- spend today so far: CHINOOK $0.2921 (1 run, the outlier above) + this run
+  records at session end (~$0.01 expected); GALE $0.129 (1 run, its normal
+  band); CYCLONE/BORA $0.00; others 0 runs. Host total well under any line.
+- cadence: chinook effective 8x/day continues (my 4 slots + maistral's 4
+  accidental). Fleet stagger intact — the :05 accidentals displace only
+  maistral's own slots.
+
+### forecast / thresholds
+
+- **Disk:** 55G flat, 4th consecutive day. 80% line ~78G ≈ 23G away:
+  **~2026-12-05 at ~0.5 G/day** — named date unchanged from #135–140. No
+  action.
+- **Spend:** my outlier moves nothing structural — even at the worst-case
+  reading ($0.29/run × 4/day = ~$1.16/day) I'm far under $15/day. GALE
+  remains the only real cost driver. No rule-4 run-count anomaly anywhere.
+- **Load/Mem/Swap:** flat and very low. No crossing projectable.
+- **Fleet capacity item (unchanged, top item):** maistral lane dark since
+  10-19 08:05Z; backlog +5 msgs since #140 (88 now); restoration is the
+  operator's — backups + github branch identified, advisories already sent
+  to BORA + MAISTRAL at #140. No further advisory noise.
+
+### done this waking
+
+- check_replies: none. Peer inbox: 4 archived to processed/ (1993 total) —
+  HARBOR×3 + CANYON pass #187, all routine "no reply needed", no acks owed.
+- Maistral state re-verified read-only (unchanged); backlog 88 noted.
+- Spend outlier ($0.2921 @ #140) logged → ASK.md + Telegram (rule 4 path).
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261021T020521Z.tar.gz` (264K) gzip-verified, AGENT.md
+  read-back clean, 14-snapshot ceiling held.
+- Git: NOTES + ASK.md committed; migration files (AGENT.md/opencode.json/
+  wake.sh + .baks) stay uncommitted pending operator confirmation.
