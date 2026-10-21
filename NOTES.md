@@ -1954,3 +1954,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - No spend alert; git commit after this entry; notify next (INFO: routine waking all green; GLM Latest baseline ~0.10–0.30 USD/waking settling; journald growth accelerating, proposal stands).
 
 
+
+## 2026-10-21T16:10Z — Waking (opencode/openrouter/~z-ai/glm-latest, 4th on this model) health + backup + interop; routine all green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox; ./check_replies.sh → (no new messages from operator). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 16:10 on schedule).
+- Host gale-agent: up 3d0h46m, load 0.28/0.21/0.18, mem 57G (51G available), swap 8G unused, disk 60% used (38G free — flat vs 10:10Z), tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}`, cron `10 4,10,16,22` + `*/5` poller intact. Backup `backups/tempest-20261021T161011Z.tar.gz` (264K, 85 entries) verified via gzip -t + tar -tzf; zero keys/.env entries; AGENT/NOTES/ASK present. 14 snapshots kept.
+- Peer inbox: 13 new msgs since 10:10Z, all routine data-only pings/sweeps — MOUNTAIN x3 (rule-7 sweep x2 + latency, incl. one mesa-relay body), DELTA x2, MEADOW census x2, MESA, RIVER L2 sweep, HARBOR x2, CANYON scribe pass #189. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5. Find-count discipline: 13 found before mv, 0 remaining after, processed/ 2502→2515, subdirs (quarantine/, tempest/) empty.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM Latest stack:
+  - Model consistency: opencode.json `model` + wake.sh `PRIMARY_MODEL`/run flag + AGENT.md header all `openrouter/~z-ai/glm-latest`; fallback intact; this session is the live runner proof (4th GLM Latest waking).
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (glob shape intact, zero catch-alls, poniente belt-and-suspenders present); live `--run` → deny BLOCKED + control READABLE, rc 0, first try (`--auto` harness wording variant, same authoritative `part.state.status:"error"` path).
+  - **Spend parity — GLM Latest 3rd ledger line: 0.1115 USD (10:11:43Z Oct 21, routine)** — confirms routine baseline ~0.10–0.11 USD/waking (points: 0.2862 long, 0.1023, 0.1115). Near-0 vs Sonnet/Opus holds; no threshold alert; ~1 USD/run parity-alert proposal in ASK.md unchanged, still awaiting operator word.
+  - **journald watch: 1017M (16:10Z) vs 957M (10:10Z) — +60M/6h, first deceleration after two accelerating intervals (+52 → +74 → +60), but crossed 1G again.** ASK.md numbers updated; drop-in re-apply proposal stands, no action without operator word.
+  - Offsite GitHub push: `git ls-remote github` → `refs/heads/tempest` = `4a28bb8` = local HEAD at check (tree clean); push hook chain intact (this waking's commit lands remote at session end).
+  - bash -n ok (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh, backup.sh); py_compile ok (spend_check.py, telegram_commands.py, peer_server.py, deny_probe.py).
+- ASK.md updated this waking: journald 1017M + GLM Latest third spend point on the parity item. All other open items unchanged (outbound-to-remote unlock, sibling keys-deny, TRAMONTANE/PONIENTE pairing, MAISTRAL two-way, opencode v2 convergence) — no operator word yet.
+- No spend alert; git commit after this entry; notify next (INFO: routine waking all green; GLM Latest routine baseline ~0.10–0.11 USD confirmed; journald crossed 1G, first deceleration, proposal stands).
