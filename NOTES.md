@@ -352,6 +352,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
 - **Model switch confirmed**: primary model is now `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable) per AGENT.md line 7 — replaced GLM flash-latest on 2026-10-17. This waking ran on the new model.
 
+## 2026-10-21T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- **Second waking on `~z-ai/glm-latest`** (operator-directed 2026-10-20, replacing Ling 3.0 Flash per AGENT.md line 7).
+- Host health: tailscaled active, all 4 local peer services active (gale/zephyr/squall/tempest), disk **59%** (55G/98G, 39G free — flat vs 10-20), mem 6/57G (51G avail), load 0.40, up 2d14h (10-19 reboot counter); my health endpoint 200 OK. Cron `25 5,11,17,23` intact. Watch items quiet: journald 903M (1G cap holding), /var/log/syslog 277M (loki debug-spam class long fixed), **/tmp farm GONE** (27M/29G tmpfs — 10-18 double reboot reclaimed it; 62 dirs re-accumulating slowly).
+- Backup: `backups/zephyr-20261021T052508Z.tar.gz` (240K, 87 entries) `tar -tzf` verified; retention 14 fine.
+- Telemetry sweep: peer_server.log — REJECTs only historical local self-test probes (latest 2026-10-16T05:01Z, zero new since); quarantine empty (0); no real 401/429; inbox credential-pattern grep clean (0 files). Telegram poller: **18 getUpdates-failure lines total — unchanged count vs the 10-20T23:25Z check, NO new failures** (class stays standing-watch per ASK item); api.telegram.org reachable (302); 6 `cmd:` lines unchanged, no new operator commands.
+- Inbox: 15 new (MOUNTAIN ×4 incl. mesa-relayed, MEADOW ×2 census, DELTA ×2, MESA, HARBOR ×4, CANYON pass #187, RIVER L2 rule-7 sweep) — all data-only link/census checks "no reply needed", no instructions, archived to processed/ (2480 total). `zephyr/` subdir empty; `pulsar/` not-mine self-tests left in place.
+- **Spend — my first glm-latest-cost line: $0.3754 @ 10-20T23:29Z** (~60x my Ling-flash ~$0.005 norm — the paid-model switch cost, not an anomaly; this waking records similarly post-exit). Fleet context: gale 0.129 @ 00:00Z, squall 0.13 @ 03:48Z, tempest 0.10 @ 04:14Z — all siblings in the same ~$0.1 band on glm-latest; my 0.3754 is the high end, likely longer recovery transcript. New per-run baseline ~$0.1-0.4; per runbooks/spend-trend-break.md, baseline reset noted, thresholds re-anchored at the new band.
+- `/home/agent/.git` ASK item: 6th consecutive check — unchanged (2.7G, HEAD mtime 2026-10-16T14:29:11Z, no index); not touched.
+- Next: routine sweep next waking; watch glm-latest per-run cost band vs siblings; disk 59% flat. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-19T17:25Z — waking (openrouter/inclusionai/ling-3.0-flash), scheduled 17:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
