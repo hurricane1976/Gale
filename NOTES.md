@@ -8048,3 +8048,69 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   read-back clean; 14-snapshot ceiling held.
 - Git: NOTES + ASK.md committed; migration files stay uncommitted pending
   operator confirmation.
+
+## 2026-10-21T08:05Z — waking #143 (ACCIDENTAL slot: maistral's corrupted cron fired chinook, 8th accidental — this session IS the 08:05Z predicted run)
+
+### headline: prediction held again; spend on glm-latest now 3/3 elevated — pricing all but confirmed
+
+- **This waking fired at 08:05:12Z = maistral's cron slot (`5 2,8,14,20`)** — exactly
+  the #142 prediction ("next accidental run: 08:05Z"). #143 = 8th accidental
+  maistral-cron→chinook run (#129,131,133,135,137,139,141,143). My 12:50Z slot
+  remains armed and unaffected.
+- **check_replies: none new.** Both open ASK.md items (maistral disposition;
+  10-20 20:08Z fleet model-ID batch) still await operator word.
+- **Maistral (read-only re-check):** unchanged — AGENT.md header "# AGENT.md —
+  Chinook", wake.sh `cd /home/agent/chinook`, cron `5 2,8,14,20`. Inbox backlog
+  grew 88 → **102** unprocessed (+14 since #142; ~$0.005/accidental-run absorb
+  cost continues). peer_server:8795 still 200 (masks the dark lane). Recovery
+  sources unchanged (its 10-19 backups + github branch; ASK.md item). Next
+  accidental chinook run: 14:05Z.
+- **Spend discriminator — 3rd data point:** waking #142 (06:51:22Z, normal-weight)
+  billed **$0.0580** — like #141's $0.0725, far above the old ling-3.0-flash
+  norm ($0.003–0.008). **glm-latest runs are now 3/3 elevated** ($0.058–0.292)
+  vs 0/3 under the old ID. Pricing hypothesis effectively confirmed observationally;
+  ASK.md item updated (still awaiting operator word on glm-latest cost). My
+  re-baselined lane forecast stands: ~$0.3–2/day worst case, far under $15/day.
+
+### capacity snapshot 2026-10-21T08:05Z (waking #143)
+
+- host gale-agent: up 2d16h41m (boot 10-18 15:23Z, stable), load
+  0.21/0.24/0.20 on 16 cores (~1.5%), mem 6Gi/57Gi used (51Gi avail),
+  swap 0, disk / 55G/98G (60%, 38G free) — flat, 6th consecutive day at 55G.
+  /var/log/journal 928M (bounded, shrunk vs prior ~4G readings — 10-18
+  snapshot-cleanup landed).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, all <1 ms.
+- spend today so far: CHINOOK $0.4226 ($0.2921 + $0.0725 + $0.0580) + this
+  run records at session end; GALE $0.2573, SQUALL $0.1325, TEMPEST $0.1023,
+  ZEPHYR $0.0455, VORTEX $0.0894, others $0 — host total well under any line.
+- cadence: my effective 8x/day continues (my 4 + maistral's 4 accidentals);
+  06:50Z slot fired on time (drift 0m), this 08:05Z accidental on time.
+
+### forecast / thresholds
+
+- **Disk:** 55G flat 6 days. 80% line ~78G ≈ 23G away: **~2026-12-05 at ~0.5
+  G/day** — named date unchanged from #135–142. No action.
+- **Spend:** glm-latest pricing shift is my lane's only structural change —
+  ~$0.06–0.29/run observed; no alert line remotely in sight. Host-wide paid
+  lanes (GALE + flash trio + vortex) all in normal band. No rule-4 run-count
+  anomaly anywhere.
+- **Load/Mem/Swap:** flat, very low. No crossing projectable.
+- **Fleet capacity item (top, unchanged):** maistral lane dark since 10-19
+  08:05Z — backlog growth accelerating (88→102 in 6h); restoration is the
+  operator's, advisories already sent to BORA + MAISTRAL at #140. No further
+  advisory noise.
+
+### done this waking
+
+- check_replies: none. Peer inbox: 8 archived to processed/ — HARBOR×6
+  (link-verification retries), CANYON×2 (pass #188 liveness sweeps), all
+  routine "no reply needed", no acks owed, no operator content.
+- Maistral state re-verified read-only (unchanged, backlog 102); accidental-
+  run prediction confirmed on schedule.
+- Spend 3rd data point recorded; ASK.md spend item updated to 3/3.
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261021T080518Z.tar.gz` (264K) gzip-verified, AGENT.md
+  read-back clean, 14-snapshot ceiling held.
+- Git: NOTES + ASK.md committed below; migration files (AGENT.md/
+  opencode.json/wake.sh + .baks) stay uncommitted pending operator
+  confirmation.
