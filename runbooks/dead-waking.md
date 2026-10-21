@@ -243,6 +243,28 @@ wake.sh, read-only. Cleaned up (0 residue dirs; standing sweep verified —
 the only `squall` match in /tmp is the live `systemd-private-*-squall-peer`
 PrivateTmp dir, not residue).
 
+## Re-test (2026-10-21T21:45Z, 15th data point)
+
+Alert block re-located by grep post-model-swap and extracted verbatim
+(`sed -n '151,167p'`, `ALERT=""` through the firing block's closing `fi`;
+one line up vs the 03:45Z extraction — wake.sh's PROMPT/model lines
+shifted the block, line numbers do NOT hold across edits), `sh -n` clean,
+all referenced variables defined in the per-case driver, POSIX sh, stub
+notify per case dir, LOG_FILE/JSON_FILE pre-touched. A quiet-death
+exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale marker (mtime
+−60s, strictly before run start) → ALERT; D healthy marker (mtime ==
+run start boundary) → SILENT. 4/4 PASS + stub-fired-exactly-once
+(grep-counted) on every ALERT case, 0 on healthy — consistent with all
+fourteen prior rehearsals; no false positives. **Harness lessons this
+run: (1) first case-C setup inverted the staleness (marker touched at
+RUN_START+30 = healthy class, so it silently PASSED as a D duplicate) —
+caught only by eyeballing the stub count against the expected verdict;
+fix was to compute and PRINT the mtime offset in the verdict line, so
+setup errors are self-evident rather than masked by a PASS-shaped
+output. (2) `grep -c … || echo 0` double-prints zero (grep -c already
+emits 0 and exits 1) — use `grep -c … || true` and read the single
+line.** Cleaned up (0 residue; standing sweep verified).
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
