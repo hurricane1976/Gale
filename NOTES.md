@@ -1021,6 +1021,60 @@ Model: still running `ollama/qwen3.8:27b` (operator-confirmed
 migration, see ASK.md); AGENT.md still names `opencode/muse-spark-1.3-
 contributor-free` — kept as-is per prior operator direction, no change.
 
+## 2026-10-21T21:20Z — Scheduled waking (upstream all green; Ollama v0.40.8-rc0 + opencode v1.19.3 noted)
+
+Host: up 3d 5h 57m, load 0.22, disk 60% (56G/98G, **38G free** — note:
+significant jump from ~35% at 2026-10-19 entries; 60% is elevated, watching).
+RAM 6.1Gi/57Gi, swap idle. `sirocco-peer` active, :8796 listening.
+
+`check_replies.sh`: no new operator messages.
+
+Inbox: 13 new, filed to processed/ (now ~400 total):
+3x MOUNTAIN (Rule-7 sweep x2 + latency check; again "mesa routine mesh sweep"
+label mismatch on one MOUNTAIN body — identity/label quirk, not a compromise),
+1x MEADOW census, 2x DELTA link-verify, 1x RIVER rule-7 sweep, 3x HARBOR
+link-verify, 1x CANYON scribe pass #190 liveness sweep. All "no reply needed";
+no replies sent, nothing minted.
+
+Upstream (live probes, all OPERATIONAL):
+- GitHub: api.github.com 200 in 0.05s; status page API 200 ("All Systems
+  Operational").
+- OpenRouter: /api/v1/models 200 in 0.11s.
+- OpenCode Zen: opencode.ai 200 in 0.16s.
+- Tailscale: all fleet nodes active (per tailscale status on prior wakings;
+  `tailscale status --json` returned 0 nodes here this time — possible
+  transient tailnet sync issue, not a service outage).
+
+Dependency changes:
+- **Ollama v0.40.8-rc0 (2026-10-21)**: new release, first since v0.34.4
+  (2026-09-23). This is a significant jump (0.34 → 0.40, with -rc0 suffix).
+  LAN runner on this box is still v0.34.4 (confirmed 2026-09-26 waking).
+  Flagging for operator: the runner is ~one major release behind, though
+  only the -rc0 branch, so stability is uncertain. If the operator wants
+  the runner bumped, this is the window. No action taken (outside my lane).
+- **OpenCode v1.19.3 (2026-10-16)**: new release, current installed is
+  v1.18.32 (2026-09-21). One minor version ahead. Routine; fleet-wide
+  upgrade would be a Gale/ops task, not mine.
+
+Certs (unchanged, all >30d, no warnings): beaconwake.com -> 2026-11-23
+(63d), tidalwake.org -> 2026-11-28 (68d), mountainwake.org -> 2026-12-04
+(74d). BEACON cert enters 30d window ~2026-10-24.
+
+Disk: 60% used (56G/98G), 38G free. This is a notable increase from the
+~35% (34-35G free) seen in the 2026-10-19 entries and prior. Either large
+log growth or new files; noting for Gale. No action by me.
+
+Model: still running `ollama/qwen3.8:27b` (operator-confirmed migration,
+ASK.md RESOLVED). AGENT.md stale on model line — no operator word yet on
+updating it.
+
+Backup: `backups/sirocco-20261021T212035Z.tar.gz` (203K, 136 entries,
+read-back verified). OK.
+
+Next: watch disk trend (60% — could creep higher); watch for operator
+answers on ASK.md pending items; Ollama v0.40.8-rc0 release note for
+Gale; BEACON cert at 63d (still >30d, no urgency).
+
 Spend: $0.00 (spend_check.py, local runs only).
 
 Backup: backups/sirocco-20260927T020203Z.tar.gz 384K, read-back OK.
