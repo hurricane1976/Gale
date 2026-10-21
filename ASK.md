@@ -37,6 +37,12 @@
   glm-latest); NO DATA LOST. Both lanes run again this waking. Your call (a)/(b)
   stands.**
 
+  **Re-checked w131 2026-10-21 22:35Z: UNCHANGED — AGENT.md still byte-identical
+  to sirocco's (`diff -q` silent), mtime still 2026-10-13 19:34:23; harness intact
+  (wake.sh `cd /home/agent/tramontane`, opencode.json glm-latest); NO DATA LOST.
+  Both lanes run again this waking (drill+sweep+dependency pass). Your call
+  (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -98,6 +104,38 @@
   intact: (a) the Oct 19 08:05Z snap readable; (b) offsite `refs/heads/maistral`
   tip `8c95afd` — UNCHANGED. NO DATA LOST; I touched nothing (rule 7). Your call
   (a)/(b) stands.**
+
+  **Re-checked w131 2026-10-21 22:35Z: UNRESOLVED — maistral drift ~62.5h (3750m),
+  +359m ≈ +6h vs w130 exactly as the model predicts; AGENT.md still "# AGENT.md —
+  Chinook", wake.sh still `cd /home/agent/chinook`, mtimes still your Oct 20 20:08Z
+  batch edit; newest own snap still `maistral-20261019T080520Z` (readable), newest
+  own log still 09:20Z Oct 19. 5th consecutive duplicate-chinook slot: its 20:05Z
+  slot produced `chinook-20261021T200515Z`; chinook's OWN 18:50Z slot fired
+  normally (`chinook-20261021T185041Z`) so chinook itself is healthy. Anchors
+  re-verified intact: (a) the Oct 19 08:05Z snap readable; (b) offsite
+  `refs/heads/maistral` tip `8c95afd` — UNCHANGED. NO DATA LOST; I touched
+  nothing (rule 7). Your call (a)/(b) stands.**
+
+- **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
+  stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
+  theirs to fix — flagged here for your visibility since one tier of the
+  two-tier backup model has been silently down for that agent.** Read-only sweep
+  findings (I touched nothing per rule 7): (1) offsite `refs/heads/poniente` tip
+  `e48b019` is dated 2026-09-27 vs its local HEAD `50680a8` (waking #136 today) —
+  its wake.sh push fails every slot with "src refspec main does not match any"
+  (its local branch is named `poniente`, not `main`; error visible in its own
+  current log). Its snapshots exclude `.git` by design, so its git history
+  currently lives ONLY locally — exactly the single-tier exposure the fleet
+  split into two tiers to avoid. Tier-1 file state is fine (fresh 20:55Z snap
+  today, keys example-only, git=0). (2) Its `backups/` holds 15 tars (its
+  rotation keeps 14): the oldest (`poniente-20261018T085524Z.tar.gz`) was spared
+  by the 20:55Z slot's rotation and now carries today's mtime (20:55:41, 16s
+  after its new snap) — content verified era-consistent (nothing lost), but the
+  mtime-based rotation order is now corrupted and its next rotation may delete
+  an unexpected file. Possible fleet-side angle if you want one: the push
+  refspec bug is per-agent wake.sh config (its push names `main` while its local
+  branch is `poniente` — same class as the "push targets stay `main:<agent>`"
+  recommendation from the clobber post-mortems).
 
 - **SIROCCO ENTANGLEMENT — RESOLVED (w127 2026-10-20 22:35Z, verified
   read-only).** Sirocco's identity is restored: AGENT.md "# AGENT.md —
@@ -563,6 +601,8 @@
    **Re-checked w129 2026-10-21 10:35Z: still no operator msg on my channel;
    still holding course, no action taken.**
    **Re-checked w130 2026-10-21 16:35Z: still no operator msg on my channel;
+   still holding course, no action taken.**
+   **Re-checked w131 2026-10-21 22:35Z: still no operator msg on my channel;
    still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
