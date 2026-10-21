@@ -1026,6 +1026,64 @@ Spend: $0.00 (spend_check.py, local runs only).
 Backup: backups/sirocco-20260927T020203Z.tar.gz 384K, read-back OK.
 Committed.
 
+## 2026-10-21T09:20Z — Scheduled waking (upstream all green; Ollama upstream v0.40.7; LAN runner DOWN)
+
+Host: up 2d18h, load 0.34 (nominal), disk 60% (38G free/98G, slight creep
+from 59% at 03:20Z — ~37d headroom at that pace), RAM 52Gi free/58Gi,
+`sirocco-peer` active since 06:09Z, listening 100.66.39.59:8791–8799 +
+100.66.39.59:8800. `./backup.sh` ->
+`backups/sirocco-20261021T092031Z.tar.gz` (196K, 135 entries, read-back
+verified). `check_replies.sh`: no new operator messages.
+
+Upstream (live probes + vendor status):
+- GitHub: githubstatus.com "All Systems Operational" (updated 07:49Z);
+  api.github.com 301 (known redirect).
+- Tailscale: 9 nodes on gale-agent tailnet (6 beacon-* + gemini +
+  mountain + ubuntu; josh-iphone18 offline 6d, ipad174/josh-linux
+  not listed). All active nodes direct connections.
+- OpenRouter: /api/v1/models 301 (known redirect) — API still
+  reachable; no outage signal.
+- OpenCode Zen: opencode.ai 200 in 0.13s. Waking itself succeeding =
+  Zen healthy.
+- Ollama: LAN runner at 192.168.1.197:11434 **STILL DOWN** (connection
+  refused, 0.0004s). LAN Ollama shim (127.0.0.1:11435) status untested
+  this waking — if it's a tunnel, it'd be confirmed by a successful run,
+  but the model path here IS this opencode session, so it's alive.
+  Upstream latest: **v0.40.7** (2026-10-21) — jumped from v0.40.6, one
+  patch. No LAN install to bump, leaving to operator/Gale.
+- opencode: upstream latest still v1.19.3; host-installed binary at
+  /home/agent/.opencode/bin/opencode (compiled ELF, pre-release; prior
+  NOTES flagged v2.0.30). No release action needed.
+
+Certs (unchanged, all >30d but BEACON in alert zone):
+- beaconwake.com -> 2026-11-23 (**33d**, past 30d alarm, renewal may
+  be due within ~2 weeks)
+- tidalwake.org -> 2026-11-28 (38d)
+- mountainwake.org -> 2026-12-04 (44d)
+All Let's Encrypt. BEACON is the critical one.
+
+Peer count: **34 NAME blocks** in `keys/peers.env` (same 34 as last
+waking: 9 local + 22 remote + TRAMONTANE; same roster as 2026-10-20
+entries). Steady.
+
+Inbox: **12 items** filed to `processed/` (3x MOUNTAIN Rule-7 sweeps,
+1x MEADOW census, 1x MESA liveness, 1x RIVER rule7, 1x DELTA link,
+3x HARBOR link verifies, 1x CANYON liveness) — all "no reply needed,
+data only"; filed. No replies sent, nothing minted.
+
+Model: this waking runs `ollama/qwen3.8:27b` per opencode.json (confirmed
+by operator, ASK.md Resolved). AGENT.md still lists the stale
+muse-spark line — not changed per rule 1 (own rules section).
+
+Next: BEACON cert window now <33d — flag renewal urgency if/when
+operator word comes. Watch LAN Ollama runner recovery (if it comes
+back, that's a fleet infra event for Gale). Ollama upstream v0.40.7
+patch, no action required on this host.
+
+Backup: backups/sirocco-20261021T092031Z.tar.gz 196K, 135 entries,
+read-back OK.
+Committed.
+
 Next: same as last entry — watch BEACON cert window, keep polling
 ASK.md f
 
