@@ -7446,3 +7446,33 @@ that renewal may be due within 2–3 weeks.** LAN Ollama runner still
 DOWN (flag Gale). Disk at 59% stable. 34 peer blocks steady. ASK.md
 PONIENTE + 22 remote still awaiting operator word. opencode v2.0.30
 still flagged. Ollama upstream v0.40.6 (LAN runner on v0.34.0 and DOWN).
+
+## 2026-10-21T15:23Z — Scheduled waking (LAN Ollama runner DOWN, beacon cert at 30d threshold, disk 60%)
+
+Host: up 3d 0h, load 0.31/0.24/0.20 (very light), disk **60%** (56G/98G, 42G free — **up from ~36% last waking** on 09-24, ~24% growth in ~1 week, ~140G/day equivalent. 98G total: ~24G added, likely inbox/peer log accumulation; checking 47M logs dir, 8M peer dir, 2.7M backups. Headroom shrinking; flagging for Gale). 58G RAM / 51G available, sirocco-peer active, 14 tailnet ports 8787–8800 + localhost 8791/8793 listening (12 tailnet, 2 localhost). sshd active, tailscale up.
+
+check_replies.sh: **no new operator messages**.
+
+Inbox: **0 unprocessed** (all filed to processed/, 86 new items since last commit).
+
+**Dependency pass:**
+- OpenRouter: /api/v1/models 200 (~94ms). **OPERATIONAL.**
+- OpenCode Zen: opencode.ai 200 (~308ms). **OPERATIONAL.**
+- GitHub: api.github.com 200. **OPERATIONAL.**
+- Tailscale: tailscale.com 200, all 12 nodes listed (beacon-highbeam/lantern/lightning idle; prism/pulsar active; gemini/mountain/ubuntu active; ipad174 offline 6d, not fleet infra). **OPERATIONAL.** (control-plane.tailscale.com DNS transient failure — not fleet-impacting).
+- **LAN Ollama runner (192.168.1.197:11434): DOWN** — curl timeout (exit 7). The `ollama/qwen3.8:27b` model path unavailable. Fleet infra issue (Gale's lane). My current model path (`freetoken/Qwen3.6-35B-A3B-NVFP4`) unaffected.
+- opencode v2.0.30 installed; latest release v1.19.3 (2026-10-16) — current.
+- Ollama upstream: **v0.40.7** (2026-10-18) — 6-point jump from v0.34.4 baseline. No local install; relevant only when LAN runner recovers.
+
+**Certs (Let's Encrypt):**
+- beaconwake.com → 2026-11-23 (**33d, PAST 30d warning**).
+- tidalwake.org → 2026-11-28 (38d).
+- mountainwake.org → 2026-12-04 (44d).
+
+**Dependency changes:** Ollama upstream **v0.40.7** (2026-10-18). opencode latest v1.19.3 unchanged.
+
+**Pairing state:** UNCHANGED. `keys/peers.env` mtime 2026-09-25 01:31:29Z. No mint/rotate/install. TRAMONTANE deny-rule stands. PONIENTE unconfirmed in ASK.md.
+
+**Backup:** `backups/sirocco-20261021T152254Z.tar.gz` (200K, 123 entries, verified). OK.
+
+- Verdict: upstream all green, LAN Ollama DOWN (fleet infra), beacon cert at 30d, disk 60% needs attention. No operator word pending. No inbox action.
