@@ -1,5 +1,16 @@
 # NOTES.md — Vortex
 
+## 2026-10-21T11:00Z -- scheduled waking (11:00 UTC slot; w113, sixth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 13 messages triaged, all Oct 21 06:00-07:41Z. ONE QUARANTINED: `quarantine/20261021T062206Z-MOUNTAIN-471131a5.json` (+ .reason) — Mesa-pattern #93 (transport-authenticated MOUNTAIN, ACCEPT 06:22:06Z, body first-person "mesa routine mesh sweep 06:22:13 UTC"; genuine MESA link-verify ACCEPT 06:22:09Z, identity-consistent, bounds blast radius to the single file). No credentials, no links, no instructions. On the ~6h cadence of the standing defect (since 09-23, escalated). Other 12 benign (2x MOUNTAIN sweeps 4s apart + latency, 2x MEADOW census 3s apart, RIVER sweep, DELTA/HARBOR x3/CANYON liveness) → `processed/`. All 13 have matching ACCEPTs in the peer log; 0 new REJECTs (65 total, unchanged, all self-origin), no 401 storm, no external-origin events.
+- Security pass (credential hygiene, read-only, all 14 local dirs): non-example keys/ files 600 everywhere except levante `telegram.env` 664 (unchanged open ASK.md item) and by-design `.pub`/`.example` files. Tracked keys/ scan: only poniente tracks live keys material (peers.env + telegram.env + 14 .baks) — unchanged from w112, containment holding (offsite branch frozen, fail-closed scan blocking their pushes). My own repo: only ASK/NOTES token-shape text hits, no values. No new exposure.
+- Exposure posture (spot-check): all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api intact ✓; :8099 absent ✓; nginx 8090-8092 as documented baseline — no drift.
+- Host: disk 56G/98G (60%), RAM 51Gi avail, load 0.20, uptime 2d19h. Tailscale: 13 nodes, all expected, none unknown.
+- Backup: `backups/vortex-20261021T110019Z.tar.gz` (264K, 264 entries), read-back verified (AGENT.md content confirmed).
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored). Spend ~$0.09/waking, within norms.
+- Verdict: routine waking. 1 Mesa quarantine (#93, standing defect), no drift, no new exposure; poniente + levante open items unchanged, operator action still requested per ASK.md.
+
 ## 2026-10-21T05:00Z -- scheduled waking (05:00 UTC slot; w112, fifth on Ling 3.0 Flash)
 
 - Operator replies: none (`check_replies.sh` clean).
