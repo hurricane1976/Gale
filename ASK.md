@@ -26,6 +26,11 @@
   lanes (backup drills/sweeps per my true role and history + dependency passes
   per the file), which is what w119–w127 have been doing.
 
+  **Re-checked w129 2026-10-21 10:35Z: UNCHANGED — AGENT.md still byte-identical
+  to sirocco's (`diff -q` clean), mtime still 2026-10-13 19:34:23; harness intact
+  (PROMPT names TRAMONTANE, opencode.json glm-latest); NO DATA LOST. Both lanes run
+  again this waking. Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -65,6 +70,17 @@
   runner-swap batch edit touched maistral's wake.sh/AGENT.md mtimes but did not fix
   the clobber; its 02:05Z slot produced another duplicate-chinook snap
   (`chinook-20261021T020521Z`). Anchors intact. Your call (a)/(b) stands.**
+
+  **Re-checked w129 2026-10-21 10:35Z: UNRESOLVED — maistral drift ~50.5h (3030m),
+  +6h/slot as the model predicts; AGENT.md still "# AGENT.md — Chinook", wake.sh
+  still `cd /home/agent/chinook`, mtimes still your Oct 20 20:08Z batch edit; newest
+  own snap still `maistral-20261019T080520Z`, newest own log still 09:20Z Oct 19.
+  3rd consecutive duplicate-chinook slot: its 08:05Z slot produced
+  `chinook-20261021T080518Z` (74 entries); chinook's OWN 06:50Z slot also fired
+  normally (`chinook-20261021T065012Z`) so chinook itself is healthy. Anchors
+  re-verified intact: (a) the Oct 19 08:05Z snap readable; (b) offsite
+  `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from MY repo).
+  NO DATA LOST; I touched nothing (rule 7). Your call (a)/(b) stands.**
 
 - **SIROCCO ENTANGLEMENT — RESOLVED (w127 2026-10-20 22:35Z, verified
   read-only).** Sirocco's identity is restored: AGENT.md "# AGENT.md —
@@ -239,7 +255,14 @@
   6h/slot: expect ~31h at w115 if unfixed (next slots 21:20Z tonight,
   03:20Z tomorrow). Your call stands: (a) restore sirocco's identity
   operator-side, or (b) an operator word to sirocco via another channel.
-  **Also w114: w113's BORA greet-then-stop RESOLVED as predicted — bora
+   **Also w129 2026-10-21 10:35Z: w128's LEVANTE greet-then-stop RESOLVED as
+   predicted — levante recovered at its 07:40Z slot (log verified READ-ONLY as a
+   FULL session: 114 jsonl lines with tool calls, fresh snap
+   `levante-20261021T074120Z`, 174m at sweep); the signature did NOT recur this
+   window. Pattern stands at 7 instances / 5 agents / 5 windows
+   (bora×3, maistral, ostro, poniente, levante), every instance self-healed at
+   its next slot. The standing wake.sh ALERT-content recommendation stays open.**
+   **Also w114: w113's BORA greet-then-stop RESOLVED as predicted — bora
   recovered at its 12:25Z slot (log verified READ-ONLY full session: 70
   jsonl lines, 18 step cycles, 18 text parts, 17 tool calls; snap 187K,
   92 entries, readable, keys/git clean); the signature did NOT recur
@@ -519,6 +542,8 @@
    still holding course, no action taken. (w115-w126 re-checks appear in
    the NOTES.md entries of those wakings.)**
    **Re-checked w128 2026-10-21 04:35Z: still no operator msg on my channel;
+   still holding course, no action taken.**
+   **Re-checked w129 2026-10-21 10:35Z: still no operator msg on my channel;
    still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
