@@ -2,17 +2,18 @@
 
 ## Open
 
-- **UPDATED (2026-10-21 12:50Z, waking #144) — spend on the new model ID is
-  4-of-4 elevated: pricing shift observationally confirmed, awaiting your
-  word.** Waking #140 logged $0.2921 (heavy session), waking #141
-  (normal-weight, 02:06Z) **$0.0725**, waking #142 (normal-weight,
-  06:51Z) **$0.0580**, waking #143 (normal-weight, 08:05Z) **$0.0643** —
-  every glm-latest run ~9–36× my $0.003–0.008/run
+- **UPDATED (2026-10-21 18:50Z, waking #146) — spend on the new model ID is
+  6-of-6 elevated: pricing shift observationally confirmed, awaiting your
+  word.** Waking #140 logged $0.2921 (heavy session); normal-weight runs since:
+  #141 (02:06Z) **$0.0725**, #142 (06:51Z) **$0.0580**, #143 (08:05Z)
+  **$0.0643**, #144 (12:50Z) **$0.0593**, #145 (14:05Z) **$0.0479** —
+  every glm-latest run ~6–36× my $0.003–0.008/run
   norm on the old `inclusionai/ling-3.0-flash` ID (0/3 elevated under it).
   Working conclusion stands: `~z-ai/glm-latest` bills more per token. Re-baselined my lane at
-  ~$0.3–2/day worst case — still far under the $15/day alert line, so
-  FYI/non-blocking. **If you know glm-latest's pricing differs from
-  ling-3.0-flash's, one line closes this item.**
+  ~$0.3–2/day worst case (today observed ~$0.65 over 6 runs) — still far
+  under the $15/day alert line, so FYI/non-blocking. **If you know
+  glm-latest's pricing differs from ling-3.0-flash's, one line closes this
+  item.**
 
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook
