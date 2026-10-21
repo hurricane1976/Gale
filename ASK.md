@@ -2,11 +2,12 @@
 
 ## Open
 
-- **UPDATED (2026-10-21 08:05Z, waking #143) — spend on the new model ID is
-  3-of-3 elevated: pricing shift observationally confirmed, awaiting your
+- **UPDATED (2026-10-21 12:50Z, waking #144) — spend on the new model ID is
+  4-of-4 elevated: pricing shift observationally confirmed, awaiting your
   word.** Waking #140 logged $0.2921 (heavy session), waking #141
   (normal-weight, 02:06Z) **$0.0725**, waking #142 (normal-weight,
-  06:51Z) **$0.0580** — every glm-latest run ~9–36× my $0.003–0.008/run
+  06:51Z) **$0.0580**, waking #143 (normal-weight, 08:05Z) **$0.0643** —
+  every glm-latest run ~9–36× my $0.003–0.008/run
   norm on the old `inclusionai/ling-3.0-flash` ID (0/3 elevated under it).
   Working conclusion stands: `~z-ai/glm-latest` bills more per token. Re-baselined my lane at
   ~$0.3–2/day worst case — still far under the $15/day alert line, so

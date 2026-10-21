@@ -8114,3 +8114,70 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Git: NOTES + ASK.md committed below; migration files (AGENT.md/
   opencode.json/wake.sh + .baks) stay uncommitted pending operator
   confirmation.
+
+## 2026-10-21T12:50Z — waking #144 (scheduled :50 slot)
+
+### headline: no operator reply; maistral backlog 116; glm-latest spend 4/4 elevated
+
+- **This waking fired at 12:50:10Z = my own scheduled :50 slot** (cron
+  `50 0,6,12,18`), on time (drift 0m). Not an accidental run. Effective
+  8x/day continues (my 4 + maistral's 4 accidentals; next accidental:
+  14:05Z per maistral's `5 2,8,14,20` cron).
+- **check_replies: none new.** Both open ASK.md items (maistral overwrite
+  disposition; 10-20 20:08Z fleet model-ID batch) still await operator
+  word — third day on the maistral item.
+- **Maistral (read-only re-check):** unchanged — AGENT.md header "# AGENT.md —
+  Chinook", wake.sh `cd /home/agent/chinook`, cron `5 2,8,14,20`. Inbox
+  backlog grew 102 → **116** unprocessed (+14 in ~4.75h since #143 — the
+  ~7 msgs/6h rate is edging up; restoration cost rises the longer it
+  waits). peer_server:8795 still 200 (masks the dark lane). Recovery
+  sources unchanged (its 10-19 backups + github branch; ASK.md item).
+  No advisories re-sent — #140's to BORA + MAISTRAL stand.
+- **Spend discriminator — 4th data point:** waking #143 (08:05:39Z,
+  normal-weight) billed **$0.0643** — like #141/#142, far above the old
+  ling-3.0-flash norm. **glm-latest runs are now 4/4 elevated**
+  ($0.058–0.292) vs 0/3 under the old ID. ASK.md spend item updated to
+  4/4. Re-baselined lane forecast stands: ~$0.3–2/day worst case, far
+  under the $15/day alert line. Today so far $0.4869 (4 runs) + this run
+  records at session end.
+
+### capacity snapshot 2026-10-21T12:50Z (waking #144)
+
+- host gale-agent: up 2d21h26m (boot 10-18 15:23Z, stable), load
+  0.64/0.30/0.25 on 16 cores (~2% — this waking's own activity in the
+  1-min number), mem 6.1Gi/57Gi used (51Gi avail), swap 0, disk /
+  56G/98G (60%, 38G free) — flat vs #143 (55–56G for 7 consecutive days).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, all <1 ms.
+- spend today (all ledgers I read): CHINOOK $0.4869 + this run; GALE /
+  flash-trio / VORTEX in normal band per #143; others $0. Host total
+  well under any line.
+- cadence: 12:50 slot on time (drift 0m); 4 scheduled + 1 accidental
+  (08:05) so far today — cadence-consistent, no rule-4 jump (accidentals
+  are maistral-cron-explained).
+
+### forecast / thresholds
+
+- **Disk:** 56G flat 7th day. 80% line ~78G ≈ 22G away: **~2026-12-05 at
+  ~0.5 G/day** — named date unchanged from #135–143. No action.
+- **Spend:** glm-latest pricing shift remains my lane's only structural
+  change (~$0.06–0.29/run observed); no alert line remotely in sight.
+- **Load/Mem/Swap:** flat, very low. No crossing projectable.
+- **Fleet capacity item (top, unchanged):** maistral lane dark since
+  10-19 08:05Z, backlog 116 and growing ~14/4.75h — restoration is the
+  operator's; no further advisory noise beyond #140's.
+
+### done this waking
+
+- check_replies: none. Peer inbox: 11 archived to processed/ (2018 on
+  disk) — MOUNTAIN×4 (incl. one MESA-envelope shared-lane body, standing
+  pattern), DELTA×2, MEADOW census, MESA, RIVER rule-7 sweep,
+  HARBOR×2 — all routine "no reply needed", no acks owed, no operator
+  content.
+- Maistral state re-verified read-only (unchanged, backlog 116).
+- Spend 4th data point recorded; ASK.md spend item updated to 4/4.
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261021T125021Z.tar.gz` (268K) gzip-verified,
+  AGENT.md read-back clean, 14-snapshot ceiling held.
+- Git: NOTES + ASK.md committed below; migration files (AGENT.md/
+  opencode.json/wake.sh + .baks) stay uncommitted pending operator
+  confirmation.
