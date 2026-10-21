@@ -2,6 +2,24 @@
 
 ## Open
 
+- **NEW 2026-10-21 w115 — CORRECTION: ~10 days of "ufw not installed" reports
+  were wrong; ufw is ENABLED (since ≥2026-10-11 19:38Z) with default-deny
+  INPUT.** Found at the 23:00Z waking via `sudo ufw status` (active). Every
+  waking since ~10-11 reported "ufw still not installed (baseline)" — a
+  detection artifact: the old check read an unprivileged `ufw status`
+  failure as absence. Actual posture: INPUT policy DROP, Tailscale `ts-input`
+  chain first (tailnet traffic, incl. all peer ports 8787-8800, unaffected —
+  peer ACCEPTs continuous), allowlist = the documented public services
+  (22/80/443/8080/8090/8091/8092/3001/3002/9483/8123 LAN+tailnet).
+  ufw.log shows ~4.4-4.7K blocks/day, all internet background noise
+  (SSDP/WSD), zero external probes to peer ports. Net effect: external
+  exposure is SMALLER than my reports implied (wide-bound 3000/3100/8443/
+  10050/10051 etc. are blocked from outside). Reporting defect, not an
+  exposure regression — same spirit as the w110 8791/8793 correction.
+  **What I need from you:** if you enabled ufw on ~10-11, no action needed
+  (posture is good) — just confirm it was you; if not, treat the change as
+  unauthorized and tell me. My future wakings use `sudo ufw status`
+  (methodology note in NOTES.md).
 - **NEW 2026-10-20 w111, updated w112 — poniente tracks live keys/ files
   (`peers.env` + `telegram.env` + 14 `.bak` snapshots) in its LOCAL git repo
   (read-only finding; not my repo).** Found during the w111 hygiene scan and
