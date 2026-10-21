@@ -7820,3 +7820,105 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - check_replies: none. Peer inbox: 4 archived to processed/ (1981 total).
 - Host health baseline recorded. No breaches.
 - Backup verified + commit + notify below.
+
+## 2026-10-21T00:50Z — waking #140 (scheduled :50 slot; HEADLINE: maistral dir found overwritten with a frozen chinook copy — its cron runs chinook sessions, maistral lane dark)
+
+### headline finding: maistral's directory is a frozen CHINOOK copy (rule-4 flagged, ASK.md + Telegram; I touched nothing per rule 7)
+
+- **What:** `/home/agent/maistral/{AGENT.md, NOTES.md, opencode.json, wake.sh}`
+  are byte-identical to chinook's; wake.sh does `cd /home/agent/chinook` and
+  wakes "as CHINOOK". Its NOTES.md is chinook's **through waking #124**
+  (10-18 12:51Z, matching line numbers); its `.git` HEAD is chinook's
+  waking-#124 commit `0329f5a` with the full chinook history and the same
+  fleet remote (`hurricane1976/Gale.git`, branch `main` + chinook push
+  config — a push from it would write into chinook's remote branch).
+- **Timeline (read-only forensics):** chinook state frozen in the 10-18
+  12:51–18:51 window (same day as the host reboot, below); applied onto
+  maistral ~10-19 08:06:34Z (NOTES.md mtime; maistral's 08:05/09:20
+  session-end pushes failed non-fast-forward — the .git was already
+  swapped); wake.sh swapped between 09:21 and 14:05Z 10-19. Before all
+  that, maistral's own model had been repointed at a nonexistent route
+  (`provider.no-route: Model unavailable: freetoken/Qwen3.6-35B-A3B-NVFP4`,
+  08:05 + 09:20 ×3 attempts each, ALERTs fired).
+- **Effect since 10-19 14:05Z:** maistral's cron (`5 2,8,14,20`) runs
+  CHINOOK sessions — **six accidental chinook wakings so far (#129, #131,
+  #133, #135, #137, #139 — the "off-slot" entries this file already
+  carries)**. Chinook effective cadence 8x/day (cost trivial, ~$0.006/run);
+  **maistral's own lane is dark since 10-19 08:05** (last real runs 02:05/
+  03:20Z), with ~83 unprocessed messages piling up in its inbox and its
+  peer_server still answering /health:8795 — masking the dead lane from
+  simple sweeps.
+- **Blast radius:** ONLY maistral. All 12 other siblings' wake.sh verified
+  correct this waking (each cds into its own dir, prompts as itself).
+  GALE's dir untouched (mtime 10-17).
+- **Recovery sources for the operator:** maistral's own backups
+  `maistral-20261019T020527Z / 032016Z / 080520Z.tar.gz` contain its true
+  "# AGENT.md — Maistral" + real wake.sh (verified by reading them back);
+  its github branch holds its history (last clean push 10-19 03:20Z).
+- **Actions taken:** ASK.md item (was this yours? disposition?); Telegram
+  via notify.sh; peer advisories sent to BORA (scaffold lane) and MAISTRAL
+  (record in its inbox for whenever it is restored). Next accidental
+  chinook run via its cron: 02:05Z.
+
+### corrections to prior entries (record set straight, no history rewritten)
+
+- Wakings **#129–139 "off-slot / operator-triggered"** were actually
+  **maistral-cron-triggered chinook sessions** (the corrupted wake.sh
+  explains the exact 02:05/08:05/14:05/20:05 pattern — it is maistral's
+  cron grid). The prior "operator extra-wake" interpretation was wrong.
+- **Host boot attribution**: recent entries said "(since 9/28 15:33Z
+  reboot)" — wrong. `who -b`: actual boot **2026-10-18 15:23Z**. A reboot
+  happened between #124 (12:50) and #125 (18:51) on 10-18; #125 saw "up
+  3:26" but misattributed it. Cause unconfirmed (ASK.md context note).
+- Waking #125–139 model lines said `inclusionai/ling-3.0-flash`; the
+  10-20 20:08Z fleet batch moved the ID to `~z-ai/glm-latest` (same Ling
+  3.0 Flash model, new OpenRouter ID) — this is the first waking on the
+  new ID and it works (existence proof).
+
+### capacity snapshot 2026-10-21T00:50Z (waking #140)
+
+- host gale-agent: up 2d9h27m (boot 10-18 15:23Z), load 0.34/0.23/0.20 on
+  16 cores (~2%), mem 5.9Gi/57Gi used (51Gi avail), swap 0/8G, disk /
+  55G/98G (59%, 39G free) — flat vs #138/#139 (55G for 3 days).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800 (<1 ms). Note
+  8795 (maistral's peer_server) answers 200 while the agent lane is dark
+  — /health is transport liveness, not lane liveness.
+- spend: 10-20 closed $0.0393/7 runs (4 scheduled + 3 accidental); this
+  waking run-1 of 10-21, ~$0.006 expected at session end. Per-run
+  $0.003–0.008; 7-day avg ~$0.07/day. No rule-4 anomaly (accidental runs
+  are cadence-explained, not a cost/count jump).
+- cadence: my 00:50 slot fired on time (drift 0m). Effective 8x/day while
+  maistral's cron is corrupted (see headline). Fleet stagger unaffected:
+  the accidental :05 runs displace only maistral's own slot (ostro :30 /
+  poniente :55 untouched).
+- model: `openrouter/~z-ai/glm-latest` (10-20 20:08Z fleet batch,
+  unattributed; 3 modified files + .baks left UNCOMMITTED per standing
+  precedent — new ASK.md item).
+
+### forecast / thresholds
+
+- **Disk:** 55G/98G (59%), 39G free — flat 3 consecutive days. 80% line
+  ~78G ≈ 23G away: **~2026-12-05 at the recent ~0.5 G/day rate** (named
+  date unchanged from #135–139). No action.
+- **Spend:** ~$0.05/day at accidental-double cadence — no line in sight
+  (per-run $5.00 / daily $15.00). GALE still the only real cost driver.
+- **Load/Mem/Swap:** flat, very low across the series. No crossing
+  projectable.
+- **Fleet capacity item:** maistral lane restoration (operator). While
+  dark, its inbox grows ~20 msgs/day — restoration cost rises slightly
+  the longer it waits; chinook absorbs its slots at ~$0.006 each. No
+  sibling near a resource limit otherwise. Advisory sent to BORA
+  (scaffold lane); no other advisory warranted.
+
+### done this waking
+
+- check_replies: none. Peer inbox: 8 archived to processed/ (1989 total) —
+  MOUNTAIN×4 (incl. one MESA-envelope shared-lane body, standing
+  pattern), MEADOW census, DELTA×2, MESA. All data-only, no acks owed.
+- Maistral overwrite investigated end-to-end (read-only); ASK.md item +
+  peer advisories to BORA + MAISTRAL sent; record corrections logged.
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261021T005508Z.tar.gz` (260K) gzip-verified, key
+  files read back, 14-snapshot ceiling held.
+- Git: NOTES + ASK.md committed; migration files stay uncommitted pending
+  operator confirmation.

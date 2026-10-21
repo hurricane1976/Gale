@@ -2,7 +2,55 @@
 
 ## Open
 
-- **NEW — opencode v2 broke my wake.sh: 3 lost slots 10-15; unattributed fix
+- **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
+  overwritten with a frozen CHINOOK copy; its cron now runs chinook
+  sessions and maistral's lane is dark. Was this yours? Please confirm +
+  pick a disposition.** Evidence (all read-only, rule 7 — I touched
+  nothing): `/home/agent/maistral/{AGENT.md,NOTES.md,opencode.json,
+  wake.sh}` are byte-identical to chinook's (wake.sh does `cd
+  /home/agent/chinook` and wakes "as CHINOOK"); its NOTES.md is chinook's
+  through waking #124 (10-18 12:51Z); its `.git` HEAD is chinook's
+  waking-#124 commit `0329f5a` with the FULL chinook history and the same
+  fleet remote. Timeline: chinook state frozen in the 10-18 12:51–18:51
+  window (same day as the unflagged 10-18 15:23Z reboot — corrected in
+  NOTES); applied to maistral ~10-19 08:06:34Z (NOTES mtime; maistral's
+  08:05 and 09:20 session-end pushes failed non-fast-forward from the
+  already-swapped .git); its wake.sh was swapped between 09:21 and 14:05Z
+  10-19. Since 10-19 14:05Z, maistral's cron (`5 2,8,14,20`) has run SIX
+  accidental chinook wakings (#129–139, previously mislabeled "off-slot /
+  operator-triggered" — corrected in NOTES); maistral's own lane last ran
+  10-19 02:05/03:20Z and its 08:05/09:20 runs had already been failing on
+  `provider.no-route: Model unavailable: freetoken/Qwen3.6-35B-A3B-NVFP4`
+  (someone repointed its model at a nonexistent route BEFORE the
+  overwrite). All 12 other siblings verified intact (wake.sh identity
+  lines correct). Cost so far: ~$0.006/accidental run — trivial; the real
+  loss is maistral's memory lane (dark ~2 days, ~83 unprocessed inbox
+  messages piling up). Its peer_server still answers /health:8795, which
+  masks the dead lane from simple sweeps. **Recovery sources:** maistral's
+  own backups `maistral-20261019T020527/032016/080520Z.tar.gz` contain its
+  true "# AGENT.md — Maistral" + real wake.sh; its github branch holds its
+  history (last clean push 10-19 03:20Z). **Caution:** the corrupted .git
+  is on branch `main` with chinook's push config — any push from it would
+  write into chinook's remote branch. Next accidental chinook run via its
+  cron: 02:05Z. Asks: (a) accident or deliberate rebuild? (b) want its
+  cron slot left as-is (chinook absorbs 8x/day) or paused until you fix
+  it? (c) confirm the freetoken/Qwen3.6 model repoint was also yours.
+
+- **NEW (2026-10-21 00:50Z, waking #140) — fleet-wide model-ID batch
+  landed 2026-10-20 20:08:12Z unattributed (ling-3.0-flash → ~z-ai/
+  glm-latest): please confirm so I can commit.** All sibling wake.sh /
+  AGENT.md / opencode.json re-stamped within ~15ms of each other
+  (20:08:12–23Z); my three files carry a pure model-ID change
+  (`openrouter/inclusionai/ling-3.0-flash` → `openrouter/~z-ai/glm-latest`,
+  verified by git diff; `*.bak-20261020-ling-to-glm` files left alongside).
+  This waking runs on the new ID fine (existence proof — I am it). Per the
+  10-07/10-12/10-15 precedent the three modified files stay UNCOMMITTED
+  until your word. Minor inconsistency to fold into your reply: AGENT.md's
+  Model line dates the change "operator-directed 2026-10-17" while the
+  batch landed 10-20 — if the ID move is just OpenRouter renaming the same
+  Ling 3.0 Flash model, one line covers it.
+
+- **opencode v2 broke my wake.sh: 3 lost slots 10-15; unattributed fix
   sits uncommitted in my tree — please confirm so I can commit (2026-10-15
   18:50Z, waking #113).** opencode was upgraded host-wide to v2.0.29 on
   10-14 20:41Z and removed `run --dir`. My 00:50/06:50/12:50 slots today all
