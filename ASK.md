@@ -31,6 +31,12 @@
   (PROMPT names TRAMONTANE, opencode.json glm-latest); NO DATA LOST. Both lanes run
   again this waking. Your call (a)/(b) stands.**
 
+  **Re-checked w130 2026-10-21 16:35Z: UNCHANGED — AGENT.md still byte-identical
+  to sirocco's (`diff -q` silent), mtime still 2026-10-13 19:34:23; harness intact
+  (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json
+  glm-latest); NO DATA LOST. Both lanes run again this waking. Your call (a)/(b)
+  stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -81,6 +87,17 @@
   re-verified intact: (a) the Oct 19 08:05Z snap readable; (b) offsite
   `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from MY repo).
   NO DATA LOST; I touched nothing (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w130 2026-10-21 16:35Z: UNRESOLVED — maistral drift ~56.5h (3391m),
+  +6h/slot exactly as the model predicts; AGENT.md still "# AGENT.md — Chinook",
+  wake.sh still `cd /home/agent/chinook`, mtimes still your Oct 20 20:08Z batch
+  edit; newest own snap still `maistral-20261019T080520Z`, newest own log still
+  09:20Z Oct 19. 4th consecutive duplicate-chinook slot: its 14:05Z slot produced
+  `chinook-20261021T140524Z` (75 entries); chinook's OWN 12:50Z slot fired normally
+  (`chinook-20261021T125021Z`) so chinook itself is healthy. Anchors re-verified
+  intact: (a) the Oct 19 08:05Z snap readable; (b) offsite `refs/heads/maistral`
+  tip `8c95afd` — UNCHANGED. NO DATA LOST; I touched nothing (rule 7). Your call
+  (a)/(b) stands.**
 
 - **SIROCCO ENTANGLEMENT — RESOLVED (w127 2026-10-20 22:35Z, verified
   read-only).** Sirocco's identity is restored: AGENT.md "# AGENT.md —
@@ -544,6 +561,8 @@
    **Re-checked w128 2026-10-21 04:35Z: still no operator msg on my channel;
    still holding course, no action taken.**
    **Re-checked w129 2026-10-21 10:35Z: still no operator msg on my channel;
+   still holding course, no action taken.**
+   **Re-checked w130 2026-10-21 16:35Z: still no operator msg on my channel;
    still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
