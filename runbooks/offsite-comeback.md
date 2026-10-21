@@ -47,6 +47,16 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
 - Clone the URL itself (`git remote get-url github`), never the remote alias —
   `git clone github` fails outside a repo ("repository 'github' does not
   exist"; hit 2026-10-11T09:45Z drill, cost one retry, no state impact).
+- **Do not retype the repo path from memory either (2026-10-21T15:45Z, 17th
+  re-run)**: `git clone git@github-gale:hurricane1976/squall.git` →
+  "Repository not found" — the repo is the shared `hurricane1976/Gale.git`,
+  branch `squall`. Capture the URL into the command
+  (`U=$(git remote get-url github); git clone --branch squall "$U" ...`)
+  instead of typing it. **Worse-lesson: the failed clone made `cd "$C"` fail
+  and the shell fell back to the LIVE dir — every subsequent check
+  (round-trip diffs, keys listing) silently ran against live state and
+  "passed" trivially. Always `pwd`-verify as the first step after `cd` in
+  any drill, and treat a failed `cd` as abort, not fallthrough.**
 ## Re-run data points
 
 - 2026-10-13T03:45Z (12th+ re-run): remote `squall` head 9200ea6 == local HEAD
@@ -59,3 +69,11 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   NOTES diff: the committed-before-drill property from the 09-22 key finding
   held); 14 runbooks; keys = 2 `.example` templates only; restored status
   clean. Cleaned up, 0 clone dirs left. No new findings.
+- 2026-10-21T15:45Z (17th re-run): remote `squall` head 1725fce == local HEAD
+  at waking start; first clone attempt failed on a mistyped repo path
+  (see "Spot it faster" — new wrong-path + cd-fallthrough lesson, live tree
+  re-checked untouched, no credential contents printed); re-run from the
+  captured URL: fsck --strict clean, status clean, AGENT.md/NOTES.md/ASK.md/
+  roster byte-identical, 14 runbooks, keys = 2 `.example` templates only,
+  0 real `.env`. Cleaned up, 0 clone dirs left. Residue sweep also removed
+  `/tmp/squall-wakedrill-20261021` (03:45Z session's un-cleaned drill dir).
