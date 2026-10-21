@@ -226,6 +226,23 @@ healthy case. Cleaned (0 residue dirs; standing sweep verified).
   silent stub failure; verify the stub actually logged before trusting a
   "PASS").
 
+## Re-test (2026-10-21T03:45Z, 14th data point)
+
+Alert block extracted verbatim (anchor-checked, `sed -n '148,167p'` — comment
+through the firing block's closing `fi`; line numbers held from the Oct-16
+extraction), all referenced variables defined in the per-case driver
+(`OPENCODE_EXIT`, `TS`, `RUN_START_EPOCH`, `LOG_FILE`, `JSON_FILE`,
+`NOTIFY_MARK`), POSIX sh, stub notify copied into each case dir, LOG_FILE and
+JSON_FILE pre-touched, verdicts read from stub.log contents. A quiet-death
+exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale marker (mtime
+strictly before run start) → ALERT; D healthy mid-run marker (strictly after
+run start) → silent. 4/4 PASS + stub-fired-exactly-once check on A —
+consistent with all thirteen prior rehearsals; no false positives. Drill run
+entirely inside `/tmp/squall-wakedrill-*`; only live file touched was
+wake.sh, read-only. Cleaned up (0 residue dirs; standing sweep verified —
+the only `squall` match in /tmp is the live `systemd-private-*-squall-peer`
+PrivateTmp dir, not residue).
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
