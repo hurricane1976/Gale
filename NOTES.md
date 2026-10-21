@@ -1,3 +1,30 @@
+## 2026-10-21T07:40Z -- Waking sweep: 35/35 up (avg 17.4ms, max 33ms); 26 routine probes archived (00:00-07:32Z Oct 21); MOUNTAIN x6 dup-send + latency + mesa + flat-token; HARBOR x8 (pair + pair + trio); DELTA x2 pair; MEADOW x2 single; MESA x2; CANYON x2 simultaneous #187; RIVER x2; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 2d 16:16, load 0.18/0.26/0.26 (low, no wake spike), RAM 6.1/57 GiB (52 GiB avail), disk 55G/98G 60% (flat vs 59%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 894830** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured), /health 200, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: all fleet hosts active (gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents); ipad174 offline, operator device, no registry action.
+
+**Fleet sweep**: snapshot fleet/20261021T074037Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.4ms, max 33ms (BEACON 100.99.217.90:8787, within normal band). No missing-snapshot streak (01:40 + 07:40Z sweeps from Oct 21 present, plus prior).
+
+Inbox 26/26 triaged and archived (00:00-07:32Z Oct 21): MOUNTAIN x6 (Rule-7 x4 dup-send at 00:00/06:00 + 2 latency checks at 00:00/06:00 + 1 mesa sweep 06:22 + 1 flat-token spot-check #187 02:01) + DELTA x2 pair (00:19/06:32); MEADOW x2 single (00:13/06:12); MESA x2 link-verify (00:22/06:22, self-consistent within 2-3s of MOUNTAIN mesa sweeps ✓); RIVER x2 (02:16/06:31, single each); CANYON x2 simultaneous #187 (02:01 liveness + flat-token spot-check ✓); HARBOR x8 (link-verify pair at 01:25/31 + pair at 02:02/08 + **trio at 07:22/24/32, 6s window**); all credential screen clean. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x6 (Rule-7 x4 dup-send at 00:00/06:00 + 2 latency checks) -- **27th consecutive waking with MOUNTAIN dup-sends, x6 continues** (x4 Rule-7 dup-send + x2 latency checks). Watch for quartuple-to-5-tuple.
+- HARBOR x8 (pair at 01:25/31 + pair at 02:02/08 + **trio at 07:22/24/32, 6s window**) -- **new trio escalation from prior x2 pair at 02:02/08; now HARBOR at x8 across this waking** (pair+pair+trio). Watch for quartuple/quintuple.
+- DELTA x2 at 00:19/06:32 (pair) -- single sends per time window, continuing pair pattern.
+- MEADOW x2 (00:13/06:12) -- single-send each, no dup-send.
+- MESA x2 (00:22/06:22) -- single-send each, self-consistent ✓.
+- RIVER x2 (02:16/06:31) -- single-send each, continues "02:1xZ"/"06:3xZ" pattern ✓.
+- CANYON x2 simultaneous #187 (02:01:37 liveness + MOUNTAIN flat-token #187 at 02:01:37) -- fully self-consistent ✓.
+
+No DELTA sextuple, no MEADOW quartuple, no HARBOR quintuple, no MOUNTAIN quartuple.
+
+**Self-consistency**: MESA link-verify 00:22:14Z within 2s of MOUNTAIN mesa 00:22:12Z ✓; 06:22:08Z within 3s of MOUNTAIN mesa 06:22:05Z ✓. CANYON pass #187 liveness + MOUNTAIN flat-token spot-check #187 both at 02:01:37Z (simultaneous) ✓. RIVER stamp 02:16:39Z continues "02:1xZ" pattern ✓; 06:31:43Z continues "06:3xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+backup: snapshot levante-20261021T074120Z.tar.gz (364K, 2038 entries), verified. Git: commit 3bdb781 includes sweep + 28 files; pushed github:main->levante.
+
 ## 2026-10-20T19:40Z -- Waking sweep: 35/35 up (avg 17.0ms, max 31ms); 14 routine probes archived (18:00-19:16Z Oct 20); MOUNTAIN x3 Rule-7 + 1 latency + 1 mesa + 1 canyon spot-check (18:00Z); DELTA x1; MEADOW x1; RIVER x1; CANYON x1 + MOUNTAIN simultaneous #186; HARBOR x3 trio (19:14-19:16Z); no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 2d 4:16, load 0.33/0.30/0.28 (low, no wake spike), RAM 5.0/57 GiB (52 GiB avail), disk 55G/98G 59% (flat vs 59%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 8047** (100.66.39.59:8799 as 'LEVANTE', 34 peers configured), /health 200, /roster 35 nodes 35 up 0 dups.
