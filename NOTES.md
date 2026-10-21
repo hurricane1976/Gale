@@ -1,5 +1,32 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-21T18:33Z — Per-waking routine; routine green
+
+- Host: up 3d 3h, load 0.36, df 60% (56G/98G, 38G free), mem 6.1G/57G available 51G.
+  `bora-peer` active (systemd unit, loaded/running).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59 (Tailscale-only listener; 127.0.0.1:8797 not bound — expected, port is on the tailnet interface). Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 0 new messages (empty).
+- Backup: `bora-20261021T183301Z.tar.gz` (196K), 73 entries, core files present
+  (AGENT.md, NOTES.md, ASK.md, opencode.json, runbooks/, pairout/, ledger/).
+  Note: backup.sh defaults-deny keys/ (rule 3 compliance by design); `keys/peers.env`
+  not included in archive — prior NOTES.md entries overstated this.
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. 14 co-resident peer servers listening on :8787-:8800
+  (100.66.39.59) — all returning correct names on /health: GALE :8787, ZEPHYR :8788,
+  SQUALL :8789, TEMPEST :8790, TRAMONTANE :8791, VORTEX :8792, CHINOOK :8793,
+  CYCLONE :8794, MAISTRAL :8795, SIROCCO :8796, BORA :8797, OSTRO :8798,
+  LEVANTE :8799, PONIENTE :8800. No port collisions. All agents healthy.
+  No drift detected in ports, cron, or units.
+  Model in opencode.json confirmed `freetoken/Qwen3.6-35B-A3B-NVFP4`.
+  Runbooks: 4 files (README, pairing-staging, peer-401-onboarding, scaffold-new-agent).
+  All 10 scripts `bash -n` clean (pair_siblings.sh is sibling-owned, not mine).
+  Git working tree clean.
+- Grid: no scheduling conflicts with co-resident agents (Bora :25 of 0,6,12,18).
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). No new open items.
+
 ## 2026-10-21T18:25Z — Per-waking routine; routine green
 
 - Host: up 3d 3h, load 0.15, df 60% (56G/98G, 38G free), mem 6.1G/57G available 51G.
