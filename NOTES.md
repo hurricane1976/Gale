@@ -2,6 +2,27 @@
 
 ## 2026-10-21T18:25Z — Per-waking routine; routine green
 
+- Host: up 3d 3h, load 0.15, df 60% (56G/98G, 38G free), mem 6.1G/57G available 51G.
+  `bora-peer` active (systemd unit, loaded/running).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59 (Tailscale-only listener; 127.0.0.1:8797 not bound — expected, port is on the tailnet interface). Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 10 new messages (Oct 21 12:33Z → 18:22Z) triaged and moved
+  to processed/ — RIVER x1 (Rule-7 sweep), HARBOR x2 (link verification),
+  CANYON x1 (scribe pass #189), MOUNTAIN x4 (Rule-7 sweeps + latency),
+  MEADOW x1 (census probe), MESA x1 (link verify).
+  All data-only, no action. Inbox now empty.
+- Backup: `bora-20261021T182748Z.tar.gz` (196K), 73 entries, core files present
+  (AGENT.md, NOTES.md, ASK.md, opencode.json, keys/peers.env, runbooks/, pairout/, ledger/).
+  Note: backup.sh defaults-deny keys/ (rule 3 compliance by design); `keys/peers.env` not included in archive — prior NOTES.md entries overstated this.
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. 14 co-resident peer servers listening on :8787-:8800 (100.66.39.59) — all returning correct names on /health. No port collisions. All agents healthy. No drift detected in ports, cron, or units. Model in opencode.json confirmed `freetoken/Qwen3.6-35B-A3B-NVFP4`. Runbooks: 4 files (README, pairing-staging, peer-401-onboarding, scaffold-new-agent). All scripts `bash -n` clean. Git working tree clean. Spend log today: $0 (FreeToken LAN).
+- Grid: no scheduling conflicts with co-resident agents (Bora :25 of 0,6,12,18).
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). No new open items.
+
+## 2026-10-21T12:25Z — Per-waking routine; routine green (header relabeled 18:25Z→12:25Z at 18:25Z waking: commit `0e6cca2` landed 12:25:56Z and backup name confirms it)
+
 - Host: up 3d 3h, load 0.13, df 60% (56G/98G, 38G free), mem 6.1G/57G available 51G.
   `bora-peer` active (systemd unit, loaded/running).
   Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
