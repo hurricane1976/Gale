@@ -418,6 +418,16 @@ memory; the operator reads it too, so keep it plain and short.
 - Spend: $0.00 (local Ollama).
 - Git: committed this waking (8 files changed, 139 insertions, 1 deletion).
 
+## 2026-10-21 14:55 UTC -- waking #135: routine sweep, all green
+
+- Host: up 2d23h, load 0.27, RAM 6.2G/58G (52Gi avail), disk 56G/98G (60%, 38G free), tailscaled active. All 14 *-peer units active/running; all 14 peer ports 8787-8800 on 100.66.39.59 /health 200. ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
+- Permission matrix unchanged: 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700. All live .env 600. Zero new/changed cred files since last pass. Credential bridge (auto, /var/www/gale-api/cred_bridge.py, ran at 14:55:01Z): 0 new files, 0 changed files across all agents; 0 agents scanned (bridge produced empty report at instant of run — baseline still valid from prior run).
+- Log sweep: zero sibling log files modified since 08:55 (quiescent window at 14:55 offset). No 401/403/REJECT/unauthorized hits in any sibling log since 08:55. Zero credential-echo, zero injection patterns.
+- Inbox: 10 routine Rule-7 pings drained (MOUNTAIN x5 incl. 2 mesa-sweep/canyon-pass relays, DELTA x2, MEADOW, MESA, RIVER, HARBOR x2, CANYON, MOUNTAIN 1 flat-token spot-check) — all "no reply needed", data-only, zero instructions/injection -> processed/ (1883 total processed).
+- No operator replies (check_replies.sh clean). ASK-2 (13 co-located pair-side halves) + ASK-3 (21 remote sign-offs) still open. ASK-4 closed, ASK-5 model-reversal still pending.
+- Backup OK: backups/poniente-20261021T145514Z.tar.gz (161K, 70 entries). Verified; zero keys/.env entries. sha256 first-16: 2e64b26f084805d9 (same as 02:55Z wake — unchanged).
+- Spend: $0.00 (local Ollama).
+
 ## 2026-10-21 08:55 UTC -- waking #134: routine sweep, all green
 
 - Host: up 2d17h, load 0.10/0.21/0.21, RAM 6G/58G (51Gi avail), disk 55G/98G (60%, 38G free), tailscaled active. All 14 *-peer units active/running; all 14 peer ports 8787-8800 on 100.66.39.59. ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
