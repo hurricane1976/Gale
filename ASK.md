@@ -2,7 +2,31 @@
 
 ## Open
 
-- **NEW w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
+- **NEW w128 2026-10-21 04:35Z — MY OWN (tramontane's) AGENT.md is identity-clobbered
+  with SIROCCO's content — third instance of the fleet's clobber class; your call:
+  confirm intent (role reassignment) or authorize a revert.** Discovered this waking
+  via git archaeology (all read-only; I touched nothing): my AGENT.md is
+  **byte-identical to sirocco's** and says "# AGENT.md — Sirocco / You are Sirocco /
+  directory /home/agent/sirocco persists / Your role: Upstream Dependency &
+  External-Service Health" — not my identity. My TRUE AGENT.md ("# AGENT.md —
+  Tramontane / Your role: Backup & Restore Guardian") is intact in my own git history
+  at first commit `ba71ac4` through `7451e6b` (the commit just before w119); the swap
+  landed on-disk between w118 (Oct 18 16:35Z) and w119 (Oct 18 22:35Z) with file mtime
+  `2026-10-13 19:34:23` — sirocco's file as of its Oct 13 operator edit, i.e. an
+  mtime-preserving copy (snapshot-tarball or `cp -p` class), same class as the
+  sirocco(→maistral) and maistral(→chinook) clobbers. My w119 session then COMMITTED
+  it as a "pre-existing modification" (its note described the swap backwards).
+  **My harness is intact** (wake.sh `cd /home/agent/tramontane`, PROMPT names
+  TRAMONTANE, opencode.json glm-latest; sessions/backups/ledger all mine since);
+  **NO DATA LOST.** Per rule 6 I will not edit the role/rules sections myself:
+  **(a) if the w119 swap was your intent (role reassignment to the supply-line
+  lane), say so on Telegram and I'll adopt it fully; (b) if not, authorize the
+  revert — restore AGENT.md from my pre-w119 history (`git show 7451e6b:AGENT.md`)
+  operator-side or say the word and I'll do it.** Until your word, I run BOTH
+  lanes (backup drills/sweeps per my true role and history + dependency passes
+  per the file), which is what w119–w127 have been doing.
+
+- **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
   inbox while its wake.sh cd's into chinook's dir.** Discovered read-only at
@@ -35,6 +59,12 @@
   numbers for maistral were stale-template errors. The w127 sweep above is
   the authoritative one; I will re-verify each row's snap filename fresh
   every waking going forward.
+
+  **Re-checked w128 2026-10-21 04:35Z: UNRESOLVED — maistral drift ~44.5h (2670m);
+  AGENT.md still Chinook, wake.sh still `cd /home/agent/chinook`; your Oct 20 20:08Z
+  runner-swap batch edit touched maistral's wake.sh/AGENT.md mtimes but did not fix
+  the clobber; its 02:05Z slot produced another duplicate-chinook snap
+  (`chinook-20261021T020521Z`). Anchors intact. Your call (a)/(b) stands.**
 
 - **SIROCCO ENTANGLEMENT — RESOLVED (w127 2026-10-20 22:35Z, verified
   read-only).** Sirocco's identity is restored: AGENT.md "# AGENT.md —
@@ -488,6 +518,8 @@
   **Re-checked w127 2026-10-20 22:35Z: still no operator msg on my channel;
    still holding course, no action taken. (w115-w126 re-checks appear in
    the NOTES.md entries of those wakings.)**
+   **Re-checked w128 2026-10-21 04:35Z: still no operator msg on my channel;
+   still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
@@ -698,7 +730,7 @@
   (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 34,973
   → 39,104 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
   read-only; still not my lane.
-    **Re-checked w104 2026-10-14 10:35Z: UNCHANGED — same `activating
+   Not my lane; quiet unless it changes again.**
   (auto-restart)` + 203/EXEC on the gunicorn spawn; NRestarts 39,104
   → 43,229 (~4.1k in 6h ≈ one per ~5.2s), steady-state.** Noted
   read-only; still not my lane.
@@ -731,6 +763,8 @@
   NRestarts=0.** Not my lane; quiet unless it changes again.
   **Re-checked w127 2026-10-20 22:35Z: UNCHANGED — still `inactive`,
    NRestarts=0.** Not my lane; quiet unless it changes again.
+   **Re-checked w128 2026-10-21 04:35Z: UNCHANGED — still `inactive`, NRestarts=0.
+   Not my lane; quiet unless it changes again.**
 
 - **INFORMATIONAL (w94 2026-10-11 22:35Z) — second host reboot in 2 days
   (~19:47Z), this time a CLEAN ordered shutdown.** journal boot -1 ends
