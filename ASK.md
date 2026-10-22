@@ -20,33 +20,34 @@
   (posture is good) — just confirm it was you; if not, treat the change as
   unauthorized and tell me. My future wakings use `sudo ufw status`
   (methodology note in NOTES.md).
-- **NEW 2026-10-20 w111, updated w112 — poniente tracks live keys/ files
-  (`peers.env` + `telegram.env` + 14 `.bak` snapshots) in its LOCAL git repo
-  (read-only finding; not my repo).** Found during the w111 hygiene scan and
-  re-verified w112 with corrected figures: poniente (co-resident sibling,
-  peer server :8800) commits 18 keys/ files to its local branch — the live
-  `keys/peers.env` (fleet-wide pairing registry), the live
-  `keys/telegram.env` (their bot token — **new detail w111 missed**), 14
-  `.bak` snapshots, and 2 `.example` files. (w111's "+33 .bak snapshots" was
-  a miscount: git log shows no keys/ commits since 10-17, so the tracked
-  set is unchanged; 14, not 33.) **Offsite containment verified w112:**
-  the offsite branch `github/poniente` was last pushed 09-27 and its tree
-  contains ONLY `keys/*.example` — no leak offsite. Their wake.sh carries
-  the fleet-standard fail-closed pre-push secret scan (added 09-23 after
-  RIVER's leak alert), and it has been doing its job: scan HITs appear in
-  ≥4 of their wake logs, and since ~10-20 pushes fail outright
-  (`src refspec main does not match any` in their 10-20/10-21 wake logs) —
-  so the offsite branch is frozen, not one step from leaking. Cost: poniente's
-  offsite backup has been broken ~24 days (push fails every waking). Their
-  tracked logs/*.json (122 files) match secret patterns but every match is
-  a redacted 4-char prefix or the canonical AWS example key — no live values.
-  I touched nothing (their repo, rule 7); data-only peer note sent to
-  PONIENTE (w111 keys finding, w112 push-failure follow-up). **What I need
-  from you:** get poniente to untrack keys/peers.env + keys/telegram.env
-  (+ .baks) from its local history, fix their push refspec so their offsite
-  backup resumes, and confirm the remote branch policy — levante's
-  keys/telegram.env is also live-at-664 (untracked, just wrong perms vs.
-  the 600 house standard), unchanged this waking.
+- **NEW 2026-10-20 w111, updated w112, RESOLVING w118 (2026-10-22) — poniente
+  live keys tracked in its LOCAL git repo: poniente self-contained it this
+  morning.** History: w111 found poniente (co-resident sibling, peer server
+  :8800) tracking 18 keys/ files — live `peers.env` (fleet pairing registry),
+  live `telegram.env` (their bot token), 14 `.bak`s, 2 `.example`s — in its
+  local branch. At their waking #137, 2026-10-22 03:16Z, they committed
+  `94a2078` "SECURITY CONTAINMENT (ASK-6)": untracked keys/, logs/, backups/,
+  peer logs/inbox, `*.bak-*`; fixed .gitignore; fixed their push refspec;
+  made the pre-push gate history-aware + fail-closed. Verified by me
+  (w118, read-only): `git ls-files keys/` = the 2 `.example` files only;
+  keys blobs remain in their LOCAL history (09-17→10-22 commits); the
+  history-aware gate still HITs in their latest wake log (14:55Z), so pushes
+  stay blocked and the offsite branch `github/poniente` stays frozen at
+  09-27 with a `.example`-only tree — **never leaked offsite**. Their
+  waking #139 also ran a fleet-wide git-history scan (13 sibling histories
+  clean — consistent with my w111 finding that they were the only tracker).
+  Correction of my own record: w117's "poniente item unchanged, 18 tracked
+  files" was stale — containment landed 03:16Z, before w117's 11:00Z check;
+  w117 evidently carried the figure forward without a fresh check. **What I
+  still need from you:** (1) word on scrubbing the keys blobs from poniente's
+  local history (their gate blocks pushes until then, so their offsite
+  backup stays broken), or accept local-history retention + say so;
+  (2) whether you want token rotation given the ~5-day window (added
+  10-17 20:55Z, untracked 10-22 03:16Z) in which the full pairing registry
+  + a bot token sat in local git on a multi-agent box (stacks on the
+  unrotated 09-21→09-25 :8099 exposure, item below).
+  Levante's keys/telegram.env is still live-at-664 (untracked, wrong perms
+  vs the 600 house standard), unchanged this waking.
 - **NEW 2026-10-20 w111 — CORRECTION of my w110 "8791/8793 tailnet bind
   drift" report.** No drift: firewalla-control (:8791) and fleet-api (:8793)
   are localhost-only exactly as intended (127.0.0.1 PIDs, systemd units
