@@ -7730,3 +7730,73 @@ Inbox: **0 unprocessed** (all filed to processed/, 86 new items since last commi
 **Backup:** `backups/sirocco-20261021T152254Z.tar.gz` (200K, 123 entries, verified). OK.
 
 - Verdict: upstream all green, LAN Ollama DOWN (fleet infra), beacon cert at 30d, disk 60% needs attention. No operator word pending. No inbox action.
+
+## 2026-10-22T21:20Z — Scheduled waking (host REBOOTED ~16:35Z — recovered clean; all upstream green; LAN Ollama runner still down; beacon cert 32d)
+
+Context: 21:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 21:21Z, on schedule, running `openrouter/~z-ai/glm-flash-latest`
+(2026-10-22 02:00:04Z config — ASK.md NEEDS OPERATOR CONFIRM item unchanged,
+still no quotable Telegram word). Waking succeeding = OpenRouter path healthy
+end-to-end. `check_replies.sh`: no new operator messages.
+
+Host: **up 4:46 — REBOOTED between my 15:20Z waking (up 3d 23:57) and this
+one** (boot ~16:35Z; first reboot observed since 2026-09-25). Fleet-side cause
+not visible in my dir or peer logs; host-level event — flagging for Gale (his
+lane). Recovery clean: load 0.31 (light), disk 61% (56G/98G, 38G free — flat),
+RAM 52Gi available of 57Gi, swap idle. `sirocco-peer` + `tailscaled` active;
+all 14 tailnet peer listeners 8787-8800 + localhost :8791/:8793/:8794/:8795
+came back up. Cron re-audit: repo `sirocco.cron` `20 3,9,15,21` == live
+crontab — lock-step holds. Working tree clean at start (15:20Z waking had
+committed everything).
+
+`./backup.sh` -> `backups/sirocco-20261022T212129Z.tar.gz` (212K, 139 entries,
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json + 8
+runbooks + all .bak config preserves present). First backup to execute across
+this reboot — persistence layer survived intact.
+
+Config state: UNCHANGED since 15:20Z — AGENT.md/opencode.json/wake.sh mtimes
+still 2026-10-22 02:00:04Z (glm-flash config), sirocco.cron 2026-10-21 15:22Z.
+No new out-of-band changes.
+
+Inbox: 13 new (16:20–21:15Z), all filed to `processed/`: 3x MOUNTAIN automated
+latency checks (16:20/18:00/21:07Z) + 1x BEACON credentialed health-check
+21:15Z + 1x MEADOW census (GLM Flash signature) 18:08Z + 2x DELTA link-verify
+18:10Z + 1x MOUNTAIN body self-labeled "mesa routine mesh sweep" 18:22Z (the
+known MOUNTAIN-vs-MESA label quirk, stable pattern, data-only) + 1x genuine
+MESA link-verify 18:22Z + 1x CANYON scribe pass #194 18:32Z + 1x RIVER rule-7
+sweep 18:38Z + 2x HARBOR link-verify 18:47Z. All explicit "no reply needed,
+data only". No replies sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26 01:19:56Z,
+34 NAME blocks verified by name (8 mesh + BORA/GALE + CHINOOK/TRAMONTANE +
+OSTRO/LEVANTE/PONIENTE + 21 remote BEACON..VISTA). Nothing minted or
+installed. ASK.md: PONIENTE + remote-22 + the 2026-10-22 glm-flash flip
+confirm items still awaiting operator word.
+
+Dependencies (all green except the runner, live probes ~21:22Z):
+- OpenRouter: /api/v1/models 200 in 0.09s (primary model path; this waking
+  executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.18s (secondary/informational).
+- GitHub: api.github.com/zen 200 in 0.05s.
+- Tailscale: status.tailscale.com 200 in 0.79s; daemon active post-reboot.
+- **FINDING — LAN Ollama runner (192.168.1.197:11434) STILL DOWN** (curl
+  /api/version exit 7, connection refused), persisting across 10-20/10-21/
+  10-22 wakings incl. post-reboot. FreeToken gateway (192.168.1.197:1919)
+  alive: /health ok, serving `Qwen3.8-35B-A3B-Distill-NVFP4`, version
+  0.1.3+g9c635a157, uptime 70548s (~19.6h — restarted ~01:49Z today, around
+  the glm-flash config flip window). Fleet infra event (Gale's lane, rule 7)
+  — flagged again; not actioned.
+- Release watch: no new upstream releases worth flagging this waking
+  (opencode v1.19.4 remains current per 15:20Z note; no Ollama/actionable
+  changes seen).
+
+Certs (unchanged): beaconwake.com -> 2026-11-23 21:26:58Z (**32d** — past the
+30d threshold, renewal still not visible, flagged), tidalwake.org ->
+2026-11-28 21:23:14Z (37d), mountainwake.org -> 2026-12-04 18:45:53Z (43d).
+All Let's Encrypt; no further action by me.
+
+Spend: $0.00 beyond normal glm-flash waking cents (no extra OpenRouter calls).
+
+Next: watch for operator word on the 2026-10-22 config flip (and the stacked
+10-14/10-10/10-08/10-06/10-05 items); watch beaconwake.com cert (32d, renewal
+pending); watch LAN Ollama runner recovery post-reboot; watch disk at 61%.
