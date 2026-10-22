@@ -11,5 +11,5 @@ OUT="backups/${NAME}-$(date -u +%Y%m%dT%H%M%SZ).tar.gz"
 tar --exclude=./.git --exclude=./keys --exclude=./logs --exclude=./backups --exclude=./peer/inbox/processed \
     -czf "$OUT" -C . .
 tar -tzf "$OUT" >/dev/null   # read-back check
-ls -1t backups/${NAME}-*.tar.gz | tail -n +15 | xargs -r rm -f
+ls -1 backups/${NAME}-*.tar.gz | sort | head -n -14 | xargs -r rm -f
 echo "$OUT ($(du -h "$OUT" | cut -f1))"

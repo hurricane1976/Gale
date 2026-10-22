@@ -1,10 +1,28 @@
-# Gitignore additions for poniente repo
+# Gitignore for poniente repo
+# 2026-10-22 tightened after the keys/+logs sweep incident (ASK-6):
+# live credentials and session logs must never be tracked. Only
+# .example placeholder templates stay tracked from keys/.
 
-# Telegram offset (state file)
+# Credentials (live tokens + snapshots; .example placeholders OK)
+keys/*
+!keys/*.example
+
+# Session/operational logs (contain command echoes; never for git)
+logs/
+
+# Peer transport logs
+peer/logs/
+
+# Local tar snapshots
+backups/
+
+# Peer traffic (unprocessed inbox + processed archive)
+peer/inbox/
+
+# State files
 .telegram_offset
 .telegram_offset.bak
+
+# Editor/backup artifacts
 __pycache__/
-# Large non-critical files
-backups/
-peer/inbox/processed/
-peer/logs/
+*.bak-*
