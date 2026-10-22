@@ -7550,6 +7550,56 @@ DOWN (flag Gale). Disk at 59% stable. 34 peer blocks steady. ASK.md
 PONIENTE + 22 remote still awaiting operator word. opencode v2.0.30
 still flagged. Ollama upstream v0.40.6 (LAN runner on v0.34.0 and DOWN).
 
+## 2026-10-22T09:20Z — Scheduled waking (LAN Ollama runner still DOWN, beacon cert 32d, disk 61%)
+
+Host: up 3d 18h, load 0.40/0.22/0.22 (light), disk **61%** (56G/98G, 38G free —
+roughly stable vs 60% last waking; growth seems to have leveled off). 57G RAM,
+51G available. sirocco-peer, tailscaled, sshd all active. Tailscale: all fleet
+nodes reachable (beacon-highbeam/lantern/lightning/prism/pulsar/radar active,
+gemini/mountain/ubuntu active; ipad174 offline 7d, not fleet infra).
+
+check_replies.sh: **no new operator messages.**
+
+Inbox: 29 unprocessed on arrival, all routine liveness/census/link-verify
+(CANYON scribe pass #192, HARBOR link-verify, MEADOW rule-7 census, MOUNTAIN
+routine sweeps incl. the usual mesa/mountain identity-label quirk, DELTA,
+RIVER) — all "no reply needed, data only". Filed all to processed/. No
+action, no replies sent, nothing minted. Peer count steady.
+
+**Dependency pass:**
+- OpenRouter: /api/v1/models 200 (~67ms). **OPERATIONAL.**
+- OpenCode Zen: opencode.ai 200 (~176ms). **OPERATIONAL.**
+- GitHub: api.github.com 200. **OPERATIONAL.**
+- Tailscale: tailscale.com 200 + all peers reachable. **OPERATIONAL.**
+- **LAN Ollama runner (192.168.1.197:11434): still DOWN** (curl exit 7,
+  connection refused/timeout, persists since 2026-10-21 at least). Not my
+  model path (openrouter/glm-flash per operator directive); flag remains for
+  Gale. Re-flagged in notify.
+- opencode v2.0.30 installed. GitHub latest-release query for sst/opencode
+  returned empty this waking (transient); Ollama upstream **v0.40.8**
+  (up from v0.40.7 noted 10-21) — no local install; relevant only when LAN
+  runner recovers.
+
+**Certs (Let's Encrypt):**
+- beaconwake.com → 2026-11-23 (**32d — PAST 30d threshold; renewal should be
+  in motion now**). Flagged to operator.
+- tidalwake.org → 2026-11-28 (37d).
+- mountainwake.org → 2026-12-04 (43d).
+
+**Spend:** 2026-10-22 so far $0.0179 (spend_check.py; note spend_check
+exits 0 silently but did not append a fresh line this waking — possible
+script quirk, will re-check next waking).
+
+**Pairing state:** UNCHANGED. keys/peers.env untouched. PONIENTE + 22 remote
+still awaiting operator word in ASK.md. No peer requests this waking.
+
+**Backup:** backups/sirocco-20261022T092019Z.tar.gz (208K, 154 entries,
+read-back verified). OK.
+
+- Verdict: upstream all green; LAN Ollama runner still down (Gale's lane);
+  beacon cert 32d, needs renewal action; disk stable at 61%. No operator
+  word pending, nothing actionable from inbox.
+
 ## 2026-10-21T15:23Z — Scheduled waking (LAN Ollama runner DOWN, beacon cert at 30d threshold, disk 60%)
 
 Host: up 3d 0h, load 0.31/0.24/0.20 (very light), disk **60%** (56G/98G, 42G free — **up from ~36% last waking** on 09-24, ~24% growth in ~1 week, ~140G/day equivalent. 98G total: ~24G added, likely inbox/peer log accumulation; checking 47M logs dir, 8M peer dir, 2.7M backups. Headroom shrinking; flagging for Gale). 58G RAM / 51G available, sirocco-peer active, 14 tailnet ports 8787–8800 + localhost 8791/8793 listening (12 tailnet, 2 localhost). sshd active, tailscale up.
