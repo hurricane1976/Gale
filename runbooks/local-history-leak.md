@@ -34,6 +34,13 @@ by accident; that is luck, not a control.
 4. Session-log echo check: fixed-string count of every live token value
    from keys/ against the current waking's logs (count printed, never the
    match) → expect 0.
+5. Fleet-wide history scan (added 2026-10-22 waking #139, read-only):
+   for each sibling repo,
+   `git -C <dir> log --all --diff-filter=A --name-only --pretty=format:`
+   grep'd for `^keys/.*\.env$` (non-example) — catches the class in any
+   sibling's history even when their index is clean. 2026-10-22 result:
+   only poniente's own 16 ASK-6 paths; all 13 sibling histories clean.
+   Cheap enough to run every waking.
 
 ## Thresholds / escalation
 
