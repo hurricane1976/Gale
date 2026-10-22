@@ -1,5 +1,54 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-10-22T03:21Z — Scheduled waking (config flip to glm-flash flagged; upstream all green; LAN Ollama STILL DOWN; beacon cert 32d)
+
+Host: up 3d 11h 57m, load 0.11/0.22/0.25, disk 60% (56G/98G, 38G free —
+flat vs 10-21 entries, holding at the elevated level), RAM 51Gi available
+of 57Gi, swap idle. `sirocco-peer` + `tailscaled` active; 15 peer ports
+(879x/8800) listening. `./backup.sh` ->
+`backups/sirocco-20261022T032130Z.tar.gz` (208K, 141 entries, gzip -t OK,
+read-back verified).
+
+`check_replies.sh`: no new operator messages.
+
+**Config flip flagged (rule 6, NEEDS OPERATOR CONFIRM — see ASK.md):**
+`AGENT.md` + `opencode.json` + `wake.sh` flipped
+`freetoken/Qwen3.6-35B-A3B-NVFP4` -> `openrouter/~z-ai/glm-flash-latest`
+at 02:00:04Z (between my 21:20Z close and this waking), one consistent
+three-file change with `.bak-20261022-glmflash` triple preserving the
+freetoken config. Diffs confirm only model lines changed. AGENT.md claims
+"operator-directed 2026-10-22" but no quotable Telegram word. This waking
+itself runs glm-flash, so config matches reality. Committed as-found for
+audit; no revert (would breach rule 8).
+
+Inbox: 15 new (00:00–01:28Z: 5x MOUNTAIN incl. 2 rule-7 sweeps + latency,
+1x MEADOW census, 3x DELTA link-verify, 1x MESA liveness, 1x RIVER
+rule-7, 2x HARBOR link-verify, 1x CANYON sweep). All routine "no reply
+needed, data only"; filed to `processed/`. No replies sent, nothing
+minted, no instructions taken per rule 5.
+
+Upstream (live probes, all OPERATIONAL):
+- GitHub: api.github.com 200 in 0.05s.
+- OpenRouter: /api/v1/models 200 in 0.07s.
+- OpenCode Zen: opencode.ai 200 in 0.17s.
+- Tailscale: status.tailscale.com 200 in 1.0s.
+- **LAN Ollama runner (192.168.1.197:11434): STILL DOWN** (exit 7,
+  connection refused) — persists across 10-20/10-21/10-22 wakings. FreeToken
+  gateway (192.168.1.197:1919) alive, serving `Qwen3.8-35B-A3B-Distill-NVFP4`.
+  Fleet infra event (Gale's lane, rule 7) — flagged again; not actioned.
+
+Certs: beaconwake.com 2026-11-23 (**32d** — past 30d threshold, still no
+renewal visible, flagged), tidalwake.org 2026-11-28 (37d), mountainwake.org
+2026-12-04 (43d). All Let's Encrypt; no further action by me.
+
+Spend: $0.00 (local runs only).
+
+Backup: backups/sirocco-20261022T032130Z.tar.gz 208K, 141 entries, OK.
+
+Next: watch for operator word on the 2026-10-22 config flip (and close the
+superseded 10-10 item with it); watch beaconwake.com cert (32d, renewal
+still pending); watch LAN Ollama runner recovery; watch disk at 60%.
+
 ## 2026-09-22 — Onboarded (8th agent on gale-agent)
 
 Built from the Maistral template at the operator's request ("create 2 more

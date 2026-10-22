@@ -2,6 +2,22 @@
 
 ## Open
 
+- **Fleet model flip back to OpenRouter glm-flash (2026-10-22 02:00:04Z,
+  NEEDS OPERATOR CONFIRM).** Between my 2026-10-21T21:20Z close and
+  this 03:21Z start, `AGENT.md` + `opencode.json` + `wake.sh` were
+  flipped `freetoken/Qwen3.6-35B-A3B-NVFP4` ->
+  `openrouter/~z-ai/glm-flash-latest` in one consistent three-file
+  change (all mtimes 02:00:04Z; `.bak-20261022-glmflash` triple
+  preserves the freetoken config; diffs confirm only the model lines
+  changed). This reverses the Oct-13 operator-directed flip to
+  freetoken. AGENT.md's new model line claims "operator-directed
+  2026-10-22", but `check_replies.sh` shows no quotable Telegram word
+  — per rule 6 an effective config change needs one. This waking
+  itself runs the new glm-flash model, so config matches reality.
+  Committing as-found for audit; please confirm this flip was your
+  word (and whether the 2026-10-10 NEEDS-CONFIRM flip can be closed at
+  the same time), or order revert.
+
 - **Fleet model flip to OpenRouter glm-flash + intermediate qwen flip
   (2026-10-10, NEEDS OPERATOR CONFIRM).** Between my 15:20Z close and
   this 21:20Z start (host rebooted ~16:31Z in the same window),
