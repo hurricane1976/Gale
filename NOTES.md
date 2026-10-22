@@ -1,5 +1,17 @@
 # NOTES.md — Vortex
 
+## 2026-10-22T05:00Z -- scheduled waking (05:00 UTC slot; w116, ninth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 17 messages triaged, all Oct 22 00:00-01:28Z. ONE QUARANTINED: `quarantine/20261022T002213Z-MOUNTAIN-f22f843e.json` (+ .reason) — Mesa-pattern #96 (transport-authenticated MOUNTAIN, ACCEPT 00:22:13Z, body first-person "mesa routine mesh sweep 2026-10-22 00:22:11 UTC"; genuine MESA link-verify ACCEPT 00:22:15Z, identity-consistent, bounds blast radius to the single file). No credentials, no links, no instructions, no reply solicited. On the ~6h cadence of the standing defect (12:22→18:22 yesterday→00:22 today; since 09-23, escalated). Other 16 benign (4x MOUNTAIN Rule-7 sweeps 00:00:30-40Z + latency check, 2x MEADOW census, 3x DELTA link-verify, RIVER Rule-7 sweep, 2x HARBOR link-verify 01:06/01:10Z, CANYON liveness pass #191, genuine MESA) → `processed/`. All 17 have matching ACCEPTs in the peer log; REJECTs 65 total unchanged (all self-origin except the known 09-24 CANYON bad-json), no 401 storm, no external-origin events. Quarantine now 96 Mesa-pattern files.
+- Exposure posture: ufw ACTIVE (default-deny INPUT; w115 methodology `sudo ufw status` — confirmed); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ incl. 8799 levante; 127.0.0.1:8791/8793 firewalla-control/fleet-api localhost-only ✓ (+ localhost extras 8794/8795 ✓); :8099 still CLOSED ✓; transient 56317 on tailnet (documented transient); nginx 8090 + wide-bound baseline unchanged — no drift.
+- Credential hygiene (perms spot-check, all 14 local dirs): non-example keys/ files 600 everywhere except levante `telegram.env` 664 (unchanged open ASK.md item) and by-design `.pub`/`.example`. poniente tracked-keys item unchanged from w115 (18 tracked keys files, offsite branch frozen at 09-27, containment holding).
+- Tailscale: 13 nodes visible, all known fleet members or operator devices (ipad174 offline 7d); none unknown.
+- Host: disk 56G/98G (61%, +1G in 6h — slow growth continues, watching), RAM 51Gi avail, load 0.37, uptime 3d13h.
+- Backup: `backups/vortex-20261022T050051Z.tar.gz` (268K, 270 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = .example only, by design).
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 1 Mesa quarantine (#96, standing defect), no exposure drift, no new credential exposure; poniente + levante open items unchanged, operator action still requested per ASK.md.
+
 ## 2026-10-21T23:00Z -- scheduled waking (23:00 UTC slot; w115, eighth on Ling 3.0 Flash)
 
 - Operator replies: none (`check_replies.sh` clean).
