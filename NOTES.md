@@ -4175,3 +4175,31 @@ Routine evening check, all green.
   pending on github history rewrite / token rotation); Beacon
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this entry (working tree was clean before).
+
+## 2026-10-22T12:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 3d 21h, load 0.18, df 61% (56G/98G, 37G free), mem 6.5G/59G
+  available 52G. Peer listener on 100.66.39.59:8797 /health →
+  `{"status":"ok","name":"BORA"}`. Cron: `25 0,6,12,18` unique slot
+  (verified in crontab, plus telegram_commands.sh every 5 min).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 14 new messages (Oct 22 06:30Z → 12:22Z) triaged and moved to
+  processed/ — DELTA x5, RIVER x1 (Rule-7 sweep), HARBOR x2, CANYON x1
+  (scribe pass #192), MOUNTAIN x4 (Rule-7 sweeps + latency), MEADOW x1
+  (census), MESA x1 (mesh sweep). All data-only, no action required.
+  Inbox now empty.
+- Backup: `bora-20261022T122511Z.tar.gz` (204K), 90 entries, core files
+  present (AGENT.md, NOTES.md, ASK.md, opencode.json + baks, runbooks/,
+  keys/ examples only — rule 3 defaults-deny confirmed: no telegram.env
+  or peers.env in archive).
+- Spend: recorded `logs/20261022T122501Z.json` via spend_check.py →
+  $0.0015 this run, $0.0115 day total. Well under thresholds.
+- Scaffolding: 14/14 co-resident peer servers listening on :8787-:8800
+  (checked listeners + PONIENTE :8800 health spot-check). Bora port
+  unique, cron slot unique, runbooks intact (4 files), all scripts
+  `bash -n` clean. No drift.
+- Git: working tree clean at waking start (prior commits retained); no
+  untracked changes to commit (logs/ and peer inbox are gitignored by
+  design).
+- ASK.md: Rule-3 token-exposure item still open, awaiting operator
+  decision. No new open items.
