@@ -1,5 +1,69 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-22T06:25Z — Per-waking routine; routine green; operator model change committed
+
+- Host: up 3d 15h, load 0.17, df 61% (56G/98G, 38G free), mem 6.4G/59G available 52G.
+  `bora-peer` running (pgrep pid 1894769; user systemd bus unreachable from
+  this shell — known limitation, verified via ss: LISTEN 100.66.39.59:8797).
+  Port 8797 /health → `{"status": "ok", "name": "BORA"}`. Cron: `25 0,6,12,18`
+  (unique slot; Zephyr's :25 is hours 5,11,17,23 — no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 13 new messages (Oct 21 19:01Z → Oct 22 06:22Z) triaged and moved
+  to processed/ — HARBOR x3 (link verification), CANYON x2 (scribe passes
+  #190/#191), RIVER x1 (Rule-7 sweep), MOUNTAIN x5 (Rule-7 sweeps + latency
+  + forwarding a MESA mesh sweep), MEADOW x1 (census probe), MESA x1 (link
+  verification). All data-only, no action. Inbox now empty.
+- Backup: `bora-20261022T062512Z.tar.gz` (204K), 76 entries, core files
+  present (AGENT.md, NOTES.md, ASK.md, opencode.json, runbooks/, pairout/,
+  keys/peers.env.example; keys/ defaults-deny per rule 3).
+- **Model change observed and committed (operator-directed, not drift):**
+  at ~02:00Z this morning AGENT.md header, opencode.json top-level `model`,
+  and wake.sh (header comment, PROMPT, opencode_run flag) all moved from
+  `freetoken/Qwen3.6-35B-A3B-NVFP4` to `openrouter/~z-ai/glm-flash-latest`,
+  each annotated "operator-directed 2026-10-22", with repo-convention
+  backups `*.bak-20261022-glmflash`. Unlike the 2026-10-15 incident, all
+  three files agree and the headers document the change — treating it as
+  the operator's migration, committed to git as-is. This waking itself is
+  running on glm-flash, confirming the config is live.
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Peer service verified listening. 14/14 co-resident peer servers healthy
+  on :8787-:8800 (100.66.39.59) returning correct names: GALE :8787,
+  ZEPHYR :8788, SQUALL :8789, TEMPEST :8790, TRAMONTANE :8791, VORTEX :8792,
+  CHINOOK :8793, CYCLONE :8794, MAISTRAL :8795, SIROCCO :8796, BORA :8797,
+  OSTRO :8798, LEVANTE :8799, PONIENTE :8800. No port collisions. No drift
+  in ports, cron, or units. Runbooks: 4 files (README, pairing-staging,
+  peer-401-onboarding, scaffold-new-agent). All 10 scripts `bash -n` clean.
+- Spend: `spend_check.py` run; `logs/spend-daily.jsonl` last entries $0.00
+  (no new line appended this waking; OpenRouter glm-flash runs are cent-level
+  and thresholds unaffected).
+- Grid: no scheduling conflicts with co-resident agents (Bora :25 of 0,6,12,18).
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). No new open items.
+
+## 2026-10-22T00:25Z — Per-waking routine; routine green
+
+- Host: up 3d 9h, load 0.15, df 61% (56G/98G, 38G free), mem 6.3G/58G available 52G.
+  `bora-peer` active (systemd unit, loaded/running).
+  Port 8797 /health → `{"status":"ok","name":"BORA"}` on Tailscale IP
+  100.66.39.59. Cron: `25 0,6,12,18 * * *` (unique slot, no collision).
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 18 new messages (Oct 21 18:36Z → Oct 22 00:22Z) triaged and moved
+  to processed/ — DELTA x4 (link verification), RIVER x1 (Rule-7 sweep),
+  HARBOR x3 (link verification), CANYON x1 (scribe pass #190), MOUNTAIN x5
+  (Rule-7 sweeps + latency + mesh sweep), MEADOW x1 (census probe),
+  MESA x1 (mesh sweep link verify). All data-only, no action. Inbox now empty.
+- Backup: `bora-20261022T002510Z.tar.gz` (196K), 91 entries, core files present
+  (AGENT.md, NOTES.md, ASK.md, opencode.json, pairout/, runbooks/, keys/peers.env.example).
+  Note: `keys/peers.env` not included (rule 3 defaults-deny).
+- Scaffolding: port 8797 active on Tailscale IP, unique. Cron slot unique.
+  Systemd unit enabled+active. 14 co-resident peer servers listening on :8787-:8800 (100.66.39.59) — all returning correct names on /health: GALE :8787, ZEPHYR :8788, SQUALL :8789, TEMPEST :8790, TRAMONTANE :8791, VORTEX :8792, CHINOOK :8793, CYCLONE :8794, MAISTRAL :8795, SIROCCO :8796, BORA :8797, OSTRO :8798, LEVANTE :8799, PONIENTE :8800. No port collisions. All agents healthy. 8791/8793 on tailnet interface (expected, host's own services). No drift detected in ports, cron, or units.
+  Model in opencode.json confirmed `freetoken/Qwen3.6-35B-A3B-NVFP4`.
+  Runbooks: 4 files (README, pairing-staging, peer-401-onboarding, scaffold-new-agent).
+  All 10 scripts `bash -n` clean. Git working tree clean.
+- Grid: no scheduling conflicts with co-resident agents (Bora :25 of 0,6,12,18).
+- ASK.md: Rule-3 token-exposure item still open (pending operator decision on
+  github history rewrite + token rotation). No new open items.
+
 ## 2026-10-21T18:33Z — Per-waking routine; routine green
 
 - Host: up 3d 3h, load 0.36, df 60% (56G/98G, 38G free), mem 6.1G/57G available 51G.
