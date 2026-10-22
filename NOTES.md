@@ -1,5 +1,104 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-10-22T15:20Z — Scheduled waking (LAN Ollama outage NARROWED to the service — host now pingable; opencode v1.19.4 upstream; beacon cert 32d)
+
+Context: 15:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 15:20Z, on schedule. This waking runs `openrouter/~z-ai/glm-flash-latest`
+(the 2026-10-22 02:00:04Z as-found config — ASK.md NEEDS OPERATOR CONFIRM item
+unchanged, still no quotable Telegram word); waking succeeding = OpenRouter path
+healthy end-to-end. `check_replies.sh`: no new operator messages.
+
+Host: up 3d 23:57, load 0.18/0.13/0.14 (light), disk 61% (56G/98G, 37G free —
+flat vs 61% at 09:20Z, growth leveled), RAM 51Gi available of 57Gi, swap idle.
+`sirocco-peer` + `tailscaled` + ssh active; all 14 tailnet peer listeners
+8787-8800 + localhost :8791/:8793/:8794/:8795. Cron re-audit: repo `sirocco.cron`
+`20 3,9,15,21` == live crontab — lock-step holds. Working tree clean at start
+(09:20Z waking had committed everything).
+
+`./backup.sh` -> `backups/sirocco-20261022T152108Z.tar.gz` (208K, 126 entries,
+tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/opencode.json + 8
+runbooks present).
+
+Config state: UNCHANGED since 09:20Z — AGENT.md/opencode.json/wake.sh mtimes
+still 2026-10-22 02:00:04Z (glm-flash config), sirocco.cron 2026-10-21 15:22Z.
+No new out-of-band changes.
+
+Inbox: 11/11 filed to `processed/` (now 2023 total): 3x MOUNTAIN Rule-7 sweeps
+12:00Z (2 duplicates) + 1x automated latency check 12:01Z + 1x MOUNTAIN body
+self-labeled "mesa routine mesh sweep" 12:22Z under MOUNTAIN's identity (the
+known MOUNTAIN-vs-MESA label quirk, stable pattern, data-only, no action) +
+1x genuine MESA link-verify 12:22Z, 1x MEADOW census ("Meadow (agent, GLM
+Flash)" signature), 2x DELTA link-verify, 1x CANYON scribe pass #193, 1x RIVER
+rule-7 sweep, 1x HARBOR link-verify. All explicit "no reply needed, data only".
+No replies sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26 01:19:56Z,
+34 NAME blocks verified by name (8 mesh + BORA/GALE + CHINOOK/TRAMONTANE +
+OSTRO/LEVANTE/PONIENTE + 21 remote BEACON..VISTA). Nothing minted or installed.
+ASK.md: PONIENTE + remote-22 + the 2026-10-22 glm-flash flip confirm items
+still awaiting operator word.
+
+Dependencies (all green except the runner, live probes ~15:21Z):
+- OpenRouter: /api/v1/models 200 in 0.15s (primary model path; this waking
+  executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.45s (secondary/informational).
+- GitHub: api.github.com/zen 200 in 0.06s; www.githubstatus.com API "All
+  Systems Operational" (indicator none, updated 15:18Z), no unresolved
+  incidents.
+- Tailscale: status.tailscale.com 200 in 0.69s; daemon active; 13-node set
+  (gale-agent self, 6x beacon-* [prism active via relay, rest idle],
+  gemini/mountain/ubuntu agents active direct, josh-iphone18, josh-linux;
+  ipad174 offline 7d — operator personal device, no fleet lane depends on
+  it). No disconnects.
+- **FINDING (refinement) — LAN Ollama runner (192.168.1.197:11434) STILL
+  DOWN, but the outage has NARROWED:** curl /api/version exit 7 on short and
+  10s probes. HOWEVER `ping -c 2` = 0% packet loss (0.8ms avg) and
+  `ip neigh` = REACHABLE this waking — at the 10-19/10-21 wakings the host
+  was ping-dead/ARP-FAILED. So the box is back at the network level;
+  **FreeToken gateway :1919 on the same box is ALIVE** (serving
+  Qwen3.8-35B-A3B-Distill-NVFP4), while Ollama :11434 does not accept
+  connections. Diagnosis narrows from "host down" to **"Ollama service not
+  listening on an otherwise-up host"** — a restart/recovery action for
+  Gale/operator (not mine, rule 7). Shim 127.0.0.1:11435 alive but returns
+  upstream-refused (consistent). Not my model path (glm-flash via
+  OpenRouter); flagged again in notify.
+- Ollama upstream: latest stable still **v0.40.8** (2026-10-21T16:20Z, same
+  as 09:20Z); NEW **v0.40.9-rc1** prerelease (2026-10-22T01:33Z). No local
+  install on this host; version gap moot while the runner service is down;
+  any bump is operator/Gale's call.
+- opencode: upstream latest **v1.19.4** (NEW — first stable release since
+  v1.19.3, 2026-10-16; the releases/latest query returned empty on first
+  try, retry got it, so the 09:20Z "empty result" was transient). Local
+  binary **v2.0.30** (separate versioning track, unchanged). Informational
+  only, operator/Gale call; nothing here to act on.
+
+Cert expiries (fresh probes, no new renewals): beaconwake.com notAfter
+2026-11-23 (**32d — PAST the 30d threshold, 4th consecutive waking flagged;
+renewal still not visible**), tidalwake.org 2026-11-28 (37d), mountainwake.org
+2026-12-04 (43d). All Let's Encrypt; HTTPS beaconwake 301 (expected), tidal/
+mountain 200. beaconwake.com remains the one needing operator/Gale action.
+
+Spend: 2026-10-22 so far $0.0179 (03:22Z) + $0.0031 (09:21Z) = $0.0210
+(OpenRouter glm-flash wakings; no alert threshold crossed). This waking's own
+entry appends at run end.
+
+- Verdict: upstream all green; the only active failure is the LAN Ollama
+  service (now pinpointed to the service, not the host — Gale's lane);
+  beaconwake.com cert 32d and still un-renewed; ASK.md glm-flip confirm
+  still open. Nothing actionable from inbox.
+- CLARIFICATION (audit hygiene): the "[1790390848]" recorded in ASK.md's
+  Resolved OSTRO/LEVANTE entries as a "chat id" is actually the message
+  DATE from `check_replies.py`'s `[date] text` output format (1790390848
+  == 2026-09-26T02:47:28Z); the operator chat id has been one stable value
+  since activation (keys/telegram.env mtime 2026-09-23, never modified) and
+  this waking's notify delivered ok to it. No operator-id discrepancy —
+  recording so future sessions don't chase it; ASK.md prose left as-is.
+- Next: watch LAN Ollama :11434 recovery (service-level now — if it comes
+  back, verify version + close the watch); watch beaconwake.com renewal
+  (32d, overdue for action); watch opencode v1.19.4 + Ollama v0.40.9
+  uptake; ASK.md awaiting operator word on the 2026-10-22 flip + PONIENTE +
+  remote-22.
+
 ## 2026-10-22T03:21Z — Scheduled waking (config flip to glm-flash flagged; upstream all green; LAN Ollama STILL DOWN; beacon cert 32d)
 
 Host: up 3d 11h 57m, load 0.11/0.22/0.25, disk 60% (56G/98G, 38G free —
