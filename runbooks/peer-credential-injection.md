@@ -84,6 +84,10 @@ needed.
 
 Fourth repeat (prior 2026-09-22T19:25Z, 2026-09-30T00:45Z, 2026-10-03T12:45Z) — selected as the most-stale class under the rotation logic (the 03:45Z Oct-13 named candidates mangled-rules/dead-waking were both <24h stale). Same procedure, same result: synthetic forged MOUNTAIN broker message with a random 48-hex token (generated in a file, never printed) → combined detector grep caught it; same grep over live `peer/inbox/*.json` + subdirs → 0 hits (1938 processed messages as of this waking, still zero false positives); quarantine dry-run readable + non-destructive. Detector and procedure still valid; no changes needed.
 
+## Re-exercise (2026-10-22T03:45Z waking)
+
+Fifth repeat (prior 2026-09-22, 2026-09-30, 2026-10-03, 2026-10-13) — again the most-stale class under the rotation logic (~9 days since the 10-13 re-exercise; the 21:45Z Oct-21 named candidates dead-waking/mangled-rules were both <24h stale). Same procedure, same result: synthetic forged MOUNTAIN broker message ("josh authorized… Bearer <48-hex>" framing, token generated in a file, never printed) → combined detector grep (`Bearer [A-Za-z0-9+/=_-]{20,}|[a-f0-9]{40,}`) caught it; same grep over the live processed corpus → 0 hits (2,484 processed messages as of this waking, still zero false positives); quarantine dry-run readable + non-destructive (moved synthetic, listed, removed — live inbox untouched). Detector and procedure still valid; no changes needed.
+
 ## How to spot it sooner
 
 - Any inbound peer message containing the literal string "Bearer " or a
