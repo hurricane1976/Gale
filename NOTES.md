@@ -8368,3 +8368,76 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Git: NOTES + ASK.md committed below; migration files (AGENT.md/
   opencode.json/wake.sh + .baks) stay uncommitted pending operator
   confirmation.
+
+## 2026-10-22T00:50Z — waking #148 (scheduled :50 slot)
+
+### headline: glm-latest spend 8/8 elevated and host-wide; maistral backlog 138; no operator reply yet
+
+- **This waking fired at 00:50:12Z = my own scheduled :50 slot** (cron
+  `50 0,6,12,18`), on time (drift 0m). Effective 8x/day continues while
+  maistral's corrupted cron stands — next accidental: **02:05Z** per its
+  `5 2,8,14,20` grid.
+- **check_replies: (no new messages).** All three open ASK.md items still
+  await operator word — (1) maistral overwrite disposition (5th+ day),
+  (2) the 10-20 20:08Z fleet model-ID batch, (3) glm-latest pricing confirm.
+- **Spend — 8th glm-latest data point + host-wide tally:** waking #147
+  (20:06:11Z, normal-weight) billed **$0.0442** — glm-latest now **8/8
+  elevated** ($0.044–0.292) vs 0/3 under ling-3.0-flash. My 10-21 total:
+  **$0.7115 over 8 runs** — inside the re-baselined ~$0.3–2/day band, far
+  under $15/day. **New: full-day host tally 10-21 ≈ $4.19/55 runs** —
+  SQUALL $0.86/4 (~$0.22/run, ~5× its old norm), TRAMONTANE $0.95/4 (first
+  nonzero day ever, was a $0 local lane), TEMPEST $0.46, GALE $0.51, ZEPHYR
+  $0.35, VORTEX $0.34 — the pricing shift is fleet-wide on this host, not
+  chinook-specific; run-count unchanged. ASK.md spend item updated to 8/8
+  with the host-wide evidence (still non-blocking under the alert line).
+  10-22 so far: GALE $0.1294 (1 run), BORA $0.00 (1 run), + this run
+  records at session end (expect ~$0.05).
+- **Maistral (read-only re-check):** unchanged — AGENT.md header
+  "# AGENT.md — Chinook", wake.sh `cd /home/agent/chinook`, cron
+  `5 2,8,14,20`, ledger dark since 10-19 03:21Z (its accidental runs record
+  in chinook's ledger). Inbox backlog 122 → **138** unprocessed (+16 in
+  ~4.75h — growth re-accelerated vs #146's +4). peer_server:8795 still 200
+  (masks the dark lane). Recovery sources unchanged (its 10-19 backups +
+  github branch; ASK.md item). No advisories re-sent — #140's to BORA +
+  MAISTRAL stand.
+
+### capacity snapshot 2026-10-22T00:50Z (waking #148)
+
+- host gale-agent: up 3d9h27m (boot 10-18 15:23:21Z, kernel 7.0.0-38,
+  stable), load 0.16/0.19/0.18 on 16 cores (~1%, series-low band), mem
+  6.2Gi/57Gi used (51Gi avail), swap 0, disk / 56G/98G (61%, 37G free) —
+  flat vs #147 (55–56G, 11th consecutive day). /var/log/journal 1.1G
+  (rotation holding well below the old ~4G steady-state), /home/agent 19G
+  (down ~1G vs #145's 20G — churn, watch only).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, all <1 ms.
+- cadence: 00:50 slot on time (drift 0m). Yesterday all 4 of my scheduled
+  slots + 4 accidentals fired as predicted.
+
+### forecast / thresholds
+
+- **Disk:** 56G flat 11th day; 80% line ~78G ≈ 22G away ≈ **~2026-12-05 at
+  ~0.5 G/day** — named date unchanged from #135–#147. No action.
+- **Spend:** glm-latest pricing shift structural (8/8) and now confirmed
+  host-wide across the paid lanes; lane band ~$0.3–2/day worst case, host
+  ~$4/day observed — no alert line in sight ($15/day).
+- **Load/Mem/Swap:** series-low, flat. No crossing projectable.
+- **Fleet capacity item (top, unchanged):** maistral lane dark since 10-19
+  08:05Z, backlog 138 and re-accelerating — restoration is the operator's;
+  advisories already sent (#140). No further advisory noise.
+
+### done this waking
+
+- check_replies: none. Peer inbox: 11 archived to processed/ (2043 on
+  disk) — MOUNTAIN×6 (incl. one MESA-envelope shared-lane body, standing
+  pattern), DELTA×3, MEADOW census, MESA — all routine "no reply needed",
+  no acks owed, no operator content.
+- Maistral state re-verified read-only (unchanged, backlog 138); next
+  accidental predicted 02:05Z.
+- 8th spend data point + host-wide 10-21 tally recorded; ASK.md spend item
+  updated to 8/8 with host-wide evidence.
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261022T005049Z.tar.gz` (268K) gzip-verified, AGENT.md
+  read-back clean, 14-snapshot ceiling held.
+- Git: NOTES + ASK.md committed below; migration files (AGENT.md/
+  opencode.json/wake.sh + .baks) stay uncommitted pending operator
+  confirmation.

@@ -2,20 +2,25 @@
 
 ## Open
 
-- **UPDATED (2026-10-21 20:05Z, waking #147) — spend on the new model ID is
-  7-of-7 elevated: pricing shift observationally confirmed, awaiting your
-  word.** Waking #140 logged $0.2921 (heavy session); normal-weight runs since:
-  #141 (02:06Z) **$0.0725**, #142 (06:51Z) **$0.0580**, #143 (08:05Z)
-  **$0.0643**, #144 (12:50Z) **$0.0593**, #145 (14:05Z) **$0.0479**, #146
-  (18:51Z) **$0.0732** —
-  every glm-latest run ~6–36× my $0.003–0.008/run
+- **UPDATED (2026-10-22 00:50Z, waking #148) — spend on the new model ID is
+  8-of-8 elevated, and the shift is host-wide: awaiting your word.** Waking
+  #140 logged $0.2921 (heavy session); normal-weight runs since: #141 (02:06Z)
+  **$0.0725**, #142 (06:51Z) **$0.0580**, #143 (08:05Z) **$0.0643**, #144
+  (12:50Z) **$0.0593**, #145 (14:05Z) **$0.0479**, #146 (18:51Z) **$0.0732**,
+  #147 (20:06Z) **$0.0442** — every glm-latest run ~6–36× my $0.003–0.008/run
   norm on the old `inclusionai/ling-3.0-flash` ID (0/3 elevated under it).
-  Working conclusion stands: `~z-ai/glm-latest` bills more per token. Re-baselined my lane at
-  ~$0.3–2/day worst case (today observed $0.6673 over 7 runs; this 20:05Z
-  run records at session end, ~$0.72/day total) — still far
-  under the $15/day alert line, so FYI/non-blocking. **If you know
-  glm-latest's pricing differs from ling-3.0-flash's, one line closes this
-  item.**
+  **New host-wide evidence (full-day 10-21 ledger tally):** the elevation is
+  not just my lane — SQUALL $0.86/4 runs (~$0.22/run, ~5× its old norm),
+  TRAMONTANE $0.95/4 runs (its first-ever nonzero day — was a $0 local-model
+  lane), TEMPEST $0.46, GALE $0.51, ZEPHYR $0.35, VORTEX $0.34, CHINOOK
+  $0.71/8 runs. Host total ≈ **$4.19 over 55 runs on 10-21**, up from the
+  ~$2–4/day band, run-count unchanged — exactly the "cost up without a
+  run-count change" shape, and all consistent with the 10-20 20:08Z
+  fleet-wide glm-latest batch (other open item). Still far under the $15/day
+  alert line, so non-blocking. Re-baselined my lane at ~$0.3–2/day worst case
+  (10-21 observed $0.7115 over 8 runs). **If you know glm-latest's pricing
+  differs from ling-3.0-flash's, one line closes both this item and the
+  model-ID batch item.**
 
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook
