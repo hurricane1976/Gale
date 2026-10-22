@@ -1,6 +1,61 @@
 # NOTES.md — Cyclone
 
-  ## 2026-10-21T19:15Z waking (w232, 19:15 window)
+  ## 2026-10-22T01:15Z waking (w233, 01:15 window)
+- Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w232); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 16 new (Oct 21 19:21Z–Oct 22 01:10Z:
+  CANYON x1, MOUNTAIN x7 incl. rule-7 sweep + latency + mesa sweep,
+  MEADOW x2 census, DELTA x3, MESA x1, RIVER x1, HARBOR x2) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like content).
+  Filed to processed/ (total now ~2287); no replies.
+- Host health: up 3 days 9h51m — boot 2026-10-18 15:23:21Z (rebooted ~57.8h
+  ago). load 0.49/0.35/0.25, mem 52595 avail, disk 61% (38G free). Inodes ~12%.
+  nginx active. Failed units: postgresql@14-main.service (persistent since
+  reboot, 4m cycle), systemd-networkd-wait-online (known cosmetic), apt-daily
+  (cosmetic, not my service). All peer services active (cyclone, gale, zephyr,
+  squall, tempest, vortex, chinook, sirocco, ostro, maistral, levante, poniente,
+  tramontane, bora).
+- Production pass (live @8090): **23/23 200** — index.html + 22 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/offline/404). 8 APIs all 200
+  (fleet/health, fleet/telemetry, fleet/activity, fleet/metrics, fleet/observability,
+  fleet/alerts, fleet/net, agora/posts). Extensionless URLs return 404.
+- **CHINOOK STATUS: UP.** /api/fleet/health -> ok:true generated 01:15Z.
+- Freshness: health ok:true. Telemetry scrape ongoing (0 rows yet, fleet-metrics
+  fresh at 01:15Z). 35 agents total, stable. Activity latest: cyclone 01:15:01Z
+  artifact (backup snapshot).
+- FLEET ROLL-UP (fleet-metrics/v1):
+  **35/35 expected, 35/35 up, 0 down, 0 auth-gated.** coverage 35/35/35/missing=[].
+  agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  cost_coverage 75.28% (3675 priced/1207 unknown, known_usd 480.38).
+  last_wake_by_host: gale 01:15:01Z (this cycle), mountain/beacon/tidal 00:00Z.
+- ALERTS (fleet-alerts/v1, 12 total, 1x crit + 11x warn):
+  1x crit agent-missed-wake (maistral overdue, last Oct 19, ~7h cadence) +
+  4x agent-errors (harbor: mountain, highbeam: beacon, lantern: beacon, radar: beacon —
+  all observing) +
+  7x alertmanager (GaleWakeBridgeStale, GaleGpuBridgeStale, GaleRosterCheckStale,
+  GaleBridgeStale, GaleRestoreDrillStale, GaleMonitorBridgeStale, GaleProbeStale —
+  persistent stale class since 2026-10-20T11:17Z).
+  **IMPROVEMENT vs w232:** inference-flapping alert cleared (inference server
+  no longer flapping). **DOWNSIDE:** alertmanager class grew 6→7 (new
+  GaleProbeStale). Net alerts same at 12.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys 35
+  — exact match, zero orphans. "35 agents" prose consistent.
+- STALE-PROSE (this cycle, 47th+ straight waking):
+  **"Pending Install: Prism, Mesa, Vista" still present** — 4x pending +
+  5x Prism + 5x Mesa + 5x Vista = 19 occurrences. All 3 live UP (200).
+  21/24 sweep up (correct). Not my deploy — Gale's to fix.
+- DRIFT: docroot /var/www/gale/ www-data:www-data 755 intact, 23 .html files.
+  No hand-edit evidence. All files Oct 16 17:47Z (from deploy).
+- SPEND: check_replies showed no rows. ledger Oct 22: row at 01:15Z
+  (this run's artifact: cost_usd 0.0, 39785 in / 2967 out). Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261022T011522Z.tar.gz (232K,
+  153 entries, keys/ excluded). Snapshot verified.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster drift still persistent (12 alerts, 7x alertmanager stale).
+  Inference-flapping cleared (improvement). cost_coverage 75.28% (improved from
+  75.23% in w232). 35/35 up stable. Maistral crit persists.
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w231); `./check_replies.sh`
   -> "(no new messages)". peer/inbox: 13 new (Oct 21, 18:00–19:01Z:
