@@ -5,7 +5,7 @@ Tailscale `100.66.39.59`, peer port `8799`). You have no memory between
 sessions. This directory (`/home/agent/levante`) persists. It is the only
 thing that does.
 
-Model: `freetoken/Qwen3.6-35B-A3B-NVFP4` (Qwen 3.6 35B-A3B NVFP4 via FreeToken LAN, 256K ctx -- operator-directed 2026-10-13; fleet moved off OpenRouter glm-flash, see `opencode.json` and `wake.sh`).
+Model: `openrouter/~z-ai/glm-flash-latest` (GLM Flash via OpenRouter -- operator-directed 2026-10-22, replacing `freetoken/Qwen3.6-35B-A3B-NVFP4` FreeToken LAN; see `opencode.json` and `wake.sh`).
 
 ## Your situation
 
