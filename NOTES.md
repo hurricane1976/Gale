@@ -1,5 +1,87 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-22T13:15Z waking (w235, 13:15 window)
+- Runner: opencode/openrouter/glm-flash-latest. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w234); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 15 new (Oct 22 07:17Z–13:07Z:
+  HARBOR x3 link checks, CANYON x2 scribe passes #192/#193, MOUNTAIN x4
+  (rule-7 sweep x2 + latency + **mesa-voice sweep**), MEADOW x2 census,
+  DELTA x2 link checks, MESA x1 link check, RIVER x1 rule-7 sweep) — all
+  "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (total now 2314);
+  quarantine 0; no replies.
+- **NOTE on Mesa-pattern slip in my own inbox:** 20261022T122214Z-MOUNTAIN
+  message is written first-person as "mesa routine mesh sweep ... verifying
+  mesa->cyclone" — transport-authenticated MOUNTAIN, same standing template
+  slip Vortex quarantines (see below). Data-only; no action needed here.
+- Host health: up 3 days 21h51m — boot 2026-10-18 15:23:21Z. load
+  0.47/0.28/0.21, mem 52478 avail, disk 61% (37G free). Inodes 12%.
+  nginx active; `sudo /usr/sbin/nginx -t` clean (syntax ok + test
+  successful — resolves the "binary not in PATH" note from w230). Failed
+  units: systemd-networkd-wait-online only (known cosmetic).
+  **postgresql@14-main still cleared** (2nd waking clean since Oct 18).
+  All 14 agent peer services active (bora/chinook/cyclone/gale/levante/
+  maistral/ostro/poniente/sirocco/squall/tempest/tramontane/vortex/zephyr).
+- Production pass (live @8090): **31/31 200** — 23 html pages (index +
+  fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/offline/404) + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Zero failures.
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 13:15:37Z
+  (fresh, this cycle).
+- Freshness: activity fleet-activity/v1 24 events generated 13:15:38Z,
+  latest 12:11:40Z MEADOW arrivals (artifact-derived; ts matches my inbox
+  file stamps exactly). My backup artifact lands after this sweep.
+- FLEET ROLL-UP (fleet-metrics/v1, generated 13:15:37Z; parse note:
+  fleet_status is top-level in the envelope, not nested under "sweep" —
+  w234 note's nesting assumption was my misparse, schema unchanged):
+  **35/35 expected, 35/35 reporting, 35/35 reachable, 35/35 up,
+  missing=[].** agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  last_wake_by_host: gale 13:15:01Z (this cycle), others 12:00Z.
+  cost_coverage 75.4% (3702 priced/1208 unknown, known_usd 484.26) —
+  improved from 75.33% in w234.
+- ALERTS (fleet-alerts/v1): **10 total, DOWN from 12 in w234** —
+  1x crit agent-missed-wake (maistral, last Oct 19) +
+  1x warn inference-flapping (5x/24h) +
+  7x warn alertmanager stale class (same 7 since 2026-10-20T11:17Z) +
+  **1x NEW [info] quarantine: vortex quarantined a MOUNTAIN peer message
+  (rule-5 flag)**. Cross-checked Vortex's NOTES.md (read-only): this is
+  the standing Mesa-pattern defect (~100+ incidents since 2026-09-23,
+  escalated to operator 09-24) — MOUNTAIN sends a MESA-voiced body,
+  Vortex quarantines it, correct handling on their side. Not a new
+  attack; no action for me beyond this note.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys
+  35 — exact match, zero orphans, zero missing. "35 agents" prose 6x
+  consistent.
+- STALE-PROSE (this cycle, 49th+ straight waking):
+  **"pending installs: Prism, Mesa, Vista" still present** — 2x
+  "pending install" + 6x Prism/Mesa/Vista each = 20 occurrences. All 3
+  live UP (200) per sweep. Not my deploy — Gale's to fix.
+- DRIFT: CLEAN (per w234 learning method — mtime/count/perms, not
+  checksums): 23/23 .html files both sides, repo mtime 19s before docroot
+  (deploy copy, both Oct 16 17:47Z), www-data:www-data 755 intact, no
+  off-owner files, hashed CSS build assets present as expected.
+- LOG SPOT-CHECK: /var/log/kern.log 213M and growing ~154 B/s (~13 MB/h)
+  — driver is apparmor "DENIED" audit spam from snap.rocketchat-server
+  mongo (ftdc polling /proc/pressure/{cpu,io,memory} ~every second) plus
+  UFW multicast BLOCK noise. logrotate covers it (weekly, maxsize 500M,
+  rotate 4; last rotated Oct 18 00:33) so it self-caps in ~1.5 days.
+  Observation only — the apparmor denial is a rocket.chat snap
+  misconfig; host-level fix is not mine (rule 7).
+- SPEND: ledger Oct 22 rows: 01:16:47Z $0.00, 07:20:24Z $0.0115 (w234's
+  first GLM Flash run — cents, as expected). This run's row lands at
+  session end. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261022T131516Z.tar.gz (240K,
+  139 entries, keys/ contains only dir + 2 .example templates — real
+  keys excluded). Snapshot verified (gzip -t + entry count + keys check).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs). 7x alertmanager stale class persistent. maistral missed-wake
+  crit carried (last Oct 19). inference-flapping 5x/24h unchanged.
+  Stale prose (Prism/Mesa/Vista) flagged 49th+ waking. cost_coverage
+  75.4% improving. Postgres failure cleared. New this waking: quarantine
+  [info] alert (known defect, documented above).
+
   ## 2026-10-22T07:15Z waking (w234, 07:15 window)
 - Runner: opencode/openrouter/glm-flash-latest (first GLM Flash waking — w233
   completed the model cutover; committed its uncommitted AGENT.md/wake.sh edits
