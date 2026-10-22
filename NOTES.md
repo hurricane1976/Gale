@@ -8812,3 +8812,114 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   14-snapshot ceiling held.
 - Git: NOTES committed below; migration files (AGENT.md/opencode.json/
   wake.sh + .baks) stay uncommitted pending operator confirmation.
+
+## 2026-10-22T18:50Z — waking #154 (scheduled :50 slot; first after an unattributed 16:33Z reboot that silently skipped 3 fleet wake slots incl. my 16:50)
+
+### headline: 16:50Z slot LOST to a reboot + new cron-skip signature; maistral backlog 177; glm-latest 14/14 elevated
+
+- **This waking fired on time** (18:50:00Z, drift 0m — chinook's own
+  `50 0,6,12,18` grid, verified by process tree; maistral's next accidental
+  is 20:05Z, not yet due).
+- **Host rebooted 16:33:56Z** (clean systemd reboot — reboot.target reached
+  normally; kernel UNCHANGED at 7.0.0-38; the prior boot had run 10-18
+  15:25 → 10-22 16:33, 4d1h). cron.service started only 16:36:23. **Post-
+  reboot the wake grid armed only PARTIALLY:** vortex 17:00, zephyr 17:25,
+  gale/agent 18:00, bora 18:25 fired — but **chinook 16:50, cyclone 17:15,
+  levante 17:40 never launched** (zero artifacts: no wake log, no ledger
+  row, no backup — wake.sh always leaves a log even on failure; no cron CMD
+  lines for them while the same-minute pollers/website tools all fired;
+  crontab spool unchanged since 10-18 16:02), and **tramontane 16:35** fell
+  in the 16:34–16:36 cron-down window. **Self-cleared by 18:50** — every
+  scheduled job fired this minute including mine. New wake-reliability
+  signature #3: "silent cron skip" (no launch, no error, retry impossible —
+  distinct from the 9/28–29 APIError-500 launch-failures and the 10-03
+  plan-then-stop). Filed in ASK.md; verify cyclone 19:15 / levante 19:40 /
+  the 20:05Z maistral accidental at the next waking to confirm
+  reboot-only. Provenance (evidence, not verification): authenticated SSH
+  for user agent from tailnet `100.99.106.7` 15:50:26–16:32:54Z + a sudo
+  session 16:30:04Z bracket the reboot — operator-pattern.
+- **check_replies: (no new messages).** All four open ASK.md items await
+  operator word — (1) NEW reboot/cron-skip item (above), (2) maistral
+  overwrite disposition (day 6), (3) 10-20 20:08Z fleet model-ID batch,
+  (4) glm-latest pricing confirm (one line covers 3 + 4).
+- **Peer inbox: 11 archived → processed/ (2082 on disk):** MOUNTAIN ×3
+  (16:20/18:00 site-build latency checks + 18:22 mesa mesh relay — the
+  documented shared-lane envelope, standing baseline), MEADOW census
+  (18:08), DELTA link-verify ×2 (18:10, 5s double), MESA link-verify
+  (18:22), CANYON scribe pass #194 (18:32), RIVER rule-7 Layer-2 sweep
+  (18:38), HARBOR link-verify ×2 (18:47, 5s double-send — standing retry
+  pattern). All "no reply needed", data-only, no acks owed, no operator
+  content, no anomalies. Batch spans 16:20–18:47Z — one slot late because
+  of the lost 16:50 (processed this waking).
+- **Maistral (read-only re-check):** unchanged — AGENT.md header
+  "# AGENT.md — Chinook", wake.sh `cd /home/agent/chinook`, cron
+  `5 2,8,14,20`, peer_server:8795 still 200 (masks the dark lane). Inbox
+  backlog 169 → **177** unprocessed (+8 in ~4.75h ≈ 1.7/hr, back at the
+  normal rate). Recovery sources unchanged (its 10-19 backups + github
+  branch); ASK.md item stands, day 6. No advisories re-sent — #140's stand.
+  Next accidental predicted: 20:05Z (14th).
+- **Spend — 14th glm-latest data point:** waking #153 (14:05:59Z,
+  accidental maistral-slot run) billed **$0.2432** — glm-latest now
+  **14/14 elevated** ($0.044–0.292) vs 0/3 under ling-3.0-flash
+  ($0.003–0.008). **10-22 host-wide to 18:50Z ≈ $3.29 over 44 runs**
+  (CHINOOK $0.8078/6 — the 3 accidentals are $0.571 of it — GALE
+  $0.5154/4, SQUALL $0.4915/3, TEMPEST $0.3610/3, TRAMONTANE $0.3592/2,
+  ZEPHYR $0.2363/3, VORTEX $0.1952/3, PONIENTE $0.1840/3, SIROCCO
+  $0.0452/3, OSTRO $0.0394/3, BORA $0.0227/5, CYCLONE $0.0185/3, LEVANTE
+  $0.0164/3; maistral $0/0 — dark lane) — pacing the ~$4/day band (10-21
+  closed ~$4.19), far under the $15/day alert line. Note: cyclone/levante/
+  tramontane run counts are each one short today because of the skipped
+  slots — cadence impact, not spend. This run records at session end
+  (expect ~$0.05–0.15). ASK.md spend item updated to 14/14.
+
+### capacity snapshot 2026-10-22T18:50Z (waking #154)
+
+- host gale-agent: up 2h16m (boot 10-22 16:34:20Z, kernel 7.0.0-38,
+  stable), load 0.35/0.33/0.27 on 16 cores (~2%, series-low band), mem
+  5.5Gi/57Gi used (52Gi avail), swap 0, disk / 56G/98G (61%, 38G free) —
+  flat vs #149–#153, 17th consecutive flat day; no reboot churn visible
+  (journal 1.3G, rotation holding well below the old ~4G steady-state),
+  /tmp/opencode transient, /home/agent 19G (unchanged, watch only).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, all <1 ms — all
+  peer servers survived the reboot (auto-started clean), no degraded leg.
+- cadence: 12:50 scheduled clean (#152), 14:05 accidental as predicted
+  (#153), **16:50 scheduled LOST to the reboot-skip** (no run; this entry
+  covers the window), 18:50 scheduled on time (drift 0m). Effective
+  today: 7 of 8 expected runs (4 scheduled + 3 accidental, minus the lost
+  16:50). Next: accidental 20:05Z, scheduled 00:50Z.
+
+### forecast / thresholds
+
+- **Disk:** 56G flat 17th day; 80% line ~78G ≈ 22G away ≈ **~2026-12-05 at
+  ~0.5 G/day** — named date unchanged from #135–#153. No action.
+- **Spend:** glm-latest pricing shift structural (14/14) and host-wide;
+  host pacing ~$4/day — no alert line in sight ($15/day).
+- **Load/Mem/Swap:** series-low, flat. No crossing projectable.
+- **Wake-reliability (my lane, NEW):** post-reboot silent cron skips —
+  3 lanes + tramontane's cron-down miss; transient (self-cleared by
+  18:50). Watching recovery slots at next waking (cyclone 19:15, levante
+  19:40, maistral accidental 20:05). If the skips recur WITHOUT a reboot,
+  escalate to a scaffold defect (Bora's lane); reboot-only, treat as a
+  known boot artifact and re-baseline.
+- **Fleet capacity item (top, unchanged):** maistral lane dark since 10-19
+  08:05Z, backlog 177 and growing ~1.7/hr — restoration is the operator's;
+  advisories already sent (#140). No further advisory noise.
+
+### done this waking
+
+- **Reboot triage complete:** timeline (clean 16:33:56Z reboot, cron up
+  16:36:23), provenance (SSH 100.99.106.7 + sudo bracket — evidence only),
+  cron-skip enumeration (4 lost slots: chinook 16:50, cyclone 17:15,
+  levante 17:40, tramontane 16:35), ASK.md item filed with asks.
+- check_replies: none. Peer inbox: 11 archived → processed/ (2082).
+- Maistral state re-verified read-only (unchanged, backlog 177); next
+  accidental predicted 20:05Z (14th).
+- 14th spend data point recorded (#153 $0.2432); ASK.md spend item updated
+  to 14/14 with the 18:50Z tally ($3.29/44 runs).
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261022T185326Z.tar.gz` (276K) gzip-verified, AGENT.md
+  read-back clean (74 entries), 14-snapshot ceiling held — the 16:50
+  backup gap (14:05→18:50Z) closed by this snapshot.
+- Git: NOTES + ASK.md committed below; migration files (AGENT.md/
+  opencode.json/wake.sh + .baks) stay uncommitted pending operator
+  confirmation.

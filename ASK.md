@@ -2,14 +2,42 @@
 
 ## Open
 
-- **UPDATED (2026-10-22 08:05Z, waking #151) — spend on the new model ID is
-  11-of-11 elevated, and the shift is host-wide: awaiting your word.** Waking
+- **NEW (2026-10-22 18:50Z, waking #154) — host rebooted 16:33:56Z today and
+  cron SILENTLY SKIPPED 3 fleet wake slots afterward (incl. my 16:50): please
+  confirm the reboot was yours; the skips are a new wake-reliability
+  signature for the scaffold lane.** Clean systemd reboot (reboot.target
+  reached normally; kernel UNCHANGED at 7.0.0-38; prior boot had run since
+  10-18 15:25). Provenance evidence, not verification: authenticated SSH for
+  user agent from tailnet IP `100.99.106.7` 15:50:26–16:32:54Z plus a sudo
+  session at 16:30:04Z bracket the reboot — operator-pattern, but no verified
+  word. **The skips:** cron.service did not start until 16:36:23; from then
+  it ran the */5 pollers and website tools normally, but of the fleet wake
+  grid only SOME slots fired — vortex 17:00, zephyr 17:25, agent/gale 18:00,
+  bora 18:25, chinook 18:50 fired; **chinook 16:50, cyclone 17:15, levante
+  17:40 never launched at all** (zero artifacts: no wake log, no ledger row,
+  no backup — wake.sh always leaves a log; cron has no CMD line for them,
+  crontab spool unchanged since 10-18 16:02), and **tramontane 16:35** fell
+  in the 16:34–16:36 cron-down window. By 18:50 the condition had self-cleared
+  (every scheduled job fired, including my slot). Net cost: my 16:50 slot
+  lost (backup gap 14:05→18:50Z closed by this waking's snapshot; 11 inbox
+  msgs processed one slot late), cyclone/levante/tramontane each one slot
+  dark — ~4 slot-hours, trivial spend impact (each ~$0.01–0.25). Asks:
+  (a) confirm the 16:33Z reboot was yours; (b) the post-reboot partial
+  arming of the wake grid looks like a cron-daemon startup/table-load issue,
+  not a wake.sh defect — recording it here for Bora's scaffold lane and my
+  cadence baseline; want anything beyond the record? (c) I'll verify at the
+  next waking whether cyclone 19:15 / levante 19:40 / the 20:05Z maistral
+  accidental fired, in case the skips recur rather than being reboot-only.
+
+- **UPDATED (2026-10-22 18:50Z, waking #154) — spend on the new model ID is
+  14-of-14 elevated, and the shift is host-wide: awaiting your word.** Waking
   #140 logged $0.2921 (heavy session); normal-weight runs since: #141 (02:06Z)
   **$0.0725**, #142 (06:51Z) **$0.0580**, #143 (08:05Z) **$0.0643**, #144
   (12:50Z) **$0.0593**, #145 (14:05Z) **$0.0479**, #146 (18:51Z) **$0.0732**,
   #147 (20:06Z) **$0.0442**, #148 (00:51Z) **$0.0904**, #149 (02:08Z)
-  **$0.1560**, #150 (06:50Z) **$0.0521** — every glm-latest run
-  ~6–36× my $0.003–0.008/run
+  **$0.1560**, #150 (06:50Z) **$0.0521**, #153 (14:05Z) **$0.2432**
+  (accidental maistral-slot run) — every glm-latest run
+  ~6–80× my $0.003–0.008/run
   norm on the old `inclusionai/ling-3.0-flash` ID (0/3 elevated under it).
   **New host-wide evidence (full-day 10-21 ledger tally):** the elevation is
   not just my lane — SQUALL $0.86/4 runs (~$0.22/run, ~5× its old norm),
@@ -20,12 +48,11 @@
   run-count change" shape, and all consistent with the 10-20 20:08Z
   fleet-wide glm-latest batch (other open item). Still far under the $15/day
   alert line, so non-blocking. Re-baselined my lane at ~$0.3–2/day worst case
-  (10-21 observed $0.7115 over 8 runs). 10-22 to 12:50Z: ≈**$2.28 over 29
-  runs** host-wide (GALE $0.3866/3, CHINOOK $0.4701/4 — incl. the $0.1560
-  #149 accidental and $0.1716 #151 accidental — TRAMONTANE $0.3592,
-  TEMPEST $0.3040, SQUALL $0.2928, PONIENTE $0.1748, ZEPHYR $0.1236,
-  VORTEX $0.0787, OSTRO $0.0342, SIROCCO $0.0210, BORA $0.0141,
-  CYCLONE $0.0115, LEVANTE $0.0101) — pacing the
+  (10-21 observed $0.7115 over 8 runs). 10-22 to 18:50Z: ≈**$3.29 over 44
+  runs** host-wide (CHINOOK $0.81/6 — incl. the $0.1560 #149, $0.1716 #151 and
+  $0.2432 #153 accidentals — GALE $0.52/4, SQUALL $0.49/3, TEMPEST $0.36/3,
+  TRAMONTANE $0.36/2, ZEPHYR $0.24/3, VORTEX $0.20/3, PONIENTE $0.18/3, the
+  remaining 7 lanes <$0.05 each) — pacing the
   ~$4/day band.
   **If you know glm-latest's pricing
   differs from ling-3.0-flash's, one line closes both this item and the
