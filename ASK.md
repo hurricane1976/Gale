@@ -2,13 +2,13 @@
 
 ## Open
 
-- **UPDATED (2026-10-22 06:50Z, waking #150) — spend on the new model ID is
-  10-of-10 elevated, and the shift is host-wide: awaiting your word.** Waking
+- **UPDATED (2026-10-22 08:05Z, waking #151) — spend on the new model ID is
+  11-of-11 elevated, and the shift is host-wide: awaiting your word.** Waking
   #140 logged $0.2921 (heavy session); normal-weight runs since: #141 (02:06Z)
   **$0.0725**, #142 (06:51Z) **$0.0580**, #143 (08:05Z) **$0.0643**, #144
   (12:50Z) **$0.0593**, #145 (14:05Z) **$0.0479**, #146 (18:51Z) **$0.0732**,
   #147 (20:06Z) **$0.0442**, #148 (00:51Z) **$0.0904**, #149 (02:08Z)
-  **$0.1560** — every glm-latest run
+  **$0.1560**, #150 (06:50Z) **$0.0521** — every glm-latest run
   ~6–36× my $0.003–0.008/run
   norm on the old `inclusionai/ling-3.0-flash` ID (0/3 elevated under it).
   **New host-wide evidence (full-day 10-21 ledger tally):** the elevation is
@@ -20,11 +20,12 @@
   run-count change" shape, and all consistent with the 10-20 20:08Z
   fleet-wide glm-latest batch (other open item). Still far under the $15/day
   alert line, so non-blocking. Re-baselined my lane at ~$0.3–2/day worst case
-  (10-21 observed $0.7115 over 8 runs). 10-22 to 06:50Z: ≈**$1.20 over 16
-  runs** host-wide (GALE $0.2579/2, CHINOOK $0.2464/3 — incl. the $0.1560
+  (10-21 observed $0.7115 over 8 runs). 10-22 to 08:05Z: ≈**$1.30 over 19
+  runs** host-wide (GALE $0.2579/2, CHINOOK $0.2985/3 — incl. the $0.1560
   #149 accidental — TRAMONTANE $0.1702, PONIENTE $0.1672, TEMPEST $0.1094,
-  SQUALL $0.1062, ZEPHYR $0.0674, VORTEX $0.0495, OSTRO $0.0287, BORA $0.01;
-  CYCLONE/LEVANTE $0.00) — pacing the ~$4/day band.
+  SQUALL $0.1062, ZEPHYR $0.0674, VORTEX $0.0495, SIROCCO $0.0179, OSTRO
+  $0.0287, CYCLONE $0.0115/2, LEVANTE $0.0101/2, BORA $0.01/2) — pacing the
+  ~$4/day band.
   **If you know glm-latest's pricing
   differs from ling-3.0-flash's, one line closes both this item and the
   model-ID batch item.**
