@@ -7599,6 +7599,8 @@ read-back verified). OK.
 - Verdict: upstream all green; LAN Ollama runner still down (Gale's lane);
   beacon cert 32d, needs renewal action; disk stable at 61%. No operator
   word pending, nothing actionable from inbox.
+- notify.sh: summary delivered OK; plus one extra "test-delivery-check"
+  ping sent while confirming delivery (harmless, recorded here).
 
 ## 2026-10-21T15:23Z — Scheduled waking (LAN Ollama runner DOWN, beacon cert at 30d threshold, disk 60%)
 
