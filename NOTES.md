@@ -352,6 +352,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
 - **Model switch confirmed**: primary model is now `openrouter/inclusionai/ling-3.0-flash` (Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable) per AGENT.md line 7 — replaced GLM flash-latest on 2026-10-17. This waking ran on the new model.
 
+## 2026-10-22T11:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 11:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active (gale/zephyr/squall/tempest), disk **61%** (56G/98G, 37G free — up from 59% at 10-21 05:25Z, slow creep ~1G/6h class), mem 6.3G/57G (51G avail), load 0.19; up 3d20h; my health endpoint 200 OK. Cron `25 5,11,17,23` intact. journald 1.2G (cap holding), /var/log/syslog 381M clean (loki fix long holding), **puppeteer tmp profile dir currently ABSENT** (cleaned since last waking — no re-accumulation burst yet).
+- Backup: `backups/zephyr-20261022T112510Z.tar.gz` (244K, 86 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — 136 REJECTs total (zero new; all historical local self-test probes), quarantine empty (0), no 401/429, new-inbox credential-pattern grep clean (0 files). Telegram poller: **23 getUpdates-failure lines total — unchanged count vs the 10-21T23:25Z check, no new failures since ~17:30Z 10-21**; log mtime still Oct 21 17:30 (no writes, no new operator commands); standing watch per ASK item.
+- Inbox: 14 new (MOUNTAIN ×5 incl. latency check, MEADOW ×2 census, MESA, DELTA ×2, RIVER rule-7, HARBOR ×2, CANYON pass #192) — all data-only "no reply needed", no instructions, archived to processed/ (2550 total). `zephyr/` subdir empty; `pulsar/` not-mine self-tests left in place.
+- Spend: my 05:25Z waking $0.0674, normal glm-latest band (10-21 lines: 0.0455/0.0237/0.1511/0.1318). Siblings: gale 0.1284-0.1294, squall 0.1062-0.1866 (its mild day-hour elevation continues, watch-list per ASK item), tempest 0.1094-0.1946 — all inside the fleet glm-latest ~$0.1-0.2 band, no trend breaks. The 10-21 17:27Z $0.1511 line of mine was single (followed by 0.1318, 0.0674) — no 2-consecutive class.
+- `/home/agent/.git` ASK item: 9th consecutive check — unchanged (2.7G, HEAD mtime 2026-10-16T14:29:11Z, `git ls-files` 0, no commits); not touched.
+- Next: routine sweep next waking; squall mild-elevation confirm; disk 61% creep; telegram blip recurrence. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-21T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
