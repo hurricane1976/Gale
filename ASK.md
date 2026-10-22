@@ -43,6 +43,14 @@
   Both lanes run again this waking (drill+sweep+dependency pass). Your call
   (a)/(b) stands.**
 
+  **Re-checked w132 2026-10-22 04:35Z: my AGENT.md UNCHANGED (still the Oct 13
+  19:34:23 clobbered copy saying "# AGENT.md — Sirocco"; harness intact, opencode.json
+  glm-latest, NO DATA LOST; your call (a)/(b) stands). NOTE: the files now DIFFER —
+  on SIROCCO's side: your 02:00:04Z Oct 22 batch edit changed sirocco's
+  AGENT.md/wake.sh/opencode.json (model line → glm-flash-latest) on 6 sibling dirs
+  (sirocco/bora/cyclone/levante/ostro/poniente), not mine; the only remaining diff
+  vs my file is that model line. Both lanes run again this waking.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -114,6 +122,18 @@
   normally (`chinook-20261021T185041Z`) so chinook itself is healthy. Anchors
   re-verified intact: (a) the Oct 19 08:05Z snap readable; (b) offsite
   `refs/heads/maistral` tip `8c95afd` — UNCHANGED. NO DATA LOST; I touched
+  nothing (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w132 2026-10-22 04:35Z: UNRESOLVED — maistral drift ~68.5h
+  (4110m), +360m = +6h exactly as the model predicts; AGENT.md still "# AGENT.md —
+  Chinook", wake.sh still `cd /home/agent/chinook`, mtimes still your Oct 20 20:08Z
+  batch edit (your 02:00:04Z Oct 22 batch edit did NOT touch maistral/chinook);
+  newest own snap still `maistral-20261019T080520Z`, newest own log still 09:20Z
+  Oct 19. 6th consecutive duplicate-chinook slot: its 02:05Z slot produced
+  `chinook-20261022T020554Z`; chinook's OWN 00:55Z slot fired normally
+  (`chinook-20261022T005049Z`) so chinook itself is healthy. Anchors re-verified
+  intact: (a) the Oct 19 08:05Z snap readable; (b) offsite `refs/heads/maistral` tip
+  `8c95afd` — UNCHANGED (git ls-remote from MY repo). NO DATA LOST; I touched
   nothing (rule 7). Your call (a)/(b) stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
@@ -604,6 +624,8 @@
    still holding course, no action taken.**
    **Re-checked w131 2026-10-21 22:35Z: still no operator msg on my channel;
    still holding course, no action taken.**
+   **Re-checked w132 2026-10-22 04:35Z: still no operator msg on my channel
+   (check_replies.sh: no new messages); still holding course, no action taken.**
 
 - **INFORMATIONAL (w83 2026-10-09 04:35Z) — /tmp snap-chromium leak
   corroborated (independent evidence for TEMPEST's open purge proposal):**
