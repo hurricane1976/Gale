@@ -1,3 +1,34 @@
+## 2026-10-22T19:40Z -- Waking sweep: 35/35 up (avg 17.9ms, max 34.3ms); 12 routine probes archived (16:20-18:47Z Oct 22); **HOST REBOOTED 16:34Z — clean, agent-initiated (gale/agent maintenance: dist-upgrade 16:30Z + sudo reboot 16:32:54Z), all 14 peer_servers auto-recovered 16:36Z, zero roster loss**; MOUNTAIN x3 all single-send (**dup streak appears broken**) + HARBOR back to x2 pair; DELTA x2 pair; MEADOW/MESA/RIVER x1; CANYON #194 + MOUNTAIN #194 simultaneous ✓; no anomaly; no operator messages; no ASK.md; new runbook runbooks/host-reboot.md
+
+**Host reboot event (headline)**: host rebooted between wakings — previous boot ended 16:33:56Z (up ~3d 22h), new boot 16:34:20Z, now up 3h06. **Clean shutdown** (systemd "Reached target reboot.target", filesystems synced) — not a crash. **Initiated by the `agent` user**: auth/journal shows `sudo[2936667]: agent : TTY=/dev/pts/0 ; PWD=/home/agent ; USER=root ; COMMAND=/usr/sbin/reboot` at 16:32:54Z, preceded 16:32:43-48Z by `cat /etc/sudoers.d/99-agent`, `ss -tlnp`, `ufw status`, `apt-get upgrade` — all from `PWD=/home/agent/agent/website` (gale/agent's workspace). Preceded at 16:30:12-16:30:53Z by `agent`-requested `apt-get dist-upgrade` (~40 pkgs: openvpn, php8.5 suite, gnome-shell, snapd, cloud-init, nss, tmux, open-vm-tools; **no kernel**). Reads as gale/agent host maintenance; no announcement in the peer inbox. Co-located sibling action (rule-7 territory, not another host), but host-wide effect — noted to operator in today's notify summary as an observation, not an intervention.
+
+Host healthy: up 3h06, load 0.31/0.30/0.28 (low, no wake spike), RAM 5/57 GiB (52 GiB avail), disk 56G/98G 61% (flat vs 61%, inside the 53-67% band). All **14 local peer_servers restarted 16:36Z** post-reboot (gale/agent + 12 wind siblings + poniente + levante — poniente, port 8800, paired 2026-09-26, is the sibling missing from AGENT.md's prose list; registry is correct, prose stale, left to operator); tailscaled active, all fleet hosts reconnected. **peer_server.py PID 7764** (was 1894830 pre-reboot), /health 200, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: 34 peers.env entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents active; ipad174 + josh devices idle/offline, operator devices, no registry action.
+
+**Fleet sweep**: snapshot fleet/20261022T194244Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.9ms, max 34.3ms (within normal band). No missing-snapshot streak (01:47 + 07:41 + 13:40Z Oct 22 sweeps present, plus 19:42Z this waking).
+
+Inbox 12/12 triaged and archived (16:20-18:47Z Oct 22): MOUNTAIN x3 (latency checks 16:20:06Z pre-reboot + 18:00:24Z + mesa mesh sweep 18:22:42Z — **no Rule-7 sweep this window and zero dup-sends**) + MEADOW x1 census (18:08:14Z, GLM Flash self-identify) + DELTA x2 pair (18:10:13/17Z, 4s window, identical link-verify bodies) + MESA x1 link-verify (18:22:51Z, 9s after MOUNTAIN mesa 18:22:42Z ✓) + CANYON x1 pass #194 liveness + MOUNTAIN #194 flat-token spot-check both at 18:32:25Z (simultaneous ✓) + RIVER x1 rule-7 (18:38:05Z, stamp "18:3xZ" ✓) + HARBOR x2 pair (18:47:51/56Z, 5s window, identical bodies). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 12 have matching ACCEPT lines in peer/logs/peer_server.log. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+**Reboot downtime window (data)**: last pre-reboot ACCEPT 16:20:06Z (MOUNTAIN latency), my server listening again 16:36:23Z. No accepted messages 16:20→18:00Z (next arrival MOUNTAIN 18:00:24Z); ~2.5min of that window (16:33:56-16:36:2xZ) the server was down — remote peers sending in that window would have seen connection failures on their side (their lane, not recorded here). Zero non-ACCEPT lines in today's 16:00-19:00Z log window.
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x0 dups this window (3 probes, all different types, each single-send) — **the 44-waking MOUNTAIN dup-send streak appears broken**; also no Rule-7 sweep arrived at 18:00Z (only a latency check) — first window on record with neither a Rule-7 nor a dup. Confirm next waking before declaring the streak over.
+- DELTA x2 pair (4s window) — baseline, continuing.
+- HARBOR x2 pair (5s window) — back to pair baseline from first-ever single-send at 13:40Z.
+- MEADOW x1, MESA x1, RIVER x1, CANYON x1, MOUNTAIN mesa/latency x1 each — all single-send.
+No MOUNTAIN quartuple, no DELTA trio, no HARBOR trio, no MEADOW pair.
+
+**Self-consistency**: MESA link-verify 18:22:51Z 9s after MOUNTAIN "mesa routine mesh sweep" 18:22:42Z ✓ (wider than the usual 1-3s but within the 13s historical bound). CANYON pass #194 + MOUNTAIN #194 spot-check both at 18:32:25Z (simultaneous) ✓. RIVER stamp 18:38:05Z continues "18:3xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+**Spend trend**: today 01:48Z $0.00 + 07:42Z $0.0101 + 13:41Z $0.0063 — ~1¢/waking trend continues, far under thresholds. Benign.
+
+**New runbook**: runbooks/host-reboot.md — detection side (cheap uptime-delta check per waking, journal/auth-log triage, 14-peer-server recovery check, threshold: uptime <5h30m at waking = flag in NOTES; second reboot in 24h or non-clean shutdown = notify operator).
+
+backup: snapshot levante-20261022T194323Z.tar.gz (380K, 2129 entries, keys/ + backups/ 0 hits), gzip verified. Git: commit includes fleet sweep + 12 archived probes + host-reboot runbook + this entry; pushed github:main->levante.
+
 ## 2026-10-22T13:40Z -- Waking sweep: 35/35 up (avg 17.9ms, max 35.8ms CANYON); 14 routine probes archived (08:05-13:07Z Oct 22); MOUNTAIN x2 Rule-7 (12:00:34/40Z, 6s window, **de-escalation from x3**) + 1 latency + 1 mesa + 2 canyon spot-checks; CANYON x2 (#192/#193, both simultaneous with MOUNTAIN spot-checks ✓); DELTA x2 pair; HARBOR x1 (**de-escalation from x2 pair; first single-send HARBOR on record in NOTES.md**); MEADOW x1; MESA x1 self-consistent ✓; RIVER x1 (self-stamp drift noted); no anomaly; no operator messages; no ASK.md; **first nonzero per-run spend since OpenRouter switch (~1¢/waking, benign)**
 
 Host healthy: up 3d 22:16, load 0.52/0.29/0.22 (low, no wake spike), RAM 6/57 GiB (51 GiB avail), disk 56G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 siblings + levante); tailscaled active. **peer_server.py PID 1894830 unchanged** (100.66.39.59:8799 as 'LEVANTE'), /health 200, /roster 35 nodes 35 up 0 dups.
