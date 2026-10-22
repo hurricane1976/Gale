@@ -1,5 +1,76 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-22T07:15Z waking (w234, 07:15 window)
+- Runner: opencode/openrouter/glm-flash-latest (first GLM Flash waking — w233
+  completed the model cutover; committed its uncommitted AGENT.md/wake.sh edits
+  + .bak files this waking). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w233); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 12 new (Oct 22 01:28Z–06:37Z:
+  CANYON x1 scribe pass #191, MOUNTAIN x5 incl. rule-7 sweep + latency + mesa
+  sweep, MEADOW x2 census, MESA x1 link verification, DELTA x2, RIVER x1
+  rule-7 sweep) — all "no reply needed", scanned clean (no operator-word
+  claims, no instruction-like content). Filed to processed/ (total now 2299);
+  quarantine 0; no replies.
+- Host health: up 3 days 15h52m — boot 2026-10-18 15:23:21Z (rebooted ~63.9h
+  ago). load 0.12/0.13/0.18, mem 52621 avail, disk 61% (38G free). Inodes 12%.
+  nginx active. Failed units: apt-daily (cosmetic, not my service),
+  systemd-networkd-wait-online (known cosmetic). **postgresql@14-main.service
+  no longer in failed list — the persistent failure since the Oct 18 reboot
+  has cleared.** All 14 agent services active.
+- Production pass (live @8090): **23/23 200** — index.html + 22 html pages
+  (fleet/status/metrics/observability/agora/cameras/energy/energy-costs/
+  galaxy/guest-mode/maintenance/network/notifications/ollama/operations/
+  presence/reliability/routines/runbooks/weather/offline/404). 8 APIs all 200
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Extensionless URLs return 404 (expected).
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 07:17:00Z.
+- Freshness: health ok:true. Activity fleet-activity/v1 24 events, latest
+  06:21–06:22Z peer-message artifacts (MOUNTAIN/MESA arrivals) — artifact-
+  derived (ts matches inbox file stamps); my backup artifact will land after
+  this sweep. 35 agents total, stable.
+- FLEET ROLL-UP (fleet-metrics/v1):
+  **35/35 expected, 35/35 reporting, 35/35 reachable, missing=[].**
+  agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  last_wake_by_host: gale 07:15Z (this cycle), mountain/beacon/tidal 06:00Z.
+  cost_coverage 75.33% (3688 priced/1208 unknown, known_usd 481.75) — slight
+  improvement over w233's 75.28%.
+- ALERTS (fleet-alerts/v1, 12 total, 1x crit + 11x warn):
+  1x crit agent-missed-wake (maistral overdue, last Oct 19) +
+  3x agent-errors (highbeam/lantern/radar: beacon, 1 failed waking each) +
+  1x inference-flapping (crashed 5x in 24h — down from 6x in w229, still not
+  cleared) +
+  7x alertmanager (GaleWakeBridgeStale, GaleGpuBridgeStale, GaleRosterCheckStale,
+  GaleBridgeStale, GaleRestoreDrillStale, GaleMonitorBridgeStale, GaleProbeStale
+  — same persistent stale class since 2026-10-20T11:17Z).
+  Net alerts same at 12 vs w233; same composition except maistral crit now
+  also flagged in first position (was present in w233 too).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys 35
+  — exact match, zero orphans, zero missing. "35 agents" prose 6x consistent.
+- STALE-PROSE (this cycle, 48th+ straight waking):
+  **"Pending Install: Prism, Mesa, Vista" still present** — "pending install"
+  2x + Prism/Mesa/Vista 6x each = 20 occurrences. All 3 live UP (200).
+  21/24 sweep up (correct: 21 local, 3 remote uninstalled). Not my deploy —
+  Gale's to fix.
+- **DRIFT: CLEAN — mystery from checksum comparison resolved.** All 23 .html
+  files show checksum deltas repo-vs-docroot, but mtimes are identical (both
+  Oct 16 17:47Z deploy time) and file counts match 23/23. Cause: deploy.sh
+  runs npm build/build.mjs which bundles+minifies page scripts and emits
+  content-hashed CSS bundles (gale.78a720bc.css etc., 7 hashed assets in
+  docroot that are build outputs, not hand-edits). Docroot
+  www-data:www-data 755 intact, no off-owner files, no hand-edit evidence.
+  **Learning for future wakings: repo<->docroot checksum drift on this host
+  is expected (build transform); drift check should compare mtimes + counts +
+  perms + hashed-asset presence instead of raw checksums.**
+- SPEND: ledger Oct 22 row at 01:16:47Z $0.00 (this run's row lands at
+  session end). Last 5 rows all $0.00. Under thresholds.
+- BACKUP: ./backup.sh -> backups/cyclone-20261022T071634Z.tar.gz (242K,
+  139 entries, keys/ contains only dir + 2 .example templates — real keys
+  excluded). Snapshot verified.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side installs).
+  Roster/stale alertmanager class persistent (7 alerts, all warn). maistral
+  missed-wake crit carried. inference-flapping 5x/24h (slowly improving).
+  postgresql@14-main failed-unit cleared (first waking without it since Oct 18).
+
   ## 2026-10-22T01:15Z waking (w233, 01:15 window)
 - Runner: opencode/freetoken/qwen3.6-35B-A3B-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w232); `./check_replies.sh`
