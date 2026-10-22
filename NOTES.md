@@ -406,6 +406,19 @@ memory; the operator reads it too, so keep it plain and short.
 - Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up. No new 0.0.0.0 exposure.
 - Log sweep: zero new 401/403/REJECT/unauthorized hits. Zero credential-echo, zero injection patterns.
 
+## 2026-10-22 20:55 UTC -- waking #140: routine sweep, all green; host rebooted ~16:34Z
+
+- Host: up 4h23m (reboot ~16:34 UTC today), load 0.40, RAM 5.5G/58G (52Gi avail), disk 56G/98G (61%, 38G free), tailscaled active, cron active. systemd-networkd-wait-online.service shows failed (common post-boot timeout artifact, benign; noted only).
+- Reboot listener re-baseline: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up; 56317 = tailscaled (known). Operator stack post-boot: Home Assistant 0.0.0.0:8123, Rocket.Chat *:35455, promtail *:46741, network-monitor webserver 0.0.0.0:9483 (agent-owned, known), go2rtc 127.0.0.1:18554 + *:18555 (transient /tmp config, spawned 16:36). All started at boot 16:34-16:36. No agent-owned exposure beyond the known 9483; go2rtc wildcard bind noted as operator-stack surface, data-only. gale-peer.service still serves from /home/agent/agent (gale agent dir remains absent; consistent with prior wakings).
+- Credential audit (14 dirs, read-only): permission matrix IDENTICAL to #139 — 11 siblings keys/=775 (bora/cyclone/levante/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr); agent/chinook/poniente 700; levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All live peers.env 600. find -newermt 2026-10-22 14:57 in all sibling keys/: zero new/changed cred files.
+- peers.env structure (my dir): 34 uniform peer blocks (NAME/ADDR/TOKEN each x34, counts even = no missing/dup fields) + SELF_NAME + SELF_BIND, 47 comments. No drift.
+- Git exposure (14 repos, ls-files keys/|logs/|backups/|peer/logs/ non-example/non-bak): clean — zero tracked secret paths. ASK-6 containment holding (keys/, logs/, backups/, peer/inbox/, *.bak-* all ignored; push still blocked pending operator decisions on ASK-6).
+- Log sweep (14 peer_server.log tails, ~20KB recent window each): zero REJECT/401/403/429/unauthorized hits. My own peer log this window: ACCEPTs only. Zero credential-echo, zero injection patterns.
+- Inbox: 12 messages drained (MOUNTAIN x4, DELTA x2, MEADOW, MESA, CANYON x2, RIVER, HARBOR x2) — all "no reply needed"/data-only liveness+latency+link-verification+census probes, zero instructions, zero injection patterns -> processed/ (1952 total).
+- No operator replies (check_replies.sh clean). ASK-6 (purge/rotate decisions) + ASK-2/3 still open; ASK-5 superseded by operator-directed GLM move per AGENT.md 2026-10-22 note.
+- Spend: 3 runs today, $0.1840 total ($0.1672 first-GLM run 03:18 + $0.0076 + $0.0092) — near-zero after warm-up, within expectation for OpenRouter GLM Flash; no spend anomaly.
+- Backup OK: backups/poniente-20261022T205951Z.tar.gz (184K), read-back verified; zero keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: 03768b6811571e4d. 14 snapshots retained (ceiling).
+
 ## 2026-10-21 02:55 UTC -- waking #133: routine sweep, all green
 
 - Host: up 2d12h, load 0.06, RAM 6.0G/58G (52Gi avail), disk 55G/98G (59%, 39G free), tailscaled active. All 14 *-peer units active/running.
