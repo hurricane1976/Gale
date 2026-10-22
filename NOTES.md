@@ -8923,3 +8923,74 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Git: NOTES + ASK.md committed below; migration files (AGENT.md/
   opencode.json/wake.sh + .baks) stay uncommitted pending operator
   confirmation.
+
+## 2026-10-22T20:05Z — waking #155 (accidental maistral-cron slot, 14th, exactly as predicted; recovery slots verified — reboot-only cron skips confirmed)
+
+### headline: cyclone 19:16 + levante 19:43 fired on time → #154's "silent cron skip" watch CLOSED (reboot-only, self-cleared); maistral backlog 180
+
+- **This waking fired at 20:05:13Z** — maistral's `5 2,8,14,20` cron slot
+  running a chinook session via its swapped wake.sh, the 14th accidental,
+  exactly as predicted in #154. Not my scheduled slot (next: 00:50Z).
+- **#154 follow-up VERIFIED:** cyclone 19:16:33Z and levante 19:43:23Z slots
+  both fired (backups present on disk) — the 16:33Z-reboot cron skips were
+  **reboot-only and self-cleared**; no recurrence without a reboot. Watch
+  item CLOSED. If a silent skip ever recurs without a reboot, escalate to
+  Bora's scaffold lane.
+- **check_replies: (no new messages).** Four ASK.md open items unchanged:
+  (1) 16:33Z reboot + cron-skip confirm, (2) maistral overwrite disposition
+  (day 6), (3) 10-20 glm-latest fleet batch, (4) glm-latest pricing (one
+  line covers 3+4).
+- **Peer inbox: 0 new messages this window** (first silent window in the
+  series — 18:47Z batch was the last; processed/ holds at 2082). Nothing
+  to archive, no acks owed.
+- **Maistral (read-only):** unchanged — AGENT.md header "# AGENT.md —
+  Chinook", wake.sh `cd /home/agent/chinook`, peer_server:8795 still 200
+  (masks the dark lane). Inbox backlog 177 → **180** (+3 in ~1.25h —
+  normal rate). Recovery sources unchanged (its 10-19 backups + github
+  branch). Next accidental: **02:05Z** (15th). No advisories re-sent.
+- **Spend:** 10-22 host-wide to 20:05Z ≈ **$3.65 over 48 runs**
+  (chinook $1.1496/7 incl. the $0.571 of accidentals, GALE/agent
+  $0.5154/4, SQUALL $0.4915/3, TEMPEST $0.361/3, TRAMONTANE $0.3592/2,
+  ZEPHYR $0.2363/3, VORTEX $0.1952/3, PONIENTE $0.184/3, CYCLONE
+  $0.0286/4, LEVANTE $0.0252/4, SIROCCO $0.0452/3, OSTRO $0.0394/3,
+  BORA $0.0227/5; maistral $0/0 — dark lane). Pacing the ~$4/day band,
+  far under the $15/day alert line. glm-latest stays elevated
+  (this run records ~$0.05–0.25 at session end, 15th point).
+
+### capacity snapshot 2026-10-22T20:05Z (waking #155)
+
+- host gale-agent: up 3h31m (boot 16:34:20Z, kernel 7.0.0-38, stable), load
+  0.03/0.16/0.22 on 16 cores (series-low band), mem 5Gi/57Gi used (52Gi
+  avail), swap 0, disk / 56G/98G (61%, 38G free) — flat vs #154, 18th
+  consecutive flat reading. /var/log/journal 1.3G (rotation holding),
+  /tmp/opencode transient, /home/agent 19G (unchanged watch item).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, all <1 ms.
+- cadence today: 3 scheduled fired (00:50, 06:50, 12:50; 16:50 lost to
+  the reboot), 3 accidentals (02:08, 14:05, 20:05) — 7 runs incl. this
+  one vs 8 expected.
+
+### forecast / thresholds
+
+- **Disk:** 56G flat 18th day; 80% line ~78G ≈ 22G away ≈ **~2026-12-05 at
+  ~0.5 G/day** — named date unchanged from #135–#154. No action.
+- **Spend:** glm-latest structural, host ~$4/day band — no alert line in
+  sight ($15/day).
+- **Load/Mem/Swap:** series-low, flat. No crossing projectable.
+- **Wake-reliability:** #154's silent-skip signature closed as
+  reboot-only (this waking's verification). Remaining lane item:
+  maistral restoration — operator's.
+- No sibling near any local limit → no advisory this waking.
+
+### done this waking
+
+- Recovery-slot verification (cyclone/levante fired) — #154 watch closed;
+  ASK.md reboot item unchanged (still awaiting operator confirm).
+- check_replies: none. Peer inbox: 0 new (first quiet window).
+- Maistral re-verified read-only (unchanged, backlog 180); next accidental
+  predicted 02:05Z (15th).
+- Host tally $3.65/48 runs to 20:05Z recorded.
+- Backup: `backups/chinook-20261022T200526Z.tar.gz` (276K), gzip -t OK,
+  AGENT.md read back clean (74 entries), 14-snapshot ceiling held.
+- Git: this entry committed below; migration files (AGENT.md/
+  opencode.json/wake.sh + .baks) stay uncommitted pending operator
+  confirmation.
