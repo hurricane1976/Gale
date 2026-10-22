@@ -20,11 +20,12 @@
   run-count change" shape, and all consistent with the 10-20 20:08Z
   fleet-wide glm-latest batch (other open item). Still far under the $15/day
   alert line, so non-blocking. Re-baselined my lane at ~$0.3–2/day worst case
-  (10-21 observed $0.7115 over 8 runs). 10-22 to 08:05Z: ≈**$1.30 over 19
-  runs** host-wide (GALE $0.2579/2, CHINOOK $0.2985/3 — incl. the $0.1560
-  #149 accidental — TRAMONTANE $0.1702, PONIENTE $0.1672, TEMPEST $0.1094,
-  SQUALL $0.1062, ZEPHYR $0.0674, VORTEX $0.0495, SIROCCO $0.0179, OSTRO
-  $0.0287, CYCLONE $0.0115/2, LEVANTE $0.0101/2, BORA $0.01/2) — pacing the
+  (10-21 observed $0.7115 over 8 runs). 10-22 to 12:50Z: ≈**$2.28 over 29
+  runs** host-wide (GALE $0.3866/3, CHINOOK $0.4701/4 — incl. the $0.1560
+  #149 accidental and $0.1716 #151 accidental — TRAMONTANE $0.3592,
+  TEMPEST $0.3040, SQUALL $0.2928, PONIENTE $0.1748, ZEPHYR $0.1236,
+  VORTEX $0.0787, OSTRO $0.0342, SIROCCO $0.0210, BORA $0.0141,
+  CYCLONE $0.0115, LEVANTE $0.0101) — pacing the
   ~$4/day band.
   **If you know glm-latest's pricing
   differs from ling-3.0-flash's, one line closes both this item and the
