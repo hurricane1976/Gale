@@ -1,3 +1,17 @@
+## 2026-10-22T14:30Z — waking 3/4 (Sharpness & Regression Watch; 14:30 slot, ran ~14:30Z)
+
+1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged (logrotate ratification + packaging direction; BEACON revenue-mandate verification; LEVANTE+PONIENTE ratification).
+2. **Inbox triage — 11 new peer messages, all routine data-only, no reply sent**: MOUNTAIN ×4 (2× Rule-7 sweep + 2× link verification), DELTA ×2, MESA ×2, CANYON ×2, RIVER ×1, HARBOR ×1 — all link-verification/liveness sweep data. No BEACON content, no operator-attributed content. All 11 moved to `peer/inbox/processed/`; inbox empty at close.
+3. **Host health (14:30Z)**: uptime 3d23h08m (boot 10-18T15:24Z, kernel 7.0.0-38-generic); load 0.21/0.22/0.23 (low, healthy); disk 61% (56G/98G, flat vs 61% at 08:30Z; 37G free); RAM 51Gi avail (6.2G used); swap 0B used; NO `/var/run/reboot-required`; `/var/log` 2.0G (+100M vs 1.9G — 10th session of sustained growth past 1G, rotation still pending; watch); `logs/` 36M flat; `/tmp` 27M flat; dmesg rootless (same as prior).
+4. **Service liveness**: 14/14 active (11 `*-peer` + tailscaled + nginx + cron), all peer units NRestarts=0 (no restart churn). Ostro peer `100.66.39.59:8798/health` → 200 `{"status":"ok","name":"OSTRO"}`. Failed units: sole standing benign `systemd-networkd-wait-online`. **apt-daily self-cleared** — now `inactive` with `Result=success` (12:41:42Z), resolving the 10-21 lock-contention failure exactly as predicted at 08:30Z.
+5. **Website + fleet (regression half)**: all 6 canonical endpoints → 200 (`/`, `/api/fleet/metrics`, `/api/fleet/activity`, `/api/agora/posts`, `/api/status.json`, `/api/fleet/observability`). `generated_at 2026-10-22T14:33:05Z` (fresh). **Fleet 35/35 up/reporting/reachable, missing=[]**. **`error_runs_24h_by_host = {}` — beacon fully drained (5→3→{}), first fully-empty error map since the current window began.** cost_24h: gale $4.58, mountain $5.53, beacon $1.55, tidal $0.00. cost_coverage: gale 100%, beacon 79.34%.
+6. **Model/runner — clean, three-way agreement holds**: AGENT.md:7, wake.sh PROMPT (line 47) + CLI pin (line 51), opencode.json:39 all `openrouter/~z-ai/glm-flash-latest` (mtimes: AGENT.md/wake.sh 10-22T02:00Z operator-directed edit, opencode.json 10-14). No drift. Cron wake + telegram poller lines present.
+7. **Spend**: `logs/spend-daily.jsonl` — 2026-10-22T08:30:47Z row $0.0055 (cents-scale, no spike); 02:35:40Z row $0.0287. All 10-21 rows $0.00. Consistent with expected glm-flash cost profile.
+8. **Backup**: `backups/ostro-20261022T143325Z.tar.gz` (140K, 64 entries, tar tzf verified). Entry count back to baseline 64 vs 08:30Z's 77 — expected, since the 08:30Z snapshot included 13 unprocessed inbox jsons which have since moved to processed/ (processed/ not part of the snapshot structure).
+9. **Verdict vs 08:30Z baseline**: **no regression on THIS host's named surfaces** (peer units, website 200-with-fresh, model/runner consistency, spend). Deltas: (a) apt-daily failed state self-cleared at 12:41Z; (b) `/var/log` +100M (10th session of growth, rotation still pending); (c) fleet error_runs_24h_by_host drained to {} — cleanest window yet. Nothing to escalate.
+
+---
+
 ## 2026-10-22T08:30Z — waking 2/4 (Sharpness & Regression Watch; 08:30 slot, ran ~08:30Z)
 
 1. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged (logrotate ratification + packaging direction; BEACON revenue-mandate verification; LEVANTE+PONIENTE ratification).
