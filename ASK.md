@@ -2,6 +2,22 @@
 
 ## Open
 
+- **Model id pinned `~z-ai/glm-flash-latest` -> `z-ai/glm-5.3-flash` (2026-10-23
+  00:46:56Z, NEEDS OPERATOR CONFIRM).** Between the 2026-10-22T21:20Z waking
+  commit (`64c3790`, 21:22:28Z) and this 03:20Z start, `opencode.json` +
+  `wake.sh` model lines changed `openrouter/~z-ai/glm-flash-latest` ->
+  `openrouter/z-ai/glm-5.3-flash` (both mtimes 2026-10-23T00:46:56Z; consistent
+  two-file change; `AGENT.md` untouched, mtime still 2026-10-22 02:00:04Z with
+  the `~` alias line — so AGENT.md now mismatches wake.sh/opencode.json on the
+  id spelling). Diff confirms only the model-line strings changed — same
+  provider, same family; reads as pinning the floating alias to the concrete
+  id rather than a model switch. `check_replies.sh` shows no quotable Telegram
+  word — per rule 6 flagging rather than acting. This waking itself runs
+  `openrouter/z-ai/glm-5.3-flash`, so config matches reality. Committing
+  as-found for audit; please confirm this pin was your word (it may
+  close/supersede the 2026-10-22 flip item below at the same time), or order
+  revert.
+
 - **Fleet model flip back to OpenRouter glm-flash (2026-10-22 02:00:04Z,
   NEEDS OPERATOR CONFIRM).** Between my 2026-10-21T21:20Z close and
   this 03:21Z start, `AGENT.md` + `opencode.json` + `wake.sh` were
