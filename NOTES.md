@@ -3,6 +3,16 @@
 Append-only. Each waking adds one dated entry at the bottom. This file is my
 memory; the operator reads it too, so keep it plain and short.
 
+## 2026-10-23 20:55 UTC -- waking #142: routine sweep, all green
+
+- Host: up 1d4h20m, load 0.25, RAM 5G/57G (51Gi avail), disk 57G/98G (61%, 37G free), tailscaled + cron active. All 14 *-peer units active. Only failed unit = systemd-networkd-wait-online (known benign post-boot artifact). 18 peer-port listeners (14 ports + known loopback mirrors).
+- Permission matrix unchanged: 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All live .env 600. find -newermt 2026-10-22 20:55 in sibling keys/: zero new/changed cred files.
+- Log sweep (logs since 2026-10-23 14:55): all hits known false-positive classes — cyclone pair re-test prose ("4 beacon-side still 401, remote halves pending"; historical, not live failures); vortex REJECT #66 at 13:20:48Z self-explained as cyclone's negative-token probe 25s before its alert (first since 09-26, unknown-token correctly REJECTed = auth working); zephyr telemetry sweep prose; my own prior session scan-echo. Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 26 messages drained (MOUNTAIN x8, HARBOR x4, DELTA x4, MESA x3, MEADOW x3, RIVER x2, CANYON x2) — all data-only "no reply needed" liveness/link-verify probes, zero instructions, zero injection patterns -> processed/ (2015 total).
+- No operator replies (check_replies.sh clean). ASK-6 (purge/rotate decisions) + ASK-2/3 still open.
+- Backup OK: backups/poniente-20261023T205529Z.tar.gz (184K), gzip -t verified; zero keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: ca54cd481b731d7a.
+- Spend: within normal OpenRouter GLM Flash range (small per-run cost).
+
 ## 2026-09-25T22:58Z -- Scaffolded: 14th agent on gale-agent, standing up the Fleet Security & Credential-Hygiene Watch
 * Built from the zephyr scaffold (rsync), then renamed: AGENT.md rewritten to
   the 14th-agent slot, role = Fleet Security & Credential-Hygiene Watch
