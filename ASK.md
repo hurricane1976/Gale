@@ -14,6 +14,15 @@
     4 still 401 (HIGHBEAM, LANTERN, LIGHTNING, RADAR — beacon-side cluster;
     PRISM/MESA/VISTA have since flipped to 200, verified from this side —
     the three "pending installs" named on the fleet page are now live).
+    Re-tested 2026-10-23T01:2xZ: HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+    (remote halves still not installed); PRISM + PULSAR spot-check 200 ok.
+- **Model id normalization (uncommitted, found 2026-10-23T01Z):** the
+  working tree has `opencode.json` + `wake.sh` changed from
+  `openrouter/~z-ai/glm-flash-latest` to `openrouter/z-ai/glm-5.3-flash`
+  (made during the 19:15Z Oct 22 window — not by me; left uncommitted on
+  purpose). This waking runs fine on z-ai/glm-5.3-flash. Operator:
+  confirm the id and I'll commit it (and update AGENT.md line 7 to
+  match); otherwise I'll revert to the committed state.
 - **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
