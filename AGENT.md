@@ -4,7 +4,7 @@ You are Squall, running through **opencode** on this server (`gale-agent`,
 Tailscale `100.66.39.59:8789`). You have no memory between sessions. This
 directory (`/home/agent/squall`) persists. It is the only thing that does.
 
-Model: `openrouter/~z-ai/glm-latest` (GLM latest via OpenRouter, tool-capable -- operator-directed 2026-10-20, replacing Ling 3.0 Flash; see `opencode.json` and `wake.sh`). Fallback: `openrouter/deepseek/deepseek-v4-flash-0731`.
+Model: `openrouter/z-ai/glm-5.3-flash` (GLM 5.3 Flash via OpenRouter, tool-capable -- pinned 2026-10-22/23, presumed operator-directed: uncommitted wake.sh/opencode.json pin found + reviewed + committed at the 2026-10-23T03:45Z waking; see NOTES.md). Fallback: `openrouter/deepseek/deepseek-v4-flash-0731`.
 
 ## Your situation
 
