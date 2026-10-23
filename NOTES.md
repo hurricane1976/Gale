@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-10-23T05:00Z -- scheduled waking (05:00 UTC slot; w120, thirteenth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 13 messages triaged, all Oct 23 00:01-00:47Z. ONE QUARANTINED: `quarantine/20261023T002233Z-MOUNTAIN-267749b0.json` (+ .reason) — Mesa-pattern #100 (transport-authenticated MOUNTAIN, ACCEPT 00:22:33Z, body first-person "mesa routine mesh sweep 2026-10-23 00:22:32 UTC"; genuine MESA link-verify ACCEPT 00:22:37Z, identity-consistent, bounds blast radius to the single file). No credentials, no links, no instructions, no reply solicited. Exactly on the ~6h cadence of the standing defect (18:22→00:22; since 09-23, escalated). Other 12 benign (MOUNTAIN Rule-7 sweep 00:01Z + latency check 00:04Z, 2x DELTA link-verify 00:08Z, 2x MEADOW census 00:12Z, genuine MESA 00:22:37Z, CANYON liveness pass #195 00:31Z, RIVER Rule-7 sweep 00:34Z, 3x HARBOR link-verify 00:47:23/27/28Z — rate-noted, 3 identical in 5s, coherent with their multi-probe pattern, content benign) → `processed/`. All 13 have matching ACCEPTs in the peer log; REJECTs 65 total unchanged (all self-origin), no 401 storm, no external-origin events. Quarantine now 100 Mesa-pattern files.
+- MOUNTAIN sweep-burst follow-up (w119 rate note): this window shows their normal 1-sweep rate — the 21:30Z burst (5 sweeps in 12s) did not recur this slot. Keeping the note open one more slot before calling it drift-resolved.
+- Exposure posture: ufw ACTIVE (default-deny INPUT; `sudo ufw status`; allowlist = documented set 22/80/443/8080/8090/8091/8092/3001/3002/9483/8123 LAN+tailnet, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ (methodology note: my first grep pattern `87xx` missed :8800 — re-verified with a corrected pattern, poniente's listener present and tailnet-only; no real drift); 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795 ✓; :8099 still CLOSED ✓; nginx 8090 wide-bound unchanged; sandboxing spot-check (rotated set: sirocco-peer/cyclone-peer/levante-peer): strict/NoNewPrivileges/PrivateTmp intact — no drift.
+- Credential hygiene: perms sweep all 14 local dirs — non-example keys/ 600 everywhere except levante `telegram.env` 664 (unchanged open ASK.md item); poniente re-check run FRESH per w118 methodology — `git ls-files keys/` = 2 `.example` only (containment holding; history + rotation decisions still operator-open per ASK.md). Own repo tracked-file secret scan: only NOTES/ASK prose token-shape mentions, 0 values.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices (ipad174 listed, inactive); none unknown.
+- Host: disk 57G/98G (61%, +1G in 6h — slow growth continues, watching), RAM 51Gi avail, load 0.33, uptime 12h26m (post 10-22 16:33Z maintenance reboot).
+- Backup: `backups/vortex-20261023T050046Z.tar.gz` (272K, 278 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = .example only, by design).
+- Spend: yesterday's wakings $0.03-0.12 each, within norms (today's entry records at wake end).
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 1 Mesa quarantine (#100, standing defect), no exposure drift, no new credential exposure; MOUNTAIN burst watch: no recurrence this slot. Poniente + levante open items unchanged, operator action still requested per ASK.md.
+
 ## 2026-10-22T23:00Z -- scheduled waking (23:00 UTC slot; w119, twelfth on Ling 3.0 Flash)
 
 - Operator replies: none (`check_replies.sh` clean).
