@@ -1,5 +1,108 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-10-23T03:20Z — Scheduled waking (model id PINNED ~glm-flash-latest -> glm-5.3-flash out-of-band, flagged; all upstream green; LAN Ollama service still down; Ollama v0.40.9 now stable; beacon cert 31d)
+
+Context: 03:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 03:20:08Z, on schedule. This waking runs
+`openrouter/z-ai/glm-5.3-flash` (concrete pin — see config finding below);
+waking succeeding = OpenRouter path healthy end-to-end.
+`check_replies.sh`: no new operator messages.
+
+Host: up 10:45 (boot 2026-10-22 16:34:xxZ — the reboot already covered in the
+21:20Z entry; no further reboots), load 0.24/0.24/0.22 (light), disk 61%
+(57G/98G, 37G free — flat vs 61% at 09:20Z/15:20Z), RAM 51Gi available of
+57Gi, swap idle. `sirocco-peer` + `tailscaled` + ssh active; all 14 tailnet
+peer listeners 8790-8800 + localhost :8791/:8793/:8794/:8795. Cron re-audit:
+live crontab `20 3,9,15,21 /home/agent/sirocco/wake.sh` == repo — lock-step
+holds.
+
+**CONFIG FINDING (rule 6, NEEDS OPERATOR CONFIRM — see ASK.md):** between the
+21:20Z commit (`64c3790`, 21:22:28Z) and this start, `opencode.json` +
+`wake.sh` model lines changed `openrouter/~z-ai/glm-flash-latest` ->
+`openrouter/z-ai/glm-5.3-flash` (both mtimes 2026-10-23T00:46:56Z; diff shows
+only the model-line strings; AGENT.md untouched and now mismatches the id
+spelling). Reads as pinning the floating alias to the concrete id — same
+provider/family, benign-looking, and this waking runs the pinned id so config
+matches reality — but no quotable Telegram word, so committed as-found
+(`4b56c17`) and flagged in ASK.md rather than acted on. No revert.
+
+`./backup.sh` -> `backups/sirocco-20261023T032026Z.tar.gz` (212K, 126 entries,
+gzip -t OK, tar -tzf read-back OK; AGENT.md/NOTES.md/ASK.md/wake.sh/
+opencode.json + config .bak preserves present).
+
+Inbox: 24 new (2026-10-22 21:30Z – 2026-10-23 00:47Z), all filed to
+`processed/` (now 2060 total): 10x MOUNTAIN rule-7 sweeps, 4x MOUNTAIN
+automated latency checks, 2x DELTA link-verify, 1x MEADOW census (GLM Flash
+signature), 1x MOUNTAIN body self-labeled "mesa routine mesh sweep" 00:22Z
+(the known MOUNTAIN-vs-MESA label quirk, stable pattern) + 1x genuine MESA
+link-verify 00:22Z, 1x CANYON scribe pass #195, 1x RIVER rule-7 sweep, 3x
+HARBOR link-verify. All explicit "no reply needed, data only". No replies
+sent, nothing minted or installed.
+
+Pairing state: UNCHANGED — `keys/peers.env` mtime still 2026-09-26 01:19:56Z,
+34 NAME blocks + self, same set by name (8 mesh + GALE + CHINOOK/TRAMONTANE +
+OSTRO/LEVANTE/PONIENTE + 21 remote BEACON..VISTA). Nothing minted or
+installed. ASK.md open items: new model-id pin + PONIENTE + remote-22 + the
+2026-10-22 flip + stacked older flip items, all still awaiting operator word.
+
+Dependencies (all green except the runner, live probes ~03:21Z):
+- OpenRouter: /api/v1/models 200 in 0.94s (primary model path; this waking
+  executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.18s (secondary/informational).
+- GitHub: api.github.com/zen 200 in 0.05s; githubstatus API "All Systems
+  Operational" (indicator none, updated 02:30Z).
+- Tailscale: status.tailscale.com 200 in 1.33s; daemon active; 14-node set —
+  gale-agent self, 6x beacon ALL active direct (prior wakings saw most idle),
+  gemini/mountain/ubuntu agents active direct, ipad174 + josh-iphone18 +
+  josh-linux idle, NEW `josh-linux2` node in the set (operator personal
+  device; no fleet lane depends on it — noting, no action).
+- **FINDING — LAN Ollama runner (192.168.1.197:11434) STILL DOWN** (curl
+  /api/version exit 7, connection refused) while the host is pingable (0%
+  loss, 1.1ms avg). Same narrowed diagnosis as 15:20Z: service not listening
+  on an otherwise-up host. FreeToken gateway :1919 alive (/health ok, serving
+  Qwen3.8-35B-A3B-Distill-NVFP4, version 0.1.3+g9c635a157, uptime 92057s
+  ~25.6h). Shim 127.0.0.1:11435 up but upstream-refused (consistent). Not my
+  model path (glm-5.3-flash via OpenRouter); Gale/operator's lane — flagged
+  again, not actioned (rule 7).
+- Release watch, Ollama: **v0.40.9 is now the latest STABLE** (published
+  2026-10-22T01:33:10Z — the rc1 seen at 15:20Z promoted; headline features:
+  speech generation via Phonon on Apple Silicon, d3 decision models from vLLM
+  Semantic Router, Flint on Linux/Windows). v0.40.8 (2026-10-21) is the prior
+  stable. No local install on this host; LAN runner version unknown while the
+  service is down; any bump is operator/Gale's call — informational.
+- Release watch, opencode: upstream latest still **v1.19.4**
+  (2026-10-22T13:03Z, unchanged since the 15:20Z note). LOCAL BINARY CHANGED:
+  `opencode --version` now reports **v2.1.3** — was v2.0.30 at the 15:20Z
+  waking; upgraded out-of-band across the reboot window (binary mtime
+  normalized to a bogus 1985 date, so timing not observable). This waking
+  runs under it fine, so the runner is healthy; noting for Gale, no action.
+
+Cert expiries (fresh probes, no new renewals): beaconwake.com notAfter
+2026-11-23 21:26:58Z (**31d — PAST the 30d threshold, 5th consecutive waking
+flagged; renewal still not visible**), tidalwake.org 2026-11-28 (36d),
+mountainwake.org 2026-12-04 (42d). All Let's Encrypt; HTTPS beaconwake 301
+(expected), tidal/mountain 200. beaconwake.com remains the one needing
+operator/Gale action.
+
+Spend: 2026-10-22 totaled $0.0497 across the 4 scheduled wakings
+(0.0179+0.0031+0.0242+0.0045; no alert threshold crossed). Today's own entry
+appends at run end.
+
+Process note: the 21:20Z waking DID append its NOTES entry — but at the file
+BOTTOM (after the ~2026-10-21 tail) instead of the top, breaking the
+newest-first ordering this file has used; its content is complete (verified
+via `git show 64c3790`). Recorded so future sessions don't hunt for a
+"missing" entry; this waking restores top placement.
+
+- Verdict: upstream all green; only active failure remains the LAN Ollama
+  service (Gale's lane); beaconwake.com cert 31d and still un-renewed; one
+  new out-of-band config change (model id pin) flagged NEEDS OPERATOR
+  CONFIRM; local opencode runner upgraded v2.0.30 -> v2.1.3 out-of-band
+  (working). Nothing actionable from inbox.
+- Next: watch for operator word on the model-id pin (and the stacked flip
+  confirm items); watch beaconwake.com renewal (31d); watch LAN Ollama
+  :11434 recovery; watch Ollama v0.40.9 / opencode v1.19.4 uptake.
+
 ## 2026-10-22T15:20Z — Scheduled waking (LAN Ollama outage NARROWED to the service — host now pingable; opencode v1.19.4 upstream; beacon cert 32d)
 
 Context: 15:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
