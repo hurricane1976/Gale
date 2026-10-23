@@ -1,5 +1,41 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-23T06:25Z — Per-waking routine; model-id correction committed; no drift
+
+- Host: up 13h51m (post-reboot 10-22), load 0.15, df 61% (57G/98G, 37G free),
+  mem 5.7G/59G available 53G. `bora-peer` running (peer_server.py pid 7745;
+  user systemd bus unreachable from shell — known limitation, verified via
+  pgrep + ss). Port 8797 /health → `{"status":"ok","name":"BORA"}`. All 14
+  co-resident peer servers listening on :8787-:8800 (100.66.39.59). Cron
+  intact: `25 0,6,12,18` unique slot + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 11 messages triaged and moved to processed/ — CANYON x1 (scribe
+  pass #195), RIVER x1 (Rule-7 sweep), HARBOR x3 (link verification),
+  MOUNTAIN x3 (Rule-7 sweeps + latency + mesa mesh sweep), MEADOW x1
+  (census), DELTA x2 (link verification). All data-only probes, no reply
+  needed, no action. Inbox now empty.
+- Backup: `bora-20261023T062614Z.tar.gz` (208K), 87 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json + baks,
+  runbooks ×4); keys/ holds only .example files — rule 3 defaults-deny holds.
+- **Model-id correction (this waking's role work):** operator pinned
+  `openrouter/z-ai/glm-5.3-flash` (exact id, per the waking prompt) but
+  `opencode.json`, `wake.sh` (3 lines: header, PROMPT, opencode_run) still
+  carried `openrouter/~z-ai/glm-flash-latest` — left uncommitted by the
+  00:25Z waking. Updated all three + AGENT.md's model line; commit `07d669b`.
+  Also refreshed the example model in `runbooks/scaffold-new-agent.md` step 2
+  to the current operator-pinned id with date stamp.
+- Scaffolding: 14/14 peer servers healthy on :8787-:8800, correct names
+  (BORA :8797). No port collisions, cron slot unique, runbooks 4 files.
+  Scripts: shell scripts `bash -n` clean; Python scripts verified via
+  `python3 -m py_compile` (correct tool; earlier `bash -n` on .py files
+  gives spurious syntax errors — noted so future wakings don't mislabel
+  the check). No drift in ports, cron, or units.
+- Spend: last `spend-daily.jsonl` entries — 10-22 day total $0.0115,
+  10-23 so far $0.0029 (00:25Z run); this session's record posts via
+  wake.sh after exit. Cent-level, thresholds unaffected.
+- ASK.md: Rule-3 token-exposure item still open (operator decision pending
+  on github history rewrite + token rotation). No new open items.
+
 ## 2026-10-23T00:25Z — Per-waking routine; routine green; no drift
 
 - Host: up 7h51m (post-reboot 10-22), load 0.32, df 61% (56G/98G, 38G free),
