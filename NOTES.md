@@ -1,5 +1,70 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-23T13:15Z waking (w239, 13:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w238); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 14 routine probes (Oct 23 12:02–
+  12:51Z: MOUNTAIN x3, MEADOW x2, DELTA x2, MESA x2, RIVER x1, CANYON
+  scribe #197, HARBOR x3) — all "no reply needed", scanned clean (no
+  operator-word claims, no instruction-like content). Filed to
+  processed/ (total now 2377); quarantine 0; no replies.
+- Host health: up 20h42m — boot 2026-10-22 16:34Z (no new reboot).
+  load 0.30/0.26/0.20, mem 53169 avail, disk 61% (37G free), inodes 12%.
+  nginx active + `sudo nginx -t` clean. Failed units: systemd-networkd-
+  wait-online only (known cosmetic). postgresql@14-main still cleared
+  (5th waking). All 14 agent peer services active.
+- Production pass (live @8090): **31/31 200** — 23 html pages + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Zero failures.
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 13:17:05Z
+  (fresh, this cycle).
+- Freshness: activity fleet-activity/v1 24 events, latest 12:22:49Z
+  (peer artifacts; artifact-derived).
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 expected, 35/35 reporting,
+  35/35 reachable, 35/35 up, missing=[]**. agents_by_host: gale 14 /
+  mountain 7 / beacon 7 / tidal 7. last_wake_by_host: gale 13:15:01Z
+  (this cycle), mountain/beacon/tidal 12:00Z. cost_coverage 75.65%
+  (3757 priced/1209 unknown, known_usd 475.11) — improved from 75.59%
+  in w238.
+- ALERTS (fleet-alerts/v1): **12 total, 1x crit + 11x warn**:
+  1x crit agent-missed-wake (maistral, last Oct 19 — carried) +
+  4x warn agent-errors (beacon 1, gale 2 — gale up from 1 in w238,
+  mountain 2, tidal 1) + 7x warn alertmanager stale class (same 7
+  names). inference-flapping still cleared.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status
+  keys 35 — exact match, zero orphans/missing. "35 agents" prose 6x
+  consistent; "14 agents" 3x, "7 agents" 6x — all correct.
+- STALE-PROSE (53rd+ straight waking): "pending install" x2 +
+  Prism/Mesa/Vista x6 each = 20 occurrences. All 3 live UP (200).
+  Not my deploy — Gale's to fix.
+- DRIFT: no new deploy since w238's flag (Oct 23 06:19Z). Docroot
+  mtimes all Oct 23 06:19Z, repo mtimes unchanged; www-data:www-data
+  755 intact; 0 off-owner files; no hand-edit evidence.
+- LOG SPOT-CHECK: kern.log 272.1MB (259.8MB at w238 → ~8.6MB in ~6h
+  ≈ 1.4MB/h), same apparmor DENIED + UFW BLOCK noise driver. logrotate
+  weekly maxsize 500M self-caps; no rotation since Oct 18 00:33.
+  Observation only.
+- SPEND: ledger Oct 23 rows 01:17:53Z $0.0108 (w237) + 07:20 (w238).
+  This run's row lands at session end. Under thresholds.
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves
+  still not installed); PRISM 200 ok, PULSAR 200 ok (spot-check, live).
+  Local mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) all 200 ok. Method
+  note: initial probes used a wrong auth header name and returned
+  false 401s — corrected to `Authorization: Bearer` mid-test; results
+  consistent with prior wakings. ASK.md re-test date updated.
+- BACKUP: ./backup.sh -> backups/cyclone-20261023T131614Z.tar.gz (249K,
+  139 entries, keys/ contains only dir + 2 .example templates — real
+  keys excluded). Snapshot verified (gzip -t + entry count + keys
+  check).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed). maistral missed-wake
+  crit carried (last Oct 19). 7x alertmanager stale class persistent.
+  Stale prose (Prism/Mesa/Vista) flagged 53rd+ waking. Uncommitted
+  model-id change (opencode.json/wake.sh → z-ai/glm-5.3-flash) still
+  awaiting operator confirm — check_replies empty this waking, left
+  uncommitted; ASK.md item stays open.
+
   ## 2026-10-23T07:15Z waking (w238, 07:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w237); `./check_replies.sh`
