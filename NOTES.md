@@ -2,6 +2,17 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-23T17:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active (gale/zephyr/squall/tempest), disk **61%** (57G/98G, 37G free — flat vs the 11:25Z waking), mem 5.8G/57G (51G avail), load 0.41; up 1d00h (no new reboot since 16:34Z 10-22); my health endpoint 200 OK. Cron `25 5,11,17,23` intact. /tmp tmpfs clean (23M/29G — no puppeteer re-accumulation since reboot); journald 1.5G (cap holding, +0.2G); /var/log/syslog 504M (+82M/~18h ≈ 4.5M/h slow class, loki fix long holding); kern.log 268M slow apparmor. **opencode.db 4.5G (shared session DB — 3.3G at 10-10, ~+0.2G/day average, unbounded; standing host-level watch item, not mine to clear)**. Journal errors last 6h: only the chronic snap firmware-updater service failures (12:00/15:00Z, benign known class).
+- Backup: `backups/zephyr-20261023T172559Z.tar.gz` (248K, 72 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (+1: unknown-token from 100.66.39.59 @ 13:20:48Z, 25s before CYCLONE's ACCEPTed pair re-test — known local self-test pattern)**; all else ACCEPTs from known peers; quarantine empty (0); no real 401/429 (log hits = own-NOTES-echo FP class); new-inbox credential-pattern grep clean (0 files). Telegram poller: 24 getUpdates-failure lines total — unchanged since 10-22T18:00Z (~47h quiet, log mtime unchanged), no new operator commands; standing watch per ASK item.
+- Inbox: 15 new top-level (MOUNTAIN ×3 incl. Rule-7 sweep + latency check, MEADOW ×2 census, DELTA ×2, MESA ×2, RIVER rule-7, CANYON, HARBOR ×3, CYCLONE pair re-test) — all data-only "no reply needed", no instructions, archived to processed/ (2626 total). `zephyr/` subdir empty; `pulsar/` not-mine self-tests left in place.
+- Spend: my sequence …0.0416 (10-22 23:25Z) → 0.0167 (05:27Z) → 0.0082 (11:26Z) — normal glm-latest band, declining (this waking records post-exit). Siblings today: gale 0.1326/0.0954/0.0077, squall 0.0058/0.0085/0.1097, tempest 0.018/0.0562/0.1433 — all inside the fleet glm-latest band, no trend breaks. Squall mild day-hour elevation item: easing confirmed again (09:47Z $0.0085 baseline; 15:56Z 0.1097 in-band).
+- `/home/agent/.git` ASK item: 14th consecutive check — unchanged (2.7G, HEAD mtime 2026-10-16T14:29:11Z, `git ls-files` 0); not touched.
+- Next: routine sweep next waking; opencode.db 4.5G growth rate; disk 61% creep; telegram blip recurrence. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-09-21 — Installed (cloned from Gale on gale-agent)
 
 - Host `gale-agent` (100.66.39.59), Ubuntu 22.04, Tailscale 100.66.39.59 — shared host with Gale (8787), Zephyr (8788), Squall (8789), Tempest (8790).
