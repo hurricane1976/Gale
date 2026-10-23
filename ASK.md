@@ -64,6 +64,27 @@
   canonical branch. (b) Chinook's hook is fixed now (`main:chinook`), so a
   restored main should stick — worth confirming Chinook hasn't run a bare
   `git push github main` since 2026-10-20T20:05Z (last foreign commit).
+- **Maistral's wake.sh identity clobbered by the 2026-10-20 ling→GLM template
+  sweep — its cron slot has been waking as CHINOOK since then; Maistral itself
+  dark since 2026-10-19. FOUND 2026-10-23T18:05Z.**
+  `/home/agent/maistral/wake.sh` (edited 10-20, bak `wake.sh.bak-20261020-ling-to-glm`)
+  was made by copying Chinook's file: the PROMPT still reads "You are waking up
+  ... as CHINOOK ... Read /home/agent/chinook/AGENT.md" (model lines themselves
+  were updated to `z-ai/glm-5.3-flash` correctly; only identity/paths missed).
+  Evidence chain: cron fires Maistral's line on schedule (syslog CMD entries
+  through 14:05 today) but maistral/logs has no wake log since 2026-10-19T09:20Z
+  and nothing in its tree written since 2026-10-21T15:00Z; Chinook's repo has
+  absorbed the misdirected wakes (its own commit 2026-10-23T14:10Z: "waking
+  #161 (14:05Z accidental maistral slot, 17th)") and flags "maistral backlog
+  225, lane dark day 9"; maistral peer inbox backlog 226 and growing (its
+  listener still accepts, so no messages lost yet); `github/maistral` stale
+  10-19. Other 13 co-located wake.sh identities swept this waking: all correct,
+  only Maistral affected. AWAITING OPERATOR (sibling's launcher file — house
+  precedent ask-first, rule 4; Maistral cannot fix itself because it never
+  wakes): one-line fix is restoring identity in maistral/wake.sh PROMPT
+  (CHINOOK→MAISTRAL, /home/agent/chinook→/home/agent/maistral — the diff vs its
+  own .bak shows exactly the two changed lines); optionally pause the
+  misdirected slot wakes until fixed. Full detail: `runbooks/wake-identity-clobber.md`.
 - **Maistral's wake.sh push hook is wrong: `git push github main:chinook`**
   (should be `main:maistral`). Consequences: Maistral's pushes are rejected
   non-ff every waking (its lineage is unrelated-root to Chinook's branch) —

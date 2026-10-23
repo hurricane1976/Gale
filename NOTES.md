@@ -3646,3 +3646,50 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   new hook path, confirmed working end to end.
 
 
+
+## 2026-10-23T18:00Z routine waking
+
+- Health: all services active (tailscaled, cron, nginx, gale-sysmon,
+  gale-fleet-api, gale-firewalla, gale-agora-bridge.timer, all 14 sibling
+  peer listeners 8787-8800); only the long-standing benign
+  networkd-wait-online failed unit. Disk 61% (37G free, flat), mem 51G
+  avail of 57G, load ~0.5 on 16 cores, no reboot pending.
+- `./backup.sh` -> `gale-20261023T180054Z.tar.gz` (42M, 709 entries),
+  `tar -tzf` verified readable, zero `keys/` entries; spot-extract of
+  AGENT.md + wake.sh byte-identical to live. PASS.
+- Spend: flat ~$0.10-0.13/run (10-22 12Z-21Z, 10-23 00Z), 06Z $0.0954,
+  12Z $0.0077; no error runs, no trend change.
+- `check_replies.sh`: no new operator messages. ASK.md open items
+  unchanged (remote-main restore, network.html scoped restore, Bora
+  telegram token) except Maistral, below.
+- Inbox: 39 msgs reviewed and moved to `processed/` — all routine
+  data-only "no reply needed" probes (Mountain sweeps/latency/mesa-relay +
+  dedupe-guard ack, Meadow census x6, Delta x6, Mesa x3, River x3, Canyon
+  x3, Harbor x10, Cyclone pair re-test). Includes the 00Z/06Z batches the
+  12:00Z entry SAID it filed but had NOT — `processed/` held zero of them
+  until this waking actually moved all 39. Noting the discrepancy: verify
+  filings happened, don't log intent as fact.
+- **MAISTRAL INCIDENT (found 18:05Z, reported, NOT fixed — sibling's
+  launcher file, house precedent ask-first, rule 4).** The 2026-10-20
+  ling→GLM edit of `/home/agent/maistral/wake.sh` was copied from
+  Chinook's file and the identity was never restored: PROMPT says "as
+  CHINOOK ... Read /home/agent/chinook/AGENT.md" (model lines updated
+  correctly; only identity/paths missed). Cron fires Maistral's slot on
+  schedule (syslog CMDs through 14:05 today) but every wake since 10-20
+  has run as Chinook in Chinook's dir — Chinook's own commit 14:10Z today
+  counts 17 "accidental maistral slot" wakes and flags "maistral backlog
+  225, lane dark day 9". Local read-only evidence agrees: no maistral
+  wake log since 2026-10-19T09:20Z, tree inert since 2026-10-21T15:00Z
+  (last telegram-poller line, DNS errors), peer inbox backlog 226 and
+  growing (listener healthy, nothing lost), `github/maistral` stale
+  10-19. Identity sweep of all 14 co-located wake.sh files: only Maistral
+  affected. One-line fix identified (its own .bak diff); awaiting
+  operator word in ASK.md — Maistral can't fix itself (never wakes).
+  Runbook: `runbooks/wake-identity-clobber.md`.
+- Offsite re-check: `github/main` unchanged at Chinook's tip `fa4d148`
+  (no re-clobber; restore decision still awaits operator); `github/gale`
+  matched local HEAD pre-waking (everything current offsite);
+  `github/chinook` advancing (14:10Z today); `github/maistral` stale
+  10-19, consistent with the incident.
+- Committed: NOTES.md, ASK.md, runbook (unrelated other-session churn
+  untouched per house pattern). Pushed `HEAD:gale`.
