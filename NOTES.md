@@ -9383,3 +9383,55 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   14-snapshot ceiling held.
 - Git: this entry committed below; opencode.json + wake.sh stay
   uncommitted pending operator word.
+
+## 2026-10-23T14:05Z — waking #161 (accidental maistral slot, 17th)
+
+- Fired 14:05:01Z via maistral's cron slot (`5 2,8,14,20`) — its
+  overwritten wake.sh still cd's into chinook, so the standing
+  accidental-firing pattern continues exactly on #160's prediction
+  (17th). My own cron slots remain 00:50/06:50/12:50/18:50; last
+  scheduled waking was #160 (12:50Z). Cost impact ~$0.01/run; this
+  waking's row records at session end.
+- **check_replies: "(no new messages)".** ASK.md open items unchanged —
+  (1) 10-22 16:33Z reboot + cron-skip confirm (a/b open; (c) closed
+  #159), (2) maistral overwrite disposition (day 9), (3) 10-20
+  model-ID batch + 10-23 00:46Z pin (one word covers both; opencode.json
+  + wake.sh stay uncommitted per precedent), (4) 10-15 opencode-v2
+  wake.sh fix commit word.
+- **Peer inbox: 3 archived → processed/ (2127→2130)** — HARBOR
+  link-verification x3 (12:51:34/47/47Z; 13s + same-second pair, the
+  standing burst pattern), all self-labeled "no reply needed", no acks
+  owed, no operator content. Inbox empty.
+- **Maistral (read-only):** backlog 222→**225** (+3 in ~1.3h ≈ 2.3/h —
+  small-window read, within the 1.6–1.9/h band noise; no rate-break
+  call from 3 messages). Its ledger: 0 runs today — lane still dark
+  day 9; peer_server 8795 still answers (masks the dead lane from
+  sweeps). Recovery sources unchanged (10-19 backups + github branch);
+  ASK.md item stands.
+- **Capacity snapshot 2026-10-23T14:08Z (waking #161):** host up 21h34m
+  (boot 10-22 16:34:17Z, kernel 7.0.0-38, stable), load 0.17/0.18/0.18
+  on 16 cores (series-low band), mem 5.7Gi/57Gi used (51Gi avail), swap
+  0. disk / 57G/98G (61%, 37G free) — flat vs #155–#160, **23rd
+  consecutive flat point**. Drivers unchanged: /var/log/journal 1.5G
+  (bounded), /home/agent 20G, /tmp/opencode transient.
+- **Peers: 14/14 /health → 200** on 100.66.39.59:8787–8800 (all lanes
+  up incl. tramontane/ostro/levante/poniente), sub-second.
+- **Cadence:** cron-grid healthy since 08:05 — journalctl shows every
+  one of the 14 lanes' wake.sh fired since 08:00 (13 agents ×1 +
+  maistral's 08:05/14:05 pair, the second being this accidental
+  chinook session). Zero skips.
+- **Spend (10-23 to 14:08Z, host-wide):** **$0.56 / 29 runs** —
+  agent(GALE) $0.2357/3 top lane, TEMPEST $0.0742/2, chinook $0.0575/5
+  (incl. the #160 session-end row), levante $0.0353/4; every lane
+  ≤$0.08/run. Pacing ~$1/day vs the ~$3–4/day band — post-pin
+  old-norm pricing holds. Per-run max $0.2357 ≪ $5 line; run count
+  cadence-consistent; **no rule-4 anomaly**.
+- **Forecast:** no threshold crossings projectable on any axis at the
+  current arc (disk 61% flat — ~2026-12-05 named date only if the
+  ~0.5 G/day arc resumes; load/mem series-low; spend ~$1/day host).
+  No sibling near any local limit → **no advisory this waking**.
+- **done this waking:** check_replies; inbox archived; host health
+  baseline; 14/14 sweep; cron-grid verification; maistral re-verified
+  read-only; backup `chinook-20261023T140904Z.tar.gz` (284K) tar
+  listing + AGENT.md read-back verified, 14-snapshot ceiling held;
+  NOTES entry + commit; notify.
