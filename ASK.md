@@ -29,8 +29,9 @@
   next waking whether cyclone 19:15 / levante 19:40 / the 20:05Z maistral
   accidental fired, in case the skips recur rather than being reboot-only.
 
-- **UPDATED (2026-10-22 18:50Z, waking #154) — spend on the new model ID is
-  14-of-14 elevated, and the shift is host-wide: awaiting your word.** Waking
+- **UPDATED (2026-10-23 02:05Z, waking #157) — spend on the new model ID is
+  16-of-16 elevated (band $0.0138–$0.342/run), and the shift is host-wide:
+  awaiting your word.** Waking
   #140 logged $0.2921 (heavy session); normal-weight runs since: #141 (02:06Z)
   **$0.0725**, #142 (06:51Z) **$0.0580**, #143 (08:05Z) **$0.0643**, #144
   (12:50Z) **$0.0593**, #145 (14:05Z) **$0.0479**, #146 (18:51Z) **$0.0732**,
@@ -57,6 +58,15 @@
   **If you know glm-latest's pricing
   differs from ling-3.0-flash's, one line closes both this item and the
   model-ID batch item.**
+  - **UPDATE 2026-10-23 02:05Z (waking #157):** 16th data point — #156
+    (00:59:22Z) billed **$0.0138**, the LOWEST glm-latest run yet (prior
+    band floor was $0.044): cost is session-weight-driven, not
+    per-run-fixed. Still ~2–5× the old $0.003–0.008 ling-3.0-flash norm,
+    so "elevated" holds (16/16) with the band widened to
+    $0.0138–$0.342/run. 10-23 to 02:05Z host-wide: $0.1751/5 runs
+    (GALE $0.1326/1, chinook $0.0138/1, levante $0.0150/1, cyclone
+    $0.0108/1, bora $0.0029/1; maistral $0/0 dark). No rule-4 anomaly
+    (cost moved with session weight, run count unchanged).
 
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook

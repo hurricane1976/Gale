@@ -9074,3 +9074,89 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   verified, AGENT.md read-back clean, 14-snapshot ceiling held.
 - Git: this entry committed below; migration files (opencode.json/
   wake.sh) stay uncommitted pending operator confirmation.
+
+## 2026-10-23T02:05Z — waking #157 (ACCIDENTAL — maistral's 02:05Z cron, 15th, exactly as predicted)
+
+### headline: 15th accidental run as predicted; glm-latest 16/16 but #156 billed $0.0138 — lowest yet (cost is weight-driven); maistral backlog steady at 203 real (count-method artifact resolved); quiet window
+
+- **This waking fired at 02:05:00Z = maistral's `5 2,8,14,20` slot** — an
+  accidental CHINOOK run via the overwritten crontab, exactly as #156
+  predicted ("Next accidental: 02:05Z (15th)"). Verified by process tree:
+  parent `/home/agent/maistral/wake.sh` (bash PID 589915, started
+  02:05:00Z). Full routine run per the #129–#156 accidental-slot
+  precedent. My next scheduled slot: 06:50Z; next accidental predicted:
+  08:05Z (16th).
+- **check_replies: (no new messages).** All four ASK.md open items
+  unchanged — (1) 16:33Z reboot + cron-skip confirm (asked 10-22 18:50Z),
+  (2) maistral overwrite disposition (overwrite applied ~10-19, asked
+  10-21 00:50Z), (3) 10-20 glm-latest fleet batch, (4) glm-latest pricing
+  (one operator line covers 3+4).
+- **Peer inbox: 0 new** (window 00:47→02:05Z silent). processed/ holds
+  2107 .json files — #156's "2108" included a non-json entry; bookkeeping
+  only. No acks owed, no operator content.
+- **Maistral (read-only):** unchanged — AGENT.md header "# AGENT.md —
+  Chinook", wake.sh `cd /home/agent/chinook`, cron `5 2,8,14,20`,
+  peer_server:8795 still 200 (masks the dark lane). **Backlog recount:
+  203 .json files** — #156's "207" came from an `ls | wc -l` that
+  included 4 inbox subdirectory entries (chinook/maistral/processed/
+  pulsar scaffold artifacts); real backlog unchanged this window (newest
+  arrival 00:47Z predates #156's 00:52Z count). Counting method
+  corrected to `*.json` from here. Recovery sources unchanged (its 10-19
+  backups + github branch); ASK.md item stands. No advisories re-sent —
+  #140's stand.
+- **Spend — 16th glm-latest data point, range correction:** waking #156
+  (00:59:22Z) billed **$0.0138** — the LOWEST glm-latest run yet (prior
+  band floor $0.044). Still ~2–5× the old ling-3.0-flash $0.003–0.008
+  norm → "elevated" holds (16/16) but the band widens to
+  **$0.0138–$0.342/run**: cost is session-weight-driven, not
+  per-run-fixed. 10-23 to 02:05Z host-wide ≈ **$0.1751 over 5 runs**
+  (GALE/agent $0.1326/1, chinook $0.0138/1, levante $0.0150/1, cyclone
+  $0.0108/1, bora $0.0029/1; maistral $0/0 dark). Trivially pacing the
+  ~$4/day band; no alert line in sight ($15/day). No rule-4 anomaly
+  (cost moved with session weight, run count unchanged). ASK.md spend
+  item updated to 16/16 with the corrected band.
+
+### capacity snapshot 2026-10-23T02:05Z (waking #157)
+
+- host gale-agent: up 9h31m (boot 10-22 16:34:20Z, kernel 7.0.0-38,
+  stable), load 0.10/0.19/0.18 on 16 cores (series-low band), mem
+  5.5Gi/58Gi used (52Gi avail), swap 0, disk / 57G/98G (61%, 37G free) —
+  flat vs #156, 20th consecutive flat day. /var/log/journal 1.4G
+  (rotation holding well below the old ~4G steady-state), /tmp/opencode
+  760K (transient), /home/agent 20G (unchanged watch item).
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800, 0.34–0.52 ms —
+  all legs green.
+- cadence: 00:50 scheduled on time (#156); this 02:05Z accidental on
+  maistral's grid as predicted. Effective 8x/day continues while
+  maistral's corrupted cron stands.
+
+### forecast / thresholds
+
+- **Disk:** 57G flat 20th day (56–57G band); 80% line ~78G ≈ 21G away ≈
+  **~2026-12-05 at ~0.5 G/day** — named date unchanged from #135–#156.
+  No action.
+- **Spend:** glm-latest elevated band widens to $0.0138–$0.342/run
+  (weight-driven); host pacing ~$4/day — no alert line in sight
+  ($15/day).
+- **Load/Mem/Swap:** series-low, flat. No crossing projectable.
+- **Fleet capacity item (top, unchanged):** maistral lane dark since
+  10-19 08:05Z, backlog 203 real (recount) and arrival rate steady —
+  restoration is the operator's; advisories already sent (#140). No
+  further advisory noise.
+- **No sibling near any local limit → no advisory this waking.**
+
+### done this waking
+
+- check_replies: none. Peer inbox: 0 new (nothing to archive).
+- Maistral re-verified read-only (unchanged; backlog 203 real — #156's
+  207 count-method artifact resolved); next accidental predicted 08:05Z
+  (16th).
+- 16th spend data point recorded (#156 $0.0138, lowest yet); 10-23 early
+  tally $0.1751/5 runs; ASK.md spend item updated to 16/16 with the
+  range correction.
+- Host health baseline recorded; 14/14 peer sweep; backup
+  `backups/chinook-20261023T020543Z.tar.gz` (280K, 74 entries)
+  gzip-verified, AGENT.md/NOTES.md read-back clean, 14-snapshot ceiling
+  held.
+- Git: NOTES + ASK.md committed below; migration files (opencode.json/
+  wake.sh) stay uncommitted pending operator confirmation.
