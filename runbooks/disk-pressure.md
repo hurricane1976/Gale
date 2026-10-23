@@ -3,22 +3,51 @@
 ## What this drill is
 
 Simulate disk filling on `/` (the only volume that matters here: root fs
-holds `/tmp`, `peer/inbox/`, `logs/`, `backups/`) with a large but safe temp
-file, observe how the host degrades, then clean up and confirm full
+holds `peer/inbox/`, `logs/`, `backups/`) with a large but safe temp file,
+observe how the host degrades, then clean up and confirm full
 recovery. Self-cleaning, reversible, touches nothing but our own file in
-`/tmp`.
+`/var/tmp`.
 
-## Procedure (tested 2026-09-22T12:54Z)
+## PREMISE CHANGE — /tmp is tmpfs (2026-10-23T15:45Z)
+
+`/tmp` is now **tmpfs (RAM-backed, ~29G capacity = 50% of the 57G RAM)** —
+`df -T /tmp` → `tmpfs`, `systemctl is-active tmp.mount` → active. The root
+fs no longer holds `/tmp`. Consequences:
+
+1. The old `/tmp`-based drill silently stopped testing the real fault
+   class: a 5.2G `/tmp` fill leaves `df /` avail unchanged (37G→37G,
+   observed this waking) because the bytes go to RAM. It pressures *RAM*
+   instead — on a 57G host that is survivable but it is not disk pressure.
+2. The corrected procedure writes the sim file to `/var/tmp` (ext4, root
+   fs). Re-run PASS 2026-10-23T15:47Z: avail 37G → 32G during → 37G after
+   cleanup, self-cleaning confirmed, inodes untouched.
+3. Post-reboot `/tmp` wipes are structural (tmpfs does not survive boot),
+   consistent with every post-reboot check finding /tmp at zero.
+4. Historical /tmp disk-creep classes (puppeteer profiles, `.so` cache)
+   now consume RAM, not disk — their disk-creep watch closes; the reboot
+   wipes them.
+5. Switch window: Sep-27 drill still showed /tmp fills changing root avail
+   (on-disk); boot -1 (Oct-18 15:25 → Oct-22 16:33) had tmp.mount active.
+   Host runs Ubuntu 26.04.1 (first time recorded — the OS upgrade landed
+   with the Oct-11 kernel jump 6.8.0-146 → 7.0.0-38), and tmpfs-/tmp is
+   its default. Exact switch date is somewhere Oct-11 → Oct-18; journal
+   is vacuumed before Oct-18 so it cannot be pinned further.
+
+## Procedure (tested 2026-10-23T15:47Z — /var/tmp after the tmpfs switch)
 
 ```
+df -T /tmp /var/tmp | tail -2            # confirm /tmp is tmpfs, /var/tmp ext4
 df -h / | tail -1                        # baseline
-dd if=/dev/zero of=/tmp/squall-diskpressure-sim \
-   bs=1M count=5120 status=none          # 5G = ~6% of 98G vol
-df -h / | tail -1                        # under pressure
+dd if=/dev/zero of=/var/tmp/squall-diskpressure-sim \
+   bs=1M count=5120 status=none          # 5G = ~5% of 98G vol
+df -h / | tail -1                        # under pressure (must drop ~5G)
 df -i / | tail -1                        # inodes unaffected
-rm -f /tmp/squall-diskpressure-sim       # always clean up
+rm -f /var/tmp/squall-diskpressure-sim   # always clean up
 df -h / | tail -1                        # must match baseline
 ```
+
+DO NOT use `/tmp` for this drill anymore — it is tmpfs and the fill goes to
+RAM, not disk. `/var/tmp` is on the root fs (ext4).
 
 ## What should have alerted
 
@@ -33,6 +62,13 @@ and the operator looking at the host directly. A real fill would surface as:
 
 ## What actually did (observed)
 
+- 2026-10-23T15:47Z (re-test, third data point, PREMISE CHANGE): first
+  attempt wrote 5.2G to `/tmp` — `df /` avail UNCHANGED (37G→37G): /tmp is
+  now tmpfs, the fill went to RAM and the drill was a silent no-op for
+  disk pressure. Corrected to `/var/tmp`: 5G fill → avail 37G → 32G during
+  → 37G after `rm` (exact baseline restored), inodes untouched, no
+  residue. Same ~6h blind-spot lesson; the drill itself was the finding
+  this waking.
 - 2026-09-29T00:42Z (re-test, second data point, post-reboot host):
   5G sim file → `/` went 45% → 50% used (52G → 47G avail). Inodes untouched
   (477K/6.5M). `rm` restored the exact baseline (45%, 52G avail). Same
