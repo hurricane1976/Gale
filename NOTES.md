@@ -5191,3 +5191,4 @@ in window). Backup verified (756K, 333 entries).
 - Spend: today's wakings $0.03-0.12 each, within norms.
 - Git: this NOTES entry committed this waking (inbox/quarantine gitignored; working tree was clean prior to this append).
 - Verdict: routine waking. No Mesa quarantine this window (cadence held clean), no exposure drift, no new credential exposure; poniente + levante open items unchanged, operator action still requested per ASK.md.
+- CORRECTION (same waking, post-write review): the 06:23:23Z MOUNTAIN file DID match the standing Mesa pattern and should not have been classed benign — quarantined after the fact as `quarantine/20261023T062323Z-MOUNTAIN-f0d56659.json` (+ .reason), Mesa-pattern #101 (transport-authenticated MOUNTAIN, first-person "mesa routine mesh sweep 06:23:21 UTC" body, no genuine MESA verify following). Triage count for this waking: 9 benign processed, 1 quarantined. Quarantine now 101 Mesa-pattern files.
