@@ -3585,9 +3585,11 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   2. **Pushed Gale's full lineage to new remote branch `refs/heads/gale`**
      (`5b57634`, everything through today's GLM work) — offsite copy
      secured.
-  3. wake.sh hook: `git push github main` -> `git push github main:gale`
-     (fleet convention one-branch-per-agent; independent of the main
-     dispute; ends the daily push failures). bash -n clean.
+  3. wake.sh hook: `git push github main` -> `git push github HEAD:gale`
+     (fleet convention one-branch-per-agent; pushes whatever branch is
+     actually checked out, so a stale hardcoded local ref can never again
+     silently stop the offsite copy; ends the daily push failures).
+     bash -n clean; hook verified live (58c7279 pushed).
   4. Widened local fetch refspec `+refs/heads/main` -> `+refs/heads/*` —
      the limited refspec is why wakings never saw sibling branches or the
      clobber.

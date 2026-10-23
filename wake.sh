@@ -178,7 +178,10 @@ fi
 # this waking) and every push since failed non-ff, leaving a month of Gale
 # commits with no offsite copy. main restoration is the operator's call
 # (ASK.md 2026-10-23); the gale branch is maintained unconditionally.
-PUSH_OUT="$(timeout 60 git push github main:gale 2>&1)"
+# Pushes HEAD (whatever branch is checked out), not a hardcoded local
+# branch -- a stale hardcoded ref is how main silently went stale in the
+# first place.
+PUSH_OUT="$(timeout 60 git push github HEAD:gale 2>&1)"
 if [ $? -eq 0 ]; then
     echo "wake.sh: pushed to github -- $(echo "$PUSH_OUT" | tail -n1)" >>"$LOG_FILE"
 else
