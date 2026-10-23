@@ -1,5 +1,105 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-10-23T21:20Z — Scheduled waking (all upstream green; LAN Ollama service still down — 8th waking; FreeToken gateway RESTARTED AGAIN ~16:40Z — 2nd bounce today; Ollama v0.40.10 released; beacon cert 31d still un-renewed; no new out-of-band changes)
+
+Context: 21:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 21:20:10Z, on schedule. Runs `openrouter/z-ai/glm-5.3-flash` (pinned
+id — ASK.md NEEDS OPERATOR CONFIRM item still open, no quotable Telegram
+word); waking succeeding = OpenRouter path healthy end-to-end.
+`check_replies.sh`: no new operator messages.
+
+Host: up 1d 4:45 (boot 2026-10-22 ~16:34Z — no reboot since), load
+0.27/0.18/0.17 (light), disk 61% (57G/98G, 37G free — flat vs 61% across
+10-22/10-23 wakings), RAM 51Gi available of 57Gi, swap idle.
+`sirocco-peer` + `tailscaled` + ssh active; tailnet listeners 8790-8800
+visible (my :8796 up) + localhost :8791/:8793/:8794/:8795. Cron re-audit:
+live crontab `20 3,9,15,21 /home/agent/sirocco/wake.sh` == repo
+sirocco.cron — lock-step holds. Working tree clean at start (15:20Z waking
+committed everything).
+
+`./backup.sh` -> `backups/sirocco-20261023T212015Z.tar.gz` (216K, 126
+entries, gzip -t OK, tar -tzf read-back verified; AGENT.md/NOTES.md/ASK.md/
+wake.sh/opencode.json + .bak config preserves present).
+
+Config state: UNCHANGED since 15:20Z — AGENT.md mtime still 2026-10-22
+02:00:04Z, opencode.json + wake.sh still 2026-10-23 00:46:56Z (the flagged
+model-id pin), sirocco.cron 2026-10-21 15:22Z. `keys/peers.env` mtime still
+2026-09-26 01:19:56Z. No new out-of-band changes this waking.
+
+Pairing state: UNCHANGED — `keys/peers.env` 34 NAME blocks by `^NAME=`,
+same set and order (GALE + 8 mesh + CHINOOK/TRAMONTANE + OSTRO/LEVANTE/
+PONIENTE + 21 remote BEACON..VISTA). Nothing minted or installed.
+
+Inbox: 11 new (18:00–18:51Z), all filed to `processed/` (now 2093 total):
+3x MOUNTAIN (rule-7 sweep + automated latency check + 1 body self-labeled
+"mesa routine mesh sweep" 18:22:31Z — the known MOUNTAIN-vs-MESA label
+quirk, stable pattern) + 1x genuine MESA link-verify 18:22:33Z + 2x MEADOW
+census + 2x DELTA link-verify + 1x RIVER rule-7 sweep + 1x CANYON scribe
+pass #198 + 1x HARBOR link-verify. All explicit "no reply needed, data
+only". No replies sent, nothing minted or installed.
+
+Dependencies (all green except the runner, live probes ~21:21Z):
+- OpenRouter: /api/v1/models 200 in 0.06s (primary model path; this waking
+  executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.19s (secondary/informational).
+- GitHub: api.github.com/zen 200 in 0.05s; githubstatus API "All Systems
+  Operational" (indicator none, updated 20:34Z).
+- Tailscale: status.tailscale.com 200 in 0.88s; daemon active; 14-node
+  set — 6x beacon (highbeam/lantern/lightning/prism/pulsar/radar) ALL
+  active direct, gemini/mountain/ubuntu agents active direct, ipad174 +
+  josh-iphone18 + josh-linux + josh-linux2 not active (operator personal
+  devices, no fleet lane depends on them). No fleet disconnects.
+- **FINDING — LAN Ollama runner (192.168.1.197:11434) STILL DOWN** (curl
+  /api/version exit 7, connection refused) while the host is pingable
+  (0% loss, 0.50ms avg). Same service-level diagnosis: service not
+  listening on an otherwise-up host — **8th consecutive waking** with it
+  down (10-20, 10-21, 10-22 x3, 10-23 03:20Z/09:20Z/15:20Z, now). Shim
+  127.0.0.1:11435 up but 502 upstream-refused (consistent). Not my model
+  path (glm-5.3-flash via OpenRouter); Gale/operator's lane — flagged
+  again, not actioned (rule 7).
+- **CHANGE — FreeToken gateway :1919 on the same box RESTARTED AGAIN
+  ~16:40:33Z.** /health ok (serving Qwen3.8-35B-A3B-Distill-NVFP4, version
+  0.1.3+g9c635a157, `maintenance: serving`) but `uptime_s` 16791 (~4.66h)
+  at the 21:20Z probe vs 1828s (~30.5m) at the 15:20Z probe — implied
+  start ~16:40:33Z, i.e. a SECOND bounce today, ~1h50m after the ~14:51Z
+  restart. Same version and model on both sides; clean recovery. Two
+  restarts in one day is a new pattern — if it keeps cycling, that reads
+  as a crash loop on the box and goes to Gale/operator (rule 7). Neither
+  restart has restored Ollama :11434 (still refused). New
+  `runbooks/freetoken-gateway.md` written this waking documenting the
+  probes, uptime_s continuity signal, and this history.
+- Release watch — **CHANGE: Ollama v0.40.10 is now the latest stable**
+  (published 2026-10-23T15:03:59Z, first release since v0.40.9
+  2026-10-22; headline: NVIDIA Nemotron 3.5 Bolt E4B — Gemma 4-based
+  vision-language model, 128K ctx, DFlash speculative decoding).
+  Informational only: no local install on this host; LAN runner version
+  unknown while the service is down; any bump is operator/Gale's call.
+  opencode upstream latest still v1.19.4 (2026-10-22T13:03Z), local
+  binary still v2.1.3. Nothing here to act on.
+
+Cert expiries (fresh probes, no new renewals): beaconwake.com notAfter
+2026-11-23 21:26:58Z (**31d — PAST the 30d threshold, 8th consecutive
+waking flagged; renewal still not visible**), tidalwake.org 2026-11-28
+21:23:14Z (36d), mountainwake.org 2026-12-04 18:45:53Z (42d). All Let's
+Encrypt; HTTPS beaconwake 301 (expected), tidal/mountain 200.
+beaconwake.com remains the one needing operator/Gale action.
+
+Spend: 2026-10-23 so far $0.0433 (03:21Z $0.0067 + 09:21Z $0.0056 +
+15:21Z $0.0310; no alert threshold crossed — thresholds $5/run, $15/day).
+This waking's own entry appends at run end via wake.sh's envelope pass to
+spend_check.py.
+
+- Verdict: upstream all green; only active failure remains the LAN Ollama
+  service (Gale's lane, now 8 wakings); the FreeToken gateway on the same
+  box bounced a second time today (~16:40Z) and still did not restore
+  Ollama — pattern to watch; Ollama v0.40.10 released (informational);
+  beaconwake.com cert 31d and still un-renewed; no new out-of-band config
+  changes; nothing actionable from inbox. Steady state.
+- Next: watch for operator word on the model-id pin (and the stacked flip
+  confirm items); watch beaconwake.com renewal (31d); watch LAN Ollama
+  :11434 recovery and whether the gateway keeps cycling (3rd bounce?);
+  watch Ollama v0.40.10 / opencode v1.19.4 uptake.
+
 ## 2026-10-23T15:20Z — Scheduled waking (all upstream green; LAN Ollama service still down — 7th waking; FreeToken gateway restarted ~14:51Z; beacon cert 31d still un-renewed; no new out-of-band changes)
 
 Context: 15:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
