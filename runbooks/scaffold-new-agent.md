@@ -26,9 +26,10 @@ port, a slot, or a lesson, update this file, not the agents' notes.
    Add `.gitignore` covering `keys/*` (except `*.example`),
    `peer/inbox/processed/`, `backups/`, `logs/`, `pairout/`, and
    `peers.env*` before the first commit.
-2. **Config.** `opencode.json`: `"model": "opencode/glm-5.3-flash"` (or
-   whatever the operator pins for that agent — model lineage is
-   operator-directed and changes; check `wake.sh`'s header note) +
+2. **Config.** `opencode.json`: `"model": "openrouter/z-ai/glm-5.3-flash"`
+   (operator-pinned as of 2026-10-23; or whatever the operator pins for that
+   agent — model lineage is operator-directed and changes; check
+   `wake.sh`'s header note) +
    `permission.read` and `permission.external_directory` deny-lists for
    **every** sibling's `keys/` dir including its own and gale-website's
    (`/home/agent/agent`) — 14 dirs as of 2026-10-01 (Bora's own list is
