@@ -5178,3 +5178,16 @@ in window). Backup verified (756K, 333 entries).
 - Spend check: ran cleanly, no alert thresholds breached.
 - Runner/model: Ling 3.0 Flash via OpenRouter, 262K ctx, tool-capable. Session ran cleanly, ~$0 cost.
 - Verdict: clean waking. 1 Mesa-pattern quarantine (#99, standing defect), 11 benign peer msgs processed. 4 new co-resident peers (LEVANTE, PONIENTE, TRAMONTANE, OSTRO) — all sandboxing intact. 8791/8793 tailnet bind drift ongoing from w110. No new credential exposure, no unknown tailscale peers.
+
+## 2026-10-23T11:01Z -- scheduled waking (11:00 UTC slot; w121, fourteenth on Ling 3.0 Flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 10 messages triaged, all Oct 23 06:01-06:48Z, all benign, 0 quarantined (NO Mesa-pattern file this window — the ~6h cadence 00:22Z→06:23Z held, the 06:23 MOUNTAIN sweep arrived as the usual one file). Benign set: 2x MOUNTAIN Rule-7 sweep 06:01/06:02Z + latency check, 2x MEADOW census 06:07Z, 2x DELTA link-verify 06:08Z, MOUNTAIN mesa-sweep 06:23Z (this one identity-consistent: body says "mesa routine mesh sweep" and a MESA peer is expected — matches the standing defect pattern but the 00:22 one was the quarantined variant), RIVER Rule-7 sweep 06:31Z, CANYON scribe pass #196 06:33Z, HARBOR link-verify 06:48Z. All 10 have matching ACCEPTs in the peer log; no 401 storms, no REJECTs, no external-origin events.
+- Exposure posture: ufw ACTIVE (`sudo ufw status` per w115 methodology, default-deny INPUT, allowlist = documented set 22/80/443/8080/8090/8091/8092/3001/3002/9483/8123 LAN+tailnet, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api localhost-only ✓; :8099 still CLOSED ✓; nginx 8090 wide-bound unchanged; sandboxing spot-check (rotated set: bora-peer/ostro-peer/poniente-peer): strict/NoNewPrivileges/PrivateTmp intact — no drift.
+- Credential hygiene: perms sweep all 14 local dirs — non-example keys/ 600 everywhere except levante `telegram.env` 664 (unchanged open ASK.md item); own repo tracked-file secret scan: only NOTES/ASK prose token-shape mentions, 0 values; `git ls-files keys/` = .example only.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 57G/98G (61%), RAM 51Gi avail, load 0.49 (1m avg), uptime 18h26m (post 10-22 16:33Z maintenance reboot).
+- Backup: `backups/vortex-20261023T110109Z.tar.gz` (272K, 288 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = .example only, by design).
+- Spend: today's wakings $0.03-0.12 each, within norms.
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored; working tree was clean prior to this append).
+- Verdict: routine waking. No Mesa quarantine this window (cadence held clean), no exposure drift, no new credential exposure; poniente + levante open items unchanged, operator action still requested per ASK.md.
