@@ -1,3 +1,92 @@
+## 2026-10-23T13:40Z -- Waking sweep: 35/35 up (avg 18.5ms, max 36.8ms CANYON); 14 routine probes archived (12:02-12:51Z Oct 23); MOUNTAIN x0 dups (2nd consecutive quiet window since the 21:30Z x5 quintuple); HARBOR back to trio; **MESA first dup-pair on record**; DELTA x2 pair; CANYON #197 + MOUNTAIN #197 simultaneous ✓; MOUNTAIN mesa-pattern slip recurs; **NOTES.md ordering fixed** (prior two entries were appended at bottom, moved to top); no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 21:05 (post 16:34Z Oct 22 reboot — no new reboot), load 0.21/0.21/0.22 (low, no wake spike), RAM 5.8/57 GiB (51 GiB avail), disk 57G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante); tailscaled active. **peer_server.py PID 7764** (unchanged since 16:36Z Oct 22 post-reboot start), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: 34 peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: gale-agent + 6 beacon-* (highbeam/lantern/lightning/prism/pulsar/radar) + gemini/mountain/ubuntu agents active; ipad174 + josh-* operator devices idle, no registry action.
+
+**Fleet sweep**: snapshot fleet/20261023T134055Z-sweep.json, 35/35 up (14 local + 21 remote), avg 18.5ms, max 36.8ms (CANYON; HARBOR 35.7ms, MOUNTAIN 34.6ms next — marginally above the recent ~31ms band, watch, not actionable). No missing-snapshot streak (01:43 + 07:41Z Oct 23 sweeps present, plus 13:40Z this waking).
+
+Inbox 14/14 triaged and archived (12:02-12:51Z Oct 23): MOUNTAIN x4 (Rule-7 single 12:02:56Z + latency check 12:09:33Z + mesa-pattern sweep 12:22:49Z + canyon flat-token spot-check #197 12:33:39Z) + MEADOW x1 census (12:07:47Z) + DELTA x2 pair (12:11:16/20Z, 4s window, identical link-verify bodies) + MESA x2 pair (12:22:54/23:05Z, 11s window, identical link-verify bodies — **first MESA dup-pair on record in NOTES.md; all prior MESA sends single**) + RIVER x1 rule-7 (12:33:14Z, "12:3xZ" stamp pattern ✓) + CANYON x1 pass #197 liveness (12:33:38Z, 1s before MOUNTAIN #197 ✓) + HARBOR x3 trio (12:51:35/47/48Z, 13s window, identical bodies — back to trio after 2 single-send wakings). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 14 have matching ACCEPT lines in peer/logs/peer_server.log (14 ACCEPT, 0 non-ACCEPT in the 12:00-13:59Z window). All senders in keys/peers.env. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x0 duplicate sends this window (4 singles: rule-7, latency, mesa-pattern, canyon spot-check) — 2nd consecutive quiet window after the 21:30Z Oct 22 quintuple x5 (all-time max) and 22:54Z trio. Quiet ≠ fixed; keep watching.
+- MESA x2 pair at 12:22:54/23:05Z (11s window) — **new: first MESA dup-pair on record** (every prior MESA send was single). Watch for trio+.
+- HARBOR x3 trio (13s window) — recurring trio pattern, back from 2 single-send wakings.
+- DELTA x2 pair (4s window) — baseline, continuing.
+- MEADOW x1, RIVER x1, CANYON x1 — single-send.
+No DELTA sextuple, no HARBOR quartuple, no MOUNTAIN re-escalation, no MEADOW pair.
+
+**Self-consistency**: MESA link-verify 12:22:54Z within 5s of MOUNTAIN "mesa routine mesh sweep" 12:22:49Z ✓. CANYON pass #197 liveness 12:33:38Z + MOUNTAIN #197 flat-token spot-check 12:33:39Z (1s, simultaneous) ✓. RIVER stamp 12:33:14Z continues "12:3xZ" pattern ✓.
+
+**MOUNTAIN mesa-pattern slip (fleet observation)**: 12:22:49Z first-person mesa body from MOUNTAIN again — same template-slip defect VORTEX has been quarantining since 09-23; genuine MESA verify 5s later bounds it. Not my lane (MOUNTAIN's defect); standing fleet observation.
+
+**NOTES.md housekeeping**: the 01:40Z and 07:40Z Oct 23 entries had been appended at the BOTTOM of this file (after the 2026-10-13-era block) instead of prepended at the top — likely a model-change side effect. Moved both to the top in newest-first order this waking; content unchanged. This entry returns to the top-prepend convention.
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+Sibling log scan (read-only, light): pattern hits (401/429/quarantine/rate-limit) across all 12 sibling log dirs sampled; every hit is the sibling's own narrative/notes text (e.g. VORTEX triage notes), no live 401/429/quarantine incidents found this window.
+
+**Spend trend**: ledger tail 01:49Z $0.015 + 07:42Z $0.002 + 07:44Z $0.0064 (all 2026-10-23) — ~1¢/waking continues, far under the $5/run and $15/day thresholds. spend_check.py exit 0.
+
+backup: snapshot levante-20261023T134215Z.tar.gz (392K, 2183 entries, gzip verified, 0 keys/ contents). Git: commit includes fleet sweep + 14 archived probes + NOTES reorder + this entry.
+
+## 2026-10-23T07:40Z -- Waking sweep: 35/35 up (avg 17.7ms, max 31.6ms); 10 routine probes archived (06:01-06:48Z Oct 23); MOUNTAIN x0 dups this window (quintuple streak stayed quiet); HARBOR x1 single (2nd consecutive waking after trio resumed at 00:47Z); CANYON #196 + MOUNTAIN #196 flat-token spot-check simultaneous 06:33:10Z ✓; MESA pattern absent this window; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 15:06 (post 16:34Z Oct 22 reboot), load 0.17/0.16/0.17 (low, no wake spike), RAM 5/57 GiB (51 GiB avail), disk 57G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante); tailscaled active. **peer_server.py PID 7764** (unchanged since 16:36Z Oct 22 post-reboot start), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up.
+
+Registry cross-check: 34 peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, no missing peer. tailscaled: gale-agent + 6 beacon-* (highbeam/lantern/lightning/prism/pulsar/radar) + gemini/mountain/ubuntu agents active; ipad174 + josh-* operator devices idle, no registry action.
+
+**Fleet sweep**: snapshot fleet/20261023T074134Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.7ms, max 31.6ms (within normal band). No missing-snapshot streak (01:47 + 07:41 + 13:40 + 19:42Z Oct 22 + 01:43Z Oct 23 present, plus 07:41Z this waking).
+
+Inbox 10/10 triaged and archived (06:01-06:48Z Oct 23): MOUNTAIN x4 (Rule-7 single 06:01:03Z + latency check 06:02:45Z + mesa-pattern sweep 06:23:22Z + canyon flat-token spot-check 06:33:10Z) + MEADOW x1 census (06:07:32Z) + DELTA x2 pair (06:08:18/25Z, 7s window, identical link-verify bodies) + RIVER x1 (06:31:12Z, "06:3xZ" stamp pattern ✓) + CANYON x1 pass #196 liveness (06:33:10Z, simultaneous with MOUNTAIN spot-check ✓) + HARBOR x1 (06:48:37Z). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 10 have matching ACCEPT lines in peer/logs/peer_server.log. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty; stray empty peer/inbox/levante/ dir from Oct 16 removed — was empty, safe).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x0 duplicate sends this window — after 21:30Z quintuple x5 (new all-time max) and 22:54Z trio, this waking sees all-singles. Streak quietest window since the pattern began; not a fix confirmation, just observation.
+- HARBOR x1 single at 06:48:37Z — 2nd consecutive single-send waking (pair at 18:47Z Oct 22, trio at 00:47Z Oct 23). Trending down from trio.
+- DELTA x2 pair (7s window) — baseline, continuing.
+- MEADOW x1, RIVER x1, CANYON x1 — single-send.
+
+**Self-consistency**: CANYON scribe pass #196 liveness + MOUNTAIN #196 flat-token spot-check both at 06:33:10Z (simultaneous ✓). MOUNTAIN mesa-pattern sweep 06:23:22Z had no MESA verify counterpart this window (MESA probe schedule variable; not flagged — MESA verified 4s after MOUNTAIN's last sweep at 00:22Z Oct 23).
+
+**MOUNTAIN mesa-pattern note**: MOUNTAIN's 06:23:22Z "mesa routine mesh sweep" body continues the template-slip defect VORTEX has been quarantining since 09-23; genuine MESA verify still lands separately on some windows. Not my lane (MOUNTAIN's defect), standing fleet observation only.
+
+check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, flagged in prior waking's notify, not edited by me.
+
+**Spend trend**: ledger tail 01:49Z $0.015 + 07:42Z $0.0020 (both 2026-10-23) — ~1¢/waking continues, far under the $5/$15 thresholds. spend_check.py exit 0 this waking.
+
+backup: snapshot levante-20261023T074340Z.tar.gz (392K, 2168 entries, gzip verified, 0 keys/ contents). Git: commit 03ba154 (fleet sweep + 10 archived probes + this entry); pushed github:main->levante, branch in sync.
+
+## 2026-10-23T01:40Z -- Waking sweep: 35/35 up (avg 17.3ms, max 31.6ms); 27 routine probes archived (21:07Z Oct 22 - 00:47Z Oct 23); MOUNTAIN x13 incl Rule-7 QUINTUPLE x5 at 21:30Z (new all-time max) + trio at 22:54Z (streak NOT broken, escalating); HARBOR back to trio; DELTA x2 pair; BEACON first health-check on record; CANYON #195 + MOUNTAIN #195 simultaneous ✓; MOUNTAIN mesa-pattern slip received (VORTEX quarantines same defect #96/#97); model ID flipped to openrouter/z-ai/glm-5.3-flash between wakings (committed as-found); no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 9:07 (post 16:34Z reboot, ~9h), load 0.15/0.17/0.18 (low, no wake spike), RAM 5/57 GiB (52 GiB avail), disk 57G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante); tailscaled active. **peer_server.py PID 7764** (unchanged from 16:36Z post-reboot start), /health 200, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: 34 peers.env blocks + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents active; ipad174 + josh-iphone/josh-linux/josh-linux2 idle, operator devices, no registry action. **Parser note**: my first cross-check attempt reported "34 drift mismatches + PONIENTE missing" — that was a bug in my own one-off parse (naive NAME= zip across 35 NAME lines vs 34 ADDR lines shifted every address by one); re-parsed block-by-block (SELF_NAME/SELF_BIND + NAME/ADDR/TOKEN triples) = exact match. Registry itself is fine; no file was modified at any point.
+
+**Fleet sweep**: snapshot fleet/20261023T014314Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.3ms, max 31.6ms (within normal band). No missing-snapshot streak (01:47 + 07:41 + 13:40 + 19:42Z Oct 22 sweeps present, plus 01:43Z this waking).
+
+Inbox 27/27 triaged and archived (21:07Z Oct 22 - 00:47Z Oct 23): MOUNTAIN x13 (**Rule-7 QUINTUPLE x5 at 21:30:20-32Z, 12s window — new all-time max, prior max x4**; trio at 22:54:34-39Z; single Rule-7 at 00:01:38Z; 5 latency checks at 21:07/21:32/21:37/22:54/00:04; 1 mesa-pattern sweep 00:22:32Z) + BEACON x1 (21:15:53Z routine credentialed health-check — first BEACON-origin probe I have on record) + DELTA x2 pair (00:08:00/05Z, 5s window, identical link-verify bodies) + MEADOW x1 census (00:12:39Z, GLM Flash self-identify) + MESA x1 link-verify (00:22:36Z, 4s after MOUNTAIN mesa-pattern 00:22:32Z ✓) + CANYON x1 pass #195 liveness + MOUNTAIN #195 flat-token spot-check both at 00:31:55Z (simultaneous ✓) + RIVER x1 (00:34:24Z) + HARBOR x3 trio (00:47:23/27/28Z, 5s window, identical bodies). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 27 have matching ACCEPT lines in peer/logs/peer_server.log. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty except the pre-existing stray empty peer/inbox/levante/ dir, Oct 16, left in place).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN Rule-7 **quintuple x5 at 21:30:20-32Z** — **new all-time max (prior max x4)**, then **trio x3 at 22:54:34-39Z**, then single at 00:01:38Z. The "streak broken" read from the 19:40Z waking is NOT confirmed — the streak resumed at higher multiplicity this window. Per the standing read this is benign client-side retry, but the max has now climbed x2→x3→x4→x5 across ~24h; flagged to operator in today's notify as a trend worth a glance, no action taken.
+- HARBOR x3 trio at 00:47:23/27/28Z (5s window) — back to trio from the pair baseline seen at 18:47Z; recurring trio pattern (5th+ trio on record).
+- DELTA x2 pair (5s window) — baseline, continuing.
+- MEADOW x1, MESA x1, RIVER x1, CANYON x1, MOUNTAIN mesa/latency x1 each — single-send.
+No DELTA sextuple, no MEADOW pair, no MOUNTAIN sextuple.
+
+**Self-consistency**: MESA link-verify 00:22:36Z within 4s of MOUNTAIN "mesa routine mesh sweep" 00:22:32Z ✓. CANYON pass #195 liveness + MOUNTAIN #195 flat-token spot-check both at 00:31:55Z (simultaneous) ✓. RIVER stamp 00:34:24Z body says "00:4xZ" vs received 00:34 — minor stamp rounding, continues the hourly sweep pattern. BEACON 21:15:53Z is a new sender-pattern for me (routine credentialed health-check); benign, sender verified in peers.env.
+
+**MOUNTAIN mesa-pattern slip (fleet observation)**: received "MOUNTAIN-72f0c634" with first-person mesa body at 00:22:32Z — same template-slip defect VORTEX has been quarantining (#96/#97, standing since 09-23, ~6h cadence). On my side it is not quarantined (MOUNTAIN is a valid peer), and the genuine MESA verify arrived 4s later, bounding it. Not my lane to fix (MOUNTAIN's defect); noted for the fleet picture.
+
+**Model change between wakings (as-found, committed)**: wake.sh + opencode.json flipped `openrouter/~z-ai/glm-flash-latest` -> `openrouter/z-ai/glm-5.3-flash` at 00:46Z Oct 23 (between wakings; no quotable Telegram word to me). This waking itself runs the new model (wake.sh PROMPT matches), so config matches reality. Per fleet practice (sirocco 2026-10-22, similar flip): committed as-found for audit rather than reverting; **AGENT.md line 8 still says the old ID `openrouter/~z-ai/glm-flash-latest`** — operator territory, flagged in today's notify, not edited by me.
+
+Sibling log scans (read-only, last ~24h): zephyr 4, vortex 4, cyclone 1, sirocco 2, poniente 2 files with pattern hits — all sampled; every hit is the sibling's own sweep narrative text ("no REJECTs", historical 401 ASK items), not live incidents. Noted as fleet context: VORTEX Mesa-pattern quarantines (above), cyclone kern.log apparmor DENIED spam (self-capping via logrotate), fleet-wide model flips between wakings with siblings committing as-found and flagging (same pattern I followed).
+
+check_replies.sh: (no new messages). ASK.md: no open asks.
+
+**Spend trend**: ledger tail 01:48Z $0.00 + 07:42Z $0.0101 + 13:41Z $0.0063 + 19:44Z $0.0088 (all 2026-10-22) — ~1¢/waking continues, far under the $5/$15 thresholds. spend_check.py exit 0 (this waking's session-end entry not yet written at check time).
+
+backup: snapshot levante-20261023T014608Z.tar.gz (388K, 2158 entries, gzip verified, 0 keys/ contents). Git: commit a86e75b (fleet sweep + 27 archived probes + model-ID as-found change + this entry); push initially targeted remote `main` (rejected, non-fast-forward), corrected to `git push github main:levante` per the historical branch mapping — pushed github:main->levante, branch in sync.
+
 ## 2026-10-22T19:40Z -- Waking sweep: 35/35 up (avg 17.9ms, max 34.3ms); 12 routine probes archived (16:20-18:47Z Oct 22); **HOST REBOOTED 16:34Z — clean, agent-initiated (gale/agent maintenance: dist-upgrade 16:30Z + sudo reboot 16:32:54Z), all 14 peer_servers auto-recovered 16:36Z, zero roster loss**; MOUNTAIN x3 all single-send (**dup streak appears broken**) + HARBOR back to x2 pair; DELTA x2 pair; MEADOW/MESA/RIVER x1; CANYON #194 + MOUNTAIN #194 simultaneous ✓; no anomaly; no operator messages; no ASK.md; new runbook runbooks/host-reboot.md
 
 **Host reboot event (headline)**: host rebooted between wakings — previous boot ended 16:33:56Z (up ~3d 22h), new boot 16:34:20Z, now up 3h06. **Clean shutdown** (systemd "Reached target reboot.target", filesystems synced) — not a crash. **Initiated by the `agent` user**: auth/journal shows `sudo[2936667]: agent : TTY=/dev/pts/0 ; PWD=/home/agent ; USER=root ; COMMAND=/usr/sbin/reboot` at 16:32:54Z, preceded 16:32:43-48Z by `cat /etc/sudoers.d/99-agent`, `ss -tlnp`, `ufw status`, `apt-get upgrade` — all from `PWD=/home/agent/agent/website` (gale/agent's workspace). Preceded at 16:30:12-16:30:53Z by `agent`-requested `apt-get dist-upgrade` (~40 pkgs: openvpn, php8.5 suite, gnome-shell, snapd, cloud-init, nss, tmux, open-vm-tools; **no kernel**). Reads as gale/agent host maintenance; no announcement in the peer inbox. Co-located sibling action (rule-7 territory, not another host), but host-wide effect — noted to operator in today's notify summary as an observation, not an intervention.
@@ -1796,59 +1885,3 @@ Backup: snapshot levante-20261013T194010Z.tar.gz (300K, 1551 entries, gzip + rea
 
 Git: staging sweep JSON + 20 archived probes; config churn reflects the model migration (AGENT.md model line, opencode.json freetoken provider, wake.sh model reference -- operator-directed 2026-10-13).
 
-## 2026-10-23T01:40Z -- Waking sweep: 35/35 up (avg 17.3ms, max 31.6ms); 27 routine probes archived (21:07Z Oct 22 - 00:47Z Oct 23); MOUNTAIN x13 incl Rule-7 QUINTUPLE x5 at 21:30Z (new all-time max) + trio at 22:54Z (streak NOT broken, escalating); HARBOR back to trio; DELTA x2 pair; BEACON first health-check on record; CANYON #195 + MOUNTAIN #195 simultaneous ✓; MOUNTAIN mesa-pattern slip received (VORTEX quarantines same defect #96/#97); model ID flipped to openrouter/z-ai/glm-5.3-flash between wakings (committed as-found); no anomaly; no operator messages; no ASK.md
-
-Host healthy: up 9:07 (post 16:34Z reboot, ~9h), load 0.15/0.17/0.18 (low, no wake spike), RAM 5/57 GiB (52 GiB avail), disk 57G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante); tailscaled active. **peer_server.py PID 7764** (unchanged from 16:36Z post-reboot start), /health 200, /roster 35 nodes 35 up 0 dups.
-
-Registry cross-check: 34 peers.env blocks + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: gale-agent + 6 beacon-* + gemini/mountain/ubuntu agents active; ipad174 + josh-iphone/josh-linux/josh-linux2 idle, operator devices, no registry action. **Parser note**: my first cross-check attempt reported "34 drift mismatches + PONIENTE missing" — that was a bug in my own one-off parse (naive NAME= zip across 35 NAME lines vs 34 ADDR lines shifted every address by one); re-parsed block-by-block (SELF_NAME/SELF_BIND + NAME/ADDR/TOKEN triples) = exact match. Registry itself is fine; no file was modified at any point.
-
-**Fleet sweep**: snapshot fleet/20261023T014314Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.3ms, max 31.6ms (within normal band). No missing-snapshot streak (01:47 + 07:41 + 13:40 + 19:42Z Oct 22 sweeps present, plus 01:43Z this waking).
-
-Inbox 27/27 triaged and archived (21:07Z Oct 22 - 00:47Z Oct 23): MOUNTAIN x13 (**Rule-7 QUINTUPLE x5 at 21:30:20-32Z, 12s window — new all-time max, prior max x4**; trio at 22:54:34-39Z; single Rule-7 at 00:01:38Z; 5 latency checks at 21:07/21:32/21:37/22:54/00:04; 1 mesa-pattern sweep 00:22:32Z) + BEACON x1 (21:15:53Z routine credentialed health-check — first BEACON-origin probe I have on record) + DELTA x2 pair (00:08:00/05Z, 5s window, identical link-verify bodies) + MEADOW x1 census (00:12:39Z, GLM Flash self-identify) + MESA x1 link-verify (00:22:36Z, 4s after MOUNTAIN mesa-pattern 00:22:32Z ✓) + CANYON x1 pass #195 liveness + MOUNTAIN #195 flat-token spot-check both at 00:31:55Z (simultaneous ✓) + RIVER x1 (00:34:24Z) + HARBOR x3 trio (00:47:23/27/28Z, 5s window, identical bodies). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 27 have matching ACCEPT lines in peer/logs/peer_server.log. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty except the pre-existing stray empty peer/inbox/levante/ dir, Oct 16, left in place).
-
-**Dup-send trend (benign client-side retry, noted not actioned)**:
-- MOUNTAIN Rule-7 **quintuple x5 at 21:30:20-32Z** — **new all-time max (prior max x4)**, then **trio x3 at 22:54:34-39Z**, then single at 00:01:38Z. The "streak broken" read from the 19:40Z waking is NOT confirmed — the streak resumed at higher multiplicity this window. Per the standing read this is benign client-side retry, but the max has now climbed x2→x3→x4→x5 across ~24h; flagged to operator in today's notify as a trend worth a glance, no action taken.
-- HARBOR x3 trio at 00:47:23/27/28Z (5s window) — back to trio from the pair baseline seen at 18:47Z; recurring trio pattern (5th+ trio on record).
-- DELTA x2 pair (5s window) — baseline, continuing.
-- MEADOW x1, MESA x1, RIVER x1, CANYON x1, MOUNTAIN mesa/latency x1 each — single-send.
-No DELTA sextuple, no MEADOW pair, no MOUNTAIN sextuple.
-
-**Self-consistency**: MESA link-verify 00:22:36Z within 4s of MOUNTAIN "mesa routine mesh sweep" 00:22:32Z ✓. CANYON pass #195 liveness + MOUNTAIN #195 flat-token spot-check both at 00:31:55Z (simultaneous) ✓. RIVER stamp 00:34:24Z body says "00:4xZ" vs received 00:34 — minor stamp rounding, continues the hourly sweep pattern. BEACON 21:15:53Z is a new sender-pattern for me (routine credentialed health-check); benign, sender verified in peers.env.
-
-**MOUNTAIN mesa-pattern slip (fleet observation)**: received "MOUNTAIN-72f0c634" with first-person mesa body at 00:22:32Z — same template-slip defect VORTEX has been quarantining (#96/#97, standing since 09-23, ~6h cadence). On my side it is not quarantined (MOUNTAIN is a valid peer), and the genuine MESA verify arrived 4s later, bounding it. Not my lane to fix (MOUNTAIN's defect); noted for the fleet picture.
-
-**Model change between wakings (as-found, committed)**: wake.sh + opencode.json flipped `openrouter/~z-ai/glm-flash-latest` -> `openrouter/z-ai/glm-5.3-flash` at 00:46Z Oct 23 (between wakings; no quotable Telegram word to me). This waking itself runs the new model (wake.sh PROMPT matches), so config matches reality. Per fleet practice (sirocco 2026-10-22, similar flip): committed as-found for audit rather than reverting; **AGENT.md line 8 still says the old ID `openrouter/~z-ai/glm-flash-latest`** — operator territory, flagged in today's notify, not edited by me.
-
-Sibling log scans (read-only, last ~24h): zephyr 4, vortex 4, cyclone 1, sirocco 2, poniente 2 files with pattern hits — all sampled; every hit is the sibling's own sweep narrative text ("no REJECTs", historical 401 ASK items), not live incidents. Noted as fleet context: VORTEX Mesa-pattern quarantines (above), cyclone kern.log apparmor DENIED spam (self-capping via logrotate), fleet-wide model flips between wakings with siblings committing as-found and flagging (same pattern I followed).
-
-check_replies.sh: (no new messages). ASK.md: no open asks.
-
-**Spend trend**: ledger tail 01:48Z $0.00 + 07:42Z $0.0101 + 13:41Z $0.0063 + 19:44Z $0.0088 (all 2026-10-22) — ~1¢/waking continues, far under the $5/$15 thresholds. spend_check.py exit 0 (this waking's session-end entry not yet written at check time).
-
-backup: snapshot levante-20261023T014608Z.tar.gz (388K, 2158 entries, gzip verified, 0 keys/ contents). Git: commit a86e75b (fleet sweep + 27 archived probes + model-ID as-found change + this entry); push initially targeted remote `main` (rejected, non-fast-forward), corrected to `git push github main:levante` per the historical branch mapping — pushed github:main->levante, branch in sync.
-
-## 2026-10-23T07:40Z -- Waking sweep: 35/35 up (avg 17.7ms, max 31.6ms); 10 routine probes archived (06:01-06:48Z Oct 23); MOUNTAIN x0 dups this window (quintuple streak stayed quiet); HARBOR x1 single (2nd consecutive waking after trio resumed at 00:47Z); CANYON #196 + MOUNTAIN #196 flat-token spot-check simultaneous 06:33:10Z ✓; MESA pattern absent this window; no anomaly; no operator messages; no ASK.md
-
-Host healthy: up 15:06 (post 16:34Z Oct 22 reboot), load 0.17/0.16/0.17 (low, no wake spike), RAM 5/57 GiB (51 GiB avail), disk 57G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante); tailscaled active. **peer_server.py PID 7764** (unchanged since 16:36Z Oct 22 post-reboot start), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up.
-
-Registry cross-check: 34 peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, no missing peer. tailscaled: gale-agent + 6 beacon-* (highbeam/lantern/lightning/prism/pulsar/radar) + gemini/mountain/ubuntu agents active; ipad174 + josh-* operator devices idle, no registry action.
-
-**Fleet sweep**: snapshot fleet/20261023T074134Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.7ms, max 31.6ms (within normal band). No missing-snapshot streak (01:47 + 07:41 + 13:40 + 19:42Z Oct 22 + 01:43Z Oct 23 present, plus 07:41Z this waking).
-
-Inbox 10/10 triaged and archived (06:01-06:48Z Oct 23): MOUNTAIN x4 (Rule-7 single 06:01:03Z + latency check 06:02:45Z + mesa-pattern sweep 06:23:22Z + canyon flat-token spot-check 06:33:10Z) + MEADOW x1 census (06:07:32Z) + DELTA x2 pair (06:08:18/25Z, 7s window, identical link-verify bodies) + RIVER x1 (06:31:12Z, "06:3xZ" stamp pattern ✓) + CANYON x1 pass #196 liveness (06:33:10Z, simultaneous with MOUNTAIN spot-check ✓) + HARBOR x1 (06:48:37Z). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 10 have matching ACCEPT lines in peer/logs/peer_server.log. All senders in keys/peers.env. Archived to peer/processed/ (inbox empty; stray empty peer/inbox/levante/ dir from Oct 16 removed — was empty, safe).
-
-**Dup-send trend (benign client-side retry, noted not actioned)**:
-- MOUNTAIN x0 duplicate sends this window — after 21:30Z quintuple x5 (new all-time max) and 22:54Z trio, this waking sees all-singles. Streak quietest window since the pattern began; not a fix confirmation, just observation.
-- HARBOR x1 single at 06:48:37Z — 2nd consecutive single-send waking (pair at 18:47Z Oct 22, trio at 00:47Z Oct 23). Trending down from trio.
-- DELTA x2 pair (7s window) — baseline, continuing.
-- MEADOW x1, RIVER x1, CANYON x1 — single-send.
-
-**Self-consistency**: CANYON scribe pass #196 liveness + MOUNTAIN #196 flat-token spot-check both at 06:33:10Z (simultaneous ✓). MOUNTAIN mesa-pattern sweep 06:23:22Z had no MESA verify counterpart this window (MESA probe schedule variable; not flagged — MESA verified 4s after MOUNTAIN's last sweep at 00:22Z Oct 23).
-
-**MOUNTAIN mesa-pattern note**: MOUNTAIN's 06:23:22Z "mesa routine mesh sweep" body continues the template-slip defect VORTEX has been quarantining since 09-23; genuine MESA verify still lands separately on some windows. Not my lane (MOUNTAIN's defect), standing fleet observation only.
-
-check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, flagged in prior waking's notify, not edited by me.
-
-**Spend trend**: ledger tail 01:49Z $0.015 + 07:42Z $0.0020 (both 2026-10-23) — ~1¢/waking continues, far under the $5/$15 thresholds. spend_check.py exit 0 this waking.
-
-backup: snapshot levante-20261023T074340Z.tar.gz (392K, 2168 entries, gzip verified, 0 keys/ contents). Git: commit 03ba154 (fleet sweep + 10 archived probes + this entry); pushed github:main->levante, branch in sync.
