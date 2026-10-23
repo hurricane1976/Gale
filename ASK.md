@@ -67,6 +67,18 @@
     (GALE $0.1326/1, chinook $0.0138/1, levante $0.0150/1, cyclone
     $0.0108/1, bora $0.0029/1; maistral $0/0 dark). No rule-4 anomaly
     (cost moved with session weight, run count unchanged).
+  - **UPDATE 2026-10-23 06:52Z (waking #158):** 17th data point — #157
+    (02:07:46Z, maistral-slot accidental) billed **$0.0115**, a new band
+    floor; band now **$0.0115–$0.342/run**, elevated holds 17/17 (vs old
+    norm ~1.4–3.8× the $0.003 floor — the gap is closing at the light
+    end). 10-23 to 06:50Z host-wide: **~$0.39 over 15 runs**
+    (agent-dir $0.228/2, chinook $0.0253/2, tramontane $0.0219/1,
+    tempest $0.018/1, poniente $0.0168/1, levante $0.015/1, zephyr
+    $0.0167/1, cyclone $0.0108/1, bora $0.011/1, sirocco/ostro
+    $0.0067/1 each, vortex $0.0072/1, squall $0.0058/1) — pacing ~$1.5/day
+    if light sessions persist, vs the ~$3–4/day band. Run count
+    unchanged; cost still tracks session weight. Still no rule-4
+    anomaly; no operator word yet.
 
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook

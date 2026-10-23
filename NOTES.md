@@ -9160,3 +9160,64 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   held.
 - Git: NOTES + ASK.md committed below; migration files (opencode.json/
   wake.sh) stay uncommitted pending operator confirmation.
+
+## 2026-10-23 ~06:52 UTC — Waking #158 (scheduled :50 slot): all-green sweep, light-spend day, maistral backlog rate down
+
+### capacity snapshot 2026-10-23T06:50Z (waking #158)
+- host gale-agent: up 14h16m (since 16:33Z reboot 10-22), load
+  0.35/0.26/0.21 on 16 cores (~2%) — quietest reading in the series.
+- mem 5.7G/58G used (53G avail), swap 0; disk / 57G/98G (61%, 37G free)
+  — flat vs #155–157, ~20th consecutive flat point; Dec 5 threshold
+  arc unchanged at current growth (~0/week).
+- journal 1.4G (rotation healthy); /tmp/opencode 3.4M (self-managed).
+- peers: 12/12 local /health -> 200, 0.47–0.60 ms (8787–8800).
+- backup: chinook-20261023T065110Z.tar.gz, ./NOTES.md read-back clean
+  (tar -xzOf verified — prior wakings' check used the unprefixed name
+  and misread; NOTE: grep -f verification in this session used the
+  ./-prefixed form).
+
+### spend (glm-latest, 18th series point)
+- chinook 10-23 so far: #156 $0.0138 (00:59Z) + #157 $0.0115 (02:07Z,
+  maistral-slot accidental) = $0.0253/2. **#157 is the new band floor**
+  — band now $0.0115–$0.342/run, 17/17 elevated vs old ling-3.0-flash
+  norm, but the light-end gap is closing. Cost confirmed
+  session-weight-driven, not per-run-fixed.
+- host-wide 10-23 to 06:50Z: ~$0.39 over 15 runs (agent-dir $0.228/2
+  is the only above-$0.05 lane) — pacing ~$1.5/day if light sessions
+  persist vs the ~$3–4/day band. Run count unchanged; no rule-4
+  anomaly. ASK.md spend item updated (3rd update).
+
+### cadence / maistral watch
+- My 06:50 cron fired 06:50:01Z, drift 0m. No 04:50 slot exists (grid
+  is 50 0,6,12,18) — the "0 0,4,8" line in older notes is stale.
+- maistral dark-lane backlog: 212 unprocessed (203 real at 02:05Z →
+  +9/4.75h ≈ 1.9/h — DOWN from the +5.7/h rate at #155→#156). Still
+  ~10x my archived steady state; lane dark since 10-19. Operator word
+  still pending (ASK.md 10-21 item). Next accidental chinook run via
+  maistral cron: 08:05Z.
+
+### peer inbox
+- 9 msgs (06:01–06:48Z): MOUNTAIN x3, MEADOW, DELTA x2, RIVER, CANYON,
+  HARBOR — all routine liveness/link-verify sweeps, all self-labeled
+  "no reply needed". Data only; no acks owed; archived to processed/
+  (2117 total). Zero anomalies.
+
+### operator / checks
+- check_replies.sh: "(no new messages)". Open asks unchanged: 10-22
+  reboot+cron-skip confirm, glm-latest spend band (updated), maistral
+  overwrite disposition, 10-20 model-ID batch commit word (my
+  opencode.json + wake.sh remain uncommitted per precedent), 10-15
+  v2-fix commit word.
+
+### forecast
+- Spend: if the light-session pattern holds, my lane ~$0.05–0.15/day
+  (worst case $2/day on heavy sessions); host ~$1.5–4/day. Alert lines
+  ($5/run, $15/day) far away — earliest credible crossing none
+  projectable at current band.
+- Disk: 61% flat ~20 points; no crossing date projectable; review the
+  ~Dec 5 arc only if growth resumes.
+- No sibling lane near a limit → no advisory this waking.
+
+### done this waking
+- Routine: host health, backup verify, 12/12 sweep, inbox processed
+  and archived, ASK.md spend update, NOTES entry, commit, notify.
