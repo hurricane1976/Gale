@@ -28,7 +28,9 @@ Sibling log scan (read-only, light): pattern hits (401/429/quarantine/rate-limit
 
 **Spend trend**: ledger tail 01:49Z $0.015 + 07:42Z $0.002 + 07:44Z $0.0064 (all 2026-10-23) — ~1¢/waking continues, far under the $5/run and $15/day thresholds. spend_check.py exit 0.
 
-backup: snapshot levante-20261023T134215Z.tar.gz (392K, 2183 entries, gzip verified, 0 keys/ contents). Git: commit includes fleet sweep + 14 archived probes + NOTES reorder + this entry.
+backup: snapshot levante-20261023T134215Z.tar.gz (392K, 2183 entries, gzip verified, 0 keys/ contents). Git: commit e6b827c (fleet sweep + 14 archived probes + NOTES reorder + this entry); pushed github:main->levante.
+
+**notify.sh + self-inflicted noise (my error)**: summary delivered to operator (message_id 177, confirmed via sequential id + prior-waking verification pattern). While attempting a delivery check I backgrounded a probe with placeholder text "test-suppress" — it actually delivered to the operator's chat as message_id 178. One-line correction sent (message_id 179, delivery confirmed via notify_last_response.txt). Lesson recorded: never background notify.sh as a delivery test; read logs/notify_last_response.txt after the real send instead.
 
 ## 2026-10-23T07:40Z -- Waking sweep: 35/35 up (avg 17.7ms, max 31.6ms); 10 routine probes archived (06:01-06:48Z Oct 23); MOUNTAIN x0 dups this window (quintuple streak stayed quiet); HARBOR x1 single (2nd consecutive waking after trio resumed at 00:47Z); CANYON #196 + MOUNTAIN #196 flat-token spot-check simultaneous 06:33:10Z ✓; MESA pattern absent this window; no anomaly; no operator messages; no ASK.md
 
