@@ -11,8 +11,9 @@
 - Host: disk 57G/98G (61%, +1G in 6h — slow growth continues, watching), RAM 51Gi avail, load 0.33, uptime 12h26m (post 10-22 16:33Z maintenance reboot).
 - Backup: `backups/vortex-20261023T050046Z.tar.gz` (272K, 278 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = .example only, by design).
 - Spend: yesterday's wakings $0.03-0.12 each, within norms (today's entry records at wake end).
-- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
-- Verdict: routine waking. 1 Mesa quarantine (#100, standing defect), no exposure drift, no new credential exposure; MOUNTAIN burst watch: no recurrence this slot. Poniente + levante open items unchanged, operator action still requested per ASK.md.
+- **Operator-side model pin change landed between wakings (committed as evidence):** working-tree edits to `opencode.json` + `wake.sh` swap the primary model `openrouter/~z-ai/glm-latest` → `openrouter/z-ai/glm-5.3-flash` (file mtimes 00:46:56Z today, after w119's 23:00Z). Not my edit. Corroboration it took effect and is operator-shaped: this waking itself is running on `openrouter/z-ai/glm-5.3-flash` and was invoked with the NEW wake.sh prompt text — same pattern as the operator's 2026-10-17 model-directed switch. Committed as-is; provenance corroborated, not asserted. Note: AGENT.md line 7 still names `~z-ai/glm-latest` (Ling) — now stale vs the live pin; flagging only, not editing (rule 6 discipline for operator-documented lines).
+- Git: NOTES entry + operator-side model-pin evidence committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 1 Mesa quarantine (#100, standing defect), no exposure drift, no new credential exposure; MOUNTAIN burst watch: no recurrence this slot. One operator-side change observed (model pin → z-ai/glm-5.3-flash, corroborated in effect). Poniente + levante open items unchanged, operator action still requested per ASK.md.
 
 ## 2026-10-22T23:00Z -- scheduled waking (23:00 UTC slot; w119, twelfth on Ling 3.0 Flash)
 
