@@ -9293,3 +9293,93 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Forecast: no threshold crossings projectable on any axis at current
   arc (disk 61% flat; spend ~$1/day host; load/mem calm). No sibling
   advisory warranted this waking.
+
+## 2026-10-23T12:50Z — waking #160 (scheduled :50 slot)
+
+### headline: grid fully healthy since 08:05 (12/12 slots, zero skips); lightest-spend day of the post-pin era ($0.56/31 runs host-wide to 12:50Z); maistral backlog 222 (+8, ~1.7/h steady); next accidental 14:05Z (17th)
+
+- **This waking fired at 12:50:00Z on time** (drift 0m) — my scheduled
+  `50 0,6,12,18` slot, 3rd scheduled run today (#156 00:50, #158 06:50,
+  this). The 08:05Z run was #159 (accidental, 16th). Next accidental
+  predicted: **14:05Z (17th)** via maistral's `5 2,8,14,20` cron.
+- **check_replies: (no new messages).** ASK.md open items unchanged —
+  (1) 10-22 16:33Z reboot + cron-skip confirm (question (c) closed at
+  #159; (a) confirm and (b) Bora-lane record remain), (2) maistral
+  overwrite disposition (day 8), (3) 10-20 model-ID batch + 10-23
+  00:46Z pin (one word covers both; my opencode.json + wake.sh stay
+  uncommitted per precedent), (4) 10-15 opencode-v2 wake.sh fix commit
+  word. No new asks.
+- **Peer inbox: 10 archived → processed/ (2126 .json, verified by
+  recount; the empty pulsar/ stray subdir is the known artifact):**
+  MOUNTAIN ×3 (Rule-7 sweep, site-build latency check, and one
+  MOUNTAIN-envelope + MESA-body shared-lane sweep — the documented
+  standing baseline from #46, not a mismatch), MEADOW census, DELTA ×2
+  (11:15/11:19Z, 4s double — standing retry pattern), MESA ×2, RIVER
+  rule-7 Layer-2 sweep, CANYON scribe pass #197. All self-labeled
+  "no reply needed", no acks owed, no operator content, no anomalies.
+- **Maistral (read-only):** unchanged — AGENT.md header "# AGENT.md —
+  Chinook", wake.sh `cd /home/agent/chinook`, lane dark since 10-19
+  (its own ledger's last row is 10-19 03:21Z). Backlog 214 → **222**
+  (+8 in ~4.75h ≈ 1.7/h, steady at the low-normal rate). Recovery
+  sources unchanged (its 10-19 backups + github branch); ASK.md item
+  stands (day 8). No advisories re-sent — #140's stand.
+
+### capacity snapshot 2026-10-23T12:50Z (waking #160)
+
+- host gale-agent: up 20h16m (boot 10-22 16:34:17Z, kernel 7.0.0-38,
+  stable), load 0.44/0.21/0.18 on 16 cores (~2–3%, series-low band),
+  mem 5.7Gi/57Gi used (51Gi avail), swap 0.
+- disk / 57G/98G (61%, 37G free) — flat vs #155–#159, **22nd
+  consecutive flat point**. Drivers unchanged: /var/log/journal 1.5G
+  (bounded), /tmp/opencode 3.6M (transient), /home/agent 20G.
+- peers: **14/14 /health → 200** on 100.66.39.59:8787–8800, 0.36–0.58 ms.
+- cadence: **cron grid verified fully healthy since 08:05** — all 12
+  slots 08:05→12:50 fired on schedule (full 25-min stagger, zero
+  skips), extending #159's post-reboot verification across the whole
+  morning. My 12:50 slot on time.
+
+### spend (glm-5.3-flash post-pin era)
+
+- chinook 10-23: 4 runs **$0.0470** (#156 $0.0138, #157 $0.0115, #158
+  $0.0063, #159 $0.0154) — all at the old ling-3.0-flash norm; the
+  post-pin re-baseline from #159 holds. This waking records at session
+  end (expect ~$0.006–0.015).
+- host-wide 10-23 to 12:50Z: **$0.5582 / 31 runs** — agent/GALE
+  $0.2357/3 top lane, TEMPEST $0.0742/2, chinook $0.0470/4,
+  TRAMONTANE $0.0380/2; every lane ≤$0.08/run. Pacing ~**$1/day**,
+  consistent with #159's projection after the 00:46Z pin restored
+  old-norm pricing. Per-run max ≈$0.08 ≪ $5 line; run count
+  cadence-consistent (31 by 12:50Z on the 14-lane grid); **no rule-4
+  anomaly**. ASK.md spend item needs no further data update — the pin
+  explanation stands pending operator confirm (item 3).
+
+### forecast / thresholds
+
+- **Disk:** 57G flat 22nd day; 80% line ~78G ≈ 21G away ≈
+  **~2026-12-05 at ~0.5 G/day** — named date unchanged from
+  #135–#159; growth is ~0/day so no crossing projectable unless the
+  arc resumes.
+- **Spend:** ~$1/day host pace; no alert line in sight ($5/run,
+  $15/day).
+- **Load/Mem/Swap:** series-low, flat. No crossing projectable.
+- **Wake-reliability:** grid clean all day — the 10-22 reboot-skip
+  signature stays closed (reboot-only, verified #155/#159). No active
+  watch items in my lane.
+- **Fleet capacity item (top, unchanged):** maistral lane dark since
+  10-19 08:05Z, backlog 222 and growing ~1.7/h — restoration is the
+  operator's; advisories already sent (#140). No further advisory
+  noise.
+- **No sibling near any local limit → no advisory this waking.**
+
+### done this waking
+
+- check_replies: none. Peer inbox: 10 archived → processed/ (2126).
+- Maistral re-verified read-only (unchanged; backlog 222); next
+  accidental predicted 14:05Z (17th).
+- Host health baseline recorded; 14/14 peer sweep; cron-grid health
+  verified 12/12 since 08:05Z.
+- Backup `backups/chinook-20261023T125035Z.tar.gz` (284K, 74 entries)
+  listing-verified, AGENT.md/NOTES.md/wake.sh read back clean,
+  14-snapshot ceiling held.
+- Git: this entry committed below; opencode.json + wake.sh stay
+  uncommitted pending operator word.
