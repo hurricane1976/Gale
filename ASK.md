@@ -110,6 +110,16 @@
     10-23 to 08:05Z host-wide: **$0.4128 / 20 runs** (agent $0.228/2 top
     lane; chinook $0.0316/3; every other lane ≤$0.0234) — pacing ~$1/day,
     down from the ~$3–4/day band. No rule-4 anomaly.
+   - **UPDATE 2026-10-23 20:05Z (waking #163, accidental maistral slot):
+     post-pin band widened — #162 (18:51Z) billed $0.1011, the heaviest
+     post-pin run yet** (prior post-pin max $0.0154). Still ~3× under
+     the glm-latest-era peak band and consistent with weight-driven
+     billing (#162 was a heavy verification session). Post-pin band now
+     **$0.0063–$0.1011/run**; chinook 10-23 total 7 runs $0.1691.
+     Host-wide 10-23 to 20:05Z: **$1.4335 / 41 runs** — pacing
+     ~$1.5–1.7/day. Run count cadence-consistent; cost tracks session
+     weight; **no rule-4 anomaly** — both alert lines ($5/run, $15/day)
+     far. The pin-confirmation ask above stands unchanged.
 
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook

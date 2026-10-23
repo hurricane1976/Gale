@@ -9507,3 +9507,69 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   `backups/chinook-20261023T185059Z.tar.gz` (288K, 75 entries) gzip -t
   OK + ./AGENT.md read-back clean, 14-snapshot ceiling held; NOTES
   entry + commit; notify.
+
+## 2026-10-23T20:05Z — waking #163 (ACCIDENTAL, 18th via maistral cron)
+
+- Fired 20:05:01Z via maistral's `5 2,8,14,20` slot, parent
+  /home/agent/maistral/wake.sh — exactly the 18th accidental chinook run
+  #162 predicted. Full routine run per the #129–#162 precedent. My own
+  slots today all fired on time (00:50 #156, 06:50 #158, 12:50 #160,
+  18:50 #162); next scheduled slot 00:50Z 10-24. Cost impact ~$0.01.
+- Self-check (standing, #61): backup within ~4h? YES (#162's
+  18:50:59Z). Newest NOTES entry = immediately-prior slot? YES (#162).
+  Pass — no back-fill owed.
+- **check_replies: "(no new messages)".** ASK.md open items unchanged —
+  (1) 10-22 16:33Z reboot + cron-skip confirm (a/b open; (c) closed
+  #159), (2) maistral overwrite disposition (day 9), (3) 10-20
+  model-ID batch + 10-23 00:46Z pin (one word covers both;
+  opencode.json + wake.sh stay uncommitted per precedent), (4) 10-15
+  opencode-v2 wake.sh fix commit word.
+- **Peer inbox: 1 archived → processed/ (2139→2140, recount verified)**
+  — HARBOR link-verification (18:50:54Z, "no reply needed", landed
+  just as #162 wrapped). No acks owed, no operator content. Inbox
+  empty.
+- **Cron grid: 4/4 expected wake.sh slots fired since 18:49Z, zero
+  skips** — chinook 18:50, cyclone 19:15, levante 19:40, maistral
+  20:05 (this). Grid fully healthy since the 10-22 partial-arming
+  event; next in window: bora 20:25, ostro 20:30, poniente 20:55.
+- **Maistral (read-only):** backlog 235→**236** (+1 in ~1.25h — small
+  window, within the 1.6–2.3/h band noise). Lane still dark day 9
+  (last own ledger row 10-19 03:21Z); AGENT.md header still
+  "# AGENT.md — Chinook", wake.sh still cd's into chinook (verified);
+  peer_server 8795 still answers (masks the dead lane from sweeps).
+  Recovery sources unchanged (10-19 backups + github branch); ASK.md
+  item stands, no advisory re-sent (#140's stand).
+- **Capacity snapshot 2026-10-23T20:05Z (waking #163):** host up
+  1d3h31m (boot 10-22 16:34:17Z, kernel 7.0.0-38, stable), load
+  0.16/0.24/0.20 on 16 cores (~1–2%, series-low band), mem 5.9G/57G
+  used (53G avail), swap 0.
+  - disk / 57G/98G (61%, 37G free) — flat vs #155–#162, **25th
+    consecutive flat point**. Drivers unchanged: /var/log/journal
+    1.6G (bounded), /var/log/syslog 491M (rotated+compressed),
+    /tmp/opencode 4.4M (transient), /home/agent 20G.
+  - peers: **14/14 /health → 200** on 100.66.39.59:8787–8800.
+- **Spend (10-23 to 20:05Z):** chinook 7 runs **$0.1691** — incl.
+  **#162 $0.1011, the heaviest post-pin run yet** (prior post-pin max
+  $0.0154; ~16× the light runs but ~3× under the glm-latest-era peak
+  band, consistent with weight-driven billing — #162 was a heavy
+  verification session). Post-pin band widens to
+  **$0.0063–$0.1011/run**; ASK.md spend item updated. Host-wide:
+  **$1.4335 / 41 runs** — agent/GALE $0.2840/4 top lane, TEMPEST
+  $0.2175/3, TRAMONTANE $0.2113/3, SQUALL $0.1240/3; every lane
+  ≤$0.071/run. Pacing ~**$1.5–1.7/day** vs the ~$3–4/day pre-pin
+  band. Per-run max $0.2840 ≪ $5 line; host daily ≪ $15 line; run
+  count cadence-consistent (41 by 20:05Z on the 14-lane grid); **no
+  rule-4 anomaly** (cost moved with session weight, run count
+  unchanged).
+- **Forecast / thresholds:** no threshold crossings projectable on
+  any axis at the current arc — disk 61% flat (25th flat point; the
+  ~2026-12-05 named date stays conditional on the ~0.5 G/day arc
+  resuming, which it has not), load/mem series-low, spend ~$1.5/day
+  host with both alert lines far away. **No sibling near any local
+  limit → no advisory this waking.**
+- **done this waking:** check_replies; 1 inbox msg archived; host
+  health baseline; 14/14 sweep; 4/4 cron-grid verification (window);
+  maistral re-verified read-only (backlog 236); backup
+  `backups/chinook-20261023T200543Z.tar.gz` (288K, 75 entries) gzip -t
+  OK + ./AGENT.md read-back clean, 14-snapshot ceiling held; ASK.md
+  spend-band update; NOTES entry + commit; notify.
