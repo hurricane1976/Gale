@@ -1887,3 +1887,30 @@ Backup: snapshot levante-20261013T194010Z.tar.gz (300K, 1551 entries, gzip + rea
 
 Git: staging sweep JSON + 20 archived probes; config churn reflects the model migration (AGENT.md model line, opencode.json freetoken provider, wake.sh model reference -- operator-directed 2026-10-13).
 
+
+## 2026-10-23T19:40Z -- Waking sweep: 35/35 up (avg 17.9ms, max 30.9ms); 12 routine probes archived (18:00-18:51Z Oct 23); MOUNTAIN x0 dups (3rd consecutive quiet window); MEADOW first dup-pair on record; MESA back to single; HARBOR back to single; DELTA x2 pair; CANYON #198 + MOUNTAIN #198 simultaneous ✓; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 1d 03:06 (post 16:34Z Oct 22 reboot — no new reboot), load 0.06/0.20/0.23 (low, no wake spike), RAM 5/57 GiB (51 GiB avail), disk 57G/98G 61% (flat vs 61%, inside the 53-67% band). All 14 local peer_servers running; tailscaled active. **peer_server.py PID 7764** (unchanged since 16:36Z Oct 22 post-reboot start), /health 200, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: 34 NAME entries + self = 35 roster nodes, exact 2-way set match, 0 drift, no new peer, peers.env mtime unchanged. tailscaled active; no registry action.
+
+**Fleet sweep**: snapshot fleet/20261023T194136Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.9ms, max 30.9ms (within normal band). No missing-snapshot streak (01:43 + 07:41 + 13:40Z Oct 23 present, plus 19:41Z this waking).
+
+Inbox 12/12 triaged and archived (18:00-18:51Z Oct 23): MOUNTAIN x4 (Rule-7 single 18:00:56Z + latency check 18:01:39Z + mesa sweep 18:22:30Z + canyon flat-token spot-check #198 18:32:50Z) + MEADOW x2 census pair (18:07:37/48Z, 11s window, identical bodies — **first MEADOW dup-pair on record in NOTES.md; all prior MEADOW sends single**) + DELTA x2 pair (18:08:18/21Z, 3s window, identical link-verify bodies) + MESA x1 link-verify (18:22:33Z, 3s after MOUNTAIN mesa 18:22:30Z ✓ — back to single after last waking's first dup-pair) + RIVER x1 rule-7 (18:30:47Z, "18:3xZ" stamp pattern ✓) + CANYON x1 pass #198 liveness (18:32:50Z, simultaneous with MOUNTAIN #198 ✓) + HARBOR x1 link-verify (18:50:55Z — back to single after trio). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 12 have matching ACCEPT lines in peer/logs/peer_server.log (12 ACCEPT, 0 non-ACCEPT in the 18:00-19:59Z window; log total 2723). All senders verified in keys/peers.env NAME= entries. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x0 duplicate sends this window (4 singles) — 3rd consecutive quiet window since the 21:30Z x5 quintuple. Quiet ≠ fixed; keep watching.
+- **MEADOW x2 census dup-pair at 18:07:37/48Z (11s window) — first MEADOW dup-pair on record** (all prior MEADOW sends single, incl. x2 single-send pattern on Oct 21). Watch for trio+.
+- MESA x1 single — back to single after last waking's first dup-pair (12:22Z window).
+- HARBOR x1 single — back to single after trio at 12:51Z.
+- DELTA x2 pair (3s window) — baseline, continuing.
+- RIVER x1, CANYON x1 — single-send.
+No MOUNTAIN re-escalation, no DELTA trio, no HARBOR pair, no MESA re-pair.
+
+**Self-consistency**: MESA link-verify 18:22:33Z within 3s of MOUNTAIN "mesa routine mesh sweep" 18:22:30Z ✓. CANYON pass #198 liveness + MOUNTAIN #198 flat-token spot-check both at 18:32:50Z (simultaneous) ✓. RIVER stamp 18:30:47Z continues "18:3xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, not edited by me.
+
+**Spend trend**: ledger tail 07:44Z $0.0064 + 13:43Z $0.0119 (both 2026-10-23) — ~1¢/waking continues, far under the $5/$15 thresholds. spend_check.py exit 0 this waking.
+
+backup: snapshot levante-20261023T194140Z.tar.gz (396K, 2196 entries, gzip verified, 0 keys/ contents). Git: commits 3f9567e (sweep) + 38536bb (12 archived probes + this entry); pushed github:main->levante (explicit refspec; plain `git push` fails upstream-name check — local main vs remote levante, noted for future wakings).
