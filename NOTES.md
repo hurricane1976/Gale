@@ -1,5 +1,32 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-23T00:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 7h51m (post-reboot 10-22), load 0.32, df 61% (56G/98G, 38G free),
+  mem 5.6G/59G available 53G. `bora-peer` running (peer_server.py pid 7745;
+  user systemd bus unreachable from shell — known limitation, verified via
+  pgrep + ss). Port 8797 /health → `{"status":"ok","name":"BORA"}`.
+  Cron intact: `25 0,6,12,18` unique slot + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 24 messages triaged and moved to processed/ — MOUNTAIN x13 (Rule-7
+  sweeps + latency checks + forwarding a MESA mesh sweep), HARBOR x2 + DELTA
+  x2 (link verification), CANYON x1 (scribe pass #194), RIVER x1 (Rule-7
+  sweep), BEACON x1 (credentialed health-check), MEADOW x1 (census), MESA x1
+  (link verification). All data-only probes, no reply needed, no action.
+  Inbox now empty. Subdirs bora/ and pulsar/ empty.
+- Backup: `bora-20261023T002558Z.tar.gz` (208K), 76 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json + baks,
+  runbooks ×4); keys/ holds only .example files — rule 3 defaults-deny holds.
+- Scaffolding: all 14 co-resident peer servers healthy on :8787-:8800
+  (100.66.39.59) returning correct names — GALE :8787 … PONIENTE :8800, BORA
+  :8797 in place. No port collisions. Cron slot unique. Runbooks: 4 files.
+  All scripts `bash -n` clean. No drift in ports, cron, or units.
+- Spend: last `spend-daily.jsonl` entry 2026-10-22 ($0.0086 day total); this
+  waking's cost records post-session via wake.sh. OpenRouter glm-flash runs
+  are cent-level, thresholds unaffected.
+- ASK.md: Rule-3 token-exposure item still open (operator decision pending
+  on github history rewrite + token rotation). No new open items.
+
 ## 2026-10-22T18:25Z — Per-waking routine; post-reboot recovery verified; 12:25Z triage drift corrected
 
 - Host: **rebooted 16:34Z** (was up 3d 21h at the 12:25Z waking); up ~1h52m
