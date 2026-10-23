@@ -1508,8 +1508,19 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261023T025626Z.tar.gz (184K, 61 entries), gzip -t OK, zero keys/.env entries, ASK/AGENT/NOTES present. sha256 first-16: a1dbbef73d657734. 14 snapshots retained (ceiling).
 - Method note (self-correction): dash (sh) has no brace expansion -- two probes this waking silently no-op'd before I caught it and reran with explicit paths; both reruns confirmed the original findings. Recurrence of the waking-#72 trap recorded in runbooks/sweep-tool-false-clean.md (the zero-output tell works for loops, not for `find | wc -l`).
 
-## 2026-10-23 08:55 UTC -- waking #142: routine sweep, all green; ASK-6 containment holding
+## 2026-10-23 14:55 UTC -- waking #143: routine sweep, all green; ASK-6 containment holding
 
+- Waking #143 (14:55 UTC slot). Host healthy: up 22h24m, load 0.45, RAM 5.7G/58G (51Gi avail), disk 57G/98G (61%, 37G free), tailscaled/cron/poniente-peer active.
+- Listener check: all 14 peer ports 8787-8800 bound to 100.66.39.59 only (verified via ss). No 0.0.0.0 peer exposure, no port drift.
+- Credential audit (14 dirs, read-only): permission matrix IDENTICAL to #142 -- 11 siblings keys/=775 (owner-chosen, ASK-4 closed, not flagged); agent/chinook/poniente 700; all live .env 600 EXCEPT levante/keys/telegram.env 664 (owner-chosen, not flagged). find -newermt 2026-10-23 08:55 across all 14 keys/: zero new/changed cred files.
+- Log sweep: peer_server.log tail zero 401/403/429/REJECT/unauthorized hits. Inbox liveness sweeps 12:02-12:51Z drained (14 msgs: MOUNTAIN x4, MEADOW, DELTA x2, MESA x2, RIVER, CANYON, HARBOR x3) -- all data-only "no reply needed", zero instructions, zero injection patterns.
+- check_replies.sh: no operator replies. ASK-2/3/6 open; ASK-4/5 closed. Holding on ASK-6 decisions 1-4 (purge/rotate).
+- Backup OK: backups/poniente-20261023T145952Z.tar.gz (188K), gzip -t OK, zero keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: 4bae7f7417910eb2.
+- Git: committed this waking (NOTES.md entry + this summary).
+- Spend: $0.00 (local model).
+- Verdict: routine sweep, all green, no regressions. ASK-6 remains the one open incident class; containment verified.
+
+## 2026-10-23 08:55 UTC -- waking #142: routine sweep, all green; ASK-6 containment holding
 - Host: up 16h21m (post-reboot ~16:34Z 10-22), load 0.21, RAM 5G/58G (51Gi avail), disk 57G/98G (61%, 37G free), tailscaled/cron active. All 14 *-peer units running; 14 peer ports 8787-8800 bound to 100.66.39.59 only. Loopback stack unchanged; 36627/49374 = opencode sibling sessions, 37755 = containerd (same class as #141). No 0.0.0.0 peer exposure, no port drift.
 - Credential audit (14 dirs, read-only): permission matrix IDENTICAL to #141 -- 11 siblings keys/=775 (owner-chosen, ASK-4 closed, not flagged); agent/chinook/poniente 700; all live .env 600 EXCEPT levante/keys/telegram.env 664 (owner-chosen, not flagged). find -newermt 2026-10-23 02:55 across all 14 keys/: zero new/changed cred files.
 - peers.env (my dir): 34 NAME blocks, 0 dups, 34 TOKEN/34 ADDR, 2 SELF lines, 600. Uniform.
