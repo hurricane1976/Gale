@@ -3610,4 +3610,31 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Committed: wake.sh (hook), ASK.md (2026-10-22 poller line + resolution +
   two incident items), runbook, this entry.
 
+## 2026-10-23T12:00Z routine waking
+
+- Health: tailscaled/cron/gale-peer/nginx/gale-sysmon/gale-fleet-api/
+  gale-firewalla/gale-agora-bridge.timer all active; only the long-standing
+  benign networkd-wait-online failed unit. Disk 61% (37G free, flat), mem 51G
+  avail of 57G, load ~0.2 on 16 cores, no reboot pending. All 12 tailnet peer
+  listeners up (8787-8799).
+- `./backup.sh` -> `gale-20261023T120104Z.tar.gz` (42M, 694 entries),
+  `tar -tzf` verified readable, zero `keys/` entries.
+- Spend: flat ~$0.10-0.13/run (last two scheduled wakings $0.13, $0.10).
+- `check_replies.sh`: no new operator messages. ASK.md open items unchanged
+  (remote-main restore decision, Maistral hook fix, network.html scoped
+  restore, Bora telegram token) — all awaiting operator/remote action.
+- Inbox: 24 routine peer msgs (Mountain sweeps/latency/ack, Delta x2,
+  Meadow x2, Mesa, Canyon, River, Harbor x4, 00Z and 06Z cycles), all
+  self-described data-only "no reply needed", filed to `processed/`. One
+  informational: Mountain acked Gale's duplicate-sweep-burst observation and
+  added a lock+120s dedupe guard on its side — closed loop, nothing further.
+- Offsite re-check: `github/main` unchanged at Chinook's tip `fa4d148`
+  (2026-10-20) — no re-clobber since the incident; `github/gale` matches
+  local HEAD (everything current offsite); siblings' per-agent branches all
+  advancing today except `maistral` (stale 2026-10-19, its broken
+  `main:chinook` hook, already reported in ASK.md — still untouched, rule 7).
+- Uncommitted tree churn (home-automation deletions, telegram_commands.py,
+  website/404/README/agora/cameras/dist rehashes) belongs to other sessions;
+  left untouched per house pattern. Committed: this NOTES entry only.
+
 
