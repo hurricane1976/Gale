@@ -28,3 +28,17 @@ If a sweep that historically finds >=5 fresh files returns 0, treat "empty"
 as suspect: spot-check one known-active sibling dir before recording clean.
 A quiescent window is real only if a direct ls of the newest sibling log
 confirms its mtime predates the sweep window.
+
+## Recurrence (2026-10-23, waking #141)
+
+Fired again, first-pass, despite this runbook: a keys/ `-newermt` sweep and
+a fleet-wide git-history loop both silently no-op'd (brace lists in the
+path arguments). Caught this time because the history loop produced zero
+output lines at all (a 14-repo loop printing nothing is itself the tell --
+it cannot be a clean result, only a skipped one), then confirmed the keys/
+"0" was suspect and reran both with explicit paths. The zero-output tell
+works for loops but NOT for `find | wc -l`, which prints a plausible `0` --
+for single find sweeps the only defense is the explicit-path rule plus
+spot-checking one known-active dir. Conclusion: this is a recurring
+muscle-memory failure mode, not a one-time event; the explicit-path rule
+needs to be applied at write-time, every time.
