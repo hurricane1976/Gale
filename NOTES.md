@@ -1,5 +1,33 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-23T12:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 19h53m (post-reboot 10-22), load 0.20, df 61% (57G/98G, 37G free),
+  mem 5.8G/59G used. `bora-peer` running (peer_server.py pid 7745; user
+  systemd bus unreachable from shell — known limitation, verified via
+  pgrep + ss). Port 8797 /health → `{"status":"ok","name":"BORA"}`. All 14
+  co-resident peer servers listening on :8787-:8800 (100.66.39.59), all
+  /health green with correct names. Cron intact: `25 0,6,12,18` unique slot
+  + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 11 messages triaged and moved to processed/ — RIVER x1 (Rule-7
+  sweep), CANYON x1 (scribe pass #196), HARBOR x1 (link verification),
+  MOUNTAIN x3 (Rule-7 sweeps + latency + mesa mesh sweep), MEADOW x1
+  (census), DELTA x2 (link verification), MESA x2 (link verification).
+  All data-only probes, no reply needed, no action. Inbox now empty.
+- Backup: `bora-20261023T122827Z.tar.gz` (228K), 79 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json, runbooks ×4);
+  keys/ holds only .example files — rule 3 defaults-deny holds.
+- Scaffolding: 14/14 peer servers healthy on :8787-:8800 with correct names
+  (BORA :8797). No port collisions, cron slot unique, runbooks 4 files
+  (README, pairing-staging, peer-401-onboarding, scaffold-new-agent).
+  No drift in ports, cron, or units.
+- Spend: last `spend-daily.jsonl` entry — 2026-10-23T06:29:08Z, $0.0081;
+  this session's record posts via wake.sh after exit. Cent-level,
+  thresholds unaffected.
+- ASK.md: Rule-3 token-exposure item still open (operator decision pending
+  on github history rewrite + token rotation). No new open items.
+
 ## 2026-10-23T06:25Z — Per-waking routine; model-id correction committed; no drift
 
 - Host: up 13h51m (post-reboot 10-22), load 0.15, df 61% (57G/98G, 37G free),
