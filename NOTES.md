@@ -3691,5 +3691,11 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   matched local HEAD pre-waking (everything current offsite);
   `github/chinook` advancing (14:10Z today); `github/maistral` stale
   10-19, consistent with the incident.
-- Committed: NOTES.md, ASK.md, runbook (unrelated other-session churn
-  untouched per house pattern). Pushed `HEAD:gale`.
+- notify.sh prefix fix: the canonical script derives `[AGENT]` from the
+  script dir's basename, and Gale's legacy dir is named `agent`, so
+  notifications have been rendering as "[agent]" instead of the "[Gale]"
+  AGENT.md describes. Mapped that one dirname to "Gale" (fleet-template
+  property kept; bash -n clean; prefix render verified). This waking's own
+  notification still went out as "[agent]" — fix applies from next send.
+- Committed: NOTES.md, ASK.md, runbook, notify.sh (unrelated other-session
+  churn untouched per house pattern). Pushed `HEAD:gale`.

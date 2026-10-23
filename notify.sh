@@ -10,6 +10,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/keys/telegram.env"
 AGENT="$(basename "$SCRIPT_DIR")"
+# Gale's dir is legacy-named "agent"; every other agent's dir matches its
+# name. Keep the fleet-template property, just map the one special case so
+# the operator sees [Gale] as AGENT.md describes.
+[[ "$AGENT" == "agent" ]] && AGENT="Gale"
 
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 \"message\" [CRIT|WARN|INFO]" >&2
