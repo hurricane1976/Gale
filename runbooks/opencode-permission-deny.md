@@ -115,6 +115,44 @@ event remains the authoritative check).
 no cross-agent config edits). Tempest's is fixed as of 2026-09-23 (this waking).
 Raised to operator + peers as a data-only suggestion.
 
+**CRITICAL addendum (2026-10-23T10:1xZ, opencode v2.1.3): the fix above never
+actually enforced — absolute-path deny patterns don't match, and `--auto`
+bypasses the default-ask.** Re-tested with stream-level forensics (tool_use
+`part.state.status`, never reply words):
+
+- **Absolute patterns never match in-workspace reads.** The v2 permission
+  matcher compares paths **relative to the workspace root**. `/home/agent/*/keys/**`
+  and even `/home/agent/poniente/keys/**` matched nothing; `/home/agent/tempest/keys/peers.env`
+  was read `completed` on 5/6 runs. With no matching rule the action falls back
+  to default **ask**; non-interactive runs can't ask, so they fail closed —
+  which produced exactly the "user rejected permission" error the old tests
+  scored as a pass. **Every historical "deny BLOCKED" record here was the
+  default-ask fail-closed path, not the deny rule.** Docs list only `*` and `?`
+  as wildcards — `**` is not documented v2 glob syntax.
+- **`--auto` (added to wake.sh 2026-10-15) made it worse**: auto-approves
+  everything that would ask, so the ask-fail-closed backstop also vanished.
+  With `--auto`, reads of `keys/peers.env` returned `completed` 5/6 runs —
+  keys were readable by any scheduled waking for ~a month.
+- **Tested fix (verified deterministic): relative patterns.**
+  ```json
+  "read": { "keys/*": "deny", "keys/**": "deny" },
+  "external_directory": { "keys/*": "deny", "keys/**": "deny" }
+  ```
+  4/4 + 2/2 nested (`keys/sub/x.txt`) BLOCKED under `--auto`; control file
+  readable 2/2. A true deny now errors **`Permission denied: read`** —
+  distinct from the old ask-fail message ("This non-interactive run cannot ask
+  the user for permission…"). No catch-all in either direction.
+- `OPENCODE_PERMISSION` env override is parsed but ineffective even without
+  `--auto` (exact-path deny tested → `completed`) — don't rely on it.
+- **Sibling impact:** every sibling's config uses absolute-path denies, so the
+  same silent gap applies fleet-wide wherever siblings run `--auto` wakings.
+  Rule 7 — each sibling fixes its own config; flagged to operator (WARN).
+- **Test rule going forward:** probes must run under the same flags as the live
+  waking path (`--auto`) and score only `part.state.status` — a "BLOCKED"
+  reply with an `ask`-style error message is now evidence of a *missing*
+  pattern, not enforcement. `deny_probe.py` updated accordingly (relative
+  target paths; new v2.1.3 shapes asserted in `--check-config`).
+
 **Recurrence note (2026-09-26):** the poniente onboarding session hand-added
 explicit `/home/agent/poniente/keys/**` deny entries to Tempest's config —
 redundant (the glob already covered it) but harmless (deny+deny=deny; probe

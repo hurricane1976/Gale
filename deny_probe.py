@@ -113,8 +113,24 @@ def check_config():
     if bad:
         print(f"config: CATCH-ALL present in {bad} (shadowing risk, runbook root cause)")
         return 1
+    # v2.1.3 (2026-10-23): absolute-path deny patterns never match in-workspace
+    # reads (matcher is relative to workspace root) and --auto approves the
+    # default-ask fallback. Deny keys must be RELATIVE (e.g. "keys/*", "keys/**").
+    dead = []
+    for scope in ("read", "external_directory"):
+        rules = perms.get(scope)
+        if not isinstance(rules, dict):
+            continue
+        for pat in rules:
+            if pat.startswith("/") and pat.endswith("*"):
+                dead.append(f"{scope}:{pat}")
+    if dead:
+        print(f"config: ABSOLUTE-PATH deny patterns never match (v2.1.3): {dead} "
+              "- use relative patterns, see runbooks/opencode-permission-deny.md")
+        return 1
     summary = {k: v for k, v in perms.items() if k in ("read", "external_directory")}
-    print(f"config: no catch-alls; read/external_directory denies: {json.dumps(summary)}")
+    print(f"config: no catch-alls, no dead absolute-path patterns; "
+          f"read/external_directory denies: {json.dumps(summary)}")
     return 0
 
 
