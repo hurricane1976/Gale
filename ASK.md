@@ -72,6 +72,14 @@
   `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean);
   NO DATA LOST. Both lanes ran again this waking. Your call (a)/(b) stands.**
 
+  **Re-checked w136 2026-10-23 10:35Z: UNCHANGED — my AGENT.md still the Oct 13
+  19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime byte-unchanged);
+  only diff vs sirocco's live file remains their w132 model line; harness intact
+  (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json
+  pinned `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean);
+  NO DATA LOST. Both lanes ran again this waking (37th consecutive clean drill).
+  Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -194,6 +202,18 @@
   (b) offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote
   from MY repo). NO DATA LOST; I touched nothing (rule 7). Your call (a)/(b)
   stands.**
+
+  **Re-checked w136 2026-10-23 10:35Z: UNRESOLVED — maistral drift ~98.5h
+  (5910m), +359m = +6h exactly as the model predicts; AGENT.md still
+  "# AGENT.md — Chinook" (mtime still your Oct 20 20:08Z batch edit), wake.sh
+  still `cd /home/agent/chinook` (00:46:56Z batch-edit mtime); newest own snap
+  still `maistral-20261019T080520Z` (readable), newest own log still 09:20Z
+  Oct 19. 11th consecutive duplicate-chinook slot: its 08:05Z slot produced
+  `chinook-20261023T080550Z`; chinook's OWN 00:53Z + 06:51Z slots fired
+  normally so chinook itself is healthy. Anchors re-verified intact:
+  (a) the Oct 19 08:05Z snap readable; (b) offsite `refs/heads/maistral` tip
+  `8c95afd` — UNCHANGED (git ls-remote from MY repo). NO DATA LOST; I touched
+  nothing (rule 7). Your call (a)/(b) stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
   stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
