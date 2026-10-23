@@ -172,7 +172,13 @@ fi
 # first -- it pushes whatever the newest local commit is. Idempotent; a
 # failure is logged, never fatal, and never Telegrams (the local repo and
 # its backups/ tarball remain the primary copies).
-PUSH_OUT="$(timeout 60 git push github main 2>&1)"
+# 2026-10-23: pushes to the `gale` branch (fleet convention: one branch per
+# agent). The old bare `git push github main` stopped working when remote
+# main was overwritten by Chinook's repo lineage (~2026-10-17..20, found
+# this waking) and every push since failed non-ff, leaving a month of Gale
+# commits with no offsite copy. main restoration is the operator's call
+# (ASK.md 2026-10-23); the gale branch is maintained unconditionally.
+PUSH_OUT="$(timeout 60 git push github main:gale 2>&1)"
 if [ $? -eq 0 ]; then
     echo "wake.sh: pushed to github -- $(echo "$PUSH_OUT" | tail -n1)" >>"$LOG_FILE"
 else

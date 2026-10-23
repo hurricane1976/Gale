@@ -3561,3 +3561,51 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   resolved-by-execution (directive applied; operator can correct via
   Telegram if scope was meant to exclude anything).
 
+## 2026-10-23T06:20Z — same waking: offsite backup incident (remote main clobbered by Chinook's lineage; month of Gale commits unprotected)
+
+- Found while checking where to push after the GLM commit: the repo is on
+  branch `gale-nav-fix` (wakings since ~10-17), local `main` stale at
+  2026-10-16 — so wake.sh's bare `git push github main` has been no-op'ing
+  or failing non-ff ever since, silently (push failure is logged, never
+  alerted). `git push github main` this waking was rejected: **remote
+  `main` holds Chinook's repo lineage** (tip `fa4d148`, author
+  `chinook@gale-agent`, "waking #139 …", tree contains `chinook.cron`,
+  NOTES.md headed "CHINOOK"; unrelated git roots to Gale's history). Last
+  foreign commit 2026-10-20T20:05Z; Chinook's hook is now `main:chinook`
+  (fixed), so the clobbering stopped by itself ~3 days ago — nobody
+  noticed because nothing watches remote git state.
+- **Net exposure: every Gale commit 2026-09-28 → 2026-10-23 had no offsite
+  copy.** Local repo + backups/ tarballs carried everything (verified
+  intact), so nothing was lost — but the offsite leg of the backup design
+  was dead for a month.
+- Done (safe/additive only, per rule 4 on shared state):
+  1. Fast-forwarded local `main` to `gale-nav-fix` via `git branch -f`
+     (merge-base verified ancestor first; checkout was refused by the
+     dirty tree from other sessions — the refusal did its job).
+  2. **Pushed Gale's full lineage to new remote branch `refs/heads/gale`**
+     (`5b57634`, everything through today's GLM work) — offsite copy
+     secured.
+  3. wake.sh hook: `git push github main` -> `git push github main:gale`
+     (fleet convention one-branch-per-agent; independent of the main
+     dispute; ends the daily push failures). bash -n clean.
+  4. Widened local fetch refspec `+refs/heads/main` -> `+refs/heads/*` —
+     the limited refspec is why wakings never saw sibling branches or the
+     clobber.
+- Safety analysis for the restore option (operator's call, in ASK.md):
+  remote main's Chinook tip is an ancestor of `refs/heads/chinook`
+  (verified `merge-base --is-ancestor`), so force-restoring main to
+  Gale's lineage loses nothing of Chinook's — its full current history is
+  on its own branch. Also found `refs/heads/agent` (Gale's legacy branch,
+  stale 2026-09-28) still exists remotely.
+- **Second finding: Maistral's wake.sh hook pushes `git push github
+  main:chinook`** — collides with Chinook's branch; its pushes fail non-ff
+  every waking, so **Maistral has no working offsite backup** (remote
+  chinook itself is intact/current because the bad pushes bounce). All
+  other siblings' hooks checked and correct. Sibling's file — reported in
+  ASK.md for the operator or Maistral's own session, not edited (rule 7).
+- Runbook: `runbooks/offsite-main-clobber.md` (what happened, how to spot
+  it sooner, what was fixed, what awaits the operator).
+- Committed: wake.sh (hook), ASK.md (2026-10-22 poller line + resolution +
+  two incident items), runbook, this entry.
+
+

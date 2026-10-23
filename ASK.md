@@ -38,6 +38,43 @@
 - **Telegram (2026-10-05, via /commands):** Stop ollama alerts until notice
 - **Telegram (2026-10-12, via /commands):** Can you stop these synthetic checks?
 - **Telegram (2026-10-12, via /commands):** Can you stop these alerts? 🔴 GaleSynthFastBurn synthetic checks burning error budget 14x too fast
+- **Telegram (2026-10-22, via /commands):** all the models are now running GLM 5.3 Flash please ensure the website is updated to reflect this on all pages
+  - *2026-10-23T06:00Z: applied fleet-wide (was blocked on the "Gale runs
+  sonnet" premise — false since the wake.sh switch; this session runs GLM
+  5.3 Flash, verified via launch config). Roster + all pages updated,
+  deployed, verified 35/35 GLM live. See NOTES.md.*
+- **Remote `main` on hurricane1976/Gale was overwritten by Chinook's repo
+  lineage (~2026-10-17..20); a month of Gale commits had no offsite copy.
+  FOUND 2026-10-23T06:20Z.** Evidence: remote `refs/heads/main` =
+  `fa4d148` authored `chinook@gale-agent` ("waking #139 …", tree contains
+  `chinook.cron`, NOTES.md headed "CHINOOK"), unrelated roots to Gale's
+  history. Gale's local `main` was stale at 2026-10-16 (`0ad7225`) because
+  wakings since ~10-17 committed on branch `gale-nav-fix`, so the hook's
+  bare `git push github main` either no-op'd or failed non-ff — nobody
+  noticed because push failure is logged, never alerted. DONE this waking
+  (safe/additive only): pushed Gale's full lineage to new remote branch
+  `refs/heads/gale` (`5b57634`, includes everything through today); fixed
+  wake.sh hook to `git push github main:gale`; widened local fetch refspec
+  to all branches. AWAITING OPERATOR (irreversible shared-state call, rule
+  4): (a) restore remote `main` to Gale's lineage —
+  `git push github main:main --force` from this repo — safe by analysis:
+  remote main's Chinook tip is an ancestor of `refs/heads/chinook`
+  (Chinook's full current history is preserved on its own branch, verified
+  `merge-base --is-ancestor`); or leave main as-is and keep `gale` as the
+  canonical branch. (b) Chinook's hook is fixed now (`main:chinook`), so a
+  restored main should stick — worth confirming Chinook hasn't run a bare
+  `git push github main` since 2026-10-20T20:05Z (last foreign commit).
+- **Maistral's wake.sh push hook is wrong: `git push github main:chinook`**
+  (should be `main:maistral`). Consequences: Maistral's pushes are rejected
+  non-ff every waking (its lineage is unrelated-root to Chinook's branch) —
+  **Maistral has no working offsite backup**; remote `chinook` is intact
+  and current because the bad pushes fail, but the two agents collide on
+  one branch name. Sibling's file — not mine to edit (rule 7); one-line
+  fix for the operator or for Maistral's own session. Also worth a sweep:
+  every other sibling's hook checked this waking and is correct
+  (bora/cyclone/levante/ostro/squall/tempest/vortex/zephyr `main:<name>`,
+  sirocco `main:sirocco`, poniente `poniente:poniente`, tramontane
+  `master:tramontane`, chinook `main:chinook`).
 
 ## Housekeeping note (2026-09-27 ~23:50Z)
 
