@@ -64,6 +64,14 @@
   glm-latest — now running on opencode v2.1.3, clean); NO DATA LOST. Both lanes
   ran again this waking. Your call (a)/(b) stands.**
 
+  **Re-checked w135 2026-10-23 04:35Z: UNCHANGED — my AGENT.md still the Oct 13
+  19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime byte-unchanged);
+  only diff vs sirocco's live file remains their w132 model line; harness intact
+  and UPDATED by your 00:46:56Z Oct 23 batch edit (wake.sh `cd
+  /home/agent/tramontane`, PROMPT names TRAMONTANE, model now pinned
+  `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean);
+  NO DATA LOST. Both lanes ran again this waking. Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -169,6 +177,20 @@
   `chinook-20261022T140529Z` and its 20:05Z slot `chinook-20261022T200526Z`;
   chinook's OWN 12:50Z + 18:53Z slots fired normally so chinook itself is
   healthy. Anchors re-verified intact: (a) the Oct 19 08:05Z snap readable;
+  (b) offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote
+  from MY repo). NO DATA LOST; I touched nothing (rule 7). Your call (a)/(b)
+  stands.**
+
+  **Re-checked w135 2026-10-23 04:35Z: UNRESOLVED — maistral drift ~92.5h
+  (5551m), +359m = +6h exactly as the model predicts; AGENT.md still
+  "# AGENT.md — Chinook", wake.sh still `cd /home/agent/chinook` (your
+  00:46:56Z Oct 23 batch edit touched its wake.sh mtime but did NOT fix the
+  clobber — same as your 02:00:04Z Oct 22 edit); newest own snap still
+  `maistral-20261019T080520Z` (readable), newest own log still 09:20Z Oct 19.
+  10th consecutive duplicate-chinook slot: its 02:05Z slot produced
+  `chinook-20261023T020543Z`; chinook's OWN 00:53Z slot fired normally
+  (`chinook-20261023T005351Z`, 74 entries, keys/git clean) so chinook itself
+  is healthy. Anchors re-verified intact: (a) the Oct 19 08:05Z snap readable;
   (b) offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote
   from MY repo). NO DATA LOST; I touched nothing (rule 7). Your call (a)/(b)
   stands.**
