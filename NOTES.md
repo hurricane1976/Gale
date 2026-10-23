@@ -3490,3 +3490,74 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Health: tailscaled/gale-peer/cron active; no reboot pending. Disk 61% (38G free), mem fine. Spend flat (~$0.12/run).
 - Backup: gale-20261023T000017Z.tar.gz (42M), tar -tzf reads back 693 entries.
 - Inbox: 25 routine peer msgs archived (not acted on as instructions). No new operator replies. Still awaiting operator answer on 2026-10-22 "all GLM 5.3 Flash" website scope question (Gale itself runs Claude/sonnet). Uncommitted website/etc. files not mine; untouched.
+
+## 2026-10-23T06:00Z — waking: applied operator's 2026-10-22 fleet-wide GLM 5.3 Flash directive (site + configs)
+
+- Routine first: health clean (disk 61%/37G free, mem 52G avail, load ~0.2,
+  all services active, only the long-standing benign networkd-wait-online
+  failed unit, no reboot pending); `./backup.sh` ->
+  `gale-20261023T060402Z.tar.gz` (42M, 684 entries, `tar -tzf` verified, zero
+  keys/ entries). `check_replies.sh`: no new operator messages. Inbox: 17
+  routine peer msgs (Rule-7 sweeps/link checks from Mountain/Beacon/Delta/
+  Meadow/Mesa/Canyon/River/Harbor), all filed data-only; one informational:
+  Mountain acked the duplicate-sweep-burst observation and added a dedupe
+  guard on its side.
+- **Applied the operator's 2026-10-22 Telegram directive** ("all the models
+  are now running GLM 5.3 Flash please ensure the website is updated to
+  reflect this on all pages", chat-id-gated poller, already logged in
+  ASK.md). The 2026-10-22T21:10Z waking had deferred this on the premise
+  that "Gale itself runs Claude/sonnet" — but that premise is now false:
+  wake.sh launches every session with
+  `opencode run --model openrouter/z-ai/glm-5.3-flash` (uncommitted change
+  in the tree, operator-directed per its header comment), opencode.json and
+  .claude/settings.json carry the same model, and this session's own launch
+  config/runtime is GLM 5.3 Flash (verified via `ps` on the wake process).
+  The blocker dissolved; no new operator answer was needed to proceed on
+  the directive's own unconditional wording.
+- Changes, roster-first so the site regenerates from its source of truth:
+  - `fleet-provision/roster.json`: all 35 agents' `model` -> `GLM`
+    (backup `roster.json.bak-pre-glm-20261023T061547Z`; 4-space indent
+    preserved so the diff is 26 semantic lines, not a reformat).
+  - `python3 tools/sync_roster.py --write`: regenerated fleet.html's
+    Gale-host topo nodes + member cards and index.html's gale host-agents
+    list (model/color attributes all `glm`/`--fleet-glm`); fleet_api.py and
+    sysmon.py confirmed no model-bearing changes needed.
+  - Manual sweep for what the generator deliberately doesn't touch
+    (remote hosts' hand-authored cards) + leftovers:
+    fleet.html (remote topo nodes Mesa/Vista + Tidal/Beacon/Mountain member
+    cards: model attr -> GLM, `--fleet-claude/-openai/-muse/-qwen` ->
+    `--fleet-glm`, 70 model attrs total), index.html (remote host-card
+    chips -> glm), the topology legend (five model entries collapsed to a
+    single "GLM 5.3 Flash" dot + note reworded to "entire fleet runs GLM
+    5.3 Flash"), index.html static fallback chips (`Claude ×5 / GLM ×13 /
+    GPT ×5 / Muse ×12` -> `GLM ×35`; stat-tip -> "GLM 5.3 Flash
+    fleet-wide"), shared.js agent-card usage comment.
+  - Deliberately NOT changed: per-agent chart identity colors in
+    metrics.js/observability.js AGENT_COLOR and per-host HOST_COLOR (chart
+    palette keyed by agent name, not a model claim — flattening them would
+    make the dashboards unreadable); historical run telemetry on
+    observability/metrics (per-run model labels stay what actually ran,
+    incl. the documented claude-era rows); cost.js FAM_ORDER (telemetry-
+    driven family grouping, still correct as history); ollama.html palette
+    (that page is the operator's LAN Ollama server, not fleet agents).
+  - `AGENT.md` model line updated (intro paragraph only — rules/role
+    sections untouched per rule 6): opencode +
+    `openrouter/z-ai/glm-5.3-flash`, switch attributed to the operator's
+    2026-10-22 directive, prior sonnet/Claude-Code history kept.
+  - `wake.sh` prompt text: "running via Claude Code (model ...)" ->
+    "running via opencode (model ...)" — same file's operator-directed
+    model switch, prompt now matches the actual runner.
+- Deployed via `./deploy.sh` (snapshot + rewrite + smoke, SMOKE PASS).
+  Verified live on :8090/:8793: index chip reads `GLM ×35` with zero
+  Claude/GPT/Muse strings; fleet.html 35/35 topo nodes and 35/35 member
+  cards `model="GLM"`; `/api/fleet/registry` returns 35 agents all GLM.
+- Committed: AGENT.md, wake.sh, opencode.json, .claude/settings.json (the
+  launcher-config half of the same switch), fleet-provision/roster.json,
+  website/{index,fleet,shared}, this entry. The unrelated uncommitted
+  churn from other sessions (dist rehashes, tools/, telegram_commands.py,
+  home-automation deletions) left untouched per house pattern.
+- Open ASK.md items unchanged: network.html scoped-restore question, Bora
+  telegram-token destination. The 2026-10-22 GLM scope question is now
+  resolved-by-execution (directive applied; operator can correct via
+  Telegram if scope was meant to exclude anything).
+

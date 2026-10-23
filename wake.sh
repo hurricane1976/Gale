@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 2026-10-17 operator-directed: GLM fallback replaced with openrouter/deepseek/deepseek-v4-flash-0731 (fleet primary moved to Ling 3.0 Flash).
+# 2026-10-17 operator-directed: GLM fallback replaced with openrouter/z-ai/glm-5.3-flash (fleet primary moved to Ling 3.0 Flash).
 # Cron entry point. Wakes Gale, hands it AGENT.md, logs the run.
 #
 # Pattern follows the fleet's wake.sh (Beacon's repo), trimmed to what Gale
@@ -11,7 +11,7 @@
 #   --add-dir /home/agent                 root dir Claude Code may read/write
 #   --output-format json                  one result envelope (cost, usage)
 #   --permission-mode bypassPermissions   unattended run, no prompts
-#   --model sonnet
+#   --model openrouter/z-ai/glm-5.3-flash
 set -u
 cd /home/agent/agent || exit 1
 export PATH="$HOME/.local/bin:$HOME/.opencode/bin:/usr/local/bin:/usr/bin:/bin"
@@ -51,8 +51,8 @@ RUN_START_EPOCH="$(date +%s)"
 rm -f "$NOTIFY_MARK"
 
 PROMPT="You are waking up on your regular schedule as Gale, the Resilience & \
-Recovery agent for this host, running via Claude Code (model \
-sonnet). Read /home/agent/agent/AGENT.md first -- it has \
+Recovery agent for this host, running via opencode (model \
+openrouter/z-ai/glm-5.3-flash). Read /home/agent/agent/AGENT.md first -- it has \
 your operating rules and your role; follow them. Then check NOTES.md, ASK.md, \
 and peer/inbox/ in /home/agent/agent for prior context, and run \
 ./check_replies.sh for new messages from the operator. Do your per-waking \
@@ -63,13 +63,13 @@ Append a dated entry to NOTES.md summarizing this waking. Before you finish, \
 run ./notify.sh with a short summary, per AGENT.md."
 
 claude_run() {
-    python3 website/tools/run_observed.py --agent gale --runtime claude --model sonnet \
+    python3 website/tools/run_observed.py --agent gale --runtime claude --model openrouter/z-ai/glm-5.3-flash \
         --ts "$TS" --artifact "$JSON_FILE" --timeout 2700 -- \
         claude -p "$PROMPT" \
             --add-dir /home/agent \
             --output-format stream-json --verbose \
             --permission-mode bypassPermissions \
-            --model sonnet
+            --model openrouter/z-ai/glm-5.3-flash
 }
 claude_run >"$JSON_FILE" 2>"$LOG_FILE"
 CLAUDE_EXIT=$?
@@ -77,10 +77,10 @@ CLAUDE_EXIT=$?
 # Automatic fallback (operator-directed): Claude failed -- one attempt on
 # the OpenRouter fallback (DeepSeek V4 Flash 0731) via opencode before alerting. A fallback success
 # counts as success (no shell alert).
-FALLBACK_MODEL="openrouter/deepseek/deepseek-v4-flash-0731"
+FALLBACK_MODEL="openrouter/z-ai/glm-5.3-flash"
 if [ "$CLAUDE_EXIT" -ne 0 ]; then
     if command -v opencode >/dev/null 2>&1; then
-        echo "wake.sh: claude (sonnet) failed (exit $CLAUDE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
+        echo "wake.sh: claude (GLM 5.3 Flash) failed (exit $CLAUDE_EXIT) -- falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
 # opencode v2 (upgraded 2026-10-14 20:41Z): "run --dir" flag removed; the
 # workdir is now the process cwd (this script cd's into its own dir above).
 # --standalone keeps each wake in a private, killable process tree so the 45m

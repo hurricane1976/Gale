@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "updated": "2026-10-10",
+    "updated": "2026-10-23T06:15Z",
     "hosts": {
         "tidal": {},
         "beacon": {},
@@ -13,7 +13,7 @@
             "host": "tidal",
             "addr": "100.91.42.51",
             "port": 8787,
-            "model": "Claude",
+            "model": "GLM",
             "role": "Development & security auditing",
             "dir": null
         },
@@ -58,7 +58,7 @@
             "host": "tidal",
             "addr": "100.91.42.51",
             "port": 8792,
-            "model": "GPT",
+            "model": "GLM",
             "role": "Independent verification & fleet QA",
             "dir": null
         },
@@ -67,7 +67,7 @@
             "host": "tidal",
             "addr": "100.91.42.51",
             "port": 8793,
-            "model": "GPT",
+            "model": "GLM",
             "role": "Knowledge & documentation curator",
             "dir": null
         },
@@ -76,7 +76,7 @@
             "host": "beacon",
             "addr": "100.99.217.90",
             "port": 8787,
-            "model": "Claude",
+            "model": "GLM",
             "role": "Production build & operations",
             "dir": null
         },
@@ -121,7 +121,7 @@
             "host": "beacon",
             "addr": "100.100.158.42",
             "port": 8787,
-            "model": "GPT",
+            "model": "GLM",
             "role": "SRE & backup steward",
             "dir": null
         },
@@ -130,7 +130,7 @@
             "host": "beacon",
             "addr": "100.70.91.55",
             "port": 8787,
-            "model": "Claude",
+            "model": "GLM",
             "role": "Security sentinel",
             "dir": null
         },
@@ -139,7 +139,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8787,
-            "model": "Claude",
+            "model": "GLM",
             "role": "Fleet protocol & integration",
             "dir": null
         },
@@ -166,7 +166,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8793,
-            "model": "Muse",
+            "model": "GLM",
             "role": "Growth & outreach",
             "dir": null
         },
@@ -175,7 +175,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8794,
-            "model": "Muse",
+            "model": "GLM",
             "role": "Treasury & business strategist",
             "dir": null
         },
@@ -184,7 +184,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8795,
-            "model": "GPT",
+            "model": "GLM",
             "role": "Fleet link & mesh reliability",
             "dir": null
         },
@@ -193,7 +193,7 @@
             "host": "mountain",
             "addr": "100.114.14.116",
             "port": 8796,
-            "model": "GPT",
+            "model": "GLM",
             "role": "Site & product quality",
             "dir": null
         },
@@ -202,7 +202,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8787,
-            "model": "Claude",
+            "model": "GLM",
             "role": "Resilience & recovery \u2014 this page\u2019s vantage point, fleet lead",
             "dir": "/home/agent/agent"
         },
@@ -211,7 +211,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8788,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Continuous watch & cost-efficient telemetry",
             "dir": "/home/agent/zephyr"
         },
@@ -220,7 +220,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8789,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Adversarial verification & recovery drills",
             "dir": "/home/agent/squall"
         },
@@ -229,7 +229,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8790,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Open-stack portability & fleet interop",
             "dir": "/home/agent/tempest"
         },
@@ -238,7 +238,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8792,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Security sentinel & threat forensics",
             "dir": "/home/agent/vortex"
         },
@@ -247,7 +247,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8793,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Capacity planning & load forecasting",
             "dir": "/home/agent/chinook"
         },
@@ -256,7 +256,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8794,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Production & fleet ops",
             "dir": "/home/agent/cyclone"
         },
@@ -265,7 +265,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8795,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Fleet memory & trend curation",
             "dir": "/home/agent/maistral"
         },
@@ -274,7 +274,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8796,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Upstream dependency & external-service health",
             "dir": "/home/agent/sirocco"
         },
@@ -283,7 +283,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8797,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Fleet scaffolding & onboarding",
             "dir": "/home/agent/bora"
         },
@@ -292,7 +292,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8791,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Backup & restore guardian",
             "dir": "/home/agent/tramontane"
         },
@@ -301,7 +301,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8798,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Sharpness & regression watch",
             "dir": "/home/agent/ostro"
         },
@@ -310,7 +310,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8800,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Fleet security & credential-hygiene watch",
             "dir": "/home/agent/poniente"
         },
@@ -319,7 +319,7 @@
             "host": "gale",
             "addr": "100.66.39.59",
             "port": 8799,
-            "model": "Qwen",
+            "model": "GLM",
             "role": "Fleet observability & roster",
             "dir": "/home/agent/levante"
         }

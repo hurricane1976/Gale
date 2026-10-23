@@ -1,5 +1,5 @@
 {
-  "model": "sonnet",
+  "model": "openrouter/z-ai/glm-5.3-flash",
   "permissions": {
     "deny": [
       "Read(/home/agent/agent/keys/**)",
