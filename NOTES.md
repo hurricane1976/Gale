@@ -3633,8 +3633,16 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   local HEAD (everything current offsite); siblings' per-agent branches all
   advancing today except `maistral` (stale 2026-10-19, its broken
   `main:chinook` hook, already reported in ASK.md — still untouched, rule 7).
+- Restore spot-check (first since the full 2026-09-22 drill): extracted
+  `gale-20261023T120104Z.tar.gz` to /tmp/opencode/restore-test — 644 files;
+  AGENT.md/ASK.md/wake.sh/backup.sh/notify.sh/website/fleet_api.py all
+  byte-identical to live; NOTES.md differs only by this waking's own entry
+  appended after the snapshot ran (snapshot tail == HEAD~1's tail, verified);
+  `keys/` empty as designed. Scratch removed. Drill PASS.
 - Uncommitted tree churn (home-automation deletions, telegram_commands.py,
   website/404/README/agora/cameras/dist rehashes) belongs to other sessions;
   left untouched per house pattern. Committed: this NOTES entry only.
+- Pushed `HEAD:gale` (961c9f5) — first scheduled-waking push through the
+  new hook path, confirmed working end to end.
 
 
