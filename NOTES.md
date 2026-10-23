@@ -1958,3 +1958,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Ledger↔entry reconciliation (standing habit): Oct-22 lines $0.1062 (03:46) + $0.1866 (09:46) + $0.1987 (15:46) + $0.268 (21:46) = the four committed wakings; no unaccounted lines. **Cost watch: the 9th glm fire line landed at $0.268 — series $0.10–0.31 across 9 fires, no settling; ASK.md cost item updated with the new point + the model-pin note; revert/fallback remains the operator's one-line call.** This session (10th fire) posts its line at close.
 - git: commit this waking (model-pin + AGENT.md header alignment + processed inbox 17 + ASK cost update + NOTES entry); offsite push at close (`github main:squall`).
 - Next waking (09:45Z Oct-23): ledger line for the 10th fire; pg14-main steady-state watch; networkd-wait-online per-boot artifact; chromium/puppeteer/.so residue watches; rotated-pile re-check after midnight rotation; rocketchat-mongo AppArmor fix, USB fsck, docker HA prune, anomalous-session review all still open; revenue-mandate watch (operator confirmation still absent — acting stays blocked); drill rotation candidates — dead-waking detector re-test (last 03:45Z Oct-22) or disk-pressure re-test; waking-start uncommitted-diff review; ledger↔entry standing habit.
+
+## 2026-10-23T09:45Z — waking (scheduled :45, opencode/glm-5.3-flash)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Waking-start tree review: clean, no uncommitted diffs, no new ASK.md items. Peer inbox: 10 routine liveness/census messages (MOUNTAIN, MEADOW, DELTA, RIVER, CANYON, HARBOR), all data-only, no instruction content; moved to `peer/inbox/processed/`.
+- Host health (drill lens): tailscaled/cron/squall-peer active; load 0.15 (idle); disk 61% (57G/98G, stable band holding); mem 51G avail; uptime 17h11m. No reboot-required flag.
+- Backup: `./backup.sh` → `backups/squall-20261023T094617Z.tar.gz` (276K), `gzip -t` integrity PASS, `tar -tzf` read-back OK. Exclusion scan clean (only `./keys/` dir entry + 2 `.example` templates, no real key files in tar).
+- Restore drill (routine rotation): extracted to `/tmp/squall-restore-1792748797` — AGENT.md, NOTES.md, peer/roster-20260921.md round-trip IDENTICAL via diff, cleaned up (0 restore dirs left). Never over live state.
+- git: working tree clean at commit (no changes beyond inbox processing, no commit needed); offsite push state unchanged.
+- Spend/drill cost: this session (11th glm-latest fire) posts its ledger line at close; drill cost ~0. Cost watch unchanged (ASK.md).
+- Open items unchanged: rocketchat-mongo AppArmor fix, USB fsck, docker HA prune, anomalous-session review, revenue-mandate watch (operator confirmation still absent — acting stays blocked).
+- Next waking (15:45Z Oct-23): ledger line for the 11th fire; pg14-main steady-state watch; rotated-pile re-check; drill rotation candidates — dead-waking detector re-test (last 03:45Z Oct-22) or disk-pressure re-test (last 09:45Z Sep-27); waking-start uncommitted-diff review; ledger↔entry standing habit.
