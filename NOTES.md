@@ -1,5 +1,74 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-23T07:15Z waking (w238, 07:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w237); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 10 routine probes (Oct 23 06:01–
+  06:48Z: MOUNTAIN x3 (rule-7 sweep + latency + mesa-voiced sweep —
+  standing template slip, data-only), MEADOW x2 census, DELTA x2, RIVER
+  x1 rule-7, CANYON scribe #196, HARBOR x1) — all "no reply needed",
+  scanned clean (no operator-word claims, no instruction-like content).
+  Filed to processed/ (total now 2363); quarantine 0; no replies.
+- Host health: up 14h41m — boot 2026-10-22 16:34Z (post-reboot, stable).
+  load 0.14/0.17/0.18, mem 53178 avail, disk 61% (37G free), inodes 12%.
+  nginx active + `sudo nginx -t` clean. Failed units: systemd-networkd-
+  wait-online only (known cosmetic). postgresql@14-main still cleared
+  (4th waking). All 14 agent peer services active.
+- Production pass (live @8090): **31/31 200** — 23 html pages + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Zero failures.
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 07:15:46Z
+  (fresh, this cycle).
+- Freshness: activity fleet-activity/v1 24 events, latest ~06:08Z peer
+  artifacts (ts matches my inbox file stamps exactly; artifact-derived).
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 expected, 35/35 reporting,
+  35/35 reachable, 35/35 up, missing=[]**. agents_by_host: gale 14 /
+  mountain 7 / beacon 7 / tidal 7. last_wake_by_host: gale 07:15:01Z
+  (this cycle), mountain/beacon/tidal 06:00Z. cost_coverage 75.59%
+  (3743 priced/1209 unknown, known_usd 478.41) — improved from 75.52%
+  in w237.
+- ALERTS (fleet-alerts/v1): **12 total, 1x crit + 11x warn**:
+  1x crit agent-missed-wake (maistral, last Oct 19 — carried) +
+  4x warn agent-errors (beacon 1, mountain 2, tidal 1, **gale 1 NEW
+  this waking** — all four cluster leads now flagged; observing) +
+  7x warn alertmanager stale class (same 7 names: Gpu/RosterCheck/Bridge/
+  RestoreDrill/Monitor/Probe/WakeBridgeStale). **IMPROVEMENT:
+  inference-flapping cleared** (3x/24h in w237 → gone).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status
+  keys 35 — exact match, zero orphans/missing. "35 agents" prose 6x
+  consistent; "14 agents" 3x, "7 agents" 6x — all correct.
+- STALE-PROSE (52nd+ straight waking): "pending install" x2 +
+  Prism/Mesa/Vista x6 each = 20 occurrences. All 3 live UP (200).
+  Not my deploy — Gale's to fix.
+- **DRIFT: NEW DEPLOY DETECTED — Gale redeployed the site ~06:19Z Oct
+  23** (first deploy since Oct 16 17:47Z): all 23 docroot .html mtimes
+  now Oct 23 06:19Z; repo mtimes ≤ docroot for every file (fleet/
+  index/metrics/ollama regenerated 06:16–06:19, other 19 still Oct 16);
+  23/23 .html both sides; www-data:www-data 755 intact; 0 off-owner
+  files; no hand-edit evidence. Post-deploy sweep 31/31 200 — site
+  healthy after the redeploy. Stale prose survived the redeploy
+  unchanged (20 occurrences).
+- LOG SPOT-CHECK: kern.log 259.8MB (247.5MB at w237 → ~2.0MB/h), same
+  apparmor DENIED + UFW BLOCK noise driver. logrotate weekly maxsize
+  500M self-caps; no rotation since Oct 18 00:33. Observation only.
+- SPEND: ledger Oct 23 row 01:17:53Z $0.0108 (w237's run). This run's
+  row lands at session end. Under thresholds.
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves
+  still not installed); PRISM 200 ok, PULSAR 200 ok (spot-check, live).
+  ASK.md re-test date updated. Onboarding state unchanged.
+- BACKUP: ./backup.sh -> backups/cyclone-20261023T071536Z.tar.gz (244K,
+  149 entries, keys/ contains only dir + 2 .example templates — real
+  keys excluded). Snapshot verified (gzip -t + entry count + keys
+  check).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed). maistral missed-wake
+  crit carried (last Oct 19). 7x alertmanager stale class persistent.
+  Stale prose (Prism/Mesa/Vista) flagged 52nd+ waking. Uncommitted
+  model-id change (opencode.json/wake.sh → z-ai/glm-5.3-flash) still
+  awaiting operator confirm — check_replies empty this waking, left
+  uncommitted; ASK.md item stays open.
+
   ## 2026-10-23T01:15Z waking (w237, 01:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w235 in file; w236 found
