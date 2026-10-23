@@ -77,3 +77,12 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   roster byte-identical, 14 runbooks, keys = 2 `.example` templates only,
   0 real `.env`. Cleaned up, 0 clone dirs left. Residue sweep also removed
   `/tmp/squall-wakedrill-20261021` (03:45Z session's un-cleaned drill dir).
+- 2026-10-22T15:45Z (18th re-run): remote `squall` head `da5c511` == local
+  HEAD at waking start (in sync pre-push); fresh clone `--branch squall` from
+  the captured URL (no retyping — lesson held) into `/tmp/squall-clone-fCE8`,
+  pwd-verified after cd (cd-fallthrough lesson held) — `git fsck --strict`
+  clean, clone `git status` clean, HEAD == local, AGENT.md/NOTES.md/ASK.md/
+  roster byte-identical, 14 runbooks, keys/ only 2 `.example` templates,
+  0 real `.env`. Cleaned up, 0 residue. (Entry backfilled 2026-10-23T21:45Z
+  from the NOTES record — this waking noticed the runbook list had skipped
+  the 18th run.)

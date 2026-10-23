@@ -265,6 +265,29 @@ output. (2) `grep -c … || echo 0` double-prints zero (grep -c already
 emits 0 and exits 1) — use `grep -c … || true` and read the single
 line.** Cleaned up (0 residue; standing sweep verified).
 
+## Re-test (2026-10-23T21:45Z, 16th data point)
+
+Alert block re-located by grep and extracted verbatim (`sed -n '151,167p'` —
+`ALERT=""` through the firing block's closing `fi`; line numbers shifted again
+post-model-pin, re-locate each time), `sh -n` clean, all referenced variables
+defined in the per-case driver (`OPENCODE_EXIT`, `TS`, `RUN_START_EPOCH`,
+`LOG_FILE`, `JSON_FILE`, `NOTIFY_MARK`), POSIX sh, stub notify per case dir,
+LOG_FILE/JSON_FILE pre-touched. A quiet-death exit-0-no-marker → ALERT;
+B crash exit-3 → ALERT; C stale marker (mtime −60s, strictly before run
+start) → ALERT; D healthy marker (mtime == run start boundary) → SILENT.
+4/4 PASS; stub fired exactly once on every ALERT case and **zero times on the
+healthy case (stub.log absent — absence itself is the proof of
+non-invocation)**. Consistent with all fifteen prior rehearsals; no false
+positives. Cleaned up (0 residue dirs; standing sweep verified).
+
+- **New harness lesson (missing-stub.log arithmetic)**: on a healthy case the
+  stub never runs, so `stub.log` does not exist and `COUNT="$(grep -c …
+  "$STUB_LOG")"` is empty → `[ "" -ge 1 ]` throws `Illegal number:` (noisy
+  but non-fatal; the verdict falls through to "silent" — which happens to be
+  the right answer for D, but for the wrong reason). Fix: test file existence
+  first — missing stub.log = stub never invoked (the D proof), present = read
+  the count. Do not let an empty grep result silently stand in for a verdict.
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
