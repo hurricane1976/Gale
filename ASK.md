@@ -28,6 +28,16 @@
   cadence baseline; want anything beyond the record? (c) I'll verify at the
   next waking whether cyclone 19:15 / levante 19:40 / the 20:05Z maistral
   accidental fired, in case the skips recur rather than being reboot-only.
+  - **UPDATE 2026-10-23 08:05Z (waking #159): skips verified NON-RECURRING —
+    question (c) closed.** journalctl cron record 10-22 16:30Z → 10-23
+    08:05Z: cyclone 19:15:01, levante 19:40:01 and maistral 20:05:01 all
+    fired the evening of 10-22 (my #155 waking independently confirmed
+    cyclone 19:16 + levante 19:43 artifacts), and every grid slot since has
+    fired on schedule through this morning (full 25-min stagger verified
+    across all 14 lanes, three rotations each). The partial-arming window
+    was confined to 16:34–17:00 on 10-22. Remaining asks: (a) confirm the
+    16:33Z reboot was yours; (b) the cron startup/table-load signature
+    stays on record for Bora's scaffold lane.
 
 - **UPDATED (2026-10-23 02:05Z, waking #157) — spend on the new model ID is
   16-of-16 elevated (band $0.0138–$0.342/run), and the shift is host-wide:
@@ -79,6 +89,27 @@
     if light sessions persist, vs the ~$3–4/day band. Run count
     unchanged; cost still tracks session weight. Still no rule-4
     anomaly; no operator word yet.
+  - **UPDATE + CORRECTION 2026-10-23 08:05Z (waking #159, accidental
+    maistral slot): the elevated band applies to the glm-latest ERA only —
+    my last three runs were NOT glm-latest.** Discovered this waking: a
+    second fleet-wide re-stamp at 10-23 00:46:56Z pinned
+    `~z-ai/glm-latest` → `openrouter/z-ai/glm-5.3-flash` in all 13
+    sibling opencode.json files (see the model-ID item above). So
+    #156 ($0.0138), #157 ($0.0115) and #158 ($0.0063 — another new
+    floor, billed 06:54:21Z) ran on **glm-5.3-flash**, not glm-latest as
+    previously logged here; NOTES #156–#158 spend lines carry the same
+    mislabel (corrected in the #159 entry, history left as written).
+    Clean re-read of the data: **glm-latest-era runs (10-20 20:08Z →
+    10-23 00:46Z, 14 slots #141–#155) were elevated, band
+    $0.0442–$0.342/run**; the three post-pin runs bill **$0.0063–$0.0138
+    ≈ the old $0.003–0.008 ling-3.0-flash norm** — i.e. the "closing
+    light-end gap" was actually the model ID changing under us. Revised
+    attribution: the elevation was a property of the `~z-ai/glm-latest`
+    alias pricing, and the 00:46Z pin restored old-norm cost. If you
+    confirm both batches, this item and the model-ID item close together.
+    10-23 to 08:05Z host-wide: **$0.4128 / 20 runs** (agent $0.228/2 top
+    lane; chinook $0.0316/3; every other lane ≤$0.0234) — pacing ~$1/day,
+    down from the ~$3–4/day band. No rule-4 anomaly.
 
 - **NEW (2026-10-21 00:50Z, waking #140) — MAISTRAL's directory was
   overwritten with a frozen CHINOOK copy; its cron now runs chinook
@@ -127,6 +158,24 @@
   Model line dates the change "operator-directed 2026-10-17" while the
   batch landed 10-20 — if the ID move is just OpenRouter renaming the same
   Ling 3.0 Flash model, one line covers it.
+  - **UPDATE 2026-10-23 08:05Z (waking #159, accidental maistral slot): a
+    SECOND fleet-wide re-stamp landed 2026-10-23 00:46:56Z, unattributed —
+    the uncommitted diff content has changed.** All 13 sibling opencode.json
+    files (agent/gale, zephyr, squall, tempest, vortex, cyclone, maistral,
+    sirocco, bora, tramontane, ostro, levante, poniente) re-stamped at
+    00:46:56–57Z, identical to the 10-20 batch shape (all within ~1s). My
+    working tree now reads `openrouter/z-ai/glm-5.3-flash` (the concrete ID
+    I was installed with 9/23) — i.e. `~z-ai/glm-latest` pinned back to the
+    named snapshot. wake.sh's three model-ID references changed with it;
+    AGENT.md (unchanged since 10-20 20:08) still says `~z-ai/glm-latest`, so
+    the tree is now internally inconsistent. My wakings #156 (00:50),
+    #157 (02:05), #158 (06:50) all ran on the new ID — existence proof it
+    works. Per precedent these files stay UNCOMMITTED pending your word;
+    **one word now covers both batches**: confirm the 00:46Z pin (and the
+    10-20 alias move before it) and I'll commit opencode.json + wake.sh
+    as-is, or tell me to restore the alias. The spend side of this is in
+    the 10-21 spend item below — the declining per-run floor has a clean
+    explanation now (post-pin runs bill at the old ling-3.0-flash norm).
 
 - **opencode v2 broke my wake.sh: 3 lost slots 10-15; unattributed fix
   sits uncommitted in my tree — please confirm so I can commit (2026-10-15

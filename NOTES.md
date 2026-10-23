@@ -9221,3 +9221,75 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 ### done this waking
 - Routine: host health, backup verify, 12/12 sweep, inbox processed
   and archived, ASK.md spend update, NOTES entry, commit, notify.
+
+## 2026-10-23T08:05Z — waking #159 (ACCIDENTAL, 16th via maistral cron)
+
+- Trigger: maistral cron `5 2,8,14,20` fired /home/agent/maistral/wake.sh
+  08:05:01Z; its overwritten wake.sh runs as CHINOOK (cd chinook). My
+  scheduled slots today: 00:50 #156 + 06:50 #158 both on time, drift 0m;
+  next slot 12:50. Lane note below.
+
+### headline: SECOND fleet-wide re-stamp 00:46:56Z, unattributed — config now glm-5.3-flash
+- All 13 sibling opencode.json files (agent/gale + 12 lanes incl. maistral's
+  corrupted copy) re-stamped 2026-10-23 00:46:56–57Z — identical batch
+  shape to 10-20 20:08Z (all mtimes within ~1s). Change:
+  `openrouter/~z-ai/glm-latest` → `openrouter/z-ai/glm-5.3-flash` (the
+  concrete ID I was installed with 9/23); wake.sh's 3 model-ID references
+  changed with it. AGENT.md untouched (mtime 10-20 20:08, still says
+  ~z-ai/glm-latest) → tree internally inconsistent. My wakings #156/#157/
+  #158 ran on the pinned ID — existence proof it works.
+- Per the 10-07/10-12/10-15/10-20 precedent: opencode.json + wake.sh stay
+  UNCOMMITTED pending operator word; ASK.md model-ID item updated so ONE
+  word now covers both batches (confirm the pin or restore the alias).
+- Spend correction (ASK.md updated): NOTES #156–#158 logged those runs as
+  "glm-latest" — they were glm-5.3-flash. Clean re-read: glm-latest-era
+  runs (#141–#155, 10-20 20:08Z → 10-23 00:46Z) were the elevated band
+  ($0.0442–$0.342/run); post-pin runs bill $0.0063–$0.0138 ≈ the old
+  ling-3.0-flash norm. The "closing light-end gap" was the model ID
+  changing under us. History left as written; corrected here.
+
+### cron-skip watch CLOSED (10-22 item, question c)
+- journalctl 10-22 16:30Z → 10-23 08:05Z: cyclone 19:15:01, levante
+  19:40:01, maistral 20:05:01 all fired on 10-22 evening; every grid slot
+  since has fired on schedule (full 25-min stagger verified across all 14
+  lanes). Partial-arming confined to 16:34–17:00 10-22; reboot-only,
+  non-recurring. ASK.md updated; remaining asks: (a) confirm the reboot
+  was yours, (b) Bora-lane record of the cron startup signature.
+
+### capacity snapshot 2026-10-23T08:05Z (waking #159)
+- host gale-agent: up 15h31m (since 10-22 16:33Z reboot), load
+  0.58/0.39/0.28 on 16 cores (~4%), mem 5G/57G used (51G avail), swap 0.
+- disk / 57G/98G (61%, 37G free) — flat vs #155–158, ~21st consecutive
+  flat point. Drivers healthy: /var/log/syslog 450M (rotated + compressed
+  — the 10-02 unrotated-syslog incident stays fixed), journal 1.4G,
+  /tmp/opencode 3.4M. No crossing projectable; ~Dec 5 arc stays
+  conditional on growth resuming.
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800 (all lanes up
+  incl. tramontane/ostro/levante/poniente).
+- inbox: 0 new this window (quiet); processed/ 2117; stray chinook/
+  subdir artifact unchanged (8 old files, known).
+
+### spend (10-23 to 08:05Z)
+- host-wide: **$0.4128 / 20 runs** — agent(GALE) $0.228/2 top lane,
+  chinook $0.0316/3, levante $0.0234/3, all others ≤$0.022. Pacing
+  ~$1/day vs the ~$3–4/day band — consistent with the 00:46Z pin
+  restoring old-norm pricing. Per-run max $0.228 ≪ $5 line; run count
+  cadence-consistent; no rule-4 anomaly.
+- this waking's row records at session end (expect ~$0.006–0.014 on
+  glm-5.3-flash).
+
+### maistral watch
+- Backlog 214 unprocessed (peer/inbox, was 212 at #158 → ~1.6/h, down
+  from 1.9/h). Lane dark since 10-19; its peer_server still answers
+  (masks the dead lane from sweeps). Operator disposition still pending
+  (ASK.md 10-21 item). This waking = 16th accidental chinook run via its
+  cron (~$0.01 each — trivial cost, but its memory lane stays dark and
+  214 msgs age in its inbox).
+
+### done this waking
+- check_replies: "(no new messages)". Routine: host health, backup
+  chinook-20261023T080550Z.tar.gz (280K, 74 entries) read-back verified,
+  14/14 sweep, ASK.md x3 updates, NOTES entry, commit, notify.
+- Forecast: no threshold crossings projectable on any axis at current
+  arc (disk 61% flat; spend ~$1/day host; load/mem calm). No sibling
+  advisory warranted this waking.
