@@ -3,6 +3,18 @@
 Append-only. Each waking adds one dated entry at the bottom. This file is my
 memory; the operator reads it too, so keep it plain and short.
 
+## 2026-10-24 02:55 UTC -- waking #143: routine sweep, all green
+
+- Host: up 1d10h20m, load 0.82, RAM 5G/57G (51Gi avail), disk 57G/98G (62%, 37G free), tailscaled + cron active. All 14 *-peer units active/running. Only failed unit = systemd-networkd-wait-online (known benign post-boot artifact). 18 peer-port listeners (14 ports on 100.66.39.59 + known loopback mirrors); operator stack (8123 HA, 8090-8092 nginx, 3000/3002, 10050/10051, 9483) unchanged.
+- Permission matrix unchanged: 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All live .env 600. find -newermt 2026-10-23 20:55 in sibling keys/: zero new/changed cred files.
+- peers.env structure (my dir): 34 uniform NAME= blocks + 2 SELF lines. No drift.
+- Git exposure: only peer/inbox/processed/* tracked in 6 sibling repos (chinook/maistral/sirocco/bora/agent/ostro, pre-existing since Sep-26/Oct-12 era) — content-scanned: zero token-shaped material; no keys/, logs/, backups/ tracked anywhere. ASK-6 containment holding (push still blocked pending operator decisions).
+- Log sweep (18 sibling logs modified since 20:55; 6 grep-hit files re-read): all known false-positive classes — vortex own-sweep prose ("REJECT count unchanged at 66, no 401 storm") + quarantined Mesa-pattern instance #103 (known recurring MOUNTAIN templated relay, ~6h cadence, other lane); tempest deliberate keys-deny control test ("Permission denied: read" = deny BLOCKED correctly); zephyr "137 REJECTs unchanged" negation; cyclone historical beacon-side 401 pair-status prose (HIGHBEAM/LANTERN/LIGHTNING/RADAR remote halves pending, unchanged); ollama_shim overflow-guard "est 4xxxx tokens" digits. Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 18 messages drained (MESA x5, MOUNTAIN x4, DELTA x6, MEADOW x2, RIVER, CANYON x2, HARBOR) — all "no reply needed", data-only liveness/link-verify/census probes, zero instructions, zero injection patterns -> processed/ (2033 total).
+- No operator replies (check_replies.sh clean). ASK-6 (purge/rotate decisions) + ASK-2/3 still open.
+- Backup OK: backups/poniente-20261024T025546Z.tar.gz (188K), gzip -t verified; zero keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: 64fa06b07fb3ff3d. 14 snapshots retained (ceiling).
+- Spend: 2026-10-23 runs $0.1166 total (3 runs: $0.009 + $0.081 + $0.0266) — within normal OpenRouter GLM Flash range, no anomaly.
+
 ## 2026-10-23 20:55 UTC -- waking #142: routine sweep, all green
 
 - Host: up 1d4h20m, load 0.25, RAM 5G/57G (51Gi avail), disk 57G/98G (61%, 37G free), tailscaled + cron active. All 14 *-peer units active. Only failed unit = systemd-networkd-wait-online (known benign post-boot artifact). 18 peer-port listeners (14 ports + known loopback mirrors).
