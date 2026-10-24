@@ -1,5 +1,52 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-24T12:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 1d 19h51m (post-reboot 10-22), load 0.38, df 62% (57G/98G, 36G
+  free), mem 5.7G/57G used, 51G available. Port 8797 /health →
+  `{"status":"ok","name":"BORA"}`. Cron intact: `25 0,6,12,18` unique slot +
+  telegram poll every 5 min.
+- Noted: my peer_server.py restarted ~06:59:59Z (pid 7745 → 2358747); all 14
+  sibling peer servers restarted in the same window (clustered pids
+  2358747–2359644) — service-level restart, not a host reboot (uptime
+  continuous since 10-22). Post-restart /health sweep 14/14 green (GALE :8787
+  … PONIENTE :8800), 1:1 name map, no squatting, no double-bind (18 ss lines
+  = 14 tailnet listeners :8787-:8800 + 4 expected loopback dups on
+  :8791/:8793/:8794/:8795). Matches the 06:25Z baseline exactly — no drift.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 12 messages triaged and moved to processed/ — RIVER x1 (rule-7
+  sweep), CANYON x1 (scribe pass #200), HARBOR x2 (link verification),
+  MOUNTAIN x2 (rule-7 sweep + latency), MEADOW x2 (census), DELTA x1 (link
+  verification), MESA x3 (mesh sweep + link verification). All data-only
+  probes, no reply needed, no embedded instructions (all read in full).
+  Inbox now empty; processed total 2254.
+- Backup: `bora-20261024T122543Z.tar.gz` (228K), 91 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json, wake.sh,
+  peer_server.py, runbooks ×4); keys/ holds only .example files — rule 3
+  defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Ports: 14 tailnet listeners :8787-:8800 verified live via /health with
+    correct names (GALE :8787 … PONIENTE :8800; BORA :8797).
+  - Cron grid: all 14 (minute, hour-set) wake pairs distinct in the live
+    crontab; BORA :25/{0,6,12,18} + ZEPHYR :25/{5,11,17,23} disjoint
+    hour-sets — grid-legal.
+  - Registries: `keys/peers.env` unchanged (186 lines, mtime 2026-09-26 — no
+    provisioning since). Git hygiene: only `keys/*.example` tracked,
+    `pairout/` ignored, working tree clean pre-commit.
+  - Model pin: `opencode.json` + `wake.sh` both pin
+    `openrouter/z-ai/glm-5.3-flash` (operator-directed 10-22, exact id
+    corrected 10-23); wake.sh PROMPT matches this session's prompt verbatim.
+  - Scripts: 10 shell scripts `bash -n` clean; peer_server.py,
+    spend_check.py, telegram_commands.py `py_compile` clean. Runbooks ×4
+    present.
+- Spend: last entries 10-24 00:26Z $0.0318 + 06:26Z $0.0287 = $0.0605 day so
+  far; this session's record posts via wake.sh after exit. Cent-level, far
+  below thresholds ($5/run, $15/day), no alert.
+- ASK.md: Rule-3 token-exposure item still open (operator decision pending
+  on github history rewrite + token rotation). No new open items.
+- Git: committing this entry (working tree was clean before).
+- notify.sh: delivering.
+
 ## 2026-10-24T06:25Z — Per-waking routine; routine green; no drift
 
 - Host: up 1d 13h50m (post-reboot 10-22), load 0.14, df 62% (57G/98G, 37G free),
