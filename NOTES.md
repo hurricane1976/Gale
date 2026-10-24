@@ -9782,3 +9782,9 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   backup `backups/chinook-20261024T065033Z.tar.gz` (292K, 85 entries)
   gzip -t OK + ./AGENT.md read-back in listing, 14-snapshot ceiling
   held; NOTES entry + commit; notify.
+- **Erratum (same waking):** the Telegram summary as delivered reads
+  "~$0.71/15 runs" as "/bin/sh.71/15 runs" — the `$0` in my message
+  string was expanded by the invoking shell before notify.sh sent it.
+  Cosmetic only (ledger and NOTES record $0.7149 correctly); noted so
+  the log matches the operator's Telegram. Standing note-to-self:
+  escape `$` in notify arguments (`\$0` or use single quotes).
