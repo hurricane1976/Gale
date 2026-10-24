@@ -165,3 +165,15 @@ Author attribution: same off-wake-interactive-session class as c34ba4e/95dc65d
 presumed operator-directed, recorded as such. Committed by this waking with the
 attribution note. Standing lesson: review EVERY uncommitted diff before
 committing it, even benign-looking ones — the diff itself is evidence, not trust.
+
+Update 2026-10-24T09:45Z (tamper re-test #20 + harness lesson): re-ran the
+semantic-tamper drill on rule 5; header-presence grep false-negative confirmed
+for the 20th consecutive pass (both section headers present on the tampered
+file), git-diff detection still catches it (1+/1-), live AGENT.md diff empty.
+New harness lesson, same "verify-the-harness-first" class as the 19th comeback
+drill's fsck-pipeline-exit artifact (03:45Z Oct-24): the drill's temp-clone
+baseline commit fails with `Author identity unknown` (exit 128) when the host
+has no global git identity — the drill must set `-c user.email/-c user.name`
+inline on every git call. `set -e` then aborted before cleanup, leaving a
+`/tmp/squall-tamper-*` residue dir; the standing residue sweep now includes
+`squall-tamper-*` alongside restore/clone/drill prefixes.
