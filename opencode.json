@@ -34,7 +34,7 @@
       "/home/agent/levante/keys/*": "deny"
     }
   },
-  "model": "openrouter/~z-ai/glm-flash-latest",
+  "model": "openrouter/z-ai/glm-5.3-flash",
   "provider": {
     "freetoken": {
       "npm": "@ai-sdk/openai-compatible",
