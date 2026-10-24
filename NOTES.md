@@ -3842,3 +3842,72 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Next: verify this waking's sidecar shows the new primary completing cleanly;
   keep watching the inference-flapping ASK for the operator's word.
 
+## 2026-10-24T18:00Z — waking: sidecar follow-up verified; alert-noise fixes (roster-check false positives, never-started netbox probe); new firewalla kiosk found; Tramontane model-line drift reported
+
+- Routine first: `check_replies.sh` no new operator messages; `check_replies`
+  clean. Health all green (tailscaled/cron/gale-peer/nginx/gale-sysmon/
+  gale-fleet-api/gale-firewalla active, only the benign networkd-wait-online
+  failed unit; disk 62%/36G free, mem 51G avail, load ~0.3, no reboot
+  pending). `./backup.sh` -> `gale-20261024T180027Z.tar.gz` (42M, 685
+  entries), `tar -tzf` verified, zero keys/ entries; restore spot-extract
+  of AGENT.md/wake.sh/notify.sh/website/fleet_api.py all byte-identical
+  (635 files came out). Spend flat ($0.0533 last scheduled run). Inbox: 13
+  data-only probes 12:07–13:24Z (Meadow x4, Delta, Mesa x3, River, Canyon,
+  Harbor, Cyclone — all "no reply needed") filed to `processed/`.
+- **Follow-up verified (from 06:00Z/12:05Z): the first waking through the
+  new opencode primary completed clean.** 12Z sidecar:
+  `runtime: opencode, is_error: false, terminal_reason: completed, exit 0`
+  (175.6s). Phantom failed-waking cause stays fixed.
+- **Find 1 — 3 of the 4 GaleRosterDrift alerts were checker false
+  positives; fixed in `website/tools/roster_check.py`.** The wake.sh parser
+  regex `--model\s+(\S+)` matched the `--model` at the END of wake.sh's
+  line-11 header comment and captured the next line's leading `#` as the
+  model, so every check comparing against "what wake.sh launches" saw `#`
+  and flagged Gale (config_vs_page_model, wake_vs_config,
+  agentmd_vs_config). Parser now skips comment lines; re-ran the check:
+  4 findings -> 1. Textfile rewritten (18:03Z); the three Gale alerts clear
+  on Prometheus's next evals. The remaining finding is real — see Find 3.
+- **Find 2 — GaleLocalServiceDown(netbox) was a month of probe noise on a
+  never-started service; entry removed from `website/tools/probe_extra.py`.**
+  netbox.service was staged 2026-09-24 (gunicorn :8000 behind nginx :8092)
+  but never enabled/started once (no ExecMainStartTimestamp, no journal
+  entries ever) — nginx 502s the dead upstream, so the probe was guaranteed
+  to fail forever. Masked during the Oct 22–24 flags-wipe blackout,
+  resurfaced 06:06Z when that fix restored the series. Removed the netbox
+  line (zabbix/grafana/kuma/loki/alertmanager all probe 1; probe 5/5
+  services up). Unit + nginx vhost untouched — re-add one SERVICES line if
+  the operator ever finishes the netbox install. Logged in ASK.md Resolved.
+- **Find 3 (reported, NOT fixed — sibling's file): Tramontane's AGENT.md
+  `Model:` line is stale.** Says `freetoken/Qwen3.6-35B-A3B-NVFP4`
+  (2026-10-13 era) while its opencode.json/wake.sh already run
+  `openrouter/z-ai/glm-5.3-flash` per the 2026-10-22 operator word — the
+  GLM sweep missed the doc line. Rule 7: not edited; one-liner for the
+  operator or Tramontane's own session. New open item in ASK.md.
+- **Find 4 (observed, operator's call): new project dir
+  `/home/agent/firewalla-dashboard` built today 16:41–17:15Z by another
+  session** — a Firewalla kiosk (HDMI VT9 display, firewalla-display/
+  dashboard/kiosk services enabled+active, docker firewalla-bridge paired
+  on 127.0.0.1:7153 healthy, dashboard on 127.0.0.1:8088 answering 200).
+  Read-only hygiene pass: everything loopback-only; keys/ is 700 with a
+  600 private pairing key (contents not read); README forbids serving/
+  publishing keys. Not an agent (no AGENT.md/opencode.json, not in roster).
+  Its new keys/ dir is what the GaleCredDrift alert caught — expected
+  behavior for any new keys dir. In ASK.md: operator confirms it's theirs →
+  I reseed the cred baseline to silence the warn; if not theirs → incident.
+  Nothing touched (concurrent-session work; house pattern).
+- Other alerts at wake: maistral crit (missed wakes — known dark-lane
+  incident, one-line fix still awaits operator word) and its GaleWakeMissed
+  twin; vortex MOUNTAIN-quarantine info line (Vortex's lane, unchanged).
+  Inference-flapping did not fire this cycle.
+- Offsite: `github/gale` matched local HEAD on arrival (12Z push landed);
+  `github/main` unchanged at Chinook tip fa4d148 (no re-clobber; restore
+  decision still awaits operator); `github/maistral` still stale 10-19
+  (dark-lane incident unchanged). Maistral inbox backlog now 276 (was 226
+  yesterday) — listener healthy, nothing lost.
+- Committed: website/tools/roster_check.py (comment-skip parser fix),
+  website/tools/probe_extra.py (netbox removal), ASK.md (2 new open +
+  1 resolved), this entry. Pushed HEAD:gale.
+- Next waking: confirm the netbox + roster-drift alerts cleared in
+  alertmanager; watch for operator word on Tramontane line / cred-baseline
+  reseed / Maistral fix / remote-main restore.
+

@@ -2,6 +2,28 @@
 
 ## Open
 
+- **Tramontane's AGENT.md `Model:` line is stale (found 2026-10-24T18Z
+  roster-drift alert; REAL, unlike the three Gale findings that waking).**
+  `/home/agent/tramontane/AGENT.md` line 7 still says
+  `freetoken/Qwen3.6-35B-A3B-NVFP4` ("fleet moved off OpenRouter glm-flash",
+  true on 2026-10-13) while its `opencode.json` + `wake.sh` run
+  `openrouter/z-ai/glm-5.3-flash` — i.e. config is already GLM per the
+  2026-10-22 operator word; only the AGENT.md doc line was missed by that
+  sweep. Sibling's file — not edited (rule 7 house precedent). One-line fix
+  for the operator or Tramontane's own session.
+- **New project dir `/home/agent/firewalla-dashboard` + keys/ (found
+  2026-10-24T18Z via GaleCredDrift).** Built today 16:41–17:15Z by another
+  session (not Gale's): a Firewalla kiosk — HDMI display on VT9, three
+  systemd services (firewalla-display/dashboard/kiosk, all enabled+active),
+  docker `firewalla-bridge` paired client on 127.0.0.1:7153 (healthy),
+  dashboard 127.0.0.1:8088 (200). Hygiene checked read-only: everything
+  loopback-only, keys/ is 700 with 600 private key (etp.private.pem —
+  Firewalla pairing credential, contents not read), README explicitly
+  forbids serving/publishing keys. The cred-drift alert fires because this
+  new keys/ dir isn't in cred-baseline.json — expected for any new keys dir.
+  **Operator's call:** confirm the kiosk is intentional → then I reseed the
+  cred baseline (one command) to silence the warn; if it's NOT yours, say so
+  and I'll treat it as an incident instead. Nothing touched.
 - **Public info leak page (network.html) — scoped restore?** Pulled 2026-09-24
   ~18:55Z: an uncommitted, unlogged "Network" page had been live at
   `100.66.39.59:8090/network.html` for ~4h with no auth/tailnet gate,
@@ -163,6 +185,18 @@ ASK.md`) if needed. Nothing in this housekeeping pass changed any live
 config, token, or credential — text-only reclassification.
 
 ## Resolved
+
+- **GaleLocalServiceDown(netbox) alert noise — probe entry removed
+  2026-10-24T18Z (my own tooling, no operator config touched).**
+  `netbox.service` was staged 2026-09-24 (root-owned unit, gunicorn on
+  127.0.0.1:8000 behind nginx :8092) but never enabled or started once —
+  nginx has 502'd the dead upstream ever since, so
+  `gale_local_service_up{service="netbox"}` was permanent alert noise
+  (masked Oct 22–24 by the node_exporter flags wipe, resurfaced 06:06Z when
+  that fix restored the series). Removed the netbox entry from
+  `website/tools/probe_extra.py` SERVICES (zabbix/grafana/kuma/loki/
+  alertmanager all probe 1). Re-add one line when netbox is actually
+  deployed; unit/nginx vhost left untouched (operator's unfinished install).
 
 - **Telegram (2026-09-27, via /commands): "Rotate gale prism pair. Also levante remote pair." PRISM DONE ~02:49Z; LEVANTE was already resolved, no action taken.**
   - **Gale<->Prism:** re-verified the break live first (`send_to_peer.sh PRISM` -> 401, reproducible, matches this morning's audit). `fleet-provision rotate Gale Prism --write`: local side rendered (backup `keys/peers.env.bak-provision-20260927T024835Z`), all 34/34 self-tests PASS. New token hash (sha256, first 12 hex): `Gale|Prism d9921173c7a9`. Bundle sent to Beacon (lead) via the existing trunk: `fleet-provision bundle beacon --for Prism --send` -> 14 pairs (every gale-host agent's pairing with Prism; bundling is per-counterparty by design, matching the Ostro/Poniente/Levante pattern -- only the Gale|Prism pair actually changed, the other 13 are unchanged/idempotent resends), delivered OK (2442B). Staged at `fleet-provision/bundles/beacon-20260927T024952Z.env` (600, gitignored) pending Beacon's operator running `import` and confirming to Prism's own session; shred both copies after. Gale->Prism will still 401 until Prism imports the new row (expected, same caveat as every prior rotation).

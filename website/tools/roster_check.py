@@ -85,7 +85,17 @@ def main():
         if host != "gale" or not os.path.isdir(d):
             continue
         wake_txt = read(os.path.join(d, "wake.sh"))
-        wk = re.search(r"--model\s+(\S+)", wake_txt)
+        # first --model outside a comment line (wake.sh's header mentions
+        # "--model" in prose; grabbing that made the parser capture the next
+        # line's leading "#" and flag phantom drift -- seen 2026-10-24)
+        wk = None
+        for line in wake_txt.splitlines():
+            if line.lstrip().startswith("#"):
+                continue
+            m = re.search(r"--model\s+(\S+)", line)
+            if m:
+                wk = m
+                break
         cfg = re.search(r'"model"\s*:\s*"([^"]+)"', read(os.path.join(d, "opencode.json")))
         # authority = what wake.sh actually launches; opencode.json only matters
         # for agents that run via `opencode run` (Gale runs Claude Code directly)

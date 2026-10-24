@@ -24,7 +24,10 @@ TEXTFILE = os.environ.get('PROBE_TEXTFILE', '/var/snap/node-exporter/common/gale
 ROSTER = SITE.parent / 'fleet-provision/roster.json'
 
 SERVICES = [  # name, kind, target, ok-statuses
-    ('netbox', 'http', 'http://127.0.0.1:8092/login/', (200, 302)),
+    # netbox (127.0.0.1:8092 via nginx) removed 2026-10-24: unit created
+    # Sep 24 but never enabled/started once -- nginx 502s the dead upstream,
+    # so the probe was permanent alert noise. Re-add here when netbox is
+    # actually deployed (probe expects 200/302 on /login/).
     ('zabbix', 'http', 'http://127.0.0.1:8091/', (200, 302)),
     ('grafana', 'http', 'http://127.0.0.1:3001/api/health', (200,)),
     ('kuma', 'http', 'http://127.0.0.1:3002/', (200, 302)),
