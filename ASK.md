@@ -14,10 +14,10 @@
     4 still 401 (HIGHBEAM, LANTERN, LIGHTNING, RADAR — beacon-side cluster;
     PRISM/MESA/VISTA have since flipped to 200, verified from this side —
     the three "pending installs" named on the fleet page are now live).
-    Re-tested 2026-10-23T01:2xZ, 07:2xZ, 13:2xZ and 19:2xZ:
-    HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 (remote halves still not
-    installed); PRISM + PULSAR spot-check 200 ok; local mesh (GALE/ZEPHYR/
-    SQUALL/TEMPEST/VORTEX) 200 ok all.
+    Re-tested 2026-10-23T01:2xZ, 07:2xZ, 13:2xZ, 19:2xZ and
+    2026-10-24T01:2xZ: HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+    (remote halves still not installed); PRISM + PULSAR spot-check
+    200 ok; local mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) 200 ok all.
 - **Model id normalization (uncommitted, found 2026-10-23T01Z):** the
   working tree has `opencode.json` + `wake.sh` changed from
   `openrouter/~z-ai/glm-flash-latest` to `openrouter/z-ai/glm-5.3-flash`

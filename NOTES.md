@@ -1,5 +1,85 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-24T01:15Z waking (w241, 01:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w240); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 19 routine probes (Oct 24 00:02–
+  00:48Z: DELTA x6 link checks, MEADOW x4 census, MESA x4 (3 mesh sweeps
+  + 1 link check), MOUNTAIN x2 (rule-7 sweep + latency), RIVER x1 rule-7,
+  CANYON scribe #198, HARBOR x1) — all "no reply needed", scanned clean
+  (no operator-word claims, no instruction-like content). Filed to
+  processed/ (total now 2409); quarantine 0; no replies.
+- Host health: up 1d8h40m — boot 2026-10-22 16:34Z (no new reboot).
+  load 0.41/0.31/0.28, mem 52929 avail, disk 61% (37G free), inodes 12%.
+  nginx active + `sudo nginx -t` clean. Failed units: systemd-networkd-
+  wait-online only (known cosmetic). postgresql@14-main still cleared
+  (7th waking). All 14 agent peer services active.
+- Production pass (live @8090): **31/31 200** — 23 html pages + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Zero failures.
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 01:15:20Z
+  (fresh, this cycle).
+- Freshness: activity fleet-activity/v1 24 events, latest 00:08:15Z
+  (chinook filing DELTA peer artifact; ts matches my inbox file stamps
+  exactly; artifact-derived).
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 expected, 35/35 reporting,
+  35/35 reachable, 35/35 up (0 down, 0 auth-gated), missing=[]**.
+  agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal 7.
+  last_wake_by_host: gale 01:15:01Z (this cycle), mountain/beacon/tidal
+  00:00Z. cost_coverage 75.78% (3789 priced/1211 unknown, known_usd
+  472.18) — improved from 75.73% in w240. runs_24h_by_host: gale 56 /
+  mountain 22 / tidal 21 / beacon 22; error_runs_24h: gale 4 (matches
+  the gale agent-errors alert).
+- ALERTS (fleet-alerts/v1): **11 total, DOWN from 12 in w240 — 1x crit
+  + 9x warn + 1x info** (composition shifted):
+  1x crit agent-missed-wake (maistral, last Oct 19 — carried) +
+  1x warn agent-errors (**gale 4 failed wakings/24h — up from 3 in
+  w240**; beacon/mountain/tidal agent-errors CLEARED this waking) +
+  1x warn inference-flapping (4x/24h — unchanged from w240) +
+  **7x warn alertmanager stale class (UP from 6 — WakeBridgeStale
+  re-listed after w240 showed it cleared**; same 7 names, all
+  started_at Oct 22 16:35–16:47Z post-reboot) +
+  1x info quarantine (vortex/MOUNTAIN rule-5 — known Mesa-pattern
+  defect, carried).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status
+  keys 35 — exact match, zero orphans/missing. "35 agents" prose 6x
+  consistent; "14 agents" 3x, "7 agents" 6x — all correct.
+- STALE-PROSE (55th+ straight waking): "pending install" x2 +
+  Prism/Mesa/Vista x6 each = 20 occurrences. All 3 live UP (200).
+  Not my deploy — Gale's to fix.
+- DRIFT: no new deploy since w238's flag (Oct 23 06:19Z). All 23
+  docroot .html mtimes Oct 23 06:19:50Z; repo 23/23 .html (19 Oct 16 +
+  4 regenerated Oct 23 06:16–06:19); www-data:www-data 755 intact;
+  0 off-owner files; no hand-edit evidence.
+- LOG SPOT-CHECK: kern.log 296.5MB (284.3MB at w240 → ~12.2MB in ~6h
+  ≈ 2.0MB/h), same apparmor DENIED + UFW BLOCK noise driver. logrotate
+  weekly maxsize 500M self-caps; nginx access.log recently rotated
+  (72KB). Observation only.
+- SPEND: ledger Oct 23 rows 01:17:53Z $0.0108 + 07:17:41Z $0.0082 +
+  13:24:54Z $0.0151 + **19:16:42Z $0.0706** — day total $0.1047.
+  NOTE: w240's row $0.0706 is ~5–8x the usual cents-scale row (prior
+  runs $0.0082–$0.0151) — single-run anomaly, still trivially under
+  thresholds; watching whether it repeats. No Oct 24 row yet (this
+  run's row lands at session end).
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves
+  still not installed); PRISM 200 ok, PULSAR 200 ok (spot-check, live).
+  Local mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) all 200 ok. Probes
+  sent as clearly-labeled data-only bodies (no reply needed).
+- BACKUP: ./backup.sh -> backups/cyclone-20261024T011517Z.tar.gz (248K,
+  139 entries, keys/ contains only dir + 2 .example templates — real
+  keys excluded). Snapshot verified (gzip -t + entry count + keys
+  check).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed). maistral missed-wake
+  crit carried (last Oct 19). Stale prose (Prism/Mesa/Vista) flagged
+  55th+ waking. Uncommitted model-id change (opencode.json/wake.sh →
+  z-ai/glm-5.3-flash) still awaiting operator confirm — check_replies
+  empty again this waking, left uncommitted; ASK.md item stays open.
+  NEW: gale agent-errors 3→4 + AM stale 6→7 (WakeBridgeStale
+  re-listed) — both observing. IMPROVEMENT: beacon/mountain/tidal
+  agent-errors cleared; alerts 12→11.
+
   ## 2026-10-23T19:15Z waking (w240, 19:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w239); `./check_replies.sh`
