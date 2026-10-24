@@ -1576,3 +1576,18 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261024T145633Z.tar.gz (188K), gzip -t verified, zero keys/.env entries, sha256 first-16: 4b7cbcc00b6e529c. 14 snapshots retained (ceiling).
 - Spend: 3 runs today, $0.1017 total ($0.056 + $0.0457) — within expectation for OpenRouter GLM Flash, no spend anomaly.
 - Git: committed this waking (NOTES #145 entry).
+
+## 2026-10-24 20:55 UTC -- waking #146: routine sweep, all green
+
+- Host: up 2d4h20m, load 0.24/0.25/0.20, RAM 6G/57G (51G avail), disk 58G/98G (62%, 36G free), tailscaled + cron active. All 14 *-peer units running. Only failed unit = systemd-networkd-wait-online (known benign artifact, on record since #140).
+- Listeners: all 14 peer ports 8787-8800 bound to 100.66.39.59 only; known ollama_shim loopback mirrors 8791/8793/8794/8795 up; 56317 tailscale; loopback transients 37755/49374 = opencode sessions. No 0.0.0.0 peer exposure, no port drift, no new listeners.
+- Credential audit (14 dirs, read-only): permission matrix IDENTICAL to #145 -- agent/chinook/poniente keys/=700, 11 siblings 775 (owner-chosen, ASK-4 closed, not flagged). All live .env 600; 664 files = .env.example templates + levante/keys/telegram.env (owner-chosen, not flagged). find -newermt "2026-10-24 14:56" across all 14 keys/: zero new/changed cred files.
+- peers.env (my dir): 34 uniform NAME blocks (34 NAME/34 TOKEN/34 ADDR), 2 SELF lines, mode 600, zero duplicate NAME or ADDR values -- no drift.
+- Git exposure (14 repos, ls-files keys/|logs/|backups/|peer/logs/ non-example): zero tracked secret paths across the board. Informational: this waking's wider grep also surfaced peer/inbox/*.json message archives tracked in agent/chinook/maistral/sirocco/bora/ostro repos -- data-only peer messages, not credential material; sibling-owner choice, not flagged per rule 8. ASK-6 containment holding; push still blocked pending operator decisions 1-4 (no push attempted).
+- Log sweep (102 fresh log files since 14:56Z): peer_server.log tails across all 14 -- every regex hit benign (401/429 appear only as substrings of ACCEPT filename hashes, e.g. 31f40199/429641a7). Today's entries are ACCEPTs only (00:34Z CANYON fleet-wide fan-out + scheduled liveness probes). Zero live 401/403/429, zero REJECT, zero unauthorized.
+- Injection-pattern grep: hits only in agent's own historical sweep prose (documented false-positive class, Sep-21 incident retold). Today's 11 inbox messages all data-only "no reply needed" liveness/link-verify probes (MOUNTAIN x3, MEADOW, DELTA x2, MESA x2, RIVER, CANYON x2, HARBOR) -- zero instructions, zero token material, zero injection patterns -> drained to processed/ (2068 total).
+- check_replies.sh: no operator replies. ASK-2/3/6 open; ASK-4/5 closed. Holding on ASK-6 (purge/rotate decisions 1-4).
+- Backup OK: backups/poniente-20261024T205552Z.tar.gz (188K, 72 entries), gzip -t verified, zero keys/ content entries, AGENT/NOTES/ASK present. sha256 first-16: 9fa70cb63f48e17c. 14 snapshots retained (ceiling).
+- Spend: 3 runs today, $0.1688 total ($0.056 + $0.0457 + $0.0671) -- within normal OpenRouter GLM Flash range, no anomaly.
+- Git: committed this waking (NOTES #146 entry).
+- Verdict: routine sweep, all green, no regressions. ASK-6 remains the one open incident class.
