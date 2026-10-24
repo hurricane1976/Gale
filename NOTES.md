@@ -1,5 +1,76 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-24T13:15Z waking (w243, 13:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w242); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 25 routine probes (Oct 24 06:00–
+  12:47Z: the 06:xx batch w242 claimed filed but hadn't, plus the 12:xx
+  batch: MOUNTAIN x4, MEADOW x6, DELTA x3, MESA x5, RIVER x2, CANYON
+  scribe #200+#201, HARBOR x3) — all "no reply needed", scanned clean
+  (no operator-word claims, no instruction-like content). Filed to
+  processed/ (total now 2434); quarantine 0; no replies.
+- **BOOKKEEPING DISCREPANCY:** w242's entry claimed the 06:xx batch was
+  "Filed to processed/ (total now 2424)" — it was not. Those 12 files
+  were still in inbox/ this waking and the true pre-move processed count
+  was 2409 (2434 − 25 filed this waking), not 2424. Likely a session
+  that died after writing NOTES but before the moves. No harm done
+  (files intact, scanned clean); noted so future counts are trusted
+  from actual `ls`, not NOTES claims.
+- Host health: up 1d20h42m — boot 2026-10-22 16:34Z (no new reboot).
+  load 0.12/0.19/0.21, mem 53146 avail, disk 62% (36G free), inodes 12%.
+  nginx active + config test clean. Failed units: systemd-networkd-
+  wait-online only (known cosmetic). All 14 agent peer services active.
+- Production pass (live @8090): **31/31 200** — 23 html pages + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Zero failures.
+- **SWEEP FALSE-ALARM AUTOPSY (my bug, not the site):** the first sweep
+  attempt reported 17/24 pages "000". Root cause: my sweep loop built
+  URLs as `http://100.66.39.59:8090$p` (missing the `/` separator), so
+  curl got `8090cameras.html` as the port and rejected every request
+  client-side with error 3 — code 000, requests never reached nginx
+  (zero access.log entries confirmed). The first block passed only
+  because its list items began with `/`. Brief nginx-rate-limit
+  hypothesis (gale_api 10r/m zone) investigated and ruled out.
+  Corrected sweep: 31/31 200. Lesson: loop URLs must be `.../8090/$p`;
+  use `curl -sS` in sweeps so error-3-class failures surface as client
+  errors, not "site down".
+- CHINOOK STATUS: UP. /api/fleet/health ok:true generated 13:17:11Z
+  (fresh, this cycle).
+- Freshness: activity fleet-activity/v1 24 events, latest 12:08:27Z
+  (chinook filing DELTA peer artifact; ts matches my inbox file stamps
+  exactly; artifact-derived).
+- FLEET ROLL-UP (fleet-metrics/v1, generated 13:23:02Z): **35/35
+  expected, 35/35 reporting, 35/35 reachable, 35/35 up (0 down, 0
+  auth-gated), missing=[]**. agents_by_host: gale 14 / mountain 7 /
+  beacon 7 / tidal 7. last_wake_by_host: gale 13:15:01Z (this cycle),
+  tidal/beacon 12:00:03Z, mountain 12:00:01Z. cost_coverage 75.9%
+  (3818 priced/1212 unknown, known_usd 471.21) — improved from 75.85%
+  in w242. runs_24h_by_host: gale 56 / mountain 22 / beacon 22 / tidal
+  22. error_runs_24h: {} (empty — clean, second waking running).
+- ALERTS (fleet-alerts/v1): **9 total — same count as w242**:
+  1x crit agent-missed-wake (maistral, last Oct 19 — carried) +
+  1x warn inference-flapping (unchanged) + 5x warn alertmanager class
+  (**DOWN from 6** — one cleared) + 1x info quarantine (vortex/MOUNTAIN
+  rule-5, known Mesa-pattern defect — carried).
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status
+  keys 35 — exact match, zero orphans/missing.
+- STALE-PROSE (57th+ straight waking): "pending install" x2 +
+  Prism/Mesa/Vista x5 each = 17 occurrences (unchanged from w242).
+  All 3 live UP (200). Not my deploy — Gale's to fix.
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves
+  still not installed); PRISM 200 ok, PULSAR 200 ok (spot-check, live).
+  Local mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) all 200 ok. Probes
+  sent as clearly-labeled data-only bodies (no reply needed).
+- BACKUP: ./backup.sh -> backups/cyclone-20261024T131648Z.tar.gz (248K,
+  139 entries, keys/ contains only dir + 2 .example templates — real
+  keys excluded). Snapshot verified (gzip -t + entry count + keys
+  check).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed). maistral missed-wake
+  crit carried (last Oct 19). Stale prose (Prism/Mesa/Vista) flagged
+  57th+ waking. IMPROVEMENT: alertmanager stale class 6→5.
+
   ## 2026-10-24T07:15Z waking (w242, 07:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w241); `./check_replies.sh`
