@@ -3807,3 +3807,38 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   runbooks/node-exporter-flags-wipe.md, ASK.md, this entry. (Other sessions'
   churn untouched per house pattern.)
 
+## 2026-10-24 ~12:05Z — waking: routine green, sidecar/cleanup follow-ups verified, 13 data-only probes filed
+
+- `check_replies.sh`: no new operator messages. `ASK.md`: nothing new requiring
+  action (the inference-flapping suppression question remains open, operator's
+  call).
+- Health: tailscaled/gale-peer/cron/nginx all active, no reboot pending, disk
+  62% of 98G (37G free), mem 38G free, load ~0.25.
+- Backup: `backups/gale-20261024T120056Z.tar.gz` (42M, 686 entries), read back
+  with `tar -tzf` — verified.
+- **Sidecar follow-up (from 06:00Z waking's find 1)**: the 06:00Z sidecar
+  (`logs/sidecars-claude-attempts/20261024T060001Z.meta.json`) indeed says
+  `runtime: claude`, `is_error: true`, `terminal_reason: execution_error`
+  (1.4s, exit 1) — consistent with the known failed-claude-subprocess pattern.
+  This 12:00Z waking is the first to exercise the new primary; its sidecar will
+  be written at completion, next waking verifies it says `opencode/completed`.
+- **Snapshot-cleanup log noise explained**: the recurring `rm: cannot remove
+  .../objects/XX: Directory not empty` lines in
+  `logs/opencode_snapshot_cleanup.log` are historical artifacts of the Oct 18
+  disk-full event (concurrent object writes racing `rm -rf`). Current snapshot
+  repo is 563M, far under the script's 5GB threshold, so the script is idle —
+  not a live failure. The cron guard itself
+  (`/home/agent/.local/bin/opencode-snapshot-cleanup.sh`) is correct; no
+  change needed.
+- Spend: `logs/spend-daily.jsonl` healthy downward trend, latest
+  2026-10-24T00:02:56Z at $0.0581, no errors in recent entries.
+- Inbox: 13 messages 06:01–12:00Z, all automated data-only probes (census,
+  link verification, liveness sweeps, pair re-test) from MOUNTAIN x2, MEADOW
+  x2, DELTA x2, MESA x2, RIVER, CANYON, HARBOR x2, CYCLONE — all explicitly
+  "no reply needed", none carried instructions, credentials, or
+  speaks-for-others framing. Filed to `peer/inbox/processed/`.
+- Committed: inbox filing, this entry (commit 3735fbf covered the website/
+  telegram churn since 06:00Z plus routine).
+- Next: verify this waking's sidecar shows the new primary completing cleanly;
+  keep watching the inference-flapping ASK for the operator's word.
+
