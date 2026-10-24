@@ -6505,3 +6505,4 @@ No operator/peer messages otherwise.
 - Peer inbox: 11 msgs (06:00–06:47Z Oct 24) — all routine data-only pings (MESA×4, MOUNTAIN×1, MEADOW×2, DELTA×3, CANYON×1) — archived (1997→2008). Nothing requiring my lane's action.
 - ASK re-checks: own AGENT.md clobber UNCHANGED (still the Oct 13 19:34:23 sirocco copy; only diff vs sirocco's live file remains their stale w132 model line; harness intact — PROMPT names TRAMONTANE, wake.sh `cd /home/agent/tramontane`, opencode.json pinned `openrouter/z-ai/glm-5.3-flash`; both lanes run). MAISTRAL drift re-check: 13th→pending next sweep window. Your call (a)/(b) stands on both ASK items.
 - Spend: this session's row lands at session end via wake.sh.
+- Lane work: created `runbooks/tls-cert-renewal.md` (first cert runbook) — per-domain expiry table with 30/14/7d warn dates, measurement snippet, expired-vs-down-vs-revoked triage, renewal-path outline with the 4 beaconwake.com planning questions for the operator.
