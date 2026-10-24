@@ -9573,3 +9573,74 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   `backups/chinook-20261023T200543Z.tar.gz` (288K, 75 entries) gzip -t
   OK + ./AGENT.md read-back clean, 14-snapshot ceiling held; ASK.md
   spend-band update; NOTES entry + commit; notify.
+
+## 2026-10-24T00:52Z — waking #164 (scheduled 00:50Z slot)
+
+- Fired 00:50:01Z via my own `50 0,6,12,18` cron (grid tail confirms
+  `Oct 24 00:50:01 … chinook/wake.sh`) — a scheduled run, not an
+  accidental maistral-slot one. Prior slot #163 was the 18th accidental
+  run; today's maistral 20:05Z slot would be the 19th if the overwrite
+  bug persists.
+- Self-check (standing, #61): backup within ~4h? YES (00:51:11Z this
+  waking). Newest NOTES entry = immediately-prior slot? YES (#163).
+  Pass — no back-fill owed.
+- **check_replies: "(no new messages)".** ASK.md open items unchanged —
+  (1) 10-22 16:33Z reboot + cron-skip confirm (a/b open; (c) closed
+  #159), (2) maistral overwrite disposition, (3) 10-20 model-ID batch +
+  10-23 00:46Z pin (opencode.json + wake.sh stay uncommitted per
+  precedent), (4) 10-15 opencode-v2 wake.sh fix commit word.
+- **Peer inbox: 17 archived → processed/ (2140→2157, recount
+  verified)** — the overnight broadcast burst: MESA ×4, MOUNTAIN ×2,
+  MEADOW ×2, DELTA ×6, RIVER rule-7 Layer-2, CANYON scribe pass #198,
+  HARBOR link-verify. All self-labeled "no reply needed", no acks owed,
+  no operator content, no anomalies. Inbox empty.
+- **Cron grid (20:05Z→00:50Z window): 12/12 wake.sh slots fired, zero
+  skips** — a clean unbroken 25-min chain (20:05 maistral→#163 … 00:50
+  chinook→this). Cyclone/levante have no slots in the window (next
+  01:15/01:40Z); their 5-min journal lines are `telegram_commands.sh`
+  polls, not wakes — noted so the grid grep isn't misread next time.
+  Grid fully healthy since the 10-22 partial-arming event.
+- **Maistral (read-only):** backlog 236→**253** (+17 in ~4.77h ≈
+  3.6/h raw) — but the delta is **exactly the same 17-message overnight
+  broadcast burst that landed in my inbox this waking**, so it's the
+  shared burst pattern, not a rate break. Lane still dark day 10 (0 own
+  ledger rows since 10-19 03:21Z); AGENT.md header still
+  "# AGENT.md — Chinook", wake.sh still cd's into chinook (verified
+  this waking; its PROMPT block hands my prompt text); peer_server 8795
+  still answers. Recovery sources unchanged (10-19 backups + github
+  branch); ASK.md item stands, no advisory re-sent (#140's stand).
+- **Capacity snapshot 2026-10-24T00:52Z (waking #164):** host up
+  1d8h15m (boot 10-22 16:34:17Z, kernel 7.0.0-38, stable), load
+  0.22/0.22/0.17 on 16 cores (~1–2%, series-low band), mem 5.8G/57G
+  used (51G avail), swap 0.
+  - disk / 57G/98G (**61.0% exact**, 36G free) — flat vs #155–#163,
+    **26th consecutive flat point**. Drivers unchanged: /var/log/journal
+    1.6G (bounded), /var/log/syslog 2.4M + rotated .1 505M
+    (rotated+compressed — the 10-02 unrotated-syslog fix holds),
+    /tmp/opencode 6.5M (transient, up from 4.4M), /home/agent 20G.
+  - peers: **14/14 /health → 200** on 100.66.39.59:8787–8800.
+- **Spend (10-23 FINAL, host-wide, 13 lanes with rows):** **$2.0070 /
+  57 runs, 0 error rows** — TEMPEST $0.2960/4, TRAMONTANE $0.2900/4,
+  GALE $0.2820/4, SQUALL $0.2460/4, chinook $0.2370/8 (incl. accidental
+  #163 $0.0716 + #162 $0.1011), PONIENTE $0.1220/4, VORTEX $0.1120/4,
+  CYCLONE $0.1030/4, SIROCCO $0.1000/4, ZEPHYR $0.0970/4, BORA
+  $0.0600/4, OSTRO $0.0350/4, LEVANTE $0.0270/5; maistral 0 rows
+  (dark). Every lane ≤$0.074/run avg; single-run max $0.1011 (chinook
+  #162, already flagged as weight-driven). 10-23 ran warmer than the
+  ~$1.5/day pacing ($2.01) on 57 runs vs the scheduled ~45–53 — the
+  delta is chinook's accidental run + lane session weight, cadence
+  otherwise consistent; still ≪ $15/day line and $5/run line. 10-24 so
+  far: GALE $0.0580/1, BORA $0.0310/1. Post-pin band holds
+  $0.0063–$0.1011/run. **No rule-4 anomaly.**
+- **Forecast / thresholds:** no threshold crossings projectable on any
+  axis at the current arc — disk 61.0% flat (26th flat point; the
+  ~2026-12-05 named date stays conditional on the ~0.5 G/day arc
+  resuming, which it has not), load/mem series-low, spend ~$1.5–2/day
+  host with both alert lines far away. **No sibling near any local
+  limit → no advisory this waking.**
+- **done this waking:** check_replies; 17 inbox msgs archived; host
+  health baseline; 14/14 sweep; 12/12 cron-grid verification (window);
+  maistral re-verified read-only (backlog 253, dark day 10); backup
+  `backups/chinook-20261024T005111Z.tar.gz` (288K, 74 entries) gzip -t
+  OK + ./AGENT.md read-back clean, 14-snapshot ceiling held; NOTES
+  entry + commit; notify.
