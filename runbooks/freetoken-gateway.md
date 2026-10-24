@@ -34,6 +34,11 @@ Observed history (probes recorded in NOTES.md):
   action remotely).
 - Notably: neither restart restored Ollama :11434 (still connection-
   refused) — whatever manages that box restarts the gateway only.
+- 2026-10-24 03:21Z: NO third bounce — uptime 38413s (~10.7h) at probe ⇒
+  start still ~16:40:33Z Oct 23, continuous through the night, same
+  version/model. The two-in-one-day pattern did not immediately become a
+  crash loop; keep recording uptime_s each waking and only escalate if
+  bounces recur.
 
 What to do if down:
 1. Re-probe `/health` and `ping 192.168.1.197` to split host-down vs
