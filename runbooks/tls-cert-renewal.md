@@ -1,6 +1,6 @@
 # Runbook: TLS certificate renewal (fleet public surface)
 
-Owner: TRAMONTANE (cert & domain watch lane). Last verified: 2026-10-24 10:35Z (w140).
+Owner: TRAMONTANE (cert & domain watch lane). Last verified: 2026-10-24 22:36Z (w142).
 
 ## Scope
 
@@ -9,12 +9,14 @@ each waking):
 
 | Domain          | notAfter (UTC)        | 30d warn at   | 14d warn at   | 7d warn at    |
 |-----------------|-----------------------|---------------|---------------|---------------|
-| beaconwake.com  | 2026-11-23 21:26:58   | 2026-10-24 21:26 | 2026-11-09 21:26 | 2026-11-16 21:26 |
+| beaconwake.com  | 2027-01-22 20:51:04   | 2026-12-23 20:51 | 2027-01-08 20:51 | 2027-01-15 20:51 |
 | tidalwake.org   | 2026-11-28 21:23:14   | 2026-10-29 21:23 | 2026-11-14 21:23 | 2026-11-21 21:23 |
 | mountainwake.org| 2026-12-04 18:45:53   | 2026-11-04 18:45 | 2026-11-20 18:45 | 2026-11-27 18:45 |
 
-Current status (w140): **beaconwake.com has ENTERED its 30-day window** —
-renewal planning NOW. The other two are still outside (35d / 41d).
+Current status (w142): **beaconwake.com RENEWED 2026-10-24** (see below) —
+next 30d threshold 2026-12-23. **tidalwake.org enters its 30-day window
+2026-10-29 21:23Z** — renewal planning for it starts NOW. mountainwake.org
+still outside (40d at w142).
 
 ## Measurement (read-only, safe every waking)
 
@@ -74,6 +76,25 @@ accounts, or server config.
    box)? The renewal method depends on the answer.
 4. What is the fallback if renewal fails at T-7d: temporary downtime accepted,
    or a parked page with the same cert?
+
+## Observed renewal — beaconwake.com, 2026-10-24 (w142)
+
+The 11-waking renewal-planning flag (w132–w141) ended this waking: a fresh
+cert is live. Measured read-only 22:36Z:
+
+- issuer `Let's Encrypt CN=YE2`, subject `CN=www.beaconwake.com`
+- notBefore **2026-10-24 20:51:05Z** (issued ~1h45m before my w142 waking —
+  i.e. renewed by whoever holds the CA automation, landing right at the
+  T-30d window start; the flag did its job)
+- notAfter **2027-01-22 20:51:04Z** (90-day Let's Encrypt class)
+- Planning questions answered empirically: CA = Let's Encrypt, renewal is
+  automated enough to fire inside the 30d window (question 2 resolved),
+  issuer/subject changed vs the tracked old expiry (step-4 check: new
+  notAfter is >60d out — PASS).
+
+Watch item: subject CN is `www.beaconwake.com` — assume SANs cover the apex
+(site served fine); if a future waking sees apex-only errors, check SANs
+first. Same drill applies to tidalwake.org (threshold 2026-10-29 21:23Z).
 
 ## Escalation
 

@@ -101,6 +101,14 @@
   written, drills PASS) but BEFORE its git commit — I committed that pending
   work at w138 start as `79fac8d` (late-commit). Your call (a)/(b) stands.**
 
+  **Re-checked w142 2026-10-24 22:35Z: UNCHANGED — my AGENT.md still the Oct 13
+  19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime byte-unchanged);
+  diff vs sirocco's live file remains only their stale w132 model line; harness
+  intact (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE,
+  opencode.json pinned `openrouter/z-ai/glm-5.3-flash` — my current session
+  runs on it, clean); NO DATA LOST. Both lanes ran again this waking (43rd
+  consecutive clean drill). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -260,6 +268,19 @@
   08:05Z snap readable; (b) offsite `refs/heads/maistral` tip `8c95afd` —
   UNCHANGED (git ls-remote from MY repo). NO DATA LOST; I touched nothing
   (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w142 2026-10-24 22:35Z: UNRESOLVED — maistral drift ~134.5h
+  (8071m), +357m over the ~5h52m between measurements ≈ one slot × 6h, the
+  model holds; AGENT.md still "# AGENT.md — Chinook" (mtime still your Oct 20
+  20:08:23Z batch edit), wake.sh still `cd /home/agent/chinook` (00:46:56Z
+  batch-edit mtime); newest own snap still `maistral-20261019T080520Z`
+  (readable), newest own log still 09:20Z Oct 19 (fresh-measured this waking);
+  its inbox still untouched since Oct 19. 17th consecutive duplicate-chinook
+  slot: its 20:05Z slot produced `chinook-20261024T200515Z`; chinook's OWN
+  12:51Z + 18:50Z slots fired normally so chinook itself is healthy. Anchors
+  re-verified intact: (a) the Oct 19 08:05Z snap readable; (b) offsite
+  `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from MY
+  repo). NO DATA LOST; I touched nothing (rule 7). Your call (a)/(b) stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
   stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
