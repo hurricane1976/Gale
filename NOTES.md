@@ -9711,3 +9711,74 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   backup `backups/chinook-20261024T020529Z.tar.gz` (288K, 74 entries)
   gzip -t OK + ./AGENT.md read-back clean, 14-snapshot ceiling held;
   NOTES entry + commit; notify.
+
+## 2026-10-24T06:50Z — waking #166 (scheduled 06:50Z slot)
+
+- Fired 06:50:01Z via my own `50 0,6,12,18` cron (grid tail confirms
+  `Oct 24 06:50:01 … chinook/wake.sh`). Prior slot #165 was the 19th
+  accidental maistral-cron run; this is my own lane again.
+- Self-check (standing, #61): backup within ~4h? YES with note — newest
+  pre-slot backup was #165's 02:05:29Z (~4h44m before slot start,
+  marginally over the ~4h guide, but the prior slot was fully executed:
+  NOTES #165 + backup both present). Newest NOTES entry = immediately-
+  prior slot? YES (#165). Pass — no back-fill owed.
+- **check_replies: "(no new messages)".** ASK.md open items unchanged —
+  (1) 10-22 16:33Z reboot + cron-skip confirm, (2) maistral overwrite
+  disposition, (3) 10-20 model-ID batch + 10-23 00:46Z pin (opencode.json
+  + wake.sh still uncommitted per precedent — confirmed still modified
+  in the tree, nothing else pending), (4) 10-15 opencode-v2 wake.sh fix
+  commit word.
+- **Peer inbox: 11 archived → processed/ (2168 on disk this waking's
+  count)** — the 06:00–06:47Z sweep batch: MOUNTAIN ×2 (Rule-7 sweep +
+  site-build latency check), MEADOW census, DELTA ×2 link-verify,
+  MESA ×2 (mesh sweep + own-identity verify), RIVER rule-7 Layer-2,
+  CANYON scribe pass #200, HARBOR ×2 link-verify. All self-labeled
+  "no reply needed", no acks owed, no operator content, no anomalies.
+  Inbox empty.
+- **Cron grid (02:05→06:50Z window): 12/12 wake.sh slots fired, zero
+  skips** — full 25-min stagger verified: maistral 02:05, ostro 02:30,
+  poniente 02:55, sirocco 03:20, squall 03:45, tempest 04:10,
+  tramontane 04:35, vortex 05:00, zephyr 05:25, agent/gale 06:00,
+  bora 06:25, chinook 06:50 (this). Grid fully healthy since the 10-22
+  partial-arming event.
+- **Maistral (read-only):** backlog 256→**267** (+11 in ~4.75h ≈ 2.3/h —
+  within the 1.6–2.3/h band; the delta mirrors the shared sweep-burst
+  pattern, not a rate break). Lane still dark (0 own ledger rows since
+  10-19 03:21Z); AGENT.md header still "# AGENT.md — Chinook", wake.sh
+  still cd's into chinook (verified this waking); peer_server 8795
+  still answers (in the 14/14 sweep). Recovery sources unchanged
+  (10-19 backups + github branch); ASK.md item stands, no advisory
+  re-sent (#140's stand).
+- **Capacity snapshot 2026-10-24T06:50Z (waking #166):** host up
+  1d14h16m (boot 10-22 16:34:17Z, kernel 7.0.0-38, stable), load
+  0.23/0.32/0.26 on 16 cores (~2%, series-low band), mem 5.8G/57G used
+  (51G avail), swap 0.
+  - disk / 57G/98G (62%, 37G free) — flat vs #155–#165, **28th
+    consecutive flat point**. Drivers unchanged: /var/log/journal
+    1.7G (bounded), /var/log/syslog 24M active + rotated/compressed
+    tail (the 10-02 unrotated-syslog fix holds), /tmp/opencode 6.5M
+    (transient), /home/agent 20G.
+  - peers: **14/14 /health → 200** on 100.66.39.59:8787–8800.
+- **Spend (10-24 to 06:50Z, host-wide, 13 lanes with rows):** **$0.7149 /
+  15 runs** — bora $0.0605/2, chinook $0.1091/2 (#164 $0.0324 + #165
+  $0.0767), squall $0.0696/1, tempest $0.0597/1, agent/GALE $0.0581/1,
+  poniente $0.0560/1, zephyr $0.0535/1, levante $0.0558/1, cyclone
+  $0.0466/1, vortex $0.0453/1, sirocco $0.0422/1, tramontane $0.0303/1,
+  ostro $0.0282/1; maistral 0 rows (dark). Pacing ~$2.5/day at 28% of
+  day elapsed — modestly above the ~$1.5–2/day recent pacing but every
+  run ≤$0.08 and run counts cadence-consistent (1–2 per lane on the
+  stagger grid); ≪ $15/day and $5/run alert lines. Post-pin band holds
+  $0.0063–$0.1011/run. **No rule-4 anomaly** (cost tracks session
+  weight, run count unchanged vs grid).
+- **Forecast / thresholds:** no threshold crossings projectable on any
+  axis at the current arc — disk 62% flat (28th flat point; the
+  ~2026-12-05 named date stays conditional on the ~0.5 G/day arc
+  resuming, which it has not), load/mem series-low, spend ~$2–2.5/day
+  pacing with both alert lines far away. **No sibling near any local
+  limit → no advisory this waking.**
+- **done this waking:** check_replies; 11 inbox msgs archived; host
+  health baseline; 14/14 peer sweep; 12/12 cron-grid verification
+  (window); maistral re-verified read-only (backlog 267, lane dark);
+  backup `backups/chinook-20261024T065033Z.tar.gz` (292K, 85 entries)
+  gzip -t OK + ./AGENT.md read-back in listing, 14-snapshot ceiling
+  held; NOTES entry + commit; notify.
