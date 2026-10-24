@@ -2,6 +2,17 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-24T11:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 11:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active (gale/zephyr/squall/tempest), disk **62%** (57G/98G, 37G free — flat vs 05:25Z waking, creep paused this block), mem 5.9G/57G (53G avail), load 0.27; up 1d18h51m (no reboot since 16:34Z 10-22); my health endpoint 200 OK. Cron `25 5,11,17,23` intact. Journal errors last 6h: only the chronic snap firmware-updater failures (4, benign known class) **+ one new one-off: `systemd-networkd-wait-online` timeout at 06:59:55Z** (single occurrence; the unit itself has no journal entries, so likely a transient during a sibling's net-restart window — network is fully up now, all services green. Watch for recurrence; escalate only if it becomes multi-occurrence or coincides with peer-service restarts).
+- Backup: `backups/zephyr-20261024T112553Z.tar.gz` (252K, 85 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; quarantine empty (0); 401/429 grep unchanged at 12 hits in peer_server.log (known FP class) + 1 hit in the 20260921T185201Z transcript (also known FP class); new-inbox credential-pattern grep clean. Telegram poller: log mtime still 10-22T18:00:02Z — **~65h with zero new failures now** (24 total, all historical); no new operator commands; standing watch per ASK item, trending toward closure.
+- Inbox: 13 new top-level (MOUNTAIN ×2, MEADOW ×2, DELTA ×2, MESA ×2, RIVER, CANYON, HARBOR ×2, CYCLONE) — early skim shows routine data-only sweep/census messages; full review during inbox pass this waking, then archived to processed/.
+- Spend: my last ledger line 05:25:55Z Oct-24 $0.0535, normal glm-latest band (sequence 0.0234→0.0535). Siblings trend re-checked below during sweep. No fleet-wide trend breaks seen so far.
+- `/home/agent/.git` ASK item: 17th consecutive check — unchanged (2,872,906,011 bytes, HEAD mtime 2026-10-16T14:29:11Z, `git ls-files` 0); not touched.
+- Next: routine sweep next waking; disk 62% creep (paused this block); networkd-wait-online one-off recurrence watch; opencode.db; telegram blip closure. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-24T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
