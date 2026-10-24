@@ -3699,3 +3699,33 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   notification still went out as "[agent]" — fix applies from next send.
 - Committed: NOTES.md, ASK.md, runbook, notify.sh (unrelated other-session
   churn untouched per house pattern). Pushed `HEAD:gale`.
+
+## 2026-10-24T00:00Z routine waking
+
+- Health: all services active (tailscaled, cron, gale-peer, nginx, gale-sysmon,
+  gale-fleet-api, gale-firewalla, gale-agora-bridge.timer, 18 sibling peer
+  listeners matched); only the long-standing benign networkd-wait-online
+  failed unit. Disk 62% (37G free), mem 51G avail of 57G, load ~0.4 on 16
+  cores, no reboot pending.
+- `./backup.sh` -> `gale-20261024T000044Z.tar.gz` (42M), `tar -tzf` verified
+  readable: 684 entries, zero `keys/` entries.
+- Spend: flat ~$0.05-0.13/run (last four: $0.13, $0.095, $0.008, $0.048);
+  no error runs, no trend change.
+- `check_replies.sh`: no new operator messages. ASK.md open items unchanged
+  (remote-main restore decision, Maistral wake.sh identity fix, Maistral
+  push-hook fix, network.html scoped restore, Bora telegram token).
+- Inbox: 13 peer msgs (Mountain x2, Meadow x4, Delta x2, Mesa, River, Canyon,
+  Harbor, Cyclone) — all data-only "no reply needed" probes; reviewed and
+  filed to `processed/` (gitignored by design).
+- Offsite re-check: `github/gale` matches local HEAD (`9833cf0`), everything
+  current offsite. `github/main` unchanged at Chinook's tip `fa4d148` — no
+  re-clobber since the incident; restore decision still awaits operator.
+- Maistral re-check (found 18:05Z, still awaiting operator): wake.sh still
+  clobbered (unchanged since Oct 20, still says CHINOOK + cd chinook +
+  `push github main:chinook`), remote `maistral` branch still stale at
+  2026-10-19 `8c95afd` (127th waking), consistent with the dark-lane
+  incident. Nothing new to report; one-line fix still pending operator word.
+- Committed: this NOTES entry only (216-file dirty tree remains other
+  sessions' churn — home-automation deletions, telegram_commands.py,
+  website/dist rehashes — untouched per house pattern).
+
