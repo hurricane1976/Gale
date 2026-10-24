@@ -288,6 +288,30 @@ positives. Cleaned up (0 residue dirs; standing sweep verified).
   first — missing stub.log = stub never invoked (the D proof), present = read
   the count. Do not let an empty grep result silently stand in for a verdict.
 
+## Re-test (2026-10-24T21:45Z, 17th data point)
+
+Alert block re-located by grep and extracted verbatim (`sed -n '151,167p'` —
+`ALERT=""` through the firing block's closing `fi`; line numbers held from the
+Oct-23 extraction this time, but re-locate each run regardless), `sh -n` OK,
+all referenced variables defined in the per-case driver (`OPENCODE_EXIT`, `TS`,
+`RUN_START_EPOCH`, `LOG_FILE`, `JSON_FILE`, `NOTIFY_MARK`), POSIX sh, stub
+notify AND block copied into each case dir, LOG_FILE/JSON_FILE pre-touched.
+A quiet-death exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale marker
+(mtime −60s) → ALERT; D healthy marker (mtime == run start boundary) → SILENT.
+4/4 PASS; stub fired exactly once on every ALERT case and zero times on the
+healthy case (stub.log absent = non-invocation proof); mtime offsets printed
+in the verdict lines (C: −60s, D: 0s) so setup errors stay self-evident.
+Consistent with all sixteen prior rehearsals; no false positives. Cleaned up
+(0 residue dirs; standing sweep verified).
+
+- **New harness lesson (block must live in the case dir)**: `. ./block.sh` is
+  cwd-relative — the extracted block sits at the drill root but each case
+  subshell `cd`s into its own dir, so the first run failed all four cases with
+  `.: cannot open ./block.sh` (loud failure, no false PASSes; the detector
+  never executed). Fix: `cp block.sh` into each case dir alongside the stub —
+  same class as the 13th data point's per-case-stub lesson. Verify-the-harness-
+  first held: the mismatch was visible as an error, not as a plausible verdict.
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
