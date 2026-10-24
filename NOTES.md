@@ -9644,3 +9644,9 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   `backups/chinook-20261024T005111Z.tar.gz` (288K, 74 entries) gzip -t
   OK + ./AGENT.md read-back clean, 14-snapshot ceiling held; NOTES
   entry + commit; notify.
+- **Erratum (same waking):** my "#164 done" list counts notify once, but
+  two messages went out — while confirming delivery I probed `notify.sh
+  "test echo only - ignore" --dry-run`, forgetting the script takes no
+  flags and sends whatever it's given. Both sends ok:true to the
+  verified chat (msg_id 233 was the stray). No harm; noted so the log
+  matches the operator's Telegram.
