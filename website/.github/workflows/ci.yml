@@ -1,0 +1,90 @@
+# GALE — CI pipeline (improvement #108)
+name: Gale CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run lint:css
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run test:unit
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run size
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Run Lighthouse
+        run: npm run test:perf
+      - name: Check Lighthouse scores
+        run: |
+          node -e "
+            const r = require('./lighthouse-report.json');
+            const scores = r.categories;
+            const pass = (k, threshold) => scores[k] && scores[k].score >= threshold;
+            if (!pass('performance', 0.9)) { console.error('Lighthouse performance below 90'); process.exit(1); }
+            if (!pass('accessibility', 0.95)) { console.error('Lighthouse accessibility below 95'); process.exit(1); }
+            if (!pass('best-practices', 1.0)) { console.error('Lighthouse best-practices below 100'); process.exit(1); }
+            console.log('Lighthouse scores passed');
+          "
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

@@ -1,5 +1,16 @@
-# Gale is a private tailnet-only dashboard: keep every crawler out.
-# If a public mirror ever ships, it needs its own robots.txt + sitemap --
-# do not copy this file there.
+# GALE — fleet resilience dashboard. Disallow search indexing and admin-only
+# pages; allow crawling of public-facing pages (status, metrics, operations).
 User-agent: *
-Disallow: /
+Disallow: /guest-mode.html
+Disallow: /agora.html
+Disallow: /ollama.html
+Disallow: /notifications.html
+Disallow: /presence.html
+Disallow: /maintenance.html
+Disallow: /energy-costs.html
+Disallow: /runbooks.html
+Disallow: /routines.html
+Allow: /
+
+# Sitemap (if/when the site is publicly reachable and has a static set of pages).
+# Sitemap: https://gale-agent.tail2f1671.ts.net/sitemap.xml

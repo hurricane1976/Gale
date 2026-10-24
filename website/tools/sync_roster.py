@@ -27,7 +27,7 @@ This regenerates:
   - index.html:    the fleet stat tile, "the fleet" section lede, the
                    Fleet dash-card subtitle, and gale's agent-chip list.
   - hosts.js:      gale's host-note agent count.
-  - metrics.html, observability.html, ollama.html: "N co-located agents"
+  - metrics.html, observability.html, freetoken.html: "N co-located agents"
                    mentions.
 
 It deliberately does NOT touch the Tidal/Beacon/Mountain clusters in the
@@ -438,6 +438,7 @@ def main():
                                 (r'all \w+ co-located agents', lambda n: f'all {spell(n)} co-located agents'),
                             ]), args.write)
     any_changed |= process(os.path.join(ROOT, "ollama.html"),
+                            # freetoken inference console – co-located agent count
                             lambda t: patch_coagent_count(t, len(gale_agents), [
                                 (r'\w+ agents on this host run through it',
                                  lambda n: f'{spell(n).capitalize()} agents on this host run through it'),

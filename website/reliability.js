@@ -353,7 +353,7 @@ async function offlineShellReport() {
     const cacheList = await Promise.all(assetNames.map((name) => caches.open(name)));
     const cachedPaths = new Set();
     for (const cache of cacheList) for (const request of await cache.keys()) cachedPaths.add(new URL(request.url).pathname);
-    const pages = ["/", "/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
+    const pages = ["/", "/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/runbooks.html", "/404.html"];
     const styles = ["/gale.css", "/fleet-tidal.css", "/mobile.css", "/cinematic.css", "/fonts.css"];
     const fonts = ["/assets/fonts/inter.woff2", "/assets/fonts/fraunces.woff2", "/assets/fonts/jetbrains-mono.woff2"];
     const scripts = new Set();
@@ -393,7 +393,7 @@ async function offlineShellReport() {
     setHTML(box, `<div class="target-card" data-level="unknown"><strong>Unavailable</strong><span class="mono-dim">Cache inspection failed: ${esc(error.message)}</span></div>`);
   }
 }
-const SITE_PAGES = ["/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/home.html", "/runbooks.html", "/404.html"];
+const SITE_PAGES = ["/index.html", "/fleet.html", "/status.html", "/metrics.html", "/observability.html", "/ollama.html", "/agora.html", "/weather.html", "/network.html", "/reliability.html", "/operations.html", "/runbooks.html", "/404.html"];
 $("tap-target-scan")?.addEventListener("click", () => {
   const targets = [...document.querySelectorAll('button,a[href],input,select,summary,[role="button"]')].flatMap((element) => {
     if (element.closest("[hidden]") || getComputedStyle(element).display === "none" || getComputedStyle(element).visibility === "hidden") return [];
@@ -417,7 +417,7 @@ $("tap-target-scan")?.addEventListener("click", () => {
   window.__galeRUMRecord?.("TAP_TARGET_SCAN", undersized.length, "controls below 44px");
 });
 // scan label + progress max derive from SITE_PAGES (#100): the hardcoded
-// "14 pages" desynced when home.html was added
+// "14 pages" count is derived from SITE_PAGES.length
 {
   const btn = $("site-link-scan"), prog = $("site-link-progress");
   const n = SITE_PAGES.length;

@@ -172,7 +172,7 @@
     {
      "expr": "gale_ollama_up",
      "refId": "D",
-     "legendFormat": "ollama up"
+     "legendFormat": "freetoken up"
     }
    ],
    "fieldConfig": {

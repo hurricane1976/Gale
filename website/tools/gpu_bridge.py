@@ -17,6 +17,7 @@ Ollama server + its GPU become first-class Prometheus metrics:
 Upstreams (env-overridable, defaults match ollama_api.py):
   OLLAMA_URL      default http://192.168.1.197:11434   (/api/ps, /api/tags)
   GPU_COLLECTOR_URL default http://192.168.1.197:8792  (/gpu)
+  FREETOKEN_URL   default http://192.168.1.197:1919    (/v1/models — actual inference endpoint)
 
 On upstream failure the file is still rewritten (up=0, zeros elsewhere,
 fresh unixtime) -- the right alerts then are the *_down ones, not a silent
@@ -30,6 +31,7 @@ import time
 import urllib.request
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://192.168.1.197:11434").rstrip("/")
+FREETOKEN_URL = os.environ.get("FREETOKEN_URL", "http://192.168.1.197:1919").rstrip("/")
 COLLECTOR_URL = os.environ.get("GPU_COLLECTOR_URL", "http://192.168.1.197:8792").rstrip("/")
 TEXTFILE = os.environ.get("GPU_TEXTFILE", "/var/snap/node-exporter/common/gale_gpu.prom")
 
@@ -56,6 +58,15 @@ def main():
         ollama_up = 1
     except Exception as e:
         sys.stderr.write(f"gpu_bridge: /api/ps failed: {e!r}\n")
+
+    # Freetoken /v1/models — the actual inference endpoint opencode uses.
+    # Ollama native API (port 11434) can be down while freetoken still works.
+    freetoken_up = 0
+    try:
+        models = fetch_json(FREETOKEN_URL + "/v1/models")
+        freetoken_up = 1 if isinstance(models, dict) and "data" in models else 0
+    except Exception as e:
+        sys.stderr.write(f"gpu_bridge: /v1/models failed: {e!r}\n")
     try:
         tags = fetch_json(OLLAMA_URL + "/api/tags")
         models_installed = len(tags.get("models") or [])
@@ -74,19 +85,22 @@ def main():
         sys.stderr.write(f"gpu_bridge: collector /gpu failed: {e!r}\n")
 
     L = [
-        "# HELP gale_ollama_up LAN Ollama server reachable via /api/ps (1/0)",
+        "# HELP gale_ollama_up LAN freetoken server reachable via /api/ps (1/0)",
         "# TYPE gale_ollama_up gauge",
         f"gale_ollama_up {ollama_up}",
-        "# HELP gale_ollama_models_installed Models present in the Ollama library",
+        "# HELP gale_freetoken_up Freetoken inference API reachable via /v1/models (1/0)",
+        "# TYPE gale_freetoken_up gauge",
+        f"gale_freetoken_up {freetoken_up}",
+        "# HELP gale_ollama_models_installed Models present in the freetoken library",
         "# TYPE gale_ollama_models_installed gauge",
         f"gale_ollama_models_installed {models_installed}",
-        "# HELP gale_ollama_models_loaded Models currently resident (loaded) in Ollama",
+        "# HELP gale_ollama_models_loaded Models currently resident (loaded) in freetoken",
         "# TYPE gale_ollama_models_loaded gauge",
         f"gale_ollama_models_loaded {len(models_loaded)}",
-        "# HELP gale_ollama_vram_bytes VRAM bytes held by loaded Ollama models",
+        "# HELP gale_ollama_vram_bytes VRAM bytes held by loaded freetoken models",
         "# TYPE gale_ollama_vram_bytes gauge",
         f"gale_ollama_vram_bytes {vram_bytes}",
-        "# HELP gale_ollama_model_loaded Model currently loaded in Ollama (1/0)",
+        "# HELP gale_ollama_model_loaded Model currently loaded in freetoken (1/0)",
         "# TYPE gale_ollama_model_loaded gauge",
     ]
     for name in models_loaded:
@@ -151,7 +165,7 @@ def main():
     os.replace(tmp, TEXTFILE)
     os.chmod(TEXTFILE, 0o644)
     print(f"gpu_bridge: wrote {TEXTFILE} (ollama_up={ollama_up} "
-          f"loaded={len(models_loaded)} collector_up={collector_up})")
+          f"freetoken_up={freetoken_up} loaded={len(models_loaded)} collector_up={collector_up})")
 
 
 if __name__ == "__main__":

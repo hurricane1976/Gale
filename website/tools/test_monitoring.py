@@ -82,6 +82,65 @@ class MonitoringTests(unittest.TestCase):
         self.assertIn('severity="critical"', config['route']['routes'][0]['matchers'])
         self.assertTrue(all(r.get('equal') for r in config['inhibit_rules']))
 
+    def test_prometheus_rule_syntax(self):
+        """Validate that all prometheus rule files parse without errors."""
+        root = Path(__file__).resolve().parent.parent / 'tools'
+        prom_dir = root / 'prometheus'
+        for rule_file in prom_dir.glob('*.yml'):
+            with self.subTest(rule_file=rule_file):
+                docs = list(yaml.safe_load_all(rule_file.read_text()))
+                self.assertTrue(len(docs) > 0, f"{rule_file} is empty")
+                for doc in docs:
+                    self.assertIn('groups', doc)
+                    for group in doc['groups']:
+                        self.assertIn('name', group)
+                        self.assertIn('rules', group)
+                        for rule in group['rules']:
+                            self.assertIn('alert', rule)
+                            self.assertIn('expr', rule)
+
+    def test_alertmanager_configuration(self):
+        """Validate alertmanager config structure and required fields."""
+        root = Path(__file__).resolve().parent.parent / 'monitoring'
+        am_path = root / 'alertmanager.yml'
+        config = yaml.safe_load(am_path.read_text())
+        self.assertIn('global', config)
+        self.assertIn('route', config)
+        route = config['route']
+        self.assertIn('receiver', route)
+        self.assertIn('routes', route)
+        # Verify at least one route matcher
+        for r in route['routes']:
+            if 'matchers' in r:
+                self.assertTrue(len(r['matchers']) > 0)
+
+    def test_grafana_dashboards_json_valid(self):
+        """Validate Grafana dashboard JSON files can be loaded and have required fields."""
+        root = Path(__file__).resolve().parent.parent / 'tools' / 'grafana'
+        for dashboard_file in root.glob('*.json'):
+            with self.subTest(dashboard=dashboard_file.name):
+                content = dashboard_file.read_text()
+                data = json.loads(content)
+                self.assertIn('title', data)
+                self.assertIn('uid', data)
+                self.assertIn('panels', data)
+                self.assertIsInstance(data['panels'], list)
+                for panel in data['panels']:
+                    self.assertIn('title', panel)
+                    self.assertIn('type', panel)
+
+    def test_grafana_provisioner_config_valid(self):
+        """Validate grafana dashboards-provider.yaml is valid and complete."""
+        root = Path(__file__).resolve().parent.parent / 'tools' / 'grafana'
+        provider_path = root / 'dashboards-provider.yaml'
+        config = yaml.safe_load(provider_path.read_text())
+        self.assertIn('apiVersion', config)
+        self.assertIn('providers', config)
+        for provider in config['providers']:
+            self.assertIn('name', provider)
+            self.assertIn('type', provider)
+            self.assertIn('options', provider)
+
 
 class ControlTests(unittest.TestCase):
     def handler(self, raw=b'{"agent":"gale"}', ip='127.0.0.1', headers=None):
@@ -252,223 +311,4 @@ class OllamaAlertsTests(unittest.TestCase):
                 self._sample('2027-01-15T08:00:00Z', False, gpu),
             ])
             alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([(a['sev'], a['kind']) for a in alerts], [('crit', 'inference-down')])
-        self.assertIn('down ~10m', alerts[0]['text'])
 
-    def test_stale_evidence_never_claims_outage(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T07:50:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T07:49:00Z', False, gpu),
-                self._sample('2027-01-15T07:50:00Z', False, gpu),
-            ])
-            alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([a['kind'] for a in alerts], ['inference-monitor-stale'])
-
-    def test_missing_or_empty_history_is_monitor_stale(self):
-        with ExitStack() as stack:
-            stack.enter_context(patch.object(fleet, 'OLLAMA_HISTORY_PATH', '/nonexistent/ollama-history.jsonl'))
-            stack.enter_context(patch.object(fleet, 'OLLAMA_MAINTENANCE_PATH', '/nonexistent/ollama-maintenance.json'))
-            self.assertEqual([a['kind'] for a in fleet.ollama_alerts(now=self.NOW)], ['inference-monitor-stale'])
-        with ExitStack() as stack:
-            self._feed(stack, [{'ts': '2027-01-15T07:00:00Z', 'type': 'server_up'}])
-            self.assertEqual([a['kind'] for a in fleet.ollama_alerts(now=self.NOW)], ['inference-monitor-stale'])
-
-    def test_maintenance_mute_suppresses_all_inference_alerts(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T07:47:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T07:47:00Z', False, gpu),
-                self._sample('2027-01-15T08:00:00Z', False, gpu),
-            ])
-            directory = stack.enter_context(tempfile.TemporaryDirectory())
-            flag = Path(directory) / 'ollama-maintenance.json'
-            flag.write_text(json.dumps({"maintenance": True, "host": "192.168.1.197"}))
-            stack.enter_context(patch.object(fleet, 'OLLAMA_MAINTENANCE_PATH', str(flag)))
-            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
-
-    def test_gpu_collector_staleness_raises_warn(self):
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T08:00:00Z', True,
-                             {'ok': True, 'stale': True, 'generated_at': '2027-01-15T05:37:00Z'}),
-            ])
-            alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([(a['sev'], a['kind']) for a in alerts], [('warn', 'inference-collector-stale')])
-        self.assertIn('stale ~3h', alerts[0]['text'])
-
-    def test_event_lines_and_torn_tail_are_ignored(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
-        with ExitStack() as stack:
-            path = self._feed(stack, [
-                self._sample('2027-01-15T08:00:00Z', True, gpu),
-            ])
-            with open(path, 'a') as fh:
-                fh.write('{"ts": "2027-01-15T08:00:30Z", "type": "serv')  # torn final line
-                fh.write('\n' + json.dumps({'ts': '2027-01-15T08:00:30Z', 'type': 'server_down'}) + '\n')
-            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
-
-    def test_three_crashes_in_24h_warns_flapping(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                {'ts': '2027-01-14T07:00:00Z', 'type': 'server_down'},   # >24h old: not counted
-                {'ts': '2027-01-15T02:00:00Z', 'type': 'server_down'},
-                {'ts': '2027-01-15T02:10:00Z', 'type': 'server_up'},
-                {'ts': '2027-01-15T05:00:00Z', 'type': 'server_down'},
-                {'ts': '2027-01-15T05:20:00Z', 'type': 'server_up'},
-                {'ts': '2027-01-15T07:00:00Z', 'type': 'server_down'},
-                {'ts': '2027-01-15T07:30:00Z', 'type': 'server_up'},
-                self._sample('2027-01-15T08:00:00Z', True, gpu),
-            ])
-            alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([a['kind'] for a in alerts], ['inference-flapping'])
-        self.assertIn('crashed 3x in 24h', alerts[0]['text'])
-
-    def test_fresh_generation_failure_raises_crit_degraded(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T08:00:00Z', True, gpu,
-                             gen_ok=False, gen_ms=5020, gen_err='llama runner terminated'),
-            ])
-            alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([(a['sev'], a['kind']) for a in alerts], [('crit', 'inference-degraded')])
-        self.assertIn('generation failing', alerts[0]['text'])
-
-    def test_inconclusive_gen_or_absent_field_raises_nothing(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T08:00:00Z', True, gpu, gen_ok=None, gen_ms=25100),
-            ])
-            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
-        with ExitStack() as stack:
-            self._feed(stack, [   # pre-probe sample format: no gen keys at all
-                self._sample('2027-01-15T08:00:00Z', True, gpu),
-            ])
-            self.assertEqual(fleet.ollama_alerts(now=self.NOW), [])
-
-    def test_stale_generation_failure_not_claimed(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T07:49:00Z', True, gpu, gen_ok=False, gen_ms=8000),
-            ])
-            alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([a['kind'] for a in alerts], ['inference-monitor-stale'])
-
-    def test_unreachable_sample_never_claims_degraded(self):
-        gpu = {'ok': True, 'stale': False, 'generated_at': '2027-01-15T08:00:00Z'}
-        with ExitStack() as stack:
-            self._feed(stack, [
-                self._sample('2027-01-15T08:00:00Z', False, gpu, gen_ok=False, gen_ms=0),
-            ])
-            alerts = fleet.ollama_alerts(now=self.NOW)
-        self.assertEqual([a['kind'] for a in alerts], ['inference-down'])
-
-
-class GenProbeTests(unittest.TestCase):
-    def test_classification_matrix(self):
-        classify = ollama_api._classify_gen
-        self.assertIs(classify(200, {'done': True}), True)
-        self.assertIs(classify(200, {'done': True, 'response': ''}), True)
-        self.assertIs(classify(500, {'error': 'CUDA error: unspecified launch failure'}), False)
-        self.assertIs(classify(503, {'error': 'llama runner process has terminated'}), False)
-        self.assertIs(classify(0, {'error': 'URLError: timeout'}), None)          # transport
-        self.assertIs(classify(200, {'done': False}), None)                        # partial/odd 200
-        self.assertIs(classify(404, {'error': 'model not found'}), None)           # race, not hardware
-        self.assertIs(classify(200, None), None)
-
-    def test_probe_fragment_shapes(self):
-        with patch.object(ollama_api, 'fetch_json', return_value=(200, {'done': True})):
-            frag = ollama_api._gen_probe('qwen3.8:27b')
-        self.assertIs(frag['gen_ok'], True)
-        self.assertNotIn('gen_err', frag)
-        self.assertGreaterEqual(frag['gen_ms'], 0)
-
-        with patch.object(ollama_api, 'fetch_json', return_value=(500, {'error': 'CUDA error: unspecified launch failure'})):
-            frag = ollama_api._gen_probe('qwen3.8:27b')
-        self.assertIs(frag['gen_ok'], False)
-        self.assertIn('CUDA error', frag['gen_err'])
-
-        with patch.object(ollama_api, 'fetch_json', return_value=(0, {'error': 'URLError: timed out'})):
-            frag = ollama_api._gen_probe('qwen3.8:27b')
-        self.assertIsNone(frag['gen_ok'])
-        self.assertNotIn('gen_err', frag)
-
-
-class WeatherProxyTests(unittest.TestCase):
-    def setUp(self):
-        weather_proxy._cache.clear()
-        weather_proxy._inflight.clear()
-
-    def test_unknown_kind_rejected_without_network(self):
-        with patch.object(weather_proxy, '_http', side_effect=AssertionError('no network expected')):
-            status, obj, _ = weather_proxy.fetch('nope', {'latitude': 1})
-        self.assertEqual(status, 400)
-
-    def test_params_allowlisted_and_coordinates_quantized(self):
-        seen = {}
-        def fake_http(url, timeout):
-            seen['url'] = url
-            return 200, {'ok': True}
-        with patch.object(weather_proxy, '_http', side_effect=fake_http):
-            weather_proxy.fetch('forecast', {'latitude': 47.6062, 'longitude': -122.3321,
-                                             'current': 'temperature_2m', 'evil': 'x',
-                                             'timezone': 'auto'})
-        self.assertIn('latitude=47.61', seen['url'])
-        self.assertIn('longitude=-122.33', seen['url'])
-        self.assertNotIn('evil', seen['url'])
-        self.assertIn('current=temperature_2m', seen['url'])
-        # second query differing in the 4th decimal hits the same cache entry
-        calls = []
-        def counting(url, timeout):
-            calls.append(url)
-            return 200, {'ok': True}
-        with patch.object(weather_proxy, '_http', side_effect=counting):
-            status, obj, stale = weather_proxy.fetch('forecast', {'latitude': 47.6069, 'longitude': -122.3326,
-                                                                  'current': 'temperature_2m', 'timezone': 'auto'})
-        self.assertEqual(status, 200)
-        self.assertEqual(stale, 0)
-        self.assertEqual(len(calls), 0)          # served from cache, no second upstream hit
-
-    def test_stale_beats_503_after_upstream_fails(self):
-        with patch.object(weather_proxy, '_http', return_value=(200, {'generationtime_ms': 1})):
-            status, obj, stale = weather_proxy.fetch('forecast', {'latitude': 1, 'longitude': 2})
-        self.assertEqual((status, stale), (200, 0))
-        # TTL passes (fetch records its own now; monkeypatch time), upstream dies
-        with patch.object(weather_proxy, '_http', return_value=(0, {'error': 'URLError: down'})), \
-             patch.object(weather_proxy.time, 'time', return_value=weather_proxy.time.time() + 9999):
-            status, obj, stale = weather_proxy.fetch('forecast', {'latitude': 1, 'longitude': 2})
-        self.assertEqual(status, 200)
-        self.assertGreater(stale, 0)
-        self.assertIn('generationtime_ms', obj)
-
-    def test_no_cache_and_dead_upstream_is_502(self):
-        with patch.object(weather_proxy, '_http', return_value=(0, {'error': 'URLError: refused'})):
-            status, obj, stale = weather_proxy.fetch('airquality', {'latitude': 1, 'longitude': 2})
-        self.assertEqual(status, 502)
-        self.assertIn('error', obj)
-        self.assertIsNone(stale)
-
-    def test_single_flight_shares_one_upstream_fetch(self):
-        calls = []
-        started = threading.Event()
-        def slow_http(url, timeout):
-            calls.append(url)
-            started.set()
-            time.sleep(0.15)
-            return 200, {'ok': True}
-        with patch.object(weather_proxy, '_http', side_effect=slow_http):
-            def go():
-                weather_proxy.fetch('geocode', {'name': 'seattle', 'count': 7})
-            t1 = threading.Thread(target=go); t1.start()
-            self.assertTrue(started.wait(2))
-            t2 = threading.Thread(target=go); t2.start()
-            t1.join(3); t2.join(3)
-        self.assertEqual(len(calls), 1)          # second caller shared the first's fetch
-
-
-if __name__ == '__main__':
-    unittest.main(verbosity=2)

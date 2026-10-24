@@ -53,6 +53,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://192.168.1.197:11434").rstrip("/")
+# freetoken (vLLM-style OpenAI API) is the live inference endpoint since the fleet moved off native
+# Ollama; when :11434 is down but this answers /health, the backend is up, not down.
+FREETOKEN_URL = os.environ.get("FREETOKEN_URL", "http://192.168.1.197:1919").rstrip("/")
 COLLECTOR_URL = os.environ.get("GPU_COLLECTOR_URL", "http://192.168.1.197:8792").rstrip("/")
 API_DIR = "/var/www/gale-api"
 HISTORY_PATH = os.path.join(API_DIR, "ollama-history.jsonl")
@@ -118,6 +121,26 @@ def fetch_json(path, method="GET", body=None, timeout=10):
         return e.code, {"error": (payload or {}).get("error", str(e))}
     except Exception as e:
         return 0, {"error": f"{type(e).__name__}: {e}"}
+
+
+def freetoken_probe(timeout=6):
+    """(ok, health_dict, model_ids). ok only for a 200 /health with status "ok"."""
+    try:
+        with urllib.request.urlopen(FREETOKEN_URL + "/health", timeout=timeout) as r:
+            h = json.loads(r.read() or b"{}")
+        if r.status != 200 or not isinstance(h, dict) or h.get("status") != "ok":
+            return False, None, []
+    except Exception:
+        return False, None, []
+    ids = []
+    try:
+        with urllib.request.urlopen(FREETOKEN_URL + "/v1/models", timeout=timeout) as r:
+            ids = [m.get("id") for m in (json.loads(r.read() or b"{}").get("data") or []) if m.get("id")]
+    except Exception:
+        pass
+    if not ids and h.get("model"):
+        ids = [h["model"]]
+    return True, h, ids
 
 
 def _classify_gen(status, obj):
@@ -276,7 +299,14 @@ class Sampler:
         version = vobj.get("version") if reachable else None
 
         resident, vram = [], 0
-        if reachable:
+        ft_only = False
+        if not reachable:
+            ft_ok, fh, fids = freetoken_probe()
+            if ft_ok:
+                reachable, ft_only = True, True
+                version = (fh.get("version") or "freetoken")
+                resident = fids[:1]
+        if reachable and not ft_only:
             _, pobj = fetch_json("/api/ps", timeout=8)
             for m in (pobj or {}).get("models", []):
                 name = m.get("name") or m.get("model") or "?"
@@ -287,7 +317,7 @@ class Sampler:
         # is resident (probing an empty server would trigger a full load).
         # Skipped probes leave no gen keys -- absent == unknown, never an alarm.
         probe = {}
-        if reachable and resident:
+        if reachable and resident and not ft_only:  # _gen_probe speaks native /api/generate
             try:
                 probe = _gen_probe(resident[0])
             except Exception as e:                     # never die sampling
@@ -384,7 +414,18 @@ def build_snapshot():
     vstatus, vobj = fetch_json("/api/version", timeout=8)
     snap["latency_ms"] = round((time.monotonic() - t0) * 1000)
     if not (vstatus == 200 and isinstance(vobj, dict)):
-        snap["error"] = (vobj or {}).get("error", "unreachable")
+        native_err = (vobj or {}).get("error", "unreachable")
+        ft_ok, fh, fids = freetoken_probe()
+        if not ft_ok:
+            snap["error"] = native_err
+            return snap
+        snap.update({
+            "reachable": True, "backend": "freetoken", "url": FREETOKEN_URL,
+            "version": (fh.get("version") or "freetoken"),
+            "models": [{"name": n, "size_bytes": 0, "resident": True, "pinned": True, "capabilities": []} for n in fids],
+            "resident": fids[:1], "disk_bytes": 0,
+            "note": f"native Ollama ({OLLAMA_URL}) is not running; serving via freetoken ({fh.get('maintenance') or 'ok'}). Chat/pull/delete need native Ollama.",
+        })
         return snap
     snap["reachable"] = True
     snap["version"] = vobj.get("version")
@@ -586,8 +627,8 @@ def action_keepalive(model, keep_alive):
 
 def action_unload_all():
     snap = SNAP.get(build_snapshot)
-    if not snap.get("reachable"):
-        return 502, {"ok": False, "error": "Ollama unreachable"}
+    if not snap.get("reachable") or snap.get("backend") == "freetoken":
+        return 502, {"ok": False, "error": "Ollama unreachable" if not snap.get("reachable") else "this action needs native Ollama; only freetoken is running"}
     resident = [m["name"] for m in snap.get("models", []) if m.get("resident")]
     results = []
     for name in resident:
@@ -695,9 +736,10 @@ def validate_chat_payload(payload):
     if err:
         return None, None, None, (400, {"ok": False, "error": err})
     snap = SNAP.get(build_snapshot)
-    if not snap.get("reachable"):
-        note_error("chat", "Ollama unreachable")
-        return None, None, None, (502, {"ok": False, "error": "Ollama unreachable"})
+    if not snap.get("reachable") or snap.get("backend") == "freetoken":
+        msg = "Ollama unreachable" if not snap.get("reachable") else "chat needs native Ollama; only freetoken is running"
+        note_error("chat", msg)
+        return None, None, None, (502, {"ok": False, "error": msg})
     if not any(m["name"] == model for m in snap["models"]):
         return None, None, None, (400, {"ok": False, "error": f"model {model} is not installed"})
     return model, cleaned, options, None

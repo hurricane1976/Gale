@@ -6,15 +6,16 @@ import re, sys
 
 # group label -> [(page slug, label)]. Order here is the order everywhere.
 GROUPS = [
-    ("Overview", [("index", "Home"), ("operations", "Operations"), ("status", "Status"), ("notifications", "Notifications")]),
-    ("Fleet", [("fleet", "Fleet"), ("galaxy", "Galaxy"), ("network", "Network"), ("maintenance", "Maintenance")]),
+    ("Overview", [("index", "Home"), ("operations", "Operations"), ("status", "Status")]),
+    ("Fleet", [("fleet", "Fleet"), ("galaxy", "Galaxy"), ("network", "Network")]),
     ("Insights", [("metrics", "Metrics"), ("observability", "Observability"), ("reliability", "Reliability")]),
     ("Services", [("ollama", "freetoken"), ("agora", "Agora"), ("weather", "Weather"), ("runbooks", "Runbooks")]),
-    ("Smart home", [("energy", "Energy"), ("energy-costs", "Energy costs"), ("cameras", "Cameras"), ("presence", "Presence"),
-              ("routines", "Routines"), ("guest-mode", "Guest mode")]),
 ]
+# Smart-home pages were retired from the nav (2026-10-16, user no longer uses them). The files are left
+# on disk, unlinked; they keep getting the current nav so a direct URL still renders consistently.
+RETIRED = ["energy", "energy-costs", "cameras", "presence", "routines", "guest-mode", "maintenance", "notifications"]
 NAV = [pl for _, pages in GROUPS for pl in pages]
-PAGES = [slug for slug, _ in NAV] + ["404", "offline"]
+PAGES = [slug for slug, _ in NAV] + ["404", "offline"] + RETIRED
 # phone bottom bar = first four, icon keys read by shared.js; everything else lands in More
 TABS = {"index": ("Overview", "home"), "status": ("Status", "status"), "fleet": ("Fleet", "fleet"), "operations": ("Operations", "ops")}
 CONTAINERS = [(r'<nav class="site-links" aria-label="Site">', "nav"), (r'<div class="fleet-links">', "div"), (r'<div class="topnav-links">', "div")]

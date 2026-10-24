@@ -1,0 +1,31 @@
+groups:
+- name: gale-latency
+  interval: 15s
+  rules:
+  # HTTP request duration histogram
+  - alert: GaleHttpRequestDurationHigh
+    expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 5
+    for: 2m
+    labels:
+      severity: warning
+      component: api
+    annotations:
+      summary: "p99 latency {{ $value }}s on {{ $labels.handler }}"
+  # Request rate anomalies
+  - alert: GaleRequestRateSpike
+    expr: rate(http_requests_total[5m]) > 3 * avg(rate(http_requests_total[15m]))
+    for: 3m
+    labels:
+      severity: info
+      component: api
+    annotations:
+      summary: "Request rate spike: {{ $value }} req/s (normal: {{ $values | list | last }} req/s)"
+  # Error rate increase
+  - alert: GaleErrorRateIncrease
+    expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+    for: 2m
+    labels:
+      severity: warning
+      component: api
+    annotations:
+      summary: "5xx error rate {{ $value | humanizePercentage }} (threshold: 5%)"

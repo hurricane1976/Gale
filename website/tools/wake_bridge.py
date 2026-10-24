@@ -10,7 +10,7 @@ synthetics.sh; cron every 5 min):
   2. fleet_api /telemetry-> per-agent last wake, 24h run + error counts
      (127.0.0.1:8793, same parser fleet_api already runs; fallback: raw
       log fname timestamps, so a dead fleet_api degrades, not breaks)
-  3. /proc cmdline scan  -> live `opencode run --dir ...` session ages
+  3. /proc cmdline scan  -> live `opencode run --standalone` wake session ages
      (no ps shell-out; /proc/stat field 22 + /proc/uptime math)
 
 Metrics (agent label = fleet_api display name, "gale" for ~/agent):
@@ -115,7 +115,10 @@ def run_epoch(r):
 
 
 def live_sessions():
-    """/proc scan: age of oldest live `opencode run --dir /home/agent/X`."""
+    """/proc scan: age of oldest live `opencode run --standalone` wake in an
+    agent dir. (opencode v2, upgraded 2026-10-14: wake cmdlines no longer
+    carry --dir -- the workdir is the process cwd, since wake.sh cd's into
+    the agent dir before running.)"""
     try:
         boot = time.time() - float(open("/proc/uptime").read().split()[0])
         ticks = os.sysconf("SC_CLK_TCK")
@@ -128,11 +131,10 @@ def live_sessions():
         try:
             with open(f"/proc/{pid}/cmdline", "rb") as f:
                 argv = f.read().decode("utf-8", "replace").split("\0")
-            if "opencode" not in argv or "run" not in argv:
+            if ("opencode" not in argv or "run" not in argv
+                    or "--standalone" not in argv):
                 continue
-            if "--dir" not in argv:
-                continue
-            d = argv[argv.index("--dir") + 1].rstrip("/")
+            d = os.readlink(f"/proc/{pid}/cwd").rstrip("/")
             agent_dir = os.path.basename(d)
             with open(f"/proc/{pid}/stat") as f:
                 started_ticks = int(f.read().rsplit(")", 1)[1].split()[19])

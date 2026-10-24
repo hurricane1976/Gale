@@ -1,5 +1,6 @@
 /* Headless render test: stubs DOM globals, imports the real modules,
-   feeds LIVE api/fleet/metrics data through the pure render functions. */
+   feeds LIVE api/fleet/metrics data through the pure render functions.
+   Falls back to Zod-synthetic payloads when the live API rate-limits. */
 import { readFileSync } from "fs";
 import { execSync } from "child_process";
 
@@ -39,19 +40,50 @@ globalThis.cancelAnimationFrame = () => {};
 globalThis.location = { hash: "", origin: "http://test", pathname: "/" };
 globalThis.performance = { now: () => 0 };
 
-const OPTS = { maxBuffer: 32 * 1024 * 1024 };
-const raw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/metrics', OPTS).toString();
-const d = JSON.parse(raw);
-const actRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/activity', OPTS).toString();
-const actData = JSON.parse(actRaw);
-const statRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/status.json', OPTS).toString();
-const statData = JSON.parse(statRaw);
-const telRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/telemetry', OPTS).toString();
-const telData = JSON.parse(telRaw);
-const wakesRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/wakes', OPTS).toString();
-const wakesData = JSON.parse(wakesRaw);
-const asksRaw = execSync('curl -s --max-time 10 http://100.66.39.59:8090/api/fleet/asks', OPTS).toString();
-const asksData = JSON.parse(asksRaw);
+const fetchLive = (url) => execSync(`curl -s --max-time 5 '${url}'`, { maxBuffer: 32 * 1024 * 1024 }).toString();
+
+// Fetch metrics first — this is the most rate-limit-prone endpoint
+let d, actData, statData, telData, wakesData, asksData;
+const raw = fetchLive('http://100.66.39.59:8090/api/fleet/metrics');
+d = JSON.parse(raw);
+if (d.error === "rate limit exceeded") {
+  // Synthetic data from Zod schemas
+  const { metricsPayload } = await import("/home/agent/agent/website/payloads.js");
+  d = metricsPayload.parse({
+    days: ["2026-10-01","2026-10-02","2026-10-03","2026-10-04","2026-10-05","2026-10-06","2026-10-07","2026-10-08","2026-10-09","2026-10-10","2026-10-11","2026-10-12","2026-10-13"],
+    per_agent_24h: [
+      { agent:"gale", runs_24h:12, cost_24h:3.45, error_runs_24h:0, last_wake:"2026-10-13T18:00:00Z", daily_wakings_14d:[3,4,5,6,4,3,5,4,6,5,3,4,5], daily_cost_14d:[0.8,1.0,1.2,1.5,1.0,0.8,1.2,1.0,1.5,1.2,0.8,1.0,1.2], total_wakings_14d:55 },
+      { agent:"zephyr", runs_24h:8, cost_24h:2.10, error_runs_24h:1, last_wake:"2026-10-13T17:30:00Z", daily_wakings_14d:[2,3,4,2,3,2,4,3,2,4,3,2,3], daily_cost_14d:[0.5,0.7,1.0,0.5,0.7,0.5,1.0,0.7,0.5,1.0,0.7,0.5,0.7], total_wakings_14d:35 },
+      { agent:"squall", runs_24h:6, cost_24h:1.80, error_runs_24h:0, last_wake:"2026-10-13T16:00:00Z", daily_wakings_14d:[2,2,3,2,2,3,2,3,2,2,3,2,2], daily_cost_14d:[0.5,0.5,0.8,0.5,0.5,0.8,0.5,0.8,0.5,0.5,0.8,0.5,0.5], total_wakings_14d:28 },
+      { agent:"tempest", runs_24h:5, cost_24h:1.25, error_runs_24h:0, last_wake:"2026-10-13T15:00:00Z", daily_wakings_14d:[1,2,2,1,2,1,2,2,1,2,2,1,2], daily_cost_14d:[0.3,0.5,0.5,0.3,0.5,0.3,0.5,0.5,0.3,0.5,0.5,0.3,0.5], total_wakings_14d:21 },
+      { agent:"vortex", runs_24h:4, cost_24h:0.95, error_runs_24h:0, last_wake:"2026-10-13T14:00:00Z", daily_wakings_14d:[1,1,2,1,1,2,1,2,1,1,2,1,2], daily_cost_14d:[0.2,0.2,0.5,0.2,0.2,0.5,0.2,0.5,0.2,0.2,0.5,0.2,0.5], total_wakings_14d:18 },
+    ],
+    fleet_status: { gale: {listener:"gale",state:"ok",code:200}, zephyr: {listener:"zephyr",state:"ok",code:200}, squall: {listener:"squall",state:"ok",code:200}, tempest: {listener:"tempest",state:"ok",code:200}, vortex: {listener:"vortex",state:"ok",code:200} },
+    coverage: { total: 5, healthy: 5 }, sources: { local: ["gale","zephyr","squall","tempest","vortex"] },
+    cost_coverage: { total: 5, covered: 5 }, cost_coverage_by_host: { gale: true, zephyr: true, squall: true, tempest: true, vortex: true },
+    daily_wakings_by_host: { gale: [3,4,5,6,4,3,5,4,6,5,3,4,5], zephyr: [2,3,4,2,3,2,4,3,2,4,3,2,3] },
+    daily_cost_by_host: { gale: [0.8,1.0,1.2,1.5,1.0,0.8,1.2,1.0,1.5,1.2,0.8,1.0,1.2], zephyr: [0.5,0.7,1.0,0.5,0.7,0.5,1.0,0.7,0.5,1.0,0.7,0.5,0.7] },
+    runs_24h_by_host: { gale: 12, zephyr: 8, squall: 6, tempest: 5, vortex: 4 },
+    cost_24h_by_host: { gale: 3.45, zephyr: 2.10, squall: 1.80, tempest: 1.25, vortex: 0.95 },
+    error_runs_24h_by_host: { gale: 0, zephyr: 1, squall: 0, tempest: 0, vortex: 0 },
+    last_wake_by_host: { gale: "2026-10-13T18:00:00Z", zephyr: "2026-10-13T17:30:00Z", squall: "2026-10-13T16:00:00Z", tempest: "2026-10-13T15:00:00Z", vortex: "2026-10-13T14:00:00Z" },
+    agents_by_host: { gale: ["gale"], zephyr: ["zephyr"], squall: ["squall"], tempest: ["tempest"], vortex: ["vortex"] },
+    generated_at: "2026-10-13T19:00:00Z",
+  });
+  // Synthesize other feeds from Zod defaults
+  const { activityPayload, statusPayload, telemetryPayload, wakesPayload, asksPayload } = await import("/home/agent/agent/website/payloads.js");
+  actData = activityPayload.parse({ events: [{ts:"2026-10-13T18:00:00Z",agent:"gale",run_id:"abc123",type:"wake",dur_s:300}], generated_at:"2026-10-13T19:00:00Z" });
+  statData = statusPayload.parse({ hosts: [{name:"gale",ip:"100.66.39.59",state:"ok"}], services: {}, alerts: [] });
+  telData = telemetryPayload.parse({ runs: [] });
+  wakesData = wakesPayload.parse({ wakes: [] });
+  asksData = asksPayload.parse({ asks: [] });
+} else {
+  actData = JSON.parse(fetchLive('http://100.66.39.59:8090/api/fleet/activity'));
+  statData = JSON.parse(fetchLive('http://100.66.39.59:8090/api/status.json'));
+  telData = JSON.parse(fetchLive('http://100.66.39.59:8090/api/fleet/telemetry'));
+  wakesData = JSON.parse(fetchLive('http://100.66.39.59:8090/api/fleet/wakes'));
+  asksData = JSON.parse(fetchLive('http://100.66.39.59:8090/api/fleet/asks'));
+}
 // stub network: route each feed to its live payload
 globalThis.fetch = async (url) => {
   const u = String(url);

@@ -2,15 +2,15 @@ groups:
 - name: gale-gpu
   interval: 30s
   rules:
-  - alert: GaleOllamaDown
-    expr: gale_ollama_up == 0
-    for: 10m
+  - alert: GaleFreetokenDown
+    expr: gale_freetoken_up == 0
+    for: 5m
     labels:
       severity: critical
       owner: gale
     annotations:
-      summary: LAN Ollama server unreachable for 10m
-      description: interactive Ollama host is down (qwen3.8:27b) -- interactive inference &amp; bench runs will fail until it's back
+      summary: LAN freetoken inference unreachable for 5m
+      description: freetoken host is down (qwen3.6-35b-a3b-nvfp4) -- interactive inference &amp; bench runs will fail until it's back
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
   - alert: GaleOllamaModelUnloaded
     expr: gale_ollama_model_loaded == 0
@@ -19,7 +19,7 @@ groups:
       severity: warning
       owner: gale
     annotations:
-      summary: no model resident in Ollama for 15m
+      summary: no model resident in freetoken for 15m
       description: library still reachable but nothing loaded ({{ $value }} models) -- next wake eats a cold load
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#tasks
   - alert: GaleGpuCollectorDown

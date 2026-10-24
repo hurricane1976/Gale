@@ -29,3 +29,22 @@ groups:
     annotations:
       summary: No verified backup in {{ $value }}h
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#recovery
+- name: gale-slo-records
+  interval: 30s
+  rules:
+  - record: gale_slo_error_budget:ratio
+    expr: |
+      (1 - (1 - gale_slo_target) * (gale_slo_good / (gale_slo_good + gale_slo_bad))) * 100
+  - record: gale_slo_error_budget:time_remaining_days
+    expr: |
+      gale_slo_error_budget:ratio / (rate(gale_slo_bad[5m]) * 86400 / 30)
+  - alert: GaleSLOErrorBudgetExhausted
+    expr: gale_slo_error_budget:ratio <= 0
+    for: 0m
+    labels:
+      severity: critical
+      component: slo
+      owner: gale
+    annotations:
+      summary: "Error budget exhausted! SLO breach active."
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#slo

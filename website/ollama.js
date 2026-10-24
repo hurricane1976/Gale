@@ -1,4 +1,4 @@
-/* GALE — Ollama admin panel: polls /api/ollama/{snapshot,history} and renders
+/* GALE — freetoken admin panel: polls /api/ollama/{snapshot,history} and renders
    live status, VRAM/residency charts, model management and a playground.
    No chart library, house tokens only. Actions go through /api/ollama/action
    (allowlisted, rate-limited server-side); delete always asks for a typed
@@ -60,7 +60,7 @@ function askConfirm(action, model) {
   $("confirm-text").textContent =
     action === "delete"
       ? "Removes the model from the server's disk. Reversible only by re-downloading it."
-      : "Drops the model from VRAM now. Fleet agents using it will block until it reloads (the keepalive cron re-arms qwen3.8:27b within ~5 min).";
+      : "Drops the model from VRAM now. Fleet agents using it will block until it reloads (the keepalive cron re-arms qwen3.6-35b-a3b-nvfp4 within ~5 min).";
   const input = $("confirm-input");
   input.value = "";
   input.hidden = action !== "delete";

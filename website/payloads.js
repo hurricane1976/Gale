@@ -231,6 +231,37 @@ export const statusPayload = z.object({
   collector_interval_s: numOr.optional(),
 });
 
+/* Activity feed — /api/fleet/activity. Fields used by main.js §3 live pulse,
+   activity.js stream body, main.js §4 wake-dots, main.js §5 commits,
+   topology3d gale:activity-event listener. */
+const activityEvent = z.object({
+  ts: z.string(),
+  agent: z.string(),
+  host: z.string().optional(),
+  kind: z.enum(["waking", "backup", "peer", "peer-flag", "commit", "agora", "relay"]).optional(),
+  type: z.string().optional(),
+  run_id: z.string().optional(),
+  dur_s: numOr.optional(),
+});
+
+export const activityPayload = z.object({
+  events: z.array(activityEvent),
+  generated_at: z.string().optional(),
+});
+
+/* Telemetry summary — /api/telemetry-summary.json. Fields used by
+   reliability.js §coverageHeat: per-host per-day run counts. */
+export const telemetryPayload = z.object({
+  schema: z.literal("fleet-telemetry-summary/v1").optional(),
+  runs: z.array(z.object({
+    ts: z.string(),
+    host: z.string().optional(),
+    agent: z.string().optional(),
+    state: z.string().optional(),
+  })),
+  generated_at: z.string().optional(),
+});
+
 export function validate(payload, schema) {
   const res = schema.safeParse(payload);
   if (res.data !== undefined) return res.data;

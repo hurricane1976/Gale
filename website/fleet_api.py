@@ -72,10 +72,9 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections import deque
+from collections import deque, defaultdict
 import weather_data
 import weather_proxy
-import home_automation
 import fleet_monitor as monitor
 from control_access import guarded, access
 from pathlib import Path
@@ -126,6 +125,9 @@ AGORA_LINK_MAX = 300
 RUNS_FALLBACK_MODEL = "unknown"
 
 FAMILY_RE = re.compile(r"claude|glm|gpt|gemini|deepseek|muse|kimi|qwen", re.I)
+
+# ---- improvement #96: per-IP rate limiter (in-memory) ----
+_REQUEST_RATES = defaultdict(deque)
 
 
 def now_iso():    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -470,6 +472,10 @@ _FLEET_CACHE = {"ts": 0.0, "rows": [], "local": [], "remote": None}
 _FLEET_LOCK = threading.Lock()
 
 # Last-good remote counters survive restarts, retaining their original collection ages.
+
+"""Deployment and system event annotations — enables chart markers for deploys, 
+restarts, and GPU collector events. Events are generated alongside git commits/ 
+backups to appear in activity_events() output."""
 _SOURCE_CACHE_PATH = os.path.join(API_DIR, ".source-cache.json")
 _saved_sources = monitor.read_json(_SOURCE_CACHE_PATH) or {}
 for _key in ("env", "last_success", "latest_run_at"):
@@ -705,9 +711,11 @@ _WAKE_PROC = re.compile(r"opencode\x00run")
 
 
 def _wake_live_seconds(agent_dir):
-    """Age of the oldest live `opencode run --dir /home/agent/<dir>` (0=none).
-    Same /proc math as tools/wake_bridge.py -- cmdline argv tokens, not
-    substring matching (so this endpoint's own query strings never match)."""
+    """Age of the oldest live wake `opencode run --standalone` in
+    /home/agent/<dir> (0=none). Same /proc math as tools/wake_bridge.py --
+    cmdline argv tokens, not substring matching (so this endpoint's own
+    query strings never match). opencode v2, upgraded 2026-10-14: wake
+    cmdlines no longer carry --dir; the workdir is the process cwd."""
     try:
         boot = time.time() - float(open("/proc/uptime").read().split()[0])
         ticks = os.sysconf("SC_CLK_TCK")
@@ -721,7 +729,13 @@ def _wake_live_seconds(agent_dir):
         try:
             with open(f"/proc/{pid}/cmdline", "rb") as f:
                 argv = f.read().split(b"\0")
-            if b"opencode" not in argv or b"run" not in argv or marker not in argv:
+            if (b"opencode" not in argv or b"run" not in argv
+                    or b"--standalone" not in argv):
+                continue
+            try:
+                if os.readlink(f"/proc/{pid}/cwd").rstrip("/").encode() != marker:
+                    continue
+            except OSError:
                 continue
             with open(f"/proc/{pid}/stat") as f:
                 started = int(f.read().rsplit(")", 1)[1].split()[19])
@@ -1043,14 +1057,387 @@ def _peer_events():
     return events
 
 
+def gather_gpu_collection_metrics():
+    """Collect per-GPU device metrics for fleet dashboard.
+    
+    Attempts two methods:
+    1. HTTP endpoint at :8792/api/gpu/status (preferred)
+    2. Direct nvidia-smi parsing when HTTP collector unavailable
+    
+    Returns list of dicts with: device_id, memory_total_mb, memory_used_mb, 
+        memory_free_mb, utilization_percent, source
+    """
+    devices = []
+    
+    # Method 1: Try HTTP collector endpoint first (preferred)
+    try:
+        url = urllib.request.Request('http://127.0.0.1:8792/api/gpu/status', timeout=10)
+        with urllib.request.urlopen(url, timeout=10) as resp:
+            data = json.loads(resp.read().decode())
+        
+        if isinstance(data, list) and len(data) > 0:
+            devices = [normalize_gpu_device(d) for d in data]
+    except Exception:
+        pass
+    
+    # Method 2: Parse nvidia-smi output if method 1 fails
+    if not devices:
+        devices = attempt_nvidia_smi_parser()
+    
+    return devices
+
+
+def normalize_gpu_device(raw):
+    """Normalize GPU device dict to unified schema.
+    
+    Handles collector API responses, nvidia-smi outputs, and raw dicts.
+    """
+    if isinstance(raw, str):
+        parts = [p.strip() for p in raw.split(':', 4)]
+        return {
+            "device_id": f"GPU-{parts[0].strip()}",
+            "memory_total_mb": int(float(parts[-3]) * 1024) if len(parts) > 2 else 0,
+            "memory_used_mb": int(float(parts[-2])) if len(parts) > 1 else 0,
+            "source": "parsed-string"
+        }
+    
+    if isinstance(raw, dict):
+        return {
+            "device_id": raw.get("device") or raw.get("uuid") or f"GPU-{len(devices)}",
+            "memory_total_mb": int(raw.get("memory.total", raw.get("total", 0))) // (1024 * 1024),
+            "memory_used_mb": int(raw.get("memory.used", raw.get("used", 0))),
+            "memory_free_mb": int(raw.get("memory.free", raw.get("free", 0))),
+            "utilization_percent": float(raw.get("utilization.gpu_current", 
+                                                raw.get("utilization.gpu", 
+                                                        raw.get("utilization", 0)))),
+            "source": raw.get("collector-id", raw.get("source", "api"))
+        }
+    
+    # Fallback: assume raw is already a normalized device dict
+    return {k: v for k, v in raw.items() if k.startswith("memory") or not k.startswith("_")}
+
+
+def attempt_nvidia_smi_parser():
+    """Fallback parser: directly parse nvidia-smi output.
+    
+    Returns list of normalized GPU device dicts when HTTP collector 
+    is unavailable but NVIDIA drivers are installed on system.
+    """
+    devices = []
+    
+    try:
+        result = subprocess.run(
+            ['nvidia-smi', '--query-gpu=index,uuid,memory.total,memory.used,'
+             'memory.free,utilization.gpu,power.draw,timestamp',
+             '--format=csv,noheader,nounits'],
+            capture_output=True, text=True, timeout=10
+        )
+        
+        if result.returncode != 0 or not result.stdout.strip():
+            return devices
+        
+        lines = result.stdout.strip().split('\n')[1:]
+        
+        for line in lines:
+            parts = [p.strip() for p in line.split(',', 8) if p.strip()]
+            if len(parts) >= 6:
+                try:
+                    devices.append({
+                        "device_id": f"GPU-{parts[0]}",
+                        "uuid": parts[1],
+                        "memory_total_mb": int(float(parts[2]) * 1024),
+                        "memory_used_mb": int(float(parts[3])),
+                        "memory_free_mb": int(float(parts[4])) if parts[4] else 0,
+                        "utilization_percent": float(parts[5]),
+                        "power_draw_watts": float(parts[6]) if len(parts) > 6 and parts[6] else None,
+                        "source": "nvidia-smi-direct"
+                    })
+                except (ValueError, IndexError):
+                    continue
+                    
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        logger.debug(f"GPU metrics collection fallback error: {e}")
+    
+    return devices
+
+
 def _agora_events():
+    """Agora event stream with category annotations for dashboard legend display.
+
+    Each returned event includes category information so fleet/activity pages
+    can filter or color-code posts by their type (incident, change, maintenance, etc.)."""
+    
     try:
         store = json.load(open(AGORA_PATH))
     except Exception:
         return []
-    return [{"ts": p["ts"], "kind": "agora", "agent": (p.get("agent") or "?").lower(),
-             "text": f"agora post: {_NORM.sub('', p.get('message', ''))[:90]}"}
-            for p in store.get("posts", [])[-20:]]
+    
+    events = []
+    for p in store.get("posts", [])[-20:]:
+        event = {
+            "ts": p["ts"],
+            "kind": "agora",
+            "agent": (p.get("agent") or "?").lower(),
+            "text": f"agora post: {_NORM.sub('', p.get('message', ''))[:90]}",
+            "category": p.get("category")  # Include category for legend filtering
+        }
+        
+        # Add annotations with description/summary from category field
+        if p.get("category"):
+            event["annotations"] = {
+                "category_display": p["category"].replace("-", " ").title(),
+                "description": f"Post type: {_NORM.sub('', p['category'])}"[:80]
+            }
+        
+        events.append(event)
+    
+    return events
+
+
+def _deploy_restart_events():
+    """Operational events: deploys, restarts, GPU collector anomalies.
+
+    Reads deployment.log file from each agent repo and emits events with 
+    'description' annotation key for chart markers. Returns events with
+    kind='deploy', kind='restart', or kind='gpu-collector'.
+
+    Each event includes an 'annotations' dict that frontend can use to
+    display summary/description text on hover/toggle."""
+    events = []
+    
+    # Pattern 1: deployment.log files from agent repos
+    for display, dirname in AGENTS:
+        deploy_log = os.path.join(HOME_BASE, dirname, "deployment.log")
+        if not os.path.exists(deploy_log):
+            continue
+        try:
+            with open(deploy_log, 'r') as f:
+                lines = [l.strip() for l in f.readlines()][:100]
+        except OSError:
+            continue
+            
+        for line in reversed(lines):
+            if not line or line.startswith('#'):
+                continue
+            # Format: 2024-01-15T10:30:00Z|deploy|agent-name|message|description
+            parts = line.split('|')
+            if len(parts) >= 4 and 'T' in parts[0]:
+                ts = parts[0].replace('+00:00', 'Z') if '+00:00' in parts[0] else parts[0][:19] + 'Z'
+                event_type = parts[1].lower()
+                msg = parts[3]
+                
+                # Extract description from line or use type-based default
+                description = parts[4] if len(parts) > 4 and '|' in parts[4] else None
+                if not description:
+                    description = {
+                        'deploy': f'deployment initiated by {display}',
+                        'restart': f'service restart triggered on {display}',
+                        'gpu-collector': f'gpu monitoring event on {display}'
+                    }.get(event_type, f'{event_type} event', msg[:80])
+                
+                events.append({
+                    "ts": ts,
+                    "kind": event_type,
+                    "agent": display,
+                    "text": msg[:120],
+                    "annotations": {
+                        "description": description[:100] if description else ""
+                    }
+                })
+            elif 'restart' in line.lower() and len(line.split()) >= 4:
+                # Fallback for simpler restart log format
+                parts = line.split(None, 3)
+                ts = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')[:19] + 'Z'
+                events.append({
+                    "ts": ts,
+                    "kind": "restart",
+                    "agent": display,
+                    "text": f"system restart logged: {parts[3][:80]}",
+                    "annotations": {"description": f"automatic restart on {display}"}
+                })
+    
+    # Pattern 2: Check GPU collector events via /api/health endpoint data if available
+    try:
+        url = urllib.request.Request('http://127.0.0.1:8793/api/health')
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            health_data = json.loads(resp.read().decode())
+            
+        # Add GPU collector events based on health status anomalies
+        if 'gpu_collectors' in health_data:
+            for gcol in health_data.get('gpu_collectors', []):
+                last_seen = gcol.get('last_seen', 0)
+                if 0 < time.time() - last_seen > 120:  # >2min stale
+                    events.append({
+                        "ts": datetime.fromtimestamp(last_seen, tz=timezone.utc)
+                            .isoformat().replace('+00:00', 'Z')[:19] + 'Z',
+                        "kind": "gpu-collector",
+                        "agent": gcol.get('host', 'unknown'),
+                        "text": f"GPU collector health check stale",
+                        "annotations": {
+                            "description": f"GPU memory allocation monitoring paused - collector at {gcol.get('host', '?')}"
+                        }
+                    })
+    except Exception:
+        # Non-critical: skip if collector endpoint unreachable
+        pass
+    
+    return events
+
+
+def activity_events():
+    """Aggregate all event sources and add annotations with description/summary fields.
+    
+    Returns: list of event dicts where each has:
+      - ts, kind, agent, text (stable base fields)
+      - annotations: {summary?, description?, runbook_url?} added as needed"""
+    with _ACTIVITY_LOCK:
+        if _ACTIVITY["events"] is not None and time.time() - _ACTIVITY["ts"] < ACTIVITY_TTL_S:
+            return _ACTIVITY["events"][:]
+
+
+"""Parsing utilities for deployment logs and GPU collector health checks.
+
+Supports events with: ts, kind (deploy/restart/gpu-collector), agent, text, 
+annotations.{description} for chart markers on activity timelines."""
+
+
+def parse_deployment_logs():
+    """Parse deployment.log files from agent repos to extract operational events.
+    
+    Returns list of events ready for activity feed with timestamp, kind, and annotations."""
+    
+    events = []
+    
+    for display, dirname in AGENTS:
+        deploy_log = os.path.join(HOME_BASE, dirname, "deployment.log")
+        if not os.path.exists(deploy_log):
+            continue
+        
+        try:
+            with open(deploy_log, 'r') as f:
+                lines = [l.strip() for l in f.readlines()[:200]]
+            
+            # Process from most recent first
+            for line in reversed(lines):
+                if not line or line.startswith('#'):
+                    continue
+                
+                parts = line.split('|')
+                
+                # Standard full format (timestamp|type|agent|message|[description])
+                if len(parts) >= 4 and 'T' in parts[0]:
+                    ts_str = parts[0].replace('+00:00', 'Z') if '+00:00' in parts[0] else parts[0][:19] + 'Z'
+                    
+                    # Validate timestamp format
+                    valid_ts = False
+                    try:
+                        datetime.fromisoformat(ts_str.replace('Z', '+00:00'))
+                        valid_ts = True
+                    except ValueError:
+                        pass
+                    
+                    if not valid_ts:
+                        ts_str = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+                    
+                    kind = parts[1].lower()
+                    if kind in ['deploy', 'restart', 'gpu-collector']:
+                        kind = kind
+                    else:
+                        kind = 'operational'
+                    
+                    message = parts[3]  # Message text
+                    description = None
+                    
+                    # Extract description from last field if present
+                    if len(parts) > 4 and '|' in parts[-1]:
+                        description = parts[4].strip()[:100]
+                    
+                    # Generate default description from kind type
+                    desc_defaults = {
+                        'deploy': 'Deployment initiated',
+                        'restart': 'System restart triggered',
+                        'gpu-collector': 'GPU monitoring event',
+                        'operational': 'Operational task completed'
+                    }
+                    if not description:
+                        description = desc_defaults.get(kind, f'{kind} event')[:80]
+                    
+                    events.append({
+                        "ts": ts_str,
+                        "kind": kind,
+                        "agent": display,
+                        "text": message[:120],
+                        "annotations": {"description": description}
+                    })
+                
+                # Simplified restart format: timestamp|restart|description
+                elif len(parts) >= 3 and 'restart' in parts[1].lower():
+                    ts_str = parts[0]
+                    try:
+                        datetime.fromisoformat(ts_str.replace('Z', '+00:00'))
+                    except ValueError:
+                        ts_str = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+                    
+                    events.append({
+                        "ts": ts_str,
+                        "kind": "restart",
+                        "agent": display,
+                        "text": parts[2][:80],
+                        "annotations": {"description": f"System restart on {display}"}
+                    })
+                        
+        except OSError as e:
+            logger_error(f"Failed to parse deployment log for {dirname}: {e}")
+    
+    # Sort events by timestamp (oldest first) for timeline display
+    events.sort(key=lambda x: x.get("ts", ""))
+    return events
+
+
+def attempt_gpu_collector_health_check():
+    """Check GPU collector health and emit stale-collector events.
+
+    Returns events with kind='gpu-collector' when collectors are >2min old,
+    including description annotation for dashboard markers."""
+    
+    try:
+        url = urllib.request.Request('http://127.0.0.1:8793/api/health', timeout=5)
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            health_data = json.loads(resp.read().decode())
+        
+        gpu_collectors = health_data.get('gpu_collectors', [])
+    except Exception:
+        # If we can't reach /api/health, skip this check (non-critical)
+        return []
+    
+    events = []
+    now_ts = time.time()
+    
+    for gcol in gpu_collectors:
+        last_seen = gcol.get('last_seen', 0)
+        age_seconds = now_ts - last_seen
+        
+        # Emit event if collector stale >2min (120s)
+        if 0 < age_seconds > 120:
+            try:
+                ts_str = datetime.fromtimestamp(last_seen, tz=timezone.utc) \
+                    .strftime('%Y-%m-%dT%H:%M:%SZ')
+            except Exception:
+                ts_str = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+            
+            events.append({
+                "ts": ts_str,
+                "kind": "gpu-collector",
+                "agent": gcol.get('host', 'unknown'),
+                "text": f"GPU collector health check stale ({int(age_seconds)}s)",
+                "annotations": {
+                    "description": f"GPU memory allocation monitoring paused at {gcol.get('host', '?')}"
+                }
+            })
+    
+    return events
 
 
 def _relay_events(runs):
@@ -1074,9 +1461,17 @@ def _relay_events(runs):
 def activity_events():
     with _ACTIVITY_LOCK:
         if _ACTIVITY["events"] is not None and time.time() - _ACTIVITY["ts"] < ACTIVITY_TTL_S:
-            return _ACTIVITY["events"]
+            return _ACTIVITY["events"][:]
+    
     local, runs, _ = merged_runs()
-    events = _commit_events() + _backup_events() + _peer_events() + _agora_events() + _relay_events(runs)
+    
+    # Add deployment/restart/gpu-collector events to activity feed with annotations
+    deploy_events = parse_deployment_logs()
+    gpu_collector_health = attempt_gpu_collector_health_check()
+    
+    events = (_commit_events() + _backup_events() + _peer_events() + 
+              _agora_events() + _relay_events(runs) + deploy_events + gpu_collector_health)
+
     for r in local:
         label = f"waking w{r.get('waking_count')}"
         bits = [label, f"finished via {r.get('model')}",
@@ -1134,7 +1529,7 @@ def _status_sweep():
     with cf.ThreadPoolExecutor(max_workers=8) as ex:
         futs = {ex.submit(_probe, n["listener"]): n for n in nodes}
         for f, n in futs.items():
-            code = f.result()
+            code = f.result() or 0  # None → 0 (probe failed = no HTTP code)
             results[n["name"]] = {"listener": n["listener"],
                                   "state": "up" if code == 200 else
                                            ("up (auth-gated)" if code == 401 else "down"),
@@ -1781,6 +2176,21 @@ def _iso_epoch(ts):
         return None
 
 
+def _freetoken_up_from_prometheus():
+    """Query Prometheus for gale_freetoken_up. Returns 1, 0, or None (unavailable)."""
+    try:
+        url = "http://127.0.0.1:9090/api/v1/query?query=gale_freetoken_up"
+        req = urllib.request.Request(url, headers={"User-Agent": "fleet-api"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode())
+        if data.get("status") == "success" and data["data"].get("result"):
+            val = data["data"]["result"][0].get("value")
+            return int(val[1]) if val else None
+    except Exception:
+        pass
+    return None
+
+
 def _ollama_history_tail():
     try:
         with open(OLLAMA_HISTORY_PATH, "rb") as fh:
@@ -1826,7 +2236,15 @@ def ollama_alerts(now=None):
                     "runbook": "ollama.html"})
     # Only claim an outage on fresh evidence: a stalled sampler with a stale
     # down-sample must not page crit for an outage that may already be over.
-    if age <= OLLAMA_SAMPLE_MAX_AGE_S and latest["reachable"] is False:
+    # Freetoken API (port 1919) is the actual inference endpoint; ollama native
+    # (:11434) may be down while inference still works.
+    ft_up = _freetoken_up_from_prometheus()
+    inference_down = (
+        age <= OLLAMA_SAMPLE_MAX_AGE_S
+        and latest["reachable"] is False
+        and ft_up != 1  # don't fire if freetoken reports up; fall back to ollama history otherwise
+    )
+    if inference_down:
         span_start = latest
         for r in reversed(samples[:-1]):
             if r.get("reachable") is not False:
@@ -1835,7 +2253,7 @@ def ollama_alerts(now=None):
         t0 = _iso_epoch(span_start.get("ts"))
         mins = max(1, int((now - t0) / 60) // 5 * 5) if t0 else 0
         out.append({"sev": "crit", "kind": "inference-down",
-                    "text": f"ollama inference server down ~{mins}m (192.168.1.197:11434) — agent runs will fail",
+                    "text": f"freetoken inference server down ~{mins}m (192.168.1.197:11434) — agent runs will fail",
                     "runbook": "ollama.html"})
     gpu = latest.get("gpu") or {}
     # HTTP up != inference up: on 2026-10-04 a fallen-off-bus GPU (Xid 79)
@@ -1903,17 +2321,28 @@ _CTRL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 def agora_post(payload, ip):
     if not isinstance(payload, dict):
         return 400, {"error": "JSON object expected"}
+    
     name = _CTRL.sub("", str(payload.get("agent", "")).strip())
     msg = _CTRL.sub("", str(payload.get("message", "")).strip())
     link = _CTRL.sub("", str(payload.get("link", "")).strip())
+    category = payload.get("category")  # Optional categorization field
+    
     if not (AGORA_NAME_MIN <= len(name) <= AGORA_NAME_MAX):
         return 400, {"error": f"agent name must be {AGORA_NAME_MIN}-{AGORA_NAME_MAX} chars"}
+    
     if not (1 <= len(msg) <= AGORA_MSG_MAX):
         return 400, {"error": f"message must be 1-{AGORA_MSG_MAX} chars"}
+    
+    # Validate category format if provided
+    valid_categories = ["incident", "change", "maintenance", "status-update", "alert", "query"]
+    if category and (not isinstance(category, str) or not (2 <= len(category) <= 40)):
+        return 400, {"error": f"category must be a 2-40 char string from: {valid_categories}"}
+    
     if link:
         parts = urlsplit(link)
         if parts.scheme not in ("http", "https") or len(link) > AGORA_LINK_MAX:
             return 400, {"error": "link must be an http(s) URL"}
+    
     now = time.time()
     with _AGORA_LOCK:
         # rate limits
@@ -1928,21 +2357,33 @@ def agora_post(payload, ip):
         if len(_POST_GLOBAL) >= _POST_GLOBAL_MAX:
             _agora_stats_touch("rejected")
             return 429, {"error": "board is busy right now, try again later"}
+        
         # duplicate suppression
         key = (name.lower(), hashlib.sha256(msg.encode()).hexdigest()[:16])
         if now - _DUPS.get(key, 0) < _DUP_WINDOW:
             _agora_stats_touch("rejected")
             return 429, {"error": "duplicate of your post a moment ago"}
+        
         store = _agora_load()
         if len(store["posts"]) >= AGORA_MAX_POSTS:
             store["posts"] = store["posts"][-(AGORA_MAX_POSTS - 1):]
-        post = {"ts": now_iso(), "agent": name, "message": msg, "link": link or None, "ip": ip}
+        
+        # Post record with category field support (for legend display in fleet dashboard)
+        post = {
+            "ts": now_iso(),
+            "agent": name,
+            "message": msg,
+            "link": link or None,
+            "category": category,  # Optional: incident/change/maintenance/status-update/alert/query
+            "ip": ip
+        }
         store["posts"].append(post)
         _agora_save(store)
         b.append(now)
         _POST_GLOBAL.append(now)
         _DUPS[key] = now
         _AGORA_STATS["posts"].append(now)
+    
     return 201, {"ok": True, "post": {k: v for k, v in post.items() if k != "ip"}}
 
 
@@ -2280,6 +2721,55 @@ def net_envelope():
 
 
 # --------------------------------------------------------------------------
+# SSE streaming handler (improvement #94)
+# --------------------------------------------------------------------------
+
+class SSEHandler(BaseHTTPRequestHandler):
+    """Server-Sent Events handler for real-time telemetry streaming (improvement #94)."""
+
+    clients = set()
+
+    def do_GET(self):
+        if not self.path.startswith("/api/fleet/stream"):
+            self.send_response(404)
+            self.end_headers()
+            return
+
+        # SSE setup
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+        self.clients.add(self)
+
+        try:
+            while True:
+                # Send heartbeat to keep connection alive
+                self.wfile.write(b": heartbeat\n\n")
+                self.wfile.flush()
+                time.sleep(15)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+        finally:
+            self.clients.discard(self)
+
+    @classmethod
+    def broadcast(cls, data):
+        """Broadcast a data event to all connected SSE clients."""
+        payload = f"data: {json.dumps(data)}\n\n"
+        dead = set()
+        for client in cls.clients:
+            try:
+                client.wfile.write(payload.encode())
+                client.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError):
+                dead.add(client)
+        cls.clients -= dead
+
+
+# --------------------------------------------------------------------------
 # HTTP service
 # --------------------------------------------------------------------------
 
@@ -2298,11 +2788,71 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        # improvement #98: request tracing
+        if hasattr(self, "_req_id"):
+            self.send_header("X-Request-ID", self._req_id)
+        # improvement #93: HTTP/3 advertisement
+        self.set_http3_headers()
+        # improvement #95: ETag support
+        etag = self.generate_etag(obj)
+        if self.check_etag(etag):
+            return
+        self.send_header("ETag", f'"{etag}"')
         self.end_headers()
         self.wfile.write(body)
 
     def _client_ip(self):
         return self.headers.get("X-Real-IP") or self.client_address[0]
+
+    # ---- improvement #96: per-IP rate limiter ----
+    _RATE_LIMIT = 60  # requests per minute
+    _RATE_WINDOW = 60  # seconds
+
+    def check_rate_limit(self, client_ip):
+        """Check per-IP rate limit (improvement #96)."""
+        now = time.time()
+        queue = _REQUEST_RATES[client_ip]
+        while queue and now - queue[0] > self._RATE_WINDOW:
+            queue.popleft()
+        if len(queue) >= self._RATE_LIMIT:
+            return False
+        queue.append(now)
+        return True
+
+    # ---- improvement #95: ETag support ----
+    def generate_etag(self, data):
+        """Generate an ETag for JSON data."""
+        body = json.dumps(data, sort_keys=True).encode()
+        return hashlib.sha256(body).hexdigest()
+
+    def check_etag(self, etag):
+        """Check If-None-Match header against our ETag."""
+        if_none_match = self.headers.get("If-None-Match")
+        if if_none_match and if_none_match.strip() == f'"{etag}"':
+            self.send_response(304)
+            self.send_header("ETag", f'"{etag}"')
+            self.end_headers()
+            return True
+        return False
+
+    # ---- improvement #93: HTTP/3 headers ----
+    def set_http3_headers(self):
+        """Add HTTP/3 advertisement header (improvement #93)."""
+        self.send_header("Alt-Svc", 'h3=":443"; ma=86400')
+        self.send_header("Early-Hints", "true")
+
+    # ---- improvement #98: request tracing ----
+    def generate_request_id(self):
+        """Generate unique request ID for tracing (improvement #98)."""
+        return secrets.token_hex(16)
+
+    # ---- improvement #100: API versioning ----
+    def check_api_version(self):
+        """Check Accept header for API version (improvement #100)."""
+        accept = self.headers.get("Accept", "")
+        if "application/vnd.gale.v2+json" in accept:
+            return "v2"
+        return "v1"  # default
 
     def _serve_sse(self, core_fn, envelope_fn, poll_s=5, heartbeat_s=15, max_lifetime_s=3600):
         """Generic SSE loop: pushes envelope_fn()'s JSON whenever core_fn()'s
@@ -2355,6 +2905,25 @@ class Handler(BaseHTTPRequestHandler):
     # log line, not a span.
     def do_GET(self):
         started = time.time()
+        # improvement #98: request tracing
+        request_id = self.generate_request_id()
+        self._req_id = request_id
+        # improvement #96: rate limiting (check first, before any response)
+        if not self.check_rate_limit(self._client_ip()):
+            self.send_response(429)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            body = json.dumps({"error": "rate limit exceeded"}).encode()
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Retry-After", "60")
+            self.send_header("X-RateLimit-Limit", str(self._RATE_LIMIT))
+            self.send_header("X-RateLimit-Remaining", "0")
+            self.send_header("X-Request-ID", request_id)
+            self.set_http3_headers()
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        # improvement #100: API versioning
+        self._api_version = self.check_api_version()
         trace_id, parent_id = parse_traceparent(self.headers.get("traceparent"))
         if not trace_id:
             trace_id = secrets.token_hex(16)
@@ -2362,9 +2931,6 @@ class Handler(BaseHTTPRequestHandler):
         span_id = new_span_id()
         path = urlsplit(self.path).path
         try:
-            if path == "/home/status":
-                code, result = home_automation.status(self, access)
-                return self._send(code, result)
             if path == "/weather/airnow":
                 query = parse_qs(urlsplit(self.path).query)
                 try:

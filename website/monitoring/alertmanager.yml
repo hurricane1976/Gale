@@ -13,6 +13,13 @@ time_intervals:
     - start_time: '03:00'
       end_time: '05:00'
     weekdays: ['sunday']
+# ADD: Post-deploy quiet window
+- name: gale-post-deploy
+  time_intervals:
+  - times:
+    - start_time: '00:00'
+      end_time: '00:30'
+    days_of_week: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
 route:
   receiver: default
   group_by:
@@ -77,6 +84,20 @@ inhibit_rules:
   - fleet_host
   - agent
   - component
+# Suppress API latency alerts when API itself is down
+- source_matchers:
+  - alertname="GaleFleetApiDown"
+  target_matchers:
+  - alertname=~"GaleApiLatencyHigh|GaleApiLatencyP95"
+  equal:
+  - component
+# Suppress GPU alerts when host is down
+- source_matchers:
+  - alertname=~"GaleHostDown|GaleCollectorStale"
+  target_matchers:
+  - alertname=~"GaleGpu.*"
+  equal:
+  - fleet_host
 receivers:
 - name: watchdog
   webhook_configs:
@@ -97,3 +118,18 @@ receivers:
     parse_mode: HTML
     send_resolved: true
     message: '{{ template "gale.telegram.message" . }}'
+- name: pagerduty
+  pagerduty_configs:
+  - service_key: "{{ env "PAGERDUTY_KEY" }}"
+    severity: "{{ .CommonLabels.severity }}"
+    summary: "{{ .CommonAnnotations.summary }}"
+    details:
+      runbook_url: "{{ .CommonAnnotations.runbook_url }}"
+      fleet_host: "{{ .CommonLabels.fleet_host }}"
+- name: opsgenie
+  opsgenie_configs:
+  - api_key: "{{ env "OPSGENIE_KEY" }}"
+    priority: "{{ .CommonLabels.severity }}"
+    description: "{{ .CommonAnnotations.summary }}"
+    tags: "gale,fleet"
+    source: "gale-agent"

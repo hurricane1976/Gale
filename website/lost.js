@@ -3,7 +3,7 @@
 import { initTopology3D } from "./topology3d.js";
 
 const PAGES = [["Dashboard", "index.html"], ["Fleet", "fleet.html"], ["Status", "status.html"], ["Metrics", "metrics.html"],
-  ["Observability", "observability.html"], ["Ollama", "ollama.html"], ["Agora", "agora.html"], ["Weather", "weather.html"],
+  ["Observability", "observability.html"], ["freetoken", "ollama.html"], ["Agora", "agora.html"], ["Weather", "weather.html"],
   ["Network", "network.html"], ["Reliability", "reliability.html"]];
 
 export function initLost() {

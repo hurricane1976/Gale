@@ -63,3 +63,38 @@ groups:
     annotations:
       summary: Remote exporter {{ $labels.instance }} is down
       runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#collector
+  - record: gale_api_latency_seconds:histogram
+    expr: histogram_quantile(0.95, rate(gale_api_duration_seconds_bucket[5m]))
+  - record: gale_api_latency_seconds:avg
+    expr: rate(gale_api_duration_seconds_sum[5m]) / rate(gale_api_duration_seconds_count[5m])
+  - alert: GaleApiLatencyHigh
+    expr: gale_api_latency_seconds:avg > 2
+    for: 5m
+    labels:
+      severity: warning
+      component: api
+      owner: gale
+    annotations:
+      summary: "API p50 latency is {{ $value }}s (p95: {{ $values | list | last }}s)"
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#api
+  - record: gale_fleet_health_score
+    expr: |
+      avg(
+        (1 - gale_monitor_collector_fresh) * 0.3 +
+        (1 - gale_monitor_bridge_stale) * 0.3 +
+        (1 - gale_monitor_source_fresh) * 0.4
+      ) * 100
+  - alert: GaleFleetHealthDegraded
+    expr: gale_fleet_health_score < 80
+    for: 5m
+    labels:
+      severity: warning
+      component: fleet
+      owner: gale
+    annotations:
+      summary: "Fleet health score: {{ $value }}%"
+      runbook_url: https://gale-agent.tail2f1671.ts.net/runbooks.html#health
+  - record: gale_api_latency_with_exemplar:rate5m
+    expr: |
+      sum(rate(gale_api_duration_seconds_count[5m])) by (handler)
+    exemplar: 1  # traces included for Grafana 10+ correlation

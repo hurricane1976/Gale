@@ -62,4 +62,9 @@ export const z = {
     for (const o of opts) { const r = o._p(v, p); if (r.success) return r; }
     return bad(p, "Invalid input");
   }),
+  literal: (val) => mk((v, p) => v === val ? ok(v) : bad(p, `Invalid input: expected \`${val}\`, received ${JSON.stringify(v)}`)),
+  enum: (arr) => {
+    const set = new Set(arr);
+    return mk((v, p) => set.has(v) ? ok(v) : bad(p, `Invalid input: expected one of ${arr.join(", ")}, received ${JSON.stringify(v)}`));
+  },
 };

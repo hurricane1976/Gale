@@ -1,0 +1,53 @@
+groups:
+- name: gale-recording
+  interval: 30s
+  rules:
+  # Fleet-wide health composite score
+  - record: gale:fleet_health:composite
+    expr: |
+      avg(
+        (1 - gale_monitor_collector_fresh) * 0.3 +
+        (1 - gale_monitor_bridge_stale) * 0.3 +
+        (1 - gale_monitor_source_fresh) * 0.4
+      ) * 100
+    labels:
+      component: fleet
+  
+  # Per-host availability (30d rolling)
+  - record: gale:host_availability:30d
+    expr: |
+      avg_over_time(gale_service_up[30d]) * 100
+    labels:
+      type: availability
+  
+  # Mean time between failures (per host, 30d)
+  - record: gale:host_mtbf:30d
+    expr: |
+      30d / sum(count_over_time(gale_service_up{status="0"}[30d]))
+    labels:
+      type: mtbf
+  
+  # API throughput (per handler)
+  - record: gale:api_throughput:rate5m
+    expr: rate(gale_api_requests_total[5m])
+    labels:
+      type: throughput
+  
+  # Cost rate (dollars per hour)
+  - record: gale:cost_rate:dollars_per_hour
+    expr: rate(gale_cost_total[1h]) * 1000
+    labels:
+      type: cost
+  
+  # Backup freshness index
+  - record: gale:backup_freshness:index
+    expr: |
+      100 - (gale_backup_age_hours * 10)
+    labels:
+      type: backup
+  
+  # Agent wake frequency (per host, 7d average)
+  - record: gale:agent_wake:7d_avg
+    expr: rate(gale_wake_total[7d]) * 86400
+    labels:
+      type: wake

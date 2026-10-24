@@ -2,7 +2,7 @@
   "name": "gale-website",
   "private": true,
   "version": "1.0.0",
-  "description": "Gale's fleet website -- build step. Source stays plain ES modules with no framework; esbuild only bundles/minifies/code-splits them for production. render-test.mjs keeps testing the source files directly, not the bundle.",
+  "description": "Gale's fleet website -- build step. Source stays plain ES modules with no framework; esbuild only bundles/minifies/code-splits them for production.",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -13,17 +13,45 @@
     "test": "node render-test.mjs",
     "audit": "node tools/audit.mjs",
     "lint": "eslint . --max-warnings 200",
+    "lint:css": "stylelint 'website/**/*.css' --fix",
+    "lint:all": "npm run lint && npm run lint:css",
     "check": "node tools/syntax-check.mjs",
     "check:browser": "node tools/browser_checks.mjs csp && node tools/browser_checks.mjs budget && node tools/browser_checks.mjs phone && node tools/browser_checks.mjs webgl && node tools/browser_checks.mjs visual",
     "test:monitoring": "python3 tools/test_monitoring.py && node tools/test_reliability.mjs",
-    "verify": "npm run check && npm test && npm run build && SKIP_AUDIT=1 bash smoke.sh"
+    "verify": "npm run check && npm test && npm run build && SKIP_AUDIT=1 bash smoke.sh",
+    "test:unit": "vitest run --dir tools",
+    "test:unit:watch": "vitest watch --dir tools",
+    "test:e2e": "playwright test",
+    "test:perf": "lighthouse http://localhost:8090 --output json --output-path ./lighthouse-report.json --quiet --chrome-flags='--headless'",
+    "size": "esbuild --metafile=dist/meta.json && node tools/size-report.mjs",
+    "deploy": "node build.mjs && bash deploy.sh",
+    "ci": "npm run lint:all && npm run test:unit && npm run test && npm run build && npm run size"
   },
   "devDependencies": {
     "esbuild": "^0.24.0",
     "eslint": "^9.17.0",
-    "lighthouse": "^12.8.2"
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0",
+    "vitest": "^2.0.0",
+    "@vitest/browser": "^2.0.0",
+    "playwright": "^1.45.0",
+    "lighthouse": "^12.8.2",
+    "size-limit": "^11.1.0",
+    "synckit": "^0.9.0"
   },
   "dependencies": {
     "zod": "^4.6.5"
+  },
+  "vitest": {
+    "environment": "node",
+    "include": ["tools/**/*.mjs", "tools/**/*.test.mjs"],
+    "globals": true
+  },
+  "playwright": {
+    "testDir": "tools/e2e",
+    "timeout": 30000,
+    "expect": {
+      "timeout": 5000
+    }
   }
 }

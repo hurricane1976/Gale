@@ -9,7 +9,7 @@
     // age-based expiry (#11): count-bounded history alone lets months-old
     // samples with stale contexts linger on sparse-visit browsers
     while (samples.length && Date.now() - (samples[0].ts || 0) > TTL_MS) samples.shift();
-    const pageFiles = new Set(["index.html", "fleet.html", "status.html", "metrics.html", "observability.html", "ollama.html", "agora.html", "weather.html", "network.html", "reliability.html", "operations.html", "home.html", "runbooks.html", "404.html", "galaxy.html"]);
+    const pageFiles = new Set(["index.html", "fleet.html", "status.html", "metrics.html", "observability.html", "ollama.html", "agora.html", "weather.html", "network.html", "reliability.html", "operations.html", "runbooks.html", "404.html", "galaxy.html"]);
     const requestedPage = location.pathname.split("/").pop() || "index.html";
     const context = {
       page: pageFiles.has(requestedPage) ? requestedPage : "404.html",

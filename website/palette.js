@@ -15,11 +15,6 @@ const PAGES = [
   ["Network", "network.html", "interfaces · firewalla"],
   ["Reliability", "reliability.html", "SLOs · synthetics · RUM · forecasts"],
   ["Operations", "operations.html", "incidents · acks · lifecycle"],
-   ["Energy", "energy.html", "usage trends · costs · breakdowns"],
-   ["Maintenance", "maintenance.html", "tasks · reminders · filter changes"],
-   ["Notifications", "notifications.html", "alerts · security · leaks"],
-   ["Cameras", "cameras.html", "camera grid · snapshots"],
-   ["Presence", "presence.html", "people tracking · location"],
   ["Runbooks", "runbooks.html", "step-by-step ops procedures"],
   ["Galaxy", "galaxy.html", "3D fleet galaxy"],
 ];
@@ -123,104 +118,6 @@ async function opsItems(items) {
   } catch { /* alerts feed down -- nav items still work */ }
 }
 
-/* home actions: quick scene activation, room navigation, device toggles.
-   Mirrors the opsItems pattern: dynamic labels from live data. */
-async function homeItems(items) {
-  if (!document.querySelector("main")?.id && !location.pathname.includes("home")) return;
-
-  // Quick scenes
-  try {
-    const r = await fetch("/api/fleet/home/scenes", { cache: "no-store" });
-    if (r.ok) {
-      const d = await r.json();
-      for (const s of (d.scenes || []).slice(0, 6)) {
-        items.push({
-          icon: s.icon || "⚡",
-          label: s.name || s.id,
-          hint: "scene · " + (s.description || "").slice(0, 40),
-          go: async () => {
-            try { await fetch("/api/fleet/home/scenes/activate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: s.id }) }); } catch {}
-          },
-        });
-      }
-    }
-  } catch { /* scenes unavailable */ }
-
-  // Quick actions
-  const quickActions = [
-    { id: "home", icon: "🏠", label: "Home mode", hint: "Disarm security, lights on" },
-    { id: "away", icon: "🔒", label: "Away mode", hint: "Arm away, lights off" },
-    { id: "sleep", icon: "🌙", label: "Sleep mode", hint: "Lock doors, dim lights" },
-    { id: "morning", icon: "☀️", label: "Good morning", hint: "Open blinds, set temp" },
-  ];
-  for (const qa of quickActions) {
-    items.push({
-      icon: qa.icon,
-      label: qa.label,
-      hint: qa.hint,
-      go: async () => {
-        try {
-          await fetch("/api/fleet/home/toggle", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ entity_id: "input_boolean." + qa.id, state: qa.id === "away" ? "on" : "off" }),
-          });
-        } catch { /* best effort */ }
-      },
-    });
-  }
-
-  // Notification count badge
-  try {
-    const r = await fetch("/api/fleet/home/notifications", { cache: "no-store" });
-    if (r.ok) {
-      const d = await r.json();
-      const unreads = (d.notifications || []).filter(n => !n.read).length;
-      if (unreads > 0) {
-        items.push({
-          icon: "🔔",
-          label: `${unreads} notification${unreads > 1 ? 's' : ''}`,
-          hint: "home notifications",
-          go: () => { location.href = "notifications.html"; },
-        });
-      }
-    }
-  } catch { /* notifications unavailable */ }
-
-  // Presence toggle items for each known person
-  try {
-    const r = await fetch("/api/fleet/home/presence", { cache: "no-store" });
-    if (r.ok) {
-      const d = await r.json();
-      for (const p of (d.people || []).slice(0, 8)) {
-        const icon = p.location === "home" ? "🏠" : p.location === "sleeping" ? "🌙" : "🚗";
-        items.push({
-          icon,
-          label: `${p.name} → ${p.location || "unknown"}`,
-          hint: "presence",
-          go: () => { location.href = `presence.html#person-${p.name}`; },
-        });
-      }
-    }
-  } catch { /* presence unavailable */ }
-
-  // Camera grid link
-  try {
-    const r = await fetch("/api/fleet/home/cameras", { cache: "no-store" });
-    if (r.ok) {
-      const d = await r.json();
-      const count = (d.cameras || []).length;
-      if (count > 0) {
-        items.push({
-          icon: "📷",
-          label: `${count} camera${count > 1 ? 's' : ''}`,
-          hint: "camera grid",
-          go: () => { location.href = "cameras.html"; },
-        });
-      }
-    }
-  } catch { /* cameras unavailable */ }
-}
-
 async function collectItems() {
   const items = PAGES.map(([label, href, hint]) => ({
     icon: ICON_PAGE, label, hint: hint || href, go: () => { location.href = href; },
@@ -282,7 +179,6 @@ async function collectItems() {
   }
   kioskItem(items);
   await opsItems(items);
-  await homeItems(items);
   items.push({
     icon: "◐", label: "Toggle light / dark theme",
     hint: "or the ☀️/🌙 button, bottom-right",

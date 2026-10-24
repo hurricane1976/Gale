@@ -12,7 +12,7 @@ const PAGES = [
   "index.html", "fleet.html", "status.html", "metrics.html",
   "observability.html", "ollama.html", "network.html", "weather.html",
   "agora.html", "galaxy.html", "reliability.html", "operations.html", "runbooks.html",
-  "home.html", "404.html", // the audit gate never saw these two (#94)
+  "404.html",
 ];
 
 /* Deliberately loose on performance (backend is a Python http.server on a

@@ -1,0 +1,25 @@
+// GALE — stylelint config for CSS linting (improvement #107)
+export default {
+  extends: ["stylelint-config-standard"],
+  rules: {
+    "color-no-hex": true,
+    "color-hex-length": "long",
+    "declaration-no-important": true,
+    "media-feature-range-notation": "prefix",
+    "selector-not-notation": "simple",
+    "selector-max-id": 0,
+    "selector-class-pattern": "^[a-z]([a-z0-9-]*[a-z0-9])?$",
+    "function-no-unknown": [true, { "ignoreFunctions": ["color-mix"] }],
+    "value-no-vendor-prefix": true,
+    "property-no-vendor-prefix": true,
+    "at-rule-no-vendor-prefix": true,
+    "font-family-no-missing-generic-family-keyword": true,
+    "font-family-no-duplicate-names": true,
+    "declaration-block-single-line-max-declarations": 1,
+    "declaration-block-shorthand-properties": true,
+    "value-keyword-case": ["lower", { "ignoreKeywords": ["easing-in-out"] }],
+    "value-list-comma-newline-after": "always-multi-line",
+    "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["has"] }],
+    "selector-pseudo-element-no-unknown": [true, { "ignorePseudoElements": ["view-transition-old", "view-transition-new"] }],
+  },
+};

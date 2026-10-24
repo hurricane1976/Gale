@@ -210,7 +210,7 @@ export function initWxSky() {
   let lastBakeKey = "";
   function build() {
     const r = canvas.getBoundingClientRect();
-    if (r.width < 40 || r.height < 40) return; // hidden/not laid out yet
+    if (r.width < 40 || r.height < 40) return hills = false; // hidden/not laid out yet — frame() will retry
     DPR = Math.min(window.devicePixelRatio || 1, 1.5);
     W = Math.max(320, Math.floor(r.width)); H = Math.max(160, Math.floor(r.height));
     canvas.width = Math.floor(W * DPR); canvas.height = Math.floor(H * DPR);

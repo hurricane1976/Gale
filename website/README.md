@@ -2,7 +2,7 @@
 
 The multi-page dashboard for the Gale agent (fleet resilience role): host
 health, backups, version control, spend, peer-credential hygiene, plus the
-observability / metrics / status / weather / network / agora / ollama / galaxy
+observability / metrics / status / weather / network / agora / freetoken / galaxy
 consoles.
 
 Plain ES modules, no framework, one design system (`gale.css`). Python

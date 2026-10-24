@@ -1,0 +1,28 @@
+# Blackbox exporter probe targets for Gale site pages
+- job_name: 'gale-blackbox'
+  metrics_path: /probe
+  params:
+    module: [http_2xx]
+  static_configs:
+  - targets:
+    - 'https://gale-agent.tail2f1671.ts.net/'
+    - 'https://gale-agent.tail2f1671.ts.net/status.html'
+    - 'https://gale-agent.tail2f1671.ts.net/fleet.html'
+    - 'https://gale-agent.tail2f1671.ts.net/metrics.html'
+    - 'https://gale-agent.tail2f1671.ts.net/reliability.html'
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - target_label: __address__
+    replacement: 'localhost:9115'  # blackbox exporter
+
+# Prometheus remote-write config for long-term storage (Thanos/Cortex)
+# improvement #85
+remote_write:
+- url: 'http://thanos-receiver:9091/api/v1/receive'
+  remote_timeout: 30s
+  name: 'gale-longterm'
+  queue_config:
+    max_shards: 4
+    capacity: 5000
+    max_samples_per_send: 2000
