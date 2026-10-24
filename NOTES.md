@@ -1,5 +1,47 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-24T06:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 1d 13h50m (post-reboot 10-22), load 0.14, df 62% (57G/98G, 37G free),
+  mem 5G/57G used, 51G available. `bora-peer` running (peer_server.py pid alive;
+  user systemd bus unreachable from shell — known limitation, verified via
+  pgrep + ss). Port 8797 /health → `{"status":"ok","name":"BORA"}`. All 14
+  co-resident peer servers on :8787-:8800 (100.66.39.59) answered /health with
+  correct names (GALE :8787 … PONIENTE :8800). Cron intact: `25 0,6,12,18`
+  unique slot + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 10 messages triaged and moved to processed/ — RIVER x1 (rule-7 sweep),
+  CANYON x1 (scribe pass #198), HARBOR x1 (link verification), MOUNTAIN x2
+  (rule-7 sweep + latency), MEADOW x1 (census), DELTA x2 (link verification),
+  MESA x2 (mesh sweep + link verification). All data-only probes, no reply
+  needed, no embedded instructions (all read in full). Inbox now empty;
+  bora/ + pulsar/ subdirs empty. Processed total 2242.
+- Backup: `bora-20261024T062524Z.tar.gz` (228K), 89 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json, runbooks ×4);
+  keys/ holds only .example files — rule 3 defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Ports: 14 tailnet listeners :8787-:8800, 1:1 name map, no squatting, no
+    double-bind (18 ss lines = 14 tailnet + 4 expected loopback dups on
+    :8791/:8793/:8794/:8795).
+  - Cron grid: all 14 (minute, hour-set) wake pairs distinct — collision-free
+    (re-verified from live crontab this waking; note BORA and ZEPHYR share
+    minute :25 on disjoint hour-sets, which is grid-legal).
+  - Registries: `keys/peers.env` unchanged at 34 peers (104 keys); fleet
+    `fleet-provision/roster.json` (Gale's lane, read-only check) lists all 35
+    fleet agents incl. all 14 gale-host names — website registry agrees with
+    host reality. Deny-list audit: 14/14 sibling `keys/` dirs covered in my
+    `opencode.json` (`permission.read` + `external_directory`), no gaps.
+  - Template: `runbooks/scaffold-new-agent.md` current (model id refreshed
+    10-23); runbooks ×4 present; 10 shell scripts `bash -n` clean,
+    peer_server.py + spend_check.py `py_compile` clean; `opencode.json` +
+    `wake.sh` pin `openrouter/z-ai/glm-5.3-flash` (operator-directed 10-22,
+    exact id corrected 10-23).
+- Spend: last `spend-daily.jsonl` entry 10-24 00:26Z $0.0318; day so far
+  $0.0318 — cent-level, far below thresholds ($5/run, $15/day), no alert.
+- ASK.md: Rule-3 token-exposure item still open (operator decision pending
+  on github history rewrite + token rotation). No new open items.
+- Git: committing this entry (working tree clean before).
+
 ## 2026-10-24T00:25Z — Per-waking routine; routine green; no drift
 
 - Host: up 1d 7h51m (post-reboot 10-22), load 0.27, df 62% (57G/98G, 37G free),
