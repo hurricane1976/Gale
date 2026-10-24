@@ -9879,3 +9879,61 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   OK + core-file count clean, 14-snapshot ceiling held; e3b5f67
   incident documented + NOTES misplaced block relocated + ASK.md items
   3/4 updated; NOTES entry + commit; notify.
+
+## 2026-10-24T14:06Z — waking #168 (accidental maistral slot, 21st)
+
+- **Trigger:** fired 14:05:42Z — maistral's cron slot (`5 2,8,14,20`),
+  not my :50 grid. Evidence: my `logs/20261024T140501Z.log` +
+  maistral's wake.sh still cd's into /home/agent/chinook (the open
+  10-21 ASK.md item). Maistral's own lane still dark (zero maistral
+  logs on 10-24); this is the 21st accidental chinook run via its slot.
+  Backlog re-check: 275 — unchanged since #167 (75 min), so the
+  +19/12h churn is bursty, not steady. Operator disposition word still
+  pending; read-only throughout (rule 7).
+- **Host:** up 1d21h31m (since the 10-22 16:33Z reboot — math
+  consistent), load 0.33/0.18/0.18 on 16 cores (~2%), mem 5.8G/58G
+  used (53G avail), swap 0; disk / 57G/98G (62%, 36G free) — flat,
+  next point in the 61–62% band. **Data note: /var/log/journal is
+  1.7G — down from the months-long 4.0–4.1G steady state** (journald
+  rotation/vacuum; the one host change since #167, logged as data,
+  no action).
+- **Peers:** 14/14 /health → 200 on 100.66.39.59:8787–8800 (8793 =
+  me). check_replies: no new messages. Inbox: empty.
+- **Grid:** every lane's last 10-24 log matches its staggered 6h slot
+  (agent :00, tempest :10, cyclone :15, sirocco :20, bora :25,
+  ostro :30, tramontane :35, levante :40, chinook :50, poniente :55;
+  squall :45 + vortex :00-offset); bora 12:25 / cyclone 13:15 /
+  levante 13:40 fired since my 12:50 — **no drift, no skips** since
+  the 10-22 partial-arming event.
+- **Spend (10-24 to 14:06Z, host-wide, 12 lanes with rows):**
+  **$1.67 / 28 runs, 0 errors** — pacing ~$2.8/day vs the $15/day line
+  (10-23 closed $2.01/57). Lane detail: cyclone $0.1957/3, squall
+  $0.1802/3, levante $0.1636/3, chinook $0.2711/4 (this session's row
+  appends at end), agent $0.1114/2, tempest $0.1099/2, ostro
+  $0.1076/2, poniente $0.1017/2, tramontane $0.0980/2, zephyr
+  $0.0896/2, bora $0.0829/3, vortex $0.0803/2, sirocco $0.0730/2;
+  maistral 0 rows (dark). Cost tracks session weight; post-pin band
+  holds; **no rule-4 anomaly** (no cost jump without a run-count
+  change, no run-count jump).
+- **Backup:** `backups/chinook-20261024T140611Z.tar.gz` (296K,
+  74 entries), gzip -t OK. **Entry-count continuity verified:** 10-24
+  snapshots alternate 74–85 entries, and the processed-inbox exclude
+  has been in backup.sh since waking #69 (commit `13f1b60`, 10-05) —
+  so the small manifest is the established baseline, not a defect
+  (ruled out this waking after I initially misread it as a drop).
+  Snapshot gap 12:51→14:06 (75 min), within the ≤4h guard; 14-snapshot
+  ceiling held.
+- **Forecast / thresholds:** disk flat at 62% (no crossing
+  projectable); load/mem idle; spend pacing ~$2.8/day, in-band; the
+  journal shrink (4.0→1.7G) further reduces the only moving disk
+  driver. **No breaches, no drift, no saturation advisory this
+  waking** — no sibling near a local (CPU/mem/disk/quota) limit.
+- **ASK.md:** open items unchanged (operator word pending on: maistral
+  overwrite + 21 accidental runs, the e3b5f67 pin commit, the 10-22
+  reboot confirmation, the v2-fix blessing). Nothing new to add.
+- **done this waking:** check_replies; host health baseline; 14/14
+  peer sweep; per-lane grid verification; maistral re-verified
+  read-only (backlog 275, lane dark, its 14:05 slot ran me — 21st
+  accidental); backup + gzip verify + manifest continuity check;
+  sibling ledger spend tally (corrected `day` key after first loop
+  keyed on a nonexistent field); NOTES entry + commit; notify.
