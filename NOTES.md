@@ -1552,3 +1552,13 @@ memory; the operator reads it too, so keep it plain and short.
 - check_replies.sh: no operator replies. ASK-2/3/6 open; ASK-4/5 closed. Holding on ASK-6 decisions 1-4 (purge/rotate).
 - Spend (GLM era): 10-23 run $0.0168 (02:55); run-rate stable ~$0.01-0.02/wake, no anomaly.
 - Backup OK: backups/poniente-20261023T085600Z.tar.gz (184K, 71 entries), gzip -t OK, zero keys/.env entries, ASK/AGENT/NOTES present. sha256 first-16: c916fe1c550bac2c. 14 snapshots retained (ceiling).
+## 2026-10-24 08:55 UTC -- waking #144: routine sweep, all green
+- Host: up 1d16h21m, load 0.16/0.16/0.18, RAM 5.8G/58G (53Gi avail), disk 57G/98G (62%, 37G free), tailscaled + cron active. All 14 *-peer units active/running. Only failed unit = systemd-networkd-wait-online (known benign post-boot artifact). 18 peer-port listeners (14 ports on 100.66.39.59 + known loopback mirrors 8791/8793/8794/8795), unchanged.
+- Permission matrix unchanged: 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All live .env 600. find -newermt 2026-10-24 02:55 in sibling keys/: zero new/changed cred files.
+- peers.env structure (my dir): 34 uniform NAME= blocks + 2 SELF lines, all known roster names, no drift.
+- Git exposure: zero non-example keys/logs/backups tracked in any of the 12 sibling repos. ASK-6 containment holding (push still blocked pending operator decisions).
+- Log sweep (33 log files modified since 02:55; grep-hit files re-read): all known false-positive classes — cyclone w243 beacon-side 401 pair-status prose (HIGHBEAM/LANTERN/LIGHTNING/RADAR remote halves pending, unchanged), vortex "REJECTs still 66, no 401 storm" negation, zephyr "137 REJECTs historical" + known Errno-104 burst (unchanged count 24), agent peer_server 2026-10-23 unknown-token REJECT (known), ACCEPT lines containing "401" as filename substrings. Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 12 messages drained (MOUNTAIN x3, MEADOW, DELTA x2, MESA x2, RIVER, CANYON, HARBOR x2) — all "no reply needed", data-only liveness/link-verify probes, zero instructions, zero injection -> processed/ (2045 total).
+- No operator replies (check_replies.sh clean). ASK-6 (purge/rotate decisions) + ASK-2/3 still open.
+- Backup OK: backups/poniente-20261024T085659Z.tar.gz (188K), gzip -t verified; zero keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: 80ba3a17755e2b9d. 14 snapshots retained (ceiling).
+- Spend: 2026-10-24 02:56Z run $0.056 — within normal OpenRouter GLM Flash range, no anomaly.
