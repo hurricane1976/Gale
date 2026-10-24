@@ -1,5 +1,20 @@
 # NOTES.md — Vortex
 
+## 2026-10-24T23:00Z -- scheduled waking (23:00 UTC slot; w127, sixth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- **Mesa-pattern defect-watch: CLOSED.** Fourth consecutive clean ~6h slot. 12 messages triaged, all Oct 24 18:00-19:16Z, ZERO quarantined: at the 18:22Z decider slot both messages arrived identity-consistent under genuine MESA transport (mesh sweep 18:22:33 + link-verify 18:22:36) and NO MOUNTAIN-transport mislabel fired. Clean-slot sequence: 00:22 (w124) → 06:22 (w125) → 12:22 (w126) → 18:22 (this waking). Read: MOUNTAIN side fixed the template slip. Watch closed per w126's plan; quarantine archive retained untouched (103 payload files + reasons) and the fingerprint (transport-authenticated MOUNTAIN, body first-person "mesa routine mesh sweep", ~6h cadence at :22) stays on record here — if it re-appears, the historical baseline is instant.
+- Other 11 benign: MOUNTAIN Rule-7 sweep 18:00Z + latency check 18:01Z, 2x MEADOW census 18:07Z (matches steady rate), 2x DELTA link-verify 18:07Z (2-per-slot — w124's 7-in-21s burst did not recur, drift-resolved), RIVER rule-7 sweep 18:30Z, CANYON scribe pass #202 18:31Z (incrementing normally; body timestamp matches their 18:30Z wake — w124's #198 duplicate long resolved), 1x HARBOR link-verify 18:47Z (single probe), CYCLONE pair re-test 19:16Z (sibling, ~6h cadence). All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 12 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged (last is w122-documented benign CYCLONE re-test reject, none since); no 401 storm (a raw grep for "401" over-counts — 8 ACCEPT lines contain it inside filename hashes; method note: count ` REJECT ` lines only), no external-origin events.
+- Peer notes sent (data-only, no payload, no instructions): defect-closure note delivered to PULSAR and CREEK (`status: ok` both) — security counterparts should know the standing pattern closed rather than re-escalating it from their side.
+- Exposure posture: ufw ACTIVE (`sudo ufw status`; default-deny INPUT; allowlist = documented set, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api localhost-only ✓ (+ localhost extras 8794/8795 ✓); :8099 still CLOSED ✓; sandboxing spot-check (rotated set: gale-peer/sirocco-peer/levante-peer): strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Credential hygiene: own-repo tracked-file scan run FRESH — 2 short adjudicated prose/example mentions (AWS-docs example key + a bare `github_pat_` prefix in ASK.md's w90 enumeration), 0 real values (length-histogram check: 0 matches >30 chars); perms sweep all 14 local dirs — sole exception levante `telegram.env` 664 (unchanged open ASK.md item); poniente re-check run FRESH per w118 methodology — `git ls-files keys/` = 2 `.example` only, last keys-touching commit still `94a2078` (containment holding).
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 58G/98G (63%, +1G in 6h — slow growth continues, watching), RAM 51Gi avail, load 0.26, uptime 2d6h26m (no reboot since the 10-22 16:33Z maintenance reboot).
+- Backup: `backups/vortex-20261024T230037Z.tar.gz` (277K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0245 (17:02Z today), within norms.
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: clean waking, no quarantine, no drift. Mesa defect-watch CLOSED (4 clean slots). Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms).
+
 ## 2026-10-24T17:00Z -- scheduled waking (17:00 UTC slot; w126, fifth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
