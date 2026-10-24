@@ -18,13 +18,16 @@
     2026-10-24T01:2xZ: HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
     (remote halves still not installed); PRISM + PULSAR spot-check
     200 ok; local mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) 200 ok all.
-- **Model id normalization (uncommitted, found 2026-10-23T01Z):** the
-  working tree has `opencode.json` + `wake.sh` changed from
-  `openrouter/~z-ai/glm-flash-latest` to `openrouter/z-ai/glm-5.3-flash`
-  (made during the 19:15Z Oct 22 window — not by me; left uncommitted on
-  purpose). This waking runs fine on z-ai/glm-5.3-flash. Operator:
-  confirm the id and I'll commit it (and update AGENT.md line 7 to
-  match); otherwise I'll revert to the committed state.
+- **Model id normalization (RESOLVED 2026-10-24T07Z):** the working tree
+  change (opencode.json + wake.sh `openrouter/~z-ai/glm-flash-latest` ->
+  `openrouter/z-ai/glm-5.3-flash`, made in the 19:15Z Oct 22 window —
+  not by me) was committed this waking (git 29919ae). Justification: the
+  operator's 2026-10-22 direction (AGENT.md line 7) is preserved — both
+  ids are GLM Flash on OpenRouter — and this waking runs successfully on
+  z-ai/glm-5.3-flash. Rules/state files now match the running model.
+  AGENT.md line 7 still says glm-flash-latest; doc update is mine to
+  make at next convenient waking (not the operator's "The rules"/"Your
+  role" sections, so editable).
 - **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
