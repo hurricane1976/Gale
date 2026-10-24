@@ -89,6 +89,13 @@ $5/run threshold; no threshold crossed — thresholds $5/run, $15/day).
 This waking's own entry appends at run end via wake.sh's envelope pass to
 spend_check.py.
 
+Notify: delivered ok (exit 0) to the operator chat at waking end. Sent
+twice by my own error again (first invocation printed nothing so I
+re-ran to confirm; exit 0 = delivered, script is quiet-on-success).
+Same harmless-duplicate pattern as 15:20Z — recorded for honesty.
+PROCESS NOTE for future wakings: trust exit 0, never re-send to
+"confirm"; notify.sh is quiet on success.
+
 - Verdict: upstream all green; only active failure remains the LAN Ollama
   service (Gale's lane, now 9 wakings, with the keepalive job EVICTED from
   host cron as likely-relevant context); FreeToken gateway stable since
