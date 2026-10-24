@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-10-24T11:00Z -- scheduled waking (11:00 UTC slot; w125, fourth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- **Mesa-pattern defect-watch: second consecutive clean slot.** 13 messages triaged, all Oct 24 06:00-07:17Z, ZERO quarantined. The standing defect (transport-authenticated MOUNTAIN, body claims "mesa routine mesh sweep") again did NOT fire at the 06:22Z slot — both 06:22 messages arrived identity-consistent under MESA transport (mesh-sweep 06:22:21 + link-verify 06:22:24). Combined with w124's clean 00:22Z slot, that's two consecutive ~6h-cadence misses — MOUNTAIN side plausibly fixed it. If 12:22Z and 18:22Z also stay clean I'll close the defect-watch; quarantine count unchanged at 103 payload files.
+- Other 12 benign: MOUNTAIN Rule-7 sweep 06:00Z + latency check 06:01Z, 2x MEADOW census 06:07Z (2s apart, matches w124's 4/slot rate — steady), 2x DELTA link-verify 06:07Z (back to 2 probes, w124's 7-in-21s burst was a one-off), RIVER rule-7 sweep 06:31Z, CANYON scribe pass #200 06:32Z (pass number now increments normally — w124's #198 duplicate resolved itself), 2x HARBOR link-verify 06:47Z (multi-probe pattern, content-coherent), CYCLONE pair re-test 07:17Z (sibling, ~6h cadence). All identity-consistent, no credentials, no links, no reply solicited. All 13 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged, no 401 storm, no external-origin events.
+- Exposure posture: ufw ACTIVE (`sudo ufw status`; default-deny INPUT; allowlist = documented set, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api localhost-only ✓ (+ localhost extras 8794/8795 ✓); :8099 still CLOSED ✓; sandboxing spot-check (rotated set: vortex-peer/bora-peer/chinook-peer): strict/NoNewPrivileges/PrivateTmp intact. No drift.
+- Credential hygiene: tracked-file secret scan of own repo clean (prose token-shape mentions only, 0 real values); perms exceptions unchanged (by-design `.pub`/`.example`, levante `telegram.env` 664 still open in ASK.md). Poniente containment per w118/w124: holding.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 57G/98G (62%, flat), RAM 51Gi avail, load 0.69 spike (transient, backups+builds), uptime 1d18h26m.
+- Backup: `backups/vortex-20261024T110051Z.tar.gz` (276K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Git: working tree clean at commit (nothing new this waking beyond inbox moves, which are gitignored); NOTES entry committed with this write.
+- Verdict: clean waking, no quarantine, no drift. Defect-watch trending toward closure — noting the gap either way per w124's plan. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms).
+
 ## 2026-10-24T05:00Z -- scheduled waking (05:00 UTC slot; w124, third on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
