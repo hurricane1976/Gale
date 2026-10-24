@@ -2,12 +2,6 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
-## 2026-10-24 — Waking Routine Log
-- Backup: executed and verified (snapshot integrity confirmed).
-- Host health: stable; no drift, no breaches, no advisories.
-- Capacity: disk, load, memory, and spend all within normal bands.
-- Git: working tree clean, all tracked changes committed.
-
 ## 2026-09-23 — Installed (10th agent on gale-agent)
 
 - Host `gale-agent` (100.66.39.59), Ubuntu 22.04, Tailscale 100.66.39.59 —
@@ -9794,3 +9788,94 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   Cosmetic only (ledger and NOTES record $0.7149 correctly); noted so
   the log matches the operator's Telegram. Standing note-to-self:
   escape `$` in notify arguments (`\$0` or use single quotes).
+
+## 2026-10-24T12:52Z — waking #167 (scheduled 12:50Z slot)
+
+- Fired 12:50:01Z via my own `50 0,6,12,18` cron (journal confirms
+  `Oct 24 12:50:01 … /home/agent/chinook/wake.sh`). Prior slot was the
+  20th accidental maistral-cron run (08:05Z) — see below, it did real
+  work this time.
+- **Self-check (standing, #61): PASS with a catch.** Backup within ~4h?
+  YES (#166's 06:50:33Z). Newest NOTES entry = immediately-prior slot?
+  **NO for the 08:05Z accidental run** — see the incident section; the
+  gap is now explained and repaired, no back-fill owed.
+- **INCIDENT (e3b5f67, 08:05Z accidental run): the long-pending
+  uncommitted model-pin diff got committed AND pushed without operator
+  word.** The 08:05 maistral-slot session committed `e3b5f67` "Waking
+  routine complete: health, backup, snapshot verification" (08:06:17Z)
+  which swept in opencode.json + wake.sh model-ID changes
+  (`~z-ai/glm-latest` → `openrouter/z-ai/glm-5.3-flash`) — the exact
+  files ASK.md item 3 held uncommitted per precedent — and wake.sh's
+  wrapper push landed it on github `main:chinook` (9815075..e3b5f67).
+  Its own NOTES "entry" was also misplaced at the TOP of NOTES.md (above
+  the install entry) instead of appended. My handling this waking:
+  (a) NO revert — content matches operative runtime (every waking since
+  #156 runs glm-5.3-flash; reverting would fight the fleet state and
+  re-price at alias rates), and history is not rewritten; (b) relocated
+  the misplaced block into this proper entry (removal only, content
+  preserved verbatim in git history via e3b5f67); (c) ASK.md item 3
+  updated — ask shifts from "may I commit" to "confirm or revert".
+  Lesson for MY lane: verify-before-commit on every waking (what am I
+  actually staging?), which #166's clean commit did and the accidental
+  session did not.
+- **check_replies: "(no new messages)".** ASK.md open items now —
+  (1) 10-22 16:33Z reboot + cron-skip confirm, (2) maistral overwrite
+  disposition (lane dark day 10+), (3) 10-20 model batch + 00:46Z pin +
+  **now e3b5f67's push** (one word covers all), (4) 10-15 v2 fix —
+  updated to "moot in practice": fix already committed in `c9a7e09` /
+  `2ab5e3f`; ask reduces to bless-or-revert.
+- **Peer inbox: 11 archived → processed/ (2179 on disk)** — the
+  12:00–12:47Z sweep batch: MOUNTAIN ×2 (Rule-7 + site-build latency),
+  MEADOW ×2 census, DELTA link-verify, MESA ×3 (mesh sweep + 2× link
+  verify), RIVER rule-7 Layer-2, CANYON scribe pass #201, HARBOR
+  link-verify. All self-labeled "no reply needed", no acks owed, no
+  operator content, no anomalies. Inbox empty.
+- **Cron grid (06:50→12:50Z window): 15/15 wake.sh slots fired, zero
+  skips** — 06:50 chinook #166, then cyclone 07:15, levante 07:40,
+  maistral 08:05 (→20th accidental), bora 08:30, ostro 08:55,
+  poniente 09:20, sirocco 09:45, squall 10:10, tempest 10:35,
+  tramontane 11:00, vortex 11:25, agent/gale 12:00, bora 12:25,
+  chinook 12:50 (this). Grid fully healthy since the 10-22
+  partial-arming event.
+- **Maistral (read-only):** backlog 267→**275** (+8 in ~6h ≈ 1.3/h —
+  within band). Lane still dark (0 own ledger rows since 10-19 03:21Z);
+  AGENT.md header still "# AGENT.md — Chinook"; wake.sh still cd's into
+  chinook (verified — its 08:05 slot ran ME, the 20th accidental);
+  peer_server 8795 still answers. Recovery sources unchanged (10-19
+  backups + github branch); ASK.md item stands, no advisory re-sent.
+- **Capacity snapshot 2026-10-24T12:50Z (waking #167):** host up
+  1d20h15m (boot 10-22 16:34:17Z, kernel 7.0.0-38, stable), load
+  0.16/0.41/0.34 on 16 cores (~1–3%, series-low band), mem 5.7G/57G
+  used (51G avail), swap 0.
+  - disk / 57G/98G (62%, 36G free) — flat vs #155–#166, **29th
+    consecutive flat point**. Drivers unchanged: /var/log/journal 1.7G
+    (bounded), /var/log/syslog 46M active + 505M rotated/compressed
+    tail (10-02 fix holds), /tmp/opencode 6.5M (transient),
+    /home/agent 20G.
+  - peers: **14/14 /health → 200** on 100.66.39.59:8787–8800
+    (8793 = me).
+- **Spend (10-24 to 12:50Z, host-wide, 13 lanes with rows):** **$1.5167 /
+  29 runs, 0 error rows** — chinook $0.2301/4 (incl. the 08:05 accidental
+  $0.0362), agent/GALE $0.1114/2, squall $0.1802/2, cyclone $0.1324/2,
+  levante $0.1196/2, tempest $0.1099/2, ostro $0.1076/2, poniente
+  $0.1017/2, tramontane $0.0980/2, sirocco $0.0730/2, zephyr $0.0896/2,
+  bora $0.0829/3, vortex $0.0803/2; maistral 0 rows (dark). Per-run max
+  $0.09 ≪ $5 line; host daily ≪ $15 line; run count cadence-consistent
+  (29 by 12:50Z on the 14-lane grid incl. 1 accidental). Pacing ~$2.8/day
+  — modestly above the ~$2/day recent pacing but in-band; post-pin band
+  holds $0.0063–$0.1011/run. **No rule-4 anomaly** (cost tracks session
+  weight; run count matches the grid + 1 accidental).
+- **Forecast / thresholds:** no threshold crossings projectable on any
+  axis at the current arc — disk 62% flat (29th flat point; the
+  ~2026-12-05 named date stays conditional on the ~0.5 G/day arc
+  resuming, which it has not), load/mem series-low, spend ~$2–2.8/day
+  host with both alert lines far away. **No sibling near any local
+  limit → no advisory this waking.**
+- **done this waking:** check_replies; 11 inbox msgs archived (2179);
+  host health baseline; 14/14 peer sweep; 15/15 cron-grid verification
+  (window); maistral re-verified read-only (backlog 275, lane dark,
+  its 08:05 slot ran me — 20th accidental); backup
+  `backups/chinook-20261024T125114Z.tar.gz` (292K, 85 entries) gzip -t
+  OK + core-file count clean, 14-snapshot ceiling held; e3b5f67
+  incident documented + NOTES misplaced block relocated + ASK.md items
+  3/4 updated; NOTES entry + commit; notify.

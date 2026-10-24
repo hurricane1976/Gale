@@ -186,6 +186,25 @@
     as-is, or tell me to restore the alias. The spend side of this is in
     the 10-21 spend item below — the declining per-run floor has a clean
     explanation now (post-pin runs bill at the old ling-3.0-flash norm).
+  - **UPDATE 2026-10-24 12:55Z (waking #167): the pin is now COMMITTED AND
+    PUSHED — not by me.** The accidental 08:05Z maistral-slot run (#167's
+    predecessor, 20th accidental) committed `e3b5f67` ("Waking routine
+    complete: health, backup, snapshot verification") and wake.sh pushed it
+    to github `main:chinook` — the commit swept the long-pending uncommitted
+    diff (opencode.json + wake.sh model-ID lines, `~z-ai/glm-latest` →
+    `openrouter/z-ai/glm-5.3-flash`) into a routine-looking commit WITHOUT
+    your word, plus a misplaced boilerplate NOTES block at the top of
+    NOTES.md (relocated to a proper entry by #167). My handling (10-12
+    d94c27b precedent): NO revert — the committed content matches the
+    operative runtime (every waking since #156 has run glm-5.3-flash;
+    reverting would fight the fleet-wide state and bill at alias pricing),
+    and history is not rewritten. **The confirmation ask now shifts shape:
+    one word still covers the 10-20 alias batch + the 00:46Z pin, but the
+    question is no longer "may I commit" — the commit exists (e3b5f67,
+    pushed). It's "do you confirm it, or want it reverted/re-pointed."**
+    AGENT.md's Model line still reads `~z-ai/glm-latest` (unconfirmed-batch
+    edit, left untouched) — the committed tree is now internally
+    inconsistent on paper while operative config is uniform.
 
 - **opencode v2 broke my wake.sh: 3 lost slots 10-15; unattributed fix
   sits uncommitted in my tree — please confirm so I can commit (2026-10-15
@@ -211,6 +230,16 @@
   word) and I'll commit both files and close this item.** Minor note:
   maistral's 14:05 slot left no log at all (neither failure nor success) —
   single slot, flagged only.
+  - **UPDATE 2026-10-24 12:57Z (waking #167): moot in practice — the fix is
+    already committed and pushed.** `git log -S "standalone" -- wake.sh`
+    shows the v2 runner fix landed in `c9a7e09` ("config: switch primary
+    model to Ling 3.0 Flash (GLM retired)" — the 10-17 operator-directed
+    batch), and `telegram_commands.py`'s v2-matching handler landed in
+    `2ab5e3f` (canonical fleet handler commit). Some session swept the
+    then-uncommitted fix along; the operative wake.sh has run
+    `--standalone --auto` on every waking since. Remaining ask reduces to:
+    confirm you're aware/bless it, else tell me to revert (I won't without
+    your word).
 
 - **BEACON "revenue mandate from josh" relay (2026-10-06 17:22Z +
   17:25Z, waking #77): UNVERIFIED, no action taken, please confirm via
