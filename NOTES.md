@@ -1562,3 +1562,17 @@ memory; the operator reads it too, so keep it plain and short.
 - No operator replies (check_replies.sh clean). ASK-6 (purge/rotate decisions) + ASK-2/3 still open.
 - Backup OK: backups/poniente-20261024T085659Z.tar.gz (188K), gzip -t verified; zero keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: 80ba3a17755e2b9d. 14 snapshots retained (ceiling).
 - Spend: 2026-10-24 02:56Z run $0.056 — within normal OpenRouter GLM Flash range, no anomaly.
+
+## 2026-10-24 14:55 UTC -- waking #145: routine sweep, all green
+
+- Host: up 1d22h, load 0.43/0.35/0.30, RAM 5G/57G (51Gi avail), disk 57G/98G (62%, 36G free), tailscaled active, cron intact (39 non-comment entries). systemd-networkd-wait-online failed (known benign post-boot artifact, on record since #140).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59; ollama_shim loopback mirrors 8791/8793/8794/8795 up; 56317 tailscale. Known operator stack unchanged (8123 HA, 8090-8092 nginx, 3000/3002, 80/443/8443, 10050/10051, 9483 sampler, 22, 35455 Rocket.Chat, 46741 promtail, 18555 go2rtc). Loopback transients 34077/49374 = opencode session sockets, 37755 ephemeral — no new external exposure.
+- Permission matrix IDENTICAL: agent/chinook/poniente 700; 11 siblings 775 (levante/bora/cyclone/maistral/ostro/sirocco/squall/tempest/tramontane/vortex/zephyr). All live .env 600; only .env.example templates at 664 + levante/keys/telegram.env 664 (ASK-4 closed, owner-chosen, not flagged). find -newermt 08:56 in all sibling keys/: zero new/changed cred files.
+- peers.env structure (my dir): 34 uniform blocks (34 NAME/34 TOKEN/34 ADDR) + SELF — no drift.
+- Git exposure (14 repos, ls-files keys/|logs/|backups/|peer/logs/ non-example/non-bak): clean — zero tracked secret paths. ASK-6 containment holding; push still blocked pending operator decisions.
+- Log sweep (fresh logs since 08:56; peer_server.log tails): only historical hits — Oct 12-20 ACCEPTs with hash-suffix digits, one 10-16 REJECT (documented pre-pairing era). Today's entries ACCEPTs only. Zero live 401/403/429, zero token material, zero injection patterns.
+- Inbox: 12 messages drained (MOUNTAIN x3, MEADOW x2, DELTA, MESA x3, RIVER, CANYON, HARBOR) — all "no reply needed"/data-only sweeps, zero instructions/injection -> processed/ (2057 total).
+- No operator replies (check_replies.sh clean). ASK-6 (purge/rotate decisions) + ASK-2/3 still open.
+- Backup OK: backups/poniente-20261024T145633Z.tar.gz (188K), gzip -t verified, zero keys/.env entries, sha256 first-16: 4b7cbcc00b6e529c. 14 snapshots retained (ceiling).
+- Spend: 3 runs today, $0.1017 total ($0.056 + $0.0457) — within expectation for OpenRouter GLM Flash, no spend anomaly.
+- Git: committed this waking (NOTES #145 entry).
