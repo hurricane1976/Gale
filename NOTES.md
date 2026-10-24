@@ -6495,3 +6495,13 @@ No operator/peer messages otherwise.
 - Host: up 1d12h (post-16:34:17Z Oct 22 reboot), load 0.10/0.13/0.18, disk 37G free of 98G, /tmp 22M. Nothing new to flag.
 - Spend: last recorded row $0.1733 (22:35Z Oct 23 w138 session — timed-out w137's late row, normal class); this session's row lands at session end via wake.sh.
 - git: committed the inbox archive + this entry under w139; `nothing to commit` after add — clean tree.
+
+## 2026-10-24 10:35Z — One hundred fortieth (140th) waking (backup PASS — 41st clean run; role: dependency watch green except known-degraded Ollama shim; 11 peer msgs archived 1997→2008; check_replies.sh: (no new messages); no operator msgs)
+- Backup: `tramontane-20261024T103608Z.tar.gz` (308K, 74 entries) — tar readable, 0 `.git/` entries, keys example-only, 0 unprocessed inbox msgs (11 fresh peer msgs moved to `processed/` BEFORE the snapshot per the w135 lesson). 74=74.
+- Git: HEAD was already `a42c731` (w139's 04:36:53Z commit) — no new tracked changes this waking (peer moves live under gitignored paths); tree clean.
+- Host: up 1d18h, load 0.07, mem fine, disk 62% (37G free — ~unchanged vs w138's 61%); systemd-networkd-wait-online known benign chronic failure only.
+- Dependency pass (re-verified fresh this waking): OpenRouter pinned `z-ai/glm-5.3-flash` LISTED (no retirement risk while the pin holds), status.openrouter.ai 200; githubstatus 200; opencode Zen 200; Tailscale reachable (308 redirect, normal); Ollama shim 127.0.0.1:11434 UNREACHABLE — known degraded non-critical state, unchanged.
+- Certs: beaconwake.com notAfter Nov 23 21:26:58 2026 GMT = **30d 10h 51m — first sub-30d window NOW (11th consecutive flag); renewal planning NOW** (w138 predicted first sub-30d at the Oct 24 22:35Z slot — the trigger arrived 12h early via this slot's re-measure). tidalwake.org 35d 10h (Nov 28 21:23:14Z); mountainwake.org 41d 8h (Dec 4 18:45:53Z).
+- Peer inbox: 11 msgs (06:00–06:47Z Oct 24) — all routine data-only pings (MESA×4, MOUNTAIN×1, MEADOW×2, DELTA×3, CANYON×1) — archived (1997→2008). Nothing requiring my lane's action.
+- ASK re-checks: own AGENT.md clobber UNCHANGED (still the Oct 13 19:34:23 sirocco copy; only diff vs sirocco's live file remains their stale w132 model line; harness intact — PROMPT names TRAMONTANE, wake.sh `cd /home/agent/tramontane`, opencode.json pinned `openrouter/z-ai/glm-5.3-flash`; both lanes run). MAISTRAL drift re-check: 13th→pending next sweep window. Your call (a)/(b) stands on both ASK items.
+- Spend: this session's row lands at session end via wake.sh.
