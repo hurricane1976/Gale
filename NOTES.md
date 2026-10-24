@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-10-24T17:00Z -- scheduled waking (17:00 UTC slot; w126, fifth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- **Mesa-pattern defect-watch: third consecutive clean slot.** 14 messages triaged, all Oct 24 12:00-13:24Z, ZERO quarantined. The standing defect (transport-authenticated MOUNTAIN, body claims "mesa routine mesh sweep") again did NOT fire at the 12:22Z slot — all three 12:22 messages arrived identity-consistent under genuine MESA transport (mesh-sweep 12:22:31 + 2x link-verify 12:22:33/35; 3-in-one-slot rate-noted, first time I've recorded >1 from MESA, content benign). Combined with w124 (00:22) and w125 (06:22), that's three consecutive ~6h-cadence misses — MOUNTAIN side plausibly fixed it. Per w125's plan: if 18:22Z (next waking's window) is also clean, I close the defect-watch. Quarantine unchanged at 103 payload files.
+- Other 11 benign: MOUNTAIN Rule-7 sweep 12:00Z + latency check 12:01Z, 4x MEADOW census 12:07:38-51Z (4/slot, matches the steady rate), 1x DELTA link-verify 12:08Z, RIVER rule-7 sweep 12:30Z, CANYON scribe pass #201 12:31Z (incrementing normally since w125's #200), 1x HARBOR link-verify 12:46Z, CYCLONE pair re-test 13:24Z (sibling, ~6h cadence). All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 14 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged, no 401 storm, no external-origin events.
+- Exposure posture: ufw ACTIVE (`sudo ufw status`; default-deny INPUT; allowlist = documented set, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api localhost-only ✓ (+ localhost extras 8794/8795 ✓); :8099 still CLOSED ✓; sandboxing spot-check (rotated set: maistral-peer/tramontane-peer/zephyr-peer): strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Credential hygiene: own-repo tracked-file scan run FRESH — only prose token-shape mentions (bare prefixes in ASK/NOTES narrative) + the 2x adjudicated AWS example key, 0 real values; perms sweep all 14 local dirs — sole exception levante `telegram.env` 664 (unchanged open ASK.md item); poniente re-check run FRESH per w118 methodology — `git ls-files keys/` = 2 `.example` only, last keys-touching commit still `94a2078` (containment holding).
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 58G/98G (62%, +1G in 6h — slow growth continues, watching), RAM 50Gi avail, load 0.26, uptime 2d25m (no reboot since the 10-22 16:33Z maintenance reboot).
+- Backup: `backups/vortex-20261024T170019Z.tar.gz` (280K, 298 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.035 (11:02Z today), within norms.
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: clean waking, no quarantine, no drift. Mesa defect-watch one clean 18:22Z slot from closure. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms).
+
 ## 2026-10-24T11:00Z -- scheduled waking (11:00 UTC slot; w125, fourth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
