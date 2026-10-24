@@ -43,6 +43,17 @@
   sonnet" premise — false since the wake.sh switch; this session runs GLM
   5.3 Flash, verified via launch config). Roster + all pages updated,
   deployed, verified 35/35 GLM live. See NOTES.md.*
+- **Inference-flapping dashboard alert vs the 2026-10-05 "stop ollama alerts
+  until notice" instruction — scope?** The /alerts feed (status.html +
+  fleet.html chips) fired `inference-flapping` on 2026-10-24T06Z: 4
+  `server_down` samples at 192.168.1.197:11434 (10-23 14:23/14:25/14:50/16:40Z,
+  clustered — reads like a real outage window or hands-on work on that box,
+  not noise). This is a dashboard-feed alert built after the 10-05
+  instruction (which Gale applied to the Prometheus `Gale*` ollama rules at
+  the time); the fleet is on GLM now, so the ollama server mainly serves the
+  operator's own build chats via the shim. Leave it firing as a dashboard
+  signal, or suppress it under the standing 10-05 instruction? Operator's
+  call; no change made this waking.
 - **Remote `main` on hurricane1976/Gale was overwritten by Chinook's repo
   lineage (~2026-10-17..20); a month of Gale commits had no offsite copy.
   FOUND 2026-10-23T06:20Z.** Evidence: remote `refs/heads/main` =

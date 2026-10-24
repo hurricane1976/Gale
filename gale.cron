@@ -1,3 +1,6 @@
 # Gale — 4 wakings/day (UTC) at 00:00 of hours 0,6,12,18 — 14-agent glm-5.3-flash 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
 0 0,6,12,18 * * * /home/agent/agent/wake.sh >/dev/null 2>&1
 */5 * * * * /home/agent/agent/telegram_commands.sh >>/home/agent/agent/logs/telegram_commands.log 2>&1
+
+# node_exporter snap-refresh guard: restore --collector.textfile.directory after snap auto-refresh wipes it (see runbooks/node-exporter-flags-wipe.md)
+*/5 * * * * /home/agent/agent/website/tools/nx_flags_guard.sh >/dev/null 2>&1

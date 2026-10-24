@@ -3729,3 +3729,81 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   sessions' churn — home-automation deletions, telegram_commands.py,
   website/dist rehashes — untouched per house pattern).
 
+## 2026-10-24T06:00Z — waking: three real finds fixed (phantom failed-wakings, node_exporter flags wipe #2, dead claude primary in wake.sh); routine green otherwise
+
+- Routine first: health clean (disk 62%/37G free, mem 51G avail, load ~0.13,
+  all services active, only the benign networkd-wait-online failed unit, no
+  reboot pending; all 14 tailnet peer listeners 8787-8800 up). `./backup.sh` ->
+  `gale-20261024T060032Z.tar.gz` (42M, 691 entries, `tar -tzf` verified, zero
+  keys/ entries). `check_replies.sh`: no new operator messages. Inbox: 21 peer
+  msgs (Mesa x4, Mountain x2, Meadow x4, Delta x7, River, Canyon, Harbor,
+  Cyclone), all data-only "no reply needed", filed to `processed/`. Spend
+  flat (~$0.05-0.13/run). Offsite: `github/gale` matched local HEAD
+  (`5c3674c`) on arrival -- the 00:00Z waking's hook push landed; `github/main`
+  unchanged at Chinook's tip (no re-clobber); `github/maistral` still stale
+  10-19 (dark-lane incident unchanged).
+- **Find 1 -- "gale: 4 failed wakings in 24h" alert was real but
+  misattributed: every waking since the GLM switch has been running through a
+  dead claude primary.** wake.sh still had `claude -p ... --model
+  openrouter/z-ai/glm-5.3-flash` as the primary runner with opencode only as
+  the "fallback" -- but the claude CLI rejects that model id
+  (`[claude-code:unrecognized_model]`, this waking's log), so the primary
+  failed in ~2s EVERY waking and the fallback (same model, correct runner)
+  did the real work. Side effects: a wasted failed attempt per wake, and
+  `run_observed.py`'s meta sidecar (written by the claude attempt) marked the
+  artifact `is_error=true` even though the fallback succeeded -- fleet_api
+  overlaid that and counted 4/4 recent gale wakings as failures. AGENT.md has
+  documented "wake.sh launches every session via opencode run" since the
+  2026-10-23 GLM application; the file just never matched. **Fixed: opencode
+  is now the primary runner** (wrapped in run_observed `--runtime opencode`,
+  which parses opencode-shaped tool events correctly), claude primary and
+  fallback branch deleted, guard + alert wording + comments updated, exit var
+  renamed RUN_EXIT. bash -n clean. Live smoke test through the exact new
+  path (run_observed -> `opencode run --standalone --auto` -> tiny prompt):
+  exit 0, sidecar `is_error:false / terminal_reason:completed`, stream
+  pass-through intact, opencode replied READY (~$0.002 spend, unrecorded --
+  see telemetry gap below). Moved the 5 stale claude-attempt sidecars
+  (10-23T06Z/12Z/18Z, 10-24T00Z/06Z) to `logs/sidecars-claude-attempts/`
+  rather than delete: they described the failed claude subprocess, not the
+  artifacts they were attached to; `error_runs_24h` for gale immediately 0 and
+  the alert cleared. First waking that exercises the new primary will be
+  12:00Z -- next waking should verify its sidecar says opencode/completed.
+- **Find 2 -- node_exporter snap refresh wiped the textfile flag AGAIN
+  (rev 2307 -> 2311), silently killing all gale_* metrics since ~Oct 22.**
+  Exactly the 2026-09-29 failure mode: new revision's `flags` file empty ->
+  `--collector.textfile.directory` gone -> Prometheus lost every bridge
+  metric while the bridges themselves kept writing fresh .prom files. Six
+  Gale*Stale alerts had been firing for ~2 days unnoticed. Fixed by hand
+  (flags + snap restart; 325 gale_ series back in Prometheus immediately);
+  5 of the 6 stale alerts cleared within minutes, `GaleRestoreDrillStale`
+  self-resolves ~07:03Z (1h `for:` after the series returned; the underlying
+  drill is healthy -- last ran Oct 18, age 5.8d, well under the 14d
+  threshold). **Permanent guard installed**:
+  `website/tools/nx_flags_guard.sh` on a */5 cron (also added to `gale.cron`
+  so future crontab rebuilds keep it) restores the flag + restarts
+  node-exporter only when missing, logging to `logs/nx-flags-guard.log`.
+  Worst-case blind window after any future refresh: one guard interval.
+  Runbook: `runbooks/node-exporter-flags-wipe.md` (symptom, root cause, both
+  incidents, fix, how to spot sooner).
+- **Find 3 (report-only) -- the /alerts feed is otherwise honest:**
+  `inference-flapping` fired on 4 real `server_down` samples at
+  192.168.1.197:11434 yesterday (14:23/14:25/14:50/16:40Z, clustered --
+  outage window or operator hands-on, not noise); `vortex: peer message from
+  MOUNTAIN QUARANTINED` reflects Vortex's own quarantine lane (same
+  speaks-for-others content class, latest Oct 23 18:22Z -- Vortex's call,
+  noted read-only); `maistral missed expected wakes` is the known dark-lane
+  incident, still awaiting the operator's one-line fix word. Added an ASK.md
+  question on whether inference-flapping should be suppressed under the
+  2026-10-05 "stop ollama alerts until notice" instruction (it's a dashboard
+  feed alert built after that instruction; no change made).
+- Telemetry gap documented (pre-existing, not introduced today): opencode
+  `--format json` never emits the final step's `step_finish` (verified on two
+  complete artifacts + the smoke run: every file ends on `text` with one
+  dangling `step_start`), so spend_check/the observability envelopes
+  undercount each opencode run by the final step's cost. Trend-level noise at
+  current scale; noting so a future fix (estimate from the dangling step or
+  query session data post-hoc) is a deliberate decision, not a surprise.
+- Committed: wake.sh, gale.cron, website/tools/nx_flags_guard.sh,
+  runbooks/node-exporter-flags-wipe.md, ASK.md, this entry. (Other sessions'
+  churn untouched per house pattern.)
+
