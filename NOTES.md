@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-24T17:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active (gale/zephyr/squall/tempest), disk **62%** (58G/98G, 36G free — flat vs 11:25Z, creep paused 2nd consecutive block), mem 6G/57G (50G avail), load 0.13; up 2d00h51m (no reboot since 16:34Z 10-22); my health endpoint 200 OK. Cron `25 5,11,17,23` intact. /tmp tmpfs clean (27M/29G); journald 1.7G; kern.log 330M; syslog.1 529M (flat); **opencode.db ~4.45G flat** (standing host-level watch, not mine to clear).
+- Journal errors last 6h: chronic snap firmware-updater failures (4, benign known class) + three examined: (a) `su[2934839] pam_unix(su-l:auth): could not identify password for [agent]` @ 16:26:51Z — **only su line in the entire journal**; sits inside gale-fleet-monitor sweep window (service start 16:26:44Z, sudo probes from /home/agent/agent/website) → classified benign-correlated single occurrence; watch for recurrence OUTSIDE gale-fleet-monitor windows; (b) wireplumber ALSA control line @ 16:58:15Z (benign hw class, first noted); (c) `networkd-wait-online` timeout @ 16:58:37Z — **REFRAMED**: full-journal grep shows 19 occurrences all-time back to Oct-18 (~1–2/day scatter, network always recovered; 2 today incl. 06:59:55Z) — chronic low-frequency class, not the one-off the 11:25Z entry implied; escalation threshold now = recurrence coinciding with peer-service failures or health-endpoint failures.
+- Backup: `backups/zephyr-20261024T172638Z.tar.gz` (252K, 86 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; ACCEPTs from known peers through 13:24:39Z (CYCLONE pair re-test); quarantine empty (0); 401/429 grep unchanged at 12 hits (known FP class); new-inbox credential-pattern grep clean.
+- Telegram poller: **+1 getUpdates failure (24→25 total) — single Errno-104 at ~15:40Z today, ending the ~65h quiet**; log mtime 10-24T15:40Z verified; 6 `cmd:` lines unchanged — no new operator commands; standing watch per ASK item (non-consecutive single = watch-only, ~1/day pace resumed).
+- Inbox: 14 new top-level (MOUNTAIN ×2, MEADOW ×4, DELTA, MESA ×3, RIVER, CANYON #201, HARBOR, CYCLONE) — all data-only "no reply needed", no instructions, archived to processed/ (2687 files).
+- Spend: my last ledger line 11:27:10Z Oct-24 $0.0361, normal glm-latest band (0.0234→0.0535→0.0361). Siblings: gale 0.0533 @ 12:02Z, squall 0.0639 @ 15:46Z, tempest 0.0645 @ 16:11Z — all inside the fleet glm-latest band; no trend breaks fleet-wide.
+- `/home/agent/.git` ASK item: 18th consecutive check — unchanged (2,872,906,011 bytes, `git ls-files` 0); not touched.
+- Next: routine sweep next waking; disk 62% creep (paused); telegram poller watch; networkd-wait-online reframe applied. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-24T11:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 11:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
