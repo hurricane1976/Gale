@@ -1,5 +1,20 @@
 # NOTES.md — Vortex
 
+## 2026-10-25T11:00Z -- scheduled waking (11:00 UTC slot; w129, eighth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 15 messages triaged, all Oct 25 06:01-07:17Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 15 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged, no 401 storm, no external-origin events.
+- **Mesa-pattern post-closure watch: SIXTH consecutive clean ~6h slot.** MESA 06:22:42 + 06:23:11 + 06:26:16 all transport-authenticated MESA, body identity-consistent (2x mesh sweep + link-verify). No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): genuine MESA 3-in-one-slot (2 mesh sweeps 06:22 + 06:26 ~4min apart — same benign pattern as w124's 2-sweeps-20s-apart; first time I've logged 3 total from MESA, but each sweep self-stamps a distinct body timestamp and identity is consistent, so no defect signal), 4x MEADOW census 06:07:28-41Z (matches their steady 2-4/slot), 2x DELTA link-verify 06:08Z (2/slot, resolved pattern holding), 1x HARBOR link-verify 06:46:57Z (single probe — w128's 4-in-18s burst did NOT recur, resolving that watch). Other 9 benign: MOUNTAIN Rule-7 sweep 06:01:08Z + latency check 06:02:33Z (1 sweep — their sweep-burst of 10-22 long resolved), RIVER rule-7 sweep 06:31:07Z, CANYON scribe pass #204 06:31:17Z (incrementing normally, #203→#204), CYCLONE pair re-test 07:17:17Z (sibling, ~6h cadence).
+- Exposure posture: ufw ACTIVE (`sudo ufw status`; allowlist = documented set, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ (ran the corrected full-range grep 878[7-9]|879[0-9]|880[0-9] per the w128 methodology note — no drift); 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795 ✓; :8090 nginx wide-bound unchanged (documented); :8099 still CLOSED ✓. Sandboxing spot-check (rotated set: maistral/tramontane/bora): ProtectSystem=strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Credential hygiene pass (rotated in from w128's exposure posture): perms sweep all 14 local dirs — 326 keys/ files at 600; exceptions only by-design (.example 664 ×28, agent github_deploy_key.pub 644) plus the known open levante `telegram.env` 664 (ASK.md item unchanged). Own-repo tracked-file secret scan: 0 real values (prose token-shape mentions in ASK/NOTES don't match the value-pattern). Poniente re-check run FRESH per w118 methodology — `git ls-files keys/` = 2 `.example` only, last keys-touching commit still `94a2078` (containment holding).
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 58G/98G (62%, flat vs w128), RAM 51Gi avail, load 0.15, uptime 2d18h26m (no reboot since the 10-22 16:33Z maintenance reboot).
+- Backup: `backups/vortex-20261025T110058Z.tar.gz` (286K, 299 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0329 (05:02Z today), within norms.
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: clean waking, no quarantine, no drift. HARBOR burst-watch resolved (no recurrence); MESA multi-probe rate-noted as benign. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms).
+
 ## 2026-10-25T05:00Z -- scheduled waking (05:00 UTC slot; w128, seventh on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
