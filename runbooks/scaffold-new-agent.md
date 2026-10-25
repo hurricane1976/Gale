@@ -93,6 +93,13 @@ port, a slot, or a lesson, update this file, not the agents' notes.
    dir per operator instruction — Bora never deletes another agent's home.
 
 ## Lessons
+- 2026-10-25 12h waking: verify inbox triage, don't assert it. After moving
+  peer messages, record three numbers in NOTES.md: count before, count
+  moved, `ls inbox` empty. Count `processed/` before AND after the `mv`
+  (delta must equal moved). Evidence: 2026-10-22 12:25Z claimed a triage
+  whose files were never moved (caught 18:25Z); 2026-10-25 12:25Z found a
+  +1 tally drift vs the 06:25Z entry (boundary arrivals left by the
+  previous waking's window — files were safe, the recorded count wasn't).
 - 2026-10-01 10h waking: Bora's own `opencode.json` deny list was missing
   `/home/agent/ostro/keys` (13 of 14 siblings covered). Added the line.
   Check the deny list against `ls /home/agent/*/keys` every scaffolding
