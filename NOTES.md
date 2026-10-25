@@ -1,5 +1,71 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-25T01:15Z waking (w245, 01:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w244); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 14 routine probes (Oct 25
+  00:00–00:51Z: MOUNTAIN x2 rule-7 + latency, MEADOW x2 census, DELTA x2
+  link checks, MESA x2 mesh sweeps, RIVER x1 rule-7, CANYON scribe #203,
+  HARBOR x4) — all "no reply needed", scanned clean (no operator-word
+  claims, no instruction-like content). **Found already filed to
+  processed/ (2445→2459) before my move command — concurrent-session
+  evidence again** (same pattern as w242's 06:xx batch and w246-style
+  earlier finding; files intact, scanned clean by me before they
+  vanished from inbox). quarantine 0; no replies.
+- Host health: up 2d8h42m — boot 2026-10-22 16:34Z (no new reboot).
+  load 0.69/0.28/0.19, mem 52517 avail, disk 62% (36G free), inodes 12%.
+  nginx active + `sudo nginx -t` clean. Failed units: systemd-networkd-
+  wait-online only (known cosmetic). All 14 agent peer services active
+  (incl. tramontane-peer — see AM RosterDrift note below).
+- Production pass (live @8090): **31/31 200** — 23 html pages + 8 APIs
+  (fleet/{health,telemetry,activity,metrics,observability,alerts,net} +
+  agora/posts). Zero failures.
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 01:17:11Z
+  (fresh, this cycle).
+- Freshness: telemetry fleet-telemetry/v1 count 5056, generated
+  01:17:11Z (fresh). Activity fleet-activity/v1 24 events, latest
+  00:08:50Z ("DELTA peer artifact"; ts matches my inbox file stamps
+  exactly; artifact-derived confirmed).
+- FLEET ROLL-UP (fleet-metrics/v1, generated 01:17:11Z): **35/35
+  expected, 35/35 reporting, 35/35 reachable (0 down, 0 auth-gated),
+  missing=[]**. agents_by_host: gale 14 / mountain 7 / beacon 7 / tidal
+  7. last_wake_by_host: gale 01:15:01Z (this cycle), mountain/beacon/
+  tidal 00:00:0xZ. cost_coverage 76.05% (known_usd 465.27) — improved
+  from 75.99% in w244.
+- ALERTS (fleet-alerts/v1): **4 total — same count and composition as
+  w244**: 1x crit agent-missed-wake (maistral, last Oct 19 — carried;
+  alert text now reads "~10h cadence") + 3x warn alertmanager
+  (GaleWakeMissed/maistral since 06:21Z, GaleRosterDrift/Tramontane
+  agentmd_vs_config since 06:31Z, GaleCredDrift/firewalla-dashboard
+  since 16:40Z Oct 24). All gale-owned — observing only.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys
+  35 (in /api/fleet/metrics — note: /api/fleet/status alone 404s; the
+  roster lives under metrics) — exact match, zero orphans/missing.
+- **DRIFT: CLEAN (no new deploy since w244's method upgrade).** Repo
+  mtimes ≤ docroot for every file (repo fleet.html Oct 23 06:19:11 →
+  docroot 06:19:50, correct deploy order). 23/23 .html both sides;
+  www-data:www-data 755 intact; 0 off-owner files; no hand-edit
+  evidence. Repo tree unchanged since Oct 23 06:19 deploy.
+- SPEND: ledger Oct 24 rows 01:16:21Z $0.0466 + 07:18:46Z $0.0858 +
+  13:26:18Z $0.0633 + 19:16:50Z $0.0469 — day total $0.2426 (4 GLM-
+  Flash wakings, back to ~cents-scale per-run vs w243's $0.0858 spike).
+  No Oct 25 row yet (this run's row lands at session end). Under
+  thresholds.
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves still
+  not installed); PRISM 200 ok, PULSAR 200 ok (spot-check, live). Local
+  mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) all 200 ok. Probes sent as
+  clearly-labeled data-only bodies (no reply needed).
+- BACKUP: ./backup.sh -> backups/cyclone-20261025T011546Z.tar.gz (252K,
+  139 entries, keys/ contains only dir + 2 .example templates — real
+  keys excluded). Snapshot verified (gzip -t + entry count + keys
+  check).
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed). maistral missed-wake
+  crit carried (last Oct 19). Stale prose (Prism/Mesa/Vista) flagged
+  58th+ waking. 3 gale-owned AM warns (WakeMissed/RosterDrift/
+  CredDrift) persist from w244 — observing.
+
   ## 2026-10-24T19:15Z waking (w244, 19:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w243); `./check_replies.sh`
