@@ -10280,3 +10280,68 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   host-wide spend tally; backup `backups/chinook-20261025T065031Z.tar.gz`
   (300K, 74 entries) gzip -t + ./AGENT.md read-back clean, 14-snapshot
   ceiling held; NOTES entry + commit; notify.
+
+## 2026-10-25T08:05Z — waking #174 (ACCIDENTAL, 24th via maistral cron)
+
+- **Trigger:** fired 08:05:01Z = maistral's cron slot (`5 2,8,14,20`)
+  running chinook sessions — the documented maistral-overwrite bug
+  (ASK.md open item #2), exactly as #173 predicted ("accidental #24 if
+  the overwrite bug persists"). It persists: maistral's AGENT.md header
+  still reads "# AGENT.md — Chinook" (read-only check this waking).
+  Executing the full routine per precedent (#168/#170/#172 class),
+  tagged accidental. Next scheduled chinook slot: 12:50Z; maistral's
+  14:05Z slot would be accidental #25.
+- Self-check (standing, #61): backup within ~4h? YES (#173's 06:50:31Z
+  snapshot, ~1h15m before this slot). Newest NOTES entry =
+  immediately-prior slot? YES (#173). Pass — no back-fill owed.
+- **check_replies: "(no new messages)".** ASK.md open items unchanged:
+  (1) 10-22 16:33Z reboot + cron-skip confirm, (2) maistral overwrite
+  disposition, (3) 10-20 alias batch + 00:46Z pin + e3b5f67 push
+  (one word blesses-or-reverts), (4) 10-15 v2-fix bless-or-revert.
+- **Peer inbox: empty** (nothing arrived in the 06:50→08:05 window;
+  2215 on disk in processed/). No acks owed, no operator content.
+- **Cron grid (06:50→08:05Z window): full** — chinook 06:50 (mine),
+  cyclone 07:15 fired, levante 07:40 fired; this 08:05 slot is
+  maistral's (fired, as chinook — the bug). Zero skips since the 10-22
+  partial-arming event; grid fully healthy.
+- **Maistral (read-only):** backlog 310→**312** (+2 in ~1.25h ≈ 1.6/h —
+  back inside the 1.6–2.3/h band; #172/#173's above-band samples were
+  small-window noise as suspected). Lane still dark: last own-ledger
+  row confirmed 2026-10-19T03:21:44Z ≈ **6 days dark**. AGENT.md
+  header still "# AGENT.md — Chinook"; peer_server 8795 still answers
+  /health (in the 14/14 sweep). Recovery sources unchanged (10-19
+  backups + github branch); ASK.md item stands, no advisory re-sent
+  (#140's stand).
+- **Capacity snapshot 2026-10-25T08:05Z (waking #174):** host up
+  2d15h31m (boot 10-22 16:34:17Z, kernel 7.0.0-38, stable), load
+  0.18/0.17/0.17 on 16 cores (~1% — new series-low), mem 6G/57G used
+  (51G avail), swap 0/8G.
+  - disk / **58G/98G (62%, 36G free)** — **flat at 58G for the 4th
+    consecutive point**; #170's trip condition (59G+) NOT triggered;
+    growth-watch stays closed, trip carries to #175. Drivers unchanged:
+    /var/log/journal 1.9G (stable), /tmp/opencode 9.7M (transient),
+    /home/agent 20G (chinook dir 312M of it, mostly backups/).
+  - peers: **14/14 /health → 200** on 100.66.39.59:8787–8800 (8793 = me).
+- **Spend (host-wide, 14 lanes):** 10-25 to 08:05Z ≈ **$1.23 / ~19
+  runs, 0 error rows** (chinook $0.2103/3 = #171 $0.0661 + #172
+  $0.0613 + #173 $0.0829, this waking adds a 4th row; agent $0.1954/2,
+  squall $0.2201/1, cyclone $0.1064/2, levante $0.0904/2, bora
+  $0.0740/2, tramontane $0.0804/1, poniente $0.0684/1, zephyr
+  $0.0499/1, ostro $0.0408/1, vortex $0.0329/1, sirocco $0.0305/1,
+  tempest $0.0261/1; maistral 0 rows, dark). Pacing ~$3.7/day — inside
+  the ~$3.1–4/day band; every lane ≤$0.22/run, post-pin band holds
+  ($0.0063–$0.1011/run). **No rule-4 anomaly** (cost tracks session
+  weight; run count cadence-consistent incl. this accidental).
+- **Forecast / thresholds:** no threshold crossings projectable on any
+  axis — disk flat at 62% (the ~2026-12-05 named date stays parked;
+  59G+ trip carries to #175), load/mem series-low, spend in-band with
+  $5/run and $15/day lines far. **No sibling near any local limit → no
+  advisory this waking.**
+- **done this waking:** check_replies; inbox empty (nothing to
+  archive); self-check; trigger verification (journal + crontab);
+  cron-grid verification (window); maistral re-verified read-only
+  (backlog 312, lane dark ~6d); host health baseline + disk breakdown;
+  14/14 peer sweep; host-wide spend tally; backup
+  `backups/chinook-20261025T080618Z.tar.gz` (300K, 74 entries) gzip -t
+  + ./AGENT.md read-back clean, 14-snapshot ceiling held; NOTES entry
+  + commit; notify.
