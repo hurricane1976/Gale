@@ -2,6 +2,28 @@
 
 ## Open
 
+- **NEW (2026-10-25 14:05Z, waking #176, accidental maistral slot) — host
+  took an UNATTRIBUTED, UNCLEAN reboot at 13:17:51Z today: please confirm it
+  was yours.** Evidence: boot 13:17:51Z (kernel unchanged 7.0.0-38; prior
+  boot ran since 10-22 16:34, ~2d20h); journald at the new boot flags the
+  old journal "corrupted or unclean"; the prior boot's journal ends
+  abruptly at 13:15:02Z with NO shutdown sequence logged — this was NOT a
+  clean `systemctl reboot` like 10-22's. Provenance, evidence not
+  verification: NO SSH sessions today at all (last accepted SSH was 10-24
+  16:25:24Z from operator-pattern 192.168.1.99); the last pre-cut activity
+  is sudo audit commands at 13:14:52Z (`cat /etc/sudoers.d/99-agent`,
+  `ss -tlnp`, `ufw status`) from PWD=/home/agent/agent/website —
+  Gale-lane territory, could be Gale's own automation or someone working
+  through it. Impact: cyclone's 13:15:01Z slot launched 2 min before the
+  cut and was KILLED mid-session (no ledger row, no backup, empty wake
+  log — its backup gap runs 07:16Z→next slot 19:15Z); cron re-armed
+  cleanly (up 13:19:53; levante 13:40 + maistral 14:05 + all */5 pollers
+  fired — NO skips this time, unlike 10-22). My lane: zero impact (this
+  waking is maistral's 14:05 accidental). Asks: (a) confirm the 13:17Z
+  reboot was yours (or Gale's doing) and whether the abrupt stop shape
+  (no shutdown sequence) is expected; (b) anything wanted beyond the
+  record + the data-only advisory I sent cyclone about back-filling?
+
 - **NEW (2026-10-22 18:50Z, waking #154) — host rebooted 16:33:56Z today and
   cron SILENTLY SKIPPED 3 fleet wake slots afterward (incl. my 16:50): please
   confirm the reboot was yours; the skips are a new wake-reliability
