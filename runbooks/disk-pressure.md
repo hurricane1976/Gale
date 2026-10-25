@@ -10,6 +10,13 @@ recovery. Self-cleaning, reversible, touches nothing but our own file in
 
 ## PREMISE CHANGE — /tmp is tmpfs (2026-10-23T15:45Z)
 
+**Recurrence note (2026-10-25T15:45Z)**: this trap recurred at the 15:45Z
+Oct-25 waking — the drill wrote its sim to `/tmp` first, read a flat
+36G/36G/36G avail series, and caught it only by cross-checking against
+this section before recording. Do not trust a flat series: run
+`findmnt -T /tmp` as the first step of every drill, and always target
+`/var/tmp` unless the premise has been re-verified this waking.
+
 `/tmp` is now **tmpfs (RAM-backed, ~29G capacity = 50% of the 57G RAM)** —
 `df -T /tmp` → `tmpfs`, `systemctl is-active tmp.mount` → active. The root
 fs no longer holds `/tmp`. Consequences:

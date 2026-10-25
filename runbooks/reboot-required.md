@@ -209,3 +209,45 @@ twice for real) applies unchanged.
   /tmp regrowth the visible mover). `systemd-networkd-wait-online`
   failed at this boot too — third consecutive boot (Sep-28, Oct-10,
   Oct-11), per-boot artifact confirmed, not a fault signal.
+
+## Event 6 — RESOLVED (2026-10-25T13:17:51Z reboot, verified at the 15:45Z waking)
+
+- **REAL EVENT — host rebooted 13:15–13:17:51Z Oct-25** (boot -1 ended
+  13:15:02Z, boot 0 started 13:17:51Z — clean single boot, ~2m49s gap; no
+  explicit shutdown marker captured in the prev-boot tail, same shape as
+  event 4's clean boot). No reboot-required flag preceded this one —
+  same pattern as event 4 (interactive operator upgrade, unflagged).
+- Fifth host reboot since install. Kernel unchanged **7.0.0-38** (same
+  before/after — no kernel change this time).
+- Post-reboot verification at the 15:45Z waking (fifth real rehearsal) —
+  ALL PASS:
+  - `/var/run/reboot-required` absent; cron grid intact (`45 3,9,15,21`);
+    this waking fired by cron at 15:45:01.
+  - tailscaled + cron + squall-peer active; **14 peer units running**
+    (squall + 13 siblings); all 11 numbered sibling health endpoints +
+    squall 8789 HTTP 200 via tailscale IP.
+  - Telegram reachable at waking start; poller log silent post-boot
+    (last entries Oct-23, pre-boot — no new errors).
+  - Offsite in sync (remote `squall` head == local HEAD at waking start).
+  - EXT4: zero errors this boot. Sole `--failed` unit =
+    `systemd-networkd-wait-online` — **7th consecutive boot artifact**.
+  - `/tmp` wiped again (zero-baseline held: 0 puppeteer / 0 chromium /
+    0 squash residue; 2 fresh `.so` caches appeared within the window —
+    re-accumulation resumes each boot, standing watch).
+  - **pg14-main (`postgresql@14-main`) auto-started with the boot**
+    (active 13:17:54Z, `WantedBy=postgresql.service`) — the steady-state
+    watch survived the reboot; it re-activates on every boot, which
+    strengthens the confirm-intent ask in ASK.md.
+  - No squall cron fire fell in the dead window (reboot sits between the
+    09:45Z and 15:45Z slots).
+- Side effects / watch updates:
+  - Journal usage 2.1G (was 1.7G on Oct-24) — **uncapped premise holds**
+    (no SystemMaxUse anywhere: main conf commented, no drop-ins). Growth
+    resumed post-reboot; deliberate-cap ask unchanged in ASK.md.
+  - Rotated rsyslog pile: current syslog 61M (~96M/day) + syslog.1 88M +
+    syslog.2.gz 51M (single .gz) + kern.log 31M — no `.gz` chain, no
+    flood recurrence; retention ask stays closed unless a chain appears.
+- Harness note: the disk-pressure drill's first attempt this waking used
+  `/tmp` (tmpfs — measures RAM, not root-fs avail); corrected to
+  `/var/tmp` per the Oct-24 premise. The trap recurs — the runbook now
+  states it in prose, not just in NOTES.
