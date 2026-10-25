@@ -4103,3 +4103,71 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
 
+
+## 2026-10-25T18:00Z — waking: UNPLANNED HOST REBOOT 13:17Z recovered clean (cause not in logs); 12Z inbox-filing claim was false (26 msgs filed this waking); 12Z DB-exact cost verified; routine green otherwise
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) -- no operator word, nothing acted on.
+- **Main event: the host rebooted today between the 12Z and 18Z wakings.**
+  Previous boot ended 13:15:02Z, new boot 13:17:51Z (~3 min gap, same kernel
+  7.0.0-38 both sides -- not a kernel update). Cause NOT determined from
+  logs: old boot's journal ends mid-normal-activity (no shutdown message, no
+  panic), no apt/unattended-upgrade activity that day, `last -x` empty.
+  If the operator rebooted it by hand, that explains it; otherwise a repeat
+  of a causeless cutoff becomes a hardware/hypervisor question to escalate.
+  **Recovery was clean**: all Gale services active post-boot (tailscaled/
+  gale-peer/cron/nginx/gale-sysmon/gale-fleet-api/gale-firewalla/
+  gale-ollama-api/gale-push), only the benign networkd-wait-online failed
+  unit, all 14 tailnet peer listeners (8787-8800) back up, this 18:00Z wake
+  fired on schedule, node_exporter flags intact (nx-flags-guard quiet --
+  first reboot test of the guard, and no wipe occurred anyway), site +
+  APIs all 200. No backup was lost (12:00:51Z pre-reboot snapshot + this
+  waking's 18:01:35Z one bracket the event). Runbook written:
+  `runbooks/host-reboot-recovery.md` (8-step post-reboot checklist).
+- **Inbox: 26 messages filed to `processed/`, and one honesty flag.** 14 of
+  them are the 06:02-07:17Z batch the 12Z NOTES entry SAID it had filed but
+  had NOT (still in inbox/; no copies in processed/ -- the filing never
+  happened). Plus 12 new 12:00-12:46Z probes (Mountain x2, Delta x3,
+  Meadow x2, Mesa x2, River, Canyon, Harbor), nothing after 12:46Z. All 26
+  token-authenticated, data-only, "no reply needed", no credentials, no
+  speaks-for-others framing. **This is the second "logged intent as fact"
+  on a 12:00Z waking** (Oct 23 12Z did the same) -- pattern to watch; the
+  fix is to verify the `mv`/count before writing "filed", not to re-do the
+  filing afterwards.
+- **Follow-ups verified: 12Z sidecar `runtime: opencode, is_error: false,
+  terminal_reason: completed, exit 0` (72.2s)** -- fifth consecutive clean
+  waking through the opencode primary; and the 12Z ledger line ($0.0612 @
+  12:01:14Z) matches the opencode session store exactly
+  (`ses_e8d1164e3ffePkyFfHqXetECtW`, 0.06119632, created 12:00:02.5Z) --
+  third consecutive DB-exact waking.
+- **Port-share quirk (NOTES 12Z) extended: it is not 2 loopback Gale
+  services, it is 4.** Loopback 8794 = `website/ollama_api.py`
+  (gale-ollama-api.service) and 8795 = `website/gale_push.py`
+  (gale-push.service) -- both legitimate, committed, installed since Oct 7;
+  the 12Z entry just didn't know about them. So loopback 8791/8793/8794/8795
+  co-exist with tailnet 8791 (Tramontane)/8793 (Chinook)/8794 (Cyclone)/8795
+  (Maistral). Sockets distinct, nothing conflicts; any port-number-based
+  check needs bind-address awareness.
+- **Hygiene: removed 24 stale `gale_*.prom.tmp-*` files** (Oct 17-18
+  disk-full-event leftovers) from the node_exporter textfile dir; all 10
+  real .prom files remain and 8 of 10 are freshly written today.
+  `gale_synth.prom` stale since Oct 12 16:35 is consistent with the
+  operator's 2026-10-12 "stop these synthetic checks" instruction, not a
+  failure; `gale_push.prom` only writes when the alert set changes.
+- Health: disk 62% (36G free), mem 51G avail of 57G, load ~0.2-0.3, no
+  reboot pending. Fleet sweep: 35/35 nodes up. Spend flat ($0.05-0.14/run).
+- Backup: `backups/gale-20261025T180135Z.tar.gz` (42M, 676 entries),
+  `tar -tzf` verified, zero keys/ entries.
+- Offsite: `github/gale` matched local HEAD on arrival (12Z push landed);
+  `github/main` unchanged at Chinook tip fa4d148 (restore decision still
+  awaits operator). Maistral dark-lane unchanged: last wake log still
+  2026-10-19, inbox backlog 326 (was 314 at 12Z) -- listener healthy,
+  nothing lost, one-line fix still awaits operator word.
+- Committed: runbooks/host-reboot-recovery.md, this entry. Push HEAD:gale.
+- Next waking: verify this waking's sidecar/ledger as usual; watch whether
+  the reboot repeats (causeless cutoff would be the signal to escalate);
+  unchanged watch items -- operator word on Maistral fix / remote-main
+  restore / Tramontane line / cred-baseline reseed / network.html / Bora
+  token / inference-flapping scope.
