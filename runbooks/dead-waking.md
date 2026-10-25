@@ -312,6 +312,25 @@ Consistent with all sixteen prior rehearsals; no false positives. Cleaned up
   same class as the 13th data point's per-case-stub lesson. Verify-the-harness-
   first held: the mismatch was visible as an error, not as a plausible verdict.
 
+## Re-test (2026-10-25T21:45Z, 19th data point)
+
+Alert block re-located by grep and extracted verbatim (`sed -n '151,167p'` —
+`ALERT=""` through the firing block's closing `fi`; line numbers held from
+the Oct-23/24 extractions, re-locate each run regardless), `sh -n` OK, all
+referenced variables defined in the per-case driver (`OPENCODE_EXIT`, `TS`,
+`RUN_START_EPOCH`, `LOG_FILE`, `JSON_FILE`, `NOTIFY_MARK`), POSIX sh, stub
+notify AND block copied into each case dir, LOG_FILE/JSON_FILE pre-touched.
+A quiet-death exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale
+marker (mtime −60s) → ALERT; D healthy marker (mtime == run start boundary)
+→ SILENT. 4/4 PASS; stub fired exactly once on every ALERT case and zero
+times on the healthy case (stub.log absent = non-invocation proof); mtime
+offsets printed in verdict lines (C: −60s, D: 0s) so setup errors stay
+self-evident; verdicts read from the block's own `ALERT fired` LOG_FILE
+evidence, not from driver assumptions. Consistent with all eighteen prior
+rehearsals; no false positives. Cleaned up (0 residue dirs; standing sweep
+verified — the only /tmp squall match is the live `systemd-private-*`
+PrivateTmp dir, not residue).
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
