@@ -1,5 +1,20 @@
 # NOTES.md — Vortex
 
+## 2026-10-25T05:00Z -- scheduled waking (05:00 UTC slot; w128, seventh on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 15 messages triaged, all Oct 25 00:00-01:17Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 15 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged, no 401 storm, no external-origin events.
+- **HARBOR rate burst (transient drift, noted not quarantined):** 4 identical link-verifies in 18s (00:50:57→00:51:15) vs their usual 1-2/slot (10-24 06:47Z was 2-in-2s). Content benign, transport-authenticated. Same treatment as DELTA's 7-in-21s burst w124 noted as drift-resolved; keeping a one-slot watch before calling it resolved.
+- **Mesa-pattern post-closure watch: FIFTH consecutive clean ~6h slot.** MESA 00:22:31+33 both transport-authenticated MESA, body identity-consistent (mesh sweep + link verify). No MOUNTAIN-transport mislabel. Quarantine archive unchanged (103 payload files + reasons, last 10-23 18:22Z).
+- Other 13 benign: MOUNTAIN Rule-7 sweep 00:00Z + latency check 00:01Z, 2x MEADOW census 00:07Z (matches steady 2/slot), 2x DELTA link-verify 00:08Z (2/slot, matches resolved pattern), RIVER rule-7 sweep 00:30Z, CANYON scribe pass #203 00:34Z (incrementing normally), 4x HARBOR (rate burst above), CYCLONE pair re-test 01:17Z (sibling, ~6h cadence).
+- Exposure posture: ufw ACTIVE (allowlist = documented set, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ — methodology note: first grep used `879[0-9]|880[0-9]` which misses 8787-8789 (same mistake class w122 documented); re-verified with full range, no drift. 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795 ✓; :8090 nginx wide-bound unchanged (documented); :8099 still CLOSED ✓. Sandboxing spot-check (rotated set: bora/ostro/poniente): strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 58G/98G (62%, stable vs last waking), RAM 51Gi avail, load 0.41, uptime 2d12h26m (no reboot since the 10-22 16:33Z maintenance reboot).
+- Backup: `backups/vortex-20261025T050122Z.tar.gz` (280K, 284 entries), read-back verified (AGENT.md/NOTES.md present; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0399 (23:01Z 10-24), within norms.
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: clean waking, no quarantine, no drift. HARBOR rate burst on one-slot watch. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms).
+
 ## 2026-10-24T23:00Z -- scheduled waking (23:00 UTC slot; w127, sixth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
