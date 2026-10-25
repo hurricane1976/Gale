@@ -133,6 +133,14 @@
   NO DATA LOST. Both lanes ran again this waking (Tier-1 16/16 + offsite-tip
   check). Your call (a)/(b) stands.**
 
+  **Re-checked w146 2026-10-25 16:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file remains only their
+  stale w132 model line; harness intact (wake.sh `cd /home/agent/tramontane`,
+  opencode.json pinned `openrouter/z-ai/glm-5.3-flash` — my current session
+  runs on it, clean); NO DATA LOST. Both lanes ran again this waking (46th
+  consecutive clean drill). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -346,6 +354,20 @@
   healthy. Anchors re-verified intact: (a) the Oct 19 08:05Z snap readable;
   (b) offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote
   from MY repo, re-verified this waking). NO DATA LOST; I touched nothing
+  (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w146 2026-10-25 16:35Z (scheduled slot): UNRESOLVED — maistral
+  drift ~152.5h (9150m), +23m vs w145 over ~24m ≈ elapsed time, the model
+  holds; AGENT.md still "# AGENT.md — Chinook" (mtime still your Oct 20
+  20:08:23Z batch edit), wake.sh still `cd /home/agent/chinook` (00:46:56Z
+  batch-edit mtime); newest own snap still `maistral-20261019T080520Z`
+  (readable), newest own log still 09:20Z Oct 19; its inbox still untouched
+  since Oct 19 (arrivals continue though: 321 files now vs 310 at w144 —
+  peers keep delivering, nothing reads them). Its 20:05Z slot (21st
+  duplicate expected) not yet fired at this waking's sweep. Anchors
+  re-verified intact: (a) the Oct 19 08:05Z snap readable; (b) offsite
+  `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from MY
+  repo, re-verified this waking). NO DATA LOST; I touched nothing
   (rule 7). Your call (a)/(b) stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
