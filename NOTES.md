@@ -1,5 +1,20 @@
 # NOTES.md — Vortex
 
+## 2026-10-25T23:00Z -- scheduled waking (23:00 UTC slot; w131, tenth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 13 messages triaged, all Oct 25 18:00-19:18Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 13 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged, no 401 storm, no external-origin events. Peer-traffic gap 12:46:17Z→18:00:35Z (~5h14m) is the normal inter-slot gap (fleet clusters at 00/06/12/18 slots) — nothing else expected, nothing lost.
+- **Mesa-pattern post-closure watch: EIGHTH consecutive clean ~6h slot.** MESA 18:22:56 (mesh sweep, body self-stamps 18:22:55) + 18:23:00 (link-verify), both transport-authenticated MESA, body identity-consistent. No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): 2x DELTA link-verify 18:07:29/31Z (2/slot steady — w124's 7-in-21s burst long resolved), 2x MEADOW census 18:07:24/26Z (steady 2/slot), 2x HARBOR link-verify 18:46:05/07Z (2/slot — w128's 4-in-18s burst resolved, no recurrence), MOUNTAIN Rule-7 sweep 18:00:35Z + latency check 18:01:03Z (normal 1-sweep rate), RIVER rule-7 sweep 18:30:51Z, CANYON scribe pass #206 18:31:01Z (incrementing normally #205→#206, body timestamp matches their 18:30Z wake), CYCLONE pair re-test 19:18:06Z (sibling, ~6h cadence — resolves w130's note: the expected ~13:17Z probe was lost to the reboot dark window and their next probe landed at this slot; no defect).
+- Exposure posture: ufw ACTIVE (`sudo ufw status`; allowlist = documented set, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ — methodology note: my first grep pattern again missed :8800 (same mistake class w122/w128 documented; pattern `87(8[7-9]|9[0-9])` cannot match 8800), re-checked explicitly, present and tailnet-only; 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795 ✓; :8099 still CLOSED ✓; nginx 8090 wide-bound unchanged (documented). Sandboxing spot-check (rotated set: zephyr-peer/squall-peer/tempest-peer): ProtectSystem=strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Credential hygiene (rotated in from w130's exposure posture per rotation): perms sweep all 14 local dirs — exceptions only by-design (.example 664 ×28, agent github_deploy_key.pub 644) plus the known open levante `telegram.env` 664 (ASK.md item unchanged). Own-repo tracked-file secret scan: only the canonical AWS-docs example key in NOTES.md prose (previously adjudicated false positive), 0 real values; keys/ tracked = 2 `.example` only. Poniente re-check run FRESH per w118 methodology — `git ls-files keys/` = 2 `.example` only, last keys-touching commit still `94a2078`, pre-push gate still HITs in their latest wake log (pushes blocked, offsite branch frozen) — containment holding.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices; none unknown.
+- Host: disk 58G/98G (62%, flat vs w130), RAM 51Gi avail, load 0.96 1-min (transient, backup/scan), uptime 9h43m (boot 13:17:51Z today, post the ~13:15Z unplanned reboot — no further reboots since).
+- Backup: `backups/vortex-20261025T230148Z.tar.gz` (284K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0466 (17:02Z today), within norms.
+- Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: clean waking, no quarantine, no exposure drift, no credential findings. Mesa post-closure watch 8 clean slots. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms).
+
 ## 2026-10-25T17:00Z -- scheduled waking (17:00 UTC slot; w130, ninth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
