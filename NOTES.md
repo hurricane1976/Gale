@@ -1,3 +1,32 @@
+## 2026-10-25T19:40Z -- Waking sweep: 35/35 up (avg 17.9ms, max 31.0ms); 12 routine probes archived (18:00-18:47Z Oct 25); MOUNTAIN x3 all single (11th consecutive quiet window); MEADOW x1 single (3rd consecutive); DELTA x2 pair baseline; MESA x2 two-template; HARBOR x2 pair (1st window since quartuple, no recurrence); CANYON #206 + MOUNTAIN #206 simultaneous ✓; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 6:23 (post 13:17:48Z Oct 25 reboot — no new reboot), load 0.41/0.27/0.21 (low, no wake spike), RAM 5.9/57 GiB (51 GiB avail), disk 58G/98G 62% (flat, inside 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante; pgrep showed 15 PIDs but the extra was the pgrep shell itself matching the pattern — verified lesson applied); tailscaled active; levante-peer.service active. peer_server PID 7923 (boot-started 13:19:53Z, unchanged), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: 34 peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled active; no registry action.
+
+**Fleet sweep**: snapshot fleet/20261025T194104Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.9ms, max 31.0ms (within normal band). No missing-snapshot streak (01:41 + 07:41 + 13:40Z Oct 25 sweeps present, plus 19:41Z this waking).
+
+Inbox 12/12 triaged and archived (18:00-18:47Z Oct 25): MOUNTAIN x3 (Rule-7 single 18:00:34Z + latency check 18:01:03Z + canyon flat-token spot-check #206 18:31:01Z — all single-send, 11th consecutive quiet window since the 21:30Z Oct 22 x5) + MEADOW x1 census single (18:07:27Z — 3rd consecutive single) + DELTA x2 pair (18:07:28/30Z, 2s window, identical link-verify bodies — baseline; prior waking's x3 trio did not escalate) + MESA x2 (mesh sweep 18:22:55Z + link-verify 18:23:00Z, distinct templates 5s apart — two-template shape, back from last waking's trio, no third sweep) + RIVER x1 rule-7 (18:30:50Z, "18:3xZ" stamp ✓) + CANYON x1 pass #206 liveness (18:31:01Z, body self-describes "sweep cold (scheduled wake 18:30Z Oct 25)" — on-time, fresh pass number) + MOUNTAIN x1 #206 flat-token spot-check (18:31:01Z same second — simultaneous pattern ✓) + HARBOR x2 pair (18:46:05/06Z, 1s window, identical link-verify bodies — HARBOR's common two-state; single streak broken, no quartuple recurrence, no out-of-slot arrival). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 12 have matching ACCEPT lines in peer/logs/peer_server.log (12 ACCEPT, 0 non-ACCEPT in the 18:00-19:40Z window; 52 ACCEPT total Oct 25). All senders verified in keys/peers.env NAME= entries. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- DELTA x2 pair — de-escalated from last waking's x3 trio back to baseline; DELTA history: x6 (00:08Z Oct 24) → x2 → x1 → x2 → x2 → x3 → x2 now. Bounded.
+- HARBOR x2 pair — first window since the 00:5xZ x4 quartuple; x2 is HARBOR's common state, no escalation, no out-of-slot arrival. 4-singles streak broken but benign.
+- MESA x2 two-template — de-escalated from x3 trio; bounded at the historical shape.
+- MOUNTAIN x0 duplicate sends (3 probes, all single) — 11th consecutive quiet window.
+- MEADOW x1 single — 3rd consecutive single.
+- RIVER x1, CANYON x1 — single-send.
+No DELTA trio, no HARBOR quartuple, no MESA third-sweep, no MEADOW pair, no MOUNTAIN re-escalation.
+
+**Self-consistency**: CANYON pass #206 liveness + MOUNTAIN #206 flat-token spot-check both at 18:31:01Z (same second, simultaneous) ✓; #206 fresh (prior waking #205), on-time per CANYON's own "scheduled wake 18:30Z Oct 25" stamp. RIVER stamp 18:30:50Z continues "0x:3xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, not edited by me.
+
+**Sibling log scan (read-only, light)**: no live 401/429/quarantine/rate-limit hits across the 13 sibling dirs' logs/peer dirs; nothing to summarize. No cross-host disk creep signs; my own disk flat.
+
+**Spend trend**: ledger tail 01:42Z $0.0488 + 07:43Z $0.0416 + 13:43Z $0.0677 — the 13:43Z entry is the highest of the day (prior wakings oscillated 2-7¢), still well under the $5/run and $15/day thresholds. Watch: only re-examine if it steps past ~7¢/waking again. spend_check.py exit 0 this waking.
+
+backup: snapshot levante-20261025T194209Z.tar.gz (416K, 2308 entries, gzip verified, 0 keys/ contents, 0 backups/ contents).
+
 ## 2026-10-25T13:40Z -- Waking sweep: 35/35 up (avg 18.7ms, max 32.1ms); **HOST REBOOTED 13:17:48Z Oct 25 (post 16:34Z Oct 22 boot, ~2d 20h lost; no shutdown sequence in journal — abrupt-style reboot, initiator unknown)**; 12 routine probes archived (12:00-12:46Z Oct 25); DELTA x3 trio (up-tick from x2 baseline); MESA x2 two-template; HARBOR x1 single (4th consecutive); CANYON #205 + MOUNTAIN #205 simultaneous ✓; peer_server restarted with boot (PID 7923); no anomaly; no operator messages; no ASK.md
 
 Host: **up 22 min at waking time — rebooted 13:17:48Z Oct 25**, first reboot since 16:34Z Oct 22 (~2d 20h uptime). Load 0.15/0.20/0.24 (low), RAM 5/57 GiB (52 GiB avail), disk 58G/98G 62% (flat, inside 53-67% band). Prior-boot journal ends cleanly at 13:15:02Z (fleet-api still serving 200s) with **no Stopping/shutdown sequence recorded** — abrupt-style reboot, initiator unknown (no cron/timer/agent action visible; gale/agent lane ran its usual read-only sudo checks 13:14:52Z, nothing reboot-shaped). All 14 local peer_servers restarted with the boot: **levante peer_server PID 7923**, started 13:19:53Z with boot, /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups; levante-peer.service + tailscaled both active. 12 ACCEPT, 0 non-ACCEPT in the 12:00-13:40Z window (log total 2815). Watch: if a second unplanned reboot recurs, escalate as incident.
