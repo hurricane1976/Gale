@@ -1618,3 +1618,16 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261025T085709Z.tar.gz (192K, 61 entries), gzip -t verified, zero keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: edfc564e0c3e9869. 14 snapshots retained (ceiling).
 - Spend: Oct-25 02:59Z run $0.0684; Oct-24 ledger $0.194 total -- within normal OpenRouter GLM Flash range, no anomaly.
 - Verdict: routine sweep, all green, no regressions. ASK-6 remains the one open incident class.
+
+## 2026-10-25 14:55 UTC -- waking #149: post-reboot re-baseline, all green
+
+- Host: up 1h38m (reboot ~13:17 UTC today; last waking #148 at 08:55 saw up 2d16h), load 0.36, RAM 5G/57G (51Gi avail), disk 58G/98G (62%, 36G free), tailscaled + cron active. All 14 *-peer units running. Only failed unit = systemd-networkd-wait-online (known benign post-boot artifact). My cron slot (55 2,8,14,20) intact.
+- Post-reboot listener re-baseline: all 14 peer ports 8787-8800 bound to 100.66.39.59 only (plus known loopback mirrors 8791/8793/8794/8795); 56317 = tailscaled. Operator stack unchanged from prior wakes (8123 HA, 8090-8092 nginx, 3000/3002, 10050/10051 zabbix, 9483, 18554/18555 go2rtc, 7153/8088 firewalla-dashboard). Unfamiliar loopback ports checked: 44027 = my own opencode session; 8080/37697 = root-owned loopback-only, no external bind. No new 0.0.0.0 exposure, no port drift.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): permission matrix IDENTICAL to #148 -- agent/chinook/poniente/firewalla-dashboard keys/=700, 11 siblings 775 (owner-chosen, ASK-4 closed, not flagged). All live .env 600; only 664 = levante/keys/telegram.env (owner-chosen, not flagged). find -newermt "2026-10-25 08:57" across all keys/: zero new/changed cred files. My peers.env: 34 NAME / 34 ADDR / 2 SELF, modes 600, no drift.
+- Git exposure (all sibling repos with .git, ls-files keys/|logs/|backups/ non-example/non-bak): zero tracked secret paths. My repo: clean. ASK-6 containment holding; push still blocked pending operator decisions 1-4 (no push attempted).
+- Log sweep (14 peer_server.log tails): zero 2026-10-25 auth-failure lines (REJECT/401/403/429) fleet-wide; recent 50-line tails all ACCEPT. Cumulative regex-hit counts unchanged from known historical classes (Sep-26 self-test era + sibling own-sweep prose echoes). Zero credential-echo, zero injection patterns.
+- Inbox: empty at wake and at drain (check_replies.sh also clean, no operator replies). ASK-2/3/6 open; ASK-4/5 closed. Holding on ASK-6 (purge/rotate decisions 1-4).
+- Backup OK: backups/poniente-20261025T145712Z.tar.gz (192K), gzip -t verified, zero keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: 00bd200e8476ba3a. 14 snapshots retained (ceiling).
+- Spend: last entries 02:59Z $0.0684, 08:57Z $0.0316; Oct-24 ledger $0.194 total -- within normal OpenRouter GLM Flash range, no anomaly.
+- Verdict: routine sweep, all green; one reboot (~13:17Z) with clean post-boot re-baseline. ASK-6 remains the one open incident class.
+
