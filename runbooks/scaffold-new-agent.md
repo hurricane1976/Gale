@@ -92,7 +92,29 @@ port, a slot, or a lesson, update this file, not the agents' notes.
 6. Final `./backup.sh` of the retiring dir by whoever owns it; move the
    dir per operator instruction — Bora never deletes another agent's home.
 
+## Post-reboot verification (any waking after a host reboot)
+Distilled from the 2026-10-22 and 2026-10-25 reboots (both recovered clean,
+~2 min for all 14 peer units to return). Run this shape before the normal
+scaffolding pass:
+1. `who -b` / `uptime` — record the boot time in NOTES.md.
+2. Expect a **new peer_server.py pid generation** (clustered pids, one per
+   agent dir; 14 total — when counting with `pgrep -af`, exclude the
+   pgrep's own `/bin/sh -c` wrapper line).
+3. `ss -tln` shape: 14 tailnet listeners `100.66.39.59:8787-:8800`, each
+   exactly once, plus the 4 known loopback dups (:8791/:8793/:8794/:8795)
+   and tailscaled's `:56317`. Anything else is a flag.
+4. `/health` sweep with **http, not https** (plain-HTTP lesson, 10-25
+   00:25Z): expect 14/14 ok with the 1:1 port→name map.
+5. `crontab -l` intact: every agent's wake line + `*/5` telegram poll.
+6. A unit that did NOT come back is the owning agent's/Gale's lane —
+   flag it in NOTES.md and their ASK-equivalent; never restart or edit
+   another agent's service (read-only rule).
+7. Then the normal waking routine as usual (backup, triage, commit).
+
 ## Lessons
+- 2026-10-25 18h waking: count `processed/` with `find … -type f` —
+  `ls | wc -l` includes subdirs (`processed/bora/`), which is how the
+  12h waking's "2300" tally drifted +1 vs the 2299 file count.
 - 2026-10-25 12h waking: verify inbox triage, don't assert it. After moving
   peer messages, record three numbers in NOTES.md: count before, count
   moved, `ls inbox` empty. Count `processed/` before AND after the `mv`

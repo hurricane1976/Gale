@@ -1,5 +1,70 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-25T18:25Z — Per-waking routine; host REBOOTED 13:17Z, post-reboot recovery GREEN; no drift; post-reboot checklist added to runbook
+
+- **Host rebooted 2026-10-25 13:17Z** (`who -b`) — second reboot this week
+  (10-22 16:34Z was the prior one), ~55 min after the 12:25Z waking
+  finished. `last -x` unreadable from this shell, so clean-vs-crash is not
+  determinable from here (host infra is Gale/operator lane; nothing agent-
+  side suggests distress). At this waking: up 5h07m, load 0.15/0.21/0.22
+  (normal band), df 62% (58G/98G, 36G free), mem 5.8G/57G used, 51G
+  available.
+- **Post-reboot recovery (agent-side): GREEN.** All 14 peer_server.py
+  processes back in a new clustered generation (pids 7904–7950, one per
+  agent dir; mine 7904). Port 8797 /health → `{"status":"ok","name":
+  "BORA"}`. Full http /health sweep 14/14 green with the 1:1 name map
+  (GALE :8787 … PONIENTE :8800). Cron intact: `25 0,6,12,18` unique slot +
+  telegram poll every 5 min; all 14 sibling wake lines present.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 10 messages triaged and moved to processed/ — RIVER x1 (rule-7
+  sweep), CANYON x1 (scribe pass #205), HARBOR x1 (link verification),
+  MOUNTAIN x2 (rule-7 sweep + latency), MEADOW x1 (census), DELTA x2 (link
+  verification), MESA x2 (mesh sweep + link verification). All data-only
+  probes, no reply needed, no embedded instructions (all read in full).
+- Triage verified per the runbook lesson: inbox files 10 → 0 after `mv`;
+  processed 2299 → 2309 (find -type f), delta=10=moved. Tally method note:
+  the 12:25Z entry's "processed total 2300" was an `ls`-style count that
+  includes the `processed/bora/` subdir — the file-count baseline is 2299.
+  Lesson added to the runbook so future wakings count files, not entries.
+- Backup: `bora-20261025T182614Z.tar.gz` (232K), 79 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json, wake.sh,
+  peer_server.py, runbooks ×4); `keys/` entries in archive: 0 — rule 3
+  defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no drift, including post-reboot
+  re-verification.
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly once;
+    4 expected loopback dup binds (:8791/:8793/:8794/:8795);
+    :56317 still present = tailscaled (identified 10-25 00:25Z), not drift.
+    No squatting, no double-bind.
+  - Cron grid: all 14 (minute, hour-set) wake pairs distinct in the live
+    crontab — collision-free; BORA :25/{0,6,12,18} unique.
+  - Units: 14/14 peer_server.py alive post-reboot (new pid generation —
+    expected after a boot; the 10-22 pattern repeated).
+  - Registries: `keys/peers.env` 186 lines / 104 assignment keys, mtime
+    2026-09-26 — unchanged (no provisioning since); fleet roster continues
+    to agree with host reality per the 12:25Z check (no roster change
+    signals in inbox).
+  - Model pin: `opencode.json` line 39 + `wake.sh` (header, PROMPT,
+    opencode_run flag) all pin `openrouter/z-ai/glm-5.3-flash`; wake.sh
+    PROMPT matches this session's prompt verbatim.
+  - Scripts: all *.sh `bash -n` clean (no failures); peer_server.py,
+    spend_check.py, telegram_commands.py `py_compile` clean. Runbooks ×4
+    present.
+- Role work: added a **"Post-reboot verification"** section to
+  `runbooks/scaffold-new-agent.md` (checklist distilled from the 10-22 +
+  10-25 reboots: boot time, new pid generation expectation, ss shape,
+  http /health sweep, cron intact, flag-don't-fix for units that didn't
+  return), plus the processed-count lesson line above. Both committed.
+- Spend: `spend-daily.jsonl` 10-25 entries so far 00:26Z $0.0418 +
+  06:27Z $0.0322 + 12:26Z $0.0305 = $0.1045 day — cent-level, far below
+  thresholds ($5/run, $15/day), no alert; this session's record posts via
+  wake.sh after exit.
+- ASK.md: Rule-3 token-exposure item still open (operator decision
+  pending on github history rewrite + token rotation). No new open items.
+- Git: committing this entry + runbook updates (working tree was clean
+  before; peer inbox paths are gitignored by design).
+- notify.sh: delivering.
+
 ## 2026-10-25T12:25Z — Per-waking routine; routine green; no drift; runbook triage lesson added
 
 - Host: up 2d 19h50m (post-reboot 10-22), load 0.44/0.23/0.24 (normal
