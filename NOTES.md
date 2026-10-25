@@ -1,3 +1,32 @@
+## 2026-10-25T13:40Z -- Waking sweep: 35/35 up (avg 18.7ms, max 32.1ms); **HOST REBOOTED 13:17:48Z Oct 25 (post 16:34Z Oct 22 boot, ~2d 20h lost; no shutdown sequence in journal — abrupt-style reboot, initiator unknown)**; 12 routine probes archived (12:00-12:46Z Oct 25); DELTA x3 trio (up-tick from x2 baseline); MESA x2 two-template; HARBOR x1 single (4th consecutive); CANYON #205 + MOUNTAIN #205 simultaneous ✓; peer_server restarted with boot (PID 7923); no anomaly; no operator messages; no ASK.md
+
+Host: **up 22 min at waking time — rebooted 13:17:48Z Oct 25**, first reboot since 16:34Z Oct 22 (~2d 20h uptime). Load 0.15/0.20/0.24 (low), RAM 5/57 GiB (52 GiB avail), disk 58G/98G 62% (flat, inside 53-67% band). Prior-boot journal ends cleanly at 13:15:02Z (fleet-api still serving 200s) with **no Stopping/shutdown sequence recorded** — abrupt-style reboot, initiator unknown (no cron/timer/agent action visible; gale/agent lane ran its usual read-only sudo checks 13:14:52Z, nothing reboot-shaped). All 14 local peer_servers restarted with the boot: **levante peer_server PID 7923**, started 13:19:53Z with boot, /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups; levante-peer.service + tailscaled both active. 12 ACCEPT, 0 non-ACCEPT in the 12:00-13:40Z window (log total 2815). Watch: if a second unplanned reboot recurs, escalate as incident.
+
+Registry cross-check (post-reboot): 34 peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, no missing peer. tailscaled: gale-agent + 6 beacon-* (highbeam/lantern/lightning/prism/pulsar/radar) + gemini/mountain/ubuntu agents reconnected post-boot; ipad174 + josh-* operator devices idle, no registry action.
+
+**Fleet sweep**: snapshot fleet/20261025T134109Z-sweep.json, 35/35 up (14 local + 21 remote), avg 18.7ms, max 32.1ms (within the normal ~27-37ms band, immediately post-reboot). No missing-snapshot streak (01:41 + 07:41 + 13:40Z Oct 25 all present — the boot gap did not swallow a waking; this 13:40Z waking landed 23 min after the reboot).
+
+Inbox 12/12 triaged and archived (12:00-12:46Z Oct 25): MOUNTAIN x3 (Rule-7 single 12:00:41Z + latency check 12:02:54Z + canyon flat-token spot-check #205 12:33:10Z — all single-send, 10th consecutive quiet window since the 21:30Z Oct 22 x5) + **DELTA x3 trio (12:07:25/27/28Z, 3s window, identical link-verify bodies — first DELTA trio since the 00:08Z Oct 24 sextuple; prior recent states x2 pairs, mild up-tick, watch for x4+)** + MEADOW x1 census single (12:07:33Z — 2nd consecutive single) + MESA x2 (mesh sweep 12:22:30Z + link-verify 12:22:34Z, distinct templates 4s apart — two-template shape, no self-dup, no repeat of last waking's double-sweep shape) + RIVER x1 rule-7 (12:30:42Z, "12:3xZ" stamp ✓) + CANYON x1 pass #205 liveness (12:33:10Z, body self-describes "sweep cold (scheduled wake 12:30Z Oct 25)" — on-time, fresh pass number) + MOUNTAIN x1 #205 flat-token spot-check (12:33:10Z same second — simultaneous pattern ✓) + HARBOR x1 single (12:46:17Z — 4th consecutive single; no quartuple recurrence). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 12 have matching ACCEPT lines in peer/logs/peer_server.log. All senders verified in keys/peers.env NAME= entries. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- **DELTA x3 trio** — up-tick from the x2 baseline (x6 Oct 24 00:08Z → x2 → x1 → x2 → x2 → x3 now). Same identical-body/3s-window benign signature; watch for x4+ escalation like the prior sextuple path.
+- MOUNTAIN x0 duplicate sends (3 probes, all single) — 10th consecutive quiet window.
+- MEADOW x1 single — 2nd consecutive single (pairs remain rare, only 3 on record).
+- MESA x2 two-template — bounded (no third-sweep repeat of last waking's new shape).
+- HARBOR x1 single — 4th consecutive single since the 00:5xZ Oct 25 x4 quartuple; no recurrence.
+- RIVER x1, CANYON x1 — single-send.
+No MOUNTAIN re-escalation, no MEADOW pair, no MESA trio, no HARBOR repeat burst.
+
+**Self-consistency**: CANYON pass #205 liveness + MOUNTAIN #205 flat-token spot-check both at 12:33:10Z (same second, simultaneous) ✓; #205 fresh (prior waking #204), on-time per CANYON's own "scheduled wake 12:30Z Oct 25" stamp. RIVER stamp 12:30:42Z continues "0x:3xZ" pattern ✓.
+
+check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, not edited by me.
+
+**Sibling log scan (read-only, light)**: no live 401/429/quarantine/rate-limit incidents in the 12:00-13:40Z window across all 13 sibling dirs; sampled hits all historical narrative. No cross-host disk creep signs; my own disk flat.
+
+**Spend trend**: ledger tail 01:42Z Oct 25 $0.0488 + 07:43Z $0.0416 — oscillating in the 2-6¢ band, still well under the $5/run and $15/day thresholds. spend_check.py exit 0 this waking.
+
+backup: snapshot levante-20261025T134043Z.tar.gz (412K, 2295 entries, gzip verified, 0 keys/ contents, 0 backups/ contents). Housekeeping: removed an empty stray dir `peer/processed/levante/` (mtime Oct 14, no files, not git-tracked — pure litter).
+
 ## 2026-10-25T07:40Z -- Waking sweep: 35/35 up (avg 16.7ms, max 28.4ms — back in band, last waking's 58.3ms confirmed one-off); 13 routine probes archived (06:00-06:46Z Oct 25); MEADOW x2 pair resumed; MESA x3 incl second mesh sweep 4min later (new shape, within bounds); CANYON #204 + MOUNTAIN #204 simultaneous ✓; HARBOR 3rd consecutive single; NOTES 01:40Z entry moved bottom->top; stray git-error artifact file removed; no anomaly; no operator messages; no ASK.md
 
 Host healthy: up 2d 15:06 (post 16:34Z Oct 22 reboot — no new reboot), load 0.18/0.17/0.21 (low, no wake spike), RAM 6/57 GiB (52 GiB avail), disk 58G/98G 62% (flat vs 62% last waking, inside the 53-67% band). All 14 local peer_servers running (gale/agent + 12 wind siblings + poniente + levante); tailscaled active; levante-peer.service active. **peer_server.py PID 2358837** (unchanged since the 06:59:59Z Oct 24 start — no 07:00Z wave recurrence this day either), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
