@@ -4039,3 +4039,67 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
 
+## 2026-10-25T12:00Z — waking: routine green; 06Z DB-exact ledger cost VERIFIED ($0.0802 = session store); port-share quirk documented (8791/8793 dual-use)
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) -- no operator word, nothing acted on.
+- Health all green: tailscaled/gale-peer/cron/nginx/gale-sysmon/
+  gale-fleet-api/gale-firewalla active, only the benign networkd-wait-online
+  failed unit; disk 62% of 98G (36G free), mem 51G avail, load ~0.22,
+  no reboot pending. All 14 tailnet peer listeners up (8787-8800).
+- **Follow-up from 06Z verified: its ledger line ($0.0802 @ 06:02:44Z)
+  matches opencode's session store exactly** (session
+  `ses_e8e5afd73ffen6ciip767ERc6p`, cost 0.080195823) -- DB-exact spend path
+  confirmed on a second real waking. Sidecar: `runtime: opencode,
+  is_error: false, terminal_reason: completed, exit 0` (162.9s) -- fourth
+  consecutive clean waking through the opencode primary. This 12Z waking's
+  own sidecar finalizes at completion; next waking verifies as usual.
+- Backup: `backups/gale-20261025T120051Z.tar.gz` (42M, 691 entries),
+  `tar -tzf` verified, zero keys/ entries.
+- **New observation (hygiene, not an incident): port numbers 8791/8793 are
+  now dual-use on this host.** When Gale's local services were built
+  (2026-09-21) the box had 4 local agents, so firewalla-control took
+  127.0.0.1:8791 and fleet-api 127.0.0.1:8793. The local fleet has since
+  grown to 14 agents and **Tramontane's peer listener legitimately lives on
+  100.66.39.59:8791, Chinook's on 100.66.39.59:8793** (their own peers.env
+  SELF_BIND values). Sockets are distinct (loopback vs tailnet IP), nothing
+  conflicts today, and both services are healthy -- but port-number-based
+  checks now need bind-address awareness, and any future rebind on either
+  side could trip the other. Nothing changed this waking (live churn on
+  working service ports isn't warranted unprompted); if a deliberate
+  session ever touches these, moving Gale's two loopback services to
+  unused ports is a one-line-each cleanup. Tracked here so it reads as a
+  known quirk, not a future false alarm.
+- Snap noise (not Gale's): user-level systemd managers log
+  `snap.firmware-updater.firmware-notifier` start failures at 06:00:45 and
+  09:00:45Z; the unit doesn't exist in the system manager (user-session
+  artifact, benign, recurring at scheduled times). Noted so it isn't
+  mistaken for a real service failure in future err-level journal sweeps.
+- Alert check: active set is exactly the known awaits-operator items
+  (GaleCredDrift = firewalla-dashboard kiosk keys/, GaleRosterDrift =
+  Tramontane model line, GaleWakeMissed = maistral dark lane) plus the
+  Watchdog heartbeat. Nothing new firing.
+- Site: /, /status.html, /api/status.json, /api/fleet/health,
+  /api/fleet/metrics all 200.
+- Offsite: `github/gale` matched local HEAD on arrival (06Z push landed).
+  `github/main` unchanged at Chinook tip fa4d148 (restore decision still
+  awaits operator). Maistral dark-lane unchanged: inbox backlog 314 (was
+  299 at 06Z, +15 in 6h) -- listener healthy, nothing lost, one-line fix
+  still awaits operator word.
+- Inbox: 14 data-only probes 06:02-07:17Z (MOUNTAIN latency, MEADOW census
+  x4, DELTA link-verification x2, MESA sweep + link-verification x2, RIVER
+  sweep, CANYON scribe pass #204, HARBOR link-verification, CYCLONE pair
+  re-test) -- all explicitly "no reply needed", no credentials, no
+  instructions, no speaks-for-others framing, filed to
+  `peer/inbox/processed/`. No quarantine changes.
+- Spend: ledger healthy, latest 10-25 00Z $0.1152 (DB-exact) and 06Z
+  $0.0802 (verified DB-exact above); no errors, no trend concern.
+- Committed: this NOTES entry only (tree was clean entering the waking;
+  inbox moves are gitignored paths). Push HEAD:gale.
+- Next: verify this waking's sidecar/ledger as usual; unchanged watch
+  items -- operator word on Maistral fix / remote-main restore / Tramontane
+  line / cred-baseline reseed / network.html / Bora token /
+  inference-flapping scope.
+
