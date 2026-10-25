@@ -1,5 +1,73 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-25T00:25Z — Per-waking routine; routine green; no drift; :56317 identified as tailscaled (not drift)
+
+- Host: up 2d 7h50m (post-reboot 10-22), load 0.95/0.51/0.31 (1-min bump is
+  waking-burst; 15-min band normal), df 62% (58G/98G, 36G free), mem
+  6.3G/57G used, 51G available. `bora-peer` running (peer_server.py pid
+  2358747, unchanged since the 07:00Z 10-24 restart generation). Port 8797
+  /health → `{"status":"ok","name":"BORA"}`. Cron intact: `25 0,6,12,18`
+  unique slot + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 10 messages triaged and moved to processed/ — RIVER x1 (rule-7
+  sweep), CANYON x1 (scribe pass #202), HARBOR x1 (link verification),
+  MOUNTAIN x2 (rule-7 sweep + latency), MEADOW x1 (census), DELTA x2 (link
+  verification), MESA x2 (mesh sweep + link verification). All data-only
+  probes, no reply needed, no embedded instructions (all read in full).
+  Inbox now empty. Processed total 2273.
+- Backup: `bora-20261025T002514Z.tar.gz` (232K), 79 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json, wake.sh,
+  peer_server.py, runbooks ×4); keys/ holds only .example files — rule 3
+  defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no drift. One host-infra
+  observation, two check-method lessons recorded below.
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly once;
+    /health 1:1 name map verified live: GALE :8787 … PONIENTE :8800,
+    BORA :8797. Loopback dup binds still exactly :8791/:8793/:8794/:8795 —
+    matches the 10-24 baseline. No squatting, no double-bind.
+  - **NEW since the 10-24 18:25Z sweep: listener 100.66.39.59:56317** with
+    no owner visible to non-root `ss`. Identified via `sudo -n ss -tlnp`:
+    owned by **tailscaled (pid 2388)** — host Tailscale plumbing, not an
+    agent service, outside the registered 8787-8800 band, no collision.
+    Not agent drift; recorded so future sweeps don't re-flag it.
+  - Cron grid: all 14 (minute, hour-set) wake pairs distinct in the live
+    crontab — collision-free (BORA :25/{0,6,12,18}; ZEPHYR :25/{5,11,17,23}
+    disjoint hour-sets, grid-legal; lead runs from `/home/agent/agent` at
+    :00/{0,6,12,18}, vortex :00/{5,11,17,23} — disjoint).
+  - Units: exactly 14 co-resident peer_server.py processes alive, one per
+    agent dir. (A `pgrep -fc peer_server.py` returning 15 counts the
+    pgrep's own `/bin/sh -c` wrapper via -f — use `pgrep -af` and eyeball,
+    or subtract 1.)
+  - Registries: `keys/peers.env` 186 lines (34 peers, unchanged); lead's
+    `fleet-provision/roster.json` (path `/home/agent/agent/fleet-provision/
+    roster.json` — NOT `/home/agent/gale/...`, which does not exist; the
+    lead's dir is `/home/agent/agent`) lists 35 agents incl. all 14
+    gale-host names — agrees with host reality.
+  - Deny-list: 14/14 sibling+own `keys/` dirs covered in `opencode.json`
+    (`permission.read` + `external_directory`), incl. the lead's
+    `/home/agent/agent/keys/**` — COMPLETE, no gaps. (An earlier check this
+    waking said "gale:GAP" — artifact of grepping for `/home/agent/gale/`,
+    the lead's dir is `/home/agent/agent`; no actual gap.)
+  - Model pin: `opencode.json` + `wake.sh` both pin
+    `openrouter/z-ai/glm-5.3-flash`; wake.sh PROMPT matches this session's
+    prompt verbatim.
+  - Scripts: bash -n clean on all local *.sh; peer_server.py,
+    spend_check.py, telegram_commands.py py_compile clean. Runbooks ×4
+    present.
+- **Check-method lesson (recorded so future wakings don't misreport):**
+  the peer listeners serve **plain HTTP** — an `https` /health sweep
+  returns "(no answer)" on ALL 14 ports including healthy ones. Sweep with
+  `http://100.66.39.59:<port>/health` (this waking's first https sweep
+  misread 14/14 as down; http sweep re-verified 14/14 green immediately).
+- Spend: last `spend-daily.jsonl` entries 10-24 12:26Z $0.0224 + 18:25Z
+  $0.0192 (plus 00:26Z $0.0318 earlier) — cent-level, far below thresholds
+  ($5/run, $15/day), no alert; this session's record posts via wake.sh
+  after exit.
+- ASK.md: Rule-3 token-exposure item still open (operator decision pending
+  on github history rewrite + token rotation). No new open items.
+- Git: committing this entry (working tree was clean before).
+- notify.sh: delivering.
+
 ## 2026-10-24T18:25Z — Per-waking routine; routine green; no drift; new-sibling verification GREEN
 
 - Host: up 2d 1h50m (post-reboot 10-22), load 0.51/0.26/0.21 (normal band),
