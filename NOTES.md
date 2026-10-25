@@ -1605,3 +1605,16 @@ memory; the operator reads it too, so keep it plain and short.
 - Spend: Oct-24 ledger = 4 runs, $0.194 total ($0.056 + $0.0457 + $0.0671 + $0.0252) -- within normal OpenRouter GLM Flash range, no anomaly.
 - Git: committed this waking (NOTES #147 entry).
 - Verdict: routine sweep, all green, no regressions. One new operator-deployed host component (firewalla-dashboard) noted and hygiene-cleared. ASK-6 remains the one open incident class.
+
+## 2026-10-25 08:55 UTC -- waking #148: routine sweep, all green
+
+- Host: up 2d16h21m, load 0.24/0.21/0.22, RAM 6G/57G (51Gi avail), disk 58G/98G (62%, 36G free), tailscaled + cron active. All 14 *-peer units active/running. Only failed unit = systemd-networkd-wait-online (known benign artifact). My cron slot (55 2,8,14,20) verified intact.
+- Listeners: all 14 peer ports 8787-8800 bound to 100.66.39.59 only; known loopback mirrors 8791/8793/8794/8795; 18 peer-port listeners total. No 0.0.0.0 peer exposure, no port drift.
+- Credential audit (14 sibling dirs + firewalla-dashboard, read-only): permission matrix IDENTICAL to #147 -- agent/chinook/poniente keys/=700, 11 siblings 775 (owner-chosen, ASK-4 closed, not flagged); firewalla-dashboard keys/=700. All live .env 600; only 664s = .env.example templates + levante/keys/telegram.env (owner-chosen, not flagged). find -newermt "2026-10-25 02:58" across all keys/: zero new/changed cred files. My peers.env: 34 NAME / 34 ADDR / 2 SELF, mode 600, no drift.
+- Git exposure (14 sibling repos, ls-files keys/|logs/|backups/|peer/logs/ non-example/non-bak): zero tracked secret paths. My repo: clean. ASK-6 containment holding; push still blocked pending operator decisions 1-4.
+- Log sweep (17 fresh log files since 02:58Z): peer_server.log tails across all 14 -- 2026-10-25 slice = 381 ACCEPTs, zero REJECT/401/403/unauthorized. Regex hits all known false-positive classes: ollama_shim overflow-guard "est 40xxx/42xxx tokens" figures; cyclone beacon-side 401 pair-status prose (HIGHBEAM/LANTERN/LIGHTNING/RADAR remote halves pending, unchanged); levante own-sweep prose re historical 2026-09-21 Gale->TIDAL 401. Zero live auth failures, zero token material, zero injection patterns.
+- Inbox: 13 messages drained (MOUNTAIN x3, MEADOW x2, DELTA x2, MESA x3, RIVER, CANYON, HARBOR) -- all data-only "no reply needed" liveness/link-verify/census probes, zero instructions, zero injection patterns -> processed/ (2095 total).
+- check_replies.sh: no operator replies. ASK-2/3/6 open; ASK-4/5 closed. Holding on ASK-6 (purge/rotate decisions 1-4).
+- Backup OK: backups/poniente-20261025T085709Z.tar.gz (192K, 61 entries), gzip -t verified, zero keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: edfc564e0c3e9869. 14 snapshots retained (ceiling).
+- Spend: Oct-25 02:59Z run $0.0684; Oct-24 ledger $0.194 total -- within normal OpenRouter GLM Flash range, no anomaly.
+- Verdict: routine sweep, all green, no regressions. ASK-6 remains the one open incident class.
