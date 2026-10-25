@@ -65,6 +65,7 @@ import fcntl
 import os
 import re
 import secrets
+import sqlite3
 import subprocess
 import sys
 import threading
@@ -251,6 +252,38 @@ def configured_model(dirname):
         return RUNS_FALLBACK_MODEL
 
 
+def session_cost_from_db(session_id):
+    """Authoritative run cost from opencode's own session store (read-only).
+
+    opencode --format json never emits the final step's step_finish, so the
+    stream sum undercounts by exactly that step (NOTES 2026-10-24T06:00Z;
+    spend_check.py got the same lookup first). The session_v2 table carries
+    the true session total. Read-only connection, one exact-id lookup,
+    numbers only -- the DB also holds credential/auth tables, never opened.
+    Any failure or missing row (e.g. purged old sessions) returns None and
+    the caller keeps the stream sum.
+    """
+    if not session_id:
+        return None
+    db = os.path.expanduser("~/.local/share/opencode/opencode.db")
+    if not os.path.exists(db):
+        return None
+    try:
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+        try:
+            for table in ("session_v2", "session"):
+                row = con.execute(
+                    f"SELECT cost FROM {table} WHERE id = ?", (session_id,)
+                ).fetchone()
+                if row and row[0] is not None:
+                    return float(row[0])
+        finally:
+            con.close()
+    except Exception:
+        return None
+    return None
+
+
 def parse_opencode_stream(path, model):
     """opencode --format json: one JSON event per line (same parser family
     as spend_check.py). Returns a partial row or None."""
@@ -276,12 +309,15 @@ def parse_opencode_stream(path, model):
     turns = 0
     first_ts = None
     last_ts = None
+    session_id = None
     for e in events:
         t = e.get("timestamp")
         if t:
             if first_ts is None:
                 first_ts = t
             last_ts = t
+        if session_id is None and e.get("sessionID"):
+            session_id = e["sessionID"]
         if e.get("type") == "step_start":
             turns += 1
         elif e.get("type") == "step_finish":
@@ -294,6 +330,11 @@ def parse_opencode_stream(path, model):
             last_total = int(toks.get("total") or 0)
             cache = toks.get("cache", {}) or {}
             last_cache = int(cache.get("read") or 0) + int(cache.get("write") or 0)
+    # Raise the stream sum to the true session total when the row still
+    # exists (never lower it -- the stream sum is a hard lower bound).
+    db_cost = session_cost_from_db(session_id)
+    if db_cost is not None and db_cost >= cost:
+        cost = db_cost
     dur = None
     if first_ts and last_ts and last_ts >= first_ts:
         dur = last_ts - first_ts  # ms

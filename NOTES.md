@@ -3911,3 +3911,78 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   alertmanager; watch for operator word on Tramontane line / cred-baseline
   reseed / Maistral fix / remote-main restore.
 
+## 2026-10-25T00:00Z — waking: routine green; spend-telemetry gap CLOSED (final-step cost recovered from opencode's session store); restore drill 18-file pass
+
+- Routine: `check_replies.sh` no new operator messages. Health all green
+  (tailscaled/cron/gale-peer/nginx/gale-sysmon/gale-fleet-api/gale-firewalla
+  active, only the benign networkd-wait-online failed unit; disk 63%/36G
+  free, mem 51G avail, load ~0.35, no reboot pending; all 14 tailnet peer
+  listeners 8787-8800 up). `./backup.sh` -> `gale-20261025T000023Z.tar.gz`
+  (42M, 687 entries, `tar -tzf` verified, zero keys/ entries). Inbox: 12
+  data-only probes 18:00-19:16Z (Mountain x2, Meadow x2, Delta x2, Mesa x2,
+  River, Canyon, Harbor, Cyclone), all "no reply needed", filed to
+  `processed/`. Spend flat ($0.135 recorded for the 18Z run; no errors).
+- **Alert follow-ups from 18:00Z confirmed in alertmanager: netbox
+  GaleLocalServiceDown is GONE and the three Gale roster-drift false
+  positives are GONE** -- remaining active alerts are exactly the known
+  awaits-operator set (GaleRosterDrift Tramontane -- the real finding;
+  GaleCredDrift firewalla-dashboard kiosk; GaleWakeMissed maistral) plus
+  the Watchdog heartbeat. Nothing new firing.
+- **Sidecar follow-up (06:00Z find 1): the 18:00Z waking's sidecar says
+  `runtime: opencode, is_error: false, terminal_reason: completed, exit 0`
+  (241.6s)** -- second consecutive waking through the new opencode primary,
+  clean. This 00Z waking's own sidecar finalizes at completion; next waking
+  verifies as usual.
+- **Role work -- closed the documented spend-telemetry gap (06:00Z find,
+  left as "a deliberate decision, not a surprise"): opencode `--format
+  json` never emits the final step's `step_finish`, so stream-sum parsing
+  undercounted every opencode run by exactly that step.** Root evidence
+  this waking: the 18Z artifact has 51 step_starts / 50 step_finishes; the
+  dangling step_start's messageID matches the final text event, which
+  carries no cost. **Fix (measurement, not estimate): opencode's own
+  session store `~/.local/share/opencode/opencode.db` (`session_v2`
+  table) carries the true session total -- 18Z: $0.1384227 in the DB vs
+  $0.134989 stream sum (missing final step ~$0.0034, 2.5%).** Both parsers
+  now capture the stream's `sessionID` and look the total up read-only
+  (exact-id query, numbers only; the DB's credential/auth tables are never
+  opened), overriding the stream sum only when DB >= stream sum (smaller
+  read = stale; stream sum is a hard lower bound); any DB failure falls
+  back to the stream sum and can never break the caller (spend_check keeps
+  its always-exit-0 contract).
+  - `spend_check.py`: the alerting ledger is now exact per-run.
+  - `website/fleet_api.py`: same lookup in `parse_opencode_stream` so the
+    observability/metrics dashboards agree with the ledger (had `import
+    sqlite3` missing otherwise -- py_compile wouldn't have caught it).
+  - Verified offline (py_compile both; direct function calls against the
+    real 18Z artifact -> 0.1384227 exactly; empty/junk/missing inputs fail
+    soft) and live (restarted gale-fleet-api; /health /telemetry /metrics
+    /observability + /api/status.json all 200; telemetry now shows the 18Z
+    gale run at 0.138423 and 12Z at 0.055627).
+  - Not done, deliberately: no backfill of historical ledger lines or the
+    rolled-up runs-history.jsonl (append-only by design; the delta is
+    cents/day; historical rows keep their recorded values). Sessions
+    purged from the DB in future keep the known-undercount stream sum --
+    that's the graceful fallback, not an error.
+- **Full restore drill (Gale's own backup): 637 files extracted from
+  `gale-20261025T000023Z.tar.gz`; 18 files spot-compared byte-identical
+  (`cmp`) across core scripts, website backends/tools, runbooks, cron**
+  (deeper than the usual 4-7 file spot-extract; scratch removed after).
+  Tramontane's own backups are fresh (latest 22:36Z Oct 24) for today's
+  10:00Z scheduled fleet drill; last drill verdict Oct 18 ok=true, age will
+  be ~7d at that run -- far under the 14d GaleRestoreDrillStale threshold.
+- Offsite: `github/gale` matched local HEAD on arrival (18Z push landed);
+  `github/main` unchanged at Chinook tip `fa4d148` (no re-clobber; restore
+  decision still awaits operator). Maistral dark-lane incident unchanged:
+  remote branch still stale 2026-10-18, inbox backlog 288 (was 276
+  yesterday) -- listener healthy, nothing lost, one-line fix still awaits
+  the operator's word.
+- Git: tree was completely clean entering this waking (the 216-file churn
+  noted at 00:00Z/18:00Z yesterday was committed by those sessions).
+- Committed: spend_check.py, website/fleet_api.py, this entry. Pushed
+  HEAD:gale.
+- Next waking: verify this waking's ledger line carries the DB-exact cost
+  (first real-waking exercise of the new path end-to-end); unchanged
+  watch items -- operator word on Maistral fix / remote-main restore /
+  Tramontane line / cred-baseline reseed / network.html / Bora token /
+  inference-flapping scope.
+

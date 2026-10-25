@@ -3,7 +3,10 @@
 
 Called by wake.sh with the path to a run's JSON output. Supports both the
 legacy `claude --output-format json` envelope and opencode's streamed JSON
-(one JSON event per line; cost taken from the last step_finish event).
+(one JSON event per line; cost is the sum of all step_finish costs, raised
+to opencode's own session total when the session row is still in the local
+opencode.db -- opencode never emits the final step's step_finish, so the
+stream sum alone undercounts by that step; NOTES 2026-10-24T06:00Z).
 Records total_cost_usd into logs/spend-daily.jsonl (one line per run) and
 Telegrams josh via notify.sh when:
 
@@ -16,6 +19,7 @@ here cannot break wake.sh. Only Gale's own runs pass through here.
 """
 import json
 import os
+import sqlite3
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -26,6 +30,38 @@ DAILY_ALERT_USD = 15.00
 REPO = os.path.dirname(os.path.abspath(__file__))
 LEDGER = os.path.join(REPO, "logs", "spend-daily.jsonl")
 NOTIFY = os.path.join(REPO, "notify.sh")
+
+
+def session_cost_from_db(session_id):
+    """Authoritative run cost from opencode's own session store (read-only).
+
+    opencode --format json never emits the final step's step_finish (verified
+    on complete artifacts; NOTES 2026-10-24T06:00Z), so summing the stream
+    undercounts by exactly that step. The session_v2 table carries the true
+    session total; look it up by the sessionID the stream events carry.
+    Read-only connection, one exact-id lookup, numbers only -- the DB also
+    holds credential/auth tables, which are never opened. Any failure or
+    missing row returns None and the caller falls back to the stream sum.
+    """
+    if not session_id:
+        return None
+    db = os.path.expanduser("~/.local/share/opencode/opencode.db")
+    if not os.path.exists(db):
+        return None
+    try:
+        con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+        try:
+            for table in ("session_v2", "session"):
+                row = con.execute(
+                    f"SELECT cost FROM {table} WHERE id = ?", (session_id,)
+                ).fetchone()
+                if row and row[0] is not None:
+                    return float(row[0])
+        finally:
+            con.close()
+    except Exception:
+        return None
+    return None
 
 
 def parse_cost_and_error(path):
@@ -42,8 +78,6 @@ def parse_cost_and_error(path):
         except Exception:
             pass
         # Try stream: each line is a JSON event (opencode --format json)
-        cost = None
-        is_error = False
         # opencode stream: sum ALL step_finish costs. step_finish cost is
         # PER-STEP (each step bills its own tokens); keeping only the last
         # step undercounted multi-step sessions ~10x (flagged in NOTES
@@ -51,6 +85,7 @@ def parse_cost_and_error(path):
         cost = 0.0
         is_error = False
         found = False
+        session_id = None
         for line in txt.splitlines():
             line = line.strip()
             if not line:
@@ -59,6 +94,8 @@ def parse_cost_and_error(path):
                 ev = json.loads(line)
             except Exception:
                 continue
+            if session_id is None and ev.get("sessionID"):
+                session_id = ev["sessionID"]
             if ev.get("type") == "step_finish":
                 part = ev.get("part", {}) or {}
                 cost += float(part.get("cost") or 0)
@@ -66,6 +103,13 @@ def parse_cost_and_error(path):
                 is_error = is_error or part.get("reason") == "error"
                 found = True
         if found:
+            # The stream is missing the final step's cost; opencode's own
+            # session row has the true total. Only override when it is at
+            # least the stream sum (a smaller read is stale/partial -- the
+            # stream sum is a hard lower bound).
+            db_cost = session_cost_from_db(session_id)
+            if db_cost is not None and db_cost >= cost:
+                return db_cost, is_error
             return float(cost), is_error
         return None, False
     except Exception as e:
