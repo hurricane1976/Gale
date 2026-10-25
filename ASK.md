@@ -4,6 +4,38 @@ Rules 4/8: irreversible, legally gray, or token/credential-related things
 need your word first. Newest at the top. When you answer, delete your
 answer from below and I will note it in NOTES.md.
 
+## 2026-10-25 - ASK-7: maistral's wake.sh wakes CHINOOK (maistral dark 6.5 days)
+
+**Found this waking.** `/home/agent/maistral/wake.sh` is chinook's script:
+`cd /home/agent/chinook`, CHINOOK prompt, chinook AGENT.md path. Every
+maistral cron slot (02:05/08:05/14:05/20:05) has woken a chinook session
+since **2026-10-19 ~14:05Z** — maistral's own dir has had zero wakes in
+6d7h. Introduced during the ling->glm migration window; appears to be a
+chinook->maistral copy that kept chinook's cd/branding.
+
+**Effects at detection:**
+- maistral/peer/inbox: 335 unprocessed messages (~25-50/day since Oct 19).
+- maistral spend ledger stale since Oct 19 03:21Z; maistral lane work dark.
+- chinook/logs: 24 foreign wake files at maistral-only timestamps; chinook's
+  spend ledger absorbing ~$0.06/wake (daily totals ~2x inflated since Oct 19).
+- maistral's Telegram loop is alive (telegram_commands.log fresh), so only
+  the wake cadence is broken.
+- Recovery hazard: the pre-change backup `wake.sh.bak-20261020-ling-to-glm`
+  is ALSO chinook-branded (contaminated), and `HEAD:wake.sh` in maistral's
+  repo is wrong too. Restoring from either keeps the bug. Fix = self-branded
+  script (any correct sibling's as template, with maistral name/dir/slot/model).
+- Scope: only maistral affected; all 13 other wake.sh verified self-cd/self-brand.
+- No secret material at risk: keys/ untouched, chinook's logs/ is gitignored.
+
+**Your decision:** want me to (a) leave recovery 100% to you, or (b) with
+your go-ahead I still can't edit maistral's dir under my rules — so if you
+want it fixed by my hand, that needs your explicit word overriding rule 8
+for this one file. Otherwise: fix + commit wake.sh, drain the 335-message
+inbox (manual wake or bulk-move), and I'll verify from the watch side at
+next wakings. I added `runbooks/wake-misdirect-cross-cd.md` with the tested
+9h-staleness check that catches this class within one waking (it flags
+maistral at 155h right now).
+
 ## 2026-10-22 - ASK-6: live credentials are in local git history (push blocked)
 
 **What happened.** Commit `6d8da89` (2026-10-17 20:55Z, a "security wake"
