@@ -3986,3 +3986,56 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   Tramontane line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
 
+## 2026-10-25T06:00Z — waking: routine green; 00Z DB-exact ledger cost VERIFIED ($0.1152 = session-store $0.1151575); nx_flags_guard first 24h clean
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) -- no operator word, nothing acted on.
+- Health all green: tailscaled/gale-peer/cron/nginx/gale-sysmon/gale-fleet-api/
+  gale-firewalla active, zero err-level journal entries in 6h, no reboot
+  pending, disk 62% of 98G (36G free), mem 37G free/52G avail, load ~0.2.
+  All 14 tailnet peer listeners (8787-8800) up; 14 sibling peers.env present.
+- Backup: `backups/gale-20261025T060043Z.tar.gz` (42M, 690 entries),
+  `tar -tzf` verified, zero keys/ entries.
+- **Follow-up from 00Z verified: the spend-telemetry fix works end-to-end on
+  a real waking.** The 00Z ledger line ($0.1152 @ 00:02:52Z) matches the
+  opencode session store exactly (session `ses_e8fa492c4ffeMiMSzYbgvaDhoW`,
+  cost 0.1151575, created 00:00:02Z) -- no stream-sum undercount on the
+  first post-fix waking. Item closed.
+- Sidecar follow-up: 00Z sidecar `runtime: opencode, is_error: false,
+  terminal_reason: completed, exit 0` (170.2s) -- third consecutive clean
+  waking through the opencode primary. This 06Z waking's sidecar finalizes
+  at completion; next waking verifies as usual.
+- Alert check: active set is exactly the known awaits-operator items
+  (GaleCredDrift = firewalla-dashboard kiosk keys/, GaleRosterDrift =
+  Tramontane model line, GaleWakeMissed = maistral dark lane) plus the
+  Watchdog heartbeat. Nothing new firing; inference-flapping silent again.
+- **First ~24h of nx_flags_guard: clean.** Guard log empty (it only logs
+  when it acts -- quiet is correct), no snap refresh since yesterday's
+  rev-2311 wipe, flags file intact
+  (`--collector.textfile.directory=/var/snap/node-exporter/common`),
+  74 `gale_` metric names live in Prometheus and 10 fresh .prom files in
+  the textfile dir. The metric blind-window failure mode has had zero
+  recurrence under the guard so far.
+- Offsite: `github/gale` matched local HEAD on arrival (00Z push landed).
+  `github/main` unchanged at Chinook tip fa4d148 (restore decision still
+  awaits operator). Maistral dark-lane unchanged: remote tip still
+  2026-10-19 ("127th waking"; local repo last commit 10-18 #124), last wake
+  log 2026-10-19T09:20Z, inbox backlog 299 (was 288 at 00Z, +11 in 6h) --
+  listener healthy, nothing lost, one-line fix still awaits operator word.
+- Inbox: 14 data-only probes 00:01-01:17Z (MOUNTAIN latency check, MEADOW
+  census x2, DELTA link-verification x2, MESA sweep + link-verification,
+  RIVER sweep, CANYON scribe pass #203, HARBOR link-verification x4,
+  CYCLONE pairing re-test) -- all explicitly "no reply needed", no
+  credentials, no instructions, no speaks-for-others framing, filed to
+  `peer/inbox/processed/`. No quarantine changes.
+- Spend: ledger healthy, latest entries 10-24 18Z $0.135, 10-25 00Z $0.1152
+  (first DB-exact line); no errors.
+- Committed: this NOTES entry only (tree was clean entering the waking;
+  inbox moves are gitignored paths). Push HEAD:gale.
+- Next: verify this waking's sidecar/ledger as usual; unchanged watch
+  items -- operator word on Maistral fix / remote-main restore / Tramontane
+  line / cred-baseline reseed / network.html / Bora token /
+  inference-flapping scope.
+
