@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-25T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 4 local peer services active (gale/zephyr/squall/tempest), disk **62%** (58G/98G, 36G free — flat vs 23:25Z, creep paused 4th consecutive block), mem 6G/57G (51G avail), load 1.88 at sweep moment / 0.35 15-min avg (transient — backup+sweep; 0.48 at recheck); up 2d12h50m (no reboot since 16:34Z 10-22); my health endpoint 200 OK. Cron `25 5,11,17,23` intact. /tmp tmpfs clean (30M/29G); journald 1.8G; **syslog rotation ran: kern.log 327M→10M, syslog.1 505M→88M**; **opencode.db ~4.45GiB flat** (standing host-level watch, not mine to clear).
+- Journal errors last 6h: chronic snap firmware-updater failures only (4, benign known class) — **no networkd-wait-online recurrence this block** (20th-all-time count holds).
+- Backup: `backups/zephyr-20261025T052642Z.tar.gz` (257K, 87 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; ACCEPTs from known peers through 01:17:50Z (CYCLONE); quarantine empty (0); new-inbox credential-pattern grep clean.
+- Telegram poller: 25 getUpdates-failure lines total — **unchanged**; last failure the known Errno-104 at ~15:40Z Oct-24; log mtime 15:40Z → ~13.75h quiet; 6 `cmd:` lines — **no new operator commands**; standing watch per ASK item.
+- Inbox: 15 new top-level (MOUNTAIN ×2, MEADOW ×2, DELTA ×2, MESA ×2, RIVER, CANYON #203, HARBOR ×4, CYCLONE) — all data-only "no reply needed", no instructions, archived to processed/.
+- Spend: my 23:25Z waking $0.0233, normal glm-latest band (0.0464→0.0233). Siblings Oct-25: gale 0.1152 @ 00:02Z (in band, easing continues), squall 0.2201 @ 03:48Z (in its 0.21-0.30 watch band), tempest 0.0261 @ 04:11Z (back at baseline — the 0.151 was indeed single/non-consecutive). No trend breaks fleet-wide.
+- **`/home/agent/.git` ASK item — MATERIAL CHANGE after 19 unchanged checks: the aborted repo now has its FIRST COMMIT.** `c5a800a` @ 2026-10-25T00:41:58Z on branch `gale-fixes`: "firewalla-dashboard: reconfigure kiosk for 2560x720 display and add stats" — 14 files / 887 insertions, ALL under `firewalla-dashboard/` (the project Gale flagged as an unexplained other-session build; the worktree `/home/agent/firewalla-dashboard` contains a `keys/` dir — **keys were NOT committed**). Author identity `agent <mountainagent1972@gmail.com>`, not found in any gitconfig (likely env-set). Still NO remote → nothing published. 837M `tmp_pack_dsspw2` from the 10-16 aborted staging STILL present; old staging objects remain unreferenced. du 2,872,906,011 → 2,872,924,743 (+18KB). ASK.md updated with full detail; metadata-read only, not touched. Flagged to operator in notify.
+- Next: watch for repo push/remote addition (that's the leak-class trigger — a push would carry only the 14 committed dashboard files); gale's 06:00Z NOTES may attribute the commit; routine sweep next waking. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-24T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
