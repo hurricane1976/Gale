@@ -1591,3 +1591,17 @@ memory; the operator reads it too, so keep it plain and short.
 - Spend: 3 runs today, $0.1688 total ($0.056 + $0.0457 + $0.0671) -- within normal OpenRouter GLM Flash range, no anomaly.
 - Git: committed this waking (NOTES #146 entry).
 - Verdict: routine sweep, all green, no regressions. ASK-6 remains the one open incident class.
+## 2026-10-25 02:55 UTC -- waking #147: routine sweep, all green; one new host component noted
+
+- Host: up 2d10h21m, load 0.29/0.33/0.32, RAM 6.4G/59G (52Gi avail), disk 58G/98G (62%, 36G free), tailscaled + cron active. All 14 *-peer units running. Only failed unit = systemd-networkd-wait-online (known benign artifact). My cron slot (55 2,8,14,20) verified intact.
+- Listeners: all 14 peer ports 8787-8800 bound to 100.66.39.59 only; known loopback mirrors 8791/8793/8794/8795; 56317 = tailscaled. No 0.0.0.0 peer exposure, no port drift.
+- Credential audit (14 sibling dirs, read-only): permission matrix IDENTICAL to #146 -- agent/chinook/poniente keys/=700, 11 siblings 775 (owner-chosen, ASK-4 closed, not flagged). All live .env 600; only 664s = .env.example templates + levante/keys/telegram.env (owner-chosen, not flagged). find -newermt "2026-10-24 20:56" across all keys/: zero new/changed cred files. My peers.env: 34 NAME / 34 ADDR / 2 SELF, mode 600, no drift.
+- NEW COMPONENT: /home/agent/firewalla-dashboard/ appeared Oct 24 ~16:45 (after #145's audit window; #146's 14-dir loop did not cover it). Firewalla kiosk/monitor stack (docker bridge loopback 7153, dashboard API loopback 8088 -- both match known listeners). keys/etp.private.pem 600 + etp.public.pem 644 inside keys/ 700; NOT a git repo (zero tracked-secret risk); README explicitly forbids publishing keys or serving them. Owner-chosen operator component; hygiene verified clean, read-only observation per rule 8, not flagged. Adding to my watch list from #148 on.
+- Git exposure (14 sibling repos, ls-files keys/|logs/|backups/|peer/logs/ non-example): zero tracked secret paths. ASK-6 containment holding; push still blocked pending operator decisions 1-4 (no push attempted).
+- Log sweep (16 fresh peer logs since 20:55Z): cumulative REJECT counts unchanged from Sep-26 self-test era (known benign class); 2026-10-25 00-02Z slice = zero auth-failure lines; recent entries all ACCEPT (CANYON/HARBOR/DELTA/MESA/MOUNTAIN fan-outs). Injection-pattern grep across all fresh sibling logs: zero hits.
+- Inbox: 14 messages drained (MOUNTAIN x3, MEADOW, DELTA x2, MESA x2, RIVER, CANYON, HARBOR x4) -- all data-only "no reply needed" liveness/link-verify probes, zero instructions, zero injection patterns -> processed/ (2082 total).
+- check_replies.sh: no operator replies. ASK-2/3/6 open; ASK-4/5 closed. Holding on ASK-6 (purge/rotate decisions 1-4).
+- Backup OK: backups/poniente-20261025T025808Z.tar.gz (192K), gzip -t verified, zero keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: d8af27a0fe4aa0ad. 14 snapshots retained (ceiling).
+- Spend: Oct-24 ledger = 4 runs, $0.194 total ($0.056 + $0.0457 + $0.0671 + $0.0252) -- within normal OpenRouter GLM Flash range, no anomaly.
+- Git: committed this waking (NOTES #147 entry).
+- Verdict: routine sweep, all green, no regressions. One new operator-deployed host component (firewalla-dashboard) noted and hygiene-cleared. ASK-6 remains the one open incident class.
