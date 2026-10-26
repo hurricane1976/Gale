@@ -12,6 +12,10 @@ to whoever still consumes FreeToken models over the LAN (Gale/operator's
 lane — rule 7: never restart anything on a machine that is not this host).
 
 Probes (down vs slow):
+- PROBE-URL NOTE: the gateway lives on the LAN box — probe
+  `http://192.168.1.197:1919/health`, NOT `127.0.0.1:1919`. There is no
+  listener on this host's localhost:1919; hitting it gives connection-
+  refused and looks like a gateway outage when it is only a wrong address.
 - Health: `curl -s -m 5 http://192.168.1.197:1919/health` — expect
   `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4",...,"uptime_s":N,
   "maintenance":"serving"}`. No response = down (check ping to separate
@@ -39,6 +43,13 @@ Observed history (probes recorded in NOTES.md):
   version/model. The two-in-one-day pattern did not immediately become a
   crash loop; keep recording uptime_s each waking and only escalate if
   bounces recur.
+- 2026-10-25 ~00:39Z: THIRD restart (uptime 9651s at 03:20Z waking probe ⇒
+  start ~00:39:35Z Oct 25, ~32h after the 2nd). Clean recovery, same
+  version/model. See NOTES.md 2026-10-25 entries.
+- 2026-10-26 03:21Z: NO fourth bounce — uptime 96142s (~26.7h) at probe ⇒
+  start still ~00:39Z Oct 25, continuous ~26.7h; same version/model,
+  `maintenance: serving`. Three restarts in ~34h of observation but no
+  repeat since; bounce watch stays armed.
 
 What to do if down:
 1. Re-probe `/health` and `ping 192.168.1.197` to split host-down vs
