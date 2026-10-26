@@ -1,5 +1,72 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-26T18:25Z — Per-waking routine; routine green; no fleet drift; firewalla-dashboard keys/ added to own deny-list
+
+- Host: up 1d 5h07m (same 10-25 13:17Z boot as the last three wakings — no
+  new reboot), load 0.11/0.24/0.24 (normal band), df 63% (59G/98G, 35G
+  free), mem 6.2G/57G used, 51G available. 14 peer_server.py processes
+  alive (pgrep 15 lines incl. its own wrapper — real count 14, one per
+  agent dir, mine among them). Port 8797 /health →
+  `{"status":"ok","name":"BORA"}`. Cron intact: `25 0,6,12,18` unique slot
+  + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 12 messages read in full, triaged and moved to processed/ —
+  RIVER x1 (rule-7 sweep), HARBOR x3 (link verification), MOUNTAIN x2
+  (rule-7 sweep + latency), DELTA x2 (link verification), MEADOW x2
+  (census), MESA x2 (mesh sweep + link verification). All data-only
+  probes, no reply needed, no embedded instructions. Triage verified per
+  the runbook lesson: inbox 12 → 0 after `mv`; processed 2348 → 2360
+  (find -type f), delta=12=moved.
+- Backup: `bora-20261026T182515Z.tar.gz` (240K), 80 entries, `gzip -t`
+  OK, core files present (AGENT.md, NOTES.md, ASK.md, opencode.json,
+  wake.sh, peer_server.py, runbooks ×4); `keys/` in archive: dir entry +
+  2 `.example` files only — rule 3 defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no fleet drift.
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly
+    once; /health 1:1 name map re-verified live: GALE :8787 … PONIENTE
+    :8800, BORA :8797. :56317 present = tailscaled (identified 10-25),
+    not drift. No squatting, no double-bind.
+  - Cron grid: all 14 wake lines present in the live crontab, zero
+    (minute, hour-set) pair collisions (uniq count max 1) —
+    collision-free; BORA :25/{0,6,12,18} unique.
+  - Units: 14/14 peer_server.py alive, one per agent dir.
+  - Registries: `keys/peers.env` 186 lines, mtime Sep 26 01:20 —
+    unchanged (no provisioning since); fleet roster
+    (`/home/agent/agent/fleet-provision/roster.json`, read-only check)
+    re-verified — 35 entries, all 14 gale-host names present (title-case
+    in roster; matched case-insensitively), BORA → /home/agent/bora
+    agrees with host reality.
+  - Model pin: `opencode.json` line 39 + `wake.sh` (header, PROMPT,
+    opencode_run flag) all pin `openrouter/z-ai/glm-5.3-flash`; wake.sh
+    PROMPT matches this session's prompt verbatim.
+  - Scripts: all *.sh `bash -n` clean; peer_server.py, spend_check.py,
+    telegram_commands.py `py_compile` clean. Runbooks ×4 present.
+  - Deny-list: 14/14 sibling + own agent `keys/` dirs covered in
+    `opencode.json` — COMPLETE (unchanged this waking).
+- **Finding + fix (own lane):** the broad glob `/home/agent/*/keys` now
+  returns 15 dirs — new since the fleet baseline is
+  `/home/agent/firewalla-dashboard/keys` (project created Oct 24-25).
+  Identified read-only: NOT a fleet agent — it is the host's Firewalla
+  router-monitor kiosk (HDMI/Openbox/Chromium on :8, read-only API proxy
+  on 127.0.0.1:8088, dockerized bridge; README marks `keys/` as private
+  pairing credentials, do-not-publish; holds etp .pem keys). Not in the
+  roster, no peer listener, no cron slot — not fleet drift, and no
+  port-band overlap (loopback-only services). Action taken (own config
+  only): added `/home/agent/firewalla-dashboard/keys/**` +
+  `.../keys/*` deny entries to my `opencode.json` (`permission.read` +
+  `permission.external_directory`) so my own tooling can never wander
+  into router pairing credentials; JSON re-validated (15/15 deny entries
+  both blocks), model pin untouched. The project itself belongs to
+  whoever built it (infra/operator lane, pre-dates my last waking) — I
+  only hardened my own deny-list; nothing edited outside my dir.
+- Spend: 10-26 entries so far 00:26Z $0.0314 + 06:26Z $0.0316 + 12:27Z
+  $0.0286 = $0.0916 day — cent-level, far below thresholds ($5/run,
+  $15/day), no alert; this session's record posts via wake.sh after exit.
+- ASK.md: Rule-3 token-exposure item still open (operator decision
+  pending on github history rewrite + token rotation). No new open items.
+- Git: committing this entry + opencode.json deny-list hardening.
+- notify.sh: delivering.
+
 ## 2026-10-26T12:25Z — Per-waking routine; routine green; no drift
 
 - Host: up 23h07m (same 10-25 13:17Z boot as the last two wakings), load
