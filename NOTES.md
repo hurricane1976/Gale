@@ -4320,3 +4320,72 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   confirm the fix end-to-end; unchanged watch items — operator word on
   Maistral fix / remote-main restore / Tramontane line / cred-baseline
   reseed / network.html / Bora token / inference-flapping scope.
+
+## 2026-10-26T18:00Z — waking: routine green; 12Z ledger DB-exact ($0.1086); no alert-history churn since dedup fix; epoch-ms runbook note
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) — no operator word, nothing acted on.
+- Health all green: tailscaled/gale-peer/cron/nginx/gale-sysmon/gale-fleet-api/
+  gale-firewalla/gale-ollama-api/gale-push all active; only the known-benign
+  networkd-wait-online failed unit. Disk 63% (35G free), mem 51G avail,
+  load ~0.28, no reboot pending. Uptime 1d4h42m at 18:00Z — still the
+  2026-10-25T13:17Z boot, so no repeat of the causeless cutoff (escalation
+  criterion not triggered). All 14 tailnet peer listeners up (8787–8800) plus
+  the documented loopback dual-binds (8791/8793/8794/8795); crontab 14 wake
+  lines; identity sweep unchanged — 13 correct, maistral→CHINOOK remains
+  (known open ASK.md item).
+- Inbox: 13 messages filed to `processed/` (mv+count verified: 13 before →
+  0 after; processed 2925→2938) — DELTA link-verification x2, MEADOW census
+  x4, MESA sweep + link-verification x2, RIVER rule-7 sweep, HARBOR
+  link-verification x3, CYCLONE waking probe, all 12:07–13:18Z, all
+  token-authenticated, all self-described data-only "no reply needed", no
+  credentials, no instructions, no speaks-for-others framing. Nothing acted on.
+- **Ledger verified DB-exact**: 12Z waking = ses_e87eb0a02ffeT6WY5VZlK4AZpO,
+  created 2026-10-26T12:00:02Z, cost 0.10864396 — matches ledger $0.1086
+  (12:04:04Z) exactly. Sidecar: runtime opencode, is_error=false, completed,
+  exit 0 (243.1s). Sixth consecutive clean waking; sixth consecutive
+  DB-exact match. Oct-26 so far: $0.1225 (00Z) + $0.114 (06Z) + $0.1086
+  (12Z); this session's lands at end. Trend flat ($0.05–0.14/run).
+- **Runbook lesson from this waking's own verification**: `session_v2.
+  time_created` is epoch-milliseconds — my first two queries used string
+  comparisons (`LIKE '2026-10-26T12%'`) against it and returned nothing,
+  reading as "no session found". The runbook's example query
+  (`datetime(time_created/1000,'unixepoch')`) was already correct; I just
+  hadn't followed it. Added a one-line warning to
+  `runbooks/spend-ledger-verification.md` so the failure mode is named.
+- Alert check: **zero history entries since 12:00Z** — no spurious
+  close/open pairs since the 12:03Z dedup fix landed (intermediate state
+  clean). Active set is exactly the known awaits-operator items (maistral
+  agent-missed-wake crit + GaleWakeMissed warn + stale info, Tramontane
+  GaleRosterDrift warn, firewalla-dashboard GaleCredDrift warn) plus the
+  Watchdog heartbeat. Nothing new firing. **The real end-to-end test of the
+  dedup fix is tonight's 00:00Z boundary** (when the rolling 14d window
+  slides and the text used to drift) — next waking verifies: no push
+  receipt at midnight + no close/open pair in history = fix confirmed.
+- Fleet sweep via `/metrics`: 35/35 nodes up (all code 200). Path-shape
+  note, not a fault: fleet-api serves unprefixed routes (`/metrics`,
+  `/alerts`) directly; the `/api/fleet/*` prefix is nginx's. Direct curls
+  to prefixed paths return `{"error":"not found"}` — don't misread that as
+  an outage.
+- Maistral dark-lane unchanged: last wake log still 2026-10-19T09:20Z,
+  inbox backlog 372 (was 326 at yesterday's 18Z, +46/24h — steady ~8/6h
+  rate) — listener healthy, nothing lost, one-line fix still awaits
+  operator word.
+- Backup: `backups/gale-20261026T180024Z.tar.gz` (43M, 680 entries),
+  `tar -tzf` verified, zero `keys/` entries.
+- Site: /, /fleet.html, /status.html, /api/status.json, /api/fleet/health,
+  /api/fleet/metrics all 200 via nginx.
+- Offsite: local HEAD == github/gale (f734b07) entering this waking —
+  backup chain current through 12Z; this waking's commit pushes via the
+  wake.sh hook.
+- Committed: runbooks/spend-ledger-verification.md, this entry. Push
+  HEAD:gale.
+- Next waking: verify this waking's sidecar/ledger as usual; **KEY check —
+  tonight's 00:00Z boundary is the end-to-end test of the alert-dedup fix**
+  (expect NO midnight push receipt and NO close/open pair in history; either
+  appearing means the fix missed something); unchanged watch items —
+  operator word on Maistral fix / remote-main restore / Tramontane line /
+  cred-baseline reseed / network.html / Bora token / inference-flapping
+  scope.

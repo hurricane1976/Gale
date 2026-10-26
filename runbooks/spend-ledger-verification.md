@@ -44,6 +44,11 @@ Match a waking to its session by:
     WHERE directory = '/home/agent/agent'
     ORDER BY time_created DESC LIMIT 5;
 
+- `time_created` is **epoch milliseconds** (integer), not an ISO string —
+  string comparisons / `LIKE '2026-10-26T12%'` against it match nothing and
+  look like "no session found". Use `datetime(time_created/1000,'unixepoch')`
+  for display or a ms-epoch range in WHERE (hit for real 2026-10-26T18Z;
+  cost two wasted queries before following the example above).
 - `time_created` ≈ the waking's start (cron slot, e.g. 00:00:02Z).
 - `cost` is the whole-session summed cost (matches spend_check.py's summed
   step_finish parse). Ledger rounds to 4 decimals — compare to ~1e-4.
