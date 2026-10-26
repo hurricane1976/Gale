@@ -11046,3 +11046,79 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Erratum (same waking):** the Telegram summary shows "spend .77/30"
   — the `$1` in the notify string got shell-expanded (the #166 class of
   `$`-escaping erratum). Ledger and NOTES record $1.7705/30 correctly.
+
+## 2026-10-26T14:05Z — waking #184 (ACCIDENTAL, 29th via maistral cron)
+
+- **Trigger:** fired 14:05:01Z = maistral's cron slot (`5 2,8,14,20`) running
+  chinook sessions — the documented maistral-overwrite bug (ASK.md open
+  item), exactly as #183 predicted ("Next accidental: 14:05Z (29th)"). It
+  persists. Executing the full routine per precedent (#172/#174/#176/#178/
+  #180/#182 class), tagged accidental. Next scheduled chinook slot: 18:50Z;
+  maistral's 20:05Z slot would be accidental #30.
+- **Self-check (standing, #61): PASS** — newest backup pre-slot was #183's
+  12:54:49Z (~1h11m before this slot's 14:05:40Z snapshot); newest NOTES
+  entry = #183 (immediately-prior slot). No prior-slot no-op, no back-fill
+  owed.
+- **check_replies: "(no new messages)".** ASK.md open items unchanged, all
+  operator lane: (1) 10-22 16:33Z reboot + cron-skip confirm, (2) 10-25
+  13:17Z unclean reboot confirm, (3) maistral overwrite disposition
+  (lane dark ~7.5d), (4) model-ID batch + e3b5f67 pin commit
+  bless-or-revert, (5) v2-fix bless-or-revert.
+- **Peer inbox: empty** (0 new since #183's 12:54 archive; 2276 json on
+  disk in processed/). Stray `chinook/` inbox subdir re-confirmed empty
+  (known pre-existing artifact, left in place). No acks owed, no operator
+  content.
+- **Cron grid (12:50→14:05Z window): all 4 scheduled slots fired, zero
+  skips** — chinook 12:50 (own slot, #183), cyclone 13:15, levante 13:40,
+  maistral 14:05 (fired, as chinook — the bug, this waking). 17 consecutive
+  clean slots since the 10-25 13:17Z reboot; grid fully healthy.
+- **Maistral (read-only):** backlog **375 — up from 371 at #183 (+4 in
+  ~1.25h ≈ 3.2/h, top of band, growing)**; lane still dark: last own-ledger
+  row remains 2026-10-19T03:21:44Z ≈ **7.5 days dark**. AGENT.md header
+  still "# AGENT.md — Chinook" (mtime 10-20 20:08); peer_server 8795 answers
+  (in the 14/14 sweep). Recovery sources unchanged (10-19 backups + github
+  branch); ASK.md item stands, no advisory re-sent (#140's stand).
+- **Capacity snapshot 2026-10-26T14:05Z (waking #184):** host up 1d47m
+  (boot 10-25 13:17:51Z — the unclean reboot #176 flagged; stable since,
+  no SSH sessions observed), load 0.31/0.28/0.27 on 16 cores (~2%, calm),
+  mem 6G/57G used (51G avail), swap 0/7G used.
+  - disk / **58G/98G (63%, 36G free)** — **flat at 58G for the 14th
+    consecutive point**; #183's trip condition (59G+) NOT triggered;
+    growth-watch stays closed, trip carries to #185; the ~2026-12-05
+    named date stays parked. Drivers: /var/log/journal 2.3G (bounded),
+    /tmp/opencode 7.3M (transient), /home/agent 20G (flat), chinook dir
+    319M (.git 233M + logs 72M + peer 9.4M + backups 4.2M — #177
+    breakdown shape holds).
+  - peers: **14/14 /health → 200** on 100.66.39.59:8787–8800 (8793 = me).
+- **Spend (host-wide, 13 lanes; maistral dark):** 10-25 CLOSED
+  **$3.3886 / 55 rows, 0 error rows** — matches #179–#183 exactly
+  (per-lane unchanged). **10-26 to 14:05Z: $2.2600 / 33 runs, 0 error
+  rows** (agent $0.3451/3, chinook $0.5879/5 = 00:51 $0.0688 + 02:07
+  $0.0963 + 06:51 $0.0515 + 08:06 $0.0645 + #183's 12:50 row $0.3068,
+  levante $0.2149/3, cyclone $0.1819/3, tramontane $0.1697/2, bora
+  $0.0916/3, sirocco $0.0927/2, vortex $0.0910/2, squall $0.1379/2,
+  ostro $0.0895/2, poniente $0.1227/2, zephyr $0.0654/2, tempest
+  $0.0697/2; maistral 0 rows, dark; this waking's row appends at session
+  end). Pacing ~$3.9/day — upper half of the ~$3.1–4/day band; every
+  lane ≤$0.13/run, post-pin band holds ($0.0063–$0.1011/run). **No
+  rule-4 anomaly** (cost tracks session weight — #183's own row was a
+  heavy verification session; run count cadence-consistent incl. 7
+  accidentals so far today: 02:05, 08:05, 14:05).
+- **Forecast / thresholds:** no threshold crossings projectable on any
+  axis — disk flat at 58G (59G+ trip carries to #185; ~2026-12-05 named
+  date parked), load/mem series-low, spend in-band with $5/run and
+  $15/day lines far. Availability: one unclean reboot (13:17Z 10-25,
+  pending operator confirm), grid full since. **No sibling near any
+  local limit → no advisory this waking.** Watch item: maistral backlog
+  growth continuing (360→371→375) while its lane stays dark ~7.5d —
+  disposition ask remains open with the operator.
+- **Backup:** `backups/chinook-20261026T140540Z.tar.gz` (312K, 74
+  entries) gzip -t OK, tar list OK, ./AGENT.md read-back clean
+  ("# AGENT.md — Chinook"); gap 12:54:49→14:05:40 (~1h11m); 14-snapshot
+  ceiling held.
+- **done this waking:** check_replies; inbox check (empty); self-check;
+  trigger verification (journal + crontab); cron-grid verification
+  (window); maistral re-verified read-only (backlog 375, lane dark
+  ~7.5d); host health baseline + disk breakdown; 14/14 peer sweep;
+  host-wide spend tally (10-25 closed $3.39/55, 10-26 $2.26/33);
+  backup + verify; NOTES entry + commit; notify.
