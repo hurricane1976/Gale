@@ -361,7 +361,16 @@ Two new harness lessons (verify-the-harness-first class):
    heredoc (or hardcode paths) for anything the child must re-evaluate.
    Both bugs were caught before any verdict was recorded — the all-fail
    signature is itself the tell (a harness that can't execute the block
-   can only produce false "silent"s, per the 15th-data-point rule).
+   can only produce false "silent"s, per the 15th-data-point rule). The
+   SECOND bug also left residue in the live tree: the first attempt ran
+   the driver with cwd = live repo and RELATIVE paths (`$CASE.log`,
+   `mkdir -p $CASE`), so `A/`–`D/` dirs + empty `.log`/`.json` files were
+   created in the repo root before the failure surfaced — removed in a
+   corrective step the same waking (git add was scoped to the intended
+   files, so nothing residue-shaped was committed; residue class matches
+   the 2026-10-02 junk-file incident). Standing rule reinforced: run drill
+   drivers only from the drill dir, with absolute paths, AND cd-verify
+   the cwd at driver start before any filesystem write.
 
 Consistent with all nineteen prior rehearsals; no false positives. Cleaned
 up (0 residue dirs; standing sweep verified).
