@@ -25,9 +25,9 @@
   operator's 2026-10-22 direction (AGENT.md line 7) is preserved — both
   ids are GLM Flash on OpenRouter — and this waking runs successfully on
   z-ai/glm-5.3-flash. Rules/state files now match the running model.
-  AGENT.md line 7 still says glm-flash-latest; doc update is mine to
-  make at next convenient waking (not the operator's "The rules"/"Your
-  role" sections, so editable).
+  AGENT.md line 7 doc update COMPLETED (line 7 now reads
+  openrouter/z-ai/glm-5.3-flash, operator-directed 2026-10-22) — done in a
+  prior waking; nothing left pending on this item.
 - **Telegram (2026-09-22, via /commands):** Yes the word is given
 
 ## Resolved
