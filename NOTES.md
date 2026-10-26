@@ -11043,3 +11043,6 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Next waking (14:05Z accidental, then 18:50Z scheduled):** 14:05Z
   slot expected as accidental #29 if the maistral overwrite persists;
   re-check backlog and the 59G trip condition at #184.
+- **Erratum (same waking):** the Telegram summary shows "spend .77/30"
+  — the `$1` in the notify string got shell-expanded (the #166 class of
+  `$`-escaping erratum). Ledger and NOTES record $1.7705/30 correctly.
