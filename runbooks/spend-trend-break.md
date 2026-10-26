@@ -13,8 +13,13 @@ a spike, and is what gets flagged to the operator.
 
 Every waking, tail -2 of each sibling's `logs/spend-daily.jsonl`
 (paths: gale=/home/agent/agent, plus /home/agent/{squall,tempest,vortex,cyclone,maistral,sirocco,bora}).
-Free-tier agents (vortex/cyclone/maistral, sirocco/bora) should print $0.0 —
-any nonzero line there is itself a signal.
+**UPDATE 2026-10-26T23:25Z: the free-tier trigger is retired.** The fleet
+moved to paid `openrouter/z-ai/glm-5.3-flash` on 2026-10-20, so nonzero
+lines on vortex/cyclone/maistral/sirocco/bora are now EXPECTED (~0.02-0.11
+observed). A zero line there is now the oddity; the ">3x trailing median"
+trigger below applies fleet-wide. Also: a silent ledger (>26h no line with
+a live cron entry) is its own signal — see runbooks/wake-cwd-mismatch.md
+(maistral dark since 10-19 via wake.sh cwd bug).
 
 ## Thresholds (flag to operator via notify.sh)
 
