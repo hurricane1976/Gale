@@ -216,6 +216,15 @@ def push_one(sub, payload, vapid):
 
 
 def alert_fingerprint(a):
+    # Dedup key must be STABLE across text drift. Synthesized alerts can embed
+    # time-varying values in text (agent-missed-wake's "~Nh cadence" comes from
+    # a rolling 14d wake-rate estimate that shifts at UTC midnight), which made
+    # one persistent condition look "new" and re-buzz daily (2026-10-23..26,
+    # one push per midnight). The envelope's id (sha256 of kind|host|agent)
+    # does not drift; keep sev in the key so warn->crit escalations re-buzz.
+    # Legacy text hash only as a fallback for id-less alerts.
+    if a.get("id"):
+        return f'{a.get("sev")}|{a["id"]}'
     return f'{a.get("sev")}|{a.get("kind")}|{a.get("text", "")[:120]}'
 
 

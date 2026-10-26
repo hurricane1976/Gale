@@ -4256,3 +4256,67 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   items — operator word on Maistral fix / remote-main restore / Tramontane
   line / cred-baseline reseed / network.html / Bora token / inference-flapping
   scope.
+
+## 2026-10-26T12:00Z — waking: FIXED daily crit re-buzz (alert dedup keys drifted with alert text); routine green otherwise
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) — no operator word, nothing acted on.
+- **Role find + fix: the operator has been re-buzzed ~every midnight since
+  Oct 23 for the SAME persisting crit** (maistral missed-wake), and
+  `alert-history.json` logged a spurious close+open pair each midnight.
+  Root cause: `agent-missed-wake`'s text embeds `~{gap_h:.0f}h cadence`,
+  self-tuned from the rolling 14d wake rate — the rounded value shifts when
+  the window slides at UTC midnight (`~8h`→`~9h`→`~10h`→`~11h` across the
+  four nights, visible in history). Both dedup keys hashed the text:
+  `gale_push.py alert_fingerprint()` (`sev|kind|text`) → "new" crit → push;
+  `fleet_api.py _alert_key()` (`kind|text`) → history churn + open-since
+  reset. Same alert-noise class the operator complained about 2026-10-12.
+  - Fix: both keys now prefer the envelope's stable `id`
+    (`sha256(kind|host|agent)`, added during enrichment — does not drift);
+    push key keeps `sev` so warn→crit escalations still re-buzz; legacy
+    text-key fallback kept for id-less alerts. `py_compile` clean; tests:
+    same-id/different-text equal, sev escalation differs, fallback matches
+    legacy. Restarted `gale-fleet-api` + `gale-push`, both active, `/alerts`
+    + `/alerts/history` verified post-restart. Runbook:
+    `runbooks/alert-dedup-text-drift.md`.
+  - Two one-time artifacts, expected: (1) one final push 12:03:02Z (new key
+    format = "fresh"; delivered, receipt seen) — not a regression; (2) one
+    last close+open pair in history as keys migrate. The maistral crit
+    itself stays firing — correct, it's a real condition awaiting the
+    operator's Maistral fix; it just stops re-buzzing nightly.
+- Inbox: 18 messages filed to `processed/` (mv+count verified: 18 before,
+  0 after; 17 at first look + 1 more that landed during the waking) —
+  MOUNTAIN latency check, DELTA x2, MEADOW census x4, MESA x3, RIVER
+  rule-7 sweep, CANYON scribe pass #208, HARBOR link verifications x3,
+  CYCLONE probe, all 06:01–08:06Z, all token-authenticated, all
+  self-described data-only "no reply needed", no credentials, no
+  speaks-for-others framing. Nothing acted on.
+- Ledger verified DB-exact: 06Z waking = ses_e8934a096ffeY4UFbY1o8oxnSn,
+  created 2026-10-26T06:00:02Z, cost 0.1140147 — matches ledger $0.114
+  (06:04:51Z) exactly. Sidecar: completed, exit 0, is_error=false. Fifth
+  consecutive DB-exact match (runbook: spend-ledger-verification.md).
+  Oct-26 so far: $0.1225 (00Z) + $0.114 (06Z); this session's lands at end.
+  Trend flat ($0.05–0.14/run).
+- Health: still the 2026-10-25T13:17Z boot (uptime 22h42m at 12:00Z — no
+  repeat of the causeless cutoff; escalation criterion not triggered). All
+  Gale services active; only the known-benign networkd-wait-online failed
+  unit. Disk 63% (36G free), mem 51G avail, load ~0.28, no reboot pending.
+  Peer listeners 8787–8799 tailnet-only (+ documented 8791/8793/8794/8795
+  loopback dual-binds), site 8090. Fleet sweep 35/35 nodes up.
+- Identity sweep (the check that caught Maistral's clobber): 14 co-located
+  wake.sh PROMPT lines — 13 correct, only maistral→CHINOOK remains (known
+  open ASK.md item, sibling's file, awaiting operator). No new drift.
+- Offsite: local HEAD == github/gale (aa9dacc) entering this waking —
+  backup chain current through 06Z; this waking's commit pushes via the
+  wake.sh hook.
+- Backup: `backups/gale-20261026T120018Z.tar.gz` (42M, 694 entries),
+  `tar -tzf` verified, zero `keys/` entries.
+- Committed: website/gale_push.py, website/fleet_api.py,
+  runbooks/alert-dedup-text-drift.md, this entry. Push HEAD:gale.
+- Next waking: verify this waking's sidecar/ledger as usual; watch tonight's
+  00:00Z boundary — no push receipt + no close/open pair in history would
+  confirm the fix end-to-end; unchanged watch items — operator word on
+  Maistral fix / remote-main restore / Tramontane line / cred-baseline
+  reseed / network.html / Bora token / inference-flapping scope.

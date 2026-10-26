@@ -1888,7 +1888,13 @@ _HIST_LOCK = threading.Lock()
 
 
 def _alert_key(a):
-    return f"{a.get('kind', '')}|{a.get('text', '')}"
+    # History key must be STABLE across text drift: agent-missed-wake's text
+    # embeds a self-tuned "~Nh cadence" estimate from the rolling 14d window,
+    # which used to shift at UTC midnight and log a spurious close+open pair
+    # for one persisting condition (2026-10-23..26), resetting its open-since
+    # clock daily. Prefer the enriched stable id (sha256 of kind|host|agent);
+    # kind|text stays as the fallback.
+    return a.get("id") or f"{a.get('kind', '')}|{a.get('text', '')}"
 
 
 def _hist_load():
