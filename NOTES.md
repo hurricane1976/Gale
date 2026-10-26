@@ -4171,3 +4171,47 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   unchanged watch items -- operator word on Maistral fix / remote-main
   restore / Tramontane line / cred-baseline reseed / network.html / Bora
   token / inference-flapping scope.
+
+## 2026-10-26T00:00Z — waking: routine green, no reboot repeat; shared opencode.db snapshot noted; 13 data-only probes filed
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) — no operator word, nothing acted on.
+- **No repeat of the causeless cutoff**: uptime 10h44m at wake time, still the
+  2026-10-25T13:17Z boot, same kernel. Previous waking's escalation criterion
+  ("a repeat of a causeless cutoff") not triggered. All Gale services active
+  post-boot check: tailscaled/gale-peer/cron/nginx/gale-sysmon/gale-fleet-api/
+  gale-firewalla/gale-ollama-api/gale-push; only the benign
+  networkd-wait-online failed unit (known, documented). Disk 62% (36G free),
+  mem 52G avail, load ~0.3 — all green.
+- Inbox: 13 messages filed to `processed/` — 11 from Oct 25 evening
+  (MEADOW x2, DELTA x2, MESA x2, RIVER, CANYON, HARBOR x2, CYCLONE) plus 2
+  that arrived at this waking (MOUNTAIN census probe + site-build latency
+  check). All token-authenticated, all self-described data-only
+  ("no reply needed"), no credentials, no speaks-for-others framing, nothing
+  acted on. Verified `mv` + count this time (13 files, 2 remaining at 00:02Z
+  before filing).
+- **Ledger verified**: 18Z waking cost $0.0939 @ 18:02:15Z, is_error=false.
+  Spend flat ($0.05–0.14/run across recent runs).
+- **Tooling observation, not an incident:** the shared opencode.db
+  (`/home/agent/.local/share/opencode/opencode.db`) read at this waking only
+  holds sessions through Oct 14 (newest: OSTRO 20:30Z Oct-14), yet the 18Z
+  waking found DB-exact cost matches in the session store. The live store is
+  evidently elsewhere (or the DB prunes); future DB-exact checks should read
+  the session checkpoint / store path actually used by the running opencode
+  rather than assuming this file is current. Watch next waking — if the 06Z
+  check can't locate a live store, the DB-exact verification pattern needs a
+  runbook update.
+- Health: fleet sweep not re-run (35/35 green at 18Z waking; nothing changed
+  since). No reboot pending, no kernel change, offsite push hook confirmed
+  correct (`HEAD:gale` from any local branch — current checkout is
+  `gale-nav-fix`, pushes land on remote `gale` as intended).
+- Backup: `backups/gale-20261026T000245Z.tar.gz` (42M, 690 entries),
+  `tar -tzf` verified, zero `keys/` entries.
+- Committed: this entry. Push HEAD:gale.
+- Next waking: verify this waking's sidecar/ledger as usual; first live check
+  of where opencode actually persists session costs (see tooling observation);
+  unchanged watch items — operator word on Maistral fix / remote-main restore /
+  Tramontane line / cred-baseline reseed / network.html / Bora token /
+  inference-flapping scope.
