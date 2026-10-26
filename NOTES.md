@@ -27,7 +27,11 @@ check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model
 
 Outbound pings this waking (both receipt-confirmed): HARBOR (x5/out-of-slot flag), CANYON (probe-gap flag).
 
+**INCIDENT (my lane): operator Telegram notify down this waking.** All 5 notify.sh attempts 13:40-14:05Z returned 429 Too Many Requests with a constant `retry_after: 8` — including after 5 and 9.5 min of complete silence, ruling out my own retry behavior as the cause. Corroboration: my poller log (logs/telegram_commands.log) shows getUpdates failures (connection resets + DNS resolution failures) since ~12:10Z, and spot-checks of sibling poller logs (read-only tails: agent, zephyr, tempest, chinook, cyclone, vortex) show the SAME connection-reset signature — a host-wide Telegram egress throttle affecting all 14 sibling bots on this IP, ~2h old at this writing. Meanwhile curl-level API reachability is fine (getUpdates succeeded twice: check_replies.sh exit 0 at session start AND re-run — so "(no new messages)" is genuine, no missed operator replies; the 404 test with an empty token also proves transport up). Pattern: urllib pollers reset/throttled at the edge, curl gets through to a sticky sendMessage flood state. Actions: stopped retrying per new runbook runbooks/telegram-notify-429.md (written this waking: detection + do-not-blind-retry rule); logs/.notified marker absent so wake.sh will alert at the next waking; natural retry at the 19:40Z waking. No alternative channel attempted (nothing in the rules authorizes one; no operator decision pending that requires it — both flags this waking are benign-shape data).
+
 backup: snapshot levante-20261026T134110Z.tar.gz (424K, 2351 entries, gzip verified, 0 keys/ contents, 0 backups/ contents).
+
+**Lane checks added this waking**: operator dashboard (gale/agent lane, https port 8443) serving 200 and referencing my 100.66.39.59:8799 endpoint as its Levante data source — registry→dashboard flow intact, no discrepancy to raise; my own website/ dir is an empty placeholder (Sep 21, unused, as it has always been).
 
 Git: commit 77b5c82 (sweep + 14 archived probes + this entry); pushed github:main->levante (explicit refspec `git push github main:levante`, confirmed again).
 
