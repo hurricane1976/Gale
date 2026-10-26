@@ -197,3 +197,50 @@ sweep at a quiet window after confirming no live puppeteer run owns them).
   continues — bursty both ways). /tmp 5.5G sudo-du. Operator notified with
   the trajectory; nothing touched by me (cleanup + source pause are
   operator's call per this runbook).
+
+## 2026-10-26T03:45Z — rotation-cadence premise corrected (weekly + maxsize, not daily)
+
+Prior waking entries modeled the rotated pile as a **daily midnight
+rotation** ("Oct-24 midnight rotation", "Oct-25 midnight rotation", "single
+.gz expected after the Oct-26 midnight rotation"). Wrong model. The actual
+config — `/etc/logrotate.d/rsyslog`, unchanged since its Oct-01 23:35 mtime
+(same date as the original flood root-cause; provenance never recorded in
+NOTES until now) — is:
+
+    /var/log/syslog mail.log kern.log auth.log user.log cron.log {
+        rotate 4
+        weekly
+        maxsize 500M
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate /usr/lib/rsyslog/rsyslog-rotate
+    }
+
+Rotation history reconstructed from file spans + `/var/lib/logrotate/status`
+(root-readable; `sudo cat`):
+
+- **Oct-18 00:33** — weekly rotation (kern.log.1 spans exactly Oct-18→Oct-25).
+- **Oct-24 00:11** — syslog alone rotated early: it had grown to 505M ≥ the
+  500M `maxsize` (≈6 days × ~85M/day since Oct-18). kern.log (312M) stayed.
+- **Oct-25 00:19** — the weekly rotation came due (Oct-18 + 7d): rotated the
+  whole family, including syslog's then-young 91.6M day-file. The 505M
+  file shifted to syslog.2 and compressed (52.9M .gz — delaycompress keeps
+  only .1 plain). This is why two consecutive "midnight rotations" existed
+  and fooled the daily-cadence read.
+- **Oct-26 00:07** — logrotate ran, rotated only nginx/cups (their own
+  schedules). rsyslog family correctly untouched: weekly not due (next
+  ~Nov-1), syslog 97M < 500M.
+
+Consequences for the watch:
+
+- Current syslog 106M "over the ~88M/day band" was an artifact of the wrong
+  model — nothing is wrong; the file simply keeps growing until the next
+  weekly slot or the 500M maxsize trigger (~day 6 at the current rate).
+- The pile is **bounded by maxsize**: worst case ~590M per file before a
+  forced rotation at the next daily 00:07 run. Not a creep emergency.
+- `is-active pg14-main` returns `inactive` for the *nonexistent shorthand*
+  — the real unit is `postgresql@14-main`; verify the unit name before
+  recording a premise change (this waking nearly recorded one).

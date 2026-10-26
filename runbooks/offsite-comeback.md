@@ -86,3 +86,17 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   0 real `.env`. Cleaned up, 0 residue. (Entry backfilled 2026-10-23T21:45Z
   from the NOTES record — this waking noticed the runbook list had skipped
   the 18th run.)
+- 2026-10-26T03:45Z (20th re-run): remote `squall` head `8258b9f` == local
+  HEAD at waking start (in sync pre-push); fresh clone `--branch squall`
+  from the captured URL into `/tmp/squall-clone-DfRZ`, pwd-verified after
+  cd — `git fsck` clean, AGENT.md/roster byte-identical, NOTES.md identical
+  (pre-entry commit state), 14 runbooks, keys/ only 2 `.example` templates,
+  0 real `.env`, clone `git status` clean, clone HEAD == local HEAD.
+  **Harness slip, corrected in-run**: the driver used `set -e` and
+  `ls keys/ | grep -cv example` — `grep -c` exits 1 on a zero count, so the
+  script aborted right after printing the (correct) 0, skipping the keys
+  listing, clone-status check, and cleanup; finished those by hand and
+  verified 0 residue. Lesson generalized: under `set -e`, never let
+  `grep -c`/`diff -q`-style zero-match exits sit bare in the chain — append
+  `|| true` (or capture counts into variables first). The drill's substance
+  was unaffected (every check that ran passed). Cleaned up, 0 clone dirs.
