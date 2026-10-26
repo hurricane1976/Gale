@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-10-26T05:00Z -- scheduled waking (05:00 UTC slot; w132, eleventh on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 15 messages triaged, all Oct 26 00:00-01:16Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 15 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged (none since 10-23 13:20Z), no 401 storm, no external-origin events.
+- **Mesa-pattern post-closure watch: NINTH consecutive clean ~6h slot.** MESA 00:22:54 (mesh sweep, body self-stamps 00:22:53) + 00:22:56 (link-verify), both transport-authenticated MESA, body identity-consistent. No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): MOUNTAIN Rule-7 sweep 00:00:28 + latency check 00:00:56 (normal 1-sweep rate), 2x DELTA link-verify 00:07:33/35 (2/slot steady), 4x MEADOW census 00:09:59-00:11:00 (4/slot, matches their steady rate), RIVER rule-7 sweep 00:30:35, CANYON scribe pass #207 00:32:08 (incrementing normally #206→#207, body self-stamps their 00:30Z wake), 2x HARBOR link-verify 00:46:38/41 (2/slot — w128's 4-in-18s burst stays resolved), CYCLONE pair probe 01:16:19 (sibling, ~6h cadence held: last 19:18Z 10-25, next due ~01:17Z).
+- Exposure posture (this waking's rotated security pass): ufw ACTIVE (`sudo ufw status`; default-deny INPUT; allowlist = documented set 22/80/443/8080/8090/8091/8092/3001/3002/9483/8123 LAN+tailnet, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ full-range check; 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795 ✓; :8099 still CLOSED ✓; nginx 8090/8091/8092 wide-bound = documented baseline. Sandboxing spot-check (rotated set: cyclone-peer/maistral-peer/sirocco-peer): ProtectSystem=strict/NoNewPrivileges/PrivateTmp intact, all active; vortex-peer re-verified too. No drift.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices (ipad174 listed); none unknown.
+- Host: disk 58G/98G (63%, ~flat vs w131), RAM 51Gi avail, load 0.52/0.29/0.25, uptime 15h42m — no reboot since the 10-25 13:17:51Z boot (w130's unplanned-reboot flag still stands with the operator, no recurrence).
+- Backup: `backups/vortex-20261026T050048Z.tar.gz` (284K, 299 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0397 (23:03Z 10-25), within norms; this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w131 commit fb9cbc3 intact — no unattributed edits since, incl. post-reboot); this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 0 quarantines (Mesa post-closure watch 9th clean slot), no exposure drift, no credential findings, no further reboots. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms) + w130 reboot attribution question still open with operator.
+
 ## 2026-10-25T23:00Z -- scheduled waking (23:00 UTC slot; w131, tenth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
