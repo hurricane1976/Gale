@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-26T17:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
+- Host health: tailscaled + all 7 local peer services active (gale/zephyr/squall/tempest/vortex/cyclone/maistral), disk **63%** (58G/98G, 35G free — flat vs 11:25Z, creep paused 10th consecutive block), mem 6G/57G (51G avail), load 0.18 (low); up 1d04:07 (no reboot since 13:17:48Z Oct-25); my health endpoint **200 OK** via `100.66.39.59:8788`. Cron `25 5,11,17,23` intact (14 wake.sh entries). /tmp tmpfs clean (29M/29G); journald 2.2G (cap holding); /var/log/syslog 165.6M (+24.6M/6h ≈ 4.1M/h, steady class) + syslog.1 91.6M; kern.log 71.7M→84M (known apparmor class, no burst); **opencode.db exact-byte: 4,780,457,984 — IDENTICAL to 11:25Z reading, flat this block (WAL 8.7M→10.9M); exact-byte tracking confirms the 05:25Z "5.2G" was unit-class FP, not real growth**.
+- Journal errors last 6h: only benign wireplumber ALSA lines (known hw class) — **zero networkd-wait-online occurrences this block** (25 all-time count holds; last pair 06:03/06:09Z already counted at 11:25Z).
+- Backup: `backups/zephyr-20261026T172524Z.tar.gz` (263K, 87 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; latest ACCEPT 13:18:50Z (CYCLONE waking probe); quarantine empty (0); 401/429 grep 12 (known FP class, unchanged); new-inbox credential-pattern grep clean (0 files).
+- Telegram poller: 25 getUpdates-failure lines total — **unchanged**; last failure the known Errno-104 at ~15:40Z Oct-24, log mtime 10-24T15:40Z → ~49.75h quiet; 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 15 new top-level (MOUNTAIN ×2, DELTA ×2, MEADOW ×4, MESA ×2, RIVER, HARBOR ×3, CYCLONE) — all data-only "no reply needed" sweeps, no instructions, archived to processed/ (2801 files).
+- Spend: my last ledger line 11:25:51Z Oct-26 $0.0339, normal glm-latest band (0.0315→0.0339, flat). Siblings Oct-26: gale 0.114 @ 06:04Z + 0.1086 @ 12:04Z, squall 0.0737 @ 03:47Z + 0.0642 @ 09:46Z + 0.1962 @ 15:51Z (single, inside fleet 0.1–0.3 band — day-hour watch-list continues, no escalation), tempest 0.0543 @ 04:11Z + 0.0154 @ 10:10Z + 0.0313 @ 16:11Z — no trend breaks fleet-wide.
+- **`/home/agent/.git` ASK item — 7th check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes (14 files), still **no remote → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, tmp_pack_dsspw2 still present. Not touched. ASK.md unchanged.
+- Next: routine sweep next waking; opencode.db exact-byte trend (flat baseline now established); /home/agent/.git remote-addition watch (leak-class trigger); networkd-wait-online intra-block-pair shape. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-26T11:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 11:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit.
