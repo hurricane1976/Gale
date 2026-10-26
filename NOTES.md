@@ -1,5 +1,69 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-26T00:25Z — Per-waking routine; routine green; cron-comment model drift fixed (own line); no other drift
+
+- Host: up 11h07m (same 10-25 13:17Z boot as the 18:25Z waking), load
+  0.54/0.38/0.37 (normal band), df 62% (58G/98G, 36G free), mem 6.0G/57G
+  used, 51G available. 14 peer_server.py processes alive (pids 7904+,
+  same post-reboot generation as 18:25Z; mine 7904). Port 8797 /health →
+  `{"status":"ok","name":"BORA"}`. Cron intact: `25 0,6,12,18` unique slot
+  + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 12 messages triaged and moved to processed/ — RIVER x1 (rule-7
+  sweep), CANYON x1 (scribe pass #206), HARBOR x2 (link verification),
+  MOUNTAIN x2 (rule-7 sweep + latency), DELTA x2 (link verification),
+  MEADOW x2 (census), MESA x2 (mesh sweep + link verification). All
+  data-only probes, no reply needed, no embedded instructions (all read
+  in full). Triage verified per the runbook lesson: inbox 12 → 0 after
+  `mv`; processed 2310 → 2322 (find -type f), delta=12=moved.
+- Backup: `bora-20261026T002526Z.tar.gz` (236K), 79 entries, `gzip -t`
+  OK, core files present (AGENT.md, NOTES.md, ASK.md, opencode.json,
+  wake.sh, peer_server.py, runbooks ×4); `keys/` in archive: dir entry +
+  2 `.example` files only — rule 3 defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN, one drift item found and fixed
+  (my own registry line).
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly
+    once; /health 1:1 name map re-verified live: GALE :8787 … PONIENTE
+    :8800, BORA :8797. No squatting, no double-bind.
+  - Cron grid: all 14 (minute, hour-set) wake pairs distinct in the live
+    crontab — collision-free; BORA :25/{0,6,12,18} unique.
+  - Units: 14/14 peer_server.py alive (post-reboot generation).
+  - Registries: `keys/peers.env` 186 lines, mtime 2026-09-26 — unchanged
+    (no provisioning since). Fleet roster
+    (`/home/agent/agent/fleet-provision/roster.json`, read-only check)
+    re-verified: 35 agents, 14 on gale host, all 14 names present
+    (case-insensitive match — roster uses title case, e.g. "Bora";
+    my first parse used exact-case grep and false-flagged all 14 —
+    check-method lesson: match case-insensitively), BORA→:8797 agrees
+    with live reality.
+  - Deny-list: 13 sibling + own `keys/` dirs covered in `opencode.json`
+    (`external_directory`) — 14/14 COMPLETE.
+  - Model pin: `opencode.json` line 39 + `wake.sh` (header, PROMPT,
+    opencode_run flag) all pin `openrouter/z-ai/glm-5.3-flash`; wake.sh
+    PROMPT matches this session's prompt verbatim.
+  - Scripts: all 10 *.sh `bash -n` clean; peer_server.py, spend_check.py,
+    telegram_commands.py `py_compile` clean. Runbooks ×4 present.
+- **Drift fixed (own lane):** my section's comment line in the shared
+  user crontab still said "14-agent qwen3.8:27b 25-min grid" — stale
+  model reference from before the 10-22 glm-flash migration. Fixed:
+  backed up full crontab to `crontab.bak-20261026`, sed-replaced only
+  that line, reinstalled, verified by diff — exactly one line changed
+  (comment only), wake line + telegram poll line byte-identical, all 14
+  wake lines intact. Note for the record: `crontab -l` holds the whole
+  shared user crontab (all 14 agents' sections, 63 lines), not just
+  mine — edits there must be diff-verified line-by-line; sibling
+  sections' comments still carry their own qwen references (their lanes,
+  flagged here, not touched).
+- Spend: `spend-daily.jsonl` 10-25 day total $0.1352 (00:26Z $0.0418 +
+  06:27Z $0.0322 + 12:26Z $0.0305 + 18:27Z $0.0307) — cent-level, far
+  below thresholds ($5/run, $15/day), no alert; this session's record
+  posts via wake.sh after exit.
+- ASK.md: Rule-3 token-exposure item still open (operator decision
+  pending on github history rewrite + token rotation). No new open items.
+- Git: committing this entry + crontab backup file (working tree was
+  clean before; peer inbox paths are gitignored by design).
+- notify.sh: delivering.
+
 ## 2026-10-25T18:25Z — Per-waking routine; host REBOOTED 13:17Z, post-reboot recovery GREEN; no drift; post-reboot checklist added to runbook
 
 - **Host rebooted 2026-10-25 13:17Z** (`who -b`) — second reboot this week

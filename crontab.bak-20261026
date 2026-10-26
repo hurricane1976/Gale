@@ -1,0 +1,65 @@
+# Gale — 4 wakings/day (UTC) at 00:00 of hours 0,6,12,18 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+0 0,6,12,18 * * * /home/agent/agent/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/agent/telegram_commands.sh >>/home/agent/agent/logs/telegram_commands.log 2>&1
+# Zephyr — 4 wakings/day (UTC) at 05:25 of hours 5,11,17,23 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+25 5,11,17,23 * * * /home/agent/zephyr/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/zephyr/telegram_commands.sh >>/home/agent/zephyr/logs/telegram_commands.log 2>&1
+# Squall — 4 wakings/day (UTC) at 03:45 of hours 3,9,15,21 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+45 3,9,15,21 * * * /home/agent/squall/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/squall/telegram_commands.sh >>/home/agent/squall/logs/telegram_commands.log 2>&1
+# Tempest — 4 wakings/day (UTC) at 04:10 of hours 4,10,16,22 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+10 4,10,16,22 * * * /home/agent/tempest/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/tempest/telegram_commands.sh >>/home/agent/tempest/logs/telegram_commands.log 2>&1
+# Chinook — 4 wakings/day (UTC) at 00:50 of hours 0,6,12,18 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+50 0,6,12,18 * * * /home/agent/chinook/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/chinook/telegram_commands.sh >>/home/agent/chinook/logs/telegram_commands.log 2>&1
+# Bora — 4 wakings/day (UTC) at 00:25 of hours 0,6,12,18 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+25 0,6,12,18 * * * /home/agent/bora/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/bora/telegram_commands.sh >>/home/agent/bora/logs/telegram_commands.log 2>&1
+# Cyclone — 4 wakings/day (UTC) at 01:15 of hours 1,7,13,19 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+15 1,7,13,19 * * * /home/agent/cyclone/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/cyclone/telegram_commands.sh >>/home/agent/cyclone/logs/telegram_commands.log 2>&1
+# Maistral — 4 wakings/day (UTC) at 02:05 of hours 2,8,14,20 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+5 2,8,14,20 * * * /home/agent/maistral/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/maistral/telegram_commands.sh >>/home/agent/maistral/logs/telegram_commands.log 2>&1
+# Sirocco — 4 wakings/day (UTC) at 03:20 of hours 3,9,15,21 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+20 3,9,15,21 * * * /home/agent/sirocco/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/sirocco/telegram_commands.sh >>/home/agent/sirocco/logs/telegram_commands.log 2>&1
+# Vortex — 4 wakings/day (UTC) at 05:00 of hours 5,11,17,23 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+0 5,11,17,23 * * * /home/agent/vortex/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/vortex/telegram_commands.sh >>/home/agent/vortex/logs/telegram_commands.log 2>&1
+# Tramontane — 4 wakings/day (UTC) at 04:35 of hours 4,10,16,22 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+35 4,10,16,22 * * * /home/agent/tramontane/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/tramontane/telegram_commands.sh >>/home/agent/tramontane/logs/telegram_commands.log 2>&1
+# Keep LAN Ollama qwen3.8:27b resident (re-arms after server restart): every 5 min, no-op if loaded
+#EVICTED#*/5 * * * * /home/agent/agent/ollama_keepalive.sh >>/home/agent/agent/logs/ollama_keepalive.log 2>&1
+
+# Ostro — 4 wakings/day (UTC) at 02:30 of hours 2,8,14,20 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+30 2,8,14,20 * * * /home/agent/ostro/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/ostro/telegram_commands.sh >>/home/agent/ostro/logs/telegram_commands.log 2>&1
+# Levante — 4 wakings/day (UTC) at 01:40 of hours 1,7,13,19 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+40 1,7,13,19 * * * /home/agent/levante/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/levante/telegram_commands.sh >>/home/agent/levante/logs/telegram_commands.log 2>&1
+
+# Poniente — 4 wakings/day (UTC) at 02:55 of hours 2,8,14,20 — 14-agent qwen3.8:27b 25-min grid (operator-directed 2026-10-07: ≥25 min between all fleet wakes); poll Telegram commands every 5 min
+55 2,8,14,20 * * * /home/agent/poniente/wake.sh >/dev/null 2>&1
+*/5 * * * * /home/agent/poniente/telegram_commands.sh >>/home/agent/poniente/logs/telegram_commands.log 2>&1
+# Gale synthetics: blackbox page/API checks every 5 min -> api/synthetics.json + node textfile
+#PAUSED-2026-10-12# */5 * * * * /home/agent/agent/website/tools/synthetics.sh >/dev/null 2>&1
+*/5 * * * * /usr/bin/python3 /home/agent/agent/website/tools/gpu_bridge.py >/dev/null 2>&1
+*/5 * * * * /usr/bin/python3 /home/agent/agent/website/tools/wake_bridge.py >/dev/null 2>&1
+*/5 * * * * /usr/bin/python3 /home/agent/agent/website/tools/cred_bridge.py >/dev/null 2>&1
+*/5 * * * * /usr/bin/python3 /home/agent/agent/website/tools/roster_check.py >/dev/null 2>&1
+*/15 * * * * /usr/bin/python3 /home/agent/agent/website/tools/drill_bridge.py >/dev/null 2>&1
+# Gale probes: direct peer-port TCP + local NetBox/Zabbix/Grafana/Kuma/Loki health -> probes.json + gale_probe.prom
+*/5 * * * * /usr/bin/python3 /home/agent/agent/website/tools/probe_extra.py >/dev/null 2>&1
+# Gale restore drill weekly (Sun 10:00 UTC), threshold 14d
+0 10 * * 0 /home/agent/agent/website/tools/restore_drill.sh >>/home/agent/agent/logs/restore_drill.log 2>&1
+# Gale heartbeat feed (small summary of /api/fleet/telemetry)
+*/2 * * * * /usr/bin/python3 /home/agent/agent/website/tools/telemetry_summary.py >/dev/null 2>&1
+# LAN Ollama health watch: transition alerts only (down CRIT / model-missing WARN / gen-failing WARN) -> Telegram; recovery INFO includes reboot + version check
+*/5 * * * * /home/agent/agent/ollama_watch.sh >/dev/null 2>&1
+# opencode snapshot repo cleanup: delete if >5GB (it snapshots all of $HOME and filled the disk 2026-10-18)
+*/30 * * * * /home/agent/.local/bin/opencode-snapshot-cleanup.sh >>/home/agent/agent/logs/opencode_snapshot_cleanup.log 2>&1
+# node_exporter snap-refresh guard: restore --collector.textfile.directory after snap auto-refresh wipes it (see runbooks/node-exporter-flags-wipe.md)
+*/5 * * * * /home/agent/agent/website/tools/nx_flags_guard.sh >/dev/null 2>&1
