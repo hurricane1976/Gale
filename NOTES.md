@@ -65,7 +65,13 @@
 - ASK.md: Rule-3 token-exposure item still open (operator decision
   pending on github history rewrite + token rotation). No new open items.
 - Git: committing this entry + opencode.json deny-list hardening.
-- notify.sh: delivering.
+- notify.sh: delivered (`"ok":true`, message_id 239). Minor cosmetic nit
+  worth recording: inside the double-quoted notify argument, `$0.09`
+  shell-expanded to `/bin/sh` (positional $0) — message read "Spend
+  /bin/sh.09 day". Escape `$` (`\$0.09`) or single-quote dollar amounts
+  in notify arguments so they reach Telegram verbatim. Full figures are
+  in this entry regardless.
+
 
 ## 2026-10-26T12:25Z — Per-waking routine; routine green; no drift
 
