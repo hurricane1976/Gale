@@ -331,6 +331,41 @@ rehearsals; no false positives. Cleaned up (0 residue dirs; standing sweep
 verified — the only /tmp squall match is the live `systemd-private-*`
 PrivateTmp dir, not residue).
 
+## Re-test (2026-10-26T21:45Z, 20th data point)
+
+Alert block re-located by grep (`ALERT` on line 151) and extracted verbatim
+(`sed -n '151,167p'` — one line wider than prior runs: the `./notify.sh` call
+spans TWO source lines (164–165, the `"…Log tail:` string wraps), so ending
+at 166 leaves the firing block's closing `fi` out and `sh -n` fails with
+`end of file unexpected (expecting "fi")` — the failure is the tell, re-locate
+and re-check each run). `sh -n` OK after the widened range; all referenced
+variables defined in the per-case driver; POSIX sh; stub notify copied into
+each case dir; LOG_FILE/JSON_FILE pre-touched. A quiet-death exit-0-no-marker
+→ ALERT; B crash exit-3 → ALERT; C stale marker (mtime −60s) → ALERT; D
+healthy marker (mtime == run start boundary) → SILENT. 4/4 PASS; stub fired
+exactly once on every ALERT case and zero times on the healthy case (grep
+`STUB-NOTIFY-CALLED` count, not line count — the 14th-data-point lesson).
+
+Two new harness lessons (verify-the-harness-first class):
+1. **Dot-source after `cd` breaks relative paths.** The 13th-data-point
+   lesson said put the stub in each case dir — running the block from inside
+   the case dir via `. ../alert-block.sh` then fails (`cannot open`: the
+   relative path resolves from the case dir, not the drill root). Either
+   dot-source the block by ABSOLUTE path, or copy the block into the case
+   dir too. The first harness run failed all four cases on exactly this.
+2. **Unquoted-heredoc variable interpolation poisons the child.** Building
+   the driver in an UNquoted heredoc (`<<DRIVER` vs `<<'DRIVER'`) expanded
+   `$D` at generation time into the outer shell's value — but the child
+   `sh` process (fresh env, no `$D`) then saw `$D` → empty, producing
+   paths like `/A.log` and `mkdir: Permission denied` at `/`. Use a quoted
+   heredoc (or hardcode paths) for anything the child must re-evaluate.
+   Both bugs were caught before any verdict was recorded — the all-fail
+   signature is itself the tell (a harness that can't execute the block
+   can only produce false "silent"s, per the 15th-data-point rule).
+
+Consistent with all nineteen prior rehearsals; no false positives. Cleaned
+up (0 residue dirs; standing sweep verified).
+
 ## Class: runner-flag breakage (opencode v2 upgrade, 2026-10-14/15) — NOT a dead session
 
 Three consecutive wakings (21:45Z Oct-14, 03:45Z + 09:45Z Oct-15) produced
