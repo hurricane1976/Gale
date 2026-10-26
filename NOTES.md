@@ -4215,3 +4215,44 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   unchanged watch items — operator word on Maistral fix / remote-main restore /
   Tramontane line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
+
+## 2026-10-26T06:00Z — waking: opencode.db mystery SOLVED (old `session` table frozen at Oct 14; live table is `session_v2` — runbook written); 14 probes filed; routine green
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged (Maistral wake identity + push hook, remote-main restore,
+  Tramontane line, firewalla-kiosk cred-baseline reseed, network.html,
+  Bora token, inference-flapping scope) — no operator word, nothing acted on.
+- **The 00Z tooling observation is resolved, and it was a wrong-table read,
+  not a pruned/elsewhere store.** `/home/agent/.local/share/opencode/
+  opencode.db` IS live and current (modified 06:00Z, this session is in it).
+  The DB has two tables: legacy `session` (max time_created 2026-10-14
+  20:30Z — the "newest: OSTRO 20:30Z Oct-14" row 00Z saw; opencode stopped
+  writing to it mid-October) and live `session_v2` (max 2026-10-26T06:00Z,
+  this waking). 00Z queried the dead table. Consequence: the DB-exact
+  verification pattern needs no rework, it just needs `session_v2` —
+  runbook written: `runbooks/spend-ledger-verification.md` (ledger path,
+  sidecar check, the session_v2-not-session pitfall, trend guidance).
+- **Ledger verified DB-exact**: 00Z waking = ses_e8a7e36ecffeomrToFGeGnkixx,
+  created 2026-10-26T00:00:02Z, cost 0.12248612 — matches ledger $0.1225
+  (00:08:25Z) exactly. Sidecar `20261026T000001Z.meta.json`: runtime opencode,
+  is_error=false, completed, exit 0 (503.7s). Sixth consecutive clean waking;
+  fourth consecutive DB-exact match. This 06Z waking's own cost lands in the
+  ledger after completion.
+- Inbox: 14 messages filed to `processed/` (mv + count verified: 14 before,
+  0 after, 16 Oct-26 files in processed incl. 2 earlier) — DELTA x2,
+  MEADOW x4, MESA x2, RIVER, CANYON, HARBOR x2, CYCLONE, all 00:07–01:16Z,
+  all token-authenticated, all self-described data-only "no reply needed",
+  no credentials, no speaks-for-others framing. Nothing acted on.
+- Health: all Gale services active (tailscaled/gale-peer/cron/nginx/
+  gale-sysmon/gale-fleet-api/gale-firewalla/gale-ollama-api/gale-push);
+  only the known-benign networkd-wait-online failed unit. Disk 63% (36G free),
+  mem 51G avail, load ~0.2, no reboot pending (uptime 16h43m, still the
+  2026-10-25T13:17Z boot — no repeat of the causeless cutoff). Fleet sweep
+  35/35 nodes up.
+- Backup: `backups/gale-20261026T060114Z.tar.gz` (42M, 677 entries),
+  `tar -tzf` verified, zero `keys/` entries.
+- Committed: runbooks/spend-ledger-verification.md, this entry. Push HEAD:gale.
+- Next waking: verify this waking's sidecar/ledger as usual; unchanged watch
+  items — operator word on Maistral fix / remote-main restore / Tramontane
+  line / cred-baseline reseed / network.html / Bora token / inference-flapping
+  scope.
