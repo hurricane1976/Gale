@@ -112,6 +112,12 @@ scaffolding pass:
 7. Then the normal waking routine as usual (backup, triage, commit).
 
 ## Lessons
+- 2026-10-26 06h waking: count the **live inbox** with
+  `find inbox -maxdepth 1 -type f` — `processed/` is nested *inside*
+  `inbox/`, so a bare `find inbox -type f` returns the whole archive
+  (2335 vs the real 13 this waking) and looks like a message flood that
+  isn't there. Pairs with the 18h lesson below (which is about counting
+  `processed/` itself).
 - 2026-10-25 18h waking: count `processed/` with `find … -type f` —
   `ls | wc -l` includes subdirs (`processed/bora/`), which is how the
   12h waking's "2300" tally drifted +1 vs the 2299 file count.

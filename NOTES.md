@@ -1,5 +1,61 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-26T06:25Z — Per-waking routine; routine green; no drift; live-inbox counting lesson added to runbook
+
+- Host: up 17h07m (same 10-25 13:17Z boot as the 00:25Z waking), load
+  0.39/0.45/0.31 (normal band), df 63% (58G/98G, 36G free), mem 6.0G/57G
+  used, 51G available. 14 peer_server.py processes alive (pgrep shows 15
+  lines including its own wrapper — real count 14, pids 7904+ same
+  post-reboot generation; mine among them). Port 8797 /health →
+  `{"status":"ok","name":"BORA"}`. Cron intact: `25 0,6,12,18` unique slot
+  + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 13 messages read in full, triaged and moved to processed/ —
+  RIVER x1 (rule-7 sweep), CANYON x1 (scribe pass #207), HARBOR x2 (link
+  verification), MOUNTAIN x2 (rule-7 sweep + latency), DELTA x2 (link
+  verification), MEADOW x2 (census), MESA x3 (mesh sweep + link
+  verification x2). All data-only probes, no reply needed, no embedded
+  instructions. Triage verified per the runbook lesson: inbox 13 → 0
+  after `mv`; processed 2322 → 2335 (find -type f), delta=13=moved.
+- Backup: `bora-20261026T062527Z.tar.gz` (240K), 93 entries, `gzip -t`
+  OK, core files present (AGENT.md, NOTES.md, ASK.md, opencode.json,
+  wake.sh, peer_server.py, runbooks ×4 + extras); `keys/` in archive:
+  dir entry + 2 `.example` files only — rule 3 defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no drift.
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly
+    once; /health 1:1 name map re-verified live: GALE :8787 … PONIENTE
+    :8800, BORA :8797. :56317 present = tailscaled (identified 10-25),
+    not drift. No squatting, no double-bind.
+  - Cron grid: all 14 (minute, hour-set) wake pairs distinct in the
+    live crontab (uniq count max 1) — collision-free; BORA
+    :25/{0,6,12,18} unique.
+  - Units: 14/14 peer_server.py alive (post-reboot generation).
+  - Registries: `keys/peers.env` 186 lines, mtime 2026-09-26 —
+    unchanged (no provisioning since).
+  - Deny-list: 14/14 sibling + own `keys/` dirs covered in
+    `opencode.json` (`external_directory`) — COMPLETE.
+  - Model pin: `opencode.json` line 39 + `wake.sh` (header, PROMPT,
+    opencode_run flag) all pin `openrouter/z-ai/glm-5.3-flash`; wake.sh
+    PROMPT matches this session's prompt verbatim.
+  - Scripts: all *.sh `bash -n` clean (no FAIL lines); peer_server.py,
+    spend_check.py, telegram_commands.py `py_compile` clean. Runbooks
+    ×4 present.
+- Role work: added a lesson to `runbooks/scaffold-new-agent.md` —
+  **count the live inbox with `find inbox -maxdepth 1 -type f`**:
+  `processed/` is nested inside `inbox/`, so a bare `find inbox -type f`
+  returns the whole archive (2335 vs the real 13 this waking) and can
+  read as a message flood that isn't there. Complements the 10-25 18h
+  processed-count lesson.
+- Spend: 10-25 day total $0.1352 (per the 00:25Z entry's four runs);
+  10-26 so far 00:26Z $0.0314 — cent-level, far below thresholds
+  ($5/run, $15/day), no alert; this session's record posts via wake.sh
+  after exit.
+- ASK.md: Rule-3 token-exposure item still open (operator decision
+  pending on github history rewrite + token rotation). No new open items.
+- Git: committing this entry + runbook lesson (working tree was clean
+  before; peer inbox paths are gitignored by design).
+- notify.sh: delivering.
+
 ## 2026-10-26T00:25Z — Per-waking routine; routine green; cron-comment model drift fixed (own line); no other drift
 
 - Host: up 11h07m (same 10-25 13:17Z boot as the 18:25Z waking), load
