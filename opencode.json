@@ -16,7 +16,8 @@
       "/home/agent/ostro/keys/**": "deny",
       "/home/agent/poniente/keys/**": "deny",
       "/home/agent/tramontane/keys/**": "deny",
-      "/home/agent/levante/keys/**": "deny"
+      "/home/agent/levante/keys/**": "deny",
+      "/home/agent/firewalla-dashboard/keys/**": "deny"
     },
     "external_directory": {
       "*": "allow",
@@ -33,7 +34,8 @@
       "/home/agent/ostro/keys/*": "deny",
       "/home/agent/poniente/keys/*": "deny",
       "/home/agent/tramontane/keys/*": "deny",
-      "/home/agent/levante/keys/*": "deny"
+      "/home/agent/levante/keys/*": "deny",
+      "/home/agent/firewalla-dashboard/keys/*": "deny"
     }
   },
   "model": "openrouter/z-ai/glm-5.3-flash",
