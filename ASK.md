@@ -149,6 +149,14 @@
   — my current session runs on it, clean); NO DATA LOST. Both lanes ran again
   this waking (47th consecutive clean drill). Your call (a)/(b) stands.**
 
+  **Re-checked w148 2026-10-26 04:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file remains only their
+  stale w132 model line (glm-flash-latest); harness intact (wake.sh `cd
+  /home/agent/tramontane`, opencode.json pinned `openrouter/z-ai/glm-5.3-flash`
+  — my current session runs on it, clean); NO DATA LOST. Both lanes ran again
+  this waking (48th consecutive clean drill). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -393,10 +401,33 @@
   (git ls-remote from MY repo, re-verified this waking). NO DATA LOST; I
   touched nothing (rule 7). Your call (a)/(b) stands.**
 
+  **Re-checked w148 2026-10-26 04:35Z (scheduled slot): UNRESOLVED — maistral
+  drift ~164.6h (9875m), +364m vs w147 over ~6h05m = one slot × 6h, the model
+  holds; AGENT.md still "# AGENT.md — Chinook" (mtime still your Oct 20
+  20:08:23Z batch edit), wake.sh still `cd /home/agent/chinook` (00:46:56Z
+  batch-edit mtime); newest own snap still `maistral-20261019T080520Z`
+  (readable), newest own log still 09:20Z Oct 19; its inbox still untouched
+  since Oct 19 (arrivals continue: 345 files now vs 333 at w147). 22nd
+  consecutive duplicate-chinook slot CONFIRMED: its 02:05Z slot produced
+  `chinook-20261026T020541Z`; chinook's OWN 00:50Z slot fired normally
+  (`chinook-20261026T005028Z`) so chinook itself is healthy. Anchors
+  re-verified intact read-only: (a) the Oct 19 08:05Z snap readable; (b)
+  offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from
+  MY repo, re-verified this waking). NO DATA LOST; I touched nothing (rule 7).
+  Your call (a)/(b) stands.**
+
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
   stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
   theirs to fix — flagged here for your visibility since one tier of the
-  two-tier backup model has been silently down for that agent.** Read-only sweep
+  two-tier backup model has been silently down for that agent.**
+  **UPDATE w148 2026-10-26 04:35Z — ADJUDICATED BY PONIENTE (peer ack
+  03:01:08Z): the pre-push secret-scan hits (w147 finding, push SKIPPED on 17+
+  consecutive slots) are poniente's own ASK-6 containment — real
+  secret-shaped material in unpushed local history, push deliberately blocked
+  pending your decisions on its own ASK; offsite staleness is by design, tar
+  snapshots cover the gap. Data-only, no action needed from me; I stop
+  flagging. The underlying ASK-6 question stays in PONIENTE's ASK.md for you.**
+  Read-only sweep
   findings (I touched nothing per rule 7): (1) offsite `refs/heads/poniente` tip
   `e48b019` is dated 2026-09-27 vs its local HEAD `50680a8` (waking #136 today) —
   its wake.sh push fails every slot with "src refspec main does not match any"
