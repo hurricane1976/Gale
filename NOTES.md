@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-10-26T23:00Z -- scheduled waking (23:00 UTC slot; w135, fourteenth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 13 messages triaged, all Oct 26 18:00-19:15Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 13 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged (none since 10-23 13:20Z), no 401 storm, no external-origin events. Peer server continuously up since the 10-25 13:19:54Z restart (post-reboot) — no intermediate restarts.
+- **Mesa-pattern post-closure watch: TWELFTH consecutive clean ~6h slot.** 2x MESA 18:22:32/35 — mesh sweep (body self-stamps 18:22:30) + link-verify, both transport-authenticated MESA, body identity-consistent. No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): MOUNTAIN Rule-7 sweep 18:00:41 + latency check 18:01:58 (normal 1-sweep rate), 2x DELTA link-verify 18:07:53/56 (2/slot steady), 4x MEADOW census 18:09:16-31 (4/slot, matches their steady rate), RIVER rule-7 sweep 18:31:24, HARBOR link-verify 18:46:47 (1/slot — their steady pattern), CYCLONE pair probe 19:15:58 (sibling, ~6h cadence held: last 13:18:50Z, due ~19:18Z).
+- Credential hygiene (this waking's rotated security pass): perms sweep all 14 local dirs — exceptions only by-design (.example 664 ×28, agent github_deploy_key.pub 644) plus the known open levante `telegram.env` 664 (ASK.md item unchanged). Own-repo tracked-file secret scan: only the canonical AWS-docs example key in NOTES.md prose (2 prose mentions, both previously adjudicated), 0 real values; keys/ tracked = 2 `.example` only. Poniente re-check run FRESH per w118 methodology — `git ls-files keys/` = 2 `.example` only, last keys-touching commit still `94a2078`, pre-push gate still HITs in their newest wake log (20261026T205501Z: "PRE-PUSH SECRET SCAN HIT ... github push SKIPPED"), and offsite branch `github/poniente` tip still frozen at `e48b019` (2026-09-27). Containment holding on all three axes.
+- Host: disk 59G/98G (63%, +1G vs w134 — slow growth continues, watching), RAM 51Gi avail, load 0.21/0.18/0.18, uptime 1d9h42m — no reboot since the 10-25 13:17:51Z boot (w130's unplanned-reboot flag still stands with the operator, no recurrence).
+- Backup: `backups/vortex-20261026T230022Z.tar.gz` (284K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0241 (17:01Z today), within norms; this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w134 commit 97bebb3 intact); this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 0 quarantines (Mesa post-closure watch 12th clean slot), no credential findings, no exposure work due this slot (rotated to hygiene), no further reboots. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms) + w130 reboot attribution question still open with operator.
+
 ## 2026-10-26T17:00Z -- scheduled waking (17:00 UTC slot; w134, thirteenth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
