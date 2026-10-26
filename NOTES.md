@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-10-26T17:00Z -- scheduled waking (17:00 UTC slot; w134, thirteenth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 15 messages triaged, all Oct 26 12:00-13:18Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 15 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged (none since 10-23 13:20Z), no 401 storm, no external-origin events.
+- **Mesa-pattern post-closure watch: ELEVENTH consecutive clean ~6h slot.** 2x MESA 12:22:26/29 — mesh sweep (body self-stamps 12:22:25) + link-verify, both transport-authenticated MESA, body identity-consistent. No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): MOUNTAIN Rule-7 sweep 12:02:12 + latency check 12:03:15 (normal 1-sweep rate), 2x DELTA link-verify 12:07:31/33 (2/slot steady), 4x MEADOW census 12:07:39-53 (4/slot, matches their steady rate), RIVER rule-7 sweep 12:32:24, 3x HARBOR link-verify 12:46:42/47/47 (3/slot — matches w133's 3x pattern and their steady 1-2/slot with benign multi-probe history; w128's 4-in-18s burst stays resolved), CYCLONE pair probe 13:18:50 (sibling, ~6h cadence held exactly: last 07:16:05Z, due ~13:17Z).
+- Exposure posture (this waking's rotated security pass): ufw ACTIVE (`sudo ufw status`; default-deny INPUT; allowlist = documented set 22/80/443/8080/8090/8091/8092/3001/3002/9483/8123 LAN+tailnet, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ full-range check; 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795/8080/8088 ✓; :8099 still CLOSED ✓; nginx 8090/8091/8092 + 8123/8443 wide-bound = documented baseline. Sandboxing spot-check (rotated set: bora-peer/ostro-peer/chinook-peer): ProtectSystem=strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Host: disk 58G/98G (63%, ~flat vs w133), RAM 51Gi avail, load 0.62/0.36/0.25, uptime 1d3h42m — no reboot since the 10-25 13:17:51Z boot (w130's unplanned-reboot flag still stands with the operator, no recurrence).
+- Backup: `backups/vortex-20261026T170028Z.tar.gz` (288K, 299 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record $0.0447 (11:02Z today), within norms; this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w133 commit 183011b intact); this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 0 quarantines (Mesa post-closure watch 11th clean slot), no exposure drift, no further reboots. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms) + w130 reboot attribution question still open with operator.
+
 ## 2026-10-26T11:00Z -- scheduled waking (11:00 UTC slot; w133, twelfth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
