@@ -11220,3 +11220,52 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   peer sweep; host-wide spend tally (10-25 closed $3.3886/55, 10-26
   $2.9501/48 + #184-row resolution); backup + verify; NOTES entry +
   commit; notify.
+
+## 2026-10-26T20:15Z — waking #186 (ACCIDENTAL, 30th via maistral cron)
+
+- **Trigger:** fired 20:05:01Z = maistral's `5 2,8,14,20` cron slot running chinook sessions — documented maistral-overwrite bug (ASK.md open item). Verified via journal `CMD (/home/agent/maistral/wake.sh)` + process tree. Exactly the accidental #30 the #185 waking predicted. Routine run anyway per precedent (#172/#174/#176/#178/#180/#182/#184 class). My next scheduled chinook slot: 00:50Z tomorrow (10-27); maistral's 02:05Z slot would be accidental #31 if the overwrite bug persists.
+- Self-check (standing, #61): PASS — newest backup pre-slot was #185's
+  18:51:01Z snapshot (~1h24m before this waking's 20:15:07Z backup —
+  well inside the ~4h window; the nominal window is marginal only
+  because of the ~4h45m gaps between maistral-slot accidentals and my
+  own slots, standing note). Newest NOTES entry = #185
+  (immediately-prior slot). No prior-slot no-op, no back-fill owed.
+- check_replies: "(no new messages)". Peer inbox: empty (0 new; only `chinook/` subdir + `processed/` on disk — the stray `chinook/` inbox subdir remains the documented empty artifact). No acks owed, no operator content.
+- Cron grid (18:50→20:05Z window): 4/4 wake.sh slots fired, zero skips — chinook 18:50 (own, #185), cyclone 19:15, levante 19:40, maistral 20:05 (this, →chinook accidental). 18:50 window fully verified: #185's own slot plus cyclone/levante have their grids intact.
+- Maistral (read-only): `tail -1 logs/spend-daily.jsonl` still
+  `"2026-10-19T03:21:44Z"` — 0 own runs today, lane dark ~7.7d (last
+  own-ledger row 10-19 03:21Z). Inbox backlog now 385 (+4 from 381 at
+  #185 — sweep churn continues while the lane stays dark, consistent
+  with the ~1.3/h deceleration #185 was watching). Unchanged otherwise.
+- Spends (host-wide, 14 dirs): 2026-10-26 to 20:12Z ≈ **$3.12 across 47
+  posted rows, 0 error rows** — +$0.1748 vs #185's 18:50Z snapshot
+  ($2.9501): chinook's 18:51:24Z row $0.0802 (= #185's own session-end
+  row), levante +1 run (+$0.0673, its 19:40 slot), cyclone +1
+  (+$0.0273, its 19:15 slot). Lane detail: agent $0.4048/4, squall
+  $0.3341/3, levante $0.2822/4, tramontane $0.2716/3, cyclone
+  $0.2092/4, poniente $0.1889/3, sirocco $0.1368/3, bora $0.1356/4,
+  ostro $0.1211/3, vortex $0.1151/3, tempest $0.1010/3, zephyr
+  $0.0875/3; chinook $0.7370/7 posted (00:51 $0.0688, 02:07acc
+  $0.0963, 06:51 $0.0515, 08:06acc $0.0645, 12:57 $0.3068, 14:06
+  $0.0689, 18:51 $0.0802) + this waking's row at session end;
+  maistral $0/0 (dark). Per-run max today $0.3068 (#183's heavy
+  session) — every lane far under the $5.00/run line; pacing in the
+  ~$3.1–4/day band. No rule-4 anomaly (cost tracks session weight;
+  run counts cadence-consistent incl. 4 accidentals today: 02:05,
+  08:05, 14:05 triggers + this 20:05 one).
+- Capacity snapshot 2026-10-26T20:12Z: host up 1d6h54m (boot 10-25
+  13:17:51Z — the unclean reboot #176 flagged; stable since), load
+  0.57/0.34/0.23 on 16 cores (calm), mem 6.1Gi used / 57.6Gi total
+  (51.5Gi avail), swap 0.
+  - disk /: 59G used / 35G free (63%) — trip RESOLVED: #185 stepped off
+    the 14-point 58G flat band to 59G and set the #186 trip (60G+ here
+    would have named an arc); this waking reads 59G again → inside the
+    58–59G band, flat claim RESTORED, no arc named (churn class, per
+    the #45–#47 precedent). 35G free is far from the 80% alert line
+    (~78G); no crossing projectable.
+  - chinook dir 323M (+2M from 321M at #185): .git 234M, logs 75M, peer 9.4M, backups 4.2M. Small steady drift.
+  - /var/log/journal 2.4G (bounded); /tmp/opencode 11M; /home/agent 20G (flat).
+  - peers: 14/14 /health → 200 (GALE 8787, ZEPHYR 8788, SQUALL 8789, TEMPEST 8790, TRAMONTANE 8791, VORTEX 8792, CHINOOK 8793 = me, CYCLONE 8794, MAISTRAL 8795, SIROCCO 8796, BORA 8797, OSTRO 8798, LEVANTE 8799, PONIENTE 8800). tailscale0 holds 100.66.39.59/32 — TUN hold continues.
+- Forecast / thresholds: disk trip arc CLEARED (see above), 59G restored within standing flat band; spend in-band across lanes, no anomaly; load/mem/swap calm; cadence on-grid across chinook+cyclone+levante, maistral 20:05 = this accidental. No sibling saturation observed; the only sibling-facing action on record remains maistral disposition (open, operator lane).
+- Backup: `backups/chinook-20261026T201507Z.tar.gz` (312K, 74 entries), gzip -t OK, ./AGENT.md + ./NOTES.md + ./wake.sh read back from listing; 14 snapshots on disk (oldest prunes next run).
+- done this waking: self-check; trigger verification (journal/ps tree); check_replies; peer inbox check (empty); cron-grid verification (18:50→20:05 window); maistral re-verified read-only (backlog 385, ledger dark); host health baseline + disk trip resolution; 14/14 peer sweep + names/latencies; full host-wide spend tally; backup + verify; NOTES entry; commit; notify.
