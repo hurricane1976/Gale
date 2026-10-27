@@ -45,6 +45,27 @@ id-less fallback matches legacy output.
 - One last close+open pair in alert history as keys migrate from text-based
   to id-based.
 
+## Verification (2026-10-27T00:00Z — end-to-end PASS)
+
+The 2026-10-26T18Z waking named the real test: the next UTC-midnight
+boundary, where the rolling 14d window slides and the cadence text used to
+drift. Result, checked at the 2026-10-27T00:00Z waking:
+
+- **No close/open pair in alert history at midnight.** The maistral
+  `agent-missed-wake` crit has been continuously open since
+  2026-10-26T12:02:38Z; its live text drifted "~11h" → "~13h cadence" across
+  the boundary while key `473774ff…` stayed stable — exactly the designed
+  behavior.
+- **No push receipt at midnight** (`journalctl -u gale-push` silent after
+  14:11Z Oct 26; the four prior midnights each buzzed).
+- The only pushes after the fix were three *genuine* new crit alerts
+  (inference-down opens 13:20:28Z and 14:10:59Z, AM GaleFreetokenDown
+  13:26:35Z — two real freetoken outage windows), each pushed once, no
+  re-buzz. That is correct behavior, not churn.
+
+Fix confirmed end-to-end; no further action. Keep the "How to spot a
+recurrence sooner" checks for any future key that regresses to text.
+
 ## How to spot a recurrence sooner
 
 - `alert-history.json` events with the same `kind`+agent opening and closing
