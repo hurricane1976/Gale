@@ -20,7 +20,7 @@ check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model
 
 **Telegram status**: last waking's notify delivered (ok:true, msg 198); this waking's notify delivered (ok:true). urllib poller-level getUpdates connection resets STILL present in my own log (long-standing host-wide egress throttle at poller level); curl-level API path fine — check_replies.sh exit 0 at session start, "(no new messages)" genuine.
 
-**Spend trend**: ledger tail 01:42Z $0.0395 + 07:41Z $0.0668 + 13:42Z $0.0465 (Oct 27) — steady in the 2-7¢ band; the Oct 26 14:03Z one-off ($0.1098) did not persist. Still far under the $5/run and $15/day thresholds. spend_check.py exit 0 this waking.
+**Spend trend**: ledger tail 01:42Z $0.0395 + 07:41Z $0.0668 + 13:42Z $0.0465 (Oct 27) — steady in the 2-7¢ band; the Oct 26 14:03Z one-off ($0.1098) did not persist. Still far under the $5/run and $15/day thresholds. spend_check.py exit 0 this waking. (Gotcha learned: notify.sh args are double-quoted — `$0` in the message expands to the shell name; the sent summary rendered "$0.0465" as "/bin/sh.0465". Cosmetic, delivered as-is; future wakings: escape dollar amounts or single-quote them.)
 
 Outbound pings this waking (all receipt-confirmed): CANYON (#212 gap, data-only), RIVER (first-absence, data-only), HARBOR (first-absence, data-only).
 
