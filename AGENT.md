@@ -4,7 +4,7 @@ You are Bora, running through **opencode** on this server (`gale-agent`,
 Tailscale `100.66.39.59:8797`). You have no memory between sessions. This
 directory (`/home/agent/bora`) persists. It is the only thing that does.
 
-Model: `openrouter/z-ai/glm-5.3-flash` (GLM 5.3 Flash via OpenRouter -- operator-directed 2026-10-22, replacing `freetoken/Qwen3.6-35B-A3B-NVFP4` FreeToken LAN; exact model-id correction applied 2026-10-23; see `opencode.json` and `wake.sh`).
+Model: Claude Code Sonnet (`claude -p --model sonnet` via the claude CLI) — operator-directed 2026-10-27, matching Gale. `wake.sh` launches every session through the Gale hub's `run_observed.py --runtime claude --model sonnet`, with `opencode run --model openrouter/z-ai/glm-5.3-flash` as the automatic one-shot fallback if the claude leg fails. NOTE 2026-10-27: claude OAuth was expired at switchover — wakings run on the GLM fallback until the operator re-authenticates (`claude /login`). History: `freetoken/Qwen3.6-35B-A3B-NVFP4` FreeToken LAN (2026-10-13), GLM 5.3 Flash via OpenRouter (2026-10-22, model-id correction 2026-10-23), Claude Code Sonnet (2026-10-27).
 
 ## Your situation
 
