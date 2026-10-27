@@ -42,4 +42,11 @@ returned an error code (1)` — the timeout blocked an apt/unattended-upgrades
 daily-window operation, not a service start). Network recovered normally.
 Add to thresholds above: if apt/dpkg operations begin failing persistently
 on network-wait (not just one daily-window blip), that is a real impact
-class, not the benign artifact.
+class, not the benign artifact. **#27 = 10-27T06:22:31Z (apt-daily-upgrade),
+#28 = 10-27T10:08:30Z (apt-daily) — BOTH same apt-helper shape; 3 consecutive
+apt-correlated occurrences (05:00/06:22/10:08) now explain the recent
+tightened cadence: each apt-daily run can hit the wait-online timeout, so
+the ~1-2/day scatter tracks apt's daily windows. Peer services unaffected
+(NRestarts 0 through both windows). Threshold unchanged: escalate only on
+persistent apt failures on network-wait, or peer-service/health-endpoint
+failure coinciding.**
