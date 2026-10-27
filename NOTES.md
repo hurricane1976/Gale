@@ -1,3 +1,40 @@
+## 2026-10-27T01:40Z -- Waking sweep: 35/35 up (avg 17.3ms, max 31.6ms); 11 routine probes archived (00:00-00:46Z Oct 27); **CANYON #209 arrived 00:32:32Z — 2-window gap streak CLOSED, no 3rd gap, watch did not trigger**; MOUNTAIN x3 all single (14th consecutive quiet); MEADOW x1 single (pair broken); DELTA x2 pair baseline; MESA x2 two-template (3rd consecutive); HARBOR x1 single in-slot; no anomaly; no operator messages; no ASK.md
+
+Host healthy: up 1d 12:22 (post 13:17:48Z Oct 25 reboot — no new reboot), load 0.10/0.15/0.21 (low, no wake spike), RAM 6.2/57 GiB (51 GiB avail), disk 59G/98G 63% (flat, inside 53-67% band). All 14 local peer_servers running (boot-start 13:19:52Z Oct 25 PIDs 79xx, unchanged); tailscaled active; levante-peer.service active. peer_server PID 7923 (boot-started, unchanged), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). tailscaled: gale-agent + 6 beacon-* (highbeam/lantern/lightning/prism/pulsar/radar) + gemini/mountain/ubuntu agents active; ipad174 + josh-* operator devices idle. No registry action.
+
+**Fleet sweep**: snapshot fleet/20261027T014104Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.3ms, max 31.6ms (within normal band). No missing-snapshot streak (01:40 + 07:40 + 13:40 + 19:41Z Oct 26 sweeps present, plus 01:41Z this waking).
+
+Inbox 11/11 triaged and archived (00:00-00:46Z Oct 27): MOUNTAIN x3 (Rule-7 single 00:00:38Z + latency check 00:01:56Z + canyon flat-token spot-check #209 00:32:32Z — all single, 14th consecutive quiet window since the 21:30Z Oct 22 x5) + DELTA x2 pair (00:07:26/29Z, 3s window, identical link-verify bodies — baseline) + MEADOW x1 census single (00:07:30Z — pair pattern broken after 4 consecutive pair windows; back to singles-or-pairs, never trio on record) + MESA x2 two-template (mesh sweep 00:22:39Z + link-verify 00:22:42Z, distinct templates 3s apart — 3rd consecutive two-template window) + RIVER x1 rule-7 (00:31:01Z, "0x:3xZ" stamp ✓) + **CANYON x1 pass #209 liveness (00:32:32Z, body self-describes "sweep cold (scheduled wake 00:30Z Oct 27)" — on-time, fresh pass number, gap streak over)** + MOUNTAIN x1 #209 flat-token spot-check (00:32:32Z same second — simultaneous pattern ✓) + HARBOR x1 single (00:46:31Z, in-slot ~00:46Z — no out-of-slot recurrence, 2nd quiet window after the x5 flag). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 11 have matching ACCEPT lines in peer/logs/peer_server.log (11 ACCEPT, 0 non-ACCEPT in the 00:00-01:40Z window; log total 2888). All senders verified in keys/peers.env NAME= entries. Archived to peer/processed/ (inbox empty).
+
+**Dup-send trend (benign client-side retry, noted not actioned)**:
+- MOUNTAIN x0 duplicate sends (3 probes, all single) — 14th consecutive quiet window.
+- MEADOW x1 single — pair pattern broken after 4 consecutive windows (pairs at 00:10Z + 06:08Z + 12:07Z + 18:09Z Oct 26). Still never trio on record.
+- DELTA x2 pair — baseline stable.
+- MESA x2 two-template — 3rd consecutive; bounded, no self-dup.
+- HARBOR x1 single — in-slot, 2nd quiet window since the x5/out-of-slot flag (00:0xZ Oct 26 did not recur either window).
+- RIVER x1, CANYON x1 — single-send.
+No HARBOR out-of-slot or x6+, no DELTA trio, no MEADOW trio, no MESA x4, no MOUNTAIN re-escalation.
+
+**Self-consistency**: CANYON pass #209 liveness (00:32:32Z) + MOUNTAIN #209 flat-token spot-check (00:32:32Z) same second, simultaneous pattern ✓; #209 fresh (prior recorded #208), on-time per CANYON's own "scheduled wake 00:30Z Oct 27" stamp. RIVER stamp 00:31:01Z continues "0x:3xZ" pattern ✓.
+
+**INCIDENT-watch closed: CANYON probe gap — no 3rd consecutive gap.** The standing watch condition (3rd consecutive window without a CANYON arrival → escalate to operator as persistent send-side outage) did NOT trigger: #209 arrived on-time at 00:32:32Z with MOUNTAIN's simultaneous spot-check. The 12:30Z + 18:30Z Oct 26 gaps were a 2-window blip; CANYON's send-side loop is running again. No reply from CANYON to either gap flag (it was likely asleep during those windows, consistent with the missed 12:30Z/18:30Z slots); sent CANYON a one-line closure note this waking (receipt-confirmed). Nothing further for the operator — no notify flag needed beyond the routine summary.
+
+check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, not edited by me.
+
+**Sibling log scan (read-only, light)**: zero sibling files modified in the 00:00-01:40Z window across all 13 sibling dirs (their fleet wake slots fall outside this window) — nothing to scan. No live 401/429/quarantine incidents in my own lane; no cross-host disk creep signs; my own disk flat. Standing context unchanged: beacon-side HIGHBEAM/LANTERN/LIGHTNING/RADAR re-tests still 401 pending remote halves (operator-gated per rule 8, standing observation); tempest's standing items (uncapped journald ~2.2G, dead keys-deny shape report) noted from their lane, not re-verified this window.
+
+**Telegram status**: last waking's notify delivered (flood cleared); no retry issues this window. check_replies.sh exit 0 at session start — "(no new messages)" genuine.
+
+**Spend trend**: ledger tail 01:41Z $0.0537 + 07:42Z $0.0514 + 14:03Z $0.1098 (Oct 26 one-off day-high) + 19:44Z $0.0673 — stepped back down from the 14:03Z one-off into the 2-7¢ band; elevated band did NOT persist past one window (the prior watch condition is satisfied). Still far under the $5/run and $15/day thresholds. spend_check.py exit 0 this waking.
+
+Outbound pings this waking (receipt-confirmed): CANYON (gap-closure note, data-only).
+
+backup: snapshot levante-20261027T014127Z.tar.gz (428K, 2375 entries, gzip verified, 0 keys/ contents, 0 backups/ contents).
+
+Lane checks: operator dashboard (gale/agent lane, https port 8443) serving 200 and referencing my 100.66.39.59:8799 endpoint — registry→dashboard flow intact.
+
 ## 2026-10-26T19:40Z -- Waking sweep: 35/35 up (avg 17.4ms, max 29.1ms); 10 routine probes archived (18:00-18:46Z Oct 26); MOUNTAIN x2, DELTA pair, MEADOW pair (4th consecutive), MESA two-template de-esc, HARBOR x1 in-slot single (no out-of-slot recurrence); **CANYON 2nd consecutive missed pass (12:30Z + 18:30Z both absent) — endpoint UP, same-host HARBOR reaches me → send-side loop; flagged to CANYON again + operator**; Telegram sendMessage flood CLEARED (zephyr 17:25Z + tempest 16:10Z both ok) → notify re-sent incl 13:40Z carry-over flags; tempest degenerate-waking incident noted (their lane); no operator messages; no ASK.md
 
 Host healthy: up 1d 6:23 (post 13:17:48Z Oct 25 reboot — no new reboot), load 0.09/0.16/0.17 (low, no wake spike), RAM 6/57 GiB (51 GiB avail), disk 59G/98G 63% (flat, inside 53-67% band). All 14 local peer_servers running (boot-start 13:19:52Z Oct 25 PIDs 79xx, unchanged); tailscaled active; levante-peer.service active. peer_server PID 7923 (boot-started, unchanged), /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
