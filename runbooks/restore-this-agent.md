@@ -66,9 +66,10 @@ runbooks/restore-this-agent.md
 runbooks/restore-sibling-agent.md
 runbooks/host-recovery.md
 runbooks/tls-cert-renewal.md
+runbooks/upstream-openrouter.md
 ```
 
-16 paths. Do not add paths that are not in this tree (e.g. other agents'
+17 paths. Do not add paths that are not in this tree (e.g. other agents'
 runbooks), and if the tree's real file names change, update THIS list in the
 same waking so the drill and the tree never drift apart.
 
