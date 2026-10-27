@@ -5,13 +5,17 @@ Tailscale `100.66.39.59`, peer listener port 8787). You have no memory between
 sessions. This directory (`/home/agent/agent`) persists. It is the only thing
 that does.
 
-Model: `openrouter/z-ai/glm-5.3-flash` (opencode). History: opencode + GLM
-2026-09-21/22, Claude Code/sonnet 2026-09-22 onward, then the operator moved
-the whole fleet to GLM 5.3 Flash (2026-10-22 Telegram, chat-id verified:
-"all the models are now running GLM 5.3 Flash please ensure the website is
-updated to reflect this on all pages") — confirmed live by wake.sh's launch
-line and this session's own runtime 2026-10-23. Cron-driven `wake.sh` launches
-every session via `opencode run --model openrouter/z-ai/glm-5.3-flash`.
+Model: Claude Code Sonnet (`claude -p --model sonnet`) — operator-directed
+2026-10-27, matching Bora. Cron-driven `wake.sh` launches every session via
+`claude -p "$PROMPT" --add-dir /home/agent --output-format stream-json
+--verbose --permission-mode bypassPermissions --model sonnet`, with
+`opencode run --model openrouter/z-ai/glm-5.3-flash` as the automatic
+one-shot fallback if the claude leg fails (kept so an auth outage cannot
+silence a waking). NOTE 2026-10-27: claude OAuth was expired at switchover
+— wakings run on the GLM fallback until the operator re-authenticates
+(`claude /login`). History: opencode + GLM 2026-09-21/22, Claude
+Code/sonnet 2026-09-22 onward, fleet to GLM 5.3 Flash 2026-10-22 (Telegram,
+chat-id verified), back to Claude Code Sonnet 2026-10-27.
 
 ## Your situation
 

@@ -4596,3 +4596,43 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   Tramontane line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
 
+
+## 2026-10-27 18Z waking (Gale, Claude Code sonnet)
+
+- **Incident found: 3 reboots in ~20 min at 16:02–16:21Z today, no Gale-side cause.**
+  Boots: -2 ended 16:02:10Z (abrupt — log stops mid-UFW noise, no shutdown
+  sequence), -1 ran 16:04:48–16:19:05Z, current boot 16:21:05Z. Uptime at
+  18:00Z = 1h39m (previous boot dated 2026-10-25T13:17Z, so this is the
+  second unexplained cutoff after Oct 25). During boot -1 root fs writes
+  failed: `rsyslogd /var/log/syslog write error` 16:08Z and
+  `OSError: [Errno 28] No space left on device` from backup_probe.py 16:09Z
+  and another python at 16:14Z — yet `df` shows 35G free / 13% inodes now, so
+  not real capacity exhaustion (Chinook's disk advisory is a separate, slow
+  trend). No EXT4/NVMe errors found in the kernel log. Cause unknown; not
+  verified whether operator-initiated (firewalla-display unit was failing
+  with an xrandr mode error at 16:19Z, plausibly related to hardware/display
+  work). Flagged to operator rather than guessed at.
+- **Collateral: Tempest's 16:18:45Z backup archive is a 0-byte file**
+  (`/home/agent/tempest/backups/tempest-20261027T161845Z.tar.gz`), written
+  during the reboot cycle. It makes `gale-backup-proof.service` report 13/14
+  and sit in `failed` (16:26:08Z run; timer next fires 10:00Z). Tempest's good
+  snapshots (04:10Z, 10:10Z) are intact. Left untouched — Tempest's file, my
+  role is read-only on siblings; if Tempest's pruning keeps N newest it could
+  evict good snapshots behind a zero-byte one, worth Tempest/operator removing it.
+- Everything else green: tailscaled/cron/gale-peer/gale-sysmon/gale-fleet-api
+  active; only failed unit is gale-backup-proof (above). Disk 63% (35G free),
+  mem 51G avail, load ~0.1.
+- Backup: `backups/gale-20261027T180011Z.tar.gz` (43M, 697 entries) `tar -tzf`
+  OK, zero keys/ entries.
+- Ledger: 12Z waking $0.1193 (12:03:07Z) recorded; this one lands at end.
+- Inbox: 19 messages (Mountain/Meadow/Delta/Mesa/River/Canyon/Harbor
+  liveness probes; Chinook disk-capacity advisory, ~5GiB/day opencode.db
+  growth, will re-measure 18:50Z; Cyclone's tidal stale-wake FYI which the
+  host-missed-batch alert already covers). All data, no action requested.
+- Committed the operator's pending wake.sh/AGENT.md edits (model switch to
+  Claude Code sonnet w/ GLM fallback, 2026-10-27) so they're versioned. This
+  waking itself ran on claude, so the OAuth expiry noted in AGENT.md appears
+  resolved. Left untracked `.write-test` alone.
+- Next waking: did the reboots recur (uptime should be ~7h45m at 00Z)? is
+  Tempest's 0-byte archive gone / backup-proof back to 14/14? check tidal
+  12Z/18Z batch; unchanged operator-gated ASK.md items.
