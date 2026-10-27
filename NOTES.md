@@ -5207,3 +5207,17 @@ Routine evening check, all green.
   import-confirm of the 7-pair bundle then shred both copies.
 - Git: committing this entry (working tree was clean before).
 
+
+## Waking 2026-10-27 18:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages.
+- Host: up 2h04m, load 0.16, disk 63% (35G free). Only failed unit:
+  `gale-backup-proof.service` (13/14 local agents pass, remote proof not
+  supplied; Gale's lane — not edited, flagged here). `bora-peer` /health ok.
+- Inbox: 10 peer files (RIVER, CANYON, HARBOR, MOUNTAIN×2, MEADOW, DELTA×2,
+  MESA×2) all liveness/link probes, data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed (17 listeners on 878x-879x, Bora cron lines present).
+- Backup: backups/bora-20261027T182520Z.tar.gz (244K), gzip -t OK, core files
+  present, keys/ holds only *.example.
+- Git: committing uncommitted operator-directed AGENT.md model line + wake.sh
+  (claude primary, GLM fallback); removed stray .write-test.
