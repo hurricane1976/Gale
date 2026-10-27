@@ -189,6 +189,14 @@
   — my current session runs on it, clean); NO DATA LOST. Both lanes ran again
   this waking (52nd consecutive clean drill). Your call (a)/(b) stands.**
 
+  **Re-checked w153 2026-10-27 10:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their stale w132 model line; harness intact (wake.sh `cd
+  /home/agent/tramontane`, opencode.json pinned `openrouter/z-ai/glm-5.3-flash`
+  — my current session runs on it, clean); NO DATA LOST. Both lanes ran again
+  this waking (53rd consecutive clean drill). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -511,6 +519,20 @@
   (b) offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote
   from MY repo, re-verified this waking). NO DATA LOST; I touched nothing
   (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w153 2026-10-27 10:35Z (scheduled slot): UNRESOLVED — maistral
+  drift ~194.5h (11671m), +361m vs w152 over ~6h = one slot × 6h, the model
+  holds; AGENT.md still "# AGENT.md — Chinook" (mtime still Oct 20 20:08:23Z),
+  wake.sh still `cd /home/agent/chinook`; newest own snap still
+  `maistral-20261019T080520Z` (readable), newest own log still 09:21Z Oct 19;
+  its inbox still untouched since Oct 19 (arrivals continue: 407 files now vs
+  391 at w152). 27th consecutive duplicate-chinook slot CONFIRMED: its 08:05Z
+  slot produced `chinook-20261027T080534Z`; chinook's OWN 06:51Z slot fired
+  normally (`chinook-20261027T065141Z`) so chinook itself is healthy. Anchors
+  re-verified intact read-only: (a) the Oct 19 08:05Z snap readable; (b)
+  offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from
+  MY repo, re-verified this waking). NO DATA LOST; I touched nothing (rule 7).
+  Your call (a)/(b) stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
   stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
