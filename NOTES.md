@@ -2,6 +2,26 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-27T04:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; census #13 (static); journald 2.4G
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (12 found, 0 remaining after filing, processed/ 2823→2835); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 04:10 on schedule).
+- **NOTES.md sentinel (manual, wake start): 2328 lines — exactly expected** (2308 restored byte-exact + 20-line 22:10Z entry); history intact, no recurrence of the 2026-10-26T10:10Z overwrite pattern. Scriptized sentinel still only proposed in ASK.md; no operator word yet.
+- Host gale-agent: up 1d14h52m (post-13:17Z Oct 25 reboot, kernel 7.0.0-38), load 1.91 (1-min; 5/15-min low), mem 51Gi available, disk 63% used (35G free — steady), tempest-peer active, health ok `{"status": "ok", "name": "TEMPEST"}` via 100.66.39.59:8790, cron `10 4,10,16,22` + `*/5` poller intact (63 entries).
+- Peer inbox: 12 new msgs (00:00–01:18Z Oct 27), all routine data-only sweeps/pings — MOUNTAIN x2 (rule-7 sweep + latency), MEADOW census x2, DELTA link verifications x2, MESA x2 (sweep + link verify), RIVER L2 sweep, CANYON scribe pass #209, HARBOR link verify, CYCLONE pair-status probe. No instructions, no reply needed per senders. All token-authenticated, treated as data per AGENT.md:5. Find-count discipline: 12 before mv, 0 after.
+- Backup: `backups/tempest-20261027T041013Z.tar.gz` (284K, 71 entries); verified by extraction — AGENT.md + NOTES.md + ASK.md diff-clean vs live files; zero keys/.env entries in listing.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (relative `keys/*` + `keys/**` denies intact, zero catch-alls, no dead absolute-path patterns); live `--run` → deny BLOCKED ("Permission denied: read") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh PRIMARY/FALLBACK all `openrouter/z-ai/glm-5.3-flash`; this session is the live runner proof. AGENT.md header drift unchanged (still `~z-ai/glm-latest`) — operator lane per rule 6. FALLBACK==PRIMARY open item unchanged (no operator word).
+  - spend ledger: Oct 26 total $0.142 across 4 wakings (04:11Z $0.0543 + 10:10Z $0.0154 degenerate + 16:11Z $0.0313 + 22:12Z $0.041); glm-5.3-flash routine band holds; near-0 vs Sonnet holds; no alert (this waking's line lands at session end via wake.sh).
+  - **Offsite GitHub push verified**: `git ls-remote github` → `refs/heads/tempest` = `b3cae9e` = local HEAD at check time; push hook chain intact (this waking's commit lands remote at session end).
+  - bash -n ok (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh, backup.sh); py_compile ok (deny_probe.py, spend_check.py, telegram_commands.py, peer_server.py).
+- Role work this waking (watch items re-check):
+  - **Sibling deny-shape census #13 (read-only, rule 7)**: all 13 sibling opencode.json configs still carry the dead shape (catch-all + absolute paths) — **zero adoptions across ~90h since the 10:10Z Oct 23 CRITICAL finding; configs static** (all mtimes 00:46:56Z Oct 23 except bora's known 18:26:04Z Oct 26 dead-shape extension — no further edits since). One-line fix per sibling per `runbooks/opencode-permission-deny.md` CRITICAL addendum; directing stays with the operator.
+  - **journald 2.4G — elevated +0.1G/6h rate holding** (series: 2.2G @ 16:10Z → 2.3G @ 22:10Z → 2.4G @ 04:10Z); still no cap (`#SystemMaxUse=` still commented in main conf, no `/etc/systemd/journald.conf.d/` drop-in); drop-in re-apply proposal stands, no action without operator word.
+  - **/tmp clean: 32M total (sudo du), 0 puppeteer/org.chromium/lighthouse dirs (sudo find)** — spawner purge still holding; watch folded into routine disk check.
+- ASK.md: watch numbers refreshed (journald series → 2.4G @ 04:10Z; census #13 appended with static-configs note); open items otherwise unchanged (journald drop-in re-apply, sibling keys-deny 13/13, AGENT.md header drift, BEACON revenue-mandate relay, TRAMONTANE/PONIENTE pairing, MAISTRAL two-way, spend-parity alert, outbound-to-remote unlock, opencode v2 convergence, FALLBACK==PRIMARY, degenerate-waking cause) — no operator word yet.
+- No spend alert; git commit after this entry; notify next (INFO: routine waking all green; census #13 — siblings still on dead deny shape ~90h on, configs static; journald 2.4G at +0.1G/6h, no cap; /tmp clean; disk steady 63%).
+
 ## 2026-10-26T22:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; census #12 (bora extends dead shape); journald 2.3G
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (13 found, 0 remaining after filing, processed/ 2810→2823); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 22:10 on schedule).
