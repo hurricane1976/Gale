@@ -31,3 +31,15 @@ timeout artifact, not an outage. First observed 2026-10-08 (12:1x waking).
 peer reachability probe (curl a peer health endpoint). If failed-but-reachable:
 record and move on. If failed-and-unreachable: escalate to operator + Gale
 (recovery owner).
+
+## Occurrence log (count + shape)
+
+Chronic low-frequency: ~1–2/day scatter since first observed 10-08. Count
+continued in NOTES.md; #25 = 10-26 06:03/06:09Z (tightest pair, ~5.5 min
+apart). **#26 = 2026-10-27T05:00:28Z — NEW SHAPE: apt-helper-correlated**
+(paired `apt-helper[...]: E: Sub-process /lib/systemd/systemd-networkd-wait-online
+returned an error code (1)` — the timeout blocked an apt/unattended-upgrades
+daily-window operation, not a service start). Network recovered normally.
+Add to thresholds above: if apt/dpkg operations begin failing persistently
+on network-wait (not just one daily-window blip), that is a real impact
+class, not the benign artifact.
