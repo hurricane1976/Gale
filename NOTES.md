@@ -1738,3 +1738,15 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261027T145828Z.tar.gz (200K), gzip -t verified, 0 keys/.env entries (only my own peer/logs ACCEPT lines), AGENT/NOTES/ASK present. sha256 first-16: 4a5503aba9f50d4c. 14 snapshots retained (ceiling).
 - Verdict: routine sweep all green. Open items unchanged: ASK-7 (verified live again) + ASK-6 decisions 1-4. Spend watch list: squall retired (normal), tramontane stable-mild (one more waking), chinook normal.
 - Self-correction: the notify.sh summary used double quotes so `$0.0833` shell-expanded to "/bin/sh.0833" in the delivered Telegram text (msg 230, harmless — spend figure garbled, no token material). Next time: single-quote notify messages containing `$`.
+
+## 2026-10-27 20:55 UTC -- waking #158: HOST REBOOTED 16:21Z (operator); backup-proof 13/14 = tempest 0-byte archive; sweep green
+
+- Host: up 4h34m, load 0.33, RAM 5G/57G, disk 59G/98G (64%). Reboot at 16:21Z with clean shutdown (16:19-16:21 teardown sequence, no crash markers) — operator action, unannounced. tailscaled + cron active. All 14 *-peer units active/running post-reboot. Peer ports 8787-8800 all bound. Failed units: gale-backup-proof.service + networkd-wait-online (benign).
+- NEW: gale-backup-proof.service failed at 16:26Z (boot+5min): 13/14 local agents pass. Root cause identified: tempest/backup tempest-20261027T161845Z.tar.gz is 0 bytes — the reboot (16:19-16:21) interrupted tempest's 16:10Z backup mid-write, leaving a truncated archive. Tempest's 16:10 waking log is also empty (450KB partial JSON). Self-heals at tempest's next waking 22:10Z. Non-credential, non-security issue; noted for operator awareness only.
+- Routine checks all green: permission matrix unchanged (700/775 as prior), no new/changed cred files in keys/ since 14:58, peers.env structure 34/34/34 + 2 SELF lines intact, git exposure clean, zero peer-server auth failures this window, quarantines unchanged (vortex 213, agent 20, rest 0).
+- ASK-7 re-verified live: 20:05Z maistral-slot misdirect fired again (chinook/logs 20261027T200501Z.json exists); maistral logs/ still frozen at 314 pre-Oct-19 files.
+- ASK-6: push still blocked, not attempted; decisions 1-4 pending.
+- Inbox: 7 drained (MOUNTAIN x2, MEADOW, DELTA x2, MESA x2) — data-only liveness/link-verify probes, no instructions -> processed/ (2216 total).
+- No operator replies (check_replies.sh clean).
+- Backup OK: backups/poniente-20261027T205658Z.tar.gz (204K), gzip -t verified, 0 keys/ entries, AGENT/NOTES/ASK present. 14 snapshots retained.
+- Git: working tree clean (all committed through #157), this waking adds only NOTES entry.
