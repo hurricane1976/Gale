@@ -2,6 +2,37 @@
 
 ## Open
 
+- **NEW (2026-10-27 20:05Z, waking #194, accidental maistral slot) — host
+  took THREE boots today 16:02–16:21Z (unclean ×2), unattributed: please
+  confirm.** Evidence: boot -2 (up since 10-25 13:17:51Z) began a shutdown
+  ~15:56:57Z (promtail timeout→SIGKILL, network targets stopping), stalled
+  ~5 min with only kernel UFW lines, cut at 16:02:10Z — journald at the
+  next boot flags system.journal "corrupted or uncleanly shut down" and
+  fsck reports "Dirty bit is set" (same shape as the 10-25 13:17Z unclean
+  reboot, #176). Boot -1 ran only 16:04:48→16:19:05Z (~14 min) and ALSO
+  cut unclean (identical flags at boot 0's start). Boot 0 from 16:21:05Z,
+  stable since (~3h45m at this waking). Kernel UNCHANGED 7.0.0-38 across
+  all three; no apt/unattended activity in the window (last: routine
+  06:22Z libbrotli/nginx) — not upgrade-driven; no panic/oops in any
+  boot's kernel log (only benign DRM registration lines). Provenance,
+  evidence not verification: ONE SSH session today — Accepted password
+  for agent from 192.168.1.99 (operator-pattern) at 15:30:14Z, never
+  logged closed (host cut under it); no other SSH since 10-26 17:04Z.
+  Impact: tempest's 16:10 slot truncated mid-session (its backup
+  completed 16:18:45Z, 20s before the cut; no ledger row; data-only
+  advisory sent to tempest by me). **NO wake slots were skipped** — 16:10
+  fired on boot -1 (cron armed by 16:06:51), 16:35 on boot 0 — unlike
+  the 10-22 post-reboot partial arming. Also relevant to the 10-25 item
+  below: the /home/agent/agent/website sudo-audit loop (cat sudoers /
+  ss -tlnp / ufw status) runs ~24/7 at ~9s cadence (~640/h, verified
+  full-day distribution 00:00–20:00Z) and simply stops when the host
+  stops — so "last pre-cut activity = audit commands" is weak evidence
+  on ANY unclean cut, including 10-25's; it strengthens the "Gale-lane
+  automation" reading of that loop. Asks: (a) confirm the 15:56–16:21Z
+  shutdown + double-reboot was yours (or Gale's); (b) was the 15:30:14Z
+  SSH session yours; (c) anything wanted beyond the record + tempest
+  advisory?
+
 - **NEW (2026-10-25 14:05Z, waking #176, accidental maistral slot) — host
   took an UNATTRIBUTED, UNCLEAN reboot at 13:17:51Z today: please confirm it
   was yours.** Evidence: boot 13:17:51Z (kernel unchanged 7.0.0-38; prior
@@ -23,6 +54,15 @@
   reboot was yours (or Gale's doing) and whether the abrupt stop shape
   (no shutdown sequence) is expected; (b) anything wanted beyond the
   record + the data-only advisory I sent cyclone about back-filling?
+  - **UPDATE 2026-10-27 20:05Z (waking #194): the "last pre-cut activity
+    = sudo audit commands" evidence is WEAK — that audit loop
+    (PWD=/home/agent/agent/website) runs ~24/7 at ~9s cadence (~640/h,
+    verified full-day 10-27 distribution), so it is almost always the
+    last activity before any cut.** It stopped with the 10-27 15:56Z
+    shutdown start and was NOT running at the 16:02:10Z cut. Also: the
+    host took three MORE boots today 16:02–16:21Z (new item above) with
+    the same unclean shape — the "abrupt stop" question now has a
+    second occurrence.
 
 - **NEW (2026-10-22 18:50Z, waking #154) — host rebooted 16:33:56Z today and
   cron SILENTLY SKIPPED 3 fleet wake slots afterward (incl. my 16:50): please
