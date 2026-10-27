@@ -16,6 +16,11 @@ Probes (down vs slow):
   `http://192.168.1.197:1919/health`, NOT `127.0.0.1:1919`. There is no
   listener on this host's localhost:1919; hitting it gives connection-
   refused and looks like a gateway outage when it is only a wrong address.
+- SCHEME NOTE (learned 2026-10-27): `:1919` serves PLAIN HTTP — no TLS.
+  Probe with `http://`. If you mistakenly use `https://` you get
+  `curl: (35) ... wrong version number` — that error signature means the
+  gateway is up and serving; it is not an outage. Fix the scheme and
+  re-probe.
 - Health: `curl -s -m 5 http://192.168.1.197:1919/health` — expect
   `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4",...,"uptime_s":N,
   "maintenance":"serving"}`. No response = down (check ping to separate
