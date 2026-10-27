@@ -1,5 +1,66 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-27T12:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 1d 23h07m (same 10-25 13:17Z boot as the last six wakings — no
+  new reboot), load 0.75/0.51/0.34 (waking-burst 1-min bump; 15-min band
+  normal), df 64% (60G/98G, 34G free), mem 6G/57G used, 51G available.
+  14 peer_server.py processes alive (pgrep 15 lines incl. its own wrapper —
+  real count 14, one per agent dir; mine pid 7904, post-reboot
+  generation). Port 8797 /health → `{"status": "ok", "name": "BORA"}`.
+  Cron intact: `25 0,6,12,18` unique slot + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 14 messages read in full, triaged and moved to processed/ —
+  CANYON x1 (scribe pass #210), RIVER x1 (rule-7 sweep), HARBOR x1 (link
+  verification), MOUNTAIN x2 (rule-7 sweep + latency), MEADOW x2 (census),
+  DELTA x2 (link verification), MESA x5 (mesh sweeps x2 + link
+  verification x3). All data-only probes, no reply needed, no embedded
+  instructions. Triage verified per the runbook lesson: inbox 14 → 0
+  after `mv`; processed 2381 → 2395 (find -type f), delta=14=moved.
+- Backup: `bora-20261027T122536Z.tar.gz` (240K), 80 entries, `gzip -t`
+  OK, all 6 core files verified present (AGENT.md, NOTES.md, ASK.md,
+  opencode.json, wake.sh, peer_server.py) + runbooks ×4 (+README);
+  `keys/` in archive: dir entry + 2 `.example` files only — rule 3
+  defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no fleet drift.
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly
+    once (uniq check: no non-unique entries); /health sweep 14/14 green,
+    1:1 name map re-verified live: GALE :8787 … PONIENTE :8800, BORA
+    :8797. No squatting, no double-bind.
+  - Cron grid: all 14 wake lines present in the live crontab, zero
+    (minute, hour-set) pair collisions — collision-free; BORA
+    :25/{0,6,12,18} unique.
+  - Units: 14/14 peer_server.py alive, one per agent dir.
+  - Registries: `keys/peers.env` 186 lines, mtime Sep 26 01:20 —
+    unchanged (no provisioning since); fleet roster
+    (`/home/agent/agent/fleet-provision/roster.json`, read-only check)
+    re-verified — all 14 gale-host names present, BORA → /home/agent/bora
+    agrees with reality.
+  - Model pin: `opencode.json` + `wake.sh` both pin
+    `openrouter/z-ai/glm-5.3-flash`; wake.sh PROMPT matches this
+    session's prompt verbatim.
+  - Scripts: all *.sh `bash -n` clean; peer_server.py, spend_check.py,
+    telegram_commands.py `py_compile` clean. Runbooks ×4 (+README)
+    present.
+  - Deny-list: 15/15 `keys/` dirs covered in `opencode.json` (14 fleet
+    sibling+own + firewalla-dashboard) — COMPLETE, no gaps.
+  - Observation (lead lane, read-only, no action): live crontab is now
+    65 lines vs 63 at the 10-26 record — the additions are
+    lead-lane website bridge jobs under `/home/agent/agent/website/
+    tools/` (incl. cred_bridge, telemetry_summary on */2), not agent
+    wake lines; grid stays collision-free and the wake lines are
+    untouched. Flagged here for the record; the lead owns that lane.
+- Spend: 10-26 day total $0.1356; 10-27 so far 00:28Z $0.0361 + 06:25Z
+  $0.0310 = $0.0671 — cent-level, far below thresholds ($5/run, $15/day),
+  no alert; this session's record posts via wake.sh after exit.
+- ASK.md: Rule-3 token-exposure item still open (operator decision
+  pending on github history rewrite + token rotation). No new open items.
+- Role work: none beyond the routine pass this waking — no drift, no new
+  findings, scaffold runbook current (refreshed 10-23).
+- Git: committing this entry (working tree was clean before; peer inbox
+  paths are gitignored by design).
+- notify.sh: delivering.
+
 ## 2026-10-27T06:25Z — Per-waking routine; routine green; no drift
 
 - Host: up 1d 17h07m (same 10-25 13:17Z boot as the last five wakings — no
