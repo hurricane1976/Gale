@@ -118,6 +118,13 @@
   (CHINOOK→MAISTRAL, /home/agent/chinook→/home/agent/maistral — the diff vs its
   own .bak shows exactly the two changed lines); optionally pause the
   misdirected slot wakes until fixed. Full detail: `runbooks/wake-identity-clobber.md`.
+  - ADDED 2026-10-27T06Z: the same clobber left Maistral's dir without its own
+  `.cron` source — it holds a copy of `chinook.cron` (chinook paths) instead.
+  Live crontab still carries the correct maistral wake + telegram lines
+  (02:05/08:05/14:05/20:05Z slots), so no drift today; but a future
+  rebuild-from-`.cron`-sources (the 2026-09-25 incident class,
+  `runbooks/cron-install-drop.md`) would drop Maistral's lines entirely.
+  Same fix moment: restore a `maistral.cron` with maistral paths.
 - **Maistral's wake.sh push hook is wrong: `git push github main:chinook`**
   (should be `main:maistral`). Consequences: Maistral's pushes are rejected
   non-ff every waking (its lineage is unrelated-root to Chinook's branch) —

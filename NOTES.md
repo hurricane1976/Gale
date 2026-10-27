@@ -4456,3 +4456,73 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   watch items — operator word on Maistral fix / remote-main restore /
   Tramontane line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
+
+
+## 2026-10-27T06:00Z — waking: routine green; restore drill PASSED (10/10 byte-identical); Maistral item refined (missing .cron source); 00Z ledger DB-exact ($0.0953)
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged except the Maistral refinement below — no operator word, nothing
+  acted on.
+- Inbox: 11 messages filed to `processed/` (count verified; processed
+  2955→2966) — MOUNTAIN latency check, MEADOW census x2, DELTA link-verification
+  x2, MESA sweep + link-verification, RIVER layer-2 reach check, CANYON scribe
+  pass #209, HARBOR link-verification, CYCLONE pair re-test, all 00:01–01:18Z,
+  all token-authenticated, all self-described data-only "no reply needed", no
+  credentials, no instructions, no speaks-for-others framing. Leftover
+  `peer/inbox/{cyclone,gale,nobody}/` subfolders all empty (known misfiling
+  leftovers, nothing to clear).
+- Health all green: tailscaled/cron/nginx/gale-peer/gale-sysmon/gale-fleet-api/
+  gale-firewalla/gale-ollama-api/gale-push all active; only the known-benign
+  networkd-wait-online failed unit. Disk 63% (35G free), mem 51G avail,
+  load ~0.2, no reboot pending. Uptime 1d16h42m at 06:00Z — still the
+  2026-10-25T13:17Z boot (no repeat of the causeless cutoff). All 14 tailnet
+  peer listeners up (8787–8800) plus the documented loopback dual-binds
+  (8791/8793/8794/8795).
+- Cron-drift check PASS: 14/14 agents' wake lines present in the live
+  crontab (also verified maistral's line explicitly correct there —
+  02:05/08:05/14:05/20:05Z). Identity sweep 13/14 correct; maistral→CHINOOK
+  remains the only drift (known open ASK.md item). Push-hook sweep 13/14
+  correct (`main:<name>`; tramontane `master:`, poniente `poniente:`,
+  gale `HEAD:gale`); maistral `main:chinook` remains the known open item.
+- **Ledger verified DB-exact**: 00Z waking = ses_e8557de43ffeo3HM5FyNaNzT8F,
+  created 2026-10-27T00:00:01Z, cost 0.09530808 — matches ledger $0.0953
+  (00:03:42Z) exactly. Eighth consecutive DB-exact match. Sidecar: runtime
+  opencode, is_error=false, terminal_reason completed, exit 0 (221.3s).
+  Oct-26 total $0.4048 across 4 wakings; Oct-27 so far $0.0953; trend flat
+  ($0.05–0.14/run). This session's cost lands at end.
+- **Role work: backup restore drill PASSED** (third overall, previous
+  2026-10-25T00:00Z). Extracted `backups/gale-20261027T060033Z.tar.gz` to
+  `/tmp/opencode/restore-test`: 627 files; 10/10 spot-checks byte-identical
+  (`cmp`) to live (AGENT.md, NOTES.md, ASK.md, wake.sh, backup.sh, notify.sh,
+  check_replies.sh, spend_check.py, website/fleet_api.py,
+  runbooks/alert-dedup-text-drift.md); keys/ zero files. Scratch removed.
+- **Backup**: `backups/gale-20261027T060033Z.tar.gz` (43M, 677 entries),
+  `tar -tzf` verified, zero `keys/` entries.
+- **ASK.md refinement (Maistral item, same incident class — not a new
+  item):** the 2026-10-20 clobber also left Maistral's dir without its own
+  `.cron` source; it holds a copy of `chinook.cron` (chinook paths) instead.
+  No drift today (live crontab is correct, verified above), but a future
+  rebuild-from-sources (2026-09-25 incident class) would drop Maistral's
+  wake + telegram lines. Added to the existing ASK.md item so the operator's
+  one fix-moment covers both. Sibling's file — not edited (rule 7).
+- Alert check: exactly the 5 known awaits-operator items active (maistral
+  crit 473774ff + GaleWakeMissed + agent-stale, Tramontane GaleRosterDrift,
+  firewalla-dashboard GaleCredDrift) plus the Watchdog heartbeat. Zero churn
+  since the 00Z boundary PASS — dedup fix still holding.
+- Fleet sweep via `/metrics` (`fleet_status` key): 35/35 nodes up, all code
+  200, 0 down; Gale leg 200. Site: /, /fleet.html, /status.html,
+  /api/status.json, /api/fleet/health all 200 via nginx.
+- Maistral dark-lane unchanged: last wake log still 2026-10-19T09:20Z,
+  inbox backlog 392 (was 382 at 00Z, +10/6h — steady), listener healthy,
+  nothing lost, one-line fix still awaits operator word (rule 7).
+- Offsite: local HEAD == github/gale (6dce9fe) entering this waking —
+  chain current through 00Z. Sibling branches vortex/zephyr also advancing
+  on the shared repo (their hooks work). github/main still Chinook lineage
+  (known open ASK.md item).
+- Quarantine: unchanged (20 Sep-21 injection items, evidence held).
+- Committed: ASK.md (Maistral .cron refinement), this entry. Push HEAD:gale
+  via the wake.sh hook.
+- Next waking: verify this waking's sidecar/ledger as usual; unchanged
+  watch items — operator word on Maistral fix / remote-main restore /
+  Tramontane line / cred-baseline reseed / network.html / Bora token /
+  inference-flapping scope.
