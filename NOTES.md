@@ -1,5 +1,60 @@
 # NOTES.md — Bora (Fleet Scaffolding & Onboarding)
 
+## 2026-10-27T00:25Z — Per-waking routine; routine green; no drift
+
+- Host: up 1d 11h08m (same 10-25 13:17Z boot as the last four wakings — no
+  new reboot), load 0.16/0.18/0.18 (normal band), df 63% (59G/98G, 35G
+  free), mem 6G/57G used, 51G available. 14 peer_server.py processes alive
+  (pgrep 15 lines incl. its own wrapper — real count 14). Port 8797 /health
+  → `{"status": "ok", "name": "BORA"}`. Cron intact: `25 0,6,12,18` unique
+  slot + telegram poll every 5 min.
+- Telegram: `check_replies.sh` → no new messages.
+- Inbox: 9 messages read in full, triaged and moved to processed/ — RIVER
+  x1 (rule-7 sweep), HARBOR x1 (link verification), MOUNTAIN x2 (rule-7
+  sweep + latency), DELTA x2 (link verification), MEADOW x1 (census), MESA
+  x2 (mesh sweep + link verification). All data-only probes, no reply
+  needed, no embedded instructions. Triage verified per the runbook
+  lesson: inbox 9 → 0 after `mv`; processed 2360 → 2369, delta=9=moved.
+- Backup: `bora-20261027T002603Z.tar.gz` (240K), 80 entries, `gzip -t` OK,
+  core files present (AGENT.md, NOTES.md, ASK.md, opencode.json, wake.sh,
+  peer_server.py, runbooks ×4); `keys/` in archive: dir entry + 2
+  `.example` files only — rule 3 defaults-deny holds.
+- Scaffolding pass (role step 4): GREEN — no fleet drift.
+  - Ports: 14 tailnet listeners 100.66.39.59:8787-:8800 each exactly once;
+    /health 1:1 name map re-verified live: GALE :8787 … PONIENTE :8800,
+    BORA :8797. :56317 present = tailscaled (identified 10-25), not drift.
+    No squatting, no double-bind.
+  - Cron grid: all 14 wake lines present in the live crontab, zero
+    (minute, hour-set) pair collisions — collision-free; BORA
+    :25/{0,6,12,18} unique.
+  - Units: 14/14 peer_server.py alive, one per agent dir.
+  - Registries: `keys/peers.env` 186 lines, mtime Sep 26 01:20 —
+    unchanged (no provisioning since); fleet roster
+    (`/home/agent/agent/fleet-provision/roster.json`, read-only check)
+    re-verified — 35 entries, all 14 gale-host names present
+    (case-insensitive match), BORA → /home/agent/bora agrees with reality.
+  - Model pin: `opencode.json` + `wake.sh` all pin
+    `openrouter/z-ai/glm-5.3-flash`; wake.sh PROMPT matches this session's
+    prompt verbatim.
+  - Scripts: 10 *.sh `bash -n` clean; peer_server.py, spend_check.py,
+    telegram_commands.py `py_compile` clean. Runbooks ×4 present.
+  - Deny-list: 15/15 `keys/` dirs covered in `opencode.json` (14 fleet
+    sibling+own + firewalla-dashboard, explicit `/*`+`/**` entries) —
+    COMPLETE (unchanged this waking). Check-method note: entries are
+    explicit per-agent paths, not a `*` glob — grep for the glob pattern
+    returns 0; grep per-agent path patterns instead.
+- Spend: no 10-27 entries in `spend-daily.jsonl` yet (wake.sh posts this
+  session's record after exit); 10-26 day total was $0.0916 — cent-level,
+  far below thresholds ($5/run, $15/day), no alert.
+- ASK.md: Rule-3 token-exposure item still open (operator decision
+  pending on github history rewrite + token rotation). No new open items.
+- Role work: none beyond the routine pass this waking — no drift, no new
+  findings, scaffold runbook current (refreshed 10-23). Applied the 10-26
+  shell-quoting lesson to this waking's notify call.
+- Git: committing this entry (working tree was clean before; peer inbox
+  paths are gitignored by design).
+- notify.sh: delivering.
+
 ## 2026-10-26T18:25Z — Per-waking routine; routine green; no fleet drift; firewalla-dashboard keys/ added to own deny-list
 
 - Host: up 1d 5h07m (same 10-25 13:17Z boot as the last three wakings — no
