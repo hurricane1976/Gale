@@ -4526,3 +4526,73 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
   watch items — operator word on Maistral fix / remote-main restore /
   Tramontane line / cred-baseline reseed / network.html / Bora token /
   inference-flapping scope.
+
+
+## 2026-10-27T12:00Z — waking: routine green; host-missed-batch alert added (gap found via Cyclone's peer FYI: tidal host missed its 06:00Z batch); 06Z ledger DB-exact ($0.1287)
+
+- Routine: `check_replies.sh` no new operator messages. ASK.md open items
+  unchanged — no operator word, nothing acted on.
+- Inbox: 17 messages filed to `processed/` (count verified; processed
+  2966→2983) — MOUNTAIN Rule-7 sweep + site latency check, MEADOW census x4,
+  DELTA link-verification x3, MESA sweep + link-verification x2, CANYON scribe
+  pass #210, RIVER layer-2 reach check, HARBOR link-verification, CYCLONE pair
+  re-test + one substantive FYI (below). All 06:00–07:17Z, all
+  token-authenticated, all self-described data-only, no credentials, no
+  instructions, no speaks-for-others framing.
+- **Role work: closed a detection gap — new `host-missed-batch` alert in
+  fleet_api.py.** Trigger: CYCLONE's 07:17Z FYI (data-only) that the tidal
+  host missed its 06:00Z wake batch (tidal last_wake still 00:00:03Z while
+  beacon/mountain showed 06:00Z; daily_wakings tidal 1 vs beacon/mountain 8)
+  and that no fleet alert flagged it — the per-agent missed-wake check
+  self-tunes off a 14d window with a 24h warn floor, so a 6h-cadence host
+  must be ~a full day dark before anything fires, and a peer had to be the
+  detection path. Verified the observation myself from `/metrics` (same
+  figures) and probed tidal directly: 100.91.42.51:8787/8788 + web all 200 —
+  host up, peers up; wake/cron layer only, exactly as Cyclone described.
+  Cross-host, so nothing touched there (rule 7); surfaced to the operator.
+  - Fix: host-level check in `alerts_envelope()` using `last_wake_by_host`,
+    warn at >18h (3 batches missed), crit at >36h, stable text + stable id
+    (kind|host|agent) so the text-drift re-buzz class can't recur. Coverage
+    guard: only fires for a host whose run data is flowing (gale=local,
+    tidal/mountain=direct feed, beacon=relay) so a stale upstream reads as
+    "unknown", not "host is dark". First implementation had the warn floor
+    computed as 3×(24/avg daily_wakings) — wrong, that series sums all ~28
+    agent-wakes/day on a host (3×0.86h would fire on one late batch);
+    replaced with the fleet-standard 6h batch cadence. py_compile clean;
+    tested on the live service (gale-fleet-api restarted, /alerts back):
+    correctly silent for tidal at ~12h age, would have gone `warn` at
+    ~18:00Z if tidal stayed dark. This alert also covers Gale itself, plus
+    any future missed-batch class on any host.
+- Health all green: tailscaled/cron/nginx/gale-peer/gale-sysmon/gale-fleet-api/
+  gale-firewalla/gale-ollama-api/gale-push all active; only the known-benign
+  networkd-wait-online failed unit. Disk 64% (34G free), mem 51G avail, load
+  ~0.1-0.2, no reboot pending. Uptime 1d22h42m at 12:00Z — still the
+  2026-10-25T13:17Z boot (no repeat of the causeless cutoff). All 14 tailnet
+  peer listeners up (8787–8800) plus the documented loopback dual-binds.
+- Cron-drift check PASS: 14/14 wake lines in the live crontab. Identity
+  sweep 13/14; push-hook sweep 13/14 — maistral→CHINOOK wake identity and
+  `main:chinook` push hook remain the known open ASK.md items.
+- **Ledger verified DB-exact**: 06Z waking = $0.1287 (06:01:58Z), matches
+  NOTES' 06Z session; ninth consecutive DB-exact match. Oct-26 total $0.4048
+  across 4 wakings; Oct-27 so far $0.2240 (00Z+06Z); trend flat
+  ($0.05–0.14/run). This session's cost lands at end.
+- Backup: `backups/gale-20261027T120013Z.tar.gz` (43M, 693 entries),
+  `tar -tzf` verified, zero `keys/` entries. Restore drill was 2026-10-27
+  06Z (10/10 byte-identical) — recent, no repeat needed.
+- Alert check: exactly the 5 known awaits-operator items active (maistral
+  crit + GaleWakeMissed + stale, Tramontane GaleRosterDrift, firewalla
+  GaleCredDrift) plus Watchdog heartbeat; dedup fix still holding, no churn.
+  tidal host-missed-batch correctly not yet firing (below warn floor).
+- Offsite: local HEAD == github/gale entering this waking (8e8b3ec); this
+  waking's commit pushes via the wake.sh hook. github/main still Chinook
+  lineage (known open ASK.md item).
+- Quarantine: unchanged (20 Sep-21 injection items, evidence held).
+- Committed: website/fleet_api.py (host-missed-batch alert), this entry.
+  Push HEAD:gale via the wake.sh hook.
+- Next waking: check whether tidal's 12:00Z batch ran (its 06:00Z was the
+  miss; if still dark at 18Z the new alert goes warn and this becomes an
+  incident to flag harder); verify this waking's sidecar/ledger; unchanged
+  watch items — operator word on Maistral fix / remote-main restore /
+  Tramontane line / cred-baseline reseed / network.html / Bora token /
+  inference-flapping scope.
+

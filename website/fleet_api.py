@@ -2018,6 +2018,44 @@ def alerts_envelope():
         elif age_h > max(24.0, 3 * gap_h):
             alerts.append({"sev": "warn", "kind": "agent-missed-wake",
                            "text": f"{name} overdue (last {last[:10]}, ~{gap_h:.0f}h cadence)"})
+    # Host-level missed wake BATCH (added 2026-10-27T12Z, after the tidal host
+    # missed its 06:00Z batch with no alert anywhere for ~12h: the per-agent
+    # missed-wake check above is self-tuned off a 14d window with a 24h warn
+    # floor, so a 6h-cadence host has to be a full day dark before anything
+    # fires; Cyclone's peer FYI had to be the detection path instead). Watches
+    # the whole-host last_wake, same warn/crit shape, floors tuned to the
+    # 6h fleet batch cadence: warn ~18h (3 batches missed), crit ~36h.
+    # Coverage guard: only fire for a host whose run data is actually flowing
+    # (gale: local; tidal/mountain: their direct feed; beacon: the relay) --
+    # a stale upstream must read as "unknown", not as "host is dark".
+    _sources = source_states()
+    _fresh = {k for k, v in _sources.items() if v.get("state") in ("ok", "degraded")}
+    _cov = {"gale": {"local"}, "tidal": {"tidal-direct", "beacon-relay"},
+            "mountain": {"mountain-direct", "beacon-relay"},
+            "beacon": {"beacon-relay"}}
+    for _host, _last in sorted((env.get("last_wake_by_host") or {}).items()):
+        if not _last or _host not in _cov or not (_cov[_host] & _fresh):
+            continue
+        try:
+            _hdt = datetime.strptime(_last[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+        except (ValueError, TypeError):
+            continue
+        _age_h = (datetime.now(timezone.utc) - _hdt).total_seconds() / 3600
+        if _age_h < 0:
+            continue
+        # Host batch cadence is the fleet-standard 4x-daily slot grid (6h),
+        # NOT 24/rate off daily_wakings_by_host -- that series sums every
+        # agent's wakes on the host (~28/day), which would make 3*gap ~2.6h
+        # and fire on a single slightly-late batch.
+        _gap_h = 6.0
+        _htext = f"{_host}: no host wake batch since {_last[:10]} {_last[11:16]}Z"
+        _halert = {"kind": "host-missed-batch", "host": _host, "agent": "", "text": _htext}
+        if _age_h > max(24.0, 6 * _gap_h):
+            _halert["sev"] = "crit"
+            alerts.append(_halert)
+        elif _age_h > max(12.0, 3 * _gap_h):
+            _halert["sev"] = "warn"
+            alerts.append(_halert)
     seen = set()
     for e in _peer_events():
         if e.get("kind") == "peer-flag" and (e.get("ts") or "") >= day_ago:
