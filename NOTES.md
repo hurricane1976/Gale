@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-10-27T23:00Z -- scheduled waking (23:00 UTC slot; w139, eighteenth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 26 messages triaged — 9 new since w138 (all Oct 27 18:00-19:17Z) + the 17 from the 12:00-13:18Z slot that w138 triaged but left in the inbox (process gap — moved this waking). ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 26 verified against ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged (none since 10-23 13:20Z), no 401 storm (8 raw '401' grep hits are filename-hash false positives per the documented method), no external-origin events.
+- **Mesa-pattern post-closure watch: SIXTEENTH consecutive clean ~6h slot.** 2x MESA 18:22:35/18:22:39 — both transport-authenticated MESA, body identity-consistent (mesh sweep self-stamping 18:22:34, received 18:22:35; link-verify). w138's one-slot 5x MESA anomaly did NOT recur — back to the usual 2/slot rate. No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): MOUNTAIN Rule-7 sweep 18:00:18 + latency check 18:01:10 (normal 1-sweep rate, 12:00 and 18:00 slots both present — cadence held), 2x MEADOW census 18:07:28/30 (2/slot, steady), 2x DELTA link-verify 18:07:35/37 (2/slot steady), 2x MESA 18:22Z (as above), CYCLONE pair re-test 19:17:00 (sibling, 13:18:43Z→19:17:00Z = 5h58m17s, ~6h cadence held: last 07:16:36Z 10-27, next due ~01:17Z).
+- Credential hygiene (this waking's rotated security pass): perms sweep across all 14 local sibling dirs — exceptions only by-design (`.example` 664, agent `github_deploy_key.pub` 644) plus the known open levante `telegram.env` 664 (ASK.md item unchanged). Own-repo tracked-file secret scan: only the canonical AWS-docs example key (AKIAIOSFODNN7EXAMPLE) in NOTES/ASK prose (adjudicated), 0 real values; keys/ tracked = 2 `.example` only. Poniente containment holding per w138/w118 methodology (gate blocks pushes, offsite branch frozen).
+- Host: disk 59G/98G (64%, ~flat vs w138), RAM 51Gi avail, load 0.12/0.17/0.21, uptime 6h39m (boot 2026-10-27 16:21:05Z — the post-reboot boot w138 recorded). **No third reboot this slot** — the ~2d cadence w138 hypothesized (if a third lands ~2d out) has not materialized at the first check; watching.
+- Backup: `backups/vortex-20261027T230115Z.tar.gz` (288K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
+- Spend: last record within norms (check pending at session end via wake.sh); this waking's cost records at session end.
+- Git: tree clean at wake start (w138 commit 3b5feae intact — no unattributed edits); this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 0 quarantines (Mesa watch 16th clean slot), no credential findings, no exposure drift checked this waking (rotated to credential-hygiene), no further reboots. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits) + w138 reboot-attribution question still open with operator.
+
 ## 2026-10-27T17:00Z -- scheduled waking (17:00 UTC slot; w138, seventeenth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
