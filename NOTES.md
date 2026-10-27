@@ -1,5 +1,20 @@
 # NOTES.md — Vortex
 
+## 2026-10-27T05:00Z -- scheduled waking (05:00 UTC slot; w136, fifteenth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 12 messages triaged, all Oct 27 00:00-01:18Z, ZERO quarantined. All identity-consistent, no credentials, no links, no instructions, no reply solicited. All 12 have matching ACCEPTs in peer/logs/peer_server.log; REJECTs 66 total unchanged (none since 10-23 13:20Z), no 401 storm, no external-origin events. Peer server continuously up since the 10-25 13:19:54Z restart (post-reboot) — no intermediate restarts.
+- **Mesa-pattern post-closure watch: THIRTEENTH consecutive clean ~6h slot.** 2x MESA 00:22:39/42 — mesh sweep (body self-stamps 00:22:38) + link-verify, both transport-authenticated MESA, body identity-consistent. No MOUNTAIN-transport mislabel. Quarantine unchanged (103 payload files, 213 total incl. reasons, last 10-23 18:22Z).
+- Rate notes (content-benign, transport-authenticated, not chased): MOUNTAIN Rule-7 sweep 00:00:39 + latency check 00:01:56 (normal 1-sweep rate), 2x DELTA link-verify 00:07:27/29 (2/slot steady), 2x MEADOW census 00:07:26/29 (2/slot, within their steady 2-4/slot), RIVER rule-7 sweep 00:31:02, CANYON scribe pass #209 00:32:32 (increments normally #208→#209, body self-stamps their 00:30Z wake; note CANYON did not appear in w134's 12:30Z or w135's 18:30Z Oct 26 windows — sequence clean with no duplicates, read as their cadence varying, not a defect), HARBOR link-verify 00:46:31 (1/slot — steady), CYCLONE pair probe 01:18:24 (sibling, ~6h cadence held: last 19:15:58Z, due ~01:16Z).
+- Exposure posture (this waking's rotated security pass): ufw ACTIVE (`sudo ufw status`; default-deny INPUT; allowlist = documented set 22/80/443/8080/8090/8091/8092/3001/3002/9483/8123 LAN+tailnet, exact match, no new rules); all 14 peer listeners 8787-8800 tailnet-only (100.66.39.59) ✓ full-range check; 127.0.0.1:8791/8793 firewalla-control/fleet-api + localhost extras 8794/8795/8088 ✓; :8099 still CLOSED ✓; nginx 8090/8091/8092 wide-bound = documented baseline. Sandboxing spot-check (rotated set: poniente-peer/tramontane-peer/sirocco-peer + vortex-peer self): ProtectSystem=strict/NoNewPrivileges/PrivateTmp intact, all active. No drift.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices (ipad174, josh-iphone18, josh-linux, josh-linux2 listed); none unknown.
+- Host: disk 59G/98G (63%, flat vs w135), RAM 51Gi avail, load 0.50/0.30/0.27, uptime 1d15h42m — no reboot since the 10-25 13:17:51Z boot (w130's unplanned-reboot flag still stands with the operator, no recurrence).
+- Backup: `backups/vortex-20261027T050039Z.tar.gz` (288K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ files in snapshot = `.example` only, by design — the lone non-example `keys/` match is the directory entry itself, no file). Extra forensic glance: /var/log/auth.log tail clean — no auth failures or unexpected logins; recent sudo is my own read-only checks plus the documented sibling scan pattern (chinook 10-25).
+- Spend: last record $0.0452 (23:03Z Oct 26), within norms; this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w135 commit a8f1af2 intact); this NOTES entry committed this waking (inbox/quarantine gitignored).
+- Verdict: routine waking. 0 quarantines (Mesa post-closure watch 13th clean slot), no exposure drift, no credential findings due this slot (rotated to exposure posture), no further reboots. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms) + w130 reboot attribution question still open with operator.
+- Notify: summary delivered via Telegram (ok:true). Minor process note: sent twice — the first invocation printed no output so I re-sent to confirm delivery; operator received the identical summary 2x. Next waking: check `logs/notify_last_response.txt` instead of re-sending.
+
 ## 2026-10-26T23:00Z -- scheduled waking (23:00 UTC slot; w135, fourteenth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
