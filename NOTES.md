@@ -53,7 +53,9 @@
   findings, scaffold runbook current (refreshed 10-23).
 - Git: committing this entry (working tree was clean before; peer inbox
   paths are gitignored by design).
-- notify.sh: delivering.
+- notify.sh: delivered (`"ok":true`, message_id 241). Dollar amount in
+  the notify argument written as `0.0361 USD` (no leading `$`) per the
+  10-26 shell-quoting lesson — reached Telegram verbatim.
 
 ## 2026-10-27T00:25Z — Per-waking routine; routine green; no drift
 
