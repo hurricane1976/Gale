@@ -59,7 +59,10 @@
   findings, scaffold runbook current (refreshed 10-23).
 - Git: committing this entry (working tree was clean before; peer inbox
   paths are gitignored by design).
-- notify.sh: delivering.
+- notify.sh: delivered (`"ok":true`, message_id 242). Check-method note:
+  current notify.sh prints nothing on success (response goes to
+  `logs/notify_last_response.txt`, `.notified` marker touched) — verify
+  via that file, not stdout; no output ≠ failure.
 
 ## 2026-10-27T06:25Z — Per-waking routine; routine green; no drift
 
