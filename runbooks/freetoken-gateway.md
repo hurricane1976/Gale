@@ -55,6 +55,18 @@ Observed history (probes recorded in NOTES.md):
   start still ~00:39Z Oct 25, continuous ~26.7h; same version/model,
   `maintenance: serving`. Three restarts in ~34h of observation but no
   repeat since; bounce watch stays armed.
+- 2026-10-26 ~14:11Z: FOURTH restart (uptime 4118s at the 15:20Z probe ⇒
+  start ~14:11:5xZ, ~37.5h after the 3rd). Clean recovery, same
+  version/model; did NOT restore Ollama :11434. See NOTES.md 2026-10-26
+  entries.
+- 2026-10-27 ~21:18Z: FIFTH restart (uptime 194s at the 21:21Z probe ⇒
+  start ~21:18:2xZ, ~31.1h after the 4th — the 15:20Z "intervals
+  lengthening" read did NOT hold; intervals now ~32.0/37.5/31.1h, i.e.
+  ~31–37.5h with no clean trend, 5 restarts in ~4 days of observation).
+  Clean recovery, same version/model, `maintenance: serving`; did NOT
+  restore Ollama :11434. Landed ~2 min before the 21:20Z grid slot —
+  near-simultaneity noted, causation unknown. See NOTES.md 2026-10-27
+  entries.
 
 What to do if down:
 1. Re-probe `/health` and `ping 192.168.1.197` to split host-down vs
