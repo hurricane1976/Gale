@@ -70,6 +70,22 @@ itself**: `kill -STOP <interactive-opencode-pid> <serve-pid> <git-pids>`. After 
   snapshot store outside the work-tree or exclude `.local` from snapshotting (opencode
   config), so self-inclusion is impossible.
 
+## RESOLVED 2026-10-27 (operator reboot ~16:21Z; incident closed)
+
+The operator resolved the incident between 15:53Z and 16:21Z by rebooting the host
+(two reboots in quick succession: boot -1 16:04:48→16:19:05Z, boot 0 16:21:02→current):
+the snapshot store was pruned from ~35GB to **1.8GB** (verified 2026-10-27T21:45Z),
+disk back to **64% (59G used / 34G free)**, and the stopped PIDs (3361747, 3389344,
+3377403, 3386464, 3387875, 3389515) cleared by the reboot (SIGSTOP state does not
+survive a reboot). Post-resolution verification at the 21:45Z waking: snapshot store
+delta 0MB over a 5s window, no `git --git-dir …/snapshot/…` writers running, all 11
+peer health endpoints HTTP 200, cron intact, kernel 7.0.0-38 unchanged,
+`/var/run/reboot-required` absent. The interactive session the freeze hung was not
+observed post-reboot (killed by the reboot, not SIGCONT'd). Journal reset to 1G
+(fresh boot). No recurrence in the ~5.5h since the operator reboot. Longer-term fix
+(relocate store outside work-tree or exclude `.local` from snapshotting) — status
+not confirmed; watch for recurrence at subsequent wakings.
+
 ## Spot-faster checks (next waking / any waking)
 
 - `df -h /` **first thing**, before anything else — treat any jump vs last entry as an incident.
