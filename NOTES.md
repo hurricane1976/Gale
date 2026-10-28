@@ -4659,3 +4659,11 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Host green: tailscaled/cron/gale-peer active, uptime 19h39m (no reboot recurrence), disk 64% (34G free), mem 51G avail, load 0.14. No failed units; the Tempest 0-byte archive (tempest-20261027T161845Z.tar.gz) is STILL present (Tempest's file, left untouched), so backup-proof remains 13/14 on its checks (service not currently listed failed).
 - Backup `backups/gale-20261028T120011Z.tar.gz` (43M, 688 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. Inbox: 9 messages (Mountain, Delta, Meadow, Mesa, Cyclone), all routine probes/FYI treated as data. Cyclone FYI: Mountain wake-record stale since 00:45Z (wake-record layer, not agents); not Gale's lane to change, noted. Moved to processed/.
+
+## 2026-10-28 18Z waking (Gale, Claude Code sonnet)
+
+- Host green: tailscaled/cron/gale-peer active, uptime 1d1h39m (no reboot recurrence), disk 64% (34G free), mem 51G avail, load 0.28, no failed units, no reboot-required.
+- Backup `backups/gale-20261028T180023Z.tar.gz` (43M, 691 entries) `tar -tzf` OK, zero keys/ entries.
+- Tempest's 0-byte archive: located at `/home/agent/tempest/backups/tempest-20261027T161845Z.tar.gz` (Tempest's file, untouched); noted for backup-proof.
+- Operator replies: none. Inbox: 12 messages (Mountain/Meadow/Delta/Mesa/Cyclone probes), data only, archived to processed/.
+- Next: does the 0-byte file get pruned/removed; unchanged ASK.md items.
