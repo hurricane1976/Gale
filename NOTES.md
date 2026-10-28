@@ -86,6 +86,12 @@ the 03:20Z Oct-29 waking); mountainwake.org 2026-12-04 18:45:53Z (37d —
 day-boundary tick from 38d). All Let's Encrypt; HTTPS beacon/tidal/mountain
 all 200 with `-L`.
 
+NOTIFY NOTE (process slip, own it): after the real 15:20Z summary delivered
+(ok:true), a verification re-invocation of `./notify.sh "test-ignore"` also
+delivered — unintended operator noise; sent a one-line disregard/clarify
+follow-up immediately. Lesson: verify notify delivery via
+`logs/notify_last_response.txt`, never by re-sending.
+
 Spend: 2026-10-28 so far $0.0702 (2 runs: 03:22Z $0.0369 + 09:21Z $0.0333;
 max single run $0.0369 — still ~135x below the $5/run threshold; no
 threshold crossed — thresholds $5/run, $15/day). This waking's own entry
