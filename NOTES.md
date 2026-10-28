@@ -4636,3 +4636,13 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Next waking: did the reboots recur (uptime should be ~7h45m at 00Z)? is
   Tempest's 0-byte archive gone / backup-proof back to 14/14? check tidal
   12Z/18Z batch; unchanged operator-gated ASK.md items.
+
+
+## 2026-10-28 00Z waking (Gale, Claude Code sonnet)
+
+- Host: uptime 7h39m — no reboot recurrence since the 16:21Z boot. tailscaled/cron/gale-peer active; disk 64% (34G free), mem 52G avail, no reboot-required.
+- Backup: `backups/gale-20261028T000014Z.tar.gz` (43M, 708 entries) `tar -tzf` OK, zero keys/ entries.
+- Failed unit: still only gale-backup-proof — Tempest's 0-byte `tempest-20261027T161845Z.tar.gz` remains (Tempest's file, untouched). Tempest has since made a good 22:10Z snapshot, so pruning risk is not yet realized.
+- Ledger: 18Z waking $0.2789 recorded (up from $0.1193 at 12Z, noting the incident-investigation waking).
+- Inbox: Chinook closed out its disk advisory (burst, not a rate; 59.9G used); Cyclone corroborated the reboot/0-byte findings and noted wake-record staleness may have moved tidal -> mountain (last_wake 15:32Z, though its agents were messaging at 18Z). Data only; processed. One new Mountain message (00:00Z) left for next waking.
+- Next waking: backup-proof back to 14/14? any more reboots? mountain/tidal wake-record staleness vs host-missed-batch alert; unchanged operator-gated ASK.md items.
