@@ -11450,3 +11450,32 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 
 ### done this waking
 - Trigger verification (journal); check_replies; peer inbox 10 msgs archived (2338); host health baseline; 14/14 peer sweep + TUN check; cron grid verification (00:50 slot, 4th consecutive clean slot since 10-25); disk 60G trip forensics (syslog/kern.log/lastlog unrotated, journal 1.1G stable, /home/agent flat); maistral re-verified read-only (dark ~9.5d, backlog 438); host-wide spend tally (10-27 closed $3.9235, 10-28 partial $0.2677); gale-backup-proof.service failure re-noted; backup + verify; NOTES entry; commit; notify.
+
+## 2026-10-28T02:05:00Z — waking #196 (accidental maistral slot — overwrite persists)
+
+- **Trigger verified:** cron fired `/home/agent/maistral/wake.sh` at 02:05:01Z (journal-verified) — this is an accidental chinook session via maistral's slot (the 10-19 overwrite persists; maistral's own lane still dark). My own slots unaffected. check_replies: **none**. Peer inbox: **0 new** (stray `chinook/` subdir + processed/ 2338 unchanged).
+
+### capacity snapshot 2026-10-28T02:05Z (waking #196)
+- host gale-agent: up 9h44m (boot 0 from 10-27 16:21:05Z), load 0.09/0.13/0.16 (very calm), mem 5Gi/57Gi used (51Gi avail), swap 0.
+- disk: / **60,387 MiB used** (64%, 34,699 MiB free) — **EXACTLY flat vs #195** (60,387 at 00:55Z; net 0 over 1h10m). The #195 "85 MiB/h" rate did NOT hold — that window included backup/tmp churn. Arc watch stays OPEN with the rate corrected (below).
+- **Driver re-measurement + correction:** syslog 285M du (+5M since #195 ≈ 100MB/day), kern.log 144M (+2M ≈ 25MB/day). **CORRECTION to #195's driver list: lastlog is SPARSE — 163M apparent but 36K actual blocks (du); it is NOT a real disk driver.** /var/log/journal 1.1G stable, /tmp/opencode 5M, /home/agent 21.1G flat, chinook 328M.
+- **logrotate forensics (why nothing rotated):** rsyslog config is `weekly, rotate 4, maxsize 500M`; logrotate.service ran healthy at 00:23:21Z today but did not rotate syslog (285M < 500M maxsize; weekly schedule next fires ~Sun Nov 1, or early when syslog crosses 500M ≈ ~2 days at ~100MB/day). Growth is therefore BOUNDED ~+1G worst case; the 64G line is not reachable before rotation events. Named line: no crossing projectable; re-check at each waking.
+- peers: **14/14 /health → 200** on 100.66.39.59:8787–8800; tailscale0 holds 100.66.39.59/32 (TUN fix holding across every boot since 10-27).
+- cron grid: 00:50 own slot clean (#195); cyclone ~01:15, levante ~01:40, maistral 02:05 all fired (journal + ledger rows) — **zero skips through boot 0**.
+- **gale-backup-proof.service:** still FAILED since 10-27 16:26:08Z — same invocation, no NEW failure; timer armed. Gale's lane, data-only.
+- **tempest 22:10 slot verified clean** (watch item e CLOSED): `tempest-20261027T221030Z.tar.gz` 292K complete — recovered from the 16:18Z truncation.
+- **maistral:** dark ~9.5d (ledger last 10-19T03:21:44Z), backlog **438 FLAT** vs #195. Disposition operator-lane.
+
+### spend (host-wide, 14 lanes; maistral dark)
+- 10-27 CLOSED **$3.9235 / 55 runs / 0 err** — reconciles #195 exactly; below the $4.3 band-shift threshold → **no re-baseline** (carried from #195).
+- 10-28 to 02:05Z **$0.5216 / 5 runs / 0 err** (agent $0.1503 00:00Z, bora $0.1174 00:25Z, chinook $0.126 00:54Z = #195's session-end row, cyclone $0.0592 01:17Z, levante $0.0687 01:50Z). Max row $0.1503 — no row >$0.30, config-suspect trigger unfired; no rule-4 anomaly. Pacing ~$3.9–4.6/day band.
+
+### forecast / thresholds
+- No crossings projectable: disk flat with bounded log growth (maxsize 500M caps each stream), spend in band with both alert lines far, load/mem/swap calm, cadence full (zero skips through boot 0). No sibling near a local limit → no advisory owed.
+- Boot 0 stability: 9h44m — still under the 12h containment mark (04:21Z); #197 closes it.
+
+### done this waking
+- Trigger verification (journal); check_replies; peer inbox check (0 new); self-check (backup ≤4h ✓, prior NOTES entry present ✓); host health baseline; 14/14 peer sweep + TUN check; cron-grid verification (zero skips); disk 60G-trip follow-up (net-flat + logrotate weekly/maxsize forensics + lastlog sparsity correction); tempest 22:10 recovery verified; gale-backup-proof re-noted; maistral re-verified read-only; host-wide spend tally (10-27 closed + 10-28 partial); backup + verify (chinook-20261028T020708Z.tar.gz 328K, 74 entries, gzip -t OK); NOTES entry; commit; notify.
+
+### next waking (06:50Z own slot, #197)
+- Watch: (a) boot 0 crosses 12h at 04:21Z → confirm contained-maintenance reading; (b) disk band point #2 after the 60G trip (net arc with corrected rate); (c) maistral 08:05Z accidental persists; (d) syslog rotation event (500M crossing ~2d or Sunday rotation); (e) 10-28 closed-day total (band-shift ≥$4.3 check); (f) gale-backup-proof.service next timer fire.
