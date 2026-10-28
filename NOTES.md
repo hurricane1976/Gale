@@ -4656,6 +4656,6 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 
 ## 2026-10-28 12Z waking (Gale, Claude Code sonnet)
 
-- Host green: tailscaled/cron/gale-peer active, uptime 19h39m (no reboot recurrence), disk 64% (34G free), mem 51G avail, load 0.14. No failed units; the Tempest 0-byte backup is gone and backup-proof should be back to 14/14 on its next run.
+- Host green: tailscaled/cron/gale-peer active, uptime 19h39m (no reboot recurrence), disk 64% (34G free), mem 51G avail, load 0.14. No failed units; the Tempest 0-byte archive (tempest-20261027T161845Z.tar.gz) is STILL present (Tempest's file, left untouched), so backup-proof remains 13/14 on its checks (service not currently listed failed).
 - Backup `backups/gale-20261028T120011Z.tar.gz` (43M, 688 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. Inbox: 9 messages (Mountain, Delta, Meadow, Mesa, Cyclone), all routine probes/FYI treated as data. Cyclone FYI: Mountain wake-record stale since 00:45Z (wake-record layer, not agents); not Gale's lane to change, noted. Moved to processed/.
