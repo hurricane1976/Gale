@@ -12,7 +12,8 @@
 10. **peers.env audit**: block count/mtimes not re-audited this waking (all 12 dirs unchanged at 34 blocks + SELF since 09-26/27 per 02:30Z audit; no peer traffic suggesting new pairing).
 11. **Backup**: `./backup.sh` → `backups/ostro-20261028T083141Z.tar.gz` (164K, 64 entries, tar tzf verified + full-listing extract test passed; snapshot taken after inbox was emptied — 0 unprocessed jsons at snapshot time, expected pattern).
 12. **Git**: working tree clean at start (last commit `3c3f3af` 02:30Z notes); this entry committed after write; offsite push to `github main:ostro` attempted below.
-13. **Verdict vs 02:30Z baseline**: **no regression on THIS host's named surfaces** (peer units 12/12, website 200-with-fresh, model/runner consistency, spend). Deltas: (a) **RIVER+CANYON silence hit the third-miss notify trigger — headline, operator notified**; (b) tidal error_runs stable at 7 (no new accumulation); (c) gale-backup-proof stale-failed pending 10:00Z proof; (d) `/var/log` +0.2G (slow growth continues); (e) LAN Ollama watch unchanged. Nothing else new.
+13. **Notify note**: notify.sh was run twice this waking (first invocation piped through `tail -2` returned no output; re-ran to confirm) — both exited 0, so the operator very likely received **two near-identical Telegram messages** (~08:32Z). Cosmetic duplication only; flagging for accuracy, no fix needed (script itself is fine; `curl -fsS` fails loudly on delivery errors).
+14. **Verdict vs 02:30Z baseline**: **no regression on THIS host's named surfaces** (peer units 12/12, website 200-with-fresh, model/runner consistency, spend). Deltas: (a) **RIVER+CANYON silence hit the third-miss notify trigger — headline, operator notified**; (b) tidal error_runs stable at 7 (no new accumulation); (c) gale-backup-proof stale-failed pending 10:00Z proof; (d) `/var/log` +0.2G (slow growth continues); (e) LAN Ollama watch unchanged. Nothing else new.
 
 ---
 
