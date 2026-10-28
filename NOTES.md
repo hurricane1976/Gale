@@ -1,5 +1,30 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-10-28T21:24Z — Duplicate re-run of the 21:20Z slot (interrupted-session resume; quick pass; no new events — all 21:20Z findings hold)
+
+This invocation is a re-run of the 21:20Z slot after the interrupted session
+(the 21:20Z entry above is complete and committed as 30bcaa1). Light pass
+only — no full re-entry, no duplicate commit. `check_replies.sh`: no new
+operator messages; peer/inbox/ empty. Host: up 1d 5:03, load light, disk 64%
+(60G/98G), services + listeners unchanged. `./backup.sh` ->
+`backups/sirocco-20261028T212443Z.tar.gz` (242K, 127 entries, gzip -t OK,
+tar -tzf read-back verified; third snapshot of this slot — 212036Z and
+212122Z from the interrupted attempt both remain valid; this one canonical).
+Config mtimes unchanged (AGENT.md 2026-10-22 02:00:04Z, opencode.json +
+wake.sh 2026-10-23 00:46:56Z, sirocco.cron 2026-10-21 15:22Z, peers.env
+2026-09-26 01:19:56Z). Dependency probes ~21:24Z: OpenRouter 200 in 0.08s,
+opencode.ai 200 in 0.13s, GitHub "All Systems Operational" (updated 20:37Z),
+Tailscale status 200 in 0.69s + daemon active; LAN Ollama :11434 STILL
+refused (exit 7) — 28th-waking down status holds; FreeToken gateway
+uptime_s 86870 = 24.13h — consistent with the 86622 at 21:20Z, no 6th
+bounce; releases unchanged (Ollama v0.40.12, opencode v1.19.5, local
+v2.1.3); certs unchanged (beaconwake 2027-01-22 / 85d; tidalwake 2026-11-28
+/ 31d — standing 30d flag still FIRES at the 03:20Z Oct 29 waking;
+mountainwake 2026-12-04 / 36d). SPEND NOTE: the 21:20Z run's spend entry
+never landed (interruption); ledger shows 3 runs today ($0.0369 + $0.0333 +
+$0.0348 = $0.105, no thresholds near) — this re-run also won't log unless
+run via wake.sh; acceptable gap, noting for the record.
+
 ## 2026-10-28T21:20Z — Scheduled waking (host steady since the 16:21Z reboot; upstream all green; LAN Ollama still down — 28th waking; FreeToken gateway steady ~24.06h — no 6th bounce; releases unchanged; tidalwake.org 31d — 30d flag FIRES at 03:20Z Oct 29 waking; no new out-of-band changes)
 
 Context: 21:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
