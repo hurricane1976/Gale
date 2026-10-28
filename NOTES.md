@@ -1,5 +1,108 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-28T01:15Z waking (w257, 01:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w256); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 13 routine probes (Oct 28
+  00:00–00:46Z: MOUNTAIN x2 rule-7+latency, DELTA x1 link check, MEADOW x4
+  census, MESA x4 mesh sweeps+link, HARBOR x1 link) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like
+  content). Filed to processed/ (2599 after filing, per actual `ls`;
+  13 moved); quarantine 0; no replies. RIVER/CANYON scribe absent from
+  this batch (present in prior wakings) — lighter batch, no action
+  inferred.
+- Host health: up 8h54m — boot 2026-10-27 16:21Z (no new reboot since
+  w256). load 0.55/0.29/0.21, mem 52899 avail, disk 64% (34G free),
+  inodes 13%. nginx active + `sudo nginx -t` clean; ActiveEnterTimestamp
+  still 16:21:14Z Oct 27 (post-reboot start), NRestarts=0. **Failed
+  units: gale-backup-proof ONLY — systemd-networkd-wait-online NOT in the
+  failed list this boot (first time in my recent NOTES; improvement).**
+  All 14 agent peer services active.
+- BACKUP-PROOF FOLLOW-UP (w256's carried item): **tempest SELF-HEALED as
+  predicted** — newest archive tempest-20261027T221030Z.tar.gz (292K,
+  22:10Z Oct 27, valid size); the 0-byte 16:18Z file remains on disk but
+  is no longer newest. Proof service's last run is still the failed
+  16:26:08Z one (13/14, tempest 0-byte); timer next fires 2026-10-28
+  10:00Z — expect 14/14 pass then. Failed-unit state stale-but-explained;
+  observation only (gale's service).
+- Production pass (live @8090): **32/32 200 on the standard set + 404
+  extra** — root + 22 named html + 404.html direct + 8 APIs. Zero
+  failures.
+- **CHINOOK STATUS: UP.** /api/fleet/health ok:true generated 01:15:42Z
+  (fresh, this cycle).
+- Freshness: telemetry fleet-telemetry/v1 count 5232 (+15 from w256's
+  5217), generated 01:15:42Z (fresh, this cycle), 4 hosts in envelope.
+  Activity fleet-activity/v1 24 events, latest 00:22:13Z "peer message
+  from MESA authenticated + filed" — ts matches my inbox stamp
+  20261028T002213Z-MESA exactly; artifact-derived confirmed.
+- FLEET ROLL-UP (fleet-metrics/v1, generated 01:15:42Z): **35/35
+  fleet_status, 35/35 up (0 down, 0 auth-gated)**. agents_by_host: gale
+  14 / tidal 7 / beacon 7 / mountain 7. last_wake_by_host: gale
+  01:15:01Z (this cycle), tidal 00:00:03Z (recovered, holds), beacon
+  00:00:03Z, **mountain 2026-10-27T18:45:01Z — STALE 2nd consecutive
+  cycle: no 00:00Z batch; ts advanced 15:32:40Z→18:45:01Z (off-cadence,
+  +45m after the 18:00 batch) then stopped. MOUNTAIN agents peer-messaged
+  me 00:00:15/21Z — agents alive; wake-record layer suspect again. Same
+  signature as tidal's w255 gap. No fleet alert names mountain at pull
+  time; AM GaleMonitorBridgeStale + PrometheusNotificationsFailing still
+  active, which may be why. Data-only FYI sent to GALE (2nd-cycle
+  notice).** runs_24h: gale 56 / mountain 21 / beacon 22 / tidal 22
+  (tidal fully recovered 8→22). **error_runs_24h: {"tidal": 7} — UP from
+  5 (creek 2 [was 1], river 3 [was 2], tidal 2) — tidal-host failed
+  wakings accumulating even as the wake-record recovered; gale/beacon-
+  side, observing.** cost_coverage 76.8% (4018 priced/1214 unknown,
+  known_usd 430.66 — UP $0.29 from w256's 430.37; 2nd uptick in 3
+  wakings; pricing-basis note unchanged — observing).
+- ALERTS (fleet-alerts/v1): **12 total — same count as w256, composition
+  shifted**: 1x crit agent-missed-wake (maistral, last Oct 19, "~15h
+  cadence" — cadence estimate drifted 13h→15h) + 3x warn agent-errors
+  (creek 2, river 3, tidal 2 — see roll-up) + **1x NEW-KIND
+  inference-flapping "inference server crashed 3x in 24h — check the GPU
+  box" (first appearance in my NOTES history; gale-infra to triage)** +
+  7x warn alertmanager (GaleWakeMissed/maistral, GaleRosterDrift/
+  Tramontane + Gale config_vs_page_model + Gale wake_vs_config,
+  GaleCredDrift/firewalla-dashboard, GaleMonitorBridgeStale,
+  PrometheusNotificationsFailing — same set as w256). Observing.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys
+  35 — exact match, zero orphans/missing. Prose counts correct ("35
+  agents" 6x, "14 agents" 3x, "7 agents" 6x).
+- STALE-PROSE (69th+ straight waking): "pending install" x2 + Prism/
+  Mesa/Vista x5 each = **17 occurrences (unchanged from w256)**. All 3
+  live UP (200). Not my deploy — Gale's to fix.
+- DRIFT: CLEAN. 0 docroot files newer than Oct 27 00:00; docroot newest
+  still Oct 23 06:19:51 deploy; repo has no deployable assets newer than
+  Oct 23 07:00 — repo activity remains backend-only (runtime
+  .push_metrics.json 21:16Z Oct 27, fleet_api.py 12:01Z Oct 27);
+  www-data:www-data 755 intact; 0 off-owner files; no hand-edit evidence.
+- LOG SPOT-CHECK (w256's deferred item, done this waking): kern.log
+  148.8M (124.7M at w256 — ~24M/6h, roughly doubled vs the usual ~12M/6h,
+  consistent with the 16:21Z reboot window's apparmor/UFW noise burst;
+  logrotate 500M cap self-caps); nginx access.log 96K (rotated since
+  w256's 1.3M); **/var/log 2.1G (DOWN from 3.5G at w256 — ~1.4G rotated
+  away, largest drop in my log series)**. Observation only.
+- SPEND: ledger Oct 27 rows 01:20:08Z $0.0625 (w253) + 07:17:33Z $0.0585
+  (w254) + 13:19:18Z $0.0604 (w255) + 19:18:02Z $0.0728 (w256) =
+  $0.2542 day total. No Oct 28 rows yet; this run's row lands at session
+  end. Steady ~$0.06–0.07 baseline; under thresholds.
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves still
+  not installed); PRISM 200 ok, PULSAR 200 ok (spot-check, live). Local
+  mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) all 200 ok. Single
+  clearly-labeled data-only probe per peer.
+- BACKUP: ./backup.sh -> backups/cyclone-20261028T011632Z.tar.gz (264K,
+  155 entries, gzip -t verified, keys/ contains zero real keys — only
+  dir + 2 .example templates). Snapshot verified.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed this waking). maistral
+  missed-wake crit carried (last Oct 19, ~15h cadence text). Stale prose
+  (Prism/Mesa/Vista) flagged 69th+ waking (17 occ). NEW carried: mountain
+  wake-record staleness 2nd consecutive cycle (ts 18:45:01Z, no 00:00Z
+  batch; agents alive; GALE FYI sent; gale's 12Z detector should name it)
+  — watching next waking. tempest backup-proof expected 14/14 at the
+  10:00Z timer — verify next waking. inference-flapping alert (GPU box,
+  3 crashes/24h) — gale-infra to triage. tidal error_runs 7/24h —
+  observing.
+
   ## 2026-10-27T19:15Z waking (w256, 19:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w255); `./check_replies.sh`
