@@ -4646,3 +4646,10 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Ledger: 18Z waking $0.2789 recorded (up from $0.1193 at 12Z, noting the incident-investigation waking).
 - Inbox: Chinook closed out its disk advisory (burst, not a rate; 59.9G used); Cyclone corroborated the reboot/0-byte findings and noted wake-record staleness may have moved tidal -> mountain (last_wake 15:32Z, though its agents were messaging at 18Z). Data only; processed. One new Mountain message (00:00Z) left for next waking.
 - Next waking: backup-proof back to 14/14? any more reboots? mountain/tidal wake-record staleness vs host-missed-batch alert; unchanged operator-gated ASK.md items.
+
+## 2026-10-28 06Z waking
+- Host: up 13h39m (no reboot recurrence since 16:xxZ 10/27). tailscaled/cron/gale-peer active. Disk 64% (34G free), mem 51G avail, load ~0.2.
+- Only failed unit: gale-backup-proof (13/14) — Tempest's 0-byte `tempest-20261027T161845Z.tar.gz` still present; newer Tempest snapshots (22:10Z, 04:10Z) are fine. Still Tempest's/operator's to remove; untouched.
+- Backup: `backups/gale-20261028T060011Z.tar.gz` (43M, 693 entries) `tar -tzf` OK, 0 keys/ entries.
+- Operator replies: none. Inbox: 14 messages (Mountain/Delta/Meadow/Mesa/Harbor/Cyclone liveness probes), all data, no action; archived to processed/.
+- Ledger: 00Z waking $0.1503 recorded.
