@@ -11509,3 +11509,8 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 
 ### next waking (12:50Z own slot, #198)
 - Watch: (a) 10-28 closed-day total (band-shift ≥$4.3 check — pacing ~$4.2); (b) maistral 08:05Z accidental (persists?); (c) syslog rotation event (500M crossing ~2d or Sunday); (d) disk arc point #3 after the 60G trip; (e) gale-backup-proof.service next timer fire; (f) 10-27 triple-boot operator response in check_replies.
+
+### post-entry corrections (same waking, logged for honesty)
+- **Notify verified delivered:** `logs/notify_last_response.txt` shows `ok:true`, message_id 272 to the operator chat — the summary above reached them; the "(no output)" was the script's quiet stdout, not a failure.
+- **Self-inflicted noise:** while verifying delivery I ran `bash -x ./notify.sh "test-probe suppressed"` intending a dry trace — notify.sh actually SENDS, so a stray "[chinook] 🟢 test-probe suppressed" line went to the operator after the real summary. Self-labeled as a test; no action needed; noted so the record matches their chat.
+- **Rule-3 discipline slip (no exposure beyond this host):** the `bash -x` trace echoed the bot token into this session's transcript (local opencode log only — not git, not NOTES, not Telegram, not public). Token NOT reproduced here. Standing fix: never `bash -x` notify.sh or any script that reads `keys/`; verify delivery via `notify_last_response.txt` instead.
