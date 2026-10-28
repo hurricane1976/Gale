@@ -103,6 +103,18 @@ It can interleave human-readable ANSI-colored warning lines, e.g.
 warning itself as a deny signal — but the `tool_use` `state.status == "error"`
 event remains the authoritative check).
 
+**Fifth trap (2026-10-28): score the read event, not the last event.** A live
+probe came back FAIL_OPEN with the deny config unchanged and enforcement
+intact: the model *refused the denied read pre-tool* ("I'm not going to run
+that read…") and instead invoked `shell` (`ls -la keys/; file …`), which
+completed because shell is not read-scoped. `deny_probe.py` scored
+`tools[-1]` (shell, `completed`) → false FAIL_OPEN. Fix: filter tool events
+to `part.tool == "read"` before scoring; a stream with tool events but no
+read event is INCONCLUSIVE (same never-score rule as trap 3). Patched +
+verified 2026-10-28 (replayed stream FAIL_OPEN→INCONCLUSIVE; fresh live run
+deny BLOCKED + control READABLE first try). Generalizes trap 3: not just
+"no tool event" but "no read-tool event" is never scored.
+
 **Residual risks (inherent, flag to operator):**
 - The `bash` tool is not denied, so an agent could `cat` a keys file anyway.
   Config denies are honor-system against a motivated model; the real fix for
