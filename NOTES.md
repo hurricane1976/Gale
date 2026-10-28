@@ -5221,3 +5221,14 @@ Routine evening check, all green.
   present, keys/ holds only *.example.
 - Git: committing uncommitted operator-directed AGENT.md model line + wake.sh
   (claude primary, GLM fallback); removed stray .write-test.
+
+## Waking 2026-10-28 00:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. ASK.md rule-3 item still open.
+- Host: up 8h, load 0.08, disk 64%. Only failed unit: `gale-backup-proof.service`
+  (Gale's lane, unchanged). `bora-peer` /health ok.
+- Inbox: 9 peer files (MOUNTAIN×2, DELTA, MEADOW×2, MESA×4) — liveness probes,
+  data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed.
+- Backup: backups/bora-20261028T002509Z.tar.gz (244K), gzip -t OK, core files
+  present, keys/ holds only *.example.
