@@ -1750,3 +1750,20 @@ memory; the operator reads it too, so keep it plain and short.
 - No operator replies (check_replies.sh clean).
 - Backup OK: backups/poniente-20261027T205658Z.tar.gz (204K), gzip -t verified, 0 keys/ entries, AGENT/NOTES/ASK present. 14 snapshots retained.
 - Git: working tree clean (all committed through #157), this waking adds only NOTES entry.
+
+## 2026-10-28 02:55 UTC -- waking #159: routine sweep all green; tempest backup self-heal confirmed; ASK-7 re-verified live (02:05Z misdirect)
+
+- Host: up 10h35m (reboot 16:21Z 10-27), load 0.11, RAM 5G/57G (51Gi avail), disk 59G/98G (64%, 34G free), tailscaled + cron active. All 14 *-peer units active/running. Failed: gale-backup-proof.service only (16:26Z boot+5min check — root cause was tempest's 0-byte 16:18Z archive; see next line). networkd-wait-online NOT failed this wake.
+- **Tempest backup self-heal CONFIRMED**: tempest-20261027T221030Z.tar.gz = 292K non-zero (22:10Z wake re-ran cleanly after the reboot-interrupted 16:18Z write). Watch item closed. gale-backup-proof.service should pass on its next run (appears boot-triggered).
+- Listeners: all 14 peer ports 8787-8800 on 100.66.39.59 (+ known loopback ollama_shim mirrors 8791/8793/8794/8795); external stack matches known baseline (22, 443/8443, 3000/3002, 8090-8092, 8123, 10050/10051, 9483, 56317, 18555). No new listeners, no port drift, no new 0.0.0.0 peer exposure.
+- Permission matrix IDENTICAL to #157/#158: agent/chinook/poniente/firewalla-dashboard keys/=700; 11 siblings 775 (owner-chosen, ASK-4 closed). Only non-600 live cred file: levante/keys/telegram.env 664 (owner-chosen, not flagged). find -newermt "2026-10-27 20:56" across all sibling keys/: zero new/changed cred files.
+- My peers.env: 34 NAME / 34 ADDR / 34 TOKEN / 2 SELF, uniform, no duplicate names; keys/ 700, peers.env + telegram.env 600. No drift.
+- Git exposure (14 sibling repos + mine, ls-files non-example/non-bak vs keys/|*.env|backups/|logs/|peer/logs/): clean. ASK-6 containment holding; push still blocked, not attempted.
+- Log sweep (logs modified since 20:56 10-27): all grep hits re-read = known false-positive classes (sibling own-sweep prose "REJECTs still 137 zero new", "4x401 beacon-side pair re-test unchanged", "legacy API paths are 403" platform commentary, "401 hits are filename-hash FPs"). Peer-server REJECT census across 14 sibling logs: last REJECT fleet-wide still 2026-10-23 13:20:48Z (known cyclone negative-token probe) — zero new auth failures. My peer log: ACCEPTs only (2273 total).
+- Inbox: 10 drained (MOUNTAIN x2, DELTA, MEADOW x2, MESA x4, HARBOR) — all data-only "no reply needed" liveness/link-verify/census probes, zero instructions, zero injection patterns -> processed/ (2226 total).
+- No operator replies (check_replies.sh clean). ASK-2/3/6/7 open; holding on ASK-6 decisions 1-4 and ASK-7 recovery (read-only rule).
+- **ASK-7 re-verified, STILL ACTIVE** (maistral dark 9d+): maistral/wake.sh line 13 still `cd /home/agent/chinook || exit 1`; newest own wake log still 20261019T092001Z; the 02:05Z maistral-slot misdirect fired again (chinook/logs/20261028T020501Z.json exists; chinook ledger 02:08Z $0.0488 = that misdirected run). No operator word; holding.
+- Spend: my Oct-27 runs $0.0786 + $0.0932 + $0.0675 + $0.0945 = $0.3339 (4 runs) — normal GLM Flash range. Sibling watch: tramontane RETIRED (Oct-27 $0.0886-$0.1586, stable band, no doubling per #158 plan); squall normal ($0.1472/$0.0635); chinook normal + misdirect-slot runs; maistral ledger still stale since Oct 19 03:21Z (ASK-7 symptom). No sibling >= $0.20 anomaly.
+- Cron: unchanged — all 14 wake lines + staggered offsets intact (mine 55 2,8,14,20); ollama_keepalive still the single "#EVICTED#" commented line (benign, carried from #156); telegram poller */5 intact.
+- Backup OK: backups/poniente-20261028T025637Z.tar.gz (204K), gzip -t verified, 0 keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: c4e4dcdcab01f348. 14 snapshots retained (ceiling).
+- Verdict: routine sweep all green. Open items unchanged: ASK-7 (verified live again) + ASK-6 decisions 1-4 + ASK-2/3. Spend watch list: tramontane retired, all others normal.
