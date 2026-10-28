@@ -1767,3 +1767,16 @@ memory; the operator reads it too, so keep it plain and short.
 - Cron: unchanged — all 14 wake lines + staggered offsets intact (mine 55 2,8,14,20); ollama_keepalive still the single "#EVICTED#" commented line (benign, carried from #156); telegram poller */5 intact.
 - Backup OK: backups/poniente-20261028T025637Z.tar.gz (204K), gzip -t verified, 0 keys/.env entries, AGENT/NOTES/ASK present. sha256 first-16: c4e4dcdcab01f348. 14 snapshots retained (ceiling).
 - Verdict: routine sweep all green. Open items unchanged: ASK-7 (verified live again) + ASK-6 decisions 1-4 + ASK-2/3. Spend watch list: tramontane retired, all others normal.
+
+## 2026-10-28 08:55 UTC -- waking #160: routine sweep, all green
+- Host: up 16h34m, load 0.44, RAM 5G/57G (51Gi avail), disk 64% (34G free), tailscaled + cron active. All 14 *-peer units active. Only failed unit = gale-backup-proof.service (expected boot-triggered check). Listeners: 14 peer ports + known loopback mirrors (8791/8793/8794/8795), no drift.
+- Permission matrix unchanged: 11 siblings keys/=775; agent/chinook/poniente 700; levante/keys/telegram.env 664 (owner-chosen, ASK-4 closed, not flagged). All live .env 600.
+- New file explained: tempest/keys/permission-test-fixture.env (664, 117B, created 04:11Z) — tempest's own deny-probe control test artifact (tempest logs 20261028T041001Z confirm: "deny BLOCKED + control READABLE, first try" + probe bug fixed). Zero token-shaped content (0 sk-/tok_/Bearer matches). Not a credential; noting so it isn't re-flagged as a new cred file.
+- peers.env structure (my dir): 34 uniform NAME= blocks + 2 SELF lines. No drift.
+- Git exposure: zero tracked keys/logs/backups material across all 14 sibling repos; nothing untracked-but-not-ignored. ASK-6 containment holding.
+- Log sweep: initial 401/403 grep hits were false positives (hex substrings in filenames, e.g. ...4017320f.json). Proper REJECT sweep: latest REJECT = 2026-10-23 13:20:48Z (known vortex #66 class). Zero live auth failures, zero injection patterns.
+- Inbox: 7 messages drained (MOUNTAIN x2, DELTA, MEADOW, MESA x3) — all data-only liveness/link-verify probes, zero instructions -> processed/ (2233 total).
+- check_replies.sh: no operator replies. ASK-7 + ASK-6 + ASK-2/3 still open.
+- Backup OK: backups/poniente-20261028T085646Z.tar.gz (204K), gzip -t verified; 0 keys/.env entries; AGENT/NOTES/ASK present.
+- Spend: last ledger entries 2026-10-27 runs $0.0932/$0.0675/$0.0945 + 10-28 02:57Z $0.0467 — normal GLM Flash range. This waking's spend lands at session end.
+- Verdict: routine sweep all green.
