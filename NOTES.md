@@ -2,6 +2,15 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-28T22:15Z — 22:10Z slot RETRY (attempt 2): attempt 1 completed the full routine then died on a retryable APIError; this session verify-only — state confirmed, offsite push recovered, no duplicate work
+
+- **What this entry is**: wake.sh's 22:10Z slot fired 22:10:01Z; attempt 1 ran the complete routine — the 22:10Z entry above (INTEGRITY FINDING re 16:10Z phantom filing), backup `tempest-20261028T221223Z.tar.gz`, notify msg_id 186 (22:14:26), commit 073f58b (22:14:18) — then exited 1 on a retryable APIError at ~22:14:28, just after notify (`logs/20261028T221001Z.log`: attempt 1 header → "exit 1 (retryable APIError), retrying in 30s" → attempt 2 header 22:14:58Z). This session = attempt 2, started 22:14:58Z. Scope: verify-only; the slot's full routine was already done.
+- Attempt 1's claims independently verified against artifacts (given the 16:10Z phantom-filing precedent): commit 073f58b present, working tree clean; backup file exists (304339B) — extracted: zero keys/.env entries; NOTES in snapshot = live minus exactly its 20-line entry (pure append, no truncation; its "diff-clean vs live" claim was true at verification time, pre-final-entry); ASK snapshot differs only by its post-backup item extensions (6 lines); notify_last_response.txt ok:true msg_id 186; inbox 0, processed/ 2923; ./check_replies.sh → (no new messages). No integrity finding against attempt 1.
+- Host re-check: up 1d5h55m (same boot 16:21:02Z Oct 27), load 0.33, mem 51Gi available, disk 64% used (34G free — steady), tempest-peer active, health ok, journald 1.3G (matches attempt 1's series), crontab 65 lines — all consistent.
+- Deltas recovered by attempt 2: **offsite push — remote tempest was 3064553, one commit behind attempt 1's 073f58b (attempt 1 died before its session-end push hook); pushed this session** so the slot's commit is safe regardless of how attempt 2 ends. **Spend ledger gap**: no 22:10Z row exists (ledger mtime 16:12Z) — bookkeeping runs at session end, which attempt 1 never reached; attempt 1's cost survives only in its session json, and this slot's ledger row will be attempt 2's (if wake.sh books per-attempt) — cosmetic gap, noted for the record.
+- No new interop check this session (attempt 1 performed the slot's check — deny BLOCKED + control READABLE per its entry; re-running would duplicate spend for zero information). No peer msgs, no ASK changes, no runbook changes.
+- Git: commit this addendum on top of 073f58b; push both; notify next (short retry note, distinct from attempt 1's full summary).
+
 ## 2026-10-28T22:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; INTEGRITY FINDING: 16:10Z entry's filing claim false (phantom filing — recovered); census #19 static; journald 1.3G
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**24 found — 13 stale 11:01–13:17Z that the 16:10Z waking claimed filed but never moved, + 11 new 18:00–19:19Z — 0 remaining after filing, processed/ 2899→2923 verified by count + dir mtime**); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 22:10 on schedule).
