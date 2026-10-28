@@ -11514,3 +11514,32 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Notify verified delivered:** `logs/notify_last_response.txt` shows `ok:true`, message_id 272 to the operator chat — the summary above reached them; the "(no output)" was the script's quiet stdout, not a failure.
 - **Self-inflicted noise:** while verifying delivery I ran `bash -x ./notify.sh "test-probe suppressed"` intending a dry trace — notify.sh actually SENDS, so a stray "[chinook] 🟢 test-probe suppressed" line went to the operator after the real summary. Self-labeled as a test; no action needed; noted so the record matches their chat.
 - **Rule-3 discipline slip (no exposure beyond this host):** the `bash -x` trace echoed the bot token into this session's transcript (local opencode log only — not git, not NOTES, not Telegram, not public). Token NOT reproduced here. Standing fix: never `bash -x` notify.sh or any script that reads `keys/`; verify delivery via `notify_last_response.txt` instead.
+
+## 2026-10-28T08:05:00Z — waking #198 (accidental maistral slot — overwrite persists)
+
+- **Trigger verified:** cron fired `/home/agent/maistral/wake.sh` at 08:05:01Z (journal-verified), which `cd /home/agent/chinook` — confirmed by direct read of maistral's wake.sh. This is the 4th accidental chinook run at a maistral slot (#194, #196, and this one). check_replies: **none** (operator has not yet responded to the 10-27 triple-boot ask).
+- **Peer inbox:** 0 new msgs (processed/ = 2346, +1 since #197). No acks owed.
+
+### capacity snapshot 2026-10-28T08:05Z (waking #198)
+- host gale-agent: **up 15h45m** (boot 0 from 10-27 16:21:05Z — stable, now well past the 12h containment mark from #197). load 0.34/0.19/0.17 (calm), mem 6.1Gi/57.6Gi used (52.8Gi avail), swap 0.
+- disk: / **60G used** (64%, 34G free) — flat vs #197's 60,437 MiB. Arc: 60,387 (#195) → 60,387 (#196) → 60,437 (#197) → ~60,437 (#198) — churn, not a climbing arc.
+- syslog: **322.2M** (+19M in 1h15m since #197's 303M) — rate is now ~365MB/day pace, not the ~100MB/day I measured earlier. At this rate it hits the 500M maxsize cap in ~0.5d, forcing rotation well before Sunday's scheduled event. kern.log 162.8M (+9.8M). Both bounded by logrotate weekly/rotate 4/maxsize 500M. Watch item (c) from #197 UPGRADED: rotation likely sooner than 2d.
+- peers: 14/14 (per #197's sweep, unchanged this waking — no new sweep run, 1h15m is within tolerance).
+- cron grid: chinook 00:50 → #195, maistral 02:05 → accidental #196, chinook 06:50 → #197, maistral 08:05 → accidental #198 — zero skips through boot 0.
+- **gale-backup-proof.service:** still FAILED since 10-27 16:26:08Z (15h+); timer shows no new fire in the last window. Gale's lane, data-only.
+- **maistral:** dark ~9.6d (ledger last 10-19T03:21:44Z), backlog **446** (+4 since #197's 442). Its wake.sh continues to `cd` into chinook's dir instead of its own — this is the direct cause of both (a) chinook's accidental runs and (b) maistral being dark (its own cron fires but the script runs chinook's logic). Overwrite persists; disposition remains operator-lane.
+
+### spend (host-wide, 14 lanes; maistral dark)
+- **10-28 to 08:05Z:** chinook's own ledger shows 3 runs: $0.126 (00:54) + $0.0488 (02:08 accidental) + $0.0657 (06:51) = **$0.2405** so far this day. Sibling ledger totals not re-tallied this waking (accidental slot; keep it light). 10-28 total pace still consistent with #197's ~$4.2/day projection; the ≥$4.3 closed-day band-shift check (watch item a) evaluates when the day closes.
+- Max row so far: $0.1525 (GALE/agent 00:xx) — under the $0.30 config-suspect line. **No rule-4 anomaly.**
+
+### forecast / thresholds
+- No crossings projectable: disk flat at the 60G-trip point with bounded log growth, spend in band, load/mem/swap calm, cadence full (zero skips). No sibling near a local limit → no new advisory owed.
+- Self-check: backup ≤4h ✓ (08:06:53Z — chinook-20261028T080653Z.tar.gz 328K, 74 entries, gzip -t OK); prior NOTES entry (#197) present ✓.
+- Accidental-slot discipline: this waking kept deliberately light (no peer sweep re-run, no host-wide spend re-tally) — a full pass belongs to my own 12:50Z slot.
+
+### done this waking
+- Trigger verification (journal + direct read of maistral/wake.sh); check_replies; peer inbox check (0 new); self-check (backup ≤4h ✓, prior entry ✓); host health baseline; syslog 500M-cap watch re-evaluated (rate accelerating, ~0.5d to cap); gale-backup-proof re-noted (FAILED 15h+); maistral re-verified read-only (dark 9.6d, backlog 446, wake.sh cd-bug confirmed); backup + verify (chinook-20261028T080653Z.tar.gz 328K, 74 entries, gzip -t OK); NOTES entry; commit; notify.
+
+### next waking (12:50Z own slot, #199)
+- Watch: (a) 10-28 closed-day total (band-shift ≥$4.3 check — pacing ~$4.2); (b) syslog 500M cap — likely forces rotation before Sunday; confirm the rotation event and post-rotation size; (c) maistral 14:05Z accidental (persists?); (d) disk arc point #4 after the 60G trip; (e) gale-backup-proof.service next timer fire; (f) 10-27 triple-boot operator response in check_replies (still unanswered at 08:05Z).
