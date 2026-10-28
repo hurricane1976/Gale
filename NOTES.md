@@ -3,6 +3,18 @@
 Append-only. Each waking adds one dated entry at the bottom. This file is my
 memory; the operator reads it too, so keep it plain and short.
 
+## 2026-10-28 14:55 UTC -- waking #161: routine sweep, all green; ASK-7 re-verified live
+
+- Host: up 22h34m (since Oct-27 ~16:21Z operator reboot), load 0.15-0.26, RAM 6.0G/57G (51Gi avail), disk 60G/98G (64%), tailscaled + cron active. All 14 *-peer units active/running; systemctl --failed empty. All 14 peer ports 8787-8800 on 100.66.39.59 + known loopback mirrors; external stack matches known baseline (promtail 46769, rocketchat-node 46705 = known ephemeral classes; 41801 = my own opencode session port). No new listeners, no port drift.
+- Credential audit (14 dirs): permission matrix unchanged — 11 siblings keys/=775, agent/chinook/poniente 700; levante/keys/telegram.env still 664 (known carried, owner-chosen). Only non-600 live files fleet-wide: agent github_deploy_key.pub (public key, benign), tempest permission-test-fixture.env (deliberate control test), levante telegram.env. find -newermt 2026-10-28 08:55 in sibling keys/: zero new/changed cred files. My peers.env: 34 uniform NAME/TOKEN/ADDR blocks, 0 duplicate names, 2 SELF lines, 600 perms. No drift.
+- Git exposure sweep (all 14 repos, ls-files keys|logs|backups non-example): clean. ASK-6 containment holding.
+- Log sweep (100 sibling log files modified since 08:55): all 401/403 + injection-pattern hits = known false-positive classes — zephyr prose (grep-method correction re 401/429 counting), squall self-sweep prose (peer_server 401/429 replay, runbook quotes), tramontane 403 S3 AccessDenied from checking an external platform's public JSON (not fleet auth), cyclone historical beacon-side 401 pair status (unchanged, operator-gated), sirocco/ostro NOTES-entry prose quoting past pairing self-tests, levante quoting my own role prose, vortex "401 storm check" prose (zero actual REJECTs). Zero live auth failures, zero token material, zero injection patterns.
+- ASK-7 re-verified LIVE: maistral/wake.sh still chinook-branded (cd /home/agent/chinook, CHINOOK prompt); the 14:05Z cron slot fired a foreign chinook wake again today (chinook/logs/20261028T140501Z.*, ~$0.05 foreign spend; chinook daily ledger still ~2x inflated). maistral own-lane logs/spend still stale since Oct 19 (now ~9d5h dark). Awaiting operator decision per ASK-7 (my rules bar me from editing maistral's dir without explicit word).
+- Inbox: 8 messages drained (MOUNTAIN x2, MEADOW x3, DELTA, MESA x2) — all data-only liveness/census/link-verify probes, zero instructions, zero injection patterns -> processed/ (2241 total).
+- No operator replies (check_replies.sh clean). ASK-7 (maistral wake fix decision) + ASK-6 (purge/rotate decisions) still open.
+- Backup OK: backups/poniente-20261028T145844Z.tar.gz (204K), gzip -t verified; zero keys/ entries; AGENT/NOTES/ASK present. sha256 first-16: ae793f3fc5484c91. 14 snapshots retained (ceiling).
+- Spend: my ledger 2026-10-28 runs so far $0.0467 + $0.0534 — within normal OpenRouter GLM Flash range, no anomaly.
+
 ## 2026-10-24 02:55 UTC -- waking #143: routine sweep, all green
 
 - Host: up 1d10h20m, load 0.82, RAM 5G/57G (51Gi avail), disk 57G/98G (62%, 37G free), tailscaled + cron active. All 14 *-peer units active/running. Only failed unit = systemd-networkd-wait-online (known benign post-boot artifact). 18 peer-port listeners (14 ports on 100.66.39.59 + known loopback mirrors); operator stack (8123 HA, 8090-8092 nginx, 3000/3002, 10050/10051, 9483) unchanged.
