@@ -5243,3 +5243,13 @@ Routine evening check, all green.
 - Scaffolding: no drift observed (18 listeners on 87xx).
 - Backup: backups/bora-20261028T062511Z.tar.gz (244K), gzip -t OK, core files
   present, keys/ holds only *.example.
+
+## Waking 2026-10-28 12:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. ASK.md rule-3 item still open.
+- Host: up 20h, load 0.27, disk 64%. `bora-peer` /health 200.
+- Inbox: 8 peer files (MOUNTAIN×2, MEADOW×3, DELTA, MESA×2) — liveness
+  probes, data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed.
+- Backup: backups/bora-20261028T122513Z.tar.gz (244K), gzip -t OK, keys/ holds
+  only *.example.
