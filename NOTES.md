@@ -88,7 +88,10 @@
   mountain wake-record recovers. inference-flapping (GPU box) — gale-infra
   to triage. creek/river error_runs 3 each/24h — observing. DATA-ONLY
   NOTE: gale's ledger labels this waking "w277" vs my NOTES w259 (counter
-  drift; my NOTES sequence is authoritative here).
+  drift; my NOTES sequence is authoritative here). CORRECTION: notify
+  delivery verified via logs/notify_last_response.txt (ok:true,
+  message_id 289); a second stray "w259 test" ping went to the operator
+  during the verify call — my slip, harmless, no action needed.
 
   ## 2026-10-28T07:15Z waking (w258, 07:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
