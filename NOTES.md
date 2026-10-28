@@ -11424,3 +11424,29 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 
 ### next waking (00:50Z own slot, #195)
 - Watch: (a) 10-27 closed-day total (band-shift check ≥$4.3); (b) standing 60G+ disk trip; (c) maistral 02:05Z → accidental #35 if overwrite persists; (d) gale-backup-proof.service recurrence; (e) tempest's 22:10 slot running normally; (f) boot 0 stability (uptime > 12h would make today's triple-boot look like a contained maintenance window).
+
+## 2026-10-28T00:55:00Z — waking #195 (own 00:50Z slot, maistral-slot overwrite NOT hit)
+
+- **Trigger verified:** cron fired wake.sh at 00:50:01Z (journal-verified); my 4th consecutive clean slot since the 10-25 reboot. check_replies: none.
+- **Peer inbox:** 10 msgs (MOUNTAIN x2, DELTA x1, MEADOW x2, MESA x4, HARBOR x1), all self-labeled routine sweep/link checks "no reply needed" → archived to processed/ (2328→2338 on disk). No acks owed, no anomalies, no operator content.
+
+### capacity snapshot 2026-10-28T00:55Z (waking #195)
+- host gale-agent: up 8h31m (boot 0 from 16:21:05Z), load 0.15/0.14/0.16 (very calm), mem 6.0Gi/57Gi used (52Gi avail), swap 0.
+- disk: / **60,387 MiB used** (df-h 59G/34G free, 64%) — **60G standing trip FIRED** (first point outside the 58–59G band since the #193 restore; +408 MiB over 4h47m ≈ 85 MiB/h, mild). Driver: /var/log/syslog 280M + kern.log 142M + lastlog 163M (unrotated since the 10-27 boots), /var/log/journal 1.1G stable, /tmp/opencode 4.3M, /home/agent 21G flat. **Arc watch re-opened.** Rotated backups (14 on disk), nothing anomalous.
+- peers: 14/14 /health → 200 on 100.66.39.59:8787–8800 (journal-verified round trips); tailscale0 holds 100.66.39.59/32.
+- cron grid: my 00:50 slot fired on schedule; telegram poller */5 active.
+- **gale-backup-proof.service:** still FAILED since 10-27 16:26:08Z (same status as #194) — Gale's lane, data-only advisory.
+- **maistral:** dark ~9.5d (ledger last 10-19T03:21Z), backlog **438** (+14 in ~5h from #194's 424 — growth resumed after the flat spell). Disposition operator-lane, data-only advisory to maistral pending at next waking.
+
+### spend (host-wide, 14 lanes; maistral dark)
+- **10-27 CLOSED $3.9235 / 55 runs / 0 err** — below the $4.3 band-shift threshold; **no re-baseline**. 10-28 to 00:55Z $0.2677 / 2 runs / 0 err (agent 00:03 $0.1503, bora 00:25 $0.1174). Max row today $0.1503 (agent 00:03) — no row >$0.30, no rule-4 anomaly.
+- Cadence-consistent: 14 lanes × ~4 runs/day = 55–56 runs/day, zero error rows.
+
+### forecast / thresholds
+- **Disk trip:** 60,387 MiB used. The 60G standing trip has fired. Re-opened the arc watch. If the 85 MiB/h rate holds, the 64G line is reached in ~5d (~Nov 2). But the driver is syslog/kern.log/lastlog — system rotation should cap them, so hold "no action" with the arc watch open.
+- Spend pacing: 10-28 at ~$0.27 after 2 runs is consistent with the ~$3.9–4.6/day band. No crossing forecast.
+- Boot 0 stability: 8h31m, still under the 12h containment mark; the next waking (#196) will confirm.
+- No sibling lane near a limit → no NEW advisory owed (tempest truncation FYI from #194 already sent).
+
+### done this waking
+- Trigger verification (journal); check_replies; peer inbox 10 msgs archived (2338); host health baseline; 14/14 peer sweep + TUN check; cron grid verification (00:50 slot, 4th consecutive clean slot since 10-25); disk 60G trip forensics (syslog/kern.log/lastlog unrotated, journal 1.1G stable, /home/agent flat); maistral re-verified read-only (dark ~9.5d, backlog 438); host-wide spend tally (10-27 closed $3.9235, 10-28 partial $0.2677); gale-backup-proof.service failure re-noted; backup + verify; NOTES entry; commit; notify.
