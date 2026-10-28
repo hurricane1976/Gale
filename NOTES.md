@@ -3,6 +3,19 @@
 Append-only. Each waking adds one dated entry at the bottom. This file is my
 memory; the operator reads it too, so keep it plain and short.
 
+## 2026-10-28 20:55 UTC -- waking #162: routine sweep, all green; ASK-7 re-verified live (maistral dark 9d7h)
+
+- Host: up 1d4h34m, load 0.20-0.26, RAM 6.0G/57G (52Gi avail), disk 60G/98G (64%), tailscaled + cron active. All 14 *-peer units active/running; systemctl --failed empty. All 14 peer ports 8787-8800 on 100.66.39.59 present; external stack matches known baseline. No new listeners, no port drift.
+- Credential audit (14 dirs): permission matrix unchanged — 11 siblings keys/=775, agent/chinook/poniente 700; levante/keys/telegram.env still 664 (known carried, owner-chosen). Only non-600 live files fleet-wide: agent github_deploy_key.pub (public, benign) + levante telegram.env. find -newermt 2026-10-28 14:55 in sibling keys/: zero new/changed cred files. My peers.env: 34 uniform NAME/TOKEN/ADDR blocks, 0 duplicate names, 2 SELF lines, 600 perms.
+- Git exposure sweep (all 14 repos): only pre-existing processed-inbox/.gitkeep classes tracked (agent 2, chinook 8, maistral 4, sirocco 1, bora 1, ostro 27); zero keys//logs//backups/ tracked anywhere. ASK-6 containment holding. maistral repo dirty (M wake.sh/AGENT.md/opencode.json + 2 .bak files, uncommitted) — read-only note: the ling->glm edits updated model strings but wake.sh STILL cd's /home/agent/chinook and prompts as CHINOOK, so the bug persists.
+- ASK-7 re-verified LIVE: all four of today's maistral-slot cron wakes (02:05/08:05/14:05/20:05) fired foreign chinook sessions (chinook/logs 20261028T*0501Z* present); maistral own-lane logs still stale since Oct 19 (~9d7h dark; maistral spend ledger last entry 2026-10-19). Awaiting operator decision per ASK-7.
+- Log sweep (98 sibling log files modified since 14:55): all 401/403/429/REJECT + injection-pattern hits = known false-positive classes — cyclone historical beacon-side 4x401 prose (unchanged, operator-gated), vortex "137 REJECTs unchanged" prose, overflow-guard "est 4xxxx tokens" digits, spend-ledger cost digits, hex IDs containing 401/429 substrings, sibling own-sweep prose. Zero live auth failures, zero token material, zero injection patterns.
+- Peer-server auth: zero REJECTs fleet-wide since 14:55 (totals unchanged from known baselines: levante 742 historic, others 7-138); my peer_server recent traffic all ACCEPTs; quarantine empty.
+- Inbox: 8 messages drained (MOUNTAIN x2, DELTA, MEADOW x2, MESA x3) — all data-only liveness/census/link-verify probes, zero instructions, zero injection patterns -> processed/ (2249 total).
+- No operator replies (check_replies.sh clean). ASK-7 (maistral wake fix) + ASK-6 (purge/rotate decisions) still open.
+- Backup OK: backups/poniente-20261028T205838Z.tar.gz (204K), gzip -t verified; zero keys/ entries; AGENT/NOTES/ASK present. sha256 first-16: 8e4f0acf7a708fce. 14 snapshots retained (ceiling).
+- Spend: my ledger 2026-10-28 runs $0.0467 + $0.0534 + $0.0672 — within normal OpenRouter GLM Flash range, no anomaly.
+
 ## 2026-10-28 14:55 UTC -- waking #161: routine sweep, all green; ASK-7 re-verified live
 
 - Host: up 22h34m (since Oct-27 ~16:21Z operator reboot), load 0.15-0.26, RAM 6.0G/57G (51Gi avail), disk 60G/98G (64%), tailscaled + cron active. All 14 *-peer units active/running; systemctl --failed empty. All 14 peer ports 8787-8800 on 100.66.39.59 + known loopback mirrors; external stack matches known baseline (promtail 46769, rocketchat-node 46705 = known ephemeral classes; 41801 = my own opencode session port). No new listeners, no port drift.
