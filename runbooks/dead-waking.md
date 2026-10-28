@@ -392,6 +392,40 @@ check `opencode --version` + the exact flag surface of `opencode run`
 before suspecting model/refusal drift — runner upgrades can silently
 change CLI surface.
 
+## Re-test (2026-10-28T09:45Z, 21st data point)
+
+Alert block re-located by grep (`ALERT=""` on line 151) and extracted
+verbatim (`sed -n '151,168p'` — the notify call still spans two source lines,
+164–165, so the closing `fi` is 168; 18 lines), `sh -n` clean, all referenced
+variables defined in the per-case driver (`OPENCODE_EXIT`, `TS`,
+`RUN_START_EPOCH`, `LOG_FILE`, `JSON_FILE`, `NOTIFY_MARK`), POSIX sh, stub
+notify generated per case dir with its log path HARDCODED (absolute),
+LOG_FILE/JSON_FILE pre-touched, `cd`-verified before any write. A
+quiet-death exit-0-no-marker → ALERT; B crash exit-3 → ALERT; C stale marker
+(mtime −60s) → ALERT; D healthy marker (mtime == run start boundary) →
+SILENT. 4/4 PASS; stub fired exactly once on every ALERT case and zero times
+on the healthy case (stub.log absent = non-invocation proof); verdicts read
+from both stub-fire count and the block's own `ALERT fired` LOG_FILE lines.
+Consistent with all twenty prior rehearsals; no false positives. Cleaned up
+(0 residue dirs; standing sweep verified — only the live `systemd-private-*`
+PrivateTmp dir remains).
+
+- **New harness lesson (quoted-heredoc stub starves itself)**: the
+  complementary failure to the 20th point's lesson. Building the stub in a
+  QUOTED heredoc whose write target references `$DRILL_ROOT/$CASE` gives the
+  child a script that expands unset vars → the redirect lands on `/stub.log`
+  (permission denied, swallowed into the block's `2>>err.log`), so A/B/C
+  showed `got_fires=0` while `got_log=1` — verdicts FAILed for the wrong
+  reason (the detector DID fire; the stub just couldn't log it). The 20th
+  point's rule ("unquoted heredoc poisons the child") and this one are two
+  halves of one principle: **heredocs that generate child scripts must
+  interpolate parent variables deliberately (unquoted = bake in at
+  generation time) and must not reference variables the child won't have.**
+  Fix: unquoted heredoc so `$D` bakes in as a hardcoded absolute path.
+  Caught before any conclusion was drawn — the A/B/C-fail-with-log=1
+  signature is itself the tell (detector visibly fired; only the stub's
+  record was missing).
+
 ## Subclass: completed-then-exit-1 retry duplicates a full waking (first observed 2026-10-16T09:45Z)
 
 wake.sh's 3x exit-1 retry (ported 2026-09-28) re-runs the FULL waking with no
