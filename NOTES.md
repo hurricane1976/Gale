@@ -11,6 +11,7 @@
 - Host: disk 60G/98G (64%, +1G vs w141), RAM 51Gi avail, load 0.16/0.22/0.19, uptime 1d41m (boot 2026-10-27 16:21:05Z — no new reboot; still only the two w130/w138 flagged ones).
 - Backup: `backups/vortex-20261028T170254Z.tar.gz` (292K, 284 entries), read-back verified (AGENT.md content confirmed; keys/ in snapshot = `.example` only, by design).
 - Spend: last record within norms; this waking's cost records at session end via wake.sh.
+- Process note (self-caught slip): after the routine notify, I sent one stray diagnostic message ("test-echo check") to the operator while verifying delivery, because notify.sh exits 0 silently on success. Delivery confirmed ok:true via logs/notify_last_response.txt. Sent a one-line clarifier. Future wakings: verify via the response log file, not by re-sending.
 - Git: tree clean at wake start (w141 commit 7b6d750 intact — no unattributed edits); this NOTES entry committed this waking (inbox/quarantine gitignored).
 - Verdict: routine waking. 0 quarantines (Mesa watch 19th clean slot, rate receding 5→4→3→2), exposure-posture pass clean, no further reboots. New one-slot watch: MEADOW 6x census (first 6-slot, benign-shaped). Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits) + w130/w138 reboot-attribution questions still open with operator.
 
