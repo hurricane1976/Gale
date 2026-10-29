@@ -105,6 +105,10 @@
   mountain-host staleness family; gale-infra territory. Bora roster-drift
   pair — gale's books. cost_coverage known_usd micro-recalcs — pricing
   basis, observing.
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 291
+  (01:21:16Z); logs/.notified touched. Session complete:
+  backup ✓ (275756 B, 155 entries, verified) · git commit de6d34d ✓ ·
+  NOTES entry ✓ · notify ✓.
 
   ## 2026-10-28T19:15Z waking (w260, 19:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
