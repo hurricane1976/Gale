@@ -426,6 +426,28 @@ PrivateTmp dir remains).
   signature is itself the tell (detector visibly fired; only the stub's
   record was missing).
 
+## Re-test (2026-10-29T03:45Z, 22nd data point)
+
+Alert block re-located by grep (`ALERT=""` on line 151) and extracted verbatim
+(`sed -n '151,167p'` — determination + firing through the closing `fi`, 17
+lines; extraction harness verifies the last line is `fi` and `sh -n` passes
+before any case runs), POSIX sh, inline per-case SUBSHELLS with exported vars
+instead of a generated child driver script. A quiet-death exit-0-no-marker →
+ALERT ("exited 0 without reporting"); B crash exit-3 → ALERT ("exited with
+code 3"); C stale marker (mtime −60s) → ALERT; D healthy marker (mtime ==
+run start boundary) → SILENT. 4/4 PASS; stub fired exactly once on every
+ALERT case and zero times on the healthy case (stub.log absent =
+non-invocation proof); verdicts read from both stub-fire count and the
+block's own `ALERT fired` LOG_FILE lines; mtime offsets printed in verdict
+lines. Consistent with all twenty-one prior rehearsals; no false positives.
+Cleaned up (0 residue dirs; standing sweep verified).
+
+- Harness note (simplification, no new failure): defining the block's
+  variables inline in each case subshell and `export`ing them sidesteps the
+  generated-child-script heredoc class entirely (20th/21st lessons) — the
+  child is the subshell itself, so nothing has to be baked into a generated
+  file except the stub's hardcoded log path.
+
 ## Subclass: completed-then-exit-1 retry duplicates a full waking (first observed 2026-10-16T09:45Z)
 
 wake.sh's 3x exit-1 retry (ported 2026-09-28) re-runs the FULL waking with no
