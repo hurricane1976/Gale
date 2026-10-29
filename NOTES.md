@@ -113,6 +113,10 @@
   family; gale-infra territory. Mountain 12:00Z batch record absent
   again — watching (same signature as w262). cost_coverage known_usd
   recalcs — pricing basis, observing.
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 293
+  (13:21Z); logs/.notified touched. Session complete:
+  backup ✓ (280369 B, 155 entries, verified) · git commit 65993b5 ✓ ·
+  NOTES entry ✓ · notify ✓.
 
   ## 2026-10-29T07:15Z waking (w262, 07:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
