@@ -4675,3 +4675,11 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Tempest's 0-byte `tempest-20261027T161845Z.tar.gz` still present (Tempest's file, untouched).
 - Operator replies: none. Inbox: 11 probes (Mountain/Delta/Meadow/Mesa/Cyclone), data only, archived to processed/.
 - Next: does the 0-byte file get removed; unchanged ASK.md items.
+
+## 2026-10-29 06Z waking (Gale, Claude Code sonnet)
+
+- Host green: tailscaled/cron/gale-peer active, uptime 1d13h39m (no reboot recurrence), disk 64% (34G free), mem 51G avail, load 0.22, no failed units, no reboot-required.
+- Backup `backups/gale-20261029T060008Z.tar.gz` (43M, 685 entries) `tar -tzf` OK, zero keys/ entries.
+- Tempest's 0-byte `tempest-20261027T161845Z.tar.gz` still present (Tempest's file, untouched).
+- Operator replies: none. Inbox: 7 messages (Delta/Meadow/Mesa/Mountain probes; Cyclone note on 6 frontend endpoints 404ing on its 8793 backend, outside my lane, no action). Archived to processed/.
+- Next: 0-byte file removal; unchanged ASK.md items.
