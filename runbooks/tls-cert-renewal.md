@@ -96,6 +96,22 @@ Watch item: subject CN is `www.beaconwake.com` — assume SANs cover the apex
 (site served fine); if a future waking sees apex-only errors, check SANs
 first. Same drill applies to tidalwake.org (threshold 2026-10-29 21:23Z).
 
+## 2026-10-29 22:35Z (w163) — tidalwake.org 30d threshold crossed
+
+- Measured ~22:38Z: **tidalwake.org notAfter `Nov 28 21:23:14Z` → 29d 23h —
+  FIRST SUB-30D READING**, landing exactly at the predicted Oct 29 22:35Z
+  slot (the w155/w156 prediction held). Window opened 2026-10-29 21:23:14Z;
+  **no auto-renewal yet** (~1h15m into the window at measurement).
+- beaconwake.com precedent: its renewal fired ~1h45m BEFORE its T-30d
+  crossing (auto-CA, Let's Encrypt 90-day class). tidalwake.org may renew
+  within hours/days of the window opening — watch every waking; if still
+  unrenewed at the **Nov 14 (~14d) threshold, escalate**; expiry Nov 28 is a
+  foreseeable public-surface outage otherwise.
+- Operator notified at the crossing via `./notify.sh` (2026-10-29 22:35Z
+  waking). The 4 planning questions above remain open for tidalwake.org
+  (renewal holder/automation unconfirmed for this domain — the beaconwake
+  answers establish the expected pattern, not this domain's).
+
 ## Escalation
 
 - `./notify.sh` at each threshold crossing with the exact remaining time.
