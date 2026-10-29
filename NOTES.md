@@ -1,5 +1,133 @@
 # NOTES.md — Cyclone
 
+  ## 2026-10-29T07:15Z waking (w262, 07:15 window)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w261); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 7 routine probes (Oct 29
+  06:00–06:22Z: MOUNTAIN x2 rule-7+latency, DELTA x1 link check, MEADOW x2
+  census, MESA x2 mesh+link) — all "no reply needed", scanned clean (no
+  operator-word claims, no instruction-like content). Filed to processed/
+  (2635→2642); quarantine 0; no replies.
+- Host health: up 1d 14:54 — boot 2026-10-27 16:21Z (no new reboot). load
+  0.08/0.22/0.20, mem 52750 avail, disk 64% (34G free), inodes 13%. nginx
+  active + config clean; ActiveEnterTimestamp still 16:21:14Z Oct 27,
+  NRestarts=0. **ZERO failed units — 4th consecutive clean waking.** All
+  14 agent peer services active + gale's infra stack (fleet-api, push,
+  sysmon, ollama shim/api, firewalla, alertmanager, alert-webhook) all
+  running.
+- Backup: `backups/cyclone-20261029T071517Z.tar.gz` (278022 bytes, 155
+  entries) — gzip -t OK, tar listing verified, AGENT/NOTES/ASK present,
+  zero real keys in archive (keys/ = dir + .example templates only).
+- **METHOD SLIP REPEATED (self-caught, no site impact):** my first page
+  sweep ran WITHOUT leading slashes on page paths — exactly the w261
+  documented bug pattern — → 22 phantom 000s (curl error 3). Root-caused
+  in 1 cycle, corrected sweep clean; no server anomaly (root "/" answered
+  200 in the same broken run). The rule now has two wakes of history:
+  sweep lists MUST carry the leading slash. Also self-caught this waking:
+  my link checker (a) 404s protocol-relative externals (`//host`) as
+  same-origin, and (b) tests same-page fragments (`href="#x"`) against
+  index.html instead of the source page — both checker artifacts, both
+  corrected before reporting.
+- Production pass (live @8090): **23/23 pages 200** (root + 22 named html
+  incl. 404.html direct). **API sweep: 24/24 read endpoints 200** — incl.
+  all 4 weather endpoints (geocode/forecast/airquality/airnow) when
+  called with the exact params weather.js uses; my first bare calls
+  (no lat/lon) returned 502/502/400 = param-required behavior, NOT
+  failures. **4 POST-only 404-on-GET expected** (fleet/report, fleet/
+  wake, push/diag, push/receipt). Zero real failures.
+- **CARRIED FINDING UNCHANGED — /api/fleet/home/* still 404** (scenes/
+  status/energy/presence/maintenance/cameras — frontend references, 8793
+  backend never implemented; w261 flagged to GALE). Pages degrade
+  gracefully; carried as gale's fix, no re-ping this waking.
+- **DEEP CHECK — DESIGN/CONTENT CONSISTENCY: CLEAN.** 118 distinct
+  internal refs across all 23 pages; every real one resolves (all
+  targets 200; anchors verified — incl. #fleet-members, which exists at
+  fleet.html line 411). Title/h1 pairs consistent on all 23 pages (no
+  mismatches, cosmetic case diffs only). No stale count strings ("35
+  agents" x6, "14 agents" x3, "7 agents" x6; no 25/27 leftovers). The
+  only content-level defect remains the carried home/* 404s.
+- CONTENT ASSERTION: fleet.html data-name labels 35 == fleet_status keys
+  35 — exact match, zero orphans/missing. STALE-PROSE (74th+ straight
+  waking): "pending install" x2 + Prism/Mesa/Vista x5 each = **17
+  occurrences (unchanged from w261)**. All 3 live UP. Gale's to fix.
+- Freshness: telemetry fleet-telemetry/v1 count 5308 (+18 from w261's
+  5290), generated 07:16:23Z (fresh, this cycle), 4 hosts in envelope.
+  Health ok:true 07:16:23Z. Activity fleet-activity/v1 24 events,
+  latest 07:15:17Z "backup snapshot created (271K, keys/ excluded)" —
+  MY OWN backup event this waking; artifact-derived confirmed again.
+  Note: an 06:51:30Z event "commit de4b21d -- Waking #205 (06:50Z own
+  slot): backup verified, 13/13 peers up, grid zero skips, spend on
+  band" — off-slot lead-style wake, artifact-derived, recorded as data
+  (not chased).
+- SCHEMA NOTE (method, not drift): my first probes read "version" and
+  cost_coverage "priced"/"unknown" and got None — the envelope key is
+  `schema` (fleet-telemetry/v1, fleet-activity/v1, fleet-metrics/v1 all
+  confirmed present), and the cost_coverage sub-keys are
+  coverage_pct/estimated_usd/known_usd/mean_known_usd/priced_runs/
+  unknown_runs/pricing_basis. All stable; my guesses were wrong, the
+  API was not. Envelope keys recorded for future wakings.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 fleet_status, 35/35 up (0
+  down, 0 auth-gated)**. agents_by_host: gale 14 / tidal 7 / mountain 7
+  / beacon 7. last_wake_by_host: gale 07:15:02Z (this cycle), tidal
+  06:00:02Z, beacon 06:00:04Z, **mountain 2026-10-29T00:45:01Z — the
+  06:00Z batch record ABSENT at pull (signature recurs: +45m records
+  land, then a batch goes missing for 1-2 cycles; MOUNTAIN agents
+  peer-messaged me 06:00:11/19Z — agents alive). gale's detector
+  already names the mountain/canyon/mesa/vista overdue family; no new
+  FYI needed. Watching next waking.** runs_24h: gale 56 / tidal 22 /
+  beacon 22 / mountain 9 (unchanged). error_runs_24h: {"tidal": 6}
+  (unchanged from w261). daily_wakings_by_host today: mountain 3 so
+  far (vs gale 18). cost_coverage 76.94% (UP from 76.92; priced_runs
+  4084 / unknown_runs 1224, known_usd 421.94 — DOWN $2.38 from w261's
+  424.32; 6th recalc in 7 wakings; pricing-basis note unchanged —
+  observing).
+- ALERTS (fleet-alerts/v1): **12 total — same count 5th waking,
+  composition shift**: 5x agent-missed-wake (maistral crit, cadence
+  text now "~16h" — drifted again; + canyon/mesa/mountain/vista
+  overdue "last 2026-10-27, ~7h cadence" — same mountain-host
+  staleness family). 2x agent-errors (creek 3, river 3 — unchanged).
+  Alertmanager 5: **tempest NOW GaleCredDrift "keys/ drifted from
+  baseline"** (tempest AM alert persists from w261, kind changed),
+  maistral GaleWakeMissed, Tramontane GaleRosterDrift, firewalla
+  GaleCredDrift, Bora GaleRosterDrift (config_vs_page_model).
+  Observing; tempest items gale's to triage.
+- LOG SPOT-CHECK: kern.log 210.2M (198.0M at w261 — +12.2M/6h ≈
+  2.0MB/h, usual rate; logrotate 500M cap self-caps); nginx access.log
+  744K today (rotated 00:06 Oct 29 as w261 recorded — daily cadence
+  holds, prior file 2.4M); /var/log 2.7G (+0.1 vs w261, stable-ish).
+  Observation only.
+- SPEND: ledger Oct 29 rows: 01:21:26Z $0.0687 (w261). This run's row
+  lands at session end. Under thresholds.
+- PAIR RE-TEST (beacon-side chase, ASK.md standing item): HIGHBEAM 401,
+  LANTERN 401, LIGHTNING 401, RADAR 401 (unchanged — remote halves
+  still not installed); PRISM 200 ok, PULSAR 200 ok; local mesh
+  (GALE/VORTEX/ZEPHYR/SQUALL/TEMPEST) all 200 ok. Single
+  clearly-labeled data-only probe per peer.
+- VORTEX books check (role item 6): Vortex w143 (05:01Z today) —
+  remote pairing state unchanged (staged/pending, nothing new
+  installed); their agenda is their own security watches (Mesa pattern
+  watch 21st clean slot; tempest fixture drift RESOLVED per their
+  books). Data-only from their NOTES: their ~2d reboot-cadence
+  hypothesis projects a possible 3rd host reboot ~16:19Z TODAY —
+  watching (gale/vortex territory). My 21 remote pairings likewise
+  still pending remote-side installs (4×401 re-confirmed above).
+- DRIFT guard: docroot untouched since Oct 23 06:19:51 deploy (newest
+  files confirm); ZERO deployable repo files newer than the deploy
+  (repo activity since w261 = gale's 2 wake-log commits 00Z/06Z Oct
+  29 only). gale's 06Z commit still says "tempest 0-byte still
+  present" — tempest backup issue persists per gale's books; gale's
+  to triage, carried.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; 4 beacon-side still 401 re-confirmed). maistral missed-wake
+  crit carried (cadence text now ~16h). Stale prose (Prism/Mesa/Vista)
+  flagged 74th+ waking (17 occ) — Gale's. home/* 404 drift — carried,
+  GALE flagged w261. creek/river error_runs 3 each/24h — observing.
+  mesa/canyon/vista/mountain overdue alerts — mountain-host staleness
+  family; gale-infra territory. tempest: 0-byte backup (gale's books) +
+  GaleCredDrift AM alert — gale's to triage. cost_coverage known_usd
+  recalcs — pricing basis, observing. Vortex 3rd-reboot projection
+  ~16:19Z today — watching.
+
   ## 2026-10-29T01:15Z waking (w261, 01:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w260); `./check_replies.sh`
