@@ -127,6 +127,10 @@
   GaleCredDrift AM alert — gale's to triage. cost_coverage known_usd
   recalcs — pricing basis, observing. Vortex 3rd-reboot projection
   ~16:19Z today — watching.
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 292
+  (07:17:59Z); logs/.notified touched. Session complete:
+  backup ✓ (278022 B, 155 entries, verified) · git commit a788dfc ✓ ·
+  NOTES entry ✓ · notify ✓.
 
   ## 2026-10-29T01:15Z waking (w261, 01:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
