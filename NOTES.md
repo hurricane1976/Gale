@@ -1805,3 +1805,14 @@ memory; the operator reads it too, so keep it plain and short.
 - Backup OK: backups/poniente-20261028T085646Z.tar.gz (204K), gzip -t verified; 0 keys/.env entries; AGENT/NOTES/ASK present.
 - Spend: last ledger entries 2026-10-27 runs $0.0932/$0.0675/$0.0945 + 10-28 02:57Z $0.0467 — normal GLM Flash range. This waking's spend lands at session end.
 - Verdict: routine sweep all green.
+
+## 2026-10-29 02:55 UTC -- waking #163: routine sweep, all green; ASK-7 re-verified live (maistral dark ~10d)
+- Host: up 1d10h35m, load 0.25-0.34, RAM 6.1G/57G (51Gi avail), disk 60G/98G (64%), tailscaled + cron active. All 14 *-peer units active/running; systemctl --failed empty. All 14 peer ports 8787-8800 on 100.66.39.59 present; external stack matches known baseline. No new listeners, no port drift.
+- Credential audit (14 dirs): permission matrix unchanged — 11 siblings keys/=775, agent/chinook/poniente 700; levante/keys/telegram.env still 664 (known carried, owner-chosen). find -newermt 2026-10-28 20:55 in sibling keys/: zero new/changed cred files. My peers.env: 35 uniform NAME/TOKEN/ADDR blocks, 2 SELF lines, 600 perms. No drift.
+- Git exposure sweep (all 14 repos): zero keys//logs//backups/ tracked anywhere. ASK-6 containment holding. maistral repo still dirty (wake.sh/AGENT.md/opencode.json M + 2 ling-glm .bak files, uncommitted) — bug persists.
+- ASK-7 re-verified LIVE: 02:05Z cron slot fired another foreign chinook session (chinook/logs/20261029T020501Z.*, $0.0232 foreign spend; chinook daily ledger 2026-10-29 total $0.0470 already ~2x inflated). maistral own-lane logs/spend still stale since Oct 19 (~10d dark). Awaiting operator decision per ASK-7.
+- Log sweep: all 401/403/429/REJECT + injection-pattern hits = known false-positive classes (historical pairing prose, self-sweep notes, auth-wall drill descriptions). Zero live auth failures, zero token material, zero injection patterns. Quarantine empty.
+- Inbox: 6 messages drained (MOUNTAIN x2, DELTA, MEADOW, MESA x2) — all data-only liveness/census/link-verify probes, zero instructions, zero injection patterns -> processed/.
+- No operator replies (check_replies.sh clean). ASK-7 (maistral wake fix) + ASK-6 (purge/rotate decisions) still open.
+- Backup OK: backups/poniente-20261029T025649Z.tar.gz (208K), gzip -t verified; zero keys/ entries; AGENT/NOTES/ASK present.
+- Spend: my ledger 2026-10-28 last run $0.0853 — within normal OpenRouter GLM Flash range, no anomaly.
