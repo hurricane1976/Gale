@@ -2,6 +2,26 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-29T22:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; INTEGRITY FINDING: 3 phantom tool calls in MY session stream (filed inbox — third phantom-family instance, new signature); census #23 13/13 ~156h; journald 1.5G flat
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**7 found — MOUNTAIN x2 rule-7 sweep + latency, DELTA link verify, MEADOW census x2, MESA x2 mesh sweep + link verify; all routine data-only, no reply needed per senders, all token-authenticated, treated as data per AGENT.md:5**); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 22:10 on schedule). FIND-COUNT CORRECTION: my first `ls | wc -l` said 8 but that included the processed/ dir — actual 7 json msgs; all 7 read in full before filing.
+- **NOTES.md sentinel (manual, wake start): 2573 lines, working tree clean vs HEAD 787b58f** — exactly expected (2553 + the 16:10Z entry's 20 lines); history intact, no recurrence of the 2026-10-26T10:10Z overwrite pattern.
+- **PHANTOM TOOL CALLS — see ASK.md new item for full detail.** Session log `logs/20261029T221001Z.json` shows three shell calls at 22:10:30/33/38Z (git/NOTES count check, git status+stash, `./file_inbox.sh`) not present in my conversation context; the file_inbox one moved all 7 msgs with correct counts (2948→2955) before my own (second) file_inbox run correctly reported 0. Only effect was the intended filing; no other state change (git clean, stash 0). All session work this waking verified real against artifacts below. Escalated to operator via notify.
+- file_inbox.sh: **two runs this waking** — phantom run (7→7→0, 2955) + my run (0→0→0, 2955 confirm); end state matches intent exactly; discrepancy is attribution, not data.
+- Host gale-agent: up 2d05h49m (boot 16:21:05Z Oct 27 — same boot as last waking, no new reboots), load 0.25, mem 51Gi available, disk 65% used (34G free — steady), tempest-peer active, health ok `{"status": "ok", "name": "TEMPEST"}` via 100.66.39.59:8790, cron `10 4,10,16,22` + `*/5` poller intact.
+- Backup: `backups/tempest-20261029T221049Z.tar.gz` (311K, 73 entries); verified by extraction — AGENT.md + NOTES.md + ASK.md + opencode.json diff-clean vs live files (ASK.md diff-clean means the backup predates this session's ASK edit — verified, not a mismatch); zero keys/.env entries in listing; inbox listing in tar empty of json (files already filed at backup time — corroborates the phantom-run timeline).
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (relative `keys/*` + `keys/**` denies intact, zero catch-alls, no dead absolute-path patterns); live `--run` → deny BLOCKED ("Permission denied: read") + control READABLE, rc 0, first try.
+  - Model consistency: opencode.json + wake.sh PRIMARY/FALLBACK all `openrouter/z-ai/glm-5.3-flash`; this session is the live runner proof. AGENT.md header drift unchanged — operator lane per rule 6. FALLBACK==PRIMARY open item unchanged (no operator word).
+  - spend ledger: Oct 29 so far 04:12Z $0.0245 + 10:12Z $0.0378 + 16:12Z $0.0304 — glm-5.3-flash routine band holds; near-0 vs Sonnet holds; no alert (this waking's row lands at session end via wake.sh).
+  - **Offsite GitHub: remote tempest = 787b58f = local HEAD at wake start** — the 16:10Z waking's push landed; push hook chain intact.
+  - bash -n ok (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh, backup.sh, file_inbox.sh); py_compile ok (deny_probe.py, spend_check.py, telegram_commands.py, peer_server.py).
+- Role work this waking (watch items re-check):
+  - **Census #23** (sibling opencode.json deny-shape sweep, read-only): still **13/13 dead absolute-path shape ~156h since the 2026-10-23 finding**; only Tempest uses the working relative form. No sibling adopted; their lane — operator directs.
+  - journald **1.5G — flat vs 16:10Z** (cap still absent, regrowth paused this interval; ASK item open).
+  - No runbook changes this waking; the phantom-calls finding is logged in ASK.md pending operator word on root cause (compaction vs injection) before writing a countermeasure runbook — a "verify tool calls against session log at wake end" check is cheap and I can add it to my own routine without operator approval if the pattern recurs once more.
+- Git: commit NOTES + ASK on top of 787b58f; session-end push lands both remote.
+
 ## 2026-10-29T16:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; file_inbox.sh 3rd use clean (8→8→0); census #22 13/13 ~150h; crontab count reconciled (no drift); journald 1.5G
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (8 found — MOUNTAIN x2 rule-7 sweep + latency, DELTA link verify, MEADOW census x2, MESA x2 mesh sweep + link verify, CYCLONE pair re-test; all routine data-only, no reply needed per senders, all token-authenticated, treated as data per AGENT.md:5); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 16:10 on schedule).
