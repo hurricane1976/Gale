@@ -2,6 +2,21 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-29T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 4th consecutive waking.**
+- Host health: tailscaled + **all 14 local peer services active** (gale/zephyr/squall/tempest/vortex/cyclone/maistral/bora/chinook/levante/ostro/poniente/sirocco/tramontane), zero failed units; disk **65%** (60G/98G, 34G free — flat vs 17:25Z; watchdog flat 33G across all `*/15` runs, 0 alerts); mem 6/57G (51G avail); load 0.14 (low); up 2d07:04 (no reboot since 16:21:05Z Oct-27); health endpoint **200 OK** via `100.66.39.59:8788/health` (detection note: bare `/` returns 404 — no root route, always probe `/health`). Cron intact (my `25 5,11,17,23` + 14 wake.sh + `*/5` telegram poller + `*/15` disk watchdog).
+- Journal since 17:25Z: 4 benign snap firmware-updater lines (18:00/21:00Z ×2) + **one `networkd-wait-online` timeout @ 20:38:31Z — occurrence #34 by the historical ordinal**; network fully recovered (all peers green + health 200 at sweep) → chronic low-frequency class, below escalation threshold. ENOSPC 0.
+- Backup: `backups/zephyr-20261029T232524Z.tar.gz` (280K, 82 entries) `tar -tzf` verified; keys/ excluded (0 entries); 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; last inbound ACCEPT 18:22:19Z MESA (routine probes through 18:22Z — MOUNTAIN ×2, DELTA, MEADOW ×2, MESA ×2; ~5h quiet gap to sweep, within the known occasional-gap pattern, watch-only); quarantine 0; strict 401/429 grep **0**.
+- Telegram poller: 26 getUpdates-failure lines total — **unchanged**; log mtime 10-27T15:05:04Z → ~56h quiet; 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 7 new (MOUNTAIN ×2, DELTA, MEADOW ×2, MESA ×2) — all data-only "no reply needed" probes/sweeps, no instructions; credential screen run BEFORE archive: 1 hit = "credentialed reach" inside MOUNTAIN's own probe text (known benign FP, 0 real); archived to processed/ (**2944 files**); `zephyr/` empty; `pulsar/` not-mine self-tests left in place (2); quarantine 0.
+- Spend: my lines 05:26:35Z **0.0141** / 11:26:30Z **0.0283** / 17:26:16Z **0.0333** — normal glm-latest band (this waking records post-exit). Siblings all in band, no trend breaks: gale 0.1246 @ 12:00Z + 0.118 @ 18:00Z (steady 0.12–0.135 band; ledger lives at `/home/agent/agent/logs/` — the `/home/agent/gale` path is a known FP from my lane); squall 0.2343 @ 22:00Z; tempest 0.0855 @ 22:16Z; vortex 0.0124 @ 23:00Z; cyclone 0.0692 @ 19:18Z; bora 0.1139 @ 18:25Z; sirocco 0.0302 @ 21:22Z; ostro 0.0406 @ 20:32Z; levante 0.0571 @ 19:42Z; poniente 0.083 @ 20:59Z; tramontane 0.1127 @ 22:45Z (closed watch stays closed). **Maistral bug day 20+: chinook ledger Oct-29 = 8 lines = 4 own :50-ish slots (00:53/06:51/12:51/18:53) + 4 maistral-slot doubles (02:07/08:07/14:07/**20:06:17Z $0.0714 — the predicted 20:05Z double arrived on schedule**); maistral own ledger dark since 10-19T03:21Z; fix still awaits operator word via Gale (ASK item stands).**
+- **opencode.db exact-byte: 4,780,457,984 — 10th consecutive identical reading** (WAL 9.4M).
+- **`/home/agent/.git` ASK item — 17th check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes, still **0 remotes → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, tmp_pack_dsspw2 still present. Not touched.
+- mtime scan: 55 files at the 10-01T02:48:11 stamp — unchanged set, no NEW file joined. Clean.
+- Next: routine sweep; maistral fix watch (awaits operator word via Gale); .git 18th check. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-29T17:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 17:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 3rd consecutive waking.**
