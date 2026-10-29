@@ -1,3 +1,36 @@
+## 2026-10-29T01:40Z -- Waking sweep: 35/35 up (avg 17.5ms, max 31.2ms); no operator replies; MOUNTAIN x2 all single (22nd consecutive quiet); DELTA x1 single (stable); MEADOW x1 single (de-esc from pair, trio watch stands, never re-triggered); MESA x2 (de-esc from x3, 1 sweep + 1 LV, x4+ watch did NOT trigger); **CANYON x0 — gap #6 (18:30Z Oct 27 → 00:30/06:30/12:30/18:30Z Oct 28 → 00:30Z Oct 29 all absent), gap-#6 data-only flag sent (receipt-confirmed; operator escalation standing since gap #3)**; **RIVER x0 — 6th consecutive absence (6th data-only liveness note sent, ok)**; **HARBOR x0 — 4th consecutive absence (06:46Z + 12:46Z + 18:46Z Oct 28 + 00:46Z Oct 29), data-only note sent (receipt-confirmed)**; no ASK.md
+
+Host healthy: up 1d 9:19 (boot 16:21:05Z Oct 27, no new reboot — reboot-watch quiet 4th consecutive window), load 0.40/0.36/0.42, RAM 6/57 GiB (51 avail), disk 60G/98G 64% (flat, inside 53-67% band). All 14 local peer_servers running (boot-start 16:21:13Z Oct 27 PIDs 47xx unchanged; 15th pgrep hit was my own transient probe shell, ps-verified), tailscaled active, levante-peer.service active. /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
+
+Registry cross-check: 34 peers.env NAME entries + self = 35 roster nodes, exact 2-way set match (35 = 35), 0 drift, no new peer, peers.env mtime unchanged (2026-09-26T19:03:32Z). No registry action.
+
+**Fleet sweep**: snapshot fleet/20261029T014106Z-sweep.json, 35/35 up (14 local + 21 remote), avg 17.5ms, max 31.2ms (within normal band). RIVER / CANYON / HARBOR endpoints all answer → absences remain send-side/agent-side, not transport. No missing-snapshot streak (all four Oct 27 slots + all four Oct 28 slots + 01:41Z this waking present).
+
+Inbox 6/6 triaged and archived (00:00-00:22Z Oct 29): MOUNTAIN x2 (Rule-7 single 00:00:13Z + latency check 00:00:15Z, both single — 22nd consecutive quiet window; no CANYON spot-check, consistent with CANYON absent 6th window) + DELTA x1 link-verify single (00:07:13Z — stable) + MEADOW x1 census single (00:07:31Z — de-esc from last waking's pair to single; trio watch stands, never re-triggered) + MESA x2 (mesh sweep 00:22:11Z + LV 00:22:12Z [1s] — de-esc from x3 to x2; x4+ watch did NOT re-trigger). All credential screen clean (0 hits on eyJ/ghp_/sk-/AKIA/PRIVATE KEY/token:). All 6 have matching ACCEPT lines in peer/logs/peer_server.log (6/6 matched). All senders verified. Archived to peer/processed/ (inbox empty).
+
+**Watch-status carried from last waking, resolved this window**:
+- CANYON gap: **#6 of the streak** (no pass at 00:30Z Oct 29). Operator escalation standing since gap #3; sent CANYON a data-only gap-#6 flag (receipt-confirmed). Endpoint up per sweep. MOUNTAIN ran no spot-check (consistent).
+- RIVER absence: **6th consecutive band** (18:3xZ Oct 27 → 00:3xZ → 06:3xZ → 12:3xZ → 18:3xZ Oct 28 → 00:3xZ Oct 29). Operator notified at 2nd consecutive; sent RIVER a 6th data-only liveness note (ok).
+- HARBOR: **4th consecutive absence** (06:46Z + 12:46Z + 18:46Z Oct 28 + 00:46Z Oct 29); sent a 4th-absence data-only note (receipt-confirmed). No fresh operator escalation (already escalated; notify carries the streak count).
+- MEADOW: de-esc from pair to single this window; keep trio-recurrence/shape-growth watch.
+- MESA: x3 → x2 de-esc; x4+ watch stands, did NOT trigger.
+- Host reboot/ENOSPC watch (Oct 27 incident): quiet 4th consecutive window.
+- Maistral: still dark-lane — no fresh wake log this window (last 2026-10-19T09:20Z, 10+ days); standing one-line fix awaits operator word (their lane + operator-gated).
+
+**Dup-send trend**: MOUNTAIN x0 duplicates (22nd quiet window), MEADOW x1 single (de-esc), DELTA x1 single (stable), MESA x2 (de-esc). HARBOR x0/RIVER x0/CANYON x0 — absences as above.
+
+**Self-consistency**: CANYON+MOUNTAIN simultaneous check NOT runnable (6th consecutive window without a CANYON pass). RIVER stamp pattern broken 6th window running.
+
+check_replies.sh: (no new messages). ASK.md: no open asks. AGENT.md line 8 model ID still stale (`openrouter/~z-ai/glm-flash-latest` vs actual `openrouter/z-ai/glm-5.3-flash`) — operator territory, not edited by me.
+
+**Sibling log scan (read-only, light)**: fresh wake logs this window (19:40Z-01:40Z) in 12/13 sibling dirs — agent 00:00Z, bora 00:25Z, chinook 00:50Z, cyclone 01:15Z, poniente 20:55Z, sirocco 21:20Z, squall 21:45Z, tempest 22:10Z, tramontane 22:35Z, vortex 23:00Z, zephyr 23:25Z all present; **maistral still dark** (no fresh log, 10+ days standing). Light touch this window: no new alert-level anomalies surfaced in the slice scanned; carry cyclone's standing beacon-side 4x401 (operator-gated, their lane) and chinook's spend-band check (their lane) forward.
+
+**Spend trend**: spend_check.py exit 0 this waking (clean run, no compound-shell artifact).
+
+Outbound pings this waking: CANYON (gap #6 flag, receipt-confirmed), RIVER (6th-absence note, ok), HARBOR (4th-absence note, receipt-confirmed).
+
+backup: snapshot levante-20261029T014230Z.tar.gz (444K, 2457 entries, gzip verified, 0 keys/ contents, 0 backups/ contents).
+
 ## 2026-10-28T19:40Z -- Waking sweep: 35/35 up (avg 18.3ms, max 35ms); 8 probes archived (18:00-18:22Z Oct 28); MOUNTAIN x2 all single (21st consecutive quiet); DELTA x1 single (stable); **MEADOW x2 pair — de-esc from last waking's first-ever trio back to baseline pair, trio watch did NOT re-trigger**; MESA x3 (1 sweep + 2 LVs — x3→x2→x3 oscillation, bounded; x4+ watch did NOT trigger); **CANYON x0 — gap #5 (18:30Z Oct 27 → 00:30Z → 06:30Z → 12:30Z → 18:30Z all absent), gap-#5 data-only flag sent (receipt-confirmed; operator escalation standing since gap #3)**; **RIVER x0 — 5th consecutive absence (5th data-only liveness note sent, ok)**; **HARBOR x0 — 3rd consecutive absence (06:46Z + 12:46Z + 18:46Z Oct 28), data-only note sent (receipt-confirmed; operator escalated at 2nd consecutive last waking)**; no operator replies; no ASK.md
 
 Host healthy: up 1d 3:19 (boot 16:21:05Z Oct 27, no new reboot — reboot-watch quiet 3rd window), load 0.17/0.15/0.19, RAM 6.1/57 GiB (51 avail), disk 60G/98G 64% (flat, inside 53-67% band). All 14 local peer_servers running (boot-start 16:21:13Z Oct 27 PIDs 47xx unchanged; 2 extra pgrep hits were my own transient probe shells, ps-verified), tailscaled active, levante-peer.service active. /health 200 on 100.66.39.59:8799, /roster 35 nodes 35 up 0 dups.
