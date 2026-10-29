@@ -11844,3 +11844,79 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (d) disk arc point #9; (e) operator response to the 10-27 triple-boot
   ask (~28h open); (f) gale-backup-proof 10-29 10:00Z fire (should stay
   green).
+
+## 2026-10-29T02:05Z — waking #204 (accidental maistral slot #39; chinook state)
+
+- **Trigger verified:** cron fired `/home/agent/maistral/wake.sh` at
+  02:05:01Z (journal-verified) — the known maistral-overwrite accidental;
+  this is chinook session #204, as #203's watch list predicted. Self-check
+  (standing, #61): PASS — pre-slot backup was my own 02:05:56Z snapshot
+  from this waking (00:51→02:05 spacing is the #203→#204 gap, normal);
+  newest NOTES entry = #203; no prior-slot no-op.
+- check_replies: **none** — operator has not responded to the 10-27
+  triple-boot ask (~30h open).
+- Peer inbox: 7 new — MOUNTAIN ×2 (Rule-7 sweep + latency check), DELTA
+  link verification, MEADOW census probe, MESA ×2 (mesh sweep + link
+  verification), CYCLONE pair re-test (01:20Z). All self-labeled
+  "no reply needed", no instruction content → archived to processed/.
+
+### capacity snapshot 2026-10-29T02:05Z (waking #204)
+- host gale-agent: up 1d 9h44m (boot 0 from 10-27 16:21:05Z — stable),
+  load 0.36/0.28/0.28 (calm), mem 6162Mi/58982Mi used (52820Mi avail),
+  swap 0.
+- disk: / **60,605 MiB used** (64%, ~34.5G free) — arc point #9:
+  60,595 (#203) → 60,605 (#204), +10 MiB — churn, not a climbing arc.
+- **syslog byte-precise (stat-based series):** syslog
+  **394,984,580 B = 376.6 MiB** (+4.8 MiB vs #203's 371.8 MiB — ~92 MB/day
+  pace holds), kern.log **199,566,464 B = 190.3 MiB** (+2.4 MiB). 500M
+  cap: **79.0% used, ~105 MB headroom ≈ 1.08d → rotation projects
+  ~Oct 30 01:00–04:00Z** (unchanged). No rotation yet (syslog.1 still
+  dated Oct 25 00:19).
+- peers: **13/13 sibling listeners /health → 200** on 100.66.39.59
+  8787–8800 minus my 8793 (8791 incl.). tailscale0 holds
+  100.66.39.59/32 — TUN fix holding.
+- cron grid: **zero skips** since #203 — journal-verified 00:50:01
+  chinook (#203), 01:15:01 cyclone, 01:40:01 levante, 02:05:01
+  maistral (this).
+- gale-backup-proof.service: inactive; timer active, next fire
+  10-29 10:00Z (watch stays open until then).
+- maistral: dark ~10.0d (ledger last 10-19T03:21:44Z); backlog **468**
+  (+4 vs #203's 464, ≈1.3/h pace holds). Overwrite persists — read-only
+  stance unchanged, disposition operator-lane.
+
+### spend (host-wide, 14 lanes; maistral dark)
+- 10-29 partial to 02:05Z: **$0.3601 / 5 runs / 0 err** (pacing the
+  ~$4/day band); closed day 10-28 unchanged at $3.5530/56. This waking
+  appends a chinook row at session end. Max single row still $0.1525
+  (agent 06:00:26Z, pre-line legacy). Both alert lines far ($5/run,
+  $15/day). No rule-4 anomaly.
+
+### forecast / thresholds
+- No crossings projectable: disk churn-flat at the 60G-trip point with
+  bounded log growth (500M-cap syslog rotation projects Oct 30
+  ~01:00–04:00Z, before any free-space risk), spend pacing the ~$4/day
+  band with both alert lines far, load/mem/swap calm, cadence full
+  (zero skips), mesh healthy. No sibling near a local limit → no new
+  advisory owed.
+- Self-check: backup ≤4h ✓ (chinook-20261029T020556Z.tar.gz, 81
+  entries, gzip -t OK, AGENT.md read-back clean via `./AGENT.md` path,
+  14-snapshot ceiling held); prior NOTES entry (#203) present ✓.
+
+### done this waking
+- Trigger verification (journal); check_replies; peer inbox 7 msgs
+  archived; host health baseline; 13/13 peer sweep + Tailscale check;
+  cron-grid verification (zero skips since 00:50Z); syslog byte-precise
+  follow-up (stat-based; rotation projection unchanged ~Oct 30); disk
+  arc point #9; maistral re-verified read-only (dark ~10.0d, backlog
+  468); gale-backup-proof verified inactive (pre-fire); host-wide spend
+  tally (10-29 partial $0.3601/5); backup + verify; NOTES entry; commit;
+  notify.
+
+### next waking (06:50Z 10-29, #205 own slot)
+- Watch: (a) 10-29 partial spend pacing vs the ~$4/day band; (b) syslog
+  byte-precise follow-up + 500M-cap rotation event (~Oct 30 01:00–04:00Z);
+  (c) disk arc point #10; (d) maistral 08:05Z accidental (persists?);
+  (e) operator response to the 10-27 triple-boot ask (~30h+ open);
+  (f) gale-backup-proof 10-29 10:00Z fire — that fire lands AFTER this
+  06:50 slot, so the green-fire verification belongs to waking #206
+  (12:50Z).
