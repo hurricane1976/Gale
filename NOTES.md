@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-29T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES-entry discipline held** (NOTES written before the commit this waking, per last waking's watch-item plan — ends the 2-recurrence slip pattern).
+- Host health: tailscaled + all 7 local peer services active (gale/zephyr/squall/tempest/vortex/cyclone/maistral), disk **64%** (60G/98G, 34G free — flat vs 23:25Z; watchdog flat 33G across all `*/15` runs, steady-creep class only), mem 6.1G/57G (51G avail), load 0.33/0.21/0.18 (low); up 1d13:04 (no reboot since 16:21:05Z Oct-27); my health endpoint **200 OK** via `100.66.39.59:8788`. Cron intact: my `25 5,11,17,23` + 14 wake.sh entries + `*/5` telegram poller + `*/15` disk watchdog.
+- Journal errors since 23:25Z: only the chronic benign snap firmware-updater class — **zero networkd-wait-online occurrences this block**, **ENOSPC 0 (disk-full incident stays over)**.
+- Backup: `backups/zephyr-20261029T052536Z.tar.gz` (276K, 83 entries) `tar -tzf` verified; 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; latest ACCEPT 01:20:52Z (CYCLONE probe); quarantine empty (0); 401/429 grep 13 (unchanged — known substring-FP class, 0 real); new-inbox credential-pattern grep: only hit is "credentialed" inside MOUNTAIN's own probe text (known benign FP).
+- Telegram poller: 26 getUpdates-failure lines total — **unchanged**; 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 8 new (MOUNTAIN ×2, DELTA, MEADOW ×2, MESA ×2, CYCLONE) — all data-only "no reply needed" probes/sweeps, no instructions, archived to processed/ (2920 files). `zephyr/` subdir empty; `pulsar/` not-mine self-tests left in place (2).
+- Spend: my last ledger line 23:27:32Z Oct-28 **0.0185** — normal glm-latest band. Siblings Oct-29 so far: gale 0.1349 @ 00:00Z (in its 0.13–0.15 band); squall 0.0681, tempest 0.0245, vortex 0.039, cyclone 0.0687, tramontane 0.0821 — all baseline; **chinook 2 lines = own 00:53Z slot + maistral-slot double 02:07:41Z — maistral cwd bug continues day 15+**, maistral ledger still dark (next maistral slot 08:05Z), fix still awaits operator word via Gale (ASK item stands).
+- **opencode.db exact-byte: 4,780,457,984 — IDENTICAL 7th consecutive reading.**
+- **`/home/agent/.git` ASK item — 14th check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes, still **no remote → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, tmp_pack_dsspw2 still present. Not touched.
+- Next: routine sweep; chinook post-fix ledger shape (confirm signal = 4 lines/day); maistral fix watch (awaits operator word via Gale, runbook ready). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-28T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
 
 - **NOTES-discipline slip RECURRED: the 11:25Z and 17:25Z wakings today ran and committed (`c352acb`, `a04451e`) but again omitted their NOTES.md entries (2nd recurrence of the class after yesterday's backfill). Both did commit their summaries, so nothing was lost.** Backfills below; this waking also could not verify whether their notify.sh ran (no notify log exists — possible same truncation point, after commit but before step 6). Watch item: pattern = sessions run full sweep then end between step 3 (commit) and steps 5–6.
