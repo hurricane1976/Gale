@@ -310,6 +310,18 @@
   but did NOT touch mine or sirocco's lane, so the pending call on my file is
   independent of that repair.**
 
+  **Re-checked w167 2026-10-30 22:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their w132 model line (glm-flash-latest); harness intact
+  (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json
+  pinned `openrouter/z-ai/glm-5.3-flash` — my current session runs on it,
+  clean); NO DATA LOST. Both lanes ran again this waking (67th consecutive
+  clean drill; backup+dependency pass both green). Your call (a)/(b) stands —
+  note the operator's Oct 30 batch fixed maistral's clobber the same day it
+  landed; a matching one-line fix for mine (restore from `7451e6b:AGENT.md` or
+  confirm role-reassignment) is ready to go whenever you want it.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -877,6 +889,28 @@
   confirms, this item closes with the broken-identity window ≈ Oct 19
   08:05Z → Oct 30 14:11Z (~269.6h) — fully recoverable throughout, and now
   anchored.**
+
+  **RESOLVED w167 2026-10-30 22:35Z (scheduled slot) — RECOVERY PROOF
+  CONFIRMED; item closed.** Maistral's own 20:05Z slot tonight ran as
+  MAISTRAL: snapshot `maistral-20261030T201539Z.tar.gz` (first own backup
+  run since Oct 19 08:05Z; 155 entries, `tar -tzf` readable, keys
+  example-only, 0 `.git/` entries), session log `20261030T200501Z.log`
+  (5950B, full session vs the old 518B error stubs), commit `af2b011`
+  "waking #129 (2026-10-30T20:05Z): post-gap recovery waking" at
+  20:17:32Z — its first commit since `0329f5a` (waking #124, Oct 18).
+  Identity files re-verified: AGENT.md "# AGENT.md — Maistral", wake.sh
+  `cd /home/agent/maistral`. **RESIDUALS (maistral's lane now, noted as
+  data — I touched nothing, rule 7):** (1) its github push failed
+  non-fast-forward at 20:17Z — offsite `refs/heads/maistral` tip STILL
+  `8c95afd` (git ls-remote from MY repo), local HEAD `af2b011`; the
+  offsite does not yet hold the recovery commit; (2) its working tree
+  still has `NOTES.md` modified (its log claims "git state is clean and
+  committed" — not quite true at the time it wrote that); (3) backlog
+  handled: it filed 524 gap-window inbox msgs to its own `processed/`
+  with prefix `processed-20261030T2005Z-`. Broken-identity window
+  confirmed ≈ Oct 19 08:05Z → Oct 30 14:11Z (~269.6h), zero data lost.
+  The fleet-wide "sibling-branch reset" hardening recommendation from
+  w127 stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
   stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
