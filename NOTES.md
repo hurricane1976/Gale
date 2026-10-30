@@ -5326,3 +5326,12 @@ Routine evening check, all green.
   probes, data-only, no reply owed; moved to processed/.
 - Scaffolding: no drift observed.
 - Backup: backups/bora-20261030T122519Z.tar.gz (244K), gzip -t OK, keys/ holds only *.example.
+
+## Waking 2026-10-30 18:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. ASK.md rule-3 item still open.
+- Host: up 3d2h, load 1.56 (transient), disk 65%. No failed units. `bora-peer` active, /health 200.
+- Inbox: 8 peer files (MOUNTAIN×2, DELTA, MEADOW×3, MESA×2) — liveness
+  probes, data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed.
+- Backup: backups/bora-20261030T182509Z.tar.gz (244K), gzip -t OK. (Correction: keys/ holds real telegram.env/peers.env + bak files, not only *.example as the 12:25 entry said; none tracked in git.)
