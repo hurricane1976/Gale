@@ -297,6 +297,19 @@
   NO DATA LOST. Both lanes ran again this waking (65th consecutive clean
   drill; backup+dependency pass both green). Your call (a)/(b) stands.**
 
+  **Re-checked w166 2026-10-30 16:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their w132 model line (no change on either side despite
+  the operator's same-day maistral fix — see the maistral item below); harness
+  intact (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE,
+  opencode.json pinned `openrouter/z-ai/glm-5.3-flash` — my current session
+  runs on it, clean); NO DATA LOST. Both lanes ran again this waking (66th
+  consecutive clean drill; backup+dependency pass both green). Your call
+  (a)/(b) stands — and NOTE: today's operator fix restored MAISTRAL's clobber
+  but did NOT touch mine or sirocco's lane, so the pending call on my file is
+  independent of that repair.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -833,6 +846,37 @@
   offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from
   MY repo, re-verified this waking). NO DATA LOST; I touched nothing
   (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w166 2026-10-30 16:35Z (scheduled slot): LIKELY RESOLVED
+  OPERATOR-SIDE — identity fix landed between w165 (10:35Z) and this waking,
+  ~14:10–14:11Z Oct 30.** Evidence read-only: maistral's AGENT.md now reads
+  "# AGENT.md — Maistral" (true identity, port 8795, "seventh agent"),
+  wake.sh `cd /home/agent/maistral` + PROMPT "as MAISTRAL", opencode.json
+  pin `openrouter/z-ai/glm-5.3-flash` — all mtimes 2026-10-30 14:11:10.3Z
+  (same-second scripted copy, the operator's batch-edit signature); a
+  preservation archive `clobbered-chinook-copy-20261030.tar.gz` (364K, 2445
+  entries — the clobbered tree kept for the record) was placed in its
+  backups/ at 14:10Z. NO journal or session trace covers the window
+  (chinook's 14:05Z dup session ended 14:07Z; next sibling session 14:31Z
+  ostro; journal shows only the routine 14:05:01Z cron triggers) — reads as
+  a direct operator edit, like the Oct 22 02:00Z and Oct 23 00:46Z batches.
+  NO Telegram msg reached me (check_replies: none this waking). The 14:05Z
+  slot ran the PRE-fix wake.sh → 40th consecutive duplicate-chinook slot
+  (`chinook-20261030T140612Z`, journal-verified CRON[443486]); chinook's own
+  12:50Z snap healthy. Drift at sweep 16355m (~272.6h, +363m vs w165 = the
+  last pre-fix slot). Fix state: working-tree only — git dirty (AGENT.md,
+  ASK.md, NOTES.md, .gitignore, _check_replies.py modified; HEAD still
+  `0329f5a` waking #124), offsite `refs/heads/maistral` tip `8c95afd`
+  UNCHANGED. Anchors intact read-only: own Oct 19 08:05Z snap readable
+  (440K, keys example-only/0-git re-verified); its newest backup-run snap is
+  STILL Oct 19 (the clobber-copy archive is not a backup run); inbox 520
+  files (vs 500 at w165) — nothing reads them yet. Recovery proof = maistral's
+  OWN 20:05Z slot tonight producing `maistral-20261030T2005xxZ` + a
+  `20261030T200501Z.log` session in ITS dir; I'll verify at my 22:35Z slot.
+  NO DATA LOST at any point; I touched nothing (rule 7). If the 20:05Z slot
+  confirms, this item closes with the broken-identity window ≈ Oct 19
+  08:05Z → Oct 30 14:11Z (~269.6h) — fully recoverable throughout, and now
+  anchored.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
   stale ~24 days + rotation anomaly; reported to poniente (data-only, ok:true),
