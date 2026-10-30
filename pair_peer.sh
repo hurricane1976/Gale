@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Pair Gale with ONE fleet peer: mint a shared token, install CHINOOK's half in
-# keys/peers.env, restart chinook-peer, self-test the receiving side, and print
-# the block the PEER's side must install.
+# Pair Maistral with ONE fleet peer: mint a shared token, install Maistral's half
+# in keys/peers.env, restart maistral-peer, self-test the receiving side, and
+# print the block the PEER's side must install.
 #
-# Run by the OPERATOR, by hand (AGENT.md rule 8: Gale never mints or installs
-# peer tokens on its own). The token is printed only to your terminal, once.
+# Run by the OPERATOR, by hand (AGENT.md rule 8: Maistral never mints or
+# installs peer tokens on its own). The token is printed only to your
+# terminal, once.
 #
 # Usage: ./pair_peer.sh <PEER_NAME> <PEER_TAILNET_ADDR>
 #   e.g. ./pair_peer.sh BEACON 100.99.217.90:8787
@@ -47,14 +48,14 @@ cp -p "$PEERS" "$PEERS.bak-pre-$NAME"
 } >> "$PEERS"
 chmod 600 "$PEERS" "$PEERS.bak-pre-$NAME"
 
-sudo systemctl restart chinook-peer
+sudo systemctl restart maistral-peer
 sleep 2
-systemctl is-active --quiet chinook-peer || { echo "FAIL: chinook-peer not active after restart" >&2; exit 1; }
+systemctl is-active --quiet maistral-peer || { echo "FAIL: maistral-peer not active after restart" >&2; exit 1; }
 
-# --- self-test of Gale's receiving half (token never echoed) ---------------
+# --- self-test of Maistral's receiving half (token never echoed) -------------
 CODE="$(curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST "http://${SELF_ADDR}/inbox" \
     -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
-    -d '{"subject":"selftest","body":"chinook receiving-half self-test; safe to delete"}')"
+    -d '{"subject":"selftest","body":"maistral receiving-half self-test; safe to delete"}')"
 BAD="$(curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST "http://${SELF_ADDR}/inbox" \
     -H "Authorization: Bearer 0000" -H "Content-Type: application/json" -d '{}')"
 FROM="?"
@@ -65,26 +66,26 @@ if [[ -n "$F" ]]; then
 fi
 echo "self-test: right token -> HTTP $CODE (want 200), recorded sender = $FROM (want $NAME); wrong token -> HTTP $BAD (want 401)"
 if [[ "$CODE" != "200" || "$FROM" != "$NAME" || "$BAD" != "401" ]]; then
-    echo "SELF-TEST FAILED -- restore with: cp -p $PEERS.bak-pre-$NAME $PEERS && sudo systemctl restart chinook-peer" >&2
+    echo "SELF-TEST FAILED -- restore with: cp -p $PEERS.bak-pre-$NAME $PEERS && sudo systemctl restart maistral-peer" >&2
     exit 1
 fi
 
 # Record the fact (never the token) in NOTES.md.
-printf '\n## %s -- paired with %s (Gale half)\n\n- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.\n' \
+printf '\n## %s -- paired with %s (Maistral half)\n\n- Token minted and installed by the operator via pair_peer.sh; not recorded here. Self-test passed. Peer side still needs its half; not two-way until then.\n' \
     "$(date -u +%FT%TZ)" "$NAME" >> NOTES.md
 
 cat <<EOF
 
-=================== GALE'S HALF IS INSTALLED ===================
+=================== MAISTRAL'S HALF IS INSTALLED ===================
 Give this block to $NAME's side (its keys/peers.env, then restart its
 peer service). Show it only to the operator/agent that installs it.
 
-NAME=CHINOOK
+NAME=MAISTRAL
 ADDR=${SELF_ADDR}
 TOKEN=${TOKEN}
 
-After $NAME confirms, test two-way from Gale with:
-  ./send_to_peer.sh $NAME "hello from CHINOOK" "pair test"
+After $NAME confirms, test two-way from Maistral with:
+  ./send_to_peer.sh $NAME "hello from Maistral" "pair test"
 Then clear this terminal's scrollback -- the token is on screen.
-================================================================
+===============================================================
 EOF

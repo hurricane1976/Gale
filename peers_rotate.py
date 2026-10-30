@@ -3,7 +3,7 @@
 
 Never prints a token except via the explicit `get` subcommand (which rotate_peer.sh
 captures into a shell variable, not the terminal). The new token is read from the
-GALE_NEW_TOKEN environment variable, never argv, so it stays out of `ps`.
+MAISTRAL_NEW_TOKEN environment variable, never argv, so it stays out of `ps`.
 
   peers_rotate.py stage  <peers.env> <NAME>   insert a NEW block ABOVE the existing one(s)
   peers_rotate.py finish <peers.env> <NAME>   drop the old block(s), keep the new one
@@ -12,7 +12,7 @@ GALE_NEW_TOKEN environment variable, never argv, so it stays out of `ps`.
 Why "above": peer_server.py accepts EVERY token in the file (each block's token maps to
 its name), so during the changeover both tokens are accepted inbound. send_to_peer.sh
 lets the LAST matching block win for outbound, so with the new block above the old one,
-Gale keeps sending with the OLD token (which the peer still accepts) until `finish`.
+This agent keeps sending with the OLD token (which the peer still accepts) until `finish`.
 """
 import os
 import sys
@@ -89,9 +89,9 @@ def main():
     if cmd == "stage":
         if pend:
             die(f"{name} already has a rotation pending -- run finish first")
-        tok = os.environ.get("GALE_NEW_TOKEN", "")
+        tok = os.environ.get("MAISTRAL_NEW_TOKEN", "")
         if len(tok) != 64 or any(c not in "0123456789abcdef" for c in tok):
-            die("GALE_NEW_TOKEN must be 64 lowercase hex chars")
+            die("MAISTRAL_NEW_TOKEN must be 64 lowercase hex chars")
         addr = field(lines, mine[-1], "ADDR")
         if not addr:
             die(f"{name} block has no ADDR")
