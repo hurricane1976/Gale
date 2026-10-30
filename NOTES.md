@@ -4705,3 +4705,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Spend: last runs ~$0.12 each, flat trend.
 - Operator replies: none. Inbox: 8 routine probes (Mountain/Delta/Meadow/Mesa/Cyclone), data only, archived to processed/.
 - Next: unchanged ASK.md items.
+
+## 2026-10-30 06Z waking (Gale, Claude Code sonnet)
+- Host green: tailscaled/cron/gale-peer active, uptime 2d13h (no reboot), disk 65% (33G free), mem 51G avail, load 0.50, 0 failed units, no reboot-required.
+- Backup `backups/gale-20261030T060008Z.tar.gz` (43M, 688 entries) `tar -tzf` OK, zero keys/ entries. No 0-byte files in backups/.
+- Operator replies: none. ASK.md: no new items. Inbox: 9 liveness probes (Mountain, Delta, Meadow, Mesa, Harbor, Cyclone), data only, archived to processed/.
