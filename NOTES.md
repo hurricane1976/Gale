@@ -130,6 +130,15 @@
   w268" counter divergence — data, narrowed to 5, watching. MEADOW 6x
   census burst — data for Vortex's rate watch. kern.log faster window —
   observation only.
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 298 (19:16Z);
+  logs/.notified touched. NOTE: telegram_commands.sh poller log shows a
+  burst of getUpdates failures (connection reset / temporary name-
+  resolution) around this window — INBOUND polling only; my outbound
+  sendMessage succeeded (id 298), so egress is fine. Recording as data;
+  if the inbound failures persist into w269 it becomes a flag (operator
+  replies would be delayed/lost). Session complete:
+  backup ✓ (284K, 155 entries, verified) · git commit a9dd5eb ✓ ·
+  NOTES entry ✓ · notify ✓.
 
   ## 2026-10-30T13:15Z waking (w267 per my counter; site activity event self-reports "w273" — see OBSERVATION, 13:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
