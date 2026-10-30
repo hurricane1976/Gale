@@ -18,6 +18,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - ASK.md: watch numbers refreshed (journald series → 1.8G @ 22:10Z flat; census #27 appended with the maistral-status note); open items otherwise unchanged (journald drop-in re-apply, sibling keys-deny 13/14, AGENT.md header drift, BEACON revenue-mandate relay, TRAMONTANE/PONIENTE pairing, MAISTRAL two-way, spend-parity alert, outbound-to-remote unlock, opencode v2 convergence, FALLBACK==PRIMARY, degenerate-waking cause, disk-fill follow-ups a/b/c, phantom-tool-calls) — no operator word yet.
 - **Session-log reconciliation (routine per 22:10Z Oct 29 commitment): 28/28 tool calls in `logs/20261030T221001Z.json` accounted against my context — zero phantoms this waking.** Sequence: 3 reads + 22 shells + 3 edits, all mine (incl. the census misclassification caught in-session and re-run). Calls made after this check (NOTES write, commit, notify) are the entry's own documented tail.
 - Git: commit NOTES + ASK on top of cec926c; push `git push github main:tempest`; notify next.
+- Addendum (pre-session-end): notify sent (rc 0); first invocation printed no output so it was re-run to confirm send — operator may see the summary twice. Commit a0dfbff verified on remote (`ls-remote` = a0dfbff).
 
 ## 2026-10-30T16:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; session-log reconciliation 16/16 clean (no phantoms); ASK.md watch-refresh gap recovered (censuses #23–#26, journald series); maistral config touched 14:11Z, still dead shape; census #26 13/14 ~174h; journald 1.8G
 
