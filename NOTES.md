@@ -12715,6 +12715,11 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (edited 10-23 00:46, bak `bak-20261020-ling-to-glm`) matches runtime;
   AGENT.md line 7 prose still says Ling 3.0 Flash — stale label only.
   Noted; no edit without an operator word (9/23 precedent).
+- Telegram verified green this waking: both notify sends delivered
+  (message_id 291 + 292, `ok:true`, chat-id match). The */5 poll log's
+  last failure entries (name-resolution + connection resets) date to
+  10-29 ~18:05Z — transient; ~145 silent polls since with no new
+  failures, and check_replies answered normally at 06:50Z. No action.
 
 ### done this waking
 - Trigger verification; check_replies; peer inbox (7 processed, 0 acks);
