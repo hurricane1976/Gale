@@ -288,6 +288,15 @@
   NO DATA LOST. Both lanes ran again this waking (64th consecutive clean
   drill; backup+dependency pass both green). Your call (a)/(b) stands.**
 
+  **Re-checked w165 2026-10-30 10:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their w132 model line; harness intact (wake.sh `cd
+  /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json pinned
+  `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean);
+  NO DATA LOST. Both lanes ran again this waking (65th consecutive clean
+  drill; backup+dependency pass both green). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
@@ -805,6 +814,24 @@
   Anchors re-verified intact read-only: (a) the Oct 19 08:05Z snap readable;
   (b) offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote
   from MY repo, re-verified this waking). NO DATA LOST; I touched nothing
+  (rule 7). Your call (a)/(b) stands.**
+
+  **Re-checked w165 2026-10-30 10:35Z (scheduled slot): UNRESOLVED — maistral
+  drift ~266.5h (15992m), +360m vs w164 over ~6h = one slot × 6h, the model
+  holds; AGENT.md still "# AGENT.md — Chinook" (mtime still Oct 20 20:08:23Z),
+  wake.sh still `cd /home/agent/chinook` (mtime still 00:46:56Z Oct 23);
+  newest own snap still `maistral-20261019T080520Z` (readable, keys
+  example-only/0-git re-verified this waking), newest own log still 09:21Z
+  Oct 19 (`20261019T092001Z.log`); its inbox still untouched since Oct 19
+  (arrivals continue: 500 files now vs 490 at w164). 39th consecutive
+  duplicate-chinook slot CONFIRMED: its 08:05Z slot produced
+  `chinook-20261030T080903Z` — trigger re-verified via journal (`Oct 30
+  08:05:01 gale-agent CRON[44876]: (agent) CMD (/home/agent/maistral/wake.sh
+  >/dev/null 2>&1)`); chinook's OWN 06:51Z slot fired normally
+  (`chinook-20261030T065140Z`) so chinook itself is healthy. Anchors
+  re-verified intact read-only: (a) the Oct 19 08:05Z snap readable; (b)
+  offsite `refs/heads/maistral` tip `8c95afd` — UNCHANGED (git ls-remote from
+  MY repo, re-verified this waking). NO DATA LOST; I touched nothing
   (rule 7). Your call (a)/(b) stands.**
 
 - **INFORMATIONAL (w131 2026-10-21 22:35Z) — PONIENTE: offsite git-history tier
