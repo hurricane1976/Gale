@@ -12441,3 +12441,105 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   post-rotation compress-out**; (d) disk arc point #16; (e) operator
   response to the 10-27 triple-boot ask (~53h open); (f) gale-backup-proof
   10:00Z fire → verify green at #212.
+
+## 2026-10-30T00:50Z — waking #211 (own slot; 10-29 closed-day band-shift check evaluated: NO SHIFT — band moves down to ~$3–3.5/day)
+
+- **Trigger verified:** chinook cron fired `/home/agent/chinook/wake.sh` at
+  00:50:01Z (journal) — own slot, drift 0m. Kernel 7.0.0-38 unchanged; no
+  unattended-upgrades since 10-27 06:22 (libbrotli/nginx). Self-check
+  (standing, #61): PASS — prior backup #210's 20:05:50Z snapshot (4h45m
+  gap = slot-spacing norm, no skipped slot); prior NOTES entry (#210)
+  present ✓.
+- check_replies: **none** — operator has not responded to the 10-27
+  triple-boot ask (opened 10-27 20:05Z, ~53h open).
+- Peer inbox: 8 new, all self-labeled routine/data-only "no reply needed"
+  — MOUNTAIN ×2 00:00Z (Rule-7 sweep + site-build latency check), DELTA
+  link verify 00:07Z, MEADOW census 00:07Z, MESA ×3 00:22Z (2× mesh sweep
+  + own-identity link verify), HARBOR link verify 00:45Z. Zero
+  instructions, zero acks owed → archived to processed/ (2396 by my
+  `ls | grep -c json` count; 1 below #210's pre-archive 2389 figure —
+  counting-method wobble, not traffic).
+
+### capacity snapshot 2026-10-30T00:50Z (waking #211)
+- host gale-agent: up 2d 8h29m (boot 0 from 10-27 16:21:05Z — stable),
+  load 0.22/0.19/0.18 (calm), mem 6388Mi/58982Mi used (52593Mi avail),
+  swap 0/8191Mi. No SSH sessions since 10-27 15:30:14Z (operator-pattern,
+  the one already cited in the triple-boot ask); no new boots.
+- disk: / **64,124,633,088 B = 61,145 MiB used** (65%, 33,940 MiB free) —
+  arc point #16: 61,006 (#210) → 61,145 (#211), +139 MiB in 4h45m ≈
+  702 MiB/day (point-estimate wobble vs #210's 461 — churn, not a climbing
+  arc). 64G trip line unreachable before rotation events at observed churn.
+- **syslog byte-precise (stat-based series):** active syslog
+  **487,959,980 B = 465.4 MiB** (+19.5 MB vs #210 in 4h45m ≈ 98 MB/day —
+  pace holds). 500M maxsize cap: **93.1% used, ~11.5 MiB headroom ≈ 0.12d
+  → rotation projects ~Oct 30 02:45–04:00Z** (tightened from #210's
+  03:00–05:00Z; consistent). kern.log **246,215,787 B = 234.8 MiB**
+  (+12.3 MB ≈ 62 MB/day). No rotation yet — syslog.1 (87.4 MiB) still
+  dated Oct 25 00:19; it compresses out at the next event.
+- peers: **13/13 sibling listeners /health → 200** on 100.66.39.59
+  8787–8800 minus my 8793, all sub-ms. tailscale0 holds 100.66.39.59/32
+  — TUN fix holding.
+- cron grid: **zero skips** since #210 — journal-verified fires
+  20:05→00:50 (maistral-accidental 20:05, ostro 20:30, poniente 20:55,
+  sirocco 21:20, squall 21:45, tempest 22:10, tramontane 22:35,
+  vortex 23:00, zephyr 23:25, agent 00:00, bora 00:25, chinook 00:50) —
+  12/12 exactly once each.
+- gale-backup-proof: inactive since the green 10-29 10:00:01Z fire
+  (verified #207); **next timer fire 10-30 10:00:00Z** (timer armed) —
+  green-check lands at the first waking after 10:00Z, i.e. the 12:50Z
+  slot (see numbering note in handoff below).
+- maistral: dark ~11.0d (ledger last 2026-10-19T03:21:44Z); inbox backlog
+  **490** (+5 vs #210's 485 ≈ 1.0/h — pace wobble continues). Overwrite
+  persists — read-only stance unchanged; disposition operator-lane.
+
+### spend (host-wide, 14 lanes; maistral dark)
+- **10-29 CLOSED DAY: $3.3280 / 56 runs / 0 err** host-wide (13 sibling
+  lanes $2.9998/48: agent $0.5090/4, bora $0.4620/4, tramontane $0.4092/4,
+  squall $0.3853/4, cyclone $0.2844/4, tempest $0.1782/4, poniente
+  $0.1725/4, levante $0.1606/4, ostro $0.1155/4, vortex $0.1154/4, zephyr
+  $0.1099/4, sirocco $0.0978/4; + chinook $0.3282/8).
+  **$4.3 band-shift check (#210 watch item b): NO SHIFT UP — band moves
+  DOWN.** 10-29 closed $0.97 under the $4.3 line; with 10-28 ($3.5530)
+  that is two consecutive days under it → the operating band re-baselines
+  from ~$4/day to **~$3–3.5/day**, confirming #209/#210's ~$3.1/day
+  pacing projection. Max single run $0.2343 (squall 19:xxZ) — under the
+  $0.30 config-suspect line; run counts cadence-consistent (4/lane);
+  **no rule-4 anomaly**.
+- 10-30 partial to 00:50Z: **$0.2426 / 2 runs / 0 err** (agent $0.1310
+  00:00Z, bora $0.1116 00:25Z); my row records at session end. Too early
+  to pace (~4% of day) but consistent with the $3–3.5/day band.
+
+### forecast / thresholds
+- No crossings projectable: disk churn-bounded at the 60G-trip point
+  (syslog rotation ~02:45–04:00Z lands before any free-space risk at
+  33.9G free), spend in the re-baselined ~$3–3.5/day band with both
+  alert lines far ($5/run, $15/day), load/mem/swap calm, cadence full
+  (zero skips), mesh 13/13 healthy, backup-proof timer armed. No sibling
+  near a local limit → no new advisory owed.
+- Self-check: backup ≤4h ✓ (chinook-20261030T005101Z.tar.gz, 344K, 74
+  entries, gzip -t OK, AGENT.md read-back clean, 14-snapshot ceiling
+  held); prior NOTES entry (#210) present ✓.
+
+### done this waking
+- Trigger verification (journal); check_replies; peer inbox 8 msgs
+  archived; host health baseline; 13/13 peer sweep + Tailscale check;
+  cron-grid verification (12/12 slots, zero skips since 20:05Z); syslog
+  byte-precise follow-up (93.1% of 500M cap; rotation ~02:45–04:00Z);
+  disk arc point #16; maistral re-verified read-only (dark ~11.0d,
+  backlog 490); gale-backup-proof timer armed for 10:00Z; host-wide
+  spend tally (**10-29 closed $3.3280/56/0 err — band-shift check
+  evaluated: band moves DOWN to ~$3–3.5/day**; 10-30 partial
+  $0.2426/2); kernel/apt/SSH provenance re-check (nothing new);
+  backup + verify; NOTES entry; commit; notify.
+
+### next waking (02:05Z 10-30 maistral accidental #43 expected → #212; own 06:50Z slot → #213)
+- Numbering correction to #210's handoff: it labeled the 12:50Z slot
+  "#212", but per the #200/#202/#206 precedent the expected 02:05Z
+  maistral accidental takes #212, my 06:50Z own slot is #213, and the
+  12:50Z slot is #214. Watch items travel with the slots, not the
+  numbers: (a) 02:05Z accidental (persists? → yes expected); (b) 06:50Z
+  slot: verify syslog rotation fired (~02:45–04:00Z projected) + disk
+  arc #17; (c) **12:50Z slot: verify gale-backup-proof 10:00Z fire
+  green + syslog.1 compress-out**; (d) 10-30 closed-day spend vs the
+  re-baselined ~$3–3.5/day band (evaluates at the 00:50Z 10-31 waking);
+  (e) operator response to the 10-27 triple-boot ask (~57h open).
