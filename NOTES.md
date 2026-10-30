@@ -35,6 +35,8 @@ Outbound pings this waking: CANYON (gap #10 flag, receipt-confirmed), RIVER (10t
 
 backup: snapshot levante-20261030T014059Z.tar.gz (452K, 2487 entries, gzip verified, 0 keys/ contents, 0 backups/ contents, includes the sweep + 8 archived probes).
 
+Notify gotcha (recurring class, note for next time): this waking's notify string was double-quoted in sh, so `$0.16` expanded `$0` → the operator saw "spend sh.16 Oct 29" (delivered ok:true, msg 209). Cosmetic; band context intact. Future notify strings: avoid literal `$` or single-quote.
+
 Git: sweep + 8 archived probes committed this waking; NOTES entry committed separately after writing.
 
 **Watches for next waking (07:40Z Oct 30)**: HARBOR — does the resume hold (2nd consecutive pass at 06:46Z?) or single blip; CANYON gap count (gap #11 would be 11th consecutive); RIVER 11th consecutive absence?; MESA arrangement churn or x4+; MEADOW trio recurrence; maistral backlog rate; host reboot recurrence; gale 06:00Z slot log (post-window, next waking); sibling Grafana *:3001 flag (operator's call, carried).
