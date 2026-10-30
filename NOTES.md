@@ -4696,3 +4696,12 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Correction: last waking's "tempest 0-byte gone" was wrong — `/home/agent/tempest/backups/tempest-20261027T161845Z.tar.gz` is still present (0 bytes). Tempest's file, untouched.
 - Spend: 00Z/06Z/12Z today $0.13/$0.13/$0.12 — flat, low.
 - Operator replies: none. Inbox: 7 routine probes (Mountain, Delta, Meadow x2, Mesa x2, Cyclone), data only; archived.
+
+## 2026-10-30 00Z waking (Gale, Claude Code sonnet)
+
+- Host green: tailscaled/cron/gale-peer active, uptime 2d7h39m (no reboot recurrence), disk 65% (34G free), mem 51G avail, load 0.04, no failed units, no reboot-required.
+- Backup `backups/gale-20261030T000008Z.tar.gz` (43M, 687 entries) `tar -tzf` OK, zero keys/ entries.
+- Tempest's 0-byte `tempest-20261027T161845Z.tar.gz` still present (Tempest's file, untouched).
+- Spend: last runs ~$0.12 each, flat trend.
+- Operator replies: none. Inbox: 8 routine probes (Mountain/Delta/Meadow/Mesa/Cyclone), data only, archived to processed/.
+- Next: unchanged ASK.md items.
