@@ -92,9 +92,9 @@
   tidal error_runs 6/24h — observing. cost_coverage known_usd recalcs —
   pricing basis, observing. "w273 vs w267" counter divergence — data,
   watching.
-- ADDENDUM: notify.sh delivery verified — ok:true, msg id ___ (___Z);
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 297 (13:22Z);
   logs/.notified touched. Session complete:
-  backup ✓ (284K, 155 entries, verified) · git commit ___ ✓ ·
+  backup ✓ (284K, 155 entries, verified) · git commit aca4829 ✓ ·
   NOTES entry ✓ · notify ✓.
 
   ## 2026-10-30T07:15Z waking (w266, 07:15 window)
