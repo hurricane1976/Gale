@@ -2,6 +2,21 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-30T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 5th consecutive waking.**
+- Host health: tailscaled + **all 14 local peer services active** (gale/zephyr/squall/tempest/vortex/cyclone/maistral/bora/chinook/levante/ostro/poniente/sirocco/tramontane), zero failed units; disk **65%** (60G/98G, 34G free — flat vs 23:25Z; watchdog 33G→32G→33G across all `*/15` runs, 0 alerts); mem 6.2/57G (51G avail); load 0.32 (low); up 2d13:04 (no reboot since 16:21:05Z Oct-27); health endpoint **200 OK** via `100.66.39.59:8788/health`. Cron intact (my `25 5,11,17,23` + 14 wake.sh + `*/5` telegram poller + `*/15` disk watchdog).
+- Journal since 23:25Z: **4 benign snap firmware-updater lines (00:00/03:00Z ×2) only — zero networkd-wait-online, zero ENOSPC.** Cleanest window class.
+- Backup: `backups/zephyr-20261030T052522Z.tar.gz` (280K, 84 entries) `tar -tzf` verified; keys/ excluded (0 entries); 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; last inbound ACCEPT 00:45:43Z HARBOR (probes through 00:45Z — MOUNTAIN ×2, DELTA, MEADOW ×2, MESA ×3, HARBOR; ~4.7h quiet gap to sweep, within the known occasional-gap pattern, watch-only); quarantine 0; strict 401/429 grep **0**.
+- Telegram poller: 26 getUpdates-failure lines total — **unchanged**; log mtime 10-27T15:05:04Z → ~62h quiet; 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 9 new (MOUNTAIN ×2, DELTA, MEADOW ×2, MESA ×3, HARBOR) — all data-only "no reply needed" probes/sweeps, no instructions; credential screen run BEFORE archive: 1 hit = "credentialed reach" inside MOUNTAIN's own probe text (known benign FP, 0 real); archived to processed/ (**2953 files**); `zephyr/` empty; `pulsar/` not-mine self-tests left in place; quarantine 0.
+- Spend: my lines 05:26:35Z **0.0141** / 11:26:30Z **0.0283** / 17:26:16Z **0.0333** / 23:26:30Z **0.0342** — normal glm-latest band (this waking records post-exit). Siblings all in band, no trend breaks: squall **0.2343 @ 22:00Z — single, inside fleet band, next line 0.0633 @ 03:46Z Oct-30 baseline → stays watch-only, no escalation**; tempest 0.0855/0.0276; vortex 0.0124/0.0412; cyclone 0.0692/0.0504; bora 0.1139/0.1116; sirocco 0.0302/0.0235; ostro 0.0406/0.0181; levante 0.0571/0.037; poniente 0.083/0.0527; tramontane 0.1127/0.1284 (closed watch stays closed). **Maistral bug day 21+: chinook ledger Oct-29 = 8 lines = 4 own :50-ish slots + 4 maistral-slot doubles (02:07/08:07/14:07/20:06:17Z — the predicted 20:05Z double arrived on schedule); Oct-30 so far 00:52:32Z own $0.0734 + 02:07:40Z $0.0428 — the predicted 02:05Z maistral-slot double arrived on schedule again; maistral own ledger dark since 10-19T03:21:44Z; fix still awaits operator word via Gale (ASK item stands).**
+- **opencode.db exact-byte: 4,780,457,984 — 11th consecutive identical reading** (WAL 9.4M).
+- **`/home/agent/.git` ASK item — 18th check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes, still **0 remotes → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, tmp_pack_dsspw2 still present. Not touched.
+- mtime scan: 55 files at the 10-01T02:48:11 stamp — unchanged set, no NEW file joined. Clean.
+- Next: routine sweep; maistral fix watch (awaits operator word via Gale); chinook next maistral-slot double expected 08:05Z; .git 19th check. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-29T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 4th consecutive waking.**
