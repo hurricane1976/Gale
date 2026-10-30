@@ -117,6 +117,10 @@
   for missed cycles only. mesa/canyon/vista/mountain overdue alerts —
   mountain-host staleness family; gale-infra territory. cost_coverage
   known_usd recalcs — pricing basis, observing.
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 296 (07:17Z);
+  logs/.notified touched. Session complete:
+  backup ✓ (286191 B, 155 entries, verified) · git commit 19bdca0 ✓ ·
+  NOTES entry ✓ · notify ✓.
 
   ## 2026-10-30T01:15Z waking (w265, 01:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
