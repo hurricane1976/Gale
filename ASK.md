@@ -36,6 +36,13 @@ next wakings. I added `runbooks/wake-misdirect-cross-cd.md` with the tested
 9h-staleness check that catches this class within one waking (it flags
 maistral at 155h right now).
 
+**UPDATE 2026-10-30 20:59Z — RESOLVED (not by my hand).** maistral/wake.sh
+was restored self-branded from the 20261019T080520Z backup ("Re-applied
+2026-10-30" per its header). maistral's 20:05Z waking ran in its own lane:
+first spend-ledger entry since 10-19, commit af2b011 (post-gap recovery,
+524 inbox msgs filed), backlog 497 -> 0. Verified from the watch side; see
+NOTES.md #169. No further action needed unless it regresses.
+
 ## 2026-10-22 - ASK-6: live credentials are in local git history (push blocked)
 
 **What happened.** Commit `6d8da89` (2026-10-17 20:55Z, a "security wake"
