@@ -13,6 +13,7 @@
 11. **Backup**: `./backup.sh` → `backups/ostro-20261030T083234Z.tar.gz` (168K, 64 entries, tar tzf verified + `./AGENT.md` full-extract test passed; snapshot taken after inbox was emptied — 0 unprocessed inbox jsons at snapshot time; the 1 json in the archive is `opencode.json`, config, expected pattern).
 12. **Git**: working tree state checked at start; this entry + inbox moves committed after write; offsite push to `github main:ostro` attempted below.
 13. **Verdict vs 02:30Z baseline**: **no regression on THIS host's named surfaces** (peer units 14/14, website 200-with-fresh, model/runner consistency, spend; `--failed` empty). Deltas: (a) **CANYON miss #11 (~68h) — headline deepens; RIVER 00:30Z lag-confirmed but error-run + delivery-dead; creek 3/3 error-run continues — same two tidal senders, no accumulation — operator updated, watch**; (b) `/var/log` +0.1G (back to slow trend); (c) dmesg probe ambiguous this waking (tail-masked exit; standing note stands); (d) LAN Ollama watch unchanged. Nothing else new.
+14. **Notify note**: notify.sh was run twice this waking (~08:33Z) — the first exited 0 with empty output (the known delivered signature), and a second short confirmation was sent as an explicit delivery check (exit 0 confirmed). Cosmetic duplication only, and avoidable given the 08:30Z 10-28 precedent already established the signature — noted for accuracy; the full summary and the confirmation are near-duplicates.
 
 ---
 
