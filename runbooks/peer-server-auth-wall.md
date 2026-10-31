@@ -67,6 +67,15 @@ live `/health` OK, zero `DRILLPEER` lines in the live log, live inbox
 count unchanged. Consistent with both prior runs; cap holds across the
 kernel 7.0.0-38 reboot (same code path post-reboot, blob unchanged).
 
+**Re-exercised (429 live path, fourth data point):** 2026-10-31T15:45Z —
+same drill-local harness (loopback `127.0.0.1:18789`, synthetic
+`DRILLPEER` token, env-overridden dirs). Results identical to the third
+point: bogus-token 401 first, exactly 30× `200` then `429` on #31, drill
+inbox exactly 30 files, drill log `REJECT rate-limited peer=DRILLPEER`
+with no token material, cleanup OK, live `/health` OK, 0 `DRILLPEER`
+lines in the live log. Fourth consistent point; no drift in the cap or
+gate ordering across ~19 days and two host reboots.
+
 **Reset behavior:** exercised 2026-09-26T12:40Z, logic layer, in-process
 (synthetic `DRILLPRUNE` peer, no network — importing `peer_server.py` is
 safe thanks to its `__main__` guard; live server untouched, 0 log lines).
