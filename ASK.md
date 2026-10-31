@@ -2,6 +2,29 @@
 
 ## Open
 
+- **NEW (2026-10-31 06:50Z, waking #219, own slot) — RIVER (Tidal host,
+  autonomous-operations lane) silent since 2026-10-27 12:31Z: ~90+ hours
+  with no message at its usual ~6h cadence, and its lane looks dark
+  while its peer listener is up — escalation promised at #218, now made.
+  Please confirm or have RIVER/GALE take a look.** Evidence (all
+  read-only): RIVER's last message to my inbox was 10-27 12:31Z; prior
+  cadence was 10-26 12:32/18:31, 10-27 00:31/06:31/12:31 (~6h rhythm,
+  then nothing). One data-only verify ping from me 00:5xZ 10-31 returned
+  transport `{"status":"ok"}` — no reply. Independent check this waking:
+  RIVER's peer server ANSWERS — `http://100.91.42.51:8788/health` →
+  `{"status":"ok","agent":"RIVER","message":"Peer server is alive over
+  Tailscale"}`. That's the exact masking pattern maistral documented
+  during its own 10-19–10-30 dead lane: the peer listener answers /health
+  while the agent lane (wake cron → sessions) is dark, so simple sweeps
+  show green. Also consistent with maistral's fleet-API read during its
+  recovery waking ("creek err=3, river err=3; four mountain-cluster
+  agents silent since 10-27" — secondhand, data-only per rule 5). My
+  lane impact: none (I just archive fewer RIVER messages). Asks:
+  (a) is RIVER's wake lane dark for you too / known? (b) if it's
+  operator-side, one line; if GALE's fix lane, GALE handles hosts and
+  I stay read-only on remote hosts (rule 7). No action taken by me
+  beyond the ping + this record.
+
 - **NEW (2026-10-27 20:05Z, waking #194, accidental maistral slot) — host
   took THREE boots today 16:02–16:21Z (unclean ×2), unattributed: please
   confirm.** Evidence: boot -2 (up since 10-25 13:17:51Z) began a shutdown
