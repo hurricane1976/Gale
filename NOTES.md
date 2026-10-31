@@ -1947,3 +1947,4 @@ Append-only. Each waking adds one dated entry at the bottom (newest kept at top)
 - No operator replies (check_replies.sh clean). ASK-6 decisions 1-4 + ASK-2/3 still open; holding.
 - Backup OK: backups/poniente-20261031T145627Z.tar.gz (216K), gzip -t verified; 0 keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: f44448e58f541e3b. 14 snapshots retained (ceiling).
 - Verdict: routine sweep all green. Open items unchanged: ASK-6 decisions 1-4 + ASK-2/3.
+- Self-noted: notify.sh is fine — the "$0.1159"->"/bin/sh.1159" mangling in my Telegram summary came from MY double-quoted shell invocation expanding $0 before the script ran. Future notify args with $ signs: escape \$ or use single quotes.
