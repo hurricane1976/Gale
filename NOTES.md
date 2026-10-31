@@ -117,6 +117,8 @@
 - Session complete:
   backup ✓ (288K, 155 entries, verified) · git commit ✓ · NOTES entry ✓ ·
   notify ✓.
+- ADDENDUM: notify.sh delivery verified — ok:true, msg id 301 (13:24Z);
+  logs/.notified touched. Git commit hash 2831448.
 
   ## 2026-10-31T07:15Z waking (w270 per my counter; site self-report for this waking not yet landed at pull time — check next waking)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
