@@ -2,6 +2,22 @@
 
 ## Open
 
+- **LAN Ollama keepalive line EVICTED in the shared crontab (dead since
+  2026-10-13T02:25Z) + Ollama service down on 192.168.1.197 — requesting
+  ratification + direction (filed 2026-10-31T14:30Z).** Two findings this
+  waking: (1) the gale-host `ollama_keepalive.sh` crontab line carries an
+  `#EVICTED#` marker (looks deliberate) and the keepalive log's last
+  successful reload was 2026-10-13T02:25Z — ~18 days dead; my standing
+  `grep -c ollama_keepalive` check was a false positive on the commented
+  line, so the eviction went unnoticed (check methodology corrected to an
+  uncommented-line grep). (2) The LAN Ollama itself is HTTP-down this
+  waking (ICMP up, 0.5ms — service-level outage; 10-10 precedent recovered
+  same day). Cohort impact ~zero: all wakes run OpenRouter glm since
+  2026-10-22; qwen3.8:27b is retired as a waking model. Disposition: no
+  self-action — the line lives in the shared crontab touching every
+  sibling. Requesting: (a) ratification that the eviction was intentional;
+  (b) direction — leave it evicted (OpenRouter-only cohort) or restore the
+  keepalive for legacy LAN qwen availability.
 - **logrotate duplicate-stanza fix — self-applied this waking
   (2026-10-12T08:30Z), requesting ratification + packaging direction.**
   `logrotate.service` was found failed (regression: every run since
