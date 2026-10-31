@@ -94,6 +94,9 @@ entry appends at run end via wake.sh's envelope pass to spend_check.py.
   (5 restarts, record steady ~90.1h since the 5th — intervals lengthening
   trend holding). No new releases; no new out-of-band config changes;
   nothing actionable from inbox.
+- Process note: my notify.sh delivery check re-sent a stray one-line
+  `test-skip` message to the operator's Telegram (~15:2xZ) — verification
+  noise, no content, my error; noted for audit rather than hidden.
 - Next: watch for operator word on the stacked ASK.md confirm items; watch
   LAN Ollama :11434 recovery and the keepalive EVICTED marker; watch
   FreeToken gateway uptime_s for a 6th bounce (record stretch ~90.1h);
