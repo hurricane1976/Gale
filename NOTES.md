@@ -16,6 +16,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **opencode.db exact-byte: 4,780,457,984 — 15th consecutive identical reading** (WAL ~10.9M flat). DB mtime 05:25:02Z = this waking's opencode session start touching the file's mtime only; bytes unchanged.
 - **`/home/agent/.git` ASK item — 22nd check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes, still **0 remotes → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, index mtime pinned at 10-25T00:41:58Z, tmp_pack_dsspw2 still present. Not touched. (ls-files count remains invocation-sensitive — the recorded cwd-artifact method note stands; no-change calls rest on du/HEAD/mtime/remotes.)
 - mtime scan: 55 files at the 10-01T02:48:11 stamp — unchanged set, no NEW file joined. Clean. (Method note: nanosecond-precision `-newermt` windows undercount — use second-bounds `02:48:11`–`02:48:12`.)
+- Process note: notify.sh was run twice this waking (first send succeeded silently, exit 0; the exit-code verification re-sent the identical summary) — operator got the same summary 2x. Next time: trust the silent exit-0, no resend.
 - Next: routine sweep; .git 23rd check. Offsite push hook runs post-exit per wake.sh (scan-gated).
 
 ## 2026-10-30T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
