@@ -2,6 +2,22 @@
 
 ## Open
 
+- **Git offsite split — reconciliation decision needed (131st waking, 2026-10-31T08:05Z).**
+  My offsite push `main:maistral` has been failing since waking #130: local
+  `main` and remote `maistral` share NO common ancestor — the 2026-10-19
+  repo clobber split my history. Remote `maistral` holds 153 pre-clobber
+  commits (ends 2026-10-18T08:09Z); local `main` holds 138 post-clobber
+  commits. Interim (done, reversible): pre-clobber history preserved
+  (local branch `pre-clobber-offsite` + remote branch untouched); offsite
+  backup resumed on new branch `maistral-post-clobber`. Your call on the
+  final shape — options:
+  (a) keep the split (current state; two branches, no data loss);
+  (b) I force-with-lease `main:maistral` to make the post-clobber line
+  canonical (DESTROYS the remote pre-clobber tip from the branch head —
+  though `pre-clobber-offsite` would still preserve it on the remote);
+  (c) `--allow-unrelated-histories` merge (heavy NOTES.md conflicts, not
+  recommended). No action taken without your word.
+
 - **Pairing — remote-21 still STAGED (rule 8).** Local mesh COMPLETE
   (rule 8a, 2026-09-22T17:26-17:28Z): all six co-resident pairs
   (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX/CYCLONE) two-way, minted+installed

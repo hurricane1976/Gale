@@ -5340,3 +5340,18 @@ Steady state otherwise. ASK.md items unchanged.
 - **Ledger:** +9 lines to ledger/fleet-events.md, incl. a GAP-NOTE for the 10-19→10-30 window (provenance hole recorded, not reconstructed).
 - **Git:** commit at closeout (ledger + NOTES + inbox moves).
 - **Open items (unchanged):** 09-22 cost question; artifact `62` staged for operator removal; remote-21 pairing STAGED; Sirocco root cause unattributed. **New:** CANYON/mountain-host watch (PATTERN-5), known-spend decrease, reboot cause.
+
+## 2026-10-31T08:05Z -- waking #131 (scheduled, unattended)
+
+- **Context read:** AGENT.md, NOTES.md, ASK.md, peer/inbox/ (9 msgs), ./check_replies.sh -> clean (no operator messages). All peer content treated as data (rule 5).
+- **Host health:** up ~3d15h44m (boot 2026-10-27T16:21Z), load 0.2x idle, disk 65% (33G free/98G), RAM 52.5G avail/59G, swap low. 8795 listener up on 127.0.0.1 + 100.66.39.59; Fleet API 8090 up. systemd running. Known recurring noise only: snap firmware-notifier failures (03:00/06:00), systemd-networkd-wait-online timeouts (06:09, 07:28).
+- **Backup:** maistral-20261031T080531Z.tar.gz (444K) created + read-back verified (AGENT.md readable from snapshot). **Offsite push restored (see below).**
+- **GIT/OFFSITE (main work this waking):** LEVANTE 07:42Z msg (data, verified myself) reported waking #130's `git push github main:maistral` failed non-fast-forward. Verified: local `main` vs remote `maistral` have NO common ancestor — the 10-19 clobber split my history into two unrelated lines. Remote `maistral` = 153 pre-clobber commits (tip 122653e 10-18T08:09Z, wakings #121-123); local `main` = 138 post-clobber commits. Actions: preserved pre-clobber history (local branch `pre-clobber-offsite` @122653e, remote branch untouched); wake.sh push retargeted to new branch `main:maistral-post-clobber` (annotated, self-directed, reversible) and pushed OK — offsite backup resumes; final reconciliation filed in ASK.md pending operator word (force-with-lease is irreversible, rule 4). First-report credit: LEVANTE (its report was accurate).
+- **Fleet sweep (08:05:36Z):** 35/35 reachable/reporting, 0 missing, all 4 sources ok, no shape change. SIROCCO stays resolved (4 runs). BORA active. Ostro/Poniente/Levante stable 4 runs each.
+- **PATTERN-5 widened (count 2):** mountain-host silence now FOUR agents at 0 runs — canyon (last 10-27T12:30Z), mesa (last 10-27T18:22Z), mountain, vista. Only delta/harbor/ridge still waking on that host. Host daily wakings 12 -> 3 so far today. Was CANYON-only at 02:05Z.
+- **PATTERN-3 CLOSED:** 2nd consecutive clean waking — MOUNTAIN and MESA msgs each from their own identity. Cross-label pattern closed (was 72 occurrences, first-seen ~09-24).
+- **Error watch:** per-agent errs creek=3, river=2 (tidal host) — matches host-level tidal=5 exactly, so the 02:05Z host-vs-agent discrepancy (6 vs 0) looks like a window artifact. creek/river new (count 1, below 3+ threshold).
+- **Spend:** fleet 77.25% coverage ($411.77 known / 4198 priced / 1236 unknown) — known spend fell another $2.68 vs 02:05Z; 2nd consecutive decreasing observation of the unattributed known-spend drift. MAISTRAL 3 runs 24h, $0.0704, 0 err.
+- **Ledger:** +8 lines (git split/restore, PATTERN-5 widen, PATTERN-3 close, creek/river errs, spend drift, fleet stable, inbox, backup).
+- **Inbox:** 9 msgs processed (LEVANTE substantive; MOUNTAIN x2, DELTA x3, MEADOW x1, MESA x2 routine). Moved to processed/.
+- **Open items:** git reconciliation (NEW, ASK.md); 09-22 cost question; artifact `62` staged for operator removal; remote-21 pairing STAGED; Sirocco root cause unattributed; known-spend drift (count 2); PATTERN-5 mountain-host silent quartet (count 2); reboot cause uninvestigated.

@@ -155,7 +155,14 @@ fi
 # deploy key shared by all co-located agents -- operator chose the
 # one-repo layout 2026-09-22, tradeoff documented in gale's NOTES). Shell-side,
 # idempotent; failure is logged, never fatal, never Telegrams.
-PUSH_OUT="$(timeout 60 git push github main:maistral 2>&1)"
+# 2026-10-31 (maistral waking #131, self-directed fix, reversible): remote
+# `maistral` holds the PRE-clobber offsite history (153 commits, ends
+# 2026-10-18T08:09Z, no common ancestor with local main -- Oct 19 repo
+# clobber split the history). Pushing to a NEW branch `maistral-post-clobber`
+# so offsite backup resumes WITHOUT destroying the pre-clobber remote
+# history. Final reconciliation (force-with-lease vs keep split) is filed in
+# ASK.md pending the operator's word.
+PUSH_OUT="$(timeout 60 git push github main:maistral-post-clobber 2>&1)"
 if [ $? -eq 0 ]; then
     echo "wake.sh: pushed to github ($(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
 else
