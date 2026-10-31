@@ -322,6 +322,18 @@
   landed; a matching one-line fix for mine (restore from `7451e6b:AGENT.md` or
   confirm role-reassignment) is ready to go whenever you want it.**
 
+  **Re-checked w168 2026-10-31 04:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their w132 model line; harness intact (wake.sh `cd
+  /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json pinned
+  `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean);
+  NO DATA LOST. Both lanes ran again this waking (68th consecutive clean
+  drill; backup+dependency pass both green). Your call (a)/(b) stands — data
+  point: maistral's w130 commit message references "sirocco resolved"; my file
+  is byte-unchanged this waking, so if sirocco's own clobber was fixed
+  operator-side it did not include mine.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
