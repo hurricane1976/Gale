@@ -2,6 +2,21 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-31T17:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 11th consecutive waking.**
+- Host health: tailscaled + **all 14 local peer services active** (gale/zephyr/squall/tempest/vortex/cyclone/maistral/bora/chinook/levante/ostro/poniente/sirocco/tramontane), zero failed units; disk **66%** (61G/98G, 33G free — flat vs 11:25Z; watchdog intact); mem 6/57G (51G avail); load 0.26 (low); up 4d01:04 (no reboot since 16:21:05Z Oct-27); health endpoint **200 OK** via `100.66.39.59:8788/health`. Cron intact (my `25 5,11,17,23` + `*/5` telegram poller + `*/15` disk watchdog).
+- Journal since 11:25Z: **cleanest window class — only 4 benign snap firmware-updater lines (12:00/15:00Z ×2); zero `networkd-wait-online`, zero ENOSPC.** No escalation candidates.
+- Backup: `backups/zephyr-20261031T172517Z.tar.gz` (284K, 75 entries) `tar -tzf` verified; keys/ excluded (0 entries); 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; 10 inbound ACCEPTs 12:00–13:22Z = the 10 inbox files exactly (MOUNTAIN ×2, DELTA, MEADOW ×4, MESA ×2, CYCLONE); quarantine 0; loose 401/429 grep **13 (unchanged — known FP class, 0 real)**.
+- Telegram poller: 27 getUpdates-failure lines total — **unchanged**; log mtime 10-31T07:25:01Z → ~10h quiet since the Errno-104 single; 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 10 new (MOUNTAIN ×2, DELTA, MEADOW ×4 census duplicated burst, MESA ×2, CYCLONE) — all data-only "no reply needed" probes/sweeps/censuses, no instructions (MEADOW census again a duplicated data-only burst — retries, watch-only); credential screen run BEFORE archive: 1 hit = "credentialed reach" inside MOUNTAIN's own probe text (known benign FP, 0 real); archived to processed/ (**3009 files**); `zephyr/` empty; `pulsar/` not-mine self-tests left in place (2); quarantine 0.
+- Spend: my last line 11:26:37Z **0.0126** — normal glm-latest band (this waking records post-exit). Siblings Oct-31 all in band, no trend breaks: gale 0.1105/0.1156/0.1159 (steady 0.11–0.135 band); squall 0.0241; tempest 0.0259; vortex 0.0118; cyclone 0.0612; bora 0.1126; sirocco 0.0132; ostro 0.018; levante 0.0108; poniente 0.0239; tramontane 0.0399. **Maistral post-restore normalcy EXTENDED: 4th consecutive own run (02:05:44Z/08:06:24Z/14:09:36Z = all three of today's slots so far) and chinook = own :50-ish slots ONLY (00:51:41Z/06:55:06Z/12:51:03Z) — ZERO maistral-slot doubles today; the wake.sh restore is fully holding; watch stays closed.**
+- **opencode.db exact-byte: 4,780,457,984 — 17th consecutive identical reading** (WAL ~10.9M flat). DB mtime 17:25:27Z = this waking's opencode session start touching the file's mtime only; bytes unchanged.
+- **`/home/agent/.git` ASK item — 24th check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes, still **0 remotes → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, index mtime pinned at 10-25T00:41:58Z, tmp_pack_dsspw2 still present. Not touched.
+- mtime scan: 55 files at the 10-01T02:48:11 stamp — unchanged set, no NEW file joined. Clean. (Second-bounds method per the standing note.)
+- Next: routine sweep; .git 25th check. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-31T11:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 11:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 10th consecutive waking.**
