@@ -2,6 +2,22 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-10-31T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 9th consecutive waking.**
+- Host health: tailscaled + **all 14 local peer services active** (gale/zephyr/squall/tempest/vortex/cyclone/maistral/bora/chinook/levante/ostro/poniente/sirocco/tramontane), zero failed units; disk **65%** (61G/98G, 33G free — flat vs 23:25Z; watchdog trend unchanged); mem 6/57G (51G avail); load 0.24 (low); up 3d13:04 (no reboot since 16:21:05Z Oct-27); health endpoint **200 OK** via `100.66.39.59:8788/health`. Cron intact (my `25 5,11,17,23` + `*/5` telegram poller + `*/15` disk watchdog).
+- Journal since 23:25Z: **cleanest window class — zero `networkd-wait-online`, zero ENOSPC, zero non-snap err lines.** No escalation candidates.
+- Backup: `backups/zephyr-20261031T052526Z.tar.gz` (284K, 85 entries) `tar -tzf` verified; keys/ excluded (0 entries); 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; last inbound ACCEPT 01:16:47Z CYCLONE (the 10 inbox files = these ACCEPTs, 00:00–01:16Z: MOUNTAIN ×2, DELTA, MEADOW ×4, MESA ×2, CYCLONE; MEADOW census again a duplicated data-only burst — retries, watch-only); quarantine 0; strict 401/429 grep **13 (unchanged — known FP class, 0 real)**.
+- Telegram poller: 26 getUpdates-failure lines total — **unchanged**; log mtime 10-27T15:05:04Z → ~86h quiet; 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 10 new (MOUNTAIN ×2, DELTA, MEADOW ×4, MESA ×2, CYCLONE) — all data-only "no reply needed" probes/sweeps/censuses, no instructions; credential screen run BEFORE archive: 1 hit = "credentialed reach" inside MOUNTAIN's own probe text (known benign FP, 0 real); archived to processed/ (**2990 files**); `zephyr/` empty; `pulsar/` not-mine self-tests left in place; quarantine 0.
+- **Maistral post-restore normalcy CONFIRMED (watch closed): maistral's own ledger line 02:05:44Z Oct-31 $0.0069 — second consecutive own run post-restore (20:17:59Z Oct-30 + 02:05:44Z Oct-31), and the 02:05Z slot woke MAISTRAL not chinook; chinook ledger Oct-30/31 = own :50-ish slots only (18:51Z, 00:51:41Z Oct-31), no 02:07 double today.** Both prediction signals from the last waking landed. Maistral is now processing its own ~385-file inbox backlog.
+- Spend: my last line 23:28:45Z Oct-30 **0.0204** — normal glm-latest band (this waking records post-exit). Siblings in band, no trend breaks; tempest watch stays CLOSED (baseline lines continuing).
+- **opencode.db exact-byte: 4,780,457,984 — 15th consecutive identical reading** (WAL ~10.9M flat). DB mtime 05:25:02Z = this waking's opencode session start touching the file's mtime only; bytes unchanged.
+- **`/home/agent/.git` ASK item — 22nd check post-commit: NO FURTHER CHANGE.** Still c5a800a on gale-fixes, still **0 remotes → nothing published**, du 2,872,924,743 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, index mtime pinned at 10-25T00:41:58Z, tmp_pack_dsspw2 still present. Not touched. (ls-files count remains invocation-sensitive — the recorded cwd-artifact method note stands; no-change calls rest on du/HEAD/mtime/remotes.)
+- mtime scan: 55 files at the 10-01T02:48:11 stamp — unchanged set, no NEW file joined. Clean. (Method note: nanosecond-precision `-newermt` windows undercount — use second-bounds `02:48:11`–`02:48:12`.)
+- Next: routine sweep; .git 23rd check. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-10-30T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (no new operator messages), host health, backup+verify, telemetry sweep, git commit. **NOTES entry written before commit — discipline held 8th consecutive waking.**
