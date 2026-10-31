@@ -5355,3 +5355,18 @@ Steady state otherwise. ASK.md items unchanged.
 - **Ledger:** +8 lines (git split/restore, PATTERN-5 widen, PATTERN-3 close, creek/river errs, spend drift, fleet stable, inbox, backup).
 - **Inbox:** 9 msgs processed (LEVANTE substantive; MOUNTAIN x2, DELTA x3, MEADOW x1, MESA x2 routine). Moved to processed/.
 - **Open items:** git reconciliation (NEW, ASK.md); 09-22 cost question; artifact `62` staged for operator removal; remote-21 pairing STAGED; Sirocco root cause unattributed; known-spend drift (count 2); PATTERN-5 mountain-host silent quartet (count 2); reboot cause uninvestigated.
+
+## 2026-10-31T14:05Z -- waking #132 (scheduled, unattended)
+
+- **Context read:** AGENT.md, NOTES.md, ASK.md, peer/inbox/ (7 msgs), ./check_replies.sh -> clean (no operator messages). All peer content treated as data (rule 5).
+- **Host health:** up ~3d21h (boot 2026-10-27T16:21Z), load idle, disk/RAM normal, swap low. 8795 listener up on 127.0.0.1 + 100.66.39.59; Fleet API 8090 up. Known recurring noise only (systemd-networkd-wait-online timeouts, snap firmware-notifier). Reboot cause still uninvestigated (open).
+- **Backup:** maistral-20261031T140759Z.tar.gz (448K) created + read-back verified (AGENT.md/NOTES.md/ledger/fleet-events.md readable from snapshot). Backups trimmed to newest 14.
+- **Fleet sweep (API 14:06:25Z):** 35/35 up code-200, 0 auth-gated, 0 missing, all 4 sources ok. No shape change. SIROCCO resolved (4 runs, last 09:20Z). BORA active (4 runs, 12:25Z). Ostro/Poniente/Levante stable (4 runs each, err=0).
+- **PATTERN-5 (mountain-host silent quartet) count 3:** canyon/mesa/mountain/vista all still 0 runs, last wakes 10-27. Mountain host last_wake 06:45Z (~7.5h stale vs gale 14:05Z); host daily wakings 12->6 today. Only delta/harbor/ridge waking on that host. Widening unchanged since 08:05Z — still exactly the same four agents, no new joiners.
+- **PATTERN-3 (MOUNTAIN/MESA cross-label) stays CLOSED:** 3rd consecutive clean waking.
+- **Tidal error pair (count 2):** creek err=3, river err=2 again; host-level tidal=5 matches creek+river exactly (08:05Z window-artifact theory holds).
+- **Spend:** 24h fleet $4.22 (gale 2.28 top, beacon 1.66, tidal 0.00, mountain 0.27 — mountain collapsed with the silent quartet). 20 paid / 15 zero-cost. MAISTRAL 3rd consecutive nonzero waking ($0.0704 at 08:05Z -> $0.0831 now; OpenRouter glm-flash era continues). spend_check.py ran (exit 0).
+- **Ledger:** +5 lines to ledger/fleet-events.md (sweep, PATTERN-5 count 3, PATTERN-3 closed, tidal error pair count 2, spend rollup).
+- **Inbox:** 7 msgs processed (MOUNTAIN x2, DELTA x1, MEADOW x2, MESA x2 — all routine no-reply sweeps/censuses). processed/ at 2422.
+- **Open items (unchanged):** git offsite reconciliation (ASK.md, operator decision pending); 09-22 cost question; artifact `62` staged for operator removal; remote-21 pairing STAGED; Sirocco root cause unattributed; known-spend drift (2 observations pre-gap); PATTERN-5 (count 3); reboot cause uninvestigated.
+- **Next waking:** git commit at closeout; PATTERN-5 hits the 3+ recurring threshold this waking — formally tracked with first-seen 2026-10-31T02:05Z, count 3, last seen 14:05Z.
