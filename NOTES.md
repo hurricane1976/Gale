@@ -5318,3 +5318,25 @@ Steady state otherwise. ASK.md items unchanged.
 - **Git:** committed ledger update 7 lines. No uncommitted work.
 - **Open items:** 09-22 cost question unresolved; repo artifact `62` (tracked) still staged for operator removal; remote-21 pairing still STAGED; Ostro/Poniente/Levante recurring watch stable; error-agent sextet (delta/harbor/lightning/meadow/radar + MEADOW err=1) persistent — MEADOW err=1 is new (1st sighting). PATTERN-3 at 72nd occurrence. **NEW: host reboot at ~15:24Z needs investigation.**
 
+
+## 2026-10-30T20:05Z -- waking #129 (scheduled, post-gap recovery)
+
+- Context read: AGENT.md, NOTES.md, ASK.md, peer/inbox/. No operator messages (./check_replies.sh clean).
+- Host health: OK. Snapshot verified (maistral-20261030T201539Z.tar.gz).
+- Inbox: 524 backlog msgs processed (all routine sweeps, no actionable).
+- Git: committed af2b011 (post-gap recovery waking).
+
+## 2026-10-31T02:05Z -- waking #130 (scheduled, unattended)
+
+- **Context read:** AGENT.md, NOTES.md, ASK.md, peer/inbox/ (7 msgs), ./check_replies.sh -> clean (no operator messages). No instruction-grade content anywhere; all peer msgs treated as data (rule 5).
+- **Host health:** up 3d9h44m (boot ~2026-10-27T16:21Z — another reboot since the 10-18 boot; cause uninvestigated, joining the recurring reboot watch), load 0.26/0.24/0.26, disk 65% (61G/98G), RAM 51G avail, swap low. My listener 8795 up on both 127.0.0.1 and 100.66.39.59; Fleet API 8090 up. 22 listeners total. Known recurring noise only: systemd-networkd-wait-online timeouts, snap firmware-notifier failures.
+- **Backup:** maistral-20261031T020509Z.tar.gz (440K) created + read-back verified (AGENT.md/NOTES.md/ledger present). Trimmed to newest 14.
+- **Fleet sweep (API 02:05:12Z):** 35/35 reachable, 0 missing, all 4 sources ok, all listeners code-200. No shape change vs 10-18.
+- **PATTERN-1 RESOLVED: SIROCCO back** — 4 runs 24h, last_wake 10-30T21:20:01Z, after ~2 weeks silent (last seen silent 10-18; exact wake-up lost in my 10-19→10-30 sweep gap). Root cause (TRAMONTANE w111 entanglement) still unattributed.
+- **NEW PATTERN-5 OPEN: CANYON down** — 0 runs, last_wake 2026-10-27T12:30:01Z (~4 days), decline began 10-26, zero since 10-28. Whole mountain host running reduced volume (28→12 wakings/day since 10-28; host last_wake 10-30T18:45Z, stale vs others). First-seen this waking.
+- **Error cluster cleared:** delta/harbor/lightning/meadow/radar/stream all err=0. Discrepancy recorded: host-level error_runs_24h tidal=6 vs per-agent all 0 — noted side by side, not adjudicated.
+- **PATTERN-3 (MOUNTAIN/MESA cross-label) likely resolved:** MESA msgs now arrive from MESA's own identity; no cross-label pair this waking. One more clean waking to close it.
+- **Spend:** fleet 77.21% coverage ($414.45 known / 4185 priced / 1235 unknown). **Anomaly: fleet known spend DECREASED ~$55** ($469.16 on 10-19 → $414.45 now) across the unrecorded window — recorded as drift, unattributed. **MAISTRAL first nonzero spend:** $0.0568 logged 10-30, ~$0.06 this waking — 15+ day $0 streak ended, consistent with the OpenRouter glm-flash model move. gale host now top spender (~$3.2-4.8/day).
+- **Ledger:** +9 lines to ledger/fleet-events.md, incl. a GAP-NOTE for the 10-19→10-30 window (provenance hole recorded, not reconstructed).
+- **Git:** commit at closeout (ledger + NOTES + inbox moves).
+- **Open items (unchanged):** 09-22 cost question; artifact `62` staged for operator removal; remote-21 pairing STAGED; Sirocco root cause unattributed. **New:** CANYON/mountain-host watch (PATTERN-5), known-spend decrease, reboot cause.
