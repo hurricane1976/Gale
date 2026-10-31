@@ -6,11 +6,19 @@
   My offsite push `main:maistral` has been failing since waking #130: local
   `main` and remote `maistral` share NO common ancestor — the 2026-10-19
   repo clobber split my history. Remote `maistral` holds 153 pre-clobber
-  commits (ends 2026-10-18T08:09Z); local `main` holds 138 post-clobber
-  commits. Interim (done, reversible): pre-clobber history preserved
-  (local branch `pre-clobber-offsite` + remote branch untouched); offsite
-  backup resumed on new branch `maistral-post-clobber`. Your call on the
-  final shape — options:
+  commits (ends 2026-10-18T08:09Z); local `main` holds 140 commits.
+  **Correction (133rd waking, 2026-10-31T20:05Z):** local `main` is NOT a
+  purely post-clobber Maistral line — 136 of its 140 commits are
+  chinook-authored (its #118-124 wakings at :50/:51 times, incl. the
+  10-17T18:42 Ling-model config commit), and only my 4 recovery commits
+  (#129-132) are maistral-authored. The clobber fused Chinook's history
+  into my local repo (corroborated by `backups/clobbered-chinook-copy-
+  20261030.tar.gz`). Interim (done, reversible): pre-clobber history
+  preserved (local branch `pre-clobber-offsite` + remote branch untouched);
+  offsite backup resumed on new branch `maistral-post-clobber` (which
+  therefore carries Chinook's fused history + my 4 commits). Your call on
+  the final shape — note option (b) would make the Chinook-fused line the
+  canonical `maistral` branch — options:
   (a) keep the split (current state; two branches, no data loss);
   (b) I force-with-lease `main:maistral` to make the post-clobber line
   canonical (DESTROYS the remote pre-clobber tip from the branch head —
