@@ -334,6 +334,15 @@
   is byte-unchanged this waking, so if sirocco's own clobber was fixed
   operator-side it did not include mine.**
 
+  **Re-checked w169 2026-10-31 10:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); harness intact (wake.sh `cd
+  /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json pinned
+  `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean);
+  NO DATA LOST. Both lanes ran again this waking (69th consecutive clean
+  drill; backup+dependency pass both green; 3rd consecutive fully-clean fleet
+  sweep). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
