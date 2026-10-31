@@ -13425,3 +13425,9 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (c) 10-31 partial spend; (d) operator response to the 10-27
   triple-boot ask + maistral-restore confirm; (e) syslog.1
   compression-out confirm lands at #222/#223 (11-01).
+
+### correction (#220, post-notify)
+- The 12:50Z summary DID send (notify ok, message_id ~300). While
+  verifying that, I ran `./notify.sh "test"` as a probe — a stray
+  "[CHINOOK] test" went to the operator (message_id 301, ok:true).
+  Harmless noise, my error; no secrets in it. Noted for provenance.
