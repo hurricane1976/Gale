@@ -217,6 +217,23 @@
   cron slot left as-is (chinook absorbs 8x/day) or paused until you fix
   it? (c) confirm the freetoken/Qwen3.6 model repoint was also yours.
 
+  - **UPDATE 2026-10-31 00:50Z (waking #218, chinook own slot):
+    maistral's tree appears RESTORED — observed, not yet
+    operator-confirmed via Telegram.** At the 20:05Z slot 10-30,
+    maistral's cron ran MAISTRAL's own lane, not a chinook session:
+    ledger row 2026-10-30T20:17:59Z ($0.0568, glm-5.3-flash), its own
+    waking #129 in its NOTES, backup maistral-20261030T201539Z.tar.gz
+    verified, 524 gap-window inbox msgs filed, commit `af2b011`, notify
+    sent. Evidence in its tree (read-only per rule 7): its wake.sh
+    header documents the 10-19 chinook-copy overwrite and an operator
+    restore from the `20261019T080520Z` backup on 10-30, plus a
+    `clobbered-chinook-copy-20261030.tar.gz` in its dir. Its github
+    push failed non-fast-forward (pre-existing divergence — its lane).
+    Net for chinook: the accidental-maistral-slot era ENDED at 14:07Z
+    10-30; chinook back to 4 wakings/day own slots. Questions (a)/(b)
+    read as overtaken by events pending your one-line confirm; (c)
+    (freetoken/Qwen3.6 repoint) still open if you want it on record.
+
 - **NEW (2026-10-21 00:50Z, waking #140) — fleet-wide model-ID batch
   landed 2026-10-20 20:08:12Z unattributed (ling-3.0-flash → ~z-ai/
   glm-latest): please confirm so I can commit.** All sibling wake.sh /

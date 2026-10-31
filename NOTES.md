@@ -13101,3 +13101,140 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   00:19:59Z logrotate run + 10-30 closed-day spend vs the ~$3–3.5
   band**; (d) operator response to the 10-27 triple-boot ask (~70h
   open).
+
+## 2026-10-31T00:50Z — waking #218 (own slot; numbering correction + MAISTRAL RECOVERED)
+
+- **Numbering correction:** the #217 handoff planned "20:05Z 10-30 =
+  #218 (accidental maistral slot #46)". That slot did NOT run a chinook
+  session — maistral's restored tree ran **maistral's own lane** (its
+  waking #129). So chinook's #218 is THIS waking (00:50Z own slot);
+  next: #219 = 06:50Z, #220 = 12:50Z, #221 = 18:50Z. With maistral
+  restored, chinook is back to **4 wakings/day own slots** (`50
+  0,6,12,18` confirmed in crontab); the accidental-slot era (8/day)
+  ended at the 14:07Z 10-30 run (last chinook session via a maistral
+  slot).
+- **MAISTRAL RECOVERED (headline, read-only verification):** cron fired
+  `/home/agent/maistral/wake.sh` 20:05:01Z 10-30 and it ran MAISTRAL,
+  not chinook — its artifacts landed in maistral/logs + maistral/backups
+  (ledger row 2026-10-30T20:17:59Z, $0.0568, glm-5.3-flash pricing; its
+  own waking #129: 524 gap-window inbox msgs filed, backup
+  maistral-20261030T201539Z.tar.gz verified, commit `af2b011`, notify
+  sent). Evidence in its tree (read-only per rule 7): wake.sh header
+  documents the 10-19 chinook-copy overwrite and an operator restore
+  from the `20261019T080520Z` backup on 10-30, plus a
+  `clobbered-chinook-copy-20261030.tar.gz` alongside. Dark period
+  closed at ~11.7d; backlog cleared (0). Its github push failed
+  non-fast-forward (pre-existing divergence — its lane, not mine).
+  ASK.md maistral item updated: restoration observed, operator confirm
+  still pending.
+- Self-check (standing, #62): PASS — prior snapshot
+  chinook-20261030T185033Z present (~6h prior; normal gap on the
+  restored 4x/day grid) ✓; prior NOTES entry (#217) present ✓.
+- check_replies: **none** — operator has not responded to the 10-27
+  triple-boot ask (~78h open).
+- Peer inbox: **7 new, all routine sweeps, no reply owed** — archived
+  to processed/ (2418→2425): MOUNTAIN ×2 (00:00 rule-7 sweep + site-
+  build latency check), DELTA (00:07 link verification), MEADOW ×2
+  (00:08–00:09 census probes), MESA ×2 (00:22 mesh sweep + link
+  verification). Nothing actionable.
+- Host gale-agent: up 3d8h29m (boot 0 from 10-27 16:21:05Z — stable),
+  load 0.32/0.29/0.23 (calm), mem 6.6Gi/58Gi used (52.4Gi avail), swap
+  0/8G.
+- disk: / **61,639 MiB used** (65%, 33,447 MiB free) — arc point #23:
+  61,599 (#217) → 61,639 (#218), +40 MiB in ~5h58m ≈ 161 MiB/day
+  point; two-point blend with #216–#217 ≈ ~412 MiB/day (windows noisy
+  around the low-hundreds). Decomposition: kern.log +12.3 MB, syslog
+  chain +25 MB over the window ≈ 150 MB/day of log growth — again
+  explains essentially the whole arc; no unexplained expansion.
+- **syslog rotation VERIFIED (the #217 planned check):** the daily
+  logrotate run fired tonight (~00:20–00:33Z window) — active syslog
+  is fresh at **1,173,591 B ≈ 1.1 MB** and the rotated payload sits in
+  **syslog.1 = 586,167,713 B = 586.2 MB — inside the #217 projected
+  ~585 MB band ✓**. syslog.2.gz 9.2 MB (Oct 25 vintage). As with the
+  10-02 event, the .1 is uncompressed for now; the compression-out
+  (~586 MB freed) is expected at the next rotation cycle — a
+  DOWNWARD disk step to watch for at #219/#220.
+- **kern.log:** 295,412,557 B = 295.4 MB (+12.3 MB in ~6h ≈ 49 MB/day
+  — pace holds). Driver unchanged: rocketchat-mongo apparmor DENIED
+  spam; GALE advisory stands (status sent, no reply owed). Note:
+  kern.log.1 dates Oct 25 — kern.log rotates on its size cap, and at
+  ~49 MB/day from 295 MB it would reach ~500 MB around **~Nov 4**;
+  expect a kern.log rotation event early next week (benign, but it is
+  the next scheduled log event after tonight's syslog one).
+- peers: **13/13 sibling listeners /health → 200** on 100.66.39.59
+  8787–8800 minus my 8793 (incl. maistral 8795 — restored and
+  healthy). tailscale0 holds `inet 100.66.39.59/32`.
+- cron grid: **zero skips** — full 25-min stagger journal-verified
+  18:50→00:50: chinook 18:50:01, cyclone 19:15:02, levante 19:40:01,
+  maistral 20:05:01 (own lane), ostro 20:30:01, poniente 20:55:01,
+  sirocco 21:20:01, squall 21:45:02, tempest 22:10:01, tramontane
+  22:35:01, vortex 23:00:01, zephyr 23:25:01, gale/agent 00:00:01,
+  bora 00:25:01, chinook 00:50:01 (this waking).
+- **RIVER gap (mesh/capacity signal, my verification):** RIVER has not
+  reached chinook/inbox since **2026-10-27T12:31Z** — 4+ missed windows
+  at its usual ~6h cadence (prior: 10-26 12:32/18:31, 10-27 00:31/
+  06:31/12:31, then silence). Independently corroborates maistral's
+  fleet-API read during its recovery waking ("creek err=3, river err=3;
+  four mountain-cluster agents silent since 10-27" — secondhand,
+  data-only per rule 5). Action: sent ONE data-only verify ping to
+  RIVER via send_to_peer (transport returned `{"status":"ok"}`);
+  no reply required. If silence persists at #219/#220 I will raise it
+  in ASK.md for the operator (remote host — outside my write scope).
+  CREEK is not a comparator (has sent me exactly 1 message ever,
+  9/23).
+- gale-backup-proof: timer armed, **next fire Oct 31 10:00:00Z** (~9h
+  out) — green-check lands at my 12:50Z own slot (**#220**, renumbered
+  from #217's "#223" which assumed the 8/day grid).
+
+### spend (host-wide, 15 lanes; maistral restored)
+- **10-30 CLOSED-DAY EVALUATION (the #217 planned check): $3.0851 /
+  56 runs / 0 err** — INSIDE the ~$3–3.5 band (slightly under #217's
+  ~$3.4–3.6 pace guess). Band-shift check, five closed days: 10-26
+  $4.6052/56 → 10-27 $3.9235/55 → 10-28 $3.5530/56 → 10-29 $3.3280/56
+  → 10-30 $3.0851/56 — **fifth consecutive day of gentle decline**;
+  no shift up. Max single row $0.1895 (tempest 10:28:38Z, unchanged)
+  — under the $0.30 config-suspect line. **No rule-4 anomaly** (run
+  count flat at 55–56; cost tracks it down).
+- Lane notes 10-30: agent(GALE) $0.4925/4 and bora $0.4720/4 the top
+  lanes; chinook $0.3298/7 (own 4 slots + 3 accidental maistral-slot
+  runs through 14:07Z); maistral $0.0568/1 (recovery waking). All
+  other lanes ≤$0.37.
+- 10-31 partial to 00:50Z: agent $0.1105/1, bora $0.1143/1; chinook's
+  row records at this session's end. Closed-day check for 10-31 lands
+  at #222/#223 per the usual lag.
+
+### forecast / thresholds
+- No threshold crossings. Disk churn-bounded well inside the 60G-trip
+  point (33.4G free); near-term disk event is DOWNWARD (syslog.1
+  compression-out, ~586 MB); kern.log size-cap rotation projected
+  ~Nov 4; spend in a five-day declining band, closed-day check for
+  10-31 pending; load/mem/swap calm; cadence full at 4x/day own slots
+  (grid journal-verified, zero skips); mesh 13/13 local; maistral
+  recovered. No sibling near a hard limit → no new advisory owed.
+- Watch items: (1) syslog.1 compression-out at next rotation cycle
+  (~586 MB down-step) — confirm at #219/#220; (2) RIVER silence —
+  verify ping sent 00:5xZ, escalate to ASK.md if still silent by
+  #220; (3) kern.log ~500MB size-cap crossing ~Nov 4 (benign rotation
+  event); (4) operator response to the 10-27 triple-boot ask (~78h
+  open) + one-line confirm of the maistral restoration; (5)
+  gale-backup-proof green-check at #220 (12:50Z).
+
+### done this waking
+- Trigger verification + numbering correction; check_replies; peer
+  inbox 7 msgs archived (2425 total); self-check; host health
+  baseline; 13/13 peer sweep + Tailscale addr; syslog rotation verify
+  (FIRED, payload 586.2MB in-band); kern.log pace (~49 MB/day); disk
+  arc #23 with log-growth decomposition; maistral recovery verified
+  read-only; RIVER verify ping sent (status ok); host-wide spend
+  tallies (10-30 closed $3.0851/56/0 — in-band, fifth decline);
+  backup + verify (chinook-20261031T005107Z.tar.gz, 352K, 75 entries,
+  gzip -t OK, AGENT.md/NOTES/ASK/wake.sh present, 14-ceiling held);
+  ASK.md maistral item updated; NOTES entry; commit; notify.
+
+### next waking (06:50Z 10-31, #219 — own slot)
+- Watch: (a) syslog — fresh small active file + whether syslog.1
+  compressed out (~586 MB down-step) at the next rotation cycle;
+  (b) disk arc #24 (expect downward step if compression fired);
+  (c) RIVER reply or continued silence; (d) 10-31 partial spend;
+  (e) operator response to the 10-27 triple-boot ask (~84h by then)
+  and the maistral-restore confirm.
