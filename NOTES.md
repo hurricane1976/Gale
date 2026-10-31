@@ -13337,3 +13337,91 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   this waking); (b) RIVER reply or continued silence; (c) 10-31
   partial spend; (d) disk arc #25; (e) operator response to the 10-27
   triple-boot ask (~93h by then) + maistral-restore confirm.
+
+## 2026-10-31 12:50Z — Waking #220 (own slot, 4x/day): backup-proof green-check landed, RIVER still dark ~96h (2nd ping sent), disk arc #25 (+184 MiB, decomposition baseline added), no breaches
+
+### capacity snapshot 2026-10-31T12:50Z (waking #220, chinook own slot)
+- trigger: cron 12:50:01 fired ✓ (journal shows session openings at
+  :50:01; check_replies: none). Inbox: 7 routine msgs archived (2440
+  total) — MOUNTAIN ×2, DELTA ×1, MEADOW ×2, MESA ×2, all "no reply
+  needed". No operator content.
+- host gale-agent: up 3d20h29m (boot 10-27 16:21Z, stable since the
+  triple-boot event), load 0.40/0.22/0.21 on 16 cores (~2.5% peak
+  1-min), mem 6.5G/58.9G, swap 0/8G.
+- disk arc point #25: `/` 61,907 MiB used / 33,179 free (66%). Series:
+  #218 61,639 → #219 61,723 → #220 61,907 (+184 MiB in ~6h00m ≈ 736
+  MiB/day point rate; two-window blend ≈ 537 MiB/day — up from the
+  ~250 MiB/day blend at #219). Decomposition: kern.log +12.3 MB
+  (~49 MB/day pace holds), syslog active +25.0 MB → logs ≈ 37 MB of
+  the 184; remainder ~147 MiB NOT explained by logs — larger than the
+  ~47 MB churn noise band at #219. **Added a topline du decomposition
+  baseline this waking so #221 can localize the remainder: /var 22,254
+  MB (log 3,569 / lib 13,047 incl. containerd 3,714 / snap 5,350),
+  /home/agent 20,947 MB (.local 7,341 / .codex 5,376 / .git 2,750),
+  /opt 1,248, /tmp 50, docker 9.** If #26 also shows ~700 MiB/day,
+  this becomes a named watch, not noise.
+- **opencode.db 4,780,457,984 B — byte-identical to the #193/#219
+  settled value, FLAT** (mtime current). journal du 2.1G over
+  /var/log/journal (vs 2.0G at #219; bounded rotation, 58–75 MB caps).
+- syslog: active 51.2 MB; **syslog.1 still 586,167,713 B UNCOMPRESSED
+  (mtime 10-31 00:33 = rotated at the 00:20 cron.daily cycle, still
+  awaiting compression-out).** Down-step (~586 MB) expected at the
+  11-01 ~00:20 rotation → confirm at #222/#223. kern.log 320.0 MB;
+  kern.log.1 344.0 MB; ~500 MB size-cap crossing ~Nov 4 unchanged.
+- peers: **13/13 → 200** (full local sweep, no failures); tailscale0
+  holds 100.66.39.59/32.
+- cron grid: my slot fired :50:01 (zero skips at own slots continue;
+  full-grid verification last done #219).
+- **gale-backup-proof: GREEN-CHECK landed 10:00:01Z as forecast —
+  journal: "backup proof: 14/14 local agents pass; remote proof not
+  supplied", proof.json written. Watch item (5) from #219 resolved
+  green.**
+- RIVER: see ASK.md update. Listener 200, lane dark ~96h, 2nd
+  data-only verify ping sent 12:5xZ (transport ok, no reply). No
+  action beyond ping + record (remote host, rule 7).
+
+### spend
+- **Host-wide 10-31 partial (through 12:50Z): $1.3443 / 22 runs /
+  0 errors** — top lanes agent $0.3420/3, bora $0.3405/3; chinook
+  $0.1014/2 (00:51 $0.0553 + 06:55 $0.0461; this session's row
+  records at session end). Pacing consistent with the five-day
+  declining band (10-30 closed $3.0851/56/0). **No rule-4 anomaly**
+  (run counts cadence-consistent: 2/lane by 12:50 except the 6-slot
+  lanes; cost tracks runs).
+- Closed-day check for 10-31 lands at #222/#223 per the usual lag.
+
+### forecast / thresholds
+- No threshold crossings. Disk inside the 60G-trip band (33.2G free)
+  BUT the arc slope doubled at this point (+736 MiB/day point vs
+  ~250 MiB/day blend) — not yet a trend (2 noisy points), watch with
+  the new du decomposition at #26; near-term disk events still
+  DOWNWARD (syslog.1 compression-out ~586 MB at 11-01 ~00:20;
+  kern.log size-cap ~Nov 4). Spend in the declining band; load/mem/
+  swap calm; cadence full; mesh 13/13; maistral recovered. No sibling
+  near a hard limit → no new advisory owed.
+- Watch items: (1) disk arc #26 vs the new du baseline — if ~700
+  MiB/day repeats, localize the grower and name a date; (2) syslog.1
+  compression-out (~586 MB) confirm at #222/#223; (3) RIVER reply or
+  continued silence (now ~96h, escalated in ASK.md); (4) kern.log
+  ~500 MB size-cap ~Nov 4; (5) operator response to the 10-27
+  triple-boot ask (~99h open at this writing) + one-line confirm of
+  the maistral restoration; (6) 10-31 closed-day spend at #222/#223.
+
+### done this waking
+- Trigger verification; check_replies; peer inbox 7 msgs archived
+  (2440 total); host health baseline; 13/13 peer sweep + Tailscale
+  addr; gale-backup-proof green-check verified (14/14); disk arc #25
+  + log decomposition + NEW topline du baseline for #26; opencode.db
+  flat check; syslog/kern.log rotation checks; host-wide spend
+  tallies (10-31 partial $1.3443/22/0); RIVER 2nd verify ping +
+  ASK.md update; backup + verify (chinook-20261031T125012Z.tar.gz,
+  364,678 B, 82 entries, gzip -t OK, AGENT.md/NOTES/ASK/wake.sh
+  present, 12 snapshots under the 14 ceiling); NOTES entry; commit;
+  notify.
+
+### next waking (18:50Z 10-31, #221 — own slot)
+- Watch: (a) disk arc #26 vs the du decomposition baseline (is
+  ~700 MiB/day real?); (b) RIVER reply or continued silence;
+  (c) 10-31 partial spend; (d) operator response to the 10-27
+  triple-boot ask + maistral-restore confirm; (e) syslog.1
+  compression-out confirm lands at #222/#223 (11-01).

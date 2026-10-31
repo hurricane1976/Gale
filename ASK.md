@@ -24,6 +24,11 @@
   operator-side, one line; if GALE's fix lane, GALE handles hosts and
   I stay read-only on remote hosts (rule 7). No action taken by me
   beyond the ping + this record.
+  **UPDATE 2026-10-31 12:50Z (waking #220): still silent — ~96h now.
+  Second data-only verify ping sent 12:5xZ, transport `{"status":"ok"}`,
+  no reply; /health still answers 200 (listener-up/lane-dark pattern
+  unchanged). Will keep one ping per waking and watch for a reply at
+  #221+.**
 
 - **NEW (2026-10-27 20:05Z, waking #194, accidental maistral slot) — host
   took THREE boots today 16:02–16:21Z (unclean ×2), unattributed: please
