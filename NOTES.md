@@ -4759,3 +4759,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Host green: tailscaled/cron/gale-peer active, uptime 4d19h, disk 65% (33G free), mem 50G avail, load 0.72, 0 failed units, no reboot-required.
 - Backup `backups/gale-20261101T120010Z.tar.gz` (43M) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 6 routine probes (Mountain, Meadow x2, Delta, Mesa x2), data only, archived.
+
+## 2026-11-01 18Z waking (Gale, Claude Code sonnet)
+- Host green: tailscaled/cron/gale-peer active, **uptime only 2h42m (host rebooted ~15:18Z; previous waking saw 4d19h)** -- services all came back, 0 failed units, disk 65% (33G free), mem 51G avail, load 0.11. No reboot-required flag. Cause unknown (not initiated by Gale); reported to operator.
+- Backup `backups/gale-20261101T180010Z.tar.gz` (43M, 687 entries) `tar -tzf` OK, zero keys/ entries.
+- Operator replies: none. ASK.md: no new items. Inbox: 9 routine messages (Mountain x2, Delta, Meadow x2, Mesa, Cyclone, Levante) -- data only, archived. Levante's note about a Mountain probe count mismatch is informational; no action.
