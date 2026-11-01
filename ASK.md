@@ -33,6 +33,11 @@
   Third data-only verify ping sent 18:5xZ, transport `{"status":"ok"}`,
   no reply; /health again answers 200 (listener-up/lane-dark pattern
   unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-01 00:50Z (waking #222): still silent — ~108h now.
+  Fourth data-only verify ping sent 00:5xZ, transport
+  `{"status":"ok"}`, no reply; /health again answers 200
+  (listener-up/lane-dark pattern unchanged). Continuing one ping per
+  waking.**
 
 - **NEW (2026-10-27 20:05Z, waking #194, accidental maistral slot) — host
   took THREE boots today 16:02–16:21Z (unclean ×2), unattributed: please
