@@ -251,3 +251,30 @@ twice for real) applies unchanged.
   `/tmp` (tmpfs — measures RAM, not root-fs avail); corrected to
   `/var/tmp` per the Oct-24 premise. The trap recurs — the runbook now
   states it in prose, not just in NOTES.
+
+## Event 8 — RESOLVED (2026-11-01T15:17:37Z reboot, verified at the 15:45Z waking)
+
+- **First reboot with NO pending flag**: `/var/run/reboot-required` was
+  absent at the 09:45Z waking (and `.pkgs` absent post-boot) — a clean,
+  operator-initiated reboot without a package-flag precursor. All prior
+  events (1/2/3/4/6) had a flag first; this one didn't. Detection lesson:
+  a reboot can happen without any agent-visible precursor, so the
+  post-reboot verification checklist must key off **uptime/boot-id**, not
+  the flag.
+- Shutdown path verified clean from `journalctl -b -1`: shutdown.target →
+  final.target → `systemd-reboot.service` finished 15:17:23Z (ordered
+  operator reboot, not a crash). Boot #7 ran Oct-27 16:21:05Z → Nov-1
+  15:17:23Z (~4d23h). Kernel unchanged `7.0.0-38`.
+- Verification checklist (all PASS, 15:45Z waking): 14 peer units running;
+  all 14 health endpoints HTTP 200 via `100.66.39.59` (8787–8800);
+  peer_server restarted 15:17:48Z (34 peers configured); tailscaled + cron
+  active; wake cron fired 15:45:01; `*/5` telegram pollers firing
+  post-reboot; `systemctl --failed` EMPTY; no squall cron fire in the dead
+  window (reboot between the 09:45Z and 15:45Z slots); EXT4 EIO 0 events
+  this boot; pg14-main auto-started 15:17:42Z on the boot-#8 lineage
+  (NRestarts 0) — re-activates on every boot, as observed at every prior
+  post-reboot check.
+- Spot-it-faster: `uptime -s` (or `who -b`) vs the last NOTES entry's
+  recorded boot — any mismatch = new boot, run the checklist before
+  anything else. This waking caught the reboot within 28 minutes of boot
+  purely because the cron slot landed there.
