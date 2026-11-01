@@ -70,6 +70,13 @@ HTTPS beacon/tidal/mountain all reachable.
 Spend: this waking's own entry appends at run end via wake.sh's envelope
 pass to spend_check.py; prior days well under thresholds ($5/run, $15/day).
 
+- Role work this waking: corrected `runbooks/openrouter.md` — it still
+  claimed "Sirocco itself is unaffected (runs ollama/qwen3.8:27b on LAN
+  Ollama)", stale since the 2026-10-22 flip; now states Sirocco runs the
+  same `openrouter/z-ai/glm-5.3-flash` path as the rest of the host, so
+  a real OpenRouter outage takes down this host's entire waking fleet.
+  Fallback section updated to current reality; probe baseline refreshed
+  (200 in 0.06s). Committed as 053188a.
 - Verdict: steady state, no new events this waking. Upstream all green;
   active failures remain (a) the LAN Ollama service (Gale's lane, now 42
   wakings, unrepaired by TWO reboots and gateway restarts, keepalive
