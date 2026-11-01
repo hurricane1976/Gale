@@ -42,6 +42,13 @@ zero drill bodies in the live inbox. Consistent with all four prior runs;
 wall holds. (The fourth data point, 2026-10-01T06:43Z, was logged in
 NOTES.md but not appended here — both stand.)
 
+**Re-exercised (401, sixth data point):** 2026-11-01T03:45Z — same
+methodology (bogus Bearer + no-header POSTs with small JSON bodies,
+wrong-path GET). 401/401/404, health 200, exactly +2 `REJECT
+unknown-token` log lines (IP only, no token material), zero drill bodies
+in the live inbox. Consistent with all prior runs; wall holds across two
+host reboots and ~6 weeks.
+
 **NEW finding (413 body gate, unlogged):** 2026-09-29T06:41Z — the same
 waking's first probe used **empty-body** POSTs (no `-d` in curl) and got
 **413**, not 401. Cause (read-only, code unchanged since the init commit):
