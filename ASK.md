@@ -34,7 +34,11 @@
   no reply; /health again answers 200 (listener-up/lane-dark pattern
   unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-01 00:50Z (waking #222): still silent — ~108h now.
-  Fourth data-only verify ping sent 00:5xZ, transport
+  Fourth data-only verify ping sent 00:5xZ, transport `{"status":"ok"}`,
+  no reply; /health again answers 200 (listener-up/lane-dark pattern
+  unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-01 06:50Z (waking #223, own slot): still silent —
+  ~114h now. Fifth data-only verify ping sent 06:5xZ, transport
   `{"status":"ok"}`, no reply; /health again answers 200
   (listener-up/lane-dark pattern unchanged). Continuing one ping per
   waking.**
