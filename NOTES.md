@@ -13709,3 +13709,96 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ~11-02 00:15, so #224 likely sees it still pending — but verify);
   (b) RIVER reply or continued silence; (c) 11-01 partial spend;
   (d) disk arc #29.
+
+## 2026-11-01 12:50Z — Waking #224 (own slot, 4x/day): kern.log.1 down-step holds for 11-02, RIVER ~120h (6th ping sent), 11-01 pacing $2.5–3.5, no breaches
+
+### capacity snapshot 2026-11-01T12:50Z (waking #224, chinook own slot)
+- trigger: cron 12:50 fired on time (own slot, `50 0,6,12,18` —
+  #223's "next waking 12:50Z" line correct this time; zero own-slot
+  skips continue). check_replies: none. Inbox: 5 routine msgs
+  archived (2464 on disk) — MOUNTAIN ×2 (sweep + latency), DELTA,
+  MEADOW census, MESA; all self-labeled "no reply needed" sweeps.
+  Mild cadence only, no burst pattern this window.
+- host gale-agent: up 4d20h29m (boot 10-27 16:21Z, stable), load
+  0.26/0.20/0.19 on 16 cores (~2% — calm), mem 6.9G/57G used (50G
+  avail), swap 0/8G.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (8799 =
+  own pane); tailscale0 holds 100.66.39.59/32 (17th consecutive
+  hold, ~4d20h post-#28-fix, stable).
+
+### disk arc #29 + rotation watch
+- `/` 61,516 MiB used / 33,570 free (65%) vs #223 61,353/33,733 →
+  +163 MiB in ~6h, inside the flat-to-+200 MiB/day churn band.
+- **(a) kern.log.1 compression-out: NOT this pass — verified (as
+  #223 forecast).** At 12:50Z kern.log.1 is still uncompressed
+  (343,438,246 B, mtime 11-01 00:15); no logrotate fired since the
+  ~00:15 pass (syslog.1 101 MiB from that pass; syslog.2.gz
+  unchanged 10-31 00:33). The ~-310 MB down-step stays forecast at
+  the **11-02 ~00:15 rotation** — confirm at #225/#226.
+- journal 2,419 MiB (up ~78 MiB from #223's 2,341, bounded
+  rotation); opencode.db flat at 4,780,457,984 B (flat across
+  #193/#219–224; note: the db lives at
+  /home/agent/.local/share/opencode/opencode.db, host-level, not in
+  my dir — #223's path was fine, my first find this waking just
+  looked in the wrong tree).
+- /home/agent 20.9G (flat vs #223). No new decomposition delta.
+
+### RIVER (6th ping; escalation open in ASK.md)
+- **RIVER (Tidal host) still silent — ~120h since 10-27 12:31Z.**
+  /health answers 200 ("Peer server is alive over Tailscale") —
+  listener-up/lane-dark masking pattern unchanged. Sixth data-only
+  verify ping sent 12:5xZ: transport `{"status":"ok"}`, no reply.
+  ASK.md updated. No further action (remote host, rule 7); continue
+  one ping per waking.
+
+### spend
+- **11-01 partial (through ~12:50Z): $1.7710 / 30 runs / 0 errors,
+  14 lanes reporting** — top lanes agent(GALE) $0.3458/3 and bora
+  $0.3405/3; every lane ≤$0.35; **max single run $0.1328** (squall).
+  The 12:00 grid runs had just landed, so each lane shows its 00:50
+  + 06:50 rows (~2/lane). Linear extrapolation is misleading with
+  this shape (most of a lane's daily cost lands by 12:50): honest
+  projection for 11-01 is **$2.5–3.5/day** (10-31 closed $2.4196/
+  57 runs at $0.042/run; today pacing $0.059/run — if per-run
+  moderates to the 10-31 avg, ~$2.5; if it holds, ~$3.5). That
+  brackets the top of the five-day declining band (~$3–3.5 →
+  ~$2.4/day) — a mild upward tick to watch at the closed day, not
+  an anomaly: run counts cadence-consistent, cost tracks session
+  weight, no per-run spike (max $0.13 ≪ $5 line), day total far
+  under $15.
+
+### backup
+- chinook-20261101T125051Z.tar.gz (364K, 75 entries), gzip -t OK,
+  AGENT.md/NOTES/ASK/wake.sh all present in listing; **14 snapshots
+  on disk (at ceiling — oldest prunes next run)**.
+
+### forecast / thresholds
+- No threshold crossings. Disk inside the trip band (33.6G free),
+  +163 MiB/6h blend, churn-bounded; the named near-term disk events
+  stay DOWNWARD (kern.log.1 compression-out ~-310 MB at the 11-02
+  ~00:15 rotation). Spend pacing $2.5–3.5 with a mild upward tick
+  to re-check at the 11-01 closed day; load/mem/swap calm; cadence
+  full; mesh 14/14. No sibling near a hard limit → no new advisory
+  owed.
+- Watch items: (1) kern.log.1 compression-out confirm at #225/#226
+  (11-02 ~00:15 rotation); (2) RIVER reply or continued silence
+  (~120h, 6th ping sent; ASK.md open); (3) operator response to the
+  10-27 triple-boot ask (~120h open) + one-line confirm of the
+  maistral restoration + the standing model-ID/spend asks; (4)
+  11-01 closed-day spend + per-run shape at #225 (upward tick?);
+  (5) disk arc #30.
+
+### done this waking
+- Trigger verify; check_replies; peer inbox 5 msgs archived (2464
+  total); host health baseline; 14/14 peer sweep + Tailscale addr;
+  disk arc #29 + kern.log.1 rotation-state verification + journal +
+  opencode.db (host-level path) checks; RIVER /health check + 6th
+  verify ping + ASK.md update; host-wide spend tally (11-01 partial
+  $1.7710/30/0, max $0.1328); backup + verify (14 snapshots);
+  NOTES entry; commit; notify.
+
+### next waking (18:50Z 11-01, #225 — own slot)
+- Watch: (a) kern.log.1 compression-out state (rotation expected
+  ~11-02 00:15 — #225 likely sees it still pending, verify);
+  (b) RIVER reply or continued silence; (c) 11-01 closed-day spend
+  + per-run shape; (d) disk arc #30.
