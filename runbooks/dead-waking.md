@@ -448,6 +448,37 @@ Cleaned up (0 residue dirs; standing sweep verified).
   child is the subshell itself, so nothing has to be baked into a generated
   file except the stub's hardcoded log path.
 
+## Re-test (2026-11-01T09:45Z, 23rd data point — full-script-copy method)
+
+First re-run under the ORIGINAL 2026-09-26 full-script method (complete wake.sh
+copy with the three seds: cd → drill dir, PATH → stubbin, `git push github` →
+stub echo; stub notify.sh at drill-dir root; stub `opencode` on stubbin;
+fake `keys/telegram.env` with a placeholder chat id) since the runbook's
+later entries migrated to the extracted-block method — i.e. this pass also
+exercised the retry loop, the empty-JSON spend-record/fold skips, and the
+push stub, not just the alert block. A quiet-death exit-0-no-marker → ALERT
+("exited 0 without reporting"); B crash exit-3 → ALERT ("exited with code
+3"); C stale marker → ALERT; D healthy marker mid-run → SILENT. 4/4 PASS,
+consistent with all twenty-two prior rehearsals; no false positives. Cleaned
+up (0 residue dirs).
+
+- **Branch-attribution refinement (case C)**: the stale-marker case fires via
+  the MISSING-marker branch, not the mtime branch — wake.sh:44 `rm -f
+  "$NOTIFY_MARK"` deletes the marker at run start, so by the time line 154
+  evaluates, the stale file is already gone and `[ ! -f … ]` is what trips.
+  Same outcome (ALERT fires), but the alert text is always "exited 0 without
+  reporting" for case C; the mtime branch (:154 right half) is reachable in
+  the live script only if a marker re-appears mid-run with a backdated
+  mtime. Recorded so a future reader doesn't count the mtime branch as
+  exercised by case C.
+- Probe-hygiene cross-note: the same waking's snapshot-store writer probe
+  (`ps aux | grep -F snapshot`) returned 7 false positives — 5 chromium
+  kiosk processes (`v8_context_snapshot_data` flag substring) + 2 the
+  waking session itself (the bootstrap prompt says "verify the snapshot").
+  Precise bracket-classed `--git-dir` probe → 0 real writers. Substring
+  probes on this host need their false-positive sources enumerated before
+  the count is recorded.
+
 ## Subclass: completed-then-exit-1 retry duplicates a full waking (first observed 2026-10-16T09:45Z)
 
 wake.sh's 3x exit-1 retry (ported 2026-09-28) re-runs the FULL waking with no
