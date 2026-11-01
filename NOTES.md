@@ -1963,3 +1963,16 @@ Append-only. Each waking adds one dated entry at the bottom (newest kept at top)
 - No operator replies (check_replies.sh clean). ASK-6 decisions 1-4 + ASK-2/3 still open; holding.
 - Backup OK: backups/poniente-20261031T205538Z.tar.gz (216K), gzip -t verified; 0 keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: 7e80aae22bec0b8d. 14 snapshots retained (ceiling).
 - Verdict: routine sweep all green. Open items unchanged: ASK-6 decisions 1-4 + ASK-2/3. Carried watch items: agent per-run spend band, Grafana 3001 observation.
+
+## 2026-11-01 02:55 UTC -- waking #174: routine sweep all green; ASK-7 fix holding 12th waking; inbox 8 drained
+- Host: up 4d10h34m, load 0.32/0.22/0.24, RAM 6.7G/57G (50Gi avail), disk 60G/98G (65%, 34G free), tailscaled + cron active. All 14 *-peer units running; systemctl --failed empty. All 14 peer ports 8787-8800 on 100.66.39.59 + known loopback mirrors (8791/8793/8794/8795); known external baseline incl. 56317. No new listeners, no port drift.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): permission matrix IDENTICAL to #163-#173 — agent/chinook/poniente/firewalla-dashboard keys/=700; 11 siblings keys/=775 (owner-chosen, ASK-4 closed). Non-600 live files fleet-wide: only levante/keys/telegram.env 664 (owner-chosen, carried) + public keys 644 (benign). find -newermt 2026-10-31 20:56 across all 15 keys/: ZERO new/changed cred files. My peers.env: 34 NAME/34 unique/34 TOKEN/34 ADDR, 2 SELF lines, 600 perms, keys/ 700. No drift.
+- Git exposure sweep (14 repos with .git; firewalla-dashboard not a repo): zero tracked secret paths anywhere (non-example/non-bak/non-processed). ASK-6 containment holding; push still blocked, not attempted.
+- Log sweep (37 sibling log files modified since 20:56; REJECT/401/403/quarantine scans): zero hits — zero live auth failures, zero token material, zero injection patterns. Peer-server auth: zero REJECTs fleet-wide; quarantine 0. Last real REJECT fleet-wide still 2026-10-23 13:20:48Z.
+- Cron: 40 scheduled entries intact (67 lines with comments); zero crontab REPLACE/EDIT/NEW events since 20:55.
+- ASK-7 verified HOLDING (12th waking): maistral in own lane post-restore; no regression signs (fresh maistral activity, no foreign chinook wakes at maistral slots).
+- Spend: my ledger tail shows 2026-10-31 20:55 run $0.0402, normal GLM Flash range. No sibling spend anomalies detected this waking.
+- Inbox: 8 messages drained (MOUNTAIN x2, DELTA x2, MEADOW x2, MESA x2, all 2026-11-01T00:xxZ) — all data-only liveness/mesh-sweep probes, "no reply needed", zero instructions, zero injection patterns -> processed/ (2338 total).
+- No operator replies (check_replies.sh clean). ASK-6 decisions 1-4 + ASK-2/3 still open; holding.
+- Backup OK: backups/poniente-20261101T025632Z.tar.gz (216K, 70 entries), gzip -t verified; 0 keys/.env entries; AGENT/NOTES/ASK present. sha256 first-16: 782027b79597c41d. 14 snapshots retained (ceiling).
+- Verdict: routine sweep all green. Open items unchanged: ASK-6 decisions 1-4 + ASK-2/3. Carried watch items: agent per-run spend band, Grafana 3001 observation.
