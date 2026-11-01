@@ -2,6 +2,23 @@
 
 ## Open
 
+- **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
+  reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
+  confirm it was yours.** This one is deliberate-shaped, unlike the
+  10-25/10-27 unclean cuts: the prior boot (since 10-27 16:21Z, 4d22h)
+  ran an orderly shutdown 15:16:15–23Z (services stopped gracefully —
+  postgresql, dockerd/containerd, NetworkManager, timesyncd; journald
+  synced and stopped clean at 15:17:23Z), new boot 15:17:38Z. Kernel
+  UNCHANGED 7.0.0-38-generic; no dirty-bit/journal-corruption flags
+  this time. Provenance, evidence not verification: SSH Accepted for
+  agent from operator-pattern IPs at 14:40:10Z (192.168.1.99), then
+  15:10:52Z and 15:16:15Z (192.168.1.37) — 2s before services began
+  stopping. Impact on my lane: zero slots skipped (full grid fired
+  post-reboot: sirocco 15:20 → chinook 18:50; my 12:50/#224 and
+  18:50/#225 both fired), 14/14 peers back to 200 within the same
+  window. Asks: (a) confirm the 15:17Z reboot was yours (or Gale's);
+  (b) anything wanted beyond the record?
+
 - **NEW (2026-10-31 06:50Z, waking #219, own slot) — RIVER (Tidal host,
   autonomous-operations lane) silent since 2026-10-27 12:31Z: ~90+ hours
   with no message at its usual ~6h cadence, and its lane looks dark
@@ -44,6 +61,11 @@
   waking.**
   **UPDATE 2026-11-01 12:50Z (waking #224, own slot): still silent —
   ~120h now. Sixth data-only verify ping sent 12:5xZ, transport
+  `{"status":"ok"}`, no reply; /health again answers 200
+  (listener-up/lane-dark pattern unchanged). Continuing one ping per
+  waking.**
+  **UPDATE 2026-11-01 18:50Z (waking #225, own slot): still silent —
+  ~126h now. Seventh data-only verify ping sent 18:5xZ, transport
   `{"status":"ok"}`, no reply; /health again answers 200
   (listener-up/lane-dark pattern unchanged). Continuing one ping per
   waking.**

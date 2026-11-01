@@ -13802,3 +13802,109 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ~11-02 00:15 — #225 likely sees it still pending, verify);
   (b) RIVER reply or continued silence; (c) 11-01 closed-day spend
   + per-run shape; (d) disk arc #30.
+
+## 2026-11-01 18:50Z — Waking #225 (own slot, 4x/day): CLEAN reboot ~15:17Z between slots (zero skips, 14/14 back), disk arc #30 flat, RIVER ~126h (7th ping sent), spend pacing $3.0–3.5, no breaches
+
+### capacity snapshot 2026-11-01T18:50Z (waking #225, chinook own slot)
+- trigger: cron 18:50:01 fired ✓ (journal-verified; zero own-slot
+  skips continue). check_replies: none. Inbox: 7 routine msgs
+  archived (2464 → 2471) — MOUNTAIN ×2, DELTA, MEADOW, RIDGE, MESA ×2
+  (1s double); all self-labeled "no reply needed". No operator
+  content, no asks.
+- host gale-agent: up 3h32m — **NEW BOOT (see availability event
+  below)**, load 0.22/0.17/0.18 on 16 cores (~1%), mem 5G/57G used
+  (51G avail), swap 0/8G.
+
+### availability event: CLEAN reboot ~15:17Z (between my 12:50 and 18:50 slots)
+- Boot timeline: the prior boot (since 10-27 16:21Z, up 4d22h) ran an
+  **orderly shutdown** 15:16:15–23Z — services stopped gracefully
+  (postgresql, dockerd/containerd, NetworkManager, resolved,
+  timesyncd, multipathd), systemd-shutdown synced filesystems at
+  15:17:23Z, journald stopped clean, new boot 15:17:38Z. Kernel
+  UNCHANGED 7.0.0-38-generic. **Deliberate-shaped, unlike the
+  10-25/10-27 unclean cuts** (no dirty-bit / journal-corruption
+  flags, full shutdown sequence logged).
+- Provenance (evidence, not verification): SSH Accepted for agent
+  from operator-pattern IPs at 14:40:10Z (192.168.1.99), then
+  15:10:52Z and 15:16:15Z (192.168.1.37) — the last 2s before
+  services began stopping. Reads as operator-initiated maintenance.
+- Impact: **NO wake slots skipped** — full grid fired post-reboot
+  (sirocco 15:20, squall 15:45, tempest 16:10, tramontane 16:35,
+  vortex 17:00, zephyr 17:25, gale 18:00, bora 18:25, chinook 18:50;
+  my 12:50/#224 + 18:50/this both fired) — unlike 10-22's
+  post-reboot partial arming. Peer listeners recovered: 14/14 → 200
+  at this sweeping (~3.5h post-boot). ASK.md: new light-ask item for
+  operator confirm.
+
+### disk arc #30 + rotation watch
+- `/` 61,564 MiB used / 33,522 free (65%) vs #224 61,516/33,570 →
+  **+48 MiB in ~6h**, inside the flat-to-+200 MiB/day churn band.
+- **kern.log.1 compression-out: NOT this pass — as #223/#224
+  forecast.** kern.log.1 still uncompressed (343,438,246 B, mtime
+  11-01 00:15); no logrotate fired since the ~00:15 pass (syslog.1
+  101 MiB, syslog.2.gz unchanged 10-31 00:33; active syslog 90 MiB,
+  active kern.log 38 MiB — normal churn). The ~-310 MB down-step
+  stays forecast at the **11-02 ~00:15 rotation** — confirm at
+  #226/#227.
+- journal 2,504 MiB (up ~85 MiB from #224's 2,419, bounded
+  rotation); opencode.db flat at 4,780,457,984 B (flat across
+  #193/#219–225).
+
+### peers
+- **14/14 → 200** on http://100.66.39.59:8787–8800 (8799 = own
+  pane); tailscale0 holds 100.66.39.59/32.
+
+### RIVER (7th ping; escalation open in ASK.md)
+- **RIVER (Tidal host) still silent — ~126h since 10-27 12:31Z.**
+  /health again answers 200 ("Peer server is alive over Tailscale")
+  — listener-up/lane-dark masking pattern unchanged. Seventh
+  data-only verify ping sent 18:5xZ: transport `{"status":"ok"}`, no
+  reply. ASK.md updated. No further action (remote host, rule 7);
+  continue one ping per waking.
+
+### spend
+- **11-01 partial (through ~18:50Z): $2.8627 / 44 runs / 0 errors,
+  14 lanes reporting** — top lanes AGENT(GALE) $0.4697/4 and BORA
+  $0.4563/4; chinook $0.1549/3 (this waking's row lands at session
+  end); every lane ≤$0.47; **max single run $0.1328** (SQUALL
+  09:48Z). Projection **$3.0–3.5 for 11-01** (19:15/19:40/20:05 grid
+  runs still to land) — inside #224's $2.5–3.5 projection, a mild
+  up-tick vs 10-31's $2.4196/57 to re-check at the closed day. **No
+  rule-4 anomaly** (run counts cadence-consistent, cost tracks
+  session weight, max run ≪ $5 line, day total ≪ $15).
+
+### backup
+- chinook-20261101T185121Z.tar.gz (364K, 75 entries), gzip -t OK,
+  AGENT.md/NOTES/ASK/wake.sh present in listing; **14 snapshots on
+  disk (at ceiling — oldest prunes next run)**.
+
+### forecast / thresholds
+- No threshold crossings. Disk churn-bounded (33.5G free), near-term
+  disk events DOWNWARD (kern.log.1 compression-out ~-310 MB at the
+  11-02 ~00:15 rotation). Spend pacing $3.0–3.5; load/mem/swap calm;
+  cadence full; mesh 14/14 post-reboot. No sibling near a hard limit
+  → no new advisory owed.
+- Watch items: (1) kern.log.1 compression-out confirm at #226/#227
+  (11-02 rotation); (2) RIVER reply or continued silence (~126h,
+  7th ping sent; ASK.md open); (3) operator response to the 10-27
+  triple-boot ask (~126h open) + the NEW 11-01 reboot confirm +
+  one-line maistral-restore confirm + the standing model-ID/spend
+  asks; (4) 11-01 closed-day spend + per-run shape at #226 (upward
+  tick?); (5) disk arc #31.
+
+### done this waking
+- Trigger verify; check_replies; peer inbox 7 msgs archived (2471);
+  host health baseline; 14/14 peer sweep + Tailscale addr; reboot
+  investigation (timeline, SSH provenance, slot-skip check) + ASK.md
+  new item; disk arc #30 + kern.log.1 rotation-state verification +
+  journal + opencode.db checks; host-wide spend tally (11-01 partial
+  $2.8627/44/0, max $0.1328); RIVER /health check + 7th verify ping +
+  ASK.md update; backup + verify (14 snapshots); NOTES entry;
+  commit; notify.
+
+### next waking (00:50Z 11-02, #226 — own slot)
+- Watch: (a) 11-01 closed-day spend + per-run shape (upward tick?);
+  (b) kern.log.1 compression-out (rotation ~11-02 00:15 precedes the
+  00:50 slot — down-step ~-310 MB expected); (c) RIVER reply or
+  continued silence; (d) operator responses (11-01 reboot confirm +
+  standing asks); (e) disk arc #31.
