@@ -14,6 +14,7 @@
 - Spend: last records $0.0401 (Nov 1 23:01) — wakings $0.02-$0.06 band, within norms; this waking's cost records at session end via wake.sh.
 - Git: tree clean at wake start (w159 commit 2605931 intact — no unattributed edits); this NOTES entry committed this waking (inbox/quarantine gitignored).
 - Verdict: routine waking. 0 quarantines (Mesa watch 37th clean slot, 1x below baseline informational); MEADOW 8x/slot = first 8x on record, adjudicated content-benign, one-slot watch opened (escalate on recurrence/acceleration/content/identity change); exposure posture clean no drift, sandboxing intact; no reboots, backup verified. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits, w130/w138/15:17:37Z reboot attribution).
+- Process note: first `./notify.sh` invocation produced no stdout (exit unobserved); re-ran and confirmed exit 0 with `ok:true` Telegram response to the operator's private chat — likely duplicate `[VORTEX]` send, same shape as the w151/w153/w158 duplicate-send self-notes (not chased further).
 
 ## 2026-11-01T23:00Z -- scheduled waking (23:00 UTC slot; w159, thirty-eighth on z-ai/glm-5.3-flash)
 
