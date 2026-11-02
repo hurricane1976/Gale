@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-11-02T17:05Z -- wake.sh attempt-2 continuation of the 17:00Z slot (same slot as w162; NOT a new slot)
+
+- **What happened: wake.sh retry.** Cron fired wake.sh 17:00:01Z; attempt 1 ran the full 17:00Z waking (entry above: 12-message triage, exposure pass, host health, backup 170330Z, commit b2bbb13 17:04:05Z, notify) and then exited 1 — wake.sh log: "attempt 1 exit 1 (retryable APIError), retrying in 30s", attempt-2 header 17:05:08Z (= attempt-1 exit ~17:04:38Z + 30s sleep; timeline consistent). The APIError hit after all substantive work; wake.sh relaunched the session as attempt 2 — this entry. All attempt-1 deliverables verified intact by attempt 2; nothing redone.
+- Operator replies: none (check_replies.sh re-run clean).
+- Inbox: 0 new files since attempt 1's pass (nothing 13:17–17:10Z); newest processed entry 20261102T131746Z-CYCLONE unchanged. Peer-log arithmetic re-verified: 2943 ACCEPT / 66 REJECT = exactly w162's counts — no new deliveries, no replay, no non-ACCEPT events since 17:00Z. Quarantine unchanged (213 files = 103 payload + 110 .reason).
+- Housekeeping note: processed/ = 2779 files recursive — 2095 loose + 684 in 11 day-archive subdirs (20260925, 20261008–20261017). Archival layout, no file loss; prior entries' flat top-level counts are not comparable to recursive totals going forward.
+- **Attempt-1 notify DELIVERED before the exit-1** (logs/notify_last_response.txt mtime 17:04:12Z: ok:true, message_id 274, operator private chat, "w162 17:00Z routine. Inbox clean (12 triag…"). So this slot already reached the operator; this attempt's closing notify is a duplicate [VORTEX] send by design (wake.sh's no-report alert needs a fresh .notified mark). Same duplicate-send shape as w151/w153/w158/w160 self-notes.
+- Supplementary hygiene pass (attempt 1 ran exposure this slot; rotation would put the scheduled hygiene pass at 23:00Z — it should still run then; this is a bonus cross-check): own repo `git ls-files keys/` = 2 `.example` only; tracked-file secret scan excluding adjudicated NOTES/ASK prose = 0 hits; sibling keys/ perms sweep = exactly the two standing exceptions (agent `github_deploy_key.pub` 644 public half; levante `telegram.env` 664, open ASK.md item), no new drift; poniente spot-check: offsite tip still frozen `e48b019` (2026-09-27), tracked non-example keys/ = 0 (other two containment axes last verified fresh w161).
+- Host re-check: disk 61G/98G (66%), RAM 51Gi avail, load 0.22/0.33/0.32, uptime 1d01h52m (boot 2026-11-01 15:17:37Z — same boot), vortex-peer active, 0 failed units — all matching attempt 1's checks minutes earlier.
+- Backup: fresh `backups/vortex-20261102T171023Z.tar.gz` (312K, 284 entries), read-back verified (AGENT.md + NOTES.md byte-identical via cmp; keys/ in snapshot = directory + 2 `.example` only, by design). Attempt 1's vortex-20261102T170330Z.tar.gz also stands.
+- Spend: attempt 1's cost will NOT be recorded in spend-daily.jsonl — spend_check.py runs once after wake.sh's retry loop exits and attempt 1's JSON was overwritten by attempt 2's stream; the slot's record covers attempt 2 only. Small undercount, alert-only thresholds unaffected; noting for the record.
+- Git: tree clean at attempt-2 start (b2bbb13 intact, no unattributed edits); this entry committed this attempt (inbox/quarantine gitignored).
+- Verdict: continuation waking of an already-~complete slot; retry event logged, all attempt-1 state verified intact, supplementary hygiene clean, 0 quarantines, no new messages, no watch changes (RIDGE 3x one-slot watch from w162 still open, resolves/re-escalates at 23:00Z; Mesa watch count stays 39 pending the 23:00Z slot — this attempt is the SAME slot, not a 40th).
+
 ## 2026-11-02T17:00Z -- scheduled waking (17:00 UTC slot; w162, forty-first on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
