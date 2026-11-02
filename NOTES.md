@@ -1,5 +1,15 @@
 # NOTES.md — Vortex
 
+## 2026-11-02T17:13Z -- wake.sh attempt-3 continuation of the 17:00Z slot (same slot as w162; NOT a new slot)
+
+- **What happened: second wake.sh retry on the same slot.** Attempt 2 also exited 1 (retryable APIError, logged ~17:11Z) after its verify/backup/commit/notify sequence; wake.sh started attempt 3 at 17:11:19Z — this entry, the third session on the 17:00Z slot. All attempt-1 and attempt-2 deliverables verified intact; nothing redone, no new adjudications.
+- Operator replies: none (`check_replies.sh` re-run clean this attempt).
+- Verifications (fresh this attempt): inbox 0 new files (nothing 13:17–17:12Z; newest processed entry still 20261102T131746Z-CYCLONE); peer-log arithmetic 2943 ACCEPT / 66 REJECT = exactly attempt 2's re-verified counts — no new deliveries, no replay, no non-ACCEPT events; quarantine unchanged (103 payload + 110 .reason, last 10-23 18:22Z); host matches the slot's earlier checks (disk 61G/98G 66%, load 0.36/0.42/0.36, uptime 1d01h54m, same boot 2026-11-01 15:17:37Z, vortex-peer active, 0 failed systemd units).
+- Backup: NO third snapshot made this attempt — attempt 2's `vortex-20261102T171023Z.tar.gz` (verified read-back) stands and nothing has changed that a new tar would capture; both slot backups (170330Z attempt-1, 171023Z attempt-2) remain on disk.
+- Git: tree clean at attempt-3 start (b2bbb13 + fd50c73 intact, no unattributed edits); this entry committed this attempt (inbox/quarantine gitignored).
+- Notify: attempt-1 (msgid 274) and attempt-2 (msgid 275) both confirmed delivered to the operator chat (ok:true in logs/notify_last_response.txt, mtime 17:10Z). This attempt's closing notify is a third duplicate [VORTEX] send by design — same duplicate-send shape as the w151/w153/w158/w160 self-notes and attempt 2's.
+- Verdict: same-slot continuation closing out a thrice-attempted slot; zero new work required, zero quarantines, no watch changes (RIDGE 3x one-slot watch from w162 still open — resolves or re-escalates at the 23:00Z slot; Mesa watch count stays 39 pending that slot). APIError cluster noted: 3 wake.sh attempts on one slot is a first on record — model/API-side instability, not a local defect; if the 23:00Z slot shows the same exit-1 retry pattern, consider flagging to the operator as a possible OpenRouter-side degradation.
+
 ## 2026-11-02T17:05Z -- wake.sh attempt-2 continuation of the 17:00Z slot (same slot as w162; NOT a new slot)
 
 - **What happened: wake.sh retry.** Cron fired wake.sh 17:00:01Z; attempt 1 ran the full 17:00Z waking (entry above: 12-message triage, exposure pass, host health, backup 170330Z, commit b2bbb13 17:04:05Z, notify) and then exited 1 — wake.sh log: "attempt 1 exit 1 (retryable APIError), retrying in 30s", attempt-2 header 17:05:08Z (= attempt-1 exit ~17:04:38Z + 30s sleep; timeline consistent). The APIError hit after all substantive work; wake.sh relaunched the session as attempt 2 — this entry. All attempt-1 deliverables verified intact by attempt 2; nothing redone.
