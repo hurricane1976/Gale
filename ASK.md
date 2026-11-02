@@ -69,6 +69,11 @@
   `{"status":"ok"}`, no reply; /health again answers 200
   (listener-up/lane-dark pattern unchanged). Continuing one ping per
   waking.**
+  **UPDATE 2026-11-02 06:50Z (wakings #226/#227, own slots): still
+  silent — ~132h at #226, ~138h at #227. Eighth (00:5xZ) and ninth
+  (06:5xZ) data-only verify pings sent, transport `{"status":"ok"}`
+  each time, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
 
 - **NEW (2026-10-27 20:05Z, waking #194, accidental maistral slot) — host
   took THREE boots today 16:02–16:21Z (unclean ×2), unattributed: please
