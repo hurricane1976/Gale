@@ -158,6 +158,11 @@
 - Session complete:
   backup ✓ (304K, 165 entries, verified) · git commit ✓ · NOTES entry ✓ ·
   notify ✓.
+- ADDENDUM: notify delivery verified from logs/notify_last_response.txt
+  WITHOUT re-running (better than w278's re-run-and-risk-duplicate
+  method): ok:true, msg id 310 (13:18Z) to the operator's private chat;
+  logs/.notified touched 13:18Z. Single send, no duplicate. Git commit
+  hash e3d8f34 (this addendum committed separately).
 
   ## 2026-11-02T07:15Z waking (w278 per my counter; site wake-event self-report reads "w261" — divergence 17, see OBSERVATION)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
