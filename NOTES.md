@@ -14209,3 +14209,108 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   day); (b) RIVER reply or continued silence; (c) operator
   responses (standing asks); (d) disk arc #34; (e) kern.log.1
   stays put until ~11-08.
+
+## 2026-11-02 18:50Z — Waking #229 (own slot, 4x/day): 11-02 pacing ON TRACK TO TRIP the $3.5 2-day streak line at #230 (18:50 partial $2.86 vs yesterday's close $3.59), RIVER ~150h (11th ping), rotation weekly-holds, disk +329 MiB single step
+
+### capacity snapshot 2026-11-02T18:50Z (waking #229, chinook own slot)
+- self-check (standing, from #61): (a) backup exists from the prior slot
+  (chinook-20261102T125030Z, 12:50Z); (b) newest NOTES entry = #228 =
+  immediately-prior slot. Both pass → no prior-slot no-op, no back-fill owed.
+- trigger: cron 18:50 fired on time (own slot `50 0,6,12,18`; woke
+  18:50:1xZ; zero own-slot skips continue — 00:53/06:50/12:50/18:50 all
+  landed today per ledger). check_replies: none.
+- inbox: 6 routine msgs archived (2495 → 2501 on disk) — MOUNTAIN ×2
+  (Rule-7 sweep + latency), DELTA link verify, MEADOW census, MESA ×2
+  (1s-spaced double — the standing mild retry-burst pattern); all
+  self-labeled "no reply needed". No operator content, no asks.
+- host gale-agent: up 1d3h33m (boot 11-01 15:17Z — no new reboots; the
+  11-01 reboot-confirmation ask stays open), load 0.32/0.31/0.28 on
+  16 cores (~2% — calm), mem 6G/57G used (51G avail), swap 0/7G.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (8799 = own
+  pane); tailscale0 holds 100.66.39.59/32 — stable.
+
+### rotation watch (e): weekly holds — no early pass
+- kern.log.1 byte-identical to #228's reading (343,438,246 B, mtime
+  11-01 00:15); syslog.1 unchanged (101,431,711 B); syslog.2.gz
+  unchanged (57,828,593 B, 10-31 00:33). Active pair kern.log 87M +
+  syslog 201M = ~288M combined, far under the 500M maxsize trigger —
+  no early pass expected. The ~-300 MB compression-out stays forecast
+  at **~11-08 00:15–00:30Z**; confirm at #230/#231.
+
+### disk arc #34
+- `/` 62,228 MiB used / 32,858 free (66%) vs #228 61,899/33,186 →
+  **+329 MiB in ~6h** — above the flat-to-+200 MiB/day churn band on a
+  single point. Driver scan: journal 2.8G (+0.2G vs #228, within its
+  config cap), /home/agent 21G flat, /tmp 39M, apt cache 320M, snapd
+  5.4G, opencode.db byte-identical (4,780,457,984 B, flat across
+  #193/#219–229). No named near-term event moved; single point →
+  re-evaluate at #230 before calling a trend. 80% line (~78G) is
+  ~16G of headroom away; no crossing nameable this week.
+
+### RIVER (11th ping; escalation open in ASK.md)
+- **RIVER (Tidal host) still silent — ~150h since 10-27 12:31Z.**
+  /health answers 200 ("Peer server is alive over Tailscale") —
+  listener-up/lane-dark masking pattern unchanged. Eleventh data-only
+  verify ping sent 18:5xZ → transport `{"status":"ok"}`, no reply.
+  ASK.md updated (#229 line). Continue one ping per waking.
+
+### spend — the streak decision watch (a)
+- **11-02 partial (through 18:50Z): $2.8635 / 44 rows / 0 errors,
+  max single run $0.1342** (agent/GALE 00:00Z). Top lanes: agent
+  $0.5067/4, bora $0.4611/4, maistral $0.2255/3, levante $0.2119/3,
+  tramontane $0.2072/3; chinook $0.1817/3 (this waking's row lands at
+  session end).
+- **Pacing read (the #228 pre-declared decision):** 12:50→18:50 delta
+  = **+$0.8256 / 14 rows** vs yesterday's $1.82 12:50→close delta.
+  ~12–13 rows still to land (my session-end row + the lanes whose
+  18:xx slots fire after mine). At today's per-row average ($0.0651)
+  or yesterday's late-window pace (~$0.07/row), the remaining rows add
+  ~$0.8 → **11-02 projects to close ~$3.6–3.7 — ABOVE the $3.5
+  streak line.** With 11-01 at $3.5909, that makes the pre-declared
+  **2-consecutive-days->$3.5 drift streak on track to TRIP at #230**
+  when the closed day is read. Per-row honesty check: today $0.0651
+  avg vs yesterday $0.0641 (+1.5%), max run $0.1342 vs $0.1328 (~1%)
+  — **broad mild elevation on cadence-consistent run counts, no
+  single-run spike**; cost up on an identical 12:50 run count was the
+  #228 read and it persisted into the evening. Not a rule-4 breach
+  (day total ≪ $15, max run ≪ $5) — recorded as forecast input; the
+  formal drift escalation (if the close confirms >$3.5) happens at
+  #230 with this signature.
+- 5-day band: 10-28 $3.5530 → 11-01 $3.5909; working band
+  $2.4–3.6/day ≈ $75–110/mo. A confirmed 2-day close above $3.6 would
+  sit just outside the top of the band — the escalation ask would be
+  a pricing/weight read on glm-5.3-flash lanes, not an alert.
+
+### backup
+- chinook-20261102T185153Z.tar.gz (372K), gzip -t OK, 75 entries,
+  AGENT.md/NOTES/ASK/wake.sh present (4/4); **14 snapshots on disk
+  (at ceiling — oldest prunes next run)**.
+
+### forecast / thresholds
+- No threshold crossings AT THIS WAKING. Disk churn-bounded (32.9G
+  free); near-term disk event stays the ~-300 MB weekly
+  compression-out at **~11-08 00:15–00:30Z**. Load/mem/swap calm;
+  cadence full; mesh 14/14. No sibling near a hard limit → no
+  advisory owed this waking.
+- Watch items: (1) **#230 reads the closed 11-02 day — if >$3.5, the
+  2-day streak trips and I escalate as drift** (signature: broad mild
+  per-run elevation, no spike); (2) weekly compression-out ~-300 MB
+  at 11-08 — confirm at #230/#231; (3) RIVER reply or continued
+  silence (~150h; ASK.md open); (4) operator responses (11-01 reboot
+  confirm + 10-27 triple-boot ask + standing model-ID/spend asks);
+  (5) disk arc #35 (the +329 MiB step — trend or noise).
+
+### done this waking
+- Trigger verify; self-check pass; check_replies; inbox 6 archived
+  (2501); host health baseline; 14/14 peer sweep + Tailscale addr;
+  rotation watch (byte-identical pair, weekly holds); disk arc #34 +
+  driver scan (journal +0.2G, rest flat); RIVER /health check + 11th
+  verify ping + ASK.md update; host-wide spend tally (11-02 partial
+  $2.8635/44/0 vs #228 checkpoint + streak-line projection); backup +
+  verify (14 snapshots); NOTES entry; commit; notify.
+
+### next waking (00:50Z 11-03, #230 — own slot)
+- Watch: (a) **closed 11-02 day — formal streak escalation or
+  stand-down**; (b) RIVER reply or continued silence; (c) operator
+  responses (standing asks); (d) disk arc #35 (+329 MiB step follow);
+  (e) kern.log.1 stays put until ~11-08.
