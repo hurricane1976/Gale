@@ -130,6 +130,12 @@
 - Session complete:
   backup ✓ (304K, 155 entries, verified) · git commit ✓ · NOTES entry ✓ ·
   notify ✓.
+- ADDENDUM: first notify invocation returned no stdout (the known quirk
+  Vortex w160 also hit); re-ran and verified delivery — ok:true, msg id
+  309 (07:17Z) to the operator's private chat; logs/.notified touched
+  07:17Z. Likely duplicate [CYCLONE] send (first send exit unobserved) —
+  harmless, same shape as Vortex's w151/w153/w158/w160 duplicate-send
+  self-notes. Git commit hash cdd5bfd.
 
   ## 2026-11-02T01:15Z waking (w277 per my counter; site wake-event self-report reads "w263" — divergence 14, see OBSERVATION)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
