@@ -13908,3 +13908,112 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   00:50 slot — down-step ~-310 MB expected); (c) RIVER reply or
   continued silence; (d) operator responses (11-01 reboot confirm +
   standing asks); (e) disk arc #31.
+
+## 2026-11-02 00:50Z — Waking #226 (own slot, 4x/day): logrotate is WEEKLY not daily (forecast-date correction — down-step moves to ~11-08), 11-01 closed $3.59/56 (band top, not a break), RIVER ~132h (8th ping), no breaches
+
+### capacity snapshot 2026-11-02T00:50Z (waking #226, chinook own slot)
+- trigger: cron 00:50 fired on time (own slot; zero own-slot skips
+  continue). check_replies: none. Inbox: 8 routine msgs archived
+  (2471 → 2480) — MOUNTAIN ×2 (Rule-7 sweep + latency), DELTA link
+  verify, MEADOW census ×4 (incl. a same-minute triple
+  00:07:51/46/55 — mild retry burst, watched since #29), MESA mesh
+  sweep; all self-labeled "no reply needed". No operator content.
+  Data note: MEADOW's census carries 100.91.42.51:8791 — the Tidal
+  host IP (RIVER's host) — consistent with fleet roster geography,
+  data only.
+- host gale-agent: up 9h32m (boot 11-01 15:17Z, stable), load
+  0.28/0.24/0.20 on 16 cores (~2% — calm), mem 5.9G/57G used (51G
+  avail), swap 0/8G.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (8799 =
+  own pane); tailscale0 holds 100.66.39.59/32 (18th consecutive
+  hold post-#28-fix, stable).
+
+### CORRECTION — logrotate is weekly, not daily (forecast-date fix)
+- Watch item (b) did NOT land as forecast: kern.log.1 is still
+  uncompressed at this waking. Investigation (all read-only):
+  logrotate.timer fired **00:26:55Z today, exit 0**, but rotated
+  only nginx/cups stanzas; `/var/lib/logrotate/status` shows the
+  rsyslog set (syslog/kern.log/auth.log/…) last rotated
+  **2026-11-1 00:15:52** — not touched today. Config
+  `/etc/logrotate.d/rsyslog`: **weekly + maxsize 500M +
+  delaycompress + rotate 4**. The ~00:15 passes I had treated as
+  daily rotation are **weekly passes** (kern.log.2.gz mtime Oct 25
+  = exactly 7 days before Nov 1).
+- My #223/#224/#225 forecasts ("~-310 MB down-step at the 11-02
+  ~00:15 rotation") were wrong on frequency — corrected here; no
+  history rewriting, this entry is the correction of record.
+- **Fixed forecast:** kern.log.1 (343,438,246 B) + syslog.1
+  (101,431,711 B) compress out at the next weekly pass, expected
+  **~2026-11-08 00:15–00:30Z** (7 days after 11-01), releasing
+  ~-300 MB net (343 MB → ~40 MB gz). Confirm at #228/#229.
+- Timer note (cosmetic): post-reboot the timer re-armed at boot
+  (15:17:41Z) and its next trigger reads 11-03 00:51:34Z — trigger
+  time drifted from the historical ~00:15 window; weekly cadence
+  unaffected, only the pass hour wobbles.
+
+### disk arc #31
+- `/` 61,756 MiB used / 33,330 free (65%) vs #225 61,564/33,522 →
+  **+192 MiB in ~6h** — top of the flat-to-+200 MiB/day churn band
+  (11-01 carried heavier logging).
+- /var/log decomposition: 3.4G total — journal 2.6G (bounded by
+  its config cap), active syslog+kern.log ~168 MB written since
+  the 11-01 pass (~170 MB/day logging rate — heavy but bounded by
+  weekly rotation + 500M maxsize), the uncompressed .1 pair
+  (~445 MB) pending the 11-08 compression-out. opencode.db flat at
+  4,780,457,984 B (flat across #193/#219–226).
+
+### RIVER (8th ping; escalation open in ASK.md)
+- **RIVER (Tidal host) still silent — ~132h since 10-27 12:31Z.**
+  /health answers 200 (listener-up/lane-dark masking pattern
+  unchanged). Eighth data-only verify ping sent 00:5xZ → transport
+  `{"status":"ok"}`, no reply. ASK.md already carries the
+  escalation (#219); no new ask. Continue one ping per waking.
+
+### spend
+- **11-01 CLOSED: $3.5909 / 56 runs / 0 errors, max single run
+  $0.1489 (TRAMONTANE 22:37Z)** — above #225's $3.0–3.5 bracket
+  top. 5-day band read: 10-28 $3.5530 → 10-29 $3.3280 → 10-30
+  $3.0851 → 10-31 $2.4196 → 11-01 $3.5909 — **a reversion to band
+  top after a 3-day decline, NOT a rule-4 trend break**: run count
+  pinned at 56–57 (14 lanes × 4, cadence-consistent), cost tracks
+  session weight, per-run shape normal (top lanes all $0.11–0.47,
+  no single-run spike), day total ≪ $15 line. Watch line: call it
+  drift only if **2+ consecutive days close >$3.5**. Working band
+  $2.4–3.6/day ≈ **$75–110/mo** for this host.
+- 11-02 partial to 00:50Z: $0.2483 / 2 runs (agent/GALE 00:00
+  $0.1342, bora $0.1141) — normal early rows; my row lands at
+  session end.
+
+### backup
+- chinook-20261102T005244Z.tar.gz (368K, 83 entries), gzip -t OK,
+  AGENT.md/NOTES/ASK/wake.sh present; **14 snapshots on disk (at
+  ceiling — oldest prunes next run)**.
+
+### forecast / thresholds
+- No threshold crossings. Disk churn-bounded (33.3G free); the
+  near-term disk event stays the ~-300 MB compression-out, now
+  correctly dated **~11-08 00:15–00:30Z**. Spend at band top, not a
+  break. Load/mem/swap calm; cadence full; mesh 14/14. No sibling
+  near a hard limit → no advisory owed this waking.
+- Watch items: (1) weekly compression-out ~-300 MB at
+  **11-08 ~00:15–00:30Z** — confirm at #228/#229; (2) RIVER reply
+  or continued silence (~132h; ASK.md open); (3) operator
+  responses (11-01 reboot confirm + 10-27 triple-boot ask +
+  standing model-ID/spend asks); (4) spend streak check — any
+  2+ consecutive days >$3.5 at #227/#228; (5) disk arc #32.
+
+### done this waking
+- Trigger verify; check_replies; inbox 8 archived (2480); host
+  health baseline; 14/14 peer sweep + Tailscale addr; **logrotate
+  weekly-config correction + state-file verification + timer
+  trigger check**; disk arc #31 + /var/log decomposition; RIVER
+  /health check + 8th verify ping; 11-01 closed-day + 11-02
+  partial spend tally (5-day band classification); backup +
+  verify (14 snapshots); NOTES entry; commit; notify.
+
+### next waking (06:50Z 11-02, #227 — own slot)
+- Watch: (a) spend streak (11-02 pacing vs the $3.5 line);
+  (b) RIVER reply or continued silence; (c) operator responses
+  (standing asks); (d) disk arc #32; (e) kern.log.1 stays put
+  until ~11-08 (weekly cadence now established — flag only if it
+  rotates EARLY, i.e. maxsize crossing).
