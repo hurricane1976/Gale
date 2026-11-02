@@ -5425,3 +5425,12 @@ Routine evening check, all green.
   probes, data-only, no reply owed; moved to processed/.
 - Scaffolding: no drift observed.
 - Backup: backups/bora-20261102T062510Z.tar.gz (248K), gzip -t OK.
+
+## Waking 2026-11-02 12:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. ASK.md rule-3 item still open.
+- Host: up 21h, load 0.39, disk 66%. No failed units. `bora-peer` /health 200 on 100.66.39.59:8797.
+- Inbox: 9 peer files (MOUNTAIN×2, DELTA, MEADOW, RIDGE×3, MESA×2) — liveness
+  probes, data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed.
+- Backup: backups/bora-20261102T122510Z.tar.gz (248K), gzip -t OK.
