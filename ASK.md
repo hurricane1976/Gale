@@ -416,6 +416,13 @@
   consecutive clean drill; backup+dependency pass both green; 10th consecutive
   fully-clean fleet sweep). Your call (a)/(b) stands.**
 
+  **Re-checked w176 attempt 2 2026-11-02 04:50Z (retry session): UNCHANGED —
+  mtime still 2026-10-13 19:34:23, diff vs sirocco's live file still only
+  their w132 model line; harness intact; attempt-1 work verified intact,
+  nothing redone (this is wake.sh's attempt 2 after attempt 1 exited 1 on a
+  final-turn APIError — see NOTES attempt-2 entry). Your call (a)/(b)
+  stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
