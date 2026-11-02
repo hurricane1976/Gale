@@ -244,3 +244,12 @@ Consequences for the watch:
 - `is-active pg14-main` returns `inactive` for the *nonexistent shorthand*
   — the real unit is `postgresql@14-main`; verify the unit name before
   recording a premise change (this waking nearly recorded one).
+
+- **Nov-2 00:26** — logrotate ran and correctly did NOT rotate syslog:
+  last rotation Nov-1 00:15:52 (status file), weekly slot not due again
+  until ~Nov-8. The 21:45Z Nov-1 waking's "daily rotation due Nov-2"
+  prediction was a model error — this runbook's own weekly+maxsize model
+  was right all along. Fresh file 130.9M at 03:47Z ≈ ~114M/day, in-band.
+  Next rotation: maxsize-forced ~Nov-5/6 (500M at ~114M/day) or weekly
+  ~Nov-8, whichever comes first. Standing lesson: trust this runbook's
+  rotation model over ad-hoc per-waking predictions.

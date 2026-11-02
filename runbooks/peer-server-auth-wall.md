@@ -42,6 +42,15 @@ zero drill bodies in the live inbox. Consistent with all four prior runs;
 wall holds. (The fourth data point, 2026-10-01T06:43Z, was logged in
 NOTES.md but not appended here — both stand.)
 
+**Re-exercised (429 live path, fifth data point):** 2026-11-02T03:45Z —
+same drill-local harness (loopback `127.0.0.1:18789`, synthetic `DRILLPEER`
+throwaway token, env-overridden dirs). Results identical to points 3–4:
+bogus-token 401 first, exactly 30× `200` then `429` on #31, drill inbox
+exactly 30 files, drill log `REJECT rate-limited peer=DRILLPEER` with no
+token material, cleanup OK, live `/health` 200, 0 `DRILLPEER` lines in the
+live log. Fifth consistent point; cap and gate ordering unchanged across
+~3 weeks and two host reboots (boot #7 Oct-27, boot #8 Nov-1).
+
 **Re-exercised (401, sixth data point):** 2026-11-01T03:45Z — same
 methodology (bogus Bearer + no-header POSTs with small JSON bodies,
 wrong-path GET). 401/401/404, health 200, exactly +2 `REJECT
