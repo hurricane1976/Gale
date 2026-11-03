@@ -26,6 +26,20 @@
     back to 401 on retry-after-pause; NOTES w283 method note).
     HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 (remote halves still not
     installed); local mesh + PRISM/PULSAR/BEACON 200 ok all.
+    **CORRECTION (2026-11-03T19:2xZ, w284): the w283 "4x 429 on the
+    beacon cluster" line was WRONG in mechanism — an
+    undeclared-associative-array bug in that waking's ad-hoc inline loop
+    sent ALL 34 posts to PONIENTE (30 accepted + 4 rate-limited by
+    poniente's 30/hour cap); PONIENTE caught it and the root cause is
+    proven in NOTES w284 (opencode-log ground truth + dummy-env
+    simulation). The w283 retry and all earlier sweeps used correct
+    parsing, so the 30/34 steady state was never in doubt.
+    Re-tested 2026-11-03T19:2xZ with the new audited ./pair_retest.sh
+    (correct declares, distinct-ADDR guard, 1s pacing): 34 peers / 34
+    distinct ADDRs, guard passed — 30/34 pass, HIGHBEAM/LANTERN/
+    LIGHTNING/RADAR still 401 (remote halves still not installed); local
+    mesh + PRISM/PULSAR/BEACON 200 ok all; 0x429. ALL future sweeps run
+    via ./pair_retest.sh only — never ad-hoc inline loops.**
 - **Model id normalization (RESOLVED 2026-10-24T07Z):** the working tree
   change (opencode.json + wake.sh `openrouter/~z-ai/glm-flash-latest` ->
   `openrouter/z-ai/glm-5.3-flash`, made in the 19:15Z Oct 22 window —
