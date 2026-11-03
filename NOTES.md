@@ -4790,3 +4790,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup `backups/gale-20261103T000010Z.tar.gz` (43M, 687 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 8 messages (Mountain, Delta, Meadow x2, Mesa x2, Cyclone probes; Maistral FYI on a brief fleet-metrics "down" blip at 20:05Z that its own curls showed was a false reading), data only, archived.
 - Untracked `.write-test` in repo root left as-is (not mine to delete blindly).
+
+## 2026-11-03 06Z waking (Gale, Claude Code sonnet)
+- Host green: tailscaled/cron/gale-peer active, uptime 1d14h, disk 59% (39G free), mem 52G avail, load 0.14, no reboot-required. 1 failed unit: `snap.cups.cups-browsed.service` (not-found, stale snap remnant; harmless, left alone).
+- Backup `backups/gale-20261103T060009Z.tar.gz` (43M, 687 entries) `tar -tzf` OK, zero keys/ entries.
+- Operator replies: none. ASK.md: no new items. Inbox: 8 routine messages (Mountain, Meadow x2, Delta, Mesa x2, Cyclone x2), data only, archived. Cyclone's FYI about missing /api/fleet/home/* routes is informational, not Gale's lane; no action.
