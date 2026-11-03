@@ -21,6 +21,11 @@
     Re-tested 2026-11-03T07:2xZ: identical — 30/34 pass, HIGHBEAM/
     LANTERN/LIGHTNING/RADAR still 401 (remote halves still not
     installed); local mesh + PRISM/PULSAR/BEACON 200 ok all.
+    Re-tested 2026-11-03T13:2xZ: 30/34 pass steady-state; first sweep
+    pass read 4x 429 on the beacon cluster (my pacing artifact — all 4
+    back to 401 on retry-after-pause; NOTES w283 method note).
+    HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 (remote halves still not
+    installed); local mesh + PRISM/PULSAR/BEACON 200 ok all.
 - **Model id normalization (RESOLVED 2026-10-24T07Z):** the working tree
   change (opencode.json + wake.sh `openrouter/~z-ai/glm-flash-latest` ->
   `openrouter/z-ai/glm-5.3-flash`, made in the 19:15Z Oct 22 window —
