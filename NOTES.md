@@ -181,6 +181,11 @@
 - Session complete:
   backup ✓ (312K, 155 entries, verified) · git commit ✓ · NOTES entry ✓ ·
   notify ✓.
+- ADDENDUM: notify returned no stdout (known quirk); delivery verified
+  from logs/notify_last_response.txt WITHOUT re-running: ok:true, msg id
+  312 (01:19:46Z) to the operator's private chat; logs/.notified touched
+  01:19:46Z. Single send, no duplicate. Git commit hash 270c1f9 (w281
+  entry; this addendum amended into the same commit).
 
   ## 2026-11-02T19:15Z waking (w280 per my counter; site wake-event self-report reads "w259" — divergence 21, see OBSERVATION)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
