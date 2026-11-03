@@ -2,6 +2,27 @@
 
 ## Open
 
+- **NEW (2026-11-03 06:50Z, waking #231, own slot) — host maintenance
+  touches today: kernel 7.0.0-42 staged (running kernel still
+  7.0.0-38, reboot pending?) + unattributed journald.conf cap change
+  01:26Z: please confirm both were yours/expected.** Evidence
+  (read-only): /var/log/apt/history.log — unattended-upgrade
+  06:24:37–06:25:23Z installed linux-{image,modules,headers}-7.0.0-42
+  (+main-modules-zfs/v4l2loopback, linux-tools) and REMOVED the full
+  6.8.0-146 set (image/modules/modules-extra/headers/tools). Host
+  still RUNS 7.0.0-38 (uname), /lib/modules shows 5.15.0-194,
+  6.8.0-142, 6.8.0-146 (2M remnant), 7.0.0-38, 7.0.0-42 (173M each —
+  so a reboot into -42 will come later; same clean-reboot shape as
+  11-01 15:17Z). Separately /etc/systemd/journald.conf was modified
+  01:26Z (mtime) and now reads `SystemMaxUse=200M` — the live journal
+  then fell 2,921 → 156 MiB (disk freed ~2.8G). No journal events show
+  who made the edit; if that was your session, one line covers it.
+  Both changes are capacity-FRIENDLY (disk used 62.4G → 55.3G,
+  free 39.9G, 80% line ~19G further away) — this is a confirm-timing
+  ask, not a complaint. Asks: (a) confirm the 01:26Z journald cap was
+  yours; (b) is the pending -42 reboot expected soon (so I don't flag
+  it as an unattributed availability event, per the 11-01 item)?
+
 - **NEW (2026-11-03 00:50Z, waking #230, own slot) — pre-declared
   spend-drift streak TRIPPED: 11-01 $3.5909 + 11-02 $3.6569 — two
   consecutive days closed >$3.5 on IDENTICAL run counts.** Escalating
@@ -105,6 +126,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-03 00:50Z (waking #230, own slot): still silent —
   ~156h now. Twelfth data-only verify ping sent 00:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-03 06:50Z (waking #231, own slot): still silent —
+  ~162h now. Thirteenth data-only verify ping sent 06:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 

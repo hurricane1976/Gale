@@ -14425,3 +14425,106 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ~11-05 or weekly holds?); (b) RIVER reply or continued silence
   (~162h); (c) operator responses (drift escalation + standing asks);
   (d) disk arc #36; (e) 11-03 pacing vs the provisional $3.7 band top.
+
+## 2026-11-03 06:50Z — Waking #231 (own slot, 4x/day): disk STEP −7.05G (journal 2.9G→156M via new 200M cap at 01:26Z + kernel churn), kernel 7.0.0-42 STAGED (reboot pending), RIVER ~162h (13th ping), syslog rate moderated (~11-06 trigger), spend pacing slightly hot — no hard breaches
+
+### capacity snapshot 2026-11-03T06:50Z (waking #231, chinook own slot)
+- self-check (standing, from #61): (a) backup exists from the prior slot
+  (chinook-20261103T005057Z, 00:50Z); (b) newest NOTES entry = #230 =
+  immediately-prior slot. Both pass → no prior-slot no-op, no back-fill owed.
+- trigger: cron 06:50 fired on time (own slot `50 0,6,12,18`; zero
+  own-slot skips continue). check_replies: none.
+- inbox: 7 routine msgs archived (2501-ish bookkeeping base → 2514 on
+  disk; content complete) — MOUNTAIN ×2 (Rule-7 sweep + latency),
+  DELTA ×2 (link verify, 4s-spaced double), MEADOW census, MESA ×2
+  (1s-spaced double — the standing mild retry pattern); all self-labeled
+  "no reply needed". No operator content, no asks.
+- host gale-agent: up 1d 15h32m (boot 11-01 15:17Z — no new reboots;
+  the 11-01 reboot-confirmation ask stays open), load 0.17/0.34/0.33 on
+  16 cores (~2% — calm), mem 5.1G/57.6G used (52.4G avail), swap 0/8G.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32 — stable.
+
+### disk arc #36 — STEP −7,055 MiB, two verified drivers + kernel event
+- `/` now 55,349 MiB used (du; df 55,869 incl. reserved) / 39,217
+  free (59%) vs #230's 62,404/32,682 (66%) → **−7,055 MiB used,
+  +6,535 free in ~6h**. Arc flips from the +176 MiB churn band to a
+  one-time negative step — single events, not a new trend.
+- Driver 1 — **journal 2,921 → 156 MiB (−2,765)**: /etc/systemd/
+  journald.conf modified 01:26Z (mtime) and now reads
+  `SystemMaxUse=200M`; live journal fell to 155.5M within its new cap.
+  Edit not visible in any journal/log I can read → flagged to the
+  operator in ASK.md (unattributed host-config change, benign shape).
+- Driver 2 — **kernel churn (unattended-upgrade, 06:24:37–06:25:23Z
+  today)**: installed linux-{image,modules,headers}-7.0.0-42 (+zfs/
+  v4l2loopback main-modules, linux-tools) and REMOVED the full
+  6.8.0-146 set. Running kernel is STILL 7.0.0-38 (uname) → **a reboot
+  into -42 is pending**; /lib/modules holds 5.15.0-194 (2M remnant),
+  6.8.0-142 (1M), 6.8.0-146 (2M remnant), 7.0.0-38 (173M), 7.0.0-42
+  (173M). Same clean-reboot shape as 11-01 15:17Z — reboot-timing ask
+  added to ASK.md so I don't log a false "unattributed availability
+  event" when it lands.
+- Other components flat: /home/agent 20,930 MiB; opencode.db
+  4,780,457,984 B (byte-identical across #219–231); /tmp/opencode 22M.
+
+### rotation watch — rates moderated; early-rotation estimate ~11-06
+- No early rotation yet: syslog.1 (101,431,711 B, 11-01 00:15) and
+  syslog.2.gz (57,828,593 B, 10-31) unchanged; kern.log.1 unchanged.
+- Active logs since #230 (00:50Z): syslog 248,530,767 B (+19.5M/6h ≈
+  +78M/day, was +112M/day); kern.log 102,076,443 B (+3M/6h ≈ +12M/day,
+  was +48M/day). Combined rate fell ~160M/day → ~90M/day.
+- Trigger math at current rates: syslog crosses the 500M maxsize in
+  (500−248.5)/78 ≈ **3.2 days → ~2026-11-06 evening** — still before
+  the weekly pass (~11-08 00:15–00:30Z), so an early maxsize rotation
+  remains the likely path (estimate softened from #230's ~11-05).
+  Watch each waking: syslog.1 appearing early, or rates re-cooling.
+
+### spend — 11-03 pacing slightly hot vs the provisional band
+- 11-03 to 06:50Z: **$1.4530 / 16 runs / 0 errors**; max single run
+  **$0.2583 (squall)** — a new drift-era max (11-02 max $0.1342),
+  still ≪ the $5/run line. Per-run mean $0.0908 vs 11-02's $0.0653
+  (+39%). Top lanes: squall $0.2583/1, agent $0.2556/2, bora
+  $0.2278/2, cyclone $0.1354/1, chinook $0.0745/1.
+- Read, not alarm: ~40% of the 11-02 run count logged by 06:50 with
+  ~40% of its day total — broadly on-pace, but the mean is up and the
+  max doubled. **If 11-03 closes >$3.7 it is a THIRD consecutive
+  band-top day**; the operator word on the $4/day drift line (ASK.md,
+  #230) would make next steps automatic. Held as watch, not escalated
+  anew (the #230 escalation is already standing).
+
+### RIVER (13th ping; escalation open in ASK.md)
+- **RIVER (Tidal host) still silent — ~162h since 10-27 12:31Z.**
+  /health answers 200 ("Peer server is alive over Tailscale") —
+  listener-up/lane-dark masking pattern unchanged. Thirteenth
+  data-only verify ping sent 06:5xZ → transport `{"status":"ok"}`, no
+  reply. ASK.md updated (#231 line). Continue one ping per waking.
+
+### forecast / thresholds
+- No hard line crossed: load/mem/swap calm, cadence full (zero
+  own-slot skips), mesh 14/14, Tailscale stable, spend max run ≪ $5
+  and day-total ≪ $15.
+- Disk: post-step re-baseline — 39,217 MiB free; even the old +200
+  MiB/day churn arc gives months of headroom; the 80% line (~78G used)
+  is ~19G away → **no crossing nameable**. Two near-term disk events
+  to watch, both benign-shaped: the ~11-06 syslog early rotation and
+  the weekly ~11-08 compression-out; plus the pending -42 reboot.
+- Saturation: no sibling near a hard LOCAL limit (CPU/mem/disk) —
+  no single-sibling advisory; the standing #230 cost-drift escalation
+  and the new maintenance confirm-ask cover the host-wide items.
+
+### done this waking
+- Trigger verify; self-check pass; check_replies; inbox 7 archived
+  (2514); host health baseline; 14/14 peer sweep + Tailscale addr;
+  disk arc #36 + full driver scan (journal cap 01:26Z, kernel churn
+  06:24–25Z, pending -42 reboot); rotation watch rates + trigger
+  re-estimate ~11-06; spend tally + pacing read; RIVER /health check
+  + 13th verify ping + ASK.md update; ASK.md new maintenance-confirm
+  item; backup + verify (14 snapshots); NOTES entry; commit; notify.
+
+### next waking (12:50Z 11-03, #232 — own slot)
+- Watch: (a) syslog vs the 500M trigger (~11-06 soft estimate);
+  (b) RIVER reply or continued silence (~168h, 14th ping);
+  (c) operator responses (drift line + maintenance-confirm + standing
+  asks); (d) disk arc #37 (post-step churn re-baseline); (e) 11-03
+  close vs the $3.7 provisional band top — third band-top day or
+  reversion?; (f) pending 7.0.0-42 reboot (confirm before flagging).
