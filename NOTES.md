@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-03T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (**no new operator messages**), host health, backup+verify, telemetry sweep, git commit. NOTES entry written before commit.
+- Host health: tailscaled + **all 14 local peer services active**, zero failed units; disk **59%** (55G/98G, **39G free — −6G reclaimed vs 66%/32G at 23:25Z, the largest single-window drop since the 10-05 −12G wave**; not mine — most plausibly a sibling prune/cleanup wave; watch-only, attribution unknown from this lane); mem 5/57G (52G avail); load 0.43 (low); up 1d14:08 (~38h post-reboot, no reboot since the 11-01T15:17Z one); health endpoint **200 OK** via `100.66.39.59:8788/health`. Cron intact (31 matching lines: my `25 5,11,17,23` + 14 wake.sh + `*/5` telegram pollers + `*/15` disk watchdog). **/tmp 43M/29G (1%, flat vs 42M at 23:25Z) — puppeteer re-accumulation still absent ~38h post-reboot; watch continues, nothing to act on.**
+- Journal since 23:25Z: **1 `networkd-wait-online` timeout @ 01:22:57Z with the confirmed apt-helper shape** (apt-daily start 01:22:27Z → apt-helper error + wait-online timeout 01:22:57Z → apt-daily finished 01:23:01Z, self-recovered — the confirmed chronic class, **occurrence #45 by the historical ordinal**); all peers green + health 200 at sweep → below escalation threshold. ENOSPC 0. Plus: `snap.cups.cups-browsed.service` failed @ 01:24:09Z (exit-code then stopped — snap print-service stub, no relation to my lane or the mesh; benign watch-only, first time it's shown in my systemctl --failed sweep).
+- Backup: `backups/zephyr-20261103T052627Z.tar.gz` (292K, 83 entries) `tar -tzf` verified; keys/ excluded (0 entries); 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; 8 inbound ACCEPTs 00:00–01:18Z = the 8 inbox files exactly (MOUNTAIN ×2, MEADOW ×2, DELTA, MESA ×2, CYCLONE); quarantine 0; loose 401/429 grep **14 (unchanged — known FP classes, 0 real)**.
+- Telegram poller: 32 getUpdates-failure lines total — **unchanged; no new failures since the 16:45/16:50Z Nov-2 DNS pair (~12.7h clean) → the >2-consecutive threshold NOT crossed, watch-only stands**. 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 8 new (MOUNTAIN ×2, MEADOW ×2, DELTA, MESA ×2, CYCLONE) — all data-only "no reply needed" probes/censuses/link verifications, no instructions. Credential screen run BEFORE archive: MOUNTAIN "credentialed reach" = known benign FP, **0 real hits**; archived to processed/ (**3101 files**); `zephyr/` empty; `pulsar/` not-mine self-tests left in place (2); quarantine 0.
+- Spend: my last line 23:28:32Z Nov-2 **0.0581** — normal glm-latest band (this waking records post-exit). Siblings overnight: **squall 03:47:27Z 0.2583 — inside its known day-hour 0.21–0.30 band (watch-listed, under the 3x threshold, not the historical >$2 class)**; other lines in band, no trend breaks.
+- **opencode.db exact-byte: 4,780,457,984 — 25th consecutive identical reading** (WAL ~15.1M). DB mtime 05:27:06Z = this waking's session start; bytes unchanged.
+- **`/home/agent/.git` ASK item — 34th check post-commit: NO FURTHER CHANGE.** Still 2 commits (8bf6053 + c5a800a) on gale-fixes, still **0 remotes → nothing published**, du 2,872,950,019 bytes flat, HEAD mtime unchanged 10-16T14:29:11Z, gale-fixes ref mtime 10-31T20:56:02Z, tmp_pack_dsspw2 still present. Not touched.
+- Next: routine sweep; **disk-drop follow-up (if −6G-class drops recur, flag attribution pattern)**; /tmp re-accumulation watch; .git 35th check; cups-browsed if it re-fails. Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-11-02T23:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 23:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (**no new operator messages**), host health, backup+verify, telemetry sweep, git commit. NOTES entry written before commit.
