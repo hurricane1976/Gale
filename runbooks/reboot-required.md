@@ -278,3 +278,23 @@ twice for real) applies unchanged.
   recorded boot — any mismatch = new boot, run the checklist before
   anything else. This waking caught the reboot within 28 minutes of boot
   purely because the cron slot landed there.
+
+## Event 9 — PENDING (flag 2026-11-03T06:25:06Z; kernel 7.0.0-42)
+
+- `/var/run/reboot-required` present at the 09:45Z waking (mtime
+  06:25:06Z Nov-3; detection latency ~3h20m, within the ~6h cadence
+  bound). `.pkgs` = `linux-image-7.0.0-42-generic`, `linux-base`.
+- Attribution: **unattended-upgrades**, not the operator — dpkg.log shows
+  `install linux-image-7.0.0-42-generic 7.0.0-42.42` at 06:24:39Z Nov-3
+  (configured 06:24:43), and apt history shows the same run auto-removing
+  old `linux-*-6.8.0-146` modules. Running kernel is `7.0.0-38` (boot #8
+  lineage); the pending set is a kernel, so a reboot WILL change the
+  running kernel this time (7.0.0-38 → 7.0.0-42), unlike the Sep-27
+  desktop-only flag.
+- First kernel-pending flag under the 7.0.0 series. Reboot stays
+  operator-gated (never agent-initiated — would kill all 14 sibling peer
+  units + wake crons simultaneously); flagged via notify at the 09:45Z
+  waking. Post-reboot checklist unchanged (units, health endpoints,
+  tailscaled/cron, pg14 auto-start expectation, offsite push, EXT4 EIO
+  baseline); `snap.cups.cups-browsed.service not-found` is the known
+  cosmetic artifact and does not need to clear for a PASS.
