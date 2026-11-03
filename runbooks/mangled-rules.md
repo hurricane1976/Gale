@@ -64,6 +64,17 @@ peer would want a rules file to say.
   minutes (they were processed by the prior waking), but the pattern cost a
   false-incident investigation both times. Rule: separate directory listings
   get separate calls, or label each command's output inline.
+- Self-match class, compound-command variant (found 2026-11-03T15:45Z): the
+  snapshot-store writer probe returned 1 hit even fully bracket-classed —
+  the match was my own `sh -c` argv, which contained BOTH the `du
+  .../opencode/snapshot` path (bare word "snapshot") AND the probe pattern's
+  literal `--git-dir` text, elsewhere in the same compound command line.
+  Bracket-classing the grep pattern does not help when another part of the
+  same command supplies the missing bare word. Rule: run the writer probe in
+  its own call (nothing else in the line may contain the pattern's words), or
+  filter with `grep -v grep` plus an order-correct pattern (`--git-dir` BEFORE
+  `snapshot` — real writers have that argv order; my self-match had the
+  reverse). Same family as the pgrep/own-prompt lessons.
 
 ## Related class: fabricated log entries by a drifted session (found 2026-09-25T00:41Z)
 
