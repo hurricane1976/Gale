@@ -14637,3 +14637,131 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   continued silence (~174h, 15th ping); (d) operator responses
   (drift line + maintenance-confirm + standing asks); (e) disk arc
   #38 (df method); (f) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-03 18:50Z — Waking #233 (own slot, 4x/day): disk arc −1,567M (driver found: snap purge of the host's bulk non-fleet services, 01:22–01:24Z), spend has EXCEEDED 11-02's full day before close (~$4.7–5.0 projected — third band-top day certain), RIVER ~174h (15th ping), no hard breaches
+
+### capacity snapshot 2026-11-03T18:50Z (waking #233, chinook own slot)
+- self-check (standing, from #61): (a) backup exists from the prior slot
+  (chinook-20261103T125100Z, 12:51Z); (b) newest NOTES entry = #232 =
+  immediately-prior slot. Both pass → no prior-slot no-op, no back-fill owed.
+- trigger: cron 18:50:01 fired on time (own slot `50 0,6,12,18` —
+  journal-verified; zero own-slot skips continue). check_replies: (no new
+  messages) — operator has not yet answered the standing asks (drift
+  line, maintenance-confirm, RIVER, 11-01 reboot).
+- inbox: 8 routine msgs archived (2525 → 2533 on disk) — MOUNTAIN ×2
+  (Rule-7 sweep + latency), DELTA link verify, MEADOW census ×3 (20s
+  triple — the standing mild retry pattern), RIDGE link verify, MESA
+  mesh sweep; all self-labeled "no reply needed". No operator content,
+  no asks, no acks owed.
+- host gale-agent: up 2d 3h32m (boot 11-01 15:17Z — no new reboots;
+  **kernel still 7.0.0-38, the staged -42 reboot remains pending**),
+  load 0.17/0.21/0.19 on 16 cores (~1% — calm), mem 5.2G/57G used
+  (52G avail), swap 0/8G.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32 — stable.
+
+### disk arc #38 — STEP −1,567M, driver IDENTIFIED (deferred snap purge)
+- df: **54,340M used / 40,746M free (58%) vs #232's 55,907M/39,179M →
+  −1,567M used, +1,567M free in ~6h.** Direction favorable; a one-time
+  negative step, not a new trend.
+- Driver found: `snap changes` shows TWO Remove batches **01:22–01:24Z
+  today** — (1) desktop-security-center, keepalived, etcd, lxd,
+  **microk8s**; (2) **nextcloud, rocketchat-server**, sabnzbd, cups,
+  mosquitto. `snap list` confirms all gone. These are the bulk
+  non-fleet services first noted at waking #1 ("host bulk 25G is
+  rocketchat, nextcloud, wekan, microk8s, snapd") — **the host's
+  non-fleet payload is being dismantled.** /var/lib/snapd 5.4G
+  (#229 reading) → 4.0G now; /var/snap 1.25G (prometheus 1.24G is
+  the remaining bulk). The bulk of the freed space already sat inside
+  #231's −7,055M step (where I attributed journal-cap + kernel churn;
+  the snap purge was folded in unidentified — corrected here, no
+  history rewriting); today's −1,567M is the purge's deferred
+  completion (old/disabled revisions reclaimed after the 01:22Z
+  service stops).
+- **Read:** one operator maintenance session — 01:22–01:26Z (snap
+  purge + journald cap) then 06:24Z kernel staging. ASK.md #231 item
+  UPDATED: the confirm-ask now covers all three events, one line
+  closes the lot. Not my lane (host services = Gale/operator); I
+  touched nothing — read-only diagnostics.
+- Other drivers flat: journal 184.7M (bounded under the new 200M
+  cap); /home/agent 20,923M; opencode.db byte-identical 4,780,457,984 B
+  (flat across #219–233); chromium now holds THREE revisions (3559/
+  3563/3569 — old ones not yet auto-reclaimed, watch only).
+
+### rotation watch (b): no early rotation — trigger estimate ~Nov 6 evening
+- syslog.1 (101,431,711 B) / kern.log.1 (343,438,246 B, both mtime
+  11-01 00:15) / syslog.2.gz (57,828,593 B) — all unchanged, weekly
+  pass still forecast ~11-08 00:15–00:30Z.
+- Active rates since #232: syslog 284,086,100 B (+18.1M/6h ≈ +72M/day,
+  was +70M/day); kern.log 105,406,621 B (+1.7M/6h ≈ +7M/day). Combined
+  ~79M/day. Trigger math: (500−284)/72 ≈ 3.0 days → **~2026-11-06
+  evening** for the early maxsize rotation — unchanged from #232's
+  ~Nov 6–7 estimate, still ahead of the weekly pass. Either outcome
+  benign (bounded by maxsize).
+
+### spend — 11-03 has EXCEEDED 11-02's full day before the day closes
+- 11-03 to 18:50Z: **$3.8728 / 44 runs / 0 errors** — already above
+  11-02's full-day close ($3.6569 / 56 runs) with ~12 rows still to
+  land (the 18:xx/20:xx lanes + my session-end row).
+- Same-window pacing (the cleanest drift signal): 12:50→18:50 delta
+  **+$1.2743 / +14 rows vs yesterday's +$0.8256 / +14 rows** —
+  identical run counts, +54% cost. Per-run mean $0.0880 vs 11-02's
+  $0.0653 (+35%); max single run $0.2583 (squall 03:47Z — same value
+  as #231's max, NO new spike). All 14 lanes nonzero ($0.10–0.52/lane
+  to date).
+- Close projection: ~12 remaining rows at $0.065–0.09/row →
+  **~$4.7–5.0 close** → third consecutive band-top day CERTAIN, and
+  the day approaches the $5 mark. 7-day series: 10-28 $3.5530 →
+  10-29 $3.3280 → 10-30 $3.0851 → 10-31 $2.4196 → 11-01 $3.5909 →
+  11-02 $3.6569 → 11-03 ~$4.7–5.0 (pacing).
+- Read: the #230 drift escalation (ASK.md + Telegram, suspected
+  session-weight growth or a pricing-side change on glm-5.3-flash
+  lanes) stands; this waking's pace recorded as an UPDATE on that
+  item, not a new escalation. The operator's proposed $4/day drift
+  line (question c) would trip on today's close — the case for
+  defining it strengthens again. Not a rule-4 hard breach (max run
+  ≪ $5, day total ≪ $15); no run-count change.
+
+### RIVER (15th ping; escalation open in ASK.md)
+- **RIVER (Tidal host) still silent — ~174h since 10-27 12:31Z.**
+  /health answers 200 ("Peer server is alive over Tailscale") —
+  listener-up/lane-dark masking pattern unchanged. Fifteenth data-only
+  verify ping sent 18:5xZ → transport `{"status":"ok"}`, no reply.
+  ASK.md updated (#233 line). Continue one ping per waking.
+
+### forecast / thresholds
+- No hard line crossed: load/mem/swap calm (~1% load), cadence full
+  (zero own-slot skips), mesh 14/14, Tailscale stable, max run ≪ $5,
+  day-total pacing ≪ $15.
+- Disk: favorable post-purge re-baseline — 40.7G free; the 80% line
+  (~78G used) is ~24G away → **no crossing nameable** (stronger than
+  #231's ~19G read). Near-term disk events unchanged: ~Nov 6 evening
+  early syslog rotation (likely) or ~Nov 8 weekly compression-out;
+  plus the pending 7.0.0-42 reboot (confirm-before-flag).
+- Capacity-frame note: with microk8s/nextcloud/rocketchat gone, the
+  waking-#1-era "agent fleet is <2% of host disk" framing shifts —
+  the fleet is now a much LARGER share of a smaller host payload;
+  absolute headroom (40.7G free, 52G RAM avail) remains ample.
+- Saturation: no sibling near a hard LOCAL limit (CPU/mem/disk); the
+  cost-drift item remains host-wide, covered by the standing #230
+  escalation. No single-sibling advisory warranted.
+
+### done this waking
+- Trigger verify; self-check pass; check_replies; inbox 8 archived
+  (2533); host health baseline; 14/14 peer sweep + Tailscale addr;
+  kernel-reboot-pending verify; **disk arc #38 + driver hunt (snap
+  purge identified, ASK.md confirm-ask updated to cover all three
+  maintenance events)**; rotation watch (no early pass, ~Nov 6
+  estimate holds); spend tally (11-03 exceeds 11-02 full day; close
+  ~$4.7–5.0 projected; drift-read UPDATE filed); RIVER /health check
+  + 15th verify ping + ASK.md update; backup + verify (14 snapshots);
+  NOTES entry; commit; notify.
+
+### next waking (00:50Z 11-04, #234 — own slot)
+- Watch: (a) closed 11-03 day — formal third-band-top-day read
+  (close value vs $3.7 top and the ~$4.7–5.0 projection); (b) syslog
+  vs the 500M trigger (~Nov 6 evening) or early syslog.1; (c) RIVER
+  reply or continued silence (~180h, 16th ping); (d) operator
+  responses (drift line + maintenance-confirm + standing asks);
+  (e) disk arc #39 (post-purge churn re-baseline); (f) pending
+  7.0.0-42 reboot (confirm first).

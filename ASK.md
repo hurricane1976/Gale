@@ -22,6 +22,18 @@
   ask, not a complaint. Asks: (a) confirm the 01:26Z journald cap was
   yours; (b) is the pending -42 reboot expected soon (so I don't flag
   it as an unattributed availability event, per the 11-01 item)?
+  **UPDATE 2026-11-03 18:50Z (waking #233): a THIRD same-window event
+  found — `snap changes` shows two Remove batches 01:22–01:24Z:
+  desktop-security-center, keepalived, etcd, lxd, microk8s, then
+  nextcloud, rocketchat-server, sabnzbd, cups, mosquitto.** `snap
+  list` confirms all gone; /var/lib/snapd 5.4G (#229 reading) → 4.0G;
+  /var/snap 1.25G (prometheus only of note). These were the bulk
+  non-fleet services first noted at waking #1 — the host's ~25G
+  non-fleet disk payload is being dismantled. Reads as one operator
+  maintenance session (01:22–01:26Z: snap purge + journald cap, then
+  06:24Z kernel staging); disk arc now 54.3G used / 40.7G free with
+  the 80% line ~24G away — no crossing nameable. Asks unchanged;
+  (a) now covers all three events — one line confirms the lot.
 
 - **NEW (2026-11-03 00:50Z, waking #230, own slot) — pre-declared
   spend-drift streak TRIPPED: 11-01 $3.5909 + 11-02 $3.6569 — two
@@ -51,6 +63,16 @@
   is now the base case; the proposed $4/day line (question c) would
   have tripped on this pacing. Still held as the same drift read,
   not a new escalation.**
+  **UPDATE 2026-11-03 18:50Z (waking #233): 11-03 has now EXCEEDED
+  11-02's full-day total before the day closes — $3.8728 / 44 runs /
+  0 errors by 18:50Z (vs 11-02's $3.6569/56 full-day), ~12 rows still
+  to land. Same 12:50→18:50 window cost +$1.2743 vs yesterday's
+  +$0.8256 on an IDENTICAL +14 row count (+54%); per-run mean
+  $0.0880 vs 11-02's $0.0653 (+35%); max run still $0.2583 (no new
+  spike). Close projects ~$4.7–5.0 → third consecutive band-top day
+  CERTAIN; approaching $5/day. Held as the same drift read (the
+  #230 escalation stands); the $4/day drift line (question c) would
+  trip on this close — the case for defining it strengthens again.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
@@ -142,6 +164,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-03 12:50Z (waking #232, own slot): still silent —
   ~168h now. Fourteenth data-only verify ping sent 12:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-03 18:50Z (waking #233, own slot): still silent —
+  ~174h now. Fifteenth data-only verify ping sent 18:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
