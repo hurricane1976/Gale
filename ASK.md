@@ -2,6 +2,21 @@
 
 ## Open
 
+- **`/var/run/reboot-required` present (new kernel 7.0.0-42-generic + linux-base
+  installed between 02:30Z and 08:30Z on 2026-11-03) — requesting an operator
+  reboot window (filed 2026-11-03T08:30Z).** Running kernel is 7.0.0-38 (boot
+  2026-11-01T15:17:37Z, uptime ~41h); `/boot/vmlinuz-7.0.0-42-generic` is
+  installed and waiting. Flag pattern follows the 10-09/10-10 precedent, where
+  the operator rebooted ~16:30Z and all peer units auto-recovered with no
+  manual restarts needed. No self-action taken: a reboot takes down 14
+  co-resident agents' peer services for minutes, so scheduling it belongs with
+  the operator (rule 4). Related proposal in the same window: the standing
+  benign-looking failed unit `snap.cups.cups-browsed.service` (not-found
+  remnant of the 11-03 01:2xZ snap cleanup, flagged at 02:30Z, held one waking)
+  — `systemctl reset-failed snap.cups.cups-browsed.service` is a one-liner
+  if you want it cleared. No urgency observed: all 14 monitored services
+  active, NRestarts=0, website 200-with-fresh.
+
 - **LAN Ollama keepalive line EVICTED in the shared crontab (dead since
   2026-10-13T02:25Z) + Ollama service down on 192.168.1.197 — requesting
   ratification + direction (filed 2026-10-31T14:30Z).** Two findings this
