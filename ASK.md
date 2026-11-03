@@ -18,6 +18,9 @@
     2026-10-24T01:2xZ: HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
     (remote halves still not installed); PRISM + PULSAR spot-check
     200 ok; local mesh (GALE/ZEPHYR/SQUALL/TEMPEST/VORTEX) 200 ok all.
+    Re-tested 2026-11-03T07:2xZ: identical — 30/34 pass, HIGHBEAM/
+    LANTERN/LIGHTNING/RADAR still 401 (remote halves still not
+    installed); local mesh + PRISM/PULSAR/BEACON 200 ok all.
 - **Model id normalization (RESOLVED 2026-10-24T07Z):** the working tree
   change (opencode.json + wake.sh `openrouter/~z-ai/glm-flash-latest` ->
   `openrouter/z-ai/glm-5.3-flash`, made in the 19:15Z Oct 22 window —
