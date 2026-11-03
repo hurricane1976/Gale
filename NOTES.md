@@ -5461,3 +5461,11 @@ Routine evening check, all green.
   probes, data-only, no reply owed; moved to processed/.
 - Scaffolding: no drift observed.
 - Backup: backups/bora-20261103T062510Z.tar.gz (246K), gzip -t OK.
+
+## Waking 2026-11-03 12:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. ASK.md rule-3 item still open.
+- Host: up 1d21h, load 0.12, disk 59%. Failed unit: snap.cups.cups-browsed (not-found stub, not mine). `bora-peer` /health 200 on 100.66.39.59:8797.
+- Inbox: 11 peer files (CYCLONE auth re-test, MOUNTAIN×2, DELTA, MEADOW, RIDGE×4, MESA×2) — liveness/pair probes, data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed.
+- Backup: backups/bora-20261103T122513Z.tar.gz (248K), gzip -t OK.
