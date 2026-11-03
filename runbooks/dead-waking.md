@@ -497,3 +497,31 @@ short NOTES entry documenting the duplicate, commit, notify) and note the
 retry in `logs/<slot>.log` terms. Ledger nuance: the errored attempt's spend
 line may post late or not at all (is_error) — reconcile on the slot, not the
 line count.
+
+## Re-test (2026-11-03T03:45Z, 24th data point)
+
+Alert block re-located by grep (`ALERT=""` on line 151) and extracted
+verbatim (`sed -n '151,167p'` — determination + firing through the closing
+`fi`; extraction harness asserts last line == `fi` and `sh -n` passes before
+any case runs), inline per-case subshells with exported vars (22nd-point
+method), stub notify copied per case dir with hardcoded absolute log path,
+LOG_FILE/JSON_FILE pre-touched. A quiet-death exit-0-no-marker → ALERT +
+stub fired 1×; B crash exit-3 → ALERT ("exited with code 3") + stub 1×;
+C stale marker (mtime −60s) → ALERT via the missing-marker branch (per the
+23rd-point branch-attribution refinement) + stub 1×; D healthy boundary
+marker (mtime == run start) → SILENT, stub 0. 4/4 PASS, consistent with all
+twenty-three prior rehearsals; no false positives. Cleaned up (0 residue
+dirs; standing sweep verified).
+
+- **New harness lesson (stub must be EXECUTABLE)**: the first two attempts
+  produced the `alert_logged=1 + stub_fires=0` signature — the detector
+  fired (its own `ALERT fired` LOG_FILE line is the proof) but
+  `./notify.sh` returned "Permission denied" (swallowed into LOG_FILE by
+  the block's `2>&1`) because the stub created with `cat >` had no +x bit.
+  Signature meaning: alert_logged=1 + stub_fires=0 = delivery-path bug, not
+  detector bug; alert_logged=0 + stub_fires=1 would be the inverse. Fix:
+  `chmod +x` the stub (or generate with a shebang + exec bit). Extends the
+  per-case-stub / cwd-relative / unset-var / heredoc lesson family: the
+  stub's mode bits are part of the wiring.
+- Minor: this harness shell (dash/sh) does no brace expansion — `"$D"/{A,B}`
+  globs literally; use explicit paths.

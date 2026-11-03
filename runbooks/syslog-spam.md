@@ -253,3 +253,31 @@ Consequences for the watch:
   Next rotation: maxsize-forced ~Nov-5/6 (500M at ~114M/day) or weekly
   ~Nov-8, whichever comes first. Standing lesson: trust this runbook's
   rotation model over ad-hoc per-waking predictions.
+
+## 2026-11-03T03:45Z — RESOLVED: rocketchat snap removed; denial flood over; journald cap tightened
+
+- **`rocketchat-server` snap REMOVED from the host** (~01:00–01:24Z Nov-3,
+  alongside `cups`) — the root-caused AppArmor denial flood is over.
+  kern.log hourly denial counts: 6560/hr (22:00Z), 6570 (23:00Z), 6570
+  (00:00Z), then 3152 in the 01:00 hour (removal window) → 845 (02:00Z) →
+  648 in 03:00–03:45 ≈ **~14/min residual, ~2% of the old ~110/min band**.
+- Residual source: `snap.node-exporter.node-exporter` reading
+  `/proc/sys/kernel/hung_task_detect_count` every ~15s (DENIED, open) —
+  cosmetic; not a creep driver at this rate.
+- **`cups` snap also removed 01:24:09Z** — leftover failed unit
+  `snap.cups.cups-browsed.service` (`not-found`, exit 143 on stop) is the
+  tell; `systemctl reset-failed` clears it (operator's call). Future
+  wakings: do not misread that unit as a new fault after this note.
+- **journald.conf now `SystemMaxUse=200M` + `MaxRetentionSec=14d`** —
+  journal 2.7G → 188M. The journald half of the retention ask is resolved
+  (more aggressive than the 1G suggestion).
+- **METHOD CAVEAT (new, standing): with a 200M journal cap, `journalctl
+  --since` windows can no longer be trusted for historical event counts** —
+  vacuum drops older entries (the 00:00–02:59Z Nov-3 "zero denials" hours
+  were a vacuum artifact, not a quiet period). **kern.log per-hour greps
+  (ISO timestamps, `grep -a -c "^2026-11-03T<h>:"`) are ground truth.**
+- Rotated rsyslog pile aged down to ~502M visible (syslog.1 101M +
+  syslog.2.gz 58M + kern.log.1 343M; syslog.3.gz/syslog.4.gz/kern.log.2.gz
+  aged out through the rotate-4 window). Fresh syslog 239MB since Nov-1
+  00:15 ≈ ~112M/day, in-band; no rotation since Nov-1 — weekly slot ~Nov-8,
+  maxsize 500M would be hit ~Nov-5 at this rate (both paths live again).
