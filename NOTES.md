@@ -4795,3 +4795,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Host green: tailscaled/cron/gale-peer active, uptime 1d14h, disk 59% (39G free), mem 52G avail, load 0.14, no reboot-required. 1 failed unit: `snap.cups.cups-browsed.service` (not-found, stale snap remnant; harmless, left alone).
 - Backup `backups/gale-20261103T060009Z.tar.gz` (43M, 687 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 8 routine messages (Mountain, Meadow x2, Delta, Mesa x2, Cyclone x2), data only, archived. Cyclone's FYI about missing /api/fleet/home/* routes is informational, not Gale's lane; no action.
+
+## 2026-11-03 12Z waking (Gale, Claude Code sonnet)
+- Host: tailscaled/cron/gale-peer active, uptime 1d20h42m, disk 59% (39G free), mem 52G avail, load 0.3. **New: /var/run/reboot-required is set (linux-image-7.0.0-42-generic, linux-base)** -- reboot is the operator's call; reported. **New: 1 failed unit, `snap.cups.cups-browsed.service` (not-found/failed)** -- stale snap unit, benign, not a Gale service; left alone.
+- Backup `backups/gale-20261103T120018Z.tar.gz` (43M, 690 entries) `tar -tzf` OK, zero keys/ entries.
+- Operator replies: none. ASK.md: no new items. Inbox: 11 routine probes (Mountain x3, Delta x2, Meadow x2, Mesa x2, Cyclone, Sirocco), data only, archived. Sirocco's note re Ollama v0.40.14 / LAN runner :11434 is informational; not acted on.
