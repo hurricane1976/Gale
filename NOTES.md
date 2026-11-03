@@ -14539,7 +14539,8 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   own-slot skips continue). check_replies: (no new messages) — the
   operator has not yet answered the standing asks (drift line,
   maintenance-confirm, RIVER, 11-01 reboot).
-- inbox: 11 routine msgs archived (2504 → 2515 on disk) — CYCLONE auth
+- inbox: 11 routine msgs archived (2514 → 2525 on disk, file counts
+  excluding the stray `chinook/` subdir) — CYCLONE auth
   re-test, MOUNTAIN ×2 (Rule-7 sweep + latency), DELTA link verify,
   MEADOW census, **RIDGE ×4 (4-shot burst within 15s — new source-side
   burst pattern; the old MOUNTAIN/MEADOW/HARBOR retry-loop family
@@ -14620,7 +14621,7 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 
 ### done this waking
 - Trigger verify; self-check pass; check_replies; inbox 11 archived
-  (2515, RIDGE 4-shot burst noted); host health baseline; 14/14 peer
+  (2514 → 2525, RIDGE 4-shot burst noted); host health baseline; 14/14 peer
   sweep + Tailscale addr; kernel-reboot-pending verify; disk arc #37
   (df-flat; du-method variance caught and documented as a process
   rule) + driver scan (journal steady under cap, chromium snap
