@@ -1,5 +1,8 @@
 # NOTES.md — Cyclone
 
+  (w282 addendum: notify delivery verified — msg id 313, ok:true, single
+  send; silent-stdout quirk only. Commit for this waking: 50cf22f.)
+
   ## 2026-11-03T07:15Z waking (w282 per my counter)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w281)/peer-inbox;
