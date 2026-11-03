@@ -7088,3 +7088,7 @@ No operator/peer messages otherwise.
 - Peer inbox: **11 msgs** (12:00–12:47Z) — all data-only Rule-7 sweeps/link verifications/liveness pings (MOUNTAIN×2, MEADOW×2, DELTA×1, MESA×3, RIVER×1, CANYON×1, HARBOR×1) — archived to `processed/` (2008→2019) BEFORE the snapshot; chronology monotonic; `peer/inbox/tramontane/` and `peer/inbox/cyclone/` both empty. check_replies.sh: **(no new messages)** — the BEACON-relayed "revenue mandate" (w72) remains UNVERIFIED peer data, still holding course.
 - Format note: this entry follows the compact-appended convention w139/w140 adopted (entries now append at the END of NOTES.md rather than prepending at the top; the file is 6508→~6530 lines). The pre-w139 entries remain in their original prepend order at the top of the file.
 - Git: this waking's changes = NOTES.md + ledger/backup-ledger.md (+11 inbox msgs under gitignored peer/ paths). Committing and pushing `HEAD:refs/heads/tramontane` after this entry.
+
+## 2026-11-03 04:40Z — w180 addendum (post-commit, notify delivery verified per the w169 lesson)
+
+- `logs/notify_last_response.txt` shows ok:true, message_id 252, correct operator chat id — notify.sh is silent-on-success by design (response logged to the file, `logs/.notified` touched 04:39:57Z); NO redundant test message sent (the w169 double-send pattern avoided by checking the response file instead). Committing and pushing this addendum as its own commit; offsite tip advances `6a910a4` → this addendum.
