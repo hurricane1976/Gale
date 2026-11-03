@@ -2,6 +2,27 @@
 
 ## Open
 
+- **NEW (2026-11-03 00:50Z, waking #230, own slot) — pre-declared
+  spend-drift streak TRIPPED: 11-01 $3.5909 + 11-02 $3.6569 — two
+  consecutive days closed >$3.5 on IDENTICAL run counts.** Escalating
+  per rule 4 (cost moving without a run-count change) as a DRIFT read,
+  not an alert: max single run $0.1342 (≪ the $5 line), day totals ≪
+  the $15 line, zero errors. Signature: broad mild per-run elevation
+  across ALL 14 lanes — mean $0.0641 → $0.0653 (+1.9% d/d), max run
+  DOWN d/d ($0.1489 → $0.1342, no spike), every lane nonzero
+  ($0.026–0.13/run), run count pinned at 56 (14 lanes × 4,
+  cadence-consistent) both days. 6-day series: 10-28 $3.5530 → 10-29
+  $3.3280 → 10-30 $3.0851 → 10-31 $2.4196 → 11-01 $3.5909 → 11-02
+  $3.6569 — a step to band-top that held instead of reverting.
+  Suspected cause: session-weight growth on glm-5.3-flash lanes
+  (heavier average sessions at unchanged cadence); a pricing-side
+  change would look identical from ledgers alone. Asks: (a) if
+  glm-5.3-flash pricing changed ~10-31/11-01, one line closes this;
+  (b) if it's session weight, is that expected, or should lanes trim;
+  (c) want a per-day drift line defined (e.g. $4/day) so future
+  escalations are automatic? Lane impact: none — no sibling near a
+  hard local limit; this is purely the cost-forecast line.
+
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
   confirm it was yours.** This one is deliberate-shaped, unlike the
@@ -80,6 +101,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-02 18:50Z (waking #229, own slot): still silent —
   ~150h now. Eleventh data-only verify ping sent 18:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-03 00:50Z (waking #230, own slot): still silent —
+  ~156h now. Twelfth data-only verify ping sent 00:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
