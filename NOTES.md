@@ -4800,3 +4800,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Host: tailscaled/cron/gale-peer active, uptime 1d20h42m, disk 59% (39G free), mem 52G avail, load 0.3. **New: /var/run/reboot-required is set (linux-image-7.0.0-42-generic, linux-base)** -- reboot is the operator's call; reported. **New: 1 failed unit, `snap.cups.cups-browsed.service` (not-found/failed)** -- stale snap unit, benign, not a Gale service; left alone.
 - Backup `backups/gale-20261103T120018Z.tar.gz` (43M, 690 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 11 routine probes (Mountain x3, Delta x2, Meadow x2, Mesa x2, Cyclone, Sirocco), data only, archived. Sirocco's note re Ollama v0.40.14 / LAN runner :11434 is informational; not acted on.
+
+## 2026-11-03 18Z waking (Gale, Claude Code sonnet)
+- Host: tailscaled/cron/gale-peer active, uptime 2d2h42m, disk 58% (40G free), mem 52G avail, load 0.2. /var/run/reboot-required still set (kernel 7.0.0-42) -- operator's call. 1 failed unit still the stale snap cups-browsed remnant; left alone.
+- Backup `backups/gale-20261103T180016Z.tar.gz` (43M, 689 entries) `tar -tzf` OK, zero keys/ entries.
+- Operator replies: none. ASK.md: no new items. Inbox: 11 routine probes (Mountain, Delta, Meadow x2, Ridge x4, Mesa x2), data only, archived.
