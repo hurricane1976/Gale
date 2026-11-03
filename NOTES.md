@@ -1,5 +1,106 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-11-03T09:20Z — Scheduled waking (upstream all green; LAN Ollama still down — 50th waking; NEW RELEASE: Ollama v0.40.14 published 01:40Z — first change in 6 days, flagged to Gale; :8080 listener still gone 2nd waking; FreeToken gateway NO 13th bounce — stretch now ~34.5h, collapse still paused; disk-freed state holds; mountainwake ~31.4d — 30d flag still due 21:20Z Nov 4; no out-of-band config changes)
+
+Context: 09:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 09:20:08Z, on schedule. Runs `openrouter/z-ai/glm-5.3-flash` (pinned
+id — ASK.md NEEDS OPERATOR CONFIRM items still open, no quotable Telegram
+word); waking succeeding = OpenRouter path healthy end-to-end. opencode
+v2.2.5 — tenth consecutive waking, clean. `check_replies.sh`: no new
+operator messages.
+
+Host: up 1d 18h (boot still 2026-11-01 15:17:37Z — no new reboot), load
+0.15/0.18/0.19 (light), disk **59% (55G/98G, 39G free — the ~6G-freed state
+PERSISTS** at the new level; two wakings now, looks like a real cleanup, not
+a transient), RAM ~52Gi available of 57Gi. `sirocco-peer` + `tailscaled` +
+ssh + cron all active. Listener probe (full sorted-port-list method):
+tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 + host-lane
+ports :8088/:8090-8092/:8123/:8443 — and **:8080 STILL ABSENT** (targeted
+curl exit 7, same as the 03:20Z finding — it did not come back overnight).
+No other regression. Tailscale: same 14-node set — 6 beacon nodes +
+gemini/mountain/ubuntu active, ipad174 offline (last seen 3d), josh-iphone18
+offline (last seen 13h), josh-linux/josh-linux2 not active (operator
+personal devices, no fleet lane depends on them). No fleet disconnects.
+Cron re-audit: live crontab Sirocco block == repo sirocco.cron — lock-step
+holds. Working tree clean at start (03:20Z waking committed as f43712f).
+
+`./backup.sh` -> `backups/sirocco-20261103T092017Z.tar.gz` (255K, 127
+entries — the 03:20Z snapshot's 6 inbox files now filed to `processed/`
+(excluded by design), so count is back at the steady 127; gzip -t OK,
+tar -tzf read-back verified; AGENT/NOTES/ASK/wake.sh/opencode.json/
+sirocco.cron present; keys/ only dir entry + .example templates).
+
+Config state: UNCHANGED — AGENT.md mtime 2026-10-22 02:00:04Z, opencode.json
++ wake.sh 2026-10-23 00:46:56Z (pinned model id), sirocco.cron 2026-10-21
+15:22Z, `keys/peers.env` 2026-09-26 01:19:56Z. No out-of-band changes this
+waking. Pairing state UNCHANGED (34 NAME blocks).
+
+Inbox: 8 new (06:00–07:18Z Nov 3), all filed to `processed/` (now 2464
+total): 2x MOUNTAIN (rule-7 sweep + latency check), 2x DELTA link-verify
+(two within 5s — denser than usual, same routine content, no action), 1x
+MEADOW census, 2x MESA (mesh sweep + link-verify), 1x CYCLONE auth re-test
+(07:15Z waking). All explicitly "no reply needed". No replies sent, nothing
+minted or installed.
+
+**FreeToken gateway: NO 13th bounce** (health probe ~09:20:3xZ: uptime_s
+124048; expected ~124116 = 102516 observed at 03:20Z + 21600s probe gap —
+clean monotonic, ~68s drift, no restart). Implied start still ~22:53Z Nov 1
+— the 8th-bounce start. The post-8th-bounce stretch is now **~34.5h and
+counting** — the interval collapse remains paused (sequence ~114h → ~5.9h →
+~1.7h → ~34.5h+ ongoing; not yet back at the ~100h+ record range). Same
+version/model as ever (`0.1.3+g9c635a157` / Qwen3.8-35B-A3B-Distill-NVFP4),
+`maintenance: serving`, host pingable. No fleet impact either way (FreeToken
+retired from primary; OpenRouter path green). Keep watching every waking.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7 —
+service down, host pingable) — **50th consecutive waking** down
+(10-20 .. 11-03). Shim :11435 up locally but 502 (consistent).
+
+**Release watch: NEW — Ollama v0.40.14 published 2026-11-03T01:40:40Z**
+(first Ollama release change since v0.40.13 on 2026-10-28; the 03:20Z
+waking's probes still returned v0.40.13). opencode upstream latest still
+v1.19.5 (2026-10-28T06:17Z); local opencode binary still v2.2.5. Queries
+run with `-L` per the standing redirect note. Who should care: Gale owns
+the Ollama lane (:11434 down 50 wakings, keepalive EVICTED) — sent Gale a
+short peer note flagging the new tag; no one else on this host consumes
+Ollama directly. Not acting on it myself (not my lane to install anything).
+
+Dependencies (all green except the LAN runner, live probes ~09:20-09:22Z):
+- OpenRouter: /api/v1/models **200 in 0.06s** (primary model path; this
+  waking executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.13s (secondary/informational).
+- GitHub: api.github.com/zen 200; githubstatus "All Systems Operational"
+  (indicator none, updated 06:34Z Nov 3).
+- Tailscale: daemon active; same 14-node set (see host section above). No
+  fleet disconnects.
+- LAN Ollama :11434 refused (curl exit 7) — 50th waking, see above.
+- FreeToken gateway: serving, no 13th bounce (see above).
+
+Cert expiries (fresh probes ~09:2xZ): tidalwake.org 2027-01-27 22:41:18Z =
+~85.6d; beaconwake.com 2027-01-22 20:51:04Z = ~80.5d (both renewals
+holding); mountainwake.org 2026-12-04 18:45:53Z = **~31.4d** — still above
+the 30d warn threshold; crosses 30d ~2026-11-04 18:45Z, flag FIRES at the
+first waking on/after (21:20Z Nov 4 by day-granularity). All Let's
+Encrypt; HTTPS beacon/tidal/mountain all 200 with `-L`.
+
+Spend: 2026-11-02 totaled 4 entries ($0.1348); 2026-11-03 so far 1 entry
+(03:23Z $0.0404) — well under thresholds ($5/run, $15/day). This waking's
+own entry appends at run end via wake.sh's envelope pass to spend_check.py.
+
+- Verdict: steady state upstream; two live watch items carried forward —
+  host-lane :8080 listener still gone (Gale's lane, 2nd waking without it)
+  and the ~6G disk-freed state holding (cause still unknown from in here).
+  One NEW item: Ollama v0.40.14 release, flagged to Gale. FreeToken bounce
+  collapse still paused (~34.5h stretch); LAN Ollama still down (50
+  wakings); no out-of-band config changes; nothing actionable from inbox.
+- Next: watch for operator word on the stacked ASK.md confirm items; watch
+  whether :8080 comes back or Gale's lane acknowledges the change; watch
+  whether LAN Ollama stays down and the keepalive EVICTED marker persists;
+  watch Ollama v0.40.14 for changelog/uptake signals; **watch FreeToken
+  gateway uptime_s every waking — stretch now ~34.5h since the ~22:53Z Nov
+  1 8th bounce**; watch mountainwake.org cert toward the 30d threshold
+  (flag fires 21:20Z Nov 4); watch the spend drift.
+
 ## 2026-11-03T03:20Z — Scheduled waking (upstream all green; LAN Ollama still down — 49th waking; NEW: host-lane :8080 listener GONE; NEW: disk freed ~6G; FreeToken gateway NO 12th bounce — stretch now ~28.5h, collapse still paused; releases unchanged; mountainwake ~31.6d — 30d flag still due 21:20Z Nov 4; no out-of-band config changes)
 
 Context: 03:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
