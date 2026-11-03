@@ -14528,3 +14528,111 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   asks); (d) disk arc #37 (post-step churn re-baseline); (e) 11-03
   close vs the $3.7 provisional band top — third band-top day or
   reversion?; (f) pending 7.0.0-42 reboot (confirm before flagging).
+
+## 2026-11-03 12:50Z — Waking #232 (own slot, 4x/day): disk arc FLAT (+38M df — du-delta was method variance), syslog rate cools again (~Nov 6–7 trigger), spend pacing HOT (naive close ~$5 — third band-top day would trip the pre-declared read), RIVER ~168h (14th ping), no hard breaches
+
+### capacity snapshot 2026-11-03T12:50Z (waking #232, chinook own slot)
+- self-check (standing, from #61): (a) backup exists from the prior slot
+  (chinook-20261103T065149Z, 06:51Z); (b) newest NOTES entry = #231 =
+  immediately-prior slot. Both pass → no prior-slot no-op, no back-fill owed.
+- trigger: cron 12:50 fired on time (own slot `50 0,6,12,18`; zero
+  own-slot skips continue). check_replies: (no new messages) — the
+  operator has not yet answered the standing asks (drift line,
+  maintenance-confirm, RIVER, 11-01 reboot).
+- inbox: 11 routine msgs archived (2504 → 2515 on disk) — CYCLONE auth
+  re-test, MOUNTAIN ×2 (Rule-7 sweep + latency), DELTA link verify,
+  MEADOW census, **RIDGE ×4 (4-shot burst within 15s — new source-side
+  burst pattern; the old MOUNTAIN/MEADOW/HARBOR retry-loop family
+  stays quiet this window)**, MESA ×2 (2s-spaced double, standing
+  pattern). All self-labeled "no reply needed"; no operator content,
+  no asks. No acks owed.
+- host gale-agent: up 1d 21h32m (boot 11-01 15:17Z — no new reboots;
+  **kernel still 7.0.0-38, the staged -42 reboot remains pending**),
+  load 0.12/0.17/0.14 on 16 cores (~1% — very calm), mem 5.4G/58G used
+  (53.5G avail), swap 0/8G.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32 — stable.
+
+### disk arc #37 — FLAT; #231's du delta was method variance, not growth
+- df: **55,907M used / 39,179M free (59%) vs #231's df 55,869M →
+  +38M in ~6h** — inside the ±200 MiB/day churn band. The −7,055 MiB
+  step (#231) remains a one-time negative event; no new arc.
+- **Measurement note (process):** raw `du -sm /` as agent read
+  57,121M — a false +1,772M vs #231's du 55,349M. Root cause: du as
+  the non-root agent undercounts root-only dirs inconsistently
+  (/var/lib/snapd read this waking but other root paths vary);
+  df is the like-for-like comparator. **Standing method rule: use df
+  for the cross-waking disk arc; du only for driver breakdowns, and
+  only against same-method baselines.** No false alarm raised.
+- Drivers scanned (flat or explained): journal 154M (2nd reading
+  under the new 200M cap — steady); /home/agent 20,913M (~flat);
+  /tmp/opencode 25M; syslog+kern.log active growth ~+19M this window;
+  **chromium snap auto-refresh 12:07Z (chromium_3569, 188M)** — routine
+  snapd behavior, old revisions compress-out at cleanup. opencode.db
+  unchanged at 4,780,457,984 B (still flat across #219–232).
+
+### rotation watch — rates cool again; trigger estimate ~Nov 6–7
+- syslog 265,950,584 B (+17.4M/6h ≈ +70M/day, was +78M/day);
+  kern.log 103,743,229 B (+1.7M/6h ≈ +7M/day, was +12M/day).
+  Combined ~77M/day (was ~90M/day). syslog.1 / kern.log.1 /
+  syslog.2.gz unchanged (no early rotation yet).
+- Trigger math at current rates: (500−266)/70 ≈ 3.3 days →
+  **~2026-11-06 late evening** — still ahead of the weekly pass
+  (~11-08 00:15–00:30Z), so an early maxsize rotation remains the
+  likely path. If the rate keeps cooling it may slide into the weekly
+  pass instead — either outcome is benign (bounded by maxsize).
+- RIVER (14th ping; escalation open in ASK.md): **still silent —
+  ~168h since 10-27 12:31Z.** /health answering pattern per prior
+  wakings; 14th data-only verify ping sent 12:5xZ → transport
+  `{"status":"ok"}`, no reply. ASK.md updated. Continue one ping/waking.
+
+### spend — 11-03 pacing HOT: naive close ~$5, third band-top day likely
+- 11-03 to 12:50Z: **$2.5985 / 30 runs / 0 errors**; max single run
+  **$0.2583 (squall — same value as #231's max, no new spike)**;
+  per-run mean $0.0866 vs 11-02's full-day $0.0653 (+33%).
+- Pacing: ~28–30 of the day's ~56 slots consumed with $2.60 of 11-02's
+  $3.6569 close already logged — naive ×2 projection ≈ **$5.0–5.2**.
+  Even a softer afternoon lands well above the $3.7 provisional band
+  top → **a third consecutive band-top day is the base case** unless
+  the afternoon mean falls sharply. 6-day series: 10-28 $3.5530 →
+  10-29 $3.3280 → 10-30 $3.0851 → 10-31 $2.4196 → 11-01 $3.5909 →
+  11-02 $3.6569 (+ 11-03 pacing ~$5).
+- Read, not alarm: max run $0.2583 ≪ $5/run line; no error rows; run
+  count cadence-consistent. This is the drift shape (broad mild
+  per-run elevation at unchanged cadence) continuing to steepen — the
+  #230 escalation (ASK.md + Telegram, suspected session-weight growth
+  or a pricing-side change on glm-5.3-flash lanes) is ALREADY STANDING;
+  not re-escalated as a new item, but the 11-03 pace is recorded as an
+  UPDATE on that ASK.md item. The operator's proposed $4/day drift
+  line (ASK.md question (c)) would have tripped automatically on this
+  pacing — strengthens the case for defining it.
+
+### forecast / thresholds
+- No hard line crossed: load/mem/swap very calm (load ~1%), cadence
+  full (zero own-slot skips), mesh 14/14, Tailscale stable, disk flat
+  (+38M), max run ≪ $5, day-total pacing still ≪ $15.
+- Near-term disk events unchanged: possible early syslog maxsize
+  rotation ~Nov 6–7, weekly compression-out ~Nov 8, and the pending
+  7.0.0-42 reboot (confirm-before-flag per the standing ask).
+- Saturation: no sibling near a hard LOCAL limit (CPU/mem/disk); the
+  cost-drift item remains host-wide, covered by the standing #230
+  escalation. No single-sibling advisory warranted.
+
+### done this waking
+- Trigger verify; self-check pass; check_replies; inbox 11 archived
+  (2515, RIDGE 4-shot burst noted); host health baseline; 14/14 peer
+  sweep + Tailscale addr; kernel-reboot-pending verify; disk arc #37
+  (df-flat; du-method variance caught and documented as a process
+  rule) + driver scan (journal steady under cap, chromium snap
+  refresh, opencode.db flat); rotation watch rates (cooled again,
+  ~Nov 6–7); spend tally + hot-pacing read + ASK.md UPDATE on the
+  standing drift item; RIVER 14th verify ping + ASK.md update; backup
+  + verify (14 snapshots); NOTES entry; commit; notify.
+
+### next waking (18:50Z 11-03, #233 — own slot)
+- Watch: (a) 11-03 close vs $3.7 band top — third band-top day or
+  reversion (and vs the naive ~$5 projection); (b) syslog vs the
+  500M trigger (~Nov 6–7) or early syslog.1; (c) RIVER reply or
+  continued silence (~174h, 15th ping); (d) operator responses
+  (drift line + maintenance-confirm + standing asks); (e) disk arc
+  #38 (df method); (f) pending 7.0.0-42 reboot (confirm first).

@@ -43,6 +43,14 @@
   (c) want a per-day drift line defined (e.g. $4/day) so future
   escalations are automatic? Lane impact: none — no sibling near a
   hard local limit; this is purely the cost-forecast line.
+  **UPDATE 2026-11-03 12:50Z (waking #232): 11-03 pacing HOT —
+  $2.5985 / 30 runs / 0 errors by 12:50Z (vs 11-02's full-day
+  $3.6569/56); naive ×2 projection ≈ $5.0–5.2 close. Max single run
+  $0.2583 (squall, same as #231's max — no new spike); per-run mean
+  $0.0866 vs 11-02's $0.0653 (+33%). Third consecutive band-top day
+  is now the base case; the proposed $4/day line (question c) would
+  have tripped on this pacing. Still held as the same drift read,
+  not a new escalation.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
@@ -130,6 +138,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-03 06:50Z (waking #231, own slot): still silent —
   ~162h now. Thirteenth data-only verify ping sent 06:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-03 12:50Z (waking #232, own slot): still silent —
+  ~168h now. Fourteenth data-only verify ping sent 12:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
