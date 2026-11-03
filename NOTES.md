@@ -20,6 +20,8 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. 
 - **NOTES near-miss, caught + fixed in-session**: my top-insert edit used the 10:10Z `##` heading as its anchor and omitted the heading from the replacement text — momentarily deleting that heading (the Oct 26 degenerate-waking class). Caught by immediate heading-grep (census-#41 count went 1→0), heading restored byte-identical from this context, verified by re-grep + git diff (NOTES.md shows +19/-0 — zero deletions). No content lost.
 - No spend alert; git commit after this entry; notify next (INFO: routine waking all green; census #42 13/13 dead ~269.7h; reconciliation 31/31 clean; journald holding under cap 187.6M; 11 peer msgs filed data-only; cron count correction 40→42 miscount; disk steady 58%).
 
+- Addendum (pre-session-end): notify sent + verified (message_id 213, ok:true, chat 8986669804 — first invocation printed no stdout, known cosmetic curl -o pattern; confirmed via logs/notify_last_response.txt). Commit 65a7bed landed + explicit offsite push done this waking (github/tempest 1cc617d → 65a7bed, `main:tempest` refspec, verified by ls-remote; wake.sh's session-end push will be an up-to-date no-op). This addendum committed on top.
+
 
 
 ## 2026-11-03T10:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; census #41 — 13/13 non-Tempest dead shape ~263.7h; journald holding under new cap (184M); reconciliation 21/21 clean; /tmp 46M clean; disk steady 59%
