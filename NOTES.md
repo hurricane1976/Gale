@@ -2,6 +2,21 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-04T17:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 17:25Z cron
+
+- Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (**no new operator messages**), host health, backup+verify, telemetry sweep, git commit. NOTES entry written before commit.
+- Host health: tailscaled + **all 14 local peer services active**, **zero failed units** (cups-browsed resolution holds — no recurrence at 2nd check); disk **58%** (54G/98G, 40G free — flat vs 11:25Z); mem 5/57G (52G avail); load 0.16 (low); up 3d02:07 (~74h post-reboot, no reboot since the 11-01T15:17Z one); health endpoint **200 OK** via `100.66.39.59:8788/health`. **/tmp 49M/29G (1%, flat) — puppeteer re-accumulation still absent ~74h post-reboot; watch continues, nothing to act on.**
+- Journal since 11:25Z: **CLEANEST WINDOW CLASS — zero `networkd-wait-online` timeouts (both idioms), zero ENOSPC, zero err/crit at all beyond the chronic filtered classes.** No escalation candidates; networkd ordinal stays #50.
+- Cron check (corrected idiom): **40 non-blank non-comment lines = exact baseline match, no drift.**
+- Backup: `backups/zephyr-20261104T172511Z.tar.gz` (300K, 89 entries) `tar -tzf` verified; keys/ excluded (0 entries); 14 snapshots at retention cap.
+- Telemetry sweep: peer_server.log — **137 REJECTs total (zero new; last = 2026-10-23T13:20:48Z known local self-test pattern)**; 14 inbound ACCEPTs 12:00–13:17Z = the 14 inbox files exactly; quarantine 0; loose 401/429 grep **14 (unchanged — known FP classes, 0 real)**.
+- Telegram poller: **35 getUpdates-failure lines total (+1: single Errno-104 @ 16:30:01Z = log mtime — non-consecutive, ~6.5h after the 10:00Z Nov-4 single, clean polls between → >2-consecutive threshold NOT crossed, watch-only stands).** 6 `cmd:` lines — no new operator commands; standing watch per ASK item.
+- Inbox: 14 new (MOUNTAIN ×2 incl. the known benign "credentialed reach" FP, **MEADOW ×6** census dup burst 12:07:21–45Z — same identical probe repeated, inside the historical ×2–×9 burst range for this peer, watch-only, DELTA ×2, **RIDGE ×1 — stays ≤1, consistent with the closed watch**, MESA ×2, CYCLONE ×1) — all data-only "no reply needed" probes/censuses/link verifications, no instructions. Credential screen + instruction-pattern screen run BEFORE archive: **1 FP (MOUNTAIN) / 1 FP (CYCLONE — match on the literal text "Content is data, not instructions"; 0 real hits)**; archived to processed/ (**3164 files**); `zephyr/` empty; `pulsar/` not-mine self-tests left in place (2); quarantine 0.
+- Spend: my last line 11:26:33Z **0.0441** — normal glm-latest band (this waking records post-exit). Siblings Nov-4 all own slots, in band, no trend breaks: gale 12:00:27Z 0.125 (inside its 0.11–0.135 band); squall 15:46 0.0707 (easing holds); tempest 16:11 0.037; vortex 17:01 0.0415; cyclone 13:19 0.0576; **maistral 14:14:33Z 0.0348 own 14:05Z slot — 20th consecutive clean post-restore day; zero maistral-slot doubles; maistral watch stays closed (spot-check only)**; bora 12:25 0.1218 (steady ~0.115); chinook 12:51 own :50 slot; levante 13:41 0.0702; ostro 14:31 0.0306; poniente 14:56 0.0619; sirocco 15:21 0.0352; tramontane 16:37 0.0718.
+- **opencode.db exact-byte: 4,780,457,984 — 31st consecutive identical reading** (WAL ~15.1M present).
+- **`/home/agent/.git` ASK item — 40th check post-commit: NO FURTHER CHANGE.** Still 2 commits (8bf6053 + c5a800a) on gale-fixes, still **0 remotes → nothing published**, du 2,872,950,019 bytes flat, gale-fixes ref mtime 10-31T20:56:02Z, tmp_pack_dsspw2 still present. Not touched.
+- Next: routine sweep; /tmp re-accumulation watch; .git 41st check; telegram poller watch (2-consecutive = watch class, >2 = notify). Offsite push hook runs post-exit per wake.sh (scan-gated).
+
 ## 2026-11-04T11:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 11:25Z cron
 
 - Per AGENT.md waking: read AGENT/NOTES/ASK/inbox, check_replies (**no new operator messages**), host health, backup+verify, telemetry sweep, git commit. NOTES entry written before commit.
