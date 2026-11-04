@@ -170,9 +170,22 @@ fi
 # deploy key shared by all four co-located agents -- operator chose the
 # one-repo layout 2026-09-22, tradeoff documented in NOTES). Shell-side,
 # idempotent; failure is logged, never fatal, never Telegrams.
-PUSH_OUT="$(timeout 60 git push github main:tempest 2>&1)"
-if [ $? -eq 0 ]; then
-    echo "wake.sh: pushed to github ($(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
-else
-    echo "wake.sh: github push failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
-fi
+# Bounded retry on the push (added 2026-11-04T10:1xZ by this waking's
+# Tempest session): GitHub's SSH pool intermittently rejects the shared
+# deploy key (observed 10:10-10:15Z Nov 4: same key alternates success /
+# "Permission denied (publickey)" across consecutive connections, no local
+# change; matches GitHub's Jul 2026 deploy-key incident class). A single
+# session-end attempt could silently leave the branch behind. Bounded:
+# nothing to push exits 0 on attempt 1; worst case 5*60s + 4*15s sleep.
+PUSH_OK=0
+for TRY_P in 1 2 3 4 5; do
+    PUSH_OUT="$(timeout 60 git push github main:tempest 2>&1)"
+    if [ $? -eq 0 ]; then
+        echo "wake.sh: pushed to github (attempt $TRY_P; $(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
+        PUSH_OK=1
+        break
+    fi
+    echo "wake.sh: github push attempt $TRY_P failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
+    [ "$TRY_P" -lt 5 ] && sleep 15
+done
+[ "$PUSH_OK" -eq 1 ] || echo "wake.sh: github push FAILED after 5 attempts (GitHub ssh-auth flake?)" >>"$LOG_FILE"
