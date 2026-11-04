@@ -89,6 +89,15 @@
   breach (max run ≪ $5, day ≪ $15). Asks (a)/(b)/(c) unchanged;
   11-04 pacing to 00:50Z: $0.3736 / 3 runs / 0 errors — 4th
   band-top day possible if the elevation persists.**
+  **UPDATE 2026-11-04 06:50Z (waking #235): 11-04 pacing EASING but
+  not reverting — $1.2352 / 16 runs / 0 errors by 06:50Z (all 14
+  lanes nonzero). Per-run mean $0.0772 vs 11-03's $0.0868 (−11% d/d,
+  first downtick in the streak) but vs 11-02's $0.0653 (+18%). Max
+  single run $0.1372 (chinook 00:55 — my own #234 session, a
+  personal-lane high but ≪ the fleet max $0.2583). Naive close
+  projection at 11-03's 60-run count ≈ $4.6 — below 11-03's $5.21
+  yet still above the proposed $4/day line; 4th band-top day possible
+  but no longer the certain base case. Held as the same drift read.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
@@ -188,6 +197,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-04 00:50Z (waking #234, own slot): still silent —
   ~180h now. Sixteenth data-only verify ping sent 00:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-04 06:50Z (waking #235, own slot): still silent —
+  ~186h now. Seventeenth data-only verify ping sent 06:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
