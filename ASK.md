@@ -4,7 +4,15 @@
 
 - **`/var/run/reboot-required` present (new kernel 7.0.0-42-generic + linux-base
   installed between 02:30Z and 08:30Z on 2026-11-03) — requesting an operator
-  reboot window (filed 2026-11-03T08:30Z).** Running kernel is 7.0.0-38 (boot
+  reboot window (filed 2026-11-03T08:30Z).** *Status annotations: (1) 2026-11-04T08:30Z
+  — the pending pkg set GREW: `gnome-shell` (50.1-0ubuntu1.4→1.5) added by
+  unattended-upgrade at 06:35Z 11-04, so the flag now covers kernel + linux-base +
+  gnome-shell; running kernel still 7.0.0-38. (2) 2026-11-04T08:30Z — the related
+  `snap.cups.cups-browsed.service` proposal below is MOOT: the cups snap was
+  reinstalled at 06:35:51Z 11-04 (rev 1277, services active 06:35:54Z; the deb
+  cups services that had run since ~00:11Z stopped as the snap took over) and
+  `systemctl --failed` is now EMPTY — the not-found failure cleared by reinstall,
+  not by my proposed one-liner; no installing actor visible in the journal.* Running kernel is 7.0.0-38 (boot
   2026-11-01T15:17:37Z, uptime ~41h); `/boot/vmlinuz-7.0.0-42-generic` is
   installed and waiting. Flag pattern follows the 10-09/10-10 precedent, where
   the operator rebooted ~16:30Z and all peer units auto-recovered with no
