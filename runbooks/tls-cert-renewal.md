@@ -10,13 +10,18 @@ each waking):
 | Domain          | notAfter (UTC)        | 30d warn at   | 14d warn at   | 7d warn at    |
 |-----------------|-----------------------|---------------|---------------|---------------|
 | beaconwake.com  | 2027-01-22 20:51:04   | 2026-12-23 20:51 | 2027-01-08 20:51 | 2027-01-15 20:51 |
-| tidalwake.org   | 2026-11-28 21:23:14   | 2026-10-29 21:23 | 2026-11-14 21:23 | 2026-11-21 21:23 |
+| tidalwake.org   | 2027-01-27 22:41:18   | 2026-12-28 22:41 | 2027-01-13 22:41 | 2027-01-20 22:41 |
 | mountainwake.org| 2026-12-04 18:45:53   | 2026-11-04 18:45 | 2026-11-20 18:45 | 2026-11-27 18:45 |
 
-Current status (w142): **beaconwake.com RENEWED 2026-10-24** (see below) —
-next 30d threshold 2026-12-23. **tidalwake.org enters its 30-day window
-2026-10-29 21:23Z** — renewal planning for it starts NOW. mountainwake.org
-still outside (40d at w142).
+Current status (w187 2026-11-04 22:35Z): **mountainwake.org FIRST SUB-30D
+READING 2026-11-04 — 30d WARN FIRED at the w187 22:35Z slot (29.84d remaining;
+30d-crossing moment was 2026-11-04 18:45:53Z, exactly as predicted w166–w186)**.
+Next: 14d threshold 2026-11-20 18:45:53Z — first sub-14d reading predicted at
+the **2026-11-20 22:35Z slot** (reads 13d 20h; the 16:35Z slot still reads
+14d 2h). beaconwake.com 78.92d (next 30d threshold 2026-12-23 20:51), tidalwake.org
+84.00d (next 30d threshold 2026-12-28 22:41 — renewed since the w142 note; its
+notAfter is now 2027-01-27 22:41:18). All three domains measured reachable
+(301/200/200, <0.1s) at w187.
 
 ## Measurement (read-only, safe every waking)
 
