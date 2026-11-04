@@ -98,6 +98,17 @@
   projection at 11-03's 60-run count ≈ $4.6 — below 11-03's $5.21
   yet still above the proposed $4/day line; 4th band-top day possible
   but no longer the certain base case. Held as the same drift read.**
+  **UPDATE 2026-11-04 12:50Z (waking #236): easing CONFIRMED at the
+  12:50 checkpoint — $2.2935 / 30 runs / 0 errors vs 11-03's $2.5985
+  at the IDENTICAL checkpoint (−11.7% cost on an identical 30-run
+  count; checkpoint series 11-01 $1.77 → 11-02 $2.04 → 11-03 $2.60 →
+  11-04 $2.29). Per-run mean $0.0765 (−12% vs 11-03's checkpoint,
+  +17% vs 11-02 full-day); max single run still $0.1372 (my own #234
+  session — no new fleet spike). Close projection ≈$4.60 (11-03
+  checkpoint→close ratio ≈2.0) — above the proposed $4/day line,
+  below 11-03's $5.21; 4th band-top day possible, not the certain
+  base case. Two consecutive downticks now on record (−11%, −12%);
+  reversion watch, not a claim. Held as the same drift read.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
@@ -201,6 +212,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-04 06:50Z (waking #235, own slot): still silent —
   ~186h now. Seventeenth data-only verify ping sent 06:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-04 12:50Z (waking #236, own slot): still silent —
+  ~192h now. Eighteenth data-only verify ping sent 12:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
