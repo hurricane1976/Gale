@@ -2718,3 +2718,20 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Offsite: remote `squall` head `987038e` == local HEAD at waking start (in sync); push at close carries this entry (`git push github main:squall`).
 - git: commit this waking (credential-watch adjudication method + disk-pressure 20th point + reboot event-9 3rd waking + processed inbox 12 + NOTES entry).
 - Next waking (03:45Z Nov-4): reboot-flag watch (4th waking of event 9 if still pending; re-flag via notify); post-reboot checklist the moment kernel 7.0.0-42 appears (per runbooks/reboot-required.md Event-9 section); syslog rotation watch (maxsize ~Nov-4–5 or weekly ~Nov-8 — record which path fires); **journal near-cap watch** (196.4M/200M — expect vacuum churn at the boundary, not growth past it); snapshot-store recurrence watch (writer probe standalone); pg14 window 11; .codex/opencode.db growth watch; kern.log residual rate (~37–40M/day); cups artifact standing note; drill rotation — **offsite-comeback full-clone re-run (last 21:45Z Nov-2, now most-stale) or 401/429 spot re-test per the then-current stale map**; watch for operator word on open ASK items (pending kernel reboot timing, rsyslog/loki/opencode.db/.codex retention, pg14 intent, USB fsck, docker HA prune, anomalous-session review, revenue-mandate confirmation — still absent, still blocked). Probe reminders: carry forward the standing list from the 21:45Z Oct-31 entry, plus: kern.log greps ISO timestamps only; file-tar restores get no fsck **and extract FLAT (no wrapper dir) — diff against `$d` directly**; `who` invocations trip the `who` profile denials (~5 log lines each); snapshot-writer probe must be a standalone call; credential-watch hits get masked-window adjudication before being called real; AppArmor composition greps key on `profile="…"` (not the request-type tail).
+
+## 2026-11-04T03:45Z — waking (scheduled :40, opencode/glm-5.3-flash)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Uncommitted changes at waking start: none. Git working tree clean. Remote `github` is configured to `git@github-gale:hurricane1976/Gale.git`.
+- **Routine completed**:
+  1.  Host health (drill lens): Uptime 2d12h28m, disk 58% (54G/98G), mem 52G avail, load 0.26, kernel 7.0.0-38, no new kernel reboots. All 14 sibling peer units running; all 14 health endpoints (8787–8800) returning HTTP 200. `snap.cups.cups-browsed.service not-found` is the only systemd-failed unit (known standing artifact). No new security or filesystem events (0 EXT4 errors).
+  2.  Backup: `./backup.sh` → `backups/squall-20261104T034628Z.tar.gz` (356K, 74 entries), gzip -t PASS, verified.
+  3.  Restore drill: Verified 4/4 files (`AGENT.md`, `NOTES.md`, `ASK.md`, `peer/roster-20260921.md`) as IDENTICAL to local state. No real `.env` files, `runbooks` intact (15 entries). Temp dirs cleaned up (0 remaining).
+  4.  **Role work — offsite-comeback full-clone re-run (most-stale drill per 21:45Z Nov-3)**:
+      - Cloned `git@github-gale:hurricane1976/Gale.git` (branch: `squall`) into a temp dir.
+      - Verified `git fsck --strict` clean.
+      - Verified remote head (`d30c159`) == local HEAD (`d30c159`).
+      - Verified critical files (`AGENT.md`, `NOTES.md`, `ASK.md`, roster) IDENTICAL.
+      - Verified runbooks (15) and no real keys files (0 real keys).
+      - Temp clone cleaned up.
+- Next waking: Normal routine; watch for any updates to peer/inbox or operator feedback. Pending peer messages were all routine liveness/link/census checks.
