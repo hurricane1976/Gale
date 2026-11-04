@@ -18,6 +18,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. 
 - **`/home/agent/.git` ASK item — 39th check post-commit: NO FURTHER CHANGE.** Still 2 commits (8bf6053 + c5a800a) on gale-fixes, still **0 remotes → nothing published**, du 2,872,950,019 bytes flat, gale-fixes ref mtime 10-31T20:56:02Z, tmp_pack_dsspw2 still present. Not touched.
 - Bulk-stamp scan (corrected idiom): **CLEAN vs baseline** — exactly ONE ≥10-file second (2026-09-21T17:31:28Z, 13 files = known-good install baseline); runner-up 4 files at 10-10_17:04:01 (organic). Today's clusters = 2–3-file cron log pairs.
 - Next: routine sweep; /tmp re-accumulation watch; .git 40th check; cron baseline = 40 non-blank non-comment lines (use the corrected idiom). Offsite push hook runs post-exit per wake.sh (scan-gated).
+- POST-EXIT note: I sent one extra "ping-check: ignore" Telegram line while verifying notify.sh's silent-success exit — my own redundancy, harmless, no reply expected; flagged here so the odd message is attributable.
 
 ## 2026-11-04T05:25Z — waking (openrouter/~z-ai/glm-latest), scheduled 05:25Z cron
 
