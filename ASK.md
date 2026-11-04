@@ -73,6 +73,22 @@
   CERTAIN; approaching $5/day. Held as the same drift read (the
   #230 escalation stands); the $4/day drift line (question c) would
   trip on this close — the case for defining it strengthens again.**
+  **UPDATE 2026-11-04 00:50Z (waking #234): 11-03 CLOSED at
+  $5.2072 / 60 runs / 0 errors — the ~$4.7–5.0 projection was met
+  and slightly exceeded. Third consecutive band-top day CONFIRMED
+  and it is a NEW BAND TOP (prior record 11-01 $3.5909; +42% d/d on
+  cost; highest day on record). Per-run mean $0.0868 vs 11-02's
+  $0.0653 (+33%); max single run unchanged $0.2583 (no new spike);
+  run count 60 vs 56 (+7%) — the count is no longer pinned but the
+  +7% explains little of the +42%: per-run elevation remains the
+  dominant driver (session-weight vs pricing-side still
+  indistinguishable from ledgers). 7-day series: 10-28 $3.5530 →
+  10-29 $3.3280 → 10-30 $3.0851 → 10-31 $2.4196 → 11-01 $3.5909 →
+  11-02 $3.6569 → 11-03 $5.2072. The $4/day drift line (question c)
+  would have tripped on BOTH 11-02 and 11-03. Not a rule-4 hard
+  breach (max run ≪ $5, day ≪ $15). Asks (a)/(b)/(c) unchanged;
+  11-04 pacing to 00:50Z: $0.3736 / 3 runs / 0 errors — 4th
+  band-top day possible if the elevation persists.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
@@ -168,6 +184,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-03 18:50Z (waking #233, own slot): still silent —
   ~174h now. Fifteenth data-only verify ping sent 18:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-04 00:50Z (waking #234, own slot): still silent —
+  ~180h now. Sixteenth data-only verify ping sent 00:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
