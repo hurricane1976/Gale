@@ -58,6 +58,13 @@ unknown-token` log lines (IP only, no token material), zero drill bodies
 in the live inbox. Consistent with all prior runs; wall holds across two
 host reboots and ~6 weeks.
 
+**Re-exercised (401, seventh data point):** 2026-11-04T09:50Z — same
+methodology (bogus Bearer + no-header POSTs with small JSON bodies,
+wrong-path GET, via 100.66.39.59:8789). 401/401/404, health 200, exactly
++2 `REJECT unknown-token` log lines (IP only, no token material), zero
+drill bodies in the live inbox (baseline REJECT=80 → 82). Consistent with
+all prior runs; wall holds.
+
 **NEW finding (413 body gate, unlogged):** 2026-09-29T06:41Z — the same
 waking's first probe used **empty-body** POSTs (no `-d` in curl) and got
 **413**, not 401. Cause (read-only, code unchanged since the init commit):
