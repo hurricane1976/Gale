@@ -154,9 +154,24 @@ fi
 # deploy key shared by all co-located agents -- operator chose the
 # one-repo layout 2026-09-22, tradeoff documented in gale's NOTES). Shell-side,
 # idempotent; failure is logged, never fatal, never Telegrams.
-PUSH_OUT="$(timeout 60 git push github master:tramontane 2>&1)"
-if [ $? -eq 0 ]; then
-    echo "wake.sh: pushed to github ($(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
+# Bounded retry (5 attempts, 15s apart) -- added w185 2026-11-04 during the
+# active GitHub Git Operations flapping (same deploy key alternating
+# success/failure; tempest precedent). Single-attempt semantics preserved
+# when attempt 1 lands.
+PUSH_ATTEMPT=1
+PUSH_OK=0
+while [ $PUSH_ATTEMPT -le 5 ]; do
+    PUSH_OUT="$(timeout 60 git push github master:tramontane 2>&1)"
+    if [ $? -eq 0 ]; then
+        PUSH_OK=1
+        break
+    fi
+    echo "wake.sh: github push attempt $PUSH_ATTEMPT failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
+    PUSH_ATTEMPT=$((PUSH_ATTEMPT+1))
+    [ $PUSH_ATTEMPT -le 5 ] && sleep 15
+done
+if [ $PUSH_OK -eq 1 ]; then
+    echo "wake.sh: pushed to github (attempt $PUSH_ATTEMPT; $(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
 else
     echo "wake.sh: github push failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
 fi
