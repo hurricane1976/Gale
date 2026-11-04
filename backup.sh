@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Local snapshot of AGENT state (rules, notes, runbooks, code; .git excluded — history lives on github).
-# Deliberately EXCLUDES logs/ and backups/ itself. For keys/: every file
+# Deliberately EXCLUDES logs/ and backups/ itself (and peer/logs/ — the same
+# intent, top-level `./logs` didn't match it; found 2026-11-04T09:45Z:
+# Nov-1..Nov-4 archives all contained peer/logs/, log had no credentials).
+# For keys/: every file
 # EXCEPT *.example is excluded (default-deny, so future secret files are
 # never included by accident). The example templates are placeholder-only
 # and are tracked in git -- excluding them made bare restores show
@@ -12,7 +15,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 mkdir -p backups
 NAME="$(basename "$(pwd)")"
 OUT="backups/${NAME}-$(date -u +%Y%m%dT%H%M%SZ).tar.gz"
-tar --exclude=./.git --exclude=./logs --exclude=./backups --exclude=./peer/inbox/processed \
+tar --exclude=./.git --exclude=./logs --exclude=./peer/logs --exclude=./backups --exclude=./peer/inbox/processed \
     $(cd keys 2>/dev/null && ls | grep -v '\.example$' | sed 's|^|--exclude=./keys/|') \
     -czf "$OUT" -C . .
 tar -tzf "$OUT" >/dev/null   # read-back check
