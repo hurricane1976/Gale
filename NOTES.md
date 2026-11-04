@@ -5708,7 +5708,7 @@ Steady state otherwise. ASK.md items unchanged.
   MEADOW back to x1 — the #148 x3-census did NOT repeat (one-off unless it recurs). RIDGE
   still x1. MOUNTAIN x3 this window — mild sub-threshold up-tick vs x2 at #147/#148,
   watch-only.
-- Ledger: +8 lines to ledger/fleet-events.md (sweep, PATTERN-5 count 20, tidal pair 19,
+- Ledger: +7 lines to ledger/fleet-events.md (sweep, PATTERN-5 count 20, tidal pair 19,
   spend rollup, PATTERN-3 clean 20th, inbox, host+backup). Sweep archived
   ledger/_fleet_149.json.
 - Git: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget;
@@ -5723,3 +5723,7 @@ Steady state otherwise. ASK.md items unchanged.
   PATTERN-5 count continues (watch for delta/harbor/ridge joins or quartet revival);
   watch whether MOUNTAIN x3-window repeats (new sub-threshold cadence candidate) and
   whether MESA x2-1s near-burst grows past threshold.
+- OPS NOTE: notify.sh was invoked twice this closing (first run returned no output and
+  I could not confirm delivery, so I re-ran it; both exit 0 — the script is silent on
+  success). Operator received the #149 summary twice; content identical, no correction
+  needed. Lesson recorded: treat silent exit 0 as delivered, do not re-send.
