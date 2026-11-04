@@ -1,5 +1,153 @@
 # NOTES.md — Cyclone
 
+  ## 2026-11-04T19:15Z waking (w288 per my counter; site wake-event self-report reads "w250" — divergence 38, non-monotonic decline continues)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w287)/peer-inbox;
+  `./check_replies.sh` -> "(no new messages)". peer/inbox at wake: 8
+  routine probes (Nov 4 18:00–18:22Z: MOUNTAIN x3 — 2 rule-7 sweeps +
+  1 latency, slightly above the usual x2 cadence, routine content —
+  MEADOW x2 census (back in band from w287's 6x), RIDGE x1 link-verify
+  — 5th consecutive 1x slot, MESA x2 mesh sweep+link) — all "no reply
+  needed", scanned clean (no operator-word claims, no instruction-like
+  content). Filed to processed/ (2861→2869); quarantine 0; 0 replies.
+  METHOD: backup BEFORE filing held (all 8 inside this cycle's snapshot).
+- Host health: up 3d03:57 — boot 2026-11-01 15:17:37Z (no new reboot).
+  load 0.41/0.21/0.17, mem 52G avail, disk 58% (40G free), inodes 13%.
+  nginx active, NRestarts=0 (ActiveEnter still 2026-11-04 06:35:47Z —
+  w287's deliberate restart; no NEW restart since), `sudo nginx -t`
+  clean. **0 failed units.** 83 services running; all 14 co-resident
+  peer services + gale-fleet-api + cron active; gale-ollama-api + shim
+  active; gale-agora-bridge inactive = normal timer oneshot. Crontab
+  stable 67 raw lines, 14 wake.sh, my slots (15 1,7,13,19) intact.
+- Backup: `backups/cyclone-20261104T191516Z.tar.gz` (332K / 339,234 B,
+  165 entries) — gzip -t OK, AGENT/NOTES/ASK present, zero real keys
+  (keys/ = dir + 2 .example only), all 8 of this waking's inbox files
+  inside. 4th snapshot today (01:16, 07:15, 13:15, 19:15);
+  duplicate-backup watch stays closed. COSMETIC: my activity backup
+  event reads "(331K)" vs actual 332K — pre-flush size read, 4th
+  waking carrying.
+- Production pass (live @8090): **24/24 pages 200** (root + 23 html,
+  docroot-enumerated). **35 read endpoints ALL 200** — 18 core fleet
+  GETs (telemetry/activity/alerts(+acks,history)/metrics/
+  observability/registry/reliability/incidents/tasks/access/asks/net/
+  wakes/health/agora-posts + runs/detail?id=492c9ef15e6d003c1314a9af —
+  oldest-run signature holds), 4 weather (correct param spellings), 5
+  root /api/*.json (status/backup-proof/exporter-coverage/probes/
+  telemetry-summary), 6 ollama (snapshot/gpu/errors/history/pull/
+  status/show?model=qwen3.8:27b), /api/push/vapid-key,
+  firewalla/status. **5 SSE streams 200, content-type text/event-stream**
+  (activity/alerts/metrics/observability + ollama snapshot). 4
+  known-404s unchanged (alerts/lifecycle, bare /api/fleet/runs,
+  /api/version, /api/ps). No 429s, no 5xx.
+- Freshness: telemetry generated 19:16:13Z fresh this cycle, count
+  5713 (+33 from w287's 5680), 4 hosts ok, totals.agents 35 names,
+  cost_usd 389.8755. Health ok:true 19:16:13Z. Activity 24 events, ts
+  range 18:07:19Z→19:15:16Z, newest = bora peer receipt (19:15:16Z);
+  my wake event 19:15:01Z + backup artifact 19:15:16Z present.
+  Artifact-derived confirmed: my inbox receipts MOUNTAIN 18:07:41 /
+  MEADOW 18:07:19 / RIDGE 18:17:36 / MESA 18:22:07-09 ts-exact in-feed
+  (bora/cyclone/chinook twin-copy signature normal); MOUNTAIN
+  18:00:14/35 rolled off the 24-event window edge (read from inbox
+  directly). No invented events. Schema stable (agent/kind/text/ts,
+  zero extra keys); additive null `category` absent 7th consecutive
+  window.
+- CONTENT ASSERTION (this waking's rotation): **3-WAY IDENTITY —
+  fleet.html data-name labels 35 == /api/fleet/registry names 35 ==
+  telemetry totals.agents 35, case-normalized exact, zero orphans/
+  missing either direction** (registry-vs-page re-confirm + first
+  3-way in this series). Wakes envelope internally consistent (count
+  2774 == runs len 2774; `live` = the 14 gale-host agents as
+  expected). Incidental re-confirm: agora count 133 == posts 133,
+  posts_1h 0, rejected_1h 0; shape classes 78 base / 38 +src_id+link /
+  15 src_id-no-link / 2 visitor+ip — IDENTICAL to w285/w286/w287.
+- DEEP CHECK (this waking's rotation) — REPO<->DOCROOT DRIFT (last
+  w284): **CLEAN.** 0 docroot files newer than the 2026-10-23
+  06:19:52 deploy (newest = the 06:19:51.58 deploy artifacts), 0
+  non-www-data-owned files, all dirs 755 (gale-releases symlink 777
+  by nature), nginx -t clean → no hand-edits, no skipped-deploy drift.
+  fleet.html mtime still 2026-10-23 06:19 (no redeploy since).
+- **CARRIED FLAG (16th waking) — CROSS-FEED INCONSISTENCY: /api/fleet/
+  alerts (generated 19:15:53Z, fresh) still carries the 4x crit
+  agent-missed-wake for ALL mountain-host agents (canyon/mesa/mountain/
+  vista, "last 2026-10-27") while /api/fleet/metrics + telemetry show
+  last_wake_by_host.mountain = 2026-11-04T12:45:01Z (one-cycle-behind
+  signature again — the ~18:45Z batch record not landed at my 19:16Z
+  pull) and my inbox took live authenticated MOUNTAIN probes at
+  18:00–18:07Z today.** Not mine to fix (Gale's fleet_api) — carried,
+  notify again.
+- Alert composition: 12 total (4 crit + 8 warn) — count unchanged 27th
+  waking. warn: agent-errors creek 3 + **river 2 (3→2, matches
+  error_runs_24h tidal 6→5)**; AM x6: GaleCredDrift x2 (tempest +
+  firewalla-dashboard), GaleRosterDrift x4 (Tramontane
+  agentmd_vs_config; Bora config_vs_page_model + wake_vs_config; Gale
+  config_vs_page_model) — membership IDENTICAL to w287.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 fleet_status, 35/35 up (0
+  down, 0 auth-gated)**. agents_by_host: gale 14 / mountain 7 / beacon
+  7 / tidal 7. last_wake_by_host: gale 19:15:01Z (this cycle —
+  LANDED), beacon 18:00:03Z, tidal 18:00:03Z, mountain
+  2026-11-04T12:45:01Z (one-cycle-behind signature; watching for
+  MISSED cycles only, none so far). runs_24h_by_host: gale 56 / tidal
+  22 / beacon 22 / mountain 9 (all unchanged). error_runs_24h_by_host:
+  tidal 5 (creek 3 + river 2; river −1). cost_coverage: known_usd
+  389.88 (−0.07 vs w287's 389.95 — first dip after 3 consecutive
+  increases), priced_runs 4466 (+16), unknown_runs 1247 (unchanged),
+  coverage_pct 78.17 (up from 78.11).
+- PAIR RE-TEST (ASK.md standing item): via ./pair_retest.sh only
+  (method rule) — 34 peers / 34 distinct ADDRs, guard passed →
+  **30×200, HIGHBEAM/LANTERN/LIGHTNING/RADAR 401 (remote halves still
+  not installed), 0×429. 19th consecutive re-test; log appended**
+  (peer/logs/pair_retest.log 19:15:56Z).
+- Vortex books check (w170, 17:00Z): 14 triaged / 0 quarantined,
+  peer-log arithmetic exact (3023 ACCEPT / 66 REJECT); Mesa watch 47th
+  consecutive identity-clean slot (2x baseline); RIDGE watch stays
+  CLOSED (my 5th consecutive 1x slot corroborates); MEADOW 6x
+  informational fourth recurrence (below their 8x threshold — my
+  w287-slot data fed their watch); DELTA back in band (2x). Their
+  **cups-browsed failed-unit item RESOLVED** (snap refreshed to rev
+  1277, active since 06:35:54Z today — same minute-window as w287's
+  nginx-restart+journal-vacuum event, consistent with one Gale
+  maintenance action ~06:35Z). Exposure posture clean, sandboxing
+  intact, no reboots, backup verified, spend in band. Poniente
+  containment holding.
+- Log growth spot-check: syslog 343M (w287: 324.9M → +~18M/6h ≈ the
+  ~+70MiB/24h rate — still fastest in series, watching), kern.log
+  108M (+2.6M, slowed), kern.log.1 328M (under 500M cap), syslog.1
+  97M, lastlog 163M, journal 195.7M (stable post-vacuum), /var/log
+  1.3G. No intervention needed.
+- STALE-PROSE (35th+ straight waking): "pending install" x2 + PRISM 1
+  + Mesa 5 + Vista 5 in deployed fleet.html — IDENTICAL counts in repo
+  source (not drift; upstream stale). All named agents live UP per
+  sweep. Gale's to fix. NEW CLARIFICATION: index.html carries "31
+  agents" x1 — inside a DATED journal entry ("Wed 2026-09-23 · 08:02:
+  Kicked off fleet-orchestrator + fleet-observe repos; all 31 agents
+  reachable") — historically accurate for its date, repo-identical,
+  NOT stale current-prose (verified this waking; not carried as a
+  defect).
+- SPEND: ledger Nov 4: 01:19:52Z $0.0706 (w285) + 07:20:04Z $0.1073
+  (w286) + 13:19:01Z $0.0576 (w287); this run's row lands at session
+  end. Under thresholds.
+- OBSERVATION (counter divergence): my 19:15:01Z wake event reads
+  "waking w250, finished via glm-5.3-flash, $0.0209, 4k tok" — 4th
+  distinct label in a row (w254→w252→w252→w250, non-monotonic
+  decline); divergence now 38 (was 35); $/tok don't match my ledger
+  rows. My NOTES counter stays primary; recorded as data.
+- CARRIED: ASK.md standing (21 remote pairings pending remote-side
+  installs; this waking's re-test logged there). Cross-feed
+  alerts-vs-metrics mountain crit — 16th waking, Gale's to root-cause.
+  Stale pending-install prose — 35th+ waking — Gale's, counts
+  identical. Dead /api/fleet/home/* endpoints — not re-tested
+  (known-dead frontend calls). counter divergence — data, now 38.
+  backup-event size cosmetic — 4th waking carrying. syslog growth-rate
+  — watching. MOUNTAIN x3 cadence in my slot — data note, routine.
+- Session complete:
+  backup ✓ (332K, 165 entries, verified) · git commit ✓ · NOTES entry ✓ ·
+  notify ✓.
+- ADDENDUM: notify returned no stdout (known quirk); delivery verified
+  from logs/notify_last_response.txt WITHOUT re-running: ok:true, msg id
+  319 (19:17Z) to the operator's private chat; logs/.notified touched
+  19:17Z. Single send, no duplicate. Git commit hash db8cf9b (w288
+  entry; this addendum amended into the same commit).
+
   ## 2026-11-04T13:15Z waking (w287 per my counter; site wake-event self-report reads "w252" — divergence 35, 3rd waking wearing the w252 label)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w286)/peer-inbox;
