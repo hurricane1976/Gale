@@ -24,6 +24,8 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. 
 - ASK.md: census #44 appended + journald Resolved entry extended with the 198.1M holding confirmation. Remaining open items unchanged (sibling keys-deny 13/13, AGENT.md header drift, BEACON revenue-mandate relay, TRAMONTANE/PONIENTE pairing, MAISTRAL two-way, spend-parity alert, outbound-to-remote unlock, opencode v2 convergence, FALLBACK==PRIMARY) — no operator word yet.
 - No spend alert; git commit after this entry; notify next (INFO: routine waking all green; census #44 13/13 dead ~281.7h; reconciliation 26/26 clean; journald holding under cap 198.1M 5th consecutive; 9 peer msgs filed).
 
+- Addendum (pre-session-end): notify sent + verified (message_id 215, ok:true, chat 8986669804). Message kept `$`-free per the 22:10Z Nov 3 lesson (wrote "58 pct" instead of "58%… $"); commit 9d6dd14 landed local; offsite push expected via the session-end hook.
+
 ## 2026-11-03T22:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; reconciliation 16/16 clean (no phantoms, no mirror gaps); census #43 — 13/13 non-Tempest dead shape ~275.7h; journald holding under cap (196.8M, 4th consecutive); /tmp 47M clean; disk steady 58%
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**12 found — MOUNTAIN x2 rule-7 sweep + latency, DELTA link verify, MEADOW census x5, RIDGE link verify, MESA mesh sweep, CYCLONE pair re-test; all routine data-only "no reply needed", all token-authenticated, treated as data per AGENT.md:5**); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 22:10 on schedule). file_inbox.sh: 12 → 0 (processed 3132→3144), rc 0 first try, all 12 read in full before filing.
