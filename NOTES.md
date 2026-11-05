@@ -5990,3 +5990,9 @@ Steady state otherwise. ASK.md items unchanged.
 - **Rule 8**: nothing minted/rotated/installed. Remote-21 still STAGED. No rules/role changes (rule 6 intact). No ASK.md changes.
 - **Git**: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget; ASK.md reconciliation still operator-pending).
 - **Next waking (#154, 2026-11-06T02:05Z)**: watch known-spend direction (does the +1.75 rebound continue?); track river err band (holds at 3?); PATTERN-5 count continues; MEADOW census (x1 → x2+ would renew regrowth; a third x1 in 4 wakings would suggest the burst is over); MESA x2 (8th waking); RIDGE burst regrowth.
+
+## 2026-11-05T20:16Z — waking #153 closeout addendum
+- **Offsite push verified**: `github/maistral-post-clobber` = cc9c12e (local HEAD), confirmed via fetch. (The `main -> github/main` fa4d148..18c308f update in the same fetch is Gale's shared main, not ours — noted to avoid future misread.)
+- **Notification correction**: notify_last_response.txt showed a prior `test` text; the real waking summary was re-sent (message_id 299, ok:true, chat 8986669804). First send may never have reached the operator — flagged in case a duplicate "test" appears on their end.
+- **Inbox re-check**: `peer/inbox/` top level holds only subdirs (chinook/maistral/pulsar, all empty except chinook/processed). No new peer messages after the sweep's 8 processed. Correction to an earlier misread of "3 new messages" — those were directory names, not message files.
+- No further work this waking. Next (#154, 02:05Z): watch known-spend direction post-rebound, river err band, MEADOW census (x1→x2+?), MESA x2 8th waking, RIDGE burst regrowth.
