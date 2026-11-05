@@ -5827,3 +5827,71 @@ Steady state otherwise. ASK.md items unchanged.
   ss-visibility — plus one new watch: whether a wake.sh double-attempt
   recurs (if it does, consider whether the APIError-at-exit pattern deserves
   a tracked entry; 1st sighting 2026-11-05T02:05Z slot).
+
+## 2026-11-05T08:05Z -- waking #151 (scheduled, unattended)
+
+- Runner/model: opencode `openrouter/z-ai/glm-5.3-flash` per AGENT.md (operator-directed
+  2026-10-13); no drift, no runner friction. AGENT.md untouched (rule 6). On-cadence 08:05Z
+  slot, 2nd of 11-05. **wake.sh double-attempt watch: no recurrence this slot** (single
+  attempt so far; 1 sighting total, still 02:05Z slot only).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 16h47m (boot 2026-11-01T15:17Z, #137-attributed reboot), load
+  0.21/0.23/0.19, disk 58% (40G free/98G — stable since #145), RAM 53.5G avail/58G, swap 0.
+  systemctl --failed EMPTY (5th consecutive clean — cups fix holds). maistral-peer active;
+  listeners 8787-8799 tailnet + 8090-8092 + localhost 8791/8793/8794/8795 in ss-grep.
+  **:8800 absent from ss-grep 2nd consecutive waking but re-verified ALIVE via HTTP 200
+  /health (PONIENTE)** — ss-transient pattern 2-for-2 since #148's premature "resolved";
+  watch stays open, unattributed.
+- Backup: maistral-20261105T080537Z.tar.gz (520K, 176 entries, sha256 475b74a7…) created +
+  read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present); 14
+  maistral-* snapshots retained.
+- Memory pass (fleet sweep API 08:05:31Z, archived ledger/_fleet_151.json sha256 c0f683f9):
+  - Shape: 35/35 up code-200, 0 auth-gated, 0 missing, 35/35 reachable, all 4 sources ok.
+    No shape change (gale 14, mountain 7, tidal 7, beacon 7). Host last_wakes: gale 08:05:01Z
+    fresh, beacon 06:00:03Z, tidal 06:00:02Z, mountain 00:45:01Z 11-05 (~7.3h stale at sweep;
+    moved 18:45 -> 00:45 since #150 — host-level wake advancing ~6h cadence). Host 24h runs
+    gale 56 / tidal 22 / beacon 22 / mountain 9 — all four unchanged vs #150; errors tidal 5
+    only. #141 mass-down watch closed, clean 9th.
+  - PATTERN-5 count 22: silent quartet (canyon/mesa/mountain/vista) unchanged, ~9.2 days
+    dead; peer-identity corroboration holds 17th waking (MOUNTAIN x2 06:00Z, MESA x2 06:22Z,
+    RIDGE 06:17Z, MEADOW census 06:07Z — own identities, wakes dead). No new silent joiners.
+  - Tidal error pair count 21: creek err=3 (00:15:02Z), river err=2 (00:30:02Z) — river HELD
+    at 2 again (series 3->2->1->0->1->2->3->3->3->2->2->2; first two-consecutive-hold at 2);
+    host tidal 5 = 3+2 exact.
+  - SPEND/DRIFT: coverage 78.28% ($388.04 known / 4498 priced / 1248 unknown) vs #150
+    78.25% ($389.92/4482/1246) — **known spend -$1.88, largest single move in the recorded
+    streak** (-0.58, -2.47, +0.72, +0.55, +0.01, -0.15, -1.88) and first back-to-back
+    negative pair; candidate explanation 14-day window roll-off, not adjudicated. $81.12
+    below pre-gap 10-19 $469.16. 24h fleet $5.89 (gale 3.632, beacon 1.9748, mountain
+    0.2794, tidal 0.00 flat). MAISTRAL 22nd consecutive nonzero waking: 4 runs 24h,
+    $0.1690, 0 err, last wake 08:05:01Z; #150-retry's row landed 02:13:39Z $0.0393 (first
+    retry-session row on file); this waking's row pending at close. spend_check.py not run
+    mid-session (duplicate-row avoidance, per #150 note).
+  - PATTERN-3 stays CLOSED (22nd clean): MOUNTAIN x2 / MESA x2 all own identities.
+  - New-agent wakes all active 4 runs err=0: bora 06:25Z $0.4715, sirocco 03:20Z $0.1266,
+    tramontane 04:35Z $0.3445, chinook 06:50Z $0.2855, ostro 02:30Z $0.1795, poniente
+    02:55Z $0.1992, levante 07:40Z $0.3523.
+- Inbox: 7 msgs (MOUNTAIN x2 06:00:22/45Z, MEADOW x1 06:07:58Z, RIDGE x1 06:17:13Z,
+  MESA x2 06:22:17/18Z, CYCLONE x1 07:24:03Z) — all routine data-only, no replies needed;
+  moved to peer/inbox/processed/maistral/ (105 -> 112; top-level processed 2472 unchanged).
+  **MEADOW back to x1 — the #150 x4-census did NOT repeat** (one-off unless recurs; second
+  census-repeat miss running). MESA x2 in ~1s (5th waking running). RIDGE still x1 (burst
+  not regrown since #144). MOUNTAIN x2 steady.
+- Ledger: +7 lines to ledger/fleet-events.md (sweep, PATTERN-5 count 22, tidal pair 21,
+  spend rollup, PATTERN-3 clean 22nd, inbox, host+backup). Sweep archived
+  ledger/_fleet_151.json.
+- Git: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget;
+  ASK.md reconciliation still operator-pending).
+- Open items (unchanged): git offsite reconciliation (ASK.md, operator decision pending,
+  incl. chinook-fusion correction); 09-22 cost question; artifact `62` staged for operator
+  removal; remote-21 pairing STAGED (rule 8); Sirocco root cause unattributed; known-spend
+  drift (now trending down 2 consecutive, -1.88 this waking); PATTERN-5 (count 22,
+  transports-alive + reboot-proof diagnosis); tidal error pair (count 21, river held at 2);
+  dual-lineage numbering conflict (open, provenance); :8800 ss-grep blind spot (open —
+  2 absent-but-alive since #148).
+- Next waking (#152, 14:05Z): track the river band (held at 2 twice — next move either
+  direction is data); PATTERN-5 count continues (watch for delta/harbor/ridge joins or
+  quartet revival); verify :8800 ss-visibility (3rd consecutive absent would firm the
+  ss-transient pattern); watch the known-spend direction (3rd consecutive negative delta
+  would be a new pattern candidate); watch whether a wake.sh double-attempt recurs and
+  whether the MEADOW census burst regrows.
