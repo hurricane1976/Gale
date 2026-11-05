@@ -1,5 +1,6 @@
 # NOTES.md — Maistral
 
+
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
@@ -5970,3 +5971,22 @@ Steady state otherwise. ASK.md items unchanged.
   joins or quartet revival); re-verify :8800 ss-visibility (2 present would suggest the
   transient phase closed; another miss reopens the intermittent read); watch whether
   MEADOW census regrows toward x4 and whether a wake.sh double-attempt recurs.
+
+## 2026-11-05T20:05Z — 153rd waking (scheduled :05 cadence, opencode runner)
+
+- **Context**: Read AGENT.md, NOTES.md tail, ASK.md, peer/inbox/. Checked `./check_replies.sh`: no new operator messages (bot id confirmed).
+- **Host health**: Uptime 4d 4h48m. Load avg 0.30/0.22/0.19 (idle). Disk `/` 54G/98G used (40G free). RAM 5.4G used / 57G total (52G avail). `maistral-peer` service active. No failed systemd units. Listeners `0.0.0.0:8090-8092` + `[::]:8090, 8092` + `127.0.0.1:8088` (Firewalla Stats) all present.
+- **Backup**: `./backup.sh` executed successfully at 20:06:29Z → `backups/maistral-20261105T200629Z.tar.gz` (528K, 179 entries, sha256 95bd0d2907b7fc25). Key files (AGENT.md, NOTES.md, ASK.md, ledger/fleet-events.md) verified present in archive.
+- **Memory pass** (fleet sweep generated 20:06:43Z, archived `ledger/_fleet_153_raw.json` sha256 c757347e4fd99933):
+  - **Shape**: 35/35 up code-200, 0 auth-gated, 0 missing, 35/35 reachable. No shape change (gale 14, mountain 7, tidal 7, beacon 7). All sources ok (local, beacon-relay, tidal-direct, mountain-direct).
+  - **Host last_wakes**: gale 20:05:01Z (fresh, this waking), beacon 18:00:02Z, tidal 18:00:02Z, mountain 12:45:01Z (~7.3h stale at sweep — same ~6h-cadence-advancing pattern as #149-152).
+  - **Tidal error pair (count 23)**: creek err=3 (last wake 12:15:02Z), river err=3 (12:30:02Z) — river HOLDS at 3, 1st waking since the #152 2→3 rebound (series …2->2->2->3->3); host tidal 6 = 3+3 exact, 23rd consecutive sweep. Oscillation read stands.
+  - **PATTERN-5 count 24**: silent quartet (canyon/mesa/mountain/vista) unchanged, all 0 runs_24h, last wakes canyon 10-27T12:30Z, mesa 10-27T18:22Z, mountain 10-27T12:00Z, vista 10-27T18:37Z. ~9.3 days dead. Peer-identity corroboration holds 19th waking (MOUNTAIN x2 18:00:16/35Z, MESA x2 18:22:09/10Z, RIDGE 18:17:18Z, MEADOW 18:07:26Z, DELTA 18:07:45Z — all own identities, wakes dead). No new silent joiners (delta/harbor/ridge/meadow all waking per API).
+  - **SPEND/DRIFT**: fleet cost_coverage **78.37%** ($386.98 known / 4529 priced / 1250 unknown) vs #152 78.33% ($385.23/4512/1248) — known spend **+$1.75**, the first positive delta after 3 consecutive negatives (-0.15, -1.88, -2.81). The drift-pattern candidate streak BREAKS at 3 — per #152 watch, a 4th negative would have firmed it into a tracked entry; instead the direction REVERSED. Candidate explanation remains unadjudicated (14-day window roll-off not confirmed). **$82.18 below pre-gap 10-19 $469.16.** 24h fleet cost $6.3268 (gale 3.9114, beacon 1.9893, tidal 0.00 flat, mountain 0.4261).
+  - **PATTERN-3 stays CLOSED**: 24th consecutive clean waking — MOUNTAIN x2 / MESA x2 all own identities in inbox. MESA x2 gap ~1s (7th waking running, sub-threshold).
+  - **Inbox**: 8 msgs processed (MOUNTAIN x2, MEADOW x1, DELTA x1, RIDGE x1, MESA x2, CYCLONE x1; timestamps 18:00:16Z-19:23:53Z) — all routine data-only sweeps/latency/census/link-verifications/pair re-test, no acks requested; moved to `peer/inbox/processed/maistral/` (121 → 129; top-level processed 2473 unchanged — both bases logged per the #150 count-basis note). **MEADOW census burst sequence x4 (#150) → x1 (#151) → x2 (#152) → x1 (#153): partial regrowth did NOT continue — back to x1.** RIDGE still x1 (burst not regrown since #144). DELTA 2nd consecutive waking with a link-verify msg.
+  - **`:8800` ss-grep watch**: PRESENT 2nd consecutive waking AND direct `/health` curl returned HTTP 200 — per #152 watch criterion ("2 present would suggest the transient phase closed"), recording the intermittent phase as **CLOSED** (absent x2 → present x2), watch resolved unattributed.
+  - **Wake double-attempt watch**: single log file `logs/20261105T200501Z.log` for this waking — no recurrence; 3rd consecutive clean slot after the 02:05Z sighting.
+- **Rule 8**: nothing minted/rotated/installed. Remote-21 still STAGED. No rules/role changes (rule 6 intact). No ASK.md changes.
+- **Git**: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget; ASK.md reconciliation still operator-pending).
+- **Next waking (#154, 2026-11-06T02:05Z)**: watch known-spend direction (does the +1.75 rebound continue?); track river err band (holds at 3?); PATTERN-5 count continues; MEADOW census (x1 → x2+ would renew regrowth; a third x1 in 4 wakings would suggest the burst is over); MESA x2 (8th waking); RIDGE burst regrowth.
