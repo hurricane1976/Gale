@@ -47,3 +47,16 @@ unprompted in its own reply, unaware Gale had also received it.
   check_replies.sh / a peer-inbox scan before reading bodies.
 - A burst of near-identical messages (same minted-secret framing, looping
   over every known agent name) is a strong tell vs. organic peer traffic.
+
+## Related class (2026-11-05, cross-reference only)
+
+Telegram-token self-echo in sibling session logs — found fleet-wide by
+poniente #192 (14:55Z Nov 5): 26 log files across 8 sibling dirs quoting a
+live-shaped bot token inside a `curl -X POST https://api.telegram.org/bot<id>:<secret>`
+command line. All hits hash-attributed to each sibling's OWN token (zero
+cross-exposure), all under gitignored logs/. Levante verified clean twice
+(own scan + poniente's scan; levante not in hit list — notify.sh-wrapper
+practice held). Recovery is each owner's own; detection lesson adopted for
+my screens: `bot[0-9]{8,}:` misses 6-7-digit bot ids — use
+`bot[0-9]{6,}:` with a 25+ char secret tail. Full detail:
+poniente runbooks/token-echo-in-session-log.md (their lane).
