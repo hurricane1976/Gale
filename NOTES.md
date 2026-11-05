@@ -5895,3 +5895,78 @@ Steady state otherwise. ASK.md items unchanged.
   ss-transient pattern); watch the known-spend direction (3rd consecutive negative delta
   would be a new pattern candidate); watch whether a wake.sh double-attempt recurs and
   whether the MEADOW census burst regrows.
+
+
+## 2026-11-05T14:05Z -- waking #152 (scheduled, unattended)
+
+- Runner/model: opencode `openrouter/z-ai/glm-5.3-flash` per AGENT.md (operator-directed
+  2026-10-13); no drift, no runner friction. AGENT.md untouched (rule 6). On-cadence 14:05Z
+  slot, 3rd of 11-05. **Wake double-attempt watch: no recurrence this slot** (logs/
+  20261105T140501Z.log shows attempt 1 only — 2nd consecutive clean slot after the 02:05Z
+  double-attempt; 1 sighting total, still 02:05Z slot only).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 22h48m (boot 2026-11-01T15:17Z, #137-attributed reboot), load
+  0.08/0.11/0.14, disk 58% (40G free/98G — stable since #145), RAM 52G avail/58G, swap 0.
+  systemctl --failed EMPTY (6th consecutive clean — cups fix holds). maistral-peer active;
+  listeners 8787-8799 tailnet + 8090-8092 + localhost 8791/8793/8794/8795 + 127.0.0.1:8088
+  Firewalla in ss-grep. **:8800 PRESENT in ss-grep this waking (1st since #148) AND
+  re-verified ALIVE via HTTP 200 on /health (PONIENTE)** — the 2-waking absent streak BROKE
+  at 2; ss-transient pattern now reads intermittent (absent x2 -> present x1), all sweeps
+  HTTP-alive throughout. Watch stays open, unattributed.
+- Backup: maistral-20261105T140620Z.tar.gz (524K, 179 entries, sha256 d8854336…) created +
+  read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present); 14
+  maistral-* snapshots retained.
+- Memory pass (fleet sweep API 14:06Z, archived ledger/_fleet_152_raw.json sha256 3bd12641):
+  - Shape: 35/35 up code-200, 0 auth-gated, 0 missing, 35/35 reachable. No shape change
+    (gale 14, mountain 7, tidal 7, beacon 7). Host last_wakes: gale 14:05:01Z fresh,
+    beacon 12:00:03Z, tidal 12:00:02Z, mountain 06:45:01Z (~7.3h stale at sweep — same
+    ~6h-cadence-advancing pattern as #149-151). Host 24h runs gale 56 / tidal 22 / beacon
+    22 / mountain 9 — all four unchanged vs #151; errors tidal 6 only. #141 mass-down
+    watch closed, clean 10th.
+  - PATTERN-5 count 23: silent quartet (canyon/mesa/mountain/vista) unchanged, ~9.2 days
+    dead; peer-identity corroboration holds 18th waking (MOUNTAIN x2 12:00Z, MESA x2
+    12:22Z, RIDGE 12:17Z, MEADOW x2 12:07Z, DELTA 12:07Z — own identities, wakes dead).
+    No new silent joiners (delta/harbor/ridge/meadow all waking per API).
+  - Tidal error pair count 22: creek err=3 (06:15Z), river err=3 (06:30Z) — river MOVED
+    2 -> 3 after two consecutive holds at 2 (series …2->2->2->3); host tidal 6 = 3+3
+    exact. Post-hold rebound is a data point, not a trend.
+  - SPEND/DRIFT: coverage 78.33% ($385.23 known / 4512 priced / 1248 unknown) vs #151
+    78.28% ($388.04/4498/1248) — **known spend -$2.81, largest single move in the recorded
+    streak, and now 3 consecutive negative deltas (-0.15, -1.88, -2.81): the #151 watch's
+    new-pattern-candidate threshold is MET** — recorded as a drift pattern candidate, not
+    yet a tracked entry. Candidate explanation 14-day window roll-off, not adjudicated.
+    $83.93 below pre-gap 10-19 $469.16. 24h fleet $5.85 (gale 3.6585, beacon 1.8982,
+    mountain 0.2972, tidal 0.00 flat). MAISTRAL 23rd consecutive nonzero waking: 4 runs
+    24h, $0.1984, 0 err, last wake 14:05:01Z; this waking's row pending at close
+    (spend_check.py runs post-session via wake.sh — not run mid-session, duplicate-row
+    avoidance per #150).
+  - PATTERN-3 stays CLOSED (23rd clean): MOUNTAIN x2 / MESA x2 all own identities.
+  - New-agent wakes all active 4 runs err=0: bora 12:25Z $0.4637, sirocco 09:20Z $0.1154,
+    tramontane 10:35Z $0.3486, chinook 12:50Z $0.3364, ostro 08:30Z $0.1372, poniente
+    08:55Z $0.19, levante 13:40Z $0.3642.
+- Inbox: 9 msgs (12:00:14Z-13:17:56Z: MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, MESA x2,
+  CYCLONE x1) — all routine data-only, no replies needed; moved to peer/inbox/processed/
+  maistral/ (112 -> 121; top-level processed 2473 unchanged — both bases logged per the
+  #150 count-basis note). **MEADOW x2 census (~11s apart): burst PARTIALLY regrowing —
+  x4 (#150) -> x1 (#151) -> x2 (#152), still below the x4 burst; watch continues.** DELTA
+  link-verify — first delta msg in ~3 wakings (delta joins the peer-identity corroboration
+  once). RIDGE still x1 (burst not regrown since #144). MESA x2 in ~1s (6th waking
+  running). CYCLONE 13Z pair re-test routine (data-only, ASK.md standing item).
+- Ledger: +8 lines to ledger/fleet-events.md (sweep, PATTERN-5 count 23, tidal pair 22,
+  spend rollup, PATTERN-3 clean 23rd, inbox+double-attempt watch, host+backup). Sweep
+  archived ledger/_fleet_152_raw.json.
+- Git: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget;
+  ASK.md reconciliation still operator-pending).
+- Open items (unchanged): git offsite reconciliation (ASK.md, operator decision pending,
+  incl. chinook-fusion correction); 09-22 cost question; artifact `62` staged for operator
+  removal; remote-21 pairing STAGED (rule 8); Sirocco root cause unattributed; known-spend
+  drift (now a PATTERN CANDIDATE — 3 consecutive negative deltas); PATTERN-5 (count 23,
+  transports-alive + reboot-proof diagnosis); tidal error pair (count 22, river rebounded
+  to 3); dual-lineage numbering conflict (open, provenance); :8800 ss-grep intermittent
+  (absent x2 -> present x1); MEADOW census partial regrowth (x1 -> x2).
+- Next waking (#153, 20:05Z): watch the known-spend direction (4th consecutive negative
+  would firm the drift pattern into a tracked entry); track the river band (3 after 2
+  holds — watch for holds/escalation); PATTERN-5 count continues (delta/harbor/ridge
+  joins or quartet revival); re-verify :8800 ss-visibility (2 present would suggest the
+  transient phase closed; another miss reopens the intermittent read); watch whether
+  MEADOW census regrows toward x4 and whether a wake.sh double-attempt recurs.
