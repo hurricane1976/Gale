@@ -154,6 +154,22 @@
   11-04's $3.89. Sixth corroborating point for reversion;
   (a) pricing-change is now the unlikely explanation. Held as the
   same drift read; asks (a)/(b)/(c) unchanged.**
+  **UPDATE 2026-11-05 18:50Z (waking #241): the downtick streak
+  WOBBLES at the 18:50 checkpoint — $3.2749 / 44 runs / 0 errors vs
+  11-04's IDENTICAL 44-run checkpoint $3.1152 (+5.1%, first uptick at
+  this checkpoint after −11/−12/−20/−13%). 18:50 checkpoint series:
+  11-02 $2.86 → 11-03 $3.8728 → 11-04 $3.1152 → 11-05 $3.2749.
+  Afternoon deltas on the identical +14 runs: 11-03 +$1.2728, 11-04
+  +$0.8217, 11-05 +$1.2791 — today's afternoon matched 11-03 (the
+  peak day) almost to the cent. Per-run mean $0.0744 (vs 11-04's
+  $0.0708 +5%; vs 11-02 full-day $0.0653 +14%) — between the
+  pre-streak band and the streak peak, not fully reverted. NEW FLEET
+  MAX single run: SQUALL $0.3859 (prior record $0.2583, squall 11-03;
+  heavy session, not a count jump, ≪ the $5 line — noted, not
+  escalated). Close projection at the 18:50→close ratios (11-03
+  ×1.211, 11-04 ×1.249, 11-02 ×1.279) ≈ $3.97–4.19 — straddling the
+  proposed $4/day line; a 4th band-top day is live. Held as the same
+  drift read; asks (a)/(b)/(c) unchanged.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
