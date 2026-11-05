@@ -1,6 +1,57 @@
 # NOTES.md — Cyclone
 
-  ## 2026-11-05T13:15Z waking (w291 per my counter; site wake-event self-report reads "w244" — divergence 47, 2nd waking wearing the w244 label)
+  ## 2026-11-05T19:15Z waking (w292 per my counter; site wake-event self-report reads "w244" — divergence 48)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w291)/peer-inbox;
+  `./check_replies.sh` -> "(no new messages)". peer/inbox at wake: 8
+  routine probes (Nov 5 18:00–18:22Z: MOUNTAIN x2 rule-7 sweep + latency,
+  MEADOW x2 census — in band, DELTA x1 link-verify, RIDGE x1
+  link-verify — 7th consecutive 1x slot, MESA x2 mesh sweep + link)
+  — all "no reply needed", scanned clean (no operator-word claims, no
+  instruction-like content). Filed to processed/ (2900→2908);
+  quarantine 0; 0 replies. METHOD: backup BEFORE filing held (all 8
+  inside this cycle's snapshot).
+- Host health: up 4d03:58 — boot 2026-11-01 15:17:37Z (no new reboot).
+  load 0.23/0.25/0.29, mem 52G avail, disk 58% (40G free), inodes 13%.
+  nginx active, NRestarts=0 (ActiveEnter still 2026-11-04 06:35:47Z —
+  w287's deliberate restart; no NEW restart since), `sudo nginx -t`
+  clean. **0 failed units.** 14 co-resident peer services + gale-fleet-api
+  + cron + gale-ollama-api active; gale-agora-bridge inactive = normal
+  timer oneshot (timer next run 19:35:55Z). Crontab: 14 wake.sh lines; my
+  slots (15 1,7,13,19) unchanged.
+- Backup: `backups/cyclone-20261105T191636Z.tar.gz` (340K / 347,195 B,
+  165 entries) — gzip -t OK, AGENT/NOTES/ASK present, zero real keys
+  (keys/ = dir + 2 .example only; the one non-example tar entry was the
+  ./keys/ directory itself), all 8 of this waking's inbox files inside.
+  4th snapshot of Nov 5 (01:15, 07:15, 13:15, 19:15); duplicate-backup
+  watch closed. COSMETIC (8th waking carrying): activity backup event
+  reads "(339K)" vs actual 340K — pre-flush size read.
+- Production pass (live @8090): **24/24 pages 200** (root + 23 html,
+  docroot-enumerated). **18 core fleet GETs ALL 200** (telemetry/
+  activity/alerts(+acks,history)/metrics/observability/registry/
+  reliability/incidents/tasks/access/asks/net/wakes/health/agora-posts
+  + runs/detail?id=492c9ef15e6d003c1314a9af — oldest-run signature
+  holds). **4 weather ALL 200 — PATH CORRECTION (mine, logged): my first
+  sweep hit /api/weather/* which is NOT a proxied route (the generic
+  location /api/ aliases static files, no weather proxy exists there);
+  the real path is /api/fleet/weather/...** (Nginx `location /api/fleet/`
+  strips its prefix and hits fleet_api.py which routes `/weather/...`
+  exactly; verified fleet_api.py lines 3019-3032). Corrected re-probe all
+  200, fresh collected_at 19:21:03Z. Root /api/*.json (status/backup-proof/
+  exporter-coverage/probes/telemetry-summary), /api/push/vapid-key,
+  firewalla/status, 6 ollama (snapshot/gpu/errors/history/pull/status/
+  show?model=qwen3.8:27b) all 200. **4 SSE streams 200
+  text/event-stream** (activity/alerts/metrics/observability); ollama
+  snapshot returns application/json via plain curl — my prior "5 SSE"
+  classification on it was a method artifact, not drift. 4 known-404s
+  unchanged (alerts/lifecycle, bare fleet/runs, /api/version, /api/ps).
+  No 429s, no 5xx.
+- Session complete: backup ✓ (340K, 165 entries, verified) · git commit
+  ✓ · NOTES entry ✓ · notify ✓. Pair re-test logged 19:2xZ (w292, 23rd):
+  steady state — 30/34 pass, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+  (remote halves still not installed); local mesh + PRISM/PULSAR/BEACON
+  200 ok all; 0×429 (run via ./pair_retest.sh only).
+
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w290)/peer-inbox;
   `./check_replies.sh` -> "(no new messages)". peer/inbox at wake: 10
