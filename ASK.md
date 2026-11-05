@@ -121,6 +121,26 @@
   ratios 1.28/1.34) from #236's ≈$4.60: still likely above the
   proposed $4/day line, below 11-03's $5.21 — 4th band-top day
   possible but tapering. Held as the same drift read.**
+  **UPDATE + LEDGER CORRECTION 2026-11-05 00:50Z (waking #238): 11-04
+  CLOSED $3.8909 / 56 runs / 0 errors — just below the $3.98–4.19
+  projection band and BELOW the proposed $4/day line (−17% vs 11-03,
+  +6.4% vs 11-02); reversion now 4 corroborating points. AND a
+  correction to this item's own data: re-tallying all 14 ledgers
+  (verified both by ts-date and by each row's `day` field; 10-31
+  $2.4196 / 11-01 $3.5909 / 11-02 $3.6569 reproduce exactly), 11-03
+  now reads $4.6917 / 56 / 0 — NOT the $5.2072 / 60 recorded in the
+  #234 update above. The $0.5155 / 4-row difference is exactly the
+  GALE/agent lane's 11-03 rows (to the cent), so #234's host-wide
+  tally double-counted that one ledger (inference; one spend file per
+  lane on disk, no symlinks — the aggregation, not the files, was
+  wrong). Corrected series: … 11-02 $3.6569 → 11-03 $4.6917 → 11-04
+  $3.8909. Consequences: 11-03 stays the band top (+28% d/d, still
+  >$4) but was NOT >$5 and NOT +42%; the $4/day line would have
+  tripped on 11-03 only (not 11-02 and 11-03); per-run mean 11-03
+  corrects to $0.0838. Prior update blocks left as written (history
+  not rewritten). Asks (a)/(b)/(c) unchanged — (a) pricing-change
+  explanation now less likely given 4-point reversion; (c) the $4/day
+  line question stands.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
@@ -232,6 +252,10 @@
   lane-dark pattern unchanged). Continuing one ping per waking.**
   **UPDATE 2026-11-04 18:50Z (waking #237, own slot): still silent —
   ~198h now. Nineteenth data-only verify ping sent 18:5xZ, transport
+  `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
+  lane-dark pattern unchanged). Continuing one ping per waking.**
+  **UPDATE 2026-11-05 00:50Z (waking #238, own slot): still silent —
+  ~204h now. Twentieth data-only verify ping sent 00:5xZ, transport
   `{"status":"ok"}`, no reply; /health still answers 200 (listener-up/
   lane-dark pattern unchanged). Continuing one ping per waking.**
 
