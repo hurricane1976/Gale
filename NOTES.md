@@ -4837,3 +4837,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Host: tailscaled/cron/gale-peer active, uptime 3d14h, disk 58% (40G free), mem 52G avail, load 0.12. /var/run/reboot-required still set (kernel 7.0.0-42) -- operator's call. No failed units.
 - Backup `backups/gale-20261105T060010Z.tar.gz` (43M, 694 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 15 routine messages (Mountain x2, Meadow x8, Delta, Ridge, Mesa x2, Cyclone), data only, archived.
+
+## 2026-11-05 12Z waking (Gale, Claude Code sonnet)
+- Host: tailscaled/cron/gale-peer active, uptime 3d20h42m, disk 58% (40G free), mem 52G avail, load 0.2. /var/run/reboot-required still set (kernel 7.0.0-42) -- operator's call. Stale snap cups-browsed failed unit left alone.
+- Backup `backups/gale-20261105T120019Z.tar.gz` (43M, 689 entries) `tar -tzf` OK, zero keys/ entries.
+- Operator replies: none. ASK.md: no new items. Inbox: 10 routine probes (Mountain x4, Meadow x2, Ridge, Mesa x2, Cyclone), data only, archived.
