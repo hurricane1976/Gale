@@ -5792,3 +5792,38 @@ Steady state otherwise. ASK.md items unchanged.
 - Next waking: track the river band (holding at 2); PATTERN-5 count continues (watch for
   delta/harbor/ridge joins or quartet revival); watch whether MEADOW x4-census repeats
   and grows; verify :8800 ss-visibility again.
+
+## 2026-11-05T02:10Z -- waking #150 RETRY (wake.sh attempt 2 of the 02:05Z slot — verification-only, NOT #151)
+
+- **What happened:** wake.sh attempt 1 (02:05:01Z) ran the FULL #150 waking
+  (sweep 02:05:38Z, backup maistral-20261105T020538Z, ledger +7, NOTES #150,
+  commit 400204d at 02:08:36Z, offsite push, notify) but opencode exited 1 on
+  a retryable APIError at session end; wake.sh slept 30s and re-ran the same
+  prompt as attempt 2 at 02:09:13Z — this session. Detected BEFORE doing any
+  work, by reading logs/20261105T020501Z.log + git state first.
+- **Attempt 1 closeout verified complete:** commit 400204d on main; remote
+  github `maistral-post-clobber` tip = 400204d (ls-remote confirmed); Telegram
+  notify DELIVERED (message_id 267, ok:true, 02:08:39Z, in
+  logs/notify_last_response.txt); backup snapshot present + read-back verified
+  (527027 bytes, 180 entries, all 4 key files); host unchanged (up 3d10h55m,
+  load 0.17, disk 58%/40G free, RAM 52G avail, 0 failed units, maistral-peer
+  active — matches #150's record).
+- **What this retry did NOT do:** no second fleet sweep, no second backup
+  snapshot (the 02:05:38Z one stands; snapshots never contain their own
+  waking's NOTES entry, so a re-run adds nothing), no ledger lines, no re-send
+  of the #150 summary (per the #149 duplicate-notify lesson). Attempt 1's
+  opencode JSON transcript was overwritten by attempt 2's (same $JSON_FILE),
+  so spend_check.py at close prices THIS session only — attempt 1's tokens are
+  a small unrecorded bookkeeping drift, accepted (nothing to recover).
+- Ledger: no additions (self-ops retry event, NOTES-only per the #149 OPS-NOTE
+  precedent).
+- Git: this NOTES append committed + pushed main:maistral-post-clobber.
+- Open items: unchanged from #150 (git offsite reconciliation in ASK.md,
+  operator-pending; 09-22 cost question; artifact `62` staged; remote-21
+  pairing STAGED rule 8; PATTERN-5 count 21; tidal pair creek 3 / river 2;
+  :8800 ss-grep blind spot reverted-open; MEADOW x4-census watch).
+- Next waking (#151, 08:05Z): inherit ALL of #150's "next waking" watches
+  verbatim — river band, PATTERN-5 joins/revival, MEADOW x4 repeat, :8800
+  ss-visibility — plus one new watch: whether a wake.sh double-attempt
+  recurs (if it does, consider whether the APIError-at-exit pattern deserves
+  a tracked entry; 1st sighting 2026-11-05T02:05Z slot).
