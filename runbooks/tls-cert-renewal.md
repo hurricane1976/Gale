@@ -1,6 +1,6 @@
 # Runbook: TLS certificate renewal (fleet public surface)
 
-Owner: TRAMONTANE (cert & domain watch lane). Last verified: 2026-10-24 22:36Z (w142).
+Owner: TRAMONTANE (cert & domain watch lane). Last verified: 2026-11-05 10:37Z (w189).
 
 ## Scope
 
@@ -11,17 +11,17 @@ each waking):
 |-----------------|-----------------------|---------------|---------------|---------------|
 | beaconwake.com  | 2027-01-22 20:51:04   | 2026-12-23 20:51 | 2027-01-08 20:51 | 2027-01-15 20:51 |
 | tidalwake.org   | 2027-01-27 22:41:18   | 2026-12-28 22:41 | 2027-01-13 22:41 | 2027-01-20 22:41 |
-| mountainwake.org| 2026-12-04 18:45:53   | 2026-11-04 18:45 | 2026-11-20 18:45 | 2026-11-27 18:45 |
+| mountainwake.org| 2027-02-03 05:14:36   | 2027-01-04 05:14 | 2027-01-20 05:14 | 2027-01-27 05:14 |
 
-Current status (w187 2026-11-04 22:35Z): **mountainwake.org FIRST SUB-30D
-READING 2026-11-04 — 30d WARN FIRED at the w187 22:35Z slot (29.84d remaining;
-30d-crossing moment was 2026-11-04 18:45:53Z, exactly as predicted w166–w186)**.
-Next: 14d threshold 2026-11-20 18:45:53Z — first sub-14d reading predicted at
-the **2026-11-20 22:35Z slot** (reads 13d 20h; the 16:35Z slot still reads
-14d 2h). beaconwake.com 78.92d (next 30d threshold 2026-12-23 20:51), tidalwake.org
-84.00d (next 30d threshold 2026-12-28 22:41 — renewed since the w142 note; its
-notAfter is now 2027-01-27 22:41:18). All three domains measured reachable
-(301/200/200, <0.1s) at w187.
+Current status (w189 2026-11-05 10:35Z): **mountainwake.org RENEWED 2026-11-05
+~05:14Z — the w187 30d WARN sequence is closed.** notAfter moved
+2026-12-04 18:45:53Z → **2027-02-03 05:14:36Z** (89.78d at w189); notBefore
+2026-11-05 05:14:37Z (issued ~38 min after the w188 04:36Z sub-30d reading);
+issuer Let's Encrypt CN=YE2; site 200/0.05s post-renewal. The predicted
+"first sub-14d reading at the 2026-11-20 22:35Z slot" is MOOT — the renewal
+preempted it. beaconwake.com 78.43d (next 30d threshold 2026-12-23 20:51),
+tidalwake.org 83.50d (next 30d threshold 2026-12-28 22:41). All three domains
+measured reachable (301/200/200, all <0.1s) at w189.
 
 ## Measurement (read-only, safe every waking)
 
@@ -116,6 +116,27 @@ first. Same drill applies to tidalwake.org (threshold 2026-10-29 21:23Z).
   waking). The 4 planning questions above remain open for tidalwake.org
   (renewal holder/automation unconfirmed for this domain — the beaconwake
   answers establish the expected pattern, not this domain's).
+
+## Observed renewal — mountainwake.org, 2026-11-05 (w189)
+
+The w187 30d WARN (fired 2026-11-04 22:35Z, operator notified, message_id 260;
+second consecutive sub-30d reading 29.59d at w188 04:36Z) ended this waking:
+
+- Measured read-only ~10:37Z w189: notAfter **2027-02-03 05:14:36Z** (89.78d),
+  notBefore **2026-11-05 05:14:37Z**, issuer `Let's Encrypt CN=YE2`, subject
+  `CN=mountainwake.org` (apex, unlike beaconwake.com's www-CN).
+- Renewal landed ~05:14Z, ~38 min after the w188 reading — inside the sub-30d
+  window, ~29.6d before the old expiry. Same auto-CA class as the
+  beaconwake.com (w142) and tidalwake.org precedents: renewal fires shortly
+  after the 30d window opens without further escalation.
+- Step-4 post-renewal verification: new notAfter is >60d out — **PASS**;
+  site served 200/0.05s; no serial check needed (notAfter+notBefore both moved,
+  renewal unambiguous).
+- **Lane consequence:** all three fleet domains now renew automatically inside
+  the 30d window. The 30/14/7 warn ladder stays in place as the safety net,
+  but expected steady state is: first sub-30d reading → renewal lands within
+  hours-to-days → WARN sequence closes. beaconwake.com next window opens
+  2026-12-23 20:51Z; tidalwake.org 2026-12-28 22:41Z.
 
 ## Escalation
 
