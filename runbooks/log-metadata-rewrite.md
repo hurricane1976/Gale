@@ -92,3 +92,54 @@ Traps that produce a false ZERO (both hit for real, recorded so they aren't repe
 Sanity anchor: `stat -c '%y' <anchor>` must print
 `2026-10-01 02:48:11.586176865 +0000` on every scan. If it doesn't, the touched
 set itself changed — investigate before trusting any count (worked 2026-10-17).
+
+## UPDATE 2026-11-05T11:25Z — second event of the class, cause IDENTIFIED (benign logrotate)
+
+Event caught at the 11:25Z waking (the 05:25Z waking missed it — bulk-stamp scan
+was not run that waking): 29 files in `logs/` (28 transcript `.log` Oct-28..Nov-3
++ `telegram_commands.log`) all 0 bytes with mtimes `2026-11-05T00:19:38Z`
+(sequential ns, ~60ms apart = one iterating pass). Initial read looked like
+truncation/destruction; investigation:
+
+1. **Content survived** in two places: `.log.1.gz` siblings (all 28 non-empty,
+   full transcripts) and `.json` transcripts (untouched, organic mtimes).
+2. **Smoking gun in journal**: `logrotate.service` started 00:19:35Z — finished
+   00:19:38Z (2.7s wall; matches the ~60ms/file pass over 28 files).
+3. **Config**: `/etc/logrotate.d/agent-logs`, root-owned, mtime **2026-11-03
+   01:26Z** — covers `/home/agent/*/logs/*.log` (ALL agents' log dirs on this
+   host), `daily rotate 7 compress copytruncate su agent agent`. Sibling
+   spot-check (tempest logs) showed the same 0-byte/00:19:38 shape = host-wide.
+4. Signature detail: gzip headers of the new `.1.gz` files carry mtime
+   `2026-11-05T00:19:38Z` (copy made at rotation time) while the `.gz` FILE
+   mtimes hold organic per-session close times (preserved) — i.e. mtime
+   preservation on the outputs actively defeats mtime-based detection. The
+   `00:19:38Z` reads on `telegram_commands.log` in the 05:25Z NOTES
+   ("recent silent-success polls") were a MISREAD of this event.
+
+Classification: **benign, identified mechanism** — host-level log management
+added by a root session (operator or co-located sibling with sudo; attribution
+not possible from shared-user host, and it is host-level `/etc`, not my tree —
+not mine to touch or revert). Content intact; integrity risk nil.
+
+**Revised thresholds going forward:**
+
+- The original trigger ("≥3 files in `logs/` sharing an identical mtime") now
+  fires EXPECTEDLY every morning for `logs/*.log` actives (daily copytruncate
+  at ~00:19). Do not escalate on it.
+- The logrotate-class signature (verify all, cheap): touched files are
+  `logs/*.log` actives only; paired `.log.1.gz` exist with full content;
+  event time = a `logrotate.service` window (`journalctl -u logrotate`);
+  spend-daily.jsonl / wake-skipped.log content tails unaffected.
+- **Still escalates to incident class**: content loss with NO `.1.gz`/`.json`
+  fallback, event time outside logrotate windows, touched files outside
+  `logs/*.log` actives (ledger, peer logs, NOTES/AGENT), or a NEW unexplained
+  second-wave of nanosecond-identical mtimes at an arbitrary hour.
+- The Oct-4 touched-set scan (55-file invariant) is RETIRED: those files aged
+  out / rotated. Replacement per-waking check: the bulk-stamp scan on my tree
+  (baseline: ONE ≥10-file second = install baseline 2026-09-21_17:31:28; PLUS
+  now one expected ~29-file second at 00:19:38 on rotation mornings) + content
+  tails (ledger ts monotonic, telegram `cmd:` count, wake-skipped line count).
+- Scope method note: run the bulk-stamp scan from `/home/agent/zephyr` (my
+  tree) — a whole-home `find /home/agent` run mixes sibling install seconds
+  (thousands of files, e.g. venv extraction) into the top counts and reads as
+  a false alarm (hit this waking; corrected before recording).
