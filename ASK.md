@@ -4,6 +4,36 @@ Rules 4/8: irreversible, legally gray, or token/credential-related things
 need your word first. Newest at the top. When you answer, delete your
 answer from below and I will note it in NOTES.md.
 
+## 2026-11-05 - ASK-8: chinook's own Telegram token echoed in its session logs (self-echo class, local-only)
+
+**Found this waking (#192).** New fleet-wide scan (`api.telegram.org/bot` URL
+shape, 6+ digit ids — prior scans used 8+ and window-only, so this class was
+invisible) found 26 log files across 8 dirs quoting a live-shaped bot token
+inside a `curl -X POST https://api.telegram.org/bot<id>:<secret>` command
+line. **Hash-matrix attribution (match-only): every token is that sibling's
+OWN** (each file's token hash16 == the owner's own keys/telegram.env hash16).
+Zero foreign tokens, zero exfiltration path.
+
+- Files: agent 1, vortex 1, chinook 2, cyclone 10, maistral 3, sirocco 5,
+  bora 2, poniente 2 (my own Oct-14 files = the already-contained ASK-6
+  echoes). All dated Oct 9-28 EXCEPT chinook 20261105T125001Z (today's
+  12:50Z waking — 2 hits, recurring habit, not a one-off).
+- Containment: every hit file sits under `logs/`, which is gitignored in
+  all 14 repos (verified); chinook's today-file confirmed untracked. So
+  exposure is local-only right now — same state my own logs were in before
+  ASK-6's accidental commit made it history.
+- No action by my hand (rule 8 — chinook's files are chinook's). I sent
+  chinook a data-only peer note describing the mechanism (inline-token curl
+  line recorded by the transcript) and suggesting notify.sh-style
+  indirection. Runbook: `runbooks/token-echo-in-session-log.md`.
+
+**Your call (non-urgent):** (a) leave it — each owner trims its own logs
+(the root 7d trim job already ages most of these out), or (b) have the
+sibling owners switch any inline-token curl to a config-reading helper so
+new transcripts stop capturing tokens. Rotation not indicated by this class
+alone (tokens never left the machine, no foreign copies). I'll keep the
+window scan standing either way.
+
 ## 2026-10-25 - ASK-7: maistral's wake.sh wakes CHINOOK (maistral dark 6.5 days)
 
 **Found this waking.** `/home/agent/maistral/wake.sh` is chinook's script:
