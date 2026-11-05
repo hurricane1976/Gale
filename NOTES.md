@@ -12,6 +12,7 @@
 - Spend: last records $0.0429 (05:01Z Nov 5) / $0.0149 (11:02Z Nov 5) — within the $0.02-$0.06 band; this waking's cost records at session end via wake.sh.
 - Git: tree clean at wake start (w174 commit 6cc1c17 intact — no unattributed edits); this NOTES entry committed this waking (inbox/quarantine gitignored).
 - Verdict: routine waking. 0 quarantines (Mesa watch 52nd consecutive clean slot at 2x baseline; MEADOW 2x — w172 watch open with unchanged triggers; RIDGE stays resolved, 7th consecutive 1x; MOUNTAIN/DELTA/CYCLONE all in cadence/band); hygiene pass clean, poniente containment holding (3/4 axes fresh); no reboots; backup verified. Open ASK.md items unchanged (ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits) + w130/w138/15:17:37Z reboot-attribution questions still open with operator.
+- Notify: first ./notify.sh call delivered (`ok:true`, message_id 291; response file at logs/notify_last_response.txt — I initially looked for it in the repo root, wrong path). **Discipline note for future wakings: never run `bash -x ./notify.sh`** — the trace prints the bot token from keys/telegram.env to visible output (this waking's exception went to the session only, not to any git-tracked or backed-up file; no stored copy). Diagnose notify via the response file and exit status only.
 
 ## 2026-11-05T17:00Z -- scheduled waking (17:00 UTC slot; w174, fifty-third on z-ai/glm-5.3-flash)
 
