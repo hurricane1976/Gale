@@ -15325,3 +15325,79 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ~216h silence (22nd ping); (d) operator responses (drift line +
   maintenance-confirms + RIVER + standing asks); (e) disk arc #45;
   (f) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-05T12:50Z — waking #240 (own slot): reversion 6th point (11-05 checkpoint $2.00/30, mean back in pre-streak band), disk arc #45 +9M, RIVER ping 22 (~216h), no breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261105T065128Z, 06:51Z); (b) newest NOTES entry = #239 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 12:50:01 own slot; check_replies: no new messages —
+  standing asks (drift line, 11-03 maintenance-confirm ×3, RIVER,
+  reboots) still unanswered.
+- inbox: 9 routine msgs archived (2586 → 2595) — CYCLONE pair re-test,
+  MOUNTAIN ×2 (Rule-7 sweep + latency), MEADOW ×2 census, DELTA link
+  verify, RIDGE link verify, MESA ×2 (mesh sweep + link verify). All
+  self-labeled data-only / "no reply needed". No operator content, no
+  acks owed. (The stray empty `chinook/processed/` dir in inbox/ —
+  Oct 18 scaffold artifact, noted #39 — still present, left in place.)
+- host gale-agent: up 3d 21h33m (boot 11-01 15:17Z — no new reboots;
+  **kernel still 7.0.0-38, the staged -42 reboot remains pending**),
+  load 0.58/0.29/0.27 on 16 cores (~4% — calm), mem 5.5G/59G used
+  (53.5G avail), swap 0/8G. Journal 198.7M — under the 200M
+  SystemMaxUse cap (capped, working as intended).
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32 — stable.
+- **spend 11-05 checkpoint (12:50Z): $1.9958 / 30 runs / 0 errors,
+  max single run $0.1246** — vs 11-04's IDENTICAL 30-run checkpoint
+  $2.2935 (−13.1%) and 11-03's $2.5985/30 (−23%). Per-run mean
+  $0.0665 vs 11-04's $0.0764 (−13%) and vs 11-02 full-day $0.0653
+  (+1.8% — **back at the pre-streak band**). Checkpoint series:
+  11-01 $1.77 → 11-02 $2.04 → 11-03 $2.60 → 11-04 $2.29 → 11-05
+  $2.00. **Fourth consecutive matched-checkpoint downtick (−11%, −12%,
+  −20%, −13%); sixth corroborating point for the reversion read.**
+  Lane split at checkpoint: bora $0.3422/3, agent $0.3387/3,
+  tramontane $0.2014/2, cyclone $0.1606/2 — every lane ≤3 runs, no
+  new spike (fleet max on record stays $0.2583 squall 11-03). Close
+  projection at 11-04's checkpoint→close ratio (×1.70) ≈ **$3.4**
+  (~$3.3–3.6) — below the proposed $4/day line and below 11-04's
+  $3.89. Held under the standing #230 escalation; ASK.md updated
+  (#240 block). If 11-05 closes below $4, ask (c)'s $4/day line
+  question gains its cleanest data point yet.
+- disk arc #45: 54,777M used / 40,302M free (58%) vs #239's
+  54,768M/40,317M → +9M in 6h — deep churn band, 8th consecutive
+  post-purge point. 80% line ~24G away, **no crossing nameable**.
+- rotation watch (b): syslog 413,387,288 B (+18.8M/6h ≈ +75M/day —
+  rate steady); syslog.1 101.4M unchanged (mtime 11-01) — **no early
+  rotation**. Trigger math: (500−413.4)/75 ≈ 1.15d → **~Nov 6 late
+  evening / early Nov 7** for the early maxsize rotation; weekly
+  compression-out pass still ~11-08. Either outcome benign (bounded
+  by maxsize).
+- RIVER (22nd ping; escalation open in ASK.md): **RIVER (Tidal host)
+  still silent — ~216h since 10-27 12:31Z.** /health answers 200
+  ("Peer server is alive over Tailscale") — listener-up/lane-dark
+  masking pattern unchanged. Twenty-second data-only verify ping sent
+  12:5xZ → transport `{"status":"ok"}`, no reply. ASK.md item stays
+  open (no new block this waking — state unchanged from #239).
+- forecast / thresholds: no hard line crossed — load ~4%, cadence
+  full (zero own-slot skips), mesh 14/14, Tailscale stable, max run
+  $0.1246 ≪ $5, day pacing ≪ $15. Cost reversion strengthening to
+  6 points; disk churn-band. Near-term disk events unchanged (~Nov 6
+  late-evening syslog rotation likely; pending 7.0.0-42 reboot —
+  confirm-before-flag per the 11-01 precedent). Saturation: no
+  sibling near a hard LOCAL limit (CPU/mem/disk); the cost drift is
+  host-wide and easing — no advisory warranted this waking.
+- done this waking: trigger verify; self-check; check_replies; host
+  health baseline; 14/14 peer sweep + Tailscale addr; kernel-pending
+  verify; disk arc #45 (+9M, churn band); rotation watch (no early
+  pass, ~Nov 6 late-evening estimate holds); spend checkpoint tally
+  (14 lanes) + ASK.md #240 update; RIVER /health check + 22nd verify
+  ping; inbox 9 archived (2595); backup + verify
+  (chinook-20261105T125310Z, 392K, 75 entries, gzip -t + AGENT.md
+  read-back OK; 14 snapshots at ceiling); NOTES entry; commit;
+  notify.
+- next waking (18:50Z 11-05, #241 — own slot): watch (a) 11-05 close
+  — reversion hold (~$3.3–3.6 projection) vs the $4 line; (b) syslog
+  vs the ~Nov 6 late-evening trigger or early syslog.1; (c) RIVER
+  reply or ~222h silence (23rd ping); (d) operator responses (drift
+  line + maintenance-confirms ×3 + RIVER + standing asks); (e) disk
+  arc #46; (f) pending 7.0.0-42 reboot (confirm first).

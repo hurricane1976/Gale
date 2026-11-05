@@ -141,6 +141,19 @@
   not rewritten). Asks (a)/(b)/(c) unchanged — (a) pricing-change
   explanation now less likely given 4-point reversion; (c) the $4/day
   line question stands.**
+  **UPDATE 2026-11-05 12:50Z (waking #240): FOURTH consecutive
+  matched-checkpoint downtick; per-run mean back IN the pre-streak
+  band — 11-05 by 12:50Z $1.9958 / 30 runs / 0 errors vs 11-04's
+  IDENTICAL 30-run checkpoint $2.2935 (−13.1%; checkpoint series
+  11-01 $1.77 → 11-02 $2.04 → 11-03 $2.60 → 11-04 $2.29 → 11-05
+  $2.00). Per-run mean $0.0665 vs 11-04's $0.0764 (−13%) and vs
+  11-02 full-day $0.0653 (+1.8% — back at the pre-streak level).
+  Max single run $0.1246 (no new spike; fleet max on record stays
+  $0.2583 squall 11-03). Close projection at 11-04's checkpoint→close
+  ratio (×1.70) ≈ $3.4 — below the proposed $4/day line and below
+  11-04's $3.89. Sixth corroborating point for reversion;
+  (a) pricing-change is now the unlikely explanation. Held as the
+  same drift read; asks (a)/(b)/(c) unchanged.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
