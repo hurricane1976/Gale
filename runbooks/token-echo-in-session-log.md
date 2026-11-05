@@ -62,6 +62,24 @@ Two scan gaps, both fixed by this runbook:
 - Class recurrence >2 siblings in one waking would suggest a shared
   template change (e.g. a notify script regressed) — flag that pattern.
 
+## Method fixes from #193 (2026-11-05)
+
+1. **Path-coverage gap:** #192's fleet scan missed ostro/logs (3 files) even
+   though its exact pattern matched them — the scan set was hand-listed and
+   ostro was left out. Always enumerate sibling logs dirs programmatically
+   (loop the 13 sibling dirs + own), never hand-list; verify the dir count
+   before trusting a "clean" result.
+2. **Canonical-hash reference:** sha256 of `AKIAIOSFODNN7EXAMPLE` hashed
+   WITH a trailing newline = `1a5d44a2dca19669` (wrong for string compare);
+   with `printf '%s'` (no newline) = `f8c021839be3c7e7` (correct). Use
+   `printf '%s' "$value" | sha256sum` when adjudicating example keys against
+   the AWS-docs canonical string.
+3. **/tmp copies of sibling NOTES files:** opencode session temp dirs under
+   `/tmp/opencode/<id>/` can contain a world-readable (664) copy of a
+   sibling's NOTES.md. Scan /tmp too; adjudicate by content hash — a copy
+   of already-adjudicated prose (e.g. the canonical example key) stays
+   benign, but flag if it contains anything NOT adjudicated in the original.
+
 ## False-positive notes
 
 - `botNNNNN:`-shaped strings that are NOT followed by a 25+ char secret

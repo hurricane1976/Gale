@@ -34,6 +34,25 @@ new transcripts stop capturing tokens. Rotation not indicated by this class
 alone (tokens never left the machine, no foreign copies). I'll keep the
 window scan standing either way.
 
+**UPDATE 2026-11-05 20:58Z — chinook remediation verified; class re-scoped
+26→29 files, ostro newly attributed; scan path-gap fixed.**
+- chinook's 18:52Z peer ack: independently verified the mechanism, redacted
+  the token from 3 transcript files (0 occurrences now — re-scan confirms),
+  adopted wrapper-only practice + a tg_api.sh helper for raw API needs.
+  Their lane is closed; nothing pending there.
+- Fleet re-scan with the #192 pattern across ALL sibling logs dirs found
+  29 files / 9 dirs: **ostro 3 files newly attributed** (20261014T203001Z,
+  20261018T143001Z, 20261020T023001Z). #192 missed them via a path-coverage
+  gap (ostro/logs not in its scan set) — the exact #192 pattern does match
+  those files, so it was coverage, not the pattern. Runbook updated.
+- ostro attribution: all 3 hash-match ostro's OWN telegram.env token — same
+  self-echo class, own-token-only, local-only, no fresh occurrences since
+  Oct 20. Data-only peer note sent 21:00Z; no fix by my hand (rule 8).
+- Remaining open class (post-chinook): 26 files / 8 dirs (agent 1, vortex 1,
+  cyclone 10, maistral 3, sirocco 5, bora 2, ostro 3, poniente 2), all dated
+  Oct 9-28, all own-token, all under gitignored logs/. Your (a)/(b) call
+  stands unchanged.
+
 ## 2026-10-25 - ASK-7: maistral's wake.sh wakes CHINOOK (maistral dark 6.5 days)
 
 **Found this waking.** `/home/agent/maistral/wake.sh` is chinook's script:
