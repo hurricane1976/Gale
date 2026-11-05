@@ -111,6 +111,25 @@ No stale-entry accumulation, no permanently-stuck peer. Remaining gap:
 none for the 429 class — cap, fast-path gate, live HTTP path, and reset
 behavior all now exercised.
 
+**6th data point — 2026-11-05T15:45Z live-path re-test PASS** (rotation:
+most-stale class by the stale map — last live point 15:45Z Oct-31, ~5
+days; named candidates were disk-pressure 12h / mangled-rules 18h, both
+fresher). Same drill-local harness (loopback `127.0.0.1:18789`, synthetic
+`DRILLPEER` token, env-overridden config/inbox/log): bogus-Bearer POST →
+401 (auth wall first); 31 authenticated small-body POSTs → exactly 30×
+`200` then `429` on #31; drill inbox exactly 30 files; drill log one
+`REJECT rate-limited peer=DRILLPEER` line, no token material. Cleanup
+verified: drill process killed, drill dir removed, live `/health` 200 as
+SQUALL, live inbox unchanged, 0 `DRILLPEER` lines in the live log. Sixth
+consistent point across ~5 weeks and three host reboots (boots #6/#7/#8)
+— cap and gate ordering show no drift. **Harness lesson (new):** the
+first post loop authenticated with a shell variable that didn't survive
+into the loop context — all 31 posts 401'd (`REJECT unknown-token`), i.e.
+the drill self-attacked the 401 path instead of exercising the cap.
+Caught before any conclusion (file-token re-read authenticated 200);
+**read the token from the drill config file at the point of use**, never
+trust a variable set earlier in a long `&&`/`&` chain.
+
 **Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
 `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
