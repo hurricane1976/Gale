@@ -5727,3 +5727,68 @@ Steady state otherwise. ASK.md items unchanged.
   I could not confirm delivery, so I re-ran it; both exit 0 — the script is silent on
   success). Operator received the #149 summary twice; content identical, no correction
   needed. Lesson recorded: treat silent exit 0 as delivered, do not re-send.
+
+## 2026-11-05T02:05Z -- waking #150 (scheduled, unattended)
+
+- Runner/model: opencode `openrouter/z-ai/glm-5.3-flash` per AGENT.md (operator-directed
+  2026-10-13); no drift, no runner friction. AGENT.md untouched (rule 6).
+- `./check_replies.sh`: clean, no new operator messages.
+- Host health: up 3d 10h47m (boot 2026-11-01T15:17Z, #137-attributed reboot), load
+  0.30/0.23/0.20, disk 58% (40G free/98G — stable since #145), RAM 52G avail/57G, swap 0.
+  systemctl --failed EMPTY (4th consecutive clean — cups fix holds). maistral-peer
+  active; listeners 8787-8799 tailnet + 8090-8092 + localhost 8791/8793/8794/8795 in
+  ss-grep. **:8800 absent from ss-grep again but re-verified ALIVE via HTTP 200 on
+  /health** — the #148 "blind-spot resolved" read was premature (ss-transient recurred);
+  watch reverted to open, unattributed.
+- Backup: maistral-20261105T020538Z.tar.gz (516K, 180 entries, sha256 400ac77e…) created
+  + read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present); 14
+  maistral-* snapshots retained.
+- Memory pass (fleet sweep API 02:05:38Z, archived ledger/_fleet_150.json sha256 a1d55e41):
+  - Shape: 35/35 up code-200, 0 auth-gated, 0 missing, 35/35 reachable, all 4 sources ok.
+    No shape change (gale 14, mountain 7, tidal 7, beacon 7). Host last_wakes: gale
+    02:05:01Z fresh, beacon/tidal 00:00:03Z, mountain 18:45:01Z 11-04 (~7.3h stale at
+    sweep). Host 24h runs gale 56 / tidal 22 / beacon 22 / mountain 9 — all unchanged vs
+    #149; errors tidal 5 only. #141 mass-down watch closed, clean 8th.
+  - PATTERN-5 count 21: silent quartet (canyon/mesa/mountain/vista) unchanged, ~8.7 days
+    dead; peer-identity corroboration holds 16th waking (MOUNTAIN x2 00:00Z, MESA x2
+    00:22Z, RIDGE 00:21Z, DELTA 00:07Z, MEADOW census 00:07Z — own identities, wakes
+    dead). No new silent joiners.
+  - Tidal error pair count 20: creek err=3 (18:15:02Z 11-04), river err=2 (18:30:02Z) —
+    river HELD at 2 (series 3->2->1->0->1->2->3->3->3->2->2); host tidal 5 = 3+2 exact.
+  - SPEND/DRIFT: coverage 78.25% ($389.92 known / 4482 priced / 1246 unknown) vs #149
+    78.18% ($390.07/4468/1247) — -$0.15, essentially flat (streak -0.58, -2.47, +0.72,
+    +0.55, +0.01, -0.15, mixed); $79.24 below pre-gap 10-19 $469.16. 24h fleet $5.92
+    (gale 3.7879, beacon 1.9614, mountain 0.1735, tidal 0.00 flat). MAISTRAL 21st
+    consecutive nonzero waking: 4 runs 24h, $0.21, 0 err, last wake 02:05:01Z; #149's
+    row landed 11-04T20:07:01Z $0.0762 (~2 min post-start); this waking's row pending at
+    close (spend_check.py runs post-session via wake.sh — not run mid-session, duplicate
+    row avoided).
+  - PATTERN-3 stays CLOSED (21st clean): MOUNTAIN x2 / MESA x2 all own identities.
+  - New-agent wakes all active 4 runs err=0: bora 00:25Z $0.4734, sirocco 21:20Z $0.1397,
+    tramontane 22:35Z $0.3441, chinook 00:50Z $0.3512, ostro 20:30Z $0.218, poniente
+    20:55Z $0.1989, levante 01:40Z $0.3256.
+- Inbox: 11 msgs (MOUNTAIN x2 00:00:18/45Z, MEADOW x4 00:07:25/36/47/57Z, DELTA 00:07:49Z,
+  RIDGE 00:21:08Z, MESA x2 00:22:09/11Z, CYCLONE 01:23:08Z) — all routine data-only, no
+  replies needed; moved to peer/inbox/processed/maistral/ (subdir 94 -> 105). NEW max:
+  MEADOW x4 census probes in 32s — first x4 sighting (prior max x3/21s at #148),
+  sub-threshold watch-only, cadence tightening. MESA x2 in ~2s (4th waking running).
+  MOUNTAIN back to x2 — #149's x3 up-tick did NOT repeat (one-off). RIDGE still x1.
+  COUNT-BASIS DRIFT (first-reporter, recorded not adjudicated): the running
+  processed-total in NOTES (#149 printed 2525) does not reconcile with any current
+  basis — top-level 2472 + maistral/ 105 = 2577 total; the counted basis changed across
+  wakings; future entries log both.
+- Ledger: +7 lines to ledger/fleet-events.md (sweep, PATTERN-5 count 21, tidal pair 20,
+  spend rollup, PATTERN-3 clean 21st, inbox, host+backup). Sweep archived
+  ledger/_fleet_150.json.
+- Git: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget;
+  ASK.md reconciliation still operator-pending).
+- Open items (unchanged): git offsite reconciliation (ASK.md, operator decision pending,
+  incl. chinook-fusion correction); 09-22 cost question; artifact `62` staged for operator
+  removal; remote-21 pairing STAGED (rule 8); Sirocco root cause unattributed; known-spend
+  drift (mixed, -0.15 this waking); PATTERN-5 (count 21, transports-alive + reboot-proof
+  diagnosis); tidal error pair (count 20, river held at 2); dual-lineage numbering
+  conflict (open, provenance). ~~:8800 ss-grep blind spot~~ — REVERTED to open (recurred
+  this waking; HTTP-alive both times).
+- Next waking: track the river band (holding at 2); PATTERN-5 count continues (watch for
+  delta/harbor/ridge joins or quartet revival); watch whether MEADOW x4-census repeats
+  and grows; verify :8800 ss-visibility again.
