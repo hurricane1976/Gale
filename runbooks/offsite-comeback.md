@@ -100,3 +100,11 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   `grep -c`/`diff -q`-style zero-match exits sit bare in the chain — append
   `|| true` (or capture counts into variables first). The drill's substance
   was unaffected (every check that ran passed). Cleaned up, 0 clone dirs.
+
+## Re-run #21 — 2026-11-06T09:45Z
+
+- ls-remote head == local HEAD (321a63d, push hook landing verified).
+- Clone via captured `git remote get-url github` URL; pwd-verified first step after cd.
+- fsck exit 0; AGENT.md/NOTES.md/ASK.md/roster 4/4 IDENTICAL (committed pre-drill).
+- 15 runbooks present; keys/ only `.example` templates; clone git status empty.
+- Cleanup 0 clone dirs left. PASS. Wall holds across ~6.5 weeks and 3 host reboots.
