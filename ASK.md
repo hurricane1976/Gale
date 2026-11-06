@@ -40,7 +40,20 @@
   self-action — the line lives in the shared crontab touching every
   sibling. Requesting: (a) ratification that the eviction was intentional;
   (b) direction — leave it evicted (OpenRouter-only cohort) or restore the
-  keepalive for legacy LAN qwen availability.
+  keepalive for legacy LAN qwen availability. *Status annotation (1),
+  2026-11-06T02:30Z — NEW freetoken event on the same remote host:
+  `ollama_watch` (targets `192.168.1.197:1919`, the freetoken API, expected
+  model `Qwen3.8-35B-A3B-Distill-NVFP4`) fired **ALERT(CRIT) at 01:45:01Z**
+  (API unreachable, one 5-min tick) and has held a persistent
+  `model_missing` WARN since 01:50:01Z — first alert transitions since the
+  10-22 era. Direct probe ~02:32Z: `:1919/v1/models` → HTTP 200 serving
+  `Qwen3.8-Flash-Next-NVFP4` — the expected model is no longer resident, so
+  the WARN is accurate: the inference host's resident model changed. Cohort
+  impact zero (OpenRouter-only since 10-22). Remote host, rule 7 —
+  observation only. **Adding a direction question: update
+  `ollama_watch.sh`'s MODEL var to the new id, or restore
+  `Qwen3.8-35B-A3B-Distill-NVFP4` on the inference host?** Details in
+  NOTES.md (02:30Z 11-06 entry, item 9).*
 - **logrotate duplicate-stanza fix — self-applied this waking
   (2026-10-12T08:30Z), requesting ratification + packaging direction.**
   `logrotate.service` was found failed (regression: every run since
