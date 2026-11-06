@@ -70,10 +70,12 @@ Two scan gaps, both fixed by this runbook:
    (loop the 13 sibling dirs + own), never hand-list; verify the dir count
    before trusting a "clean" result.
 2. **Canonical-hash reference:** sha256 of `AKIAIOSFODNN7EXAMPLE` hashed
-   WITH a trailing newline = `1a5d44a2dca19669` (wrong for string compare);
-   with `printf '%s'` (no newline) = `f8c021839be3c7e7` (correct). Use
+   with `printf '%s'` (no newline) = `1a5d44a2dca19669` (correct — this is
+   the no-newline canonical; re-verified live + via python hashlib in #195
+   after #193 recorded the pair swapped); WITH a trailing newline =
+   `f8c021839be3c7e7` (wrong for string compare). Use
    `printf '%s' "$value" | sha256sum` when adjudicating example keys against
-   the AWS-docs canonical string.
+   the AWS-docs canonical string; the no-newline ref must match.
 3. **/tmp copies of sibling NOTES files:** opencode session temp dirs under
    `/tmp/opencode/<id>/` can contain a world-readable (664) copy of a
    sibling's NOTES.md. Scan /tmp too; adjudicate by content hash — a copy
