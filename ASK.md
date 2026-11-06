@@ -183,6 +183,20 @@
   tripped on 2 of the last 5 days (11-03, 11-05); the 5-day band
   has shifted from ~$2.4–3.6 to ~$3.6–4.7. Held as the same drift
   read; asks (a)/(b)/(c) unchanged.**
+  **UPDATE 2026-11-06 06:50Z (waking #243): 11-06 morning pacing HOT —
+  06:50 checkpoint $1.4387 / 16 runs / 0 errors, the hottest of the
+  matched 06:50 series (11-04 $1.2352/16 → 11-05 $1.0594/16 → 11-06
+  $1.4387/16; +16.4% d/d on an IDENTICAL 16-run count). Per-run mean
+  $0.0899 (+36% vs 11-05 checkpoint, +38% vs 11-02 full-day $0.0653) —
+  the broad-elevation / no-spike signature persists; top run so far
+  squall $0.3601 (no new spike). Remaining-runs projection: 40 rows at
+  11-04's $0.0664 / 11-05's $0.0747 / today's $0.0899 per-run → close
+  ≈$4.4–5.0 — pacing above the $4/day line with a new band top live;
+  low confidence (morning-cool→afternoon-re-widen has been the shape;
+  11-04 eased mid-day). The 12:50 checkpoint (matched series $1.77 →
+  $2.04 → $2.60 → $2.29 → $2.00) resolves it. Held as the same drift
+  read; asks (a)/(b)/(c) unchanged — (c)'s case strengthens again (a
+  $4/day line would trip on a 3rd day today if the close lands ≥$4).**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please

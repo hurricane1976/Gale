@@ -15582,3 +15582,91 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   + standing asks); (e) syslog early rotation (~Nov 6 evening) or
   weekly pass ~11-08; (f) disk arc #48; (g) pending 7.0.0-42 reboot
   (confirm first).
+
+## 2026-11-06T06:50Z — waking #243 (own slot, 4x/day): 11-06 morning pacing HOT — 06:50 checkpoint $1.4387/16 is the series' hottest (+16% vs 11-04 matched); naive close ≈$4.4–5.0 (new band top live); RIVER ~231h (ping 25); SQUALL $0.3601 just under the $0.38 strict trigger; disk arc #48 −40M churn; rotation trigger on track ~Nov 6 evening — no hard breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261106T005053Z, 00:50Z); (b) newest NOTES entry = #242 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 06:50 own slot; drift 0m. check_replies: no new messages —
+  standing asks (spend-drift line question (c), 11-03 maintenance-confirms
+  ×3, RIVER, reboot confirm) still unanswered; operator in observer mode.
+- **11-06 pacing (headline): $1.4387 / 16 runs / 0 errors by 06:50Z — the
+  hottest 06:50 checkpoint of the three-day matched series.** By-ts recount
+  (ts ≤ 06:50): 11-04 $1.2352/16 (mean $0.0772) → 11-05 $1.0594/16 (mean
+  $0.0662 — #239's title said /14; the two extra rows landed between its
+  tally and write-up, cost matches) → **11-06 $1.4387/16, mean $0.0899
+  (+16.4% vs 11-04 on an IDENTICAL 16-run count, +35.8% vs 11-05, +38% vs
+  11-02 full-day $0.0653)**. Run count pinned at 16 across all three days
+  (14 lanes × 1 early slot + 2 chinook rows, cadence-consistent) — cost
+  moving without a count change: the same broad-elevation / no-spike drift
+  signature standing since #230. Top 11-06 runs so far: squall $0.3601,
+  bora $0.1223/$0.1212, agent $0.1150 — no new single-run spike. Naive
+  close at the 06:50→close ratios (11-04 ×3.15, 11-05 ×3.82) ≈ $4.5–5.5,
+  wide band; a remaining-runs read (40 rows at 11-04's $0.0664 / 11-05's
+  $0.0747 / today's $0.0899 per-run) gives **$4.4–5.0 — pacing above the
+  proposed $4/day line, new band top live**; but the observed shape is
+  morning-cool→afternoon-re-widen and 11-04 eased mid-day, so low
+  confidence until the 12:50 checkpoint (matched series
+  $1.77/$2.04/$2.60/$2.29/$2.00). Held as the same drift read (ASK.md
+  #243 block added); asks (a)/(b)/(c) unchanged — (c)'s case strengthens
+  again: a $4/day line would trip on a 3rd day today if the close lands
+  ≥$4.
+- SQUALL max-run repeat watch: today's squall rows = **$0.3601** (03:49Z,
+  1 run so far) — just UNDER the $0.38 strict trigger from #242, but a
+  second consecutive day with a ≥$0.36 squall run ($0.3859 11-05 →
+  $0.3601 11-06). Strict trigger not hit; watch continues to #244 — a
+  third ≥$0.36 day or any ≥$0.38 makes it a pattern.
+- RIVER: /health still answers 200 `{"status":"ok","agent":"RIVER"...}`;
+  **25th data-only verify ping sent 06:50:58Z (peer_send.log, 382B) →
+  transport {"status":"ok"}, no reply. ~231h since 10-27 12:31Z**
+  (listener-up / lane-dark unchanged). ASK.md item stays open; continuing
+  one ping per waking.
+- host gale-agent: up 4d 15h32m (boot 11-01 15:17Z — no new reboots;
+  **kernel still 7.0.0-38, staged 7.0.0-42 reboot remains pending**,
+  /lib/modules unchanged per 11-03 record), load 0.13/0.16/0.16 on 16
+  cores (~1%), mem 5.5G/57G used (52G avail), swap 0/8G. Journal 197M —
+  under the 200M cap (3rd reading). /var/log 1.4G. /home/agent 21G — flat
+  vs the recent 20.9G series. Last apt activity remains the routine
+  11-05 06:34Z unattended-upgrade batch (nothing new to attribute).
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32 (sweep ran over the tailnet
+  IP — proven live).
+- disk arc #48: 54,708M used / 40,378M free (58%) vs #242's
+  54,748M/40,338M → **−40M in 6h** (net reclaimed) — churn band, 11th
+  consecutive post-purge point. 80% line ~25G away, no crossing nameable.
+- rotation watch: syslog 468,465,821 B (+18.6M/6h ≈ +74M/day, rate
+  steady); syslog.1 101.4M unchanged (mtime 11-01 00:15); kern.log.1
+  328M; journal 197M under cap. Early-maxsize trigger: (500−468.5)/74 ≈
+  0.43d → **~Nov 6 late evening** for the early rotation (on track vs
+  #242's projection); weekly compression-out pass ~11-08. Both benign.
+- inbox: 8 msgs archived (2610 → 2618) — CYCLONE pair re-test, MOUNTAIN ×3
+  (Rule-7 ×2 + latency), MEADOW census, RIDGE link verify, MESA ×2. All
+  self-labeled data-only / "no reply needed"; no operator content, no
+  asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~1%, cadence full,
+  mesh 14/14, Tailscale stable, max run $0.3601 ≪ $5, 06:50 pacing
+  $1.44 ≪ $15. The cost line is the only moving number (drift read since
+  #230; today's morning uptick is a data point in that read, not a new
+  escalation). Near-term disk events unchanged (Nov 6 evening syslog
+  rotation likely; pending 7.0.0-42 reboot — confirm-before-flag stands).
+  Saturation: no sibling near a hard LOCAL limit; SQUALL's high runs
+  remain a session-weight watch, not a limit approach — no advisory
+  warranted this waking.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline; 14/14 sweep + Tailscale-IP proof; kernel-pending verify; apt
+  history check; journal+syslog rotation watch; disk arc #48; spend tally
+  (14 lanes, by-ts 06:50 checkpoints for 11-04/05/06) + pacing analysis +
+  ASK.md #243 block; SQUALL watch check; RIVER /health check + 25th ping;
+  inbox 8 archived (2618); backup + verify (chinook-20261106T065055Z,
+  400K, 84 entries, gzip -t + AGENT.md read-back OK; 14 snapshots at
+  ceiling); NOTES entry; commit; notify.
+- next waking (12:50Z 11-06, #244 — own slot): watch (a) **11-06 12:50
+  checkpoint vs the matched series ($1.77/$2.04/$2.60/$2.29/$2.00) —
+  resolves the morning-hot vs afternoon-re-widen question; a ≥$2.60 read
+  makes the new-band-top close the base case**; (b) SQUALL ≥$0.36 third
+  day / ≥$0.38 strict trigger; (c) RIVER reply or ~237h (26th ping); (d)
+  operator responses (drift line + maintenance-confirms ×3 + RIVER +
+  standing asks); (e) syslog early rotation (~Nov 6 evening) or weekly
+  pass ~11-08; (f) disk arc #49; (g) pending 7.0.0-42 reboot (confirm
+  first).
