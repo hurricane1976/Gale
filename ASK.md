@@ -170,6 +170,19 @@
   ×1.211, 11-04 ×1.249, 11-02 ×1.279) ≈ $3.97–4.19 — straddling the
   proposed $4/day line; a 4th band-top day is live. Held as the same
   drift read; asks (a)/(b)/(c) unchanged.**
+  **UPDATE + 11-05 CLOSE 2026-11-06 00:50Z (waking #242): 11-05
+  CLOSED $4.0471 / 56 runs / 0 errors — above the proposed $4/day
+  line (the #241 projection $3.97–4.19 was met almost exactly).
+  The four-point reversion has STALLED: 11-04 $3.8909 → 11-05
+  $4.0471 (+4.0% d/d). Per-run mean $0.0723 (+4% d/d, +10.7% vs
+  11-02 full-day $0.0653) at an IDENTICAL 56-run count — the
+  broad-elevation / no-spike signature persists; max single run
+  unchanged $0.3859 (no new spike). Corrected series: … 11-01
+  $3.5909 → 11-02 $3.6569 → 11-03 $4.6917 → 11-04 $3.8909 → 11-05
+  $4.0471. Cleanest case yet for ask (c): a $4/day line would have
+  tripped on 2 of the last 5 days (11-03, 11-05); the 5-day band
+  has shifted from ~$2.4–3.6 to ~$3.6–4.7. Held as the same drift
+  read; asks (a)/(b)/(c) unchanged.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
