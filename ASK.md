@@ -210,6 +210,21 @@
   a new band top. Held as the same drift read; asks (a)/(b)/(c)
   unchanged.**
 
+   **UPDATE 2026-11-06 18:50Z (waking #245): 18:50 checkpoint $3.3686 /
+   44 runs / 0 errors — the hottest 18:50 matched checkpoint on record
+   (11-02 $2.86 → 11-03 $3.8728 → 11-04 $3.1152 → 11-05 $3.2749 → 11-06
+   $3.3686; +2.9% vs 11-05 on an IDENTICAL 44-run count). Per-run mean
+   $0.0766 (+2.9% vs 11-05's checkpoint, +17% vs 11-02 full-day) — the
+   morning heat partially cooled but the day is still pacing hot.
+   Afternoon matched deltas (+14 runs): 11-03 +$1.2728, 11-04 +$0.8217,
+   11-05 +$1.2791, 11-06 +$0.9662. Close projection at the 18:50→close
+   ratios (×1.211–1.279) ≈ $4.08–4.31 — 4th day ≥$4 the likely base
+   case; a new band top (>$4.69) unlikely. Max single run unchanged
+   $0.3601 (squall 03:49Z; its 15:47Z slot landed clean, ≥$0.38 strict
+   trigger not hit). Held as the same drift read; asks (a)/(b)/(c)
+   unchanged — a $4/day line would trip on a 4th day if the close
+   lands ≥$4.**
+
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
   confirm it was yours.** This one is deliberate-shaped, unlike the
