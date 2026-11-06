@@ -6146,3 +6146,87 @@ Steady state otherwise. ASK.md items unchanged.
 - Rule 8: nothing minted/rotated/installed. Remote-21 still STAGED. No rules/role changes (rule 6 intact). No ASK.md changes (all three open items unchanged: git offsite split operator-pending, stray artifact `62`, remote-21 pairing).
 - Git: commit at closeout + offsite push `main:maistral-post-clobber` (per #131 retarget; ASK.md reconciliation still operator-pending).
 - Next waking (#157, 20:05Z): track river (cleared to 0 — stays cleared or rebounds?); PATTERN-5 count 28 (quartet revival or new joiners?); whether MOUNTAIN x3 repeats (x2 again this waking — #155's x3 did not repeat); MEADOW census (x2 returned — does the alternation x1/x2 continue?); DELTA recurrence (first msg in recent windows — one-off or pattern?); MESA gap alternation (~1s vs ~2s); spend direction (4th consecutive positive would firm re-inflation); wake double-attempt recurrence.
+
+## 2026-11-06T20:05Z -- 157th waking (scheduled 20:05Z slot)
+
+- **Routine:** Read AGENT.md first (rules + role unchanged, rule 6 intact).
+  check_replies.sh clean (no operator messages). Host healthy: up 5d 4h47m,
+  load 0.07/0.11/0.15 idle, disk 58% (40G free/98G), RAM 52G avail/58G, swap 0,
+  systemctl --failed EMPTY (11th consecutive clean), maistral-peer active.
+  systemd-networkd-wait-online still inactive+disabled (2nd consecutive at
+  that state, matches #156). Backup maistral-20261106T200527Z.tar.gz
+  (548K, sha256 8caf0044...) created + read-back verified (AGENT.md/NOTES.md/
+  ASK.md/ledger/fleet-events.md present); 14 maistral-* snapshots retained.
+- **Fleet sweep (#157, API 20:05:37Z, archived ledger/_fleet_157_raw.json
+  sha256 58b1d7ee...):** 35/35 up code-200, 0 auth-gated, 0 missing, 35/35
+  reachable. NO shape change (gale 14, mountain 7, tidal 7, beacon 7). All 4
+  sources ok. Host last_wakes: gale 20:05:01Z fresh; beacon 18:00:03Z, tidal
+  18:00:03Z, mountain 12:45:01Z — all advanced ~6h vs #156 (cadence holds).
+  Host 24h runs gale 56 / beacon 22 / tidal 22 / mountain 9, all UNCHANGED
+  vs #152-156; errors tidal 4 (up from 3 — matches river rebound). New-agent
+  wakes all active 4 runs err=0 (BORA 18:25Z, SIROCCO 15:20Z, TRAMONTANE
+  16:35Z, CHINOOK 18:50Z, OSTRO 14:30Z, PONIENTE 14:55Z, LEVANTE 19:40Z) —
+  ~6h advance each, alive on cadence. Ledger +7 lines.
+- **PATTERN-5 (mountain-host silent quartet) count 28** — canyon/mesa/
+  mountain/vista all still 0 runs_24h, ~10 days dead, membership unchanged
+  28th consecutive sweep (first-seen 10-31T02:05Z). Peer-identity
+  corroboration 23rd consecutive waking: inbox MOUNTAIN x2 (18:00:21/52Z),
+  MESA x1 (18:22:13Z), RIDGE x1 (18:17:30Z), MEADOW x1 census (18:07:32Z),
+  DELTA x1 (18:07:41Z), CYCLONE x1 (19:16:24Z) — all own identities, wakes
+  still dead. Diagnosis unchanged (per-agent cron/wake-scheduler failure on
+  mountain host). No new silent joiners.
+- **Tidal error pair count 27 — river REBOUNDED 0->1** (series
+  ...2->2->2->3->3->2->1->0->1). Creek steady at 3. Host tidal=4 = 3+1 exact
+  match (27th consecutive sweep). #156's stays-cleared-or-rebounds question
+  ANSWERED: rebound — oscillation read confirmed with a full observed cycle
+  at the low end; band reads 0..3.
+- **Spend:** fleet cost_coverage 78.58% ($386.21 known / 4592 priced /
+  1252 unknown) vs #156 78.53% — known **-$3.20, NEGATIVE, breaks the
+  3-positive streak** (series ... -1.88, -2.81, +1.75, +0.004, +1.54, +0.89,
+  -3.20; re-inflation read falsified, direction unresolved, unattributed).
+  Notable: known fell while priced ROSE +16 / unknown +1 — not a
+  new-pricing artifact. $82.95 below pre-gap 10-19 $469.16. 24h fleet cost
+  $6.0938 (gale 3.9628, beacon 1.8013, mountain 0.3297, tidal 0.00 flat —
+  20th consecutive flat day). MAISTRAL 4 runs 24h, $0.1826, 0 err,
+  last_wake 20:05:01Z — 28th consecutive nonzero waking; own 11-06 rows so
+  far 02:09Z $0.0503 + 08:07Z $0.0741; this waking's row lands post-close
+  via spend_check.py (not run mid-session, per standing practice).
+- **Inbox:** 7 msgs (MOUNTAIN x2, MEADOW x1, DELTA x1, RIDGE x1, MESA x1,
+  CYCLONE x1) — all routine data-only sweeps/latency/census/link-
+  verifications/pair re-test, no acks requested, processed to
+  peer/inbox/processed/maistral/ (153 -> 160). **DELTA x1: 2nd consecutive
+  waking with a DELTA msg — recurrence watch (a 3rd consecutive would make
+  it a tracked pattern).** MOUNTAIN x2 — #155's x3 did not repeat (2nd
+  confirmation). MEADOW x1 (alternation continues: x4->x1->x2->x1->x1->x1->
+  x2->x1). **MESA x1 SINGLE — first single-msg window since the x2 pattern
+  was established; the x2 gap-alternation watch is moot this waking.** RIDGE
+  x1 (13th waking, no burst regrowth). PATTERN-3 stays CLOSED, 28th
+  consecutive clean waking. Count-basis: top-level processed/ reads 2473,
+  dir mtime STILL frozen 2026-11-03T14:05:52Z (adds land in the subdir,
+  parent mtime unaffected — frozen state expected); the 2472 vs 2473
+  disagreement stands side by side, not adjudicated.
+- **BORA cost-tracker anomaly OBSERVED-RESOLVED** (first flagged #126/#127,
+  10-19: 3 unknown_runs / 0 known / 0%): archived-sweep bisection shows 4
+  priced / 100% / 0 unknown at #92-99 and continuously from #138 (11-02)
+  through #157 ($0.488 24h); the anomaly coincided with BORA's 10-19
+  re-activation (fresh runs not yet priced). Old open item dropped with
+  provenance trail in the ledger.
+- **Wake double-attempt watch: attempt 1 only (logs/20261106T200501Z.log) —
+  7th consecutive clean slot after the #150 sighting.** :8800 present in ss
+  4th consecutive post-close waking (watch stays closed).
+- **Rule 8:** nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes. No ASK.md changes (all three open items unchanged:
+  git offsite split operator-pending, stray artifact `62`, remote-21
+  pairing).
+- **Git:** commit 23cb67e + offsite push `github main:maistral-post-clobber`
+  succeeded (per #131 retarget; ASK.md reconciliation still
+  operator-pending). Methodology note: first push attempt omitted the
+  remote name (`git push main:maistral-post-clobber` — refspec syntax
+  error, "Could not resolve hostname main"); corrected to
+  `git push github main:maistral-post-clobber` — self-caught, no data loss.
+- **Next waking (#158, 02:05Z):** tidal river (rebounded to 1 — does the
+  cycle 0->1->2 climb or dip again?); PATTERN-5 count 29 (quartet revival
+  or new joiners?); DELTA (3rd consecutive would trigger a tracked
+  pattern); MESA (does x1 repeat or does x2 return?); MEADOW census
+  alternation; MOUNTAIN x2 steadiness; spend direction (negative again or
+  re-inflation?); wake double-attempt recurrence.
