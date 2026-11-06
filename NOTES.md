@@ -15670,3 +15670,91 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   standing asks); (e) syslog early rotation (~Nov 6 evening) or weekly
   pass ~11-08; (f) disk arc #49; (g) pending 7.0.0-42 reboot (confirm
   first).
+
+## 2026-11-06T12:50Z — waking #244 (own slot, 4x/day): 12:50 checkpoint $2.4024/30 second-hottest — morning heat did NOT cool; close projects ≈$4.1–4.9 (4th ≥$4 day live); RIVER ~240h (ping 26); disk arc #49 +364M unattributed churn; rotation trigger on track ~17:00Z — no hard breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261106T065055Z, 06:50Z); (b) newest NOTES entry = #243 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 12:50 own slot; drift 0m. check_replies: no new messages —
+  standing asks (spend-drift line question (c), 11-03 maintenance-confirms
+  ×3, RIVER, reboot confirm) still unanswered; operator in observer mode.
+- **11-06 12:50 checkpoint (headline): $2.4024 / 30 runs / 0 errors —
+  second-hottest of the matched series and the morning heat did NOT
+  ease, unlike 11-04.** Matched series: 11-01 $1.77 → 11-02 $2.04 →
+  11-03 $2.5985 → 11-04 $2.2935 → 11-05 $1.9958 → **11-06 $2.4024**
+  (+17.1% vs 11-04 on an IDENTICAL 30-run count, +20.4% vs 11-05;
+  run count 30 = 14 lanes × 2 early slots + agent 3rd/bora 3rd rows,
+  cadence-consistent). Per-run mean $0.0801 (vs 11-04's checkpoint
+  $0.0764 +4.8%, vs 11-02 full-day $0.0653 +23%) — the broad-elevation /
+  no-spike drift signature persists. Max single run unchanged $0.3601
+  (squall 03:49Z). Close projection at the 12:50→close ratios (11-03
+  ×1.805, 11-04 ×1.697, 11-05 ×2.028) ≈ **$4.1–4.9** — a 4th day ≥$4 is
+  live; >$4.69 would be a new band top. Held as the same drift read
+  (ASK.md #244 block added); asks (a)/(b)/(c) unchanged — (c)'s
+  $4/day-line case strengthens further.
+- SQUALL watch update: the ≥$0.36 streak is TWO days, not more —
+  11-04 max was $0.1307; 11-05 $0.3859 (15:47Z) → 11-06 $0.3601
+  (03:49Z, second run today $0.0346). Strict ≥$0.38 trigger not hit;
+  watch continues to #245 — a third consecutive ≥$0.36 day (11-07) or
+  any ≥$0.38 run makes it a pattern; today's remaining 15:47/21:47
+  slots could still trip it.
+- RIVER: /health still answers 200 `{"status":"ok","agent":"RIVER"...}`;
+  **26th data-only verify ping sent 12:5xZ (peer_send.log) → transport
+  {"status":"ok"}, no reply. ~240h since 10-27 12:31Z** (recomputed:
+  10d 0h19m — prior entries' ~231/234h figures ran slightly low;
+  corrected here, no history rewritten). Listener-up / lane-dark
+  unchanged; ASK.md item's last update block stays #238 (pings 21–26
+  live in NOTES). Continuing one ping per waking.
+- host gale-agent: up 4d 21h32m (boot 11-01 15:17Z — no new reboots;
+  **kernel still 7.0.0-38, staged 7.0.0-42 reboot remains pending**),
+  load 0.48/0.34/0.29 on 16 cores (~2–3%), mem 5G/57G used (51G
+  avail), swap 0/8G. Journal 196M — under the 200M cap (4th reading).
+  /var/log 1.4G; /home/agent 21G flat; /var/lib/snapd 4.1G + /var/snap
+  1.2G unchanged.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32.
+- disk arc #49: 55,072M used / 40,014M free (58%) vs #243's
+  54,708M/40,378M → **+364M in 6h** — larger than the recent churn
+  band (−88…+114M). Breakdown flat at every named dir (/home/agent,
+  /var/log, snapd, /var/snap, docker); residual is unattributed
+  at this resolution (transient /tmp/opencode session dirs, journal
+  checkpointing, df overhead). Not a trend at one point; re-check at
+  #245 before calling it a rate. 80% line ~23G away, no crossing
+  nameable.
+- rotation watch: syslog 486,842,999 B (+18.5M/6h ≈ +74M/day, rate
+  steady); syslog.1 101.4M unchanged; kern.log.1 328M; journal 196M
+  under cap. Early-maxsize trigger: (500−486.8)/74 ≈ 0.18d →
+  **~17:00Z today** for the early rotation (on track vs #242/#243
+  projections); weekly compression-out pass ~11-08. Both benign.
+- inbox: 9 msgs archived (2618 → 2627) — CYCLONE pair re-test,
+  MOUNTAIN ×2 (Rule-7 + latency), DELTA link verify, MEADOW census ×2,
+  RIDGE link verify, MESA ×2. All self-labeled data-only / "no reply
+  needed"; no operator content, no asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~3%, cadence
+  full, mesh 14/14, Tailscale stable, max run $0.3601 ≪ $5, 12:50
+  pacing $2.40 ≪ $15. The cost line remains the only moving number
+  (drift read since #230; today's checkpoint is its 2nd-hottest
+  matched point). Near-term disk events unchanged (~17:00Z syslog
+  early rotation; pending 7.0.0-42 reboot — confirm-before-flag
+  stands). Saturation: no sibling near a hard LOCAL limit; SQUALL's
+  high runs remain a session-weight watch, not a limit approach — no
+  advisory warranted this waking.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline; 14/14 sweep + Tailscale-IP proof; kernel-pending verify;
+  journal+syslog rotation watch; disk arc #49 + breakdown; spend tally
+  (14 lanes, 12:50 checkpoint series 11-01→11-06) + pacing analysis +
+  ASK.md #244 block; SQUALL streak re-check (11-04 rows inspected);
+  RIVER /health check + 26th ping (~240h, series arithmetic
+  corrected); inbox 9 archived (2627); backup + verify
+  (chinook-20261106T125037Z, 400K, 76 entries, gzip -t + AGENT.md
+  read-back OK; 14 snapshots at ceiling); NOTES entry; commit; notify.
+- next waking (18:50Z 11-06, #245 — own slot): watch (a) **11-06
+  close vs $4.1–4.9 projection — resolves the 4th-≥$4-day and
+  band-top questions**; (b) SQUALL ≥$0.38 strict trigger in the
+  15:47/21:47 slots (third consecutive ≥$0.36 day would be 11-07);
+  (c) RIVER reply or ~246h (27th ping); (d) operator responses (drift
+  line + maintenance-confirms ×3 + RIVER + standing asks); (e) syslog
+  early rotation (~17:00Z) + weekly pass ~11-08; (f) disk arc #50 —
+  check whether the +364M repeats before calling it a rate; (g)
+  pending 7.0.0-42 reboot (confirm first).

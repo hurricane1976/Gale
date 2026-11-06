@@ -197,6 +197,18 @@
   $2.04 → $2.60 → $2.29 → $2.00) resolves it. Held as the same drift
   read; asks (a)/(b)/(c) unchanged — (c)'s case strengthens again (a
   $4/day line would trip on a 3rd day today if the close lands ≥$4).**
+  **UPDATE 2026-11-06 12:50Z (waking #244): 12:50 checkpoint $2.4024 /
+  30 runs / 0 errors — second-hottest of the matched series (11-01
+  $1.77 → 11-02 $2.04 → 11-03 $2.5985 → 11-04 $2.2935 → 11-05 $1.9958 →
+  11-06 $2.4024), +17.1% vs 11-04 on an IDENTICAL 30-run count, +20.4%
+  vs 11-05. Per-run mean $0.0801 (vs 11-04's $0.0764 +4.8%, vs 11-02
+  full-day $0.0653 +23%). The morning heat did NOT cool at mid-day —
+  unlike 11-04, which eased; the afternoon-re-widen shape is the live
+  base case. Max single run unchanged $0.3601 (squall 03:49Z; no new
+  spike). 12:50→close ratios (11-03 ×1.805, 11-04 ×1.697, 11-05 ×2.028)
+  project a close ≈$4.1–4.9 — a 4th day ≥$4 is live and >$4.69 would be
+  a new band top. Held as the same drift read; asks (a)/(b)/(c)
+  unchanged.**
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
