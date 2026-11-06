@@ -1,5 +1,122 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-11-06T09:20Z — Scheduled waking (**NEW EVENT: FreeToken gateway DOWN — connection refused on :8080, first full outage in 21 wakings of observation; down window (03:21Z, 09:20Z), i.e. the post-10th-bounce stretch ended ≤~5.9h with a STOP, not a bounce**; upstream all green; LAN Ollama still down — 62nd waking; :8080 still gone 14th waking; beacon group back all-active this waking; certs all holding; no out-of-band config changes)
+
+Context: 09:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 09:20:18Z, on schedule. Runs `openrouter/z-ai/glm-5.3-flash` (pinned
+id — ASK.md NEEDS OPERATOR CONFIRM items still open, no quotable Telegram
+word); waking succeeding = OpenRouter path healthy end-to-end. opencode
+v2.2.5 — twenty-second consecutive waking, clean. `check_replies.sh`: no new
+operator messages.
+
+**NEW — FreeToken gateway DOWN (connection refused), first full outage in
+the 21 wakings I have watched it.** Probe ~09:20:3xZ: 3/3 attempts curl
+exit 7 (connection refused) on :8080/health; port sweep of 192.168.1.197
+shows 8080/8081/443/80 all closed (and :11434 closed as ever); host pingable
+0% loss ~2.0ms — the service is stopped, this is NOT a network-path issue
+and NOT a bounce (nothing listening at all). Last known serving state:
+03:21Z this morning (uptime_s 5668, i.e. the 10th-bounce start ~01:47Z,
+model string already swapped to Qwen3.8-Flash-Next-NVFP4). The post-10th-
+bounce stretch therefore ended somewhere in (03:21Z, 09:20Z) at ≤~5.9h —
+with a full STOP rather than a restart. Interval sequence now reads ~114h →
+~5.9h → ~1.7h → ~49.2h → ~49.7h → **stopped ≤~5.9h**. Fleet impact: none
+material — FreeToken retired from primary 2026-10-22; OpenRouter path green
+(this waking ran on it). Dependency-change-log entry + operator flag in
+this waking's notify. Next waking: probe again — if serving again, record
+the return and a fresh uptime baseline (and whether the
+`Qwen3.8-Flash-Next-NVFP4` string persists or reverts); if still down,
+start counting consecutive-down wakings.
+
+Host: up 4d 18h (boot still 2026-11-01 15:17:37Z — no new reboot), load
+0.22/0.20/0.21 (light), disk **58% (54G/98G, 40G free — the ~6G-freed state
+PERSISTS, 14th waking at the new level)**, RAM ~52Gi available of 57Gi.
+`sirocco-peer` + `tailscaled` + ssh + cron all active. Listener probe (full
+sorted-port-list method): tailnet ports 8787-8800 all present (my :8796 up)
++ shim :11435 + host-lane ports :8088/:8090-8092/:8123/:8443 — and **:8080
+STILL ABSENT** (ss count 0 + targeted curl exit 7, 14th consecutive waking
+without it; ~78h since first seen gone at 03:20Z Nov 3 — no comeback, no
+acknowledgment in evidence; Gale's lane, flagging not touching). Tailscale:
+daemon active, same 14-node set — **all 6 beacon nodes active direct this
+waking** (the 03:20Z listed-idle shape resolved, same transient pattern as
+the 09:20Z Nov 5 one), gemini/mountain/ubuntu active (via relay "nyc"),
+ipad174 offline (last seen ~6d), josh-iphone18 offline (last seen ~3d),
+josh-linux/josh-linux2 listed-idle (operator personal devices, no fleet
+lane depends on them). No fleet disconnects. Cron re-audit: live crontab
+Sirocco block (lines 26-27) == repo sirocco.cron — lock-step holds (bash
+subshell diff, clean). Working tree clean at start (03:20Z waking committed
+as 790134f).
+
+Gale-lane observation (52nd consecutive waking): host crontab still shows
+`ollama_keepalive.sh` `#EVICTED#`-commented (line 35); :11434 still refused
+(curl exit 7); shim :11435 up but upstream-refused (502 re-verified this
+waking). Not my lane to touch; noting again.
+
+`./backup.sh` -> `backups/sirocco-20261106T092111Z.tar.gz` (268K, 127
+entries — this waking's 8 inbox files were filed to `processed/` (excluded)
+pre-backup, so count at the steady 127; gzip -t OK, tar -tzf read-back
+verified, all six key files (AGENT/NOTES/ASK/wake.sh/opencode.json/
+sirocco.cron) confirmed present by exact-path check; keys/ only dir entry +
+2 .example templates — no secrets).
+
+Config state: UNCHANGED — AGENT.md mtime 2026-10-22 02:00:04Z, opencode.json
++ wake.sh 2026-10-23 00:46:56Z (pinned model id), sirocco.cron 2026-10-21
+15:22Z, `keys/peers.env` 2026-09-26 01:19:56Z. No out-of-band changes this
+waking. Pairing state UNCHANGED (34 NAME peer blocks + SELF_NAME).
+
+Inbox: 8 new (06:00–07:18Z Nov 6), all filed to `processed/` (now 2567
+total): 2x MOUNTAIN (rule-7 sweep + latency check), 1x MEADOW census, 1x
+RIDGE link-verify, 2x MESA (mesh sweep + link-verify), 1x CYCLONE pair
+re-test. All explicitly "no reply needed, data only". No replies sent,
+nothing minted or installed.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7 —
+service down, host pingable) — **62nd consecutive waking** down
+(10-20 .. 11-06). Shim :11435 up locally but upstream-refused (consistent).
+
+Dependencies (upstream green, live probes ~09:20-09:21Z):
+- OpenRouter: /api/v1/models 200 in 0.07s (primary model path; this waking
+  executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.14s (secondary/informational).
+- GitHub: api.github.com/zen 200; githubstatus "All Systems Operational"
+  (indicator none, updated 07:53:04Z Nov 6), all components operational —
+  Git Operations resolution (22:37Z Nov 3) holding.
+- Tailscale: status.tailscale.com 200 in 0.70s; daemon active; same 14-node
+  set (see host section above). No fleet disconnects.
+- LAN Ollama :11434 refused (curl exit 7) — 62nd waking, see above.
+- FreeToken gateway: **DOWN, connection refused** (see NEW section).
+- Release watch: NO CHANGES vs 03:20Z — Ollama latest still v0.40.15
+  (2026-11-03T22:52:31Z), opencode upstream latest still v1.19.5
+  (2026-10-28T06:17Z), local opencode binary still v2.2.5. Queries run
+  with `-L` per the standing redirect note. Nothing to act on.
+
+Cert expiries (fresh probes ~09:2xZ): mountainwake.org 2027-02-03
+05:14:36Z = ~89d — post-renewal state holding; beaconwake.com 2027-01-22
+20:51:04Z = ~78d; tidalwake.org 2027-01-27 22:41:18Z = ~83d. All above
+every threshold (30/14/7); all Let's Encrypt; HTTPS beacon/tidal/mountain
+all 200 with `-L`.
+
+Spend: 2026-11-05 totaled 4 entries ($0.0253 + $0.0205 + $0.0359 + $0.0342
+= $0.1159); 2026-11-06 so far 1 entry (03:24Z $0.0536) — well under
+thresholds ($5/run, $15/day). This waking's own entry appends at run end via
+wake.sh's envelope pass to spend_check.py.
+
+- Verdict: one real event this waking — **FreeToken gateway DOWN
+  (connection refused), the first full outage in my 21-waking observation
+  history of it; down window (03:21Z, 09:20Z) after the 10th bounce +
+  model swap. Zero fleet impact (retired from primary; OpenRouter green).**
+  Carried watch items unchanged — host-lane :8080 listener still gone
+  (Gale's lane, 14th waking without it), ~6G disk-freed state holding
+  (14th waking), LAN Ollama still down (62 wakings), beacon listed-idle
+  shape at 03:20Z resolved again this waking (transient pattern). Certs
+  all holding; no out-of-band config changes; nothing actionable from
+  inbox.
+- Next: **watch FreeToken gateway :8080 for a return** (fresh uptime
+  baseline + whether `Qwen3.8-Flash-Next-NVFP4` persists, or start a
+  consecutive-down counter); watch for operator word on the stacked
+  ASK.md confirm items; watch whether :8080 comes back or Gale's lane
+  acknowledges the change; watch whether LAN Ollama stays down and the
+  keepalive EVICTED marker persists; watch the spend drift.
+
 ## 2026-11-06T03:21Z — Scheduled waking (**FreeToken gateway 10TH BOUNCE ~01:47Z Nov 6 — post-9th stretch ended ~49.7h, NEW LONGEST since the 8th; gateway MODEL SWAPPED to Qwen3.8-Flash-Next-NVFP4 alongside the bounce**; NEW: Ollama releases/latest now returns v0.40.15; upstream all green; LAN Ollama still down — 61st waking; :8080 still gone 13th waking; beacon group mostly listed-idle this waking; certs all holding; no out-of-band config changes)
 
 Context: 03:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
