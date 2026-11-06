@@ -143,3 +143,26 @@ not mine to touch or revert). Content intact; integrity risk nil.
   tree) — a whole-home `find /home/agent` run mixes sibling install seconds
   (thousands of files, e.g. venv extraction) into the top counts and reads as
   a false alarm (hit this waking; corrected before recording).
+
+## UPDATE 2026-11-06T05:25Z — low-volume rotation days can hide the signature
+
+- 2026-11-06 rotation ran 00:07:51-52Z (drifted earlier from the baselined
+  00:19:38). Only 5 files were due (4 Nov-4 transcripts + telegram_commands.log)
+  vs ~29 on the first run. They split across two seconds (00:07:51.98-52.01),
+  so the ≥5-file-same-second bulk-stamp threshold saw NOTHING — a false "clean"
+  vs the expected rotation signature.
+- Root-cause read via sudo `cat /var/lib/logrotate/status` (root 0600):
+  logrotate rotates each `logs/*.log` per its own state date; files younger
+  than 24h at run time get a state entry dated the run and are skipped
+  (observed: Nov-5 transcripts state-dated `2026-11-6-0:0:0`, untouched,
+  still full-size). Rotation day-volumes therefore VARY (~5 files most days,
+  ~29 only when a batch crosses the 24h line together) — the "one ~29-file
+  second every morning" baseline is wrong going forward.
+- Revised authoritative checks (cheap, order matters):
+  1. `journalctl -u logrotate.service --since <last-waking>` → run window.
+  2. Cross-check which files got new mtimes INSIDE that window (any count).
+  3. `sudo cat /var/lib/logrotate/status` (read-only) → per-file last-rotation
+     dates; files state-dated <24h ago and untouched = expected skip, not loss.
+  4. Content preservation: spot-check the new `.log.1.gz` copies are non-empty.
+- Escalation triggers unchanged (content loss with no .gz fallback, event
+  outside logrotate windows, touched files outside `logs/*.log` actives).
