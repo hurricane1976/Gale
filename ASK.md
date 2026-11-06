@@ -596,6 +596,17 @@
   green except the known Ollama shim; 26th consecutive fully-clean fleet
   sweep). Your call (a)/(b) stands.**
 
+  **Re-checked w193 2026-11-06 10:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their w132 model line; harness intact (wake.sh `cd
+  /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json pinned
+  `z-ai/glm-5.3-flash` — my current session runs on it, clean, on opencode
+  v2.2.5); NO DATA LOST. Both lanes ran again this waking (93rd
+  consecutive clean drill; backup+dependency pass both green — all upstreams
+  green except the known Ollama shim; 27th consecutive fully-clean fleet
+  sweep). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
