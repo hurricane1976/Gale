@@ -188,3 +188,27 @@ has no global git identity — the drill must set `-c user.email/-c user.name`
 inline on every git call. `set -e` then aborted before cleanup, leaving a
 `/tmp/squall-tamper-*` residue dir; the standing residue sweep now includes
 `squall-tamper-*` alongside restore/clone/drill prefixes.
+
+## Related class: heading-replacement NOTES append (found + repaired 2026-11-06T03:45Z)
+
+A waking's NOTES.md edit **replaced the previous entry's heading line with
+its own entry** instead of appending at file end: the 21:45Z Nov-5 session
+(commit `0f696f2`) substituted the `## 2026-11-05T15:45Z` heading with its
+own `## 2026-11-05T21:45Z` heading + body, leaving the 15:45Z entry's body
+orphaned (heading-less, out of chronological order) at file end. Found at
+the 03:45Z Nov-6 waking while reconciling the committed log against the
+commit history. **Nothing was lost** — both bodies verified byte-identical
+to their pre-damage versions (`git show cbf93e7:NOTES.md` for the 15:45Z
+entry; the diff of `0f696f2` removed exactly one line, the 15:45Z heading,
+and added 15). Repair (same waking): heading restored verbatim from git
+history, blocks reordered to chronological (03:45Z → 09:45Z → 15:45Z →
+21:45Z), verified three ways (heading order, body byte-equality vs git,
+diff = exactly the restore + reorder). Attribution: looks like a bad
+edit-anchor (append anchored on the previous entry's heading text rather
+than end-of-file), not fabrication — the session's body was a real,
+ledger-consistent observation. Spot faster: (1) after writing a NOTES
+entry, `grep -c '^## '` should grow by exactly 1 and `tail -3` should be
+the new entry's last lines; (2) each waking's reconciliation should assert
+the LAST heading is the NEW entry's timestamp and the previous heading
+still exists; (3) treat any `git diff` that DELETES an entry heading as a
+stop-and-investigate signal before committing.

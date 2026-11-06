@@ -65,6 +65,15 @@ wrong-path GET, via 100.66.39.59:8789). 401/401/404, health 200, exactly
 drill bodies in the live inbox (baseline REJECT=80 → 82). Consistent with
 all prior runs; wall holds.
 
+**Re-exercised (401, eighth data point):** 2026-11-06T03:48Z — same
+methodology (bogus Bearer + no-header POSTs with small JSON bodies,
+wrong-path GET, via 100.66.39.59:8789). 401/401/404, health 200, exactly
++2 `REJECT unknown-token` lines in `peer/logs/peer_server.log`
+(baseline REJECT=82 → 84; IP-only `from=100.66.39.59`, no token
+material), zero drill bodies in the live inbox. Consistent with all
+seven prior runs; wall holds across three host reboots (boots #6/#7/#8)
+and ~7 weeks.
+
 **NEW finding (413 body gate, unlogged):** 2026-09-29T06:41Z — the same
 waking's first probe used **empty-body** POSTs (no `-d` in curl) and got
 **413**, not 401. Cause (read-only, code unchanged since the init commit):
