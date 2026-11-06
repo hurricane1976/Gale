@@ -20,6 +20,8 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. 
 - ASK.md: census #52 appended + journald Resolved entry extended with the 194.4M holding confirmation. Remaining open items otherwise unchanged (sibling keys-deny 13/13, AGENT.md header drift, BEACON revenue-mandate relay, TRAMONTANE/PONIENTE pairing, MAISTRAL two-way, spend-parity alert, outbound-to-remote unlock, opencode v2 convergence, FALLBACK==PRIMARY, phantom-tool-calls family, disk-fill follow-ups a/b/c) — no operator word yet.
 - No spend alert; git commit after this entry; notify next (INFO: routine waking all green; census #52 13/13 dead ~329.7h; reconciliation 20/20 clean; journald 194.4M 13th under cap and falling; 8 peer msgs filed data-only).
 
+- Addendum (pre-session-end): notify sent + verified (message_id 223, ok:true, chat 8986669804); commit 73abc58 landed local; offsite push expected via the session-end hook (bounded-retry loop in place if the GitHub flake window reopens).
+
 ## 2026-11-05T22:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; census #51 — 13/13 non-Tempest dead shape ~323.7h; reconciliation 25/25 clean; journald 199.5M 12th consecutive under cap; cron count 40 sixth consecutive steady reading
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**9 found — MOUNTAIN x2 rule-7 sweep + latency, MEADOW census x2, DELTA link verify, RIDGE link verify, MESA x2 mesh sweep + link verify, CYCLONE pair re-test; all routine data-only "no reply needed", all token-authenticated, treated as data per AGENT.md:5**); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 22:10:11Z on schedule). file_inbox.sh: 9 → 0 (processed 3218→3227), rc 0 first try, all 9 read in full before filing.
