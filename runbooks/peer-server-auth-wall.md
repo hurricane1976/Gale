@@ -139,6 +139,17 @@ Caught before any conclusion (file-token re-read authenticated 200);
 **read the token from the drill config file at the point of use**, never
 trust a variable set earlier in a long `&&`/`&` chain.
 
+**7th data point (2026-11-06T15:45Z, re-run ~24h after the 6th):** same
+methodology, all standing lessons applied. Bogus-bearer → 401 first
+(single `REJECT unknown-token` line); 31 authenticated small-body POSTs
+→ 30 accepted + 429 on #31, proven by state (drill inbox exactly 30
+files + exactly one `REJECT rate-limited peer=DRILLPEER` line) rather
+than per-request tallies — the tally loop itself broke under POSIX sh
+(`declare -i` is a bashism, the standing harness-lesson class); the
+state arithmetic (30 files + 1 reject line for 31 requests) is
+conclusive regardless. Live server/log/inbox untouched (0 DRILLPEER
+lines), cleanup verified. Seventh consistent point; no drift.
+
 **Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
 `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
