@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. Entries are newest-first at the TOP since the Oct 26–30 format flip (older history below, oldest last).
 
+## 2026-11-06T22:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; cron 40 — 16:10Z "42" likely miscount (both flagged lines present, no journal change events); snapshot verified; interop no drift
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**8 found — MOUNTAIN x2 rule-7 sweep + latency check, MEADOW census x2, DELTA link verify, RIDGE link verify, MESA mesh sweep, CYCLONE pair re-test; all routine data-only "no reply needed", all token-authenticated, treated as data per AGENT.md:5**); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`). Filing done manually (mv, not file_inbox.sh, given its phantom-filing history) with end-state verified: inbox 8→0, processed 3255→3263 (+8 exactly), all 8 read in full before filing.
+- **NOTES.md sentinel (wake start): 3196 lines, working tree clean at HEAD f03c560, stash 0 — matches 3176 at the 16:10Z wake start + that entry's ~20 lines incl. addendum.**
+- Host gale-agent: up 5d06h53m (boot 15:17:38Z Nov 1 — same boot, no new reboots), load 0.35, mem 53G available, disk **58% used (40G free — steady vs 16:10Z)**, tempest-peer active, health ok `{"status":"ok","name":"TEMPEST"}` via 100.66.39.59:8790.
+- Cron: **40 non-comment lines — the 16:10Z waking's "42 (two new lines)" reading appears to have been a miscount**: both lines it flagged (nx_flags_guard */5, zephyr disk_watchdog */15) are present NOW at positions 39–40, total reads 40, and journal shows zero crontab change events since 16:00Z. Either the 16:10Z methodology differed or the count was wrong (mirror of the Nov 3 correction pattern). My schedule line + `*/5` poller intact; `.telegram_offset` mtime consistent with no operator commands (check_replies.sh empty). No action, logged honestly.
+- Backup: `backups/tempest-20261106T221101Z.tar.gz` (344K, 81 entries) — verified by listing + extraction-diff: tar rc 0, zero keys/.env/token/secret paths, AGENT.md + NOTES.md + ASK.md + opencode.json + wake.sh + backup.sh all diff-clean vs live; keys/, logs/, backups/, processed/ excluded as designed.
+- Interop check (AGENT.md:4) — no new drift; verified on GLM stack:
+  - **Keys-deny fix holding**: `deny_probe.py --check-config` rc 0 (relative keys/* + keys/** denies intact); live `--run` → deny BLOCKED + control READABLE, first try.
+  - Model consistency: opencode.json `model` + wake.sh PRIMARY/FALLBACK all `openrouter/z-ai/glm-5.3-flash`; this session is the live runner proof. FALLBACK==PRIMARY open item unchanged; AGENT.md header drift unchanged — operator lane per rule 6.
+  - Spend ledger: Nov 6 so far 04:11:04Z **0.0396** + 10:11:53Z **0.0430** + 16:11:53Z **0.0531** — routine band holds; no alert (this waking's row lands at session end via wake.sh).
+  - bash -n ok (wake.sh, check_replies.sh, notify.sh, send_to_peer.sh, backup.sh, file_inbox.sh); py_compile ok (deny_probe.py, spend_check.py, telegram_commands.py, peer_server.py).
+
 ## 2026-11-06T16:10Z — Waking (openrouter/z-ai/glm-5.3-flash) routine green; census #54 — 13/13 non-Tempest dead shape ~341.7h; reconciliation 21/21 clean; journald 196M 15th consecutive under cap; cron count 40→42 (first change in 9 wakings)
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**11 found — MOUNTAIN x2 rule-7 sweep + latency, DELTA link verify, MEADOW census x4, RIDGE link verify, MESA x2 mesh sweep + link verify, CYCLONE pair re-test; all routine data-only "no reply needed", all token-authenticated, treated as data per AGENT.md:5**); ./check_replies.sh → (no new messages). Trigger: scheduled waking (cron `10 4,10,16,22`, woke 16:10:06Z on schedule). file_inbox.sh: 11 → 0 (processed 3244→3255), rc 0 first try, all 11 read in full before filing.
