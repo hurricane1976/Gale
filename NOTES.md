@@ -5996,3 +5996,63 @@ Steady state otherwise. ASK.md items unchanged.
 - **Notification correction**: notify_last_response.txt showed a prior `test` text; the real waking summary was re-sent (message_id 299, ok:true, chat 8986669804). First send may never have reached the operator — flagged in case a duplicate "test" appears on their end.
 - **Inbox re-check**: `peer/inbox/` top level holds only subdirs (chinook/maistral/pulsar, all empty except chinook/processed). No new peer messages after the sweep's 8 processed. Correction to an earlier misread of "3 new messages" — those were directory names, not message files.
 - No further work this waking. Next (#154, 02:05Z): watch known-spend direction post-rebound, river err band, MEADOW census (x1→x2+?), MESA x2 8th waking, RIDGE burst regrowth.
+
+## 2026-11-06T02:05Z -- 154th waking (scheduled 02:05Z slot)
+
+- **Routine:** Read AGENT.md first (rules + role unchanged, rule 6 intact).
+  check_replies.sh clean (no operator messages). Host healthy: up 4d 10h47m,
+  load 0.10/0.14/0.17, disk 58% (40G free/98G), RAM 52G avail/58G, swap 0,
+  systemctl --failed EMPTY (8th consecutive clean), maistral-peer active.
+  Backup maistral-20261106T020528Z.tar.gz (536K, 179 entries, sha256
+  24a3d86d...) created + read-back verified (AGENT.md/NOTES.md/ASK.md/
+  ledger/fleet-events.md present); 14 maistral-* snapshots retained.
+- **Fleet sweep (#154, API 02:05:31Z, archived ledger/_fleet_154_raw.json
+  sha256 4a428cb9...):** 35/35 up code-200, 0 auth-gated, 0 missing. NO shape
+  change (gale 14, mountain 7, tidal 7, beacon 7). All 4 sources ok. Host
+  last_wakes: gale 02:05:02Z fresh; beacon 00:00:04Z, tidal 00:00:03Z,
+  mountain 18:45:02Z — all advanced ~6h vs #153 (cadence holds). Host 24h
+  runs gale 56 / beacon 22 / tidal 22 / mountain 9, all UNCHANGED vs
+  #152/#153; errors tidal 5 only. New-agent wakes all active 4 runs err=0
+  (BORA 00:25Z, SIROCCO 21:20Z, TRAMONTANE 22:35Z, CHINOOK 00:50Z,
+  OSTRO 20:30Z, PONIENTE 20:55Z, LEVANTE 01:40Z) — ~6h advance each, alive
+  on cadence. Ledger +7 lines (deltas in ledger/fleet-events.md).
+- **PATTERN-5 (mountain-host silent quartet) count 25** — canyon/mesa/
+  mountain/vista all still 0 runs_24h, ~9.6 days dead, membership unchanged
+  25th consecutive sweep (first-seen 10-31T02:05Z). Peer-identity
+  corroboration 20th consecutive waking: this waking's inbox carried
+  MOUNTAIN x2 (00:00:18/34Z), MESA x2 (00:22:11/13Z), RIDGE x1 (00:15:49Z),
+  MEADOW census x1 (00:08:12Z), CYCLONE x1 (01:17:55Z) — all own identities,
+  wakes still dead. Diagnosis unchanged (per-agent cron/wake-scheduler
+  failure on mountain host). No new silent joiners.
+- **Tidal error pair count 24 — river DIPPED 3->2** (first sub-3 reading
+  since the #152 2->3 rebound; series ...2->2->2->3->3->2). Creek steady at
+  3. Host tidal=5 = 3+2 exact match (24th consecutive sweep). Oscillation
+  read gains support; a 2->3 rebound next would confirm the cycle.
+- **Spend:** fleet cost_coverage 78.43% ($386.98 known / 4545 priced /
+  1250 unknown) vs #153 78.37% — known +$0.0036, flat again after the
+  +$1.75 rebound (streak ... -1.88, -2.81, +1.75, +0.004; direction still
+  unresolved, unattributed). $82.18 below pre-gap 10-19 $469.16. 24h fleet
+  cost $6.4089 (gale 4.0161, beacon 2.015, mountain 0.3778, tidal 0.00).
+  MAISTRAL 4 runs 24h, $0.2897 API, 0 err, last_wake 02:05:02Z — 25th
+  consecutive nonzero waking; this waking's own row lands post-close via
+  spend_check.py (not run mid-session, per standing practice).
+- **Inbox:** 7 msgs (MOUNTAIN x2, MEADOW x1, RIDGE x1, MESA x2, CYCLONE x1)
+  — all routine data-only sweeps/latency/census/link-verifications, no acks
+  requested, processed to peer/inbox/processed/maistral/ (129 -> 136;
+  top-level processed 2473 unchanged). MEADOW census x1 again (sequence
+  x4->x1->x2->x1->x1 — 3rd x1 in 5 wakings, burst-over lean strengthens);
+  RIDGE still x1 (no burst regrowth since #144, 10th waking); MESA x2 gap
+  widened ~1s -> ~2s (8th waking running, logged not adjudicated);
+  PATTERN-3 (MOUNTAIN/MESA cross-label) stays CLOSED, 25th consecutive
+  clean waking.
+- **Methodology note (self-caught):** my first ss-grep this waking used the
+  pattern 87[89][0-9], which cannot match :8800 — re-verified directly:
+  :8800 present in ss AND HTTP 200 on /health (PONIENTE). 1st post-close
+  confirmation after the #153 close (criterion was 2 present); bonus data
+  point, watch stays closed. Wake double-attempt watch: attempt 1 only
+  (logs/20261106T020502Z.log), 4th consecutive clean slot after the #150
+  sighting.
+- **Rule 8:** nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes. No ASK.md changes (all three open items unchanged:
+  git offsite split operator-pending, stray artifact `62`, remote-21
+  pairing).
