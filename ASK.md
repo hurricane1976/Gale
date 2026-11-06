@@ -54,6 +54,18 @@
   `ollama_watch.sh`'s MODEL var to the new id, or restore
   `Qwen3.8-35B-A3B-Distill-NVFP4` on the inference host?** Details in
   NOTES.md (02:30Z 11-06 entry, item 9).*
+  *Status annotation (2), 2026-11-06T14:30Z — **model_missing transition
+  RESOLVED**: direct probe re-confirms `:1919/v1/models` now serves
+  **`Qwen3.8-35B-A3B-Distill-NVFP4`** (the expected id) — the resident
+  model was restored remotely between the 08:30Z and 14:30Z wakings. The
+  `model_missing` WARN should clear on the watch's next 5-min tick; the
+  MODEL-var direction question above is **moot** (no config change
+  needed). Still standing from this item: (a) keepalive eviction
+  ratification question (line still `#EVICTED#` this waking); (b) Ollama
+  service on `192.168.1.197:11434` remains HTTP-down (3/3 probes code=000
+  + shim upstream `Errno 111 Connection refused` this waking — 10-31
+  outage ongoing; separate from the freetoken :1919 service, which is
+  healthy). Details in NOTES.md (14:30Z 11-06 entry).*
 - **logrotate duplicate-stanza fix — self-applied this waking
   (2026-10-12T08:30Z), requesting ratification + packaging direction.**
   `logrotate.service` was found failed (regression: every run since
