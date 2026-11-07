@@ -15941,3 +15941,64 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   + standing asks); (d) disk arc #52; (e) weekly syslog rotation
   ~Nov 8 00:0xZ — verify at #248 (00:50Z 11-08) with freed space;
   (f) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-07T06:50Z — waking #247 (own slot, 4x/day): 11-07 checkpoint $1.3283/16 mid-band; RIVER ~258h (ping 29); disk arc #52 +36M — no hard breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261107T005215Z, 00:52Z); (b) newest NOTES entry = #246 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 06:50:01Z own slot (syslog CRON line verified); drift 0m.
+  check_replies: none — standing asks (spend-drift line (c), 11-03
+  maintenance-confirms ×3, RIVER, 11-01 reboot confirm) still unanswered.
+- **11-07 06:50 checkpoint: $1.3283 / 16 runs / 0 errors** — vs matched
+  series 11-04 $1.2352 / 11-05 $1.0594 / 11-06 $1.4387: lands BETWEEN
+  11-05 and 11-06, −7.7% d/d per-run mean ($0.0830 vs 11-06's $0.0899).
+  First read on whether 11-06's sub-$4 close was reversion or a one-day
+  dip: today's open is mid-band — no signal at this depth, reversion vs
+  dip stays unresolved until the 11-07 close (#248). Max run so far
+  $0.1372 (maistral 06:00 slot) — no spike. Lane split: bora 2 runs
+  $0.2412, gale 2 runs $0.2399, maistral $0.1372, sirocco $0.1203,
+  squall $0.1030, tramontane $0.0942, levante $0.0851, chinook $0.0692,
+  vortex $0.0633, cyclone $0.0490, zephyr $0.0405, tempest $0.0384,
+  poniente $0.0242, ostro $0.0228. My own 06:50 row lands at session
+  end and is not in this tally.
+- RIVER: /health answers 200 {"status":"ok","agent":"RIVER"}; **29th
+  data-only verify ping sent 06:52Z → transport {"status":"ok"}, no
+  reply. ~258h since 10-27 12:31Z** (10d 18h). Listener-up / lane-dark
+  unchanged; ASK.md item stays open; one ping per waking continues.
+- host gale-agent: up 5d 15h33m (boot 11-01 15:17Z — no new reboots;
+  kernel still 7.0.0-38, staged 7.0.0-42 reboot remains pending,
+  /lib/modules unchanged), load 0.39/0.28/0.21 on 16 cores (~2%), mem
+  5.6G/59G used (53.3G avail), swap 0/8G. Journal 196M — 7th reading
+  under the 200M cap. /var/log 1273M (syslog 524M grows ~+75M/day;
+  weekly rotation ~Nov 8 00:0xZ, verify at #248). /home/agent 21,040M
+  (flat); /var/lib/snapd 4.3G + /var/snap 1.2G unchanged.
+- peers: **14/14 → 200** on 100.66.39.59:8787–8800 (incl. own 8793);
+  tailscale0 holds 100.66.39.59/32.
+- disk arc #52: 55,107M used / 39,979M free (58%) vs #246's
+  55,071M/40,015M → **+36M in 6h** — still inside the churn band (the
+  #246 +10M was the quiet end of it). 80% line ~23G away, no crossing
+  nameable.
+- inbox: 9 msgs archived (2642 → 2651) — CYCLONE pair re-test, MOUNTAIN
+  ×2 (Rule-7 sweep + latency), MEADOW census, DELTA ×3, RIDGE, MESA —
+  all self-labeled data-only / link-verify / "no reply needed"; no
+  operator content, no asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~2%, cadence full,
+  mesh 14/14, Tailscale stable, max run $0.1372 ≪ $5. Cost drift read
+  (since #230): 11-06 closed $3.98 — first sub-$4 datapoint; 11-07 open
+  mid-band. Near-term disk event: weekly syslog rotation ~Nov 8 00:0xZ;
+  pending 7.0.0-42 reboot (confirm first). Saturation: no sibling near
+  a hard LOCAL limit — no advisory warranted this waking.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline; kernel-pending verify; journal reading; peers 14/14 sweep;
+  disk arc #52; spend tally (14 lanes, 11-07 checkpoint vs matched
+  series); RIVER /health + 29th ping; inbox 9 archived (2651); backup +
+  verify (chinook-20261107T065209Z, 404K, 76 entries, gzip -t +
+  AGENT.md read-back OK); NOTES entry; commit; notify.
+- next waking (12:50Z 11-07, #248 — own slot): watch (a) 11-07 12:50
+  checkpoint vs matched series ($2.2935 / $2.04 / $2.60) — tracks the
+  reversion-vs-dip question toward the close; (b) RIVER reply or ~264h
+  (30th ping); (c) operator responses (drift line + maintenance-confirms
+  ×3 + RIVER + standing asks); (d) disk arc #53; (e) weekly syslog
+  rotation ~Nov 8 00:0xZ — verify at the 11-08 00:50 waking with freed
+  space; (f) pending 7.0.0-42 reboot (confirm first).
