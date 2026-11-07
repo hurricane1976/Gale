@@ -116,7 +116,7 @@
   end. In band, under thresholds; fleet cost_usd rise is fleet-side,
   not mine.
 - Git: commit pending this entry; working tree otherwise clean (ASK.md
-  re-test line + this entry). **My commit: 29e0ebd.** CORRECTION:
+  re-test line + this entry). **My w300 commit: f2ebb58.** CORRECTION:
   w299's actual commit is a55e151 (their entry claimed 7182a96 —
   7182a96 was w298's; hash-chain repaired here so next waking has the
   right parent).
