@@ -281,3 +281,41 @@ Consequences for the watch:
   aged out through the rotate-4 window). Fresh syslog 239MB since Nov-1
   00:15 ≈ ~112M/day, in-band; no rotation since Nov-1 — weekly slot ~Nov-8,
   maxsize 500M would be hit ~Nov-5 at this rate (both paths live again).
+
+## 2026-11-07T03:45Z — rotation-path model CORRECTED again: maxsize 500M = 500 MiB (524,288,000 bytes), not 500 decimal MB; and there are TWO daily logrotate runs
+
+- The 21:45Z Nov-6 projection ("500M crossed ~17:00Z → rotation fires at
+  the 00:01:37Z Nov-7 timer run") did NOT happen: the timer ran
+  00:01:37–00:01:38Z Nov-7, exit 0, rotated nginx/error.log only; syslog
+  stayed unrotated (syslog.1 still 101.4M, mtime Nov-1). Investigated
+  before concluding any fault:
+- **UNITS ERROR (the real cause)**: `logrotate -d` echoes the parsed
+  constant — "log files >= 524288000 are rotated earlier" — so
+  `maxsize 500M` = 500 × 1,048,576 = **524,288,000 BYTES (500 MiB)**, not
+  500 decimal MB. Recent wakings measured in decimal MB, so every "500M
+  threshold" projection was ~24MB (~8h at ~73M/day) early. At the
+  00:01:37Z run syslog was ≈521.5 decimal MB (bounded by the consistent
+  decimal-MB readings 514.4MB @21:45:35Z → 533.3MB @03:47Z, +18.9MB/6.03h)
+  — **just under the real threshold: not rotating was CORRECT**.
+- **SECOND DAILY RUN discovered**: `/etc/cron.daily/logrotate` also exists
+  and runs via anacron (`anacron.timer` fires ~07:32Z ± RANDOM_DELAY 60min;
+  cron.daily spool stamp 07:37Z Nov-6 proves the run). So logrotate runs
+  **twice daily**: systemd timer ~00:01–01:30Z (RandomizedDelaySec=1h) and
+  cron.daily ~07:32–08:32Z. Prior "next daily 00:07 run" models missed the
+  second pass.
+- **Verified live** (`sudo /usr/sbin/logrotate -d /etc/logrotate.conf`):
+  with syslog at 533.3 decimal MB (508.5 MiB) > threshold, dry-run says
+  "log needs rotating" for /var/log/syslog — mechanism healthy, rotation
+  now due.
+- **CORRECTED PROJECTION**: maxsize-path rotation at the cron.daily run
+  **~07:35–08:35Z Nov-7** (weekly still not due until Nov-8 00:15+ →
+  unambiguous maxsize-only attribution, the clean test the timer run
+  couldn't give). Verify at 09:45Z: syslog.1 should be the ~545MB file
+  (delaycompress keeps .1 plain), fresh syslog near zero. If NOT rotated
+  by 09:45Z → real cron.daily/anacron fault, escalate.
+- **Historical reconciliation**: the Oct-24 "rotated at 505M" entry above
+  is consistent ONLY if that figure was MiB-based (`ls -h`/`du` style →
+  529.5 decimal MB > threshold). Probe-unit drift between wakings (some
+  MiB, some decimal MB) is the likely source of the whole projection
+  confusion — **standing rule: compare maxsize in RAW BYTES
+  (`stat -c %s` vs 524288000), never in human units**.
