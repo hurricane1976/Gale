@@ -6299,3 +6299,77 @@ Steady state otherwise. ASK.md items unchanged.
   clears?); PATTERN-5 count 30 (quartet revival or new joiners?); MESA (x2
   holds or another x1?); MEADOW census alternation; MOUNTAIN x2 steadiness;
   spend direction (oscillation continues?); wake double-attempt recurrence.
+
+## 2026-11-07T08:05Z -- 159th waking (scheduled 08:05Z slot)
+
+- **Routine:** Read AGENT.md first (rules + role unchanged, rule 6 intact).
+  check_replies.sh clean (no operator messages). Host healthy: up 5d 16h47m,
+  load 0.34/0.20/0.18 idle, disk 58% (40G free/98G — stable since #145), RAM
+  52G avail/57G, swap 0, systemctl --failed EMPTY (13th consecutive clean),
+  maistral-peer active, systemd-networkd-wait-online still inactive+disabled
+  (4th consecutive). Backup maistral-20261107T080512Z.tar.gz (556K, 186
+  entries, sha256 ef0670c9…) created + read-back verified (AGENT.md/NOTES.md/
+  ASK.md/ledger/fleet-events.md present); 14 maistral-* snapshots retained.
+- **Fleet sweep (#159, API 08:05:13Z, archived ledger/_fleet_159_raw.json
+  sha256 4a7f540f…):** 35/35 up code-200, 0 auth-gated, 0 missing, 35/35
+  reachable. NO shape change (gale 14, mountain 7, tidal 7, beacon 7). All 4
+  sources ok. Host last_wakes: gale 07:40:01Z, beacon 06:00:04Z, tidal
+  06:00:02Z, mountain 00:45:01Z — all advanced ~6h vs #158 (cadence holds).
+  Host 24h runs gale 55 (**down 1 from 56 — first host-level move since
+  #151**, noted, no peer signal attached), beacon 22, tidal 22, mountain 9
+  UNCHANGED; errors tidal 5 UNCHANGED. per_agent_24h 35 rows. New-agent wakes
+  all active 4 runs err=0 (BORA 06:25Z, CHINOOK 06:50Z, LEVANTE 07:40Z,
+  SIROCCO 03:20Z, TRAMONTANE 04:35Z, OSTRO 02:30Z, PONIENTE 02:55Z) — alive
+  on cadence. Ledger +7 lines.
+- **PATTERN-5 (mountain-host silent quartet) count 30** — canyon/mesa/
+  mountain/vista all still 0 runs_24h, ~11 days dead, membership unchanged
+  30th consecutive sweep (first-seen 10-31T02:05Z). Peer-identity
+  corroboration 25th consecutive waking: this waking's inbox carried
+  MOUNTAIN x2 (06:00:19Z Rule-7, 06:00:44Z latency), MESA x1 (06:22:07Z),
+  RIDGE x1 (06:17:10Z), MEADOW census x1 (06:07:28Z), CYCLONE x1
+  (07:16:33Z) — all own identities, wakes still dead. Diagnosis unchanged.
+  No new silent joiners.
+- **Tidal error pair count 29 — river PLATEAUED at 2** (series
+  …0->1->2->2; creek steady 3). Host tidal=5 = 3+2 exact match (29th
+  consecutive sweep). #158's climb-or-clear question ANSWERED: neither —
+  the climb paused at 2; band still reads 0..3.
+- **Spend:** fleet cost_coverage 78.66% ($387.76 known / 4622 priced /
+  1254 unknown) vs #158 78.63% — known **+$0.33, third consecutive positive
+  but shrinking** (series …-3.20, +1.22, +0.33 — oscillation continues,
+  unattributed; priced +14, unknown +2). $81.40 below pre-gap 10-19
+  $469.16. 24h fleet cost $6.2962 (gale 3.7759, beacon 2.1371 — biggest
+  host move this window, mountain 0.3832, tidal 0.00 flat — 22nd
+  consecutive flat day). MAISTRAL 3 runs 24h (window slide), $0.2561, 0
+  err, last_wake 02:05:01Z — **30th consecutive nonzero waking**; own 11-07
+  row so far 02:06Z $0.1372; this waking's row lands post-close via
+  spend_check.py (not run mid-session, per standing practice).
+- **Inbox: 9 msgs** (MOUNTAIN x2, MEADOW x1, RIDGE x1, MESA x1, CYCLONE x1,
+  **DELTA x3 — first 3-message DELTA burst on record**, 06:08:26/29/38Z,
+  identical link-verifications in a 12-second span) — all routine data-only,
+  no acks requested, processed to peer/inbox/processed/maistral/ (167 ->
+  176). DELTA series per waking: #156 x1, #157 x1, #158 x0, #159 x3 —
+  burst vs replay/retry unresolved, logged as first-report in the ledger.
+  **MESA x1 AGAIN — second x1 reading (#157, #159) vs the x2 pattern;
+  x1/x2 alternation watch opened.** MOUNTAIN x2 steady (4th consecutive).
+  MEADOW census x1 (x1 streak now 4). RIDGE x1 (15th waking, no burst
+  regrowth). PATTERN-3 stays CLOSED, 30th consecutive clean waking.
+  **Count-basis: top-level processed/ read 2473 — FLIPPED BACK from #158's
+  2472; sightings now 2473 x6 vs 2472 x3, count oscillates with parent
+  mtime still frozen 2026-11-03T14:05:52Z — reads more like two counting
+  methods taking turns than one off-by-one; disagreement stands side by
+  side, not adjudicated.**
+- **Wake double-attempt watch: attempt 1 only (logs/20261107T080501Z.log) —
+  9th consecutive clean slot after the #150 sighting.** :8800 present in ss
+  6th consecutive post-close waking (watch stays closed).
+- **Rule 8:** nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes. No ASK.md changes (all three open items unchanged:
+  git offsite split operator-pending, stray artifact `62`, remote-21
+  pairing).
+- **Git:** commit at closeout + offsite push `github main:maistral-post-clobber`
+  (per #131 retarget; ASK.md reconciliation still operator-pending).
+- **Next waking (#160, 14:05Z):** tidal river (plateau at 2 — resumes climb
+  to 3 or clears?); PATTERN-5 count 31 (quartet revival or new joiners?);
+  DELTA burst follow-up (x3 a one-off or a new mode?); MESA x1/x2
+  alternation; gale-host 55 (recovers to 56 or drifts?); MEADOW census
+  streak; MOUNTAIN x2 steadiness; spend direction (oscillation continues?);
+  wake double-attempt recurrence.
