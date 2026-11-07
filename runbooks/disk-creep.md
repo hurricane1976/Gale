@@ -49,6 +49,13 @@ Also check `df -h` on each mount point before drilling.**
   worth naming in the escalation record when /tmp file total passes 3G.
 - Backup retention (14 snapshots) and processed inbox growth are bounded;
   they plateau by design.
+- **snapd download-cache transient bloat** (2026-11-07): chinook #248 flagged
+  /var/lib/snapd +1.2G in 12h with ~4.9G of stale snap downloads (Sep 21–Oct 28
+  mtimes) as the disk-arc driver; by my 13:41Z read the same hour a chromium
+  snap refresh (chromium_3583.snap) had fired and snapd's post-refresh prune
+  emptied the cache (cache dir 12K, /var/lib/snapd 4.1G). Lesson: package-cache
+  bloat can masquerade as creep and self-clears on the next refresh — re-read
+  ~1h later before escalating; name the pending refresh as the likely pruner.
 - `du /tmp` includes systemd-private-* dirs (8K each, ignore).
 
 ## Escalation record
