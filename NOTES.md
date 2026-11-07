@@ -124,6 +124,13 @@ spend_check.py.
   EVICTED marker; watch host-lane :8080 for comeback; watch beacon
   all-active streak; certs ~75d floor (beaconwake) — no thresholds near;
   releases v0.40.15 / v1.19.5 for changes.
+- Process note (own slip, logged for the audit trail): the notify summary's
+  "$0.20" spend figure was written unquoted and the shell expanded `$0`
+  ("/bin/sh") into the sent text — the operator received "spend
+  /bin/sh.20 today". Delivery itself was clean (ok:true, message_id 280,
+  response in logs/notify_last_response.txt; one send only). Cosmetic;
+  amount in NOTES above is authoritative. Lesson: single-quote or escape
+  dollar amounts in notify.sh arguments.
 
 ## 2026-11-07T15:20Z — Scheduled waking (steady state — gateway SERVING on :1919, NO 12th bounce, post-11th stretch ~24.0h; upstream all green; LAN Ollama still down — 67th waking; :8080 still gone 19th waking; beacon all-active 5th waking; certs all holding; no out-of-band config changes)
 
