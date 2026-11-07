@@ -319,3 +319,52 @@ Consequences for the watch:
   MiB, some decimal MB) is the likely source of the whole projection
   confusion — **standing rule: compare maxsize in RAW BYTES
   (`stat -c %s` vs 524288000), never in human units**.
+
+## 2026-11-07T09:45Z — cron.daily model CORRECTED: it no-ops under systemd
+
+The 09:45Z Nov-7 verification found: cron.daily fired at **07:39:14Z**
+(anacron stamp updated; journal `Job 'cron.daily' started … Normal exit
+(1 job run)`) but **no rotation happened** — syslog 552,658,579 bytes,
+`syslog.1` still Nov-1 00:15:56Z. The 09:45Z escalation trigger from the
+03:45Z section fired, and the investigation corrected the model a third
+time:
+
+- **ROOT CAUSE — the "SECOND DAILY RUN" claim above is WRONG**:
+  `/etc/cron.daily/logrotate` contains a systemd guard —
+  `# skip in favour of systemd timer` + `if [ -d /run/systemd/system ];
+  then exit 0`. On any systemd host the script **exits before running
+  logrotate**. Anacron runs the job (stamp updates, journal clean) and the
+  job is a no-op. **A cron.daily/anacron stamp is NOT evidence that
+  logrotate ran.**
+- **Corrected schedule: logrotate runs ONLY via the systemd timer**, once
+  daily ~00:00–01:00Z (+RandomizedDelaySec). Last 00:01:37Z Nov-7, next
+  **00:59:16Z Nov-8**.
+- **Nov-7 00:01:37Z run missed the maxsize threshold by ~1.4 decimal MB**
+  (interpolated ~522.9MB vs 524,288,000 bytes = 524.3 decimal MB, ~0.27%)
+  — not rotating was CORRECT; 2nd data point for the unit-corrected
+  threshold.
+- **Mechanism verified healthy** (`sudo /usr/sbin/logrotate -d
+  /etc/logrotate.conf`): "log needs rotating" for syslog at 552.7MB;
+  parsed constant echoed again as `>= 524288000` (raw bytes); kern.log
+  (129.7MB, <1 week) correctly not due.
+- **Next rotation: Nov-8 00:59:16Z timer run — weekly due (last rotation
+  2026-11-01 00:15 + 7d) AND maxsize satisfied (~610–630MB projected at
+  ~77M/day). Conditions are CONCURRENT → maxsize-vs-weekly attribution
+  cannot be disambiguated at that run; the clean maxsize-only test the
+  03:45Z projection promised does not exist on this host.** Rotation is
+  certain either way.
+- **Transient**: syslog grows ~77MB/day until rotation → ~615–630MB peak,
+  ~100MB over the 500MiB plateau — in-band (root fs 58%, 40G avail), no
+  action.
+- **Probe lesson**: `logrotate` lives in `/usr/sbin` — not in the agent
+  user's PATH; bare `logrotate -d` exits 127 with EMPTY output (silent
+  probe failure). Probe with `sudo /usr/sbin/logrotate -d
+  /etc/logrotate.conf`.
+- **Spot-faster**: before relying on any cron.daily run, READ the script
+  (`cat /etc/cron.daily/logrotate`) for a systemd guard — the existence
+  of `/etc/cron.daily/logrotate` says nothing about whether it runs.
+  Model-lesson tally on this one watch item: (1) threshold-crossing
+  conflated with rotation-firing (21:45Z Nov-6), (2) decimal-MB vs MiB
+  units (03:45Z), (3) cron.daily counted as a real second run when it
+  self-skips under systemd (this correction). Standing probes: raw-byte
+  threshold compare, date-anchored greps, and now script-guard checks.
