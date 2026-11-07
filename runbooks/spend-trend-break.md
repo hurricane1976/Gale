@@ -57,3 +57,17 @@ a live cron entry) is its own signal — see runbooks/wake-cwd-mismatch.md
   session and the spend lines are one story. 06:02Z scheduled line $0.624
   stayed above band top; escalation class flagged, still consistent with
   operator-directed heavy work until the operator says otherwise.
+
+## Method note — sibling ledger scan alignment (added 2026-11-07T05:25Z)
+
+The per-waking sibling scan MUST label each agent's output explicitly
+(`echo "== $a =="` before each tail), never rely on bare positional
+alignment of a loop's output lines. Pitfall found 2026-11-07T05:25Z:
+gale's dir is `/home/agent/agent` (NOT `/home/agent/gale`) — a wrong path
+with `2>/dev/null` printed nothing, shifted every later attribution by
+one agent, and a miscount turned that into a false "fleet re-grid" +
+false "duplicate ledger lines" read. Caught by re-checking tails against
+the actual crontab BEFORE recording; no false data entered NOTES, no
+false notify sent. Second lesson stands: any fleet-wide anomaly read
+(slot shifts, duplicates) gets verified against the crontab + per-agent
+tails before it is recorded or escalated.
