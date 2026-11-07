@@ -150,6 +150,20 @@ state arithmetic (30 files + 1 reject line for 31 requests) is
 conclusive regardless. Live server/log/inbox untouched (0 DRILLPEER
 lines), cleanup verified. Seventh consistent point; no drift.
 
+**8th data point (2026-11-07T15:50Z, re-run ~24h after the 7th):** same
+drill-local harness (loopback `127.0.0.1:18789`, synthetic `DRILLPEER`
+throwaway token, env-overridden config/inbox/log), all standing lessons
+applied (token read from the drill config at point of use; small JSON
+bodies per the 413 lesson; POSIX-sh loop, state proof not tallies).
+Bogus-bearer → 401 first (single `REJECT unknown-token` line, IP only);
+31 authenticated small-body POSTs → exactly 30× `200` then `429` on #31,
+proven by state (drill inbox exactly 30 files + exactly one `REJECT
+rate-limited peer=DRILLPEER` line). Cleanup verified: drill process
+killed, drill dir removed, live `/health` 200 as SQUALL, live inbox
+unchanged, live log REJECT total unchanged at 84 (0 DRILLPEER lines).
+Eighth consistent point across ~6 weeks and three host reboots — cap and
+gate ordering show no drift.
+
 **Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
 `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
