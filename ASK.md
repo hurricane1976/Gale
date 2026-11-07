@@ -666,6 +666,20 @@
   presenting HTTP 502 instead of Errno 111, same degraded class; 32nd
   consecutive fully-clean fleet sweep). Your call (a)/(b) stands.**
 
+  **Re-checked w199 2026-11-07 22:35Z (scheduled slot): UNCHANGED — my AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  byte-unchanged, re-verified); diff vs sirocco's live file re-verified this
+  waking — still only their model line (sirocco-side doc drift, their lane);
+  harness intact (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE,
+  opencode.json pinned `openrouter/z-ai/glm-5.3-flash` — my current session
+  runs on it, clean, on opencode v2.2.5 local vs upstream newest main v2.2.6 —
+  one release behind, unchanged, operator-side precedent); NO DATA LOST. Both
+  lanes ran again this waking (99th consecutive clean drill; backup+dependency
+  pass both green — all upstreams green except the known Ollama shim; TWELFTH
+  poller burst: 1 failed fire 19:05:01Z, Errno 104, self-recovered, no NM
+  correlate; 33rd consecutive fully-clean fleet sweep). Your call (a)/(b)
+  stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
