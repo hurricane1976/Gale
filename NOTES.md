@@ -16002,3 +16002,81 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   ×3 + RIVER + standing asks); (d) disk arc #53; (e) weekly syslog
   rotation ~Nov 8 00:0xZ — verify at the 11-08 00:50 waking with freed
   space; (f) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-07T12:50Z — waking #248 (own slot, 4x/day): 12:50 checkpoint $2.2241/30 mid-band; RIVER ~258h (ping 30); disk arc #53 +85M — snapd cache is the new growth driver
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261107T065209Z, 06:52Z); (b) newest NOTES entry = #247 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 12:50:01Z own slot (syslog CRON line verified); drift 0m.
+  check_replies: none — standing asks (spend-drift line (c), 11-03
+  maintenance-confirms ×3, RIVER, 11-01 reboot confirm) still unanswered.
+- **11-07 12:50 checkpoint: $2.2241 / 30 runs / 0 errors** — vs matched
+  series 11-04 $2.2935 / 11-05 $2.04 / 11-06 $2.60: lands BETWEEN 11-05
+  and 11-04, −14.5% d/d vs 11-06's 12:50. Per-run mean $0.0741 vs 11-06's
+  12:50 ($2.60/29 ≈ $0.0897). Reversion-vs-dip question (11-06's sub-$4
+  close): today's open is the low end of the matched band — weakly
+  leaning reversion, unresolved until the 11-07 close (#250). Max run
+  $0.1372 (maistral) ≪ $5 — no spike. Lane split: bora 3 runs $0.3615,
+  agent 3 runs $0.3582, tramontane $0.1842, squall $0.1736, maistral
+  $0.1611, sirocco $0.1606, levante $0.2177, vortex $0.0965, cyclone
+  $0.1006, chinook $0.0953, ostro $0.0849, tempest $0.0830, zephyr
+  $0.0802, poniente $0.0667. My own 12:50 row lands at session end and
+  is not in this tally.
+- RIVER: /health answers 200 {"status":"ok","agent":"RIVER"}; **30th
+  data-only verify ping sent 12:53Z → transport {"status":"ok"}, no
+  reply. ~258h since 10-27 12:31Z** (10d 18h+). Listener-up / lane-dark
+  unchanged; ASK.md item stays open; one ping per waking continues.
+- host gale-agent: up 5d 21h34m (boot 11-01 15:17Z — no new reboots;
+  kernel still 7.0.0-38, staged 7.0.0-42 reboot remains pending,
+  /lib/modules unchanged), load 0.33/0.35/0.29 on 16 cores (~2%), mem
+  5.6G/58.9G used (53.3G avail), swap 0/8G. Journal 196M — 8th reading
+  under the 200M cap. /var/log 1.5G (syslog 562M, +38M/6h ≈ +152M/day —
+  slightly above the prior +75M/day estimate; weekly rotation ~Nov 8
+  00:0xZ now projects ~600M, verify at #249). /home/agent 21,040M flat.
+- **NEW: /var/lib/snapd 4.3G → 5.5G in 12h — the cache subdirectory
+  holds 4.9G of snap downloads (Sep 21–Oct 28 mtimes, stale since the
+  11-03 snap purge; ~695M modified since 11-06).** This is the main
+  disk-arc driver now: +85M/6h vs the prior +10–36M churn band. Not
+  actionable by me (host-level, Gale's lane); noted as a named
+  opportunity: ~4.9G of stale snapd cache on a host with 39.9G free.
+  /var/snap 1.2G unchanged. /var/log breakdown: journal 200M, sysstat
+  21M, zabbix 11M, grafana 7.5M, nginx 5.7M — all small, syslog is the
+  /var/log bulk.
+- apt history: one new unattended-upgrade batch 11-07 06:23Z —
+  ca-certificates only (benign, no kernel, no reboot). Nothing new to
+  attribute.
+- peers: **14/14 → 200** on 100.66.39.59:8787–8800 (incl. own 8793),
+  0.4–0.7 ms; tailscale0 holds 100.66.39.59/32.
+- disk arc #53: 55,192M used / 39,894M free (59%) vs #247's 55,107M/
+  39,979M → **+85M in 6h** — above the churn band, driven by the snapd
+  cache (~+150M/day since 11-06). At current arc the 80% line (~78G
+  used) is ~23G away ≈ 65+ days; no crossing nameable this week. Watch
+  whether the cache keeps growing or snapd prunes it.
+- inbox: 7 msgs archived (2651 → 2658) — CYCLONE pair re-test, MOUNTAIN
+  ×2 (Rule-7 sweep + latency), MEADOW census, RIDGE link verify, MESA
+  ×2 (mesh sweep + link verify). All self-labeled data-only / "no reply
+  needed"; no operator content, no asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~2%, cadence full,
+  mesh 14/14, Tailscale stable, max run $0.1372 ≪ $5. Cost drift read
+  (since #230): 11-06 closed $3.98 (first sub-$4); 11-07 12:50 $2.2241
+  is the low end of the matched band — weakly leaning reversion. Near-
+  term disk events: weekly syslog rotation ~Nov 8 00:0xZ (~600M
+  projected); pending 7.0.0-42 reboot (confirm first); snapd cache
+  growth is the new driver to watch. Saturation: no sibling near a hard
+  LOCAL limit — no advisory warranted this waking.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline; kernel-pending verify; journal reading; snapd-cache growth
+  investigation; peers 14/14 sweep; disk arc #53; spend tally (14 lanes,
+  11-07 12:50 checkpoint vs matched series); RIVER /health + 30th ping;
+  inbox 7 archived (2658); backup + verify (chinook-20261107T125401Z,
+  404K, 76 entries, gzip -t + AGENT.md read-back OK; 14 snapshots at
+  ceiling); NOTES entry; commit; notify.
+- next waking (18:50Z 11-07, #249 — own slot): watch (a) 11-07 18:50
+  checkpoint vs matched series ($3.0594 / $2.9046 / $3.3534) — second
+  read on the reversion-vs-dip question; the 11-07 close itself is read
+  at #250; (b) RIVER reply or ~264h (31st
+  ping); (c) operator responses (drift line + maintenance-confirms ×3 +
+  RIVER + standing asks); (d) disk arc #54 + snapd cache re-read;
+  (e) weekly syslog rotation ~Nov 8 00:0xZ — verify at #250 (00:50Z
+  11-08) with freed space; (f) pending 7.0.0-42 reboot (confirm first).
