@@ -1,5 +1,130 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-11-07T09:20Z — Scheduled waking (**FreeToken gateway VERIFIED SERVING on :1919 — wrong-port correction holds on first re-test; NO 12th bounce, post-11th stretch ~18h; model string stays reverted**; upstream all green; LAN Ollama still down — 66th waking; :8080 still gone 18th waking; beacon group all-active 4th waking holding; certs all holding; no out-of-band config changes)
+
+Context: 09:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
+landed 09:20:11Z, on schedule. Runs `openrouter/z-ai/glm-5.3-flash` (pinned
+id — ASK.md NEEDS OPERATOR CONFIRM items still open, no quotable Telegram
+word); waking succeeding = OpenRouter path healthy end-to-end. opencode
+v2.2.5 — twenty-sixth consecutive waking, clean. `check_replies.sh`: no new
+operator messages.
+
+**FreeToken gateway: VERIFIED SERVING on `:1919` — the 03:20Z wrong-port
+correction holds on first re-test.** Live probes ~09:20:25Z + 09:20:45Z:
+`{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":
+"f2527b60…","uptime_s":64813→64833,"maintenance":"serving","version":
+"0.1.3+g9c635a157"}` — clean monotonic (+20s), same instance_id (11th-bounce
+start), model string stays the REVERTED `Qwen3.8-35B-A3B-Distill-NVFP4`
+(2nd waking since reversion), version unchanged, host pingable (0% loss
+~1.6ms). Expected uptime ≈64900 = 43278 observed at 03:21:30Z + 21600s —
+64813 is within drift. **NO 12th bounce**: the post-11th-bounce stretch is
+now **~18.0h and counting** (start ~15:20:12Z Nov 6). Interval ladder:
+~114h → ~5.9h → ~1.7h → ~49.2h → ~49.7h → ~13.6h → **~18.0h ongoing**.
+Fleet impact of anything here: none — FreeToken retired from primary
+2026-10-22, OpenRouter path green (this waking ran on it).
+
+Host: up 5d 18h (boot still 2026-11-01 15:17:37Z — no new reboot), load
+1.48/0.62/0.43 (light, brief bump at the :20 grid-wake minute), disk **58%
+(54G/98G, 40G free — the ~6G-freed state PERSISTS, 18th waking at the new
+level)**, RAM ~52Gi available of 57Gi. `sirocco-peer` (system service, main
+PID 4959, up since boot 2026-11-01 15:17:47Z) + `tailscaled` + ssh + cron
+all active; peer log ACCEPTs current through 07:16Z. Listener probe (full
+sorted-port-list method): tailnet ports 8787-8800 all present (my :8796 up)
++ shim :11435 + host-lane ports :8088/:8090-8092/:8123/:8443 — **:8080
+STILL ABSENT** (ss count 0 + targeted curl exit 7, 18th consecutive waking
+without it; ~102h since first seen gone at 03:20Z Nov 3 — no comeback, no
+acknowledgment in evidence; Gale's lane, flagging not touching). Tailscale:
+daemon active, same 14-node set — **all 6 beacon nodes active direct this
+waking** (4th consecutive holding), gemini/mountain/ubuntu active (via
+relay "nyc"), ipad174 offline (last seen ~7d), josh-iphone18 offline (last
+seen ~4d), josh-linux/josh-linux2 listed-idle (operator personal devices,
+no fleet lane depends on them). No fleet disconnects. Cron re-audit: live
+crontab Sirocco block (lines 26-27) == repo sirocco.cron — lock-step holds.
+Working tree clean at start (03:20Z waking committed as 19205f4).
+
+Gale-lane observation (56th consecutive waking): host crontab still shows
+`ollama_keepalive.sh` `#EVICTED#`-commented (line 35); :11434 still refused
+(curl exit 7, re-verified local + LAN this waking); shim :11435 up but
+upstream-refused (502 re-verified this waking). Not my lane to touch;
+noting again.
+
+`./backup.sh` -> `backups/sirocco-20261107T092105Z.tar.gz` (276K, 127
+entries — this waking's 9 inbox files were filed to `processed/` (excluded)
+pre-backup, so count at the steady 127; gzip -t OK, tar -tzf read-back
+verified, all seven key files (AGENT/NOTES/ASK/wake.sh/opencode.json/
+sirocco.cron/runbooks/freetoken-gateway.md) confirmed present by exact-
+path check; keys/ only dir entry + 2 .example templates — no secrets).
+
+Config state: UNCHANGED — AGENT.md mtime 2026-10-22 02:00:04Z, opencode.json
++ wake.sh 2026-10-23 00:46:56Z (pinned model id), sirocco.cron 2026-10-21
+15:22Z, `keys/peers.env` 2026-09-26 01:19:56Z. No out-of-band changes this
+waking. Pairing state UNCHANGED (34 NAME peer blocks + SELF_NAME).
+
+Inbox: 9 new (06:00–07:16Z Nov 7), all filed to `processed/` (now 2599
+total): 2x MOUNTAIN (rule-7 sweep + latency check), 1x MEADOW census, 3x
+DELTA link-verify, 1x RIDGE link-verify, 1x MESA mesh sweep, 1x CYCLONE
+pair re-test. All explicitly "no reply needed, data only". No replies sent,
+nothing minted or installed.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7 —
+service down, host pingable 0% loss ~1.6ms) — **66th consecutive waking**
+down (10-20 .. 11-07). Shim :11435 up locally but upstream-refused
+(consistent).
+
+Dependencies (upstream green, live probes ~09:20-09:21Z):
+- OpenRouter: /api/v1/models 200 in 0.08s (primary model path; this waking
+  executing on it = end-to-end healthy).
+- OpenCode Zen: opencode.ai 200 in 0.10s (secondary/informational).
+- GitHub: api.github.com/zen 200; githubstatus "All Systems Operational"
+  (indicator none, updated 07:19:22Z Nov 7), all components operational —
+  Git Operations resolution (22:37Z Nov 3) holding.
+- Tailscale: status.tailscale.com 200 in 0.98s; daemon active; same 14-node
+  set (see host section above). No fleet disconnects.
+- LAN Ollama :11434 refused (curl exit 7) — 66th waking, see above.
+- FreeToken gateway: SERVING on :1919 — correction verified (see top
+  section).
+- Release watch: NO CHANGES vs 03:20Z — Ollama latest still v0.40.15
+  (2026-11-03T22:52:31Z), opencode upstream latest still v1.19.5
+  (2026-10-28T06:17Z), local opencode binary still v2.2.5. Queries run
+  with `-L` per the standing redirect note. Nothing to act on.
+
+Cert expiries (fresh probes ~09:2xZ): mountainwake.org 2027-02-03
+05:14:36Z = ~88d — post-renewal state holding; beaconwake.com 2027-01-22
+20:51:04Z = ~76d; tidalwake.org 2027-01-27 22:41:18Z = ~81d. All above
+every threshold (30/14/7); all Let's Encrypt; HTTPS beacon/tidal/mountain
+all 200 with `-L`.
+
+Spend: 2026-11-06 totaled 4 entries ($0.1632); 2026-11-07 so far 1 entry
+(03:22Z $0.1203) — well under thresholds ($5/run, $15/day). This waking's
+own entry appends at run end via wake.sh's envelope pass to spend_check.py.
+
+- Verdict: verification waking, no NEW events — the 03:20Z **wrong-port
+  correction held on first re-test: gateway confirmed SERVING on `:1919`**
+  (uptime 64813→64833 monotonic, no 12th bounce, post-11th stretch ~18h,
+  model string still the reverted Distill). Everything else carried:
+  upstream all green; host-lane :8080 listener still gone (Gale's lane,
+  18th waking); ~6G disk-freed state holding (18th waking); LAN Ollama
+  still down (66 wakings); beacon group all-active (4th waking holding);
+  certs all holding; no out-of-band config changes; nothing actionable
+  from inbox.
+- Process note (own slip, logged for the audit trail): while verifying
+  notify delivery after the summary send, I fumbled a shell check and
+  accidentally invoked `./notify.sh` a second time with the literal
+  string "test-suppressed" — it DELIVERED to the operator chat
+  (message_id 278, 09:21Z, response captured in
+  `logs/notify_last_response.txt`, ok:true). Harmless noise, but two
+  Telegram sends where one was intended. The summary itself delivered
+  first (clean exit, API ok). Lesson recorded: verify notify delivery by
+  reading `logs/notify_last_response.txt`, never by re-invoking the
+  script. No third message sent to explain the second — the string is
+  self-evidently a stray test.
+- Next: probe the gateway on **`:1919`** every waking (expect uptime_s
+  ≈86413 next waking if no 12th bounce; watch the ladder against
+  ~13.6h/~49h marks); watch for operator word on the stacked ASK.md
+  confirm items; watch whether :8080 comes back or Gale's lane
+  acknowledges the change; watch whether LAN Ollama stays down and the
+  keepalive EVICTED marker persists; watch the spend drift.
+
 ## 2026-11-07T03:20Z — Scheduled waking (**CORRECTION: FreeToken gateway was NEVER down — the last four "DOWN" calls were a wrong-port artifact; gateway verified SERVING on :1919 with a real 11TH BOUNCE ~15:20:12Z Nov 6 and the model string REVERTED; runbook updated with a WRONG-PORT TRAP section**; upstream all green; LAN Ollama still down — 65th waking; :8080 still gone 17th waking; beacon group all-active 3rd waking holding; certs all holding; no out-of-band config changes)
 
 Context: 03:20 slot of the 4x/day 25-min fleet grid (`20 3,9,15,21`); waking
