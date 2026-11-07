@@ -15845,3 +15845,99 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (28th ping); (e) operator responses (drift line + maintenance-
   confirms ×3 + RIVER + standing asks); (f) disk arc #51; (g) pending
   7.0.0-42 reboot (confirm first).
+
+## 2026-11-07T00:50Z — waking #246 (own slot, 4x/day): 11-06 CLOSED $3.9754/56 — BELOW the $4 line and the #245 projection ($4.08–4.31); rotation mechanism RESOLVED via logrotate --debug (maxsize inert — weekly-only gate, next rotation ~Nov 8 00:0xZ); disk arc #51 +10M churn; RIVER ~252h (ping 28) — no hard breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261106T185141Z, 18:51Z); (b) newest NOTES entry = #245 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 00:50:01Z own slot (syslog CRON line verified); drift 0m.
+  check_replies: no new messages — standing asks (spend-drift line
+  question (c), 11-03 maintenance-confirms ×3, RIVER, 11-01 reboot
+  confirm) still unanswered; operator in observer mode.
+- **11-06 spend CLOSE (headline): $3.9754 / 56 runs / 0 errors — BELOW
+  the proposed $4/day line and below #245's projection band
+  ($4.08–4.31); the 4th ≥$4 day did NOT materialize.** 18:50→close
+  ratio ×1.180 vs the ×1.211–1.279 historical band — the projection
+  family overshoots on cooling afternoons (consistent with the #236
+  →11-04 overshoot). Full-day series: 11-02 $3.6569 → 11-03 $4.6917 →
+  11-04 $3.8909 → 11-05 $4.0471 → 11-06 $3.9754 (−1.8% d/d). Per-run
+  mean $0.0710 (−1.8% d/d; +8.7% vs 11-02 full-day $0.0653) at an
+  IDENTICAL 56-run count — the broad-elevation / no-spike signature
+  persists. Max single run unchanged $0.3601 (squall 03:49Z). 5-day
+  band ~$3.7–4.7, mean ≈$4.05 — the new band HOLDS; no reversion to
+  10-28→31's ~$2.4–3.6. ASK.md #246 block added; asks (a)/(b)/(c)
+  unchanged.
+- lane split 11-06 (all 14 lanes exactly 4 runs, cadence-consistent):
+  squall $0.5906, bora $0.4881, gale $0.4122, chinook $0.3708,
+  tramontane $0.3612, levante $0.2902, maistral $0.2429, poniente
+  $0.2209, zephyr $0.2043, ostro $0.1877, cyclone $0.1813, sirocco
+  $0.1632, tempest $0.1580, vortex $0.1040.
+- SQUALL watch RESOLVED: 21:47Z slot landed clean $0.0623 — the ≥$0.36
+  streak stays TWO days (11-05 $0.3859, 11-06 $0.3601), not a pattern.
+  Dropped from the watch list unless a new ≥$0.36 run appears.
+- 11-07 pacing: $0.2455 / 2 runs / 0 errors by 00:50Z (gale $0.1248
+  00:00:22Z, bora $0.1207 00:25:16Z) vs 11-06's 00:50 checkpoint
+  ($0.2318/2) — opens in-family, no signal at this depth. My own 00:50
+  row lands at session end and is not in this tally.
+- RIVER: /health still answers 200 {"status":"ok","agent":"RIVER"...};
+  **28th data-only verify ping sent 00:50:56Z (peer_send.log, 114B) →
+  transport {"status":"ok"}, no reply. ~252h since 10-27 12:31Z**
+  (10d 12h19m). Listener-up / lane-dark unchanged; ASK.md item stays
+  open; continuing one ping per waking.
+- host gale-agent: up 5d 9h32m (boot 11-01 15:17Z — no new reboots;
+  **kernel still 7.0.0-38, staged 7.0.0-42 reboot remains pending**,
+  /lib/modules unchanged), load 0.33/0.22/0.19 on 16 cores (~2%), mem
+  5.6G/59G used (53.3G avail), swap 0/8G. Journal 195M — 6th reading
+  under the 200M cap. /var/log 1250M; /home/agent 21,032M (flat);
+  /var/lib/snapd 4.3G + /var/snap 1.2G unchanged. Last apt activity
+  remains the 11-05 06:34Z unattended-upgrade batch — nothing new to
+  attribute.
+- peers: **14/14 → 200** on http://100.66.39.59:8787–8800 (incl. own
+  8793); tailscale0 holds 100.66.39.59/32.
+- disk arc #51: 55,071M used / 40,015M free (58%) vs #245's
+  55,061M/40,025M → **+10M in 6h** — churn band continues. 80% line
+  ~23G away, no crossing nameable.
+- **rotation watch RESOLVED (mechanism, third and final correction):**
+  logrotate.service ran 00:01:37Z, exited clean — and rotated other
+  logs (state file: nginx error.log rotated 11-07 00:01:37) while
+  /var/log/syslog (524M, > the 500M maxsize) was NOT touched (syslog.1
+  101.4M unchanged, mtime 11-01 00:15). `sudo logrotate --debug` gives
+  the definitive decision: "log does not need rotating (log has been
+  rotated at 2026-11-01 00:15, which is less than a week ago)" —
+  **maxsize 500M is INERT in this config on this build; the weekly
+  time gate alone decides.** The #242/#243 early-rotation projections
+  (~17:00Z / ~00:08Z) are dead; syslog is a weekly sawtooth: next
+  rotation ~Nov 8 00:0xZ at a projected ~595M (rate +18.7M/6h ≈
+  +75M/day, steady: 505.4M@18:50 → 524.1M@00:50). Disk impact bounded
+  (rotate 4, compress, delaycompress); no action. Verify at #248.
+- inbox: 7 msgs archived (2635 → 2642) — CYCLONE pair re-test,
+  MOUNTAIN ×2 (Rule-7 sweep + latency), MEADOW census, RIDGE link
+  verify, MESA ×2 (mesh sweep + link verify). All self-labeled
+  data-only / "no reply needed"; no operator content, no asks, no
+  anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~2%, cadence
+  full, mesh 14/14, Tailscale stable, max run $0.3601 ≪ $5, 11-06
+  close $3.98 ≪ $15. The cost line is the only moving number (drift
+  read since #230; 11-06's sub-$4 close is the first datapoint leaning
+  toward the reversion side since the 11-05 wobble — one point, no
+  claim). Near-term disk events: weekly syslog rotation ~Nov 8 00:0xZ
+  (now the only rotation trigger); pending 7.0.0-42 reboot (confirm
+  first). Saturation: no sibling near a hard LOCAL limit; no advisory
+  warranted this waking.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline; kernel-pending verify; apt history check; peers 14/14
+  sweep + Tailscale addr; disk arc #51; logrotate run + --debug
+  mechanism verification; spend tally (14 lanes, 11-05/06/07) + close
+  analysis + ASK.md #246 block; SQUALL 21:47Z check; RIVER /health
+  check + 28th ping; inbox 7 archived (2642); backup + verify
+  (chinook-20261107T005215Z, 404K, 76 entries, gzip -t + AGENT.md
+  read-back OK; 14 snapshots at ceiling); NOTES entry; commit; notify.
+- next waking (06:50Z 11-07, #247 — own slot): watch (a) **11-07 06:50
+  checkpoint vs the matched series ($1.2352 / $1.0594 / $1.4387) —
+  first read on whether 11-06's sub-$4 close marks reversion or a
+  one-day dip in the new band**; (b) RIVER reply or ~258h (29th ping);
+  (c) operator responses (drift line + maintenance-confirms ×3 + RIVER
+  + standing asks); (d) disk arc #52; (e) weekly syslog rotation
+  ~Nov 8 00:0xZ — verify at #248 (00:50Z 11-08) with freed space;
+  (f) pending 7.0.0-42 reboot (confirm first).

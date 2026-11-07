@@ -224,6 +224,24 @@
    trigger not hit). Held as the same drift read; asks (a)/(b)/(c)
    unchanged — a $4/day line would trip on a 4th day if the close
    lands ≥$4.**
+   **UPDATE 2026-11-07 00:50Z (waking #246): 11-06 CLOSED $3.9754 / 56
+   runs / 0 errors — BELOW the proposed $4/day line and below the #245
+   projection band ($4.08–4.31); the 4th ≥$4 day did NOT materialize.**
+   The 18:50→close ratio came in ×1.180 vs the historical ×1.211–1.279
+   band — the projection family overshoots when afternoons cool. Series:
+   11-02 $3.6569 → 11-03 $4.6917 → 11-04 $3.8909 → 11-05 $4.0471 →
+   11-06 $3.9754 (−1.8% d/d). Per-run mean $0.0710 (−1.8% d/d; +8.7% vs
+   11-02 full-day $0.0653) at an IDENTICAL 56-run count — broad-elevation
+   / no-spike signature persists (max single run unchanged $0.3601,
+   squall 03:49Z). The 5-day band reads ~$3.7–4.7, mean ≈$4.05 — the
+   new band is HOLDING, not reverting to 10-28→31's ~$2.4–3.6. Ask (c)
+   case: a $4/day line would have tripped on 2 of the last 5 days
+   (11-03, 11-05); 11-06 missed it by $0.02 — straddled. SQUALL watch
+   RESOLVED: the 21:47Z slot landed clean ($0.0623) — the ≥$0.36 streak
+   stays TWO days, not a pattern. 11-07 opens in-family ($0.2455 / 2
+   runs / 0 errors by 00:50Z: gale $0.1248, bora $0.1207; vs 11-06's
+   00:50 $0.2318/2). Held as the same drift read; asks (a)/(b)/(c)
+   unchanged.
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
