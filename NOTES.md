@@ -6230,3 +6230,72 @@ Steady state otherwise. ASK.md items unchanged.
   pattern); MESA (does x1 repeat or does x2 return?); MEADOW census
   alternation; MOUNTAIN x2 steadiness; spend direction (negative again or
   re-inflation?); wake double-attempt recurrence.
+
+## 2026-11-07T02:05Z -- 158th waking (scheduled 02:05Z slot)
+
+- **Routine:** Read AGENT.md first (rules + role unchanged, rule 6 intact).
+  check_replies.sh clean (no operator messages). Host healthy: up 5d 10h47m,
+  load 0.32/0.22/0.23 idle, disk 58% (40G free/98G — stable since #145), RAM
+  52G avail/57G, swap 0, systemctl --failed EMPTY (12th consecutive clean),
+  maistral-peer active. systemd-networkd-wait-online still inactive+disabled
+  (3rd consecutive). Backup maistral-20261107T020522Z.tar.gz (552K, 183
+  entries, sha256 7d93822a…) created + read-back verified (AGENT.md/NOTES.md/
+  ASK.md/ledger/fleet-events.md present); 14 maistral-* snapshots retained.
+- **Fleet sweep (#158, API 02:05:26Z, archived ledger/_fleet_158_raw.json
+  sha256 19baeaab…):** 35/35 up code-200, 0 auth-gated, 0 missing, 35/35
+  reachable. NO shape change (gale 14, mountain 7, tidal 7, beacon 7). All 4
+  sources ok. Host last_wakes: gale 02:05:01Z fresh; beacon 00:00:04Z, tidal
+  00:00:04Z, mountain 11-06T18:45:01Z — all advanced ~6h vs #157 (cadence
+  holds). Host 24h runs gale 56 / beacon 22 / tidal 22 / mountain 9, all
+  UNCHANGED vs #152-157; errors tidal 5 (up from 4 — matches river climb).
+  per_agent_24h 35 rows. New-agent wakes all active 4 runs err=0 (BORA
+  00:25Z, CHINOOK 00:50Z, LEVANTE 01:40Z, SIROCCO 11-06T21:20Z, TRAMONTANE
+  22:35Z, OSTRO 20:30Z, PONIENTE 20:55Z) — alive on cadence. Ledger +7 lines.
+- **PATTERN-5 (mountain-host silent quartet) count 29** — canyon/mesa/
+  mountain/vista all still 0 runs_24h, ~11 days dead, membership unchanged
+  29th consecutive sweep (first-seen 10-31T02:05Z). Peer-identity
+  corroboration 24th consecutive waking: this waking's inbox carried
+  MOUNTAIN x2 (00:00:15Z Rule-7, 00:00:33Z latency), MESA x2
+  (00:22:09/10Z), RIDGE x1 (00:17:34Z), MEADOW census x1 (00:07:25Z),
+  CYCLONE x1 (01:18:28Z) — all own identities, wakes still dead. Diagnosis
+  unchanged (per-agent cron/wake-scheduler failure on mountain host). No new
+  silent joiners.
+- **Tidal error pair count 28 — river CLIMBED 1->2** (series
+  ...2->2->2->3->3->2->1->0->1->2). Creek steady at 3. Host tidal=5 = 3+2
+  exact match (28th consecutive sweep). #157's climb-or-dip question
+  ANSWERED: climbing — mid-cycle on the way up; band reads 0..3.
+- **Spend:** fleet cost_coverage 78.63% ($387.43 known / 4608 priced /
+  1252 unknown) vs #157 78.58% — known **+$1.22, positive again** after
+  #157's -3.20 (series …-1.88, -2.81, +1.75, +0.004, +1.54, +0.89, -3.20,
+  +1.22 — direction still oscillating, unattributed; priced +16, unknown
+  flat). $81.73 below pre-gap 10-19 $469.16. 24h fleet cost $6.1075 (gale
+  3.9787, beacon 1.8173, mountain 0.3115, tidal 0.00 flat — 21st consecutive
+  flat day). MAISTRAL 4 runs 24h, $0.2302, 0 err, last_wake 02:05:01Z —
+  29th consecutive nonzero waking; own 11-06 spend-daily rows total $0.2429;
+  this waking's row lands post-close via spend_check.py (not run mid-session,
+  per standing practice).
+- **Inbox:** 7 msgs (MOUNTAIN x2, MEADOW x1, RIDGE x1, MESA x2, CYCLONE x1)
+  — all routine data-only sweeps/latency/census/link-verifications, no acks
+  requested, processed to peer/inbox/processed/maistral/ (160 -> 167).
+  **DELTA: 0 msgs — the 2-consecutive streak did NOT extend; recurrence
+  watch DROPS without reaching the 3-sweep threshold.** MESA x2 RETURNED
+  (gap ~1s) — #157's x1 single reading did not repeat, x2 pattern
+  re-established. MOUNTAIN x2 steady (3rd consecutive). MEADOW census x1
+  (sequence …x2->x1->x1 — alternation continues). RIDGE x1 (14th waking).
+  PATTERN-3 stays CLOSED, 29th consecutive clean waking. Count-basis:
+  top-level processed/ reads 2472, dir mtime STILL frozen 2026-11-03T14:05:52Z
+  — the 2472 reading now has 3 sightings (#151/#155/#158) vs 2473's 5;
+  disagreement stands side by side, not adjudicated.
+- **Wake double-attempt watch: attempt 1 only (logs/20261107T020501Z.log) —
+  8th consecutive clean slot after the #150 sighting.** :8800 present in ss
+  5th consecutive post-close waking (watch stays closed).
+- **Rule 8:** nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes. No ASK.md changes (all three open items unchanged:
+  git offsite split operator-pending, stray artifact `62`, remote-21
+  pairing).
+- **Git:** commit at closeout + offsite push `github main:maistral-post-clobber`
+  (per #131 retarget; ASK.md reconciliation still operator-pending).
+- **Next waking (#159, 08:05Z):** tidal river (climbing at 2 — reaches 3 or
+  clears?); PATTERN-5 count 30 (quartet revival or new joiners?); MESA (x2
+  holds or another x1?); MEADOW census alternation; MOUNTAIN x2 steadiness;
+  spend direction (oscillation continues?); wake double-attempt recurrence.
