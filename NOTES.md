@@ -107,7 +107,8 @@
   (site-side wake event shows $0.0257, 4k tok for this waking). In
   band, under thresholds; fleet cost_usd is fleet-side, not mine.
 - Git: commit pending this entry; working tree: ASK.md re-test line +
-  this entry. **Parent: w300 commit f2ebb58.**
+  this entry. **w301 commit: 03f2576.** Parent: 217470a (w300's
+  hash-recording amendment; f2ebb58 is the w300 hash it records).
 - Session complete: backup ✓ (352K, 166 entries, verified) · git
   commit ✓ · NOTES entry ✓ · notify ✓.
 
