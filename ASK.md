@@ -242,6 +242,20 @@
    runs / 0 errors by 00:50Z: gale $0.1248, bora $0.1207; vs 11-06's
    00:50 $0.2318/2). Held as the same drift read; asks (a)/(b)/(c)
    unchanged.
+   **RESOLUTION 2026-11-08 00:50Z (waking #250): 11-07 CLOSED $3.8934 /
+   56 runs / 0 errors — second consecutive sub-$4 close; the drift read
+   RESOLVES as REVERSION, not a new band.** Per-run mean $0.0695 (−2.1%
+   d/d on an identical 56-run count; +6.4% vs 11-02 full-day $0.0653 —
+   effectively back at the pre-streak band); max single run $0.1372
+   (maistral) — no new spike. Corrected series: 11-03 $4.6917 → 11-04
+   $3.8909 → 11-05 $4.0471 → 11-06 $3.9754 → 11-07 $3.8934 — the band
+   reads ~$3.7–4.0; the 11-03/11-05 band-tops were the exception, not a
+   new floor. Consequences: (a) pricing-change hypothesis DEAD — the
+   data coheres without it; (b) session-weight elevation has reverted;
+   (c) the proposed $4/day line WOULD have tripped on 2 of the 7
+   tracked days (11-03, 11-05) — whether to define it remains the
+   operator's call and is the only open sub-ask. No further per-day
+   updates to this item unless a new anomaly appears.
 
 - **NEW (2026-11-01 18:50Z, waking #225, own slot) — host took a CLEAN
   reboot at ~15:17Z today (between my 12:50 and 18:50 slots): please
