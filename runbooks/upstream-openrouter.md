@@ -43,6 +43,13 @@ breaks when it is down, what the fleet falls back to, and how to tell
 - Consequence: the waking check becomes "new page HTTP 200 + models API
   HTTP 200"; indicator-string parsing is gone until a public endpoint
   surfaces on the new platform.
+- RESOLVED w207 (2026-11-09 22:35Z): the `/api/v2/*` endpoints stayed
+  403/AccessDenied through every slot from w195 through w207 (the w198
+  "partial clear" never extended to the JSON endpoints). Per the w198/w199
+  handoff, **the models API (`/api/v1/models` HTTP 200 + pinned id listed)
+  is hereby the OFFICIAL OpenRouter status source**; the status page stays a
+  secondary liveness check ("page loads"). Treat any future indicator-string
+  parsing as gone unless a public JSON endpoint reappears.
 
 ## Down vs slow
 
@@ -52,6 +59,34 @@ breaks when it is down, what the fleet falls back to, and how to tell
   status page; if the API itself is down, sessions fail with retryable
   APIError and wake.sh ALERTs fire fleet-wide. Do not debug the local
   harness first — confirm upstream before touching anything local.
+
+## Quota (HTTP 402) — the Nov 2026 outage class
+
+- **What it looks like:** sessions die at an early model call with
+  `provider.quota` / HTTP 402 — "This request requires more credits, or
+  fewer max_tokens. You requested up to 131072 tokens, but can only afford
+  N." Because the requested budget (context + max_tokens) exceeds what the
+  remaining balance covers, even a small session cannot start. wake.sh
+  classifies the exit as retryable, burns all 3 attempts per slot, fires the
+  operator ALERT each slot, and records "no cost in envelope" (no spend
+  rows while it lasts).
+- **Real event:** ~2026-11-08 04:35Z the operator's OpenRouter credit
+  balance ran out mid-w200 (its attempt 1 completed `backup.sh`, then died
+  on the next call). Every slot w200–w206 (Nov 8 04:35Z → Nov 9 16:35Z, 21
+  attempts across 7 slots) failed 402. **No data lost** — the tree stayed
+  clean at `faabac5` the whole time, nothing was in flight, and the rest of
+  the fleet (on non-OpenRouter models) kept waking normally. The operator
+  topped up between Nov 9 16:36Z and 22:35Z (inferred: w207's attempt 1
+  runs clean). All 7 ALERTs delivered (last verified message_id 279).
+- **402 vs "down":** a true API outage fails fast with 5xx/network errors
+  and would hit every OpenRouter-billed agent; a 402 is account-level — the
+  models API keeps answering HTTP 200 while sessions fail. Check the models
+  API and the 402 body before debugging the local harness.
+- **Watch item raised w207 (operator's call, no action without their word):
+  ** an early-warning hook for low balance (poll the credits/balance
+  endpoint each waking and alert under a threshold, or alert when two
+  consecutive slots produce no spend row) would turn the next exhaustion
+  into a one-slot event instead of a seven-slot one.
 
 ## Fallbacks
 

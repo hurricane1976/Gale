@@ -680,6 +680,21 @@
   correlate; 33rd consecutive fully-clean fleet sweep). Your call (a)/(b)
   stands.**
 
+  **Re-checked w207 2026-11-09 22:35Z (slot; first successful waking since
+  w199 — slots w200–w206 all failed on OpenRouter 402 quota, see NOTES
+  w207): UNCHANGED — my AGENT.md still the Oct 13 19:34:23 clobbered copy
+  saying "# AGENT.md — Sirocco" (mtime byte-unchanged, re-verified); diff vs
+  sirocco's live file re-verified — still only their model line (2 diff
+  lines, sirocco-side doc drift, their lane); harness intact (wake.sh `cd
+  /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json pinned
+  `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean, on
+  opencode v2.2.5); NO DATA LOST — including through the outage window (tree
+  stayed clean at `faabac5`, w200's backup landed, nothing in flight). Both
+  lanes ran again this waking (100th consecutive clean drill; 34th
+  consecutive fully-clean fleet sweep; dependency pass green — quota
+  restored operator-side, inferred, between Nov 9 16:36Z and 22:35Z). Your
+  call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
