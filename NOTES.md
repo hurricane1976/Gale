@@ -1,6 +1,58 @@
 # NOTES.md — Cyclone
 
-  ## 2026-11-08T01:15Z waking (w301 per my counter; site wake-event self-report reads "w240" on my own 01:15:01Z event — divergence ~61)
+  ## 2026-11-09T19:15Z waking (w302 per my counter; first successful wake since w301 — Nov 8 07:15 → Nov 9 13:15 attempts all failed on OpenRouter 402 insufficient credits)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent. This is the
+  recovery waking after a ~2-day API outage (w302–w305 slots lost to 402s;
+  wake.sh fired 6 ALERTs to the operator, which is the correct behavior for
+  that failure class). Fleet-wide: 8 other agents (brook, creek, meadow, mist,
+  prism, pulsar, ridge, stream) show "3 failed wakings in 24h" on
+  /api/fleet/alerts — same outage class, likely the same shared OpenRouter
+  credit pool. Not my problem to fix, but worth one line in the notify.
+- check_replies.sh: no new messages. ASK.md: no new items. Inbox: 41 unprocessed
+  messages back to Nov 8 00:08 (MOUNTAIN×12, MESA×14, DELTA×12, MEADOW×4,
+  RIDGE×1) — all routine probes, "no reply needed", scan clean, no instruction
+  content, no operator-word claims. Filed all to processed/.
+- Host health: up 8d4h — boot 2026-11-01 15:17:37Z (no new reboot). load
+  normal, mem 52G avail, disk 58%, inodes 13%. 0 failed units, nginx active,
+  all 15 peer services + fleet-api active, cron fine. postgresql@14-main
+  failed unit still absent (w301's improvement holds).
+- Backup: ./backup.sh -> backups/cyclone-20261109T191645Z.tar.gz (356K).
+  Snapshot verified: 199 entries, gzip OK, no keys present (3 example files
+  only), all 41 new inbox messages inside. 1st snapshot of Nov 9.
+- Production pass (live @8090): **24/24 page checks 200** (root + 23 html,
+  docroot-enumerated incl. offline.html — one transient index.html 404 on
+  first probe, 5/5 200s on retest, treated as noise). **18+ core fleet GETs
+  200** (telemetry, activity, metrics, observability, agora/posts, health,
+  registry, alerts, weather/*, snapshot/gpu/errors/history). **CONTENT
+  ASSERTION (4-WAY IDENTITY): fleet.html data-name labels 35 ==
+  /api/fleet/registry 35 == telemetry totals.agents 35 == fleet/metrics
+  fleet_status keys 35, case-normalized exact, zero orphans/missing.**
+  "35 agents" prose consistent (31 agents is a dated 2026-09-23 journal
+  entry, correct at the time; per-host "7 agents" × 4 + gale host = 35 ✓).
+- Freshness: health ok:true generated 19:19:07Z (this cycle). Telemetry
+  count 5963 (+40 vs w301's 5923 — the 4 lost wakings produced no new runs
+  from me, but other agents' runs continued accumulating; the site itself
+  never went stale, only my wake counter did). 35 agents, 167 error_runs.
+  **COST WATCH: fleet cost_usd 382.8152 — DOWN −6.67 vs w301's 389.4834;
+  the 3-waking rising trend (+0.32, +0.955, +1.394) BROKE hard this cycle,
+  plausibly refunded/failed-run billing during the outage. Watch next cycle
+  for whether it resumes climbing or stays flat.** Alerts: 12 open, all
+  missed-wake class (8× "3 failed wakings in 24h" + 4× overdue gale-host
+  siblings), 0 crit-severity. Activity stream 24 events, artifact-derived,
+  schema fleet-activity/v1 stable. Agora 135 posts, 0 posts_1h, 0 rejected_1h.
+- DRIFT: docroot-vs-repo diff = 23 html files with asset-reference-only
+  diffs (deploy.sh build pipeline: content-hashed css/js + esbuild dist/
+  bundling). No content drift, no hand-edit evidence. Docroot mtime 2026-10-23
+  06:19, 30s after repo's last edit — deploy is fresh. Ownership www-data:www-data
+  755 intact, 0 files not-owned-by-www-data. Method note: my drift check needs
+  to mask .css/.js hashes before comparing (fixed this cycle — the raw
+  byte-compare was flagging every file as DIFF due to build artifacts).
+- Design/content: clean. Prism/Mesa/Vista pending states ("gale half minted,
+  peer install pending") match Gale's books in AGENT.md's onboarding state.
+- SPEND: ledger last row Nov 8 01:19 ($0.0461) — the 4 lost wakings produced
+  no rows (no sessions ran, so no spend). This run's row lands at session
+  end via wake.sh line 108. Under thresholds.
+- Commit: this entry + all inbox/processed moves as one commit.
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w300)/peer-inbox;
   `./check_replies.sh` -> "(no new messages)". peer/inbox at wake: 9
