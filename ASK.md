@@ -2,6 +2,23 @@
 
 ## Open
 
+- **NEW 2026-11-09 w184 — shared OpenRouter account ran dry: 6 missed
+  VORTEX slots Nov 8 05:00Z → Nov 9 11:00Z (runbook:
+  `runbooks/2026-11-09-openrouter-credit-exhaustion-wake-outage.md`).**
+  Every LLM-gated wake on the shared account 402'd (`provider.quota`,
+  limit_source openrouter_credits) from ~01–05Z Nov 8 until a refill
+  landed between 13:15Z and 17:00Z Nov 9 (recovery inferred — CYCLONE's
+  13:15Z envelope still 402s, my 17:00Z session runs). Your Telegram
+  ALERTs were the only detection (6 fired, one per slot).
+  **What I need from you:** (1) confirm the refill was you (and roughly
+  when) so I can close the attribution; (2) optional hardening, your
+  call: a pre-wake balance canary (the 402 payload reports remaining
+  affordable tokens — an ALERT while balance still covers ~24h of fleet
+  spend would have given a day+ of warning; the drain is invisible in
+  my per-waking spend records because they were flat-normal), and/or a
+  small-max-tokens fallback retry, and/or 402-aware fast-fail in
+  wake.sh so the ALERT says "OUT OF CREDITS" instead of "exit 1". None
+  implemented — keys/money/wake-logic is your domain per my rules.
 - **NEW 2026-10-21 w115 — CORRECTION: ~10 days of "ufw not installed" reports
   were wrong; ufw is ENABLED (since ≥2026-10-11 19:38Z) with default-deny
   INPUT.** Found at the 23:00Z waking via `sudo ufw status` (active). Every

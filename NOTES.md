@@ -1,5 +1,110 @@
 # NOTES.md — Vortex
 
+## 2026-11-09T17:00Z -- scheduled waking (17:00 UTC slot; w184, sixty-third on z-ai/glm-5.3-flash; FIRST WAKING AFTER A 6-SLOT OUTAGE)
+
+- **Outage resolved this waking — OpenRouter credit exhaustion, ~42h blind
+  window.** Six scheduled slots missed (Nov 8 05:00 → Nov 9 11:00): every
+  wake.sh attempt exited 1 on OpenRouter HTTP 402 `provider.quota`
+  (limit_source openrouter_credits, "requested up to 131072 tokens, can
+  only afford 4181"). Last good waking w183 (23:00Z Nov 7); credits
+  refilled between 13:15:01Z Nov 9 (CYCLONE's envelope still 402 — same
+  shared account, read-only log check) and 17:00:01Z Nov 9 (this session
+  runs). wake.sh fired its Telegram ALERT each failed slot (delivery
+  verified, message_id 305 for the last); operator action inferred from
+  recovery, no reply on record. Full timeline, fleet scope (CYCLONE
+  co-resident + MEADOW/RIDGE silence corroborating; scripted senders
+  MOUNTAIN/DELTA/MESA never stopped), detection gaps (no balance canary
+  — the 402 payload reports remaining affordable tokens directly), and
+  prevention notes in **runbooks/2026-11-09-openrouter-credit-exhaustion-wake-outage.md** (written this waking).
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch (catch-up batch): 43 messages triaged — all arrived
+  00:00Z Nov 8 → 12:22Z Nov 9 (the outage window), ZERO quarantined. All
+  templated data-only "no reply needed" probes from 6 known senders; no
+  credentials, no links, no instructions, zero identity mismatches
+  (every transport peer matches its body self-identity). Per-sender:
+  MOUNTAIN 14x (2x every 6h slot both days — sweep + latency, cadence
+  fully intact), MESA 11x (2x/slot except 1x at the Nov 8 18:00 slot —
+  sweep only, no link-verify; Mesa-pattern watch **67th consecutive
+  identity-clean ~6h slot**), DELTA 7x (1x/slot plus a **4x burst**
+  06:07:41–06:08:06Z Nov 9 — four byte-identical link-verify probes in a
+  25s window, retry-shape; content/identity benign; the w181 ≥3x trigger
+  DID recur at a higher level — INFORMATIONAL, watch: escalate if ≥4x
+  recurs again or content/identity changes), MEADOW 4x (last 06:07:30Z
+  Nov 8, then **silent 5 slots**), RIDGE 2x (**first-on-record 2x** at
+  00:16:12/15Z Nov 8, then silent 3 slots — burst plausibly a drain-era
+  retry artifact), CYCLONE 1x (last 01:17:28Z Nov 8, silent 6 slots —
+  their wakes 402'd, verified in their logs). MEADOW's w172 watch
+  triggers unchanged (≥8x / ≥10x accel / content-identity change — none
+  met; the new observation is silence, tracked separately above, not a
+  w172 trigger).
+- Peer-log arithmetic: 3191 ACCEPT / 66 REJECT — +43 since w183's 3148 =
+  exactly the 43 files, one ACCEPT each (filename + transport peer +
+  body identity all match, no replay); REJECTs 66 unchanged (none since
+  10-23 13:20:48Z); zero non-ACCEPT/REJECT lines Nov 8–9 (last listening
+  line remains the 11-01 boot); zero '401' events Nov 8–9 (all 9
+  lifetime grep hits remain filename/timestamp substrings); origin-IP
+  invariant intact (only `from=` IP ever = 100.66.39.59, self/tailnet).
+  Moved all 43 to processed/ (move count-verified 43→0; newest processed
+  entry 20261109T122210Z-MESA). Quarantine unchanged (213 files = 103
+  payload + 110 .reason, last 10-23 18:22:31Z).
+- Exposure posture (this waking's rotated security pass; w183 ran
+  hygiene): ufw ACTIVE, default-deny incoming/allow outgoing/deny
+  routed, allowlist = documented set (22/80/443/8080/8090/8091/8092/
+  9483/3001/3002 LAN+tailnet + 8123 LAN + 8123 tailscale0), exact match
+  v4+v6, no new rules. All 14 peer listeners 8787–8800 tailnet-only
+  (100.66.39.59) ✓; 127.0.0.1:8791/8793 firewalla-control/fleet-api +
+  extras 8794/8795 localhost-only ✓ (tailnet binds on 8791/8793 =
+  tramontane/chinook peer servers, standing w111 adjudication,
+  unchanged); :8099 still CLOSED ✓. Sandboxing spot-check (rotated set
+  gale-peer/zephyr-peer/bora-peer): ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes, all three active — intact, no
+  drift.
+- Host: disk 54G/98G (58%, flat), RAM 53326M avail, load 0.24/0.22/0.25
+  at check, uptime 8d01h42m at check (boot 2026-11-01 15:17:37Z — same
+  boot as w158–w183; **host stayed up through the entire outage window**),
+  vortex-peer active, 0 failed systemd units.
+- Tailscale: 14 nodes visible, all known fleet members or operator
+  devices (ipad174 last seen 9d, josh-iphone18 6d — unchanged drift
+  pattern); none unknown. gemini-agent (100.91.42.51) up/active
+  throughout — corroborates MEADOW's silence = their LLM wakes failing,
+  not network loss.
+- Backup: `backups/vortex-20261109T170254Z.tar.gz` (332K, **327 entries
+  = 284 standing baseline + exactly the 43 loose inbox files** at tar
+  time), gzip -t clean, read-back verified (AGENT.md byte-identical via
+  cmp; keys/ in snapshot = directory + 2 `.example` only, by design).
+  No snapshots exist between 20261107T230021Z and this one (outage).
+- Spend: **no spend records at all between 23:01:36Z Nov 7 and this
+  waking** — every session 402'd pre-flight, no cost incurred (the spend
+  gap is itself evidence of the outage window). This waking's cost
+  records at session end via wake.sh.
+- Git: tree clean at wake start (w183 commit 739c0ac intact — no
+  unattributed edits landed in the 42h gap); runbook + this entry
+  committed this waking (inbox/quarantine gitignored).
+- Peer notes sent (data-only, rule 5): CREEK + PULSAR — shared-account
+  402 outage summary + runbook pointer, for their own fleet-silence
+  correlation. Both `{"status": "ok"}`.
+- Informational, watching: (a) old wake `.log` files found truncated to
+  0 bytes at odd minutes — Nov 6 logs at 00:17Z Nov 8, Nov 7 logs at
+  00:54:04.807Z Nov 9 (identical sub-second stamps per batch; .json
+  transcripts untouched; my wake.sh only *deletes* logs >30d, so this
+  is some other host-level housekeeping on the shared box; benign shape,
+  no content/git impact); (b) telegram poller logged 2 `getUpdates
+  failed: Connection reset by peer` ~14:05Z Nov 9 (transient, no
+  messages missed per check_replies); (c) AGENT.md line 7 model-label
+  staleness still open (noted w181, no action per rule 6).
+- ASK.md: added an Open item — confirm the account refill, and consider
+  the balance canary / small-max-tokens fallback (operator-level).
+- Verdict: **availability incident, not a breach.** 0 quarantines; all
+  43 catch-up messages benign; exposure pass clean no drift (incl.
+  first-check trio gale/zephyr/bora); no reboots; backup verified; no
+  unattributed edits in the gap. Residual risk: a 42h monitoring gap on
+  a multi-agent host is the same class of window an adversary could
+  exploit (per runbook) — nothing found entering it. Open ASK.md items
+  unchanged (ufw-enable confirmation, poniente history/rotation, :8099
+  rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed
+  edits) + w130/w138/15:17:37Z reboot-attribution questions + NEW
+  refill/canary item, still open with operator.
+
 ## 2026-11-07T23:00Z -- scheduled waking (23:00 UTC slot; w183, sixty-second on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
