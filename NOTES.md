@@ -6594,3 +6594,92 @@ Steady state otherwise. ASK.md items unchanged.
   MEADOW census x1 streak; MOUNTAIN x2 steadiness; spend direction (4th
   consecutive positive at #161 followed by -0.53 — does oscillation
   continue?); wake double-attempt recurrence.
+
+## 2026-11-09T20:05Z -- 169th waking (scheduled 20:05Z slot; first waking after a 6-slot outage)
+
+- **OUTAGE (#163-#168 all failed): OpenRouter credit exhaustion, ~41.5h dead.**
+  Six scheduled wakings (11-08T08:05Z, 14:05Z, 20:05Z; 11-09T02:05Z, 08:05Z,
+  14:05Z) produced NO session — each exit 1 after 3 wake.sh attempts on
+  `provider.quota` HTTP 402: "requested up to 131072 tokens, but can only
+  afford 4181" (limit_source openrouter_credits). Same failure corroborated
+  read-only in SIX sibling dirs (sirocco/squall/tempest/tramontane/ostro/
+  poniente) with the identical "4181" figure — one shared OpenRouter
+  account/key; NOT maistral-specific. Last API wakes: ostro 11-08T02:30Z ...
+  tramontane 11-08T04:35Z. wake.sh ALERT fired per slot to the operator chat
+  (receipt ok:true). Alive through the window: gale/zephyr/vortex/cyclone/
+  chinook/bora/levante (different key/model class, unadjudicated).
+- **Recovery:** this waking (20:05:01Z) is the first post-outage success.
+  OpenRouter balance now $38.65 ($615 credits - $576.35 used; queried
+  read-only, key never printed). Top-up between 14:06Z and 20:05Z presumed
+  (operator action presumed, unconfirmed). Runway at current gale-cohort
+  burn (~$1.26/24h): ~30 days — flagged informational.
+- **Routine:** Read AGENT.md first (rules + role unchanged, rule 6 intact).
+  check_replies.sh clean (no operator messages). Host healthy: up 8d 4h47m,
+  load 0.37/0.36/0.33 idle, disk 58% (40G free/98G — stable band), RAM 53G
+  avail/58G, swap 0, systemctl --failed EMPTY (17th consecutive clean),
+  maistral-peer active, systemd-networkd-wait-online still inactive+disabled
+  (8th consecutive). Listeners unchanged (8787-8800 tailnet + localhost
+  8791/8793/8794/8795 + :8090/:8091/:8092); :8800 present 10th consecutive
+  post-close waking. Backup maistral-20261109T200546Z.tar.gz (572K, 222
+  entries, sha256 ec9ae6a4…) created + read-back verified; 14 retained.
+- **Fleet sweep (#169, API 20:05:46Z, archived ledger/_fleet_169_raw.json
+  sha256 5b9815f2…):** 35/35 up code-200, 0 auth-gated, 0 missing, 35/35
+  reachable, all 4 sources ok. NO shape change. Host last_wakes all advanced
+  ~6h vs #162 (host-level cadence held through the outage). Host 24h runs
+  gale 14 (**was 56 — the outage's 7 dead agents**), beacon 23, tidal 22,
+  mountain 9. Alive new-agent wakes: BORA 18:25Z, CHINOOK 18:50Z, LEVANTE
+  19:40Z, all err=0.
+- **ERROR CLUSTER RE-EMERGENCE (first sighting, count 1):** EIGHT remote
+  agents at err=3 — tidal host brook/creek/meadow/mist/stream (host 15),
+  beacon prism/pulsar (6), mountain ridge (3). vs #162: tidal 3->15, beacon
+  0->6, mountain 0->3. Precedent: the 10-18 9-agent cluster fully cleared
+  within ~1 day. Watch: clear-fast like last time, or persist 3+ wakings.
+  Tidal pair: river err=0 (3rd consecutive 0), creek steady 3.
+- **PATTERN-5 (mountain-host silent quartet) count 34** — canyon/mesa/
+  mountain/vista all still 0 runs_24h, ~13.5 days dead, membership
+  unchanged (first-seen 10-31T02:05Z; slots #163-#168 produced no sweeps —
+  count advances per sweep, gap recorded). Peer-identity corroboration held
+  THROUGH the outage: 11-08/11-09 inbox carried MOUNTAIN x14 + MESA x13
+  with own identities while their API wakes stay dead. Diagnosis unchanged.
+- **Spend:** fleet cost_coverage 78.83% ($382.80 known / 4702 priced /
+  1263 unknown) vs #162 78.80% — known **-$6.78, largest negative move on
+  record** (series …+0.96, +1.39, -0.53, -6.78; priced +33 while known fell
+  — likely 14-day window roll-off, unadjudicated). $86.36 below pre-gap
+  10-19 $469.16. 24h fleet cost $2.8391 (was $6.2753 — outage-driven; tidal
+  flat 0.00 — 26th consecutive flat day). MAISTRAL 1 run 24h (this waking),
+  $0.0153, 0 err, last_wake 20:05:01Z — **33-consecutive-nonzero streak
+  BROKEN by the outage; resumes.** Own spend-daily ends 11-08T02:11Z
+  $0.0505 (failed slots: no envelope, nothing recorded); this waking's row
+  lands post-close.
+- **Inbox: 40 msgs spanning the outage window** (MOUNTAIN x14, MESA x13,
+  DELTA x10, MEADOW x2 census, RIDGE x1) — all routine data-only, no acks
+  requested, no operator-word/bundle claims, processed to
+  peer/inbox/processed/maistral/ (201 -> 241). **DELTA x10 / MESA x13:
+  per-waking cadence series basis BROKEN by the 6-slot gap — burst/alternation
+  watches suspended until cadence re-establishes.** MOUNTAIN x2/6h-window
+  cadence HELD through the outage (7 windows). RIDGE back to x1 (no burst
+  regrowth). PATTERN-3 stays CLOSED, 34th consecutive clean waking.
+  Count-basis: top-level processed/ read 2473, dir mtime STILL frozen
+  2026-11-03T14:05:52Z — 10th consecutive 2473 sighting (2473 x10 vs 2472
+  x3); disagreement stands side by side, not adjudicated.
+- **Wake double-attempt watch: this slot at attempt 1 (in progress at
+  sweep time); the 6 outage slots each consumed all 3 attempts (provider
+  402 mode, not the #150 double-attempt mode).**
+- **Housekeeping note:** while normalizing processed-msg filenames this
+  waking I briefly renamed 70 already-committed double-prefixed
+  processed-msg files; caught it via git status and restored every one to
+  its committed name before committing — zero net change to tracked files
+  (git status verified clean before this entry's commit).
+- **Rule 8:** nothing minted/rotated/installed. Remote-21 still STAGED.
+  No rules/role changes. No ASK.md changes (all three open items unchanged:
+  git offsite split operator-pending, stray artifact `62`, remote-21
+  pairing).
+- **Git:** commit at closeout + offsite push `github main:maistral-post-clobber`
+  (per #131 retarget; ASK.md reconciliation still operator-pending).
+- **Next waking (#170, 2026-11-10T02:05Z):** outage follow-up (do the 6
+  silent gale-host peers wake on cadence again — sirocco/squall/tempest/
+  tramontane/ostro/poniente last-wake clocks advance?); error cluster
+  (clears fast like 10-19, or persists to count 3?); PATTERN-5 count 35;
+  tidal river 4th consecutive 0?; DELTA/MESA cadence re-establishment;
+  spend direction (-6.78 negative — window roll-off or real re-pricing?);
+  wake double-attempt recurrence; OpenRouter balance trend.
