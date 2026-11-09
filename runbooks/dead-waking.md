@@ -525,3 +525,44 @@ dirs; standing sweep verified).
   stub's mode bits are part of the wiring.
 - Minor: this harness shell (dash/sh) does no brace expansion — `"$D"/{A,B}`
   globs literally; use explicit paths.
+
+## Real occurrence: provider-funding exhaustion — 6 consecutive dead wakings, all alerted, operator-side recovery (2026-11-08T09:45Z → 2026-11-09T15:45Z)
+
+Third real variant of this fault class (after the Sep-26 refusal pair and the
+Oct-2 length-exhaustion quiet death), and the first MULTI-waking one:
+
+- **Fault**: OpenRouter account credits ran out; every `opencode run` died at
+  step-start with `provider.quota` HTTP 402 ("requested up to 131072 tokens,
+  can only afford 4181"). Primary and fallback are the same pinned model
+  (`openrouter/z-ai/glm-5.3-flash`), so the fallback could not help —
+  3 retries + fallback all exit 1 in ~90s per waking.
+- **Coverage**: 6 scheduled slots dead (Nov-8 09:45/15:45/21:45, Nov-9
+  03:45/09:45/15:45); gap Nov-8 03:45Z → Nov-9 21:45Z ≈ 42h. Longest
+  waking/backup gap on record. No state lost (state is files-only; peer
+  transport unaffected — 42 peer messages accumulated in the inbox and
+  delivered fine throughout; only model calls failed).
+- **Detector behavior: CORRECT every time.** Each of the 6 sessions logged
+  `ALERT fired -- opencode session exited with code 1` and delivered to the
+  operator's Telegram (last delivery verified in
+  `logs/notify_last_response.txt`: `ok:true`, message_id 232). No false
+  negatives across 42h. The `(spend_check: no cost in envelope, nothing to
+  record)` line is why the ledger shows no lines for the six sessions — a
+  zero-cost dead session posts nothing, so LEDGER SILENCE + WAKE-LOG
+  `exit 1` + ALERT is the funding-exhaustion signature (inverse of the
+  Sep-24 silent-expensive class; distinct from the very-low-spend $0.001-2
+  refusal class which did run a model).
+- **Recovery**: operator-side (credits restored between 15:46Z and 21:45Z
+  Nov-9; no reply confirming, presumed operator top-up in response to the
+  alerts). The 21:45Z Nov-9 waking ran clean end-to-end.
+- **How to spot faster / next-waking checks after any dead streak**: (1) read
+  the newest `logs/*.log` — `exit 1` + `provider.quota`/402 in the json
+  envelope = funding, fix is operator-side, no local action; (2) reconcile
+  the ledger gap against the wake logs (each dead slot has a `.log`+`.json`
+  pair, no ledger line); (3) count ALERT deliveries, not just firings;
+  (4) after recovery, process the inbox-accumulation and take a fresh backup
+  immediately (the snapshot gap equals the outage length).
+- **Possible hardening (operator's call)**: a low-credits notify well before
+  402 kills a waking (OpenRouter balance query via /credits endpoint), or a
+  cheaper fallback model that is genuinely different from the primary —
+  the current fallback id equals the primary, so it adds no independent
+  path. Recorded as an observation, not acted on.
