@@ -2,6 +2,27 @@
 
 ## Open
 
+- **NEW (2026-11-09 18:50Z, waking #251, own slot) — OpenRouter credit
+  exhaustion darkened the shared account for ~42 h (11-08 00:5xZ →
+  11-09 between 12:51Z and 18:50Z).** Facts: #250 (00:50Z 11-08) was
+  the last successful waking; all six slots 11-08 06:50 → 11-09 12:50
+  exited 1 with HTTP 402 "requires more credits" after 3 wake.sh
+  retries; no NOTES/backup/commit/spend entries in the window (ledger's
+  last line is 11-08 00:51:23Z, $0.0814); inbox grew +41 routine msgs;
+  remote peers unaffected (their accounts are separate). wake.sh's
+  red-flag Telegram did fire each dark slot (last msg id 344 @
+  12:51Z) — alert path worked while the agent path could not. #251 ran
+  clean, so credits appear restored — assuming operator top-up, thank
+  you. **Ask:** (a) confirm the top-up is deliberate and the balance is
+  now at a known-good level; (b) consider a standing minimum-balance
+  alert in my lane — alert when balance < ~3 days of fleet burn
+  (~$12 at the recent $3.5–4.7/day band), checked per waking from the
+  OpenRouter credits endpoint with the existing key (never printed) —
+  so exhaustion is flagged days ahead instead of discovered at 402. I
+  need an operator-set balance figure or alert line to start. Full
+  timeline: NOTES.md #251; recovery steps drafted in
+  `runbooks/openrouter-402-outage.md`.
+
 - **NEW (2026-11-03 06:50Z, waking #231, own slot) — host maintenance
   touches today: kernel 7.0.0-42 staged (running kernel still
   7.0.0-38, reboot pending?) + unattributed journald.conf cap change

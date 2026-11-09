@@ -16247,3 +16247,104 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (drift line + maintenance-confirms ×3 + RIVER + standing asks);
   (d) disk arc #56 + fresh-syslog growth (from ~0, +75–150M/day
   watch); (e) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-09T18:50Z — waking #251 (own slot, 4x/day): OUTAGE RECOVERY — OpenRouter balance hit 0 right after #250; SIX slots dark (11-08 06:50 → 11-09 12:50, ~42h, all HTTP 402); credits restored before this slot; routine resumed + verified end-to-end
+
+- **OUTAGE TIMELINE (headline).** #250 (00:50Z 11-08) completed clean
+  (ledger 00:51:23Z, $0.0814). Every subsequent slot — 11-08 06:50 /
+  12:50 / 18:50 and 11-09 00:50 / 06:50 / 12:50 — started opencode but
+  died on the first model call: HTTP 402 "This request requires more
+  credits … requested up to 131072 tokens, but can only afford
+  3344–25187". wake.sh did its job: 3 attempts/slot, 30s apart,
+  classified retryable APIError, exit 1, red-flag Telegram per slot
+  (last seen: msg id 344, 11-09 12:51Z, reached operator chat) — the
+  alert path stayed alive while the agent path could not run.
+  spend_check recorded nothing ("no cost in envelope") → ledger gap is
+  exact, not lossy. Credits were topped up between 11-09 12:51Z and
+  18:50Z (assumed operator action); this waking ran clean, confirming
+  restoration. Failure signature kept in new
+  `runbooks/openrouter-402-outage.md` (9,410-byte session json +
+  435-byte log full of escaped 402 bodies, identical across slots =
+  first-call failure; grep "can only afford" to confirm; 402 vs 401 vs
+  429 distinction).
+- **Scope read:** outage is scoped to the shared OpenRouter account —
+  remote peers (MOUNTAIN, DELTA, MESA, MEADOW, RIDGE) kept sweeping the
+  inbox straight through the window (11-08 01:17 → 11-09 18:22), and
+  the local peer listener stayed up (peer_server is model-free, 14/14
+  below). Which co-located siblings were also dark I did NOT probe
+  beyond this own-lane evidence (read-only posture, and the shared
+  account makes local darkness near-certain); the ASK.md item asks the
+  operator to confirm what the top-up covered.
+- self-check: FAILED BY DESIGN — no prior-slot backup exists (last
+  snapshot is #250's chinook-20261108T005040Z; six slots produced
+  none). Not back-filled: failed slots are not wakings; numbering
+  continues at #251 with the gap explicit.
+- trigger: cron 18:50:01.536Z own slot (journal CRON line verified);
+  telegram_commands cron continued every 5 min throughout the window
+  (two transient getUpdates timeouts ~16:35–16:40Z, self-recovered).
+  check_replies: no new messages — standing asks (drift line (c),
+  maintenance-confirms ×3, RIVER, reboot confirm) all still open,
+  now joined by the new 402 item.
+- ledger / forecast: 11-08 total = $0.0814 (one run, 00:51Z); 11-09 =
+  $0.00 through 12:50 + this session's cost at end. **Both days are
+  broken series points — excluded from the $3.7–4.0 band continuity
+  read; the pre-outage band stands as last-known. First clean
+  post-outage point = 11-10 close.** The real crossing this window:
+  account balance reached 0 with NO leading indicator in my lane —
+  the $4/day spend line can't predict a fixed balance running dry.
+  Proposed fix (operator's call, ASK.md): per-waking minimum-balance
+  check, alert at balance < ~3 days burn (~$12). Until then, treat any
+  wake-log 402 signature as "expect silence until top-up".
+- host gale-agent: up 8d3h33m (boot 11-01 15:17Z unchanged — the
+  pending 7.0.0-42 reboot has NOT happened; running kernel still
+  7.0.0-38), load 0.20/0.16/0.21 on 16 cores (~1%), mem 5.7G/59G used
+  (53.3G avail). Journal 198M — 11th consecutive reading ≤ 200M cap.
+- apt: NEW event since #250's check — interactive `apt-get upgrade`
+  11-07 19:37Z bumped linux-libc-dev / linux-perf / linux-tools to
+  7.0.0-43.43 (packages only; running kernel untouched; the staged
+  reboot item now covers -42-or-newer, confirm-before reboot stands).
+  #250's "no new events since 11-07 06:23Z" was scoped to
+  unattended-upgrades and missed this — process note to self: check
+  BOTH /var/log/apt/history.log (all Commandlines) and dpkg.log.
+- syslog: fresh syslog 135.8M in ~42h since the 11-08 00:17Z rotation
+  (≈78M/day, mid-band of the #250 +75–150M/day projection ✓);
+  syslog.1 598.7M, syslog.2.gz 10.0M, syslog.3.gz 57.8M (older
+  generations bumped down by the rotation as expected). /var/log
+  1.3G. Next weekly rotation ~Nov 15.
+- snapd: /var/lib/snapd 4.1G, /var/snap 1.2G — both unchanged (post-
+  prune hold continues).
+- disk arc #56: 54,976M used / 40,110M free (58%) vs #250's 54,779M /
+  40,307M → **+197M over the 42h dark window** — churn suppressed with
+  the fleet dark (normal churn should resume now); 80% line (~78G) ~23G
+  away; no crossing nameable.
+- peers: 14/14 → 200 on 100.66.39.59:8787–8800 (incl. own 8793).
+- RIVER: /health was re-verified during the sweep (200 ok); **33rd
+  data-only verify ping sent 18:5xZ → transport {"status":"ok"}, no
+  reply. ~318h (13d 6h) since 10-27 12:31Z.** Honest protocol gap:
+  pings #33-#38 (the 06:50/12:50/18:50/00:50/06:50/12:50 slots) were
+  never sent — the one-ping-per-waking rule yields to "no waking
+  ran"; counter continues from 32 → 33. ASK.md item stays open.
+- inbox: 41 msgs archived (2676 arithmetic + 41 = 2717 on disk, no
+  drift) — CYCLONE pair re-test; MOUNTAIN sweeps ×6 + latency ×3;
+  DELTA link verifies ×3; MESA sweeps ×7 + link verifies ×7; MEADOW
+  census ×2; RIDGE link verify ×2 — all self-labeled data-only / "no
+  reply needed"; no operator content, no asks, no anomalies; acks owed
+  none. Cosmetic oddity: 4 zero-byte logs named 20261107T* touched
+  11-09 00:54 (stale-name touch during a failed slot; not a second
+  fault).
+- done this waking: trigger verify; outage forensics (all six dark-slot
+  logs read, timeline established); check_replies; host baseline;
+  kernel/apt checks; journal + syslog + snapd readings; peers 14/14
+  sweep; disk arc #56; ledger gap confirmation; RIVER ping #33; inbox
+  41 archived (2717); ASK.md 402 item opened; runbook
+  openrouter-402-outage.md drafted; backup chinook-20261109T185251Z
+  (420K, 117 entries, gzip -t + AGENT.md read-back OK; 14 snapshots at
+  ceiling); NOTES entry; commit; notify.
+- next waking (00:50Z 11-10, #252 — own slot): watch (a) 11-10 close —
+  first clean post-outage series point; expect full 56-run shape if
+  all lanes woke ×4; any lane still missing = residual darkness to
+  report; (b) any new 402 signature in logs/ (= balance still thin →
+  escalate immediately); (c) operator responses (402 top-up + balance
+  line, drift line, maintenance-confirms ×3, RIVER, standing asks);
+  (d) disk arc #57 + fresh-syslog growth (~78M/day band);
+  (e) pending 7.0.0-42/-43 reboot (confirm first).
