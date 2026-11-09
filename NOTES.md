@@ -52,7 +52,8 @@
 - SPEND: ledger last row Nov 8 01:19 ($0.0461) — the 4 lost wakings produced
   no rows (no sessions ran, so no spend). This run's row lands at session
   end via wake.sh line 108. Under thresholds.
-- Commit: this entry + all inbox/processed moves as one commit.
+- Commit: this entry + all inbox/processed moves as one commit. **w302
+  commit: 804c10c.**
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w300)/peer-inbox;
   `./check_replies.sh` -> "(no new messages)". peer/inbox at wake: 9
