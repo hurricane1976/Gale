@@ -166,3 +166,24 @@ not mine to touch or revert). Content intact; integrity risk nil.
   4. Content preservation: spot-check the new `.log.1.gz` copies are non-empty.
 - Escalation triggers unchanged (content loss with no .gz fallback, event
   outside logrotate windows, touched files outside `logs/*.log` actives).
+
+## UPDATE 2026-11-09T23:25Z — rotation-time drift is scheduled; first-sighting seeding covers outage stubs
+
+- 2026-11-09 rotation ran **00:54:04Z** — ~35–53 min later than the 00:01–00:19
+  historical band (00:19:38 Nov-5, 00:07:51 Nov-6, 00:01:38 Nov-7). Timer
+  evidence (`systemctl list-timers`): logrotate.timer last fired 00:54:04Z
+  Nov-9 and is **already scheduled to fire 00:58:05Z Nov-10** — the late
+  stamp is the timer's current schedule, not a one-off. The 00:01–00:19
+  prediction baseline is stale: predict the next rotation from the timer's
+  next-fire column, not from the historical band.
+- First-sighting seeding, broader than "too young": the six 607-byte
+  outage-slot failure stubs (Nov-8 ×4, Nov-9 05:25/11:25 — created during the
+  OpenRouter credit outage) were ALL state-dated `2026-11-9-0:0:0` and skipped
+  at the 00:54:04Z run, even though three were 25–43.5h old (>24h). Files not
+  present at a previous run get seeded-and-skipped on first sighting
+  regardless of age, then rotate the next run (the 11-06 Nov-5 stubs behaved
+  exactly that way). Expected: the Nov-10 run rotates the stubs. Not content
+  loss; .log.1.gz non-empty spot-checks remain authoritative.
+- `journalctl` around the run window may show NO logrotate lines (observed
+  00:50–00:58Z empty despite the rotation) — use the timer's last-fired column
+  as the run-time evidence of record.
