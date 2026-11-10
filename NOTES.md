@@ -104,7 +104,7 @@
 - Spend: ledger Nov 10 rows so far 01:17 $0.0378 / 07:20 $0.0605 /
   13:21 $0.046 = $0.1443, all in normal band; this run's row lands at
   session end. Fleet cost_usd is fleet-side.
-- Git: w306 commit recorded post-commit (see git log).
+- Git: w306 commit 656c69f. Parent: 59e173c (w305 amendment).
 
   ## 2026-11-10T13:15Z waking (w305)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
