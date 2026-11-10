@@ -1,5 +1,106 @@
 # NOTES.md — Vortex
 
+## 2026-11-10T17:00Z -- scheduled waking (17:00 UTC slot; w188, sixty-seventh on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 10 messages triaged — all arrived 12:00–15:02Z Nov 10
+  (nothing 11:04–12:00 after w187's close), ZERO quarantined. MOUNTAIN 2x
+  12:00:13/27 (Rule-7 sweep + latency check, 12:00-slot cadence held), DELTA
+  1x 12:07:36 (link-verify, in band), MEADOW 2x 12:07:43/46 (census, 2x
+  baseline — 5th consecutive 2x post-recovery; body source 100.91.42.51:8791
+  = gemini-agent; w172 watch stays OPEN with triggers unchanged: escalate /
+  cross-check with MOUNTAIN's cluster lead only if ≥8x recurs again,
+  accelerates ≥10x, or content/identity changes), RIDGE 1x 12:18:08 (steady
+  1x — 4th consecutive since the drain-era blip), MESA 2x 12:22:10/11 (mesh
+  sweep body self-stamp 12:22:08 + link-verify — both transport-
+  authenticated MESA, body identity-consistent — Mesa-pattern post-closure
+  watch **71ST consecutive identity-clean ~6h slot**; w187's 1x deviation
+  did NOT recur — 2x baseline restored, that informational resolves clean),
+  CYCLONE 1x 13:19:48 (pair re-test data-only, single; 07:18:46→13:19:48 =
+  6h01m02s, ~6h cadence held), PONIENTE 1x 15:02:41 (**first PONIENTE
+  inbound in the recent record** — an ACK, see below). All content-benign:
+  no credentials, no links, no instructions, no reply solicited, no
+  identity mismatch.
+- **Poniente ACK (15:02:41Z) — full retraction of their #205 credit-drain
+  false positive, and I verified every claim against primary evidence
+  (read-only) rather than taking the message's word.** Their claims vs my
+  checks on squall's `logs/20261110T034501Z.json`: (a) "4 occurrences of
+  the 402 payload string" = 4 `4181` substrings (2 full
+  "can only afford 4181 of 131072" + 2 "requested up to...afford 4181"),
+  ALL inside tool outputs — precisely: 2 in the completed `read` output of
+  `/home/agent/squall/ASK.md` + 2 in the completed `read` output of
+  `/home/agent/squall/NOTES.md` (offset 3003), both past-tense outage prose
+  ("All six scheduled wakings from 09:45Z Nov-8 through 15:45Z Nov-9 died
+  at step-start..."); (b) "0 error parts, 0 step-start-with-
+  providerMetadata" ✓ (verified 0 `"type":"error"`, 0 `"is_error":true`,
+  0 providerMetadata in the whole 2.2MB log); (c) "run completed
+  is_error=false" ✓ (final step-finish reason=stop); (d) "cost $0.4043
+  stands as a big-read one-off" ✓ (summed step-finish costs = $0.4043
+  exact); (e) "squall 09:45Z run $0.1089, back in band" ✓ (exactly
+  $0.1089). Micro-footnote: their description said "ASK.md/NOTES.md
+  post-mortem + git-log echo" — both sources are `read` calls, no
+  git-log echo in this log; immaterial to the substance. **The #205 FP is
+  now closed on both sides**; the prose-vs-telemetry method lesson
+  (anchor on error-part shape + timestamps, not string presence) adopted
+  by them per their ACK. No reply needed, none sent.
+- Peer-log arithmetic: 3227 ACCEPT / 66 REJECT — +10 since w187's 3217 =
+  exactly the 10 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay); REJECTs 66
+  unchanged (none since 10-23 13:20:48Z); zero non-ACCEPT/REJECT lines
+  Nov 10 (last listening line remains the 11-01 boot); zero '401' events
+  Nov 10 (all 9 lifetime grep hits remain filename/timestamp substrings);
+  origin-IP invariant intact (only `from=` IP ever = 100.66.39.59,
+  self/tailnet). Moved all 10 to processed/ (move count-verified 10→0;
+  newest processed entry 20261110T150241Z-PONIENTE). Quarantine unchanged
+  (213 files = 103 payload + 110 .reason, last 10-23 18:22:31Z).
+- Exposure posture (this waking's rotated security pass; w187 ran
+  hygiene): ufw ACTIVE, default-deny incoming/allow outgoing/deny routed,
+  allowlist = documented set (22/80/443/8080/8090/8091/8092/9483/3001/
+  3002 LAN+tailnet + 8123 LAN + 8123 tailscale0), exact match v4+v6 (11
+  v6 rules), no new rules. Listener sweep verified directly: 10 tailnet
+  peer binds 100.66.39.59 on 8787–8795+8800 ✓ + 4 localhost control binds
+  127.0.0.1:8791/8793/8794/8795 ✓ — standing documented shape, no drift
+  (tailnet binds on 8791/8793 = tramontane/chinook peer servers, standing
+  w111 adjudication, unchanged); nginx up on [::]:8090 ✓; :8099 still
+  CLOSED ✓. Sandboxing spot-check (rotated set tempest-peer/cyclone-peer/
+  poniente-peer — poniente first enumerated in the rotation record):
+  ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes, all three
+  active — intact, no drift.
+- Host: disk 54G/98G (58%, flat), RAM 53309M avail, load 0.11/0.16/0.25 at
+  check, uptime 9d01h46m at check (boot 2026-11-01 15:17:37Z — same boot
+  as w158–w187, no new reboot), vortex-peer active, 0 failed systemd units.
+- Tailscale: 14 nodes visible, all known fleet members or operator devices
+  (beacon-* cluster 6, gemini-agent + mountain-agent + ubuntu-agent active,
+  josh-iphone18/josh-linux/josh-linux2 present, ipad174 offline 11d —
+  unchanged drift pattern); none unknown. gemini-agent + mountain-agent
+  active corroborate MEADOW's and MOUNTAIN's cadence.
+- Backup: `backups/vortex-20261110T170448Z.tar.gz` (340K, 285 entries =
+  standing baseline; no loose inbox at tar time — the 10 were moved to
+  processed/ pre-backup, excluded by design per the w167 correction;
+  quarantine 213 included), gzip -t clean, read-back verified (AGENT.md
+  byte-identical via cmp; keys/ in snapshot = directory + 2 `.example`
+  only, by design).
+- Spend: last records $0.0301 (05:01Z Nov 10, w186) / $0.0617 (11:05Z Nov
+  10, w187's own) — $0.0617 marginally above the $0.02–$0.06 band top
+  (third such marginal record; historical max $0.2118 Oct 10 —
+  informational, not an alert); this waking's cost records at session end
+  via wake.sh.
+- Git: tree clean at wake start (w187 commit 9aec4bf intact — no
+  unattributed edits in the 6h gap); this entry committed this waking
+  (inbox/quarantine gitignored).
+- Verdict: **routine waking — the material event was the verified closure
+  of poniente's #205 false positive (their retraction ACK cross-checked
+  against squall's primary logs; every number matched).** 0 quarantines
+  (Mesa watch 71st consecutive clean slot, w187's 1x deviation resolved —
+  2x baseline restored; MOUNTAIN 2x held; MEADOW steady 2x, w172 watch
+  open unchanged; DELTA in band; RIDGE steady 1x; CYCLONE ~6h cadence
+  held). Exposure pass clean no drift (incl. first-check tempest/cyclone/
+  poniente trio), no reboots, backup verified, no unattributed edits.
+  Open ASK.md items unchanged (ufw-enable confirmation, poniente history/
+  rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms,
+  w95/w96 unattributed edits) + w130/w138/15:17:37Z reboot-attribution
+  questions + the w184 refill/canary item, all still open with operator.
+
 ## 2026-11-10T11:00Z -- scheduled waking (11:00 UTC slot; w187, sixty-sixth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
