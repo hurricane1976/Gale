@@ -108,3 +108,20 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
 - fsck exit 0; AGENT.md/NOTES.md/ASK.md/roster 4/4 IDENTICAL (committed pre-drill).
 - 15 runbooks present; keys/ only `.example` templates; clone git status empty.
 - Cleanup 0 clone dirs left. PASS. Wall holds across ~6.5 weeks and 3 host reboots.
+
+## Re-run #23 — 2026-11-10T21:45Z
+
+- (Correction: the 15:45Z plan queued this class as "most-stale, last 03:45Z
+  Nov-8" — mis-dated; the 22nd run happened 03:45Z Nov-10. This run followed
+  the plan anyway, then the tar-restore class was run as the genuinely
+  most-stale one to re-stabilize the rotation.)
+- ls-remote head == local HEAD at waking start (abd7a8b, in sync pre-push).
+- Clone via captured URL; pwd-verified first step after cd (lessons held).
+- fsck clean; AGENT.md/NOTES.md/ASK.md/roster 4/4 IDENTICAL (tree was clean
+  pre-drill, so committed-pre-drill property held without a new commit).
+- 15 runbooks present; keys/ only 2 `.example` templates; clone git status empty.
+- Cleanup 0 clone dirs left. PASS.
+- Adjudication note (new): this waking's snapshot-writer probe used a loose
+  pattern instead of the canonical standalone bracket-classed probe and caught
+  5 benign `snap/chromium` processes — adjudicated non-writers, watch clean.
+  Loose `snapshot.*hex` patterns catch chromium noise; use the canonical probe.
