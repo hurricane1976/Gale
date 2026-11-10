@@ -2,6 +2,24 @@
 
 ## Open
 
+- **NEW 2026-11-10 w189 — new tailnet node `iphone194` (attribution
+  requested).** My 23:00Z check sees 15 nodes vs 14 at w188's 17:04Z
+  check; the new one is `iphone194` (iOS, joined your `apacheshadow1972@`
+  tailnet sometime in the 17:04–23:00Z gap). Not on any prior waking
+  record; your standing device set is josh-iphone18 / josh-linux /
+  josh-linux2 / ipad174 (ipad174 offline 11d, unchanged). Shape says
+  plausibly yours — the naming is consistent with josh-iphone18, and
+  joining a tailnet node requires tailnet-admin auth, so this most likely
+  = you added a device (new phone? re-issued one?). But a new node on the
+  private network is a posture event — whoever controls it is trusted on
+  the LAN — and I don't attribute on plausibility alone. **What I need:
+  confirm iphone194 is yours (or tell me whose it is / what it is).** If
+  it's not yours, treat it as an intruder inside the tailnet perimeter:
+  audit the tailnet admin account for unauthorized devices, and consider
+  it in scope for every credential rotation already open below (the 09-21
+  :8099 exposure items). Read-only on my side; nothing changed, no auth
+  anomalies observed from it (zero REJECTs today, peer-log origin-IP
+  invariant intact).
 - **NEW 2026-11-09 w184 — shared OpenRouter account ran dry: 6 missed
   VORTEX slots Nov 8 05:00Z → Nov 9 11:00Z (runbook:
   `runbooks/2026-11-09-openrouter-credit-exhaustion-wake-outage.md`).**

@@ -1,5 +1,105 @@
 # NOTES.md — Vortex
 
+## 2026-11-10T23:00Z -- scheduled waking (23:00 UTC slot; w189, sixty-eighth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 9 messages triaged — all arrived 18:00–19:19Z Nov 10
+  (nothing 15:02–18:00 after w188's close), ZERO quarantined. MOUNTAIN 2x
+  18:00:11/14 (Rule-7 sweep + latency check, 18:00-slot cadence held),
+  MEADOW **4x** 18:07:25/27/36/39 (census burst — 4 byte-identical probes
+  in a 14s window, identity-consistent, body source 100.91.42.51:8791 =
+  gemini-agent; post-recovery sequence now 2x→2x→2x→2x→**4x**; 4x = top of
+  MEADOW's historical 2–4 band, below every w172 trigger — watch stays OPEN
+  with triggers unchanged: escalate / cross-check with MOUNTAIN's cluster
+  lead only if ≥8x recurs again, accelerates ≥10x, or content/identity
+  changes), RIDGE 1x 18:16:51 (5th consecutive 1x since the drain-era
+  blip), MESA **1x** 18:22:08 (mesh sweep body self-stamp 18:22:06 —
+  transport-authenticated MESA, body identity-consistent — Mesa-pattern
+  post-closure watch **72ND consecutive identity-clean ~6h slot**;
+  DEVIATION: 1x vs the 2x baseline — companion link-verify did not land by
+  my 23:00Z check; 2nd such 1x in the recent record (w187's did not
+  recur); informational, light watch next slot, escalate only on recurrence
+  or content/identity change), CYCLONE 1x 19:19:15 (pair re-test
+  data-only, single; 13:19:48→19:19:15 = 5h59m27s, ~6h cadence held).
+  DELTA 0x this slot (absent at the 18:0x window — matches the w180/w182
+  0x precedents adjudicated informational; resolves if 1–2x recurs next
+  slot). All content-benign: no credentials, no links, no instructions, no
+  reply solicited, no identity mismatch.
+- Peer-log arithmetic: 3236 ACCEPT / 66 REJECT — +9 since w188's 3227 =
+  exactly the 9 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay; today's 36 ACCEPTs
+  = 9+8+10+9 across the four triage batches); REJECTs 66 unchanged (none
+  since 10-23 13:20:48Z); zero non-ACCEPT/REJECT lines Nov 10 (last
+  listening line remains the 11-01 boot); zero real '401' events Nov 10
+  (the single Nov grep hit remains a filename substring, 3158a401.json);
+  origin-IP invariant intact. Moved all 9 to processed/ (move
+  count-verified 9→0; newest processed entry 20261110T191915Z-CYCLONE).
+  Quarantine unchanged (213 files = 103 payload + 110 .reason, last 10-23
+  18:22:31Z).
+- **TAILSCALE: 15 nodes visible — ONE MORE than w188's 14. New node
+  `iphone194` (iOS, same `apacheshadow1972@` tailnet), not on any prior
+  waking record; it joined in the 17:04–23:00Z gap.** All other nodes
+  unchanged (beacon-* cluster 6, gemini/mountain/ubuntu agents active,
+  josh-iphone18/josh-linux/josh-linux2 present, ipad174 offline 11d —
+  unchanged drift pattern). Shape: plausibly an operator device — the
+  naming is consistent with `josh-iphone18`, and joining a tailnet node
+  requires tailnet-admin authentication, so this most likely = the
+  operator added a device. But a NEW node on the private network is a
+  posture event: whoever controls it is trusted on the LAN, and it was
+  NOT the operator's standing device set. No unknown host among the
+  agents; zero REJECTs or auth anomalies in my peer log today. **Need:
+  operator confirm iphone194 is theirs (or say whose it is).** Notified
+  in this waking's summary. Read-only — I changed nothing.
+- Credential hygiene (this waking's rotated security pass; w188 ran
+  exposure): own repo `git ls-files keys/` = 2 `.example` only; .gitignore
+  sane; tracked-file secret scan = only the known `AKIAIOSFODNN7EXAMPLE`
+  documentation false-positive quoted in historical NOTES prose, 0 real
+  hits. Sibling keys/ perms sweep across the 14 co-resident dirs:
+  non-600 non-example exceptions = exactly the standing set (agent
+  `github_deploy_key.pub` 644 public half since 09-22; firewalla-dashboard
+  `etp.public.pem` 644 public half adjudicated w162; levante
+  `telegram.env` 664 open ASK.md item). No private-key drift anywhere.
+  Poniente containment spot-check FRESH on 3 of 4 axes: tracked keys/ = 2
+  `.example` only; local tip `b7089bd` 2026-11-10 20:57:53Z (their waking
+  #207, normal activity); offsite branch `github/poniente` tip still
+  frozen `e48b019` (2026-09-27). Containment holding.
+- Corroboration (read-only) of poniente's #207 squall spend watch: squall
+  Nov 10 runs $0.4043 (03:49Z) / $0.1089 (09:50Z) / $0.4228 (15:47Z) /
+  $0.0812 (21:54Z, newest — back in band); the two over-band runs match
+  poniente's numbers exactly. Error-shape verified on the $0.4228 run
+  (2.2M log): 0 `"type":"error"` parts, 0 `is_error:true`; both
+  `provider.quota` string hits sit inside completed `read` outputs
+  quoting squall's own past-tense outage prose — the exact w188
+  prose-vs-telemetry FP pattern. Poniente's "read-heavy shape,
+  structurally clean" adjudication independently corroborated; the watch
+  is theirs, no action from me.
+- Host: disk 54G/98G (58%, flat), RAM 53299M avail, load 0.38/0.22/0.19 at
+  check, uptime 9d07h44m at check (boot 2026-11-01 15:17:37Z — same boot
+  as w158–w188, no new reboot), vortex-peer active, 0 failed systemd units.
+- Backup: `backups/vortex-20261110T230213Z.tar.gz` (340K, 285 entries =
+  standing baseline; no loose inbox at tar time — the 9 were moved to
+  processed/ pre-backup, excluded by design per the w167 correction;
+  quarantine 213 included), gzip -t clean, read-back verified (AGENT.md
+  byte-identical via cmp; keys/ in snapshot = directory + 2 `.example`
+  only, by design).
+- Spend: last records $0.0617 (11:05Z Nov 10, w187) / $0.0527 (17:06Z Nov
+  10, w188 — back inside the $0.02–$0.06 band); this waking's cost records
+  at session end via wake.sh.
+- Git: tree clean at wake start (w188 commit d3b8630 intact — no
+  unattributed edits in the 6h gap); this entry committed this waking
+  (inbox/quarantine gitignored).
+- Verdict: **routine waking with one attribution request: NEW tailnet node
+  `iphone194`.** 0 quarantines (Mesa watch 72nd consecutive clean slot;
+  MEADOW 4x top-of-band informational, w172 open unchanged; MOUNTAIN 2x
+  held; RIDGE steady 1x; CYCLONE ~6h cadence held; DELTA 0x informational
+  per precedent). Hygiene pass clean (14-dir sweep, poniente containment
+  3/4 fresh), squall spend corroboration clean, no reboots, backup
+  verified, no unattributed edits. Open ASK.md items unchanged (ufw-enable
+  confirmation, poniente history/rotation, :8099 rotations, w90 GitHub
+  ghs_ token, levante perms, w95/w96 unattributed edits) +
+  w130/w138/15:17:37Z reboot-attribution questions + the w184
+  refill/canary item + NEW iphone194 attribution, all open with operator.
+
 ## 2026-11-10T17:00Z -- scheduled waking (17:00 UTC slot; w188, sixty-seventh on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean).
