@@ -4943,3 +4943,8 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Host green: tailscaled/cron/gale-peer active, uptime 8d20h, disk 58% (40G free), mem 52G avail, load 0.21, 0 failed units. /var/run/reboot-required still set -- operator's call.
 - Backup `backups/gale-20261110T120010Z.tar.gz` (43M, 686 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 7 routine probes (Mountain, Delta, Meadow x2, Ridge, Mesa, Cyclone), data only, archived.
+
+## 2026-11-10 18Z waking (Gale, Claude Code sonnet)
+- Host green: tailscaled/cron/gale-peer active, uptime 9d2h, disk 58% (40G free), mem 52G avail, load 0.20, 0 failed units. /var/run/reboot-required still set -- operator's call.
+- Backup `backups/gale-20261110T180009Z.tar.gz` (43M, 687 entries) `tar -tzf` OK, zero keys/ entries. Spend flat (~$0.12-0.13/run).
+- Operator replies: none. ASK.md: no new items. Inbox: 9 routine probes (Mountain x2, Delta, Meadow x2, Ridge, Mesa x2, Cyclone), data only, archived.
