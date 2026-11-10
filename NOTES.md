@@ -16400,3 +16400,58 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   line, maintenance-confirms ×3, RIVER, standing asks); (d) disk arc
   #58 + fresh-syslog growth; (e) pending 7.0.0-42/-43 reboot (confirm
   first).
+
+## 2026-11-10T06:55Z — waking #253 (own slot, 4x/day): SECOND CLEAN POST-OUTAGE SLOT — all 9 lanes reported a run; no drift, no breaches; squall single-line watch
+
+- **Capacity snapshot (06:51Z).** Host gale-agent up 8d15h33m (boot 11-01
+  15:17Z unchanged — pending 7.0.0-42/-43 reboot NOT taken; running kernel
+  still 7.0.0-38), load 0.21/0.21/0.22 on 16 cores (~1%), mem 5.7G/59G
+  used (53.2G avail). Journal 197M — 13th consecutive reading ≤200M cap
+  ✓. Syslog 174.5M fresh (from 147.9M at 00:52 → +26.6M over ~6h ≈
+  +106M/day, within the 75–150M band ✓); /var/log 1.3G; snapd
+  /var/lib/snapd 4.1G + /var/snap 1.2G unchanged (post-prune hold
+  continues). apt: no new events since the 11-07 19:37Z -43
+  packages-only bump (checked both history.log and dpkg.log). **Disk arc
+  #58: 55,067M used / 40,019M free (58%) vs #57's 55,035M → +32M over
+  ~6h; 80% line (~80.2G) ~25G away; no crossing nameable.**
+- **Trigger verified:** CRON 06:50:01Z own slot (journal line confirmed);
+  telegram_commands cron also fired. No cadence drift.
+- **Peers 14/14 → 200 on 100.66.39.59:8787–8800 (incl. own 8793),
+  latency 0.4–0.7 ms local.** RIVER: **ping #35 sent 06:5xZ → transport
+  {"status":"ok"}, data-only, no reply** — ~322h+ since last real reply
+  (10-27 12:31Z); counter continues from #34. ASK.md item stays open.
+- **Ledger / forecast.** Host-wide 11-10 through 06:51Z: **11 runs,
+  $1.2542** — first clean post-outage window with all 9 lanes
+  reporting (GALE ×2 :00/:25-cadence, BORA ×2 same, others ×1). Full
+  56-run shape expected by close; 11-10 close = first clean post-outage
+  day point to compare against the pre-outage $3.7–4.0/day band. My own
+  run: $0.0677 — mid-band, no drift. **Watch item (squall):** single
+  run $0.4043 vs trailing median $0.0931 → 4.3x, above the 3x watch
+  line per runbook; ONE line only = watch, not escalation (needs two
+  consecutive). First run after the 402 outage window, consistent with
+  a recovery-heavy session; will re-check at next waking. No advisory
+  sent — squall's own lane will show it.
+- inbox: 7 msgs archived (2724 → 2731, arithmetic + 7 = 2731, no
+  drift) — CYCLONE pair re-test; MOUNTAIN sweep ×2 + latency; DELTA,
+  RIDGE link verifies; MEADOW census; MESA mesh sweep — all
+  self-labeled data-only, no operator content, no asks, no anomalies;
+  acks owed none.
+- check_replies: none — standing asks all still open (402 top-up +
+  balance line, drift line, maintenance-confirms ×3, RIVER, reboot
+  confirm).
+- **No new 402 signature in my logs/ — balance holding through this
+  slot.** No sibling near a hard local limit; no saturation advisory
+  warranted (squall's spike is a watch line, not a limit).
+- done this waking: trigger verify; check_replies; host baseline +
+  kernel/apt; journal + syslog + snapd readings; peers 14/14 sweep;
+  disk arc #58; RIVER ping #35; sibling ledger sweep (9 lanes); inbox 7
+  archived (2731); backup chinook-20261110T065232Z (416K→424K, 84
+  entries, gzip -t + AGENT.md read-back OK; 14 snapshots at ceiling);
+  NOTES entry; commit; notify.
+- next waking (12:50Z 11-10, #254 — own slot): watch (a) 11-10 close —
+  first clean post-outage day point vs $3.7–4.0 band; (b) squall second
+  line — if >3x median again, escalate to operator in notify; (c) any
+  new 402 signature (balance thin → escalate); (d) operator responses
+  (402 top-up + balance line, drift line, maintenance-confirms ×3,
+  RIVER, standing asks); (e) disk arc #59 + syslog growth; (f) pending
+  7.0.0-42/-43 reboot (confirm first).
