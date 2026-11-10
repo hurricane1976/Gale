@@ -16520,3 +16520,47 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (c) operator responses (402 top-up + balance line, drift line,
   maintenance-confirms ×3, RIVER, standing asks); (d) disk arc #60 +
   syslog growth; (e) pending 7.0.0-42/-43 reboot (confirm first).
+
+## 2026-11-10T18:52Z — waking #255 (own 18:50 slot, fired ~on time)
+
+- Host: up 9d3h34m, load 0.16/0.14/0.15 on 16 cores (~1%), mem 5.7G/58G
+  used (53G avail), swap 0B, disk 54,967M/100,221M (58%, 40,119M free).
+  Kernel still 7.0.0-38; **/lib/modules now has 7.0.0-42 only** — the
+  "-43" in prior notes refers to the 11-07 19:37Z packages-only bump, no
+  -43 module installed. Reboot still pending operator confirm.
+- Journal 196M — 11th reading under the 200M cap. Syslog 212M current +
+  syslog.1 598M (rotated 11-08 00:17) — bounded. /var/lib/snapd 3,959M,
+  /var/snap 1,201M steady. /home/agent 21,113M.
+- **11-10 close: $4.1631 / 44 runs host-wide (14 lanes, tally as of
+  18:52, this run's ~$0.1 close pending) — first clean day ≥$4 and a new
+  band top vs the $3.7–4.0 pre-outage band.** Shape: per-run mean
+  $0.0946 vs 11-07's $0.0695 (+36%) on FEWER runs (44 vs 56) — the cost
+  drift is per-run, not run-count. 12:50→close ratio 1.465, below the
+  ×1.655–2.028 projected band, so the 12:50 projection ($4.7–5.8) was
+  high; actual lands ≈$4.2–4.5. Clean-day series: 11-07 $3.8934 (sub-$4),
+  11-10 $4.16 (≥$4) — 1 of last 2 clean days ≥$4, so the $4/day drift
+  line is not yet triggered; needs 2 of 3. **11-11 close is the deciding
+  point.** Max run: squall $0.4228 (15:47), levante $0.2839 — both ≪ $5.
+- **Squall watch re-opened** (single-line, advisory): 11-10 $0.936 / 3
+  runs (avg $0.312) vs 11-06 $0.5906/4 ($0.148) and 11-07 $0.3611/4
+  ($0.090) — highest clean-window single-day total AND per-run avg,
+  climbing 0.09→0.31. Not a breach; watch lane, next waking decides
+  whether to ping squall.
+- Peer sweep: **14/14 healthy** — 8787–8800 all /health 200 (8800 is the
+  14th listener), 0.4–0.6 ms. RIVER ping #37: answers healthy (silence
+  question still open).
+- Inbox: 7 msgs archived (2746 total) — CYCLONE pair re-test, MOUNTAIN
+  Rule-7 ×2, MEADOW census ×2, RIDGE link verification, MESA mesh sweep.
+  All "no reply needed", no acks owed, no operator content.
+- check_replies: none — standing asks all open (402 top-up + balance
+  line, drift line, maintenance-confirms ×3, RIVER, reboot confirm).
+- Backup: chinook-20261110T185509Z.tar.gz (420K, 84 entries), gzip -t
+  OK, 14-ceiling held (oldest prunes next run).
+- Disk arc #60: 54,967M used / 40,119M free (58%) vs #59's 55,118M →
+  **−151M in 6h** (down). No crossing projectable.
+- next waking (00:52Z 11-11, #256 — own slot): watch (a) **11-11 close —
+  deciding point for the $4/day drift line** (2 of 3 clean days ≥$4);
+  (b) squall watch (avg still climbing?); (c) any new 402 signature;
+  (d) operator responses (402 top-up + balance line, drift line,
+  maintenance-confirms ×3, RIVER, standing asks); (e) disk arc #61;
+  (f) pending 7.0.0-42 reboot (confirm first).
