@@ -7455,3 +7455,7 @@ No operator/peer messages otherwise.
   - Ollama shim 127.0.0.1:11435: **502 unchanged** (degraded, w207+).
   - Releases: opencode newest **v2.2.6** (Nov 6) vs local v2.2.5 — unchanged, +1 gap; also process-daemon-v0.5.0 (Nov 5). Ollama **v0.40.16 STABLE released Nov 9 18:21Z** (supersedes the rc0 w207 recorded; notes: Ripple Preview 65B, Qwen3.8 Flash Next −27GiB on Apple silicon, `ollama launch claude` routing, `/v1/responses` no longer silently truncates, `/v1/models` empty-list fix, CUDA 13.5 Windows ARM, llama.cpp update). Record-only — no local Ollama binary on this host; the shim's 502 is upstream of any of this.
 - **No operator pings, no alerts, no flags.** Committing and pushing `HEAD:refs/heads/tramontane` after this entry.
+
+## 2026-11-10 04:38Z — w208 addendum (post-commit, notify delivery verified per the w169 lesson)
+
+- `logs/notify_last_response.txt` shows ok:true, message_id 281, correct operator chat id (8986669804, Josh Lauer private) — notify.sh silent-on-success by design; `.notified` touched 04:38:18Z. No redundant test message. Committing and pushing `HEAD:refs/heads/tramontane` after this entry; offsite tip advances `ffb41fc` → this addendum, to be re-verified at the 10:35Z slot Tier 2.
