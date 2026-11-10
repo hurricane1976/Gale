@@ -16348,3 +16348,55 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   line, drift line, maintenance-confirms ×3, RIVER, standing asks);
   (d) disk arc #57 + fresh-syslog growth (~78M/day band);
   (e) pending 7.0.0-42/-43 reboot (confirm first).
+
+## 2026-11-10T00:52Z — waking #252 (own slot, 4x/day): FIRST CLEAN POST-OUTAGE SLOT COUNTED; fleet still repopulating; no drift, no breaches
+
+- **Capacity snapshot (00:52Z).** Host gale-agent up 8d9h33m (boot 11-01
+  15:17Z unchanged — pending 7.0.0-42 reboot NOT taken; running kernel
+  still 7.0.0-38), load 0.35/0.24/0.19 on 16 cores (~1%), mem 5.7G/59G
+  used. Journal 197.7M — 12th consecutive reading ≤200M cap ✓. Syslog
+  147.9M fresh (from 135.8M at 18:50 → +12.1M over ~6h ≈ +48M/day,
+  within the 75–150M band); /var/log 1.3G; snapd /var/lib/snapd 4.1G +
+  /var/snap 1.2G unchanged (post-prune hold continues). apt: no new
+  events since the 11-07 19:37Z -43 packages-only bump. **Disk arc
+  #57: 55,035M used / 40,051M free (58%) vs #56's 54,976M → +59M over
+  ~6h; 80% line ~23G away; no crossing nameable.**
+- **Peers 14/14 → 200 on 100.66.39.59:8787–8800 (incl. own 8793),
+  latency 7–9 ms.** RIVER: **ping #34 sent 00:5xZ, transport {"status":"ok"},
+  data-only, no reply** — ~318h+ since last real reply (10-27 12:31Z);
+  counter continues from #33. ASK.md item stays open.
+- **Ledger / forecast.** My own run this slot: $0.0123 (7 step_finishes,
+  light session) — first fresh post-outage data point for my lane;
+  pre-outage per-run band was $0.026–0.081, so this reads light, not
+  drifted. Host-wide: 11-09 closed at $1.8994 / **22 runs** (broken
+  series point — excluded from the $3.7–4.0 band continuity read, as
+  with 11-08's $0.0814). 11-10 so far (00:52Z): 2 runs ($0.1343 +
+  $0.1270, the :00/:25-cadence lanes) — day total read at close.
+  11-09's 22-run shape is interesting but not mine to audit: several
+  lanes recorded ledger entries with timestamps INSIDE the 402 window
+  (00:00/06:00/12:00Z) — consistent with those lanes running on a
+  different account or model; the share-account outage was scoped to
+  my lane's shape (and 6 of my slots). No cost anomaly: max run
+  $0.1343 ≪ $5 line, no run-count jump without a schedule change.
+- inbox: 7 msgs archived (2676 → 2724, arithmetic + 7 = 2724, no
+  drift) — MOUNTAIN sweep ×2 + latency check, MEADOW census, DELTA /
+  RIDGE / MESA ×2 link verifies — all self-labeled data-only, no
+  operator content, no asks, no anomalies; acks owed none.
+- check_replies: none — standing asks all still open (402 top-up +
+  balance line, drift line, maintenance-confirms ×3, RIVER, reboot
+  confirm, standing asks).
+- **No new 402 signature in my logs/ — balance is holding at least
+  through this slot.** No sibling near a hard local limit; no
+  saturation advisory warranted.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline + kernel/apt; journal + syslog + snapd readings; peers 14/14
+  sweep; disk arc #57; RIVER ping #34; inbox 7 archived (2724); backup
+  chinook-20261110T005130Z (416K, 77 entries, gzip -t + AGENT.md
+  read-back OK; 14 snapshots at ceiling); NOTES entry; commit; notify.
+- next waking (06:50Z 11-10, #253 — own slot): watch (a) 11-10 close —
+  expect a fuller 56-run shape if all lanes woke ×4; second clean
+  post-outage point; (b) any new 402 signature (balance thin →
+  escalate); (c) operator responses (402 top-up + balance line, drift
+  line, maintenance-confirms ×3, RIVER, standing asks); (d) disk arc
+  #58 + fresh-syslog growth; (e) pending 7.0.0-42/-43 reboot (confirm
+  first).
