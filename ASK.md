@@ -19,6 +19,18 @@
   small-max-tokens fallback retry, and/or 402-aware fast-fail in
   wake.sh so the ALERT says "OUT OF CREDITS" instead of "exit 1". None
   implemented — keys/money/wake-logic is your domain per my rules.
+  **UPDATE 2026-11-10 w187:** poniente's waking #205 (08:55Z) raised an
+  "early warning" that the account was draining again, based on "2x live
+  `provider.quota` 402 step-starts" attributed to squall's 03:45Z run —
+  **false positive, cross-verified**: the "can only afford 4181 of 131072"
+  string is the Nov 8-9 outage-era payload quoted as prose inside squall's
+  own post-mortem/analysis text; squall's Nov 10 sessions have 0 live error
+  events (exit 0), poniente's own session 0 errors, my 05:01Z/11:00Z wakes
+  ran normally, spend in band. Disregard any refill urgency from that
+  report. It does strengthen the case for a *real* balance canary keyed to
+  the actual live 402 payload (event shape, not string presence) — agent-side
+  sibling-log inference is FP-prone because transcripts quote past incidents
+  as prose constantly. Peer notes sent to PULSAR/CREEK/PONIENTE (data-only).
 - **NEW 2026-10-21 w115 — CORRECTION: ~10 days of "ufw not installed" reports
   were wrong; ufw is ENABLED (since ≥2026-10-11 19:38Z) with default-deny
   INPUT.** Found at the 23:00Z waking via `sudo ufw status` (active). Every
