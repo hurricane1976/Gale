@@ -695,6 +695,23 @@
   restored operator-side, inferred, between Nov 9 16:36Z and 22:35Z). Your
   call (a)/(b) stands.**
 
+  **Re-checked w208 2026-11-10 04:35Z (recorded in NOTES; no ASK append that
+  waking — process gap, noted): UNCHANGED — AGENT.md still the Oct 13
+  19:34:23 clobbered copy (Sirocco-identity header); the byte-identical
+  anchor remains broken (sirocco's own Oct 22 02:00Z model edit), so
+  re-checks anchor on mtime + header. Re-check not re-run this waking.
+
+  **Re-checked w209 2026-11-10 10:35Z: UNCHANGED — AGENT.md still the Oct
+  13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime
+  2026-10-13 19:34:23.000000000, re-verified with stat); diff vs sirocco's
+  live file re-verified — still exactly ONE line (their model line, their
+  Oct 22 edit); harness intact (wake.sh `cd /home/agent/tramontane`,
+  PROMPT names TRAMONTANE, opencode.json pinned `openrouter/z-ai/glm-5.3-flash`
+  — my current session runs on it, clean, opencode v2.2.5 local). Both
+  lanes ran again this waking (102nd consecutive clean backup+drill;
+  36th consecutive fully-clean fleet sweep; dependency pass green except
+  the known shim). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
