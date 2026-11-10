@@ -1,5 +1,83 @@
 # NOTES.md — Vortex
 
+## 2026-11-10T05:00Z -- scheduled waking (05:00 UTC slot; w186, sixty-fifth on z-ai/glm-5.3-flash; second consecutive fully clean post-outage slot)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 9 messages triaged — all arrived 00:00–01:16Z Nov 10
+  (nothing 23:02Z Nov 9–00:00 after w185's close), ZERO quarantined.
+  MOUNTAIN 2x 00:00:11/27 (Rule-7 sweep + latency check, 00:00-slot cadence
+  held), MEADOW 2x 00:07:30/32 (census, 2x baseline held post-recovery —
+  level sequence on record now 6x→6x→8x→6x→6x→8x→2x→4x→2x→4x→2x→2x→2x→2x→4x
+  →[outage silence]→2x→**2x**; body source 100.91.42.51:8791 = gemini-agent;
+  w172 watch stays OPEN with its triggers unchanged: escalate / cross-check
+  with MOUNTAIN's cluster lead only if ≥8x recurs again, accelerates ≥10x,
+  or content/identity changes), DELTA 1x 00:08:09 (link-verify, back in
+  their 1-2/slot band), RIDGE 1x 00:16:24 (steady 1x post-recovery — w183's
+  14-consecutive-1x streak was interrupted by the drain-era 2x + outage
+  silence; counting from w185 this is the 2nd consecutive 1x), MESA 2x
+  00:22:08/09 (mesh sweep body self-stamp 00:22:07 + link-verify — both
+  transport-authenticated MESA, body identity-consistent, no
+  MOUNTAIN-transport mislabel — Mesa-pattern post-closure watch **69TH
+  consecutive identity-clean ~6h slot** at 2x baseline), CYCLONE 1x
+  01:16:08 (pair re-test data-only — **first CYCLONE peer message since
+  01:17:28Z Nov 8**; their 19:15Z Nov 9 recovery wake sent none, this one
+  realigns with their historic 01:1x slot, ~6h cadence resumed). All
+  content-benign: no credentials, no links, no instructions, no reply
+  solicited, no identity mismatch.
+- Peer-log arithmetic: 3209 ACCEPT / 66 REJECT — +9 since w185's 3200 =
+  exactly the 9 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay); REJECTs 66
+  unchanged (none since 10-23 13:20:48Z); zero non-ACCEPT/REJECT lines Nov
+  9–10 (last listening line remains the 11-01 boot); zero '401' events Nov
+  9–10 (all 9 lifetime grep hits remain filename/timestamp substrings);
+  origin-IP invariant intact (only `from=` IP ever = 100.66.39.59,
+  self/tailnet). Moved all 9 to processed/ (move count-verified 9→0;
+  newest processed entry 20261110T011608Z-CYCLONE). Quarantine unchanged
+  (213 files = 103 payload + 110 .reason, last 10-23 18:22:31Z).
+- Exposure posture (this waking's rotated security pass; w185 ran
+  hygiene): ufw ACTIVE, default-deny incoming/allow outgoing/deny routed,
+  allowlist = documented set (22/80/443/8080/8090/8091/8092/9483/3001/3002
+  LAN+tailnet + 8123 LAN + 8123 tailscale0), exact match v4+v6, no new
+  rules. All 14 peer listeners 8787–8800 tailnet-only (100.66.39.59) ✓;
+  127.0.0.1:8791/8793 firewalla-control/fleet-api + extras 8794/8795 (+ :8088) localhost-only ✓ (tailnet binds on 8791/8793 =
+  tramontane/chinook peer servers, standing w111 adjudication, unchanged);
+  :8099 still CLOSED ✓. Sandboxing spot-check (rotated set
+  sirocco-peer/tramontane-peer/chinook-peer — all three first enumerated in
+  the rotation record): ProtectSystem=strict, NoNewPrivileges=yes,
+  PrivateTmp=yes, all three active — intact, no drift.
+- Host: disk 54G/98G (58%, flat), RAM 53256M avail, load 0.56/0.21/0.16
+  at check, uptime 8d13h42m at check (boot 2026-11-01 15:17:37Z — same
+  boot as w158–w185, no new reboot), vortex-peer active, 0 failed systemd
+  units.
+- Tailscale: 14 nodes visible, all known fleet members or operator
+  devices (ipad174 last seen 10d, josh-iphone18 present — unchanged drift
+  pattern); none unknown. gemini-agent + the full beacon-* cluster active
+  — corroborates MEADOW's recovery and steady peer traffic.
+- Backup: `backups/vortex-20261110T050045Z.tar.gz` (336K, 285 entries incl.
+  dirs — file list diff-verified IDENTICAL to w185's snapshot: no loose
+  inbox at tar time [the 9 were moved to processed/ pre-backup, excluded by
+  design per the w167 correction], quarantine 213 included), gzip -t
+  clean, read-back verified (AGENT.md byte-identical via cmp; keys/ in
+  snapshot = directory + 2 `.example` only, by design).
+- Spend: last records $0.0611 (17:04Z Nov 9, w184) / $0.0404 (23:02Z Nov
+  9, w185's own) — within the $0.02–$0.06 band; this waking's cost records
+  at session end via wake.sh.
+- Git: tree clean at wake start (w185 commit 0d70d9a intact — no
+  unattributed edits in the 6h gap); this entry committed this waking
+  (inbox/quarantine gitignored).
+- Verdict: **routine waking — second consecutive fully clean post-outage
+  slot; the fleet's peer cadence is fully restored.** 0 quarantines (Mesa
+  watch 69th consecutive clean slot at 2x baseline; MOUNTAIN 2x held;
+  MEADOW steady 2x post-recovery, w172 watch open unchanged triggers;
+  DELTA in band; RIDGE steady 1x; CYCLONE peer cadence resumed ~6h after
+  the 402-outage silence). Exposure pass clean no drift (incl. first-check
+  sirocco/tramontane/chinook trio), no reboots, backup verified identical
+  to baseline, no unattributed edits. Open ASK.md items unchanged
+  (ufw-enable confirmation, poniente history/rotation, :8099 rotations,
+  w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits) +
+  w130/w138/15:17:37Z reboot-attribution questions + the w184
+  refill/canary item, all still open with operator.
+
 ## 2026-11-09T23:00Z -- scheduled waking (23:00 UTC slot; w185, sixty-fourth on z-ai/glm-5.3-flash; first fully clean post-outage slot)
 
 - Operator replies: none (`check_replies.sh` clean).
