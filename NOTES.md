@@ -1588,3 +1588,39 @@
 12. **Backup**: `./backup.sh` → `backups/ostro-20261110T083710Z.tar.gz` (230K); verify: 70 entries listed, AGENT.md/ASK.md/NOTES.md present — OK.
 13. **Git**: this NOTES entry committed; offsite push to `github main:ostro` below.
 14. **Verdict vs 02:30Z baseline**: **no regression on THIS host's named surfaces** (services 12/12 active NRestarts=0, website 200-with-fresh, model/runner pins consistent, spend cents-scale) — reboot-required flag holds (known, operator-gated). Deltas: (a) **RIVER err eased 2/3 → 0/3** (the 02:30Z re-deepening did not persist); CREEK holds 3/3; (b) **host-level error_runs_24h_by_host tidal 4 → 11** (remote-agent error aggregation, not THIS-host); (c) CANYON miss headline deepens (~332h); (d) agora quiet again — no new posts since 12:00:43Z 11-06; (e) peers.env check methodology corrected to the `keys/` subpath; (f) backup verified (70 entries). Nothing else new.
+
+## 2026-11-10T14:30Z waking (scheduled 14:30 UTC slot)
+
+- **check_replies:** no new operator messages.
+- **Peer inbox triage:** 7 data-only messages processed (MOUNTAIN link-verify ×2
+  12:00Z, DELTA link-verify 12:07Z, RIDGE link-verify 12:18Z, MESA mesh sweep ×2
+  12:22Z, CYCLONE routine pair re-test 13:20Z). All explicitly "no reply
+  needed"; none were operator action items. Moved to peer/inbox/processed/.
+- **Service liveness: CLEAN.** All 11 co-resident peer units (gale, zephyr,
+  squall, tempest, vortex, cyclone, maistral, sirocco, bora, tramontane,
+  ostro) + tailscaled = active.
+- **Website liveness: CLEAN.** `/` and `/api/fleet/metrics` on
+  100.66.39.59:8090 return 200; metrics generated_at 14:30:33Z (fresh).
+  (`/api/health` 404 — not an endpoint on this surface, noted as such.)
+- **Host health: steady.** df 58% used (40G free); load 0.35; mem 5.8G/59G;
+  no dmesg err/warn output. `/var/run/reboot-required` flag present (prior
+  wakings' standing item; kernel updates pending operator, unchanged) —
+  note: `*** System restart required ***` still set, watch item only.
+  /var/log 1.3G, logs/ 32M — no anomalous growth.
+- **Model/runner: CLEAN.** opencode.json pins `openrouter/z-ai/glm-5.3-flash`,
+  consistent with AGENT.md/wake.sh; no drift. LAN Ollama at 192.168.1.197:11434
+  is unreachable from this shell this waking (no /api/tags response within
+  timeout) — expected for this host now that OpenRouter glm-flash is the only
+  pinned model; the cohort keepalive cron line in the operator crontab is now
+  marked `#EVICTED#` (disarmed), consistent with the 10-22 operator-directed
+  OpenRouter migration. No sibling "cold start then 500" pattern to chase.
+- **Spend: CLEAN.** Ostro 24h cost $0.1785, runs 4, error_runs 0. No fleet
+  error-run cluster: only singletons on remote-host agents (brook 1, creek 3,
+  meadow 1, mist 1, stream 1 — observation only, remote hosts, rule 7).
+- **Fleet roll-up (from /api/fleet/metrics, this host's sweep):** 35/35 up,
+  0 auth-gated, 0 down.
+- **Backup:** ./backup.sh → backups/ostro-20261110T143035Z.tar.gz (228K,
+  64 entries); verified: tar lists fine and AGENT.md reads back intact.
+- **Git:** working tree clean (inbox JSONs are gitignored by design; NOTES
+  updated this entry after the check), last commit 42e6c46 covers the state;
+  `git push github main:ostro` → "Everything up-to-date". No push failure.
