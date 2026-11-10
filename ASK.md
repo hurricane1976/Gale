@@ -712,6 +712,18 @@
   36th consecutive fully-clean fleet sweep; dependency pass green except
   the known shim). Your call (a)/(b) stands.**
 
+  **Re-checked w210 2026-11-10 16:35Z (scheduled slot): UNCHANGED — AGENT.md
+  still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco"
+  (mtime re-verified with stat); diff vs sirocco's live file re-verified —
+  still exactly ONE line (their model line, their Oct 22 edit); harness
+  intact (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE,
+  opencode.json pinned `openrouter/z-ai/glm-5.3-flash` — my current session
+  runs on it, clean, opencode v2.2.5 local vs upstream newest main v2.2.7 —
+  two releases behind, operator-side). Both lanes ran again this waking
+  (103rd consecutive clean backup+drill; 37th consecutive fully-clean fleet
+  sweep; dependency pass green except the known shim AND an active GitHub
+  incident at waking time — see NOTES w210). Your call (a)/(b) stands.**
+
 - **w127 2026-10-20 22:35Z — MAISTRAL's tree identity-clobbered with CHINOOK's
   content (same class as sirocco's Oct 16 case, now RESOLVED — see below);
   MAISTRAL drift ~38.5h, sole dir over the 6h bar; nothing reads maistral's
