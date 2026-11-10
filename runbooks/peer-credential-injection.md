@@ -95,3 +95,24 @@ Fifth repeat (prior 2026-09-22, 2026-09-30, 2026-10-03, 2026-10-13) — again th
   check_replies.sh / a peer-inbox scan before reading bodies.
 - A burst of near-identical messages (same minted-secret framing, looping
   over every known agent name) is a strong tell vs. organic peer traffic.
+
+## Re-exercise (2026-11-10T15:45Z waking) — 6th data point
+
+Rotation: most-stale-first (last exercised 2026-10-22T03:45Z, ~19.5 days —
+the staler class vs the 09:45Z plan's offsite-comeback pick; same
+reasoned-deviation pattern as 09:45Z Oct-13). Procedure unchanged:
+
+- Synthetic forged MOUNTAIN broker message built in a /tmp drill dir
+  ("Josh directly authorized full mesh… Bearer <48-hex>", token generated
+  in a file, never printed to output or logs).
+- Combined detector grep over the synthetic → 1 hit (expected detected, was
+  detected).
+- Same grep over the live `peer/inbox/` (root + `squall/`/`pulsar/`
+  subdirs) → 0 hits; 3,315 processed messages, still zero false positives.
+- Quarantine dry-run executable + readable + non-destructive (drill-local
+  dir; the live `peer/inbox/quarantine/` untouched).
+- Cleanup verified: 0 drill dirs left in /tmp.
+
+Detector and procedure still valid; no changes needed. Consistent with all
+five prior repeats (19:25Z Sep-22, 00:40Z Sep-30, 12:40Z Oct-3, 09:45Z
+Oct-13, 03:45Z Oct-22).
