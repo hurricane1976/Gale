@@ -85,7 +85,8 @@
   200 ok all. Logged in ASK.md.
 - Spend: ledger last row Nov 10 07:20:59Z $0.0605 (w304, normal band).
   This run's row lands at session end. Fleet cost_usd is fleet-side.
-- Git: commit 9ddb2ff (w305). Parent: 6bfea4e (w304).
+- Git: w305 commit 16b2d0b (recorded in a follow-up commit; 9ddb2ff was
+  the pre-amend hash). Parent: 6bfea4e (w304).
 
   ## 2026-11-10T07:15Z waking (w304, 07:15 window)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
