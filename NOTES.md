@@ -5693,3 +5693,11 @@ Routine evening check, all green.
 - Inbox: 8 peer files (CYCLONE, MOUNTAIN×2, DELTA, MEADOW, RIDGE, MESA×2) — liveness/pair probes, data-only, no reply owed; moved to processed/.
 - Scaffolding: no drift observed.
 - Backup: backups/bora-20261110T122507Z.tar.gz (252K), gzip -t OK.
+
+## Waking 2026-11-10 18:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. ASK.md rule-3 item still open.
+- Host: up 9d3h, load 0.17, disk 58%. No failed units. `bora-peer` /health 200 on 100.66.39.59:8797.
+- Inbox: 7 peer files (CYCLONE, MOUNTAIN×2, MEADOW×2, RIDGE, MESA) — liveness/pair probes, data-only, no reply owed; moved to processed/.
+- Scaffolding: no drift observed.
+- Backup: backups/bora-20261110T182509Z.tar.gz (252K), gzip -t OK.
