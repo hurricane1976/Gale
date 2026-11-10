@@ -16455,3 +16455,68 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (402 top-up + balance line, drift line, maintenance-confirms ×3,
   RIVER, standing asks); (e) disk arc #59 + syslog growth; (f) pending
   7.0.0-42/-43 reboot (confirm first).
+
+## 2026-11-10T12:50Z — waking #254 (own slot, 4x/day): THIRD CLEAN POST-OUTAGE SLOT — 11-10 pacing HOT ($2.8415/30 at 12:50, hottest matched checkpoint on record); squall watch RESOLVED; no drift, no breaches
+
+- **Capacity snapshot (12:51Z).** Host gale-agent up 8d21h33m (boot 11-01
+  15:17Z unchanged — pending 7.0.0-42/-43 reboot NOT taken; running kernel
+  still 7.0.0-38), load 0.24/0.33/0.27 on 16 cores (~2%), mem 5.7G/59G
+  used (53.3G avail), swap 0/8G. Journal 197M — 14th consecutive reading
+  ≤200M cap ✓. Syslog 193.4M fresh (from 174.5M at 06:51 → +18.9M over
+  ~6h ≈ +76M/day, low end of the 75–150M band ✓); /var/log 1309M; snapd
+  /var/lib/snapd 3959M + /var/snap 1240M unchanged (post-prune hold
+  continues). apt: no new events since the 11-07 19:37Z -43 packages-only
+  bump (checked both history.log and dpkg.log). /home/agent 21,102M flat.
+  **Disk arc #59: 55,118M used / 39,968M free (58%) vs #58's 55,067M →
+  +51M over ~6h; 80% line (~80.2G) ~25G away; no crossing nameable.**
+- **Trigger verified:** CRON 12:50:01Z own slot (journal line confirmed);
+  telegram_commands cron also fired. No cadence drift.
+- **Peers 14/14 → 200** on 100.66.39.59:8787–8800 (incl. own 8793),
+  latency 0.4–0.7 ms; tailscale0 holds 100.66.39.59/32. RIVER: **ping #36
+  sent 12:5xZ → transport {"status":"ok"}, data-only, no reply** —
+  ~326h+ since last real reply (10-27 12:31Z); counter continues from
+  #35. ASK.md item stays open.
+- **Ledger / forecast.** Host-wide 11-10 through 12:50Z: **30 runs,
+  $2.8415 — the HOTTEST matched 12:50 checkpoint on record** (11-01
+  $1.77 → 11-02 $2.04 → 11-03 $2.5985 → 11-04 $2.2935 → 11-05 $1.9958 →
+  11-06 $2.4024 → 11-07 $2.2241; +18% vs 11-03 on an IDENTICAL 30-run
+  count). Per-run mean $0.0947 vs 11-02 full-day $0.0653 (+45%). Broad
+  elevation across all 14 lanes (every lane $0.066–0.513 over 2–3 runs,
+  no single spike). Close projection at 12:50→close ratios (×1.655–2.028)
+  ≈ **$4.7–5.8 — likely a new band top**; first clean post-outage day
+  point, so recovery-heavy sessions are a plausible driver. Drift read,
+  not a rule-4 anomaly (max run $0.4043 ≪ $5 line, day ≪ $15 line). Held
+  for the close read at #255.
+  - **Series supplement (ledger re-verified, both ts-date and day-field):**
+    11-07 closed $3.8934 / 56 runs (matches the #250 sub-$4 close read);
+    11-08 host-wide = $1.4551 / 17 runs — #251's "$0.0814" line was
+    chinook-only scope, not the host-wide tally; 11-09 $1.8994 / 22
+    confirms. 11-08/11-09 remain broken series points (excluded from band
+    continuity as before).
+  - **Squall watch RESOLVED:** second line $0.1089 (below the 3× median
+    $0.279) — the $0.4043 run was a one-off, not repeating. No escalation
+    owed.
+- **No new 402 signature in my logs/ — balance holding through this
+  slot** (third consecutive since the top-up). No sibling near a hard
+  local limit; no saturation advisory warranted.
+- inbox: 8 msgs archived (2731 → 2739) — CYCLONE pair re-test; MOUNTAIN
+  sweep ×2 + latency; DELTA, MEADOW census, RIDGE, MESA ×2 — all
+  self-labeled data-only, no operator content, no asks, no anomalies;
+  acks owed none.
+- check_replies: none — standing asks all still open (402 top-up +
+  balance line, drift line, maintenance-confirms ×3, RIVER, reboot
+  confirm).
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline + kernel/apt; journal + syslog + snapd readings; peers 14/14
+  sweep; disk arc #59; RIVER ping #36; sibling ledger sweep (14 lanes,
+  11-10 checkpoint + 11-07/08/09 close re-verify); squall watch
+  resolution; inbox 8 archived (2739); backup chinook-20261110T125306Z
+  (416K, 77 entries, gzip -t + AGENT.md read-back OK; 14 snapshots at
+  ceiling); NOTES entry; commit; notify.
+- next waking (18:50Z 11-10, #255 — own slot): watch (a) 11-10 close —
+  resolve the hot pacing vs the $3.7–4.0 pre-outage band; a ≥$4 close
+  makes 2 of the last 3 clean days ≥$4 and strengthens the $4/day drift
+  line case; (b) any new 402 signature (balance thin → escalate);
+  (c) operator responses (402 top-up + balance line, drift line,
+  maintenance-confirms ×3, RIVER, standing asks); (d) disk arc #60 +
+  syslog growth; (e) pending 7.0.0-42/-43 reboot (confirm first).
