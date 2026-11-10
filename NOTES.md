@@ -7436,3 +7436,22 @@ No operator/peer messages otherwise.
 ## 2026-11-03 04:40Z — w180 addendum (post-commit, notify delivery verified per the w169 lesson)
 
 - `logs/notify_last_response.txt` shows ok:true, message_id 252, correct operator chat id — notify.sh is silent-on-success by design (response logged to the file, `logs/.notified` touched 04:39:57Z); NO redundant test message sent (the w169 double-send pattern avoided by checking the response file instead). Committing and pushing this addendum as its own commit; offsite tip advances `6a910a4` → this addendum.
+
+## 2026-11-10 04:35Z — w208 (first slot after w207; 101st consecutive clean backup+drill)
+
+- **Host healthy:** up 8d13h17m (same boot), load 0.05/0.18/0.22, mem 52G avail, disk 58% (40G free, flat), cron fired my slot on schedule 04:35:01Z; netbox still inactive (w94 informational, unchanged). 14 peer services running.
+- **check_replies.sh:** no new messages.
+- **Peer inbox:** 8 msgs, all routine data-only sweeps/census/link-verification marked "no reply needed" (MOUNTAIN×2, MEADOW×1, DELTA×1, RIDGE×1, MESA×2, CYCLONE×1). Archived 2544–2551 (processed 2552→2560; sequence-numbering convention applied — my mv had skipped the rename, fixed in-session).
+- **Backup:** `tramontane-20261110T043533Z.tar.gz` 436K, 77 entries, 0 `.git/`, keys example-only, file-list diff vs w207 tar EMPTY, rotation 14. **Tier 1 drill PASS 19/19 byte-identical + zero diff-vs-live** (101st consecutive). **Tier 2 fetch-check PASS attempt-1:** remote tip `ffb41fc` == local HEAD at waking start — w207's commit AND addendum both landed.
+- **Fleet sweep:** 14/14 fresh (35th consecutive), ages 25m (tempest) – 335m (vortex), all inside the 6h bar; maistral recovery holding (own 02:05Z snap). Keys/git hygiene: 0 live keys, 0 `.git/` across all 14 newest snaps.
+- **Poller watch:** chain total **58 lines** — same total as w207, redistributed by the 00:58:11Z rotation (live 0 + .1 1 + .2 2 + .3 1 + .4 3 + .5 1 + .6 50; `.6.gz` appeared, oldest content). **No 16th poller instance.** Zero new failures since w207.
+- **ASK.md w128 item — UNCHANGED on my side, but the byte-identical anchor broke:** my AGENT.md still Sirocco-content (mtime 2026-10-13 19:34:23) — the clobber itself is untouched. The diff vs sirocco's AGENT.md now shows exactly ONE line because sirocco's own file got an operator-directed model edit (mtime 2026-10-22 02:00Z, → `openrouter/~z-ai/glm-flash-latest`); my file's model line still says the FreeToken Qwen. So "byte-identical to sirocco's" is no longer true since Oct 22 — future re-checks should anchor on my mtime + the Sirocco-identity header, not the byte-identical test. Your call (a)/(b) stands.
+- **Spend:** spend_check.py is a no-op without an argument — it takes the session envelope path from wake.sh at session close (wiring intact, wake.sh:84–88); my manual invocations were no-ops by design. Ledger last entry 2026-11-09T22:39:47Z $0.1089 (no error). No alerts.
+- **Dependency pass (mostly green):**
+  - GitHub: all systems operational, 0 unresolved incidents.
+  - OpenRouter: models API 200, catalog 465 (+1, below the double-digit bar), pinned `z-ai/glm-5.3-flash` LISTED. Status page HTML 200; **api/v2/status.json now 404** (was 403 through w207 — presentation shift in a non-functional endpoint, still models-API-only sourcing).
+  - OpenCode Zen: **302 first time in 65 checks** → `/console/models` → 200 (page moved, presentation-only, no outage).
+  - Public surface: beacon 301 / tidal 200 / mountain 200. Certs: 73d / 78d / 85d — no flags, no change.
+  - Ollama shim 127.0.0.1:11435: **502 unchanged** (degraded, w207+).
+  - Releases: opencode newest **v2.2.6** (Nov 6) vs local v2.2.5 — unchanged, +1 gap; also process-daemon-v0.5.0 (Nov 5). Ollama **v0.40.16 STABLE released Nov 9 18:21Z** (supersedes the rc0 w207 recorded; notes: Ripple Preview 65B, Qwen3.8 Flash Next −27GiB on Apple silicon, `ollama launch claude` routing, `/v1/responses` no longer silently truncates, `/v1/models` empty-list fix, CUDA 13.5 Windows ARM, llama.cpp update). Record-only — no local Ollama binary on this host; the shim's 502 is upstream of any of this.
+- **No operator pings, no alerts, no flags.** Committing and pushing `HEAD:refs/heads/tramontane` after this entry.
