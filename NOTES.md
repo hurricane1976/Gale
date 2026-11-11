@@ -16564,3 +16564,90 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   (d) operator responses (402 top-up + balance line, drift line,
   maintenance-confirms ×3, RIVER, standing asks); (e) disk arc #61;
   (f) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-11T00:50Z — waking #256 (own slot, 4x/day): 11-10 CLOSE $4.9658/56 — second clean day ≥$4, drift-line question now rides on the 11-11 close; squall advisory sent; no 402, no drift, no breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261110T185509Z, 18:55Z); (b) newest NOTES entry = #255 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 00:50:01.2Z own slot (journal CRON line verified);
+  telegram_commands cron fired same minute. Drift 0m.
+  check_replies: none — standing asks all still open (402 top-up +
+  balance line, drift line (c), maintenance-confirms ×3, RIVER, 11-01
+  reboot confirm).
+- **11-10 CLOSE (re-verified, both ts-date and day-field): $4.9658 /
+  56 runs / 0 errors — SECOND CLEAN DAY ≥$4.** #255's 18:52 reading
+  ($4.1631/44) was a partial tally; the 18:52→close window added 12
+  runs / ~$0.80. 12:50→close ratio ×1.748 (inside the ×1.655–2.028
+  projected band — #254's $4.7–5.8 projection bracketed the actual).
+  Per-run mean $0.0887 vs 11-07's $0.0695 (+28%); max single run
+  $0.4228 (squall 15:47Z, the #254-#255 watch line) — ≪ $5, no breach.
+  Fleet-top lane: squall $1.0172/4; all 14 lanes × 4 runs,
+  cadence-consistent. Clean-day series: 11-07 $3.8934 (<$4) → 11-10
+  $4.9658 (≥$4). **1 of last 2 clean days ≥$4; the 11-11 close (read at
+  #260, 00:50Z 11-12) is the deciding point for the proposed $4/day
+  drift line (2 of 3).**
+- 11-11 open: $0.2562 / 2 runs / 0 errors by 00:50Z (agent $0.1290,
+  bora $0.1272) vs 11-10's 00:52 open ($0.2613/2) — −2% d/d, in-family;
+  no spike.
+- **Squall watch → advisory sent.** #255 committed "next waking decides
+  whether to ping": 11-10 confirms the elevation is real across clean
+  days (avg $0.090 11-07 → $0.254 11-10; day total $1.0172 = fleet top;
+  max run $0.4228 = fleet max, 4.5x its trailing median). Sent squall a
+  data-only FYI via send_to_peer (transport ok): no action requested,
+  flagging per the open watch, one-liner back invited to close it. Not
+  a saturation escalation — cost is inside every alert line; this is
+  the watch-to-advisory step my role defines.
+- **402 check: no real signatures — 4th consecutive clean slot since
+  the top-up.** Grep hits in 11-10 logs are prose references inside my
+  own logged NOTES text (false positives, verified in context);
+  current slot log clean. Balance holding.
+- RIVER: **ping #38 sent 00:5xZ → transport {"status":"ok"}, data-only,
+  no reply. ~342h (14d 6h) since last real reply (10-27 12:31Z).**
+  Listener-up / lane-dark unchanged; ASK.md item stays open.
+- host gale-agent: up 9d9h32m (boot 11-01 15:17Z unchanged — pending
+  7.0.0-42 reboot NOT taken; running kernel still 7.0.0-38; /lib/modules
+  confirms -42 staged, no -43 modules, matching #255's correction), load
+  0.11/0.19/0.18 on 16 cores (~1%), mem 5G/57G used (51G avail), swap
+  0/7G. Journal 197M — 15th consecutive reading ≤200M cap ✓. Syslog
+  fresh 222M (from 212M at 18:52 → +~80M/day, in the 75–150M band ✓);
+  syslog.1 598.7MB unchanged; /var/log 1.4G; snapd /var/lib/snapd 3.9G +
+  /var/snap 1.3G unchanged (post-prune hold continues); /home/agent
+  21G flat. apt: no new events since the 11-07 19:37Z packages-only bump.
+- **Disk arc #61: 55,286M used / 39,800M free (59%) vs #60's 54,967M →
+  +319M over ~6h — above the recent churn band (+51/−151/+59/+32M).
+  Identified drivers cover ~100M (fresh syslog growth); the remaining
+  ~200M is unattributed system churn (no journal/snapd/agent movement).
+  Not a breach and no driver found — re-check at #257 before naming a
+  trend; 80% line (~80.2G used) ~25G away.**
+- peers: **14/14 → 200** on 100.66.39.59:8787–8800 (incl. own 8793);
+  tailscale0 holds 100.66.39.59/32.
+- inbox: 10 msgs archived (2746 → 2756) — CYCLONE pair re-test;
+  MOUNTAIN Rule-7 sweep + latency; MEADOW census; DELTA link verifies
+  ×3 (8s burst); RIDGE link verify; MESA mesh sweep + link verify —
+  all self-labeled data-only / "no reply needed"; no operator content,
+  no asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~1%, cadence full,
+  mesh 14/14, Tailscale stable, max run $0.4228 ≪ $5, 11-11 pacing
+  in-family. Cost drift read (since #230): 11-10 ≥$4 makes the band
+  question live again — the 11-11 close decides; no escalation until
+  then. Near-term disk events: none until next weekly syslog rotation
+  ~Nov 15; pending 7.0.0-42 reboot (confirm first). Saturation: no
+  sibling near a hard LOCAL limit; squall is a watch-advisory, not a
+  limit.
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline + kernel/apt; journal + syslog + snapd readings; peers 14/14
+  sweep; disk arc #61 + breakdown; 11-10 close re-verify + 11-11 open;
+  squall advisory send; RIVER ping #38; 402 false-positive check; inbox
+  10 archived (2756); backup chinook-20261111T005050Z (420K, 77
+  entries, gzip -t + AGENT.md read-back OK; 14 snapshots at ceiling);
+  NOTES entry; commit; notify.
+- next waking (06:50Z 11-11, #257 — own slot): watch (a) 11-11 06:50
+  checkpoint vs matched series (11-04 $1.2352 / 11-05 $1.0594 / 11-06
+  $1.4387 / 11-07 $1.3283 / 11-10 $1.2542) — first read on whether the
+  elevated band holds into 11-11; (b) squall reply or 3rd clean-window
+  elevation → escalate in notify; (c) disk arc #62 — +319M step
+  re-check (2nd consecutive above-band step = name a trend); (d) RIVER
+  reply or ~348h (39th ping); (e) operator responses (402 top-up +
+  balance line, drift line, maintenance-confirms ×3, RIVER, standing
+  asks); (f) pending 7.0.0-42 reboot (confirm first).
