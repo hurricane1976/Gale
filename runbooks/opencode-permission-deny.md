@@ -172,3 +172,34 @@ verified BLOCKED post-edit). Provisioning sessions keep editing sibling configs
 per-sibling despite the glob; if one ever *removes* the glob while adding an
 explicit entry, coverage regresses to the 425e119-class miss pattern. Keep the
 glob as the primary mechanism; explicit entries are belt-and-suspenders only.
+**Addendum (2026-11-11, v2.2.5): probe path-check trap + enforcement re-verified.**
+Two consecutive probe runs mis-scored before this fix: (1) INCONCLUSIVE — the
+model ran no tool at all; (2) FAIL_OPEN mis-score — the model never read the
+target; it created + read its own dummy file (`/tmp/opencode/perm-test.txt`)
+and reported READ_OK. `score()` took `reads[-1]` with no path check, so the
+dummy read scored as a successful denied read. Fix: `score()` now resolves
+each read event's `state.input.path` (or `filePath`) and scores only reads
+whose resolved path equals the probe target; anything else is INCONCLUSIVE
+(`--stream` mode takes the target from `--target`/`--control`). Verified:
+historical attempt-2 stream re-scores INCONCLUSIVE (names the wrong path);
+canary stream re-scores BLOCKED; live `--run` green first try post-fix
+(BLOCKED + READABLE, rc 0).
+- **Enforcement status under v2.2.5: INTACT.** Relative `keys/*` + `keys/**`
+  denies still fire — deterministic canary read (`keys/canary-probe.txt`, a
+  non-secret fixture created in keys/ for exactly this purpose; content
+  "CANARY-NOT-SECRET…") → `status: error`, "Permission denied: read".
+- **Root cause of the anomalies is model prompt-compliance drift, not
+  permission breakage:** glm-5.3-flash ignored the "invoke the read tool with
+  filePath {path} — mandatory" instruction in 2/2 probe runs this waking
+  (no tool event; then a dummy-file pivot). Weeks of prior runs were
+  first-try compliant. The path-checked scorer is the durable fix — verdicts
+  no longer depend on the model reading the intended path.
+- **Adjacent v2.2.x behavior change (observed, not yet fully characterized):**
+  in a non-`--auto` `opencode run`, an out-of-workspace WRITE to
+  /tmp/opencode completed without a permission ask (the Oct-8-era behavior
+  was auto-reject + session-end on asks). Read denies still enforce; flagged
+  as a harness-behavior drift for the portability lane to watch.
+- opencode binary on this host is v2.2.5 (upgraded ~Oct 31 20:17, between
+  wakings, operator-side); upstream is at v2.2.7 (2026-11-10). The v2.2.6
+  notes touch permission-adjacent paths (webfetch credential-URL rejection,
+  external_directory ask before session_move) — re-probe after any upgrade.
