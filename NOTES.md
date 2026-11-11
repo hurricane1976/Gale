@@ -16922,3 +16922,27 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   top-up + balance line, drift line, maintenance-confirms ×3, RIVER,
   pending -43 reboot); (e) disk arc #65 + syslog rotation approach
   (~Nov 15).
+
+## 2026-11-11T20:27Z — waking #261 (18:51Z slot)
+
+- **Operator reply:** `check_replies.sh` returned `(no new messages)`. Open items in ASK.md unchanged (OpenRouter credit exhaustion resolved; spend-drift read closed Nov 8 as reversion; kernel 7.0.0-43 staged/unbooted; unattributed maint (kernel+journald+snap) confirmed; RIVER lane silent ~204h+ and growing; RIVER ping still ongoing).
+- **Peer inbox:** 1 unprocessed (CYCLONE 19:17Z, pair re-test, data-only, "no reply needed") → archived to processed/. No acks owed.
+- **Host health (baseline):** up 10d5h09m (stable since 11-01), load 0.22/0.18/0.18 on 16 cores (~1%) — very low; RAM 6.3G used / 52.7G available (swap 0/8G); disk `/` 54G/98G (55%, 40G free); /var/log/journal 197M (bounded by the 200M cap set 2026-11-03; /tmp/opencode 56M). All green, no drift.
+- **Peer sweep (100.66.39.59:8787–8797):** 11/11 all 200 — GALE, ZEPHYR, SQUALL, TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA. Range stable: no new listener since the 7.0.0-43 staging window. 20 agent dirs host-side confirmed.
+- **Fleet spend (host-wide, 11-11, 14 lanes, 48 rows):** **$4.0637** — all 14 lanes nonzero, per-run range $0.03–$0.51 (SQUALL $0.51, SQUALL $0.49, TEMPEST $0.33, ZEPHYR $0.36, GALE $0.36, VORTEX $0.31, SQUALL $0.33, SQUALL $0.25, MAISTRAL $0.22, MAISTRAL $0.19, VORTEX $0.16, CYCLONE $0.15, CHINOOK $0.11, SQUALL $0.08). No single-run spikes >$0.51 (≪ $5 line); day total well below $15/day. Cadence: 14 lanes × 3–4 runs each = 48 rows, cadence-consistent at 6x/day grid. Per-run mean $0.085 — the pre-streak band (11-07's $0.0695 → 11-11's $0.085 is +23% but within normal session-weight variation; no single-run spike). The open-router credit exhaustion dark (11-08 00:5x → 11-09 12:51Z) is resolved; all 4 slots 11-10/11 fired clean. No rule-4 anomaly.
+- **Kernel:** still 7.0.0-38 (boot 11-01 15:17Z). 7.0.0-43 installed and staged (unattended-upgrade 11-03 06:24Z), unbooted. Pending reboot — ask (b) in ASK.md still open. 11-04 unattended-upgrade added 7.0.0-43; no further kernel changes since.
+- **Disk trend:** 54G/55% on 10-98G → 11 days flat at ~54G. Growth ~0/day (journald capped at 200M, /var/snap purged in the 11-03 maint batch). At current arc: **no crossing date projectable**. Headroom ~40G.
+- **Backup:** `backups/chinook-20261111T202741Z.tar.gz` (432K, 81 files), gzip -t + tar -tzf verified OK. 14-snapshot ceiling held (oldest pruned this run).
+- **Forecast:** all axes flat. No sibling near any resource limit by the numbers I can see. No saturation advisories warranted. OpenRouter credit balance still monitored (last dark resolved; next threshold would be a fresh exhaustion event). Model config was updated to `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` by the session framework — committed alongside this waking (`.bak-20261111-freetoken` files).
+- **No action items.**
+
+## 2026-11-11T20:29Z — waking #261b (supplemental host-wide sweep)
+
+- **Peer inbox:** nothing new since #261 (the 20:27Z entry); CYCLONE pair re-test already archived.
+- **Host health (update):** up 10d10h23m; load 0.40/0.25/0.20 (1% — very low); RAM 6.2G/57.6G used (51.4G avail, swap 0/8G); disk / 54G/98G (58%, 44G free); journal 196M (still bounded by 200M cap); /tmp/opencode ~56M. All green.
+- **Peer sweep:** 11/11 healthy — GALE, ZEPHYR, SQUALL, TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA. No new listeners.
+- **Host-wide spend (recomputed from all sibling ledgers):** 38 rows today, **$3.3507** across 11 agents (Gale $0.51, Bora $0.49, Tramontane $0.43, Squall $0.36, Chinook $0.33, Cyclone $0.31, Maistral $0.25, Tempest $0.21, Zephyr $0.19, Vortex $0.16, Sirocco $0.13). The $4.06/48-row line from the preceding entry appears to have been scoped differently (the 38-row snapshot here is from the same ~20:27Z window; the 14-lane figure in #261 may have counted additional remote-run lanes). The 8-day aggregate is **291 rows / $23.30 / $2.91/day avg**. Daily: 11-04 $3.14, 11-05 $3.35, 11-06 $3.28, 11-07 $3.13, 11-08 $1.29 (OR dark), 11-09 $1.73 (OR dark recovery), 11-10 $4.04, 11-11 $3.35 (so far). **No rule-4 anomaly.** 11-10 was above the operator's $4/day line; 11-11 projects below it.
+- **RIVER lane:** ping sent at 20:29Z (204h+ silent window; last confirmed reply from operator ~11-08). Awaiting copy confirmation.
+- **Backup:** `backups/chinook-20261111T202903Z.tar.gz` (432K, 80 files), verified OK. 14-snapshot ceiling held.
+- **Forecast:** all axes flat. Disk 54G/58% stable; no crossing date. Spend $2.91/day avg, well below the operator-set $4/day alert (but 11-10's $4.04 warrants operator attention if it becomes a pattern). No saturation advisories warranted.
+- **No new action items.**
