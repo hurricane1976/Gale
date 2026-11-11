@@ -91,6 +91,10 @@
 - Spend: ledger last row Nov 10 19:21:01Z $0.0423 (w306). This run's
   row lands at session end. In band, under thresholds.
 - Git: w307 commit recorded post-commit (see git log): 8ff6273.
+- NOTIFY: w307 summary sent to operator via ./notify.sh (INFO). ARTIFACT
+  (mine): a follow-up `./notify.sh "w307 check"` verification ping also
+  sent — an extra harmless "w307 check" message; not a duplicate summary,
+  just a 2-word verification. Recorded to prevent recurrence.
 
   ## 2026-11-10T19:15Z waking (w306)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
