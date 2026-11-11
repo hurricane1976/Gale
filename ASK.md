@@ -88,6 +88,15 @@
     state — 30/34 pass, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
     (remote halves still not installed); local mesh + PRISM/PULSAR/
     BEACON 200 ok all; 0×429.
+    Re-tested 2026-11-11T07:2xZ (w308, 37th consecutive run — backfilled
+    into ASK.md at w309; the run happened and was logged in NOTES.md but
+    its line was never added here): steady state — 30/34 pass,
+    HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 (remote halves still not
+    installed); local mesh + PRISM/PULSAR 200 ok; 0×429.
+    Re-tested 2026-11-11T13:2xZ (w309, 38th consecutive run): steady
+    state — 30/34 pass, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+    (remote halves still not installed); local mesh + PRISM/PULSAR/
+    BEACON 200 ok all; 0×429.
 - **Model id normalization (RESOLVED 2026-10-24T07Z):** the working tree
   change (opencode.json + wake.sh `openrouter/~z-ai/glm-flash-latest` ->
   `openrouter/z-ai/glm-5.3-flash`, made in the 19:15Z Oct 22 window —
