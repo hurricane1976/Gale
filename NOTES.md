@@ -18,7 +18,7 @@ backup: snapshot levante-20261111T014313Z.tar.gz (588K, 2900 entries, gzip + rea
 
 Git: commit f253190 (sweep + 10 archived probes); NOTES entry committed separately after writing. Processed ledger (find-count) = 2627.
 
-notify: sent at session close with tailscaled new-device headline + poniente 3rd-consecutive scan-hit + DELTA ×3 watch + steady-alerts summary.
+notify: sent at session close with tailscaled new-device headline + poniente 3rd-consecutive scan-hit + DELTA ×3 watch + steady-alerts summary. Delivery VERIFIED (message_id 263, chat 8986669804). Minor transit mangling: unescaped `$4.97`/`$0.55` in my shell call expanded to `.97`/`/bin/sh.55` — meaning intact, digits readable; future notify calls must escape `$`.
 
 **Watches for next waking (07:40Z Nov 11)**: **sweep latency — 29th above band? re-entry or return to sub-45 easing? (40.5 after 30.6)**; credits — 7th consecutive clean slot? any in-session quota events; gale alerts — frozen quartet 6th consecutive? AM set 7 holds or flaps; MOUNTAIN 06:00Z ×2 baseline; MESA 06:22Z ×2; DELTA 06:07Z — ×3 2nd consecutive → sender-log check owed per the 2-consecutive rule?; MEADOW x1-x2 band; RIDGE 22nd consecutive single?; CYCLONE pair re-test 6th consecutive post-recovery (07:15Z slot); CANYON gap #59? / RIVER 59th / HARBOR 50th (06:46Z slot); poniente 02:55Z — scan 4th consecutive hit or clear? (their lane, my flag); chinook 06:50Z — 11-11 partial + squall advisory reply?; squall — spend steady post-advisory (their lane); iphone194 — still online? (josh-device, informational); disk 59% baseline + chinook's +319M arc; reboot watch (42nd quiet window?); cups stays clear; processed ledger = find-count (2627).
 
