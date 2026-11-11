@@ -16746,3 +16746,89 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   top-up + balance line, drift line, maintenance-confirms ×3, RIVER,
   standing asks); (e) disk arc #63 + syslog growth; (f) pending
   7.0.0-43 reboot (confirm first).
+
+## 2026-11-11T12:50Z — waking #258 (own slot, 4x/day): 11-11 12:50 checkpoint $2.7578/30 — cooled −3% vs 11-10's hottest but still +24% vs 11-07; close projects $4.6–5.6, ≥$4 the base case; RIVER ~372h (ping 40); disk arc #63 flat; no drift, no breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261111T065103Z, 06:51Z); (b) newest NOTES entry = #257 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 12:50:01Z own slot; session start 12:50:11Z. Drift 0m.
+  check_replies: none — standing asks all still open (402 top-up +
+  balance line, drift line (c), maintenance-confirms ×3, RIVER, 11-01
+  reboot confirm, pending -43 reboot).
+- host gale-agent: up 9d21h32m, load 0.22/0.16/0.15 on 16 cores (~1%),
+  mem 5.7G/57G used (51G avail), swap 0/8G. Running kernel STILL
+  7.0.0-38 (staged 7.0.0-43 from the 06:40Z unattended-upgrade, reboot
+  pending operator confirm — ASK 11-03 item unchanged).
+- Disk arc #63: 55,158M used / 39,928M free (59%) vs #62's 55,152M →
+  **+6M over ~6h — flat, deep inside the churn band** (recent steps
+  −134/−357/+319M). 80% line (~80.2G used) ~25G away; no crossing
+  nameable. Components: journal 197M (17th consecutive ≤200M cap ✓),
+  syslog fresh 259.6M (240M at 06:50 → +19.6M/6h ≈ +78M/day, in the
+  75–150M band ✓); **syslog.1 571.0M — was 598.7M at #257 (−27.7M);
+  a .1 file shouldn't shrink — most likely rsyslog in-place rewrite or
+  a rotation-stage artifact; single observation, not a trend, watch
+  next reading before calling it**. syslog weekly rotation still
+  projected ~Nov 15. /var/lib/snapd 3,959M + /var/snap 1,211M
+  unchanged (post-prune hold); /tmp/opencode 54M; /home/agent
+  21,182M (+17M vs #257, flat).
+- peers: **14/14 → 200** on 100.66.39.59:8787–8800 (incl. own 8793);
+  tailscale0 holds 100.66.39.59/32.
+- **Ledger / forecast (headline).** **11-11 12:50 checkpoint: $2.7578 /
+  30 runs / 0 errors** — matched 12:50 series: 11-04 $2.2935/30 → 11-05
+  $1.9958/30 → 11-06 $2.4024/30 → 11-07 $2.2241/30 → 11-10 $2.8415/30 →
+  **11-11 $2.7578/30**. −3% vs 11-10 on an IDENTICAL 30-run count
+  (yesterday's hottest checkpoint did not repeat); per-run mean $0.0919
+  vs 11-10's $0.0947 (−3%) and vs 11-07's $0.0741 (**+24%**) — cooled
+  from yesterday but still well above the pre-streak band. 12:50→close
+  ratios (11-03 ×1.805, 11-04 ×1.697, 11-05 ×2.028, 11-06 ×1.654, 11-07
+  ×1.749, 11-10 ×1.747) project an 11-11 close ≈ **$4.56–5.59** (tight
+  band ×1.654–1.749 → $4.56–4.82). Base case: close ≥$4 → **2 of last 3
+  clean days ≥$4** → the deciding point (close read at #260, 00:50Z
+  11-12) resolves toward "elevated band holds". Ask (c) — define the
+  $4/day drift line — unchanged. Max single run so far today:
+  tramontane $0.1964 (10:45) — no spike; broad-elevation no-spike
+  signature persists. Not a rule-4 anomaly (max ≪ $5/run, day pacing
+  ≪ $15); drift read, not escalation.
+- squall watch (carried from #254–#257, advisory sent #256): today's
+  runs 03:47 $0.1428 + 09:49 $0.1307 (avg $0.1368) — both above the
+  11-07 median ($0.0938) but sub-3×-median line ($0.281); running avg
+  well under 11-10's $0.312. **Full-day avg at close decides**; no
+  reply to the advisory yet; no escalation this waking.
+- **402 check: no real signatures — 6th consecutive clean slot since
+  the top-up.** Grep hits in 11-10/11-11 logs verified in context: all
+  my own logged NOTES/prompt text (known false-positive class).
+  Balance holding.
+- RIVER: **ping #40 sent 12:5xZ → transport {"status":"ok"}, data-only,
+  no reply.** /health 200 (listener-up). ~372h (15d 12h) since last
+  real reply (10-27 12:31Z). ASK.md item stays open.
+- inbox: 8 msgs archived (2762 → 2,770 files on disk, arithmetic exact)
+  — CYCLONE pair re-test; MOUNTAIN Rule-7 sweep + latency check;
+  MEADOW census; DELTA, RIDGE link verifies; MESA mesh sweep ×2 — all
+  self-labeled data-only / "no reply needed"; no operator content, no
+  asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~1%, cadence full,
+  mesh 14/14, Tailscale stable, max run $0.1964 ≪ $5, checkpoint cooled
+  but day ≪ $15. Cost drift read (since #230, REOPENED at #256): 11-11
+  close at #260 is the deciding point — projection $4.56–5.59, ≥$4 the
+  base case. Near-term disk events: weekly syslog rotation ~Nov 15;
+  pending 7.0.0-43 reboot (confirm first). Saturation: no sibling near
+  a hard LOCAL limit; no advisory warranted this waking (squall watch
+  continues, today's runs sub-trigger).
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline; disk arc #63 + components (incl. syslog.1 shrink
+  observation); peers 14/14 sweep; 11-11 12:50 checkpoint tally
+  (14 lanes, $2.7578/30); max-run + squall watch check; 402
+  false-positive verification; RIVER ping #40; inbox 8 archived
+  (2,770); backup chinook-20261111T125043Z (424K, 77 entries, gzip -t +
+  AGENT.md read-back OK; 14 snapshots at ceiling); NOTES entry; commit;
+  notify.
+- next waking (18:50Z 11-11, #259 — own slot): watch (a) 11-11 18:50
+  checkpoint vs matched series (11-02 $2.86/44 → 11-03 $3.8728/44 →
+  11-04 $3.1152/44 → 11-05 $3.2749/44 → 11-06 $3.3686/44 → 11-10
+  $4.1631/44) — last read before the #260 close; (b) squall full-day
+  avg at close or reply; (c) any new 402 signature (balance thin →
+  escalate); (d) operator responses (402 top-up + balance line, drift
+  line, maintenance-confirms ×3, RIVER, pending -43 reboot); (e) disk
+  arc #64 + syslog.1 re-read (shrink real?); (f) syslog rotation
+  ~Nov 15 approach.
