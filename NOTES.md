@@ -1,5 +1,86 @@
 # NOTES.md — Vortex
 
+## 2026-11-11T17:00Z -- scheduled waking (17:00 UTC slot; w192, seventy-first on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
+  request (w189) still open with operator.
+- Inbox threat watch: 9 messages triaged — all arrived 12:00–13:19Z Nov 11
+  (nothing 11:00–12:00 after w191's close), ZERO quarantined. MOUNTAIN 2x
+  12:00:11/24 (Rule-7 sweep + latency check, 12:00-slot cadence held),
+  MEADOW 2x 12:07:41/44 (census, 2x baseline; body source 100.91.42.51:8791
+  = gemini-agent; w172 watch stays OPEN with triggers unchanged: escalate /
+  cross-check with MOUNTAIN's cluster lead only if ≥8x recurs again,
+  accelerates ≥10x, or content/identity changes), DELTA 1x 12:07:50
+  (link-verify, in band — the named DELTA-3x watch did NOT recur this slot;
+  watch stays OPEN, escalate if ≥4x recurs or content/identity changes),
+  RIDGE 1x 12:16:22 (8th consecutive 1x since the drain-era blip), MESA 2x
+  12:22:09/09 (mesh sweep body self-stamp 12:22:07 + link-verify — both
+  transport-authenticated MESA, body identity-consistent — Mesa-pattern
+  post-closure watch **75TH consecutive identity-clean ~6h slot**; w191's
+  1x deviation did NOT recur — 2x baseline restored, that informational
+  resolves clean), CYCLONE 1x 13:19:06 (pair re-test data-only, single;
+  07:17:44→13:19:06 = 6h01m22s, ~6h cadence held). All content-benign: no
+  credentials, no links, no instructions, no reply solicited, no identity
+  mismatch.
+- Peer-log arithmetic: 3264 ACCEPT / 66 REJECT — +9 since w191's 3255 =
+  exactly the 9 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay); REJECTs 66
+  unchanged (none since 10-23 13:20:48Z); zero non-ACCEPT/REJECT lines Nov
+  11 (last listening line remains the 11-01 boot); zero real '401' events
+  Nov 11; origin-IP invariant intact (only `from=` IP ever = 100.66.39.59,
+  self/tailnet). Moved all 9 to processed/ (move count-verified 9→0;
+  newest processed entry 20261111T131906Z-CYCLONE). Quarantine unchanged
+  (213 files = 103 payload + 110 .reason, last 10-23 18:22:31Z).
+- Exposure posture (this waking's rotated security pass; w191 ran
+  hygiene): ufw ACTIVE, default-deny incoming/allow outgoing/deny routed,
+  allowlist = documented set (22/80/443/8080/8090/8091/8092/9483/3001/
+  3002 LAN+tailnet + 8123 LAN + 8123 tailscale0), exact match v4+v6 (11
+  v6 rules), no new rules. Listener sweep verified directly: 14 tailnet
+  peer binds 100.66.39.59 on 8787–8800 ✓ + localhost control binds
+  127.0.0.1:8791/8793/8794/8795 (+ :8088) ✓ (tailnet binds on 8791/8793 =
+  tramontane/chinook peer servers, standing w111 adjudication, unchanged);
+  nginx up on [::]:8090 ✓; :8099 still CLOSED ✓. Sandboxing spot-check
+  (rotated set squall-peer/levante-peer/gale-peer — squall + levante
+  first enumerated in the rotation record): ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes, all three active — intact, no
+  drift.
+- Tailscale: 15 nodes — **iphone194 persists unchanged** (100.100.111.39),
+  NO further new nodes since w189; all other nodes unchanged (beacon-*
+  cluster 6, gemini/mountain/ubuntu agents active, josh-iphone18/
+  josh-linux/josh-linux2 present, ipad174 offline 11d — unchanged drift
+  pattern). Attribution still pending with operator (ASK.md w189 item);
+  no auth anomalies observed from it (zero REJECTs today, origin-IP
+  invariant intact). Read-only — changed nothing.
+- Host: disk 54G/98G (58%, flat), RAM 52686M avail, load 0.58/0.32/0.26 at
+  check, uptime 10d01h42m at check (boot 2026-11-01 15:17:38Z — same boot
+  as w158–w191, no new reboot), vortex-peer active, 0 failed systemd
+  units.
+- Backup: `backups/vortex-20261111T170118Z.tar.gz` (344K, 285 entries =
+  standing baseline; no loose inbox at tar time — the 9 were moved to
+  processed/ pre-backup, excluded by design per the w167 correction;
+  quarantine 213 included), gzip -t clean, read-back verified (AGENT.md
+  byte-identical via cmp; keys/ in snapshot = directory + 2 `.example`
+  only, by design).
+- Spend: last records $0.0586 (05:03Z Nov 11, w190) / $0.0460 (11:01Z Nov
+  11, w191) — within the $0.02–$0.06 band; this waking's cost records at
+  session end via wake.sh.
+- Git: tree clean at wake start (w191 commit 1a1acbf intact — no
+  unattributed edits in the 6h gap); this entry committed this waking
+  (inbox/quarantine gitignored).
+- Verdict: **routine waking.** 0 quarantines (Mesa watch 75th consecutive
+  clean slot, 2x baseline restored — w191's 1x informational resolved
+  clean as its own entry anticipated; DELTA-3x named watch open, no
+  recurrence this slot at 1x; MEADOW 2x baseline, w172 open unchanged;
+  MOUNTAIN 2x held; RIDGE steady 1x; CYCLONE ~6h cadence held). Exposure
+  pass clean no drift (incl. first-check squall/levante in the sandbox
+  rotation), iphone194 attribution still pending, no reboots, backup
+  verified, no unattributed edits, disk flat. Open ASK.md items unchanged
+  (ufw-enable confirmation, poniente history/rotation, :8099 rotations,
+  w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits) +
+  w130/w138/15:17:37Z reboot-attribution questions + the w184
+  refill/canary item + w189 iphone194 attribution, all open with
+  operator.
+
 ## 2026-11-11T11:00Z -- scheduled waking (11:00 UTC slot; w191, seventieth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
