@@ -1,5 +1,94 @@
 # NOTES.md — Vortex
 
+## 2026-11-11T11:00Z -- scheduled waking (11:00 UTC slot; w191, seventieth on z-ai/glm-5.3-flash)
+
+- Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
+  request (w189) still open with operator.
+- Inbox threat watch: 8 messages triaged — all arrived 06:00–07:17Z Nov 11
+  (nothing 05:02–06:00 after w190's close), ZERO quarantined. MOUNTAIN 2x
+  06:00:09/33 (Rule-7 sweep + latency check, 06:00-slot cadence held),
+  MEADOW 2x 06:07:38/41 (census, 2x baseline; body source 100.91.42.51:8791
+  = gemini-agent; w172 watch stays OPEN with triggers unchanged: escalate /
+  cross-check with MOUNTAIN's cluster lead only if ≥8x recurs again,
+  accelerates ≥10x, or content/identity changes), DELTA 1x 06:07:53
+  (link-verify, in band — the w190-named DELTA-3x watch did NOT recur;
+  watch stays OPEN, escalate if ≥4x recurs or content/identity changes),
+  RIDGE 1x 06:15:56 (7th consecutive 1x since the drain-era blip), MESA 1x
+  06:22:07 (mesh sweep body self-stamp 06:22:06 — transport-authenticated
+  MESA, body identity-consistent — Mesa-pattern post-closure watch **74TH
+  consecutive identity-clean ~6h slot**; DEVIATION: 1x vs the 2x baseline —
+  the companion link-verify did not land by my 11:00Z check; **3rd such 1x
+  in the recent record** (w187's and w189's each resolved to 2x the next
+  slot); informational, light watch next slot, escalate only on recurrence
+  or content/identity change), CYCLONE 1x 07:17:44 (pair re-test
+  data-only, single; 01:23:38→07:17:44 = 5h54m06s, ~6h cadence held). All
+  content-benign: no credentials, no links, no instructions, no reply
+  solicited, no identity mismatch.
+- Peer-log arithmetic: 3255 ACCEPT / 66 REJECT — +8 since w190's 3247 =
+  exactly the 8 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay); REJECTs 66
+  unchanged (none since 10-23 13:20:48Z); zero non-ACCEPT/REJECT lines Nov
+  11 (last listening line remains the 11-01 boot); zero real '401' events
+  Nov 11; origin-IP invariant intact (only `from=` IP ever = 100.66.39.59,
+  self/tailnet). Moved all 8 to processed/ (move count-verified 8→0;
+  newest processed entry 20261111T071744Z-CYCLONE). Quarantine unchanged
+  (213 files = 103 payload + 110 .reason, last 10-23 18:22:31Z).
+- Credential hygiene (this waking's rotated security pass; w190 ran
+  exposure): own repo `git ls-files keys/` = 2 `.example` only; .gitignore
+  sane; tracked-file secret scan = hits only in the adjudicated NOTES/ASK
+  prose, 0 real hits. Sibling keys/ perms sweep: exceptions = the standing
+  set (agent `github_deploy_key.pub` 644 public half since 09-22;
+  firewalla-dashboard `etp.public.pem` 644 public half adjudicated w162;
+  levante `telegram.env` 664 open ASK.md item) + **ONE NEW: tempest
+  `keys/canary-probe.txt` 664**, created 04:12:16Z Nov 11 — adjudicated
+  BENIGN on content: single line "CANARY-NOT-SECRET deny-probe canary
+  2026-11-11", a deliberate labeled non-secret fixture (tempest-side
+  deny-probe test), untracked in their git (their tracked keys/ = 2
+  `.example` only). Cross-corroborated: poniente's own #209 (08:57Z)
+  independently adjudicated the same file as a deliberate non-secret
+  fixture (their baseline 360→361). Two sentinels agree; no action, no
+  private-key drift anywhere. Poniente containment spot-check FRESH on 3
+  of 4 axes: tracked keys/ = 2 `.example` only; local tip `d296404`
+  2026-11-11 08:57:08Z (their waking #209, normal activity); offsite
+  branch `github/poniente` tip still frozen `e48b019` (2026-09-27).
+  Containment holding.
+- Host: disk 54G/98G (58% — w190's +1G reading did NOT persist; flat
+  again, no trend), RAM 53229M avail, load 0.24/0.19/0.18 at check,
+  uptime 9d19h42m at check (boot 2026-11-01 15:17:37Z — same boot as
+  w158–w190, no new reboot), vortex-peer active, 0 failed systemd units.
+- Tailscale: 15 nodes — **iphone194 persists unchanged** (100.100.111.39,
+  online/idle), NO further new nodes since w189; all other nodes
+  unchanged (beacon-* cluster 6, gemini/mountain/ubuntu agents active,
+  josh-iphone18/josh-linux/josh-linux2 present, ipad174 offline 11d —
+  unchanged drift pattern). Attribution still pending with operator
+  (ASK.md w189 item); no auth anomalies observed from it (zero REJECTs,
+  origin-IP invariant intact). Read-only — changed nothing.
+- Backup: `backups/vortex-20261111T110033Z.tar.gz` (344K, 285 entries =
+  standing baseline; no loose inbox at tar time — the 8 were moved to
+  processed/ pre-backup, excluded by design per the w167 correction;
+  quarantine 213 included), gzip -t clean, read-back verified (AGENT.md
+  byte-identical via cmp; keys/ in snapshot = directory + 2 `.example`
+  only, by design).
+- Spend: last records $0.0517 (23:04Z Nov 10, w189) / $0.0586 (05:03Z Nov
+  11, w190) — within the $0.02–$0.06 band; this waking's cost records at
+  session end via wake.sh.
+- Git: tree clean at wake start (w190 commit 75aea81 intact — no
+  unattributed edits in the 6h gap); this entry committed this waking
+  (inbox/quarantine gitignored).
+- Verdict: **routine waking.** 0 quarantines (Mesa watch 74th consecutive
+  clean slot with a 1x informational deviation — 3rd of record, prior two
+  resolved to 2x; DELTA-3x named watch open with no recurrence at 1x;
+  MEADOW 2x baseline, w172 open unchanged; MOUNTAIN 2x held; RIDGE steady
+  1x; CYCLONE ~6h cadence held). Hygiene pass clean with one NEW
+  adjudicated-benign exception (tempest canary fixture, cross-corroborated
+  by poniente #209), poniente containment 3/4 fresh, no reboots, backup
+  verified, no unattributed edits, disk back flat (w190's +1G resolved).
+  Open ASK.md items unchanged (ufw-enable confirmation, poniente history/
+  rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms,
+  w95/w96 unattributed edits) + w130/w138/15:17:37Z reboot-attribution
+  questions + the w184 refill/canary item + w189 iphone194 attribution,
+  all open with operator.
+
 ## 2026-11-11T05:00Z -- scheduled waking (05:00 UTC slot; w190, sixty-ninth on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
