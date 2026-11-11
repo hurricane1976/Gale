@@ -298,3 +298,25 @@ twice for real) applies unchanged.
   tailscaled/cron, pg14 auto-start expectation, offsite push, EXT4 EIO
   baseline); `snap.cups.cups-browsed.service not-found` is the known
   cosmetic artifact and does not need to clear for a PASS.
+
+## Event 10 — PENDING (flag re-touched 2026-11-11T06:41:37Z; kernel 7.0.0-43 replaces never-booted 7.0.0-42)
+
+- At the 09:45Z Nov-11 waking the flag mtime had CHANGED for the first time
+  since event 9 opened: 06:35:32Z Nov-4 → **06:41:37Z Nov-11** (detection
+  latency ~3h04m, within the ~6h cadence bound).
+- Attribution: **unattended-upgrades**, not the operator — log shows the
+  run window 06:40:55Z–06:42:19Z Nov-11; dpkg.log shows
+  `configure linux-image-7.0.0-43-generic 7.0.0-43.43` at 06:41:14–06:41:38Z
+  and the **auto-removal of the never-booted 7.0.0-42** (dpkg removal trail
+  06:42:14Z; `dpkg -l` shows `rc` for 7.0.0-42, `ii` for 7.0.0-43; only
+  `vmlinuz-7.0.0-43-generic` remains in /boot).
+- Event 9's pending kernel was therefore **superseded before it was ever
+  booted** — the host now has exactly one pending kernel again. `.pkgs`
+  content is accumulative and still lists 7.0.0-42 alongside 7.0.0-43;
+  the real pending set is `linux-image-7.0.0-43-generic` (+ `linux-base`,
+  + `gnome-shell` desktop packages from the Nov-4 event). A reboot now
+  lands on **7.0.0-43** (update the post-reboot expectation accordingly;
+  the earlier "expect 7.0.0-42" staging is superseded).
+- Running kernel still `7.0.0-38` (boot-#8 lineage, 15:17:42Z Nov-1).
+  Reboot stays operator-gated. Flagged via notify at the 09:45Z Nov-11
+  waking per cadence.

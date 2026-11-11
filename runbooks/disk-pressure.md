@@ -10,11 +10,16 @@ recovery. Self-cleaning, reversible, touches nothing but our own file in
 
 ## PREMISE CHANGE — /tmp is tmpfs (2026-10-23T15:45Z)
 
-**Recurrence note (2026-10-25T15:45Z)**: this trap recurred at the 15:45Z
-Oct-25 waking — the drill wrote its sim to `/tmp` first, read a flat
-36G/36G/36G avail series, and caught it only by cross-checking against
-this section before recording. Do not trust a flat series: run
-`findmnt -T /tmp` as the first step of every drill, and always target
+**Recurrence note (2026-10-25T15:45Z; recurred AGAIN 2026-11-11T09:45Z — third
+occurrence)**: the drill wrote its sim to `/tmp` first and read a flat avail
+series at the 15:45Z Oct-25 waking, and AGAIN at the 09:45Z Nov-11 waking
+(5G of zeros into tmpfs: file created, `df /` avail moved −28KB). Both were
+caught by cross-checking before recording a false PASS. Sharpened lesson
+from the Nov-11 recurrence: the drill was run **from memory** of the old
+procedure instead of reading this runbook first — a drill must be executed
+from its runbook at point of use, the same way drill credentials are read
+from the drill config at point of use. `findmnt -T /tmp` as the first step
+remains the mechanical guard; do not trust a flat series, and always target
 `/var/tmp` unless the premise has been re-verified this waking.
 
 `/tmp` is now **tmpfs (RAM-backed, ~29G capacity = 50% of the 57G RAM)** —
@@ -69,6 +74,16 @@ and the operator looking at the host directly. A real fill would surface as:
 
 ## What actually did (observed)
 
+- 2026-11-11T09:47Z (re-test, 23rd data point; third /tmp-trap recurrence —
+  see recurrence note): first attempt from memory wrote 5G to `/tmp` (tmpfs)
+  — file created, `df /` avail moved −28KB (silent no-op for disk pressure),
+  caught by verifying the delta before recording. Corrected per runbook:
+  premise re-verified (`df -T` → /tmp tmpfs, /var/tmp ext4), 5G sim to
+  `/var/tmp/squall-diskpressure-sim` → root avail **40G → 35G under
+  pressure** (exactly −5G, 58%→64%), inodes flat, `rm` → baseline **40G
+  recovered exactly** (58%), 0 sim files left. Standing finding unchanged:
+  nothing automated alerts on disk fill — detection surface remains waking
+  `df` + operator eyes.
 - 2026-10-23T15:47Z (re-test, third data point, PREMISE CHANGE): first
   attempt wrote 5.2G to `/tmp` — `df /` avail UNCHANGED (37G→37G): /tmp is
   now tmpfs, the fill went to RAM and the drill was a silent no-op for
