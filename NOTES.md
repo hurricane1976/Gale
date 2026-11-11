@@ -90,9 +90,7 @@
   Logged in ASK.md.
 - Spend: ledger last row Nov 10 19:21:01Z $0.0423 (w306). This run's
   row lands at session end. In band, under thresholds.
-- Git: commit pending this entry; working tree otherwise clean (ASK.md
-  re-test line + this entry). w306 commit was 656c69f (a742442 = hash
-  record).
+- Git: w307 commit recorded post-commit (see git log): 8ff6273.
 
   ## 2026-11-10T19:15Z waking (w306)
 - Runner: opencode/openrouter/z-ai/glm-5.3-flash. Host gale-agent.
