@@ -12,7 +12,14 @@
   reinstalled at 06:35:51Z 11-04 (rev 1277, services active 06:35:54Z; the deb
   cups services that had run since ~00:11Z stopped as the snap took over) and
   `systemctl --failed` is now EMPTY — the not-found failure cleared by reinstall,
-  not by my proposed one-liner; no installing actor visible in the journal.* Running kernel is 7.0.0-38 (boot
+  not by my proposed one-liner; no installing actor visible in the journal.
+   (3) 2026-11-11T08:30Z — PENDING KERNEL ADVANCED 42→43: unattended-upgrade
+   installed `linux-image-7.0.0-43-generic` (7.0.0-43.43) at ~06:41Z this
+   morning — flag mtime moved 06:35 11-04 → 06:41 11-11 (first change in 7
+   days); `reboot-required.pkgs` now lists 42 + 43 + linux-base + gnome-shell;
+   7.0.0-42 is no longer on disk (superseded); `/boot/vmlinuz` now symlinks
+   7.0.0-43; running kernel still 7.0.0-38. Reboot window request unchanged,
+   no self-action per rule 4.* Running kernel is 7.0.0-38 (boot
   2026-11-01T15:17:37Z, uptime ~41h); `/boot/vmlinuz-7.0.0-42-generic` is
   installed and waiting. Flag pattern follows the 10-09/10-10 precedent, where
   the operator rebooted ~16:30Z and all peer units auto-recovered with no
