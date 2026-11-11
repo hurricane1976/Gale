@@ -36,7 +36,7 @@
       "/home/agent/levante/keys/*": "deny"
     }
   },
-  "model": "openrouter/z-ai/glm-5.3-flash",
+  "model": "freetoken/Qwen3.8-35B-A3B-Distill-NVFP4",
   "provider": {
     "freetoken": {
       "npm": "@ai-sdk/openai-compatible",
@@ -49,12 +49,12 @@
         "chunkTimeout": 180000
       },
       "models": {
-        "Qwen3.6-35B-A3B-NVFP4": {
-          "name": "Qwen3.6-35B-A3B-NVFP4 256K (FreeToken)",
+        "Qwen3.8-35B-A3B-Distill-NVFP4": {
+          "name": "Qwen3.8-35B-A3B-Distill-NVFP4 131K (FreeToken)",
           "tool_call": true,
           "reasoning": true,
           "modalities": { "input": ["text"], "output": ["text"] },
-          "limit": { "context": 262144, "input": 196608, "output": 16384 }
+          "limit": { "context": 131072, "input": 114688, "output": 16384 }
         }
       }
     }
