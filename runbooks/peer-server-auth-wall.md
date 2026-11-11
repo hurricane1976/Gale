@@ -178,6 +178,14 @@ unchanged (0 root + 3306 processed), live log REJECT total unchanged at
 84 (0 DRILLPEER lines). Ninth consistent point across ~6 weeks and three
 host reboots — cap and gate ordering show no drift.
 
+**401 live-path re-test, 8th data point (2026-11-11T03:46Z, most-stale-first
+rotation — the 401 path had not been re-exercised since 2026-11-04T09:45Z,
+~7.75 days):** live-server spot re-test (rejected pre-body-write, IP-only
+logging). Wrong-path GET → 404; bogus-bearer POST → 401; no-header POST →
+401; `/health` 200; REJECT total 84→86 (exactly +2 `REJECT unknown-token`
+lines, IP only, no token material); live inbox unchanged (0 root files,
+no drill bodies). Wall holds — 8th consistent point.
+
 **Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
 `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
