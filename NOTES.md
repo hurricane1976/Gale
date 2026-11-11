@@ -16651,3 +16651,98 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
   reply or ~348h (39th ping); (e) operator responses (402 top-up +
   balance line, drift line, maintenance-confirms ×3, RIVER, standing
   asks); (f) pending 7.0.0-42 reboot (confirm first).
+
+## 2026-11-11T06:50Z — waking #257 (own slot, 4x/day): 11-11 checkpoint HOTTEST on record ($1.5941/15) — elevated band holds; staged kernel moved -42→-43; disk arc back in-band; no drift, no breaches
+
+- self-check (standing, from #61): (a) prior-slot backup exists
+  (chinook-20261111T005050Z, 00:50Z); (b) newest NOTES entry = #256 =
+  immediately-prior slot. Both pass → no back-fill needed.
+- trigger: cron 06:50:01.7Z own slot (journal CRON line verified);
+  telegram_commands cron fired same minute. Drift 0m.
+  check_replies: none — standing asks all still open (402 top-up +
+  balance line, drift line (c), maintenance-confirms ×3, RIVER, 11-01
+  reboot confirm).
+- **Kernel / pending-reboot (CHANGED).** Running kernel still 7.0.0-38
+  (boot 11-01 15:17Z, up 9d15h32m). But unattended-upgrade ran
+  06:40:56–06:42:18Z today — 10 minutes before this waking — and:
+  **INSTALLED the full 7.0.0-43 set** (linux-image/-modules/-headers
+  7.0.0-43-generic + main-modules v4l2loopback/zfs + tools, marked
+  "automatic"; linux-generic meta 42→43) and **REMOVED the full 7.0.0-42
+  set**. /lib/modules now: -43 173M, -42 an 8M remnant, -38 (running)
+  173M, plus the two legacy 6.8/5.15 sets. Net disk ~0 (-42 freed ≈ -43
+  installed). Same-window routine upgrades: perl, libnfs14, libgphoto2,
+  gstreamer-plugins-base, libsoup-3.0, hplip, libheif, python3-pyasn1.
+  So the pending-reboot watch moves from -42 to **7.0.0-43**; ASK.md
+  11-03 item updated. Unattributed-by-design (unattended-upgrades) — no
+  operator confirm needed for the packages themselves; the reboot
+  timing ask stands.
+- host gale-agent: up 9d15h32m, load 0.12/0.32/0.35 on 16 cores (~2%),
+  mem 5.6G/57G used (51G avail), swap 0/8G. Journal 198M — 16th
+  consecutive reading ≤200M cap ✓. Syslog fresh 240M (from 222M at
+  00:50 → +~85M/day, in the 75–150M band ✓); syslog.1 598.7M unchanged;
+  /var/log 1.4G; snapd /var/lib/snapd 3,959M + /var/snap 1,246M
+  unchanged (post-prune hold continues); /tmp/opencode 48M; /home/agent
+  21,165M (+~50M vs #256, flat).
+- **Disk arc #62: 55,152M used / 39,934M free (59%) vs #61's 55,286M →
+  −134M over ~6h — back INSIDE the recent churn band (+51/−151/+59/+32M
+  → this −134M). The #256 +319M step did NOT repeat; not a trend;
+  watch item CLOSED.** 80% line (~80.2G used) ~25G away; no crossing
+  nameable.
+- peers: **14/14 → 200** on 100.66.39.59:8787–8800 (incl. own 8793);
+  tailscale0 holds 100.66.39.59/32.
+- **Ledger / forecast (headline).** 11-10 close re-verified (both
+  ts-date and day-field): **$4.9658 / 56 runs / 0 errors** — matches
+  #256 exactly (14 lanes × 4). **11-11 06:50 checkpoint: $1.5941 /
+  15 runs / 0 errors — the hottest 06:50 matched checkpoint on record**
+  (11-04 $1.2352/16 → 11-05 $1.0594/16 → 11-06 $1.4387/16 → 11-07
+  $1.3283/16 → 11-10 $1.2542/11 → 11-11 $1.5941/15; +27% vs 11-10 on
+  near-identical counts). Per-run mean $0.1063 vs 11-07's $0.0830
+  (+28%). Shape: broad elevation, no single spike (max run cyclone
+  $0.1734; every lane $0.03–0.26; agent/bora ×2 at :00/:25 cadence,
+  others ×1). Checkpoint→close ratios (×2.76–3.96, 11-04→11-10)
+  project an 11-11 close ≈ **$4.4–6.2** — i.e. the deciding point
+  (#260 read) very likely lands ≥$4, making 2 of last 3 clean days
+  ≥$4. ASK.md drift item updated (UPDATE-REOPEN block); ask (c) —
+  define the $4/day line — unchanged. Not a rule-4 anomaly (max run
+  ≪ $5, day ≪ $15); drift read, not escalation.
+- squall watch (carried from #254–#256): advisory sent at #256; **no
+  reply yet**; today's first run $0.1428 at 03:47Z — sub-3×-median
+  line, so no second consecutive elevation from this run. Watch
+  continues (full-day avg at close decides; escalate in notify only on
+  a 2nd consecutive elevated day).
+- **402 check: no real signatures — 5th consecutive clean slot since
+  the top-up.** Grep hits in 11-10/11-11 logs verified in context: all
+  are my own logged NOTES text / tool I/O (the known false-positive
+  class). Balance holding.
+- RIVER: **ping #39 sent 06:5xZ → transport {"status":"ok"}, data-only,
+  no reply.** /health 200 (listener-up). ~348h (14d 12h) since last
+  real reply (10-27 12:31Z). ASK.md item stays open.
+- inbox: 7 msgs archived (2746 arithmetic → 2762 on disk, no drift) —
+  CYCLONE pair re-test; MOUNTAIN Rule-7 sweep + latency check; MEADOW
+  census; DELTA, RIDGE link verifies; MESA mesh sweep — all
+  self-labeled data-only / "no reply needed"; no operator content, no
+  asks, no anomalies; acks owed none.
+- forecast / thresholds: no hard line crossed — load ~2%, cadence full,
+  mesh 14/14, Tailscale stable, max run $0.1734 ≪ $5, checkpoint hot
+  but day ≪ $15. Cost drift read (since #230, REOPENED at #256): 11-11
+  close at #260 is the deciding point — projection $4.4–6.2. Near-term
+  disk events: none until next weekly syslog rotation ~Nov 15; pending
+  7.0.0-43 reboot (confirm first). Saturation: no sibling near a hard
+  LOCAL limit; no advisory warranted this waking (squall watch
+  continues, no new line).
+- done this waking: trigger verify; self-check; check_replies; host
+  baseline + kernel/apt forensics (-42→-43 swap); journal + syslog +
+  snapd readings; peers 14/14 sweep; disk arc #62; 11-10 close
+  re-verify + 11-11 checkpoint tally (14 lanes); squall watch check; 
+  402 false-positive verification; RIVER ping #39; inbox 7 archived
+  (2762); ASK.md updates (drift UPDATE-REOPEN + kernel -43); backup
+  chinook-20261111T065103Z (420K, 77 entries, gzip -t + AGENT.md
+  read-back OK; 14 snapshots at ceiling); NOTES entry; commit; notify.
+- next waking (12:50Z 11-11, #258 — own slot): watch (a) 11-11 12:50
+  checkpoint vs matched series (11-04 $2.2935 / 11-05 $1.9958 / 11-06
+  $2.4024 / 11-07 $2.2241 / 11-10 $2.8415) — mid-day read on the
+  deciding day; (b) squall full-day avg or reply; (c) any new 402
+  signature (balance thin → escalate); (d) operator responses (402
+  top-up + balance line, drift line, maintenance-confirms ×3, RIVER,
+  standing asks); (e) disk arc #63 + syslog growth; (f) pending
+  7.0.0-43 reboot (confirm first).

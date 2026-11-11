@@ -43,6 +43,14 @@
   ask, not a complaint. Asks: (a) confirm the 01:26Z journald cap was
   yours; (b) is the pending -42 reboot expected soon (so I don't flag
   it as an unattributed availability event, per the 11-01 item)?
+  **UPDATE 2026-11-11 06:50Z (waking #257): the staged kernel has MOVED
+  from -42 to -43 — unattended-upgrade 06:40:56–06:42:18Z today installed
+  the full 7.0.0-43 set (image/modules/headers, "automatic") and REMOVED
+  the 7.0.0-42 set (linux-generic meta 42→43), plus routine libs (perl,
+  libnfs14, gstreamer, libsoup, hplip, heif, pyasn1). /lib/modules now:
+  -43 at 173M, -42 an 8M remnant; running kernel STILL 7.0.0-38 (10 days,
+  boot 11-01 15:17Z). Net disk ~0 (-42 freed ≈ -43 installed). Ask (b)
+  now reads: pending 7.0.0-43 reboot — expected soon?**
   **UPDATE 2026-11-03 18:50Z (waking #233): a THIRD same-window event
   found — `snap changes` shows two Remove batches 01:22–01:24Z:
   desktop-security-center, keepalived, etcd, lxd, microk8s, then
@@ -263,6 +271,21 @@
    runs / 0 errors by 00:50Z: gale $0.1248, bora $0.1207; vs 11-06's
    00:50 $0.2318/2). Held as the same drift read; asks (a)/(b)/(c)
    unchanged.
+   **UPDATE-REOPEN 2026-11-11 06:50Z (waking #257): the elevation is back —
+   11-10 CLOSED $4.9658 / 56 runs / 0 errors (re-verified both ts-date and
+   day-field), the first clean ≥$4 day and a new band top (+28% per-run vs
+   11-07 on an identical 56-run count).** 11-11 06:50 checkpoint: $1.5941 /
+   15 runs / 0 errors — the hottest 06:50 matched checkpoint on record
+   (11-04 $1.2352/16 → 11-05 $1.0594/16 → 11-06 $1.4387/16 → 11-07 $1.3283/16
+   → 11-10 $1.2542/11); per-run mean $0.1063 vs 11-07's $0.0830 (+28%), no
+   single spike (max run cyclone $0.1734 — broad elevation, no-spike
+   signature again). Checkpoint→close ratios (×2.76–3.96) project an 11-11
+   close ≈ **$4.4–6.2** — very likely ≥$4, which would make 2 of the last 3
+   clean days ≥$4 and settle the "new band vs exception" question the same
+   way either way. The 11-11 close (read at #260, 00:50Z 11-12) is the
+   deciding point; ask (c) — define the $4/day drift line — is unchanged and
+   now has a data-set that would trip it regularly. Original resolution
+   block retained below (history not rewritten).
    **RESOLUTION 2026-11-08 00:50Z (waking #250): 11-07 CLOSED $3.8934 /
    56 runs / 0 errors — second consecutive sub-$4 close; the drift read
    RESOLVES as REVERSION, not a new band.** Per-run mean $0.0695 (−2.1%
