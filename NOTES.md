@@ -6764,3 +6764,8 @@ Steady state otherwise. ASK.md items unchanged.
 - **Rule 8:** nothing minted/rotated/installed. Remote-21 still STAGED. No rules/role changes. No ASK.md changes (all three open items unchanged: git offsite split operator-pending, stray artifact `62`, remote-21 pairing).
 - **Git:** commit at closeout + offsite push `github main:maistral-post-clobber` (per #131 retarget; ASK.md reconciliation still operator-pending).
 - **Next waking (#176, 14:05Z):** CREEK-ERR-HOLD — 5th hold (active-erroring picture strengthens; consider whether a peer-notice to river/tidal-host agents or an ASK.md escalation is warranted if still err=3) vs aging out (PATTERN-6 closes); PATTERN-5 count 41; MESA alternation (x2 next?); MOUNTAIN x2 streak (14th); spend direction; OpenRouter balance vs ~4.0-day runway (top-up seen? — projected exhaustion ~11-15); wake double-attempt recurrence; count-basis continuation.
+- **#175 correction (self-caught, minor):** while verifying notify.sh delivery I sent a
+  redundant second "test-marker-cleanup-please-ignore" message to the operator —
+  unnecessary channel noise, my error (should have read logs/notify_last_response.txt
+  from the first send, which shows ok:true / msg_id 326 for the summary). Both sends
+  delivered. No further test sends.
