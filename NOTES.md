@@ -1,6 +1,18 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-12T07:30Z -- 129th waking (unattended scheduled)
+
+- **Host:** up 11d 17h, load 0.22 (idle), disk 58% (40G free/98G — stable). RAM 53G avail/59G (9% used), swap 0. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 21 listeners (8787-8795 + :8791/8793 localhost + :8796-8800 + :8090) present. 0 failed systemd units. All normal.
+- **FLEET:** 35/35 expected, 35 up (code-200), 0 auth-gated, 0 missing. All 4 sources ok. **FLEET SHAPE:** Stable at 35 — no shape changes. MAISTRAL 5 runs 24h, $0.1354, 0 errors, last wake 2026-11-12T07:30:01Z. GLM Flash model cost ~$0.03/run this window (down from $0.05/run at 01:30Z — cost_24h window shift accounts for it; 5 runs same).
+- **PATTERN-4 (2nd consecutive):** MESA, CANYON, MOUNTAIN, VISTA — all 4 zero runs_24h, all last_wake 2026-10-27, all code 200 in fleet_status. All 4 Mountain-cluster nodes, 16+ days silent. Same state as 128th waking. First-sighting was 128th. Recurring threshold: 3+ consecutive — approaching.
+- **CREEK err=3, RIVER err=1** — same 2 error agents as 128th. Same zero-cost. 35-agent 0-error streak still broken (24 consecutive). No new error agents.
+- **Spend:** Per-day 2026-11-12: gale $0.4830, beacon $0.7556, mountain $0.0909, tidal $0.00. Error runs by host: tidal: 4 (=CREEK err=3 + RIVER err=1). MAISTRAL $0.1354 24h (5 runs). Spend API /api/spend unavailable (502/empty) — cannot read cost_coverage_by_host this waking.
+- **Inbox:** 9 msgs processed (MOUNTAIN x2, DELTA x1, MEADOW x2, RIDGE x1, MESA x2, CYCLONE x1) — all routine sweep/verify/link-check, no reply needed. check_replies.sh clean.
+- **Backup:** maistral-20261112T073023Z.tar.gz (624K) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** commit pending (local `main`). Push **BLOCKED**: non-fast-forward vs `github:maistral` (122653e pre-clobber tip). Offsite split unresolved per ASK.md item #1. Waking complete.
+- **Open items (unchanged):** 09-22 cost question; repo artifact `62`; remote-21 pairing STAGED; PATTERN-4 (2nd consecutive, approaching recurring threshold); CREEK err=3 / RIVER err=1 (24th consecutive); MAISTRAL $0.1354 24h; SIROCCO/TRAMONTANE entanglement resolved (Sirocco back at 3 runs); Ostro/Poniente/Levante stable; BORA stable; PATTERN-3 still in ledger.
+
 ## 2026-11-12T01:30Z -- 128th waking (unattended scheduled)
 
 - **Host:** up 10d 10h, load 0.26 (idle), disk 58% (40G free/98G — down from 59% at 127th waking, stable). RAM 53G avail/59G (9% used), swap 0. All systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 21 listeners (8787-8795 + :8791/8793 localhost + :8796-8800 + :8090) present. 0 failed systemd units. All normal.
@@ -10,7 +22,7 @@
 - **Patterns:** PATTERN-4: Mountain-cluster 4/4 silent (MESA/MOUNTAIN/CANYON/VISTA, all 15+ days, zero runs_24h, all fleet_status code 200) — first sighting. **CREEK err=3 / RIVER err=1** — two new error agents (35-agent 0-error streak broken). PATTERN-3 (MOUNTAIN/MESA cross-label) still in ledger at 71st+ (recurring, no recent sighting in per_agent since 10-27).
 - **Inbox:** 15 msgs processed (MOUNTAIN x4, MEADOW x2, DELTA x2, RIDGE x2, MESA x2, CYCLONE x2) — all routine sweep/verify/census/link-check, no reply needed. check_replies.sh clean.
 - **Backup:** maistral-20261112T013048Z.tar.gz (620K, 194 entries) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
-- **Git:** to be committed + pushed. Working tree has ledger update + NOTES entry.
+- **Git:** commit 35ac0bf done (local `main`). Push **BLOCKED**: non-fast-forward vs `github:maistral` (122653e pre-clobber tip). Offsite split unresolved per ASK.md item #1. Local `main` = Chinook-fused history (21 commits ahead of pre-clobber line). Forcing push would destroy remote pre-clobber tip. Operator decision needed (keep-split / force-push / merge). Waking complete pending operator resolution.
 - **Open items:** 09-22 cost question unresolved; repo artifact `62` still staged; remote-21 pairing still STAGED; PATTERN-4 (Mountain cluster 4/4 silent, first sighting); **CREEK err=3 / RIVER err=1 — first errors since 35-agent 0-error streak** (2 new error agents); MAISTRAL now OpenRouter $0.05/run (~5 runs/day, ~$1.70/week if trend holds); SIROCCO/TRAMONTANE entanglement unresolved (last ledger sighting 10-19); Ostro/Poniente/Levante stable in per_agent.
 - **Model change note:** MAISTRAL woke via OpenRouter `~z-ai/glm-flash-latest` (freetoken proxy). Cost ~$0.05/run. Previous 12 wakings (starting ~2026-10-10) were on OpenRouter. Local ollama/qwen3.8:27b not used since 2026-10-09. This is an operator-directed change (noted in AGENT.md "operator-directed 2026-11-11").
 
