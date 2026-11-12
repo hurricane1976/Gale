@@ -1,5 +1,37 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-11-12T09:30Z — Scheduled waking (gateway BROKE RECORDED LADDER at 53h, config reversion still open — FLAGGED, upstream all green; LAN Ollama still down — 79th observed; opencode binary 2.2.5→2.2.7; :8080 still gone 31st observed; disk 58% holding; certs all holding; Ollama v0.40.17-rc0 released 2026-11-10; 79th waking)
+
+Context: 09:30 slot of the 4x/day 25-min fleet grid (on-disk cron: `30 3,9,15,21`; committed repo: `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:32Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh says freetoken; on-disk modified wake.sh was reverted to GLM outside waking — see below). opencode **v2.2.7** (binary updated from v2.2.5 on-disk; not a repo change). `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config files reverted OUTSIDE waking window (per rules 4+6 — DO NOT COMMIT, unresolved since 03:30Z).** Same issue as 03:30Z waking: AGENT.md, opencode.json, and wake.sh had been modified outside wakings to revert from the 2026-11-11 `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` config back to the pre-2026-11-11 `openrouter/z-ai/glm-5.3-flash` config. Cron on-disk `30 3,9,15,21` vs committed `20 3,9,15,21` still NOT lock-step. **Still NOT committing.** The committed copy (freetoken Distill) is what this waking ran on. **Same open question for operator: was this revert intentional? Cron at 03:30 (FT grid) but model at GLM (no FT) is INCONSISTENT — suggests a script touched files, not a deliberate operator session.**
+
+**FreeToken gateway: SERVING on `:1919`, NO bounce. 53h stretch — BROKE THE LADDER.** Live probe ~09:30:40Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"32a5a8df-7e1b-4c38-a5f2-264e5434504f","uptime_s":191122,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — same instance `32a5a8df…`, uptime 191122s = **53.09h** — **NEW LADDER RECORD** (prev record ~47.1h at 03:30Z). This is the longest continuous service stretch observed since the Oct 26-28 ladder. Model string STILL the REVERTED `Qwen3.8-35B-A3B-Distill-NVFP4` (80th consecutive observed waking since reversion). Host pingable 0% loss ~1.5ms. Fleet impact: none.
+
+Host: up 10d 18h (boot 2026-11-01 15:17:37Z — no new reboot), load 0.47/0.30/0.22 (light), disk **58% (54G/98G, 40G free) — same as 03:30Z**, RAM ~52Gi available of 57Gi. `sirocco-peer` + `tailscaled` + ssh + cron all active. **opencode binary: v2.2.7 on-disk (was v2.2.5 at 03:30Z)** — package updated on host outside waking. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (down) + host-lane :8088 (:8088 now shows "Firewalla Stats" page at 127.0.0.1 — not the beacon peer-list UI; not my lane to diagnose, flagging). **:8080 STILL ABSENT** (31st observed waking without it; ~216h since first seen gone). Tailscale: daemon active. Cron: `30 3,9,15,21` on disk.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **79th consecutive observed waking** down. Shim :11435 still down (exit 7).
+
+**Release watch — NEW: Ollama v0.40.17-rc0 released 2026-11-10T22:25:00Z (release candidate, not stable).** LAN Ollama still down so it hasn't picked this up. When LAN recovers, it may pull v0.40.17-rc0. The stable release before this was v0.40.16 (2026-11-09T18:21:19Z). **Opencode: v2.2.7 on-disk (up from 2.2.5 at 03:30Z)** — need to check if this is from upstream release; notes from previous wakings say upstream was v1.19.5 but binary is v2.2.7 now. Need to verify if this is a local build or upstream release. **OpenRouter models: `Qwen3.8-35B-A3B-NVFP4` NOT listed** (expected — FreeToken LAN model; `~z-ai/glm-flash-latest` available).
+
+Dependencies (upstream green, probes ~09:30Z):
+- OpenRouter: /api/v1/models 200 in ~0.8s (845070 bytes = 468 models); `~z-ai/glm-flash-latest` available; `Qwen3.8-35B-A3B-NVFP4` not listed (expected — LAN model).
+- GitHub: api.github.com/zen "Avoid administrative distraction." (200); status page reachable.
+- Tailscale: status.tailscale.com 200; daemon active.
+- LAN Ollama :11434 refused (exit 7) — 79th observed.
+- FreeToken gateway: SERVING, 53.1h (ladder-broken record), no bounce.
+- Release watch: Ollama v0.40.17-rc0 (2026-11-10T22:25:00Z, RC); opencode binary v2.2.7 (up from 2.2.5); upstream opencode still believed v1.19.5 (need to verify — v2.2.7 is a major version bump).
+
+Cert expiries: beaconwake.com 2027-01-22 ~69d; tidalwake.org 2027-01-27 ~74d; mountainwake.org 2027-02-03 ~81d. All above thresholds.
+
+Spend: 2026-11-11 so far 8 entries; 2026-11-12 so far minimal. Well under thresholds.
+
+Inbox: 15 new (2026-11-11 18:00–06:31Z Nov 12): 3x MOUNTAIN (rule-7 sweep + latency), 2x MEADOW (census), 2x DELTA (link-verify), 2x RIDGE (link-verify), 4x MESA (mesh sweep + 2x link-verify), 2x CYCLONE (pair re-test). All "data-only, no reply needed", no anomalies. Filed to processed/. No replies sent, nothing minted.
+
+- Verdict: **TWO NEW EVENTS — gateway broke ladder record (53h) + opencode binary updated 2.2.5→2.2.7 + Ollama v0.40.17-rc0 RC released.** Gateway holding record-breaking 53h stretch (same instance `32a5a8df`, same reverted Distill string 80th consecutive). Opencode binary updated to v2.2.7 — the committed repo notes say upstream was v1.19.5; the binary jumped to 2.2.7 which is a major version bump. Need to verify: is this a local build or upstream release? Ollama v0.40.17-rc0 is a release candidate (not stable) — notable since LAN Ollama is still down at 79 wakings. Everything else carried: upstream all green; LAN Ollama still down (79th); :8080 still gone (31st); disk 58% holding; certs all holding; no operator messages; peer messages all routine. **Config reversion remains unresolved (highest-priority open question).**
+- Next: probe the gateway every waking (expect uptime_s ≈212722 next waking if no bounce; the 53h ladder record is the new baseline); watch whether it breaks 114h again; watch opencode v2.2.7 origin (local build vs upstream release); watch LAN Ollama v0.40.17-rc0 when it recovers; watch host-lane :8080 for comeback; watch the config reversion — this has been open since 03:30Z and is still unresolved.
+- Next: **URGENT: the config reversion is still open with no operator Telegram word.** The cron at 03:30 (FT grid) with model at GLM (no FT) is INCONSISTENT — this strongly suggests a script or automation touched files rather than a deliberate operator session. This is the highest-priority open question.
+
 ## 2026-11-12T03:30Z — Scheduled waking (config REVERSION OUTSIDE WAKING — FLAGGED per rules 4+6; gateway SERVING on :1919, NO bounce, post-bounce stretch ~47.1h new record; upstream all green; LAN Ollama still down — 78th observed; :8080 still gone 30th observed; beacon all-active 16th observed; disk 58% holding; certs all holding; 78th waking)
 
 Context: 03:30 slot of the 4x/day 25-min fleet grid (as currently committed: `30 3,9,15,21`); waking landed 03:30:15Z. This session runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (the committed wake.sh still says freetoken; on-disk modified wake.sh was reverted to GLM outside this waking — see below). opencode v2.2.5. `check_replies.sh`: no new operator messages.

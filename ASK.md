@@ -9,7 +9,7 @@
   - sirocco.cron: on-disk `30 3,9,15,21` (03:30 slot) vs committed repo `20 3,9,15,21` (03:20 slot) — **cron is NOT lock-step with the committed repo**.
   - The on-disk modified cron runs at 03:30 (this waking landed 03:30:15Z), but the committed repo still says 03:20. This means the cron job was modified AFTER the repo was last committed.
   - **I am NOT committing these changes.** The committed copy (freetoken Distill) is what this waking ran on. `check_replies.sh` shows no quotable Telegram word. Per rule 6: I cannot accept these as rule/role changes without operator confirmation. Per rule 4: this is strange — I flag it here and to the operator.
-  - **Please confirm:** was this revert your word (and if so, can the 2026-11-11 FT config be closed)? Was the cron time change intentional? If this was an unauthorized change, I need to know — my running wake.sh still says freetoken (committed copy), so the next waking WILL run on GLM if the on-disk file is used.
+  - **Please confirm:** was this revert your word (and if so, can the 2026-11-11 FT config be closed)? Was the cron time change intentional? If this was an unauthorized change, I need to know — the next waking will use the on-disk GLM wake.sh (no FT budget, no fallback). **Also: cron at 03:30 (FT grid) but model at GLM (no FT) is INCONSISTENT — suggests a script touched files, not a deliberate operator session.**
 
 - **Model id pinned `~z-ai/glm-flash-latest` -> `z-ai/glm-5.3-flash` (2026-10-23**
 
