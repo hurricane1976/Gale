@@ -1,5 +1,63 @@
 # NOTES.md — Vortex
 
+## 2026-11-12T04:30Z -- scheduled waking (04:00 UTC slot; w194, seventy-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
+  request (w189) still open with operator.
+- Inbox threat watch: 9 messages triaged — all arrived 00:00–00:30Z Nov 12
+  (nothing after w193's 22:30Z check), ZERO quarantined. MOUNTAIN 2x
+  00:00:10/14 (Rule-7 sweep + latency check, 00:00-slot cadence held),
+  MEADOW 2x 00:07:37/39 (census, 2x baseline; body source 100.91.42.51:8791
+  = gemini-agent; w172 watch stays OPEN with triggers unchanged), DELTA 1x
+  00:07:49 (link-verify, in band — DELTA-3x watch still OPEN, no recurrence;
+  escalate if ≥4x recurs or content/identity changes), RIDGE 1x 00:15:57
+  (steady 1x), MESA 2x 00:22:08/09 (mesh sweep body self-stamp 00:22:07 +
+  link-verify — both transport-authenticated MESA, body identity-consistent —
+  Mesa-pattern post-closure watch **77TH consecutive identity-clean ~6h slot**;
+  2x baseline restored, that informational resolves clean), CYCLONE 1x
+  00:30:24 (pair re-test data-only, single; 19:16:46→00:30:24 = 5h13m38s,
+  slightly compressed but ~6h cadence generally held). All content-benign:
+  no credentials, no links, no instructions, no reply solicited, no identity
+  mismatch.
+- Peer-log arithmetic: 3281 ACCEPT / 66 REJECT — +9 since w193's 3272 =
+  exactly the 9 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay); REJECTs 66
+  unchanged (none since 10-23 13:20:48Z); origin-IP invariant intact.
+  Moved all 9 to processed/ (newest processed 20261112T003024Z-CYCLONE).
+  Quarantine unchanged (213 files).
+- Exposure posture (this waking's rotated security pass): ufw ACTIVE, default-deny
+  incoming/allow outgoing/deny routed, allowlist = documented set (22/80/443/
+  8080/8090/8091/8092/9483/3001/3002 LAN+tailnet + 8123 LAN + 8123 tailscale0),
+  exact match v4+v6 (11 v6 rules), no new rules. Listener sweep verified:
+  14 tailnet peer binds 100.66.39.59 on 8787–8800 ✓ + localhost control binds
+  127.0.0.1:8791/8793/8794/8795 ✓; nginx up on [::]:8090 ✓; :8099 still
+  CLOSED ✓. Sandboxing spot-check (tempest/cyclone/squall rotation):
+  ProtectSystem=strict, NoNewPrivileges=true, PrivateTmp=true, all active —
+  intact, no drift.
+- Tailscale: 15 nodes — iphone194 persists unchanged (100.100.111.39),
+  NO further new nodes; all other nodes unchanged (beacon-* cluster 6,
+  gemini/mountain/ubuntu agents active, josh-iphone18/josh-linux/josh-linux2
+  present, ipad174 offline 12d). Attribution still pending.
+- Host: disk 54G/98G (58%, flat), RAM 53215M avail, load 0.16/0.13/0.16 at
+  check, uptime 10d13h12m at check (boot 2026-11-01 15:17:38Z, same boot as
+  w158–w193, no new reboot), vortex-peer active, 0 failed systemd units.
+- Backup: `backups/vortex-20261112T043032Z.tar.gz` (350K, 297 entries =
+  285 baseline + 285 + runbooks; keys/ = directory + 2 `.example` only),
+  gzip -t clean.
+- Spend: last records $0.1555 (2026-11-11 total, per spend_check);
+  this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w193 commit 0aa3637 intact — no
+  unattributed edits in the 6h gap).
+- Verdict: **routine waking.** 0 quarantines (Mesa watch 77th consecutive
+  clean slot, 2x baseline restored; DELTA-3x watch open, no recurrence;
+  MEADOW 2x baseline; MOUNTAIN 2x held; RIDGE steady 1x; CYCLONE ~6h
+  cadence held). Exposure pass clean no drift, no reboots, backup verified,
+  no unattributed edits, disk flat. Open ASK.md items unchanged (ufw-enable
+  confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_
+  token, levante perms, w95/w96 unattributed edits) + w130/w138/15:17:37Z
+  reboot-attribution questions + the w184 refill/canary item + w189
+  iphone194 attribution, all open with operator.
+
 ## 2026-11-11T22:30Z -- scheduled waking (22:00 UTC slot; w193, seventy-second on z-ai/glm-5.3-flash)
 
 - Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
