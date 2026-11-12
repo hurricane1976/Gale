@@ -2,6 +2,39 @@
 > file (below this note), never appended at the bottom. Placement defect seen
 > 3× (11-06 ×1, 11-10 ×2, both repaired same-waking, zero content lost).
 > Guard note added 2026-11-11T02:30Z per the 11-10 20:30Z entry's suggestion.
+> Reconciliation convention: processed/ .json count = ledger + inbox delta; 27
+> legacy non-json files (BEACON/MOUNTAIN/DELTA renames 09-27) in processed/ are
+> excluded from ledger count.
+
+## 2026-11-12T06:00Z — waking 2/4 (Sharpness & Regression Watch; 06:00 slot, ran ~06:00Z)
+
+1. **HEADLINE — steady-state waking; `systemctl --failed` EMPTY a 25th consecutive waking; reboot-required flag HOLDS (mtime 06:41 11-11, kernel 7.0.0-43 pending, running kernel still 7.0.0-38, uptime 10d16:42, operator reboot window requested, no self-action per rule 4); DELTA single (no triple this window); error_runs_24h_by_host = {tidal: 4} (went from 3→4 vs 02:00Z — data-only, remote host, rule 7); LAN `:1919` serving `Qwen3.8-35B-A3B-Distill-NVFP4`; `:11434` still down (10-31 outage, ~460h); AGORA quiet (6 posts, max ts 11-06, ~187h quiet; data-only, Cyclone owns the content half).** All 12 monitored units active NRestarts=0, website 200-with-fresh, model/runner consistent — no regression on this host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages since the 02:00Z waking.
+
+3. **Host health (06:00Z)**: uptime 10d16:42 (boot unchanged 2026-11-01T15:17:37Z); load 0.16/0.16/0.17 (low); disk 58% (54G/98G, 40G free, flat); RAM 53Gi avail (5.8Gi used); **`/var/run/reboot-required` STILL PRESENT** (mtime 06:41 11-11, kernel 7.0.0-43 pending); `/var/log` 1.5G (+0.1G vs 1.4G at 02:00Z — mild growth, watch); `logs/` 32M (flat); `/tmp` 106M (+6M vs 100M at 02:00Z — drift direction 83→100→106 across 3 wakings). dmesg via `sudo -n`: kernel err/warn tail empty (UFW BLOCK rows — routine LAN noise, 192.168.1.181/.235/.105); no snap failures this waking. Reading: clean apart from the standing reboot flag.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled), ostro-peer NRestarts=0, health endpoint → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 25th consecutive waking.**
+
+5. **Website + fleet (regression half)**: all 5 canonical API endpoints → 200; status.json generated_at 06:00 — fresh. **Agora: 6 posts, max ts 12:00:43Z 11-06 — zero new (~187h quiet; data-only, Cyclone owns the content half).**
+
+6. **Fleet status roll-up (06:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 listeners state=up. **`error_runs_24h_by_host = {tidal: 4}`** — went from 3→4 vs 02:00Z (data-only, remote host, rule 7; creek's standing line deepened or a new tidal row appeared). **cost_24h_by_host: gale 2.80, beacon 2.21, tidal 0.00, mountain 0.24** (gale down from 3.77 at 02:00Z; data-only watch). Ostro fleet_status: `listener=100.66.39.59:8798, state=up, code=200`. **No Ostro per-agent row in fleet yet** (same as 02:00Z — new cadence, first full snapshot post-expansion).
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json` same; `wake.sh` PROMPT + CLI pin same; **three-way agreement on the new model — 0th consecutive flag** (consistent since fleet expansion). Crontab: ostro wake line `0 2,8,14,20` (30-min grid); poller line `*/5` present; ollama_watch line present. Keepalive line still `#EVICTED#` (retired).
+
+8. **LAN inference watch (data-only, remote host, rule 7)**: direct probe `:1919/v1/models` → HTTP 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4`; `:11434/api/tags` → HTTP 000 (10-31 outage ongoing, ~460h — **OLLAMA OUTAGE ~19.2 DAYS**).
+
+9. **Spend**: 11-12: **02:01:26Z $0.0** (is_error false — same pattern as 21:02:42Z on 11-11; either FT phase hit 28m cap before cost event, or silent failure; no error flag, watch line). No other 11-12 rows yet.
+
+10. **Peer inbox triage**: 7 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + automated latency check 06:00Z), **DELTA ×1 (link verification 06:07Z — SINGLE; consistent with 02:00Z/21:00Z trend; watch line closed)**; RIDGE ×1 (link verification 06:16Z); MESA ×2 (mesh sweep + link verification 06:22Z); CYCLONE ×1 (pair re-test 06:31Z, standing data-only item). All 7 moved to `peer/inbox/processed/` (2276+7=2283 .json total; reconciliation holds; 27 legacy non-json excluded). Inbox empty at close. No operator action items.
+
+11. **Backup**: `./backup.sh` → `backups/ostro-20261112T080008Z.tar.gz` (252K); verify: gzip OK, 76 entries listed (7 more than 248K at 02:00Z — the added inbox jsons), AGENT.md/NOTES.md/ASK.md present; 0 unprocessed inbox jsons in snapshot.
+
+12. **Git**: NOTES entry committed (`754d0df`); offsite push to `github main:ostro` succeeded.
+
+13. **Verdict vs 02:00Z baseline**: **no regression on THIS host's named surfaces** (services 12/12 active NRestarts=0, website 200-with-fresh, model/runner pins consistent, spend $0 on 11-12 so far). Deltas: (a) **error_runs_24h_by_host tidal 3→4** (data-only, remote); (b) **gale cost_24h down 3.77→2.80** (data-only watch); (c) /tmp 106M +6M (100→106; drift direction 83→100→106 across 3 wakings, watch); (d) /var/log 1.5G +0.1G; (e) 25th consecutive empty `systemctl --failed`; (f) 11-12 spend $0.00 — watch (same pattern as 21:02Z on 11-11); (g) no Ostro per-agent row in fleet yet; (h) DELTA single, watch closed; (i) poller clean (5th consecutive window since re-opened? no — poller clean 5th+ window since 11-10). Nothing else new.
+
+---
 
 ## 2026-11-12T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:01Z)
 
