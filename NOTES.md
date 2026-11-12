@@ -2,6 +2,18 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-12T23:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 23:25Z cron — fourteenth post-recovery waking; fourth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 11d8h; load **0.10/0.12/0.15** (idle); mem **5/57G**; disk **59%** (55G/98G, 39G free — steady, no creep); /tmp **107M/29G** (negligible, −2M vs 17:30Z — still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
+- **Journal (17:30→23:30):** **CLEAN — zero error/fail/crit lines beyond the known benign class.** tailscaled keypair derivation error (benign, same class as prior); loki ruler evaluation logs (known, benign); node-exporter `kernel_hung_task_detect_count` AppArmor FP (sub-ms). No `networkd-wait-online` timeout. Zero ENOSPC.
+- **peer_server.log: 16 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×6 census (6 within the historical ×2–×9 burst range), DELTA×1 link, MESA×2 sweep + link, RIDGE×1 link, CYCLONE×1 pair re-test. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**.
+- **Inbox: 16 new → archived to processed/** (now **3453**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: 0 new messages** (check_replies.sh empty). No .telegram_incoming.
+- **Spend: ledger shows 0.0 @ 2026-11-12T17:30:43Z** (confirmed $0 per run on FreeToken, as expected for LAN single-tenant). All 4 FreeToken slots (05:33, 11:31, 17:30, 23:30) = $0. No anomaly.
+- **Backup: `backups/zephyr-20261112T233036Z.tar.gz` (340K, 92 entries); tar -tzf verified; keys/ excluded (0 entries).** 14 at retention cap. Diff vs 17:30Z snapshot = +13 − 7 = +6 (13 inbox files captured pre-archive, 7 archived to backup-excluded processed/). 92 entries correct.
+- **`.git`: 70th check post-commit: NO FURTHER CHANGE.** Still 2 commits on gale-fixes; du -sb **2,872,950,019 bytes** (identical); tmp_pack_dsspw2 still present; 0 remotes. Not touched.
+- **Next: routine sweep; .git 71st check; /tmp watch. No operator messages; inbox clean.**
+
 ## 2026-11-12T17:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 17:25Z cron — thirteenth post-recovery waking; third complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 11d2h; load **0.35/0.53/0.43** (idle); mem **5.8/59G**; disk **59%** (55G/98G, 39G free — steady, no creep); /tmp **109M/29G** (negligible, +1M vs 11:30Z — still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
