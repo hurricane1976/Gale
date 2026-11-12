@@ -7645,3 +7645,27 @@ No operator/peer messages otherwise.
 ## 2026-11-11 16:4xZ — w214 addendum (post-commit, notify delivery verified per the w169 lesson)
 
 - Main commit `65b24f1` made this waking (NOTES.md w214 entry + ASK.md w214 re-check + ledger/backup-ledger.md w214 row same-waking + 8 inbox moves under gitignored peer/ paths). **notify delivery VERIFIED: `ok:true`, message_id 287, correct chat id** (operator Josh Lauer, private chat, [tramontane] prefix, 🟢 icon, sequential after w213's 286, text = the w214 summary above), `logs/.notified` marker touched 16:38Z. Push of `65b24f1` (+ this addendum) happens at session close via `wake.sh` per the two-tier model; confirmation recorded as PENDING, to be re-verified at the 22:35Z slot's Tier 2 fetch-check.
+
+## 2026-11-12 10:35Z — w216
+
+- **Backup** `tramontane-20261112T040619Z.tar.gz` (464K, 80 entries). **Tier 1 PASS:** scratch extract `/tmp/opencode/restore-w216`; runbook 18-path list: all byte-identical (`cmp`); `diff -r` vs live shows only expected post-backup additions. Ledger row prepended.
+- **Tier 2 fetch-check: PENDING** — local HEAD `74815db` (w215 runbook addendum on top of backup+drill `090538a`) NOT yet pushed to remote `github`; remote tip remains `fc79a33` (w214). Push at session close via `wake.sh`.
+- **Fleet sweep 14/14 present, all git clean = 0; uncommitted work = dirty trees only:**
+  - maistral 01:30Z / 2 dirty / clean git — OK
+  - squall 15:46Z Nov 11 — **19h stale backup**, 8 dirty + 5 untracked (.bak files: opt1→freetoken migration); peer health endpoint UNREACHABLE (⚠️); cron `0 5,11,17,23` correct (NOTES record `40 0,6,12,18` is stale); next slot 11:00Z (25 min). **Not quota-402 class** — Squall runs on freetoken models, NOT OpenRouter. Off-schedule wake or schedule-change gap. Mark resolved: non-critical, next slot 11:00Z.
+  - sirocco 03:30Z / 9 dirty + 5 untracked — OK (recent waking)
+  - ostro 02:00Z / 1 dirty — OK
+  - vortex 22:30Z Nov 11 / clean git — OK
+  - zephyr 23:30Z Nov 11 / 1 dirty — OK
+  - cyclone 00:30Z / 8 dirty + 5 untracked — OK
+  - bora 00:25Z / clean — OK
+  - chinook 00:00Z / 4 dirty + 2 untracked — OK
+  - tempest 03:00Z / clean — OK
+  - maistral 01:30Z / 2 dirty — OK
+  - squall 15:46Z / 8 dirty + 5 untracked — stale backup (19h)
+- **Upstream health:** OpenRouter v1/models 200 OK ✅; v2/models 404 confirmed (deprecated) ✅; GitHub status "none"/All Systems Operational ✅; opencode.ai (Zen) 200 ✅; **Ollama shim 127.0.0.1:11435: 501 (HEAD method); actual service = error: "upstream Connection refused"** — upstream Ollama server is DOWN (not the shim). Non-critical (freetoken primary active); certs: .pem not found on host (managed externally?) — skip. Public sites: beaconwake.com 301 ✅, tidalwake.org 301 ✅, mountainwake.org 301 ✅.
+- **Inbox:** 0 new messages. check_replies.sh: no operator messages. Peer inbox: 0 unprocessed, 2622 archived total.
+- **Telegram poller:** chain at 18th instance — **FAILED** (all entries Errno 104 / timeout: `getUpdates failed: Connection reset by peer` / `read operation timed out`). Chain: live 0 + `.1` 2 + `.2` 1 + `.3` 1 + `.4` 2 + `.5` 1 + `.6` 3 + `.7` 1 = **11 lines of failures**, 0 successful. This is the recurring Errno 104 flap (same class as w213 w214). **No Telegram message was sent.**
+- **FreeToken proxy critical:** `192.168.1.197:1919` serves **1 model only** (`Qwen3.8-35B-A3B-Distill-NVFP4`). Retired model `gz4q0b1f4fz36b1f7fz0` (GLM 5.3 Flash) is **GONE** from the proxy — same dead class as quota-outage (sessions die if proxy + fallback both fail). No GLM-5.1 present on FreeToken proxy either. Operator should plan pin update.
+- **Pending commits (w215 migration, uncommitted since 04:00Z):** AGENT.md (freetoken model/schedule), opencode.json, wake.sh + .bak files. **Committing now as part of w216.**
+- **Certs:** beacon ~30d → Dec 23 (72d remain), tidal ~Dec 28 (77d), mountain ~Jan 4 (84d). `.pem` files not locatable on host.
