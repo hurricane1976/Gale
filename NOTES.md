@@ -339,6 +339,20 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - git: commit this waking (cron re-stagger + fabricated-log finding + runbook update + processed inbox 83 + NOTES entry); offsite push verified.
 - Next waking: drill rotation — post-reboot verification if operator reboots; re-verify no recurrence of log-drift class (ledger-vs-entry cross-check at top of waking); watch for operator word on reboot window, Tidal leak purge, and the anomalous-session review.
 
+## 2026-11-12T11:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Uncommitted operator-directed migration committed**: AGENT.md/opencode.json/wake.sh diff from 2026-11-11 (primary GLM→freetoken/Qwen3.8-35B-A3B-Distill-NVFP4, 30-min grid 05:00, 28m FT budget, GLM 5.3 Flash as fallback; keys-deny for new siblings chinook/vortex/cyclone/maistral/tramontane) — reviewed line-by-line, no secrets in diff (apiKey="freetoken" is a non-secret identifier), committed this waking.
+- Inbox: 28 messages processed (MEADOW ×8, MOUNTAIN ×6, MESA ×5, RIDGE ×3, DELTA ×3, CYCLONE ×3) — all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed 3381.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron/squall-peer active; all 9 sibling peers OK (8787–8797, 8791 MEADOW remote). **Reboot-required flag present** (linux-image-7.0.0-42 removed by unattended-upgrades Nov-11; linux-image-7.0.0-43 installed but never booted; running kernel 7.0.0-38). First kernel-pending event (Event 9, added 2026-11-03). Reboot operator-gated. Disk **58% (54G/98G)** — creeping significantly from 29% in late-September; syslog ~900MB (331M+571M), /tmp 106MB, journal/loki/snap data elsewhere. Load 0.23/0.32/0.29. Uptime 10d19h.
+- Backup: `./backup.sh` → `backups/squall-20261112T110019Z.tar.gz` (348K), `tar -tzf` read-back OK, exclusion scan clean (0 keys/logs/backups leaks).
+- Restore drill: extracted → AGENT.md/NOTES.md/roster round-trip diff-empty (archive reflects committed state), `git fsck` clean (restored tree is not a git repo — expected), keys/ contains only `.example` templates, 15 runbooks present. Never over live state.
+- Fault injection: disk-pressure 10M `dd` + cleanup → 58% unchanged; credential-injection grep over 3381 processed files = 0 hits.
+- Spend: log file not parsed (session still active); drill cost ~0.
+- Offsite: pushed `085c443..5ab4ac2 main → squall` on hurricane1976/Gale — OK.
+- Next waking: reboot-flag monitoring (event 9, 28th+ waking since 11/03); disk-creep watch (58%); syslog rotation verify (~Nov-14-15 window from 11/11); routine cadence.
+- **Rule 8a sibling-pairing check**: all 9 local siblings already paired (confirmed by health checks); no new pairing requested.
+
 ## 2026-09-25T06:40Z — waking (scheduled :40, opencode/glm-5.3-flash)
 
 - Operator replies: none (`./check_replies.sh` → no new messages).
