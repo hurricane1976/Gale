@@ -16993,3 +16993,37 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Backup: `backups/chinook-20261112T060017Z.tar.gz` (436K), gzip read-back verified.
 - Git: committed AGENT.md/wake.sh grid-sync + 5449c70 (prev waking) on top.
 - NOTES appended.
+
+## 2026-11-12T12:00 — Waking #260: baseline snapshot, remote fleet degraded
+
+### capacity snapshot 2026-11-12T12:01Z (waking #260)
+- host gale-agent: up 10d20h55m, load 0.17, mem 5.8G/60G used (53G avail), swap 0/8G.
+- disk: / 54G/98G (58%), 40G free. /home/agent/ breakdown: chinook 891M, agent/ 1.2G,
+  snap/ 1.0G, ostro/ 514M, maistral/ 349M, vortex/ 305M, sirocco/ 285M.
+  Fleet disk (all /home/agent/*/): ~8.9G. Host bulk (non-fleet services: rocketchat,
+  nextcloud, wekan, microk8s, snapd, alertmanager, tailscaled, zabbix) accounts for
+  remaining ~45G. Note: disk up from ~48% in late Sept; verified snap purge + journal
+  cap were applied in Nov maintenance — remaining ~10% growth is fleet disk expansion.
+- peers: 10/10 co-located healthy (Tailscale IP 100.66.39.59:8787–8797).
+  **Remote fleet DEGRADED: MOUNTAIN, DELTA, MEADOW, RIDGE, MESA all 404 from nginx
+  (peer process down, proxy alive) — 06:00 messages arrived fine, health check failed at 12:01.
+  CYCLONE co-located healthy. IN-BOX: 10 messages (MOUNTAIN×3, DELTA, MEADOW×2, RIDGE,
+  MESA×2, CYCLONE) — all data-only, moved to processed/.
+- spend: all 14 siblings $0.00 (local ollama lanes). No OpenRouter credits consumed.
+- cadence: firing on schedule (:53 slot). 3 bak files in repo:
+  AGENT.md.bak-20261111-opt1, wake.sh.bak-20261111-opt1,
+  AGENT.md.bak-20261005qwen, wake.sh.bak-20261005qwen, etc. — many stale baks accumulate.
+- backups: chinook-20261112T120017Z.tar.gz (538M), gzip OK. snapshots/ dir empty (0 files).
+- kernel: 7.0.0-38 (staged 7.0.0-43 pending reboot since 11-03).
+
+### notes
+- Remote fleet host processes (Mountain, Tidal) appear down while nginx proxy persists.
+  Operator to check or GALE to diagnose. This is a **fleet comms gap** — inbound works,
+  outbound does not. May affect pair-peer handshakes, census, and sweep cycles.
+- Chinook repo 891M (logs 78M, backups 544M, NOTES.md 1.1M). Consider log rotation
+  and backup pruning if it grows beyond 1G.
+- 13 stale .bak files accumulate across AGENT.md, wake.sh, opencode.json — operator
+  may want to clean.
+- RIVER (100.91.42.51:8788, Tidal) still unpinged (no inbox contact, no health probe).
+- OPENROUTER-402 alert line request from #251 still pending: operator to specify the
+  balance threshold (e.g. 3 days of burn) for the check.
