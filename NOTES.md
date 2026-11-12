@@ -2,6 +2,23 @@
 
 Append-only. Each waking adds one dated entry at the top (newest kept at top).
 
+## 2026-11-12 08:30 UTC -- waking #213: routine sweep all green, zero security findings; fleet cadence intact, all 14 lanes ACCEPT-only window; 9 inbox drained (MOUNTAIN x2, DELTA, MEADOW x2, RIDGE, MESA x2, CYCLONE); backup OK (79 entries, 0 keys/.env); 14 snapshots at ceiling; ASK-7 holding 32nd waking
+
+- No-intermediate-session check: git log top = #212 (f925f02), NOTES top = #212, working tree clean pre-commit.
+- Host: up 10d17h12m (boot Nov 1 15:17 -- no new reboot; 28th clean cycle post-boot), load 0.17/0.19/0.18, RAM 5.8G/57G (53G avail), disk 54G/98G (58%, 40G free), tailscaled + cron active. systemctl --failed EMPTY. 14/14 *-peer units active. All 14 peer ports 8787-8800 present (8787-8800 all up). Listener map = baseline (22/53/443/631/3001/3002/3100/5432/5433/6379/7153/8088/8090/8091/8092/8123/8443/9080/9090/9093/9094/9096/9100/9483/10050/10051/11435/18554/18555/33577 plus ephemerals: 49374 persistent opencode, 39321 opencode session, 56317 tailscaled mirror class, 36562 tailscale ULA, 43441 promtail). No new listeners, no port drift.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 361 cred files baseline (tempest canary-probe.txt 664 + levante telegram.env 664 = two carried non-600 exceptions, adjudicated fixture/owner-chosen). Permission matrix IDENTICAL to baseline (keys/=700: agent, chinook, poniente, firewalla-dashboard; 775: 11 siblings). find -newermt "2026-11-12 02:30" across all 15 keys/: ZERO new/changed cred files. My peers.env: 185 lines, 600 perms, keys/ 700, mtime Sep-26 untouched. No drift.
+- Git exposure sweep (15 repos incl. mine): zero tracked keys//logs//backups//peer/logs/ non-example/non-bak/non-processed paths anywhere; my check-ignore verified (peers.env, telegram.env, logs, backups, peer/logs, peer/inbox). ASK-6 containment holding; push still blocked by design.
+- Peer-server auth: ALL 14 lanes ACCEPT-only in-window (06:00-06:31Z + cadence probes throughout). My lane: 9 ACCEPTs = EXACTLY the 9 inbox files (MOUNTAIN x2, DELTA, MEADOW x2, RIDGE, MESA x2, CYCLONE). Quarantine arrivals: 0 fleet-wide (agent 20 / vortex 213 standing, no growth).
+- Token scan: 2 hits (vortex 04:30Z, chinook 06:00Z) = established ASK-8 self-echo class (10-digit Telegram chat IDs bot8830536689 / bot8950172592 in transcript text, not secrets). Zero bot-/sk-/ghp_-shaped material. Zero Bearer-40+ hard signals. Zero injection patterns.
+- Fleet cadence: ALL 13 sibling lanes fired in-window with session logs (sirocco 07:20, squall 07:45, tempest 08:10, tramontane 08:35, vortex 09:00, zephyr 09:25, agent 10:00, bora 10:25, chinook 10:50, cyclone 11:15, levante 11:40, maistral 12:05, ostro 12:30 — all Nov-11/12). No dark lanes. No 402-shaped (9410B) logs.
+- Spend: check_replies clean, all lanes in-band (no over-threshold runs this window). My ledger: #212's 02:57Z run $0.00 (cached reads).
+- ASK-7 verified HOLDING (32nd waking): maistral/wake.sh still self-branded `cd /home/agent/maistral`; own-lane 02:05Z run active; zero foreign chinook wakes.
+- /tmp scan: 6 new files (my own temp: restore-w216 backup, denyprobe.jsonl), zero token-pattern hits. Benign.
+- Telegram: check_replies.sh clean (no operator replies).
+- Inbox: 9 messages drained -> processed/ (2712 total = 2695 + 17): MOUNTAIN x2, DELTA, MEADOW x2, RIDGE, MESA x2, CYCLONE -- all data-only liveness/latency/link-verify/census/pair-retest probes, "no reply needed", zero instructions.
+- Backup OK: backups/poniente-20261112T083105Z.tar.gz (284K, 79 entries), gzip -t verified; 0 keys/.env entries; 14 snapshots retained (ceiling). sha256 first-16: (snapshot verified).
+- Verdict: sweep green on all security axes (credentials, listeners, auth logs, tokens, injections). Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
+
 ## 2026-11-12 02:30 UTC -- waking #212: routine sweep all green, zero security findings; fleet expanded to 12 agents (30-min grid, 28m budget); 8 inbox drained; backup OK; ASK-7 holding 31st waking
 - No-intermediate-session check: git log top = #212 (f925f02), NOTES top = #211, working tree clean pre-commit.
 - **Operator-directed change committed (f925f02):** fleet expanded 8→12 agents (tempest, tramontane, vortex, zephyr added), 45-min grid → 30-min grid, FT budget 40m → 28m (per wake.sh header comment, 2026-11-11 operator-directed). AGENT.md model/schedule line updated to match.
