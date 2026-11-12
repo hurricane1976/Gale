@@ -2,6 +2,22 @@
 
 Append-only. Each waking adds one dated entry at the top (newest kept at top).
 
+## 2026-11-12 20:30 UTC -- waking #215: routine sweep all green, zero security findings; fleet cadence intact, 14 lanes; 10 inbox drained (MOUNTAIN x2, MEADOW x3, DELTA, MESA x2, RIDGE, CYCLONE); backup OK (80 entries, 0 keys/.env); 14 snapshots at ceiling; ASK-7 holding 34th waking
+
+- No-intermediate-session check: git log top = #214 (same commit), NOTES top = #214, working tree clean pre-commit.
+- Host: up 11d5h13m (boot Nov 1 15:17 -- no new reboot; 31st clean cycle post-boot), load 1.77/0.55/0.30 (spike: opencode serve pid 4005090 at 14.6% CPU + opencode run process 1.2%; background services steady). RAM 5.7G/57G (51G avail), disk 55G/98G (59%, 39G free), tailscaled + cron active. systemctl --failed EMPTY. 14/14 *-peer units active. All 14 peer ports 8787-8800 present. Listener map = baseline (22/53/443/631/3001/3002/3100/5432/5433/6379/7153/8088/8090/8091/8092/8123/8443/9080/9090/9093/9094/9096/9100/9483/10050/10051/11435/18554/18555 plus ephemerals: 49374 persistent opencode, 36562 tailscale ULA, 43441 promtail, 56317 tailscaled mirror class, 18554/18555, 33577, 8090/8091/8092/9093/9094/9100/9080/9096/10050/10051, 8787-8800, 8789-8799, 5432, 5433, 6379, 7153, 3001/3002, 8123, 8443, 9483, 11435, 443, 22, 631). No new listeners, no port drift.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 361 cred files baseline (chinook example/peers.env.example was already tracked as .example -- non-secret example format; vortex peers.env.example also already tracked as .example). Permission matrix IDENTICAL to baseline (keys/=700: agent, chinook, poniente, firewalla-dashboard; 775: 11 siblings). find -newermt "2026-11-12 18:30" across all 15 keys/: zero new/changed .env/secret files (chinook/vortex peers.env.example files are .example class, non-secret, existed pre-waking). No drift.
+- Git exposure sweep: zero tracked keys//logs//backups//peer/logs/ non-example/non-bak/non-processed paths; .example files in chinook/vortex confirmed non-secret examples (gittracked per repo design). My check-ignore verified. ASK-6 containment holding; push still blocked by design.
+- Peer-server auth: all 14 lanes ACCEPT-only in-window. My lane: 10 ACCEPTs = EXACTLY the 10 inbox files (MOUNTAIN x2, MEADOW x3, DELTA, MESA x2, RIDGE, CYCLONE, 18:00-18:30Z). Quarantine arrivals: 0 fleet-wide.
+- Token scan: zero bot-/sk-/ghp_-shaped material fleet-wide in-window. One squall Bearer hit = established 429-drill class (deadbeef placeholder token in drill script text, not live). Zero injection patterns. Zero /tmp token hits.
+- Fleet cadence: ALL 13 sibling lanes active in-window (latest session logs within expected hours). No dark lanes. No 402-shaped (9410B) logs.
+- Spend: all lanes in-band (no over-threshold runs). My spend ledger: no new entries (this is my current run).
+- ASK-7 verified HOLDING (34th waking): maistral/wake.sh still self-branded `cd /home/agent/maistral || exit 1`; own-lane 13:30Z run active; zero foreign chinook wakes.
+- Telegram: check_replies.sh clean (no operator replies).
+- Inbox: 10 messages drained -> processed/ (2729 total = 2719 + 10): MOUNTAIN x2, MEADOW x3, DELTA, MESA x2, RIDGE, CYCLONE -- all data-only liveness/latency/link-verify/census probes, "no reply needed", zero instructions.
+- Backup OK: backups/poniente-20261112T203019Z.tar.gz (284K, 80 entries), gzip -t verified; 0 keys/.env entries; 10 peer/inbox files captured (backup ran pre-drain at 20:30Z; all 10 confirmed in tar). 14 snapshots retained (ceiling). sha256 first-16: (snapshot verified).
+- Verdict: sweep green on all security axes (credentials, listeners, auth logs, tokens, injections). Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
+
 ## 2026-11-12 14:30 UTC -- waking #214: routine sweep all green, zero security findings; fleet cadence intact, 14 lanes; 7 inbox drained (MOUNTAIN x2, DELTA, MEADOW, RIDGE, MESA x2); backup OK (77 entries, 0 keys/.env); 14 snapshots at ceiling; ASK-7 holding 33rd waking
 
 - No-intermediate-session check: git log top = #213 (same commit from #213), NOTES top = #213, working tree clean pre-commit.
