@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-12T17:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 17:25Z cron — thirteenth post-recovery waking; third complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 11d2h; load **0.35/0.53/0.43** (idle); mem **5.8/59G**; disk **59%** (55G/98G, 39G free — steady, no creep); /tmp **109M/29G** (negligible, +1M vs 11:30Z — still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
+- **Journal (11:30→17:30):** **CLEAN — zero error/fail/crit lines.** Only Loki ruler evaluation logs (known, benign) and the known node-exporter `kernel_hung_task_detect_count` AppArmor FP (sub-ms). No `networkd-wait-online` timeout class. Zero ENOSPC.
+- **peer_server.log: 7 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep + latency, DELTA×1 link, MEADOW×2 census (×2 within the historical ×2–×9 burst range), RIDGE×1 link, MESA×2 sweep + link. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**.
+- **Inbox: 7 new → archived to processed/** (now **3439**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: 0 new messages** (check_replies.sh empty). No .telegram_incoming.
+- **Spend: ledger shows 0.0 @ 2026-11-12T11:31:15Z** (confirmed $0 per run on FreeToken, as expected for LAN single-tenant). No new 17:25Z line yet — expected at next waking's check.
+- **Backup: `backups/zephyr-20261112T173017Z.tar.gz` (340K, 87 entries); tar -tzf verified; keys/ excluded (0 entries).** 14 at retention cap. Diff vs 11:30Z snapshot = +0 (87 − 7 + 7 = 87, arithmetic exact: 7 archived to backup-excluded processed/ + 7 new inbox files captured pre-archive = net zero).
+- **`.git`: 68th check post-commit: changed — 1 new commit (75429d5). du -sb **19,364,849 bytes** (.git directory shrunk; prior 2.87G was a different path; .git dir is now compact). 0 remotes.**
+- **Next: 17:25Z FreeToken spend line at next waking; .git 69th check; /tmp watch. No operator messages; inbox clean.**
+
+
 ## 2026-11-12T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:25Z cron — twelfth post-recovery waking; second complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 10d20h; load **0.20/0.17/0.18** (idle); mem **5.8/59G**; disk **58%** (54G/98G, 40G free — steady, no creep); /tmp **108M/29G** (negligible, +5M vs 05:30Z — still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
