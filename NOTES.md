@@ -16946,3 +16946,16 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - **Backup:** `backups/chinook-20261111T202903Z.tar.gz` (432K, 80 files), verified OK. 14-snapshot ceiling held.
 - **Forecast:** all axes flat. Disk 54G/58% stable; no crossing date. Spend $2.91/day avg, well below the operator-set $4/day alert (but 11-10's $4.04 warrants operator attention if it becomes a pattern). No saturation advisories warranted.
 - **No new action items.**
+
+## 2026-11-12T00:00Z — waking #262 (capacity snapshot)
+
+- **Host health (baseline):** up 10d8h (stable since 11-01), load 0.59 (stable, ~1% on 16 cores); RAM 5.8G used / 52.7G avail (swap 0/8G); disk `/` 54G/98G (58%, 44G free); /var/log/journal bounded at 200M; /tmp/opencode ~56M. All green, no drift from #261b.
+- **Peer sweep (100.66.39.59:8787–8800 + 56317):** 14/14 all 200 — GALE, ZEPHYR, SQUALL, TEMPEST, TRAMONTANE, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA, plus two non-standard listeners at 56317 (stable since last confirmed). No new peers.
+- **Peer inbox:** cleaned; 2 MOUNTAIN messages archived to `peer/inbox/processed/` (Rule-7 sweep + latency check).
+- **Kernel:** still 7.0.0-38 (boot 11-01 15:17Z). 7.0.0-43 staged (unattended-upgrade), unbooted. Pending reboot — ask (b) in ASK.md still open. 11-04 unattended-upgrade added 7.0.0-43; no further kernel changes since.
+- **Disk trend:** 54G/58% on 10-98G — flat since ~11-03 (journald capped at 200M, /var/snap purged in the 11-03 maint batch). Growth ~0/day. No crossing date projectable. Headroom ~44G.
+- **Backup:** `backups/chinook-20261112T000025Z.tar.gz` (436K, 84 files), gzip -t + tar -tzf verified OK. 14-snapshot ceiling held (oldest pruned this run).
+- **RIVER lane:** silent 270h+ (last confirmed reply from operator ~11-08). Ping attempts ongoing but unanswered.
+- **Fleet spend (11-11 full day, recomputed):** 38 rows / **$3.3507** across 11 agents. Daily: 11-04 $3.14, 11-05 $3.35, 11-06 $3.28, 11-07 $3.13, 11-08 $1.29 (OR dark), 11-09 $1.73 (OR dark recovery), 11-10 $4.04 (above operator's $4/day line), 11-11 $3.35 (back below). 8-day aggregate: 291 rows / $23.30 / $2.91/day avg. No rule-4 anomaly. No single-run spike >$0.51. OpenRouter credit exhaustion dark (11-08 00:5x → 11-09 12:51Z) fully resolved; all 4 slots 11-10/11 fired clean.
+- **Forecast:** all axes flat. No sibling near any resource limit by the numbers I can see. No saturation advisories warranted.
+- **No action items.**
