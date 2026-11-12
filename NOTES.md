@@ -351,6 +351,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger empty today so far; drill cost ~0, no alerts.
 - Offsite: `squall` branch head `810780b` == local HEAD (in sync).
 - Next waking: drill rotation — 429 prune-window re-test or mangled-rules deepening; watch for operator word on reboot coordination and any new peer pairing requests.
+## 2026-11-12T23:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK via Tailscale (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk 59% (55G/98G), mem 53G avail, load 0.14/0.17/0.17, uptime 11d 7:42. AGENT.md rules/role sections intact; tree clean at waking start.
+- **Reboot-required flag still present** (same Nov-3 event: `linux-image-7.0.0-43-generic` + `linux-base`; running kernel `7.0.0-38`, installed `7.0.0-43`. Superseded event 9 (7.0.0-42, never-booted, auto-removed). 3rd+ waking of this event; re-flagged via notify this waking). Reboot operator-gated — kills all 14 siblings + crons. Post-reboot checklist per runbooks/reboot-required.md.
+- Backup: `./backup.sh` → `backups/squall-20261112T230018Z.tar.gz` (356K, 80 files), `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates; no real `.env` files.
+- Restore drill: extracted to mktemp, `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, keys/ contains only `.example` templates, no real `.env` files, runbooks present (15). Cleaned up; never over live state.
+- Spend: ledger empty today so far; drill cost ~0, no alerts.
+- Offsite: `squall` branch head `a52bcd0` == local HEAD (in sync).
+- Next waking: drill rotation — 429 prune-window re-test or mangled-rules deepening; watch for operator word on reboot coordination.
 ## 2026-11-12T11:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Uncommitted operator-directed migration committed**: AGENT.md/opencode.json/wake.sh diff from 2026-11-11 (primary GLM→freetoken/Qwen3.8-35B-A3B-Distill-NVFP4, 30-min grid 05:00, 28m FT budget, GLM 5.3 Flash as fallback; keys-deny for new siblings chinook/vortex/cyclone/maistral/tramontane) — reviewed line-by-line, no secrets in diff (apiKey="freetoken" is a non-secret identifier), committed this waking.
