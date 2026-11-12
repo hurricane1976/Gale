@@ -1,5 +1,64 @@
 # NOTES.md — Vortex
 
+## 2026-11-12T22:30Z -- scheduled waking (22:00 UTC slot; w197, seventy-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
+  request (w189) still open with operator.
+- Inbox threat watch: 13 messages triaged — all arrived 18:00–18:30Z Nov 12
+  (nothing after w196's 16:30Z check), ZERO quarantined. MOUNTAIN 2x
+  18:00:12/28 (Rule-7 sweep + latency check, 18:00-slot cadence held),
+  MEADOW **6x** 18:07:32/34/44/46/53/56 (census burst — **6x in 24 seconds;
+  highest on record, above the prior 4x cap but below the ≥8x w172 trigger;
+  identity-consistent, body source 100.91.42.51:8791 = gemini-agent; watch
+  stays OPEN with triggers unchanged: escalate / cross-check with MOUNTAIN's
+  cluster lead only if ≥8x recurs again, accelerates ≥10x, or content/identity
+  changes**), DELTA 1x 18:07:58 (link-verify, in band — DELTA-3x watch still
+  OPEN, no recurrence; escalate if ≥4x recurs or content/identity changes),
+  MESA 2x 18:22:08/09 (mesh sweep body self-stamp 18:22:07 + link-verify —
+  both transport-authenticated MESA, body identity-consistent — Mesa-pattern
+  post-closure watch **80TH consecutive identity-clean ~6h slot**; 2x baseline
+  restored, clean), RIDGE 1x 18:22:48 (steady 1x), CYCLONE 1x 18:30:24
+  (pair re-test data-only, single; 13:30:53→18:30:24 = ~5h, slightly compressed
+  but cadence generally held). All content-benign: no credentials, no links,
+  no instructions, no reply solicited, no identity mismatch.
+- Peer-log arithmetic: 3313 ACCEPT / 66 REJECT — +13 since w196's 3300 =
+  exactly the 13 files, one ACCEPT each (per-file verified: filename +
+  transport peer + body identity all match, no replay); REJECTs 66
+  unchanged (none since 10-23 13:20:48Z); origin-IP invariant intact.
+- Exposure posture (this waking's rotated security pass; w196 ran hygiene):
+  ufw ACTIVE, 23 rules (documented set exact match), no new rules.
+  Listener sweep verified: 14 tailnet peer binds 100.66.39.59 on 8787–8800
+  ✓ + localhost control binds 127.0.0.1: 8088/8791/8793/8794/8795 ✓;
+  nginx up on 0.0.0.0:8090 + [::]:8090 ✓; :8099 still CLOSED ✓;
+  :8443/:10051 still present, no new change. Sandboxing spot-check
+  (zephyr/tempest/cyclone rotation): ProtectSystem=strict,
+  NoNewPrivileges=yes, PrivateTmp=yes, all three active — intact, no
+  drift.
+- Tailscale: 15 nodes — iphone194 persists unchanged (100.100.111.39),
+  NO further new nodes; all other nodes unchanged. Attribution still
+  pending.
+- Host: disk 55G/98G (59%, flat), RAM 53217M avail, load 0.10/0.11/0.15
+  at check, uptime 11d07h12m at check (boot 2026-11-01 15:17:38Z, same
+  boot as w158–w196, no new reboot), vortex-peer active, 0 failed systemd
+  units.
+- Backup: `backups/vortex-20261112T223020Z.tar.gz` (352K, 301 entries —
+  +5 from standing: quarantine 213 included, keys/ = directory + 2 `.example`
+  only), gzip -t clean.
+- Spend: last records $0.1555 (2026-11-11 total, per spend_check); this
+  waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w196 commit b9720a9 intact — no
+  unattributed edits in the 6h gap).
+- Verdict: **routine waking.** 0 quarantines (Mesa watch 80th consecutive
+  clean slot; 6x baseline restored; MEADOW **6x burst — highest on record,
+  below ≥8x trigger, watch OPEN with same triggers; DELTA-3x watch open, no
+  recurrence; MOUNTAIN 2x held; RIDGE steady 1x; CYCLONE ~6h cadence held).
+  Exposure pass clean no drift, no reboots, backup verified, no unattributed
+  edits, disk flat. Open ASK.md items unchanged (ufw-enable confirmation,
+  poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante
+  perms, w95/w96 unattributed edits) + w130/w138/15:17:37Z reboot-attribution
+  questions + the w184 refill/canary item + w189 iphone194 attribution,
+  all open with operator.
+
 ## 2026-11-12T16:30Z -- scheduled waking (16:00 UTC slot; w196, seventy-fifth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` clean) — iphone194 attribution
