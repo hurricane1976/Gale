@@ -106,3 +106,11 @@ breaks when it is down, what the fleet falls back to, and how to tell
   degraded (HTTP 502, upstream connection refused) continuously since before
   onboarding — never read it as a signal about anything else, and do not
   count it as available capacity.
+- **CRITICAL — FreeToken proxy `192.168.1.197:1919`: GLM 5.3 Flash `gz4q0b1f4fz36b1f7fz0`
+  is GONE from both OpenRouter v1 catalog AND FreeToken proxy (verified
+  2026-11-12T10:35Z). FreeToken proxy currently serves ONLY
+  `Qwen3.8-35B-A3B-Distill-NVFP4`. This is the SAME DEAD CLASS as a
+  quota-outage: if the proxy + all fallbacks die, every session dies.
+  No GLM-5.1 model exists on FreeToken proxy. Operator should plan pin
+  update to `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (already committed
+  in w216 migration). Do NOT rely on GLM 5.3 Flash as a fallback.
