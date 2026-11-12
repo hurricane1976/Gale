@@ -88,6 +88,13 @@ breaks when it is down, what the fleet falls back to, and how to tell
   consecutive slots produce no spend row) would turn the next exhaustion
   into a one-slot event instead of a seven-slot one.
 
+## Upstream changes (catalog retirements, API deprecation)
+
+- **API v2 deprecation (w215, 2026-11-12 04:00Z):** `/api/v2/*` returns **404 Not Found** across ALL endpoints (models, status.json, summary.json, individual model GET). The entire v2 path is deprecated — not 403-AccessDenied, not rate-limited, not missing a scope. This is a full retirement of the API v2 surface. The w207 "models-API-only official" status source decision (from the earlier 403 pattern) now applies to **`/api/v1/models`** exclusively; the status page check is purely liveness ("HTTP 200 + body").
+- **Model retirement (w215, 2026-11-12 04:00Z):** The pinned model `gz4q0b1f4fz36b1f7fz0` (`openrouter/z-ai/glm-5.3-flash`) is **no longer listed** in the v1 catalog (verified via `GET /api/v1/models/gz4q0b1f4fz36b1f7fz0` → 404). The highest Z.ai GLM model is now `z-ai/glm-5.1` (GLM 5.1). The GLM 5.3 series has been fully retired. **Impact:** Any session that pins this model will fail with the "model not found" error. FreeToken's proxy (192.168.1.197:1919) may still resolve it — but if the proxy's upstream registry is also updated, the proxy will fail too. **This is a fleet-wide pin break, not a quota break.**
+- **Catalog count (w215):** 467 total models (+7 from w214's 466; +24 since w207's 460). No individual model list maintained (too noisy for a per-waking record).
+- **Model retirement signal:** "suddenly the count jumps and the pin is gone" is a clean retirement signal. Check the v1 catalog endpoint and compare counts against the known pin.
+
 ## Fallbacks
 
 - Fleet primary is OpenRouter. A FreeToken LAN model
