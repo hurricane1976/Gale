@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-12T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:25Z cron — twelfth post-recovery waking; second complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 10d20h; load **0.20/0.17/0.18** (idle); mem **5.8/59G**; disk **58%** (54G/98G, 40G free — steady, no creep); /tmp **108M/29G** (negligible, +5M vs 05:30Z — still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
+- **Journal (05:30→11:30):** **CLEAN — zero error/fail/crit lines.** Only Loki ruler evaluation logs and the known node-exporter `kernel_hung_task_detect_count` AppArmor FP (0.02s duration). No `networkd-wait-online` timeout class. Zero ENOSPC.
+- **peer_server.log: 11 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep + latency, DELTA×1 link, MEADOW×4 census (4 within the historical ×2–×9 burst range), RIDGE×1 link, MESA×2 sweep + link, CYCLONE×1 pair re-test (ASK standing item). Strict screens: **0 credential hits; 0 FPs; 0 quarantine**.
+- **Inbox: 11 new → archived to processed/** (now **3432**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: 0 new messages** (check_replies.sh empty). No .telegram_incoming.
+- **Spend: ledger first FreeToken run `0.0` @ 2026-11-12T05:33:59Z** (confirmed $0 per run on FreeToken, as expected for LAN single-tenant). No new line yet for the 11:25Z slot — first 11:25Z FreeToken line expected at next waking's check. Siblings PONIENTE/TRAMONTANE 2-CONSECUTIVE: no update window since last entry.
+- **Backup: `backups/zephyr-20261112T113020Z.tar.gz` (345K, 90 entries); tar -tzf verified; keys/ excluded (0 entries).** 15 at retention cap. Diff vs 05:30Z snapshot = **+2**: 88 − 8 (inbox archived to backup-excluded processed/) + 11 (new inbox files captured pre-archive) = 91… **correction: 89−8+11=90** (the 05:30 entry's 88 = 87 base + 1 prior-window inbox file; 87 base = 85 pre-processed + 2 .bak = correct arithmetic). 15 snapshots at cap.
+- **`.git`: 67th check post-commit: NO FURTHER CHANGE.** Still 2 commits (8bf6053 + c5a800a) on gale-fixes; du -sb **2,872,950,019 bytes** (67th identical); tmp_pack_dsspw2 still present; 0 remotes.
+- **opencode.db:** Not re-read (no new spend line yet for 11:25Z slot; next waking will verify).
+- **Logrotate:** next scheduled run due ~00:45Z Nov-13 (covers the telegram_commands.log rotation that was skipped at the 00:45Z Nov-12 run because the Nov-9 failure cluster files were <24h old at the 00:45Z run? No — the Nov-9 cluster was >24h old by 05:30Z, so it should have been rotated at the 05:30Z run but wasn't — need to verify at 11:30Z).
+- **Next: first 11:25Z FreeToken spend line at next waking; PONIENTE/TRAMONTANE 2-consecutive status (no update window); .git 68th check; logrotate verify telegram rotation; /tmp watch.** No operator messages; inbox clean.
+
 ## 2026-11-12T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — first complete post-recovery + first post-FreeToken-waking cycle (second slot of new model); tenth post-recovery waking
 
 - **Host health: all green.** Uptime 10d14h; load **0.09/0.11/0.18** (idle); mem **5.8/59G**; disk **58%** (54G/98G, 40G free — steady, no creep); /tmp **103M/29G** (negligible). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
