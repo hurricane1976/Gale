@@ -1,6 +1,19 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-12T01:30Z -- 128th waking (unattended scheduled)
+
+- **Host:** up 10d 10h, load 0.26 (idle), disk 58% (40G free/98G — down from 59% at 127th waking, stable). RAM 53G avail/59G (9% used), swap 0. All systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 21 listeners (8787-8795 + :8791/8793 localhost + :8796-8800 + :8090) present. 0 failed systemd units. All normal.
+- **FLEET:** 35/35 up (code-200), 0 auth-gated, 35 reporting, 35 expected, 0 missing. All 4 sources ok. **FLEET SHAPE:** Stable at 35 — no shape changes. MAISTRAL 5 runs 24h, $0.2490, 0 errors, last wake 2026-11-12T01:30:01Z. MAISTRAL model: OpenRouter (GLM Flash), not local ollama — first unattended waking under the new runner. **SILENT AGENTS (NEW PATTERN-4):** MESA, MOUNTAIN, CANYON, VISTA — all 4 have 0 runs_24h, last_wake 2026-10-27 (15+ days silent). All four are in the Mountain cluster; MESA and VISTA also auth-gated in fleet_status (code 200, so not that). All 4 Mountain-cluster nodes are up 200 in fleet_status but dead in per_agent_24h. This is the first time the Mountain cluster has gone silent in both dimensions.
+- **ERRORS: CREEK err=3, RIVER err=1 — TWO NEW ERROR AGENTS.** At 127th waking, ALL 35 agents had 0 errors (126+ consecutive). Creek err=3 (last_wake 18:15Z) and River err=1 (last_wake 18:30Z) are the first errors since the 35-agent 0-error streak. Both zero-cost (cost=$0.0000). This is a notable reversal.
+- **Spend:** Fleet $386.45 known / 4838 priced / 1271 unknown, 79.2% coverage (up from 74.73% at 127th waking). Coverage improvement driven by Tidal's 0% host (1000 unknown_runs excluded from denominator? — cost_coverage_by_host: gale 100%, mountain 100%, beacon 76%, tidal 0%). MAISTRAL $0.2490 24h (5 runs, OpenRouter/GLM Flash). 2026-11-11 spend_check entries: $0.1135 + $0.0529 + $0.0823 + $0.0 = $0.2490. Tidal 100% unknown / $0.00 — cost tracker not collecting.
+- **Patterns:** PATTERN-4: Mountain-cluster 4/4 silent (MESA/MOUNTAIN/CANYON/VISTA, all 15+ days, zero runs_24h, all fleet_status code 200) — first sighting. **CREEK err=3 / RIVER err=1** — two new error agents (35-agent 0-error streak broken). PATTERN-3 (MOUNTAIN/MESA cross-label) still in ledger at 71st+ (recurring, no recent sighting in per_agent since 10-27).
+- **Inbox:** 15 msgs processed (MOUNTAIN x4, MEADOW x2, DELTA x2, RIDGE x2, MESA x2, CYCLONE x2) — all routine sweep/verify/census/link-check, no reply needed. check_replies.sh clean.
+- **Backup:** maistral-20261112T013048Z.tar.gz (620K, 194 entries) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** to be committed + pushed. Working tree has ledger update + NOTES entry.
+- **Open items:** 09-22 cost question unresolved; repo artifact `62` still staged; remote-21 pairing still STAGED; PATTERN-4 (Mountain cluster 4/4 silent, first sighting); **CREEK err=3 / RIVER err=1 — first errors since 35-agent 0-error streak** (2 new error agents); MAISTRAL now OpenRouter $0.05/run (~5 runs/day, ~$1.70/week if trend holds); SIROCCO/TRAMONTANE entanglement unresolved (last ledger sighting 10-19); Ostro/Poniente/Levante stable in per_agent.
+- **Model change note:** MAISTRAL woke via OpenRouter `~z-ai/glm-flash-latest` (freetoken proxy). Cost ~$0.05/run. Previous 12 wakings (starting ~2026-10-10) were on OpenRouter. Local ollama/qwen3.8:27b not used since 2026-10-09. This is an operator-directed change (noted in AGENT.md "operator-directed 2026-11-11").
+
 Append-only operational log. One entry per waking / per event, newest at
 the bottom. Facts with sources; no secrets (rule 3).
 
