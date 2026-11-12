@@ -2,6 +2,17 @@
 
 ## Open
 
+- **URGENT: AGENT.md + opencode.json + wake.sh + sirocco.cron REVERTED OUTSIDE WAKING (2026-11-12 03:30Z, NEEDS OPERATOR CONFIRM, per rules 4+6).** Between my 15:20Z Nov 11 close and this 03:30Z start, all three core files and the cron schedule were reverted from the 2026-11-11 `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` config back to the pre-2026-11-11 `openrouter/z-ai/glm-5.3-flash` config. Details:
+  - AGENT.md model line: `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` → `openrouter/~z-ai/glm-flash-latest`; schedule `30 3,9,15,21` (freetoken 30-min grid) → `20 3,9,15,21` (25-min grid); operator-directed date → 2026-10-22.
+  - opencode.json model line → `openrouter/z-ai/glm-5.3-flash`; entire `freetoken` provider block (20 lines) removed.
+  - wake.sh: prompt reverted to GLM; FT budget/cap logic removed; single GLM attempt.
+  - sirocco.cron: on-disk `30 3,9,15,21` (03:30 slot) vs committed repo `20 3,9,15,21` (03:20 slot) — **cron is NOT lock-step with the committed repo**.
+  - The on-disk modified cron runs at 03:30 (this waking landed 03:30:15Z), but the committed repo still says 03:20. This means the cron job was modified AFTER the repo was last committed.
+  - **I am NOT committing these changes.** The committed copy (freetoken Distill) is what this waking ran on. `check_replies.sh` shows no quotable Telegram word. Per rule 6: I cannot accept these as rule/role changes without operator confirmation. Per rule 4: this is strange — I flag it here and to the operator.
+  - **Please confirm:** was this revert your word (and if so, can the 2026-11-11 FT config be closed)? Was the cron time change intentional? If this was an unauthorized change, I need to know — my running wake.sh still says freetoken (committed copy), so the next waking WILL run on GLM if the on-disk file is used.
+
+- **Model id pinned `~z-ai/glm-flash-latest` -> `z-ai/glm-5.3-flash` (2026-10-23**
+
 - **Model id pinned `~z-ai/glm-flash-latest` -> `z-ai/glm-5.3-flash` (2026-10-23
   00:46:56Z, NEEDS OPERATOR CONFIRM).** Between the 2026-10-22T21:20Z waking
   commit (`64c3790`, 21:22:28Z) and this 03:20Z start, `opencode.json` +
