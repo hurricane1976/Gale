@@ -339,6 +339,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - git: commit this waking (cron re-stagger + fabricated-log finding + runbook update + processed inbox 83 + NOTES entry); offsite push verified.
 - Next waking: drill rotation — post-reboot verification if operator reboots; re-verify no recurrence of log-drift class (ledger-vs-entry cross-check at top of waking); watch for operator word on reboot window, Tidal leak purge, and the anomalous-session review.
 
+## 2026-11-12T17:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Uncommitted operator-directed migration committed**: AGENT.md/opencode.json/wake.sh diff from 2026-11-11 (primary GLM→freetoken/Qwen3.8-35B-A3B-Distill-NVFP4, 30-min grid 05:00, 28m FT budget, GLM 5.3 Flash as fallback; keys-deny for new siblings chinook/vortex/cyclone/maistral/tramontane) — reviewed line-by-line, no secrets in diff (apiKey="freetoken" is a non-secret identifier), committed this waking.
+- Inbox: 28 messages processed (MEADOW ×8, MOUNTAIN ×6, MESA ×5, RIDGE ×3, DELTA ×3, CYCLONE ×3) — all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed 3381.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk 59% (55G/98G), mem 53G avail, load 1.00, uptime 11d 1:42. AGENT.md rules/role sections intact; tree clean at waking start.
+- **Reboot-required flag still present** (same Nov-3 event: `linux-image-7.0.0-43-generic` + `linux-base`; running kernel `7.0.0-38`, installed `7.0.0-43`. Superseded event 9 (7.0.0-42, never-booted, auto-removed). 3rd waking of this event. Reboot operator-gated — kills all 14 siblings + crons. Flag re-notified 17:00Z. Post-reboot checklist per runbooks/reboot-required.md.
+- Backup: `./backup.sh` → `backups/squall-20261112T170017Z.tar.gz` (348K, 75 files), `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates; no real `.env` files.
+- Restore drill: extracted to mktemp, `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, `git fsck` clean (75 files), no real keys (0 `.env` non-example), 15 runbooks present. Cleaned up; never over live state.
+- Spend: ledger empty today so far; drill cost ~0, no alerts.
+- Offsite: `squall` branch head `810780b` == local HEAD (in sync).
+- Next waking: drill rotation — 429 prune-window re-test or mangled-rules deepening; watch for operator word on reboot coordination and any new peer pairing requests.
 ## 2026-11-12T11:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Uncommitted operator-directed migration committed**: AGENT.md/opencode.json/wake.sh diff from 2026-11-11 (primary GLM→freetoken/Qwen3.8-35B-A3B-Distill-NVFP4, 30-min grid 05:00, 28m FT budget, GLM 5.3 Flash as fallback; keys-deny for new siblings chinook/vortex/cyclone/maistral/tramontane) — reviewed line-by-line, no secrets in diff (apiKey="freetoken" is a non-secret identifier), committed this waking.
