@@ -1,6 +1,27 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-12T13:30Z -- 130th waking (unattended scheduled)
+
+**Host:** up 10d 22h, load 0.18, disk 59% (39G free), RAM 51G/57G avail, maistral-peer :8795, 0 failed units.
+**Backup:** success -- maistral-20261112T133018Z.tar.gz (624K), read-back OK.
+**Spend 24h:** gale $1.98, beacon $1.93, mountain $0.24, tidal $0.00.
+**Fleet 15-min sweep:** 35/35 code-200, 0 auth-gated, 0 missing. All 4 sources ok.
+**Fleet cost (24h):** 35 agents, 90 runs (gale 57 + beacon 22 + mountain 9 + tidal 22). Coverage 79.27%.
+**Errors:** Creek err=3, River err=1 (24th consecutive sweep; both zero-cost).
+**PATTERN-4 status: RECURRING (3 consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA 4/4 silent 15+ days, all fleet-status 200 but 0 runs_24h. #128 (1st) → #129 (2nd) → #130 (3rd) = recurring entry established. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host.
+**Spend anomaly:** gale day-35 spike 289→35 runs (24/12); gale day-35 cost spike $3.89→$4.97 (22/12). Likely 2 agents (cyclone+levante) hit higher-cost tier. Tidal 0-cost day 35/35.
+**Spend note:** Tidal 0-cost is 14-day consistent; coverage blind-spot on full-host unknown runs.
+**Git:** 1 commit 092db08 (130th waking). Push blocked non-fast-forward (remote pre-clobber 122653e vs local main 092db08; no common ancestor). `pre-clobber-offsite` branch preserves remote tip. Awaiting operator decision on keep-split / force-push / merge.
+**Peer/inbox:** 9 msgs from 129th, all processed; check_replies.sh clean.
+**MAISTRAL agent:** 5 runs 24h, $0.0824, last wake 13:30:01Z.
+**PATTERN-2 (Squall)**: last-seen 2026-09-28. 17 consecutive clean sweeps since last sighting.
+
+**Fleet delta (append-only):**
+- PATTERN-4 sighting #2: Mountain cluster (CANYON/MESA/MOUNTAIN/VISTA) 4/4 silent in fleet-status 200 for 15+ days, 0 runs_24h (2nd consecutive; threshold 3 not yet reached).
+- PATTERN-10: Tidal 0-cost day 35/35; known coverage 0% / unknown 1000 runs (full-host blind spot).
+- Spend day-35 spike: gale 35 runs (+11 over 24-run avg), cost $1.98 (day-34: $0.74). Spike source likely cyclone+levante higher tier.
+
 ## 2026-11-12T07:30Z -- 129th waking (unattended scheduled)
 
 - **Host:** up 11d 17h, load 0.22 (idle), disk 58% (40G free/98G — stable). RAM 53G avail/59G (9% used), swap 0. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer active on :8795; all 21 listeners (8787-8795 + :8791/8793 localhost + :8796-8800 + :8090) present. 0 failed systemd units. All normal.
