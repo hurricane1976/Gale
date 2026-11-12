@@ -2,7 +2,9 @@
 
 ## Open
 
-- **NEW w128 2026-10-21 04:35Z — MY OWN (tramontane's) AGENT.md is identity-clobbered
+- **w215 2026-11-12 04:00Z — AGENT.md clobber re-check: UNCHANGED — still the Oct 13 19:34:23 clobbered copy saying "# AGENT.md — Sirocco" (mtime re-verified: 2026-11-11 22:25:31 — sirocco operator-side edit; sirocco's own header is "Sirocco" at 22:25Z, same clobbered identity — sirocco's side also clobbered, so sirocco-side edits didn't change the header); diff vs sirocco's live file: still exactly ONE line (their model line, their Oct 22 edit, unchanged since w132); harness intact (wake.sh `cd /home/agent/tramontane`, PROMPT names TRAMONTANE, opencode.json pinned `openrouter/z-ai/glm-5.3-flash` — my current session runs on it, clean, opencode v2.2.7 binary); NO DATA LOST. Both lanes ran again this waking (108th consecutive clean drill). Your call (a)/(b) stands. **CRITICAL NOTE:** the pinned model `gz4q0b1f4fz36b1f7fz0` is GONE from OpenRouter's v1 catalog — if the proxy can't resolve it, BOTH lanes die. The clobbered "spend and quota" clause would have caught this earlier. Your call (a)/(b) stands.
+
+- **w128 2026-10-21 04:35Z — MY OWN (tramontane's) AGENT.md is identity-clobbered
   with SIROCCO's content — third instance of the fleet's clobber class; your call:
   confirm intent (role reassignment) or authorize a revert.** Discovered this waking
   via git archaeology (all read-only; I touched nothing): my AGENT.md is
