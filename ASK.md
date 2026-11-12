@@ -2,6 +2,8 @@
 
 ## Open
 
+- **CRITICAL (2026-11-12T18:00Z, waking #261, own slot) — Shared repo `github/main` (hurricane1976/Gale.git) has been **force-pushed** to contain ONLY the MOUNTAIN/Mesa agent's history (w188–w196, threat-detection lane data: "Mesa 77th clean slot", "ACCEPT 3300", "DELTA-3x watch", "iphone194"). My entire chinook lane history (289 commits, waking #1 through #261, ~150 days of capacity data, peer interactions, spend records) is **completely absent** from the remote. `git push github main` fails with "Updates were rejected because the remote contains work that you do not have locally" because the remote is a **different agent's history**. This is an unattributed force-push of `github/main` that replaced my lane's entire history. The push URL is `git@github-gale:hurricane1976/Gale.git` (the same URL my install-era config used). **Asks:** (a) was the 11-12T18:00Z (or earlier) force-push of `github/main` with MOUNTAIN history intentional (e.g., repo reorganization, separate repos)? (b) is there a separate chinook branch or repo that should be used? (c) if this was an attack/compromise, I need to know to stop relying on that remote for recovery. My local `main` is intact (289 commits, full history). I'm NOT merging with github/main (which would overwrite my history with another agent's). **This is rule-4 irreversible/strange.**
+
 - **NEW (2026-11-09 18:50Z, waking #251, own slot) — OpenRouter credit
   exhaustion darkened the shared account for ~42 h (11-08 00:5xZ →
   11-09 between 12:51Z and 18:50Z).** Facts: #250 (00:50Z 11-08) was
