@@ -893,6 +893,74 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
   bounded by journal rotation); load flat; journal 4.1G bounded. No crossing
   projectable. No action.
 
+## 2026-11-12T18:00Z — waking #261: capacity baseline
+
+### capacity snapshot
+- host gale-agent (gale-agent.gale.tailnet): up 11d 2h43m, load 0.37/0.27/0.25
+  on 16 cores (~2%) — the lowest of the entire series; the 6.8→7.0-kernel
+  transition has settled. 7.0.0-38 still running; 7.0.0-43 staged (installed
+  11-11 06:40Z, 42 removed 06:42Z; net +173M, -8M ≈ 0 on disk). Pending
+  reboot still unconfirmed (ask #233, still open).
+- mem 5.8Gi/59Gi used (53Gi avail); swap 0/8G. 200M journal, 58M /tmp/opencode.
+- disk / 55G/98G (59%): **39G free — tight**. Breakdown: /var/log/journal
+  200M (at 200M cap, bounded, 14d retention), /var/lib/snapd 3.9G,
+  /var/snap 1.3G, /home/agent 8.4G (agent-dir 1.2G, snap 1.0G, agent 1.2G
+  = non-fleet 80% of 100% usage; 14 agents total ~3G), /tmp/opencode 58M.
+  **The ~25G "host bulk" non-fleet payload from waking #1 has settled at ~5.2G
+  (snapd 5.4G→3.9G + snap 1.3G) — the operator's 11-03 purge of 10 snap
+  packages (rocketchat, nextcloud, microk8s, lxd, etcd, etc.) shaved ~1G.**
+  But the remaining non-fleet services + snapd are 5.2G, meaning the fleet
+  is now 59% of total disk at 55G used, not 28%. The 80% line (78G = 20G
+  free) is ~10.2G away — at the current ~0.5G/day growth arc (journal+tmp),
+  **crossing in ~20 days ≈ 2026-12-03**. Because journal is capped at 200M
+  and /tmp clears itself, the unbounded projection is likely an upper bound;
+  the true arc is closer to 0.2–0.4G/day, but 20G free is a real number to
+  track.
+- peers: **12/12 healthy** on 100.66.39.59:8787–8799, 200 OK, <0.8 ms (all
+  co-located: GALE, ZEPHYR, SQUALL, TEMPEST, VORTEX, CHINOOK, CYCLONE,
+  MAISTRAL, SIROCCO, BORA, OSTRO, LEVANTE). No remote-pair legs tested
+  (still staged pending operator sign-off, rule 8).
+- cadence: crontab `0 0,6,12,18` — **4x/day** (not 6x/day as recorded at
+  #257). Between #257 (11-11 06:50Z) and this waking, the grid was retracted
+  to 4x. Run-count back to 16/day. This is a **positive** capacity signal
+  (half the per-day cost footprint of the 6x window). If intentional, this
+  is a forecast-input change. Ask operator in Telegram if desired, or just
+  record: 4x/day holds and the 11-12 daily spend to 12:03Z was $0.8587
+  (13 runs, 1 nonzero: GALE $0.122 + SQUALL $0.119 at 12:25/18:00Z).
+- spend: 2026-11-12 to 18:00Z, **$0.8587 / ~13 runs** (all 0.0 except
+  GALE $0.122, SQUALL $0.119 at 12:25/18:00Z). The $0.00 local-model runs
+  dominate the remaining. Per-day arc still low at this hour; no anomaly.
+  The corrected daily-trend series in ASK.md drift item (last: 11-11 $4.1234)
+  still needs the 11-12 full-day close at #263 (00:50Z 11-13).
+
+### findings / forecast
+- No sibling near a resource limit. No peer-level saturation signal.
+- Disk: the tightest axis (59% used, 39G free; 80% line ~10G away). The
+  journal 200M cap prevents unbounded growth here, but the remaining
+  non-fleet snapd payload (5.2G) and the 3.0G agent-dir growth over 6mo
+  (waking #1: 1.3G → now 8.4G across 14 dirs) are the drivers. At 0.2–
+  0.4G/day the true crossing is months out; at 0.5G/day worst case
+  (the #16 projection) it is ~10 days. **Named date: if 0.5G/day persists,
+  80% crossing ~2026-11-22.** But the 6x→4x cadence retraction is the
+  biggest capacity relief this waking: per-day run count down 33%, which
+  cuts the agent-dir + tmp/opencode footprint proportionally.
+- Load/mem: completely flat at ~0.3/5.8G. No concern.
+- No peer inbox anomalies (all 16 11-12 msgs archived: link verifies,
+  Rule-7 sweeps, census probes — all data-only, "no reply needed").
+- Pending operator asks (ASK.md, open): RIVER 11-03 silence (~260h at
+  this point), host-kernel-43 pending reboot (ask #233b), cadence 4x vs
+  6x confirmed; drift $4/day line defined?; OpenRouter credit exhaustion
+  top-up confirm. No new opens.
+
+### done this waking
+- Backup: `backups/chinook-20261112T180021Z.tar.gz` (440K), gzip-integrity
+  OK, 99 entries; 14-snapshot ceiling (oldest prunes next run).
+- Git: no uncommitted changes (already clean).
+- Peer inbox: 16 msgs (DELTA, MEADOW, RIDGE, MESA×2, MOUNTAIN×3, PEACE?,
+  CYCLONE×2, VORTEX×2, SQUALL×2, TRAMONTANE×2, PULSAR, LEVANTE, HARBOR,
+  DELTA×2, BEACON) → archived to processed/. No acks owed.
+- Host health recorded (12th peer sweep; 12/12 on-box healthy).
+
 ## 2026-09-26T08:00:00Z — waking #20
 
 - Host healthy: uptime 17h (stable since 9/25 6.8-kernel reboot), load
