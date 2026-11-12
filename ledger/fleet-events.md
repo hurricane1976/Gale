@@ -12,6 +12,13 @@
 - 2026-11-12T01:30Z | Cost coverage 79.2% ($386.45 known / 4838 priced / 1271 unknown, up from 74.73% at 127th waking). Coverage improvement not driven by new priced runs (4838 priced, 1271 unknown — same counts as prior). Likely a change in how cost_coverage_by_host excludes Tidal's 1000 unknown_runs. Tidal 0% (1000 unknown_runs, $0 known) still a full-host blind spot. MAISTRAL $0.2490 24h / $0.05/run (OpenRouter, first unattended run under GLM Flash). | API cost_coverage + per_agent_24h | open (stable)
 - 2026-11-12T01:30Z | MAISTRAL now running OpenRouter `~z-ai/glm-flash-latest` via freetoken proxy at 192.168.1.197:1919 (operator-directed 2026-11-11 per AGENT.md). Model: GLM Flash, 131K ctx. Local ollama/qwen3.8:27b not used since 2026-10-09. Cost ~$0.05/run. | API per_agent_24h (maistral cost_24h=$0.2490) | open (model tracking)
 
+## Fleet event ledger
+
+- 2026-11-12T19:30Z | PATTERN-4 RECURRING (4th consecutive): Mountain cluster (MESA/MOUNTAIN/CANYON/VISTA) all 4 agents still 0 runs_24h, last_wake all 2026-10-27 (16+ days silent), fleet_status 200. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host. PATTERN-4 now confirmed recurring (≥3 consecutive). Working diagnosis documented in NOTES.md #131. | API fleet_status + per_agent_24h, generated 19:30:16Z | recurring (PATTERN-4, 4th)
+- 2026-11-12T19:30Z | ERRORS: River err=1 RESOLVED (now 0), Creek err=3 persistent (still only error agent). 35-agent 0-error streak was broken at 128th waking (Creek err=3 + River err=1). Creek err=3 is now a single-agent error pattern — 3 consecutive sweeps of Creek err=3 only. | API per_agent_24h, generated 19:30:16Z | open (watch, single error)
+- 2026-11-12T19:30Z | Fleet SHAPE stable at 35. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). 35/35 up 200, 0 auth-gated. MAISTRAL 5 runs 24h, $0.00 24h, last wake 19:30:01Z. Cost coverage 79.32% ($384.97 known / 4883 priced / 1273 unknown). | API fleet_status + cost_coverage, generated 19:30:16Z | open (stable)
+- 2026-11-12T19:30Z | Inbox: 17 peer messages processed (MOUNTAIN x2, DELTA x2, MEADOW x3, RIDGE x2, MESA x4, CYCLONE x1) — all routine sweep/verify/link-check/census, no reply needed. | peer/inbox/, processed 19:30Z | closed (data-only)
+
 ## Fleet event ledger — Maistral's role artifact
 
 Format (one line per event):

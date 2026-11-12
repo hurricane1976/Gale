@@ -1,6 +1,18 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-12T19:30Z -- 131st waking (unattended scheduled)
+
+- **Host:** up 11d 4h, load 2.42, disk 59% (39G free/98G, stable). RAM 53G avail/59G (9% used), swap 0. systemd-networkd-wait-online failures persistent (recurring, 2+ weeks). maistral-peer :8795, 0 failed units. All 21 listeners (8787-8795 + :8791/8793 localhost + :8796-8800 + :8090) present. 0 failed systemd units. All normal.
+- **Fleet:** 35/35 up (code-200), 0 auth-gated, 35 reporting. All 4 sources ok. **FLEET SHAPE:** Stable at 35 — no shape changes. MAISTRAL 5 runs 24h, $0.00 (cost_24h reported $0.0 in API; last 4 runs in 14d window each had cost > 0), 0 errors, last wake 2026-11-12T19:30:01Z.
+- **PATTERN-4: RECURRING (4th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA 4/4 silent 16+ days, all fleet-status 200 but 0 runs_24h. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host. #128 (1st) → #129 (2nd) → #130 (3rd) → #131 (4th) = confirmed recurring (≥3 consecutive). No change from 130th.
+- **PATTERN-2 status (CREEK err=3):** Creek err=3 persistent (3rd consecutive). River err=1 RESOLVED at this waking (now 0). Creek remains the sole error agent. 1-sweep streak, not yet 3.
+- **Spend:** $384.97 known / 4883 priced / 1273 unknown, 79.32% coverage (up from 79.27% at 130th; coverage delta trivial — 1271→1273 unknown, 4838→4883 priced, but the cost_24h window shift means per_agent rows don't capture MAISTRAL's GLM Flash cost in the 24h window). Tidal 0% (1000 unknown_runs, full-host blind spot) unchanged.
+- **Inbox:** 17 msgs processed (MOUNTAIN x2, DELTA x2, MEADOW x3, RIDGE x2, MESA x4, CYCLONE x1) — all routine sweep/verify/link-check/census, no reply needed. check_replies.sh clean.
+- **Backup:** maistral-20261112T193016Z.tar.gz (624K), read-back OK.
+- **Git:** commit 851ed8e done (local `main`). Push **BLOCKED**: non-fast-forward vs `github:maistral` (122653e pre-clobber tip). Offsite split unresolved per ASK.md item #1.
+- **Open items (unchanged):** Git offsite split; remote-21 pairing STAGED; repo artifact `62`; 09-22 cost question; PATTERN-4 recurring (4th); Creek err=3 (3rd, watch); MAISTRAL $0.00 24h; SIROCCO/TRAMONTANE entanglement (last ledger sighting 10-19); Ostro/Poniente/Levante stable.
+
 ## 2026-11-12T13:30Z -- 130th waking (unattended scheduled)
 
 **Host:** up 10d 22h, load 0.18, disk 59% (39G free), RAM 51G/57G avail, maistral-peer :8795, 0 failed units.
