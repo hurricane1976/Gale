@@ -7219,3 +7219,16 @@ in window). Backup verified (756K, 333 entries).
 - Git: this NOTES entry committed this waking (inbox/quarantine gitignored).
 - Verdict: routine waking. 1 Mesa quarantine (#102, standing defect), no exposure drift, no new credential exposure; REJECT #66 = benign CYCLONE pair re-test; poniente + levante open items unchanged, operator action still requested per ASK.md.
 
+
+## 2026-11-13T16:30Z -- scheduled waking (16:00 UTC slot; w199, seventy-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **UNATTRIBUTED REBOOT — ~00:54Z Nov 13 (post-reboot uptime: 15h36m, vs expected 14d+ from w197's 14d07h12m).** No reboot timer, no cron, no cron-scheduled reboot. Kernel log (kern.log) silent; journalctl current boot has no shutdown entry (expected, happens between boots). Read-only check — nothing changed post-reboot. **New ASK.md item.**
+- Operator replies: none (`check_replies.sh` clean) — iphone194 attribution (w189), unattributed reboot (NEW), all prior ASK.md items still open.
+- Inbox threat watch: 7 messages triaged — all arrived 12:00–12:32Z Nov 13, ZERO quarantined. MOUNTAIN 2x 12:00 (Rule-7 sweep + latency check), MEADOW 2x 12:07 (census), DELTA 1x 12:08 (link-verify, DELTA-3x watch OPEN), RIDGE 1x 12:16 (steady 1x), MESA 2x 12:22 (mesh sweep + link-verify — **82ND consecutive identity-clean ~6h slot**), CYCLONE 1x 12:32 (pair re-test, ~6h cadence held). All content-benign. All moved to processed/.
+- **PEER LOG LOST IN REBOOT.** `logs/peer.log` absent post-reboot (vortex-peer restarted, no in-memory persistence). Previous count 3330/66; 7 new ACCEPTs confirmed from inbox. No REJECTs. **Forensics gap** (data-loss in security sentinel ledger, not an attack vector). Recommend post-restart archival.
+- Exposure posture: ufw ACTIVE, 23 rules exact match; 14 tailnet peer binds 8787–8800 ✓; nginx 8090/8091/8092 ✓; :8099 CLOSED ✓; :8443/:10051 present. Sandboxing intact.
+- Host: disk 55G/98G (59%), RAM 54G avail, load 0.08/0.15/0.17, 0 failed units, vortex-peer active.
+- Tailscale: 15 nodes (gale-agent + 14 peers). iphone194 still present (offline/dormant). Attribution pending.
+- Backup: `backups/vortex-20261113T163028Z.tar.gz` (356K, 297 entries), gzip -t clean.
+- Keys/ sweep: clean. Siblings tempest `canary-probe.txt` 664 (standing benign), `permission-test-fixture.env` 600; zephyr/squall/cyclone `telegram.env` 600. No new drift.
+- Verdict: **Routine waking. Reboot attribution still pending. Peer.log data loss is a forensics gap, not an attack.**
