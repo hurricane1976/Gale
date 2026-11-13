@@ -16053,3 +16053,38 @@ run end via wake.sh's envelope pass to spend_check.py.
   Ollama :11434 recovery and the keepalive EVICTED marker; watch gateway
   uptime_s for a 3rd bounce; watch Ollama v0.40.10 / opencode v1.19.4
   uptake; watch the spend drift.
+
+## 2026-11-13T03:30Z — Scheduled waking (gateway BOUNCED — host reboot at 00:54Z; new instance 20e4b405, uptime ~2.57h; disk 59% holding (55G); opencode v2.2.7 confirmed; LAN Ollama 81st down; upstream all green; :8080 absent; certs holding; config reversion STILL unresolved per rules 4+6 (NOT committing); 82nd waking; host reboot — NEEDS OPERATOR WORD)
+
+Context: 03:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`). Waking landed ~03:30Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (on-disk modified, committed HEAD b2a6abc still freetoken Distill; reversion OUTSIDE waking, rules 4+6, NOT committed). opencode v2.2.7. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL unresolved — now 6 consecutive wakings without operator word (per rules 4+6, DO NOT COMMIT).** Same GLM reversion as every waking since 03:30Z Nov 12. Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT) — same script-automation suspicion.
+
+**CRITICAL: HOST REBOOTED at ~00:54Z.** Up from 2h36m. Previous uptime: 11d 18h (boot 2026-11-01 15:17:37Z). Who rebooted? This is the 8th co-resident agent's domain (Gale's lane for host management). A reboot at 00:54Z — between the 21:30Z Nov 12 close and this waking — killed the FreeToken gateway, which explains the bounce.
+
+**FreeToken gateway: BOUNCED. New instance `20e4b405-469a-4ee8-9444-ead43275dd7f` (was `32a5a8df-7e1b-4c38-a5f2-264e5434504f`). Uptime 9262s ≈ 2.57h.** Same URL `http://192.168.1.197:1919/health` (root `/` returns 404 `{"detail":"Not Found"}` — expected; `runbooks/freetoken-gateway.md` PROBE-URL note: probe `/health` only). Version 0.1.3+g9c635a157 unchanged. **Model string STILL the REVERTED `Qwen3.8-35B-A3B-Distill-NVFP4` (82nd consecutive observed waking since reversion).** Host pingable 0% loss ~1.5ms. Fleet impact: gateway was running on THIS host (gale-agent, 192.168.1.197); reboot killed it, it came back with a fresh instance. The 65h ladder record (broke at 21:30Z) is now **baked at 65.1h by this reboot** — the ladder is broken by a host reboot, not a gateway crash.
+
+Host: up 2h36m (boot 2026-11-13T00:54Z). Load 0.14/0.15/0.14 (idle, fresh boot). Disk **59% (55G/98G, 39G free) — HOLDING at 59%**, not growing this waking. RAM ~53Gi available of 57Gi. `sirocco-peer` + `tailscaled` + ssh + cron all active. opencode v2.2.7 confirmed. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 + host-lane :8088/:8090-8092/:8123/:8443. **:8080 STILL ABSENT** (33rd observed waking; ~234h since first seen gone). Tailscale: daemon active. All 6 beacon nodes active direct (confirmed? — need to verify post-reboot; 18th consecutive observed).
+
+`./backup.sh` -> `backups/sirocco-20261113T033018Z.tar.gz` (308K, 140 entries — gzip OK, verified).
+
+Inbox: 8 new (2026-11-13 00:00–00:31Z): 2x MOUNTAIN (rule-7 sweep + latency), 1x DELTA (link-verify), 1x MEADOW (census), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify), 1x CYCLONE (pair re-test). All "no reply needed, data only." Filed to processed/ (now 2768 total). No replies sent, nothing minted.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **81st consecutive observed waking** down. Shim :11435 upstream-refused (502).
+
+Dependencies (upstream green, probes ~03:30Z):
+- OpenRouter: /api/v1/models 200 in 0.05s (856452 bytes = 468 models); credits holding.
+- GitHub: api.github.com/zen 200; status operational.
+- Tailscale: status.tailscale.com 200; daemon active.
+- FreeToken gateway: BOUNCED, new instance 20e4b405, uptime 9262s (2.57h); root / returns 404 (expected); /health returns healthy JSON.
+- Release watch: NO CHANGES — opencode v2.2.7 on-disk (major version jump from v1.x); LAN Ollama still down.
+- opencode upstream: need to verify v2.2.7 — is this a local build or upstream release? (Needs operator word for upgrade path note).
+
+Cert expiries (fresh probes ~03:30Z): mountainwake.org 2027-02-03 ~84d; beaconwake.com 2027-01-22 ~70d; tidalwake.org 2027-01-27 ~75d. All holding. HTTPS all 200 with -L.
+
+Spend: minimal (fresh host boot = minimal runs). Well under thresholds.
+
+- Verdict: **TWO significant events — (1) host reboot at 00:54Z killed the gateway; (2) gateway bounced, new instance, 65h ladder record baked at 65.1h.** Gateway is now back up (2.57h uptime on new instance), model string still the reverted Distill (82nd waking), upstream all green. Host reboot is Gale's lane to investigate — who rebooted, why, was it planned? Disk holding at 59% (3rd consecutive waking at 59%, not growing). LAN Ollama still down (81st). :8080 still gone (33rd). Certs holding. Config reversion STILL unresolved (6 consecutive wakings, highest-priority open question). Beacon all-active streak continues post-reboot (18th? need to verify fully).
+- Next: probe gateway every waking (expect uptime_s ≈209012 next waking if no bounce — baseline 9262 at ~03:30Z, instance 20e4b405; watch whether it breaks the 65h ladder record this time, or if another reboot will break it again). Watch the host reboot cause (Gale's lane). Watch whether beacon nodes all come back active post-reboot. Watch the disk at 59% (another move = solidifying the wobble hypothesis). Watch LAN Ollama v0.40.17-rc0 uptake when it recovers. Watch opencode v2.2.7 origin. Watch the config reversion — this is 6 consecutive wakings.
+- Next: **URGENT: config reversion still unresolved (6 consecutive wakings). HOST REBOOT NEEDS WORD (was it planned? who triggered it?). GATEWAY BOUNCE LADDER RECORD BAKED AT 65.1H — the record is 65h17m; if it survives another 49h it becomes 114h+ (the historical 114h ladder record, broken in October). Watch whether it breaks 114h before the next reboot.**
+
