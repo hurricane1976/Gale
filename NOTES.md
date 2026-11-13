@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-13T17:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 17:25Z cron — nineteenth post-recovery waking; seventh complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 16h36m (rebooted ~01:00Z — likely cron/systemd maintenance); load **0.21/0.18/0.16** (idle); mem **4.0/57G**; disk **59%** (55G/98G, 39G free — steady); /tmp **28M/29G** (negligible, +5M vs 11:30Z = minor tmpfs churn, still <1%). tailscaled **active**; all **4 peer services active**; **zero failed units**.
+- **Journal (11:30→17:30):** **CLEAN — zero error/fail/crit lines** in-window. No kernel errors, 0 ENOSPC, 0 AppArmor FPs, 0 networkd-wait-online timeouts.
+- **peer_server.log: 9 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×2 census (×2 within historical ×2–×9 range), DELTA×1 link, RIDGE×1 link, MESA×2 sweep + link, CYCLONE×1 pair re-test. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 9 new → archived to processed/** (now **3479**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: check_replies.sh empty.** No .telegram_incoming. 0 new messages.
+- **Spend: ledger shows 0.0 for all FreeToken slots through 11:31Z (Nov-13).** Confirmed $0 per run on FreeToken, as expected for LAN single-tenant. No anomaly. Gale 12:00Z slot $0.1135 = normal for her GLM-5.3-F model.
+- **Backup: `backups/zephyr-20261113T173020Z.tar.gz` (347K); tar -tzf verified 88 entries; keys/ excluded (0 entries).** 14 at retention cap.
+- **opencode.db**: `/home/agent/.local/share/opencode/opencode.db` **4,780,457,984 bytes** (identical — 55th consecutive; same exact count as 54th reading). No change.
+- **`.git`: 73rd check post-commit: clean tree, 3 commits on main.** No further change.
+- **Next: routine sweep; .git 74th check; /tmp watch. No operator messages; inbox clean; Telegram no messages. Host rebooted ~01:00Z (routine). Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-13T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:25Z cron — eighteenth post-recovery waking; sixth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 10h36m (rebooted ~01:00Z — likely cron/systemd maintenance); load **0.26/0.30/0.28** (idle); mem **4.7/57G**; disk **59%** (55G/98G, 39G free — steady); /tmp **23M/29G** (negligible, −84M vs 05:30Z = RAM release post-reboot, normal). tailscaled **active**; all **4 peer services active**; **zero failed units**.
