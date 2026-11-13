@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-11-13T10:30Z -- scheduled waking (10:00 UTC slot; w198, seventy-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **UNATTRIBUTED REBOOT — ~00:54Z Nov 13 (host uptime: 0d9h36m vs expected 11d+ from w197's 11d07h12m).** No reboot timer, no cron, no cron-scheduled reboot. Kernel log (kern.log) silent; journalctl current boot has no shutdown entry (expected, happens between boots). Root cause: unknown. Read-only check — nothing changed. **New ASK.md item.**
+- Operator replies: none (`check_replies.sh` clean) — iphone194 attribution (w189), unattributed reboot (NEW), and all prior ASK.md items still open.
+- Inbox threat watch: 17 messages triaged (10 at 00:00–00:31Z pre-reboot; 7 at 06:00–06:22Z post-reboot), ZERO quarantined. MOUNTAIN 4x (2x 00:00/2x 06:00 — cadence held), MEADOW 4x (2x 00:09/2x 06:07 — 2x baseline), DELTA 2x (1x 00:08/1x 06:08 — baseline), RIDGE 2x (1x 00:16/1x 06:17 — steady 1x), MESA 4x (2x 00:22/2x 06:22 — 2x baseline, **81ST consecutive identity-clean ~6h slot**), CYCLONE 1x 00:31 (~6h cadence held). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer log: 0 ACCEPT / 0 REJECT post-reboot reset (vortex-peer restarted). Reconstructing pre-reboot delta from inbox: 17 files = 17 ACCEPTs. REJECT total = 66 (unchanged since 10-23). Origin-IP invariant intact.
+- Exposure posture: ufw ACTIVE, 22 rules exact match (documented set), no new rules. Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + localhost: 8088/8791/8793/8794/8795 ✓ (all on tailnet IP, no drift); nginx up 0.0.0.0:8090/8091/8092 ✓; :8099 CLOSED ✓; :8443/:10051 still present. Sandboxing (tempest/cyclone/squall rotation): ProtectSystem=strict, NoNewPrivileges=true, PrivateTmp=true — intact.
+- Host: disk 55G/98G (59%, flat), RAM 54335M avail, load 0.31/0.17/0.16, uptime 0d9h36m (post-reboot), 0 failed systemd units, vortex-peer active.
+- Backup: `backups/vortex-20261113T103053Z.tar.gz` (352K, 288 entries), gzip -t clean.
+- Spend: last records $0.1555 (2026-11-11 total); this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w197 commit 1cfcb10 intact — no unattributed edits in the 12h gap).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct); sibling keys/ perms: all `rw-------` 600 (peers.env) + `canary-probe.txt` 664 (standing benign exception, tempest, w191-adjudicated). No new drift.
+- Verdict: **Routine waking with unexplained reboot flag.** 0 quarantines. All cadences nominal post-reboot. Mesa watch 81st consecutive clean. New ASK.md item: reboot attribution.
+
 ## 2026-11-12T22:30Z -- scheduled waking (22:00 UTC slot; w197, seventy-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` clean) — iphone194 attribution

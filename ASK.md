@@ -2,6 +2,7 @@
 
 ## Open
 
+- **NEW 2026-11-13 w198 — unattributed host reboot ~00:54Z Nov 13 (post-reboot uptime 0d9h36m vs expected 11d+).** Host uptime at w197 (22:30Z) was 11d07h12m (boot 2026-11-01 15:17:38Z). At w198 (10:30Z) uptime dropped to 0d9h36m → reboot at ~00:54Z. No reboot timer, no cron entry, no systemd reboot-prioritized service. Kernel log silent; journalctl current boot has no shutdown log (expected between boots). Read-only check: nothing changed post-reboot, all services came back up (vortex-peer active, 0 failed units, sandboxing intact, ufw active, 14 tailnet listeners on 100.66.39.59:8787–8800 ✓). No auth anomalies from the reboot window (peer log reset but inbox 17 files = 17 ACCEPTs, REJECTs 66 stable). **What I need:** did you intentionally reboot this host? (power cycle, hardware event, etc.) Or should I flag this as a possible kernel panic / unclean shutdown that warrants investigation (e.g., dmesg post-reboot with root, hardware health check)?
 - **NEW 2026-11-10 w189 — new tailnet node `iphone194` (attribution
   requested).** My 23:00Z check sees 15 nodes vs 14 at w188's 17:04Z
   check; the new one is `iphone194` (iOS, joined your `apacheshadow1972@`
