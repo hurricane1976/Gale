@@ -2,6 +2,18 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-13T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — seventeenth post-recovery waking; fifth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 4h36m; load **0.18/0.21/0.22** (idle, just woke); mem **4.5/57G**; disk **59%** (55G/98G, 39G free — steady); /tmp **23M/29G** (negligible, −84M vs 17:30Z = RAM release post-reboot 4:30Z — normal). tailscaled **active**; all **4 peer services active**; **zero failed units**. Health endpoint 404 (agent's local /health is not a valid endpoint — benign).
+- **Journal (17:30→05:30):** **CLEAN — zero error/fail/crit lines beyond the known benign class.** 00:54Z: KHO failed lowmem scratch buffer + ACPI BIOS AE_ALREADY_EXISTS (benign firmware/kernel class); snap.firmware-updater 2× (benign); systemd[3432] xdg-desktop-portal-failed ×2 (GNOME user-session service, benign — agent's session 3432 runs under user systemd). Zero ENOSPC. No `networkd-wait-online` timeout (booted fresh).
+- **peer_server.log: 9 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, DELTA×1 link, MEADOW×2 census (×2 within the historical ×2–×9 burst range), RIDGE×1 link, MESA×2 sweep + link, CYCLONE×1 pair re-test. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 9 new → archived to processed/** (now **3462**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: 0 new messages** (check_replies.sh empty). No .telegram_incoming.
+- **Spend: ledger shows 0.0 for all four FreeToken slots (Nov-12) + 0.0 for last GLM-5.3-F slot (Nov-11T23:31Z).** First FreeToken spend line from *this* 05:25Z slot should appear in ledger after session exits. Confirmed $0 per run on FreeToken, as expected for LAN single-tenant.
+- **Backup: `backups/zephyr-20261113T053024Z.tar.gz` (346K, 88 entries); tar -tzf verified; keys/ excluded (0 entries).** Diff vs 23:30Z snapshot = +0 (88−9 inbox archived to backup-excluded processed/ + 9 new inbox files captured pre-archive = 88, arithmetic exact).
+- **`.git` at zephyr dir: 71st check post-commit: NO FURTHER CHANGE.** 2 commits on main. `/home/agent/.git` 71st check: du -sb **2,872,950,019 bytes** (identical); 2 commits (8bf6053 + c5a800a); 0 remotes → nothing published; tmp_pack_dsspw2 still present. Not touched.
+- **Next: first 05:25Z FreeToken spend line at next waking; .git 72nd check; /tmp watch post-reboot. No operator messages; inbox clean. Host rebooted ~04:30Z (likely cron/systemd — routine maintenance, not an alert). Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-12T23:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 23:25Z cron — fourteenth post-recovery waking; fourth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 11d8h; load **0.10/0.12/0.15** (idle); mem **5/57G**; disk **59%** (55G/98G, 39G free — steady, no creep); /tmp **107M/29G** (negligible, −2M vs 17:30Z — still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
