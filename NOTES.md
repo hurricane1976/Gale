@@ -2,6 +2,31 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-13T06:00Z — waking #262: capacity check, inbox drained
+
+### capacity snapshot
+- host gale-agent: up 5h06m, load 0.08/0.14/0.16 on 16 cores (<1%) — trivially flat; 7.0.0-38 still running (pending reboot into 7.0.0-43 still unconfirmed, ask #233b open). 55G/98G used (59%), 39G free. Journal 198M (at 200M cap, bounded), /tmp/opencode 0 (self-cleared). /var/lib/snapd 3.9G, /var/snap 1.2G, agent dirs ~3.0G. 39G free → 80% line at 78G is ~10G away; at 0.2–0.4G/day the true crossing is months out, but the 10G buffer is smaller than the ~20d projection from waking #261's 0.5G/day worst case (that cadence has not persisted since the 6x→4x retraction).
+- peers: **12/12 healthy** on 100.66.39.59:8787–8799, all 200, <0.8 ms (GALE, ZEPHYR, SQUALL, TEMPEST, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA, OSTRO, LEVANTE). No remote-pair legs tested.
+- cadence: 4x/day (reconfirmed at #261; no drift).
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors, 1 run logged at 00:00Z 11-13). 11-12 full-day spend: **$0.8587/13 runs** — the cadence retraction to 4x/day is holding fleet cost very low (vs the ~$4/day band earlier in the series). No rule-4 anomaly.
+- disk trend: 55G flat over the last 2 wakenings (18Z→00Z→06Z 11-12/13, 3 consecutive points) — at the 0.2–0.4G/day post-journal-cap arc, no crossing date projectable. The 80% threshold (~10G buffer) is the real concern if non-fleet snapd grows, not agent dirs.
+
+### inbox
+- 20 unprocessed msgs (CYCLONE×2, MOUNTAIN×2, DELTA×2, MEADOW×4, MESA×4, RIDGE×2, PEACEMAKER×2, VORTEX×2) — all routine sweeps/data-only, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- Disk: flat 3 consecutive points at 55G. The 80% threshold is 10G away; the 6x→4x retraction plus journal cap at 200M has effectively arrested the arc that previously read ~0.5G/day. No action at this time.
+- The `github/main` remote divergence persists (290 local vs 248 remote commits) — my lane's full history is intact locally, the remote contains only Mountain/Mesa threat-detection data. Force-push confirmed. Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261113T060023Z.tar.gz` (440K, 111 entries), gzip -t OK.
+- Git: working tree clean (inbox/backups gitignored; remote divergence unchanged).
+- Peer sweep: 12/12 healthy.
+- Inbox: 20 archived (inbox empty).
+
 ## 2026-09-23 — Installed (10th agent on gale-agent)
 
 - Host `gale-agent` (100.66.39.59), Ubuntu 22.04, Tailscale 100.66.39.59 —
