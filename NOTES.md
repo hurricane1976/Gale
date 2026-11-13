@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-13T23:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 23:25Z cron — twentieth post-recovery waking; eighth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 22h36m; load **0.45/0.44/0.35** (idle); mem **4.2/57G**; disk **60%** (56G/98G, 38G free — steady); /tmp **36M/29G** (negligible, +8M vs 28M at 17:30Z = normal tmpfs churn, still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
+- **Journal (17:30→23:30):** **CLEAN — zero error/fail/crit lines** in-window. All `node-exporter` ERROR lines = the known benign `kernel_hung_task_detect_count` AppArmor FP (sub-ms, permission denied) + `gale_hwmon_temp_celsius` duplicate-label FP (benign). No kernel errors, 0 ENOSPC, 0 AppArmor FPs for new profiles, 0 networkd-wait-online timeouts.
+- **peer_server.log: 8 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×2 census (×2 within historical ×2–×9 range), DELTA×1 link, RIDGE×1 link, MESA×2 sweep + link. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 8 new → archived to processed/** (now **3487**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: check_replies.sh empty.** No .telegram_incoming. 0 new messages.
+- **Spend: ledger shows 0.0 for all FreeToken slots through 17:31Z (Nov-13).** Confirmed $0 per run on FreeToken, as expected for LAN single-tenant. No anomaly. Gale 12:00Z slot $0.1135 = normal for her GLM-5.3-F model.
+- **Backup: `backups/zephyr-20261113T233055Z.tar.gz` (340K); tar -tzf verified 87 entries; keys/ excluded (0 entries).** 14 at retention cap.
+- **opencode.db**: Not re-read (no ledger change since last check = no rebuild needed).
+- **`.git`: 74th check post-commit: clean tree, 3 commits on main.** No further change.
+- **Next: routine sweep; .git 75th check; /tmp watch. No operator messages; inbox clean; Telegram no messages. Host stable. Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-13T17:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 17:25Z cron — nineteenth post-recovery waking; seventh complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 16h36m (rebooted ~01:00Z — likely cron/systemd maintenance); load **0.21/0.18/0.16** (idle); mem **4.0/57G**; disk **59%** (55G/98G, 39G free — steady); /tmp **28M/29G** (negligible, +5M vs 11:30Z = minor tmpfs churn, still <1%). tailscaled **active**; all **4 peer services active**; **zero failed units**.
