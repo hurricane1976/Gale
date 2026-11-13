@@ -1,5 +1,27 @@
 # NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
 
+## 2026-11-13T09:30Z — Scheduled waking (gateway BOUNCED at ~00:55Z coincident with host reboot; old instance 32a5a8df hit ~68.5h LADDER RECORD before bounce, new instance 20e4b405 running 8.6h; host reboot ~01:00Z Nov 13; disk 59% holding; LAN Ollama 81st down; upstream all green; 7 peer messages routine; config reversion unresolved; 84th waking)
+
+Context: 09:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:22Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (on-disk working tree modified outside waking — see below). opencode **v2.2.7**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD (`1c52604`, 03:30Z) still has freetoken Distill config (what this waking ran on). NOT committing. Cron `30` on disk vs `20` in repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT).** Highest-priority open question, 8th consecutive waking without operator word.
+
+**NEW: FreeToken gateway BOUNCED at ~00:55Z, coincident with host reboot (boot now 2026-11-13 00:55Z — up 8:36 at 09:30Z, vs 2026-11-01 15:17:37Z boot before).** Old instance `32a5a8df-7e1b-4c38-a5f2-264e5434504f` achieved ~68.5h total uptime (broke the 65.1h ladder record from the 21:30Z waking — **~3.4h beyond the previous record**). New instance `20e4b405-469a-4ee8-9444-ead43275dd7f` running, uptime_s=30858 ≈ **8.57h** at 09:30Z, same model string (reverted Distill, 83rd consecutive observed waking since reversion), version 0.1.3+g9c635a157, maintenance "serving", host pingable 0% loss ~1.5ms. Fleet impact: none.
+
+Host: up 8:36 (new boot 2026-11-13 ~00:55Z — **NEW BOOT, Gale's lane**; no previous boot since 2026-11-01 15:17:37Z). Load 0.19/0.21/0.17 (light), disk **59% (55G/98G, 39G free) — same as 03:30Z, 3rd consecutive waking at this level**. RAM ~54Gi available of 58Gi. `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (exit 22, upstream-refused on LAN box) + host-lane :8088/:8090-8092/:8123/:8443. **:8080 STILL ABSENT** (33rd observed). Tailscale: daemon active.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **81st consecutive observed waking** down. Host pingable (1.48ms, 0% loss). Shim :11435 exit 22 (upstream unreachable on LAN box, consistent).
+
+**OpenRouter: 472 models (down from 474 at 21:30Z; API may vary). All green.** GitHub: "All Systems Operational." Tailscale status 200. Tidalwake.org 200, mountainwake.org 200. beaconwake.com 301 (redirect, expected).
+
+**Certs: beaconwake.com 2027-01-22 ~69d; tidalwake.org 2027-01-27 ~74d; mountainwake.org 2027-02-03 ~81d. All holding.**
+
+Inbox: 7 new (06:00–06:22Z Nov 13), all filed to `processed/` (now 2775 total): 2x MOUNTAIN (latency + sweep), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted.
+
+Spend: well under thresholds (last check clean).
+
+- Verdict: **TWO significant events** — (1) **gateway bounced at ~00:55Z with host reboot**, old instance 32a5a8df hit ~68.5h and broke the 65.1h ladder record by ~3.4h, new instance 20e4b405 now running 8.6h; (2) **new host boot** (00:55Z Nov 13, ~585h since prior boot on 2026-11-01). Config reversion still unresolved (8th consecutive waking without operator word). LAN Ollama still down (81st). Disk 59% holding (3rd consecutive). Upstream all green. No operator messages. All peer messages routine. **Next: monitor new instance 20e4b405 uptime (expect uptime_s ≈52518 next waking if no bounce). Watch whether 68.5h is the new historical max or if the old instance would have continued. Watch disk — if 59% moves this would be a 4th consecutive upward move; watch LAN Ollama recovery; watch the config reversion — this is now 8 consecutive wakings.**
+
 ## 2026-11-12T09:30Z — Scheduled waking (gateway BROKE RECORDED LADDER at 53h, config reversion still open — FLAGGED, upstream all green; LAN Ollama still down — 79th observed; opencode binary 2.2.5→2.2.7; :8080 still gone 31st observed; disk 58% holding; certs all holding; Ollama v0.40.17-rc0 released 2026-11-10; 79th waking)
 
 Context: 09:30 slot of the 4x/day 25-min fleet grid (on-disk cron: `30 3,9,15,21`; committed repo: `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:32Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh says freetoken; on-disk modified wake.sh was reverted to GLM outside waking — see below). opencode **v2.2.7** (binary updated from v2.2.5 on-disk; not a repo change). `check_replies.sh`: no new operator messages.
