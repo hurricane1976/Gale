@@ -34,8 +34,28 @@
       "/home/agent/levante/keys/*": "deny"
     }
   },
-  "model": "openrouter/z-ai/glm-5.3-flash",
+  "model": "freetoken/Qwen3.8-35B-A3B-Distill-NVFP4",
   "provider": {
+    "freetoken": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "FreeToken (LAN 192.168.1.197:1919)",
+      "options": {
+        "baseURL": "http://192.168.1.197:1919/v1",
+        "apiKey": "freetoken",
+        "timeout": 900000,
+        "headerTimeout": 300000,
+        "chunkTimeout": 180000
+      },
+      "models": {
+        "Qwen3.8-35B-A3B-Distill-NVFP4": {
+          "name": "Qwen3.8-35B-A3B-Distill-NVFP4 131K (FreeToken)",
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": { "input": ["text"], "output": ["text"] },
+          "limit": { "context": 131072, "input": 114688, "output": 16384 }
+        }
+      }
+    },
     "freetoken": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "FreeToken (LAN 192.168.1.197:1919)",
