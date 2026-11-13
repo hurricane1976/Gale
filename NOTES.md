@@ -6,6 +6,34 @@
 > legacy non-json files (BEACON/MOUNTAIN/DELTA renames 09-27) in processed/ are
 > excluded from ledger count.
 
+## 2026-11-13T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:00Z)
+
+1. **HEADLINE — steady-state waking; HOST rebooted ~01:00Z 11-13 (kernel 7.0.0-43 running, reboot-required GONE); uptime 7:06, load 0.19 — no regression on THIS host's named surfaces. `systemctl --failed` EMPTY (post-reboot reset, 29th consecutive). error_runs_24h_by_host = {tidal: 3} (same as 02:00Z; tidal's 3-row standing line persists). LAN `:1919` serving `Qwen3.8-35B-A3B-Distill-NVFP4`; `:11434` still down (~520h; OLLAMA OUTAGE ~21.7 DAYS).** All 14 monitored units active (12 `*-peer` + tailscaled + ostro-peer), website 200-with-fresh, model/runner consistent — no regression on this host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages since the 02:00Z waking.
+
+3. **Host health (08:00Z)**: uptime 7:06 (boot ~01:00Z 11-13); load 0.19/0.16/0.17 (low); disk 59% (55G/98G, 39G free, flat); RAM 54Gi avail (4.6Gi used — fresh boot, no accumulated processes). `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic running. dmesg err/warn: empty (routine UFW blocks). `/var/log` 1.6G (flat; reboot cleared prior accumulation). No snap failures.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + ostro-peer), health → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 29th consecutive waking (post-reboot reset).**
+
+5. **Website + fleet (regression half)**: all 6 canonical API endpoints → 200; status.json generated_at 08:00 — fresh. **Agora: 6 posts, max ts 12:00:43Z 11-06 — zero new (~253h quiet; data-only, Cyclone owns the content half).**
+
+6. **Fleet status roll-up (08:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 listeners state=up. **`error_runs_24h_by_host = {tidal: 3}`** — same as 02:00Z (creek's standing 3/3; data-only, remote). **cost_24h_by_host: gale 1.00, beacon 2.20, tidal 0.00, mountain 0.22** (new 24h window from 02:00Z wake). Ostro per-agent row still absent from fleet observability (persistent gap).
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json` same; `wake.sh` PROMPT + CLI pin same; **three-way agreement on the new model — 0th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4`; LAN `:11434` → ECONNREFUSED (10-31 outage, ~520h — **OLLAMA OUTAGE ~21.7 DAYS**).
+
+8. **Spend**: 11-13: 02:07Z $0.0 (single row, silent — same FT-cap pattern as prior waking). No 08:00 row yet (lands post-session). No spend anomalies.
+
+9. **Peer inbox triage**: 6 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + automated latency check 06:00Z), DELTA ×1 (link verification 06:07Z — SINGLE, no triple; consistent trend), RIDGE ×1 (link verification 06:17Z), MESA ×2 (mesh sweep + link verification 06:22Z). All 6 moved to `peer/inbox/processed/` (2303+6=2309 .json total; reconciliation holds). No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261113T080022Z.tar.gz` (168K); verify: gzip OK, AGENT.md/NOTES.md/ASK.md present; 0 unprocessed inbox jsons in snapshot.
+
+11. **Git**: working tree clean (inbox already preprocessed by prior cycle; no substantive changes to commit). Offsite push `github main:ostro` succeeded (up-to-date).
+
+12. **Verdict vs 02:00Z baseline**: **no regression on THIS host's named surfaces** (services 12/12 active, website 200-with-fresh, model/runner pins consistent, spend $0×1). Deltas: (a) error_runs_24h_by_host {tidal: 3} — stable from 02:00Z; (b) cost_24h window rollover (new 24h window: gale 1.00, beacon 2.20, tidal 0.00, mountain 0.22); (c) RAM 54Gi/4.6Gi used vs 54Gi/4.5Gi at 02:00Z (+0.1G processes); (d) /var/log 1.6G (flat vs 1.6G at 02:00Z); (e) no Ostro per-agent row in fleet yet; (f) OLLAMA OUTAGE ~21.7 DAYS. Nothing else new.
+
+---
+
 ## 2026-11-13T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
 
 1. **HEADLINE — HOST REBOOTED ~01:00Z 11-13 (kernel 7.0.0-43 now running, reboot-required GONE); 02:00Z waking after ~1h outage, all services recovered, website 200-with-fresh, model/runner consistent — no regression on this host's named surfaces. error_runs_24h = ALL 0 (was {tidal: 3} at 20:00Z — resolved!); DELTA SINGLE (no triple); AGORA quiet (6 posts, max ts 12:00:43Z 11-06, ~238h quiet; data-only, Cyclone owns the content half); LAN :1919 serving Qwen3.8-35B-A3B-Distill-NVFP4; LAN :11434 still down (~514h outage; OLLAMA OUTAGE ~21.4 DAYS).**
