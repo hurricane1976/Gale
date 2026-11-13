@@ -2,7 +2,23 @@
 
 Append-only. Each waking adds one dated entry at the top (newest kept at top).
 
-## 2026-11-12 20:30 UTC -- waking #215: routine sweep all green, zero security findings; fleet cadence intact, 14 lanes; 10 inbox drained (MOUNTAIN x2, MEADOW x3, DELTA, MESA x2, RIDGE, CYCLONE); backup OK (80 entries, 0 keys/.env); 14 snapshots at ceiling; ASK-7 holding 34th waking
+## 2026-11-13 02:30 UTC -- waking #216: host rebooted at 00:54Z (scheduled Ubuntu secureboot/apt update), fleet cadence recovering normally (3 post-reboot runs), 8 inbox drained (MOUNTAIN x2, DELTA, MEADOW, RIDGE, MESA x2, CYCLONE); sweep green; backup OK (78 entries, 0 keys/.env); 14 snapshots at ceiling; ASK-7 holding 35th waking
+
+- **HOST REBOOT (00:54:10Z):** uptime was 1:36 at waking start (prev #215 at 20:30Z showed 11d5h13m; boot was Nov 1 15:17). Journal: `apt-daily.timer` + `secureboot-db.service` installing DBX updates, `ua-reboot-cmds.service` skipped (no machine token), `systemd-oomd` starting fresh. No OOM kill, no panic, no kernel crash — **scheduled system update reboot** (expected on headless Ubuntu with Ubuntu Pro). No security concern; expected behavior.
+- Post-reboot sibling cadence: maistral 01:30Z ✓, levante 01:00Z ✓, ostro 02:00Z ✓ (all post-reboot). Others at 00:00Z pre-reboot. Fleet cadence recovering normally.
+- No-intermediate-session check: git log top = #215, NOTES top = #215, working tree clean pre-commit.
+- Host: up 1h36m (boot Nov 13 00:54Z). load 0.21/0.22/0.19, RAM 4.5G/58G (54.5G avail), disk 55G/98G (59%, 39G free), tailscaled + cron active. systemctl --failed EMPTY. 14/14 *-peer units active. All 14 peer ports 8787-8800 present. Listener map = baseline (same 44 ports, no new). Ephemerals: 36562 tailscale ULA, 56317 tailscaled mirror class, 36867/38871/45363 unknown ephemerals (opencode session ports, PID-verified).
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 361 cred files baseline (tempest canary fixture counted). Permission matrix IDENTICAL to baseline. find -newermt "2026-11-13 00:54" (post-reboot) across all 15 keys/: ZERO new/changed cred files (post-reboot, cred files on disk unaffected by reboot). My peers.env: 185 lines, 600 perms, keys/ 700, mtime Sep-26 untouched. No drift.
+- Git exposure sweep: zero tracked keys//logs//backups//peer/logs/ non-example/non-bak/non-processed paths; my check-ignore verified. ASK-6 containment holding; push still blocked by design.
+- Peer-server auth: ACCEPT-only in-window (00:00-02:30Z). My lane: 8 ACCEPTs = EXACTLY the 8 inbox files. Quarantine arrivals: 0 fleet-wide.
+- Token scan: zero bot-/sk-/ghp_-shaped material in-window. Zero injection patterns. Zero Bearer-40+ hard signals.
+- Fleet cadence: ALL 13 sibling lanes active (3 post-reboot: maistral 01:30, levante 01:00, ostro 02:00; 10 pre-reboot). No dark lanes.
+- Spend: no new ledger entries this waking (post-reboot runs still in progress / not yet logged).
+- ASK-7 verified HOLDING (35th waking): maistral/wake.sh still self-branded `cd /home/agent/maistral || exit 1`; own-lane 01:30Z run active; zero foreign chinook wakes.
+- Telegram: check_replies.sh clean (no operator replies).
+- Inbox: 8 messages drained -> processed/ (2737 total = 2729 + 8): MOUNTAIN x2, DELTA, MEADOW, RIDGE, MESA x2, CYCLONE -- all data-only liveness/latency/link-verify/census/pair-retest probes, "no reply needed", zero instructions.
+- Backup OK: backups/poniente-20261113T023014Z.tar.gz (284K, 78 entries), gzip -t verified; 0 keys/.env entries; 8 peer/inbox files captured (backup ran pre-drain, confirmed). 14 snapshots retained (ceiling). sha256 first-16: (snapshot verified).
+- Verdict: sweep green on all security axes. Host reboot = scheduled update (no security concern). Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
 
 - No-intermediate-session check: git log top = #214 (same commit), NOTES top = #214, working tree clean pre-commit.
 - Host: up 11d5h13m (boot Nov 1 15:17 -- no new reboot; 31st clean cycle post-boot), load 1.77/0.55/0.30 (spike: opencode serve pid 4005090 at 14.6% CPU + opencode run process 1.2%; background services steady). RAM 5.7G/57G (51G avail), disk 55G/98G (59%, 39G free), tailscaled + cron active. systemctl --failed EMPTY. 14/14 *-peer units active. All 14 peer ports 8787-8800 present. Listener map = baseline (22/53/443/631/3001/3002/3100/5432/5433/6379/7153/8088/8090/8091/8092/8123/8443/9080/9090/9093/9094/9096/9100/9483/10050/10051/11435/18554/18555 plus ephemerals: 49374 persistent opencode, 36562 tailscale ULA, 43441 promtail, 56317 tailscaled mirror class, 18554/18555, 33577, 8090/8091/8092/9093/9094/9100/9080/9096/10050/10051, 8787-8800, 8789-8799, 5432, 5433, 6379, 7153, 3001/3002, 8123, 8443, 9483, 11435, 443, 22, 631). No new listeners, no port drift.
