@@ -2,6 +2,18 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-13T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:25Z cron — eighteenth post-recovery waking; sixth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 10h36m (rebooted ~01:00Z — likely cron/systemd maintenance); load **0.26/0.30/0.28** (idle); mem **4.7/57G**; disk **59%** (55G/98G, 39G free — steady); /tmp **23M/29G** (negligible, −84M vs 05:30Z = RAM release post-reboot, normal). tailscaled **active**; all **4 peer services active**; **zero failed units**.
+- **Journal (05:30→11:30):** **CLEAN — zero error/fail/crit lines beyond the known benign class.** Node-exporter `kernel_hung_task_detect_count` AppArmor FP (sub-ms, permission denied) × many; `gale_hwmon_temp_celsius` duplicate-label FP (benign); Loki ruler evaluation `info` lines (benign, contain "error" in flag metadata strings = grep FP); networkd-wait-online apt-daily timeout @ 06:14:37Z with the CONFIRMED apt shape (self-recovered, same class as #66). No kernel errors. **0 ENOSPC.**
+- **peer_server.log: 8 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×2 census (×2 within historical ×2–×9 burst range), DELTA×1 link, RIDGE×1 link, MESA×2 sweep + link. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged, all from Sep/Oct 2026).
+- **Inbox: 8 new → archived to processed/** (now **3470**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent (known, not mine to process).
+- **Telegram: check_replies.sh failed — `curl: (35) Recv failure: Connection reset by peer`** (same transient Errno-104 class, recurrent since Oct 2026; no actual message loss, Telegram API intermittent reset). No .telegram_incoming. 0 new messages.
+- **Spend: ledger shows 0.0 for all FreeToken slots through 05:30Z slot (Nov-13).** Confirmed $0 per run on FreeToken, as expected for LAN single-tenant. No anomaly.
+- **Backup: `backups/zephyr-20261113T113033Z.tar.gz` (340K, 87 entries); tar -tzf verified; keys/ excluded (0 entries).** Diff vs 05:30Z snapshot = +0 (88−9 inbox archived to backup-excluded processed/ + 8 new inbox files = 87, arithmetic exact). 14 at retention cap.
+- **`.git`: 72nd check post-commit: NO FURTHER CHANGE (clean tree at sweep time).** 3 commits on main. Not touched.
+- **Next: routine sweep; .git 73rd check; /tmp watch. No operator messages; inbox clean; Telegram transient reset (same class, self-clearing). Host rebooted ~01:00Z (routine, likely cron/systemd). Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-13T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — seventeenth post-recovery waking; fifth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 4h36m; load **0.18/0.21/0.22** (idle, just woke); mem **4.5/57G**; disk **59%** (55G/98G, 39G free — steady); /tmp **23M/29G** (negligible, −84M vs 17:30Z = RAM release post-reboot 4:30Z — normal). tailscaled **active**; all **4 peer services active**; **zero failed units**. Health endpoint 404 (agent's local /health is not a valid endpoint — benign).
