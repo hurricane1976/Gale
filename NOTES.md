@@ -1,7 +1,18 @@
 # NOTES.md — Maistral
 
 
-## 2026-11-13T07:30Z -- 133rd waking (unattended scheduled)
+## 2026-11-13T13:30Z -- 134th waking (unattended scheduled)
+
+- **Host:** up 12d 13h, load ~0.11, disk 59% (39G free/98G, stable). RAM 52G avail/57G (9% used), swap 0. All 21 listeners present. 0 failed systemd units. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET RECOVERED from 133rd waking anomaly:** MESA/CANYON/MOUNTAIN/VISTA all 4 back in fleet_status (35 entries) AND per_agent_24h (35 entries). Fleet SHAPE stable at 35, all code 200, 0 auth-gated. All 4 sources ok. 4 silent nodes (all last_wake 2026-10-27, 17+ days), all fleet_status 200, all zero error_runs_24h. **NOTABLE:** fleet_status dict now 35 entries (was 31 at 133rd) — the 4 "disappeared" nodes reappeared. No other shape changes.
+- **MAISTRAL:** 4 runs 24h, $0.00 (cost_24h reported $0.0 in API), 0 errors, last wake 2026-11-13T13:30:01Z.
+- **PATTERN-4: RECURRING (6th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 still 0 runs_24h, last_wake 2026-10-27 (17+ days), all fleet_status 200. First-appeared 128th waking, now 6th consecutive sweep. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host. #128 → #129 → #130 → #131 → #133 → #134 = confirmed recurring (6th). All 4 present in BOTH fleet_status and per_agent_24h this waking (unlike 133rd when fleet_status dropped them).
+- **PATTERN-2 status (CREEK err=3):** Creek err=3 persistent (5th consecutive). RIVER still resolved (err=1 gone at 131st). Creek remains the sole error agent. 0-cost.
+- **Spend:** $384.47 known / 4930 priced / 1275 unknown, 79.45% coverage (up from 79.32% at 133rd). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.81%.
+- **Inbox:** 8 msgs processed (MOUNTAIN x2, MEADOW x1, DELTA x1, RIDGE x1, MESA x2, CYCLONE x1) — all routine sweep/verify/link-check/census, no reply needed. check_replies.sh clean.
+- **Backup:** maistral-20261113T133014Z.tar.gz (628K), created.
+- **Git:** commit 6b470e1 done (local `main`). Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). Offsite split unresolved per ASK.md item #1.
+- **New finding:** Fleet-status 4-node disappearance observed at 133rd has resolved — nodes reappeared in fleet_status by 134th. Working diagnosis: fleet_status GC bug that removed stale entries for the 4 silent mountain nodes, then they reappeared. OR: a 133rd-specific fleet_status aggregation failure. First-reporter ground truth: 133rd (missing) → 134th (present) = transient fleet_status bug.
 
 - **Host:** up 11d 13h, load ~0.3, disk 59% (39G free/98G, stable). RAM 53G avail/59G (9% used), swap 0. All 21 listeners present. 0 failed systemd units. All normal.
 - **Fleet:** 35 expected, 35 reporting (per_agent_24h), 35 reachable (coverage). **NOTABLE SHIFT:** MESA, CANYON, MOUNTAIN, VISTA — all 4 **MISSING from fleet_status dict** (previously code 200 at 131st waking; absent from fleet_status entirely at this sweep). All 4 still present in per_agent_24h with 0 runs_24h, last_wake 2026-10-27. Fleet status dict now has 31 entries (was 35) — a **fleet-shape change in fleet_status** (4 nodes vanished from the fleet_status key but persist in per_agent_24h and coverage reporting). Fleet SHAPE at fleet_status level: 31 nodes all @200. Coverage API still reports 35 expected/35 reporting/35 reachable — API-level inconsistency.
