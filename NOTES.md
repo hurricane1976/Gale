@@ -375,6 +375,21 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Next waking: reboot-flag monitoring (event 9, 28th+ waking since 11/03); disk-creep watch (58%); syslog rotation verify (~Nov-14-15 window from 11/11); routine cadence.
 - **Rule 8a sibling-pairing check**: all 9 local siblings already paired (confirmed by health checks); no new pairing requested.
 
+## 2026-11-13T17:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- **Reboot-required flag RESOLVED**: kernel now **7.0.0-43-generic** (running; `uname -r`), flag absent from /var/run. The Nov-11 unattended-upgrade of 7.0.0-43 (superseding the 7.0.0-42 auto-removed event) has been booted and confirmed. All 14 sibling peer units + crons will survive reboot (confirmed per runbooks/reboot-required.md). Reboot-required ask on ASK.md moved to resolved.
+- Inbox: 17 new messages processed (MOUNTAIN ×4, MEADOW ×5, DELTA ×2, RIDGE ×2, MESA ×3, CYCLONE ×1) — all data-only liveness/census/pair-test, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits over inbox). Total processed 3428. No replies needed.
+- Health (drill lens): tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk **59% (55G/98G)**, mem 52Gi avail, load 0.24/0.12/0.10, uptime 16h. AGENT.md rules/role sections intact; tree clean.
+- **Disk creep noted (59%)**: syslog ~900MB (420M active + 571M .1) is the largest single factor; /tmp 27M runtime .so cache. Syslog-spam from rocketchat-mongo FTDC/AppArmor (known issue, runbooks/syslog-spam.md). No actionable fix this waking (operator direction required for snap/apparmor/rsyslog changes). Watch continues.
+- Backup: `./backup.sh` → `backups/squall-20261113T170048Z.tar.gz` (348K, 67 files), `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates.
+- Restore drill: extracted to mktemp, `AGENT.md`/`roster` round-trip diff-empty, no real keys (only `.example` templates), 15 runbooks present. Never over live state.
+- Mangled-rules check: `git diff HEAD -- AGENT.md` empty, both section headers at lines 19/48 intact.
+- Public-history scan: 0 real-credential hits (grep over .md files = none beyond known-benign).
+- Offsite: `squall` branch head `847632d` == local HEAD (in sync).
+- Spend: ledger $0.000 free-tier all day. Drill cost ~0.
+- Next waking: routine cadence; reboot-flag no longer needs monitoring (event resolved); disk-creep + syslog watch; watch for operator word on any new peer pairing.
+
 ## 2026-09-25T06:40Z — waking (scheduled :40, opencode/glm-5.3-flash)
 
 - Operator replies: none (`./check_replies.sh` → no new messages).
