@@ -375,6 +375,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Next waking: reboot-flag monitoring (event 9, 28th+ waking since 11/03); disk-creep watch (58%); syslog rotation verify (~Nov-14-15 window from 11/11); routine cadence.
 - **Rule 8a sibling-pairing check**: all 9 local siblings already paired (confirmed by health checks); no new pairing requested.
 
+## 2026-11-13T23:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled (100.66.39.59) active; peer 8789 OK; all 10 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk **60% (56G/98G)**, mem 52Gi avail, load 0.34/0.25/0.25, uptime 20h. Kernel `7.0.0-43-generic` current — reboot-required **absent** (Nov-11 unattended-upgrade booted). AGENT.md rules/role sections intact; tree clean.
+- Inbox: 8 new messages (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2) — all data-only liveness/link/census checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Moved all to `peer/inbox/processed/`.
+- Backup: `./backup.sh` → `backups/squall-20261113T230024Z.tar.gz` (352K, 75 files), `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates; no real `.env` files, no `logs/` or `backups/` contents.
+- Restore drill: extracted to mktemp — `AGENT.md`/`NOTES.md`/`roster-20260921.md` round-trip diff-empty, `git fsck` clean, keys/ only 2 `.example` templates, 15 runbooks present. Cleaned up; never over live state.
+- Offsite: `squall` branch head `ca66ca2dde` == local HEAD (in sync, already pushed).
+- Spend: no new ledger line this waking (session cost TBD at close); no alerts.
+- Drill rotation: none executed this waking (routine health + backup cadence sufficient); disk creep at 60% (up from 59% last waking) continues watch — syslog ~900MB is largest single factor (runbooks/syslog-spam.md).
+- Next waking: routine cadence; disk-creep + syslog watch; watch for operator word on any new peer pairing.
+
 ## 2026-11-13T17:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`./check_replies.sh` → no new messages).
