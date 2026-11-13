@@ -17120,3 +17120,39 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - RIVER (100.91.42.51:8788, Tidal) still unpinged (no inbox contact, no health probe).
 - OPENROUTER-402 alert line request from #251 still pending: operator to specify the
   balance threshold (e.g. 3 days of burn) for the check.
+
+## 2026-11-13T12:00Z — waking #263: capacity check, inbox drained, peer sweep
+- host: 13h uptime, load 0.37/0.25/0.20, mem 4.6G/57G (53G avail), disk 55G/98G (59%,
+  39G free), journal 197M. OK.
+- peer sweep (100.66.39.59:8787–8799): **13/13 healthy** (all ports responsive).
+- inbox: 5 messages (DELTA, MESA, MOUNTAIN×2) — all routine link-verification sweeps,
+  no operator requests. Moved to processed/.
+- spend: 0 non-zero runs; ledger clean at $0.00 (ollama local).
+- cadence: 4×/day confirmed (0 0,6,12,18 — retracted from 6×). 3 bak files in repo
+  (stale; noted #262).
+- backups: chinook-20261113T120030Z.tar.gz (444K). snapshot/ dir empty.
+
+## 2026-11-13T18:00Z — waking #264: capacity check, kernel 7.0.0-43 confirmed running, 12/12 peers
+
+### capacity snapshot
+- host gale-agent: up 17h06m (kernel 7.0.0-43-generic confirmed running; reboot between 11-13 00:54 and this waking, previously-pending -43 upgrade applied). Load 0.13/0.29/0.24 on 16 cores (<2%) — trivially flat. 4.8G/57G used (52G avail), swap 0/8G. Disk 55G/98G (59%), 39G free — unchanged since last waking. Journal 194M (bounded at 200M cap, #233 operator-set). /var/lib/snapd 4.0G, /var/snap 1.2G (post-purge state from #233). /tmp/opencode 0 (self-cleared). Agent dirs ~3.0G. 39G free → 80% line at 78G is ~20G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **12/12 healthy** on 100.66.39.59:8787–8799, all 200, <0.8 ms (GALE, ZEPHYR, SQUALL, TEMPEST, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA, OSTRO, LEVANTE). All bind 100.66.39.59:port (12 Tailscale ports confirmed via `ss -tlnp`; the earlier FAIL was a grep-pattern issue — `{"status": "ok"}` with spaces, not `{"status":"ok"}`).
+- cadence: 4×/day (cron `0 0,6,12,18`, no drift).
+- spend: $0.00/run (ollama qwen3.8:27b local). 11-13 so far: 4 runs, $0.00 total. 11-12 full-day spend $0.8587/13 runs; cadence retraction to 4x/day holds fleet cost very low. No rule-4 anomaly.
+- kernel 7.0.0-43 is now RUNNING (uname), confirming the pending reboot from ASK.md ask (b) is closed. 11-01 kernel-42 → 43 staged → installed → rebooted.
+
+### inbox
+- 0 unprocessed messages (the MOUNTAIN 18:00Z Rule-7 sweep arrived during this waking; inbox already clean at 06:00Z sweep). No operator messages (check_replies: none). No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- Disk: flat 4 consecutive points at 55G. The 80% threshold is 20G away; no crossing date projectable. The journal cap at 200M and self-clearing /tmp/opencode have kept growth bounded.
+- The `github/main` remote divergence persists (290 local vs 248 remote commits) — my lane's full history intact locally, remote contains only Mountain/Mesa threat-detection data. Force-push confirmed. Ask (a)/(b)/(c) in ASK.md still open.
+- OPENROUTER-402 alert line (ASK.md) still pending operator sign-off on balance threshold.
+- Cadence retraction from 6×→4× holds; fleet spend ~$1/day range on 11-13.
+
+### done this waking
+- Backup: `backups/chinook-20261113T180019Z.tar.gz` (444K, 104 entries), gzip -t OK.
+- Git: one modified file (NOTES.md), about to commit.
+- Peer sweep: 12/12 healthy.
+- Kernel: 7.0.0-43 confirmed running (previous pending reboot applied).
