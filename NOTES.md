@@ -16478,3 +16478,87 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   New: quarantine alert (mountain→vortex, rule-5 — not my concern, but notable).
   New: gale-backup-proof.service exited success (was "No space" in w223, recovered).
   Cost_coverage 75.12% (improved from 75.08% in w230).
+
+    ## 2026-11-14T06:30Z waking (w320)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w319); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 8 routine probes
+  (Nov 14 00:00–00:22Z: MOUNTAIN x2 (rule-7 sweep + latency check),
+  MEADOW x2 census (dup-pair 1s apart, same pattern),
+  DELTA x1 link verify, RIDGE x1 link verify, MESA x2 (mesh sweep + link verify)) — all
+  "no reply needed", scanned clean. Filed to processed/; quarantine 0.
+- **REBOOT: host rebooted 2026-11-13T00:54Z — 23+ days uptime before full
+  system reboot. Uptime now 1d 5:36. nginx + all 13 sibling peer services +
+  cyclone-peer + gale-fleet-api + cron active after reboot. 0 failed units.
+  nginx NRestarts=0 post-reboot (ActiveEnter 2026-11-13 00:54:20 UTC — this
+  reboot event, not a crash). `sudo nginx -t` clean. All services restored.
+  Uptime 06:30:48 up 1 day, 5:36, load 0.24/0.27/0.21, mem 52G avail, disk
+  60% (38G free), inodes 13%.
+- Backup: `backups/cyclone-20261114T063048Z.tar.gz` (388K, 162 entries)
+  — gzip -t OK, keys/ = dir + 2 .example templates only, 8 of this
+  waking's inbox probes inside, 14th snapshot of Nov 13 / 2nd of Nov 14.
+- Production pass (live @8090): **22/22 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/network/offline/weather/ollama/presence/
+  reliability/operations/runbooks/routines/cameras/galaxy/guest-mode/energy/
+  energy-costs/notifications/maintenance). **health.html 404** — same as
+  w319/w318/w317/w316: never in website repo, wiped by re-deploy.
+  15 core proxied fleet API 200 (telemetry/health/registry/alerts/activity/
+  metrics/observability/agora/posts/alerts/acks/alerts/history). All at
+  `/api/fleet/` prefix. push/vapid-key/firewalla/status/ollama/pull/status:
+  4/4 200. **reports 404, summary 404** — route shift to /api/fleet/reports/summary?
+  Same as w319.
+- SSE streams: **ALL 4 still `text/html;charset=utf-8`** (activity/metrics/
+  observability/agora/posts) — content-type regression persists across
+  reboot+deploy. No fix landed. Gale's to fix.
+- Freshness: fleet-health ok:true generated 06:30:48Z (this cycle).
+  Telemetry generated 06:30:48Z (this cycle), 35 agents,
+  **cost_usd 384.2682 — UP +0.587 from w319's 383.681: decline halted
+  and bounced back up. Watch continues.** error_runs 191 (+2 from w319's 189).
+  Activity 24 events, schema fleet-activity/v1 stable. Agora 0 posts,
+  posts_1h 0, rejected_1h 0. (Agora posts: 0? Change from w319's 135 —
+  either cleared or empty. Flagged.)
+- **ALERTS SCHEMA DRIFT:** Alerts now returned under `fleet-alerts/v1`
+  schema with flat `alerts[]` array (fields: sev, kind, text, agent, host,
+  owner, id, runbook) — replaced the prior envelope.
+  **12 total, 4 crit + 8 warn, composition IDENTICAL to w319:**
+  4x crit agent-missed-wake (canyon/mesa/mountain/vista, still "last 2026-10-27")
+  + 8x warn: creek 3 failed + river 1 failed + AM x6 (CredDrift x2
+  firewalla-dashboard/tempest, RosterDrift x4: Bora x2 config_vs_page_model/
+  wake_vs_config, Gale x2 config_vs_page_model/wake_vs_config).
+  All Nov 1 boot window. Gale's domain.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 up, 0 down, 0 auth-gated**
+  (35 agent-name keys under fleet_status, flat dict). last_wake_by_host.gale:
+  2026-11-14T06:30:01Z (this cycle — LANDED). cost_coverage: known_usd
+  384.2682 (matches telemetry), coverage_pct 79.57 (up from 79.52).
+  coverage.expected=?, reporting=?, missing=[].
+- **CARRIED FLAG (56th waking) — CROSS-FEED INCONSISTENCY:** the 4
+  mountain-host missed-wake crits still say "last 2026-10-27" while
+  last_wake_by_host.mountain advanced (00:45:01Z) and my inbox took live
+  authenticated MOUNTAIN probes at 00:00Z today. Gale's fleet_api to fix —
+  carried, notify again.
+- **CARRIED FINDING (6th w319 verification): SSE content-type regression.**
+  All 4 SSE stream endpoints return `text/html;charset=utf-8` instead of
+  `text/event-stream`. Persists across reboot+deploy. Pages consuming these
+  streams will get empty results. Gale's to fix.
+- **CARRIED FINDING (6th verification): icon-192-maskable.png still 404
+  in production.** Deploy.sh icon-copy omission; Gale's one-line fix.
+- **CARRIED FINDING: health.html still 404 in production.** Gale's to fix.
+- **CARRIED FINDING: reports/summary 404 (2nd).** Route shifted.
+  Gale's to fix.
+- CONTENT ASSERTION (7-WAY IDENTITY, 30th consecutive clean): fleet.html
+  data-name labels 35 == /api/fleet/registry 35 == fleet-metrics
+  fleet_status keys 35 == telemetry totals.agents[] count 35 == fleet-status
+  up count 35 == agent-card name="..." count 35 == coverage.reported 35,
+  case-normalized exact, zero orphans/missing; cyclone present in all seven.
+  "35 agents" x6 in fleet.html; no 25/27 strings.
+- STALE-PROSE (56th straight waking): "pending install" FOUND in fleet.html.
+  Gale's to fix.
+- ROTATION (design/content consistency): **CLEAN except carried findings.**
+- ROTATION (repo<->docroot drift): **CLEAN.** 23 docroot .html files.
+  www-data:www-data 755; 0 non-www-data-owned; 0 non-755 dirs.
+- SYSLOG (500M ceiling method): live syslog 458M (+17M from w319).
+  Well under 500M ceiling. No runaway.
+- PAIR RE-TEST (51st consecutive): steady — 30/34 pass, 401: HIGHBEAM/LANTERN/LIGHTNING/RADAR.
+- Onboarding: 21 remote pairings staged, pending per-pair operator sign-off.
+- Git: no uncommitted changes.
+- NOTIFY: summary sent to operator via ./notify.sh.
