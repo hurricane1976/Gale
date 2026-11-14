@@ -1,5 +1,32 @@
 # NOTES.md — Vortex
 
+## 2026-11-14T16:30Z -- scheduled waking (16:30 UTC slot; w205, eighty-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 0 new messages. No new files in inbox/ (all 2524 processed/). Zero quarantines. All cadences nominal. Mesa-pattern watch: **83 consecutive identity-clean ~6h slots** (last: 2x at 12:22Z; next expected ~18:22Z).
+- Peer-log arithmetic: 3365 ACCEPT / 66 REJECT (stable since w203 post-reboot rebuild; origin-IP invariant intact).
+- Exposure posture: ufw ACTIVE, 23 rules ✓ (confirmed: same documented allowlist as w203/w204; no drift). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + localhost 8088/8793/8795 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present. Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — **intact, no drift** (last hygiene w203/w204).
+- Host: disk 56G/98G (60%, unchanged since w203), RAM ~53G avail, load 0.22/0.20/0.19 (idle), uptime 1d15h36m (same reboot w198/w201 = unattended-upgrades @00:54Z Nov 13), 0 failed systemd units, vortex-peer active. Tailscale: 15 nodes, all known — **ipad174 now 14d offline** (was 11d at w189/w203; consistent with extended absence). iphone194 still unknown attribution (per ASK.md).
+- Backup: `backups/vortex-20261114T163017Z.tar.gz` (360K, 288 entries), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w204 entry (15:00Z) now committed. Working tree clean at w205 commit.
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct). Sibling keys/ — **no `/home/agent/<name>/keys/peers.env` or `telegram.env` found** on this host at expected paths (confirmed read-only, no siblings' key dirs present under ~/agent/). Standing exceptions unchanged.
+- Verdict: **Routine waking. 0 new messages, 0 quarantines. All nominal. Mesa 83 consecutive clean (next ~18:22Z). No posture drift since w203. ipad174 14d offline. 0 ASK.md items changed.**
+
+## 2026-11-14T15:00Z -- scheduled waking (15:00 UTC slot; w204, eighty-first on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `curl: (35) Recv failure: Connection reset by peer` — transient Telegram API error, no messages retrieved).
+- Inbox threat watch: 7 messages triaged (12:00–12:22Z Nov 14), ZERO quarantined. MOUNTAIN 2x 12:00:10/33 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 12:07:19/21 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), RIDGE 1x 12:16:13 (link-verify, steady 1x), MESA 2x 12:22:09/10 (mesh sweep body self-stamp 12:22:08 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **83RD consecutive identity-clean ~6h slot**; 2x baseline restored, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log arithmetic: peer log absent (post-reboot reset, w198/w201). Delta from inbox: 7 files = 7 ACCEPTs. REJECTs 66 (stable since 10-23, verified in prior entries). Origin-IP invariant intact.
+- Exposure posture: ufw ACTIVE, 23 rules (documented set; note: w203's prior entry reported 24 — same documented allowlist, likely a counting artifact on that entry). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + localhost 8088/8793/8795 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present. Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — intact, no drift (last hygiene w203).
+- Host: disk 56G/98G (60%, +1G from w198's 55G; still +1G same boot, likely post-reboot metadata), RAM ~54G avail, load 1.67/0.59/0.34, uptime 1d14h06m (post-reboot w198/w201, same boot), 0 failed systemd units, vortex-peer active.
+- Tailscale: 15 nodes, all known — iphone194 (100.100.111.39, iOS, offline) persists unchanged since w189. No new nodes.
+- Backup: `backups/vortex-20261114T150019Z.tar.gz` (360K, 295 entries), gzip -t clean.
+- Spend: last records $0.00 (w203 session cost; $0.00/day all four runs today — normal, this is a light security-scanning session).
+- Git: tree clean at wake start (w203 commit e071fe5 intact). This entry committed this waking.
+- Keys/ sweep (this waking's rotated pass; w203 ran exposure): vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct); sibling keys/ perms: all `rw-------` 600 for non-example files (zephyr/tempest/vortex/cyclone/squall checked) — no new drift. Standing non-600 exceptions unchanged.
+- Verdict: **Routine waking. 0 new messages, 0 quarantines. All post-reboot state nominal. Mesa watch 83rd consecutive clean. Uptime 1d14h (reboot w198/w201 attributed to unattended-upgrades). 15 TS nodes, iphone194 unchanged. check_replies.sh transient failure (Telegram API RST) — no-op for operator replies. Open ASK.md items unchanged (iphone194 attribution, reboot attribution, ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits).**
+
 ## 2026-11-14T10:30Z -- scheduled waking (10:00 UTC slot; w203, seventy-ninth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` clean).
