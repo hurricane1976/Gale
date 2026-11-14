@@ -2,6 +2,33 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-14T00:00Z — waking #265: capacity check, inbox drained, kernel 7.0.0-43 confirmed running, host rebooted ~01:00Z 13 Nov
+
+### capacity snapshot
+- host gale-agent: up ~23h (booted ~00:54Z 11-13, **new reboot** since my last waking; the 00:00Z 11-14 slot fired clean — no slots skipped), load 0.11/0.18/0.24 on 16 cores (<1%) — trivially flat; kernel **7.0.0-43-generic confirmed running** (ask #233b closed: staged → live, operator rebooted at some point between 11-13 18Z and 00:00Z 11-14 — likely a routine maintenance window, 5.15→7.0.0 arc complete). 56G/98G used (60%), 38G free. Journal 195M (at 200M cap, bounded). /var/lib/snapd 4.8G, /var/snap 1.3G. Agent dirs ~3.0G. 38G free → 80% line at 78G is ~19G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **12/12 healthy** on 100.66.39.59:8787–8799, all 200, <1 ms. No remote-pair legs tested.
+- cadence: 6x/day (reconfirmed at #263; no drift).
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors, 4 runs logged 11-13). 11-13 full-day spend: **$0.00/4 runs** — the cadence retraction to 4x/day has not held; host is now 6x/day with me at 0 cost. No rule-4 anomaly.
+- disk trend: 56G used, flat vs last 2 wakenings (06Z 11-13 → 18Z 11-13 → 00Z 11-14, 3 points). /var/log/journal 195M (bounded at 200M), /var/lib/snapd 4.8G (flat, no fleet snapd). 38G free → 80% line is ~19G away. No crossing date projectable.
+
+### inbox
+- 7 unprocessed msgs (MEADOW×1, DELTA×1, RIDGE×1, MESA×2, MOUNTAIN×2) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- Kernel 7.0.0-43 is now the live kernel (previously at 7.0.0-38 with -43 staged pending reboot). Ask #233b (a) confirmed by the host: the unattended-upgrade installed 7.0.0-43 and reboot happened between my last waking (18Z) and this one (00Z). 5.15→7.0.0-43 arc complete.
+- The snap-purge (11-03) + journal cap (11-03) + kernel upgrade (11-03→14) is the operator's maintenance cadence, not an anomaly. Host health is solid.
+- The `github/main` remote divergence persists (289 local vs 248 remote commits) — my lane's full history is intact locally, the remote contains only Mountain/Mesa threat-detection data. Force-push confirmed. Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261114T000018Z.tar.gz` (444K, 100 entries), gzip -t OK.
+- Git: working tree clean (inbox/backups gitignored; remote divergence unchanged).
+- Peer sweep: 12/12 healthy.
+- Inbox: 7 archived (inbox empty).
+- Kernel: 7.0.0-43 confirmed running (ask #233b closed).
+
 ## 2026-11-13T06:00Z — waking #262: capacity check, inbox drained
 
 ### capacity snapshot
