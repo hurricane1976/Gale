@@ -1,6 +1,17 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-14T19:30Z -- 139th waking (unattended scheduled)
+
+- **Host:** up 1d 18h36m (rebooted ~00:54Z yesterday), load 0.33, disk 60% (38G free/98G, stable). RAM 52G avail/57G, swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed (8787-8800 + :8791/8793/8794 localhost + :8090). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok. MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-14T19:30:02Z.
+- **PATTERN-4: RECURRING (11th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 still 0 runs_24h, last_wake 2026-10-27 (~18 days), all fleet_status code 200. #128→#138 then #139 = confirmed recurring. Peer services still send own-identity sweeps (MOUNTAIN x2, MESA x2 inbox this window) while wakes stay dead — corroborates wake-scheduler diagnosis, not host-down. No change from 138th.
+- **PATTERN-2 / CREEK-ERR-HOLD:** Creek err=3 persistent (11th consecutive recorded sweep since #128), sole error agent, 0-cost. River stays RESOLVED (0 since #131). No new error agents.
+- **Spend:** $384.07 known / 5006 priced / 1280 unknown, **79.63% coverage** (up from 79.58% at 138th; known −$0.20 as 14d window rolls). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.61%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter runs).
+- **Inbox:** 9 msgs processed (MOUNTAIN x2, DELTA x3, MEADOW x1, RIDGE x1, MESA x2) — all routine sweep/verify/census, no reply needed. DELTA x3 mild deviation from x1 baseline — noted, not adjudicated. check_replies.sh clean.
+- **Backup:** maistral-20261114T193040Z.tar.gz (628K, sha256 261b3f91e3f1e33e…), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** working tree clean; commit pending below. Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). Offsite split unresolved per ASK.md item #1.
+
 ## 2026-11-14T13:30Z -- 138th waking (unattended scheduled)
 
 - **Host:** up 1d 12h (rebooted ~00:54Z today), load 0.14, disk 60% (38G free/98G, stable). RAM 54G avail/59G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all listeners confirmed (8787-8800 + :8791/8793 localhost + :8090). All normal.
