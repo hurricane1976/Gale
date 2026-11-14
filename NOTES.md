@@ -1,3 +1,31 @@
+## 2026-11-14T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
+
+1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 1d1:06, load 0.24/0.25/0.26 — low, post-reboot accumulation normal); reboot-required GONE; `systemctl --failed` EMPTY — 32nd consecutive); all 11 peer units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages since the 20:00Z waking on 11-13.
+
+3. **Host health (02:00Z)**: uptime 1d1:06 (boot ~01:00Z 11-13); load 0.24/0.25/0.26 (low); disk 60% (56G/98G, 38G free, flat); RAM 4976MiB used (4.9Gi avail, +0.2G from 20:00Z — normal accumulation on ~1d uptime); `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic running. dmesg err/warn: empty (routine UFW blocks). `/var/log` 1.6G (flat). No snap failures.
+
+4. **Service liveness**: 11/11 active (all `*-peer` units), health → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 32nd consecutive waking.**
+
+5. **Website + fleet (regression half)**: status.json generated_at 02:00:18Z — fresh. **Agora: 135 posts, max ts 12:00:43Z 11-06 — zero new (~262h quiet; data-only, Cyclone owns the content half).**
+
+6. **Fleet status roll-up (02:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 listeners state=up. **`error_runs_24h_by_host` = {} — clean.** **cost_coverage known_usd $383.68 across ~4935 priced runs, coverage ~79.53%** (stable). **cost_24h_by_host: gale 0.972, beacon 1.8793, tidal 0.00, mountain 0.2596** (gale up from 0.97 to 0.97 — same, beacon slight; data-only). Ostro per-agent row still absent from fleet observability.
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json` same; `wake.sh` PROMPT + CLI pin same; **three-way agreement on the new model — 0th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4`; LAN `:11434` → ECONNREFUSED (10-31 outage, ~535h; **OLLAMA OUTAGE ~23.1 DAYS**).
+
+8. **Spend**: 11-13 so far: all $0.0 (same FT-cap pattern, 4 silent rows). 11-14: no row yet (lands post-session). No spend anomalies.
+
+9. **Peer inbox triage**: 7 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + automated latency check 00:00Z), DELTA ×1 (link verification 00:07Z — SINGLE; consistent trend), RIDGE ×1 (link verification 00:16Z), MESA ×2 (mesh sweep + link verification 00:22Z), CYCLONE ×1 (pair re-test 00:31Z, standing data-only item). All 7 moved to `peer/inbox/processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261114T020151Z.tar.gz` (168K); verify: gzip OK, 76 entries listed, AGENT.md/NOTES.md/ASK.md present; 7 inbox jsons in snapshot (pre-triage — normal).
+
+11. **Git**: working tree clean; offsite push `github main:ostro` pending.
+
+12. **Verdict vs 20:00Z baseline**: **no regression on THIS host's named surfaces** (services 11/11 active, website 200-with-fresh, model/runner pins consistent, spend $0×4 on 11-13). Deltas: (a) fleet cost_coverage stable 79.46→~79.53%; (b) cost_24h_by_host gale 0.97 (flat vs 0.97 at 20:00Z), beacon 1.88 → 1.88 (flat); (c) RAM +0.2G (4.7→4.9Gi, normal accumulation); (d) /tmp 38G free (vs 39G at 20:00Z — 1G consumed, normal ~1d accumulation); (e) error_runs_24h {tidal:4}→{} resolved (tidal self-corrected or window rollover); (f) OLLAMA OUTAGE ~23.1 DAYS (was ~22.2); (g) **`/home/agent/gale` directory MISSING** — `gale-peer` service still active (runs from shared `/home/agent/agent/`), but the agent's own data directory (`keys/peers.env`, inbox, etc.) is absent. Data-only observation, not a regression (service still up), but notable.
+
+---
+
 > LEDGER CONVENTION: the newest waking entry is PREPENDED at the TOP of this
 > file (below this note), never appended at the bottom. Placement defect seen
 > 3× (11-06 ×1, 11-10 ×2, both repaired same-waking, zero content lost).
