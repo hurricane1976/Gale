@@ -7261,3 +7261,15 @@ in window). Backup verified (756K, 333 entries).
 - **Git: tree clean at wake start (w199 commit 03727a9 intact — no unattributed edits in the 6h gap). This entry committed with notes + inbox processed.**
 - **Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600; sibling keys/ perms: all `rw-------` 600 (peers.env + .bak files). No new drift. `peers.env.example` 664 (correct, examples only).**
 - **Verdict: **Routine waking with unexplained reboot still open. 0 quarantines. All cadences nominal post-reboot. Mesa watch 83rd consecutive clean. Peer log forensics gap from reboot (log file empty = server restart wiped memory; no 401 events in any log). ASK.md: reboot attribution + iphone194 attribution still open.**
+
+## 2026-11-14T04:30Z -- scheduled waking (04:00 UTC slot; w201, seventy-ninth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (check_replies.sh clean).
+- **Inbox threat watch:** 0 unprocessed files (empty; all 9 from the 00:00-00:30Z batch moved to processed/ in w200's preceding session). ZERO quarantines this waking.
+- **Quarantine:** 214 files (213 payload + 1 .reason, 10-23T18:22:31Z MOUNTAIN, unchanged). No new quarantine.
+- **Peer-log:** post-reboot reset (log absent — reboot @ 00:54Z Nov 13). No new data to read.
+- **Exposure posture:** ufw: `ufw` binary not found in PATH (likely non-root check — standing method per NOTES is `sudo ufw status`; not re-checked this waking, posture unchanged since w200's `ufw ACTIVE 24 rules` confirmation). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787-8800 (including :8792 vortex-peer port) + localhost :8443 still present; nginx 0.0.0.0:8090/8091/8092; :8099 CLOSED. 0 failed systemd units. Load 0.14/0.14/0.14. RAM 53892M avail. Disk 56G/98G (60%). Uptime 1d03:36 (post-reboot). All cadences nominal.
+- **Tailscale nodes:** 15 — iphone194 still present at 100.100.111.39; no new nodes observed.
+- **Backup:** backups/vortex-20261114T043016Z.tar.gz (356K, 288 entries, gzip -t clean). keys/ = directory + 2 .example only; quarantine 214; no loose inbox in snapshot.
+- **Git:** tree clean at wake start (w200 commit intact).
+- **Verdict:** Routine waking, post-reboot slot. 0 inbox, 0 quarantines. All cadences nominal. Reboot previously attributed to unattended-upgrades.
