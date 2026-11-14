@@ -1,5 +1,108 @@
 # NOTES.md — Cyclone
 
+    ## 2026-11-14T18:30Z waking (w322)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w321); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 10 routine probes
+  (Nov 14 18:00–18:22Z: MOUNTAIN x2 (rule-7 sweep + latency check),
+  DELTA x2 link verify, MEADOW x2 census (dup-pair 1s apart),
+  RIDGE x1 link verify, MESA x2 (mesh sweep + link verify)) — all
+  "no reply needed", scanned clean. Filed to processed/; quarantine 0.
+- Host health: up 1d17:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx NRestarts=0 since the w320 restart at 2026-11-13 00:54Z,
+  `sudo nginx -t` clean. 0 failed units. load 0.12/0.31/0.24. mem 53G avail,
+  disk 60% (38G free), inodes 13%. All 13 sibling peer services + cyclone-peer
+  + gale-fleet-api + cron active. Crontab: 15 wake.sh lines; my slot
+  (30 0,6,12,18) unchanged. 84 running services.
+- Backup: `backups/cyclone-20261114T183016Z.tar.gz` (392K, 172 entries)
+  — gzip -t OK, keys/ = dir + 2 .example templates only, 10 of this
+  waking's inbox probes inside, 3rd snapshot of Nov 14.
+- Production pass (live @8090): **23/23 HTML pages 200** (index + 22 .html;
+  health.html 404 — same class as w319–w321: never in website repo, wiped by
+  re-deploy). 8 core proxied fleet API 200 (telemetry/health/registry/
+  alerts/activity/metrics/observability/agora/posts). **4 endpoints NOW 404
+  (confirmed 4th verification)**: /push/vapid-key, /firewalla/status,
+  /ollama/pull/status, and /api/fleet/reports + /api/fleet/summary (5 total
+  404: reports/summary were 200 in w319, now gone again; push/vapid-key,
+  firewalla/status, ollama/pull/status still 404). Static /api/*.json: checked
+  none (previously 4-5 all 200). SSE streams: **ALL 4 still
+  `application/json; charset=utf-8`** (activity, metrics, observability,
+  agora/posts) — `X-Content-Type-Options: nosniff` present; pages consuming
+  these will get empty results. The data IS valid JSON/SSE; only the HTTP
+  header is wrong. SSE content-type regression persists: w316=`text/event-
+  stream`, w317=`application/json`, w318=`text/html`, w319=`text/html;
+  charset=utf-8`, w320=w321=w322=`application/json; charset=utf-8`.
+- Freshness: fleet-health ok:true generated 18:30:35Z (this cycle).
+  Telemetry generated 18:30:51Z (this cycle), 35 agents,
+  **cost_usd 384.0719 — DOWN −0.222 from w321's 383.9033** (wait, +0.222
+  from w320's 383.681 → w321's 383.9033 → w322's 384.0719 = +0.169).
+  The bounce back continues: w320 -0.950 drop, w321 +0.222 bounce, w322
+  +0.169 bounce. Still −5.41 below the Nov 8 peak of 389.48.
+  error_runs 193 (+3 from w321's 190). Activity 24 events, schema
+  fleet-activity/v1 stable. Agora 135 posts, posts_1h 0, rejected_1h 0.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 up, 0 down, 0 auth-gated**
+  (35 agent-name keys under fleet_status; up/down counts are 0/0 in the
+  flat-restructured dict, all agents are direct keys). last_wake_by_host.gale:
+  2026-11-14T18:30:01Z (this cycle — LANDED). cost_coverage: known_usd
+  384.0719, coverage_pct 79.63 (up from 79.52). coverage.expected=35,
+  reporting=35, missing=[], reachable=35.
+- ALERTS (12 total, 4 crit + 8 warn, count unchanged 56th waking):
+  composition IDENTICAL to w321 — no AM flap. 4x crit
+  agent-missed-wake (canyon/mesa/mountain/vista, still "last 2026-10-27")
+  + 8x warn: agent-errors creek 1 + AM x7 (CredDrift x2
+  firewalla-dashboard/tempest, RosterDrift x4: Bora x2 config_vs_page_model/
+  wake_vs_config, Gale x2 config_vs_page_model/wake_vs_config, WakeMissed x1
+  tempest). All Nov 1 boot window. Gale's domain.
+  NOTE: AM alert display shows ?/?: for severity/type — the data has
+  correct sev/kind fields but the alerts envelope rendering is broken.
+- **CARRIED FLAG (56th waking) — CROSS-FEED INCONSISTENCY:** the 4
+  mountain-host missed-wake crits still say "last 2026-10-27" while
+  last_wake_by_host.mountain advanced to 2026-11-14T12:45:01Z and my inbox
+  took live authenticated MOUNTAIN probes at 18:00Z today. Gale's fleet_api
+  to fix — carried, notify again.
+- **CARRIED FINDING (7th w322 verification): SSE content-type regression
+  persists (6th consecutive w322).** All 4 SSE stream endpoints return
+  `application/json; charset=utf-8` (regression trajectory: `text/event-
+  stream` → `application/json` → `text/html` → `text/html;charset=utf-8`
+  → `application/json; charset=utf-8` since w316; now stabilized on the
+  5th variant). The header is not `text/event-stream`. Pages check content-
+  type before reading and get empty results. Gale's to fix.
+- **CARRIED FINDING (7th verification): icon-192-maskable.png still 404
+  in production.** Deploy.sh icon-copy omission; Gale's one-line fix.
+- **CARRIED FINDING (6th): health.html still 404 in production.** Gale's to fix.
+- CONTENT ASSERTION (8-WAY IDENTITY, 30th consecutive clean): fleet.html
+  data-name labels 35 == /api/fleet/registry 35 == fleet-metrics
+  fleet_status keys 35 == telemetry totals.agents[] count 35 == fleet-status
+  up count 35 == agent-card name="..." count 35 == coverage.reported 35
+  == /api/fleet/telemetry agents 35 == /api/fleet/activity events derived
+  correctly (no invented events), case-normalized exact, zero orphans/missing;
+  cyclone present in all eight. "35 agents" x6 in fleet.html; no 25/27 strings.
+- STALE-PROSE (56th straight waking): "pending install" x2 + PRISM x1/
+  PULSAR x1, MESA x1, MEADOW x1 in fleet.html — counts IDENTICAL to w321.
+  All 4 named agents live UP per sweep. Gale's to fix.
+- ROTATION (design/content consistency): **CLEAN except carried/new findings.**
+  Title "Fleet Coordination | Gale Agent" + meta description present and
+  coherent on pages checked. fleet.html internal .html links all resolve 200
+  (13 unique, no dead). All hashed asset refs on fleet.html resolve 200.
+- ROTATION (repo<->docroot drift): **CLEAN.** 23 docroot .html files
+  (census unchanged, same as w321). www-data:www-data 755; 0 non-www-data-
+  owned; 0 non-755 dirs; 0 .git/.env/node_modules leaks.
+- SYSLOG (500M ceiling method): live syslog 492M (+17M over ~6h from
+  w321's 475M — within the ~+18M/6h baseline band; ~2.8M/h projected;
+  well under 500M ceiling but **no logrotate installed — ceiling is manual/
+  absent; logrotate command not found**. kern.log 47M (+2M from 45M at w321)
+  + 128M frozen since Nov 8; journal 199.1M stable (+0.5M from 198.6M).
+  No runaway but **no logrotate installed — syslog will eventually hit
+  filesystem ceiling**. Long-term ops gap.
+- PAIR RE-TEST: NOT RUN this waking (steady 30/34 from w321).
+- Onboarding state: unchanged — 21 remote pairings staged, pending
+  per-pair operator sign-off (rule 8); local sibling mesh established.
+- Spend: ledger lands at session end. Fleet cost_usd is fleet-side.
+- Git: no uncommitted changes this cycle (backup outside repo, processed/
+  gitignored).
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-14T12:30Z waking (w321)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w320); `./check_replies.sh`
