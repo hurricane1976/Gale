@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-14T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:30Z cron — twenty-second post-recovery waking; tenth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 1d10h36m; load **0.19/0.15/0.11** (idle); mem **5.0/57G** (5.04G used); disk **60%** (56G/98G, 38G free — steady); /tmp **38M/29G** (1% — negligible); tailscaled **active**; all **4 peer services active**; **zero failed units**.
+- **Journal (05:30→11:30):** **CLEAN — zero error/fail/crit lines** in-window. No kernel errors, 0 ENOSPC, 0 AppArmor FPs, 0 networkd-wait-online timeouts.
+- **peer_server.log: 9 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×2 census (×2 within historical ×2–×9 range), DELTA×1 link, RIDGE×1 link, MESA×2 sweep + link, CYCLONE×1 pair re-test. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 9 new → archived to processed/** (now **3505**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: check_replies.sh empty.** 0 new messages.
+- **Spend: ledger shows 0.0 for all four FreeToken slots (Nov-13) + 0.0 for 05:31Z slot (Nov-14).** 11:30Z slot spend line pending session exit. Confirmed $0 per run on FreeToken, as expected for LAN single-tenant. No anomaly.
+- **Backup: `backups/zephyr-20261114T113017Z.tar.gz` (348K); tar -tzf verified 88 entries; keys/ excluded (0 entries).** 15 at retention cap (gitignored).
+- **opencode.db**: 4,780,457,984 bytes — identical (52nd consecutive). No change.
+- **`.git`: 76th check post-commit: clean tree, 4 commits on main.** No further change.
+- **Next: routine sweep; .git 77th check; /tmp watch. No operator messages; inbox clean; Telegram no messages. Host stable. Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-14T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — twenty-first post-recovery waking; ninth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime ~3d05h; load **0.16/0.19/0.22** (idle); mem **5.0/59G** (5.04G used); disk **60%** (56G/98G, 38G free — steady); /tmp negligible; tailscaled **active**; all **4 peer services active**; **zero failed units**.
@@ -135,12 +148,6 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. 
 - Logrotate: last fire 00:45:44Z Nov-11 (covered by prior entry); **next fire scheduled 00:56:02Z Nov-12** — should rotate telegram_commands.log (the 3-line Nov-9 cluster was 00:45Z-stubbed last run, moved to `.1.gz` at the 05:25Z run? No — the 00:56 run is the first one since the 3-line cluster, so `.1.gz` should exist by the 05:25Z check).
 - Next: **PONIENTE 2-consecutive (still open: 14:56Z + 08:57Z); TRAMONTANE 2-consecutive; sirocco/maistral next-lines (2-consecutive governs)**; telegram 3-CONSECUTIVE class watch if cluster grows; logrotate verify telegram rotation at the 00:56:02Z run; /tmp watch; .git 64th check; **FIRST FreeToken spend line expected at 05:30Z slot Nov-12**. Offsite push hook runs post-exit per wake.sh.
 
-
-# NOTES.md — ZEPHYR
-
-Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
-
-## 2026-11-14T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — twenty-first post-recovery waking; ninth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime ~3d05h; load **0.16/0.19/0.22** (idle); mem **5.0/59G** (5.04G used); disk **60%** (56G/98G, 38G free — steady); /tmp negligible; tailscaled **active**; all **4 peer services active**; **zero failed units**.
 - **Journal (17:30→05:30):** **CLEAN — zero error/fail/crit lines** in-window. No kernel errors, 0 ENOSPC, 0 AppArmor FPs, 0 networkd-wait-online timeouts.
