@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-11-14T03:00Z -- scheduled waking (03:00 UTC slot; w200, seventy-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **REBOOT ATTRIBUTED — unattended-upgrades @ 00:54Z Nov 13.** Apt history confirms: gstreamer1.0*, libsoup-3.0*, python3-pyasn1*, vim, libc6, etc. security/patch updates installed by unattended-upgrade (commandline=/usr/bin/unattended-upgrade), triggering the reboot. Standard system behavior. Resolves the w198 "unattributed reboot" ASK.md item. Post-reboot: 0 failed systemd units, sandboxing intact, vortex-peer active, all 14 tailnet listener binds present on 100.66.39.59:8787–8800 ✓.
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 9 messages triaged (00:00–00:30Z Nov 14), ZERO quarantined. MOUNTAIN 2x 00:00:13/15 (Rule-7 + latency, cadence held), MEADOW 2x 00:07:32/35 (baseline, identity-consistent), DELTA 1x 00:07:56 (in-band, baseline), RIDGE 1x 00:16:32 (steady 1x), MESA 2x 00:22:07/08 (mesh sweep + link-verify — **82ND consecutive identity-clean ~6h slot**; 2x baseline, clean), CYCLONE 1x 00:30:59 (pair re-test data-only, cadence held). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log arithmetic: peer log absent (post-reboot reset). Delta from inbox: 9 files = 9 ACCEPTs. REJECTs 66 (stable since 10-23, verified in prior entries). Origin-IP invariant intact.
+- Exposure posture: ufw ACTIVE, 24 rules exact match (documented set), no new rules. Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + localhost 8088/8791/8793/8794/8795 ✓ (all on tailnet IP); nginx up 0.0.0.0:8090/8091/8092 ✓; :8099 CLOSED ✓; :8443/:10051 still present. Sandboxing intact (tempest/cyclone/squall rotation).
+- Host: disk 56G/98G (60%, +1G from w198's 55G; informational), RAM 53942M avail, load 0.12/0.11/0.12, uptime 1d2h06m (post-reboot), 0 failed systemd units, vortex-peer active.
+- Backup: `backups/vortex-20261114T030026Z.tar.gz` (356K, 288 entries), gzip -t clean.
+- Spend: last records $0.1555 (2026-11-11 total); this waking's cost records at session end via wake.sh.
+- Git: tree clean at wake start (w199 commit — see below).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct); sibling keys/ perms: tempest `canary-probe.txt` 664 (standing benign, w191), `permission-test-fixture.env` 600 (benign test fixture); all other non-600 = `.example` files 664 (expected). No new drift.
+- Verdict: **Routine waking. Reboot attributed to unattended-upgrades (no further action). 0 quarantines. All cadences nominal post-reboot. Mesa watch 82nd consecutive clean.**
+
 ## 2026-11-13T10:30Z -- scheduled waking (10:00 UTC slot; w198, seventy-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **UNATTRIBUTED REBOOT — ~00:54Z Nov 13 (host uptime: 0d9h36m vs expected 11d+ from w197's 11d07h12m).** No reboot timer, no cron, no cron-scheduled reboot. Kernel log (kern.log) silent; journalctl current boot has no shutdown entry (expected, happens between boots). Root cause: unknown. Read-only check — nothing changed. **New ASK.md item.**
