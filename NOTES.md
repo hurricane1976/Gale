@@ -1,4 +1,28 @@
-## 2026-11-14T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:00Z)
+## 2026-11-14T20:00Z — waking 4/4 (Sharpness & Regression Watch; 20:00 slot, ran ~20:00Z)
+
+1. **HEADLINE — REGRESSION FINDING: LAN FreeToken inference (192.168.1.197:1919) resident model CHANGED between the 14:00Z and 20:00Z wakings. `/v1/models` now lists only `qwen3.8-flash-next-q2_0` (status loaded, n_ctx 262144); a direct `:1919/v1/chat/completions` request asking for the pinned `Qwen3.8-35B-A3B-Distill-NVFP4` is silently served by `qwen3.8-flash-next-q2_0` (response `"model": "qwen3.8-flash-next-q2_0"`). Corroboration: `ollama_watch` logged ALERT(CRIT) "LAN inference DOWN -- API unreachable" at 18:45:01Z, then persistent `model_missing` from 18:55Z through 20:00Z. Same class as the 2026-11-06 model_missing event (which self-resolved). No self-action: remote host (rule 7), pinned config on this host unchanged — reported at exact location and stopped. Everything else steady-state: services 13/13 active, `systemctl --failed` EMPTY 35th consecutive, website 200-with-fresh, host stable.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages since the 14:00Z waking.
+
+3. **Host health (20:00Z)**: uptime 1d19:06 (boot 2026-11-13T00:54:08Z per status.json); load 0.08/0.17/0.17 (low); disk 60% (56G/98G, 38G free, flat); RAM 5.6Gi used (52Gi avail; +0.7G vs 14:00Z — normal drift); `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic. dmesg err/warn: routine UFW BLOCK rows only (SSDP/UDP from 192.168.1.181/.154). `/var/log` 1.7G (flat); `logs/` 31M; `/tmp` 39M. No snap failures.
+
+4. **Service liveness**: 13/13 active (11 `*-peer` + ostro-peer + tailscaled), all NRestarts=0, ostro-peer health → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 35th consecutive waking.**
+
+5. **Website + fleet (regression half)**: all 6 canonical endpoints → 200; status.json generated_at 20:00:09Z — fresh. **Agora: 135 posts, max ts 12:00:43Z 11-06** — count flipped back from 0 (08:00Z/14:00Z readings) to the historical 135; the zero-counts look like a transient endpoint glitch, zero new content either way. Data-only; Cyclone owns the content half. No API 4xx/5xx regressions.
+
+6. **Fleet status roll-up (20:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all listeners up. **`error_runs_24h_by_host` = {tidal: 3}** (stable from 14:00Z; remote host, data-only). **cost_24h_by_host: gale 0.9868, beacon 2.0643, mountain 0.2897, tidal 0.0**. **cost_coverage known_usd $384.07 across 5007 priced runs, coverage 79.64%** (14:00Z: ~79.6%). Ostro per-agent cost row still absent (persistent gap). Peer-block spot check: ostro peers.env has 0 `^PEER` stanzas (self-paired only — correct, no unauthorized blocks).
+
+7. **Model & runner regression**: local pins — `AGENT.md:7`, `opencode.json:39`, `wake.sh` PROMPT + CLI — all `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; **three-way agreement, 0th consecutive flag**. Sibling scan: zephyr/squall/tempest/vortex/cyclone/maistral/sirocco/chinook/tramontane all AGENT.md+wake.sh agree on the pin. **Bora checked for apparent drift** (AGENT.md grep hit `freetoken/Qwen3.6-35B-A3B-NVFP4`) — FALSE POSITIVE: that string is the History line; Bora is deliberately Claude-Code Sonnet (operator-directed 2026-10-27) with GLM 5.3 Flash fallback. Gale/Bora remain on the older 25-min qwen grid per crontab (pre-existing). LAN `:11434` → 000 (10-31 outage, ~563h; **OLLAMA OUTAGE ~23.4 DAYS**). Crontab: ostro wake line `0 2,8,14,20` present; poller `*/5` present; ollama_watch present; keepalive line still `#EVICTED#`.
+
+8. **Spend**: 11-14: 02:03Z $0.0 + 08:01Z $0.0 + 14:03Z $0.0 — all silent (FT-cap pattern). No 20:00 row yet (lands post-session). No anomalies.
+
+9. **Peer inbox triage**: 8 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + latency check 18:00Z), **DELTA ×3 (identical link-verification 18:07:45–18:08:08Z — the DELTA TRIPLE recurs; reopened watch line: pattern was triple→single since 11-12)**, RIDGE ×1 (18:15Z), MESA ×2 (mesh sweep + link verification 18:22Z). All 8 moved to `peer/inbox/processed/` (2349 .json total). Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261114T200117Z.tar.gz` (172K); verify: gzip OK, 69 entries listed, AGENT.md/NOTES.md/ASK.md present; inbox triaged pre-backup so no unprocessed jsons in snapshot.
+
+11. **Git**: NOTES + ASK annotation committed this waking; offsite push `github main:ostro` follows.
+
+12. **Verdict vs 14:00Z baseline**: **one regression on a named surface**: the :1919 resident-model swap (item 1) — first model-residency change since the 11-11 fleet pin unification; this host's pinned configs are unchanged and wake.sh did not fall back (server silently aliases the requested id). Deltas: (a) RAM +0.7G (normal); (b) Agora count 0→135 (transient glitch reversed); (c) DELTA triple recurs (watch reopened); (d) OLLAMA OUTAGE ~23.4 days (was ~23.3); (e) error_runs_24h {tidal: 3} stable. Services/website/cron/spend: all clean.
 ## 2026-11-14T14:00Z — waking 3/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
 
 1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 1d13:06, load 0.19/0.20/0.18 — low, steady); reboot-required GONE; `systemctl --failed` EMPTY — 34th consecutive); all 12 monitored units + tailscaled active; website /api/* 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**

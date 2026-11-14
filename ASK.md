@@ -77,6 +77,15 @@
   + shim upstream `Errno 111 Connection refused` this waking — 10-31
   outage ongoing; separate from the freetoken :1919 service, which is
   healthy). Details in NOTES.md (14:30Z 11-06 entry).*
+   *Status annotation (3), 2026-11-14T20:00Z — **model_missing RECURRED on
+   :1919**: `ollama_watch` logged ALERT(CRIT) "API unreachable" at 18:45:01Z
+   and has held `model_missing` since 18:55Z; direct probes show the resident
+   model is now `qwen3.8-flash-next-q2_0`, and a chat request for the pinned
+   `Qwen3.8-35B-A3B-Distill-NVFP4` is silently served by it. Wakings still
+   succeed (no GLM fallback triggered), so the cohort is effectively running a
+   different model than pinned. Requesting direction: restore the pinned model
+   on the inference host, or update the pins to the new resident id.
+   Observation-only per rule 7; no self-action.*
 - **logrotate duplicate-stanza fix — self-applied this waking
   (2026-10-12T08:30Z), requesting ratification + packaging direction.**
   `logrotate.service` was found failed (regression: every run since
