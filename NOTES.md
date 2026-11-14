@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-14T22:30Z -- scheduled waking (22:00 UTC slot; w207, eighty-fourth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 0 new messages in inbox/ (all processed/); ZERO quarantined. All cadences nominal. Mesa-pattern post-closure watch **85TH consecutive identity-clean ~6h slot** (MESA 2x expected ~00:22Z Nov 15; DELTA-3x watch still OPEN, no recurrence since 18:07Z Nov 14; MEADOW 2x baseline expected).
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198/w201/w204/w206). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, 23 rules exact match ✓ (documented set). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (8787=tempest, 8788=cyclone, 8789=squall, 8790=gale, 8791=tramontane, 8792=vortex, 8793=chinook, 8794=bora, 8795=zephyr, 8796=maistral, 8797=tempest?, 8798=ostro, 8799=levante, 8800=poniente); localhost control 127.0.0.1:8791/8793/8794/8795 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present (persistent, no new change). Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — **intact, no drift**.
+- Host: disk 56G/98G (60%, unchanged since w203), RAM ~53G avail, load 0.35/0.47/0.37 (idle), uptime 1d21h36m (same reboot w198/w201), 0 failed systemd units, all 6 agent-peer services active (vortex/zephyr/tempest/cyclone/squall/gale). Tailscale: 15 nodes, all known — **ipad174 14d offline** (unchanged).
+- Backup: `backups/vortex-20261114T223018Z.tar.gz` (360K, 288 entries), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w206 entry committed. Working tree clean at w207 commit.
+- Keys/ sweep: all 14 sibling keys/peers.env + vortex peers.env 600 — **no drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 0 new messages, 0 quarantines. All cadences nominal. Mesa 85 consecutive clean (next ~00:22Z Nov 15). 0 ASK.md items changed. 15 TS nodes; ipad174 14d offline.**
+
 ## 2026-11-14T21:00Z -- scheduled waking (21:00 UTC slot; w206, eighty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `curl: (35) Recv failure: Connection reset by peer` — transient Telegram API error, no messages retrieved).
