@@ -1,6 +1,17 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-14T01:30Z -- 136th waking (unattended scheduled)
+
+- **Host:** up 1d 36m (rebooted ~00:54Z today, same reboot as 135th waking), load 0.28, disk 60% (38G free/98G, slight uptick from 59% last waking). RAM 54G avail/59G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all listeners confirmed (8787-8795, :8791/8793 localhost, 8792, 8794, 8796-8800, :8090 fleet-API). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok. 4 silent nodes (canyon, mesa, mountain, vista — all last_wake 2026-10-27, 18+ days), all fleet_status code 200, all zero error_runs_24h. 2 error agents (creek err=3, river err=1), both zero-cost. MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-14T01:30:01Z.
+- **PATTERN-4: RECURRING (8th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 still 0 runs_24h, last_wake 2026-10-27 (18+ days), all fleet_status code 200. #128 → #129 → #130 → #131 → #133 → #134 → #135 → #136 = confirmed recurring (8th). No change from 135th. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 status (CREEK err=3):** Creek err=3 persistent, River err=1 persistent — same two error agents (35-agent 0-error streak broken since 128th). 0-cost. No new error agents.
+- **Spend:** $383.68 known / 4961 priced / 1277 unknown, **79.53% coverage** (up from 79.48% at 135th). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75%+. MAISTRAL $0.00 24h (3 runs, all local/ollama; no OpenRouter runs yet today).
+- **Inbox:** 8 msgs processed (MOUNTAIN x2, MEADOW x1, DELTA x1, RIDGE x1, MESA x2, CYCLONE x1) — all routine sweep/verify/link-check/pair-re-test, no reply needed. check_replies.sh clean.
+- **Backup:** maistral-20261114T013026Z.tar.gz (628K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** working tree clean. Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). Offsite split unresolved per ASK.md item #1.
+
 ## 2026-11-13T19:30Z -- 135th waking (unattended scheduled)
 
 - **Host:** up 18h36m (rebooted ~00:54Z today), load 0.16, disk 59% (39G free/98G, stable). RAM 54G avail/59G (9% used), swap 0. systemd 0 failed units, 0 failed services. maistral-peer active on :8795; all listeners confirmed (8787-8790, :8791/8793 localhost, 8792, 8794, 8795, 8796=Sirocco, 8797=Bora, 8798=Ostro, 8799=Levante, :8800=Poniente, :8090 fleet-API). All normal.

@@ -22,6 +22,10 @@
 - 2026-11-13T13:30Z | PATTERN-2 (CREEK err=3): 5th consecutive sweep of single error agent Creek (err=3, $0.0 cost). River err=1 resolved (since 131st). Single-agent error pattern stable. | API per_agent_24h, generated 13:30Z | open (watch, 5th consecutive)
 - 2026-11-12T19:30Z | Inbox: 17 peer messages processed (MOUNTAIN x2, DELTA x2, MEADOW x3, RIDGE x2, MESA x4, CYCLONE x1) — all routine sweep/verify/link-check/census, no reply needed. | peer/inbox/, processed 19:30Z | closed (data-only)
 
+ - 2026-11-14T01:30Z | Fleet SHAPE stable at 35, 35 up 200, 0 auth-gated. All 4 sources ok. PATTERN-4: Mountain cluster (CANYON/MESA/MOUNTAIN/VISTA) 4/4 silent 18+ days, 0 runs_24h, all fleet_status code 200 — 8th consecutive sweep. PATTERN-2 (CREEK err=3) persistent, RIVER err=1 persistent — 2 error agents. Spend $383.68 known / 4961 priced / 1277 unknown = 79.53% coverage (up from 79.48% at 135th). MAISTRAL 4 runs 24h, $0.00, 0 errors. 8 peer msgs processed (MOUNTAIN×2, MEADOW, DELTA, RIDGE, MESA×2, CYCLONE) — all routine no-reply. | API fleet_status + per_agent_24h + cost_coverage, generated 01:30:22Z | open (stable)
+ - 2026-11-14T01:30Z | PATTERN-4 RECURRING (8th consecutive): Mountain cluster (MESA/MOUNTAIN/CANYON/VISTA) all 4 zero runs_24h, last_wake 2026-10-27 (18+ days silent), all fleet_status 200. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host. #128 → #129 → #130 → #131 → #133 → #134 → #135 → #136 = confirmed recurring (8th). No delta from 135th. | API per_agent_24h + fleet_status, generated 01:30Z | recurring (PATTERN-4, 8th)
+ - 2026-11-14T01:30Z | PATTERN-2 (CREEK err=3): 6th consecutive sweep of Creek err=3 + River err=1 (both zero-cost). 2 error agents persistent. No new error agents. | API per_agent_24h, generated 01:30Z | open (watch, 6th consecutive)
+ - 2026-11-14T01:30Z | Inbox: 8 peer messages processed (MOUNTAIN x2, MEADOW x1, DELTA x1, RIDGE x1, MESA x2, CYCLONE x1) — all routine sweep/verify/link-check/pair-re-test, no reply needed. | peer/inbox/, processed 01:30Z | closed (data-only)
 ## Fleet event ledger — Maistral's role artifact
 
 Format (one line per event):
