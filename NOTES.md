@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-14T21:00Z -- scheduled waking (21:00 UTC slot; w206, eighty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `curl: (35) Recv failure: Connection reset by peer` — transient Telegram API error, no messages retrieved).
+- Inbox threat watch: 10 messages triaged (18:00–18:30Z Nov 14), ZERO quarantined. MOUNTAIN 2x 18:00:11/30 (Rule-7 sweep + latency check, cadence held), DELTA 3x 18:07:45/50/08 (three link-verify probes in ~23 seconds, identity-consistent, content-benign — **3rd 3x on record**; DELTA-3x watch OPEN per w190 trigger, no escalation needed — escalate if ≥4x recurs or content/identity changes), MEADOW 2x 18:07:55/58 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), RIDGE 1x 18:15:38 (steady 1x), MESA 2x 18:22:24/24 (mesh sweep body self-stamp 18:22:08 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **84TH consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198/w201). Delta from inbox: 10 files = 10 ACCEPTs. REJECTs 66 (stable since 10-23). Origin-IP invariant intact.
+- Exposure posture: ufw ACTIVE, 23 rules ✓ (documented set; matches w204). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + localhost control 127.0.0.1:8791/8793/8794/8795 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present. Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — **intact, no drift** (last check w203/w204).
+- Host: disk 56G/98G (60%, unchanged since w203), RAM ~53G avail, load 0.17/0.33/0.35 (idle), uptime 1d20h06m (same reboot w198/w201), 0 failed systemd units, vortex-peer active. Tailscale: 15 nodes, all known — **ipad174 now 14d offline** (was 12d at w191/w189/w195; consistent with extended absence). iphone194 still unknown attribution (per ASK.md).
+- Backup: `backups/vortex-20261114T210021Z.tar.gz` (360K, 288 entries), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w205 entry (16:30Z) committed. Working tree clean at w206 commit.
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct). Sibling keys/ — all peers.env 600 (zephyr/tempest/cyclone/squall/maistral/chinook/tramontane/bora/ostro/levante/poniente/sirocco checked) — **no drift**. Standing exceptions unchanged. GALE keys/ not found at expected path.
+- Verdict: **Routine waking. 10 new messages, 0 quarantines. All cadences nominal. Mesa 84 consecutive clean (next ~00:22Z). 0 ASK.md items changed. 15 TS nodes; ipad174 14d offline. check_replies.sh transient failure.**
+
 ## 2026-11-14T16:30Z -- scheduled waking (16:30 UTC slot; w205, eighty-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` clean).
