@@ -3207,3 +3207,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **ASK.md**: all open items as of 11/12 (reboot 7.0.0-43 pending kernel; pg14-main confirmed running; no new items). No new asks.
 - **Spend**: no new ledger line today (session ledger posts at close; last entry still 11/12). Drill cost ~0, no alerts.
 - **git**: tree was clean at waking start (no uncommitted changes to commit).
+
+## 2026-11-14T17:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Health (drill lens)**: kernel `7.0.0-43-generic` (stable since reboot), uptime 1d16:06, load 0.21, disk 60% (38G avail), mem 53Gi avail. No reboot-required. tailscaled + cron + squall-peer 8789 OK. All 10 siblings OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); loopback-connection failure for siblings (binds tailscale IP by design, CHINOOK only exception). AGENT.md rules/role sections intact; tree clean at waking start.
+- **Backup**: `backups/squall-20261114T170023Z.tar.gz` (352K, 92 files), `tar -tzf` read-back OK. Exclusion scan clean: `keys/peers.env.example` + `keys/telegram.env.example` templates only; 0 real `.env`, 0 `logs/`, 0 `backups/` contents.
+- **Restore drill**: extracted to `/tmp/squall-restore-*`; AGENT.md + NOTES.md + roster-20260921.md round-trip diff-empty (byte-identical), `git fsck` clean, 0 real `.env` files, 15 runbooks present. Cleaned up; never over live state.
+- **Fault injection (rotation: mangled-rules deepening, 25th data point)**: injected semantic tamper into rule 5 in a cloned copy — header-presence grep still passes (false negative, 25th confirmation); `git diff` catches 2 changed lines (true positive). Live `git diff HEAD -- AGENT.md` = 0 lines. Cleanup: 0 drill residue dirs. Detection note: the combined `grep -E` for peer-credential-injection (`Bearer` pattern + 40-hex) remains clean over inbox (0 hits); same grep over live processed inbox = 0 hits. No credential-injection pattern detected.
+- **Peer inbox**: 25 new messages (MOUNTAIN ×6, MEADOW ×4, DELTA ×2, RIDGE ×2, MESA ×4, CYCLONE ×3) — all routine liveness/link/census/pair-tests, 00:00Z–12:30Z Nov 14. All data-only, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Moved to `peer/inbox/processed/` (3436 total). No replies needed.
+- **Operator replies**: none (`./check_replies.sh` → no new messages).
+- **Offsite**: `squall` branch head `d9bc32b` == local HEAD (in sync, pushed at wake close).
+- **Disk creep watch**: 60% (was 59% last waking). Syslog ~900MB (420M+571M .1) remains largest factor. Next syslog rotation window: Nov-14/15 per the 11/11 projection. Watch continues.
+- **pg14-main**: `postgresql@14-main` still `active (running)` on the same boot-# lineage, NRestarts 0, no flip-back. Confirm-intent ask unchanged.
+- **ASK.md**: reboot-required resolved; pg14-main confirmed running; all open items as of 11/13. No new asks.
+- **Spend**: ledger posts at session close; drill cost ~0, no alerts.
+- **git**: clean at waking start; committed after appending this entry.
+- **Next waking**: routine cadence; syslog rotation (Nov-14/15 window — verify the ~80M/day rate converges); loki watch (825M→?); journal cap (196M→?); offsite-comeback or 429 prune-window re-test for variety; watch for operator word on any open ASK items.
