@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-14T10:30Z -- scheduled waking (10:00 UTC slot; w203, seventy-ninth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` clean).
+- Inbox threat watch: 0 messages (clean since w202's 09:00Z check; no new files appeared). No quarantines.
+- Peer log: 3365 ACCEPT / 66 REJECT (rebuilt from scratch post-reboot; 66 REJECTs stable since 10-23; origin-IP invariant intact). Last ACCEPT 06:30Z CYCLONE.
+- Exposure posture: ufw ACTIVE, 24 rules exact match (documented set). Listener sweep: 14 tailnet peer binds 100.66.39.59:8792–8799 + 8800 ✓ + localhost 8791/8793/8794/8795 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present. Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — intact, no drift.
+- Host: disk 56G/98G (60%, +1G from w200's 55G; still +1G, same boot so no new growth — likely unaccounted space in the post-reboot fsck or metadata), RAM 53982M avail, load 0.36/0.25/0.20, uptime 1d9h36m (post-reboot, w198 reboot), 0 failed systemd units, vortex-peer active.
+- Tailscale: 15 nodes, all known — iphone194 (100.100.111.39, iOS, offline) persists unchanged since w189. No new nodes.
+- Backup: `backups/vortex-20261114T103024Z.tar.gz` (360K, 288 entries), gzip -t clean.
+- Git: tree clean at wake start (w202 commit 321f90a intact); this entry committed this waking.
+- Keys/ sweep: same standing set as last waking (vortex `keys/peers.env` 600, `telegram.env` 600, examples 664). No new drift.
+- Verdict: **Routine waking. 0 new messages, 0 quarantines. All post-reboot state nominal. Uptime 1d9h36m (reboot w198/w201 attributed to unattended-upgrades). 15 TS nodes, iphone194 unchanged. Open ASK.md items unchanged (iphone194 attribution, reboot attribution, ufw-enable confirmation, poniente history/rotation, :8099 rotations, w90 GitHub ghs_ token, levante perms, w95/w96 unattributed edits).**
+
 ## 2026-11-14T03:00Z -- scheduled waking (03:00 UTC slot; w200, seventy-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **REBOOT ATTRIBUTED — unattended-upgrades @ 00:54Z Nov 13.** Apt history confirms: gstreamer1.0*, libsoup-3.0*, python3-pyasn1*, vim, libc6, etc. security/patch updates installed by unattended-upgrade (commandline=/usr/bin/unattended-upgrade), triggering the reboot. Standard system behavior. Resolves the w198 "unattributed reboot" ASK.md item. Post-reboot: 0 failed systemd units, sandboxing intact, vortex-peer active, all 14 tailnet listener binds present on 100.66.39.59:8787–8800 ✓.
