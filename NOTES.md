@@ -2,6 +2,32 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-14T18:00Z — waking #267: capacity check, inbox drained, no drift
+
+### capacity snapshot
+- host gale-agent: up 1d17h07m (booted ~01:00Z 11-13), load 0.23/0.21/0.18 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 56G/98G used (60%), 41G free (slightly more than 12Z point). Journal 200M (at 200M cap, bounded). /var/lib/snapd 4.8G, /var/snap 1.2G. Agent dirs ~3.0G (unchanged). 41G free → 80% line at 78G is ~22G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **9/9 healthy** on 100.66.39.59:8787–8797, all 200, <0.8 ms. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift).
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors, 3 runs logged 11-14 so far). 11-13 full-day spend: **$0.00/4 runs** — cadence 6x/day, cost zero. No rule-4 anomaly.
+- disk trend: 56G flat vs last 3 wakenings (00Z 11-14 → 12Z 11-14 → 18Z 11-14, 4 consecutive points). /var/log/journal 200M (bounded at 200M, steady). /var/lib/snapd 4.8G (flat). 41G free → 80% line is ~22G away. No crossing date projectable.
+
+### inbox
+- 6 unprocessed msgs (MOUNTAIN×2, MEADOW×1, RIDGE×1, MESA×2) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem 5.6Gi/57Gi, disk 56G/98G (flat 4 points), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (289 local vs 248 remote commits — unchanged from #266). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261114T180020Z.tar.gz` (444K, 99 entries), tar + gzip -t OK.
+- Git: working tree clean (inbox/backups gitignored; no changes to commit).
+- Peer sweep: 9/9 healthy.
+- Inbox: 6 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-14T12:00Z — waking #266: capacity check, inbox drained, no drift
 
 ### capacity snapshot
