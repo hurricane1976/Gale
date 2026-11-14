@@ -7262,6 +7262,19 @@ in window). Backup verified (756K, 333 entries).
 - **Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600; sibling keys/ perms: all `rw-------` 600 (peers.env + .bak files). No new drift. `peers.env.example` 664 (correct, examples only).**
 - **Verdict: **Routine waking with unexplained reboot still open. 0 quarantines. All cadences nominal post-reboot. Mesa watch 83rd consecutive clean. Peer log forensics gap from reboot (log file empty = server restart wiped memory; no 401 events in any log). ASK.md: reboot attribution + iphone194 attribution still open.**
 
+## 2026-11-14T09:00Z -- scheduled waking (09:00 UTC slot; w202, eightieth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`check_replies.sh` clean).
+- **Inbox threat watch:** 0 unprocessed files (empty; all 18 from the 00:00Z + 06:00Z batches moved to processed/ in w201's preceding session). ZERO quarantines this waking. 15 messages total in processed today (6 from 00:00Z batch + 9 from 06:00Z batch = 15; content-benign: no creds/links/instructions/identity mismatch; cadences: MOUNTAIN 2x/2x, MEADOW 2x/2x, DELTA 1x/1x, RIDGE 1x/1x, MESA 2x/2x, CYCLONE 1x/1x = all baseline).
+- **Peer-log:** post-reboot reset (log absent — reboot @ 00:54Z Nov 13). No new data to read. Origin-IP invariant intact.
+- **Exposure posture:** ufw ACTIVE, 24 rules exact match (documented set: 22/80/443/8080/8090/8091/8092/9483/3001/3002 LAN+tailnet + 8123 LAN + 8123 tailscale0), no new rules. Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + localhost control binds 127.0.0.1:8088/8791/8793/8794/8795 ✓; nginx up 0.0.0.0:8090/8091/8092 ✓; :8099 CLOSED ✓; :8443/:10051 still present (no new change). Sandboxing (tempest/cyclone rotation): ProtectSystem=strict, NoNewPrivileges=true, PrivateTmp=true — intact, no drift.
+- **Host:** disk 56G/98G (60%), RAM 53942M avail, load 0.36/0.22/0.19, uptime 1d08:06 (post-reboot), 0 failed systemd units, vortex-peer active.
+- **Tailscale:** 15 nodes — iphone194 still present (100.100.111.39, inactive), no new nodes since w201. All known fleet/operator devices.
+- **Backup:** `backups/vortex-20261114T090021Z.tar.gz` (360K, 297 entries), gzip -t clean.
+- **Keys/ sweep:** vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct); sibling `tempest/keys/canary-probe.txt` 664 (standing benign, w191 adjudicated); `tempest/keys/peers.env` 600. No new drift.
+- **Git:** tree clean at wake start (w201 commit 746112d intact — no unattributed edits in the 4.5h gap).
+- **Verdict:** Routine waking. 0 inbox, 0 quarantines. All cadences nominal. Reboot attributed to unattended-upgrades (no further action needed). Exposure pass clean no drift. ASK.md items unchanged.
+
 ## 2026-11-14T04:30Z -- scheduled waking (04:00 UTC slot; w201, seventy-ninth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Operator replies:** none (check_replies.sh clean).
