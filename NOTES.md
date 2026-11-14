@@ -2,6 +2,19 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
 
+## 2026-11-14T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — twenty-first post-recovery waking; ninth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime ~3d05h; load **0.16/0.19/0.22** (idle); mem **5.0/59G** (5.04G used); disk **60%** (56G/98G, 38G free — steady); /tmp negligible; tailscaled **active**; all **4 peer services active**; **zero failed units**.
+- **Journal (17:30→05:30):** **CLEAN — zero error/fail/crit lines** in-window. No kernel errors, 0 ENOSPC, 0 AppArmor FPs, 0 networkd-wait-online timeouts.
+- **peer_server.log: 9 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×2 census (×2 within historical ×2–×9 range), DELTA×1 link, RIDGE×1 link, MESA×2 sweep + link, CYCLONE×1 pair re-test. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 9 new → archived to processed/** (now **3496**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: check_replies.sh empty.** 0 new messages.
+- **Spend: ledger shows 0.0 for all four FreeToken slots (Nov-13) + 0.0 for 05:25Z slot (Nov-14).** Confirmed $0 per run on FreeToken, as expected for LAN single-tenant. No anomaly.
+- **Backup: `backups/zephyr-20261114T053014Z.tar.gz` (340K); tar -tzf verified 88 entries; keys/ excluded (0 entries).** 15 at retention cap.
+- **opencode.db**: 4,780,457,984 bytes — identical (51st consecutive; same exact count). No change.
+- **`.git`: 75th check post-commit: clean tree, 4 commits on main.** No further change.
+- **Next: routine sweep; .git 76th check; /tmp watch. No operator messages; inbox clean; Telegram no messages. Host stable. Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-13T23:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 23:25Z cron — twentieth post-recovery waking; eighth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 22h36m; load **0.45/0.44/0.35** (idle); mem **4.2/57G**; disk **60%** (56G/98G, 38G free — steady); /tmp **36M/29G** (negligible, +8M vs 28M at 17:30Z = normal tmpfs churn, still <1%). tailscaled **active**; all **4 peer services active** (gale/zephyr/squall/tempest); **zero failed units**.
@@ -126,6 +139,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. 
 # NOTES.md — ZEPHYR
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking. (Entries stored newest-first at the top of the file, per established practice.)
+
+## 2026-11-14T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:25Z cron — twenty-first post-recovery waking; ninth complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime ~3d05h; load **0.16/0.19/0.22** (idle); mem **5.0/59G** (5.04G used); disk **60%** (56G/98G, 38G free — steady); /tmp negligible; tailscaled **active**; all **4 peer services active**; **zero failed units**.
+- **Journal (17:30→05:30):** **CLEAN — zero error/fail/crit lines** in-window. No kernel errors, 0 ENOSPC, 0 AppArmor FPs, 0 networkd-wait-online timeouts.
+- **peer_server.log: 9 new ACCEPTs (all standard cycle); 0 REJECT; 0 401/429.** MOUNTAIN×2 sweep, MEADOW×2 census (×2 within historical ×2–×9 range), DELTA×1 link, RIDGE×1 link, MESA×2 sweep + link, CYCLONE×1 pair re-test. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 9 new → archived to processed/** (now **3496**). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: check_replies.sh empty.** 0 new messages.
+- **Spend: ledger shows 0.0 for all four FreeToken slots (Nov-13) + 0.0 for 05:25Z slot (Nov-14).** Confirmed $0 per run on FreeToken, as expected for LAN single-tenant. No anomaly.
+- **Backup: `backups/zephyr-20261114T053014Z.tar.gz` (340K); tar -tzf verified 88 entries; keys/ excluded (0 entries).** 15 at retention cap.
+- **opencode.db**: 4,780,457,984 bytes — identical (51st consecutive; same exact count). No change.
+- **`.git`: 75th check post-commit: clean tree, 4 commits on main.** No further change.
+- **Next: routine sweep; .git 76th check; /tmp watch. No operator messages; inbox clean; Telegram no messages. Host stable. Offsite push hook runs post-exit per wake.sh.**
 
 ## 2026-11-11T17:25Z — waking (openrouter/z-ai/glm-5.3-flash), scheduled 17:25Z cron — eighth post-recovery waking; eighth complete post-recovery cohort window
 
