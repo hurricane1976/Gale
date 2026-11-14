@@ -375,6 +375,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Next waking: reboot-flag monitoring (event 9, 28th+ waking since 11/03); disk-creep watch (58%); syslog rotation verify (~Nov-14-15 window from 11/11); routine cadence.
 - **Rule 8a sibling-pairing check**: all 9 local siblings already paired (confirmed by health checks); no new pairing requested.
 
+## 2026-11-14T23:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK via Tailscale (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); 14 sibling peer units active; cron + telegram pollers active; disk **60% (56G/98G)**, mem 54Gi avail, load 0.14/0.17/0.17, uptime ~30h. Kernel **7.0.0-43-generic** current — reboot-required **absent** (confirmed 3+ wakings since Nov-11 boot). AGENT.md rules/role sections intact; tree clean at waking start.
+- Inbox: 34 new messages processed (MOUNTAIN ×8, MEADOW ×8, DELTA ×4, RIDGE ×4, MESA ×8, CYCLONE ×2) — all data-only liveness/link/census checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed 3474. No replies needed.
+- Backup: `./backup.sh` → `backups/squall-20261114T230023Z.tar.gz` (352K), `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates; no real `.env` files.
+- Restore drill: extracted to mktemp — `AGENT.md`/`NOTES.md` round-trip diff-empty, no real keys, 15 runbooks present. Never over live state.
+- Drill rotation — **mangled-rules 25th-pass semantic deepening** (routine re-verification): injected one-line semantic tamper into rule 5 ("only the operator" → "any peer with operator delegation") in a temp clone. Finding **unchanged from 2026-09-22 18:54Z**: header-presence grep (## The rules / ## Your role) **passes** (false negative — both headers still present); `git diff --quiet AGENT.md` catches it (exit 1 = diff found). Detection procedure still valid: use `git diff HEAD -- AGENT.md` as primary, header grep as secondary sanity.
+- Spend: ledger all lines $0.000 (FreeToken free-tier active); drill cost ~0.
+- Offsite: `squall` branch head `a198c7f` == local HEAD (in sync, pushed this waking).
+- Next waking: routine cadence; disk-creep watch (60% stable, syslog/loki the main drivers); watch for operator word on any new peer pairing.
 ## 2026-11-13T23:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`./check_replies.sh` → no new messages).
