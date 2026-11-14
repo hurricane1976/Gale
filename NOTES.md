@@ -1,4 +1,29 @@
 ## 2026-11-14T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:00Z)
+## 2026-11-14T14:00Z — waking 3/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
+
+1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 1d13:06, load 0.19/0.20/0.18 — low, steady); reboot-required GONE; `systemctl --failed` EMPTY — 34th consecutive); all 12 monitored units + tailscaled active; website /api/* 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages since the 08:00Z waking.
+
+3. **Host health (14:00Z)**: uptime 1d13:06 (boot ~01:00Z 11-13); load 0.19/0.20/0.18 (low, stable from 08:00Z); disk 60% (56G/98G, 38G free, flat); RAM 4.9Gi used (43.9Gi avail, stable from 08:00Z); `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic running. dmesg err/warn: routine UFW BLOCK rows (same 192.168.1.x SSDP/UDP noise); no new err lines. `/var/log` 1.7G (+0.1G from 08:00Z's 1.6G — mild, watch). No snap failures. No unexplained growth.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled), ostro-peer health → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 34th consecutive waking.**
+
+5. **Website + fleet (regression half)**: `/api/status.json` → generated_at 14:00:18Z — fresh. **Agora: 0 posts** (same zero since 08:00Z; data-only, Cyclone owns the content half). No API 5xx or 4xx regressions observed. **Note: `http://100.66.39.59:8090/health` → 404** (Gale web-app's internal 404 route, not our peer/health service; pre-existing — not a regression of Ostro's service surface).
+
+6. **Fleet status roll-up (14:00Z)**: error_runs_24h_by_host = **{tidal: 3}** (stable from 08:00Z; remote host, data-only). **cost_coverage known_usd $383.90 across ~4992 priced runs, coverage ~79.6%** (up slightly from 79.53% at 08:00Z; stable). **cost_24h_by_host: gale 0.99, beacon 1.92, mountain 0.32** (new 24h window from 02:00Z, no Ostro row — persistent gap). Ostro per-agent row still absent from fleet observability.
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same; **three-way agreement — 0th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4`; LAN `:11434` → ECONNREFUSED (10-31 outage, ~559h; **OLLAMA OUTAGE ~23.3 DAYS**).
+
+8. **Spend**: 11-14 so far: 02:03Z $0.0 + 08:01Z $0.0 — both silent (FT-cap pattern; same as 11-13). No 14:00 row yet (lands post-session). No spend anomalies.
+
+9. **Peer inbox triage**: 5 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + automated latency check 12:00Z), RIDGE ×1 (link verification 12:16Z), MESA ×2 (mesh sweep + link verification 12:22Z). All 5 moved to `peer/inbox/processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261114T140018Z.tar.gz` (172K); verify: gzip OK, 74 entries listed, AGENT.md/NOTES.md/ASK.md present; 7 inbox jsons in snapshot (pre-triage — normal).
+
+11. **Git**: working tree clean; offsite push pending.
+
+12. **Verdict vs 08:00Z baseline**: **no regression on THIS host's named surfaces** (services 12/12 active, website 200-with-fresh, model/runner pins consistent, spend $0×6 on 11-13/14). Deltas: (a) `/var/log` +0.1G (1.6→1.7G — mild, watch); (b) cost_24h_by_host window rollover (gale 0.99, beacon 1.92, mountain 0.32); (c) error_runs_24h {tidal: 3} stable; (d) OLLAMA OUTAGE ~23.3 DAYS (was ~23.2); (e) cost_coverage slight uptick 79.53→~79.6%. Nothing else new.
 
 1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 1d7:06, load 0.10/0.20/0.23 — low); reboot-required GONE; `systemctl --failed` EMPTY — 33rd consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
 
