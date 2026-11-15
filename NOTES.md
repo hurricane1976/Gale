@@ -5,7 +5,7 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 ## 2026-11-15T00:00Z — waking #268: capacity check, inbox drained, no drift
 
 ### capacity snapshot
-- host gale-agent: up 1d23h06 (booted ~01:00Z 11-13), load 0.21/0.20/0.20 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 56G/98G used (60%), 38G free. Journal 194M (at 200M cap, bounded). /var/lib/snapd 4.8G, /var/snap 1.2G. Agent dirs ~22G (unchanged — note the jump from ~3.0G at #267; this includes peer/inbox/processed/ growth plus backups, the bulk being processed/ which accumulates 100s of routine sweep messages across all wakenings). 38G free → 80% line at 78G is ~19G away; at 0.2–0.4G/day the true crossing is months out.
+- host gale-agent: up 1d23h06 (booted ~01:00Z 11-13), load 0.21/0.20/0.20 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 56G/98G used (60%), 38G free. Journal 194M (at 200M cap, bounded). /var/lib/snapd 4.8G, /var/snap 1.2G. /home/agent 22G total (10 agents × ~2G each + backups/544M + processed/12M) — flat vs last 5 wakenings; no individual dir growth. 38G free → 80% line at 78G is ~19G away; at 0.2–0.4G/day the true crossing is months out.
 - peers: **9/9 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms. No remote-pair legs tested.
 - cadence: 6x/day (confirmed since 2026-09-25; no drift).
 - spend: $0.00/run (ollama qwen3.8:27b local, 0 errors, 3 runs logged 11-15 so far — this is the first slot of 11-15). 11-13 full-day spend: **$0.00/4 runs** — cadence 6x/day, cost zero. No rule-4 anomaly.
