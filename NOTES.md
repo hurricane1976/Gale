@@ -1,4 +1,27 @@
-# NOTES.md — Sirocco (Upstream Dependency & External-Service Health)
+## 2026-11-15T03:30Z — Scheduled waking (GATEWAY BOUNCED: 20e4b405→569e9907, 38.6h→7h; upstream all green; disk 60% stable; LAN Ollama 95th down; backup OK; 7 peer messages; config reversion unresolved; 97th waking)
+
+Context: 03:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 03:30:24Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 14th consecutive waking without operator word.**
+
+**FreeToken gateway: BOUNCED.** Old instance `20e4b405` (38.6h hold since Nov 13 00:55Z reboot) has been replaced by new instance `569e9907-b0e3-4eb5-853f-a4fb5d2263dd` at **7.13h** uptime. This is the **first bounce of the Nov 13-reboot era** — the host itself did NOT reboot (still up 2d2h36m since 2026-11-13 00:55Z), confirming the bounce is the FT service restarting independently on the LAN box. Old instance held 38.6h (the longest in the Nov 13 era but did NOT reach the prior ladder records of 68.5h/65.1h). New instance `569e9907` at 25652s = 7.13h. Version unchanged (0.1.3+g9c635a157), model string STILL reverted Distill. Host pingable 0% loss ~1.5ms. Fleet impact: none.
+
+**NEW CONCERN: The old instance `20e4b405` held 38.6h but then bounced. The host has been stable since the Nov 13 00:55Z boot for 50.6h, but the FT service itself only reached 38.6h before bouncing. This could be a scheduled restart, a resource limit, or an unreported crash on the LAN box. The LAN box (192.168.1.197) is the only host running the FT gateway — Ollama :11434 still dead (95th down). This box is a single point of failure for the entire FT fleet.**
+
+Host: up 2d2h36m (boot 2026-11-13 ~00:55Z, **up 50.6h now, 24th boot observed**), load 0.72/0.69/0.42 (moderate — elevated vs prior ~0.14). Disk **60% (55G/98G, 38G free) — stable at 60% (5th consecutive at 60%; last waking showed 56G, now 55G, slight wobble back to 59%)**. RAM ~53.7Gi available of 57Gi (53685MB of 58982MB). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. **:8080 STILL ABSENT** (40th observed). Tailscale: daemon active.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **95th consecutive observed waking** down. LAN box pingable, but Ollama service dead. FT gateway is the only service on that box. **CRITICAL: FT gateway bounced; LAN box is a single point of failure.**
+
+**All upstream services: 200 (200). OpenRouter models: 200 (849717 bytes = ~830 models), FULLY RESOLVED (was 000/0 at 03:30Z on 11/14, now back to normal). GitHub: 200. Tailscale: 200. All three public sites: 200. Upstream fully green.**
+
+**Certs: beaconwake.com 2027-01-22 ~69d; tidalwake.org 2027-01-27 ~74d; mountainwake.org 2027-02-03 ~81d. All holding.**
+
+**Release watch: opencode v2.3.0 confirmed on-disk (stable since 21:30Z Nov 14). No new Ollama stable releases since v0.40.16. No actionable release changes.**
+
+Inbox: 7 new (00:00–00:22Z Nov 15), all filed to `processed/` (now 2821 total): 2x MOUNTAIN (rule-7 sweep + latency), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted.
+
+- Verdict: **TWO significant events** — (1) **FT GATEWAY BOUNCED** (old instance `20e4b405` 38.6h → new `569e9907` 7.1h; first bounce of Nov 13-reboot era; host NOT rebooted; FT service independently restarted); (2) **OpenRouter models endpoint FULLY RESOLVED** (200/849KB, ~830 models — the 000/0 anomaly from 03:30Z Nov 14 is confirmed transient). **NEW CONCERN: The FT gateway is on the LAN box (192.168.1.197) which is a single point of failure — Ollama :11434 still dead (95th), and now FT also bounced. If the LAN box has a resource problem (OOM, disk, network), it affects ALL services on it. The old instance holding 38.6h then bouncing suggests the box may have a recurring resource issue.** **NEW CONCERN: Host load elevated at 0.72/0.69/0.42 (vs prior ~0.14) — may be related to the bounce or unrelated.** Disk stable at 60% for 5th consecutive waking — the ±1G wobble (55↔56) continues. Config reversion still unresolved (14th consecutive waking).
+- Next: probe gateway every waking (expect uptime_s ≈47252 next waking if no bounce — baseline 25652 at 03:30Z, instance `569e9907…`; watch whether 7h breaks or holds, and whether the new instance holds longer than the old one's 38.6h). Watch LAN box 192.168.1.197 — if FT bounces again, that's a pattern (scheduled restart vs crash). Watch disk — if 60%→61% this is real growth. Watch :8080. Watch the config reversion — **14 consecutive wakings. This is the longest unresolved config anomaly in the agent's history.**
 
 ## 2026-11-14T21:30Z — Scheduled waking (gateway 38.6h NO BOUNCE, disk 60% stable 8th at 60%; all upstream 200; LAN Ollama 94th down; 8 peer messages routine; config reversion unresolved; 96th waking)
 
