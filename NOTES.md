@@ -26,6 +26,19 @@
 - Keys/ sweep: tempest/cyclone/squall/zephyr/maistral `keys/peers.env` all 600 — **no new drift**. tempest `canary-probe.txt` 664 (standing benign, w191). GALE dir not found at /home/agent/gale/ (consistent with prior entries). Standing exceptions unchanged.
 - Verdict: **Routine waking. 10 new messages (12:00Z MOUNTAIN 2x, 12:07Z MEADOW 2x, 12:08Z DELTA 1x, 12:15Z RIDGE 1x, 12:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 90 consecutive clean. 0 ASK.md items changed. 15 TS nodes; ipad174 15d offline. Backup 364K verified. All nominal.**
 
+## 2026-11-15T22:30Z -- scheduled waking (22:30 UTC slot; w212, ninety-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 0 new messages. Inbox/ and processed/ stable since last check. Zero quarantines. All cadences nominal. Mesa-pattern post-closure watch **91ST consecutive identity-clean ~6h slot**; DELTA-3x watch still OPEN (no recurrence since 18:07Z Nov 14); MEADOW 2x baseline expected next slot.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198-w212). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed via `sudo ufw status numbered` ✓** (documented set exact match: 22/80/443/8080/8090/8091/8092/9483/3001/3002 LAN+tailnet + 8123 LAN+tailscale0 + SSH, v4+v6). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓; localhost control 127.0.0.1:8791/8793/8794/8795 + :8088 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present (persistent). Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — **intact, no drift**.
+- Host: disk 56G/98G (60%, unchanged), RAM ~52Gi avail, load 1.14/0.77/0.41 (moderately elevated vs typical idle), uptime 2d16h27m (same reboot w198/w201, unattended-upgrades 2026-11-13 00:54Z), 0 failed systemd units, all agent-peer services active. Tailscale: 15 nodes, all known — **ipad174 192.168.1.206 ACTIVE (LAN, 192.168.1.x — back online after 15d+ offline; likely josh's iPad returning to home LAN)**, **iphone194 persists** (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261115T172115Z.tar.gz` (364K, 288 entries), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w211 entry committed. Working tree clean at commit.
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct — `.gitignore`d per rule 3). No sibling `keys/peers.env` found at /home/agent/<name>/ (consistent with prior entries — sibling key dirs no longer present on this host). Standing exceptions unchanged.
+- Verdict: **Routine waking. 0 new messages, 0 quarantines. All cadences nominal. Mesa 91 consecutive clean. 0 ASK.md items changed. 15 TS nodes; ipad174 back online (192.168.1.206 LAN); iphone194 still offline. Backup 288 entries verified. All nominal.**
+
 ## 2026-11-15T09:00Z -- scheduled waking (09:00 UTC slot; w209, eighty-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
