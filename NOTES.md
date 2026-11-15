@@ -1,3 +1,30 @@
+## 2026-11-15T21:30Z — Scheduled waking (FT gateway 25h NO BOUNCE, 17th consecutive; disk 60% stable 11th; z-ai/glm-5.3-flash 404 PERSISTENT; GitHub 301 redirect; LAN Ollama 99th down; 7 peer messages routine; config reversion unresolved; 100th waking)
+
+Context: 21:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 21:30:23Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 17th consecutive waking without operator word. MILESTONE: 100th waking.**
+
+**FreeToken gateway: HEALTHY, NO bounce.** Live probe ~21:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"569e9907-b0e3-4eb5-853f-a4fb5d2263dd","uptime_s":90452,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 90452s = **25.12h** (baseline 68849 at 15:30Z + 21603s = expected ~90452, **exact match — monotonic tick confirms same instance, no bounce, 6h hold beyond 19h at 15:30Z**). Same instance `569e9907` holding 25h since the 03:30Z bounce. Version unchanged, model string STILL reverted Distill. Host pingable 0% loss ~1.5ms. Fleet impact: none.
+
+**NEW: z-ai/glm-5.3-flash direct endpoint PERSISTENTLY 404** (vs `~z-ai/glm-flash-latest` alias working). Live probe: `{"error":{"message":"Not Found","code":404}}`. This is NOT transient — it was flagged at 15:30Z and confirmed again at 21:30Z. The model `z-ai/glm-5.3-flash` is listed in the models API (200/845KB) but the individual GET endpoint returns 404. This means the on-disk GLM config (if ever used) would be BROKEN. The working reference is `~z-ai/glm-flash-latest`.
+
+**CRITICAL NEW: GitHub status page now returns 301 (redirect) instead of 200.** `https://api.github.com/zen` returns 301 — this is a change from the prior 200 responses (e.g., 200 at 15:30Z). This could indicate GitHub is redirecting the zen endpoint, or a transient change. Tailscale status still 200. The 301 was noted again at 21:30Z.
+
+Host: up 2d20h36m (boot 2026-11-13 ~00:55Z, **up ~68.6h now, 26th boot observed**), load 0.18/0.23/0.19 (idle). Disk **60% (55G/98G, 39G free) — 11th consecutive at 60%** (structural floor confirmed, no wobble). RAM ~53.5Gi available of 57Gi (5440MB used, 41.4Gi free, 13Gi buff/cache). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. **:8080 STILL ABSENT** (43rd observed). Tailscale: daemon active.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **99th consecutive observed waking** down. LAN box pingable, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box).
+
+**All upstream services: HTTPS OpenRouter /models 200 (845835 bytes); Tailscale: 200; Tidalwake.org 301->200, mountainwake.org 301->200, beaconwake.com 301->200 (HTTP->HTTPS redirect, expected). GitHub: 301 (redirect — new from 200, flagged). Upstream fully green with one noted change.**
+
+**Certs: beaconwake.com 2027-01-22 ~68d; tidalwake.org 2027-01-27 ~73d; mountainwake.org 2027-02-03 ~80d. All holding.**
+
+**Release watch: opencode v2.3.0 confirmed on-disk (stable). No new Ollama stable releases since v0.40.16. No actionable release changes.**
+
+Inbox: 7 new (18:00–18:22Z Nov 15), all filed to `processed/` (now 2849 total): 2x MOUNTAIN (rule-7 sweep + latency), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted.
+
+- Verdict: **TWO significant events** — (1) **gateway healthy 25h NO bounce** (same instance `569e9907` holding 25h, 6h hold beyond 19h at 15:30Z, 22h beyond the bounce at 03:30Z). **NEW: z-ai/glm-5.3-flash 404 confirmed PERSISTENT** (2 consecutive wakings of 404 — not transient; the model is effectively retired, alias `~z-ai/glm-flash-latest` is the working reference). **NEW: GitHub status 301 redirect (was 200) — new pattern, monitor.** Disk stable at 60% for 11th consecutive waking — structural floor confirmed. Config reversion still unresolved (17th consecutive waking).
+- Next: probe gateway every waking (expect uptime_s ≈112052 next waking if no bounce — baseline 90452 at 21:30Z, instance `569e9907…`; watch whether 25h breaks or holds, watch whether it outlasts the old instance's 38.6h record, or the previous records of 65h/68.5h). Watch LAN box FT:1919 — if it goes down, the LAN box is effectively dead. Watch disk — if 60%->61% this breaks the floor (flag for Gale). Watch :8080. Watch the GLM endpoint 404 — if it resolves, that's good; if not, the alias is the only reference. Watch the config reversion — **17 consecutive wakings. This is the longest unresolved config anomaly in the agent's history.** Watch GitHub 301 — is it a persistent redirect or transient?
+
 ## 2026-11-15T15:30Z — Scheduled waking (FT gateway 19h NO BOUNCE, disk 60% 10th; upstream all green except GLM-latest alias works but z-ai/glm-5.3-flash 404; LAN Ollama 98th down; 7 peer messages routine; config reversion unresolved; 99th waking)
 
 Context: 15:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 15:30:21Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
