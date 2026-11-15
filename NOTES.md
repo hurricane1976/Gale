@@ -1,3 +1,31 @@
+## 2026-11-15T20:00Z — waking 4/4 (Sharpness & Regression Watch; 20:00 slot, ran ~20:00Z)
+
+1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 2d19:06, load 1.06/0.47/0.36 — elevated due to this session; normal otherwise); reboot-required GONE; `systemctl --failed` EMPTY — 38th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages since the 14:00Z waking.
+
+3. **Host health (20:00Z)**: uptime 2d19:06 (boot 2026-11-13T00:54:08Z per status.json); load 1.06/0.47/0.36 (elevated — opencode session at 16.5% CPU, normal for a waking session; 15min avg down to 0.47); disk 60% (55G/98G, 38G free, flat, -0.1G from 14:00Z — mild); RAM 5.2Gi used (52Gi avail; stable from 14:00Z); `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic. dmesg: `Operation not permitted` (non-root) + routine UFW BLOCK (192.168.1.154/.200 on SSDP/UDP ports 15600/1900 — no new err lines). `/var/log` 1.1G (flat from 14:00Z; logrotate stable). `logs/` 31M; `/tmp` ~35M (estimated). No snap failures. Grafana/Promtail/Loki stack healthy (~3-5% combined CPU — stable).
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + ostro-peer), all NRestarts=0, ostro-peer health → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 38th consecutive waking.**
+
+5. **Website + fleet (regression half)**: `/api/status.json` → 200, generated_at 20:00:16Z — fresh. **Agora: 301 redirect (Gale web-app, not Ostro's surface — pre-existing, not a regression).** Fleet `/api/fleet/metrics` → 200, 35/35 agents up, missing=[] (Tidal/River/Creek/Stream/Meadow/Brook/Mist/Beacon/Highbeam/Lantern/Lightning/Radar/Prism/Pulsar/Mountain/Canyon/Ridge/Harbor/Delta/Mesa/Vista/Gale/Zephyr/Squall/Tempest/Vortex/Chinook/Cyclone/Maistral/Sirocco/Bora/Tramontane/Ostro/Poniente/Levante). Ostro per-agent row: **`Ostro → 100.66.39.59:8798, state=up, code=200, last_wake=2026-11-15T12:45:02Z`** (the 20:00Z waking not yet recorded in fleet due to timing). `error_runs_24h_by_host` = {} (clean). `cost_24h_by_host`: gale 142.04, mountain 147.93, beacon 92.98, tidal 0.0 — **new 24h window from 02:00Z, Ostro row absent again (persistent gap since 11-01 boot; note gale cost $142, mountain $148, beacon $93 across ~5007 runs; no Ostro row — Ostro runs FT-dedicated so no OpenRouter cost recorded, but the row should still appear in fleet metrics).** `cost_coverage`: 79.8% (79.64% at 14:00Z — slight uptick). `cost_coverage_by_host`: gale 100%, mountain 100% (full reporting), tidal 0% (no cost reporting, same as 14:00Z).
+
+6. **Fleet status roll-up (20:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 listeners state=up. `error_runs_24h_by_host` = {} (clean, was {tidal:3} at 14:00Z — resolved by window drain). `cost_24h_by_host`: gale 142.04, mountain 147.93, beacon 92.98, tidal 0.0 (new 24h window from 02:00Z, no Ostro row). `cost_coverage` 79.8% (up from 79.64% at 14:00Z). **Peer-block spot check: ostro peers.env has 0 `^PEER` stanzas (self-paired only — correct).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 38th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, no regression — confirmed again). LAN `:11434` → 000 (10-31 outage, ~598h; **OLLAMA OUTAGE ~24.9 DAYS**).
+
+8. **Spend**: 11-15: 02:01Z $0.0 + 08:00Z $0.0 + 14:01Z $0.0 — all silent (FT-cap pattern). No 20:00 row yet (lands post-session). No anomalies.
+
+9. **Peer inbox triage**: 6 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + latency check at 18:00Z), **DELTA ×1** (link verification 18:07Z — **SINGLE per slot, consistent trend since 11-12**), RIDGE ×1 (link verification 18:17Z), MESA ×2 (mesh sweep + link verification 18:22Z). All 6 moved to `peer/inbox/processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261115T200016Z.tar.gz` (176K); verify: gzip OK, 75 entries listed, AGENT.md/NOTES.md/ASK.md present; inbox triaged pre-backup so no unprocessed jsons in snapshot.
+
+11. **Git**: working tree clean (inbox preprocessed); offsite push `github main:ostro` succeeded (up-to-date).
+
+12. **Verdict vs 14:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.07/0.17→1.06/0.47 (dominated by this session, 15m avg down to 0.47 — benign); (b) /var/log 1.1G flat (stable); (c) DELTA single (trend continues, no triple); (d) `cost_24h_by_host` window rolled (gale $142, mountain $148, beacon $93; new 24h window); (e) `error_runs_24h` {} (tidal resolved by window drain); (f) `cost_coverage` 79.64→79.8% (slight uptick); (g) Ostro per-agent cost row still absent (persistent gap; Ostro FT-dedicated so no OpenRouter cost expected, but the row should appear in fleet observability — worth flagging to operator); (h) OLLAMA OUTAGE ~24.9 DAYS (was ~24.3). Nothing else new.
+
+---
+
 ## 2026-11-15T14:00Z — waking 2/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
 
 1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 2d13:06, load 0.07/0.17/0.18 — low); reboot-required GONE; `systemctl --failed` EMPTY — 37th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
