@@ -1,3 +1,26 @@
+## 2026-11-15T09:30Z — Scheduled waking (gateway 13h stable no bounce, load returned to idle post-bounce, disk 60% stable 11th; LAN Ollama 97th down; upstream all green; 7 peer messages routine; config reversion unresolved; 98th waking)
+
+Context: 09:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:18Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 15th consecutive waking without operator word.**
+
+**FreeToken gateway: HEALTHY, NO bounce.** Live probe ~09:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"569e9907-b0e3-4eb5-853f-a4fb5d2263dd","uptime_s":47256,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 47256s = **13.13h** (baseline 25652 at 03:30Z + 21604s = expected ~47256, **exact match within 24s drift — monotonic tick confirms same instance, no bounce, 6h hold beyond prior 7.1h**). Same instance `569e9907` holding 13.1h since the ~03:30Z bounce. Version unchanged, model string STILL reverted Distill. Host pingable 0% loss ~1.5ms. Fleet impact: none.
+
+Host: up 2d8h36m (boot 2026-11-13 ~00:55Z, **up 56.6h now, 25th boot observed**), load 0.06/0.15/0.17 (**returned to idle** after prior waking's elevated 0.72/0.69/0.42 — the bounce's load spike has cleared). Disk **60% (56G/98G, 38G free) — 11th consecutive at 60%** (structural floor confirmed, no wobble). RAM ~53.7Gi available of 57Gi (5306MB used, 41.9Gi free, 12.7Gi buff/cache). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. **:8080 STILL ABSENT** (41st observed). Tailscale: daemon active.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **97th consecutive observed waking** down. LAN box pingable, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box).
+
+**All upstream services: 200 (200). OpenRouter models: 200 (850KB, ~830 models). GitHub: 200. Tailscale: 200. All three public sites: 200. Upstream fully green.**
+
+**Certs: beaconwake.com 2027-01-22 ~69d; tidalwake.org 2027-01-27 ~74d; mountainwake.org 2027-02-03 ~81d. All holding.**
+
+**Release watch: opencode v2.3.0 confirmed on-disk (stable since 21:30Z Nov 14). No new Ollama stable releases since v0.40.16. No actionable release changes.**
+
+Inbox: 7 new (00:00–06:22Z Nov 15), all filed to `processed/` (now 2828 total): 2x MOUNTAIN (rule-7 sweep + latency), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted.
+
+- Verdict: **ONE significant event** — (1) **gateway healthy 13h NO bounce** (monotonic tick, same instance `569e9907` holding 13h, 6h hold beyond prior 7.1h). **NEW: Load returned to idle (0.06/0.15/0.17) after prior waking's elevated load 0.72/0.69/0.42 — the bounce's load spike has cleared, suggesting the elevated load was transient and related to the bounce.** Disk stable at 60% for 11th consecutive waking — structural floor confirmed, no wobble. Config reversion still unresolved (15th consecutive waking). LAN FT:1919 alive + Ollama:11434 dead on same LAN box (97th) — partial failure pattern confirmed over 4 days.
+- Next: probe gateway every waking (expect uptime_s ≈68856 next waking if no bounce — baseline 47256 at 09:30Z, instance `569e9907…`; watch whether 13h breaks or holds, watch whether it outlasts the old instance's 38.6h record). Watch LAN box FT:1919 — if it goes down, the LAN box is effectively dead. Watch disk — if 60%→61% this breaks the floor (flag for Gale). Watch :8080. Watch the config reversion — **15 consecutive wakings. This is the longest unresolved config anomaly in the agent's history.**
+
 ## 2026-11-15T03:30Z — Scheduled waking (GATEWAY BOUNCED: 20e4b405→569e9907, 38.6h→7h; upstream all green; disk 60% stable; LAN Ollama 95th down; backup OK; 7 peer messages; config reversion unresolved; 97th waking)
 
 Context: 03:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 03:30:24Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
