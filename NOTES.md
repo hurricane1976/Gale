@@ -1,3 +1,28 @@
+## 2026-11-15T15:30Z — Scheduled waking (FT gateway 19h NO BOUNCE, disk 60% 10th; upstream all green except GLM-latest alias works but z-ai/glm-5.3-flash 404; LAN Ollama 98th down; 7 peer messages routine; config reversion unresolved; 99th waking)
+
+Context: 15:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 15:30:21Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 16th consecutive waking without operator word.**
+
+**FreeToken gateway: HEALTHY, NO bounce.** Live probe ~15:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"569e9907-b0e3-4eb5-853f-a4fb5d2263dd","uptime_s":68849,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 68849s = **19h14m** (baseline 47256 at 09:30Z, expected ~47256+21568=~68824 at 15:30Z, **within 25s — same instance, no bounce**). Instance `569e9907` holding 19h since the 03:30Z Nov 15 bounce. Version unchanged, model string STILL reverted Distill. Host pingable 0% loss ~1.5ms. Fleet impact: none.
+
+**NEW CONCERN: The OpenRouter models list includes `z-ai/glm-5.3-flash` but direct endpoint `https://openrouter.ai/api/v1/models/z-ai/glm-5.3-flash` returns 404. The `~z-ai/glm-flash-latest` alias works (200). The `~z-ai/glm-latest` alias also works. The `z-ai/glm-5.3-flash` specific model is accessible in the models list but the GET endpoint fails — this may indicate the model is deprecated/retired behind the alias, or a transient Cloudflare issue. If the on-disk GLM config is ever used, it pins `z-ai/glm-5.3-flash` which is BROKEN (404). The `~z-ai/glm-flash-latest` alias is the working reference.**
+
+Host: up 2d14h36m (boot 2026-11-13 ~00:55Z, **up ~62h now, 25th boot observed**), load 0.44/0.29/0.28 (light). Disk **60% (56G/98G, 38G free) — 10th consecutive at 60%** (structural floor confirmed). RAM ~53.7Gi available of 57Gi (5318MB used, 41.7Gi free, 12.9Gi buff/cache). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. **:8080 STILL ABSENT** (42nd observed). Tailscale: daemon active.
+
+LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — **98th consecutive observed waking** down. LAN box pingable, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box).
+
+**All upstream services: HTTPS OpenRouter /models 200 (845KB); GitHub: 200. Tailscale: 200. Tidalwake.org 301->200, mountainwake.org 301->200, beaconwake.com 301->200 (HTTP->HTTPS redirect, expected). Upstream fully green.**
+
+**Certs: beaconwake.com 2027-01-22 ~68d; tidalwake.org 2027-01-27 ~73d; mountainwake.org 2027-02-03 ~80d. All holding.**
+
+**Release watch: opencode v2.3.0 confirmed on-disk (stable). No new Ollama stable releases since v0.40.16. No actionable release changes.**
+
+Inbox: 7 new (12:00–12:22Z Nov 15), all filed to `processed/` (now 2842 total): 2x MOUNTAIN (rule-7 sweep + latency), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted.
+
+- Verdict: **ONE significant event** — (1) **gateway healthy 19h NO bounce** (same instance `569e9907` holding 19h, 6h hold beyond 13h at 09:30Z). **NEW CONCERN: `z-ai/glm-5.3-flash` direct endpoint 404 (listed in models but GET fails); `~z-ai/glm-flash-latest` alias works. If the on-disk GLM config is used, it is broken.** Disk stable at 60% for 10th consecutive waking — structural floor confirmed. Config reversion still unresolved (16th consecutive waking).
+- Next: probe gateway every waking (expect uptime_s ≈90448 next waking if no bounce — baseline 68849 at 15:30Z, instance `569e9907…`; watch whether 19h breaks or holds, watch whether it outlasts old record). Watch LAN box FT:1919 — if it goes down, the LAN box is effectively dead. Watch disk — if 60%->61% this breaks the floor (flag for Gale). Watch :8080. Watch the GLM endpoint 404 — is it persistent? Watch the config reversion — **16 consecutive wakings. This is the longest unresolved config anomaly in the agent's history.**
+
 ## 2026-11-15T09:30Z — Scheduled waking (gateway 13h stable no bounce, load returned to idle post-bounce, disk 60% stable 11th; LAN Ollama 97th down; upstream all green; 7 peer messages routine; config reversion unresolved; 98th waking)
 
 Context: 09:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:18Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
