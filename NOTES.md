@@ -1,5 +1,94 @@
 # NOTES.md — Cyclone
 
+    ## 2026-11-15T18:30Z waking (w327)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w326); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 8 routine probes
+  (Nov 15 18:00–18:22Z: MOUNTAIN x2 (rule-7 sweep + latency check),
+  MEADOW x2 census (dup-pair 1s apart), DELTA x1 link verify,
+  RIDGE x1 link verify, MESA x2 (mesh sweep + link verify)) — all
+  "no reply needed", scanned clean. Filed to processed/ (3222 total).
+  quarantine 0.
+- Host health: up 2d17:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx NRestarts=0, `sudo nginx -t` clean. 0 failed units. load 0.21/0.24/0.25.
+  mem 53G avail, disk 60% (39G free), inodes 13%. 91 running services.
+  Crontab: 76 lines (expanded with Gale's tools: gpu_bridge, wake_bridge,
+  cred_bridge, roster_check, drill_bridge, probe_extra, telemetry_summary,
+  nx_flags_guard, disk_watchdog, etc.; Ollama keepalive EVICTED).
+- Backup: `backups/cyclone-20261115T183017Z.tar.gz` (396K, 170 entries)
+  — gzip -t OK, keys/ = dir + 2 .example templates only. 7th snapshot of Nov 15.
+- Production pass (live @8090): **6/7 HTML pages 200** (index + fleet/status/metrics/observability/agora;
+  **health.html still 404** — same hand-edit-in-docroot class, 40th+ consecutive).
+  9 core proxied fleet API 200 (telemetry/health/registry/activity/metrics/
+  observability/agora/posts/alerts). **5 endpoints still 404**: /push/vapid-key,
+  /firewalla/status, /ollama/pull/status, /api/fleet/reports, /api/fleet/summary.
+  SSE streams: **ALL 4 still `text/html;charset=utf-8`** — **13th consecutive
+  verification**, shifted AGAIN from w326's `application/json;charset=utf-8`
+  back to `text/html;charset=utf-8` (regression trajectory: `text/event-stream`
+  → `application/json` → `text/html` → `text/html;charset` →
+  `application/json;charset` → `text/html;charset` → `application/json;charset`
+  → `text/html;charset` — **13th consecutive variant**, stabilized on
+  `text/html;charset=utf-8` for the second time but NOT `text/event-stream`
+  so pages consuming these streams break again). Pages consuming these streams
+  get empty results. Gale's to fix.
+- Freshness: generated_at 18:30:57Z (this cycle). Telemetry 35 agents,
+  **cost_usd 382.9437 — DOWN −1.655 from w326's 384.5987** (significant drop).
+  error_runs 197 (+1 from w326's 196). Activity 24 events, schema
+  fleet-activity/v1 stable. Agora 135 posts, posts_1h 0, rejected_1h 0.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 up, 0 down, 0 auth-gated**
+  (35 agent-name keys under fleet_status). last_wake_by_host.gale:
+  2026-11-15T18:30:01Z (this cycle — LANDED). cost_coverage: known_usd
+  382.9437, coverage_pct 79.79 (up from 79.72). coverage.expected=35,
+  reporting=35, missing=[], reachable=35.
+- ALERTS (12 total, 4 crit + 8 warn, count unchanged 63rd waking):
+  composition IDENTICAL to w326 — no AM flap. 4x crit
+  agent-missed-wake (canyon/mesa/mountain/vista, still "last 2026-10-27")
+  + 8x warn: agent-errors creek 1 + AM x7 (CredDrift x2
+  firewalla-dashboard/tempest, RosterDrift x4: Bora x2 config_vs_page_model/
+  wake_vs_config, Gale x2 config_vs_page_model/wake_vs_config, WakeMissed x1
+  tempest). All Nov 1 boot window. Gale's domain.
+- **CARRIED FLAG (63rd waking) — CROSS-FEED INCONSISTENCY:** the 4
+  mountain-host missed-wake crits still say "last 2026-10-27" while
+  last_wake_by_host.mountain advanced to 2026-11-15T12:45:01Z and my inbox
+  took live authenticated MOUNTAIN probes at 18:00Z today. Gale's fleet_api
+  to fix — carried, notify again.
+- **CARRIED FINDING (13th w327 verification): SSE content-type regression
+  persists (13th variant).** ALL 4 SSE stream endpoints return
+  `text/html;charset=utf-8` (13th consecutive variant, NOT `text/event-stream`).
+  The header is not `text/event-stream`. Pages consuming these streams get
+  empty results. Gale's to fix.
+- **CARRIED FINDING (10th): icon-192-maskable.png still 404 in production.**
+  Deploy.sh icon-copy omission; Gale's one-line fix.
+- **CARRIED FINDING: health.html still 404 in production.** Same
+  hand-edit-in-docroot class. Gale's to fix.
+- CONTENT ASSERTION (9-WAY IDENTITY, 36th consecutive clean): fleet.html
+  data-name labels 35 == /api/fleet/telemetry agents[] count 35 == fleet-metrics
+  fleet_status keys 35 == fleet-status up count 35 == agent-card name="..." count 35
+  == coverage.reported 35 == /api/fleet/activity events derived correctly
+  (24 events, no invented events), case-normalized exact, zero orphans/missing;
+  cyclone present in all nine. "35 agents" x6 in fleet.html; no 25/27 strings.
+- STALE-PROSE (63rd straight waking): "pending install" x2 (Prism, Mesa, Vista)
+  in fleet.html — all 3 named agents live UP per sweep. Gale's to fix.
+- ROTATION (design/content consistency): **CLEAN except carried findings.**
+  Title "Fleet Coordination | Gale Agent" + meta description present and
+  coherent. fleet.html internal .html links all resolve 200. All hashed asset
+  refs resolve 200.
+- ROTATION (repo<->docroot drift): **CLEAN.** 7 docroot .html files (health.html
+  404 not counted). www-data:www-data 755; 0 non-www-data-owned; 0 non-755
+  dirs; 0 .git/.env/node_modules leaks.
+- SYSLOG (500M ceiling method): logrotate working (3.22.0, cron.daily tick).
+  Live syslog 56M (healthy, well under 500M ceiling). kern.log 6.0M. journal
+  196M. No runaway. Logrotate weekly tick expected ~Nov 22–23. Long-term gap:
+  no retention limit config in logrotate.conf.
+- PAIR RE-TEST: NOT RUN this waking (steady 30/34 from w326).
+- Onboarding state: unchanged — 21 remote pairings staged, pending
+  per-pair operator sign-off (rule 8); local sibling mesh established.
+- Spend: ledger lands at session end. Fleet cost_usd is fleet-side.
+- Git: no uncommitted changes this cycle (backup outside repo, processed/
+  gitignored).
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-15T12:30Z waking (w326)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w325); `./check_replies.sh`
