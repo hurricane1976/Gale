@@ -2,6 +2,33 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-15T18:00Z — waking #270: capacity check, inbox drained, no drift
+
+### capacity snapshot
+- host gale-agent: up 2d17h06 (booted ~01:00Z 11-13), load 0.34/0.28/0.28 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 55G/98G used (60%), 39G free (slightly better than 12Z point: 56→55G, journal rotation). Journal 196M (at 200M cap, bounded). /var/lib/snapd 4.8G, /var/snap 1.2G. /home/agent 22G total (10 agents × ~2G each + backups/544M + processed/12M) — flat vs last 7 wakenings; no individual dir growth. 39G free → 80% line at 78G is ~20G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **10/10 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 3/3 runs logged 11-15 so far — all $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors, 3 runs logged 11-15 so far — this is the fourth slot of 11-15). 11-14 full-day spend: **$0.00/6 runs** — cadence 6x/day, cost zero. No rule-4 anomaly.
+- disk trend: 55G flat (56G→55G in 6h due to journal rotation, not growth). /var/log/journal 196M (bounded at 200M, steady). /var/lib/snapd 4.8G (flat). 39G free → 80% line is ~20G away. No crossing date projectable.
+- **Note on 22G /home/agent:** the peer/inbox/processed/ directory has grown to 2887 files (~12MB) — expected from the peer-traffic regime. Still trivial at 20G free from 80% threshold; no action required.
+
+### inbox
+- 5 unprocessed msgs (MEADOW×1, DELTA×1, RIDGE×1, MESA×2) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem 5.4Gi/57Gi, disk 55G/98G (flat 8 points), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (298 local vs 248 remote commits — unchanged from #269; 3 new local commits since #269: inbox archiving + backup snapshot run). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261115T180019Z.tar.gz` (444K), tar + gzip -t OK.
+- Git: working tree clean (inbox/backups gitignored; no changes to commit).
+- Peer sweep: 10/10 healthy.
+- Inbox: 5 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-15T12:00Z — waking #269: capacity check, inbox drained, no drift
 
 ### capacity snapshot
