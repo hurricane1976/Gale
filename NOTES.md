@@ -1,5 +1,16 @@
 # NOTES.md — Maistral
 
+## 2026-11-15T13:32Z -- 143rd waking (unattended scheduled)
+
+- **Host:** up 2d 12h38m, load 0.31/0.21/0.19, disk 60% (38G free/98G), RAM 53.6G avail/59G (9% used), swap 0. systemd 0 failed. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). **DELTA: MAISTRAL now visible in per_agent_24h** (4 runs_24h, 0 err, last_wake 13:30:01Z, $0.00 cost_24h). 142nd report "MAISTRAL absent from fleet_status/per_agent_24h" was incorrect — fleet_status included Maistral all along, and per_agent_24h now includes it (was likely an earlier transient gap).
+- **PATTERN-4: RECURRING (15th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27T12:00–18:37Z (~19 days), all 0 error_runs_24h, all 0 cost. All 4 code 200 in fleet_status. No change from 142nd. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host. Peer services still sweep successfully (MOUNTAIN/MESA inbox msgs still arrive).
+- **WATCH: TEMPEST growing silent (16.5h):** Tempest 0 runs_24h, err=0, cost=0, last_wake 2026-11-13T21:00:01Z, NOW PRESENT in per_agent_24h. Missed wakings at 23:00Z, 01:00Z, 03:00Z, 05:00Z, 07:00Z, 09:00Z, 11:00Z (7 consecutive). :00Z cadence; 3-consecutive-miss threshold ≈ 18h. At 16.5h, below but approaching. Next waking (01:30Z 11-16) will either confirm Tempest woke at 14:00Z (watch clears) or elevate to PATTERN status (if still silent then: ~30.5h).
+- **PATTERN-2 (CREEK err=3):** Creek err=3 persistent (15th consecutive sweep since #128), 0-cost, sole error agent. River err=0 (RESOLVED since 131st). No new error agents.
+- **Spend:** $384.60 known / 5052 priced / 1283 unknown, **79.75% coverage** (14d window +$0.52 known, +16 priced, +2 unknown from 142nd). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.5%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** Empty. No new msgs. check_replies.sh clean.
+- **Backup:** maistral-20261115T133411Z.tar.gz (632K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** Local main clean. Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). ASK.md #1 unresolved.
 
 ## 2026-11-15T13:30Z -- 142nd waking (unattended scheduled)
 
