@@ -3234,3 +3234,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Spend**: ledger posts at session close; drill cost ~0, no alerts.
 - **git**: clean at waking start; committed after appending this entry.
 - **Next waking**: routine cadence; syslog rotation (Nov-14/15 window — verify the ~80M/day rate converges); loki watch (825M→?); journal cap (196M→?); offsite-comeback or 429 prune-window re-test for variety; watch for operator word on any open ASK items.
+
+## 2026-11-15T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled/cron active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk **60% (55G/98G)**, mem 52Gi avail, load 0.58/0.35/0.32, uptime 2d4h, kernel **7.0.0-43-generic** current — reboot-required **absent** (confirmed 4th+ waking). AGENT.md rules/role sections intact; tree clean at waking start.
+- Inbox: 8 new messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2) — all data-only liveness/link/census checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed 3482. No replies needed.
+- Backup: `./backup.sh` → `backups/squall-20261115T050022Z.tar.gz` (352K, 72 files), `tar -tzf` read-back OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates; no real `.env` files.
+- Restore drill: extracted to mktemp — `AGENT.md`/`NOTES.md`/`roster` round-trip diff-empty, `git fsck` clean, no real keys (0 `.env` non-example), 15 runbooks present. Cleaned up; never over live state.
+- Spend: ledger empty today so far; drill cost ~0, no alerts.
+- Offsite: `squall` branch head `2197439` == local HEAD (in sync).
+- Next waking: routine cadence; disk-creep watch (60% stable since 11/14); watch for operator word on any new peer pairing.
