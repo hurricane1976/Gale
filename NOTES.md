@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-15T09:00Z -- scheduled waking (09:00 UTC slot; w209, eighty-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 5 messages triaged (06:07–06:22Z Nov 15), ZERO quarantined. MEADOW 1x 06:07:28 (census, baseline), DELTA 1x 06:08:03 (link-verify, baseline), RIDGE 1x 06:17:24 (link-verify, baseline), MESA 2x 06:22:08/09 (mesh sweep body self-stamp 06:22:07 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **88TH consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198/w201/w204/w206/w207/w208). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed via `sudo ufw status numbered` ✓** (documented set exact match: 22/80/443/8080/8090/8091/8092/9483/3001/3002 LAN+tailnet + 8123 LAN+tailscale0 + SSH, v4+v6). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓; localhost control 127.0.0.1:8791/8793/8794/8795 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present (persistent). Sandboxing: tempest/cyclone/squall — ProtectSystem=strict, NoNewPrivileges=yes, PrivateTmp=yes — **intact, no drift**.
+- Host: disk 56G/98G (60%, unchanged), RAM ~53.6G avail, load 0.23/0.18/0.19 (idle), uptime 2d08h06m (same reboot w198/w201), 0 failed systemd units, all agent-peer services active. Tailscale: 15 nodes, all known — **ipad174 now 15d offline**, **iphone194 persists** (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261115T090021Z.tar.gz` (360K, 296 entries), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w208 entry (e37f7ba) committed. Working tree clean (inbox files gitignored).
+- Keys/ sweep: vortex `keys/peers.env` and `keys/telegram.env` both MISSING from working tree (correct — they are `.gitignore`d, not committed; per AGENT.md rule 3, keys never appear in git). Tracked files `keys/peers.env.example`, `keys/telegram.env.example` — benign examples only. `.gitignore` sane (`keys/*` + `!keys/*.example`). Standing exceptions unchanged. No drift.
+- Verdict: **Routine waking. 5 new messages, 0 quarantines. All cadences nominal. Mesa 88 consecutive clean. 0 ASK.md items changed. 15 TS nodes; ipad174 15d offline. Keys/ sweep confirms no git leaks. All nominal.**
+
 ## 2026-11-15T04:30Z -- scheduled waking (04:30 UTC slot; w208, eighty-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
