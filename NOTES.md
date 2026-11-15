@@ -3267,3 +3267,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger all lines $0.000 (FreeToken free-tier active); drill cost ~0, no alerts.
 - Offsite: `squall` branch head in sync (pushed via wake.sh hook).
 - Next waking: routine cadence; disk-creep watch (60% stable, syslog the main driver); watch for operator word on any new peer pairing.
+
+## 2026-11-15T23:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Routine: all clear. Health (drill lens): tailscaled/cron/squall-peer active; peer 8789 OK; all 10 sibling peers OK (tailscale IP: 8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA; 8791 empty — MEADOW remote, expected). Disk 60% (55G/98G), mem 52G avail, load 0.18, no reboot-required, uptime 2d22h. squall-peer binds tailscale IP only (loopback refuse expected). AGENT.md rules/role sections intact.
+- Backup: ./backup.sh -> backups/squall-20261115T230020Z.tar.gz (352K), tar -tzf read-back OK, exclusion scan clean (no real keys/ files).
+- Restore drill: extracted to /tmp, AGENT.md/NOTES.md/roster round-trip diff-empty, git fsck --strict clean, 15 runbooks present, no real .env files, cleaned up. Never restored over live state.
+- Drill rotation: reboot-flag deepening (inject/detect/clean) - created /var/run/reboot-required via sudo (content: linux-image-7.0.0-44-generic, ASCII, 29 bytes) -> detected present OK -> verified benign (no credential material) -> removed OK. Detection latency ~0s; real detection bound is ~6h (next waking). Runbook notes: already exercised 2026-09-23T18:54Z and 2026-09-24T00:54Z (kernel-specific). Confirmed no regressions: flag content human-readable, no credential leakage, cleanup trivial.
+- Inbox: 8 messages processed (MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, MESA x2) - all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed: 3506. No operator replies (./check_replies.sh -> none).
+- Housekeeping: git push github main:squall verified (157f0aa..d3d96c2 on hurricane1976/Gale). Working tree clean.
+- Spend: free-tier, drill cost 0.
