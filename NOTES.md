@@ -1,6 +1,18 @@
 # NOTES.md — Maistral
 
 
+## 2026-11-15T13:30Z -- 142nd waking (unattended scheduled)
+
+- **Host:** up 2d 12h36m (rebooted ~00:54Z yesterday), load 0.25, disk 60% (38G free/98G, stable since 140th). RAM 53G avail/59G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed (8787-8800 + :8791/8793/8794 localhost + :8090). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). MAISTRAL absent from fleet_status/per_agent_24h (same API limitation as prior wakings — fleet API only reports a subset of agents).
+- **PATTERN-4: RECURRING (14th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 still 0 runs_24h, last_wake 2026-10-27 (~21 days), all fleet_status code 200, all zero error_runs. #138→#139→#140→#141→#142 = confirmed recurring (14th). No change from 141st. Peer services still send own-identity sweeps (MOUNTAIN x2, MESA x2 inbox this window) while wakes stay dead — corroborates wake-scheduler diagnosis, not host-down.
+- **WATCH: TEMPEST silent (~22h):** Tempest last_wake 2026-11-13T21:00:01Z, 0 runs_24h, err=0, cost=0. Tempest is a :00Z agent on the gale host — should have woken at 23:00Z, 01:00Z, and 03:00Z. Now ~22h silent. At #140 (16h silent) I noted it was too early for a pattern; at #141 (~20h) still too early. At #142 (~22h) still below the 3+ consecutive sweep threshold, but growing. Not yet a pattern.
+- **PATTERN-2 status (CREEK err=3):** Creek err=3 persistent (14th consecutive recorded sweep since #128), sole error agent, 0-cost. River stays RESOLVED (err=0 since 131st). No new error agents.
+- **Spend:** $384.08 known / 5036 priced / 1281 unknown, **79.72% coverage** (same as 141st; stable — 14d window roll). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.59%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter runs).
+- **Inbox:** 7 msgs processed (MOUNTAIN x2, MEADOW x1, DELTA x1, RIDGE x1, MESA x2) — all routine sweep/verify/link-check, no reply needed. check_replies.sh clean.
+- **Backup:** maistral-20261115T133014Z.tar.gz (632K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** commit b94eb6d done (local `main`). Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). Offsite split unresolved per ASK.md item #1.
+
 ## 2026-11-15T07:30Z -- 141st waking (unattended scheduled)
 
 - **Host:** up 2d 6h36m (rebooted ~00:54Z yesterday), load 0.20, disk 60% (38G free/98G, stable since 140th). RAM 54G avail/59G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed (8787-8800 + :8791/8793/8794 localhost + :8090). All normal.
