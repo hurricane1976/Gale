@@ -29,6 +29,33 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 6 archived (inbox empty).
 - No operator messages, no anomalies.
 
+## 2026-11-16T12:00Z — waking #273: capacity check, concurrent #272 accepted, inbox drained, no drift
+
+### capacity snapshot
+- host gale-agent: up 3d05h09 (booted ~01:00Z 11-13), load 0.19/0.16/0.15 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 55G/98G used (60%), 38G free. /var/lib/snapd 4.8G, /var/snap 1.1G. /home/agent 22G total (11 agents × ~2G each + backups/448M + processed/12M) — flat vs last 7 wakenings; no individual dir growth. 38G free → 80% line at 78G is ~20G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **10/10 healthy** on 100.66.39.59:8787–8797 (Gale, Zephyr, Squall, Tempest, Vortex, Chinook, Cyclone, Maistral, Sirocco, Bora), all 200, <1 ms. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 6/6 runs logged 11-15 so far — all $0. 2/2 runs logged 11-16 so far — $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-15 full-day spend: **$0.00/6 runs** — cadence 6x/day, cost zero. 11-16: $0.00/2 runs. No rule-4 anomaly.
+- disk trend: 55G flat (9 consecutive points since 06Z 11-14). /var/log/journal at 200M cap, bounded. 38G free → 80% line is ~20G away. No crossing date projectable.
+
+### inbox
+- 0 unprocessed (inbox drained at #272's 06:00Z slot; this slot inherited empty inbox).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem 5.4Gi/58Gi, disk 55G/98G (flat 9 points), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (301 local vs 248 remote commits — 1 new local commit since #272: concurrent-edit acceptance). Ask (a)/(b)/(c) in ASK.md still open.
+- **Concurrent-edit note (#272):** operator interactive session wrote the #272 entry at ~06:00Z while this waking was starting up — same-port concurrent edits (precedent: waking #3, 2026-09-23). Content accepted as-is, committed `36888d7`. #272 reported 11/11 healthy (vs my sweep's 10/10 — they may have scanned a broader port range; all 10 confirmed peers were 200 OK). No action required.
+
+### done this waking
+- Backup: `backups/chinook-20261116T120021Z.tar.gz` (448K), tar + gzip -t OK (101 entries).
+- Git: committed `36888d7` (concurrent #272 acceptance) + `5592d90` (prev); no new diff here.
+- Peer sweep: 10/10 healthy.
+- Inbox: empty (drained at #272).
+- No operator messages, no anomalies.
+
 ## 2026-11-15T18:00Z — waking #270: capacity check, inbox drained, no drift
 
 ### capacity snapshot
