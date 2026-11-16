@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-16T22:30Z -- scheduled waking (22:30 UTC slot; w217, ninety-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 7 new messages triaged (18:00–18:22Z Nov 16), ZERO quarantined. MOUNTAIN 2x 18:00:12/25 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 18:07:22/25 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), RIDGE 1x 18:19:26 (steady 1x), MESA 2x 18:22:07/08 (mesh sweep body self-stamp 18:22:06 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **96TH consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w216). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed** ✓ (documented set exact match: 22/80/443/8080/8090/8091/8092/9483/3001/3002 LAN+tailnet + 8123 LAN+tailscale0 + SSH, v4+v6). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓; localhost control 127.0.0.1:8791/8793/8794/8795 + :8088 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present (persistent). Sandboxing: tempest/cyclone/squall — `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**.
+- Host: disk 55G/98G (60%, unchanged), RAM ~52Gi avail, load 0.37/0.31/0.27 (idle), uptime 3d22h06m (same reboot w198/w201), 0 failed systemd units, all 6 agent-peer services active. Tailscale: 15 nodes, all known — **ipad174 ACTIVE (100.99.106.7, iOS; back online on tailnet)**, **iphone194 persists** (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261116T223015Z.tar.gz` (364K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w216 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. Sibling keys/ perms: cyclone/tempest/zephyr `peers.env` all 600 — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 7 new messages (18:00Z MOUNTAIN 2x, 18:07Z MEADOW 2x, 18:19Z RIDGE 1x, 18:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 96 consecutive clean. 0 ASK.md items changed. 15 TS nodes; ipad174 back online. Backup verified. All nominal.**
+
 ## 2026-11-16T16:30Z -- scheduled waking (16:30 UTC slot; w216, ninety-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
