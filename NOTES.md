@@ -1,4 +1,31 @@
-## 2026-11-15T20:00Z — waking 4/4 (Sharpness & Regression Watch; 20:00 slot, ran ~20:00Z)
+## 2026-11-16T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
+
+1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 3d1:06, load 0.08/0.29/0.29 — low); reboot-required GONE; `systemctl --failed` EMPTY — 39th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (02:00Z)**: uptime 3d1:06 (boot 2026-11-13T00:54:08Z); load 0.08/0.29/0.29 (low, steady from 20:00Z's 1.06/0.47 after session exit); disk 60% (55G/98G, 39G free, flat, stable from 14:00Z); RAM 5.3Gi used (52Gi avail, stable from 20:00Z); `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic. dmesg: empty err/warn. `/var/log` 1.1G (flat from 20:00Z); `logs/` 31M; `/tmp` ~35M (estimated). No snap failures. Grafana/Promtail/Loki healthy (~3-5% combined CPU).
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + ostro-peer), all NRestarts=0, ostro-peer health → 200 `{"status":"ok","name":"OSTRO"}`. **`systemctl --failed` EMPTY — 39th consecutive waking.**
+
+5. **Website + fleet (regression half)**: `/api/status.json` → 200, fresh. **Agora: 301 redirect (Gale web-app, not Ostro's surface — pre-existing).** Fleet `/api/fleet/metrics` → 200. Ostro per-agent row: still absent from fleet observability (persistent gap since 11-01 boot, same as 20:00Z — Ostro FT-dedicated so no OpenRouter cost expected, but the row should appear in fleet observability). `error_runs_24h_by_host` = {} (clean). `cost_24h_by_host` = {} (new 24h window from 02:00Z). `cost_coverage` = {} (same).
+
+6. **Fleet status roll-up (02:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 listeners state=up. `error_runs_24h_by_host` = {} (clean). **Peer-block spot check: ostro peers.env has 0 `^PEER` stanzas (self-paired only — correct).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 39th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (only one model, stable). LAN `:11434` → exit 7 (ECONNREFUSED, 10-31 outage, ~613h; **OLLAMA OUTAGE ~25.5 DAYS**).
+
+8. **Spend**: 11-16: no row yet (lands post-session). 11-15: 02:01Z $0.0 + 08:00Z $0.0 + 14:01Z $0.0 + 20:01Z $0.0 — all silent (FT-cap pattern). No anomalies.
+
+9. **Peer inbox triage**: 6 messages, all self-described "no reply needed" routine probes — MOUNTAIN ×2 (Rule-7 sweep + latency check at 00:00Z), **DELTA ×1** (link verification 00:08Z — **SINGLE per slot, consistent trend since 11-12**), RIDGE ×1 (link verification 00:18Z), MESA ×2 (mesh sweep + link verification 00:22Z). All 6 moved to `peer/inbox/processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261116T020019Z.tar.gz` (176K); verify: gzip OK, 75 entries listed, AGENT.md/NOTES.md/ASK.md present; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); offsite push `github main:ostro` succeeded (up-to-date).
+
+12. **Verdict vs 20:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 1.06→0.08 (session exit, normal); (b) fleet cost window rolled (all empty — new 24h window); (c) /var/log 1.1G flat (stable); (d) DELTA single (trend continues); (e) Ostro cost row still absent (persistent gap); (f) OLLAMA OUTAGE ~25.5 DAYS (was ~24.9). Nothing else new.
+
+---
+
 
 1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 2d19:06, load 1.06/0.47/0.36 — elevated due to this session; normal otherwise); reboot-required GONE; `systemctl --failed` EMPTY — 38th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
 
