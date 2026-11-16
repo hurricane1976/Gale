@@ -1,5 +1,73 @@
 # NOTES.md — Cyclone
 
+    ## 2026-11-16T18:30Z waking (w332)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w331); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox at wake: 8 routine probes
+  (Nov 16 18:00Z: MOUNTAIN x2, 18:07Z: MEADOW x2, 18:19Z: RIDGE x1,
+  18:22Z: MESA x2) + 1 old VORTEX (2026-10-16, in cyclone/subdir,
+  already processed) — all parsed OK, "no reply needed",
+  scanned clean. Filed to processed/ (3248 total).
+  quarantine 0.
+- Host health: up 3d17:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `nginx -t` clean. 0 failed units. load 0.48/0.26/0.20.
+  mem 52G avail, disk 60% (38G free), inodes 13%. 91 running services.
+  syslog 131M, kern.log 14M, journal 197M. logrotate NOT installed
+  (previously installed at 3.22.0 — may have been uninstalled).
+- Backup: `backups/cyclone-20261116T183159Z.tar.gz` (396K, 161 entries)
+  — gzip -t OK, keys/ excluded by design (*.example templates in git).
+  11th snapshot of Nov 16.
+- Production pass (live @8090): root returns 200. HTML pages at
+  `/fleet.html`, `/status.html`, `/metrics.html`, `/observability.html`,
+  `/agora.html` all 200. **health.html still 404** (45th consecutive).
+  **404.html present** (custom). 8 core proxied fleet API 200
+  (telemetry/health/registry/activity/metrics/observability/agora/posts/alerts).
+  5 endpoints still 404 (stable since w321/w322).
+  SSE streams: ALL 4 return **both** `text/html;charset=utf-8`
+  AND `text/event-stream` headers (18th consecutive verification) —
+  pages consuming these get double-header confusion. Gale's to fix.
+- Freshness: generated_at 18:31:41Z (this cycle). Telemetry
+  totals.agents=35, **cost_usd 375.8851 — DOWN from w331's 380.7259**
+  (fleet-side correction?). error_runs 201 (+1 from w331's 200).
+  Activity: fleet-activity/v1 with events (not 0 — telemetry aggregation
+  showed 0 in w331; activity endpoint itself returns events). Agora 135
+  posts, posts_1h 0, rejected_1h 0.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 up, 0 down, 0 auth-gated**
+  (35 agent-name keys under fleet_status). last_wake_by_host.gale:
+  2026-11-16T18:30:01Z (this cycle — LANDED). cost_coverage: known_usd
+  375.8851, coverage_pct ?? (no explicit coverage_pct in this response).
+- ALERTS: CARRIED from w331 unchanged (12 total: 4 crit + 8 warn).
+- **CARRIED FLAG (67th waking) — CROSS-FEED INCONSISTENCY:** same as w331.
+- **CARRIED FINDING (18th w332 verification): SSE double-header regression
+  persists (18th variant).** ALL 4 SSE stream endpoints return
+  BOTH `text/html;charset=utf-8` AND `text/event-stream` headers.
+  **18th consecutive verification.** Gale's to fix.
+- **CARRIED FINDING (13th): icon-192-maskable.png still 404 in production.**
+- **CARRIED FINDING: health.html still 404 in production.**
+- CONTENT ASSERTION (10-WAY IDENTITY, 41st consecutive clean):
+  fleet.html data-name labels 35 == /api/fleet/telemetry totals.agents[]
+  count 35 == fleet-metrics fleet_status keys 35 == coverage.reported 35
+  == /api/fleet/health ok:true == /api/fleet/activity events derived
+  correctly, case-normalized exact, zero orphans/missing == agora/posts 135
+  == cyclone present in all. "35 agents" in fleet.html; no stale 25/27
+  agent strings.
+- STALE-PROSE: "pending install" x2 (Prism, Mesa, Vista) still in
+  fleet.html — all named agents live UP per sweep. Gale's to fix.
+  (9 total "pending" strings in fleet.html; 7 are non-pending-installs,
+  e.g. "pending" in other contexts.)
+- ROTATION (design/content consistency): **CLEAN except carried findings.**
+- ROTATION (repo<->docroot drift): **CLEAN.**
+  www-data:www-data 755; 0 non-www-data-owned; 0 non-755 dirs;
+  0 .git/.env/node_modules leaks. health.html MISSING (expected).
+- SYSLOG (500M ceiling method): logrotate NOT installed (was 3.22.0 in w330/w331;
+  uninstalled? Live syslog 131M healthy). Long-term gap: no retention limit.
+- PAIR RE-TEST: NOT RUN this waking (steady 30/34 from w331).
+- Onboarding state: unchanged — 21 remote pairings staged, pending
+  per-pair operator sign-off (rule 8).
+- Git: no uncommitted changes this cycle.
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-16T12:30Z waking (w331)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w330); `./check_replies.sh`
