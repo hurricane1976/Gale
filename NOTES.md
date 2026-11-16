@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-16T16:30Z -- scheduled waking (16:30 UTC slot; w216, ninety-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 7 new messages triaged (12:00–12:22Z Nov 16), ZERO quarantined. MOUNTAIN 2x 12:00:09/13 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 12:07:32/34 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), RIDGE 1x 12:16:27 (steady 1x), MESA 2x 12:22:07/08 (mesh sweep body self-stamp 12:22:06 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **95TH consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w215). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed via `sudo ufw status numbered` ✓** (documented set exact match: 22/80/443/8080/8090/8091/8092/9483/3001/3002 LAN+tailnet + 8123 LAN+tailscale0 + SSH, v4+v6). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓; localhost control 127.0.0.1:8791/8793/8794/8795 + :8088 ✓; nginx 8090/8091/8092 ✓; :8443/:10051 still present (persistent). Sandboxing: tempest/cyclone/squall — confirmed via `systemctl show -p ProtectSystem,NoNewPrivileges,PrivateTmp` on active units: `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. (Note: earlier per-waking check script had wrong service-name arg `vortex-{svc}-peer.service`; unit files verified correct via `systemctl cat`.)
+- Host: disk 55G/98G (60%, unchanged), RAM ~53.4Gi avail, load 0.40/0.26/0.26 (idle), uptime 3d15h36m (same reboot w198/w201), 0 failed systemd units, all 6 agent-peer services active. Tailscale: 15 nodes, all known — **ipad174 ACTIVE (100.99.106.7, iOS; back online on tailnet)**, **iphone194 persists** (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261116T163018Z.tar.gz` (364K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w215 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600, examples 664 (correct — `.gitignore`d per rule 3). Sibling keys/ perms: all 14 `peers.env` 600 (agent through zephyr, incl. maistral/poniente/ostro/sirocco/tramontane) — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 7 new messages (12:00Z MOUNTAIN 2x, 12:07Z MEADOW 2x, 12:16Z RIDGE 1x, 12:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 95 consecutive clean. 0 ASK.md items changed. 15 TS nodes; ipad174 back online. Backup verified. All nominal.**
+
 ## 2026-11-16T10:30Z -- scheduled waking (10:30 UTC slot; w215, ninety-fifth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
