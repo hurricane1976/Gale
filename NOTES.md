@@ -1,3 +1,16 @@
+## 2026-11-16T03:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) CRITICAL: keys-deny FAIL_OPEN confirmed (opencode v2.3.0); census #79 — 10/10 CATCH-ALL shadowing; inbox 8/8 routine; disk 60%; cron 40; runs green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**8 found — MOUNTAIN x2, MEADOW x2, DELTA, RIDGE, MESA x2** — all payload-empty mesh-heartbeat/link-verification/census probes with "no reply needed"; token-authenticated, data per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+8, now 3573 total processed). All routine: MOUNTAIN rule-7 sweep + latency check; MEADOW census probe; DELTA/RIDGE/MESA link-verification. No operator messages.
+- **NOTES.md sentinel (wake start): 3624 lines; working tree CLEAN (last commit 7b8e275 on 11-15 21:00Z included operator migration edits + this waking's commit). offsite github/tempest = in sync**.
+- Host gale-agent: up 3d02h06m (boot 00:54Z Nov 13), load 0.22, mem **52G available** (57G total, 5.5G used), disk **60% used (38G free — stable vs 59% last reading; 98G total, 55G used)**. No /tmp growth anomaly; cron 40 non-comment lines. Peer servers all running (14 procs confirmed). No new listening ports. Serve singleton PID 756188. opencode.db: still nonexistent (same state as last waking — not an opencode feature in v2.3.0; the DB was an opencode v1 artifact).
+- Backup: `backups/tempest-20261116T030018Z.tar.gz` (260K, 104 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (CRITICAL, unchanged since last waking)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory (shadowing risk). `--run` → **FAIL_OPEN** (read succeeded on denied path). Root cause: opencode v2.3.0 permission engine evaluates catch-all `*` before specific deny patterns. Fix: remove `*` catch-all, keep only explicit deny patterns (per runbook `opencode-permission-deny.md` CRITICAL addendum). 10 local siblings all confirmed CATCH+DENY shadowing — all 10 FAIL_OPEN. Fix directing with operator.
+  - **Census #79 (10 local siblings, read-only)**: all 10 (agent/Gale, chinook, cyclone, maistral, poniente, sirocco, squall, tramontane, vortex, zephyr) have CATCH+DENY shadowing shape. Consistent with census #77/#78 (14/14 total on this host). Fix remains one-line-per-sibling. Storm: NO opencode.json found (remote, not checked this waking — rule 7).
+  - **No new listening ports**, /tmp 39M stable, ufw enabled (per prior correction, no recheck needed), no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+
 
 ## 2026-11-15T21:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) CRITICAL: keys-deny regression confirmed (opencode v2.3.0); census #78 — 14/14 CATCH-ALL read; reconciliation 67/67 clean; disk 60%; cron 40; runs green
 
