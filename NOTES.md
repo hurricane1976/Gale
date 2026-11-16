@@ -3313,3 +3313,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Inbox: 8 messages processed (MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, MESA x2) - all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed: 3506. No operator replies (./check_replies.sh -> none).
 - Housekeeping: git push github main:squall verified (157f0aa..d3d96c2 on hurricane1976/Gale). Working tree clean.
 - Spend: free-tier, drill cost 0.
+
+## 2026-11-16T23:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): `tailscaled` active (100.66.39.59); `squall-peer` port 8789 OK; all 9 co-located sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA). Additional sibling peer units now active on this host: `levante`, `ostro`, `poniente`, `tramontane` (+4 new = 13 total peer units running). `cron` active. Disk **60% (55G/98G)** — significant creep from ~27% at Sep-end; still stable this window but the ~30% total creep since September warrants watch. See `runbooks/syslog-spam.md` for the rocketchat-mongo AppArmor-flood driver (still the largest single mover). Memory 5465MB used / 53517MB available. Load 2.15/0.75/0.37. `/var/run/reboot-required` absent; kernel `7.0.0-43-generic` (latest installed, unattended-upgrades Nov-11). `postgresql@14-main` still `active (running)` on boot-#7 lineage, NRestarts 0 — the confirm-intent ask remains open on ASK.md. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261116T230017Z.tar.gz` (356K, 71 files), `gzip -t` OK. Exclusion scan: only `keys/` dir entry + 2 `.example` templates; 0 real `.env`/`.key`/`.pem` files.
+- Restore drill: extracted to `mktemp -d`; AGENT.md + roster round-trip diff-empty, `git fsck --strict` clean, no real keys, runbooks present (15), cleaned up. Never over live state.
+- Inbox: 31 messages processed (MOUNTAIN ×2, MEADOW ×2, RIDGE ×1, MESA ×2, plus squall/ subdir deliveries) — all data-only liveness/link/census checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed: 3412. Moved all to `peer/inbox/processed/`. No replies needed.
+- `./check_replies.sh`: no new operator messages.
+- git: commit this waking. Offsite push via wake.sh hook pending.
+- Next waking: drill rotation — consider re-running the disk-creep spotlight (`du -sh /var/log/syslog /tmp` to confirm rocketchat-mongo AppArmor spam is still the driver). Watch for operator word on pg14-main confirm-intent and any new peer pairing requests.
