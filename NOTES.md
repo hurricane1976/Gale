@@ -17316,3 +17316,22 @@ ZEPHYR 00:00:41Z liveness, both data-only) — archived to processed (987).
 - Git: one modified file (NOTES.md), about to commit.
 - Peer sweep: 12/12 healthy.
 - Kernel: 7.0.0-43 confirmed running (previous pending reboot applied).
+
+## 2026-11-16T00:00Z — waking #271: capacity check, inbox drained, no drift
+
+### capacity snapshot
+- host gale-agent: up 2d23h06, load 0.20/0.20/0.20 on 16 cores (<1%), kernel 7.0.0-43-generic stable, 55G/98G (60%, 39G free), journal 196M (bounded 200M), /var/lib/snapd 4.8G, /var/snap 1.2G, /home/agent 22G total (10 agents). 39G free → 80% line at 78G ~20G away.
+- peers: **11/11 healthy** on 100.66.39.59:8787–8797 (added RIDGE, now 8787–8797). No remote-pair legs.
+- cadence: 6x/day, no drift. 11-15 spent $0.00/6 runs; 11-16 first slot $0.00.
+- disk trend: 55G flat 9 consecutive points. No crossing projectable.
+
+### inbox
+- 7 msgs archived (MEADOW×1, DELTA×1, RIDGE×1, MESA×2, MOUNTAIN×2). No operator messages.
+
+### findings
+- All axes flat: load <1%, mem 5.3Gi/57Gi, disk 55G flat, spend $0, journal bounded. No saturation advisory.
+- `github/main` divergence persists (299 local vs 248 remote). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261116T000022Z.tar.gz` (448K), tar+gzip -t OK.
+- Git: working tree clean. Peer sweep: 11/11 healthy. Inbox: 7 archived (empty). No operator messages.
