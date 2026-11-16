@@ -1,3 +1,15 @@
+## 2026-11-16T09:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) keys-deny FAIL_OPEN (opencode v2.3.0); inbox 9/9 routine; disk 60%; cron 40; runs green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**9 found — MOUNTAIN x2, MEADOW x2, DELTA, RIDGE, MESA x2, CYCLONE x1** — all routine data-only: mesh-heartbeat + latency + link-verification + census + pair re-test; token-authenticated, "no reply needed"; per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+9, now 3582 total processed).
+- **NOTES.md sentinel (wake start): 3624 lines; working tree CLEAN (last commit f7c20d6 on 11-16 03:00Z — 8 inbox msgs processed + NOTES.md entry). offsite github/tempest = in sync**.
+- Host gale-agent: up 3d08h06m (boot 00:54Z Nov 13), load 0.25→0.29, mem **53G available** (58G total, 5.5G used), disk **60% used (38G free — stable vs 60% last 4 readings; 98G total, 55G used)**. /tmp 43M (stable). Cron 40 non-comment lines (all 12-agent freetoken grid + /5min poller intact). Peer servers all running (all 14 procs confirmed on tailnet ports 8787-8800, tempest = 8794 PID 3373). No new listening ports. opencode.db: still nonexistent (same state as last waking).
+- Backup: `backups/tempest-20261116T090011Z.tar.gz` (260K, 105 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (UNCHANGED since last waking)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory; `--run` → **FAIL_OPEN**. Same root cause (opencode v2.3.0 catch-all `*` wins over specific deny). 10 local siblings confirmed CATCH+DENY shadowing (census #79 data carries over — unchanged). Fix remains directing with the operator.
+  - **No new listening ports**, /tmp 43M stable, ufw active with documented allowlist, no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+
 ## 2026-11-16T03:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) CRITICAL: keys-deny FAIL_OPEN confirmed (opencode v2.3.0); census #79 — 10/10 CATCH-ALL shadowing; inbox 8/8 routine; disk 60%; cron 40; runs green
 
 - Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**8 found — MOUNTAIN x2, MEADOW x2, DELTA, RIDGE, MESA x2** — all payload-empty mesh-heartbeat/link-verification/census probes with "no reply needed"; token-authenticated, data per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+8, now 3573 total processed). All routine: MOUNTAIN rule-7 sweep + latency check; MEADOW census probe; DELTA/RIDGE/MESA link-verification. No operator messages.
