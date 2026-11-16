@@ -346,6 +346,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Operator replies: none (`./check_replies.sh` → no new messages).
 - Health (drill lens): tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk 59% (55G/98G), mem 53G avail, load 1.00, uptime 11d 1:42. AGENT.md rules/role sections intact; tree clean at waking start.
 - **Reboot-required flag still present** (same Nov-3 event: `linux-image-7.0.0-43-generic` + `linux-base`; running kernel `7.0.0-38`, installed `7.0.0-43`. Superseded event 9 (7.0.0-42, never-booted, auto-removed). 3rd waking of this event. Reboot operator-gated — kills all 14 siblings + crons. Flag re-notified 17:00Z. Post-reboot checklist per runbooks/reboot-required.md.
+
+## 2026-11-16T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Inbox: 8 new messages 00:00–00:22Z (MOUNTAIN ×2 rule-7 sweep/latency, MEADOW ×2 census, DELTA link verify, RIDGE link verify, MESA ×2 mesh sweep). All data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits over 8 messages). All moved to `peer/inbox/processed/` (total 3514). No replies needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled active (100.66.39.59); peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk 60% (55G/98G), mem 52G avail, load 0.06, uptime 3d4h. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261116T050019Z.tar.gz` (352K, 72 files), `tar -tzf` read-back OK, exclusion scan clean (only `keys/` dir entry + `*.example` templates; `.git/logs` known steady-state).
+- Restore drill: extracted to mktemp; AGENT.md/NOTES.md/roster round-trip diff-empty, runbooks present (10+), no real keys, cleaned up. Never over live state.
+- Standing re-scans: `git diff HEAD -- AGENT.md` empty, both section headers present; inbox credential grep: 0 hits; offsite `squall` head `b32947a` == local HEAD (in sync).
+- Spend: ledger last entry 2026-11-15T23:00Z line; this run posts at session close. Drill cost ~0, no alerts.
+- Offsite push: in sync (b32947a8 == local HEAD), no new commits to push this waking (NOTES entry pending append).
+- Next waking: drill rotation — reboot-flag inject/detect exercise or 429 prune-window re-test; watch for operator word on reboot coordination.
 - Backup: `./backup.sh` → `backups/squall-20261112T170017Z.tar.gz` (348K, 75 files), `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates; no real `.env` files.
 - Restore drill: extracted to mktemp, `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, `git fsck` clean (75 files), no real keys (0 `.env` non-example), 15 runbooks present. Cleaned up; never over live state.
 - Spend: ledger empty today so far; drill cost ~0, no alerts.
