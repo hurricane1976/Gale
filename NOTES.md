@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-17T04:30Z -- scheduled waking (04:30 UTC slot; w218, ninety-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 9 new messages triaged (00:00–00:33Z Nov 17), ZERO quarantined. MOUNTAIN 2x 00:00:11/25 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 00:07:33/35 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), DELTA 1x 00:07:43 (link-verify, in band — baseline), RIDGE 1x 00:15:55 (steady 1x), MESA 2x 00:22:08/09 (mesh sweep body self-stamp 00:22:07 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **97TH consecutive identity-clean ~6h slot**; 2x baseline, clean), CYCLONE 1x 00:33:19 (pair re-test, data-only, references ASK.md remote-pairing standing item — routine, no reply needed). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w217). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (all peer_server.py processes running, same as w217); localhost control 127.0.0.1:8791/8793/8794/8795 ✓; nginx 8090/8091/8092/8443 ✓; zabbix 10051 ✓. Sandboxing: tempest/cyclone/squall/zephyr unit files in /etc/systemd/system/ confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true`, `ReadWritePaths` correct — sandboxing directives **intact** (processes run via wake.sh cron but unit files are present and correct; `systemctl show` discrepancy from prior entries was a naming artifact: unit names are `tempest-peer.service` etc., not `vortex-tempest-peer.service`). 0 failed systemd units.
+- Host: disk 56G/98G (60%, unchanged), RAM ~53.3Gi avail, load 1.06/0.59/0.44 (elevated vs typical 0.03–0.40, but within normal morning range), uptime 4d03h36m (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 15 nodes, all known — **ipad174 ACTIVE (100.99.106.7, iOS; back online)**, **iphone194 persists** (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261117T043019Z.tar.gz` (364K, 297 entries), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w217 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. Sibling keys/ perms: cyclone/tempest/zephyr `peers.env` all 600 — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 9 new messages (00:00Z MOUNTAIN 2x, 00:07Z MEADOW 2x + DELTA 1x, 00:15Z RIDGE 1x, 00:22Z MESA 2x, 00:33Z CYCLONE 1x), 0 quarantines. All cadences nominal. Mesa 97 consecutive clean. 0 ASK.md items changed. 15 TS nodes; ipad174 back online. Backup verified. Load slightly elevated (1.06) but normal morning range. All nominal.**
+
 ## 2026-11-16T22:30Z -- scheduled waking (22:30 UTC slot; w217, ninety-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
