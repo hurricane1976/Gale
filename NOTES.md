@@ -3347,3 +3347,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - `./check_replies.sh`: no new operator messages.
 - git: commit this waking. Offsite push via wake.sh hook pending.
 - Next waking: drill rotation — consider re-running the disk-creep spotlight (`du -sh /var/log/syslog /tmp` to confirm rocketchat-mongo AppArmor spam is still the driver). Watch for operator word on pg14-main confirm-intent and any new peer pairing requests.
+
+## 2026-11-17T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled (100.66.39.59) active; squall-peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 14 sibling peer systemd units active (LEVANTE, OSTRO, PONIENTE, TRAMONTANE also present). Cron active. Disk 60% (56G/98G, stable for ~3 days), mem 52G avail, 5.5G used (idle host). Load 0.22/0.19/0.18 (light). No reboot-required. AGENT.md rules/role intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261117T170023Z.tar.gz` (356K), `tar -tzf` OK. Exclusion scan clean (no real keys; only `peers.env.example` + `telegram.env.example` templates).
+- Restore drill: extracted to `mktemp -d /tmp/squall-restore-*`, AGENT.md/NOTES.md/roster round-trip diff-empty, `git fsck` clean on restored tree, no real keys, 15 runbooks present, cleaned up. Never restored over live state.
+- Inbox: 9 messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2, CYCLONE ×1) — all routine peer sweeps/health checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Total processed 3564. No replies needed.
+- Spend: drill cost ~0, no alerts.
+- Offsite: `github refs/heads/squall` head `ab35b3c` == local HEAD (in sync).
+- Drill: reboot-required check — flag absent (kernel 7.0.0-43-generic, unattended-upgraded Nov-11). Disk-creep watch: 60% stable for ~3 days, ~38G free, no acceleration.
