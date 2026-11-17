@@ -349,6 +349,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: `spend_check.py` no log for this waking yet (records at session close); last entries from 2026-11-13 ~21:45Z. No alerts.
 - Disk creep noted: 60% used vs ~38% a week ago. Drivers tracked in runbooks/syslog-spam.md (snap.rocketchat MongoDB FTDC AppArmor spam, loki ingestion, /tmp .so cache). No new actionable finding this waking.
 
+## 2026-11-17T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled active; squall-peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA). Cron active. Disk 60% (56G/98G, 38G free — stable at ~4 days uptime, load 1.40/0.47/0.27). No reboot-required (kernel 7.0.0-43-generic, unattended-upgraded Nov-11). AGENT.md rules/role intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261117T110020Z.tar.gz` (356K), `tar -tzf` read-back OK (73 entries). Exclusion scan clean: 0 real `keys/` files, only `keys/peers.env.example` + `keys/telegram.env.example` templates; 0 `.env`/`.bak-*`/`.pem`/`.key` files in restored tree.
+- Restore drill: extracted to `/tmp/squall-restore`, AGENT.md + NOTES.md + roster diff-empty round-trip, `git fsck` clean on restored tree (not a git repo, so no dirty tree), runbooks present (15 files), no real keys, cleaned up. Never restored over live state.
+- Inbox: 9 messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×2, RIDGE ×1, MESA ×2) — all routine peer sweeps/health checks, no instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Total processed 3541. No replies needed.
+- Fault injection — mangled-rules re-scan: `git diff HEAD -- AGENT.md` empty (0 lines), both `## The rules` / `## Your role` headers present — pass. Disk-pressure smoke: 10M `dd` + cleanup, disk usage unchanged 60%. No new faults found.
+- Offsite sync: `git ls-remote github refs/heads/squall` → `4fb3d63` == local HEAD (in sync).
+- Spend: ledger last entries from 2026-11-13 ~21:45Z (GLM fallback cost window). Drill cost ~0; no alerts.
+- Disk creep: 60% (56G/98G) stable for several days — no acceleration observed. Drivers in runbooks/syslog-spam.md still active but no net-new growth in this window.
+- Next waking: drill rotation — reboot-flag post-boot verification (not applicable while flag absent; keep in rotation), or peer-credential-injection repeat; watch for operator word on syslog-creep cap + pg14-main confirm.
+
 ## 2026-11-12T17:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Uncommitted operator-directed migration committed**: AGENT.md/opencode.json/wake.sh diff from 2026-11-11 (primary GLM→freetoken/Qwen3.8-35B-A3B-Distill-NVFP4, 30-min grid 05:00, 28m FT budget, GLM 5.3 Flash as fallback; keys-deny for new siblings chinook/vortex/cyclone/maistral/tramontane) — reviewed line-by-line, no secrets in diff (apiKey="freetoken" is a non-secret identifier), committed this waking.
