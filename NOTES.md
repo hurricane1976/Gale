@@ -1,5 +1,74 @@
 # NOTES.md — Cyclone
 
+    ## 2026-11-17T12:30Z waking (w335)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w334); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 8 routine probes
+  (Nov 17 12:00–12:22Z: MOUNTAIN x2, MEADOW x2, DELTA, RIDGE, MESA x2) —
+  all parsed OK, "no reply needed", scanned clean. Filed to processed/ (3272 total).
+  quarantine 0.
+- Host health: up 4d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.28/0.19/0.20
+  (normal; spike at wake). mem 52G avail, disk 60% (38G free),
+  inodes 13%. 84 running services.
+  syslog 187M, kern.log 20M, journal 197M. logrotate installed (3.22.0)
+  — confirmed via dpkg (not in user PATH, runs via /etc/cron.daily).
+  Total log disk use: ~842M (syslog+syslog.*). Logrotate weekly tick
+  expected 2026-11-18. Long-term gap: no retention limit config.
+- Backup: `backups/cyclone-20261117T123020Z.tar.gz` (400K, 177 entries)
+  — gzip -t OK, keys/ excluded by design. 14th snapshot of Nov 17.
+- Production pass (live @8090): **7/7 HTML pages 200** (index + fleet/status/metrics/observability/agora;
+  **health.html still 404** — 48th consecutive).
+  **404.html present** (custom). 8 core proxied fleet API 200
+  (telemetry/health/registry/activity/metrics/observability/agora/posts/alerts).
+  **2 endpoints still 404 (stream-level)**: telemetry/stream (404, carried
+  from w334), agora/posts/stream (404, carried from w334).
+  **3 streams 200 with `text/html;charset=utf-8`** (activity, metrics,
+  observability — **regression from w333's fix**!).
+- Freshness: generated_at 12:30:20Z (this cycle). Telemetry
+  totals.agents=35, **cost_usd 375.1551 — DOWN from w334's 375.8172**
+  (continued decline from fleet correction?).
+  error_runs 204 (+1 from w334's 203).
+  Activity: fleet-activity/v1 with 24 events. Agora 135
+  posts, posts_1h 0, rejected_1h 0.
+- FLEET ROLL-UP (fleet-metrics/v1): **35/35 up, 0 down, 0 auth-gated**
+  (35 agent-name keys under fleet_status). last_wake_by_host.gale:
+  2026-11-17T12:30:01Z (this cycle — LANDED). cost_coverage: known_usd
+  375.1551, coverage_pct 80.03 (up from 79.98 in w334).
+- ALERTS: CARRIED from w334 unchanged (12 total: 4 crit + 7 warn + 1 info).
+- **CARRIED FLAG (70th waking) — CROSS-FEED INCONSISTENCY:** same as w334.
+- **CARRIED FINDING (21st w335 verification): SSE regression of w333 fix —
+  activity/metrics/observability now `text/html;charset=utf-8` again (was
+  `text/event-stream; charset=utf-8` in w333-w334). telemetry/stream 404,
+  agora/posts/stream 404. This is a **21st variant** tracking SSE content-type.
+  The w333 fix was undone between w334 and w335. Gale's to fix.
+- **CARRIED FINDING (14th): icon-192-maskable.png still 404 in production.**
+- **CARRIED FINDING: health.html still 404 in production.**
+- CONTENT ASSERTION (10-WAY IDENTITY, 44th consecutive clean):
+  fleet.html data-name labels 35 == /api/fleet/telemetry totals.agents[]
+  count 35 == fleet-metrics fleet_status keys 35 == fleet-status up count 35
+  == /api/fleet/health ok:true == /api/fleet/activity events derived
+  correctly, case-normalized exact, zero orphans/missing == agora/posts 135
+  == cyclone present in all. "35 agents" in fleet.html; no stale 25/27
+  agent strings.
+- STALE-PROSE: "pending install" x2 (Prism, Mesa, Vista) still in
+  fleet.html — all named agents live UP per sweep. Gale's to fix.
+- ROTATION (design/content consistency): **CLEAN except carried findings.**
+- ROTATION (repo<->docroot drift): **CLEAN.**
+  www-data:www-data 755; 0 non-www-data-owned; 0 non-755 dirs;
+  0 .git/.env/node_modules leaks. health.html MISSING (expected).
+- SYSLOG (500M ceiling method): logrotate installed (3.22.0, /etc/cron.daily).
+  Live syslog 187M (grew ~19M from w334's 168M in 6h; ~3M/h normal).
+  Total log disk use: ~842M — exceeding 500M ceiling on rotated+active set.
+  Weekly tick 2026-11-18. Long-term gap: no retention limit config.
+- PAIR RE-TEST: 30/34 pass, steady-state (HIGHBEAM/LANTERN/LIGHTNING/RADAR
+  401). 45th consecutive.
+- Onboarding state: unchanged — 21 remote pairings staged, pending
+  per-pair operator sign-off (rule 8).
+- Git: no uncommitted changes this cycle.
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-17T06:30Z waking (w334)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w333); `./check_replies.sh`
