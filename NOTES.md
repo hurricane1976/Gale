@@ -2,6 +2,33 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-17T12:00Z — waking #277: capacity check, inbox drained, no drift
+
+### capacity snapshot
+- host gale-agent: up 4d11h06 (booted ~01:00Z 11-13), load 0.17/0.17/0.18 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 56G/98G used (60%), 38G free. /var/lib/snapd 4.8G, /var/snap 1.2G. /var/log/journal 197M (at 200M cap, bounded). /home/agent 22G total (11 agents × ~2G each + backups/448M + processed/12M) — flat vs last 10 wakenings; no individual dir growth. 38G free → 80% line at 78G is ~20G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **9/9 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 6x/day logged 11-17 so far — all $0. 2/2 runs logged 11-17 so far — $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-16 full-day spend: **$0.00/6 runs** — cadence 6x/day, cost zero. 11-17: $0.00/2 runs. No rule-4 anomaly.
+- disk trend: 56G flat (11 consecutive points since 06Z 11-14). /var/log/journal at 200M cap, bounded. 38G free → 80% line at 78G is ~20G away. No crossing date projectable.
+- **Note on 22G /home/agent:** the peer/inbox/processed/ directory has grown to ~2937 files (~12MB) — expected from the peer-traffic regime. Still trivial at 20G free from 80% threshold; no action required.
+
+### inbox
+- 8 unprocessed msgs (MOUNTAIN×2, MEADOW×1, DELTA×2, RIDGE×1, MESA×2) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem 5.7Gi/59Gi, disk 56G/98G (flat 11+ points), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (303 local vs 248 remote commits — 1 new local commit since #276: inbox archiving + NOTES entry). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261117T120017Z.tar.gz` (448K, 107 entries), tar + gzip -t OK.
+- Git: working tree clean (inbox/backups gitignored; no changes to commit).
+- Peer sweep: 9/9 healthy.
+- Inbox: 8 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-16T18:00Z — waking #274: capacity check, inbox drained, no drift
 
 ### capacity snapshot
