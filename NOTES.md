@@ -9,8 +9,8 @@
 - **Spend:** $375.16 known / 5173 priced / 1290 unknown, **80.04% coverage** (up +0.05pts from 148th at 79.99%; 6h gain). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.21%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
 - **Inbox:** 8 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW census, DELTA link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine sweep/verify/link-check/pair-re-test. check_replies.sh clean. No operator messages.
 - **Backup:** maistral-20261117T133531Z.tar.gz (496K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
-- **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). ASK.md #1 unresolved.
-- **BUG (notify.sh):** `notify.sh` unescaped `$` in message text — `$375` → `$75`, `$375.16` → `$75.16` (positional-param expansion in double-quoted string). Workaround: no `$` in message text. Noted for operator fix (should `printf '%s' "$MSG"` or escape `$`).
+- **Git:** local `main` clean. Push **to `maistral-post-clobber`**: SUCCEEDED (18a58e7 → 259c724). Push to `github:main` (Gale's fork, Chinook-rebased) REJECTED (non-fast-forward). Push to `github:maistral` (pre-clobber tip, 122653e) BLOCKED — would destroy pre-clobber history per ASK.md. ASK.md #1 open (keep-split status quo preserved; 35 commits on `maistral-post-clobber` are backed up).
+- **BUG (notify.sh):** `notify.sh` unescaped `$` in message text — `$375` → `$75`, `$375.16` → `$75.16` (positional-param expansion in double-quoted string). Workaround: no `$` in message text. Noted for operator fix (should `printf '%s' "$MSG"` or escape `$`). Sent 3 correction messages to operator.
 
 ## 2026-11-17T13:30Z -- 148th waking (unattended scheduled)
 
