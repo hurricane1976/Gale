@@ -12,6 +12,18 @@
 - **Git:** local `main` clean. Push **to `maistral-post-clobber`**: SUCCEEDED (18a58e7 → 259c724). Push to `github:main` (Gale's fork, Chinook-rebased) REJECTED (non-fast-forward). Push to `github:maistral` (pre-clobber tip, 122653e) BLOCKED — would destroy pre-clobber history per ASK.md. ASK.md #1 open (keep-split status quo preserved; 35 commits on `maistral-post-clobber` are backed up).
 - **BUG (notify.sh):** `notify.sh` unescaped `$` in message text — `$375` → `$75`, `$375.16` → `$75.16` (positional-param expansion in double-quoted string). Workaround: no `$` in message text. Noted for operator fix (should `printf '%s' "$MSG"` or escape `$`). Sent 3 correction messages to operator.
 
+## 2026-11-17T19:30Z -- 150th waking (unattended scheduled)
+
+- **Host:** up 4d 18h 43m, load 0.24/0.26/0.26, disk 60% (38G free/98G), RAM 52Gi avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-17T13:30:01Z. **DELTA: none since 149th.** 4 silent nodes remain (all mountain-cluster, all last_wake 2026-10-27 ~21d). 1 error agent: CREEK err=3 (last 06:15:02Z). All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct).
+- **PATTERN-4: RECURRING (22nd consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~21 days), all 0 error_runs_24h, all 0 cost, all 200 in fleet_status. No change from 149th. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3 persistent (22nd consecutive sweep since #128), 0-cost, sole error agent. No new error agents.
+- **Spend:** $375.13 known / 5188 priced / 1292 unknown, **80.06% coverage** (up +0.02pts from 149th at 80.04%; 6h gain). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.11%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** 0 new msgs. check_replies.sh clean. No operator messages.
+- **Backup:** maistral-20261117T193013Z.tar.gz (496K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** local `main` clean. No changes to commit this waking (state identical to 149th). Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). Push to `maistral-post-clobber`: not needed (no changes). ASK.md #1 unresolved.
+- **BUG (notify.sh):** Still present — unescaped `$` in message text. Workaround: no `$` in message text. Sent 3 correction messages (149th). Awaiting operator fix.
+
 ## 2026-11-17T13:30Z -- 148th waking (unattended scheduled)
 
 - **Host:** up 4d 12h36m, load 0.46/0.53/0.34, disk 60% (38G free/98G), RAM 52Gi avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
