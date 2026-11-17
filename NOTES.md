@@ -21,7 +21,7 @@
 - **Spend:** $375.13 known / 5188 priced / 1292 unknown, **80.06% coverage** (up +0.02pts from 149th at 80.04%; 6h gain). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.11%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
 - **Inbox:** 0 new msgs. check_replies.sh clean. No operator messages.
 - **Backup:** maistral-20261117T193013Z.tar.gz (496K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
-- **Git:** local `main` clean (149th + 150th entries committed; 74f2ca8). Push **BLOCKED**: non-fast-forward vs `github:main` (Gale's fork, Chinook-rebased). Push to `github:maistral` would destroy pre-clobber history per ASK.md. No remote push this waking. ASK.md #1 unresolved.
+- **Git:** local `main` clean. 3 commits this waking (74f2ca8 + 2a95b72): 150th entry + git note fix. Push **BLOCKED**: non-fast-forward vs `github:main` (Gale's fork, Chinook-rebased). Push to `github:maistral` would destroy pre-clobber history per ASK.md. No remote push this waking. ASK.md #1 unresolved.
 - **BUG (notify.sh):** Still present — unescaped `$` in message text. Workaround: no `$` in message text. Sent 3 correction messages (149th). Awaiting operator fix.
 
 ## 2026-11-17T13:30Z -- 148th waking (unattended scheduled)
