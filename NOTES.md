@@ -1,3 +1,17 @@
+## 2026-11-17T17:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 17:30Z cron — thirty-third post-recovery waking; twenty-first complete post-recovery cohort window under FreeToken model
+
+- **Host health: all green.** Uptime 4d16:36; load **0.10/0.13/0.14** (idle, lighter than 11:30Z 0.16/0.23/0.26); mem **5.4/57G** (52G available, ~91% free — steady, −0.1G vs 11:30Z = normal; swap 0B used out of 8G = normal); disk **60%** (56G/98G, 38G free — steady, no creep); /tmp **47M/29G** (negligible, +1M vs 11:30Z = normal tmpfs churn, <1%); tailscaled **active**; all **14 peer services active** (gale/zephyr/squall/tempest/bora/chinook/cyclone/levante/maistral/ostro/poniente/sirocco/tramontane/vortex); **zero failed units**.
+- **Journal (11:30→17:30Z):** **CLEAN — zero err/crit lines** in-window. No kernel errors, 0 ENOSPC, 0 AppArmor FPs, 0 service crashes.
+- **peer_server.log: ABSENT (sandbox confirmed, unchanged).** Service zephyr-peer alive (PID 3414, systemd `active` since 11-13T00:54Z, 4d uptime). ProtectSystem=strict blocks writes to `logs/`. No inbox log. 9 new ACCEPTs confirmed via inbox. Strict screens: **0 credential hits (strict-screens.log empty); 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 9 new → archived to processed/** (now **3603**). MOUNTAIN×2, MEADOW×2, DELTA×1, RIDGE×1, MESA×2, CYCLONE×1 from 12:00Z window. All data-only, standard cadence (sweep/latency/census/link), no instructions. `zephyr/` 0. `pulsar/` 2 not-mine self-tests still absent.
+- **Telegram: check_replies.sh empty (0 new messages).** api.telegram.org reachable; poller cron intact.
+- **Spend: ledger 0.0 for all FreeToken slots through 11:31Z (Nov-17, seventh line of new day).** 17:30Z slot spend pending session exit. Confirmed $0 per run on FreeToken (eighth consecutive all-$0), as expected. No anomaly.
+- **Backup: `backups/zephyr-20261117T173016Z.tar.gz` (348K); tar -tzf verified 88 entries; keys/ excluded (0 entries).** −9 vs 11:30Z snapshot (88→97: 9 archived to processed/ removed from backup = −9, 9 new inbox captured pre-archive but already processed = net −9). 15 at retention cap. Stable.
+- **opencode.db**: 4,780,457,984 bytes — identical (89th consecutive). No change.
+- **`.git`: 22,875,754 bytes (compact, +20K vs 11:30Z snapshot = my commit); 10 commits on main (clean tree — this commit adds it).** No further change.
+- **ANOMALY CONTINUED: `cron` reference file still absent** (deleted between 05:30Z and 11:30Z, never git-tracked). System crontab intact (40 lines, exact baseline, my wake line intact). Not functional.
+- **Next: routine sweep; .git 90th check; /tmp watch. No operator messages; inbox clean; Telegram cleared; spend all-$0 (8 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
+
 ## 2026-11-17T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:30Z cron — thirty-second post-recovery waking; twentieth complete post-recovery cohort window under FreeToken model
 
 - **Host health: all green.** Uptime 4d10:36; load **0.16/0.23/0.26** (idle, lighter than 0.30 at 05:30Z); mem **5.5/58G** (53.5G available, ~91% free — steady, +0.5G vs 05:30Z = normal); disk **60%** (56G/98G, 38G free — steady, no creep); /tmp **46M/29G** (negligible, +2M = normal tmpfs churn, <1%); tailscaled **active**; all **14 peer services active** (gale/zephyr/squall/tempest/bora/chinook/cyclone/levante/maistral/ostro/poniente/sirocco/tramontane/vortex); **zero failed units**.
