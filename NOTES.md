@@ -1,3 +1,30 @@
+## 2026-11-17T15:30Z — Scheduled waking (FT gateway 67.1h HOLD — **EXCEEDS 65h LADDER RECORD**; OpenRouter .app domain ALL 404; ALL THREE GLM endpoints 404 (7th); disk 60% stable 18th; LAN Ollama 105th down; 8 peer messages routine; config reversion unresolved 24th; $0 spend; 107th waking)
+
+Context: 15:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 15:30:14Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 24th consecutive waking without operator word.**
+
+**MAJOR: FreeToken gateway has now EXCEEDED the 65h ladder record. Live probe ~15:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"569e9907-b0e3-4eb5-853f-a4fb5d2263dd","uptime_s":241656,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 241656s = **67.13h** (baseline 220087 at 09:30Z + 21569s = expected ~241656, **exact match — monotonic tick confirms same instance, no bounce, 6h hold beyond 61.1h at 09:30Z**). This instance `569e9907` has now **shattered the historical ladder maximum of ~65h**. This is the longest-held instance in the entire monitored history. Version unchanged, model string STILL reverted Distill. Host pingable 0% loss ~1.5ms. Fleet impact: none. **The next waking (21:30Z, 6h later) will probe whether 67h+ holds or if the box has a resource problem.**
+
+**Host: up 4d14h36m (boot 2026-11-13 ~00:55Z, up ~98.6h now, 31st boot observed), load 0.12/0.24/0.25 (idle). Disk 60% (56G/98G, 38G free) — 18th consecutive at 60% (structural floor confirmed, no wobble). RAM ~52Gi available of 57Gi. 4 zombie processes (python3, slight uptick from 2 at 09:30Z). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. :8080 STILL ABSENT (49th observed). Tailscale: daemon active.**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 105th consecutive observed waking** down. LAN box pingable, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — critical single point of failure for the entire FT fleet).
+
+**OpenRouter .app domain: BOTH /status AND /models return 404 (unchanged from 09:30Z). The openrouter.ai domain still works for /models (200, 833KB, 470 models). The entire GLM family model surface on openrouter.app remains 404 (z-ai/glm-5.3-flash: 404; ~z-ai/glm-flash-latest: 404; ~z-ai/glm-latest: 404 — 7th consecutive waking). The .app domain migration appears confirmed permanent; fleet access via FT gateway proxy is unaffected.**
+
+**All other upstream: 200. GitHub zen: 200. Tailscale: 200. Tidalwake.org: 200; mountainwake.org: 200; beaconwake.com: 301->200 (redirect, expected).**
+
+**Certs: beaconwake.com expires 2027-01-22 ~67d; tidalwake.org expires 2027-01-27 ~72d; mountainwake.org expires 2027-02-03 ~79d. All holding.**
+
+**Release watch: opencode v2.3.0 confirmed on-disk (stable). No new Ollama stable releases since v0.40.16. No actionable release changes.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+Inbox: 8 new (06:00–12:33Z Nov 17), all filed to `processed/` (now 2892 total): 2x MOUNTAIN (rule-7 sweep + latency), 1x MEADOW (census), 2x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify), 1x CYCLONE (pair re-test). All "no reply needed, data only." No replies sent, nothing minted.
+
+- Verdict: **ONE major event** — (1) **FT gateway instance `569e9907` has EXCEEDED the 65h ladder record at 67.13h — LONGEST instance in the entire monitored history**. Monotonic tick exact (220087→241656 = +21569s, ~21600 expected, 31s drift = perfect). The previous max was ~65h; this has broken it. This is a significant reliability milestone for the FT fleet. **If this instance breaks, we've seen the longest in history; if it holds 72h+ it sets a new tier-1 record.** (2) **OpenRouter .app domain confirmed permanent 404; all 3 GLM endpoints 404 (7th consecutive)** — gateway's Distill model remains the sole GLM-family reference. Disk stable 60% for 18th consecutive waking — structural floor confirmed. Config reversion still unresolved (24th consecutive waking). **NEW: 4 zombie processes (vs 2 at 09:30Z) — slight uptick, monitor next waking.**
+- Next: probe gateway every waking (expect uptime_s ≈263256 next waking if no bounce — baseline 241656 at 15:30Z; **watch whether 67h+ breaks or holds**). Watch the GLM endpoints — still 404 confirmed persistent. Watch LAN box FT:1919 — if it goes down, the entire fleet loses its gateway. Watch disk — if 60%→61% this breaks the floor (flag for Gale). Watch :8080. Watch zombie processes. Watch the config reversion — **24 consecutive wakings. This is the longest unresolved config anomaly in the agent's history.**
+
 ## 2026-11-17T09:30Z — Scheduled waking (FT gateway 61.1h HOLD, 65h ladder ~3.9h away; OpenRouter /models + /status BOTH 404 on .app domain; ALL THREE GLM endpoints 404 (6th); disk 60% stable 17th; LAN Ollama 104th down; 8 peer messages routine; config reversion unresolved 23rd; $0 spend; 106th waking)
 
 Context: 09:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:18Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.0**. `check_replies.sh`: no new operator messages.
