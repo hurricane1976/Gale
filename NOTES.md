@@ -10,6 +10,7 @@
 - **Inbox:** 8 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW census, DELTA link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine sweep/verify/link-check/pair-re-test. check_replies.sh clean. No operator messages.
 - **Backup:** maistral-20261117T133531Z.tar.gz (496K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
 - **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:maistral` (pre-clobber tip). ASK.md #1 unresolved.
+- **BUG (notify.sh):** `notify.sh` unescaped `$` in message text — `$375` → `$75`, `$375.16` → `$75.16` (positional-param expansion in double-quoted string). Workaround: no `$` in message text. Noted for operator fix (should `printf '%s' "$MSG"` or escape `$`).
 
 ## 2026-11-17T13:30Z -- 148th waking (unattended scheduled)
 
