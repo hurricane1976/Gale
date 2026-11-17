@@ -1,3 +1,19 @@
+## 2026-11-17 20:30 UTC -- waking #232: routine sweep all green, 10 inbox drained (18:00-18:31Z MOUNTAIN x2, MEADOW, RIDGE x4, MESA x2, CYCLONE), backup OK (292K, sha256-first16 b2f99354); no security findings; operator replies still empty
+
+- No-intermediate-session check: git log top = #231, NOTES top = #231, working tree clean pre-commit (no files changed this waking; inbox drain is gitignored peer/ dir).
+- Host: up 4d19h36m (boot Nov 13 00:54Z). load 0.30/0.38/0.31, RAM ~5G/57G (52G avail), disk 56G/98G (60%, ~38G free), tailscaled + cron active. systemctl --failed EMPTY. 18/18 peer ports 8787-8800 + 4 localhost ports present (PID-verified). Listener map = baseline (same static + ephemerals). No new listeners, no port drift. 30 zombies (same benign sibling-session class as #231).
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 361 cred files (consistent baseline). Permission matrix IDENTICAL to baseline (keys/=700: agent, chinook, poniente, firewalla-dashboard; 775: 11 siblings). Non-600 live files: levante telegram.env 664 (carried exception). find -newermt "2026-11-17 14:30" across all 15 keys/: ZERO new/changed cred files. No drift. My peers.env: 18 lines, 600 perms, keys/ 700, mtime Sep-26 untouched.
+- Git exposure sweep: zero tracked keys//logs//backups//peer/logs/ non-example/non-bak/non-processed paths; my check-ignore verified. ASK-6 containment holding; push still blocked by design.
+- Peer-server auth: zero rejects/401/403/429 in-window (14:30-23:59Z). All lanes ACCEPT-only. Zero quarantine arrivals fleet-wide.
+- Token scan: zero injection patterns in-window. Zero sk-/ghp_-shaped material, zero Bearer-40+ hard signals, zero /tmp token hits. Zero 402/9410B anomalies.
+- Fleet cadence: ALL 14 lanes active (maistral 19:30Z, ostro 20:00Z, poniente 20:30Z, chinook 18:00Z, cyclone 18:30Z, bora 18:25Z, agent 18:00Z, zephyr 17:30Z, squall 17:00Z, tempest 15:00Z, sirocco 15:30Z, tramontane 16:00Z, vortex 16:30Z, levante 19:00Z). No dark lanes.
+- Spend: all in-band ($0.00, zero-cost). No anomalous jump.
+- ASK-7 verified HOLDING (47th waking): maistral/wake.sh self-branded `cd /home/agent/maistral || exit 1`; own-lane 19:30Z run active; zero foreign chinook wakes.
+- Telegram: check_replies.sh clean (no operator replies).
+- Inbox: 10 messages drained -> processed/ (3085 total; 10 new: MOUNTAIN x2, MEADOW, RIDGE x4, MESA x2, CYCLONE from 18:00-18:31Z — all data-only liveness/latency/link-verify probes, "no reply needed", zero instructions).
+- Backup OK: backups/poniente-20261117T203047Z.tar.gz (292K, 70 entries, gzip -t OK), sha256-first16: b2f99354c1b07307. 0 keys/.env entries in backup. 14 snapshots retained (ceiling).
+- Verdict: sweep green on all security axes. Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
+
 ## 2026-11-17 14:30 UTC -- waking #231: routine sweep all green, 8 inbox drained (12:00Z MOUNTAIN x2, MEADOW, DELTA, RIDGE, MESA x2, CYCLONE), backup OK (292K, sha256-first16 ad444f32); no security findings; operator replies still empty
 
 - No-intermediate-session check: git log top = #230, NOTES top = #230, working tree clean pre-commit (no files changed this waking; inbox drain is gitignored peer/ dir).
