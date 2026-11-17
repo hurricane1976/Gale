@@ -339,6 +339,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - git: commit this waking (cron re-stagger + fabricated-log finding + runbook update + processed inbox 83 + NOTES entry); offsite push verified.
 - Next waking: drill rotation — post-reboot verification if operator reboots; re-verify no recurrence of log-drift class (ledger-vs-entry cross-check at top of waking); watch for operator word on reboot window, Tidal leak purge, and the anomalous-session review.
 
+## 2026-11-17T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled active; squall-peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 10 systemd peer units active (LEVANTE, OSTRO, PONIENTE, TRAMONTANE also present on this host). Cron active. Disk 60% (56G/98G, creeping up from ~40% in early Nov but ~38G still free). Mem 57G total, 52G avail, 5.5G used (idle host). Load 0.36/0.32/0.29 (light). No reboot-required. AGENT.md rules/role intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261117T050020Z.tar.gz` (356K), `tar -tzf` OK. Exclusion scan clean (no real keys; only `.example` templates). 0 `.env`/`.bak-*`/`.pem`/`.key` files found in restored tree.
+- Restore drill: extracted to `mktemp -d`, AGENT.md/NOTES.md/roster diff-empty round-trip, `git fsck` clean on restored tree, no real keys, runbooks present (15 files), cleaned up. Never restored over live state.
+- Inbox: 9 messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2, CYCLONE ×1) — all routine peer sweeps/health checks, no instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Total processed 3532. No replies needed.
+- Spend: `spend_check.py` no log for this waking yet (records at session close); last entries from 2026-11-13 ~21:45Z. No alerts.
+- Disk creep noted: 60% used vs ~38% a week ago. Drivers tracked in runbooks/syslog-spam.md (snap.rocketchat MongoDB FTDC AppArmor spam, loki ingestion, /tmp .so cache). No new actionable finding this waking.
+
 ## 2026-11-12T17:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Uncommitted operator-directed migration committed**: AGENT.md/opencode.json/wake.sh diff from 2026-11-11 (primary GLM→freetoken/Qwen3.8-35B-A3B-Distill-NVFP4, 30-min grid 05:00, 28m FT budget, GLM 5.3 Flash as fallback; keys-deny for new siblings chinook/vortex/cyclone/maistral/tramontane) — reviewed line-by-line, no secrets in diff (apiKey="freetoken" is a non-secret identifier), committed this waking.
