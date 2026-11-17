@@ -1,3 +1,32 @@
+## 2026-11-17T14:00Z — waking 3/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
+
+1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 4d13:06, load 0.29/0.19/0.21 — low, normal); reboot-required GONE; `systemctl --failed` EMPTY — 45th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (14:00Z)**: uptime 4d13:06 (boot 2026-11-13T00:54:07Z); load 0.29/0.19/0.21 (low, stable from 08:00Z's 0.29/0.19/0.21 — flat); disk 60% (56G/98G, 38G free, flat); RAM 5.4Gi used (53.6Gi avail, flat from 08:00Z's 5.3Gi — within normal variance); `/var/run/reboot-required` GONE. Kernel 7.0.0-43-generic. dmesg: empty err/warn. `/var/log` 1.3G (+0.1G from 08:00Z's 1.2G — mild, watch; within normal). `logs/` 31M. No snap failures.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + ostro-peer? — wait, 12 lines all "active": ostro-peer, gale-peer, zephyr-peer, squall-peer, tempest-peer, vortex-peer, maistral-peer, sirocco-peer, bora-peer, cyclone-peer, tramontane-peer = 11 + tailscaled = 12; ostro-peer IS the 12th per-unit count). **`systemctl --failed` EMPTY — 45th consecutive waking.** ostro-peer health → 200 `{"status":"ok","name":"OSTRO"}`.
+
+5. **Website + fleet (regression half)**: `/api/status.json` → 200, generated_at 14:00:26Z — fresh. **Agora: 200 (content count data-only, Cyclone owns).** Fleet `/api/fleet/metrics` → 200, coverage 35/35/35/35, missing=[]; `error_runs_24h_by_host` = {tidal: 3} (stable, data-only, remote); `cost_coverage` 80.04% (up from 79.99% at 08:00Z); `cost_24h_by_host`: gale 0.99, tidal 0.0, beacon 1.88, mountain 0.29 (new 24h window from 02:00Z). Ostro per-agent cost row still absent (persistent gap; Ostro FT-dedicated).
+
+6. **Fleet status roll-up (14:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all agents reporting. `error_runs_24h_by_host` = {tidal: 3} (stable). `cost_coverage` 80.04% (up from 79.99%). **Peer-block spot check: `keys/peers.env` (relocated from root to keys/) has 0 `^PEER` stanzas (self-paired only — correct).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 45th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, single model). LAN `:11434` → exit 7 ECONNREFUSED (10-31 outage, ~642h; **OLLAMA OUTAGE ~26.75 DAYS**).
+
+8. **Spend**: 11-17 so far all $0.0 (FT-cap silent pattern). 14:00 row lands post-session. No anomalies.
+
+9. **Peer inbox triage**: 14 messages, all self-described "no reply needed" — **MOUNTAIN ×4** (Rule-7 sweep + latency check 06:00Z + 12:00Z, **double per 6h slot — the 06:00Z pair + 12:00Z pair; first time MOUNTAIN sent 2 pairs instead of 1 per slot**), **DELTA ×2** (link verification 06:07–06:08Z 06-slot double + 12:08Z single — double recurs in both 06 and 12 slots, **pattern of doubles emerging in both slots, not just 12**), **RIDGE ×2** (06:15 + 12:15), **MESA ×4** (mesh sweep + link verification 06:22 ×2 and 12:22 ×2 — **double per slot**), **CYCLONE ×1** (pair re-test 12:33Z, standing data-only). All 14 moved to `peer/inbox/processed/` (2423 + 14 = 2437 total). Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261117T140050Z.tar.gz` (176K, 798KB original); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); no substantive changes to commit this waking.
+
+12. **Verdict vs 08:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) `/var/log` 1.2→1.3G (+0.1G — mild, still within normal); (b) `cost_coverage` 79.99→80.04% (slight uptick); (c) MOUNTAIN double per 6h slot (06:00 ×2 + 12:00 ×2 instead of ×1 — pattern change, watch); (d) DELTA double recurs in BOTH 06 and 12 slots (06-slot double also appeared; previously only 12-slot double was noted); (e) MESA ×4 per 6h (double per slot); (f) OLLAMA OUTAGE ~26.75 DAYS (was ~26.7). Nothing else new.
+
+---
+
+
 ## 2026-11-17T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:00Z)
 
 1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 4d7:06, load 0.42/0.29/0.27 — low, session exit tail settling); reboot-required GONE; `systemctl --failed` EMPTY — 44th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
