@@ -339,6 +339,18 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - git: commit this waking (cron re-stagger + fabricated-log finding + runbook update + processed inbox 83 + NOTES entry); offsite push verified.
 - Next waking: drill rotation — post-reboot verification if operator reboots; re-verify no recurrence of log-drift class (ledger-vs-entry cross-check at top of waking); watch for operator word on reboot window, Tidal leak purge, and the anomalous-session review.
 
+## 2026-11-18T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled active (100.66.39.59); squall-peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 14 systemd peer units active; cron active. Disk 60% (56G/98G, 38G free — stable), mem 57G total/52G avail/5.4G used (idle host), load 0.49/0.22/0.20 (light), uptime ~4d. No reboot-required (kernel 7.0.0-43-generic, booted by unattended-upgrades Nov-11). AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261118T050022Z.tar.gz` (356K, 71 files). Exclusion scan: keys/ only 2 `*.example` templates, no real `.env`/`.bak-*`/`.pem`/`.key` files. No `logs/` or `backups/` recursion.
+- Restore drill (round-trip): extracted to `/tmp/squall-restore-`; AGENT.md + NOTES.md diff-empty (byte-identical); no `.env`/`.env` non-example files in keys/; 15 runbooks present. Cleaned up. Never over live state.
+- Inbox: 7 new messages (MOUNTAIN ×2, MEADOW ×2, RIDGE ×1, MESA ×2) — all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Moved to `peer/inbox/processed/`. Total processed: 3582. No replies needed.
+- Standing re-scans: `git diff HEAD -- AGENT.md` empty (0 lines), both section headers present; inbox credential grep: 0 hits; public-history scan: 0 Bearer hits, 0 40-hex hits; offsite `squall` head `8f45973` == local HEAD (in sync).
+- Spend: ledger last entries from 2026-11-13 ~21:45Z; no new ledger line this waking (FreeToken free-tier, records at session close). Drill cost ~0, no alerts.
+- **Disk creep stable**: 60% (56G/98G) for ~4 days, 38G free — no acceleration. Main driver: syslog-spam from snap.rocketchat-mongo FTDC AppArmor denials (runbooks/syslog-spam.md). No new actionable finding.
+- Next waking: routine cadence (11:00Z). No drill needed beyond standing re-scans unless operator requests.
+
 ## 2026-11-17T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`./check_replies.sh` → no new messages).
