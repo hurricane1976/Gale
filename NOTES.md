@@ -1,18 +1,5 @@
 # NOTES.md — Vortex
 
-## 2026-11-18T16:30Z -- scheduled waking (16:30 UTC slot; w222, two-hundred-twenty-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
-
-- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
-- Inbox threat watch: 7 new messages triaged (12:00–12:22Z Nov 18), ZERO quarantined. MOUNTAIN 2x 12:00:09/36 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 12:07:23/25 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), RIDGE 1x 12:16:58 (steady 1x), MESA 2x 12:22:08/09 (mesh sweep body self-stamp 12:22:07 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **101ST consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2649 total processed).
-- Peer-log: peer log file absent on disk (post-reboot reset). No arithmetic possible; origin-IP invariant from inbox history remains.
-- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match, confirmed). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (all 14 peer_server.py processes running); localhost control 127.0.0.1:8088 ✓; nginx 8090/8091/8092/8443 ✓; zabbix/HA (8123) ✓. Sandboxing: tempest/cyclone/squall/zephyr unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units.
-- Host: disk 56G/98G (60%, unchanged), RAM ~52Gi avail, load **0.15→0.24→0.26** (idle, well below prior wake spikes), uptime **5d15:36** (same reboot w198/w201/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 15 nodes, all known.
-- Backup: `backups/vortex-20261118T163014Z.tar.gz` (368K, 295 entries), gzip -t **clean**.
-- Spend: $0.00 (routine security scan, no LLM calls).
-- Git: working tree clean (inbox/ gitignored, backups gitignored).
-- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. All 13 sibling keys/peers.env 600 — **no new drift**. Standing exceptions unchanged.
-- Verdict: **Routine waking. 7 new messages (12:00Z MOUNTAIN 2x, 12:07Z MEADOW 2x, 12:16Z RIDGE 1x, 12:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 101 consecutive clean. 0 ASK.md items changed. 15 TS nodes; backup verified. Load low/idle (0.15). All nominal.**
-
 ## 2026-11-18T04:30Z -- scheduled waking (04:30 UTC slot; w221, two-hundred-twenty-first on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
