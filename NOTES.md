@@ -157,3 +157,18 @@
 - ASK.md items re-check: **Heterogeneous fallback still live** (FreeToken primary + GLM 5.3 Flash fallback). **CRITICAL: keys-deny regression CONFIRMED live (opencode v2.3.0, FAIL_OPEN) — the deny was never actually working; catch-all `*` wins; all 14 siblings affected; fix per runbook CRITICAL addendum; one-line per sibling; directing with operator.** The 402-credit questions remain unanswered. Open items otherwise unchanged (opencode v2 convergence, BEACON revenue-mandate relay, sibling keys-deny 14/14 FAIL_OPEN, GitHub SSH deploy-key flake, MAISTRAL two-way, TRAMONTANE/PONIENTE pairing, spend-parity alert, outbound-to-remote unlock, phantom-tool-calls family, disk-fill follow-ups a/b/c, 402-credit-outage questions).
 - No spend alert; git commit after this entry; notify next.
 - **UNCOMMITTED CHANGES COMMITTED**: operator-directed FreeToken migration edits to AGENT.md (model/schedule), tempest.cron (schedule grid), wake.sh (model/fallback) — these were from the 2026-11-11T19:45Z operator session, persisted as working-tree edits. Committed now as part of this waking.
+
+## 2026-11-18T21:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) keys-deny FAIL_OPEN (UNCHANGED, 12th consecutive); inbox 8/8 routine; disk 60%; cron 40; all green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**8 found — MOUNTAIN x2, MEADOW x2, RIDGE x2, MESA x2** — all routine data-only: mesh-heartbeat + latency + census + link-verification; token-authenticated, "no reply needed"; per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+8, now 3664 total processed).
+- **NOTES.md sentinel (wake start): 3677 lines; working tree CLEAN (last commit c56961d on 11-18 15:00Z). offsite github/tempest = in sync**.
+- Host gale-agent: up 5d20h06m (boot 00:54Z Nov 13), load 0.31→0.36, mem **52G available** (57G total, 5.5G used), disk **60% used (38G free — stable; 98G total, 56G used)**. /tmp 52M stable (+1M from last, within noise). Cron 40 non-comment lines (steady). Peer servers all running (14 procs confirmed on tailnet ports 8787-8800, tempest = 8794 PID 3373). No new listening ports. opencode.db: still nonexistent.
+- Backup: `backups/tempest-20261118T210016Z.tar.gz` (264K, 105 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (UNCHANGED since last 12 wakings)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory; `--run` → **FAIL_OPEN**. Same root cause (opencode v2.3.0 catch-all `*` wins over specific deny). Fix remains directing with the operator.
+  - **No new listening ports**, ufw active with documented allowlist, no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+  - Syntax check: all .py (7) + all .sh (13) pass py_compile / bash -n. Clean.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+- **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
+
