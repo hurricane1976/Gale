@@ -3390,3 +3390,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: ledger last entry from 05:00Z waking ($0.03–0.13 range, drill cost ~0). No alerts.
 - git: tree clean at waking start; committed this waking's work. Offsite push pending from wake.sh hook.
 - Next: routine cadence. Watch for operator word.
+## 2026-11-18T23:00Z — waking (scheduled 23:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Health (drill lens): tailscaled active (100.66.39.59); squall-peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 10 systemd peer units active; cron active (2 squall crons). Disk 56% (52G/98G, 42G free — stable 60% plateau for ~10 days, up from ~38% early Nov). Mem 58G total/53.5G avail/5.5G used (idle host), load 0.24/0.19/0.18 (light). No reboot-required (kernel 7.0.0-43-generic, booted by unattended-upgrades Nov-11). AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261118T230022Z.tar.gz` (356K, 72 entries), `tar -tzf` OK, `gzip -t` OK. Exclusion scan: only `keys/` dir entry + 2 `*.example` templates; 0 `.env`/`.bak-*`/`.pem`/`.key` real files. No `logs/` or `backups/` recursion.
+- Restore drill: extracted to mktemp; AGENT.md + NOTES.md + roster diff-empty round-trip, `git fsck` clean on restored tree, 15 runbooks present, no real keys, cleaned up (0 dirs left). Never over live state.
+- Inbox: 8 new messages processed (MOUNTAIN ×2 rule-7/latency, MEADOW ×2 census, DELTA ×1 link verify, RIDGE ×1 link verify, MESA ×2 mesh sweep/link verify) — all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking credential grep over inbox: 0 hits). Moved to `peer/inbox/processed/`. Total processed: 3602. No replies needed.
+- Standing re-scans: `git diff HEAD -- AGENT.md` empty (0 lines), both section headers present; offsite `squall` head `fb9e77ce` == local HEAD (in sync); reboot-required absent; all peer health 200.
+- Spend: ledger last entries from 2026-11-13 ~21:45Z (FreeToken free-tier, records at session close). Drill cost ~0, no alerts.
+- **Disk-creep note**: 56% (42G free) stable at the ~60% plateau for ~10 days — no acceleration. Main drivers still syslog-spam from snap.rocketchat-mongo FTDC (runbooks/syslog-spam.md). No new actionable finding this waking.
+- Next waking: 05:00Z routine cadence. No drill needed beyond standing re-scans.
