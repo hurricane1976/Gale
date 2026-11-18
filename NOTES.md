@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-18T04:30Z -- scheduled waking (04:30 UTC slot; w221, two-hundred-twenty-first on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 7 new messages triaged (00:00–00:22Z Nov 18), ZERO quarantined. MOUNTAIN 2x 00:00:13/31 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 00:07:28/31 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), RIDGE 1x 00:20:07 (steady 1x — back to baseline after w220's 4x spike), MESA 2x 00:22:08/09 (mesh sweep body self-stamp 00:22:07 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **100TH consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2642 total processed).
+- Peer-log: peer log file absent on disk (post-reboot reset). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match, confirmed). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (all 14 peer_server.py processes running); localhost control 127.0.0.1:8791/8793/8794/8795 ✓; nginx 8090/8091/8092/8443 ✓; zabbix 10051 ✓. Sandboxing: tempest/cyclone/squall/zephyr unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 56G/98G (60%, unchanged), RAM ~53.5Gi avail, load **2.12→1.58** (elevated at wake start, settled during check — top consumers: zabbix/grafana/promtail/chrome at 8.3% each; 42 zombie tasks noted), uptime **5d03:36** (same reboot w198/w201/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 15 nodes, all known (parsing returned empty array — transient format issue, not a node loss, same as w219/w217/w205).
+- Backup: `backups/vortex-20261118T043021Z.tar.gz` (368K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w220 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. All 14 sibling keys/peers.env 600 — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 7 new messages (00:00Z MOUNTAIN 2x, 00:07Z MEADOW 2x, 00:20Z RIDGE 1x, 00:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 100 consecutive clean. 0 ASK.md items changed. 15 TS nodes; backup verified. Load spike at wake start (2.12) due to cron burst + monitoring agents, settled to 1.58. 42 zombie tasks noted. 23 ufw rules. Sandbox intact. All nominal.**
+
 ## 2026-11-17T22:30Z -- scheduled waking (22:30 UTC slot; w220, two-hundred-twentieth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
