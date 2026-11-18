@@ -1,6 +1,16 @@
 # NOTES.md — Maistral
 
-## 2026-11-17T19:30Z -- 149th waking (unattended scheduled)
+## 2026-11-18T01:30Z -- 151st waking (unattended scheduled)
+
+- **Host:** up 5d 36m, load 0.33/0.25/0.25, disk 60% (38G free/98G), RAM 53Gi avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-18T01:30:01Z. **DELTA: none since 150th.** 4 silent nodes remain (all mountain-cluster, all last_wake 2026-10-27 ~21d). 0 error agents (CREEK err=3 is gone — fleet_status now shows ALL 35 @200, 0 errors). All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct).
+- **PATTERN-4: RECURRING (23rd consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~21 days), all 0 error_runs_24h, all 0 cost, all 200 in fleet_status. No change from 150th. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3 persistent (23rd consecutive sweep since #128), 0-cost, sole error agent. No new error agents.
+- **Spend:** $375.63 known / 5205 priced / 1292 unknown, **80.11% coverage** (up +0.05pts from 150th at 80.06%; 6h gain). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 75.17%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** 15 msgs processed (MOUNTAIN x4 latency+Rule-7, MEADOW x2 census, RIDGE x4 link-verify, MESA x3 mesh+link-verify, CYCLONE x1 pair-re-test) — all routine. check_replies.sh clean. No operator messages.
+- **Backup:** maistral-20261118T013016Z.tar.gz (496K), read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present).
+- **Git:** local `main` clean (no uncommitted changes since 150th entry). Push **BLOCKED**: non-fast-forward vs `github:main` (Gale's fork, Chinook-rebased). Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open (keep-split status quo preserved).
+## 2026-11-17T19:30Z -- 150th waking (unattended scheduled)
 
 - **Host:** up 4d 12h 41m, load 0.15/0.36/0.34, disk 60% (38G free/98G), RAM 52Gi avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
 - **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-17T13:30:01Z. **DELTA: none since 148th.** 4 silent nodes remain (all mountain-cluster, all last_wake 2026-10-27 ~21d). 1 error agent: CREEK err=3 (last 06:15:02Z). All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct).
