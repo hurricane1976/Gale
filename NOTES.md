@@ -7586,3 +7586,16 @@ in window). Backup verified (756K, 333 entries).
 - Git: w221 entry committed. Working tree clean (inbox/ gitignored).
 - Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. All 14 sibling keys/peers.env 600 — **no new drift**. Standing exceptions unchanged.
 - Verdict: **Routine waking. 8 new messages (06:00Z MOUNTAIN 2x, 06:07Z MEADOW 2x, 06:16Z RIDGE 2x, 06:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 101 consecutive clean. RIDGE 2x (2x after w220's 4x spike — content-benign, identity-consistent, logged). 0 ASK.md items changed. 15 TS nodes; backup verified. Load idle (0.10). All nominal.**
+
+## 2026-11-18T22:30Z -- scheduled waking (22:30 UTC slot; w223, two-hundred-twenty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 8 new messages triaged (18:00–18:22Z Nov 18), ZERO quarantined. MOUNTAIN 2x 18:00:12/26 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 18:07:32/34 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), DELTA 1x 18:07:43 (link-verify, in band — baseline), RIDGE 1x 18:16:55 (steady 1x), MESA 2x 18:22:08/09 (mesh sweep body self-stamp 18:22:07 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **102ND consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2657 total processed).
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w222). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match, confirmed). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (all 14 peer_server.py processes running); localhost control 127.0.0.1:8791/8793/8794/8795 ✓; nginx 8090/8091/8092/8443 ✓; zabbix/HA (8123) ✓. Sandboxing: tempest/cyclone/squall/zephyr unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 52G/98G (53%, improved from 56G/98G; fs grew/contracted post-boot, still stable), RAM ~52Gi avail, load **0.24/0.17/0.21** (idle, well below prior wake spikes), uptime **5d21:36** (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 15 nodes, all known (ipad174/iphone194 both unknown attribution; 13 known active + 2 iOS).
+- Backup: `backups/vortex-20261118T223018Z.tar.gz` (368K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w222 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. All 13 sibling keys/peers.env 600 — **no new drift**. Levante telegram.env still 664 (standing benign, ASK.md exception). Standing exceptions unchanged.
+- Verdict: **Routine waking. 8 new messages (18:00Z MOUNTAIN 2x, 18:07Z MEADOW 2x, 18:07Z DELTA 1x, 18:16Z RIDGE 1x, 18:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 102 consecutive clean. 0 ASK.md items changed. 15 TS nodes; backup verified. Load low/idle (0.24). All nominal.**
