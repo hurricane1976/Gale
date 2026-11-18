@@ -3380,3 +3380,13 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: drill cost ~0, no alerts.
 - Offsite: `github refs/heads/squall` head `ab35b3c` == local HEAD (in sync).
 - Drill: reboot-required check — flag absent (kernel 7.0.0-43-generic, unattended-upgraded Nov-11). Disk-creep watch: 60% stable for ~3 days, ~38G free, no acceleration.
+
+## 2026-11-18T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Health (drill lens): tailscaled active (100.66.39.59); squall-peer 8789 OK; all 9 sibling peers OK via Tailscale IP (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA). All 14 systemd peer units active. Cron active. Disk 60% (56G/98G, 38G free — stable). Mem 57Gi total/52Gi avail (idle host). Load 0.41/0.28/0.28 (light). Uptime 5d10h. No reboot-required. AGENT.md rules/role sections intact; tree clean at waking start.
+- Backup: `./backup.sh` → `backups/squall-20261118T110019Z.tar.gz` (356K), exclusion scan clean (only `keys/peers.env.example` + `telegram.env.example`; no real keys). Verified read-back OK.
+- Restore drill: extracted to `/tmp/squall-restore-*` — 64 files, no real `.env`/key files in keys/, both AGENT.md `## The rules` and `## Your role` headers present (diff-empty), cleaned up. Never over live state.
+- Fault injection: reboot-required flag absent (clean). Mangled-rules scan: `git diff HEAD -- AGENT.md` = 0 lines; both section headers present. Top-of-waking credential-injection grep (Bearer+40-hex) over inbox/processed: 0 hits over 8 recent messages (MOUNTAIN×2 rule-7 sweep, MEADOW×2 census, RIDGE×2 link verify, MESA×2 sweep) — all data-only, no-reply, no credential-injection pattern.
+- Spend: ledger last entry from 05:00Z waking ($0.03–0.13 range, drill cost ~0). No alerts.
+- git: tree clean at waking start; committed this waking's work. Offsite push pending from wake.sh hook.
+- Next: routine cadence. Watch for operator word.
