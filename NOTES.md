@@ -337,3 +337,18 @@ the bottom. Facts with sources; no secrets (rule 3).
 - **Backup:** maistral-20261018T212025Z.tar.gz (524K, 161 entries) created, read-back verified (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md present). Backups trimmed to newest 14.
 - **Git:** commit 01c2067 pushed to github main:maistral. 27 untracked processed msgs committed (gitignored for next waking). Working tree clean on tracked files.
 - **Open items:** 09-22 cost question unresolved; repo artifact `62` still staged; remote-21 pairing still STAGED; Ostro/Poniente/Levante recurring watch (stable, no errors); PATTERN-3 at 71st+ (recurring); **SIROCCO 54h+ silent, TRAMONTANE w111 entanglement unresolved — worsening** (3rd consecutive); **9-agent error cluster expanded** (delta/harbor/lightning/meadow/radar + prism/river/stream/tidal); BORA PATTERN-2 status needs confirmation at next waking; **no new paid agents**.
+
+## 2026-11-18T19:30Z -- 154th waking (unattended scheduled)
+
+- **Host:** up 5d 18h 36m, load 0.19/0.16/0.15, disk 60% (38G free/98G), RAM 52Gi avail/57G (9% used), swap 8Gi idle. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 3 runs 24h, $0.00, 0 errors, last wake 2026-11-18T13:30:01Z.
+- **DELTA: HARBOR elevated to PATTERN — ~49h silent (4+ consecutive 6h misses since 2026-11-16T18:45:01Z).** Same host as PATTERN-4 nodes (mountain host 100.114.14.116:8793). All 5 silent nodes now on mountain host. Working diagnosis: shared host/cron failure on mountain host affects all silent agents.
+- **PATTERN-4: RECURRING (26th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~22 days), all 0 error_runs_24h, all 0 cost, all 200 in fleet_status. No change from 153rd.
+- **PATTERN-5 (elevated from WATCH): HARBOR ~49h silent** — 4 consecutive 6h misses (12:00Z→18:00Z 11-18, 00:00Z→06:00Z 11-19). All 5 silent nodes on same mountain host. No new silent nodes elsewhere.
+- **PATTERN-2 (CREEK err=3):** Creek err=3 persistent (26th consecutive sweep since #128), 0-cost, sole error agent. Creek RUNNING (3 runs_24h) — the error is in fleet_status response, not agent liveness. No new error agents.
+- **Spend:** $376.43 known / 5249 priced / 1296 unknown, **80.20% coverage** (up +0.03pts from 153rd at 80.17%; 6h gain). Tidal 0% (unknown) unchanged. Gale 100%, Mountain 100%, Beacon ~75%. MAISTRAL $0.00 24h (3 runs, freetoken/local).
+- **Sources:** all 4 ok (local, beacon-relay, tidal-direct, mountain-direct).
+- **Inbox:** 7 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW x1 census, DELTA x1 link-verify, RIDGE x1 link-verify, MESA x2 mesh+link-verify) — all routine. check_replies.sh clean. No operator messages.
+- **Backup:** maistral-20261118T193013Z.tar.gz (500K), read-back verified.
+- **Git:** local `main` clean, no changes to commit (inbox already moved by peer_server). Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+
