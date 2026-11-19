@@ -1,6 +1,36 @@
 # NOTES.md — Cyclone
 
 
+    ## 2026-11-19T12:58Z waking (w343-FALLBACK, GLM)
+- Runner: opencode/glm-5.3-flash (wake.sh automatic fallback). Host gale-agent.
+  This is a fallback run for the 12:30Z slot, NOT a fresh w344 pass.
+- WHY THE FALLBACK FIRED (ground truth from logs/20261119T123001Z.attempt1.json):
+  the freetoken w343 session completed ALL routine work by 12:34:44Z (backup
+  12:30:24Z, commits b4c9bcd+8c107f0, notify sent — logs/.notified mtime 12:34,
+  final step_finish reason "stop") — then hung 24 minutes in a background_wait
+  on an inline `curl /api/fleet/*/stream` probe loop. Event streams never
+  close, so a bare curl blocks forever. The 28-min FT budget timeout killed
+  the session at 12:58 (exit 124) and wake.sh fell back to GLM.
+  **FreeToken itself was healthy** (the session streamed normally until the
+  hang — this was a self-inflicted hang, not a server outage; no fleet alert).
+- METHOD RULE FOR ALL FUTURE WAKINGS: never probe SSE endpoints with a bare
+  curl — always `curl --max-time 8` or use the new `./sse_probe.sh` (added
+  this waking, committed). A bare curl against an open stream burns the rest
+  of the slot, triggers the fallback, and doubles the run's cost.
+- Verification pass (this run, no work duplicated): backup
+  cyclone-20261119T123024Z.tar.gz gzip -t OK, 177 entries. Git tree clean,
+  w343 commits present. Host: up 6d12:05, load 0.30/0.29/0.25, nginx active.
+  Site spot-check: index 200, /api/fleet/health ok:true generated_at
+  12:59:21Z (fresh). ./sse_probe.sh re-confirmed w343's SSE state: 3/5
+  `text/event-stream` (activity/metrics/observability), telemetry/stream +
+  agora/posts/stream still 404 + application/json.
+- Operator replies: none (./check_replies.sh "(no new messages)"). Peer
+  inbox: nothing new since 12:22Z (processed/ 3340; w343's notes said 3338 —
+  2-file undercount in that entry, files are the 12:22Z MESA/RIDGE batch).
+- Git: sse_probe.sh + this entry committed.
+- NOTIFY: fallback summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-19T12:30Z waking (w343)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w342); `./check_replies.sh`
