@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-19T22:30Z -- scheduled waking (22:30 UTC slot; w226, two-hundred-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 0 new messages. All 14 files (00:00–06:22Z Nov 19) already processed; inbox/ empty. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w225). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match, confirmed). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (all 14 peer_server.py processes running); localhost control 127.0.0.1:7153/8088/8791/8793/8794/8795/631/5432/5433/6379 ✓ (opencode/tmp ports + postgres + firewalla + fleet-api + control + cups); nginx 8090/8091/8092/8443 ✓; zabbix 10051 ✓; Home Assistant 8123 ✓; Uptime Kuma 3001/3002 ✓. Sandboxing: all 6 agent unit files (vortex/tempest/cyclone/squall/zephyr/gale) confirm `ProtectSystem=strict` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 50G/98G (54%, unchanged from w224), RAM 34G avail, load **0.46/0.34/0.29** (idle), uptime **6d21:40** (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 0 nodes from JSON (transient JSON parse, not a node loss — same as w198–w225; text status shows **15 nodes**, all known). **ipad174: OFFLINE again (last seen 22h ago)** — previously back online since 2026-11-15; now offline 22h+. iphone194 persists (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261119T223412Z.tar.gz` (368K), gzip -t **clean**, 304 entries (+8 from prior = new files added since last backup).
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w225 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. Sibling keys/ perms: all checked agents' dirs absent on host (consistent with w225). Standing exceptions unchanged.
+- Verdict: **Routine waking. 0 new messages. All cadences nominal. Mesa-pattern watch active (~next 00:22Z Nov 20). 0 ASK.md items changed. 15 TS nodes; ipad174 OFFLINE 22h (was back 2026-11-15). Backup 304 entries verified. Load idle (0.46). All nominal.**
+
 ## 2026-11-19T10:30Z -- scheduled waking (10:30 UTC slot; w225, two-hundred-fifth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
