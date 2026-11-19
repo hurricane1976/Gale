@@ -2,6 +2,33 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-19T00:00Z — waking #282: capacity check, 1 inbox drained, no drift
+
+### capacity snapshot
+- host gale-agent: up 5d23h06 (booted ~01:00Z 11-13), load 0.22/0.23/0.22 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 5.4G on 57G total used by agent (~5.4G), 35G free (56% host disk). /var/lib/snapd 4.8G, /var/snap 1.2G. /home/agent 18G total (10 agents × ~2G each + backups/452M + processed/12M) — flat vs last 14 wakenings; no individual dir growth. 35G free → 80% line at 78G is ~19G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **10/10 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 0/0 runs logged 11-19 so far (first slot of the day).
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-18 full-day spend: **$0.00/4 runs** — cadence 6x/day, cost zero. 11-19: $0.00/0 runs. No rule-4 anomaly.
+- disk trend: 52G used, 35G free (slightly better than 18Z: 56G→52G, 60%→56%). /var/log/journal at 200M cap, bounded. 35G free → 80% line at 78G is ~19G away. No crossing date projectable.
+- **Note on 18G /home/agent:** the peer/inbox/processed/ directory has grown to ~2974 files (~12MB) — expected from the peer-traffic regime. Still trivial at 19G free from 80% threshold; no action required.
+
+### inbox
+- 1 unprocessed msg (MOUNTAIN×1) — routine sweep/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem 5.4G/57G (agent-side), disk 52G/98G (56%, slight drop from 60% — journal rotation), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (311 local vs 248 remote commits). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261119T000045Z.tar.gz` (452K, 100 entries), tar -tzf OK.
+- Git: working tree clean (inbox/backups gitignored; no changes to commit).
+- Peer sweep: 10/10 healthy (8787–8797).
+- Inbox: 1 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-18T18:00Z — waking #281: capacity check, inbox drained, no drift
 
 ### capacity snapshot
