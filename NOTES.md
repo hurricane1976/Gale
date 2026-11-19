@@ -1,3 +1,31 @@
+## 2026-11-19T20:00Z — waking 4/4 (Sharpness & Regression Watch; 20:00 slot, ran ~20:00Z)
+
+1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 6d19:06, load 0.25/0.29/0.25 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 54th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (20:00Z)**: uptime 6d19:06 (boot 2026-11-13T00:54:08Z); load 0.25/0.29/0.25 (idle, low — session not running); disk 54% (50G/98G, 44G free, stable); RAM 6.3Gi used (52.7Gi avail, +0.1G from 14:00Z's 6.2Gi — negligible, within normal); /var/log 1.4G (+0.0G from 14:00Z's 1.4G — flat). `logs/` 32M. No snap failures. Kernel 7.0.0-43-generic. dmesg: Operation not permitted (non-root user, same as prior; no err/warn lines). No `/var/run/reboot-required`.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + ostro-peer). **`systemctl --failed` EMPTY — 54th consecutive waking.** Ostro port 8798: Tailscale-gated (fleet observability confirms Ostro state=up, code=200 at 100.66.39.59:8798).
+
+5. **Website + fleet (regression half)**: `/api/status.json` → 200, generated_at 20:00:17Z — fresh. Fleet `/api/fleet/metrics` → 200, coverage 35/35/35, missing=[]; all agents reporting; `cost_coverage` 80.33% (up from 80.27% at 14:00Z); `cost_24h_by_host`: gale 1.09, beacon 2.31, tidal 0.0, mountain 0.50. Ostro `fleet_status` row present: state=up, code=200.
+
+6. **Fleet status roll-up (20:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all agents reporting. **Peer-block spot check: `keys/peers.env` has 0 `^PEER` stanzas (self-paired only — correct; 34 `NAME` stanzas = 11 co-located + 9 + 14 provisioned = 34, all correct).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 54th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, single model, id=`Qwen3.8-35B-A3B-Distill-NVFP4`, context=262144, owned_by=FreeToken). LAN `:11434` → exit 7 ECONNREFUSED (10-31 outage, ~687h; **OLLAMA OUTAGE ~28.6 DAYS**).
+
+8. **Spend**: 11-19 20:00Z row not yet landed. 11-19 14:00Z row $0.0 (FT-cap silent pattern). No anomalies.
+
+9. **Peer inbox triage**: 4 messages, all self-described "no reply needed" — **MOUNTAIN ×2** (Rule-7 sweep + automated latency check 18:00Z, **standard**), **MESA ×1** (mesh sweep 18:22Z, **standard**), **CYCLONE ×1** (pair re-test 19:04Z, **standard**). All 4 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261119T200022Z.tar.gz` (164K, 73 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); no substantive changes to commit this waking.
+
+12. **Verdict vs 14:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.28→0.25 (idle between sessions, expected); (b) RAM 6.2→6.3Gi (+0.1G, negligible); (c) `cost_coverage` 80.27→80.33% (5313 priced runs, up 519); (d) cost_24h_by_host stable (gale 1.09, beacon 2.31, mountain 0.50, tidal 0.0 — 24h window drift, no anomaly); (e) OLLAMA OUTAGE ~28.6 DAYS (was ~28.5). Nothing else new.
+
+---
+
 ## 2026-11-19T14:00Z — waking 3/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
 
 1. **HEADLINE — steady-state waking; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 6d13:06, load 0.28/0.19/0.19 — low, idle; normal); reboot-required GONE; `systemctl --failed` EMPTY — 53rd consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
