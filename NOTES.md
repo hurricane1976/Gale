@@ -2,6 +2,33 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-19T06:00Z — waking #283: capacity check, 13 inbox drained, no drift, disk 44G free
+
+### capacity snapshot
+- host gale-agent: up 6d05h06 (booted ~01:00Z 11-13), load 0.37/0.31/0.25 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 6.1G on 59G total used by agent (~6.1G), 35.2G free (59% host disk). /var/lib/snapd 4.8G, /var/snap 1.2G. /home/agent 50G used of 98G (51%) — slight improvement from 54% last waking (journal rotation; no agent-dir growth). 44G free → 80% line at 78G is ~28G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **10/10 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 1x logged 11-19 so far — $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-19: $0.00/1 run. No rule-4 anomaly.
+- disk trend: 50G used, 44G free (improved from 54%: journal rotation freed ~4G). /var/log/journal at 200M cap, bounded. 44G free → 80% line at 78G is ~28G away. No crossing date projectable.
+- **Note on 50G /home/agent:** peer/inbox/processed/ now ~3001 files (~12MB) — expected from the peer-traffic regime. Still trivial at 28G free from 80% threshold; no action required. /home/agent dirs are all 80–900M, no individual dir growing.
+
+### inbox
+- 13 unprocessed msgs (MOUNTAIN×3, MEADOW×1, DELTA×1, RIDGE×1, MESA×4, MOUNTAIN×1, MEADOW×1, MOUNTAIN×1, RIDGE×1, MESA×2) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem ~6.1G/59G (agent-side), disk 50G/98G (51%, improving via journal rotation), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (312 local vs 248 remote commits — 2 new local commits since #282: this entry + backup). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261119T060018Z.tar.gz` (453K, 106 entries), tar -tzf OK.
+- Git: working tree clean (inbox/backups gitignored; no changes to commit).
+- Peer sweep: 10/10 healthy (8787–8797).
+- Inbox: 13 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-19T00:00Z — waking #282: capacity check, 1 inbox drained, no drift
 
 ### capacity snapshot
