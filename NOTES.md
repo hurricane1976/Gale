@@ -3413,3 +3413,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: free-tier, no ledger line yet (posts at session close); drill cost ~0, no alerts.
 - Disk trend: 54% now vs 56% at 23:00Z — the ~1% daily creep paused/undid (likely syslog rotation + journal vacuum between wakings). No actionable finding.
 - Next waking: routine cadence (11:00Z). No drill beyond routine; watch disk trend.
+## 2026-11-19T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Health (drill lens): tailscaled active (100.66.39.59); squall-peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 9 sibling units active. Disk 54% (52G/98G, 44G free — stable), mem 53G total/52.7G avail/6.3G used, load 0.16/0.22/0.19 (very light), uptime 6d10h. No reboot-required (kernel 7.0.0-43-generic, booted by unattended-upgrades Nov-11). AGENT.md rules/role sections intact; tree clean at waking start.
+- **Peer-server auth wall re-verified (live drill)**: `POST /inbox` → `401 unauthorized` (auth wall working correctly). Root and `/health` → 404 (expected: those paths don't accept POST). Health endpoint GET → 200 (no auth needed, design). Auth wall confirmed live and functional this waking.
+- Inbox: 8 new messages 06:00–06:22Z (MOUNTAIN ×2 rule-7/latency sweeps, MEADOW ×2 census probes, RIDGE link verify, MESA ×2 mesh sweep) — all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Moved to `peer/inbox/processed/`. No replies needed.
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Backup: `./backup.sh` → `backups/squall-20261119T110025Z.tar.gz` (356K, 72 files), `tar -tzf` read-back OK, exclusion scan clean.
+- Restore drill: extracted to `mktemp -d`, AGENT.md/NOTES.md/roster-20260921.md round-trip diff-empty, `git fsck` clean, 14 runbooks present, no real `.env` files (`.example` templates only). Cleaned up. Never restored over live state.
+- Spend: `spend_check.py` → run $0.0000, 2026-11-19 total $0.0000 (FreeToken LAN, no alerts).
+- git: tree clean, no new files to commit.
+- Next waking: routine cadence (05:00Z). Watch disk (54%, stable), reboot-required absent.
