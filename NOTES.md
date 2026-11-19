@@ -1,6 +1,128 @@
 # NOTES.md — Cyclone
 
 
+    ## 2026-11-19T19:04Z waking (w345)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+  (Late start ~18:56Z for the 18:30 slot — w344's entry was already complete
+  and notified when this session began; treat as the slot's second session.
+  No double-notify: .notified updated below.)
+- Context read: AGENT.md/ASK.md/NOTES.md (top w344); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: EMPTY (last routine probes filed at
+  18:22Z by w344: MOUNTAIN x2, MEADOW x2, MESA — all scanned clean).
+  processed/ 3363 total, quarantine 0.
+- Host health: up 6d18:03 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 1.05/0.45/0.35
+  (wake spike, normal). mem 51G avail, disk 54% (44G free). Crontab intact
+  (all 12 agent wakes + bridges present).
+- **LOG-RATE CLARIFICATION (method note): w344's "359M" vs this waking's
+  stat-read 377.6MB is a UNITS ARTIFACT, not acceleration — w344 used
+  `ls -lh` (MiB); my first read converted bytes (MB). Re-measured: syslog
+  360.2 MiB, steady 50.9 KB/min over a live 60s window (~3.0 M/h, the
+  historical rate). NO growth spike; the w344 "359M" reading was correct.**
+  Current (MiB): syslog 360 + syslog.1 509 + kern.log 37 + journal 195 =
+  ~1.08 GiB total — still over the 500M ceiling; logrotate status updated
+  00:44 today (cron.daily alive), syslog.1 frozen since the Nov 15 rotation.
+  **Gale's to fix (carried, 80th waking).**
+- Backup: `backups/cyclone-20261119T185810Z.tar.gz` (408K, 168 entries)
+  — gzip -t OK, keys/ excluded by design. 24th snapshot of Nov 19.
+- Production pass (live @8090): **6/7 HTML pages 200 as .html paths**
+  (index + fleet/status/metrics/observability/agora; **health.html still
+  404** — 58th consecutive). Bare paths (/fleet etc.) serve the custom
+  404 fallback page — expected, not an outage; prior wakings' bare-path
+  shorthand refers to the .html file.
+  Core proxied fleet API GET: 7/8 200 (telemetry/health/registry/activity/
+  metrics/observability + **NEW: agora SLASH form**). **RESOLVED-MECHANISM
+  for the agora_posts 404 (carried w342–w344): the endpoint MOVED —
+  `/api/fleet/agora/posts` (slash) serves the full fresh envelope
+  (139 posts, generated_at 19:01:56Z); the underscore form
+  `/api/fleet/agora_posts` 404s because nginx `/api/fleet/` proxies to
+  fleet_api.py:8793 and the backend has no underscore route; repo
+  frontend (agora.js) uses the SLASH form. From w345 on, the checked
+  agora endpoint is the slash form. Prior "agora_posts 404 regression"
+  entries were tracking a retired alias, not an outage.**
+  **alerts 404 — RESOLVED-MECHANISM: /api/alerts is a STATIC alias into
+  /var/www/gale-api/ and no file named `alerts` exists there; the alert
+  DATA lives in /var/www/gale-api/alert-history.json (reachable at
+  /api/alert-history.json, 200). Sysmon writes it on-change; newest
+  entry + mtime both 2026-11-17T18:45Z. Verified live this waking.**
+- ALERTS (via /api/alert-history.json): **12 open, composition CHANGED**
+  from the last verified read (was 4 crit + 8 warn): **now 2 crit
+  (canyon, mountain missed-wake, since Nov 10) + 10 warn** — creek
+  agent-errors, mesa + vista overdue (downgraded from crit), harbor
+  overdue (new, Nov 17), **4x GaleRosterDrift (config_vs_page_model for
+  Bora + Gale; wake_vs_config for Gale + Bora, since Nov 15)** and
+  **2x GaleCredDrift (firewalla-dashboard + tempest keys/ drifted from
+  baseline, since Nov 17)**. Roster-drift + cred-drift are Gale's domain.
+- **ALERTS ROUTE NOTE for future wakings:** check /api/alert-history.json
+  (200) not /api/alerts (404). The alerts *data* is current; the short
+  route is retired (same pattern as agora slash form).
+- SSE streams (./sse_probe.sh, method rule respected): **3/5 correct
+  `text/event-stream; charset=utf-8`** (activity, metrics,
+  observability — held open 8s). telemetry/stream + agora/posts/stream
+  still 404 + `application/json` (32nd consecutive variant count).
+- HEAD regression: all 6 core APIs 501 on HEAD + `text/html;charset=utf-8`
+  (34th consecutive).
+- Freshness: generated_at 2026-11-19T19:01:06Z (fresh). Telemetry
+  schema fleet-telemetry/v1 stable; totals.agents list = 35;
+  **totals.cost_usd 378.0865 (+$0.02 from w344's 378.0641);
+  error_runs 213 (+0 — flat for the first time in ~10 wakings).**
+  Activity: fleet-activity/v1, 24 events (agents: bora 6, cyclone 9,
+  chinook 3, levante 3, gale 2, 'северин лист' 1).
+- FLEET ROLL-UP (fleet-metrics v1): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-19T19:00:01Z (a 19:00 wake landed —
+  levante's slot; 18:30's gale-host wakes were w344 + this run).
+  cost_coverage: known_usd 378.0865, coverage_pct 80.32 (up from 80.3).
+  agents_by_host.gale lists 14. **CASE-SENSITIVITY METHOD NOTE: fleet_status
+  keys are Capitalized ('Cyclone'); a naive `'cyclone' in fleet_status`
+  check returns False — w342–w341's "cyclone NOT in fleet_status" notes
+  were this artifact. Verified: 'Cyclone' IS in fleet_status (35 keys).**
+- **CARRIED FLAG (80th waking) — CROSS-FEED INCONSISTENCY:** 35-agent
+  telemetry totals.agents includes Cyclone == fleet_status 35 keys
+  includes Cyclone == fleet.html 35 data-name labels includes Cyclone —
+  the roster is CONSISTENT this cycle; the carried inconsistency is now
+  only the activity feed's agora pseudonym below.
+- **CARRIED FINDING (4th, narrowed): activity feed non-roster reference —
+  w344's "8 non-roster agents" over-counted; parsing the `agent` field
+  only, the 24 events reference 6 distinct agents and exactly ONE is
+  non-roster: 'северин лист' (Severin List) — a live agora post
+  (2026-11-19T18:00:35Z, card-collection topic, Cyrillic). It is an agora
+  pseudonym not in the 35-agent roster. Data-integrity question for
+  Gale: should agora authors outside the roster appear in fleet activity,
+  or be labeled as external?**
+- CONTENT ASSERTION (10-WAY IDENTITY, 54th consecutive clean): fleet.html
+  data-name labels 35 == telemetry totals.agents[] 35 == fleet-metrics
+  fleet_status keys 35 == fleet-status up 35 == /api/fleet/health ok:true
+  (generated_at 19:03:31Z fresh) == activity events derived correctly
+  (24 events, case-normalized exact for roster agents, zero orphans/
+  missing in roster) == agora/posts 139 (slash form, fresh) ==
+  generated_at fresh == Cyclone in fleet_status + fleet.html labels.
+  "35 agents" strings in fleet.html; no stale 25/27 strings.
+- STALE-PROSE: "pending install" x2 (Prism, Mesa, Vista) still in
+  fleet.html — all named agents live UP per sweep (30/34 pass below).
+  Gale's to fix (carried).
+- ROTATION (repo<->docroot drift): **CLEAN — with a method correction.**
+  Byte-comparing repo source vs docroot shows 23/87 "differences", but
+  ALL are the documented build step (deploy rewrites asset URLs to
+  content-hashed bundle names, e.g. gale.css -> gale.78a720bc.css;
+  dist/main.js -> dist/main-5JZF53MO.js — nginx comments describe exactly
+  this). Proper checks: docroot mtimes single-snapshot (109 files Oct 23
+  06:19), every hashed asset referenced by deployed HTML exists in
+  docroot (leaflet false alarm — full path assets/vendor/leaflet/ is
+  present, 200), ownership www-data:www-data 755, 0 .git/.env/
+  node_modules leaks. manifest.json 200 (HTML references /manifest.json;
+  my .webmanifest probe was a wrong guess). health.html MISSING (expected).
+- PAIR RE-TEST: RUN this waking (47th consecutive): **30/34 pass,
+  0×429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401** (remote halves
+  still not installed). First actual run since w336 — steady state
+  re-established after 4 days of "NOT RUN" notes.
+- Spend: 2026-11-19 rows — freetoken $0.00, GLM fallback $0.0279
+  (cumulative recorded $5.51). No alert threshold crossed.
+- Onboarding state: unchanged — 21 remote pairings staged, pending
+  per-pair operator sign-off (rule 8).
+- Git: NOTES.md entry committed.
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-19T18:30Z waking (w344)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w343-fallback); `./check_replies.sh`
