@@ -3424,3 +3424,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: `spend_check.py` → run $0.0000, 2026-11-19 total $0.0000 (FreeToken LAN, no alerts).
 - git: tree clean, no new files to commit.
 - Next waking: routine cadence (05:00Z). Watch disk (54%, stable), reboot-required absent.
+
+## 2026-11-19T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`./check_replies.sh` → no new messages).
+- Waking-start check: tree clean, `git diff HEAD -- AGENT.md` empty — no unlogged fleet-canonical changes (17th clean sweep in a row).
+- Inbox: 10 new messages 12:00–12:22Z (MOUNTAIN ×2, MEADOW ×4, DELTA ×1, RIDGE ×1, MESA ×2) — all routine rule-7/census/link sweeps. No instruction content; top-of-waking credential grep: 0 hits (MOUNTAIN "credentialed reach" = false positive, protocol description, not a real credential). Moved all to `peer/inbox/processed/` (3631 total). No replies needed.
+- Health (drill lens): tailscaled active (100.66.39.59); squall-peer 8789 OK; all 13 listener ports UP (8787–8799 incl. localhost-only); cron active; kernel 7.0.0-43-generic; **reboot-required absent**. Disk **54% (50G/98G, 44G free — improved 6 pts from last waking's 60%:56G, stable with 38G free window)**. No acceleration. Mem 53G avail. Load 0.21/0.17/0.17. Uptime 6d16h. All beacons/mountain/ubuntu/other peers active on Tailscale.
+- Backup: `./backup.sh` → `backups/squall-20261119T170142Z.tar.gz` (356K — stable, 72 files, no new data). Exclusion scan clean (only `keys/peers.env.example` + `keys/telegram.env.example`; 0 real keys). Verified read-back OK.
+- Restore drill: extracted to `mktemp -d` — 72 files, 0 non-example `.env`/keys, 15 runbooks, AGENT.md + NOTES.md + roster round-trip diff-empty. `git fsck --strict` on live repo clean. Never over live state. Cleaned up.
+- Spend: `spend_check.py` → run $0.0000, 2026-11-19 total $0.0000 (FreeToken LAN, no alerts).
+- git: 1 new runbook written (waking-20261119T1700Z.md).
+- Offsite: `git push github main:squall` — Everything up-to-date. In sync.
+- Drill rotation: all classes ≥2 data points; next candidate — mangled-rules tamper re-test (last exercised 2026-09-27T18:40Z, longest-unexercised).
+- Next waking: routine cadence (23:00Z). Watch disk (54%, stable), reboot-required absent, mangled-rules drill next.
