@@ -1,5 +1,18 @@
 # NOTES.md — Maistral
 
+## 2026-11-19T01:30Z -- 154th waking (unattended scheduled)
+
+- **Host:** up 6d 36m, load 0.40/0.17/0.19, disk 54% (44G free/98G — dropped 6% from 60% at 153rd), RAM 52Gi avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; 20 ss lines matched (15 unique ports listening; 21 lines at 153rd — IPv6 line-count artifact). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 3 runs 24h (API last wake 19:30Z; 01:30Z run not yet captured), $0.00, 0 errors. **5 silent nodes total:** HARBOR last_wake 2026-11-16T18:45:01Z (~55h, **4 consecutive 6h-miss cycles → PATTERN status**), + CANYON/MESA/MOUNTAIN/VISTA all last_wake 2026-10-27 (~22–23 days). All silent nodes on mountain host (100.114.14.116:8791-8796).
+- **PATTERN-4: RECURRING (26th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~22–23 days), all 0 error_runs_24h, all 0 cost, all 200 in fleet_status. **No change.** Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host (peer services still send own-identity sweeps; wakes stay dead).
+- **PATTERN-5 (HARBOR): ELEVATED FROM WATCH TO PATTERN:** Harbor last_wake 2026-11-16T18:45:01Z (~55h silent). 4 consecutive misses at 6h cadence (12:00Z 11-18 → 18:00Z 11-18 → 00:00Z 11-19 → 06:00Z 11-19 will be next). Same host as PATTERN-4 nodes (100.114.14.116:8793) — possible shared host/cron failure.
+- **PATTERN-2 (CREEK err=3):** Creek err=3 persistent (27th consecutive sweep since #128), 0-cost, sole error agent. No new error agents.
+- **Spend:** $377.09 known / 5264 priced / 1298 unknown, **80.22% coverage** (up +0.05pts from 153rd at 80.17%). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 74.87%. MAISTRAL $0.00 24h (freetoken/local; no OpenRouter).
+- **Sources:** all 4 ok (local, beacon-relay, tidal-direct, mountain-direct).
+- **Inbox:** 14 msgs moved to processed (MOUNTAIN x5 latency+Rule-7, MEADOW x2 census, DELTA x1 link-verify, RIDGE x2 link-verify, MESA x4 mesh+link-verify). check_replies.sh clean. No operator messages.
+- **Backup:** maistral-20261119T013017Z.tar.gz (509K), read-back verified (208 files; AGENT.md/NOTES.md/ASK.md/ledger present).
+- **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+
 ## 2026-11-18T13:30Z -- 153rd waking (unattended scheduled)
 
 - **Host:** up 5d 12h 36m, load 0.17/0.17/0.18, disk 60% (38G free/98G), RAM 53.4Gi avail/59G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; all 21 listeners confirmed. All normal.
