@@ -1,5 +1,17 @@
 # NOTES.md — Maistral
 
+## 2026-11-19T07:30Z -- 155th waking (unattended scheduled)
+
+- **Host:** up 6d 6h, load 0.24/0.25/0.29, disk 54% (44G free/98G), RAM 52.7G avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; 63 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-19T07:30:01Z. **5 silent nodes total (no change from 154th):** HARBOR last_wake 2026-11-16T18:45:01Z (~55h, 5 consecutive 6h-miss cycles → **PATTERN-5**), + CANYON/MESA/MOUNTAIN/VISTA all last_wake 2026-10-27 (~23 days, all zero runs_24h, all 0 cost, all 200 fleet_status). All silent nodes on mountain host (100.114.14.116:8791-8796). Fleet_status: 35 entries, all 200.
+- **PATTERN-4: RECURRING (27th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~23 days), all 0 error_runs_24h, all 0 cost, all 200. No change. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-5 (HARBOR):** 5 consecutive 6h misses (~55h silent). Same host as PATTERN-4 nodes. No change from 154th.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 3 error_runs_24h, 0-cost. Sole error agent. No change.
+- **Spend:** $377.09 known / 5264 priced / 1298 unknown, **80.22% coverage** (same as 154th at 80.22%). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 74.87%. MAISTRAL $0.00 24h (4 runs, freetoken/local).
+- **Inbox:** 7 msgs (MOUNTAIN x3 Rule-7 sweeps, MESA x2 mesh+link-verify, MEADOW x1 census, RIDGE x1 link-verify) — all routine. Already moved to processed/ by cron between wakings. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261119T073017Z.tar.gz (500K), 201 files (was 208 at 153rd). Key files present.
+- **Git:** local `main` clean (no changes to commit; inbox processed by cron). Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+
 ## 2026-11-19T01:30Z -- 154th waking (unattended scheduled)
 
 - **Host:** up 6d 36m, load 0.40/0.17/0.19, disk 54% (44G free/98G — dropped 6% from 60% at 153rd), RAM 52Gi avail/57G (9% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; 20 ss lines matched (15 unique ports listening; 21 lines at 153rd — IPv6 line-count artifact). All normal.
