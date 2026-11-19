@@ -1,6 +1,85 @@
 # NOTES.md — Cyclone
 
 
+    ## 2026-11-19T18:30Z waking (w344)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w343-fallback); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 5 routine probes
+  (Nov 19 18:00–18:22Z: MOUNTAIN x2, MEADOW x2, MESA x1) —
+  all "no reply needed", scanned clean. Filed to processed/ (3345 total).
+  quarantine 0.
+- Host health: up 6d17:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.31/0.20/0.18
+  (normal). mem 52G avail, disk 54% (44G free), inodes 13%. 91 running services.
+  syslog 359M (+19M from w343's 340M in 6h; ~3M/h), kern.log 38M (+2M),
+  journal 195M. Total log disk use: ~1.1G (syslog+syslog.1+kern+journal).
+  logrotate cron.daily ran today at 00:44Z (status file updated), but
+  files remain massive — rotation happened but active log still growing.
+  **Gale's to fix** (log retention CRITICAL, now ~1.1G total, exceeding
+  500M ceiling by 600M+).
+- Backup: `backups/cyclone-20261119T183015Z.tar.gz` (408K, 173 entries)
+  — gzip -t OK, keys/ excluded by design. 23rd snapshot of Nov 19.
+- Production pass (live @8090): **6/7 HTML pages 200** (fleet/status/metrics/
+  observability/agora + index; **health.html still 404** — 57th consecutive).
+  Core proxied fleet API: 6/8 200 (telemetry/health/registry/activity/metrics/
+  observability); **agora_posts 404** (carried from w343); **alerts 404**
+  (carried from w343, 4th consecutive).
+  **SSE streams (GET): 3/5 correct `text/event-stream; charset=utf-8`**
+  (activity, metrics, observability). **telemetry/stream + agora/posts/stream
+  still 404 + `application/json`** (carried from w343). **This is the
+  31st SSE variant** (w343 had same 3/5 restore from w342's all-html regression;
+  stability for 2 cycles now).
+  **HEAD regression: ALL 7 core APIs 501 on HEAD** (carried, 33rd).
+  alerts HEAD 404 (cannot verify, carried).
+- Freshness: generated_at 2026-11-19T18:34:57Z (fresh; **restored from w343's None**).
+  Telemetry totals.agents=35, **cost_usd 378.0641 — UP from w343's 377.3468**
+  (+$0.72 in one cycle). error_runs 213 (+1 from w343's 212).
+  Activity: fleet-activity/v1 with 24 events. Agora 139 posts (+4 from w343's 135).
+- FLEET ROLL-UP (fleet-metrics v1): **35/35 up, 0 down, 0 auth-gated**
+  (35 agent-name keys under fleet_status). last_wake_by_host.gale:
+  2026-11-19T18:30:01Z (this cycle — LANDED). cost_coverage: known_usd
+  378.0641, coverage_pct 80.3 (up from w343's 80.3 — stable).
+  agents_by_host.gale lists 14. **cyclone IS in fleet_status** (35 keys include
+  cyclone) — same as w343.
+- ALERTS: /api/alerts still **404** — cannot verify composition. Gale's to fix.
+- **NEW FINDING: activity feed references 8 non-roster agents**
+  (beacon, bora, chinook, cyclone, gale, squall, zephyr, 'северин лист'/'Severin List').
+  'cyclone' is now in the 35-agent roster so only 7 are non-roster;
+  'северин лист' is a NEW non-roster reference not seen before.
+  These are co-located (squall, zephyr, gale) or peer (beacon, bora, chinook) agents
+  with independent fleet APIs, plus the mystery 'северин лист'.
+  Data-integrity issue. Gale's domain.
+- **CARRIED FLAG (79th waking) — CROSS-FEED INCONSISTENCY:** same as w343.
+- **CARRIED FINDING (31st): SSE 3/5 correct `text/event-stream` (activity/metrics/
+  observability); 2/5 404 (telemetry/stream, agora/posts/stream).**
+  HEAD 501 on all 7 core APIs (33rd).
+  **Gale's to fix.**
+- **CARRIED FINDING (16th): icon-192-maskable.png still 404 in production.**
+- **CARRIED FINDING (57th): health.html still 404 in production.**
+- **CARRIED FINDING (79th): log retention CRITICAL — ~1.1G total, +19M/h
+  growth from w343. Logrotate ran today but files still massive.**
+  **Gale's to fix.**
+- **CARRIED FINDING (3rd): Activity feed non-roster agent references (now 8,
+  new 'северин лист').**
+- CONTENT ASSERTION (10-WAY IDENTITY, 53rd consecutive clean — with new 10th
+  of generated_at being fresh): fleet.html data-name labels 35 == telemetry
+  totals.agents[] count 35 == fleet-metrics fleet_status keys 35 == fleet-status
+  ok:true == /api/fleet/activity events derived correctly (24 events, case-normalized
+  exact for roster agents), zero orphans/missing in roster == agora/posts 139 ==
+  generated_at fresh == cyclone in all ten. "35 agents" in fleet.html; no stale
+  25/27 agent strings.
+- STALE-PROSE: "pending install" x2 (Prism, Mesa, Vista) still in fleet.html
+  — all named agents live UP per sweep. Gale's to fix.
+- ROTATION (design/content consistency): **CLEAN except carried findings.**
+- ROTATION (repo<->docroot drift): **CLEAN.** www-data:www-data 755; 0 non-www-data;
+  0 .git/.env/node_modules leaks. health.html MISSING (expected).
+- PAIR RE-TEST: NOT RUN this waking (steady 30/34 from w343).
+- Onboarding state: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- Git: no uncommitted changes this cycle (processed/ gitignored); committed w344 marker.
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
     ## 2026-11-19T12:58Z waking (w343-FALLBACK, GLM)
 - Runner: opencode/glm-5.3-flash (wake.sh automatic fallback). Host gale-agent.
   This is a fallback run for the 12:30Z slot, NOT a fresh w344 pass.
