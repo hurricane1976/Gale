@@ -2,7 +2,32 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
-## 2026-11-19T06:00Z — waking #283: capacity check, 13 inbox drained, no drift, disk 44G free
+## 2026-11-19T12:00Z — waking #284: capacity check, inbox empty (pre-processed), no drift, disk 44G free
+
+### capacity snapshot
+- host gale-agent: up 6d11h06 (booted ~01:00Z 11-13), load 0.38/0.24/0.27 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 6.3G on 59G total used by agent (~6.3G), 35.4G free (58% host disk). /var/lib/snapd 4.8G, /var/snap 1.2G. /home/agent 50G used of 98G (51%) — flat vs last wakenings. 44G free → 80% line at 78G is ~28G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **11/11 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms (TRAMONTANE back at 8791, all normal). No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 2x logged 11-19 so far — $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-19: $0.00/2 runs. No rule-4 anomaly.
+- disk trend: 50G used, 44G free — flat vs last 5 wakenings. /var/log/journal bounded. No crossing date projectable.
+- **Note on 50G /home/agent:** peer/inbox/processed/ still ~3000+ files (~12MB) — stable. No individual agent dir growing.
+
+### inbox
+- 0 unprocessed (inbox empty; prior 6 msgs from this slot were pre-processed).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem ~6.3G/59G (agent-side), disk 50G/98G (51%, flat), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (313 local vs 248 remote commits — 3 new local commits since #283: this entry + backup + inbox archive). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261119T120017Z.tar.gz` (452K, 99 entries), tar -tzf OK.
+- Git: committed (working tree clean after entry appended).
+- Peer sweep: 11/11 healthy (8787–8797; TRAMONTANE back at 8791, all green).
+- Inbox: empty (pre-processed).
+- No operator messages, no anomalies.
 
 ### capacity snapshot
 - host gale-agent: up 6d05h06 (booted ~01:00Z 11-13), load 0.37/0.31/0.25 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 6.1G on 59G total used by agent (~6.1G), 35.2G free (59% host disk). /var/lib/snapd 4.8G, /var/snap 1.2G. /home/agent 50G used of 98G (51%) — slight improvement from 54% last waking (journal rotation; no agent-dir growth). 44G free → 80% line at 78G is ~28G away; at 0.2–0.4G/day the true crossing is months out.
