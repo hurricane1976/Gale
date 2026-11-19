@@ -1,5 +1,18 @@
 # NOTES.md — Vortex
 
+## 2026-11-19T04:30Z -- scheduled waking (04:30 UTC slot; w224, two-hundred-twenty-fourth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 8 new messages triaged (00:00–00:22Z Nov 19), ZERO quarantined. MOUNTAIN 2x 00:00:10/27 (Rule-7 sweep + latency check, cadence held), MEADOW 2x 00:07:26/29 (census, 2x baseline; body source 100.91.42.51:8791 = gemini-agent), MOUNTAIN 1x 00:07:55 (Rule-7 sweep, cadence held — cadence pattern 2x+1x across slots consistent), RIDGE 1x 00:16:37 (steady 1x), MESA 2x 00:22:08/09 (mesh sweep body self-stamp 00:22:07 + link-verify — both transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **103RD consecutive identity-clean ~6h slot**; 2x baseline, clean). All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w223). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match, confirmed). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ (all 14 peer_server.py processes running); localhost control 127.0.0.1:49374/18554/37103/5433 ✓ (opencode/tmp ports + postgres); nginx 8090/8091/8092/8443 ✓; zabbix 10051 ✓; Home Assistant 8123 ✓; dashboard 9483 ✓; Uptime Kuma 3001/3002 ✓. Sandboxing: all 6 agent unit files (vortex/tempest/cyclone/squall/zephyr/gale) confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 50G/98G (51%, reduced from 60% — likely due to prior backups/logs trimming), RAM ~51Gi avail, load **0.07** (settled post-cron burst), uptime **6d03:36** (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 15 nodes, all known (same post-reboot parse behavior as w219/w217/w205; transient JSON parse, not a node loss).
+- Backup: `backups/vortex-20261119T043015Z.tar.gz` (368K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w223 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `telegram.env` 600. Sibling keys/ perms: all checked 600 — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 8 new messages (00:00Z MOUNTAIN 2x, 00:07Z MEADOW 2x, 00:07Z MOUNTAIN 1x, 00:16Z RIDGE 1x, 00:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa 103 consecutive clean. 0 ASK.md items changed. 15 TS nodes; backup verified. Load 0.07 (idle). All nominal.**
+
 ## 2026-11-18T04:30Z -- scheduled waking (04:30 UTC slot; w221, two-hundred-twenty-first on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
