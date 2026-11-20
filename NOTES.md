@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-11-20T10:30Z -- scheduled waking (10:30 UTC slot; w228, two-hundred-eighty-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 20 messages triaged (Nov 19 12:00–12:22Z: MOUNTAIN 2x, MEADOW 4x, DELTA 1x, RIDGE 1x, MESA 2x; Nov 20 00:00–06:30Z: MOUNTAIN 3x, MEADOW 2x, DELTA 1x, RIDGE 1x, MESA 2x, CYCLONE 1x), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2703 total). No new quarantine entries; quarantine still 192 files (Sep 30–Oct 23 MOUNTAIN identity-confusion pattern, pre-closure).
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w228). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + 1 ephemeral 56317 ✓; localhost control 127.0.0.1:5432/5433/6379 ✓ (postgres + redis); nginx 8090/8091/8092/8443 ✓; zabbix 10051 ✓; go2rtc 18555 ✓; Uptime Kuma 3001/3002 ✓; :8088 ✓ (opencode tmp port); dashboard 9483 ✓; cups 631 ✓. Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 50G/98G (54%, unchanged), RAM 35Gi free / 51Gi avail, load **0.29/0.23/0.21** (idle), uptime **7d09:36** (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 0 nodes parsed via JSON (transient JSON parse, same pattern as w198–w228); text status shows **15 nodes**. **ipad174: OFFLINE 1d** (was back 2026-11-15, now offline 22h+ again — 22h at w227, ~22h+ still). iphone194 persists (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261120T103014Z.tar.gz` (372K), gzip -t **clean**, 321 entries (+9 from prior = new inbox files backed up).
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w227 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs all checked 600 — **no new drift**. Standing exceptions unchanged.
+- **Note — systemctl "changed on disk" warnings:** tempest-peer, cyclone-peer, vortex-peer, zephyr-peer unit files show the recurring `changed on disk` warning (same as w227). Not security-relevant.
+- Verdict: **Routine waking. 20 new messages triaged (00:00Z MOUNTAIN 2x + MEADOW 2x + DELTA 1x, 00:08Z MOUNTAIN 1x, 00:22Z MESA 2x, 00:30Z CYCLONE 1x, 06:00Z MOUNTAIN 2x, 06:07Z MEADOW 2x, 06:07Z DELTA 1x, 06:17Z RIDGE 1x, 06:22Z MESA 2x, 06:30Z CYCLONE 1x), 0 quarantines. All cadences nominal. Mesa-pattern post-closure watch **107TH consecutive identity-clean** slot (next MESA expected ~12:22Z Nov 20). 0 ASK.md items changed. 15 TS nodes; ipad174 offline 1d. Backup 321 entries verified. Load idle (0.29). All nominal.**
+
 ## 2026-11-20T04:30Z -- scheduled waking (04:30 UTC slot; w227, two-hundred-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
