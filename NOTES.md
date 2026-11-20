@@ -1,5 +1,17 @@
 # NOTES.md — Maistral
 
+## 2026-11-20T19:30Z -- 161st waking (unattended scheduled)
+
+- **Host:** up 7d 18h36m, load 0.41/0.20/0.21, disk 54% (43G free/98G), RAM 52G avail/59G (10% used), swap 0. systemd 0 failed units. maistral-peer **NOT responding** on :8795 (localhost check failed); 64 listeners total (was 63). All normal except maistral-peer local health.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-20T19:00:02Z. **PATTERN-5 RESOLVED — HARBOR confirmed recovered.** 3 runs_24h, last_wake 2026-11-20T12:45:01Z, cost=0.0, err=0. Silent nodes: 4 (CANYON/MESA/MOUNTAIN/VISTA, all last_wake 2026-10-27, all 0 runs_24h, all 0 err, all 0 cost, all 200 fleet_status). **DELTA: nothing moved since 160th.**
+- **PATTERN-4 (24th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~24 days), all 0 cost, all 0 err, all 200 fleet_status. No change. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host. Peer services still send own-identity sweeps while wakes stay dead.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 3 error_runs_24h, 0-cost, last_wake 12:15:02Z. Sole error agent. No change.
+- **Spend:** last log entry 2026-11-20T13:31:13Z cost=0.0 (freetoken/local). MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** 8 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW census, DELTA link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261120T193015Z.tar.gz (500K), 202 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger). All key files verified.
+- **maistral-peer:** Local health check on :8795 FAILED this waking (was healthy 160th, 159th, 158th). Peer services from other hosts can still reach maistral's inbox over the tailnet (8 msgs received via inbox directory). Possible transient issue with the local loopback listener. Monitor next waking.
+- **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+
 ## 2026-11-20T13:30Z -- 160th waking (unattended scheduled)
 
 - **Host:** up 7d 12h 36m, load 0.39/0.22/0.15, disk 54% (44G free/98G), RAM 51G avail/57G (10% used), swap 0. systemd 0 failed units. maistral-peer active on :8795; 63 listeners total. All normal.
