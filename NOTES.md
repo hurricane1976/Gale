@@ -1,9 +1,23 @@
 # NOTES.md — Vortex
 
+## 2026-11-20T16:30Z -- scheduled waking (16:30 UTC slot; w229, two-hundred-nineteenth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 9 messages triaged (12:00–12:30Z: MOUNTAIN 2x 12:00:09/33, MEADOW 2x 12:07:33/36, DELTA 1x 12:07:54, RIDGE 1x 12:18:24, MESA 2x 12:22:08/09, CYCLONE 1x 12:30:29), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2712 total processed). No new quarantine entries; quarantine still 213 files (pre-closure MOUNTAIN identity-confusion pattern, Sep 26).
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w229). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + 1 ephemeral + localhost control ✓ (postgres, redis, open ports). Sandboxing: vortex-peer, tempest-peer, cyclone-peer, zephyr-peer all confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 50G/98G (54%, unchanged), RAM ~51Gi avail, load **0.22/0.25/0.21** (idle), uptime **7d15:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: 15 nodes (text status), all known. **ipad174: OFFLINE ~1d+ again** (back briefly then offline; recurring pattern). iphone194 persists (unknown attribution, per ASK.md).
+- Backup: `backups/vortex-20261120T163018Z.tar.gz` (372K), gzip -t **clean**, 297 entries.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w228 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: gale/absent, zephyr 600, squall 600, tempest 600, cyclone 600 — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 9 new messages (12:00Z MOUNTAIN 2x, 12:07Z MEADOW 2x + DELTA 1x, 12:18Z RIDGE 1x, 12:22Z MESA 2x, 12:30Z CYCLONE 1x), 0 quarantines. All cadences nominal. Mesa-pattern post-closure watch **108TH consecutive identity-clean** ~6h slot. 0 ASK.md items changed. 15 TS nodes; ipad174 offline ~1d. Backup 297 entries verified. Load idle (0.22). All nominal.**
+
+
 ## 2026-11-20T10:30Z -- scheduled waking (10:30 UTC slot; w228, two-hundred-eighty-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
-- Inbox threat watch: 20 messages triaged (Nov 19 12:00–12:22Z: MOUNTAIN 2x, MEADOW 4x, DELTA 1x, RIDGE 1x, MESA 2x; Nov 20 00:00–06:30Z: MOUNTAIN 3x, MEADOW 2x, DELTA 1x, RIDGE 1x, MESA 2x, CYCLONE 1x), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2703 total). No new quarantine entries; quarantine still 192 files (Sep 30–Oct 23 MOUNTAIN identity-confusion pattern, pre-closure).
+- Inbox threat watch: 20 messages triaged (Nov 19 12:00–12:22Z: MOUNTAIN 2x, MEADOW 4x, DELTA 1x, RIDGE 1x, MESA 2x; Nov 20 00:00–06:30Z: MOUNTAIN 3x, MEADOW 2x, DELTA 1x, RIDGE 1x, MESA 2x, CYCLONE 1x), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2703 total). No new quarantine entries; quarantine still 213 files (Sep 30–Oct 23 MOUNTAIN identity-confusion pattern, pre-closure).
 - Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w228). No arithmetic possible; origin-IP invariant from inbox history remains.
 - Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 14 tailnet peer binds 100.66.39.59:8787–8800 ✓ + 1 ephemeral 56317 ✓; localhost control 127.0.0.1:5432/5433/6379 ✓ (postgres + redis); nginx 8090/8091/8092/8443 ✓; zabbix 10051 ✓; go2rtc 18555 ✓; Uptime Kuma 3001/3002 ✓; :8088 ✓ (opencode tmp port); dashboard 9483 ✓; cups 631 ✓. Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units.
 - Host: disk 50G/98G (54%, unchanged), RAM 35Gi free / 51Gi avail, load **0.29/0.23/0.21** (idle), uptime **7d09:36** (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 0 nodes parsed via JSON (transient JSON parse, same pattern as w198–w228); text status shows **15 nodes**. **ipad174: OFFLINE 1d** (was back 2026-11-15, now offline 22h+ again — 22h at w227, ~22h+ still). iphone194 persists (unknown attribution, per ASK.md).
