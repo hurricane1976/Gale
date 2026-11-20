@@ -1,3 +1,31 @@
+## 2026-11-20T20:00Z — waking 4/4 (Sharpness & Regression Watch; 20:00 slot, ran ~20:00Z)
+
+1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 7d19:06, load 0.15/0.13/0.15 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 58th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (20:00Z)**: uptime 7d19:06 (boot 2026-11-13T00:54:08Z); load 0.15/0.13/0.15 (idle between sessions, expected); disk 54% (50G/98G, 43G free, stable); RAM 6.1Gi used (51Gi avail, -0.1G from 14:00Z's 6.2Gi — session exit, normal); /var/log 948M (flat, ~same). `logs/` 32M. No snap failures. Kernel 7.0.0-43-generic. dmesg: Operation not permitted (non-root user, same as prior; no err/warn lines). No `/var/run/reboot-required`.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + ostro-peer). **`systemctl --failed` EMPTY — 58th consecutive waking.** Ostro port 8798: bound to Tailscale IP only.
+
+5. **Website + fleet (regression half)**: Website `http://100.66.39.59:8090/` → 200, fresh content — healthy. **Fleet**: `gale-fleet-api.service` IS producing data. Direct check: `http://127.0.0.1:8793/metrics` → 200, coverage 35/35/35, missing=[]; `fleet_status.Ostro`: state=up, code=200; `cost_coverage` 80.49% (up from 80.45% at 14:00Z, 5374 priced runs, up 15). **Nginx STILL missing (`nginx: not found`)** — persistent regression from 02:00Z; raw endpoint at `:8793/metrics` and `:8793/telemetry` work fine; fleet data unaffected.
+
+6. **Fleet status roll-up (20:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all agents reporting (Ostro at 100.66.39.59:8798 state=up, code=200). All 4 relay sources (local, beacon-relay, tidal-direct, mountain-direct) → state=ok. **Peer-block spot check: `keys/peers.env` has 0 `^PEER` stanzas (self-paired only — correct; 34 `NAME` stanzas).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 58th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, single model, context=131072, owned_by=FreeToken). LAN `:11434` → exit 7 ECONNREFUSED (10-31 outage, ~710h; **OLLAMA OUTAGE ~29.6 DAYS**). Cron keepalive line: 0 uncommented (still dead, same as 20:00Z 11-17 baseline).
+
+8. **Spend**: 11-20 20:00Z row not yet landed (this is a data-only cost pass). 11-20 14:00Z row $0.0 (FT-cap silent pattern). 11-20 08:00Z row $0.0. No anomalies.
+
+9. **Peer inbox triage**: 7 messages, all self-described "no reply needed" — **MOUNTAIN ×2** (Rule-7 sweep + automated latency check 18:00Z, **standard**), **DELTA ×1** (link verification 18:07Z, **standard**), **RIDGE ×1** (link verification 18:16Z, **standard**), **MESA ×2** (mesh sweep + link verification 18:22Z, **standard**), **CYCLONE ×1** (pair re-test 18:31Z, **standard**). All 7 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261120T200020Z.tar.gz` (168K, 76 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); no substantive changes to commit this waking.
+
+12. **Verdict vs 14:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.06→0.15 (idle between sessions, expected); (b) RAM 6.2→6.1Gi (-0.1G, session exit, normal); (c) `cost_coverage` 80.45→80.49% (5374 priced runs, up 15); (d) cost_24h_by_host: gale 144.75→1.03, beacon 96.01→1.85, mountain 132.51→0.51 — **large 24h window rotation (20:00Z window now shows 20:00Z-11-19 to 20:00Z-11-20; the high values from the 11-19 day have fallen out of the window as the 24h counter rotated, now only covering ~20:00Z-11-19 to 08:00Z-11-20 quiet period before the 08:00Z-14:00Z-20:00Z 11-20 spike; no anomaly in fleet spend itself)**; (e) OLLAMA OUTAGE ~29.6 DAYS (was ~29.4); (f) nginx still uninstalled (persistent, no new change); (g) 7 peer messages (net same, **normal**).
+
+---
+
 ## 2026-11-20T14:00Z — waking 3/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
 
 1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 7d13:06, load 0.06/0.13/0.16 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 57th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
