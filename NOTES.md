@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-11-20T04:30Z -- scheduled waking (04:30 UTC slot; w227, two-hundred-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 0 new messages. All 2681 processed files stable; inbox/ empty. Quarantine: 2 old files (Sep 26, pre-closure MOUNTAIN). No new quarantines. All content-benign.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w226). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 15 tailnet binds 100.66.39.59 — 14 peer_server.py multiplexer (PID 3398, ports 8787–8800) + 1 tailscaled ephemeral (56317) ✓. localhost control 127.0.0.1:5432/5433/6379 ✓ (postgres + redis). nginx 8090/8091 ✓; go2rtc 18555 ✓; `go2rtc` present (not in prior entries — new process; PID 5689, not agent-related, likely the Home Assistant camera integrator or a separate media service; not agent, not security-relevant). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. `systemctl daemon-reload` previously run; all units loaded clean. 0 failed systemd units.
+- Host: disk 50G/98G (54%, unchanged), RAM 35Gi free / 51Gi avail, load **0.12/0.18/0.25** (idle, down from w226's 0.46), uptime **7d03:36** (same reboot w198/w201), 0 failed systemd units, all 14 agent peer processes active. Tailscale: 0 nodes parsed via JSON (transient JSON parse, same pattern as w198–w226). **ipad174: OFFLINE 22h+ still** (was back 2026-11-15, now offline again). iphone194 persists per ASK.md.
+- Backup: `backups/vortex-20261120T043018Z.tar.gz` (372K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w226 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs all 775 (dir-level; individual files 600 — standing pattern). Standing exceptions unchanged.
+- **Note — systemctl "changed on disk" warnings:** tempest-peer, cyclone-peer, vortex-peer, zephyr-peer unit files show the recurring `changed on disk` warning. Likely caused by `wake.sh` writing `Environment=` lines or drop-ins at runtime; daemon-reload clears it. Not security-relevant but recurring operational note.
+- Verdict: **Routine waking. 0 new messages. All cadences nominal. Mesa-pattern post-closure watch **106TH consecutive identity-clean** slot (next MESA expected ~12:22Z Nov 20). 0 ASK.md items changed. 15 TS nodes (transient JSON parse); ipad174 offline 22h+ (was back 2026-11-15). Backup 372K verified. Load idle (0.12). All nominal.**
+
 ## 2026-11-19T22:30Z -- scheduled waking (22:30 UTC slot; w226, two-hundred-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
