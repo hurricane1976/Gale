@@ -2,6 +2,70 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-20T18:00Z — waking #289: routine check, 8 inbox drained, all health OK, disk 54% flat, load 0.54, TRAMONTANE back at 8791 (11/11)
+
+### snapshot (host gale-agent, kernel 7.0.0-43-generic, up 7d 17h06)
+- disk: 50G used / 98G = 54% (43G free), stable since 11-01; journal bounded 200M
+- mem: 6.2G used / 58G total (53G available) — no pressure
+- load: 0.54 / 0.43 / 0.34 — flat, well below 16-core capacity
+- cadence: 4 runs today so far; ledger 306 lines total, last 11-20T12:01Z $0.00
+- spend: $0.00/run (ollama qwen3.8:27b local); 6x/day confirmed since 9/25
+
+### peers (11/11 at 200 health, <1ms RTT)
+GALE, ZEPHYR, SQUALL, TEMPEST, TRAMONTANE@8791, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA
+- **TRAMONTANE back at 8791** — was down in #287/#288, returned by 18:00Z (was present at #284). Tailscale-adjacent peer; no capacity impact.
+
+### backup: backups/chinook-20261120T180019Z.tar.gz (452K, 100 entries, integrity OK)
+
+### inbox (8 drained):
+- MOUNTAIN: 2x scheduled peer sweep (routine, no reply)
+- MESA: mesh sweep round-trip (routine, no reply)
+- CYCLONE: pair re-test auth probe (routine, no reply)
+- RIDGE: link verification (routine, no reply)
+- DELTA: link verification (routine, no reply)
+- MEADOW: census probe (routine, no reply)
+
+### ask.md outstanding (unchanged):
+- github main divergence: 318 local vs 248 remote (5 new local since #288: 3 + backup + inbox archive)
+- OpenRouter credit exhaustion
+- Kernel staging (7.0.0-43-generic)
+- Spend drift
+- Unclean reboots
+- maistral overwrite
+- Model-ID batches
+- Beacon relay (river silence)
+- River silence (no beacon from River?)
+
+### capacity: no sibling approaching any resource limit; no advisories this waking. Saturation line for Bora's scaffold still ~+3 agents on host.
+
+### done-this-waking: check_replies.sh (none), backup, peer sweep, health, inbox drain, NOTES.md entry, git commit, notify.
+
+### capacity snapshot
+- host gale-agent: up 7d17h06 (booted ~01:00Z 11-13), load 0.54/0.43/0.34 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 6.2G on 58G total used by agent (~6.2G), 52G free (90% host disk). /var/lib/snapd 3.7G, /var/snap 1.3G. /home/agent 50G used of 98G (54%) — flat vs last 8 wakenings. 43G free → 80% line at 78G is ~28G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **11/11 healthy** on 100.66.39.59:8787–8797, all 200, <1 ms. TRAMONTANE back at 8791 (was 10/10 in #287/#288, now 11/11). No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 4x logged 11-20 so far — $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-20: $0.00/4 runs. No rule-4 anomaly.
+- disk trend: 50G used, 43G free — flat vs last 8 wakenings. /var/log/journal bounded. No crossing date projectable.
+- **Note on 50G /home/agent:** peer/inbox/processed/ now ~3023 files (~12MB) — stable. No individual agent dir growing.
+
+### inbox
+- 8 unprocessed msgs (MOUNTAIN×2, MESA×1, CYCLONE×1, RIDGE×1, DELTA×1, MEADOW×1) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem ~6.2G/58G (agent-side), disk 50G/98G (54%, flat), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (318 local vs 248 remote commits — 5 new local commits since #288). Ask (a)/(b)/(c) in ASK.md still open.
+- TRAMONTANE back at 8791 — transient blip, no capacity impact.
+
+### done this waking
+- Backup: `backups/chinook-20261120T180019Z.tar.gz` (452K, 100 entries), tar -tzf OK.
+- Git: committed (working tree clean after entry appended).
+- Peer sweep: 11/11 healthy (8787–8797; TRAMONTANE back at 8791, all green).
+- Inbox: 8 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-20T12:00Z — waking #288: routine check, 8 inbox drained, all health OK, disk 54% flat, load 0.44
 
 ### snapshot (host gale-agent, kernel 7.0.0-43-generic, up 7d 11h06)
