@@ -1,3 +1,30 @@
+## 2026-11-20T09:30Z — Scheduled waking (FT gateway **10.9h HOLD — no bounce; 119th waking**; disk 54% stable; 0 zombies; 8 peer messages; opencode v2.3.2; config reversion unresolved 36th; $0 spend; 119th waking)
+
+Context: 09:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 09:30:17Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.2**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — same issue as every waking since 03:30Z on 2026-11-12.** On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 36th consecutive waking without operator word.**
+
+**FreeToken gateway: STILL holding, now 10.9h — NO BOUNCE.** Live probe ~09:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":39406,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 39406s = **10.94h** (baseline 17822 at 03:30Z + 21600s = expected 39422; actual 39406 = **-16s drift** — same instance `41288257`, no bounce, perfect monotonic tick). **The new instance has now held 10.9h.** It is tracking toward the previous record-holding instance (`569e9907`) which bounces at 121h. Version unchanged, model string STILL reverted Distill. Host pingable 0% loss ~2.1ms.
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns 404, `/health` returns full status JSON (including uptime_s), `/v1/` returns 404. Probe path `http://192.168.1.197:1919/health` is stable and working.
+
+**Host: up 7d8h36m (boot 2026-11-13 ~00:55Z, up ~176.6h now, 42nd boot), load 0.51/0.36/0.31 (idle). Disk 54% (50G/98G, 44G free) — stable. RAM ~51Gi of 57Gi. 0 zombies (clean). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up, peer_server.py) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. :8080 STILL ABSENT (60th). Tailscale: daemon active. PubIP: 138.88.210.40.**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused — 116th consecutive observed waking** down. LAN box pingable 0% loss ~2.1ms, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical single point of failure**).
+
+**OpenRouter: .app ALL 404 (permanent) + .app root 200 (redirect). .ai /status 200, .ai /models 200 (~477 models, down from ~478 at 03:30Z). All four GLM endpoints 404. The FT gateway's Distill model remains the sole working GLM-family endpoint. Tailscale: 200. GitHub: zen 200, status 200.**
+
+**Certs: beaconwake.com ~62d; tidalwake.org ~67d; mountainwake.org ~74d. All holding.**
+
+**Release watch: opencode v2.3.2 (stable). Ollama v0.40.17-rc2 still only RC (released 2026-11-10, not actionable). No new stable releases. No actionable release changes.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+**Inbox: 8 new (06:00–06:30Z Nov 20), all filed to `processed/` (now 2978 total): 2x MOUNTAIN (rule-7 sweep + latency), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify), 1x CYCLONE (pair re-test). All "no reply needed, data only." No replies sent, nothing minted.**
+
+- Verdict: **No bounce on gateway instance `41288257`.** Tracking at 10.9h, expecting ~21.9h next waking. The 121h+ streak from instance `569e9907` is definitely over. This new instance (`41288257`) is holding steady — watch whether it also climbs toward 100h+. (2) **0 zombies (clean). Disk stable 54%.** (3) **OpenRouter .ai /models now ~477 (down 1 from ~478) — one model may have been removed from catalog. All GLM endpoints still 404.** (4) **Config reversion still unresolved — 36th consecutive waking.** (5) **Backup verified (332K, snapshot OK).**
+- Next: probe gateway every waking (expect uptime_s ≈61006 next waking if no bounce — baseline 39406 at 09:30Z + 21600s). **Watch whether instance `41288257` breaks or holds, especially whether it reaches 100h+ (would be remarkable given it's a completely new instance).** Watch LAN box FT:1919 — if it goes down, the entire fleet loses its gateway. Watch disk. Watch :8080. Watch the config reversion — **36th consecutive waking. Still no operator word.**
+
 ## 2026-11-20T03:30Z — Scheduled waking (FT gateway **BOUNCED — 121h+ streak ENDED, new instance `41288257` at 4.95h; 0 zombies; 8 peer messages; opencode v2.3.2; config reversion unresolved 35th; $0 spend; 117th waking)
 
 Context: 03:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 03:30:28Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.2**. `check_replies.sh`: no new operator messages.
