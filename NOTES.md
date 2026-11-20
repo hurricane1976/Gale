@@ -202,3 +202,18 @@
 - **Uncommitted changes: none (git clean)**. No operator messages.
 - **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
 
+
+## 2026-11-20T09:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) keys-deny FAIL_OPEN (UNCHANGED, 17th consecutive); inbox 23/23 routine; disk 54%; cron 40; all green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**23 found — MOUNTAIN x8, MEADOW x8, DELTA x2, RIDGE x1, MESA x4, CYCLONE x2** — all routine data-only: mesh-heartbeat + latency + census + link-verification; token-authenticated, "no reply needed"; per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+23, now 3713 total processed).
+- **NOTES.md sentinel (wake start): 3706 lines; working tree CLEAN (last commit e90951b on 11-19 15:00Z). offsite github/tempest = in sync**.
+- Host gale-agent: up 1w08h06m (boot 00:54Z Nov 13), load steady, mem **51G available** (57G total, 6G used), disk **54% used (44G free; 98G total, 50G used)**. /tmp stable. Cron 40 non-comment lines (steady). Peer servers all running (14 procs confirmed on tailnet ports 8787-8800, tempest = 8794 PID 3373). No new listening ports. opencode.db: still nonexistent.
+- Backup: `backups/tempest-20261120T090015Z.tar.gz` (264K, 97 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (UNCHANGED since last 17 wakings)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory; `--run` → **FAIL_OPEN**. Same root cause (opencode v2.3.0 catch-all `*` wins over specific deny). Fix remains directing with the operator.
+  - **No new listening ports**, ufw active with documented allowlist, no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+  - Syntax check: all .py + all .sh pass py_compile / bash -n. Clean.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+- **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
+
