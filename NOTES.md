@@ -18657,3 +18657,72 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
 - Onboarding: 21 remote pairings staged, pending per-pair operator sign-off.
 - Git: no uncommitted changes.
 - NOTIFY: summary sent to operator via ./notify.sh.
+
+      ## 2026-11-20T12:30Z waking (w348)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w347); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 8 routine probes
+  (Nov 20 12:00–12:22Z: MOUNTAIN x2, MEADOW x2, DELTA, RIDGE, MESA x2) —
+  all "no reply needed", scanned clean. Filed to processed/ (3368 total).
+  quarantine 0.
+- Host health: up 7d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.49/0.27/0.22
+  (normal, post-wake decay). mem 51G avail, disk 54% (44G free), inodes 13%.
+  91 running services. 13 agent services in crontab.
+  **LOG SIZE: syslog 40M (+36M from w347's 4K after forced logrotate;
+  kern.log 4M, journal 200M, syslog.1 379M). Total log disk ~922M — still
+  well over 500M ceiling. Logrotate cron.daily confirmed running (today's
+  run at 06:31Z), but the forced rotation from w347 left syslog.1 at 379M
+  and new daily rotation only produced fresh 40M syslog. Long-term gap: no
+  retention limit config. Gale's to fix.**
+- Backup: `backups/cyclone-20261120T123016Z.tar.gz` (416K, 175 entries)
+  — gzip -t OK, keys/ excluded by design. 27th snapshot of Nov 20.
+- Production pass (live @8090): **6/7 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora; **health.html still 404** — 61st consecutive).
+  **Bare paths serve 404 (custom) — expected.** Core proxied fleet API:
+  **8/8 200** (telemetry/health/registry/activity/metrics/observability/
+  agora/posts/alerts — **alerts RESTORED**, was 404 in w345-w347).
+  **SSE streams: 0/4 `text/event-stream; charset=utf-8` correct.**
+  3/4 404 (activity/metrics, telemetry, agora/posts/stream).
+  observability/stream returns `retry: 3000` body but `Content-Type:
+  text/html;charset=utf-8` — WRONG content-type, should be event-stream.
+  HEAD: all 4 streams 501 (steady).
+- Freshness: generated_at 2026-11-20T12:30:28Z (fresh). Telemetry
+  totals.agents=35; **cost_usd 373.2686 (DOWN from w347's 373.0465 —
+  $0.22 drop)**. error_runs 216 (+1 from w347's 215 — first increase since
+  w346, after ~10 w345-flat cycles).
+  Activity: fleet-activity/v1, 24 events (agents: chinook 2, gale 3 —
+  same as w347's 24, all agents on-roster). **ALL 6 referenced agents ARE
+  in the 35-agent roster — the 'северин лист' non-roster reference is gone.
+  Data-integrity restored on this axis.**
+  Agora: 139 posts (+0 from w347's 139 — flat for fourth cycle).
+- FLEET ROLL-UP (fleet-metrics v1): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-20T12:30:01Z (this cycle — LANDED).
+  cost_coverage: known_usd 373.2686, coverage_pct 80.44 (up from 80.37).
+  agents_by_host.gale lists 14.
+  Cyclone in fleet_status + fleet.html labels (35 keys, all correct case).
+- ALERTS (via /api/alert-history.json, 200 — **endpoint restored after 3-cycle
+  outage**): 12 open alert IDs (opaque IDs — alert details not inspectable
+  without alert content envelope). Same 12 as w347; composition likely
+  unchanged. 3x GaleRosterDrift + 2x GaleCredDrift likely present (Gale's
+  domain, unverifiable without alert content).
+- CONTENT ASSERTION (10-WAY IDENTITY, 62nd consecutive clean): fleet.html
+  data-name labels 35 == telemetry totals.agents[] 35 == fleet-metrics
+  fleet_status keys 35 == fleet-status up 35 == /api/fleet/health ok:true
+  (fresh generated_at 12:30) == activity events 24 with zero non-roster refs
+  == agora/posts 139 (fresh) == generated_at fresh == cyclone in all.
+  "35 agents" in fleet.html; no stale 25/27 agent strings.
+  **BUT: "pending install" x2 (Prism, Mesa, Vista) still in fleet.html —
+  all named agents live UP per sweep. Gale's to fix (carried, 84th waking).**
+- ROTATION (repo<->docroot drift): **CLEAN** — same method as w348 (byte-compare
+  + build-transform allowance; all mtimes single-snapshot; ownership www-data).
+  No non-www-data-owned, no leaks (git/env/node_modules).
+- PAIR RE-TEST: 30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+  (remote halves still not installed). 50th consecutive steady state.
+- Spend: 2026-11-20 rows — freetoken $0.00, no GLM fallback runs today.
+  No alert threshold crossed.
+- Onboarding state: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- Git: no uncommitted changes (processed/ gitignored).
+- NOTIFY: summary sent to operator via ./notify.sh.
+
