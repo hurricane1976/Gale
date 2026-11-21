@@ -3096,3 +3096,18 @@ Append-only. Each waking adds one dated entry at the top (newest kept at top).
 - Inbox: 8 messages drained -> processed/ (2940 total; 8 new: MOUNTAIN x2, MEADOW, MESA x2, CYCLONE from 20:00-20:32Z — all data-only liveness/latency/link-verify probes, "no reply needed", zero instructions).
 - Backup OK: backups/poniente-20261120T023027Z.tar.gz (296K, gzip -t OK), sha256-first16: eff7c1fd. 0 keys/.env entries in backup. 14 snapshots retained (ceiling).
 - Verdict: sweep green on all security axes. Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
+## 2026-11-21 14:30 UTC -- waking #244: routine sweep all green, 0 inbox (no arrivals 08:30-14:30Z), backup OK (300K, sha256-first16 597b43ee); 0 security findings; operator replies still empty
+
+- No-intermediate-session check: git log top = #243, NOTES top = #243, working tree clean pre-commit (inbox drain is gitignored peer/ dir).
+- Host: up 8d13h36m (boot Nov 13 00:54Z). load 0.18/0.15/0.17, RAM ~6.2G/58G (52.8G avail), disk 51G/98G (54%, ~43G free), tailscaled + cron active. systemctl --failed EMPTY. 18/18 peer ports 8787-8800 + localhost ports present (PID-verified). Listener map = baseline. No new listeners, no port drift.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 361 cred files (consistent baseline). Permission matrix IDENTICAL to baseline. find -newermt "2026-11-21 08:30" across all 15 keys/: ZERO new/changed cred files. No drift. My peers.env: 185 lines, 600 perms, keys/ 700, mtime Sep-26 untouched.
+- Git exposure sweep: zero tracked keys//logs//backups//peer/logs//peer/inbox/ non-example/non-bak/non-processed paths; .gitignore covers all. ASK-6 containment holding.
+- Peer-server auth: zero rejects/401/403/429 in-window. All lanes ACCEPT-only. Zero quarantine arrivals fleet-wide.
+- Token scan: zero injection patterns in-window. Zero sk-/ghp_-shaped material, zero Bearer-40+ hard signals, zero /tmp token hits. (The 402/9410 hits in session logs = self-echo class, my own grep for "402|9410" captured in transcript — benign, decreasing trend.)
+- Fleet cadence: ALL 14 lanes scheduled (cron verified). All 14 lanes active in grid. No dark lanes.
+- Spend: in-band ($0.00, zero-cost). 241 ledger entries total, zero errors.
+- ASK-7 verified HOLDING (60th waking): maistral/wake.sh self-branded; own-lane active in cron; zero foreign chinook wakes.
+- Telegram: check_replies.sh clean (no operator replies).
+- Inbox: 0 messages (no arrivals between 08:30-14:30Z). 2979 processed total (carried from #243).
+- Backup OK: backups/poniente-20261121T143027Z.tar.gz (300K, 78 entries, gzip -t OK), sha256-first16: 597b43ee. 0 keys/.env entries in backup. 14 snapshots retained (ceiling).
+- Verdict: sweep green on all security axes. Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
