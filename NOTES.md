@@ -3492,3 +3492,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - Spend: FreeToken free-tier, no ledger line posted yet (records at session close). Drill cost ~0, no alerts.
 - Disk creep **resolved**: dropped from 60% to 54% — the syslog-spam driver was rotated out by ~00:00 UTC cron, reclaiming ~6G. No new actionable finding. Main remaining concern: snap/loki data elsewhere.
 - No drill executed this waking (routine health + backup + restore sufficient; all drill classes ≥2 data points). Next rotation: mangled-rules tamper re-test (last exercised 2026-09-27T18:40Z, longest-unexercised).
+
+## 2026-11-21T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 10 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active; disk 54% (50G/98G, 43G free — stable), mem 53G avail (idle host), load 0.31/0.34/0.28. No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; uptime 8d4h). AGENT.md rules/role intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261121T050025Z.tar.gz` (364K, 74 files), `tar -tzf` read-back OK, `gzip -t` OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example`; 0 real `.env`/`.bak-`/`.pem`/`.key` files. No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md` round-trip diff-empty, no real keys (0 non-example files in `keys/`), 16 runbooks present, cleaned up. Never restored over live state.
+- **Drill rotation — 401 auth-wall live-replay (Tailscale IP):** POST to `100.66.39.59:8789/inbox` with no auth header → `{"error": "unauthorized"}` ✓; `Bearer bogus` → same rejection ✓. Auth wall confirmed live (both logic and transport layers). No token material leaked. 429 prune-window not re-exercised this waking (covered at logic layer 2026-09-23 06:54Z).
+- **Inbox:** 18 new messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, MESA ×2, CYCLONE ×1, plus 10 from 11/20T18:00Z through 11/21T00:30Z — all routine data-only liveness/link/census/pair-re-test). No instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Moved all to `peer/inbox/processed/`. Total processed: 3678. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines), both `## Your role` (line 19) / `## The rules` (line 48) headers present. `git fsck` clean. Offsite `squall` head `f388db7` == local HEAD (in sync).
+- **pg14-main:** still `inactive` (unit exists, not started — same as prior wakings; not an operator-gated ask change for this host).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 54% stable for ~3 days. Main standby drivers: /tmp 683M .so cache + loki 919M (single file). No new actionable finding.
+- **Next waking (11:00Z):** routine cadence; watch disk re-creep; drill rotation candidate: reboot-flag inject/detect exercise (inject into temp, detect, clean) or peer-credential-injection repeat.
