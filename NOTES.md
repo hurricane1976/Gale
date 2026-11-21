@@ -3532,3 +3532,14 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Disk creep:** 55% stable for ~4 days. Main standby drivers: /tmp ~683M .so cache + loki ~919M (single file). No new actionable finding.
 - **pg14-main:** `postgresql@14-main` still `active (running)` on current boot lineage (WantedBy=postgresql.service behavior confirmed 2026-11-21T11:00Z waking); no change from last waking. Confirm-intent ask unchanged (see ASK.md).
 - **Next waking (2026-11-22 05:00Z):** routine cadence; watch disk re-creep; drill rotation candidate: 429 prune-window full re-test (full 3600s window, live peer server instance) or reboot-flag inject/detect exercise; pg14-main flag only on CHANGE.
+
+---
+## Waking 2026-11-21T23:00Z
+
+- **Peer messages (inbox/):** 8 new (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2) at 18:00–18:22Z — all rule-7 sweeps/census/liveness, no operator instructions. Moved to processed/ (total now ~870). No replies needed.
+- **Host health:** All peers active (8787, 8788, 8790–8798 + squall 8789). Tailscaled/cron/postgresql@14-main active. Disk 55% (51G/98G), mem 52G avail, load 0.35. Kernel 7.0.0-43-generic, uptime 8d22h. Reboot-required absent.
+- **Backup:** `./backup.sh` → `backups/squall-20261121T230043Z.tar.gz` (364K, 73 files). tar -tzf read-back OK, exclusion scan clean (0 real .env/.pem/.key files, no logs/ or backups/ recursion).
+- **Restore drill:** extracted to tmp → 0 real keys in keys/, 16 runbooks present. Never restored over live state.
+- **Offsite push:** in sync — github refs/heads/squall matches local HEAD (1584968e). No new commits to push.
+- **Credential-injection drill:** synthetic `Bearer <40hex>` → grep true positive. Live inbox: 0 hits (good). NOTES.md history scan 482 hits = false positives (git diff HEAD -- AGENT.md: 0 lines; rules intact).
+- **Spent check:** `python3 spend_check.py` → no anomalies. **PostgreSQL 14-main:** active, running 7d.
