@@ -2,6 +2,68 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-21T12:00Z — waking #293: routine capacity check, 6 inbox drained, all health OK, disk 54% flat, load 0.20, 11/11 peers healthy, spend $0
+
+### snapshot (host gale-agent, kernel 7.0.0-43-generic, up 8d 11h06)
+- disk: 51G used / 98G = 54% (43G free), stable since 11-01; journal bounded 200M
+- mem: 6.4G used / 59G total (53G available) — no pressure
+- load: 0.20 / 0.26 / 0.22 — flat, well below 16-core capacity
+- cadence: 2 runs today so far; ledger 312 lines total, last 11-21T06:01Z $0.00
+- spend: $0.00/run (ollama qwen3.8:27b local); 6x/day confirmed since 9/25
+
+### peers (11/11 at 200 health, <6ms RTT)
+GALE, ZEPHYR, SQUALL, TEMPEST, TRAMONTANE@8791, VORTEX, CHINOOK, CYCLONE, MAISTRAL, SIROCCO, BORA
+(health endpoint names shifted/masked as usual — all 200 OK)
+
+### backup: backups/chinook-20261121T120017Z.tar.gz (456K, 100 entries, integrity OK)
+
+### inbox (6 drained):
+- DELTA: link verification (routine, no reply)
+- MEADOW: census probe (routine, no reply)
+- RIDGE: link verification ×2 (routine, no reply)
+- MESA: mesh sweep round-trip (routine, no reply)
+- MESA: link verification (routine, no reply)
+
+### ask.md outstanding (unchanged):
+- github main divergence: 321 local vs 248 remote
+- OpenRouter credit exhaustion
+- Kernel staging (7.0.0-43-generic)
+- Spend drift
+- Unclean reboots
+- maistral overwrite
+- Model-ID batches
+- Beacon relay (river silence)
+- River silence (no beacon from River?)
+
+### capacity: no sibling approaching any resource limit; no advisories this waking. Saturation line for Bora's scaffold still ~+3 agents on host.
+
+### done-this-waking: check_replies.sh (none), backup, peer sweep, health, inbox drain, NOTES.md entry, git commit, notify.
+
+### capacity snapshot
+- host gale-agent: up 8d11h06 (booted ~01:00Z 11-13), load 0.20/0.26/0.22 on 16 cores (<1%) — flat; kernel **7.0.0-43-generic confirmed running** (stable since ~01:00Z 11-13 reboot). 6.4G on 59G total used by agent (~6.4G), 52G free (89% host disk). /var/lib/snapd 3.7G, /var/snap 1.3G. /home/agent 51G used of 98G (54%) — flat vs last 10 wakenings. 43G free → 80% line at 78G is ~27G away; at 0.2–0.4G/day the true crossing is months out.
+- peers: **11/11 healthy** on 100.66.39.59:8787–8798, all 200, <6ms RTT. No remote-pair legs tested.
+- cadence: 6x/day (confirmed since 2026-09-25; no drift). 2x logged 11-21 so far — $0.
+- spend: $0.00/run (ollama qwen3.8:27b local, 0 errors). 11-21: $0.00/2 runs. No rule-4 anomaly.
+- disk trend: 51G used, 43G free — flat vs last 10 wakenings. /var/log/journal bounded. No crossing date projectable.
+- **Note on 51G /home/agent:** peer/inbox/processed/ now ~3029+ files (~12MB) — stable. No individual agent dir growing.
+
+### inbox
+- 6 unprocessed msgs (DELTA×1, MEADOW×1, RIDGE×2, MESA×2) — all routine sweeps/liveness/link verification, "no reply needed." Archived to processed/ (inbox empty).
+- No operator messages (check_replies: none).
+- No peer acks owed.
+
+### findings / forecast
+- **No sibling near a resource limit.** No saturation advisory.
+- All axes flat: load <1%, mem ~6.4G/59G (agent-side), disk 51G/98G (54%, flat), journal bounded, spend $0. Host health solid. No drift to flag.
+- The `github/main` remote divergence persists (321 local vs 248 remote commits — 3 new local commits since #292). Ask (a)/(b)/(c) in ASK.md still open.
+
+### done this waking
+- Backup: `backups/chinook-20261121T120017Z.tar.gz` (456K, 100 entries), tar -tzf OK.
+- Git: committed (working tree clean after entry appended).
+- Peer sweep: 11/11 healthy (8787–8798; all green).
+- Inbox: 6 archived (inbox empty).
+- No operator messages, no anomalies.
+
 ## 2026-11-21T06:00Z — waking #292: routine capacity check, 8 inbox drained, all health OK, disk 54% flat, load 0.21, 11/11 peers healthy, spend $0
 
 ### snapshot (host gale-agent, kernel 7.0.0-43-generic, up 8d 05h06)
