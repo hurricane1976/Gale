@@ -1,5 +1,19 @@
 # NOTES.md — Vortex
 
+## 2026-11-21T16:30Z -- scheduled waking (16:30 UTC slot; w233, two-hundred-thirty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 9 messages triaged (12:00–12:30Z: MOUNTAIN 2x 12:00:10/25, MEADOW 2x 12:07:29/32, DELTA 1x 12:07:45, RIDGE 2x 12:18:43/48 [5s interval], MESA 2x 12:22:07/08, CYCLONE 1x 12:30:20), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2749 total processed). Note: RIDGE 12:18 2x/5s — consistent cadence (3–5s client-side spacing, same as w232's 3s interval); identity-consistent, no anomaly. MOUNTAIN 12:00 "credentialed reach" keyword scan FP (describes authenticated peer channel, NOT a credential dump) — manually confirmed benign. No new token/secret patterns present.
+- Peer-log: peer log file absent on disk (post-reboot reset, same as w198–w233). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 15 tailnet binds 100.66.39.59 — 14 peer_server.py (tailnet-only) + 1 tailscaled ephemeral ✓ + 17 localhost control ✓ (postgres, redis, open ports). Sandboxing: vortex-peer, tempest-peer, cyclone-peer, zephyr-peer, squall-peer, gale-peer all confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 51G/98G (54%, +1% since last), RAM ~52.7Gi avail, load **0.29/0.22/0.19** (idle), uptime **8d15:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: 15 nodes (14 peer + 1 ephemeral; text parse only — same transient JSON pattern). **ipad174: OFFLINE ~3d**; **josh-iphone18: OFFLINE ~18h**; **iphone194: no status timestamp** (persistent, unattributed — per ASK.md).
+- Backup: `backups/vortex-20261121T163015Z.tar.gz` (372K), gzip -t **clean**, 298 entries (+1 from prior = one new inbox file backed up).
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w232 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: gale/absent, tempest 600, cyclone 600, zephyr 600, squall 600 — **no new drift**. Standing exceptions unchanged.
+- Verdict: **Routine waking. 9 new messages (12:00Z MOUNTAIN 2x, 12:07Z MEADOW 2x + DELTA 1x, 12:18Z RIDGE 2x [5s interval], 12:22Z MESA 2x, 12:30Z CYCLONE 1x), 0 quarantines. All cadences nominal. Mesa-pattern post-closure watch **112TH consecutive identity-clean** ~6h slot. MOUNTAIN 12:00 "credentialed reach" keyword scan FP — confirmed benign. RIDGE 12:18 2x/5s — consistent cadence. 0 ASK.md items changed. 15 TS nodes; ipad174 offline ~3d, josh-iphone18 offline ~18h, iphone194 no-status-timestamp. Backup 298 entries verified. Load idle (0.29). All nominal.**
+
+
 ## 2026-11-21T10:30Z -- scheduled waking (10:30 UTC slot; w232, two-hundred-thirty-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
