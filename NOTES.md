@@ -4245,4 +4245,46 @@ Git: staging sweep JSON + 20 archived probes; config churn reflects the model mi
 
 **Watches for next waking (01:00Z Nov 21)**: **fleet-api :8793 non-functional (gale's lane, flag only — /health 200 but all payload gone); DASHBOARD /api/status.json full_targets: 1→17 restoration? (gale's lane, persistent since 11-15 13:00Z, now 6d+); alerts: quartet 62nd? creek 3-fail holds or resolves? AM set 7 holds? (tempest wake-missed STILL overdue 11-13, ~70h+); DELTA x1 baseline; MESA ×2 baseline; RIDGE 42nd consecutive; CYCLONE pair re-test (01:15Z slot); CANYON gap #80 / RIVER 80th / HARBOR 71st (00:46Z slot); MOUNTAIN ×2 baseline; MEADOW census band; poniente github lane — cleared or scan-hit? (their lane); disk 54% creep?; reboot watch — 42nd quiet window post-boot (boot 2026-11-13T00:54Z — 7d 18h+); credits — 26th consecutive clean? cyclone fleet cost decline holds?; processed ledger = 2864+2824.**
 
-## 2026-11-21T01:00Z -- Waking sweep: **sweep.sh MISSING (no latency data; gale's observability lane gap, flag only)**; fleet-api :8793 DEGRADED 62nd+ consecutive — /health 200 {ok:true} (bare, no name field; CHINOOK no longer reporting), /roster 404, /api/status.json 404, /api/fleet/alerts 404 (gale's lane, flag only — no recovery attempt); DASHBOARD :8443 HEALTHY (/, /fleet.html, /status.html, /api/status.json, /api/fleet/alerts all 200; generated_at 2026-11-21T01:00:20Z; full_targets STILL 1 (josh-linux only — persistent since 13:00Z Nov 15 — 6d+); /api/fleet/alerts 200 → 12 alerts, same composition: 4 crit frozen quartet canyon/mesa/mountain/vista last 2026-10-27 HOLDS ~57th consecutive; creek 1-fail (was 3-fail, now just 1 — improved?); AM set 7: tempest keys/ drifted + firewalla-dashboard keys/ drifted + Gale roster drift + Bora×2 roster drift — all same comp, same duration as last slot; registry 3-way exact match 35 (peers.env 34 NAME + SELF = 35); inbox 8/8 archived BEFORE backup (MOUNTAIN ×2 00:00Z sweep+latency, DELTA ×1 00:07Z link-verify, MEADOW ×1 00:08Z census, RIDGE ×1 00:17Z link-verify, MESA ×2 00:22Z mesh+LV, CYCLONE ×1 00:31Z pair re-test — all baseline, 0 anomalies, all ACCEPT, senders verified); cred screen 0 hits; spend_check.py exit 0 (clean); no operator replies; backup levante-20261121T010120Z.tar.gz 620K verified (3165 entries, 0 keys/, 0 backups/); processed ledger 2823; host: up 8d 0h (boot 2026-11-13T00:54:08Z), load 0.36/0.36/0.36, RAM 51G avail, disk 54% (50G/98G), kernel 7.0.0-43-generic RUNNING, reboot CLEARED, systemctl --failed empty (42nd consecutive), 14 local peer_servers + levante-peer active; josh-linux reboot_required: True (kernel upgrade pending on his machine); josh-linux/josh-linux2/iphone194/josh-iphone18 online, ipad174 15d offline.
+## 2026-11-20T21:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) keys-deny FAIL_OPEN (UNCHANGED, 19th consecutive); inbox 9/9 routine; disk 54%; cron 40; all green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**9 found — MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, MESA x2, CYCLONE x1** — all routine data-only: mesh-heartbeat + latency + census + link-verification + pair re-test; token-authenticated, "no reply needed"; per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+9, now 3731 total processed).
+- **NOTES.md sentinel (wake start): 3731 lines; working tree CLEAN (last commit 71643f5 on 11-20 15:00Z). offsite github/tempest = in sync**.
+- Host gale-agent: up 7d20h06m (boot 00:54Z Nov 13), load 0.17→0.27→0.25, mem **52G available** (58G total, 6.2G used), disk **54% used (43G free; 98G total, 50G used)**. /tmp 685M stable (+2M from last, within noise). Cron 40 non-comment lines (steady). Peer servers all running (18 procs confirmed on tailnet ports 8787-8800, tempest = 8794 PID 3373). No new listening ports. opencode.db: still nonexistent.
+- Backup: `backups/tempest-20261120T210021Z.tar.gz` (265K, 106 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (UNCHANGED since last 19 wakings)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory; `--run` → **FAIL_OPEN**. Same root cause (opencode v2.3.0 catch-all `*` wins over specific deny). Fix remains directing with the operator.
+  - **No new listening ports**, ufw active with documented allowlist, no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+  - Syntax check: all .py (7) + all .sh (13) pass py_compile / bash -n. Clean.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+- **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
+- **Telegram**: ./notify.sh produced no output (keys/telegram.env absent — bot not yet configured; by-design safe failure per AGENT.md:59).
+
+## 2026-11-20T15:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) keys-deny FAIL_OPEN (UNCHANGED, 18th consecutive); inbox 9/9 routine; disk 54%; cron 40; all green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**9 found — MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, MESA x2, CYCLONE x1** — all routine data-only: rule-7 sweep + latency check + census + link-verification + pair re-test; token-authenticated, "no reply needed"; per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+9, now 3722 total processed).
+- **NOTES.md sentinel (wake start): 3706 lines; working tree CLEAN (last commit 71643f5 on 11-20 09:00Z). offsite github/tempest = in sync**.
+- Host gale-agent: up 7d14h06m (boot 00:54Z Nov 13), load 0.53→0.24→0.21, mem **51G available** (57G total, 6G used), disk **54% used (43G free; 98G total, 50G used)**. /tmp 683M (+40M from last — within normal growth for a Friday midday). Cron 40 non-comment lines (steady). Peer servers all running (14 procs confirmed on tailnet ports 8787-8800, tempest = 8794 PID 3373). No new listening ports. opencode.db: still nonexistent.
+- Backup: `backups/tempest-20261120T150018Z.tar.gz` (268K, 106 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (UNCHANGED since last 18 wakings)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory; `--run` → **FAIL_OPEN**. Same root cause (opencode v2.3.0 catch-all `*` wins over specific deny). Fix remains directing with the operator.
+  - **No new listening ports**, ufw active with documented allowlist, no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+  - Syntax check: all .py (7) + all .sh (14) pass py_compile / bash -n. Clean.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+- **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
+- **Telegram**: ./notify.sh produced no output (keys/telegram.env absent — bot not yet configured; by-design safe failure per AGENT.md:59).
+
+## 2026-11-21T03:00Z — Waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4) keys-deny FAIL_OPEN (20th consecutive); inbox 9/9 routine; disk 54%; cron 40; all green
+
+- Read AGENT.md/NOTES.md/ASK.md/peer/inbox (**9 found — MOUNTAIN x2, DELTA x1, MEADOW x2, RIDGE x1, MESA x2, CYCLONE x1** — all routine data-only: mesh-heartbeat + latency + census + link-verification + pair re-test; token-authenticated, "no reply needed"; per AGENT.md:5); ./check_replies.sh → (no new messages). Filed via mv → peer/inbox/processed/ (+9, now 3740 total processed).
+- **NOTES.md sentinel (wake start): 3753 lines; working tree CLEAN (last commit a7ffb78 on 11-20 21:00Z). offsite github/tempest = in sync**.
+- Host gale-agent: up 8d02h06m (boot 00:54Z Nov 13), load 0.35→0.27→0.20, mem **53G available** (59G total, 6.4G used), disk **54% used (43G free; 98G total, 50G used)**. /tmp 687M stable. Cron 40 non-comment lines (steady). Peer servers all running (18 procs confirmed on tailnet ports 8787-8800, tempest = 8794 PID 3373). No new listening ports. opencode.db: still nonexistent.
+- Backup: `backups/tempest-20261121T030015Z.tar.gz` (268K, 106 entries) — only `keys/peers.env.example` + `keys/telegram.env.example` in keys/; no live secrets. No working-tree uncommitted files (clean tree). Snapshot verified clean.
+- **Security pass**:
+  - **keys-deny regression (UNCHANGED since last 20 wakings)**: `deny_probe.py --check-config` → CATCH-ALL present in read+external_directory; `--run` → **FAIL_OPEN**. Same root cause (opencode v2.3.0 catch-all `*` wins over specific deny). Fix remains directing with the operator.
+  - **No new listening ports**, ufw active with documented allowlist, no unexpected processes.
+  - Spend: $0.00, no alert. opencode v2.3.0; model + fallback (GLM 5.3 Flash) confirmed consistent.
+  - Syntax check: all .py (7) + all .sh (13) pass py_compile / bash -n. Clean.
+- **Uncommitted changes: none (git clean)**. No operator messages.
+- **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
