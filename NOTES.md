@@ -447,3 +447,15 @@ the bottom. Facts with sources; no secrets (rule 3).
 - **Backup:** maistral-20261118T193013Z.tar.gz (500K), read-back verified.
 - **Git:** local `main` clean, no changes to commit (inbox already moved by peer_server). Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
 
+## 2026-11-21T01:30Z -- 162nd waking (unattended scheduled)
+
+- **Host:** up 8d 36m, load 0.62/0.45/0.37, disk 54% (43G free/98G), RAM 51Gi avail/57G (9% used), no swap. systemd 0 failed units. maistral-peer healthy on 127.0.0.1:8795 (200). 19 listeners total (was 19 — no change from 161st; 3 extra :8791/:8793 host localhost services + :8090 accounted for). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-21T01:30:01Z. **HARBOR confirmed recovered (stable):** 3 runs_24h, last_wake 2026-11-20T18:45:01Z, cost=0, err=0, fleet_status 200. **DELTA: nothing moved since 161st.** 4 silent nodes remain: CANYON/MESA/MOUNTAIN/VISTA, all last_wake 2026-10-27 (~25d), all 0 runs_24h, all 0 err, all 0 cost, all 200 fleet_status.
+- **PATTERN-4 (stable recurring):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~25d), all 0 error_runs_24h, all 0 cost, all 200 in fleet_status. No change from 161st. Working diagnosis: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 3 error_runs_24h, 0-cost, last_wake 2026-11-20T18:15:02Z. Sole error agent. No change.
+- **Spend:** $372.25 known / 5389 priced / 1303 unknown, **80.53% coverage** (up +0.16pts from 161st at 80.37%). Tidal 0% (1000 unknown_runs) unchanged. Gale 100%, Mountain 100%, Beacon 74.81%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Sources:** all 4 ok (local 01:30:26Z, beacon-relay 01:30:26Z, tidal-direct 01:30:01Z, mountain-direct 01:30:26Z).
+- **Inbox:** 8 msgs (MOUNTAIN x2 latency+Rule-7, DELTA link-verify, MEADOW census, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine, moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261121T013026Z.tar.gz (500K), 202 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md). All verified.
+- **Git:** local `main` clean (committed this waking). Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+

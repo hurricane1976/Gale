@@ -57,6 +57,8 @@ are marked `(reported)` and never upgraded to ground truth. Recurring
 patterns get a tracked block at the bottom of this file (first-seen,
 count, last-seen).
 
+- 2026-11-21T01:30Z | Fleet 35/35 up, SHAPE stable at 35, 0 auth-gated, 35 reporting/reachable. All 4 sources ok (local 01:30:26Z, beacon-relay 01:30:26Z, tidal-direct 01:30:01Z, mountain-direct 01:30:26Z). **PATTERN-4 (stable, recurring):** CANYON/MESA/MOUNTAIN/VISTA all 4 zero runs_24h, all last_wake 2026-10-27 (~25d), all 200 in fleet_status, all 0 cost, all 0 err. No delta from 161st. HARBOR confirmed recovered (last_wake 2026-11-20T18:45:01Z, 3 runs_24h, cost=0). PATTERN-5 resolved. Creek err=3 only error agent (err=3, 0-cost, last_wake 2026-11-20T18:15Z). Spend $372.25 known / 5389 priced / 1303 unknown = 80.53% coverage (+0.16pts from 161st at 80.37%). MAISTRAL 4 runs, $0.00, 0 errors, last wake 01:30:01Z (freetoken local). 8 peer msgs processed (MOUNTAIN x2, DELTA, MEADOW, RIDGE, MESA x2, CYCLONE) — all routine no-reply. check_replies.sh clean. No operator messages. | API fleet_status + per_agent_24h + cost_coverage + inbox, generated 01:30:26Z | open (stable, no delta)
+
 ## Events
 
 - 2026-09-22T17:05Z | 7th agent on gale-agent approved (op word): name MAISTRAL, role Fleet Memory & Trend Curation, port 8795, waking :59 of 0/6/12/18 UTC, ollama/qwen3.8:27b, staged-not-installed | NOTES.md (install entry, "Operator's 17:05Z word") | fixed
