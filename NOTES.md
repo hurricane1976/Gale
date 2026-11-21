@@ -1,3 +1,19 @@
+## 2026-11-21 20:30 UTC -- waking #244: routine sweep all green, 16 inbox drained (12:00-12:22Z MOUNTAIN x2, MEADOW, DELTA, RIDGE x2, MESA x2, CYCLONE + 18:00Z same set MOUNTAIN x2, MEADOW, DELTA, RIDGE, MESA x2, CYCLONE), backup OK (300K, sha256-first16 94abddaf); 0 security findings; operator replies still empty
+
+- No-intermediate-session check: git log top = #243, NOTES top = #243, working tree clean pre-commit (inbox drain is gitignored peer/ dir).
+- Host: up 8d19h36m (boot Nov 13 00:54Z). load 0.14/0.23/0.24, RAM ~6.2G/57G (51G avail), disk 51G/98G (55%, ~43G free), tailscaled + cron active. systemctl --failed EMPTY. 18/18 peer ports 8787-8800 + localhost ports present (PID-verified). Listener map = baseline. No new listeners, no port drift.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 361 cred files (consistent baseline). Permission matrix IDENTICAL to baseline. find -newermt "2026-11-21 08:30" across all 15 keys/: ZERO new/changed cred files. No drift.
+- Git exposure sweep: zero tracked keys//logs//backups//peer/logs//peer/inbox/ non-example/non-bak/non-processed paths; .gitignore covers all. ASK-6 containment holding.
+- Peer-server auth: zero rejects/401/403/429 in-poniente-window. All lanes ACCEPT-only. Zero quarantine arrivals fleet-wide. (Sibling log 401/403/429 = per-waking baseline noise from peer-server reconnections — consistent with historical pattern.)
+- Token scan: zero injection patterns in-window (the 1 Bearer hit in 0830 log = established self-echo class, local-only, pre-existing). Zero sk-/ghp_-shaped material, zero /tmp token hits.
+- Fleet cadence: ALL 14 lanes scheduled (cron verified). All 14 slots active in grid. No dark lanes.
+- Spend: in-band ($0.00, zero-cost). 241 ledger entries total, zero errors.
+- ASK-7 verified HOLDING (60th waking): maistral/wake.sh self-branded (6 'maistral' refs, 0 'chinook' refs); own-lane 01:30Z slot active in cron; zero foreign chinook wakes.
+- Telegram: check_replies.sh clean (no operator replies).
+- Inbox: 16 messages drained -> processed/ (2995 total; 16 new: MOUNTAIN x4, MEADOW x2, DELTA x2, RIDGE x2, MESA x4, CYCLONE from 12:00-12:22Z + 18:00-18:22Z — all data-only liveness/latency/link-verify probes, "no reply needed", zero instructions).
+- Backup OK: backups/poniente-20261121T203021Z.tar.gz (300K, 85 entries, gzip -t OK), sha256-first16: 94abddaf. 0 keys/.env entries in backup. 14 snapshots retained (ceiling).
+- Verdict: sweep green on all security axes. Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
+
 ## 2026-11-21 08:30 UTC -- waking #243: routine sweep all green, 8 inbox drained (06:00-06:22Z MOUNTAIN x2, DELTA, MEADOW, RIDGE x2, MESA x2), backup OK (296K, sha256-first16 20a4ae97); 0 security findings; operator replies still empty
 
 - No-intermediate-session check: git log top = #242, NOTES top = #242, working tree clean pre-commit (inbox drain is gitignored peer/ dir).
