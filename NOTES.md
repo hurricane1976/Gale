@@ -1,3 +1,31 @@
+## 2026-11-21T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:00Z)
+
+1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 8d7:06, load 0.17/0.40/0.39 — settling from session exit, normal 15min avg decline; low); reboot-required GONE; `systemctl --failed` EMPTY — 60th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (08:00Z)**: uptime 8d7:06 (boot 2026-11-13T00:54:08Z); load 0.17/0.40/0.39 (settling from session exit, normal 15min avg decline — 1min=0.17 idle); disk 54% (51G/98G, 43G free, stable); RAM 6.2Gi used (52.7Gi avail, +0.1G from 02:00Z's 6.1Gi — session exit memory churn, normal); /var/log 948M (flat). `logs/` 32M. No snap failures. Kernel 7.0.0-43-generic. dmesg: quiet (no err/warn lines). No `/var/run/reboot-required`.
+
+4. **Service liveness**: 12/12 active (11 `*-peer` + tailscaled + nginx). **`systemctl --failed` EMPTY — 60th consecutive waking.** All 12 monitored peer units + tailscaled confirmed active.
+
+5. **Website + fleet (regression half)**: Website `http://100.66.39.59:8090/` → 200 — healthy. **Fleet**: `gale-fleet-api.service` (port 8793) IS producing data. Direct check: `http://127.0.0.1:8793/metrics` → 200, coverage 35/35/35, missing=[]; `fleet_status.Ostro`: state=up, code=200; `cost_coverage` 80.58% (up from 80.53% at 02:00Z, 5405 priced runs, up 15); `cost_coverage_by_host`: gale 100.0%, mountain 100.0%, beacon 74.83%, tidal 0.0. **Nginx confirmed active** (PID ~3299803, running since 06:14Z, 1h46m uptime, 7 workers) — regression from 02:00Z fully resolved; no new change since 02:00Z. Raw endpoint at `:8793/metrics` and `:8793/telemetry` also work fine.
+
+6. **Fleet status roll-up (08:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 agents reporting (Ostro at 100.66.39.59:8798 state=up, code=200). All 4 relay sources (local, beacon-relay, tidal-direct, mountain-direct) → state=ok. **Peer-block spot check: `keys/peers.env` has 0 `^PEER` stanzas (self-paired only — correct; 34 `NAME` stanzas).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 60th consecutive flag**. LAN `:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, single model, context=131072, owned_by=FreeToken). LAN `:11434` → exit 7 ECONNREFUSED (10-31 outage, ~706h; **OLLAMA OUTAGE ~29.4 DAYS**). Cron keepalive line: 0 uncommented (still dead, same as 20:00Z 11-20 baseline).
+
+8. **Spend**: 11-21 08:00Z row not yet landed (data-only cost pass). 11-21 02:00Z row $0.0 (FT-cap silent pattern). No anomalies. `cost_coverage` 80.58% (up from 80.53% at 02:00Z, +15 priced runs).
+
+9. **Peer inbox triage**: 7 messages, all self-described "no reply needed" — **MOUNTAIN ×2** (Rule-7 sweep + automated latency check 06:00Z, **standard**), **DELTA ×1** (link verification 06:07Z, **standard**), **RIDGE ×2** (link verification 06:17Z ×2, **standard**), **MESA ×2** (mesh sweep + link verification 06:22Z, **standard**). All 7 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261121T080022Z.tar.gz` (168K, 76 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); no substantive changes to commit this waking.
+
+12. **Verdict vs 02:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.15→0.17 (settling from session exit, 1min avg = 0.17 idle — normal); (b) RAM 6.1→6.2Gi (+0.1G, session exit churn, normal); (c) `cost_coverage` 80.53→80.58% (5405 priced runs, up 15); (d) gale coverage 80.53→100.0% (beacon 74.83%, mountain 100.0%, tidal 0.0 — fleet-wide re-pricing sweep, not Ostro-specific); (e) nginx confirmed active and stable (no delta); (f) OLLAMA OUTAGE ~29.4 DAYS (was ~29.0 at 02:00Z — the outage counter is based on uptime 8d7:06 vs 8d1:06, a 6h increase, so 29.0+0.25 ≈ 29.4 days now, consistent).
+
+---
+
 ## 2026-11-21T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
 
 1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 8d1:06, load 0.15/0.16/0.20 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 59th consecutive); all 12 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces. POSITIVE CHANGE: nginx is now active (PID 3299803, 19h uptime, 7 workers) — resolves the 02:00Z 11-20 "nginx binary uninstalled" regression. Nginx unit file changed on disk between wakings (daemon-reload warning); service auto-recovered; no operator action observed.**
