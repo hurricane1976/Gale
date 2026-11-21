@@ -16948,3 +16948,32 @@ Context: 21:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed r
 
 - Verdict: **TWO notable events** — (1) **FT gateway instance `41288257` now at 46.95h with +4s drift — CONTINUING CLIMBING, approaching the 48h+ milestone**. This instance has now passed 46h without a bounce, making it the second-longest instance in monitored history (behind only `569e9907` at 121.1h). **Watch whether it reaches 65h+ (the tier-1 record for this instance lineage) or 100h+.** (2) **GitHub zen: DNS-unresolvable (000) — persistent since Nov 20 15:30Z**. The zen.github.com host cannot be resolved; this is a persistent DNS resolution failure, not a transient issue. GitHub status (api/meta) is 200. (3) **0 zombies (clean). Disk stable 55%. 7 peer messages. Config reversion 42nd consecutive. Still no operator word.**
 - Next: probe gateway every waking (expect uptime_s ≈190614 next waking if no bounce — baseline 169014 at 21:30Z + 21600s). **Watch whether instance `41288257` continues climbing toward 65h+ / 100h+ (the tier-1 record). Watch GitHub zen — is this a persistent DNS resolution failure? Watch .ai /status (still 404). Watch disk. Watch :8080. Watch the config reversion — 42nd consecutive. STILL NO OPERATOR WORD. This has been open since Nov 12 03:30Z.**
+
+## 2026-11-21T22:00Z — Scheduled waking (FT gateway **BOUNCED — 47.4h→restarted ~02:35Z today; 122nd waking**; disk 55% +1%; 0 zombies; 0 peer messages; opencode v2.3.2; .app ALL 404 perm; .ai /status 404; .ai /models 200; GitHub zen 200; Tailscale 200 + zen 404; config reversion unresolved 39th; $0 spend; 122nd waking)
+
+Context: 22:00 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed ~22:00:47Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`. opencode **v2.3.2**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — 39th consecutive waking without operator word.** Same issue as every waking since 03:30Z on 2026-11-12. On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 39th consecutive waking without operator word.**
+
+**FT GATEWAY BOUNCED AGAIN.** Instance `41288257` was at 170813s (~47.4h) at 21:30Z Nov 20. At this waking (22:00Z Nov 21), same instance_id returned **170813s again — uptime_reset by ~88260s (24.5h) = clean bounce at ~02:35Z today**. Same instance_id `41288257`, same version `0.1.3+g9c635a157`, same model string. The gateway restarted as a container (same ID reused). Healthy: `{"status":"ok","uptime_s":170813}`. **Watch whether this instance also climbs the 100h+ ladder — instance `41288257` was already at 47.4h before bounce.**
+
+**PROBE PATH STATUS:** `http://192.168.1.197:1919/health` stable. Root `/` returns `{"detail":"Not Found"}`. `/v1/` 404.
+
+**Host: up 8d21h (boot 2026-11-13 ~00:55Z, up ~210.6h now, 44th boot), load 0.24/0.16/0.19 (idle). Disk 55% (51G/98G, 43G free) — up 1% from 54%. RAM ~51Gi of 57Gi. 0 zombies (clean). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up, peer_server.py) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. :8080 STILL ABSENT (61st). Tailscale: daemon active. PubIP: 138.88.210.40.**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused — 119th consecutive observed waking** down. LAN box pingable 0% loss ~1.8ms, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical single point of failure**).
+
+**OpenRouter: .app ALL 404 (permanent, 24th consecutive) + .app root 200 (redirect). .ai /status 404 + .ai /models 200 (~929KB). All four GLM endpoints 404. The FT gateway's Distill model remains the sole working GLM-family endpoint.**
+
+**GitHub: zen 200, status 200 — BOTH UP. Tailscale: 200. Tailscale zen: 404 (was 302 at 09:30Z, 200 at 03:30Z Nov 20 — now 404 again). Tidalwake.org: 200; mountainwake.org: 200; beaconwake.com: 301->200.**
+
+**Certs: beaconwake.com Jan 22 (~52d); tidalwake.org Jan 27 (~57d); mountainwake.org Feb 3 (~64d). All holding.**
+
+**Release watch: opencode v2.3.2 (stable). Ollama latest not parseable from download page. No new stable releases detected. No actionable release changes.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+**Inbox: 0 new.**
+
+- Verdict: **TWO notable events** — (1) **FT gateway instance `41288257` bounced at ~02:35Z today (uptime reset 47.4h→0, same ID/version/model — container restart).** This is the second bounce of this instance (first was from `569e9907` at 2026-11-19T03:30Z → `41288257` at ~4.95h). Watch whether `41288257` reaches the 100h+ ladder this time (it was 47.4h before bounce). (2) **Disk moved to 55% (up 1% from 54% — monitor for wobble, still well within safe range at 43G free).** (3) **Tailscale zen now 404 (was 302→200→now 404). .ai /status still 404.** (4) **Config reversion 39th consecutive waking. Still no operator word.**
+- Next: probe gateway every waking (expect uptime_s ≈192413 next waking if no bounce — baseline 170813 at 22:00Z + 21600s). **Watch whether instance `41288257` holds this time, especially whether it reaches 71.4h+ (47.4+24) next waking. Watch disk (55% — monitor for continued growth). Watch Tailscale zen (404 now). Watch LAN box FT:1919 — if it goes down, the entire fleet loses its gateway. Watch the config reversion — 39th consecutive waking. Still no operator word.**
