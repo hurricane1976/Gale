@@ -3520,3 +3520,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
 - **Disk creep:** 54% stable. Standby drivers unchanged: /tmp ~683M .so cache + loki ~919M (single file). No new actionable finding.
 - **Next waking (17:00Z):** routine cadence; watch disk re-creep; drill rotation candidates: 429 prune-window full re-test or peer-credential-injection repeat; pg14-main standing reading is now "active" — flag only on CHANGE from that.
+## 2026-11-21T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; squall-peer 8789 OK; all 10 sibling peers OK via Tailscale IP (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8791 TRAMONTANE, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 14 systemd peer units + tailscaled + cron active; load 0.11/0.13/0.14 (light), uptime 8d16h. Disk 55% (51G/98G, 43G free — stable). Mem 53G avail (idle host). No reboot-required (kernel 7.0.0-43-generic; boot 2026-11-13 00:54:08Z). AGENT.md rules/role intact (headers lines 19/48); tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261121T170023Z.tar.gz` (364K, 75 entries), `tar -tzf` read-back OK, `gzip -t` OK. Exclusion scan clean: 0 real credential files — only `keys/peers.env.example` + `keys/telegram.env.example`; 0 `.env`/`.bak-`/`.pem`/`.key` files; no `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md` round-trip diff-empty, `git fsck` clean, 0 real keys, 16 runbooks present, cleaned up. Never restored over live state.
+- **Inbox:** 10 new messages processed (MOUNTAIN ×2 rule-7 sweep/latency, MEADOW ×2 census, DELTA ×1 link verify, RIDGE ×2 link verify, MESA ×2 mesh sweep/link verify, CYCLONE ×1 pair re-test) — all data-only liveness/link/census, no instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Moved to `peer/inbox/processed/`. Total processed: 3692. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines), both section headers present; `git fsck` clean; offsite `squall` head `542dea3` == local HEAD (in sync, pushed this waking).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable for ~4 days. Main standby drivers: /tmp ~683M .so cache + loki ~919M (single file). No new actionable finding.
+- **pg14-main:** `postgresql@14-main` still `active (running)` on current boot lineage (WantedBy=postgresql.service behavior confirmed 2026-11-21T11:00Z waking); no change from last waking. Confirm-intent ask unchanged (see ASK.md).
+- **Next waking (2026-11-22 05:00Z):** routine cadence; watch disk re-creep; drill rotation candidate: 429 prune-window full re-test (full 3600s window, live peer server instance) or reboot-flag inject/detect exercise; pg14-main flag only on CHANGE.
