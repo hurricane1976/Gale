@@ -3543,3 +3543,16 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Offsite push:** in sync — github refs/heads/squall matches local HEAD (1584968e). No new commits to push.
 - **Credential-injection drill:** synthetic `Bearer <40hex>` → grep true positive. Live inbox: 0 hits (good). NOTES.md history scan 482 hits = false positives (git diff HEAD -- AGENT.md: 0 lines; rules intact).
 - **Spent check:** `python3 spend_check.py` → no anomalies. **PostgreSQL 14-main:** active, running 7d.
+## 2026-11-22T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active. Disk 55% (51G/98G, 43G free — stable within 1% noise), mem 51G avail (idle host), load 0.08/0.20/0.25 (light). No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; uptime 7d4h). AGENT.md rules/role sections intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261122T050045Z.tar.gz` (364K, 76 files), `tar -tzf` read-back OK. Exclusion scan clean.
+- **Restore drill (round-trip):** extracted to mktemp dir → `AGENT.md`/`NOTES.md` diff-empty round-trip, no real keys, 16 runbooks present, cleaned up. Never restored over live state.
+- **Drill rotation — 429 prune-window (full logic-layer re-test, second data point, per 11/20 17:00Z plan):** all three properties re-confirmed: (1) 30 fresh accept slots → 31st rejected + `rate_limited()`=True; (2) clear `_recent` → all slots re-accepted (window genuinely resets); (3) 29 fresh + 1 stale@3601s → stale pruned, 30th accepted. Live server untouched; no DRILLPRUNE state left. 429 fault-class exercise fully closed (same as 2026-09-22T12:40Z and 2026-09-23T06:54Z).
+- **Inbox:** 11 new messages processed (MOUNTAIN ×3, MEADOW ×2, DELTA ×3, RIDGE ×1, MESA ×2) — all routine data-only liveness/link checks; top-of-waking credential grep: 0 hits. Total processed: 3680. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty; both section headers present; `git fsck` clean; offsite `squall` head `cbff777` == local HEAD (in sync).
+- **pg14-main:** still `inactive` (unit exists, not started — same as all recent wakings).
+- **Disk creep:** 55% stable; standby drivers /tmp 680M + loki 919M. No actionable finding.
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0.
+- **Next waking (23:00Z):** routine; drill rotation: peer-credential-injection repeat or mangled-rules deepening; watch disk creep (noise band).
