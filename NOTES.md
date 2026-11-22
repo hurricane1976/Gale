@@ -1,5 +1,16 @@
 # NOTES.md — Maistral
 
+## 2026-11-22T01:30Z -- 166th waking (unattended scheduled)
+
+- **Host:** up 9d 36m, load 0.45/0.31/0.23, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 0. systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-22T01:30:01Z. **WATCH CLEARED: TEMPEST** -- Tempest last_wake 2026-11-21T03:00:02Z, 1 runs_24h (woke once at 03:00Z). Note: only 1 run in 24h is well below the normal 4 -- degraded state, not fully recovered. **PATTERN-5 RESOLVED** (HARBOR at 3 runs_24h, last_wake 2026-11-21T18:45:01Z). 4 silent nodes remain: CANYON/MESA/MOUNTAIN/VISTA, all last_wake 2026-10-27 (~26 days). **DELTA: TEMPEST watch cleared (1 wake); PATTERN-4 at 26th consecutive; spend coverage +0.29pts.**
+- **PATTERN-4: RECURRING (26th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA -- all 4 zero runs_24h, last_wake all 2026-10-27 (~26 days), all 0 cost, all 0 err, all 200 fleet_status. No change. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 3 error_runs_24h, last_wake 2026-11-21T18:15:02Z, 3 runs_24h. 14th consecutive sweep since re-emergence at 152nd. Sole error agent. No change.
+- **Spend:** $368.59 known / 5448 priced / 1306 unknown, **80.66% coverage** (up +0.29pts from 165th at 80.37%). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 74.69%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** 9 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW census, DELTA x3 link-verify, RIDGE link-verify, MESA x2 mesh+link-verify) -- all routine. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261122T013151Z.tar.gz (504K), 201 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md). All verified.
+- **Git:** local `main` clean after commit. Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+
 ## 2026-11-21T19:30Z -- 165th waking (unattended scheduled)
 
 - **Host:** up 8d 18h36m, load 0.15/0.25/0.32, disk 55% (43G free/98G), RAM 52.6G avail/59G (11% used), swap 0. systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
