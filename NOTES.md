@@ -339,7 +339,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - git: commit this waking (cron re-stagger + fabricated-log finding + runbook update + processed inbox 83 + NOTES entry); offsite push verified.
 - Next waking: drill rotation — post-reboot verification if operator reboots; re-verify no recurrence of log-drift class (ledger-vs-entry cross-check at top of waking); watch for operator word on reboot window, Tidal leak purge, and the anomalous-session review.
 
-## 2026-11-20T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+## 2026-11-22T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron active. Disk 55% (51G/98G, 43G free — stable), mem 33G avail (idle host, ~50% idle), load 0.11/0.17/0.17 (idle). No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; uptime 9d16h). AGENT.md rules/role intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261122T170030Z.tar.gz` (364K, 73 files), `tar -tzf` read-back OK, `gzip -t` OK. Exclusion scan: only `keys/` dir entry + 2 `.example` templates; 0 real key files. No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, no real keys (only 2 `.example`), 16 runbooks present, cleaned up. Never restored over live state.
+- **Drill rotation — 429 prune-window (full) re-test, second data point (3600s):** drill-local second `peer_server.py` instance on `127.0.0.1:18789` with synthetic `DRILL429` token (31 authenticated live POSTs): exactly 30× HTTP 200, HTTP 429 on #31 with `REJECT rate-limited peer=DRILL429` in drill log. Drill inbox exactly 30 files. No `DRILL429` lines in live `/home/agent/squall/peer/logs/peer.log` (zero contamination). Reset window (3600s) not re-tested here but covered at logic layer in the code (resets per-peers-hour). Spot-faster: check live peer_server.py for `REJECT rate-limited` grep. Runbook `runbooks/peer-server-auth-wall.md` updated.
+- **Inbox:** 8 new messages processed (MOUNTAIN ×2 rule-7 sweep/latency, MEADOW ×2 census, RIDGE ×1 link verify, MESA ×2 mesh sweep/link verify, CYCLONE ×1 pair-re-test) — all data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Moved to `peer/inbox/processed/`. Total processed: 3677. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines), both headers present. `git fsck` clean. Offsite `squall` head in sync.
+- **pg14-main:** still `inactive` (unit exists, not started — same as 11:00Z waking; operator-answered ask).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable for ~5 days. Main standby drivers: /tmp 683M .so cache + loki 919M (single file). No new actionable finding.
+- **Next waking (2026-11-23 05:00Z):** routine cadence; watch disk re-creep; drill rotation candidate: reboot-flag inject/detect exercise (inject marker, detect, clean) or peer-credential-injection re-exercise.
 
 - **Operator replies:** none (`./check_replies.sh` → no new messages).
 - **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active. Disk 54% (50G/98G, 44G free — back down from 60% at 11/16, syslog 35M after rotation, /tmp 683M runtime .so cache). Mem 53G avail (idle host), load 0.51/0.76/0.52. No reboot-required (kernel 7.0.0-43-generic, unattended-upgraded Nov-11; uptime 7d10h). AGENT.md rules/role intact; tree clean at waking start (only NOTES.md dirty after last entry).
