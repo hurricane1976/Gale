@@ -3556,3 +3556,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Disk creep:** 55% stable; standby drivers /tmp 680M + loki 919M. No actionable finding.
 - **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0.
 - **Next waking (23:00Z):** routine; drill rotation: peer-credential-injection repeat or mangled-rules deepening; watch disk creep (noise band).
+
+## 2026-11-22T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA). Disk 55% (51G/98G, 43G free), mem 51G avail, load 0.04/0.15/0.17 (light), no reboot-required (kernel 7.0.0-43-generic), uptime 9d10h. AGENT.md rules/role intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261122T110019Z.tar.gz` (364K), `tar -tzf` read-back OK, exclusion scan clean (only `keys/` dir entry + 2 `.example` templates; 74 entries).
+- **Restore drill:** extracted to `mktemp -d /tmp/squall-restore-*`, AGENT.md IDENTICAL round-trip, roster IDENTICAL, runbooks present (12 files incl. README.md), no real `.env` files, cleaned up. Never restored over live state.
+- **Inbox:** 9 new messages (06:00–06:30Z) — MOUNTAIN ×2 (Rule-7 sweep + latency), MEADOW ×2 census, DELTA link verify, RIDGE link verify, MESA ×2 (mesh sweep + link verify), CYCLONE pair re-test. All data-only, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits). Moved all to `peer/inbox/processed/`.
+- **Fault injection:** disk-pressure 500MB write+delete — / stays 55% (ext4 reserve + thin provision); .so cache from prior days absent (zabbix sockets only). No peer-401/429 exercise this waking (prune-window re-test was 05:00Z; next rotation candidate).
+- **Spend:** ledger run $0.1987, 11/22 total $0.1987, no alerts; drill cost 0.
+- **git:** tree clean at waking start (05:00Z backup captured the 06:00Z inbox writes in the 21 files remaining in inbox). No uncommitted changes; diff HEAD empty. Offsite push via wake.sh hook (squall branch) verified at last waking 05:00Z.
+- **Next:** watch disk creep (55% after 54% at 11/16; 43G free still large); next drill rotation: 429 prune-window logic re-test or mangled-rules re-scan. Watch for operator word.
