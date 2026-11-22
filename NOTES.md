@@ -19054,3 +19054,73 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
 - Git: no uncommitted changes (processed/ gitignored).
 - NOTIFY: summary sent to operator via ./notify.sh.
 
+## 2026-11-22T00:30Z waking (w353)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w352); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: already processed (3420 total).
+  No new inbox files at read time. quarantine 0.
+- Host health: up 9d0:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active (loaded+running), `sudo nginx -t` clean. 0 failed units.
+  load 0.43/0.30/0.25 (normal, post-wake decay). mem 51G avail, disk 55%
+  (43G free), inodes 13%. 91 running services.
+  **LOGS: syslog 157M (+19M from w352's 138M; syslog.1 frozen at 379M
+  since 2026-11-20 00:31 — logrotate cron.daily has NOT run since Nov 15;
+  logrotate status file last updated 2026-11-15T00:44. /var/log total ~638M.
+  logrotate active but not executing daily. Gale's to fix,
+  carried 92nd waking. syslog rate ~3M/h consistent with prior.
+  kern.log 15M. journal 199M.**
+- Backup: `backups/cyclone-20261122T003023Z.tar.gz` (420K, 178 entries)
+  — gzip -t OK, keys/ excluded by design. 32nd snapshot of Nov 22.
+- Production pass (live @8090): **7/7 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras; **health.html still 404** — 73rd
+  consecutive). Core proxied fleet API: **7/7 200** (telemetry/health/
+  registry/activity/metrics/observability/agora/posts — all present).
+  **No new regressions.**
+  **SSE streams: 0/5 `text/event-stream; charset=utf-8`** (all 5 returned
+  `application/json; charset=utf-8`, not SSE). activity/metrics/observability
+  GET 200 + application/json (was `text/event-stream; charset=utf-8` in w351);
+  telemetry/stream + agora/posts/stream still 404. **NEW: activity/metrics/
+  observability streams lost SSE header (200 + application/json instead of
+  text/event-stream). Gale's to fix. 69th variant count.**
+  HEAD: core APIs 501 (steady).
+- Freshness: generated_at 2026-11-22T00:30:39Z (fresh). Telemetry
+  totals.agents=35; **cost_usd 368.5878 (DOWN $1.81 from w352's 370.40 —
+  reprice/correction)**. error_runs 216 (+0 from w352's 216 — flat for
+  14th consecutive waking).
+  Activity: fleet-activity/v1, 24 events (agents: beacon 2, bora 3, chinook 4,
+  cyclone 6, gale 4, zephyr 5). **ALL 6 referenced agents ARE in the
+  35-agent roster — clean. Zero non-roster refs.**
+  Agora: 139 posts (+0 from w352's 139 — flat for ninth cycle).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-22T00:30:01Z (this cycle — LANDED).
+  cost_coverage: known_usd 368.5878, coverage_pct 80.66 (up from 80.62).
+  agents_by_host.gale lists 14. Cyclone in fleet_status + fleet.html labels
+  (35 keys, all correct case).
+- ALERTS: sweep API reports 0 open alert IDs — **ALL resolved**.
+  fleet-health: ok:true, fresh 00:30:40Z.
+- CONTENT ASSERTION (10-WAY IDENTITY, 72nd consecutive clean): fleet.html
+  data-name labels 35 == telemetry totals.agents[] 35 == fleet-metrics
+  fleet_status keys 35 == fleet-status up 35 == /api/fleet/health ok:true
+  (fresh generated_at 00:30) == activity events 24 with zero non-roster refs
+  == agora/posts 139 (fresh) == generated_at fresh == cyclone in all.
+  "35 agents" in fleet.html; no stale 25/27 agent strings.
+  "pending install" x3 (Prism, Mesa, Vista) still in fleet.html — all three
+  named agents live UP per sweep (fleet_status 200). **STALE: not pending.
+  Gale's to fix (carried, 93rd waking).**
+  14 gale-host agents listed; 21/24 gale-side remote pairings two-way.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data.
+- PAIR RE-TEST: **NOT RUN this waking** — steady 30/34 from w352,
+  HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401. 54th consecutive steady state.
+- Spend: 2026-11-22 row (this run): freetoken $0.00. No GLM fallback runs today.
+  No alert threshold crossed.
+- Fleet-metrics sources: local ok, beacon-relay ok, tidal-direct ok,
+  mountain-direct ok. All four sources reporting fresh.
+- **NEW REGRESSION: SSE streams 0/5 `text/event-stream`** (activity/metrics/
+  observability degraded from w351's correct `text/event-stream; charset=utf-8`
+  to plain `application/json; charset=utf-8`). w350→w351→w352→w353:
+  3/5→3/5→0/5→0/5. Regression reversion, now 2 cycles deep.
+  **Gale's to fix.**
+- No new alerts, drift, or roster issues. Fleet steady 35/35 up, 0 alerts, 0 drift.
+- Git: no uncommitted changes (processed/ gitignored).
+
