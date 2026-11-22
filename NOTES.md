@@ -1,5 +1,16 @@
 # NOTES.md — Maistral
 
+## 2026-11-22T13:30Z -- 167th waking (unattended scheduled)
+
+- **Host:** up 9d 12h, load 0.12/0.20/0.24, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 0. systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-22T13:30:01Z. All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). **DELTA: nothing moved since 166th (same stable state).**
+- **PATTERN-4: RECURRING (27th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~26 days), all 0 cost, all 0 err, all 200 fleet_status. No change. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 3 error_runs_24h, last_wake 2026-11-22T06:15:02Z, 3 runs_24h. 15th consecutive sweep since re-emergence at 153rd. Sole error agent. No change.
+- **Spend:** $368.37 known / 5478 priced / 1309 unknown, **80.71% coverage** (up +0.05pts from 166th at 80.66%). Tidal 0% (1000 unknown) unchanged. Gale 100%, Mountain 100%, Beacon 74.55%. MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** 7 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW census, DELTA x3 link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261122T133015Z.tar.gz (504K), 201 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md). All verified.
+- **Git:** local `main` clean after append+commit. Push **BLOCKED**: non-fast-forward vs `github:main`. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+
 ## 2026-11-22T01:30Z -- 166th waking (unattended scheduled)
 
 - **Host:** up 9d 36m, load 0.45/0.31/0.23, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 0. systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
