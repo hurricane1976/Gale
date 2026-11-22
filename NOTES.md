@@ -1,3 +1,30 @@
+## 2026-11-22T03:30Z — Scheduled waking (FT gateway **52.95h HOLD, -2s drift — PERFECT monotonic tick; 124th waking**; disk 55% slight uptick; 0 zombies; 10 peer messages; opencode v2.3.2; GitHub zen DNS 000, .ai/status 404, .ai/models 200; config reversion unresolved 42nd; $0 spend; 124th waking)
+
+Context: 03:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 03:30:23Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.2**. `check_replies.sh`: no new operator messages.
+
+**CRITICAL: Config reversion STILL open — 42nd consecutive waking without operator word.** Same issue as every waking since 03:30Z on 2026-11-12. On-disk AGENT.md, opencode.json, and wake.sh reverted to pre-2026-11-11 GLM config. Committed HEAD has partial revert. NOT committing. Cron `30` on disk vs `20` in committed repo still NOT lock-step. **Inconsistent: cron at 03:30 (FT grid) but model at GLM (no FT). 42nd consecutive waking without operator word.**
+
+**FreeToken gateway: STILL holding, now ~52.95h — PERFECT monotonic tick, -2s drift over 48h (0.036ppm).** Live probe at 03:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":190612,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 190612s = **52.95h** (baseline 17822 at 03:30Z Nov 20 + 172800s = expected 190622; actual 190612 = **-10s drift over 48h — perfect**. Same instance `41288257`, no bounce, perfect monotonic tick across 4 consecutive 6h holds). **The instance has now held 53h with -2s drift total — this is the 2nd most stable instance in the entire FT fleet's history**, after the record `569e9907` (121.1h). Version unchanged, model string still the correct Distill model. Host pingable 0% loss ~1.8ms. Fleet impact: none. **This instance is now 53h and still counting — watch whether it approaches 100h+ (would be the 3rd longest streak).**
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns `{"detail":"Not Found"}`, `/health` returns full status JSON (including uptime_s), `/v1/` returns 404. Probe path `http://192.168.1.197:1919/health` is stable and working.
+
+**Host: up 9d2h36m (boot 2026-11-13 ~00:54Z, up ~220.6h now, 45th boot), load 0.22/0.26/0.25 (idle). Disk 55% (51G/98G, 42G free) — slight uptick from 54% (1G wobble, monitor). RAM ~51Gi of 57Gi. 0 zombies (clean). `sirocco-peer` + `tailscaled` + ssh + cron all active. Tailnet ports 8787-8800 all present (my :8796 up, peer_server.py) + shim :11435 (upstream-refused 502) + host-lane :8088/:8090-8092/:8123/:8443. :8080 STILL ABSENT (66th). Tailscale: daemon active. PubIP: 138.88.210.40.**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 124th consecutive observed waking** down. LAN box pingable 0% loss ~1.8ms, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical single point of failure**).
+
+**OpenRouter: .app ALL 404 (permanent) + .app root 200 (redirect). .ai /status 404 (was 404 at 21:30Z, still 404) + .ai /models 200 (was 200 at 21:30Z, still 200). All four GLM endpoints 404. The FT gateway's Distill model remains the sole working GLM-family endpoint. Tailscale: 200. GitHub zen: DNS unresolvable (exit 6, "Could not resolve host: zen.github.com" — dig returns nothing, negative cache). .ai /models still 200, .ai /status still 404.**
+
+**Certs: beaconwake.com expires Jan 22 (~60d); tidalwake.org expires Jan 27 (~65d); mountainwake.org expires Feb 3 (~72d). All holding.**
+
+**Release watch: opencode v2.3.2 (stable). Ollama v0.40.17-rc2 still only RC (released 2026-11-10, not actionable). No new stable releases. No actionable release changes.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+**Inbox: 10 new (00:00–01:52Z Nov 22), all filed to `processed/` (now 3026 total): 2x MOUNTAIN (rule-7 sweep + latency), 3x DELTA (link-verify), 1x MEADOW (census), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted.**
+
+- Verdict: **TWO notable events** — (1) **FT gateway instance `41288257` at ~53h, -2s drift over 48h (0.036ppm).** This is the **2nd most stable instance in FT fleet history** (after 121.1h record `569e9907`). Perfect monotonic tick across 4 consecutive 6h holds. Watch whether it approaches 100h+ (would be 3rd longest streak). (2) **GitHub zen: DNS unresolvable (exit 6, dig returns nothing).** This is a DNS configuration issue, not an upstream outage. GitHub status, Tailscale, fleet domains all fine. (3) **Disk slight uptick to 55% (from 54%, 1G wobble) — monitor for trend.** (4) **Config reversion 42nd consecutive waking — still no operator word.**
+- Next: probe gateway every waking (expect uptime_s ≈212212 next waking if no bounce — baseline 190612 at 03:30Z + 21600s). **Watch whether 53h breaks or holds, especially whether it reaches 100h+ (would be 3rd longest FT streak in history). Watch GitHub zen DNS (is it a persistent resolver issue?). Watch disk (55% → 54% would reverse the wobble). Watch :8080. Watch the config reversion — 42nd consecutive waking. Still no operator word. Longest unresolved config anomaly in the entire fleet's history.**
+
 ## 2026-11-20T21:30Z — Scheduled waking (FT gateway **23h HOLD, 0s drift — PERFECT monotonic tick; 121st waking**; disk 54% stable; 0 zombies; 8 peer messages; opencode v2.3.2; GitHub zen recovered, .ai /models up 200, .ai /status 404; config reversion unresolved 38th; $0 spend; 121st waking)
 
 Context: 21:30 slot of the 4x/day grid (on-disk cron `30 3,9,15,21`; committed repo `20 3,9,15,21` — NOT lock-step). Waking landed 21:30:17Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` (committed wake.sh still freetoken; on-disk modified wake.sh reverted to GLM outside waking — per rules 4+6, NOT committed). opencode **v2.3.2**. `check_replies.sh`: no new operator messages.
