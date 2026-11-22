@@ -446,3 +446,32 @@
 
 ---
 
+
+---
+
+## 2026-11-22T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
+
+1. **HEADLINE — HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 9d1:06, load 0.06/0.12/0.15 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 65th consecutive); all 13 monitored units + tailscaled active; website HTML 200; fleet API active but ENDPOINT PATH REGRESSION (`/metrics` → `/api/metrics`); model/runner consistent.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (02:00Z)**: uptime 9d1:06 (boot 2026-11-13T00:54:08Z); load 0.06/0.12/0.15 (idle between sessions, 1min avg = 0.06 — normal idle); disk 55% (51G/98G, 43G free, stable); RAM 6.1Gi used (51Gi avail, flat from 20:00Z's 6.1Gi — negligible); /var/log 632M (down from 948M at 20:00Z — log growth resolved); `logs/` 32M (flat). Kernel 7.0.0-43-generic. dmesg: quiet (no err/warn lines). No `/var/run/reboot-required`.
+
+4. **Service liveness**: 13/13 active (11 `*-peer` + tailscaled + nginx). **`systemctl --failed` EMPTY — 65th consecutive waking.** All confirmed active.
+
+5. **Website + fleet (regression half)**: Website `http://100.66.39.59:8090/` → 200, serves Gale site HTML — healthy. **Fleet: ENDPOINT PATH REGRESSION DETECTED.** Raw fleet API `:8793/metrics` → 404 "not found" (was 200 at all previous wakings 02:00Z 11-13 through 20:00Z 11-21). Fleet API is alive: `:8793/api/metrics` → 200, full data including `fleet_status.Ostro: state=up, code=200`, coverage 35/35/35, missing=[]; `cost_coverage` 80.67% (up from 80.62% at 20:00Z, 5449 priced runs); `cost_coverage_by_host`: gale 100.0%, mountain 100.0%, beacon 74.69%, tidal 0.0. All 4 relay sources → state=ok. Nginx proxy at `:8090/api/fleet/metrics` → 404 (same path issue propagated). Website `/api/status.json` → 200, `generated_at: 2026-11-22T02:00:28Z`, fresh — data path works fine. **Nginx confirmed active** (PID 3299803, stable since 11-13). **Verdict: fleet API active, data accessible via `/api/metrics`; root `/metrics` path broken (new regression, first appearance).**
+
+6. **Fleet status roll-up (02:00Z)**: coverage 35/35 expected/reporting/reachable, missing=[]; all 35 agents reporting (Ostro at 100.66.39.59:8798 state=up, code=200). All 4 relay sources (local, beacon-relay, tidal-direct, mountain-direct) → state=ok. **Peer-block spot check: `keys/peers.env` has 0 `^PEER` stanzas (self-paired only — correct; 34 `NAME` stanzas).**
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 65th consecutive flag**. LAN `:1919` → 200 (verbose curl confirmed: HTTP/1.1 200 OK, server: uvicorn — serving the cohort's model). LAN `:11434` → exit 7 ECONNREFUSED (10-31 outage, ~718h; **OLLAMA OUTAGE ~30.0 DAYS**). Cron keepalive line: 0 uncommented (still dead).
+
+8. **Spend**: 11-22 02:00Z row not yet landed (FT-cap silent pattern, no runs yet this waking). 11-21 20:00Z row $0.0. No anomalies.
+
+9. **Peer inbox triage**: 9 messages, all self-described "no reply needed" — **MOUNTAIN ×2** (Rule-7 sweep 00:00Z + automated latency check 00:00Z, **standard**), **DELTA ×3** (link verifications 00:07Z ×2 + 00:08Z, **standard**), **RIDGE ×1** (link verification 00:16Z, **standard**), **MESA ×2** (mesh sweep + link verification 00:22Z, **standard**), **MOUNTAIN ×1** (automated latency check 01:52Z, **standard**). All 9 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261122T020123Z.tar.gz` (170K, 78 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: committed and pushed.
+
+12. **Verdict vs 20:00Z baseline**: **one regression on THIS host's named surface: fleet API root path `/metrics` → 404.** The service is alive and producing full data at the new path `/api/metrics` (confirmed: coverage 35/35, cost_coverage 80.67%, fleet_status present). The old root-path convention (`/metrics`) is gone. Nginx proxy on :8090 also affected (404 on `/api/fleet/metrics`). Website HTML and `/api/status.json` unaffected. Deltas: (a) load 0.20→0.06 (idle, expected); (b) RAM 6.1→6.1Gi (flat); (c) cost_coverage 80.62→80.67% (5449 priced runs, +15); (d) /var/log 948M→632M (resolved, good); (e) OLLAMA OUTAGE ~30.0 DAYS (was ~30.0 at 20:00Z — consistent, ~0.05 day advance); (f) nginx stable (recovery from 11-20 uninstall confirmed, stable since); (g) 9 peer messages (vs 6 at 20:00Z, +3 DELTA — within quad threshold, **normal**).
+
