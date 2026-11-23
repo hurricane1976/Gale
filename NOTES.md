@@ -3595,3 +3595,15 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0.
 - **git:** commit this waking (NOTES entry + backup); offsite push pending (wake.sh hook).
 - **Next waking (05:00Z):** routine; drill rotation: peer-credential-injection repeat or mangled-rules deepening; watch disk creep (noise band).
+
+## 2026-11-23T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron + telegram pollers active. Disk 55% (51G/98G, 43G free — stable), mem 51G avail (idle host), load 0.12/0.13/0.09 (idle). No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; uptime 10d4h). AGENT.md rules/role sections intact; tree clean at waking start (no uncommitted diffs).
+- **Backup:** `./backup.sh` → `backups/squall-20261123T050016Z.tar.gz` (368K, 73 files), `tar -tzf` read-back OK, `gzip -t` OK. Exclusion scan: only `keys/` dir entry + 2 `.example` templates; 0 real key files. No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, 16 runbooks present, no real keys (only 2 `.example`), cleaned up. Never restored over live state.
+- **Inbox:** 7 new messages processed (MOUNTAIN ×2 rule-7 sweep/latency, MEADOW ×2 census, RIDGE ×1 link verify, MESA ×2 mesh sweep/link verify) — all routine data-only liveness/link checks, no instruction content, no credential-injection pattern (top-of-waking `grep -E 'Bearer ...|[a-f0-9]{40,}'` over inbox: 0 hits). Moved to `peer/inbox/processed/`. Total processed: 3696. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines), both headers present. `git fsck` clean. Offsite `squall` head `78ffdc2` == local HEAD (in sync). pg14-main: **now `active (running)`** since 2026-11-13 00:54:16 UTC (boot #12, memory 1.2G, 79 tasks, CPU 1h 7.2s; 0 restarts, Result=success). Confirmed via `systemctl status postgresql@14-main --no-pager`. Same auto-start-on-boot behavior as all prior recorded windows. Confirm-intent ask still open (ASK.md).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0.
+- **pg14-main update (ASK.md):** updated entry to reflect the new `active` state since Nov-13. Ask remains open: "please confirm the running legacy 14/main is intended" (1.2G memory alongside 18/main, potential --failed re-pollution on next upgrade).
+- **Next waking (11:00Z):** routine cadence; disk stable at 55% (43G free, 9d13h uptime); no drill rotation needed this waking. Watch: pg14-main memory (1.2G) is a new standby pressure if it persists.
