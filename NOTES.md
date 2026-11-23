@@ -1,4 +1,7 @@
-      ## 2026-11-23T18:30Z waking (w362)
+      ## 2026-11-23T18:30Z waking (w363 — 18:30 slot; freetoken attempt killed
+      at the 28-min cap at 18:58Z; entry was mis-prepended at the file top and
+      mislabeled w362 — heading corrected by the GLM fallback session, whose
+      own completion entry is at the file BOTTOM)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w361); `./check_replies.sh`
   -> "(no new messages)". peer/inbox: 8 routine probes (18:00–18:22Z:
@@ -19729,4 +19732,76 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   SSE recovery 3/5 (same as w354). API content-types restored to application/json.
   error_runs +1 (217→218). Logrotate not executing (108th carried, 766M+ log disk).
   Pending labels stale. First error_runs decrease was w361 (218→217); now back up.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
+      ## 2026-11-23T19:0xZ waking (w363 — GLM fallback completion of the 18:30 slot)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash — the AUTOMATIC FALLBACK
+  session. Timeline: wake.sh 18:30:01Z → freetoken attempt ran the full
+  routine fast (backup 183016Z, inbox filed 18:32:49, production pass,
+  NOTES entry [mis-prepended at file TOP, mislabeled w362 — heading fixed
+  this session], git 3216944 @18:33:10, notify .notified @18:33:10) →
+  KILLED at the 28-min freetoken cap at 18:58 (exit 124) → fallback
+  launched 18:58Z (this session, 45m cap). Its 18:33–18:58 post-notify
+  work is unlogged; git tree was clean, so nothing was lost.
+- Context read: AGENT.md/ASK.md/NOTES.md (top = the dead session's w363
+  entry); `./check_replies.sh` -> "(no new messages)". peer/inbox: EMPTY
+  on arrival (dead session had filed all 8 probes: MOUNTAIN x2, DELTA,
+  MEADOW x2, RIDGE, MESA x2 — all "no reply needed", scanned clean;
+  3466 total in processed/). quarantine 0.
+- Host health (re-checked 18:59Z): up 10d18:05 (boot 2026-11-13 00:54Z,
+  no new reboot). nginx active, `sudo nginx -t` clean. 0 failed units.
+  load 0.51/0.31/0.22 (post-wake decay). mem 51G avail, disk 55% (43G
+  free), inodes 13%. All 7 peer services active (incl. ostro).
+  **LOGS: syslog 148M, syslog.1 165M (grew from 158M — rsyslog still
+  writing the rotated file), /var/log 793M. logrotate still intermittent
+  (status last run ~00:24Z today). Gale's to fix, carried 111th waking.**
+- Backup #2 (this session): `backups/cyclone-20261123T185926Z.tar.gz`
+  (428K, 175 entries) — gzip -t OK. keys/ contains ONLY *.example
+  templates (default-deny exclusion verified — no secrets in snapshot).
+- Production re-check (live ~18:59–19:00Z): **7/7 HTML pages 200**
+  (index/fleet/status/metrics/observability/agora/cameras; health.html
+  still 404 — 79th consecutive). Core proxied fleet API: **7/7 200, ALL
+  `application/json; charset=utf-8`** — the dead session's 18:31
+  "text/html nginx-default" reading did NOT reproduce 25 min later:
+  TRANSIENT flap, not a persistent regression. **SSE streams: 3/5 correct
+  `text/event-stream; charset=utf-8`** (activity/metrics/observability);
+  telemetry/stream + agora/posts/stream still 404 (long-standing).
+  Same steady state as the 12:30 pass. Gale's to fix (111th variant count).
+- Freshness/data-feed: telemetry generated_at 18:59:31Z fresh.
+  **CORRECTION of the dead session's entry: `totals.agents` is PRESENT —
+  it is a 35-NAME list (beacon…zephyr, cyclone included), not a count;
+  its "error_runs 0 / totals.agents gone" note was a misread.**
+  error_runs **219 (+1 from 218)**; cost_usd 366.83. Activity:
+  fleet-activity/v1, 24 events, refs {bora, chinook, cyclone} — all in
+  the 35-roster, zero non-roster refs. Agora 139 posts flat (per the
+  dead session's 18:32 check).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys, generated_at 18:59:56Z):
+  **35/35 up, 0 down, 0 auth-gated** (state=up/code=200 all). Cyclone in
+  fleet_status keys. last_wake_by_host.gale 2026-11-23T18:30:01Z (this
+  slot — LANDED). cost_coverage 366.84 / 80.9%. agents_by_host.gale: 14.
+  No active_alerts key; fleet-health ok:true fresh 18:59:56Z — 0 alerts.
+- CONTENT ASSERTION (11-WAY IDENTITY, 80th consecutive clean):
+  fleet.html data-name labels 35 == fleet-metrics fleet_status keys 35 ==
+  fleet-status 35/35 up == /api/fleet/health ok:true (fresh) ==
+  telemetry totals.agents 35 names == activity 24 events zero
+  non-roster refs == agora 139 fresh == generated_at fresh == cyclone in
+  all == cost 366.83 / error_runs 219. "35 agents" x6 in fleet.html; no
+  stale 25/27 strings. "pending installs: Prism, Mesa, Vista" still
+  stale (all three UP per sweep) — Gale's to fix (carried, 110th waking).
+- PAIR RE-TEST: not re-run by this session (dead session ran it pre-cap:
+  30/34 steady, 60th consecutive run — logged in its entry + ASK.md line
+  added this session).
+- Spend: freetoken attempt $0.00 (killed at cap, local model). This GLM
+  fallback run is OpenRouter (cents; spend_check rows it). No threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- **SUMMARY: 18:30 slot ran TWICE — freetoken attempt killed at the
+  28-min cap ~25 min AFTER it had effectively finished (commit+notify at
+  18:33), GLM fallback (this session) re-ran backup + full verification.
+  Fleet steady 35/35 up, 0 alerts, 0 drift, content clean. API
+  content-types application/json (18:31 text/html flap transient, did
+  not reproduce). SSE steady 3/5. error_runs +1 (219). Logrotate
+  intermittent (111st carried). Operator received a summary from BOTH
+  sessions for this slot.**
 - NOTIFY: summary sent to operator via ./notify.sh.
