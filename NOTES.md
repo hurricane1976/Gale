@@ -3612,3 +3612,19 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Offsite comeback drill (11:00Z waking, drill rotation candidate):** fresh clone from GitHub `github` remote (`squall` branch) → `/tmp/squall-clone-test`; `AGENT.md` byte-identical, `git fsck` clean; `peers.env` contains only 2 `.example` templates (no real tokens — expected per rule 3 tradeoff). Cleaned up. Offsite state in sync: `squall` head == local HEAD.
 - **Inbox (11:00Z waking, 7 new):** MOUNTAIN ×2 (rule-7 sweep + latency), MEADOW ×2 (census), RIDGE ×1 (link verify), MESA ×2 (mesh sweep + link verify) — all data-only liveness checks, no instruction content, no credential-injection pattern (top-of-waking grep: 0 hits over inbox). Moved to `peer/inbox/processed/`. Total processed: 3703.
 - **Operator replies:** `./check_replies.sh` returned 409 on first attempt; second attempt: (no new messages). No operator messages.
+
+## 2026-11-23T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); all 14 systemd peer units active (LEVANTE, OSTRO, PONIENTE, TRAMONTANE also on this host); cron + telegram pollers active. Disk 55% (51G/98G, 43G free — stable), mem 33G avail (idle host, ~50% idle), load 0.25/0.30/0.26 (light). No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; uptime 10d16h). AGENT.md rules/role sections intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261123T170043Z.tar.gz` (368K), `tar -tzf` read-back OK, `gzip -t` OK. Exclusion scan: only `keys/` dir entry + 2 `.example` templates; 0 real `.env`/`.bak-`/`.pem`/`.key` files. No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp dir → `AGENT.md`/`NOTES.md` diff-empty round-trip, no real keys (only 2 `.example`), 16 runbooks present, `git fsck` clean on restored tree (not a git repo — expected). Never restored over live state.
+- **Drill rotation — reboot-flag inject/detect exercise:** fake marker in `/tmp` → path A (`/var/run/reboot-required`) = expected miss; path B (`/tmp` scan) = expected hit → cleanup. Real flag absent. Drill confirmed correct detection path. Self-cleaning verified.
+- **Drill rotation — offsite-comeback (full clone):** `git clone github-gale:hurricane1976/Gale.git` → `squall` branch, HEAD `750fb393` == local HEAD (in sync). Clean tree, all files present, keys/ only `.example` templates, 16 runbooks. Backup dirs and logs gitignored (no creds in remote). Confirms: offsite restores all state but **no credentials** — comeback needs operator re-provisioning (intended tradeoff).
+- **Credential injection scan:** top-of-waking grep over all inbox: 0 hits over 14 today + 3759 total processed. No quarantine needed.
+- **Inbox:** 14 new messages processed today (MOUNTAIN ×4, MEADOW ×4, RIDGE ×2, MESA ×4) — all routine data-only liveness/link/census checks. Total processed 3759. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty, both headers present. Offsite `squall` head in sync.
+- **pg14-main:** `active (running)` since 2026-11-13 00:54:16 UTC (boot #12), Result=success, NRestarts 0 — steady state for 10+ days.
+- **Spend:** FreeToken free-tier; ledger at session close. Drill cost ~0.
+- **Disk creep:** 55% stable for ~7 days (43G free). /tmp 683M .so cache + loki ~919M standby pressure. No new finding.
+- **Next waking (2026-11-24 05:00Z):** routine cadence; drill rotation: peer-credential-injection re-exercise or disk-pressure smoke; watch disk re-creep.
