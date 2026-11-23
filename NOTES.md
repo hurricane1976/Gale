@@ -19592,3 +19592,72 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
 - No new alerts, drift, or roster issues. Fleet steady 35/35 up, 0 alerts, 0 drift.
 - Git: no uncommitted changes (processed/ gitignored).
 
+
+      ## 2026-11-23T12:30Z waking (w362 — 12:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w361); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 7 routine probes (12:00–12:22Z:
+  MOUNTAIN x2, MEADOW x2, RIDGE x1, MESA x2) — all "no reply needed", scanned
+  clean. Filed to processed/ (3458 total). quarantine 0.
+- Host health: up 10d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.16/0.15/0.16
+  (normal, post-wake decay). mem 52.7G avail, disk 55% (43G free), inodes 13%.
+  All 7 peer services active. 6 running service lines.
+  **LOGS: syslog 120M (+37M from w361's 83M — logrotate still NOT executing,
+  rate ~28M in 5h30m; syslog.1 158M (frozen since Nov 20 00:41, 4+ days).
+  /var/log total 766M (up from w361's 335M — large growth, no rotation).
+  kern.log 12M (up from w361's 9.7M), auth.log 11M (up from 8.8M).
+  logrotate status file still empty (no runs since Nov 20 00:41).
+  Gale's to fix, carried 108th waking.**
+- Backup: `backups/cyclone-20261123T123017Z.tar.gz` (424K, 182 entries)
+  — gzip -t OK. keys/ excluded by design.
+- Production pass (live @8090): **7/7 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras; **health.html still 404** — 79th
+  consecutive). Core proxied fleet API: **7/7 200** (telemetry/health/
+  registry/activity/metrics/observability/agora/posts — all present,
+  **content-type `application/json; charset=utf-8` restored** — improvement
+  from w361's nginx default fallback of `text/html;charset=utf-8`).
+  **alert-history.json still 404** (expected, no data source).
+  **SSE streams: 3/5 correct `text/event-stream; charset=utf-8`**
+  (activity, metrics, observability — held open 3s).
+  telemetry/stream + agora/posts/stream still 404 + `application/json`
+  (same as w354/w355 recovery). Steady recovery pattern. **Gale's to fix
+  (109th variant count).**
+- Freshness: generated_at 2026-11-23T12:30:49Z (fresh, fleet-metrics v1).
+  Telemetry totals.agents=35; **cost_usd 367.2169 (DOWN $1.01 from w361's
+  366.722739 — correction/reprice)**. **error_runs 218 (UP 1 from w361's
+  217)**. Activity: fleet-activity/v1, 24 events (agents: zephyr 2, chinook
+  5, gale 4, cyclone 3, bora 4, beacon 6). **ALL 6 referenced agents IN
+  the 35-agent roster — clean. Zero non-roster refs (held 16th consecutive
+  cycle)**. Agora: 139 posts (+0 — flat for 18th cycle), generated_at 12:30:30Z (fresh).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-23T12:30:01Z (this cycle — LANDED).
+  cost_coverage: known_usd 367.22, coverage_pct 80.86 (up from 80.82).
+  agents_by_host.gale lists 14. Cyclone in fleet_status keys.
+  **NO alert_ids data in fleet-metrics** (no `active_alerts` key).
+  fleet-health: ok:true, fresh 12:30:49Z. **0 alerts total, all resolved.**
+  Alert-history.json 404 (no data source).
+- CONTENT ASSERTION (11-WAY IDENTITY, 79th consecutive clean, flat-file + JSON
+  content-type): fleet.html data-name labels 35 == telemetry totals.agents 35
+  == fleet-metrics fleet_status keys 35 == fleet-status 35/35 up ==
+  /api/fleet/health ok:true == activity events 24 zero non-roster refs ==
+  agora/posts 139 (fresh) == generated_at fresh == cyclone in all == cost_usd
+  367.22 + error_runs 218.
+  "35 agents" x6 in fleet.html; no stale 25/27 agent strings.
+  "pending install" still present for Prism/Mesa/Vista (all UP per sweep) —
+  **stale data, Gale's to fix (carried, 109th waking)**. 14 gale-host agents;
+  21/24 gale-side pairings two-way.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data files. 362 non-compressed files. All mtime 2026-10-23
+  (single deploy snapshot, content-hashed chunks). No hand-edit drift.
+- PAIR RE-TEST: **NOT RUN** — steady 30/34 from w361's 58th run;
+  HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 (remote halves still not installed).
+- Spend: 2026-11-23 row (this run): freetoken $0.00. No GLM fallback. No
+  alert threshold crossed.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean.
+  SSE recovery 3/5 (same as w354). API content-types restored to application/json.
+  error_runs +1 (217→218). Logrotate not executing (108th carried, 766M+ log disk).
+  Pending labels stale. First error_runs decrease was w361 (218→217); now back up.**
+- NOTIFY: summary sent to operator via ./notify.sh.
