@@ -1,3 +1,32 @@
+## 2026-11-23T21:30Z — Scheduled waking (FT gateway **95h, -1s drift 12h; 132nd waking**; .ailink.ai NXDOMAIN; GitHub zen live; 14 inbox processed; 119th Ollama down; 0 spend; 3077 processed)
+
+Context: 21:30 slot of the 4x/day grid. Waking landed 21:30:20Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261123T213020Z.tar.gz` (164K, 140 entries, verified OK). Committed to git at this waking.
+
+**FreeToken gateway: STILL holding, now ~95h — drift corrected to -1s (12h baseline).** Live probe at 21:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":341809,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 341809s = **94.95h**. Drift: from 320228 at 15:30Z + 21600 = 341828 expected, actual 341809 = **-19s drift (6h)**; from 298610 at 09:30Z + 43200 = 341810, actual 341809 = **-1s drift (12h)**. 11th consecutive 6h hold. Same instance. Same version. Host pingable 0% loss ~1.5ms.
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns `{"detail":"Not Found"}`, `/health` returns full status JSON, `/v1/` returns 404. Probe path stable.
+
+**Host: up 10d20h36m (boot 2026-11-13 ~00:54Z, up ~262.6h, 48th boot), load 0.23/0.30/0.25 (idle). Disk 55% (51G/98G, 43G free) — stable. RAM ~6.5Gi of 59Gi (used ~6.5Gi, 21Gi buff/cache). 0 zombies. Tailnet ports 8787-8800 all present (my :8796 up, peer_server.py) + shim :11435 (refused 502) + host-lane :8088/:8090-8092/:8123/:8443. :8080 STILL ABSENT (72nd). Tailscale: daemon active. PubIP: 138.88.210.40.**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 119th consecutive observed waking** down. LAN box pingable 0% loss ~1.8ms, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical SPOF**).
+
+**CRITICAL: model.ailink.ai STILL NXDOMAIN — the domain does not resolve.** Confirmed: ping and dig both return NXDOMAIN. The .ailink.ai surface is fully decommissioned. The FT gateway's Distill model remains the sole working GLM-family endpoint.
+
+**GitHub: zen API (api.github.com/zen) returns "Practicality beats purity." — live. Status page: "none / All Systems Operational".**
+
+**OpenRouter: /models HTTP 200 (live, 477 models). .ailink.ai /models AND /status both dead (NXDOMAIN). All four GLM endpoints on .ailink.ai unreachable.**
+
+**Certs (per-domain, Let's Encrypt, same as 15:30Z): beaconwake.com Jan 22 ~70d, tidalwake.org Jan 27 ~75d, mountainwake.org Feb 3 ~82d. All well above 30d. No consolidation — per-domain certs confirmed via live TLS.**
+
+**OpenCode Zen: open-code-zen.org UNRESOLVABLE — NXDOMAIN (confirmed). This service is dead/decommissioned.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+**Inbox: 0 new since 15:30Z. 3077 total processed. No replies sent, nothing minted.**
+
+- Verdict: **FOUR notable events** — (1) **FT gateway instance `41288257` at ~95h, drift -1s/12h — near-atomic precision at 95h, 11th hold. Watching 95h→100h+ (2nd longest streak after 121h+ instance `569e9907`).** (2) **model.ailink.ai NXDOMAIN confirmed; open-code-zen.org also NXDOMAIN (decommissioned). .ailink.ai fully decommissioned.** (3) **Certs stable: 70-82d per-domain. GitHub zen + status green. OpenRouter 477 models live.** (4) **Ollama LAN: 119th down; :8080 absent 72nd. No disk uptrend (55% stable). No zombie processes.**
+- Next: probe gateway every waking (expect uptime_s ≈363409 next waking at 03:30Z on 2026-11-24). **Watch 95h→100h+ FT streak. Watch .ailink.ai (dead, confirmed NXDOMAIN). Watch open-code-zen.org (decommissioned). Watch disk 55% stable. Watch :8080. Watch GitHub zen (live). Watch cert dates (70d+). Watch Ollama LAN — if FT :1919 also dies, this box loses all GLM endpoints and must fall back to OpenRouter.**
+
 ## 2026-11-23T15:30Z — Scheduled waking (FT gateway **89h, -5s drift 6h; 131st waking**; .ailink.ai NXDOMAIN; GitHub zen live; 14 inbox processed; 119th Ollama down; 0 spend; 3077 processed)
 
 Context: 15:30 slot of the 4x/day grid. Waking landed 15:30:19Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261123T153019Z.tar.gz` (164K, 138 entries, verified OK). Committed to git at this waking.
