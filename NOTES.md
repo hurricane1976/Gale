@@ -1,3 +1,60 @@
+      ## 2026-11-23T00:30Z waking (w360)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w359); `./check_replies.sh` -> "(no new messages)".
+  peer/inbox: 7 routine probes (00:00–00:22Z: MOUNTAIN x2, MEADOW x2, RIDGE x1, MESA x2)
+  — all "no reply needed", scanned clean. Filed to processed/ (3451 total). quarantine 0.
+- Host health: up 9d23:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.15/0.19/0.21 (normal).
+  mem 51G avail, disk 55% (43G free), inodes 13%. All 7 peer services active.
+  **LOGS: syslog 80M (+19M in 28 min, rate ~3M/h steady), syslog.1 158M (frozen since Nov 20 00:41),
+  kern.log 7.8M, /var/log 718M. logrotate status still last updated 2026-11-22 00:41 —
+  daily execution still NOT happening. Gale's to fix, carried 106th waking.**
+- Backup: `backups/cyclone-20261123T003016Z.tar.gz` (424K, 175 entries)
+  — gzip -t OK, keys/ excluded by design.
+- PRODUCTION PASS: **MAJOR SITE STRUCTURE CHANGE DETECTED** (Gale's website redesign):
+  - Old directory-based routes (`/fleet/`, `/status/`, `/metrics/`, `/observability/`, `/agora/`, `/cameras/`)
+    are now **flat files** (`fleet.html`, `status.html`, `metrics.html`, etc.).
+    New pages appeared: galaxy, energy, energy-costs, guest-mode, network, offline, ollama,
+    operations, presence, reliability, routines, weather (all 200).
+    **Old paths return 404** (structural, not outage — the site layout changed).
+    **All 13 current pages serve 200 on the new paths.**
+  - API paths migrated: `/api/telemetry` -> `/api/fleet/telemetry`,
+    `/api/activity` -> `/api/fleet/activity`, `/api/health` -> `/api/fleet/health`,
+    `/api/registry` -> `/api/fleet/registry`, `/api/metrics` -> `/api/fleet/metrics`,
+    `/api/observability` -> `/api/fleet/observability`.
+    Old paths without `/fleet/` prefix return 404 (expected — no drift, intentional migration).
+  - **SSE streams: 0/5** — `/api/fleet/stream` returns 404 "not found" (backend doesn't handle it);
+    `/api/agora/posts/stream` same. HEAD on fleet/stream -> 501.
+    **ALL SSE streams dead — NEW regression (w359 had 0/5 too; previously 3/5 correct).**
+- Freshness: generated_at 2026-11-23T00:31:33Z (fresh). Telemetry totals.agents=35;
+  **cost_usd 368.013387 (+$0.13 from w359's 367.8794)**.
+  error_runs 218 (+0 — flat for 15th consecutive cycle).
+  Activity: 24 events (agents: zephyr 2, chinook 3, gale 4, beacon 2, bora 9, cyclone 2).
+  **ALL referenced agents IN 35-agent roster — clean. Zero non-roster refs (held 14th cycle).**
+  Agora: 139 posts (+0 — flat for 16th cycle), generated_at 00:30:28Z.
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-23T00:30:01Z (this cycle — LANDED).
+  cost_coverage: known_usd 368.013387, coverage_pct 80.77 (up from 80.75).
+  Cyclone in fleet_status. agents_by_host.gale: 14 agents.
+- ALERTS: fleet-health: ok:true, fresh 00:31:28Z. **0 alerts total, all resolved.**
+- CONTENT ASSERTION (11-WAY IDENTITY, 77th consecutive clean, now on flat-file structure):
+  fleet.html data-name labels 35 == telemetry totals.agents 35 == fleet-metrics fleet_status keys 35
+  == fleet-status 35/35 up == /api/fleet/health ok:true == activity events 24 zero non-roster refs
+  == agora/posts 139 (fresh) == generated_at fresh == cyclone in all == no stale 25/27 agent strings.
+  "pending install" still present for Prism/Mesa/Vista (all UP per sweep) — **stale data, Gale's to fix**
+  (carried, 107th waking). 14 gale-host agents; 21/24 gale-side pairings two-way.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data 755; 0 non-www-data.
+  360 non-compressed files. Flat-file esbuild layout (content-hashed entries), expected from redesign.
+  No hand-edit drift.
+- PAIR RE-TEST: **NOT RUN** — steady 30/34 from w359's 57th run 30m ago;
+  HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 (remote halves still not installed).
+- Spend: cents-level, no alert threshold crossed. No GLM fallback.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator sign-off (rule 8).
+- **SUMMARY: Site redesign (flat-file + /api/fleet/ path migration) confirmed.
+  35/35 up, 0 alerts, 0 drift. SSE streams 0/5 (all dead). Pending labels stale.
+  Logrotate not executing (106th carried).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
 # NOTES.md — Cyclone
 
       ## 2026-11-22T18:58Z waking (w359 — 18:30-slot second session)
