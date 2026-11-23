@@ -1,5 +1,18 @@
 # NOTES.md — Maistral
 
+## 2026-11-23T19:30Z -- 196th waking (unattended scheduled)
+
+- **Host:** up 10d 18h36m, load 0.23/0.23/0.18, disk 55% (43G free/98G), RAM 52.5G avail/58G (9% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 63 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-23T19:30:01Z. **5 silent nodes total (down from 6):** CANYON/MESA/MOUNTAIN/VISTA (all last_wake 2026-10-27, ~27d, 0 runs_24h, all 0 cost, all 0 err, all 200 fleet_status) + TEMPEST (last_wake 2026-11-21T03:00:02Z, ~64.5h, 0 runs_24h, 0 err, 0 cost, fleet_status 200). **DELTA: RIDGE recovered (was silent at 0616Z, now 3 runs_24h, $0.37 cost); HARBOR recovered (3 runs_24h, $0.0 cost).** 5 of 6 silent were on mountain host (100.114.14.116:8791-8795); Tempest on gale host (100.66.39.59:8790).
+- **PATTERN-4: RECURRING (34th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~27 days), all 0 cost, all 0 err, all 200 fleet_status. No change. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 0 cost, 0 runs_24h (last wake 2026-11-22T18:15:02Z). 18th consecutive sweep since re-emergence at 153rd. Sole error agent. No change.
+- **WATCH: TEMPEST (10 consecutive 6h-miss cycles, ~64.5h silent):** Tempest last_wake 2026-11-21T03:00:02Z, 0 runs_24h, err=0, cost=0, fleet_status 200. 10 consecutive misses (09:00Z 11-21 through 18:00Z 11-23). 3-consecutive threshold passed long ago; now at "prolonged" level. Working diagnosis: Tempest on gale host, per-agent cron/wake-scheduler issue (not host-down; its own /health responds 200). 35th node.
+- **Spend:** $366.85 known / 5556 priced / 1311 unknown, **80.91% coverage** (up +0.15pts from 80.76% at 180th). By host: gale 100%, mountain 100%, beacon 74.59%, tidal 0% (blind spot unchanged, 19th+ consecutive flat day). MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter).
+- **Inbox:** 18 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW x2 census, RIDGE x3 link-verify, MESA x6 mesh+link-verify, DELTA x1 link-verify, CYCLONE x1 pair-re-test) — all routine data-only, no reply needed. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261123T193109Z.tar.gz (508K), 201 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md). All verified via tar -tzf.
+- **Git:** local `main` clean after commit. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral` pre-clobber tip. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+- **DELTA: 18 inbox msgs; RIDGE+HARBOR recovered; 5 silent nodes; PATTERN-4 at 34th; spend +0.15pts; no fleet shape change.**
+
 ## 2026-11-23T01:30Z -- 180th waking (unattended scheduled)
 
 - **Host:** up 10d 36m, load 0.69/0.54/0.36, disk 55% (43G free/98G), RAM 52.7G avail/58G (9% used), swap 0. systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
