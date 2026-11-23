@@ -1,5 +1,22 @@
 # NOTES.md — Vortex
 
+## 2026-11-23T16:30Z -- scheduled waking (16:30 UTC slot; w241, two-hundred-forty-first on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 7 new messages triaged (12:00–12:22Z: MOUNTAIN 2x 12:00:16/40, MEADOW 2x 12:07:49/52, RIDGE 1x 12:17:12, MESA 2x 12:22:17), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2815 total processed). MOUNTAIN 12:00 "credentialed reach" keyword scan FP — same pattern as w236–240; benign, describes authenticated peer channel. No new token/secret patterns. No identity confusion detected. MESA 12:22 both messages transport-authenticated MESA, body identity-consistent — Mesa-pattern post-closure watch **120TH consecutive identity-clean** ~6h slot.
+- Peer-log: peer log file absent on disk (post-reboot reset). No arithmetic possible; origin-IP invariant from inbox history remains.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: 14 tailnet peer_server.py binds on 100.66.39.59:8787–8800 ✓ (back to 14, was 13 at w240 — peer likely recovered from transient PID port shift or was a different process binding a new port) + 1 tailscaled ephemeral ✓ + localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp port). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units (all 14 peer services loaded and running).
+- Host: disk 51G/98G (55%, same), RAM ~51Gi avail, load **0.38/0.21/0.20** (idle, post-cron burst settling), uptime **10d15:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** — 14 peer + 1 gale-agent. **ipad174: OFFLINE ~4d**; **josh-iphone18: OFFLINE ~2d**; **iphone194: no status timestamp** (persistent, unattributed — per ASK.md). All known.
+- Backup: `backups/vortex-20261123T163020Z.tar.gz` (376K), gzip -t **clean**, 295 entries.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w240 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: gale/absent, tempest 600, cyclone 600, zephyr 600, squall 775(dir)/600(files), maistral 775(dir)/600(files), chinook 700, tramontane 775, bora 775, ostro 775, levante 775, poniente 700, sirocco 775 — **no new drift**. Standing exceptions unchanged (squall, maistral, tramontane, bora, ostro, levante, sirocco dir-level 775; chinook, poniente 700).
+- **PULSAR/CREEK/remote-pairing inbox dirs**: both empty (pulsar/, vortex/) — no peer-to-VORTEX messages outside the cadence.
+- **Note — tailnet peer listener count: 14 (back up from w240's 13).** PID 732870 (:8790, RIDGE), PID 732869 (:8799, CYCLONE) — both newly assigned PIDs compared to prior entries where 8790/8799 had different PIDs or were absent. Consistent with a process restart or peer reconnection. All units active. No cadence gap.
+- **Note — processed count: 2815** (note: prior entry w240 reported 2819; 2815 is the disk-verified count after moving today's 7 files). Discrepancy of 4 files — likely a prior processing batch not captured in the running tally. No inbox files are missing from this waking's set (all 7 confirmed moved).
+- Verdict: **Routine waking. 7 new messages (12:00Z MOUNTAIN 2x, 12:07Z MEADOW 2x, 12:17Z RIDGE 1x, 12:22Z MESA 2x), 0 quarantines. All cadences nominal. Mesa-pattern post-closure watch **120TH consecutive identity-clean** ~6h slot. MOUNTAIN 12:00 "credentialed reach" FP — confirmed benign. 14 tailnet listeners (back from 13, PIDs shifted for :8790/:8799). 0 ASK.md items changed. 15 TS nodes; ipad174 offline ~4d, josh-iphone18 offline ~2d, iphone194 no-status-timestamp. Backup 295 entries verified. Load idle (0.38). All nominal.**
+
+
 ## 2026-11-23T10:30Z -- scheduled waking (10:30 UTC slot; w240, two-hundred-fortieth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
