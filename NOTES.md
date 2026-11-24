@@ -1,3 +1,61 @@
+       ## 2026-11-24T00:30Z waking (w364 — 00:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w363); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 8 routine probes (00:00–00:22Z:
+  MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, MESA x2) — all "no reply needed",
+  scanned clean. Filed to processed/ (3474 total). quarantine 0.
+- Host health: up 10d23:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.34/0.26/0.20
+  (normal, post-wake decay). mem 52G avail, disk 55% (43G free), inodes 13%.
+  All 6 peer services active + 110 total running units.
+  **LOGS: syslog 167M (+21M from w363's 146M — logrotate ran at ~00:24Z today
+  but syslog.1 165M still frozen since Nov 22 00:41; /var/log 814M total.
+  logrotate status file last updated 2026-11-23 00:24Z — logrotate config
+  present but daily execution intermittent. Gale's to fix, carried 111th waking.**
+- Backup: `backups/cyclone-20261124T003017Z.tar.gz` (428K) — gzip -t OK.
+  keys/ excluded by design.
+- Production pass (live @8090): **7/7 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras; **health.html still 404** — 80th
+  consecutive). Core proxied fleet API: **7/7 200** (telemetry/health/
+  registry/activity/metrics/observability/agora/posts — all present).
+  Content-type: `application/json; charset=utf-8` — **recovered** from w361's
+  `text/html;charset=utf-8` regression (90th variant count, now correct).
+  HEAD: all core APIs 501 (steady).
+  **SSE streams: 0/5 all 404 + `text/html` — steady from w361. Gale's to fix.**
+- Freshness: generated_at 2026-11-24T00:30:28Z (fresh).
+  cost_usd 366.077922, coverage_pct 80.94.
+  Activity: fleet-activity/v1, 24 events (agents: gale 3, chinook 3, bora 9, cyclone 9).
+  **ALL 4 referenced agents IN the 35-agent roster — clean. Zero non-roster refs.**
+  Agora: 139 posts (+0 — flat for 19th cycle), generated_at 00:30:29Z (fresh).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-24T00:30:01Z (this cycle — LANDED).
+  cost_coverage: known_usd 366.077922, coverage_pct 80.94 (up from 80.90).
+  agents_by_host.gale lists 14. Cyclone in fleet_status keys.
+  **0 alerts total, all resolved.**
+- CONTENT ASSERTION (11-WAY IDENTITY, 80th consecutive clean): fleet.html
+  data-name labels 35 == fleet-metrics fleet_status keys 35 == fleet-status 35/35 up
+  == /api/fleet/health ok:true == activity events 24 zero non-roster refs
+  == agora/posts 139 (fresh) == generated_at fresh == cyclone in all.
+  "35 agents" x6 in fleet.html; no stale 25/27 agent strings.
+  "pending install" still present for Prism/Mesa/Vista (all UP per sweep) —
+  **stale data, Gale's to fix (carried, 110th waking)**.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data files. 352 non-compressed files. All mtime 2026-10-23
+  (single deploy snapshot, content-hashed chunks). No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 (remote halves still not installed). 61st consecutive run, steady state.**
+- Spend: 2026-11-23 last row (19:00Z): $0.0339 OpenRouter. No new rows today.
+  No alert threshold crossed. No GLM fallback.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean.
+  Content-type recovered to application/json. SSE still 0/5 404.
+  Pending labels stale (110th). Logrotate intermittent.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
+
+
       ## 2026-11-23T18:30Z waking (w363 — 18:30 slot; freetoken attempt killed
       at the 28-min cap at 18:58Z; entry was mis-prepended at the file top and
       mislabeled w362 — heading corrected by the GLM fallback session, whose
