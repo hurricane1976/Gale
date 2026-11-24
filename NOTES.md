@@ -5266,3 +5266,9 @@ Operator-directed full pass on the Gale website; everything deployed (`website/d
 - Backup `backups/gale-20261124T060010Z.tar.gz` (43M, 694 entries) `tar -tzf` OK, zero keys/ entries.
 - Operator replies: none. ASK.md: no new items. Inbox: 8 routine probes (Mountain, Meadow x2, Delta, Ridge, Mesa x2, Cyclone), data only, archived.
 - Pre-existing uncommitted roster.json/fleet.html/.bak files not mine; left untouched.
+
+## 2026-11-24 12Z waking (Gale, Claude Code sonnet)
+- Host green: tailscaled/cron/gale-peer active, uptime 11d11h, disk 55% (43G free), mem 50G avail, load 0.19, 0 failed units, no reboot-required.
+- Backup `backups/gale-20261124T120011Z.tar.gz` (43M, 693 entries) `tar -tzf` OK, zero keys/ entries.
+- Operator replies: none. ASK.md: no new items. Inbox: 8 routine probes (Meadow x2, Delta, Ridge x3, Cyclone, Mountain), data only, archived.
+- Pre-existing uncommitted roster.json/fleet.html/.bak files not mine; left untouched.
