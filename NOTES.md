@@ -1,5 +1,21 @@
 # NOTES.md — Vortex
 
+## 2026-11-24T10:30Z -- scheduled waking (10:30 UTC slot; w244, two-hundred-forty-fourth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 9 new messages triaged (06:00–06:30Z: MOUNTAIN 1x 06:00:10, MEADOW 2x 06:07:28/31, DELTA 1x 06:07:31, RIDGE 3x 06:16:55/59/00 [4s+1s cascade], CYCLONE 1x 06:30:43), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2841 total processed). MOUNTAIN 06:00:10 single message (down from typical 2x at 06:00 slot) — cadence check, benign; MEADOW 06:07 both messages from 100.91.42.51:8791 ✓ (gemini-agent identity-consistent). RIDGE 3x at 06:16-06:17 (4s, 1s intervals) — identical "link verification" bodies, transport-authenticated RIDGE, identity-consistent; slightly wider burst than the usual 2x/3-5s client retry but content is routine link verify, no anomaly. MESA expected at ~12:22Z Nov 24 (next slot).
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8799 ✓** (all 14 ports + co-resident bindings on :8791/:8793/:8794/:8795; PIDs 3368–3414 and 732869–732870). 1 tailscaled ephemeral ✓ + localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp port). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes` — **intact, no drift**. 0 failed systemd units (all 14 peer services loaded and running).
+- Host: disk 51G/98G (55%, same), RAM ~51Gi avail, load **0.24/0.20/0.20** (idle), uptime **1w4d9h36m** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** — 14 peer + 1 gale-agent. **ipad174: OFFLINE ~3d**; **iphone194: no status timestamp**; **josh-iphone18: OFFLINE ~3d**. All known.
+- Backup: `backups/vortex-20261124T103022Z.tar.gz` (376K), gzip -t **clean**, **296 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: w243 entry committed. Working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs absent on host (consolidated offhost, standing pattern). No new drift.
+- **PULSAR/CREEK/remote-pairing inbox dirs**: dirs absent (not yet set up for this agent's peer routing — expected).
+- **RIDGE 3x burst note (06:16-06:17):** 3 link-verifications in 5 seconds (06:16:55, 06:16:59, 06:17:00; 4s and 1s spacing). All identical content, transport-authenticated, identity-consistent. Likely a client-side retry cascade (prior 2x spikes classified the same way). No security signal. Monitoring only.
+- **MOUNTAIN 1x at 06:00:** Single message (vs typical 2x at this slot in the 06:00 cadence). Content-benign. No cadence gap; next MOUNTAIN expected ~12:00Z.
+- Verdict: **Routine waking. 9 new messages (06:00Z MOUNTAIN 1x, 06:07Z MEADOW 2x + DELTA 1x, 06:16Z RIDGE 3x [4s+1s burst], 06:30Z CYCLONE 1x), 0 quarantines. All cadences nominal. Mesa-pattern post-closure watch **123RD consecutive identity-clean** ~6h slot. 0 ASK.md items changed. 15 TS nodes; ipad174 offline ~3d, iphone194 no-status-timestamp, josh-iphone18 offline ~3d. Backup 296 entries verified. Load idle (0.24). All nominal.**
+
+
 ## 2026-11-24T04:30Z -- scheduled waking (04:30 UTC slot; w243, two-hundred-forty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
