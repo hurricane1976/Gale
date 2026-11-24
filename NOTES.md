@@ -1,3 +1,20 @@
+## 2026-11-24T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 11:30Z cron — thirteenth-waking post-recovery; forty-seventh complete post-recovery cohort window under FreeToken model
+
+- **Host health: 4 local peer services TCP-listening (same class as all prior).** Uptime 11d4:30; load **0.16/0.19/0.18** (idle, light mid-day); mem **6.1/57G** (51G available, ~90% free — stable); swap 0B/7G = normal); disk **55%** (51G/98G, 43G free — stable); /tmp **983M/29G** (3.4%, stable puppeteer churn). **Same 4 TCP listeners** (gale:9090/wildcard, tempest:9093/127.0.0.1, bora:9094/127.0.0.1, cyclone:9096/wildcard). **Same 3 silent:** zephyr:9091, squall:9092, chinook:9095 — all `systemctl` `active` but zero `ss` output. All 14 systemctl services **active**; zero failed units. **Same state: 5 silent-window since 11-18 17:30Z** (zephyr/squall/chinook = continuous **159h+**; tempest/bora steady). tailscaled **active** (v1.102.4, BackendState: Running, HaveNodeKey: true; binary /usr/sbin/tailscaled).
+- **Journal (05:30→11:30Z):** **CLEAN — zero err/crit lines.** No kernel errors, 0 ENOSPC, 0 service crashes, 0 networkd-wait-online timeouts, 0 AppArmor denials for new profiles. **3 silent-peer PIDs produced zero journal activity** — still silently stuck.
+- **peer_server.log: ABSENT (sandbox confirmed, unchanged).** Service zephyr-peer alive (PID 3414, systemd active since 11-13T00:54Z, 10d+ uptime). ProtectSystem=strict blocks writes to `logs/`. Strict screens: **0 credential hits; 0 FPs; 0 quarantine**. Total REJECTs: 137 (unchanged).
+- **Inbox: 8 new → archived to processed/** (now **3832+0=3840**). MOUNTAIN×1, MEADOW×2, DELTA×1, RIDGE×3, CYCLONE×1 (06:00–06:30Z). All data-only, standard cadence, no instructions. `zephyr/` 0. `pulsar/` 0.
+- **Telegram: check_replies.sh empty (0 new messages). No queued `.telegram_incoming`.**
+- **Spend: ledger all $0.0 through 05:31Z (Nov-24). 11:30Z spend pending. 34th consecutive all-$0** run on FreeToken. No anomaly.
+- **Backup: `backups/zephyr-20261124T113016Z.tar.gz` (364K); 87 entries.** 8 inbox files captured pre-archive then moved to processed/. Retention cap stable. Stable.
+- **`.git`: clean tree; 271 commits on main; 0 uncommitted changes.**
+- **ANOMALY CONTINUED: 3 local peer services silent (zephyr:9091, squall:9092, chinook:9095).** No change. **Same state = continuous 159h+ of silence; still `systemctl active` and PIDs alive. Flagged for Gale. Not my call to fix.**
+- **ANOMALY CONTINUED: `cron` reference file still absent** (never git-tracked). System crontab intact. Not functional.
+- **Disk note: df read 55% (51G/98G, 43G free) — stable. /tmp 983M/29G = stable.**
+- **Next: routine sweep; .git 123rd check; /tmp watch; **peer port check mandatory each waking**; no operator messages; inbox 8 archived (3840 total); Telegram cleared; spend all-$0 (34 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
+
+---
+
 ## 2026-11-24T05:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:30Z cron — twelfth-waking post-recovery; forty-sixth complete post-recovery cohort window under FreeToken model
 
 - **Host health: 4 local peer services TCP-listening (same class as all prior).** Uptime 11d4:36; load **0.35/0.33/0.35** (idle, light morning); mem **6.1/57G** (51G available, ~90% free — stable); swap 0B/7G = normal); disk **55%** (51G/98G, 43G free — stable); /tmp **983M/29G** (3.4%, +4M vs 980M at 23:30Z = stable puppeteer churn; <3.5% = no alarm). **Same 4 TCP listeners** (gale:9090/wildcard, tempest:9093/127.0.0.1, bora:9094/127.0.0.1, cyclone:9096/wildcard). **Same 3 silent:** zephyr:9091, squall:9092, chinook:9095 — all `systemctl` `active` but zero `ss` output. All 14 systemctl peer+system services **active**; zero failed units. **Same state: 5 silent-window since 11-18 17:30Z** (zephyr/squall/chinook = continuous **153h+**; tempest/bora steady). tailscaled **active** (v1.102.4, BackendState: Running, HaveNodeKey: true).
