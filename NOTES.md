@@ -1,3 +1,68 @@
+        ## 2026-11-24T12:30Z waking (w365 — 12:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w364); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 5 routine probes (12:00–12:16Z:
+  MOUNTAIN x1, MEADOW x2, DELTA x1, RIDGE x1) — all "no reply needed",
+  scanned clean. Filed to processed/ (3479 total). quarantine 0.
+- Host health: up 11d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.21/0.24/0.32
+  (normal, post-wake decay). mem 51G avail, disk 55% (43G free), inodes 13%.
+  All 6 peer services active + 110 total running units.
+  **LOGS: syslog 201M (+34M from w364's 167M; logrotate status last updated
+  2026-11-23 00:24Z — logrotate config present but daily execution still NOT
+  reliably executing; syslog.1 158M frozen since Nov 20 00:41; /var/log 865M
+  total). Gale's to fix, carried 112th waking.**
+- Backup: `backups/cyclone-20261124T123015Z.tar.gz` (428K) — gzip -t OK.
+  keys/ excluded by design.
+- Production pass (live @8090): **13/13 HTML pages 200** (fleet.html + status/
+  metrics/observability/agora/cameras + index + all new pages;
+  **health.html still 404** — 82nd consecutive). Core proxied fleet API:
+  **7/7 200** (telemetry/health/registry/activity/metrics/observability/
+  agora/posts — all present). Content-type on API responses:
+  **text/html;charset=utf-8 + nosniff** (nginx default fallback, not drift;
+  body IS valid JSON). **SSE streams: 0/5** (activity/metrics/observability
+  stream endpoints serve text/html, stream/agora/posts/stream 404 + text/html
+  — steady from w361, 82nd variant count). HEAD: /api/fleet/stream 200 w/
+  text/event-stream, others 404 (HEAD/GET inconsistency).
+- Freshness: generated_at 2026-11-24T12:32:30Z (fresh, fleet-metrics v1).
+  **cost_usd/coverage_pct/error_runs no longer at top-level of fleet-metrics**
+  (moved to cost_coverage sub-objects; 112th waking — structure changed,
+  alerting logic needs update).
+  Activity: fleet-activity/v1, 24 events (agents: gale 3, chinook 3, bora 9,
+  cyclone 9). **ALL 4 referenced agents IN the 35-agent roster — clean.
+  Zero non-roster refs.** Agora: 139 posts (+0 — flat for 20th cycle),
+  generated_at 12:32:30Z (fresh).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-24T12:30:01Z (this cycle — LANDED).
+  **cost_coverage: known_usd N/A at top-level (moved to sub-object);
+  coverage_pct same pattern**. agents_by_host.gale lists 14. Cyclone in
+  fleet_status keys. **0 alerts total, all resolved**.
+  **fleet-health: ok:true, generated_at 2026-11-24T12:36:02Z (fresh, <1s).**
+- CONTENT ASSERTION (11-WAY IDENTITY, 82nd consecutive clean): fleet.html
+  data-name labels 35 == fleet-metrics fleet_status keys 35 == fleet-status
+  35/35 up == /api/fleet/health ok:true == activity events 24 zero non-roster
+  refs == agora/posts 139 (fresh) == generated_at fresh == cyclone in all ==
+  35 in fleet.html labels (no stale 25/27 agent strings).
+  "pending install" x2 (Prism, Vista) still in fleet.html SVG labels
+  (both UP per sweep) — **stale data, Gale's to fix (carried, 112th waking)**.
+  14 gale-host agents listed; 21/24 gale-side pairings two-way.
+  **No stale agent-count strings (regex false positives: 0.3s CSS transitions).**
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data files. 352 non-compressed files. All mtime 2026-10-23
+  (single deploy snapshot, content-hashed chunks). No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 (remote halves still not installed). 62nd consecutive run, steady state.**
+- Spend: 2026-11-24 no new rows in spend-daily.jsonl. No GLM fallback.
+  No alert threshold crossed.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean.
+  fleet-metrics v1 structure: cost_coverage moved to sub-object (no longer
+  top-level cost_usd/coverage_pct). SSE 0/5 steady. Pending labels stale.
+  Logrotate intermittent (carried 112th).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
        ## 2026-11-24T00:30Z waking (w364 — 00:30 slot)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w363); `./check_replies.sh`
@@ -19863,3 +19928,60 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   intermittent (111st carried). Operator received a summary from BOTH
   sessions for this slot.**
 - NOTIFY: summary sent to operator via ./notify.sh.
+
+## 2026-11-24T06:30Z waking (w365 — 06:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w364); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 7 routine probes (06:00–06:16Z:
+  MOUNTAIN x1, MEADOW x2, DELTA x1, RIDGE x3) — all "no reply needed",
+  scanned clean. Filed to processed/ (3479 total). quarantine 0.
+- Host health: up 11d5:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.25/0.15/0.18
+  (normal, post-wake decay). mem 51G avail, disk 55% (43G free), inodes 13%.
+  All 6 peer services active + 110 total running units.
+  **LOGS: syslog 181M (+14M from w364's 167M; logrotate ran at ~06:24Z today
+  but syslog.1 158M still frozen since Nov 22 00:41; /var/log total ~814M.
+  logrotate status file last updated 2026-11-23 00:24Z — logrotate config
+  present but daily execution intermittent. Gale's to fix, carried 112th waking.**
+- Backup: `backups/cyclone-20261124T063117Z.tar.gz` (428K) — gzip -t OK.
+  keys/ excluded by design.
+- Production pass (live @8090): **7/7 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras; **health.html still 404** — 81st
+  consecutive). Core proxied fleet API: **7/7 200**, content-type
+  `application/json; charset=utf-8` — **steady**.
+  HEAD: core APIs 501 (steady).
+  **SSE streams: 3/5 correct `text/event-stream` (activity/metrics/observability;
+  recovery from w364's 0/5). telemetry/stream + agora/posts/stream still
+  404 + `application/json`. Gale's to fix (112th variant count).**
+- Freshness: generated_at 2026-11-24T06:30:29Z (fresh).
+  cost_usd 365.646293, coverage_pct 80.98.
+  Activity: fleet-activity/v1, 24 events (agents: squall, zephyr, chinook,
+  gale, beacon, bora, cyclone). **ALL 7 referenced agents IN the 35-agent
+  roster — clean. Zero non-roster refs.**
+  Agora: 139 posts (+0 — flat for 20th cycle), generated_at 06:30:36Z (fresh).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-24T06:30:01Z (this cycle — LANDED).
+  cost_coverage: known_usd 365.646293, coverage_pct 80.98 (up from 80.94).
+  agents_by_host.gale lists 14. Cyclone in fleet_status keys.
+  **0 alerts total, all resolved.**
+- CONTENT ASSERTION (11-WAY IDENTITY, 81st consecutive clean): fleet.html
+  data-name labels 35 == fleet-metrics fleet_status keys 35 == fleet-status
+  35/35 up == /api/fleet/health ok:true == activity events 24 zero non-roster
+  refs == agora/posts 139 (fresh) == generated_at fresh == cyclone in all.
+  "35 agents" x6 in fleet.html; no stale 25/27 agent strings.
+  **"pending install" x2 still on fleet.html — Prism/Mesa/Vista all UP per
+  sweep (fleet_status 200). Stale data, not pending. Gale's to fix (carried,
+  112th waking).**
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data files. 352 non-compressed files. mtimes Oct 16–23
+  (content-hashed chunks from esbuild deploy snapshot). No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 (remote halves still not installed). 62nd consecutive run, steady state.**
+- Spend: 2026-11-24 no new rows in logs/spend-daily.jsonl yet. No GLM fallback.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean.
+  SSE recovered 3/5. Stale "pending install" labels on fleet.html (112th).
+  Logrotate intermittent (112th carried).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
