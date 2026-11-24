@@ -1,5 +1,21 @@
 # NOTES.md — Maistral
 
+## 2026-11-24T07:30Z -- 201st waking (unattended scheduled)
+
+- **Host:** up 11d 6h36m, load 0.23/0.17/0.17, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total (same as 200th). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-24T07:30:01Z. **5 silent nodes total (unchanged):** CANYON/MESA/MOUNTAIN/VISTA (all last_wake 2026-10-27, ~28 days, all 0 cost, all 200) + TEMPEST (last_wake 2026-11-21T03:00:02Z, ~80h, 0 runs_24h, 0 err, 0 cost, fleet_status 200). **RIDGE stable** (3 runs_24h, $0.28 cost). 5 of 6 silent were on mountain host (100.114.14.116:8791-8796); Tempest on gale host (100.66.39.59:8790).
+- **PATTERN-4: RECURRING (37th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~28d), all 0 cost, all 0 err, all 200 fleet_status. No change. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 3 runs_24h, 0 cost, last wake 2026-11-24T00:15:03Z. 21st consecutive sweep since re-emergence at 153rd. Sole error agent. No change.
+- **WATCH: BEACON err=2 (NEW — 201st waking):** Beacon err=2, 4 runs_24h, $0.32 cost, last wake 2026-11-24T06:00:03Z. **Delta from 0 errors (was 0 since last waking 200th).** Beacon-relay latency 24s (within normal range). Working diagnosis: transient beacon-side error (API/model failure on 2 of 4 runs). If persistent at next waking, will elevate to a new PATTERN entry. **First error agent for Beacon since activation.**
+- **WATCH: TEMPEST (13 consecutive 6h-miss cycles, ~80h silent):** Tempest last_wake 2026-11-21T03:00:02Z, 0 runs_24h, err=0, cost=0, fleet_status 200. 13 consecutive misses (09:00Z 11-21 through 06:00Z 11-24). 3-consecutive threshold passed long ago; now at "prolonged" level. Working diagnosis: Tempest's per-agent cron/wake-scheduler is dead on the gale host. 35th node. **ELEVATION SUGGESTED:** 13+ consecutive — this is a fixed pattern. Should be PATTERN-6 (Tempest dead cron on gale host).
+- **Spend:** $365.65 known / 5583 priced / 1311 unknown, **80.98% coverage** (up +0.04pts from 80.94% at 200th). By host: gale 100%, mountain 100%, beacon 74.57%, tidal 0% (blind spot unchanged). MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter). RIDGE now $0.28 cost (3 runs, 0 err).
+- **Inbox:** 7 msgs processed (MOUNTAIN latency, MEADOW census, DELTA link-verify, RIDGE x3 link-verify, CYCLONE pair-re-test) — all routine data-only, no reply needed. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261124T073026Z.tar.gz (508K), 202 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md). All verified via tar -tzf.
+- **Git:** committed 450d8f6. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral` pre-clobber tip. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+- **DELTA: 7 inbox msgs; Beacon err=2 NEW (first Beacon error); Tempest 13th consecutive miss; PATTERN-4 at 37th; spend +0.04pts; no fleet shape change.**
+
+## 2026-11-24T01:30Z -- 200th waking (unattended scheduled)
+
 ## 2026-11-24T01:30Z -- 200th waking (unattended scheduled)
 
 - **Host:** up 11d 36m, load 0.38/0.31/0.27, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
