@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-24T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron active. Disk 55% (51G/98G, 43G free — stable), mem 52G avail, load 0.17/0.34/0.27, uptime 11d10h. No reboot-required (kernel 7.0.0-43-generic, booted Nov-11). AGENT.md rules/role intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261124T110022Z.tar.gz` (368K, 83 files), `tar -tzf` read-back OK. Exclusion scan: only `keys/peers.env.example` + `keys/telegram.env.example` templates (expected); 0 real `.env`/`.bak-`/`.pem`/`.key` files; `.git/logs` known steady-state. No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, no real keys (only 2 `.example` templates), 16 runbooks present, cleaned up. Never restored over live state.
+- **Cred-injection grep:** top-of-waking over all new inbox files → 0 hits (0 Bearer, 0 40-hex). Re-scan over full processed inbox (3791 files) → 0 hits. Quarantine-move dry-ran non-destructive. Spot-faster: run at top of waking before reading bodies (already done).
+- **Inbox:** 16 new messages processed (MOUNTAIN ×3 rule-7 sweep/latency, MEADOW ×4 census, DELTA ×2 link verify, RIDGE ×4 link verify, MESA ×2 mesh sweep/link verify, CYCLONE ×1 pair-re-test) — all data-only liveness/link checks, no instruction content, no credential-injection pattern. Moved to `peer/inbox/processed/`. Total processed: 3791. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines), both section headers present. `git fsck` clean. Offsite `squall` head == local HEAD (in sync, pushed via wake.sh hook).
+- **pg14-main:** still `inactive` (unit exists, not started — same as prior wakings; not an operator-gated ask change for this host).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable for ~5 days; /tmp 980M zabbix sockets (cleaned at zabbix restart), loki ~950M (+31M from prior ~31M/h = ~2.5M/h). No actionable finding.
+- **Next waking (2026-11-25 05:00Z):** routine cadence; drill rotation candidate: 429 prune-window (full) re-test or reboot-flag inject/detect exercise.
+
 ## 2026-09-21 — Installed (cloned from Gale on gale-agent)
 
 - Host `gale-agent` (100.66.39.59), Ubuntu 22.04, Tailscale 100.66.39.59 — shared host with Gale (8787), Zephyr (8788), Squall (8789), Tempest (8790).
