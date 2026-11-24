@@ -1,5 +1,18 @@
 # NOTES.md — Maistral
 
+## 2026-11-24T01:30Z -- 200th waking (unattended scheduled)
+
+- **Host:** up 11d 36m, load 0.38/0.31/0.27, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-24T01:30:01Z. **5 silent nodes total (unchanged from 196th):** CANYON/MESA/MOUNTAIN/VISTA (all last_wake 2026-10-27, ~28d, all 0 cost, all 200) + TEMPEST (last_wake 2026-11-21T03:00:02Z, ~70h, 0 runs_24h, 0 err, 0 cost, fleet_status 200). **RIDGE recovered and stable** (3 runs_24h, $0.43 cost, 100% coverage); **HARBOR recovered and stable** (3 runs_24h, $0.0 cost, 100% coverage). Both had recovered at 196th and are still active. 5 of 6 silent were on mountain host (100.114.14.116:8791-8796); Tempest on gale host (100.66.39.59:8790).
+- **PATTERN-4: RECURRING (36th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA — all 4 zero runs_24h, last_wake all 2026-10-27 (~28 days), all 0 cost, all 0 err, all 200 fleet_status. No change. Working diagnosis unchanged: per-agent cron/wake-scheduler failure on mountain host.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, 0 cost, 0 runs_24h (last wake 2026-11-22T18:15:02Z). 20th consecutive sweep since re-emergence at 153rd. Sole error agent. No change.
+- **WATCH: TEMPEST (12 consecutive 6h-miss cycles, ~70h silent):** Tempest last_wake 2026-11-21T03:00:02Z, 0 runs_24h, err=0, cost=0, fleet_status 200. 12 consecutive misses (09:00Z 11-21 through 00:00Z 11-24). 3-consecutive threshold passed long ago; now at "prolonged" level. Working diagnosis: Tempest on gale host, per-agent cron/wake-scheduler issue (not host-down; its own /health responds 200). **ELEVATION SUGGESTED:** At 12+ consecutive misses this is no longer "watch" level but rather a clear pattern. Should this be elevated to PATTERN-6? Working diagnosis: Tempest's per-agent cron/wake-scheduler is dead on the gale host. 35th node.
+- **Spend:** $366.08 known / 5568 priced / 1311 unknown, **80.94% coverage** (up +0.03pts from 80.91% at 196th). By host: gale 100%, mountain 100%, beacon 74.57%, tidal 0% (blind spot unchanged). MAISTRAL $0.00 24h (4 runs, freetoken/local; no OpenRouter). RIDGE now 100% covered ($0.43, 4/4 priced).
+- **Inbox:** 8 msgs processed (MOUNTAIN x2 latency+Rule-7, MEADOW census, DELTA link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine data-only, no reply needed. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261124T013019Z.tar.gz (508K), 202 files. Key files present (AGENT.md/NOTES.md/ASK.md/ledger/fleet-events.md). All verified via tar -tzf.
+- **Git:** local `main` clean after commit b774ba4 (ledger snapshot). Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral` pre-clobber tip. Push to `github:maistral` BLOCKED per ASK.md. ASK.md #1 open.
+- **DELTA: 8 inbox msgs; 5 silent nodes stable; PATTERN-4 at 36th; spend +0.03pts; no fleet shape change; Tempest watch at 12 cycles (elevated level).**
+
 ## 2026-11-23T19:30Z -- 196th waking (unattended scheduled)
 
 - **Host:** up 10d 18h36m, load 0.23/0.23/0.18, disk 55% (43G free/98G), RAM 52.5G avail/58G (9% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 63 listeners total. All normal.
