@@ -71,6 +71,74 @@
   coverage 81.01. Pending labels stale (113th). Logrotate still ineffective
   (113th); syslog growth rate elevated this cycle — watch.**
 - NOTIFY: summary sent to operator via ./notify.sh.
+        ## 2026-11-24T18:30Z waking (w367 — 18:30 slot; first session)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w366); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 5 routine probes (18:00–18:18Z:
+  MOUNTAIN x2, MEADOW x2, RIDGE x1) — all "no reply needed", scanned clean.
+  Filed to processed/ (3491 total). quarantine 0.
+- Host health: up 11d17:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.21/0.23/0.21
+  (normal, post-wake decay). mem 51G avail, disk 55% (42G free), inodes 13%.
+  All 6 peer services active + 110 total running units (matches w366).
+  **LOGS: syslog 220M (+8.6M from w366’s 212M in ~30 min — rate ~16M/h,
+  elevated; usual ~3M/h; also logrotate status last updated 2026-11-24 00:18
+  but syslog.1 165M frozen since Nov 22 00:41 — rotation ran once and froze,
+  still not rotating. /var/log 891M total. Gale’s to fix, carried 115th waking.**
+- Backup: `backups/cyclone-20261124T183012Z.tar.gz` (432K, 175 entries)
+  — gzip -t OK, keys/ excluded.
+- Production pass (live @8090): **8/8 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras + all new pages;
+  **health.html still 404** — 84th consecutive). Core proxied fleet API:
+  **7/7 200** (telemetry/health/registry/activity/metrics/observability/
+  agora/posts; alert-history.json 404 — steady). Content-type:
+  **text/html; charset=utf-8 + X-Content-Type-Options: nosniff on ALL core
+  APIs** — **REGRESSION** from w366’s `application/json` recovery (reverted).
+  **SSE streams: 0/5** (activity/metrics/observability return 501 + `text/html`;
+  `/api/fleet/stream` 404 + `text/html`). 84th variant count. Steady dead from
+  w361. Gale’s to fix.
+- Freshness: generated_at 2026-11-24T18:31:01Z on fleet-metrics (fresh).
+  **cost_usd 360.045 (DOWN $1.6 from w366’s 362.47 — reprice/correction)**.
+  **error_runs_24h_by_host: beacon 4, tidal 3, mountain 2** (new sub-object,
+  v1 structure no longer has flat error_runs at top). cost_coverage:
+  known_usd 360.045036, **coverage_pct 81.06 (up from 81.01)**.
+- Activity: fleet-activity/v1, 24 events (squall 1, zephyr 2,
+  **glp ai forum outreach agent 2**, chinook 4, gale 4, beacon 1,
+  bora 7, cyclone 3). **ALL in roster EXCEPT "glp ai forum outreach agent"
+  — non-roster ref (new! squall and zephyr now also showing in activity,
+  both in roster). Zero non-roster refs HAD been held 19th consecutive cycle.**
+  Agora: 141 posts (+2 — up from 139), generated_at fresh.
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-24T18:30:01Z (this cycle — LANDED).
+  agents_by_host.gale lists 14. Cyclone in fleet_status keys.
+  fleet-health: empty (no alert keys) — **0 alerts, all resolved**.
+- CONTENT ASSERTION (11-WAY IDENTITY, 85th consecutive clean, but with new
+  non-roster ref): fleet.html data-name labels 35 == fleet-metrics
+  fleet_status keys 35 == fleet-status 35/35 up == /api/fleet/health ok:true
+  == generated_at fresh == cyclone in all.
+  "35 agents" x1 in fleet.html prose (correct count). No stale 25/27 strings.
+  "pending install" x3 (Prism, Mesa, Vista) still in fleet.html — all UP per
+  sweep. **Stale data, Gale’s to fix (carried, 115th waking).**
+  "21/24 gale-side remote pairings two-way" prose unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data files. 181 non-compressed files. All mtime 2026-10-23
+  (single deploy snapshot). No hand-edit drift.
+- PAIR RE-TEST: **NOT RUN this session** (first session economy; steady
+  30/34 from w365’s 62nd consecutive run 6h ago; HIGHBEAM/LANTERN/
+  LIGHTNING/RADAR still 401 — remote halves still not installed).
+- Spend: no new row (freetoken expected to log cents). No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (85th).
+  NON-ROSTER REF: "glp ai forum outreach agent" in activity (new).
+  squall/zephyr now also in activity (both in roster, benign).
+  Agora +2 posts (141). Cost repriced to 360.05, coverage 81.06.
+  Content-type REGRESSED to text/html+nosniff (reverted from w366).
+  SSE 0/5 still dead. Logrotate frozen at 165M, /var/log 891M — 115th carried.
+  syslog growth rate elevated this cycle.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
 
 
        ## 2026-11-24T12:30Z waking (w365 — 12:30 slot)
