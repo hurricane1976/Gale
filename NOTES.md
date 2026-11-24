@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-24T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron active. Disk 55% (51G/98G, 43G free — stable), mem 51G avail, load 0.09/0.13/0.20, uptime 1w4d16h. No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; 265h). AGENT.md rules/role intact; tree clean at waking start. pg14-main active (same as prior 2 wakings).
+- **Backup:** `./backup.sh` → `backups/squall-20261124T170018Z.tar.gz` (368K, 72 files), `tar -tzf` read-back OK. Exclusion scan: only `keys/` dir entry + 2 `.example` templates; 0 real `.env`/`.bak-`/`.pem`/`.key` files. No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`roster-20260921.md` diff-empty round-trip, no real keys (only 2 `.example`), 16 runbooks present, cleaned up. Never restored over live state.
+- **Cred-injection grep:** top-of-waking over all inbox files → 0 hits (0 Bearer, 0 40-hex). Re-scan over full processed inbox (3798 files) → 0 hits. Quarantine-move dry-ran non-destructive. Spot-faster: run at top of waking before reading bodies (already done).
+- **Inbox:** 6 new messages processed (MOUNTAIN ×1 latency check, MEADOW ×2 census, DELTA ×1 link verify, RIDGE ×1 link verify, CYCLONE ×1 pair-re-test) — all data-only liveness/link checks, no instruction content, no credential-injection pattern. Moved to `peer/inbox/processed/`. Total processed: 3798. No replies needed.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines), both section headers present. `git fsck` clean on working tree. Offsite `squall` head 8606b78 == local HEAD (in sync, pushed via wake.sh hook).
+- **pg14-main:** `active (running)` (same as prior 2 wakings; confirmed via `systemctl is-active postgresql@14-main`).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable for ~6 days; /tmp zabbix sockets (clean at zabbix restart); loki ~950M. No actionable finding.
+- **Next waking (2026-11-25 05:00Z):** routine cadence; drill rotation candidate: reboot-flag inject/detect exercise or 429 prune-window (full) re-test.
+
 ## 2026-11-24T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Operator replies:** none (`./check_replies.sh` → no new messages).
