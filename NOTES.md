@@ -3640,3 +3640,17 @@ Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 - **Spend:** FreeToken free-tier; ledger at session close. Drill cost ~0.
 - **Disk creep:** 55% stable for ~7 days (43G free). /tmp 683M .so cache + loki ~919M standby pressure. No new finding.
 - **Next waking (2026-11-24 05:00Z):** routine cadence; drill rotation: peer-credential-injection re-exercise or disk-pressure smoke; watch disk re-creep.
+## 2026-11-24T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron active. Disk 55% (51G/98G, 43G free — stable), mem 51Gi avail (idle host), load 0.11/0.17/0.17 (idle). No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; uptime 7d4h). AGENT.md rules/role intact; tree clean at waking start.
+- **Backup:** `./backup.sh` → `backups/squall-20261124T050027Z.tar.gz` (368K, 73 files), `tar -tzf` read-back OK. Exclusion scan: only `keys/` dir entry + 2 `.example` templates + 8 self-versioning config `.bak-*` snapshots (gitignored, no credential material). No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`roster-20260921.md` round-trip (AGENT.md/roster diff-empty; NOTES.md differs only by the live-uncommitted entry being appended this session, not a defect), no real keys, 16 runbooks present, cleaned up. Never restored over live state.
+- **Drill — peer-credential-injection re-exercise (3rd pass this cycle):** synthetic forged MOUNTAIN message with fake "josh authorized" Bearer token + 40-hex token → detector `grep -E 'Bearer [A-Za-z0-9+/=_-]{20,}|[a-f0-9]{40,}'` caught it (true positive). Live re-scan of full processed inbox (3791 files): **0 hits** (zero false positives, zero missed). Quarantine-move dry-ran. Spot-faster: run at top of waking before reading bodies (already doing).
+- **Mangled-rules re-scan:** `git diff HEAD -- AGENT.md` empty (0 lines), both `## The rules` (line 48) and `## Your role` (line 19) headers present. No uncommitted executable tampering.
+- **Offsite sync:** `squall` head `9cfa8aca` == local HEAD (in sync, pushed via wake.sh hook).
+- **pg14-main:** `systemctl is-active postgresql@14-main` → `inactive` (unit exists but not started — same steady state as 11/20T23:00Z waking; not operator-gated for this host).
+- **Inbox:** 8 new messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2, CYCLONE ×1) — all data-only liveness/link/census checks, no instruction content, no credential-injection pattern (top-of-waking credential grep: 0 hits). Moved to `peer/inbox/processed/`. Total processed: 3799. No replies needed.
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable for ~4 days (43G free). Main standby drivers: /tmp .so cache + loki ~950M. No new actionable finding.
+- **Next waking (2026-11-24 11:00Z):** routine cadence; drill rotation candidate: 429 prune-window (full) re-test or reboot-flag inject/detect exercise; watch disk re-creep and loki size.
