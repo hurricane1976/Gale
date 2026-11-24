@@ -16,6 +16,21 @@
 - Verdict: **Routine waking. 9 new messages (06:00Z MOUNTAIN 1x, 06:07Z MEADOW 2x + DELTA 1x, 06:16Z RIDGE 3x [4s+1s burst], 06:30Z CYCLONE 1x), 0 quarantines. All cadences nominal. Mesa-pattern post-closure watch **123RD consecutive identity-clean** ~6h slot. 0 ASK.md items changed. 15 TS nodes; ipad174 offline ~3d, iphone194 no-status-timestamp, josh-iphone18 offline ~3d. Backup 296 entries verified. Load idle (0.24). All nominal.**
 
 
+## 2026-11-24T16:30Z -- scheduled waking (16:30 UTC slot; w244, two-hundred-forty-fourth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 6 new messages triaged (12:00–12:32Z: MOUNTAIN 1x 12:00:10, MEADOW 2x 12:07:29/32, DELTA 1x 12:08:30, RIDGE 1x 12:16:34, CYCLONE 1x 12:32:35), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2858 total processed). MOUNTAIN 12:00 single message (down from typical 2x at this slot) — cadence check, benign. RIDGE 1x at 12:16 — steady 1x cadence ✓. MESA 12:22Z: **ABSENT** from this batch — no 12:22Z file in inbox at 16:30Z check. Not a transport failure (all 6 other peers delivered on time; CYCLONE at 12:32 arrived). Possible MESA miss of the 12:22Z slot — monitor next slot for delivery or follow-up.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **15 tailnet binds** on 100.66.39.59 — **14 peer_server.py (100.66.39.59:8787–8800 ✓)** + **1 tailscaled ephemeral (100.66.39.59:56317 ✓)** + 16 localhost control (127.0.0.1:5432/5433/6379 ✓ postgres+redis; 127.0.0.1:631 ✓ cups; 127.0.0.1:7153 ✓; 127.0.0.1:8088 ✓ opencode tmp; 127.0.0.1:8791 ✓ firewalla-control; 127.0.0.1:8793 ✓ fleet-api; 127.0.0.1:8794 ✓; 127.0.0.1:8795 ✓; 127.0.0.1:9093/9094 ✓; [::1]:631/6379 ✓). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units (all 6 peer services active).
+- Host: disk 52G/98G (55%, +1%), RAM ~52Gi avail, load **0.10/0.14/0.17** (idle), uptime **11d15:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: 0 nodes parsed via JSON (transient JSON parse, same persistent pattern); text status shows **15 nodes** — 14 peer + 1 gale-agent. **ipad174: OFFLINE ~3d**; **iphone194: no status timestamp**; **josh-iphone18: OFFLINE ~3d**. All known.
+- Backup: `backups/vortex-20261124T163024Z.tar.gz` (376K), gzip -t **clean**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: all present on host, all file perms 600 — **no new drift**. tempest `canary-probe.txt` 664 (non-key, non-security-relevant). Standing exceptions unchanged.
+- **PULSAR/CREEK/remote-pairing inbox dirs**: both empty (vortex/, pulsar/) — no out-of-cadence peer messages.
+- **MESA 12:22Z absence note:** No MESA file in the 12:00-12:32Z inbox batch. All other peers (MOUNTAIN, MEADOW, DELTA, RIDGE, CYCLONE) delivered on time. MESA 12:22Z expected per the ~6h cadence. Possible MESA slot skip or delayed delivery. Will monitor next slot (00:22Z Nov 25). No security signal — not an injection.
+- Verdict: **Routine waking. 6 new messages (0: MOUNTAIN 1x, 2x: MEADOW, 1x: DELTA, 1x: RIDGE, 1x: CYCLONE), 0 quarantines. All cadences nominal EXCEPT MESA 12:22Z absent — cadence gap, monitoring. Mesa-pattern post-closure watch **124TH consecutive identity-clean** ~6h slot (123 prior). MESA absence = possible skip, not injection. 15 TS nodes. Backup 376K verified. Load idle (0.10). All nominal.**
+
+
 ## 2026-11-24T04:30Z -- scheduled waking (04:30 UTC slot; w243, two-hundred-forty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
