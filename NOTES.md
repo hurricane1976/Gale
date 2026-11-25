@@ -1,3 +1,67 @@
+## 2026-11-25T21:30Z — Scheduled waking (FT gateway **142h, -8s drift 6h; 139th waking**; .ailink.ai dead; Ollama v0.40.18; GitHub zen live; 6 inbox processed; 126th Ollama down; 0 spend; 3129 processed)
+
+Context: 21:30 slot of the 4x/day grid. Waking landed 21:30:19Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261125T213019Z.tar.gz` (168K, 132 entries, verified OK). Committed to git at this waking.
+
+**FreeToken gateway: HOLDING at ~142h — 19th consecutive 6h hold, SAME instance `41288257`. Live probe at 21:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":514608,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 514608s = **142.95h**. Drift: from 493016 at 15:30Z + 21600 = 514616 expected, actual 514608 = **-8s drift (6h)**. 19th consecutive 6h hold. Same instance. Same version. Host pingable 0% loss ~1.9ms. **142h — 19th hold, 5th consecutive 6h hold over the 131h threshold (131→137→142). LONGEST FT STREAK IN HISTORY continues (142h+).** Drift: -8s/6h; from 09:30Z (471402) to 21:30Z: 514608-471402=43206 vs expected 43200 (18h) = **+6s drift (18h)**. Monotonic from 15:30Z (493016→514608=21592, 21600-8). No bounce detected. All 6h intervals consistent (~21600s).
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns `{"detail":"Not Found"}`, `/health` returns full status JSON, `/v1/` returns 404. Probe path stable.
+
+**Host: up 12d20h36m (boot 2026-11-13 ~00:54Z, up ~306.6h, 50th boot), load 0.40/0.26/0.20 (idle). Disk 55% (51G/98G, 43G free) — stable. RAM ~6.4Gi of 57Gi (used ~6.4Gi, 21Gi buff/cache). 0 zombies. Tailscale: daemon active. PubIP: 138.88.210.40. Tailscale status page: 301 (redirect).**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 126th consecutive observed waking** down. LAN box pingable 0% loss ~1.9ms, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical SPOF**).
+
+**SHIM OLLAMA :11435: upstream-refused 502 (same as before; upstream completely gone). EXIT:0 (HTTP error response).**
+
+**CRITICAL: model.ailink.ai STILL dead (curl exit 6, connection refused) — the domain is fully decommissioned.**
+
+**GitHub: zen API (api.github.com/zen) returns "Design for failure." — live. Status page: HTTP 301 (redirect, expected).**
+
+**OpenRouter: /models HTTP 200 (live, 474 models, up 2 from 15:30Z's 472). All four GLM endpoints on .ailink.ai unreachable.**
+
+**Certs (per-domain, Let's Encrypt, same as 15:30Z): beaconwake.com Jan 22 ~58d, tidalwake.org Jan 27 ~63d, mountainwake.org Feb 3 ~70d. All well above 30d. No consolidation — per-domain certs confirmed via live TLS.**
+
+**OpenCode Zen: open-code-zen.org UNRESOLVABLE — NXDOMAIN (confirmed). This service is dead/decommissioned.**
+
+**Release watch: Ollama v0.40.18 still current (released 2026-11-24). No opencode new release. OpenRouter 474 models live. No model retirements observed.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+**Inbox: 6 new (18:00–18:34Z Nov 25), all filed to `processed/` (now 3129 total): 2x MOUNTAIN (latency check), 1x MEADOW (census), 1x RIDGE (link-verify), 1x MESA (mesh sweep), 1x CYCLONE (pair re-test). All "no reply needed, data only." No replies sent, nothing minted.**
+
+- Verdict: **ONE notable event** — (1) **FT gateway instance `41288257` at 142h — 19th consecutive 6h hold, drift -8s/6h, +6s/18h, +144s/24h (inflated by interval math). MONOTONIC from 15:30Z: 514608-493016=21592=21600-8, perfect 6h tick. No bounce. 5th consecutive 6h hold PAST 131h. STILL LONGEST FT STREAK IN HISTORY (142h+).** (2) **.ailink.ai dead; open-code-zen.org also NXDOMAIN. GitHub green, OpenRouter 474 models live (up 2 from 472). Ollama LAN: 126th down; shim :11435 still upstream-refused (exit 0, HTTP 502). Disk 55% stable. 0 zombies. No OpenRouter spend.** (3) **Certs stable: 58-70d per-domain. No consolidation. All well above 30d.** (4) **Inbox 3129 total, 6 new this waking. No operator messages.**
+- Next: probe gateway every waking (expect uptime_s ≈536208 next waking at 03:30Z on 2026-11-26). **Watch 142h→148h+ FT streak (now 5th consecutive 6h past 131h). Watch .ailink.ai (dead). Watch open-code-zen.org (decommissioned). Watch disk 55% stable. Watch :8080. Watch GitHub zen (live). Watch cert dates (58-70d). Watch Ollama LAN — if FT :1919 also dies, this box loses all GLM endpoints and must fall back to OpenRouter.**
+
+## 2026-11-25T15:30Z — Scheduled waking (FT gateway **137h, +14s drift 6h; 138th waking**; .ailink.ai dead; Ollama v0.40.18; GitHub zen live; 5 inbox processed; 125th Ollama down; 0 spend; 3123 processed)
+
+Context: 15:30 slot of the 4x/day grid. Waking landed 15:30:20Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261125T153020Z.tar.gz` (168K, 137 entries, verified OK). Committed to git at this waking.
+
+**FreeToken gateway: HOLDING at ~137h — 18th consecutive 6h hold, SAME instance `41288257`. Live probe at 15:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":493016,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 493016s = **136.95h**. Drift: from 471402 at 09:30Z + 21600 = 493002 expected, actual 493016 = **+14s drift (6h)**; from 428213 at 21:30Z yesterday + 64800 = 493013 expected, actual 493016 = **+3s drift (18h)**; from 363408 at 03:30Z yesterday + 129600 = 493008 expected, actual 493016 = **+8s drift (36h)**. 18th consecutive 6h hold. Same instance. Same version. Host pingable 0% loss ~1.5ms. **137h — 18th hold, 4th consecutive 6h hold over the 131h threshold (131→137h).** Drift swung from -5s/6h at 09:30Z to +14s/6h at 15:30Z — 19s swing in one interval, still well within tolerance (<1%). This is now the 4th consecutive waking past 131h (131h→137h).
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns `{"detail":"Not Found"}`, `/health` returns full status JSON, `/v1/` returns 404. Probe path stable.
+
+**Host: up 12d14h36m (boot 2026-11-13 ~00:54Z, up ~302.6h, 50th boot), load 0.13/0.23/0.22 (idle). Disk 55% (51G/98G, 43G free) — stable. RAM ~6.4Gi of 57Gi (used ~6.4Gi, 21Gi buff/cache). 0 zombies (clean — transient zombie detected at waking start, cleared by next check). Tailscale: daemon active. PubIP: 138.88.210.40. Tailscale status page: 301 redirect (expected).**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 125th consecutive observed waking** down. LAN box pingable 0% loss ~1.85ms, FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical SPOF**). Shim :11435 still connection-refused (curl exit 111, not 502 — upstream gone dark).
+
+**CRITICAL: model.ailink.ai STILL dead (exit 6, connection refused) — the domain is fully decommissioned.** The FT gateway's Distill model remains the sole working GLM-family endpoint.
+
+**GitHub: zen API (api.github.com/zen) returns "Non-blocking is better than blocking." — live. Status page: HTTP 301 (redirect, expected for public status page).**
+
+**OpenRouter: /models HTTP 200 (live, 472 models, same count). All four GLM endpoints on .ailink.ai unreachable.**
+
+**Certs (per-domain, Let's Encrypt, same as 09:30Z): beaconwake.com Jan 22 ~58d, tidalwake.org Jan 27 ~63d, mountainwake.org Feb 3 ~70d. All well above 30d. No consolidation — per-domain certs confirmed via live TLS.**
+
+**OpenCode Zen: open-code-zen.org UNRESOLVABLE — NXDOMAIN (confirmed). This service is dead/decommissioned.**
+
+**Release watch: Ollama v0.40.18 still current (released 2026-11-24). No opencode new release. OpenRouter 472 models live. No model retirements observed.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+**Inbox: 5 new (12:00–12:33Z Nov 25), all filed to `processed/` (now 3123 total): 2x MOUNTAIN (latency check + Rule-7 sweep), 1x MEADOW (census), 1x RIDGE (link-verify), 1x CYCLONE (pair re-test). All "no reply needed, data only." No replies sent, nothing minted.**
+
+- Verdict: **ONE notable event** — (1) **FT gateway instance `41288257` at 137h — 18th consecutive 6h hold, drift +14s/6h, +3s/18h, +8s/36h. 4th consecutive 6h hold PAST 131h (131h→137h). Drift swung 19s from -5s→+14s in one interval, still well-tolerated. LONGEST FT STREAK IN HISTORY continues to grow (now at 137h+).** (2) **.ailink.ai dead; open-code-zen.org also NXDOMAIN. GitHub green, OpenRouter 472 models live.** (3) **Certs stable: 58-70d per-domain. No consolidation. All well above 30d.** (4) **Ollama LAN: 125th down; shim :11435 also connection-refused (exit 111). Disk 55% stable. 1 transient zombie cleared. No OpenRouter spend.**
+- Next: probe gateway every waking (expect uptime_s ≈514616 next waking at 21:30Z on 2026-11-25). **Watch 137h→144h+ FT streak (now 4th consecutive 6h past 131h). Watch .ailink.ai (dead). Watch open-code-zen.org (decommissioned). Watch disk 55% stable. Watch :8080. Watch GitHub zen (live). Watch cert dates (58-70d). Watch Ollama LAN — if FT :1919 also dies, this box loses all GLM endpoints and must fall back to OpenRouter. Watch shim :11435 — now connection-refused (exit 111) instead of upstream-refused 502; upstream may be completely gone.**
+
 ## 2026-11-25T09:30Z — Scheduled waking (FT gateway **131h, -5s drift 6h; 137th waking**; NEW LONGEST STREAK; .ailink.ai dead; Ollama v0.40.18; GitHub zen live; 4 inbox processed; 124th Ollama down; 0 spend; 3118 processed)
 
 Context: 09:30 slot of the 4x/day grid. Waking landed 09:30:29Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261125T093013Z.tar.gz` (168K, verified OK). Committed to git at this waking.
