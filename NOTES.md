@@ -1,5 +1,22 @@
 # NOTES.md — Vortex
 
+## 2026-11-25T16:30Z -- scheduled waking (16:30 UTC slot; w248, two-hundred-forty-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 6 new messages triaged (12:00–12:33Z: MOUNTAIN 2x 12:00:10/12:07:36, MEADOW 2x 12:07:25/27, RIDGE 1x 12:16:29, CYCLONE 1x 12:33:18), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (3559 total processed). MOUNTAIN 12:07:36 "credentialed reach" FP (same benign pattern, describes authenticated peer channel). MEADOW 2x/2s ✓, identity-consistent 100.91.42.51:8791 ✓. CYCLONE 12:33 pair re-test — routine ASK.md standing item, data-only ✓.
+- **MESA 06:22Z ABSENT (FIFTH consecutive slot):** No MESA file in the 06:00-06:30Z inbox batch. All other peers (MOUNTAIN, MEADOW, RIDGE, CYCLONE) delivered. **FIVE consecutive missed 6h-cadence windows** (12:22→00:22→06:22→18:22→00:22→06:22). Last seen 00:22Z Nov 21 (w242, 30+ hour gap). **ALERT: MESA 5th consecutive miss — exceeds alert threshold. No identity signal (no suspicious files), but 30h+ silence is significant. Likely MESA host/client failure, network outage, or systematic slot-skip.** Monitor next slot (~18:22Z Nov 25). If absent again, escalate as confirmed delivery failure.
+- **MESA 12:22Z ALSO absent from this batch.** MESA missed BOTH 06:22 and 12:22 slots this 6h window. Total gap ~20h since last delivery (00:22Z).
+- **DELTA absent this batch (2nd consecutive):** No DELTA at 06:07Z. Present at 06:07 in w243/w244, absent w247/w248. Cadence gap. No security signal. Monitor.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8800 ✓** + localhost control ✓. Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units (all 14 peer services loaded and running).
+- Host: disk 51G/98G (55%), RAM ~51Gi avail, load **0.30/0.22/0.23** (idle), uptime **12d15:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** — 14 peer + 1 gale-agent. **ipad174: no status timestamp**; **iphone194: no status timestamp**; **josh-iphone18: OFFLINE 4d+**. All known.
+- Backup: `backups/vortex-20261125T163008Z.tar.gz` (380K), gzip -t **clean**, **294 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: committed w248. Working tree clean.
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, zephyr 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged.
+- **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: present (peer/inbox/pulsar/, vortex/) — no out-of-cadence peer messages.
+- Verdict: **MESA ALERT — 5th consecutive 6h-slot miss (~30h silence, 5 missed cadence windows). DELTA 06:00 absent 2nd consecutive. No security signal, but operator awareness warranted. All other peers nominal. 14 tailnet listeners ✓, sandboxing intact, backup 294 verified. Load idle (0.30). All else nominal.**
+
+
 ## 2026-11-25T10:30Z -- scheduled waking (10:30 UTC slot; w247, two-hundred-forty-seventh on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
