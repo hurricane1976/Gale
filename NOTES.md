@@ -1,3 +1,31 @@
+## 2026-11-25T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:00Z)
+
+1. **HEADLINE — mostly clean; HOST stable but REBOOT-REQUIRED reappeared (kernel 7.0.0-44-generic + linux-base installed since 02:00Z — PENDING reboot); `systemctl --failed` EMPTY — 76th consecutive); all 13 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces except new pending kernel.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (08:00Z)**: uptime 12d7:06 (boot 2026-11-13T00:54:08Z); load 0.09/0.15/0.20 (idle between sessions, normal 15min avg rise from session exit idle); disk 55% (51G/98G, 43G free, stable); RAM 6.4Gi used (51Gi avail, -0.1G from 02:00Z's 6.5Gi — session exit churn, normal); /var/log 948M (up from 896M at 02:00Z, +52M — log rotation window, normal); `logs/` 32M (flat). Kernel 7.0.0-43-generic (running); **kernel 7.0.0-44-generic + linux-base now installed in `/var/run/reboot-required` — NEW since 02:00Z, requires reboot**. dmesg: Operation not permitted (non-root user). No `/var/run/reboot-required` GONE — it came back.
+
+4. **Service liveness**: 13/13 active (11 `*-peer` + tailscaled + nginx). **`systemctl --failed` EMPTY — 76th consecutive waking.** All confirmed active. Nginx confirmed active.
+
+5. **Website + fleet (regression half)**: Website `http://100.66.39.59:8090/` → 200, fresh content — healthy. **Fleet**: nginx-proxied `/api/fleet/metrics` → 200, fresh data; `cost_coverage` 81.14% (up from 81.10% at 02:00Z, 5637 priced runs, up 14 — steady). `cost_coverage_by_host`: gale 100.0%, mountain 100.0%, beacon 74.57%, tidal 0.0. **35/35 agents up, 0 down** (verified via fleet_status). Nginx confirmed active.
+
+6. **Fleet status roll-up (08:00Z)**: All 35 agents reporting, 0 down. **Peer-block spot check: `keys/peers.env` has 35 `NAME` stanzas, 0 `^PEER` stanzas** (35 = 11 co-located + 9 remote + 14 provisioned; 0 PEER = self-paired only, correct).
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 76th consecutive flag**. LAN `192.168.1.197:1919` → HTTP 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, context=131072, owned_by=FreeToken, instance_id 41288257, uptime 466041s — **stable, model correctly resident**). LAN `:11434` → ECONNREFUSED (10-31 outage, ~755h; **OLLAMA OUTAGE ~31.7 DAYS**). Cron keepalive line: fully removed (same state as 02:00Z, consistent).
+
+8. **Spend**: 11-25 02:00Z row $0.0 (FT-cap silent pattern). No anomalies. `cost_coverage` 81.14% (5637 priced runs, up 14 — steady).
+
+9. **Peer inbox triage**: 3 messages (06:00–06:31Z, standard 08:00Z block) — **MOUNTAIN ×1** (automated latency check 06:00Z, **standard**), **RIDGE ×1** (link verification 06:16Z, **standard**), **CYCLONE ×1** (pair re-test 06:31Z, **standard**). All 3 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261125T080018Z.tar.gz` (176K, 72 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); committing with NOTES.md entry.
+
+12. **Verdict vs 02:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.11→0.09 (idle between sessions, 15min avg settling from session exit — normal); (b) RAM 6.5→6.4Gi (-0.1G, session exit churn, normal); (c) `cost_coverage` 81.10→81.14% (5637 runs, up 14 — steady); (d) /var/log 896→948M (+52M, log rotation, normal — 6h window); (e) 3 peer messages (vs 4 at 02:00Z, -1 — DELTA ×2→0, RIDGE 1, standard count, **within normal variance**); (f) OLLAMA OUTAGE ~31.7 DAYS (was ~31.5 at 02:00Z — counter increased 0.2 days, consistent with ~6h delta); (g) **NEW: `/var/run/reboot-required` reappeared** — `linux-image-7.0.0-44-generic` + `linux-base` installed between 02:00Z and 08:00Z; new pending kernel waiting for reboot. This is a new finding not present at 02:00Z (which noted reboot-required GONE). Flagged for operator.
+
+---
+
 ## 2026-11-25T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
 
 1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 12d1:06, load 0.11/0.13/0.16 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 75th consecutive); all 13 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
