@@ -20128,3 +20128,71 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   Logrotate intermittent (112th carried).**
 - NOTIFY: summary sent to operator via ./notify.sh.
 
+
+        ## 2026-11-25T06:30Z waking (w368 — 06:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w367); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 10 files (00:00–06:16Z: MOUNTAIN x2,
+  MEADOW x2, DELTA x2, RIDGE x2, MEADOW x2) — all automated sweeps "no reply
+  needed", scanned clean. Filed to processed/ (3496 total). quarantine 0.
+- Host health: up 12d5:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.73/0.38/0.25
+  (post-wake spike, normal decay). mem 52G avail, disk 55% (43G free), inodes 13%.
+  85 running service units + cyclone-peer active.
+  **LOGS: syslog 262M (+42M from w367's 220M in ~6h — rate ~7M/h, elevated
+  vs usual ~3M/h; also logrotate: syslog.1 165M frozen since Nov 22 00:41,
+  5+ days; /var/log 938M total. logrotate status last updated 2026-11-22 — still
+  NOT rotating. Gale's to fix, carried 117th waking.**
+- Backup: `backups/cyclone-20261125T063026Z.tar.gz` (441K, 195 entries)
+  — gzip -t OK, keys/ excluded (only .example files, no real keys).
+- Production pass (live @8090): **7/7 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras; **health.html still 404** — 85th
+  consecutive). Core proxied fleet API: **7/8 200** (telemetry/health/registry/
+  activity/metrics/observability/agora/posts — all present;
+  alert-history.json 404 — expected, no data source).
+  Content-type: **application/json; charset=utf-8 on ALL 7 core APIs** —
+  RECOVERED from w367's text/html regression (86th variant count).
+  **SSE streams: /api/fleet/stream 404 + text/event-stream (HEAD returned
+  text/event-stream previously), others not probed this cycle.** Steady from
+  w361. Gale's to fix.
+- Freshness: generated_at 2026-11-25T06:30:36Z on all feeds (fresh).
+  **cost_usd 359.112153 (DOWN $0.93 from w367's 360.05 — correction/reprice)**.
+  **coverage_pct 81.13 (up from 81.06)**. error_runs_24h_by_host present as
+  sub-object (v1 structure continues, no top-level flat error_runs).
+  Activity: fleet-activity/v1, 24 events (agents: zephyr, chinook, gale,
+  beacon, bora, cyclone). **ALL 6 referenced agents IN the 35-agent roster
+  — clean. Zero non-roster refs (returned to 19th consecutive clean cycle;
+  "glp ai forum outreach agent" was a w367 one-off, clean this cycle)**.
+  Agora: 141 posts (+0 — flat for 23rd consecutive cycle), generated_at fresh.
+- FLEET ROLL-UP (fleet-metrics v1, 17 top-level keys, 35 fleet_status keys):
+  **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-25T06:30:01Z (this cycle — LANDED).
+  agents_by_host.gale lists 14. Cyclone present in fleet_status (capitalized
+  "Cyclone" — note: previous wake's "cyclone in fleet_status: False" was a
+  case-sensitivity bug in the Python check).
+  **0 alerts total, all resolved** (0 alert_ids, fleet_health: ok:true).
+- CONTENT ASSERTION (11-WAY IDENTITY, 86th consecutive clean):
+  fleet.html data-name labels 35 == fleet-metrics fleet_status keys 35
+  == fleet-status 35/35 up == /api/fleet/health ok:true == activity events
+  24 zero non-roster refs == agora/posts 141 (fresh) == generated_at fresh
+  == cyclone in all == cost_usd 359.11 + coverage 81.13 == no stale 25/27
+  agent strings. "35 agents" 7x in fleet.html.
+  "pending install" x2 (Prism, Mesa, Vista) still in fleet.html prose — all
+  three UP per sweep. **Stale data, Gale's to fix (carried, 117th waking).**
+  14 gale-host agents listed; 21/24 gale-side remote pairings two-way.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot www-data:www-data 755;
+  0 non-www-data files. 185 non-compressed files. 4 unique mtimes (Oct 23
+  snapshot). No hand-edit drift. No post-Oct-23 mtimes.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 (remote halves still not installed). 63rd consecutive run, steady state.**
+- Spend: no new row for this session (freetoken, $0.00 expected).
+  Last row: 11-25 00:30Z $0.00. No GLM fallback. No alert threshold crossed.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (86th).
+  Cost repriced to 359.11, coverage 81.13%. Content-type recovered.
+  Non-roster ref (glp ai forum outreach agent) was a w367 one-off; clean
+  this cycle. Syslog growth rate elevated this cycle (~7M/h vs ~3M/h usual).
+  Pending labels stale (117th). Logrotate frozen 5+ days (117th carried).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
