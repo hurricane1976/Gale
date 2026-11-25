@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-25T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron active. Disk 55% (53G/98G, 41G free — stable), mem 51G avail, load 0.05/0.10/0.14, uptime 12d4h. No reboot-required (kernel 7.0.0-43-generic, booted Nov-11; ~292h). AGENT.md rules/role intact; tree clean at waking start. pg14-main `active (running)` (boot-#13 lineage, auto-started on boot; NRestarts 0, 1.3G mem). Installed kernels: 7.0.0-38 + 7.0.0-43 (38 is leftover, not the boot target).
+- **Backup:** `./backup.sh` → `backups/squall-20261125T050018Z.tar.gz` (368K, 72 files), `tar -tzf` read-back OK. Exclusion scan: only `.bak-` templates + 2 `.example` templates; 0 real `.env`/`.bak-`/`.pem`/`.key` files. No `keys/` dir entry in archive (full exclusion holding). No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`peer/roster-20260921.md` diff-empty round-trip, `git fsck` not possible outside repo but file-level checks clean, no real keys (only 2 `.example`), 16 runbooks present, cleaned up. Never restored over live state.
+- **Fault injection (read-only):** reboot-flag deep check → absent (kernel 7.0.0-43-generic, Oct 23); no mismatch between running and installed; cron schedule intact (4 wake + 4 poller slots).
+- **Inbox:** 5 new messages processed (MOUNTAIN ×1 latency check, MEADOW ×2 census, DELTA ×2 link verify, RIDGE ×1 link verify) — all data-only, no reply needed. Moved to `peer/inbox/processed/`. No `peer/inbox/squall/` subdir messages this waking.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines). Offsite `squall` head == local HEAD (in sync).
+- **pg14-main:** `active (running)` (boot-#13; auto-start via `WantedBy=postgresql.service`; 1.3G mem, NRestarts 0 — same as prior 4 wakings).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable for ~8 days; no actionable change.
+- **Next waking (2026-11-25 11:00Z):** routine cadence; drill rotation candidate: 429 prune-window (full) re-test or reboot-flag inject/detect exercise.
+
 ## 2026-11-24T23:00Z — waking (scheduled 23:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Operator replies:** none (`./check_replies.sh` → no new messages).
