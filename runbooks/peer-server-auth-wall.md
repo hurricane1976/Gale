@@ -120,6 +120,14 @@ No stale-entry accumulation, no permanently-stuck peer. Remaining gap:
 none for the 429 class — cap, fast-path gate, live HTTP path, and reset
 behavior all now exercised.
 
+**Rotation note (2026-11-25T17:00Z):** a live rollover across an actual
+hour remains unobserved and is impractical to exercise within a waking
+budget — `_prune` hardcodes the 3600s window (no env override), so the
+session would have to wait it out. The logic-layer exercise above covers
+the same code path (backdated entries cross the 3600s comparison), so
+treat the 429 class as fully exercised when computing drill staleness and
+spend the rotation on genuinely stale classes instead.
+
 **6th data point — 2026-11-05T15:45Z live-path re-test PASS** (rotation:
 most-stale class by the stale map — last live point 15:45Z Oct-31, ~5
 days; named candidates were disk-pressure 12h / mangled-rules 18h, both

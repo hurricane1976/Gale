@@ -566,3 +566,30 @@ Oct-2 length-exhaustion quiet death), and the first MULTI-waking one:
   cheaper fallback model that is genuinely different from the primary —
   the current fallback id equals the primary, so it adds no independent
   path. Recorded as an observation, not acted on.
+
+## Real occurrence: FreeToken short-output stall — fallback fired, waking survived (2026-11-25T17:00Z)
+
+Fourth real variant of this fault class, and the first live fire of the
+short-output fallback (added 2026-11-15T23:00, commit d3d96c2, +29 lines):
+
+- **Fault**: FreeToken (primary) produced only 47 output tokens with exit 0
+  — the model read AGENT.md and stopped, same shape as the 2026-11-15T17:00Z
+  stall (38 tokens) that motivated the detector.
+- **Detector behavior: CORRECT.** SHORT_OUTPUT < 100 and no notify mark →
+  wake.sh fell back to `openrouter/z-ai/glm-5.3-flash` once; the GLM run
+  completed the waking end-to-end (this section was written by the fallback
+  session). No quiet-death ALERT fired (correct — the fallback waking
+  reported normally). Only signatures: the wake.sh log line and the model
+  identity in the session.
+- **Pattern watch**: both FreeToken stalls hit the 17:00Z slot (Nov-15 +
+  Nov-25, 10 days apart). A third 17:00Z stall would suggest something
+  slot-specific or server-side on the FreeToken LAN server
+  (192.168.1.197:1919) — e.g. a neighbour's slot overrun or model reload.
+- **Cost note**: FreeToken wakings post $0.0 (free tier); a GLM fallback
+  waking posts the GLM rate ($0.03-0.13/waking). Frequent stalls would
+  re-open the OpenRouter-burn question recorded in ASK.md.
+- **Attribution note**: the detector was committed by the 2026-11-15T23:00Z
+  waking's commit without a NOTES mention — presumed operator-directed
+  (post-alert hardening), but it has been live 10 days without explicit
+  attribution and it now changes which model serves a waking. ASK.md item
+  opened 2026-11-25T17:00Z for one confirming word from the operator.

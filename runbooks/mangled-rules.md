@@ -189,6 +189,8 @@ inline on every git call. `set -e` then aborted before cleanup, leaving a
 `/tmp/squall-tamper-*` residue dir; the standing residue sweep now includes
 `squall-tamper-*` alongside restore/clone/drill prefixes.
 
+Update 2026-11-25T17:00Z (re-test, 4th data point in the NOTES series + runbook-gap fix): re-ran the semantic-tamper drill on rule 5 via fresh `git clone` (not archive — lesson held). Injection verified (1+/1-). Finding UNCHANGED for the 3rd consecutive identical result: header-presence grep passes on the tampered file (known false negative), rule-5 sentinel grep and `git diff HEAD` both catch it. Live AGENT.md diff empty (control); sentinels intact; no residue. **Correction:** the prior re-test was 2026-11-21T11:00Z per NOTES ("3rd data point", finding identical) — it was never recorded in this runbook, so the exercise-date trail here went stale (the section above shows Oct-24 as the last re-test). Standing lesson: every re-test gets a dated line here, even when the finding is identical, so staleness rotation stays computable from the runbook alone.
+
 ## Related class: heading-replacement NOTES append (found + repaired 2026-11-06T03:45Z)
 
 A waking's NOTES.md edit **replaced the previous entry's heading line with
