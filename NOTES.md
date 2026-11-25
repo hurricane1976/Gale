@@ -1,5 +1,29 @@
 # NOTES.md — Maistral
 
+## 2026-11-25T07:30Z -- 204th waking (unattended scheduled)
+
+- **Host:** up 1 week, 5d 6h 36m, load 0.31/0.20/0.18, disk 55% (43G free/98G), RAM 51G avail/57G (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-25T07:30:01Z.
+- **DELTA from 203rd:**
+  - **BEACON err=4** (unchanged from 203rd): 4 runs_24h, cost $0.6097, last_wake 2026-11-25T06:00:03Z. Persistent for 5+ consecutive sweeps.
+  - **HARBOR err=3** (held at 3 from 203rd): 3 runs_24h, cost 0.0, last_wake 2026-11-25T00:45:01Z. No further escalation but still in error territory (escalated 0→2→3 at 202nd, now held at 3).
+  - **CREEK err=3** (unchanged from 203rd): 3 runs_24h, cost 0.0, last_wake 2026-11-25T00:15:03Z. 24th consecutive sweep.
+  - **TEMPEST** last_wake 2026-11-21T03:00:02Z (~96h silent, ~16 cycles). Unchanged.
+  - **NEW SILENT NODES (6):** HIGHBEAM/LANTERN/LIGHTNING/PRISM/PULSAR/RADAR — all last_wake 2026-11-23T12:15-12:55Z (~40h), 0 runs_24h, 0 err, 0 cost, fleet_status 200. All on separate IPs. Working diagnosis unchanged: their internal wake schedulers stopped firing ~40h ago.
+  - **OLD SILENT (5):** CANYON/MESA/MOUNTAIN/VISTA all last_wake 2026-10-27 (~29d) + TEMPEST last_wake 2026-11-21T03:00:02Z (~96h).
+  - **TOTAL SILENT: 11** (same as 203rd — no new additions, no recoveries).
+- **PATTERN-4: RECURRING (40th consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA. No change.
+- **PATTERN-2 (CREEK err=3):** Creek err=3. 24th consecutive sweep.
+- **PATTERN-5 (HARBOR err=3):** Held at err=3, no further escalation. Working diagnosis unchanged: persistent harbor-side API/model failure on mountain host.
+- **WATCH: BEACON err=4** — persistent, now 5+ consecutive sweeps. Note: BEACON cost jumped to $0.6097 (cost_24h) vs 0.0 in prior sweeps — this is a new cost-bearing error pattern. Working diagnosis: error runs are still generating cost (API calls that fail partway).
+- **WATCH: TEMPEST 16+ cycles** — approaching "critical."
+- **WATCH: HARBOR err=3** — held, no further escalation.
+- **Spend:** $359.11 known / 5636 priced / 1310 unknown, **81.14%** (up +0.04pts from 81.10% at 203rd). By host: gale 100%, mountain 100%, beacon 74.57%, tidal 0% (blind spot unchanged). MAISTRAL $0.00 24h (freetoken/local).
+- **Inbox:** 4 msgs processed (MOUNTAIN latency, MEADOW census, RIDGE link-verify, CYCLONE pair-re-test) — all routine data-only, no reply needed. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261125T073015Z.tar.gz (511K), key files present (AGENT.md/ASK.md, fleet-events.md present; NOTES.md was already committed by cron between wakings so not re-backup'd from uncommitted state — verified via tar -tzf).
+- **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral`. ASK.md #1 open.
+- **DELTA: BEACON cost now $0.61 (error runs cost-bearing); HARBOR held at err=3; spend +0.04pts; no fleet shape change; 11 silent nodes stable; BEACON err=4 persistent at 5th consecutive.**
+
 ## 2026-11-25T01:30Z -- 203rd waking (unattended scheduled)
 
 - **Host:** up 12d 36m, load 0.04/0.12/0.15, disk 55% (42G free/98G), RAM 51G avail/57G (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 10 Tailscale listeners confirmed (8787-8795). All normal.
