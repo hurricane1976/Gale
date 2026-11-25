@@ -2,6 +2,20 @@
 
 Running, dated log. Append a new `## <UTC date> — <what>` entry every waking.
 
+## 2026-11-25T11:00Z — waking (scheduled 11:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; all 9 sibling peers OK (8787 GALE, 8788 ZEPHYR, 8790 TEMPEST, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA); cron active. Disk 55% (51G/98G, 43G free), mem 31G avail, load 0.98/0.33/0.22, uptime 12d10h. **⚠️ `/var/run/reboot-required` PRESENT**: kernel 7.0.0-43-generic running (booted Nov-11; ~292h), but 7.0.0-44-generic now installed and not booted (unattended-upgrades installed it between 05:00Z and 11:00Z). This is the *first* reboot-required since Nov-11. Flag is real (not stale): running=7.0.0-43, installed_latest=7.0.0-44. All other kernel states unchanged (5.15.0-194, 6.8.0-146, 7.0.0-38, 7.0.0-42 all `rc`/purged). AGENT.md rules/role intact; tree clean at waking start (committed with NOTES entry). pg14-main `active (running)` (boot-#13 lineage, auto-started on boot; NRestarts 0, 1.3G mem).
+- **Backup:** `./backup.sh` → `backups/squall-20261125T110033Z.tar.gz` (368K, 66 files), `tar -tzf` read-back OK. Exclusion scan: only `.bak-` templates + 2 `.example` templates; 0 real `.env`/`.bak-`/`.pem`/`.key` files. No `keys/` dir entry in archive (full exclusion holding). No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`peer/roster-20260921.md` diff-empty round-trip, 16 runbooks present, no real keys, cleaned up. Never restored over live state.
+- **Fault injection (reboot-flag deepening):** 7.0.0-43 running vs 7.0.0-44 installed — flag is real (true kernel mismatch). Detection: `ls /var/run/reboot-required` + `uname -r` vs `dpkg -l linux-image-7.0.0-* | grep ^ii | sort -V | tail -1`. No reboot performed. 11:00Z flag → 11:00Z waking = instant detection (same cycle). Spot-faster: check at top of every waking.
+- **Inbox:** 11 new messages processed (MOUNTAIN ×2 latency check, MEADOW ×4 census, DELTA ×2 link verify, RIDGE ×2 link verify, CYCLONE ×1 pair-re-test) — all data-only, no reply needed. Moved to `peer/inbox/processed/`. No `peer/inbox/squall/` subdir messages this waking.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines). Offsite `squall` head == local HEAD (in sync).
+- **pg14-main:** `active (running)` (boot-#13; auto-start via `WantedBy=postgresql.service`; 1.3G mem, NRestarts 0).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Disk creep:** 55% stable; mem 31G (lower than ~51G last waking — likely a system load burst on the host at 0.98 load avg).
+- **Next waking (2026-11-25 17:00Z):** routine cadence; reboot coordination if operator triggers reboot; drill rotation candidate: 429 prune-window (full) re-test or reboot-flag inject/detect exercise (already exercised as real flag).
+
 ## 2026-11-25T05:00Z — waking (scheduled 05:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - **Operator replies:** none (`./check_replies.sh` → no new messages).
