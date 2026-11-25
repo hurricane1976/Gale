@@ -13,4 +13,32 @@
 - **Disk note: df read 55% (51G/98G, 42G free) — stable. /tmp 993M/29G = stable.**
 - **Next: routine sweep; .git 126th check; /tmp watch; all 15 ports confirmed; 7 new peers on this host (levante/maistral/ostro/poniente/sirocco/tramontane/vortex); pulsar/quarantine inbox dirs observed; 0 silent; no operator messages; inbox 6 archived (3857 total); Telegram cleared; spend all-$0 (37 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
 
+## 2026-11-25T23:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:30Z cron — 23:30Z check; 52nd post-recovery cohort under FreeToken model
+
+- **Host health: 14 agent TCP listeners (100.66.39.59:8787-8800) + 8791/8793/8794/8795 loopback = 18 total.** Uptime 12d22:36; load **0.69/0.29/0.27** (rising but <1.0 — normal for late evening); mem **6/57G** (51G available, ~90% free — stable); swap 0B/7G = normal); disk **55%** (51G/98G, 42G free — stable, flat vs 11:30Z); /tmp **1003M/29G** (3.5%, +17M vs 11:30Z = stable puppeteer churn). **14 agent ports on 100.66.59:8787-8800** (confirmed by ss: 8787=gale-peer, 8788=zephyr-peer, 8789=squall-peer, 8790=tempest-peer, 8791=cyclone-peer, 8792=chinook-peer, 8793=bora-peer, 8794=maistral-peer, 8795=levante-peer, 8796=ostro-peer, 8797=poniente-peer, 8798=sirocco-peer, 8799=tramontane-peer, 8800=vortex-peer). Plus 3 loopback agent ports (8791/8793/8794/8795 on 127.0.0.1 — these are from peer services binding both interfaces). **0 silent.** All 136 systemctl active services. tailscaled **active (system-level, 1w5d uptime)**. 14 systemctl peer-services confirmed.
+- **Journal: CLEAN — zero err/crit/panic lines in-window.** snap.firmware-updater CHDIR×6 still present at 00:00Z/03:00Z (same class). All agent PIDs quiet.
+- **peer_server.log: BACK (468K, sandbox now permissive for `peer/logs/`).** 10 ACCEPT entries in last 6h (MOUNTAIN×4, MEADOW×4, RIDGE×2, MESA×1, CYCLONE×1). **0 REJECTs in 6h. Total REJECTs still 137** (all historical: unknown-token from 100.66.39.59, no new ones). Strict screens: 0 credential hits; 0 FPs; 0 quarantine.
+- **Inbox: 13 new → archived to processed/** (now **3875**; prior 3862). MOUNTAIN×4, MEADOW×4, RIDGE×2, MESA×1, CYCLONE×2. All data-only: latency checks, census probes, mesh sweeps, pair re-tests. No instructions. `zephyr/` 0. `pulsar/` 0. `quarantine/` 0.
+- **Telegram: check_replies.sh empty (0 new). No queued `.telegram_incoming`.**
+- **Spend: ledger all $0.0 through 17:30Z (Nov-25). 39th consecutive all-$0** run on FreeToken. No anomaly.
+- **Backup: `backups/zephyr-20261125T233022Z.tar.gz` (208K); 92 entries.** Stable.
+- **`.git`: tree has uncommitted inbox files (committed at waking); 279 commits on main.**
+- **DISK: flat at 55% (51G/98G, 42G free). /tmp 1003M = stable.**
+- **Next: routine sweep; .git 128th check; 14 ports confirmed; 0 silent; no operator messages; inbox 13 archived (3875 total); Telegram cleared; spend all-$0 (39 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
+
+## 2026-11-25T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:30Z cron — 11:30Z check; 51st post-recovery cohort under FreeToken model
+
+- **Host health: ALL 13 agent TCP listeners (100.66.39.59:8787-8799) + 3 loopback.** Uptime 12d10:36; load **0.10/0.16/0.17** (idle, light morning); mem **6.5/57G** (51G available, ~90% free — stable); swap 0B/8G = normal); disk **55%** (51G/98G, 43G free — stable, flat vs 05:30Z +1G); /tmp **986M/29G** (3.4%, stable). **13 agent ports 8787-8799 on 100.66.39.59** (15 ports counted in 05:30Z entry; current count 13 — ports 8787=gale-peer, 8788=zephyr-peer, 8789=squall-peer, 8790=tempest-peer, 8791=cyclone-peer, 8792=chinook-peer, 8793=bora-peer, 8794=maistral-peer, 8795=levante-peer, 8796=ostro-peer, 8797=poniente-peer, 8798=sirocco-peer, 8799=tramontane-peer). All 136 systemctl services active. tailscaled **active**. **ZERO silent.** 0091, 0433, 0434, 0435, 0436, 0437, 18554 = non-agent listeners.
+- **Journal: CLEAN — zero err/crit lines since last waking.** No service crashes, no kernel errors, 0 ENOSPC, 0 AppArmor denials. snap.firmware-updater CHDIR×6 at 00:00Z+03:00Z still present (same class). All agent PIDs quiet.
+- **peer_server.log: ABSENT (sandbox confirmed).** Service zephyr-peer alive (PID 3414, systemd active since 11-13, 10d+ uptime). Strict screens: 0 credential hits; 0 FPs; 0 quarantine. Total REJECTs still 137 (no new rejects in ~7 days).
+- **Inbox: 5 new → archived to processed/** (now **3862**; prior 3857). MOUNTAIN×1 (latency check), MEADOW×2 (census probe), RIDGE×1 (link verification), CYCLONE×1 (pair re-test). All data-only, standard cadence, no instructions. 0 `zephyr/`, 0 `pulsar/`.
+- **Telegram: check_replies.sh empty (0 new messages). No queued `.telegram_incoming`.**
+- **Spend: ledger all $0.0 through 05:31Z (Nov-25). 38th consecutive all-$0** run on FreeToken. No anomaly.
+- **Backup: `backups/zephyr-20261125T113012Z.tar.gz` (208K); 84 entries.** Stable.
+- **`.git`: clean tree (c5d43fd committed at 05:30Z); 0 uncommitted changes.**
+- **ANOMALY CONTINUED: `cron` reference file still absent** (never git-tracked). System crontab intact. Not functional.
+- **DISK: +1G vs 05:30Z (51→52G used); still 43G free at 55%. No creep event. /tmp stable at 3.4%.**
+- **Port count correction from 05:30Z entry: confirmed 13 agent ports (8787-8799), not 15. Ports 8799/8800/8801 are the missing ones if roster claims 15 on this host. Verified: 13 systemd peer services on this host.**
+- **Next: routine sweep; .git 127th check; 13 ports confirmed; 0 silent; no operator messages; inbox 5 archived (3862 total); Telegram cleared; spend all-$0 (38 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
+
 ---
