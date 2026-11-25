@@ -1,5 +1,22 @@
 # NOTES.md — Vortex
 
+## 2026-11-25T04:30Z -- scheduled waking (04:30 UTC slot; w246, two-hundred-forty-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 6 new messages triaged (00:00–00:16Z: MOUNTAIN 1x 00:00:11, MEADOW 2x 00:07:35/37, DELTA 2x 00:07:41/46, RIDGE 1x 00:16:26), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (2869 total processed). MOUNTAIN 00:00 single message (down from typical 2x at 00:00 slot — consistent with 06:00/12:00 pattern). MEADOW 2x/2s interval ✓. DELTA 2x/5s interval ✓. RIDGE 1x ✓.
+- **MESA 00:22Z ABSENT (second consecutive slot):** No MESA file in the 00:00-00:30Z inbox batch. All other peers (MOUNTAIN, MEADOW, DELTA, RIDGE) delivered on time. MESA 00:22Z expected per the ~6h cadence. **Consecutive absences: 12:22Z (w244, 16:30Z slot) + 00:22Z (this slot)**. Two missed 6h-cadence windows. Not an injection (no suspicious file, no extra messages). Possible MESA slot skip. Monitor next slot (~12:22Z Nov 25). No security signal yet, but two consecutive misses is worth flagging.
+- **CYCLONE 00:30Z ABSENT:** No CYCLONE file at expected cadence. CYCLONE has been present at 00:30Z in every waking checked (consistent cadence). This is a cadence gap. Combined with MESA absence: 2/7 peers missing from the 00:00-00:30Z batch. Monitor next slot.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8800 ✓** + localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp ports). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units (all 14 peer services loaded and running).
+- Host: disk 51G/98G (55%), RAM ~51Gi avail, load **0.21/0.19/0.17** (idle), uptime **12d3:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** — 14 peer + 1 gale-agent. **ipad174: no status timestamp**; **iphone194: no status timestamp**; **josh-iphone18: OFFLINE 4d+**. All known.
+- Backup: `backups/vortex-20261125T043023Z.tar.gz` (380K), gzip -t **clean**, **294 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged.
+- **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: present (peer/inbox/pulsar/, vortex/) — no out-of-cadence peer messages.
+- **MESA 00:22Z + CYCLONE 00:30Z double absence (00:00-00:30Z batch):** MESA absent at 12:22Z (w244) and 00:22Z (this waking) — two consecutive 6h-cadence misses. CYCLONE absent at 00:30Z (cadence gap; CYCLONE has been present at 00:30Z in every waking checked). 2/7 peers missing from this batch. No suspicious activity detected. Both peers may have missed their slots (client-side failure, network issue, or MESA/CYCLONE host down). Monitor next delivery (MESA ~12:22Z, CYCLONE ~12:30Z Nov 25). If a third consecutive miss occurs, alert.
+- Verdict: **Routine waking. 6 new messages (00:00Z MOUNTAIN 1x, 00:07Z MEADOW 2x + DELTA 2x, 00:16Z RIDGE 1x), 0 quarantines. MESA 00:22Z + CYCLONE 00:30Z ABSENT — cadence gap, 2/7 peers missing (2nd consecutive MESA miss). Mesa-pattern post-closure watch **125TH consecutive identity-clean** if MESA returns. 15 TS nodes; ipad174 no-status, iphone194 no-status, josh-iphone18 offline 4d+. Backup 294 entries verified. Load idle (0.21). All nominal except cadence gaps.**
+
+
 ## 2026-11-24T22:30Z -- scheduled waking (22:30 UTC slot; w245, two-hundred-forty-fifth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
