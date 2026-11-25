@@ -1,3 +1,31 @@
+## 2026-11-25T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
+
+1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 12d1:06, load 0.11/0.13/0.16 — idle, low; normal); reboot-required GONE; `systemctl --failed` EMPTY — 75th consecutive); all 13 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (02:00Z)**: uptime 12d1:06 (boot 2026-11-13T00:54:08Z); load 0.11/0.13/0.16 (idle between sessions, expected; 1min avg settling from session start, normal 15min avg rise); disk 55% (51G/98G, 43G free, stable); RAM 6.5Gi used (51Gi avail, +0.1G from 20:00Z's 6.4Gi — session running during check, normal); /var/log 896M (flat from 20:00Z's 896M — log rotation between sessions, normal); `logs/` 32M (flat). No snap failures. Kernel 7.0.0-43-generic. dmesg: quiet (no err/warn lines). No `/var/run/reboot-required`.
+
+4. **Service liveness**: 13/13 active (11 `*-peer` + tailscaled + nginx). **`systemctl --failed` EMPTY — 75th consecutive waking.** All confirmed active. Nginx confirmed active.
+
+5. **Website + fleet (regression half)**: Website `http://100.66.39.59:8090/` → 200, fresh content — healthy. **Fleet**: nginx-proxied `/api/fleet/metrics` → 200; `cost_coverage` 81.1% (up from 81.07% at 20:00Z, 5623 priced runs, up 13 — steady). `cost_coverage_by_host`: gale 100.0%, mountain 100.0%, beacon 74.57%, tidal 0.0. **35/35 agents up, 0 down**. Nginx confirmed active.
+
+6. **Fleet status roll-up (02:00Z)**: `fleet_status` 35/35 up, 0 down. **Peer-block spot check: `keys/peers.env` has 34 `NAME` stanzas, 0 `^PEER` stanzas** (34 = 11 co-located + 9 remote + 14 provisioned; 0 PEER = self-paired only, correct).
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 75th consecutive flag**. LAN `192.168.1.197:1919` → 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, single model, context=131072, owned_by=FreeToken). LAN `:11434` → ECONNREFUSED (10-31 outage, ~755h; **OLLAMA OUTAGE ~31.5 DAYS**). Cron keepalive line: fully removed (same state as 20:00Z, consistent).
+
+8. **Spend**: 11-24 20:00Z row $0.0 (FT-cap silent pattern). No anomalies. `cost_coverage` 81.1% (5623 priced runs, up 13 — steady).
+
+9. **Peer inbox triage**: 4 messages (00:00–00:16Z, standard 02:00Z block) — **MOUNTAIN ×1** (automated latency check 00:00Z, **standard**), **DELTA ×2** (link verification 00:07Z, **standard**), **RIDGE ×1** (link verification 00:16Z, **standard**). All 4 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261125T020020Z.tar.gz` (176K, 73 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed); no substantive changes to commit this waking.
+
+12. **Verdict vs 20:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.17/0.16/0.19→0.11/0.13/0.16 (idle between sessions, 15min avg decline from session exit — normal); (b) RAM 6.5→6.5Gi (flat); (c) `cost_coverage` 81.07→81.1% (5623 runs, up 13 — steady); (d) /var/log 896→896M (flat — log rotation between sessions, normal); (e) 4 peer messages (vs 3 at 20:00Z, +1 — DELTA link verification ×2 in one slot, within normal variance, **standard**); (f) OLLAMA OUTAGE ~31.5 DAYS (was ~31.5 at 20:00Z — counter rounds to same at ~6h delta); (g) fleet_status structure consistent: 35/35 up, 0 down (no schema drift this time — `fleet_status` keys accessible).
+
+---
+
 ## 2026-11-24T08:00Z — waking 2/4 (Sharpness & Regression Watch; 08:00 slot, ran ~08:01Z)
 
 1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running since ~01:00Z 11-13 reboot, uptime 11d7:06, load 0.34/0.31/0.23 — idle between sessions, normal 15min avg settling; low); reboot-required GONE; `systemctl --failed` EMPTY — 71st consecutive); all 13 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces.**
