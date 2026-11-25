@@ -20196,3 +20196,177 @@ Routine sweep. Host healthy: uptime 22h, load 1.22, RAM 6.2/58Gi, disk 35%, ngin
   Pending labels stale (117th). Logrotate frozen 5+ days (117th carried).**
 - NOTIFY: summary sent to operator via ./notify.sh.
 
+
+## 2026-11-25T12:30Z waking (w369 — 12:30 slot; first session; heading corrected
+from duplicate "w368" — which collided with the 06:30 session's label — by the
+12:58Z fallback session, w363 precedent)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w367); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 10 routine probes (00:00–12:16Z:
+  MOUNTAIN x2, MEADOW x4, DELTA x2, RIDGE x2) — all "no reply needed",
+  scanned clean. Filed to processed/ (3506 total). quarantine 0.
+- Host health: up 12d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.23/0.19/0.17
+  (normal, post-wake decay). mem 51G avail, disk 55% (43G free), inodes 13%.
+  All 6 peer services active + 110 total running units (matches w367).
+  **LOGS: syslog 296M (+77M from w367's 220M in ~30 min — highly elevated;
+  usual ~3M/h. Also logrotate status still last updated 2026-11-22 00:41,
+  syslog.1 165M frozen since Nov 22 00:41 — rotation completely frozen,
+  4+ days. /var/log total 968M (up from 891M w367). Gale's to fix,
+  carried 116th waking.**
+- Backup: `backups/cyclone-20261125T123015Z.tar.gz` (436K, 200 entries)
+  — gzip -t OK, keys/ excluded.
+- Production pass (live @8090): **20/21 HTML pages 200** (index + fleet/status/
+  metrics/observability/agora/cameras + all new pages;
+  **health.html still 404** — 85th consecutive). Core proxied fleet API:
+  **8/8 200** (telemetry/health/registry/activity/metrics/observability/
+  agora/posts + alert-history.json; all present). Content-type:
+  **text/html;charset=utf-8 + nosniff on ALL core fleet APIs** — **regression
+  from w366's `application/json` recovery (reverted again)**.
+  alert-history.json correctly serves `application/json`.
+  **SSE streams: 0/5** (all 5 return 501 with `text/html;charset=utf-8`;
+  fleet/stream HEAD 501). 85th variant count. Steady dead from w361.
+  Gale's to fix.
+- Freshness: generated_at 2026-11-25T12:32:32Z on fleet-metrics/health/activity/posts (fresh).
+  **cost_usd 358.127701 (DOWN $2.0 from w367's 360.05 — reprice/correction)**.
+  **coverage_pct 81.18 (up from 81.06)**. `error_runs_24h_by_host`:
+  mountain 4, beacon 4, tidal 3 (new sub-object, v1 structure).
+- Activity: fleet-activity/v1, 24 events (beacon 1, bora 7, cyclone 3,
+  chinook 3, gale 3, squall 1, zephyr 2). **ALL 7 referenced agents IN the
+  35-agent roster — clean. Zero non-roster refs.**
+  Agora: 141 posts (+0 — flat for 22nd cycle), generated_at fresh.
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-25T12:30:01Z (this cycle — LANDED).
+  agents_by_host.gale lists 14. Cyclone present as 'Cyclone' in fleet_status keys.
+  fleet_health: empty (no alert keys) — **0 alerts, all resolved**.
+- CONTENT ASSERTION (11-WAY IDENTITY, 86th consecutive clean): fleet.html
+  data-name labels 35 == fleet-metrics fleet_status keys 35 == fleet-status
+  35/35 up == /api/fleet/health ok:true == activity events 24 zero non-roster
+  refs == agora/posts 141 (fresh) == generated_at fresh == cyclone in all ==
+  cost_usd 358.13 + coverage 81.18.
+  "35 agents" x6 in fleet.html; stale "25/27" regex false positives (61 matches —
+  all SVG coordinate data like "cx=964.69" + date formats, not content).
+  "pending install" x2 (Prism, Mesa, Vista) still in fleet.html prose —
+  all three UP per sweep. **Stale data, Gale's to fix (carried, 116th waking).**
+  "21/24 gale-side remote pairings two-way" prose unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot ownership www-data:www-data
+  755; 0 non-www-data files. All mtime 2026-10-23 (single deploy snapshot).
+  No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 (remote halves still not installed). 65th consecutive run, steady state.**
+- Spend: last row 06:32:26Z $0.00; no new row for this session (freetoken
+  expected to log $0.00). No alert threshold crossed.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (86th).
+  Content-type REGRESSED to text/html+nosniff on all core fleet APIs (reverted
+  from w366's recovery). SSE 0/5 still all dead. cost_usd 358.13, coverage 81.18.
+  Logrotate completely frozen at 165M, syslog grew 77M in 30min — 116th carried.
+  syslog.1 frozen 4+ days. Highlog growth rate (296M) needs Gale attention.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
+       ## 2026-11-25T12:58Z waking (w370 — 12:30-slot second session; GLM fallback)
+- Runner: opencode/**openrouter/z-ai/glm-5.3-flash** (GLM fallback — the
+  freetoken 12:30 run hung after finishing its pass and was killed at the
+  28-min wall-clock cap at 12:58Z, exit 124, BEFORE its git commit; its
+  entry (w369) is complete incl. notify 12:34Z and is committed by this
+  session. w366/w355 precedent for the slot's second session). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w367 + today's bottom entries);
+  `./check_replies.sh` -> "(no new messages)". peer/inbox EMPTY at read time
+  (w369 processed the day's 10 probes -> 3506 total), quarantine 0. No
+  double-processing.
+- **COVERAGE GAP FOUND & ROOT-CAUSED (Nov 25 00:30 slot):** that session
+  degenerated — opencode log shows 59 output tokens total, then wake.sh's
+  mandated continue-attempt ran ONLY backup + snapshot verify + git no-op +
+  a minimal notify ("wake: backup OK tarball 432K verified..."). NO
+  production pass, NO NOTES entry (first missing slot entry in the current
+  NOTES era). Snapshot 20261125T003009Z exists and is fine. One-off so far;
+  watch the next 00:30 slot — if it repeats, escalate to operator.
+- **NUMBERING CORRECTED:** 06:30 session = w368 (committed 0804396);
+  w369's heading had duplicated "w368" — relabeled w369 by this session
+  (w363 precedent); this entry = w370. Content-assertion counter also
+  collided (both Nov 25 sessions wrote "86th"); continuing from the
+  committed 06:30 baseline: this session = 87th.
+- Host health: up 12d12:04 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.26/0.21/0.18
+  (normal). mem 51G avail, disk 55% (43G free), inodes 13%.
+  All 6 co-resident peer services active (gale/zephyr/squall/tempest/
+  vortex/cyclone) + 110 total running units (matches w369).
+  **LOGS: syslog 298M (+2M from w369's 296M in ~27 min — rate ~4-5M/h,
+  back down from w369's 77M/30min spike reading; still above the usual
+  ~3M/h — watch). syslog.1 165M frozen since Nov 22 00:41. /var/log 970M.
+  NEW NUANCE: logrotate status file mtime 2026-11-25 00:20:38, and its
+  entries for squall/levante agent logs updated 2026-11-25 00:00 —
+  logrotate IS running daily and rotating agent logs; only /var/log/syslog
+  rotation is stuck (status entry frozen at 2026-11-22-00:41:02). Corrects
+  w369's "logrotate completely frozen" framing — it's syslog-specific.
+  Gale's to fix, carried 118th observing waking.**
+- Backup: `backups/cyclone-20261125T125847Z.tar.gz` (436K, 180 entries)
+  — gzip -t OK; keys/ contains only the dir placeholder + 2 .example
+  templates (no real keys). w369's 123015Z snapshot (436K, 200 entries)
+  also on disk. Entry-count delta = the 10 inbox files w369 archived.
+- Production pass (live @8090): **23/23 docroot HTML pages 200** (index +
+  fleet/status/metrics/observability/agora/cameras + galaxy/energy/
+  energy-costs/guest-mode/network/offline/ollama/operations/presence/
+  reliability/routines/weather/notifications/runbooks + 404.html/
+  maintenance.html as files; **health.html still 404** — 86th consecutive,
+  continuing 06:30's counter). Core proxied fleet API: **7/7 200**
+  (telemetry/health/registry/activity/metrics/observability/agora/posts;
+  alert-history.json 404 but application/json — steady, no data source).
+  Content-type: **application/json; charset=utf-8 on ALL core APIs —
+  recovered AGAIN within the same slot** (w369 saw text/html+nosniff at
+  ~12:32Z; flap is now sub-hour: w365 text/html -> w366 JSON -> w367
+  text/html -> 06:30 JSON -> 12:32 text/html -> 12:59 JSON).
+  **SSE streams: 3/5 CORRECT — activity/metrics/observability.stream all
+  200 `text/event-stream; charset=utf-8` with real streaming data
+  (metrics.stream served SSE frames; activity.stream delivered 3416 bytes
+  in 6s). FIRST correct SSE reading since w361's 0/5 streak — recovery to
+  the w354/w358 3/5 state (or Gale deploy; docroot mtimes still Oct 23, so
+  likely the same flap, now confirmed reproducible both directions).
+  /api/fleet/stream 404 (text/event-stream content-type quirk) +
+  agora/posts/stream 404 (application/json) still dead. Gale's to fix.**
+- Freshness: generated_at 12:59:04Z fleet-metrics / 12:59:25Z telemetry +
+  activity / 12:59:26Z agora — all fresh (this minute). Telemetry
+  totals.agents = 35-name list incl cyclone. **cost_usd 358.1519 (+$0.02
+  from w369's 358.1277)**; cost_coverage known_usd 358.148101,
+  **coverage_pct 81.18 (held)**. error_runs_24h_by_host: beacon 4, tidal 3,
+  mountain 3 (w369 saw mountain 4 — rolling window moved).
+- Activity: fleet-activity/v1, 24 events (gale 4, cyclone 9, bora 7,
+  chinook 3, beacon 1). **ALL 5 referenced agents IN the 35-agent roster —
+  clean. Zero non-roster refs (w367's "glp ai forum outreach agent"
+  confirmed one-off; 2nd consecutive clean since).** Agora: 141 posts
+  (+0, flat), generated_at fresh.
+- FLEET ROLL-UP (fleet-metrics v1, 35 fleet_status keys): **35/35 up,
+  0 down, 0 auth-gated**. last_wake_by_host.gale: 2026-11-25T12:30:01Z
+  (this cycle — LANDED). Cyclone present. No alert keys — **0 alerts,
+  all resolved**.
+- CONTENT ASSERTION (11-WAY IDENTITY, 87th consecutive clean): fleet.html
+  data-name labels 35 (unique 35) == fleet-metrics fleet_status 35 (all up)
+  == telemetry totals.agents 35 == /api/fleet/health ok == activity events
+  24 zero non-roster refs == agora/posts 141 (fresh) == generated_at fresh
+  == cyclone in all == "35 agents" x6 in fleet.html == no stale 25/27
+  agent strings (0 regex hits). "pending install" x2 (Prism, Mesa, Vista)
+  still in fleet.html prose — all three UP per sweep. **Stale data, Gale's
+  to fix (carried, 118th observing waking).** "21/24 gale-side remote
+  pairings two-way" prose unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — 181 non-compressed files,
+  0 newer than Nov 1, 0 non-www-data, docroot 755 www-data:www-data. No
+  hand-edit drift. (06:30 counted 185 non-compressed; w369 + this session
+  count 181 — counting-method variance; mtime/ownership checks agree.)
+- PAIR RE-TEST: **NOT RUN this session** (second-session economy; steady
+  30/34 from w369's 65th consecutive run ~25 min ago; HIGHBEAM/LANTERN/
+  LIGHTNING/RADAR still 401 — remote halves still not installed).
+- Spend: last row 06:32:26Z $0.00. This GLM fallback session logs
+  cents-level OpenRouter (cf. w366's $0.0437). No alert threshold crossed.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- **SUMMARY: Second session (GLM fallback after freetoken cap kill; w369's
+  complete entry committed here). Fleet steady 35/35 up, 0 alerts, 0 drift,
+  content clean (87th). SSE RECOVERY 3/5 — first correct reading since
+  w361. Content-type JSON again (flap now sub-hour). COVERAGE GAP: Nov 25
+  00:30 slot degenerated (59-token session, no production pass/NOTES) —
+  watch next 00:30. Logrotate nuance: runs daily, only syslog rotation
+  stuck (118th). Syslog growth back to ~4-5M/h after w369's spike reading.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
