@@ -20445,3 +20445,144 @@ from duplicate "w368" — which collided with the 06:30 session's label — by t
   stuck (118th). Syslog growth back to ~4-5M/h after w369's spike reading.**
 - NOTIFY: summary sent to operator via ./notify.sh.
 
+
+       ## 2026-11-25T19:07Z waking (w372 — 18:30-slot second session; GLM fallback)
+- Runner: opencode/**openrouter/z-ai/glm-5.3-flash** (GLM fallback — the
+  freetoken 18:30 run (w371) completed its FULL pass — entry written,
+  commit 6c98204, notify 18:35Z, backup 183218Z — then hung and was killed
+  at the 28-min wall-clock cap at 18:58Z, exit 124; wake.sh fell back once.
+  w355/w363/w366/w370 precedent for the slot's second session). Host
+  gale-agent. No double-processing: peer/inbox EMPTY at read time (w371
+  filed the day's probes -> 3512 total), quarantine 0;
+  `./check_replies.sh` -> "(no new messages)". ASK.md unchanged.
+- NOTES LAYOUT NOTE: w371 PREPENDED its entry at line 1 (top of NOTES.md);
+  w368-w370 appended at the bottom. This entry APPENDS at the bottom
+  (AGENT.md "append"; w368/w369/w370 pattern). Both locations hold
+  complete entries — future sessions: read BOTH ends of NOTES.md for
+  context. No reorganization performed.
+- Host health: up 12d18:04 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.19/0.18/0.18
+  (normal). mem 51G avail, disk 55% (43G free), inodes ~13%.
+  All 6 co-resident peer services active (gale/zephyr/squall/tempest/
+  vortex/cyclone).
+- Backup: `backups/cyclone-20261125T190037Z.tar.gz` (436K, 180 entries)
+  — gzip -t OK; keys/ contains only the dir placeholder + 2 .example
+  templates (no real keys). w371's 183218Z snapshot (445K) also on disk.
+- **LOGROTATE ROOT-CAUSED (corrects w369/w370/w371's "stuck/frozen/failed"
+  framing — syslog rotation is being SKIPPED, not failing):**
+  (1) logrotate.service exit 0/SUCCESS; timer active, last ran
+  2026-11-25 00:20:37, next due 00:41 Nov 26 — logrotate runs daily and
+  DOES rotate the agent logs (status file full of per-agent entries,
+  latest 2026-11-25).
+  (2) `sudo logrotate --debug /etc/logrotate.conf` prints for every
+  /etc/logrotate.d/rsyslog log (syslog/mail/kern/auth/user/cron):
+  "error: skipping /var/log/syslog because parent directory has insecure
+  permissions (It's world writable or writable by group which is not
+  root). Set su directive in config file". The rsyslog config (mtime
+  2026-10-01) is weekly + maxsize 500M and has NO `su` directive.
+  (3) /var/log is **drwxrwxr-x root:syslog — GROUP-WRITABLE**, dir mtime
+  2026-11-22 00:41:06 = the exact minute of the last successful rotation
+  (syslog.1 covers 2026-11-20T00:31Z -> 2026-11-22T00:41Z; prior
+  rotations syslog.2.gz Nov 20, syslog.3.gz Nov 15, syslog.4.gz Nov 8).
+  Something set /var/log group-writable during/after the Nov 22 00:41
+  rotate; every run since has skipped the whole rsyslog family silently
+  (exit 0, so nothing looked wrong).
+  (4) /var/lib/logrotate/status has NO entries for any rsyslog-family
+  log (consistent with the skip; root-readable only — my first non-sudo
+  grep silently failed, do not repeat that).
+  FIX (Gale's — system config, not mine to edit): `sudo chmod g-w
+  /var/log` (restore 0755) OR add `su syslog adm` to
+  /etc/logrotate.d/rsyslog. **PEER MESSAGE SENT to GALE 19:0xZ with the
+  full evidence + fix.** Carried until fix confirmed (120th observing
+  waking). No urgency: syslog 320.2M bytes (~305M), ~1,746k lines since
+  Nov 22 00:41 (~3.4M/h), disk 43G free; it will cross the 500M maxsize
+  ~Nov 28-29 but will STILL be skipped until the perms/su fix lands —
+  unbounded growth, worth fixing this week.
+- **LOG-SPIKE CORRECTION (w371's "MAJOR LOG ISSUE / 168M/h / URGENT" was
+  a baseline error):** w371 compared 304M against w366's 220M — but
+  w366's reading was 2026-11-24 12:58Z, ~30 HOURS earlier, not 30
+  minutes: 220M->304M over ~30h ~= 2.8M/h = normal rate. Direct
+  measurement this session: 18:00-18:35Z window = 10,028 syslog lines
+  (normal), current rate ~1.3M/26min ~3M/h. NO burst, NO spike. Syslog
+  growth is steady ~3M/h and the only real issue is the rotation skip
+  above. Top talkers diffuse (AppArmor type=1400 audit, tailscale
+  controlclient, cron CMD lines) — no single spam source.
+- Production pass (live @8090): docroot pages checked 200: index/fleet/
+  status/metrics/observability/agora/cameras (**health.html still 404**
+  — carried; w370 counted 86th, w371 85th — counter collision, not
+  re-derivable this session). Core proxied fleet API: **7/7 200**
+  (telemetry/health/registry/activity/metrics/observability/agora/posts;
+  alert-history.json 404 application/json — steady, no data source).
+  Content-type: **application/json; charset=utf-8 on ALL core APIs**
+  (stable this reading). **SSE 3/5 via ./sse_probe.sh — activity/
+  metrics/observability.stream all 200 text/event-stream; charset=utf-8
+  held open 8s (real streaming); telemetry/stream + agora/posts/stream
+  404.** Recovery state holds for the 2nd consecutive session.
+- **fleet-metrics/v1 structure (follow-up to w371's "MAJOR STRUCTURE
+  CHANGE"):** current top-level keys = agents_by_host, cost_24h_by_host,
+  cost_coverage, cost_coverage_by_host, coverage, daily_cost_by_host,
+  daily_wakings_by_host, days, description, error_runs_24h_by_host,
+  fleet_status, generated_at, last_wake_by_host, per_agent_24h,
+  runs_24h_by_host, schema, sources. No top-level telemetry/fleet_health/
+  activity/cost_usd. **COMPATIBILITY VERIFIED against the deployed
+  page JS (docroot chunks, all mtime 2026-10-23 06:19): metrics.js,
+  dist/{cost,hosts,kiosk,main,metrics,drilldown}.js all reference
+  per_agent_24h / agents_by_host / error_runs_24h_by_host /
+  last_wake_by_host / fleet_status — i.e. tonight's shape is the shape
+  the Oct-23 site was BUILT for. The morning 12:30-cycle shape
+  (top-level cost_usd per w370) was the outlier — consistent with
+  Gale's collector flipping between builds (same pattern as the
+  content-type/SSE flap). The separate /api/fleet/telemetry endpoint is
+  intact (totals.agents 35 names, 6,994 run rows with per-run cost_usd
+  — which is what drilldown's a.cost_usd reads), so no page-render
+  breakage found. Watch next waking for another flip.**
+- Freshness: generated_at 18:59:16Z on metrics/telemetry/activity/agora
+  — all fresh (this minute). Roll-up (fleet-metrics v1, 35 fleet_status
+  keys): **35/35 up, 0 down, 0 auth-gated**. last_wake_by_host.gale:
+  2026-11-25T18:30:01Z (this cycle — LANDED; w371's own wake).
+  coverage 35/35/35. sources: beacon-relay + tidal-direct ok
+  (latest_run_at 18:00:02Z, age_s 45); **mountain-direct state ok but
+  latest_run_at 2026-11-25T12:45:01Z — no 18:00 run relayed from
+  Mountain (6h+; watch, could be its own scheduling)**. cost_coverage
+  known_usd 359.303944, coverage_pct 81.14. error_runs_24h_by_host:
+  **beacon 9 (w370 saw 4 — rising, watch)**, tidal 3, mountain 3.
+- Activity: fleet-activity/v1, 24 events, zero non-roster refs. Agora:
+  141 posts (+0, flat 23rd cycle), fresh.
+- CONTENT ASSERTION (11-WAY IDENTITY, 89th consecutive clean — w370 used
+  87th, w371 88th, counters collide again): fleet.html data-name labels
+  35 (unique 35) == fleet-metrics fleet_status 35 (all up) == telemetry
+  totals.agents 35 (cyclone in) == /api/fleet/health ok:true ==
+  activity events 24 zero non-roster refs == agora 141 fresh ==
+  generated_at fresh (18:59:16Z all) == cyclone in roster/fleet_status
+  == "35 agents" x6 in fleet.html == no stale 25/27 strings (0 hits).
+  "pending installs: Prism, Mesa, Vista" x2 still in fleet.html prose —
+  all three UP per sweep. **Stale data, Gale's to fix (carried, 120th
+  observing waking).** "21/24 gale-side remote pairings two-way" prose
+  unchanged.
+- ROTATION (repo<->docroot drift): carried from w371's 18:33 check —
+  CLEAN (523 non-compressed files, 0 non-www-data, docroot 755
+  www-data:www-data, all mtimes 2026-10-23). Spot-verified this session:
+  all consumed JS chunks still mtime 2026-10-23 06:19 (no new deploy).
+- PAIR RE-TEST: **NOT RUN this session** (second-session economy; w371
+  ran 30/34 steady at ~18:3xZ: HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 — remote halves still not installed; local mesh + PRISM/PULSAR/
+  BEACON 200 ok).
+- Spend: rows today 00:30 $0.00 / 06:32 $0.00 / 13:00:34Z $0.0525
+  (w370's GLM fallback). spend_check.py ran this session — no new row
+  yet (this session's OpenRouter usage not yet queryable; cf. w370's
+  pattern). No alert threshold crossed.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair
+  operator sign-off (rule 8).
+- **SUMMARY: Second session (GLM fallback after freetoken cap kill;
+  w371's complete entry + commit + notify verified). LOGROTATE
+  ROOT-CAUSED: /var/log went group-writable at the Nov 22 00:41 rotate;
+  every logrotate run since silently SKIPS the rsyslog family (exit 0);
+  fix = chmod g-w /var/log or add `su syslog adm` — sent to GALE with
+  evidence. w371's log-spike alarm corrected: no burst, rate normal
+  ~3M/h. Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (89th).
+  SSE 3/5 holds (2nd session). Metrics shape tonight = the shape the
+  Oct-23 page JS expects (no breakage); morning shape was the outlier.
+  Mountain-direct relay stale since 12:45Z (watch); beacon error_runs_24h
+  9 and rising (watch).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
