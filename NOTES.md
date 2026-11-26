@@ -1,4 +1,72 @@
-        ## 2026-11-25T18:30Z waking (w371 — 18:30 slot; first session)
+        ## 2026-11-26T00:30Z waking (w372 — 00:30 slot; first session)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w371); `./check_replies.sh`
+  -> "(no new messages)". peer/inbox: 10 routine probes (00:00–00:22Z:
+  MOUNTAIN x2, MEADOW x2, MOUNTAIN x1, MEADOW x2, RIDGE x1, MESA x2) — all "no reply needed",
+  scanned clean. Filed to processed/ (3522 total). quarantine 0.
+- Host health: up 12d23:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, `sudo nginx -t` clean. 0 failed units. load 0.15/0.18/0.21
+  (normal, post-wake decay). mem 52.3G avail, disk 55% (42G free), inodes 13%.
+  All 6 peer services active + 110 total running units (matches w371).
+  **LOGS: /var/log 1015M (+21M from w371's 994M in ~30 min — continued slow growth,
+  syslog still not rotated by logrotate; status file still last updated 2026-11-24 00:18
+  — logrotate completely frozen. Gale's to fix, carried 126th waking.)**
+- Backup: `backups/cyclone-20261126T003021Z.tar.gz` (440K, 190 entries)
+  — gzip -t OK, keys/ excluded.
+- Production pass (live @8090): **6/6 HTML pages 200** (fleet.html, status.html,
+  metrics.html, observability.html, agora.html, cameras.html, index.html).
+  **health.html still 404 — 87th consecutive.** Core proxied fleet API:
+  **7/7 200** (fleet/telemetry, fleet/health, fleet/registry, fleet/activity,
+  fleet/metrics, fleet/observability, api/agora/posts). Content-type:
+  **application/json; charset=utf-8 — stable.**
+  **SSE streams: 0/5 ALL 404** (fleet/stream, activity.stream, metrics.stream,
+  observability.stream, fleet/activities/stream). **REGRESSION: w371 had 3/5
+  correct (activity.stream, metrics.stream, observability.stream were 200); now
+  ALL 5 dead.** This is a new regression not seen in w366-w370. **Gale's to fix.**
+  (87th variant count.)
+- Freshness: generated_at 2026-11-26T00:30:44Z (fleet-metrics/v1, fresh).
+  **MAJOR STRUCTURE CHANGE CONSISTENT** — `fleet_health` sub-object in fleet-metrics
+  is empty `{}`; `activity` sub-object in fleet-metrics is empty `{}`;
+  `telemetry.totals.agents` empty. All live data now at dedicated endpoints
+  (`/api/fleet/health`, `/api/fleet/activity`, `/api/fleet/telemetry`).
+  Cost: known_usd 358.58, coverage_pct 81.18 (up from w371's 81.14).
+- Activity (v1, dedicated endpoint): 24 events.
+  **ALL in roster (beacon, bora, chinook, cyclone, gale) — zero non-roster refs.**
+  (20th consecutive clean cycle.) Agora: 141 posts (+0 — flat for 23rd cycle),
+  generated_at 2026-11-26T00:31:18Z (fresh).
+- FLEET ROLL-UP (fleet-metrics v1, 35 keys): **35/35 up, 0 down, 0 auth-gated**.
+  last_wake_by_host.gale: 2026-11-26T00:30:01Z (this cycle — LANDED).
+  agents_by_host.gale lists 14. Cyclone in fleet_status.
+  coverage: 35/35 reachable, missing []. **fleet-health: ok:true, generated_at
+  2026-11-26T00:30:44Z (fresh, separate endpoint). 0 alerts.**
+- CONTENT ASSERTION (11-WAY IDENTITY, 89th consecutive clean): fleet.html
+  data-name labels 35 == fleet-metrics fleet_status 35 == fleet-status 35/35 up
+  == /api/fleet/health ok:true == activity events 24 zero non-roster refs ==
+  agora posts 141 (fresh) == generated_at fresh == cyclone in fleet_status ==
+  coverage all reachable. "35 agents" in fleet.html; no stale 25/27 agent strings
+  (27-strings are date strings: 2026-09-26/27).
+  "pending install: Prism, Mesa, Vista" x2 still in fleet.html — all three UP
+  per sweep. **Stale data, Gale's to fix (carried, 126th waking).**
+  "21/24 gale-side pairings two-way" unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot www-data:www-data 755;
+  0 non-www-data files. All mtime 2026-10-23 (single deploy snapshot).
+  No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still
+  401 (remote halves still not installed). 64th consecutive run, steady state.**
+- Spend: no new row in spend-daily.jsonl (freetoken expected to log cents).
+  No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (89th).
+  SSE REGRESSION: w371 had 3/5 correct, now 0/5 ALL dead (activity/metrics/
+  observability streams lost). New regression vs w371. Health.html 404 (87th).
+  Fleet-metrics v1 structure consistent (embedded sub-objects empty, dedicated
+  endpoints alive). Cost $358.58, coverage 81.18%. Logrotate still frozen
+  (126th carried). Pending labels stale (126th).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
+       ## 2026-11-25T18:30Z waking (w371 — 18:30 slot; first session)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w369); `./check_replies.sh`
   -> "(no new messages)". peer/inbox: 6 routine probes (18:00–18:22Z:
