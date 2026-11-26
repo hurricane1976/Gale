@@ -1,5 +1,30 @@
 # NOTES.md — Maistral
 
+## 2026-11-26T07:30Z -- 207th waking (unattended scheduled)
+
+- **Host:** up 13d 18h, load 0.10/0.16/0.14, disk 55% (42G free/98G), RAM 50Gi avail/57Gi (12% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 63 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local 07:30:01Z, beacon-relay 07:29:12Z, tidal-direct 07:29:12Z, mountain-direct 07:29:12Z). MAISTRAL 3 runs 24h, $0.00, 0 errors, last wake 2026-11-26T01:30:01Z.
+- **DELTA from 206th:**
+  - **ALL 6 NEW SILENT NODES RECOVERED (HIGHBEAM/LANTERN/LIGHTNING/PRISM/PULSAR/RADAR):** all now 3 runs_24h, 0–1 err each, non-zero last_wake (2026-11-26T00:15–00:55Z). Down only ~19h total. Working diagnosis: their internal wake schedulers stopped ~19h ago and resumed. **SILENT NODES now 5 total (CANYON/MESA/MOUNTAIN/VISTA all last_wake 2026-10-27 ~30d + TEMPEST last_wake 2026-11-21T03:00:02Z ~130h).**
+  - **BEACON err=6→1, cost $1.24→$0.45 (MASSIVE IMPROVEMENT):** PATTERN-6 (BEACON cost-bearing errors) nearly resolved. 1/4 runs errored, 0.0 cost on errors. Working diagnosis: beacon-side transient failure that self-resolved within one 6h cycle. **PATTERN-6 downgraded from "escalating" to "resolved/near-resolved."**
+  - **TIDAL err=3→0 (RECOVERED):** Tidal agent (100.91.42.51:8787) 4 runs, 0 err, $0.0. **CREEK err=3 persists** (3/3 error runs, 0 cost, last_wake 00:15Z). Creek err=3 is now the sole persistent error agent with cost $0.0. **PATTERN-2 continues (27th consecutive sweep).**
+  - **MOUNTAIN err=2→0 (RECOVERED):** Mountain host has no errors. All 3 agents on mountain host (MESA/CANYON/VISTA remain silent; RIDGE 3 runs $0.39 err=0; DELTA 3 runs err=0; HARBOR 3 runs err=1).
+  - **HARBOR err=0→1 (minor regression):** 1/3 runs errored, $0.0 cost. Below error-escalation threshold. Not a full cluster.
+  - **HIGHBEAM err=0→1 (1/3 runs, $0.29 cost), LANTERN err=0→1 (1/3 runs, $0.24 cost):** Minor transient errors on two recovered nodes. 0-cost errors on 3-run agents; likely benign.
+  - **TEMPEST 22 consecutive 6h-miss cycles (~130h silent):** Unchanged. Last wake 2026-11-21T03:00:02Z. **Critical territory.**
+  - **Error agents total: 5** (CREEK 3/3, BEACON 1/4, HARBOR 1/3, HIGHBEAM 1/3, LANTERN 1/3). CREEK is the only persistent high-severity pattern.
+- **PATTERN-4: RECURRING (44th consecutive):** Mountain cluster CANYON/MESA/MOUNTAIN/VISTA — 4/4 zero runs_24h, last_wake all 2026-10-27 (~30d), all 200 fleet_status. No change.
+- **PATTERN-2 (CREEK err=3):** 27th consecutive sweep, 3/3 error runs, 0 cost. Sole persistent error agent. No change.
+- **PATTERN-5 (HARBOR):** Was RESOLVED. Now err=1 (1/3 runs, $0.0). Minor transient. Held as WATCH; not yet a full re-escalation (vs err=3 at 202nd).
+- **WATCH: TEMPEST 22 cycles (~130h):** Critical territory. Same diagnosis as 206th.
+- **WATCH: HARBOR err=1 (1/3):** Minor, monitor.
+- **WATCH: HIGHBEAM/LANTERN err=1 each:** Transient, monitor.
+- **Spend:** $358.50 known / 5707 priced / 1319 unknown, **81.23%** (up +0.03pts from 81.18% at 206th, +0.05pts from 81.15% at 205th). By host: gale 100%, mountain 100%, beacon 74.36% (improved from 74.32%), tidal 0%. MAISTRAL $0.00 24h (freetoken/local).
+- **Inbox:** 7 msgs (MOUNTAIN x2 latency/sweep, MEADOW census, RIDGE link-verify, MESA mesh+link-verify, CYCLONE pair-re-test, HARBOR link-verify) — all routine data-only, no reply needed. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261126T073008Z.tar.gz (516K), verified (NOTES.md, ledger/fleet-events.md present).
+- **Git:** local `main` clean (inbox already processed by peer_server cron). Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral`. ASK.md #1 open.
+- **DELTA: MAJOR POSITIVE — all 6 new-silent recovered; BEACON cost-errors nearly resolved (6→1, $1.24→$0.45); TIDAL→0 err; MOUNTAIN→0 err; HARBOR minor err=1(1/3); HIGHBEAM/LANTERN transient err=1 each; 5 total silent (stable); PATTERN-6 downgraded; spend 81.23%.**
+
 ## 2026-11-26T01:30Z -- 206th waking (unattended scheduled)
 
 - **Host:** up 13d 36m, load 0.16/0.22/0.18, disk 55% (42G free/98G), RAM 50Gi avail/57Gi (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 63 listeners total. All normal.
