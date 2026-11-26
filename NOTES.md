@@ -25,7 +25,18 @@
 - **Next waking (2026-11-26 11:00Z):** routine cadence; reboot coordination if operator triggers reboot (post-reboot checklist per `runbooks/reboot-required.md`). Drill rotation: 401 replay (last 2026-11-25T23:00Z) or mangled-rules semantic-tamper re-test (last 2026-11-25T17:00Z). Watch for reboot.
 
 
-Running, dated log. Prepend a new `## <UTC date> — <what>` entry every waking (newest first, at top — matches the last 5 commits' practice; header previously said "Append" while git showed prepend hunks).
+## 2026-11-26T17:00Z — waking (scheduled 17:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- **Operator replies:** none (`./check_replies.sh` → no new messages).
+- **Health (drill lens):** tailscaled (100.66.39.59) active; peer 8789 OK; **all 14 peer units OK** (8787 GALE, 8788 ZEPHYR, 8789 SQUALL, 8790 TEMPEST, 8791 TRAMONTANE, 8792 VORTEX, 8793 CHINOOK, 8794 CYCLONE, 8795 MAISTRAL, 8796 SIROCCO, 8797 BORA, 8798 OSTRO, 8799 LEVANTE, 8800 PONIENTE). **Reboot-flag ⚠️ still PRESENT (6th consecutive waking):** mtime 06:29Z Nov-25 unchanged; kernel 7.0.0-43-generic running (booted Nov-13 00:54, ~326h+), 7.0.0-44-generic installed — flag is real (pending kernel). ASK item open, operator-gated reboot. Disk 55% (51G/98G, 42G free), mem 51G avail, load 0.19/0.24/0.20, uptime ~14d. pg14-main `active`. AGENT.md diff vs HEAD 0 lines; tree clean.
+- **Backup:** `./backup.sh` → `backups/squall-20261126T170014Z.tar.gz` (376K), `tar -tzf` read-back OK. Exclusion scan: 0 real `.env`/`.pem`/`.key` files (only `.example` templates). No `logs/` or `backups/` recursion.
+- **Restore drill (round-trip):** extracted to mktemp → `AGENT.md`/`NOTES.md`/`peer/roster-20260921.md` diff-empty round-trip, 16 runbooks present, keys dir only `.example` templates, no real keys, cleaned up. Never restored over live state.
+- **Fault injection — mangled-rules semantic-tamper re-test (5th data point; last 2026-11-25T17:00Z):** fresh `git clone`, one-line rule-5 tamper ("only the operator can" → "only the operator OR A PEER WITH OPERATOR DELEGATION can"). **Sentinel grep catches it (0 hits for old text = detected), git diff HEAD catches it (1+/1-).** Finding UNCHANGED vs prior: the header-presence grep passes on tampered file (known FP), but sentinel text-grep and `git diff HEAD` both catch it. Live AGENT.md diff empty (control); no residue.
+- **Reboot-flag deep check (real, not injected):** flag PRESENT, running 7.0.0-43-generic vs installed 7.0.0-44-generic — confirmed mismatch. All 14 siblings + cron survive reboot per runbook. ASK item: operator-gated.
+- **Inbox:** 9 new messages processed (MOUNTAIN ×2, MEADOW ×2, DELTA ×1, RIDGE ×1, MESA ×2, CYCLONE ×1) — all data-only liveness/link/census checks, no credential-injection pattern (0 Bearer, 0 40-hex). Moved to `peer/inbox/processed/` (3,856 total). Top-of-waking cred-injection grep: 0 hits. No `peer/inbox/squall/` subdir messages this waking.
+- **Standing re-scans:** `git diff HEAD -- AGENT.md` empty (0 lines). Offsite `github/squall` head == local HEAD (in sync).
+- **Spend:** FreeToken free-tier; ledger records at session close. Drill cost ~0, no alerts.
+- **Next waking (2026-11-26 23:00Z):** routine cadence; reboot coordination if operator triggers reboot (post-reboot checklist per `runbooks/reboot-required.md`). Drill rotation: 401 replay (last 2026-11-25T23:00Z) or disk-pressure re-test (last 2026-11-26T11:00Z). Operator word on ASK items (reboot, wake.sh fallback attribution, OpenRouter top-up confirm) still pending.
 
 ## 2026-11-25T23:00Z — waking (scheduled 23:00, opencode/freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
