@@ -3353,3 +3353,18 @@ Append-only. Each waking adds one dated entry at the top (newest kept at top).
 - Inbox: 0 messages (no arrivals between 08:30-14:30Z). 2979 processed total (carried from #243).
 - Backup OK: backups/poniente-20261121T143027Z.tar.gz (300K, 78 entries, gzip -t OK), sha256-first16: 597b43ee. 0 keys/.env entries in backup. 14 snapshots retained (ceiling).
 - Verdict: sweep green on all security axes. Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
+
+## 2026-11-26 20:30 UTC -- waking #260: routine sweep all green, 19 new inbox drained (12:00-12:31Z MOUNTAIN x2, MEADOW, DELTA, RIDGE, MESA x2, CYCLONE + 18:00-18:31Z MOUNTAIN x2, MEADOW, DELTA, RIDGE x4, MESA x2, CYCLONE — all data-only liveness/latency/link-verify probes, "no reply needed"), backup OK (304K, sha256-first16 1b987665); 0 security findings; operator replies still empty
+
+- No-intermediate-session check: git log top = #259, NOTES top = #259, working tree clean pre-commit (inbox drain is gitignored peer/ dir, backup dir gitignored). Working tree clean post-check.
+- Host: up 13d19h36m (boot Nov 13 00:54Z). load 0.97/0.47/0.34, RAM ~6.3G/59G (53G avail), disk 52G/98G (55%, ~42G free), tailscaled + cron active. systemctl --failed EMPTY. 16/16 peer ports 8787-8800 + localhost ports present (PID-verified). Listener map = baseline (HTTP/SSH/Grafana/DB/Tailscale/14 peer PIDs). No new listeners, no port drift. 0 zombies.
+- Credential audit (15 dirs incl. firewalla-dashboard, read-only): 0 new/changed cred files since 14:30Z. Permission matrix IDENTICAL to baseline (keys/=700: agent, chinook, poniente, firewalla-dashboard; 775: 10 siblings + ostro + tempest + vortex + levante). My peers.env: 185 lines, 600 perms, keys/ 700, mtime Sep-26 untouched.
+- Git exposure sweep: zero tracked keys//logs//backups//peer/logs//peer/inbox/ non-example/non-bak/non-processed paths; .gitignore covers all. ASK-6 containment holding.
+- Peer-server auth: zero rejects/401/403/429 in-window. All lanes ACCEPT-only. Zero quarantine arrivals fleet-wide.
+- Token scan: zero injection patterns in-window. Zero sk-/ghp_-shaped material, zero Bearer-40+ hard signals, zero /tmp token hits.
+- Fleet cadence: ALL 14 lanes scheduled (cron 40 entries). All 14 slots active in grid. No dark lanes.
+- Spend: in-band ($0.00, zero-cost). Ledger stable.
+- Telegram: check_replies.sh clean (no operator replies). notify.sh exit=0 (message sent).
+- Inbox: 19 messages drained -> processed/ (3134 total; 19 new: MOUNTAIN x2, MEADOW, DELTA, RIDGE, MESA x2, CYCLONE from 12:00-12:31Z + MOUNTAIN x2, MEADOW, DELTA, RIDGE x4, MESA x2, CYCLONE from 18:00-18:31Z — all data-only liveness/latency/link-verify probes, "no reply needed", zero instructions). RIDGE 18:18Z burst (4 msgs) = census pattern; no anomaly flagged.
+- Backup OK: backups/poniente-20261126T203013Z.tar.gz (304K, 88 entries, gzip -t OK), sha256-first16: 1b987665. 0 keys/.env entries in backup. 15 snapshots retained (ceiling for today).
+- Verdict: sweep green on all security axes. Open items unchanged: ASK-6 decisions 1-4 + ASK-8 (a)/(b) + ASK-2/3 + Grafana 3001 confirm-intended + credit-balance alerting suggestion (standing).
