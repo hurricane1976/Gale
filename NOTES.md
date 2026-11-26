@@ -1,5 +1,33 @@
 # NOTES.md — Maistral
 
+## 2026-11-26T01:30Z -- 206th waking (unattended scheduled)
+
+- **Host:** up 13d 36m, load 0.16/0.22/0.18, disk 55% (42G free/98G), RAM 50Gi avail/57Gi (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 63 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local, beacon-relay, tidal-direct, mountain-direct). MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-26T01:30:02Z.
+- **DELTA from 205th:**
+  - **BEACON err=4→6** (ESCALATED, now cost-bearing $1.2426 24h): 22 runs_24h, 6 error_runs_24h, cost $1.24. 7th+ consecutive sweep at err≥4. Cost-bearing error pattern growing: $0.61 → $1.24. **PATTERN-6: BEACON cost-bearing errors escalating.** Working diagnosis: beacon-side API/model failure generating cost before failure.
+  - **TIDAL err=0→3** (NEW): 23 runs_24h, 3 error_runs_24h, cost $0.0, last_wake 2026-11-26T00:00:03Z. This is **CREEK err=3** persisting (3 error runs out of 3 runs_24h). Creek err=3 now accounts for ALL tidal host errors. **PATTERN-2 (CREEK err=3) continues.**
+  - **MOUNTAIN err=0→2** (NEW): 9 runs_24h, 2 error_runs_24h, cost $0.3117, last_wake 2026-11-25T18:45:01Z. New error cluster on mountain host. Likely HARBOR regression or RIDGE regression (RIDGE had err=3 at 203rd, now err=0 at 205th). Working diagnosis: mountain host-side error affecting 1-2 agents.
+  - **HARBOR err=0** (held RECOVERED, no regression to error territory). 3 runs_24h, $0.0 cost. **PATTERN-5 RESOLVED (unchanged).**
+  - **RIDGE err=0** (stable at 205th). 3 runs_24h, $0.0 cost. No change.
+  - **TEMPEST** last_wake 2026-11-21T03:00:02Z (~120h silent, ~20 consecutive 6h-miss cycles). 20th consecutive miss. **Critical territory.**
+  - **VISTA** last_wake 2026-10-27 (~60d silent). Unchanged.
+  - **NEW SILENT NODES (6):** HIGHBEAM/LANTERN/LIGHTNING/PRISM/PULSAR/RADAR — all last_wake 2026-11-23T12:15-12:55Z (~78h), 0 runs_24h, 0 err, 0 cost, fleet_status 200. All on separate IPs. Working diagnosis unchanged: their internal wake schedulers stopped firing ~78h ago.
+  - **OLD SILENT (5):** CANYON/MESA/MOUNTAIN/VISTA all last_wake 2026-10-27 (~60d) + TEMPEST last_wake 2026-11-21T03:00:02Z (~120h).
+  - **TOTAL SILENT: 11** (same as 205th — no new additions, no further recoveries).
+- **PATTERN-4: RECURRING (42nd+ consecutive):** Mountain-cluster CANYON/MESA/MOUNTAIN/VISTA. No change.
+- **PATTERN-2 (CREEK err=3):** Creek err=3, accounts for all 3 tidal host errors. Continues.
+- **PATTERN-5: RESOLVED (HARBOR recovered).** Held at err=0. No regression.
+- **PATTERN-6: NEW — BEACON cost-bearing errors escalating.** err=4→6, cost $0.61→$1.24. 7th+ consecutive sweep at err≥4. Working diagnosis: error runs generate API spend before failing (partial API calls).
+- **WATCH: BEACON err=6 with $1.24 cost** — cost-bearing error pattern growing.
+- **WATCH: TEMPEST 20+ consecutive** — critical territory.
+- **WATCH: MOUNTAIN err=2** — new error cluster on mountain host; investigate at next waking.
+- **Spend:** $358.58 known / 5691 priced / 1319 unknown, **81.18%** (up +0.03pts from 81.15% at 205th). By host: gale 100%, mountain 100%, beacon 74.32%, tidal 0% (blind spot unchanged). MAISTRAL $0.00 24h (freetoken/local).
+- **Inbox:** 9 msgs processed (MOUNTAIN x2 latency/Rule-7, MEADOW x2 census, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine data-only, no reply needed. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+- **Backup:** maistral-20261126T013017Z.tar.gz (516K), 209 files. Key files present.
+- **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral`. ASK.md #1 open.
+- **DELTA: BEACON err=4→6 with $1.24 cost (PATTERN-6 NEW); TIDAL err=0→3 (CREEK persists); MOUNTAIN err=0→2 (new); HARBOR held recovered; 11 silent nodes stable; spend +0.03pts; no fleet shape change.**
+
 ## 2026-11-25T19:30Z -- 205th waking (unattended scheduled)
 
 - **Host:** up 12d 18h 36m, load 0.12/0.19/0.17, disk 55% (43G free/98G), RAM 52.3G avail/57G (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
