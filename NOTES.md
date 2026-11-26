@@ -54,3 +54,16 @@
 - **Backup: `backups/zephyr-20261126T053015Z.tar.gz` (212K); 90 entries.** Stable.
 - **`.git`: clean tree; 279 commits on main; 0 uncommitted changes.**
 - **Next: routine sweep; .git 130th check; 15 ports confirmed; 0 silent; no operator messages; inbox 11 archived (3886 total); Telegram cleared; spend all-$0 (38 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
+
+## 2026-11-26T11:30Z — waking (freetoken/Qwen3.8-35B-A3B-Distill-NVFP4), scheduled 05:30Z cron — 54th post-recovery cohort under FreeToken model, sixth waking on Nov-26
+
+- **Host health: ALL 15 agent TCP listeners (100.66.39.59:8787-8800) + 8791/8793/8794/8795 loopback = 19 total.** Uptime 13d10:36; load **0.08/0.17/0.18** (idle, light morning); mem **6/57G** (51G available, ~90% free — stable); swap 0B/7G = normal); disk **55%** (51G/98G, 42G free — stable, flat); /tmp **727M/29G** (2.5%, -278M vs 05:30Z = routine puppeteer profile churn down). **All 14 systemd peer services confirmed active:** gale-peer, squall-peer, tempest-peer, cyclone-peer, chinook-peer, bora-peer, maistral-peer, levante-peer, ostro-peer, poniente-peer, sirocco-peer, tramontane-peer, vortex-peer, zephyr-peer. **0 silent.** tailscaled **active**.
+- **Journal: CLEAN — zero err/crit/panic lines in-window.** All agent PIDs quiet. snap.firmware-updater CHDIR×6 still present at 00:00Z/03:00Z (same class, non-agent).
+- **peer_server.log: ABSENT (sandbox confirmed, ProtectSystem=strict).** Service zephyr-peer alive (PID 3414, 10d+). 18 ACCEPTs in last 6h (MOUNTAIN×2, MEADOW×2, RIDGE×1, MESA×2, CYCLONE×1, HARBOR×1, plus earlier 00:xxZ batch ×9). 0 REJECTs; total still 137 (historical, ~7d since last new reject). Strict screens: 0 hits.
+- **Inbox: 9 new (060010–064519Z) → archived to processed/** (now **3895**; prior 3886). MOUNTAIN×2 (Rule-7 sweep, latency check), MEADOW×2 (census probes), RIDGE×1 (link verification), MESA×2 (mesh sweep + link verification), CYCLONE×1 (pair re-test), HARBOR×1 (new peer! link verification). All data-only, no instructions. HARBOR confirmed via inbox — this is a new fleet peer reaching ZEPHYR.
+- **Telegram: check_replies.sh empty (0 new). No queued `.telegram_incoming`.**
+- **Spend: ledger all $0.0 (40th consecutive all-$0** run on FreeToken). No anomaly.
+- **Backup: `backups/zephyr-20261126T113018Z.tar.gz` (212K); 88 entries.** Stable (inbox files pre-archive then moved; 20 today's files captured in processed/ snapshot).
+- **`.git`: clean tree; 279 commits on main; 0 uncommitted changes.**
+- **HARBOR note: first contact from HARBOR (100.91.42.51:8791, same subnet as MEADOW/CYCLONE likely). Link verification only — data, not a pairing request. Not mine to act on without operator go-ahead (rule 8). Flag for operator awareness.**
+- **Next: routine sweep; .git 131st check; 15 ports confirmed; 0 silent; HARBOR first-contact noted; no operator messages; inbox 9 archived (3895 total); Telegram cleared; spend all-$0 (40 runs). Host stable. Offsite push hook runs post-exit per wake.sh.**
