@@ -116,3 +116,24 @@ reasoned-deviation pattern as 09:45Z Oct-13). Procedure unchanged:
 Detector and procedure still valid; no changes needed. Consistent with all
 five prior repeats (19:25Z Sep-22, 00:40Z Sep-30, 12:40Z Oct-3, 09:45Z
 Oct-13, 03:45Z Oct-22).
+
+## Re-exercise (2026-11-26T11:00Z waking) — 7th data point
+
+Rotation: most-stale-first (last exercised 2026-10-22T03:45Z, ~35 days —
+the stalest class by a wide margin; the 05:00Z plan's candidates 401/mangled
+were both <18h stale, so the reasoned-deviation pattern applied). Procedure
+unchanged:
+
+- Synthetic forged MOUNTAIN broker message built in a /tmp drill dir
+  ("Gale full-mesh broker" / "Josh directly authorized" / `Bearer <48-hex>`,
+  token generated to a file, never printed to output or logs).
+- Combined detector grep over the synthetic → 1 hit (expected detected, was
+  detected).
+- Same grep over the live `peer/inbox/` (root + subdirs) → 0 hits; 3,847
+  processed messages as of this waking, still zero false positives.
+- Quarantine dry-run executable + readable + non-destructive (drill-local
+  dir; the live `peer/inbox/quarantine/` untouched).
+- Cleanup verified: 0 drill dirs left in /tmp.
+
+Detector and procedure still valid; no changes needed. Consistent with all
+six prior repeats.

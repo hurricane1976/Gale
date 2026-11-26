@@ -125,3 +125,20 @@ the intended tradeoff of rule 3; do not "fix" it by committing keys.
   pattern instead of the canonical standalone bracket-classed probe and caught
   5 benign `snap/chromium` processes — adjudicated non-writers, watch clean.
   Loose `snapshot.*hex` patterns catch chromium noise; use the canonical probe.
+
+## Re-run #24 — 2026-11-26T11:00Z
+
+- Most-stale class (~16 days since #23). ls-remote head == local HEAD
+  (83fd901, in sync pre-push). Clone via captured URL, `--branch squall`.
+- fsck --strict exit 0; AGENT.md/NOTES.md/ASK.md/roster 4/4 IDENTICAL
+  (tree clean pre-drill → committed-pre-drill property held without a new
+  commit); 16 runbooks; keys/ only 2 `.example` templates; clone status empty.
+- **RESIDUE FOUND from a prior waking:** `/tmp/squall-clone-drill-test`
+  (created 2026-11-23T17:01Z by that waking's comeback drill) had survived
+  5 subsequent wakings — the 17:00Z Nov-23 entry reported the clone PASS but
+  never stated "0 clone dirs left", and the standing /tmp residue sweep had
+  lapsed since. Harmless (clone of the offsite branch, no credentials), but
+  it is exactly the missed-cleanup class the sweep exists to catch. Removed;
+  0 squall-* dirs left after. Habit re-affirmed: end every drill block with
+  `ls -d /tmp/squall-*` and state the count in NOTES.
+- Cleanup 0 clone dirs left. PASS.
