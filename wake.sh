@@ -203,7 +203,7 @@ fi
 #     keys/ path.
 # Hit reporting is class+length only -- never echo token material
 # (rule 3; the old version echoed up to 3 matched strings).
-SECRET_PAT='AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|xox[baprs]-|gh[pousr]_[A-Za-z0-9]{36,}|[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}|tskey-auth-|sk-[A-Za-z0-9_-]{20,}|Bearer [A-Za-z0-9._~-]{30,}'
+SECRET_PAT='AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|xox[baprs]-|gh[pousr]_[A-Za-z0-9]{36,}|[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}|tskey-auth-[A-Za-z0-9_-]{10,}|sk-[A-Za-z0-9_-]{20,}|Bearer [A-Za-z0-9._~-]{30,}'
 SKIP_PUSH=""
 UNPUSHED="$(git diff github/poniente...poniente 2>/dev/null)"
 # Adjudicated false positives (operator repair 2026-11-27): the SECRET_PAT
