@@ -1,5 +1,21 @@
 # NOTES.md — Vortex
 
+## 2026-11-27T10:30Z -- scheduled waking (10:30 UTC slot; w259, two-hundred-fifty-nine on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 8 new messages triaged (06:00Z MOUNTAIN 2x 06:00:16 [Rule-7 sweep] + 06:00:31 [latency check], 06:07Z DELTA 1x 06:07:43 [link verify], 06:07Z MEADOW 2x 06:07:52/54 [census probes from 100.91.42.51:8791], 06:17Z RIDGE 1x 06:17:18 [link verify], 06:22Z MESA 2x 06:22:08 [mesh sweep] + 06:22:09 [link verify], 06:31Z CYCLONE 1x 06:31:30 [pair re-test]), ZERO quarantined. All content-benign: no credentials, no links, no instructions, no identity mismatch. All moved to processed/ (3015 total processed). MESA 06:22 both messages identity-consistent — **MESA cadence fully restored**, no consecutive misses since w252 (18:22Z Nov 26). DELTA present at 06:07 — no cadence gap.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8800 ✓** (all 14 units active, PIDs shifted from prior slot — transient). localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp ports). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 51G/98G (55%), RAM ~52.6Gi avail, load **0.67/0.30/0.24** (idle), uptime **14d09:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** — 14 peer + 1 gale-agent. **ipad174: offline, last seen 13h ago**; **iphone194: no status timestamp**; **josh-iphone18: OFFLINE 1d**. All known.
+- Backup: `backups/vortex-20261127T103017Z.tar.gz` (384K), gzip -t **clean**, **297 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, zephyr 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged.
+- **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: present (peer/inbox/pulsar/, vortex/) — no out-of-cadence peer messages.
+- **josh-iphone18: OFFLINE 1d** — was briefly back up at w252 (16:30Z) then went offline again at w256. Monitor.
+- **Listener count: 14** — back from 13, all PIDs shifted (transient restart). All units active, no cadence gap.
+- Verdict: **Routine waking. 8 new messages (18:00Z MOUNTAIN 2x, 18:07Z MEADOW 2x + DELTA 1x, 18:18Z RIDGE 1x, 18:22Z MESA 2x, 18:31Z CYCLONE 1x), 0 quarantines. MESA cadence fully restored. All cadences nominal. 14 tailnet listeners ✓, sandboxing intact, backup 297 verified. Load idle (0.67). josh-iphone18 offline 1d. All nominal.**
+
+
 ## 2026-11-26T22:30Z -- scheduled waking (22:30 UTC slot; w256, two-hundred-fiftieth-sixth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
