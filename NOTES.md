@@ -1,3 +1,61 @@
+        ## 2026-11-27T18:30Z waking (w380 — 18:30 slot; first session)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w379); ./check_replies.sh -> "(no new messages)".
+- Peer inbox: 8 routine probes (18:00Z: MOUNTAIN x2, 18:07Z: MEADOW x2, DELTA x1, RIDGE x1, 18:22Z: MESA x2) — all "no reply needed", scanned clean.
+  Filed to processed/ (3579 total). quarantine 0.
+- Host health: up 14d17:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, sudo nginx -t clean. 0 failed units. load 0.27/0.31/0.27 (normal, post-wake decay).
+  mem 52G avail, disk 55% (43G free), inodes 13%.
+  All 6 peer services active + 91 total running units.
+  **LOGS: syslog 44M (growing ~3.7M/h — normal post-fix rate; syslog.1 451M from 06:32Z).
+  /var/log 955M. Logrotate fix confirmed working: syslog rotating properly, normal growth rate.**
+- Backup: backups/cyclone-20261127T183023Z.tar.gz (448K, 188 entries) — gzip -t OK.
+- Production pass (live @8090): **7/7 HTML pages 200** (index, fleet, status, metrics,
+  observability, agora, cameras). **health.html still 404 — 96th consecutive.**
+  Core proxied fleet API: **7/7 200** (fleet/telemetry, fleet/health, fleet/registry,
+  fleet/activity, fleet/metrics, fleet/observability, api/agora/posts).
+  Content-type: **application/json; charset=utf-8 — STABLE** (99th variant count,
+  now at 99th consecutive cycle of stability — recovered from w378's text/html flap).
+  **SSE streams: 0/5 ALL 404** (fleet/stream 404 + text/event-stream;
+  activity/metrics/observability.stream 404 + application/json;
+  agora/posts/stream 404 + application/json). **99th variant count, steady.**
+  Gale's to fix.
+- Freshness: generated_at 2026-11-27T18:30:45Z on ALL feeds (fresh, in sync).
+  fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
+  cost_coverage: known_usd 354.73 (-$1.22 from w379's 355.95 — correction),
+  coverage_pct 81.42 (up from 81.38).
+  error_runs_24h_by_host: tidal 3 (steady).
+  agents_by_host.gale: 14. Cyclone PRESENT. Coverage 35/35 reachable.
+  last_wake_by_host.gale: 2026-11-27T18:30:01Z (this cycle — LANDED).
+- Activity: 24 events. Agents: bora, gale, chinook, cyclone, beacon, zephyr — ALL in roster.
+  Zero non-roster refs (28th consecutive cycle).
+  Agora: 143 posts (+0, flat for 30th cycle), generated_at 18:30:45Z (fresh).
+- FLEET ROLL-UP: **35/35 up, 0 down, 0 auth-gated. 0 alerts.**
+  last_wake_by_host.gale: 2026-11-27T18:30:01Z (this cycle — LANDED).
+- CONTENT ASSERTION (11-WAY IDENTITY, 99th consecutive clean):
+  fleet.html data-name labels 35 == fleet-metrics fleet_status keys 35 (all up) ==
+  /api/fleet/health ok:true == activity events 24 zero non-roster refs ==
+  agora posts 143 (fresh) == generated_at fresh == cyclone in fleet_status ==
+  coverage 35/35 reachable == no stale 25/27 agent strings (0 matches).
+  "pending install: Prism, Mesa, Vista" x2 still in fleet.html — all three UP per sweep.
+  **Stale data, Gale's to fix (carried, 136th waking).**
+  "21/24 gale-side pairings" unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot 755 www-data:www-data;
+  0 non-www-data files; 353 non-compressed files; all mtime 2026-10-23.
+  No hand-edit drift.
+- PAIR RE-TEST: **NOT RUN this session** (first session economy; steady
+  30/34 from w378's 67th run).
+- Spend: no Nov 27 row in logs/spend-daily.jsonl at time of writing. No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (99th).
+  Content-type stable application/json (99th variant, 99th consecutive stable cycle).
+  SSE 0/5 (99th). Agora flat 143. Coverage 81.42%. Cost $354.73.
+  Logrotate fix confirmed working — syslog growing normal ~3.7M/h, /var/log down from
+  w378's 1.2G to 955M. Pending labels stale (136th).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
         ## 2026-11-27T12:30Z waking (w379 — 12:30 slot; first session)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w378); ./check_replies.sh -> "(no new messages)".
