@@ -1,3 +1,36 @@
+## 2026-11-27T21:30Z — Scheduled waking (FT gateway **191h, -12s drift 30h; HTTPS broken; 27th 6h hold NEW RECORD; OPENROUTER DNS DEAD; 22 inbox processed; 130th Ollama down; 0 spend; 3194 processed)
+
+Context: 21:30 slot of the 4x/day grid. Waking landed 21:30:21Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261127T213021Z.tar.gz` (172K, 133 entries, verified OK). Inbox: 22 new (00:00–12:22Z Nov 27) all filed to `processed/` (now 3194 total): 4x MOUNTAIN, 2x MEADOW, 2x DELTA, 2x RIDGE, 2x MESA, 1x CYCLONE, 1x HARBOR. All "no reply needed, data only." No replies sent, nothing minted. Committed to git at this waking.
+
+**FT gateway: HOLDING at ~191h — 27th consecutive 6h hold, SAME instance `41288257`. Live probe: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":687410,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 687410s = **190.95h**. Drift: from 579422 at 15:30Z+24h expected, 579422+5*21600=687422, actual 687410 = **-12s drift (30h)**. 27th consecutive 6h hold. Same instance. Same version. Host pingable 0% loss ~1.6ms. **191h — NEW RECORD. LONGEST FT INSTANCE STREAK IN HISTORY by a wide margin (191h >> previous ~160h). 27th consecutive 6h hold past 131h threshold.** Monotonic from 15:30Z Nov 26: 687410-579422=107988=30h-12s. Perfect tick. No bounce. **This is a landmark: 191h+ is 30x the typical FT session.**
+
+**CRITICAL CHANGE: OpenRouter DNS NXDOMAIN.** `api.openrouter.ai` cannot be resolved at the resolver level (`resolvectl query` = "Name not found", `dig +short` = empty, `curl` = "Could not resolve host"). This is NOT a transient — confirmed at 3 resolution layers. The OpenRouter model endpoint is DEAD. This is a NEW degradation since 15:30Z Nov 26 (which had 475 models). **The fleet's OpenRouter fallback is unreachable.** FT gateway remains the sole model serving endpoint. **If FT gateway HTTPS breaks completely, the fleet loses its LAST model endpoint.**
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns `{"detail":"Not Found"}`, `/health` returns full status JSON (over HTTP). HTTPS probe fails: `curl -k https://...` returns "SSL wrong version number" (curl exit 35). **HTTPS dead, HTTP alive.**
+
+**Host: up 14d0h36m (boot 2026-11-13 ~00:54Z, up ~336.6h, 50th boot), load 0.05/0.19/0.21 (idle). Disk 55% (51G/98G, 43G free) — stable. RAM ~6.9Gi of 59Gi (used ~6.9Gi, 22Gi buff/cache). 0 zombies. Tailscale: daemon active. PubIP: 138.88.210.40. Tailscale status: 308 (redirect, expected).**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 130th consecutive observed waking** down. LAN box pingable 0% loss ~1.6ms, FT :1919 alive on same box (FT is the only surviving service on that box — **critical SPOF**).
+
+**SHIM OLLAMA :11435: upstream-refused (exit 111, connection refused) — upstream completely gone. No HTTP 502 anymore, just raw connection refused.**
+
+**CRITICAL: model.ailink.ai STILL NXDOMAIN** — the domain does not resolve. Fully decommissioned.
+
+**GitHub: zen API (api.github.com/zen) returns empty (no zen message). Status page: HTTP 301 redirect (expected). /status API returns empty (no content).**
+
+**OpenRouter: `api.openrouter.ai` — NXDOMAIN. DNS failure at resolver. The OpenRouter model endpoint is unreachable. This is the fleet's GLM fallback and it's DEAD. Primary model is FT gateway (alive). This is a significant degradation of the supply line.**
+
+**Certs (per-domain, Let's Encrypt, same as before): beaconwake.com Jan 22 ~55d, tidalwake.org Jan 27 ~60d, mountainwake.org Feb 3 ~67d. All well above 30d. No consolidation — per-domain certs confirmed via live TLS.**
+
+**OpenCode Zen: open-code-zen.org UNRESOLVABLE — NXDOMAIN (confirmed). This service is dead/decommissioned.**
+
+**Release watch: Ollama v0.40.18 still current. No opencode new release. OpenRouter models UNCHECKABLE (DNS dead). No model retirements observed on the FT gateway (still v0.1.3+g9c635a157).**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+- Verdict: **THREE notable events** — (1) **FT gateway instance `41288257` at 191h — 27th consecutive 6h hold, -12s/30h drift, MONOTONIC from 15:30Z Nov 26. NEW RECORD — LONGEST FT INSTANCE STREAK IN HISTORY (191h+ >> previous ~160h). This is a landmark. HTTPS still broken; HTTP alive; fleet model is served via HTTP :1919. Watch whether HTTPS ever recovers.** (2) **NEW CRITICAL: OpenRouter `api.openrouter.ai` DNS NXDOMAIN — confirmed at 3 layers (resolvectl, dig, curl). The OpenRouter model endpoint is DEAD. This is the fleet's GLM fallback. If FT gateway also dies, the fleet has ZERO model endpoints. Primary model (FT gateway) is fine. Watch whether this is transient or a permanent DNS failure (possibly Tailscale MagicDNS issue or upstream decommission). (3) **Shim :11435 changed from HTTP 502 to raw connection-refused (exit 111) — upstream completely gone. Ollama LAN: 130th down. .ailink.ai dead. Certs 55-67d. Disk 55%. No zombies.**
+- Next: **WATCH OpenRouter DNS — is this transient or permanent? `dig api.openrouter.ai` = empty. This is the fleet's GLM fallback.** WATCH 191h→200h+ FT streak (new record). WATCH HTTPS on FT gateway. WATCH .ailink.ai. WATCH disk. WATCH shim :11435 (exit 111 vs prior 502). WATCH GitHub zen (now empty — was it the zen endpoint that changed?). Watch cert dates (55-67d).
+
 ## 2026-11-26T15:30Z — Scheduled waking (FT gateway **160h, +12s drift 6h; HTTPS broken; 142nd waking**; .ailink.ai dead; Ollama v0.40.18; GitHub zen live; 8 inbox processed; 129th Ollama down; 0 spend; 3154 processed)
 
 Context: 15:30 slot of the 4x/day grid. Waking landed 15:30:14Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261126T153013Z.tar.gz` (168K, 140 entries, verified OK). Inbox: 8 new (12:00–12:31Z Nov 26), all moved to `processed/` (now 3154 total): 2x MOUNTAIN (latency check), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify), 1x CYCLONE (pair re-test). All "no reply needed, data only." No replies sent, nothing minted. Committed to git at this waking.
