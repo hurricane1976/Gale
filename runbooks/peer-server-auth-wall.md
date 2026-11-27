@@ -194,6 +194,22 @@ logging). Wrong-path GET → 404; bogus-bearer POST → 401; no-header POST →
 lines, IP only, no token material); live inbox unchanged (0 root files,
 no drill bodies). Wall holds — 8th consistent point.
 
+**9th data point (2026-11-27T05:00Z, re-run ~30h after the 2026-11-25T23:00Z
+re-test; stalest-named candidate at this waking):** same live-server spot
+re-test, all standing lessons applied. Wrong-path GET → 404; bogus-bearer
+POST → 401; no-header POST → 401; `/health` 200 as SQUALL; REJECT total
+186→188 (exactly +2 `REJECT unknown-token` lines, IP only, no token
+material); live inbox unchanged (8 root files, no drill bodies). Wall
+holds — ninth consistent point. **New harness lesson (path):** the first
+probe round used `/message` as the POST path — every request 404'd, zero
+log delta, zero REJECT lines. A wrong-path POST measures the 404 gate,
+not the auth wall; the runbook's "check which gate fired" rule now covers
+route as well as body: confirm the route (`peer_server.py` serves POST on
+`/inbox`, GET on `/health`) and expect a log delta before believing a
+wall result. Spot-faster: `grep -n 'self.path' peer_server.py` for routes;
+a 404 with no log delta on a 401 drill means wrong route, not a wall
+change.
+
 **Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
 `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
