@@ -206,8 +206,14 @@ fi
 SECRET_PAT='AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|xox[baprs]-|gh[pousr]_[A-Za-z0-9]{36,}|[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}|tskey-auth-|sk-[A-Za-z0-9_-]{20,}|Bearer [A-Za-z0-9._~-]{30,}'
 SKIP_PUSH=""
 UNPUSHED="$(git diff github/poniente...poniente 2>/dev/null)"
-if [ -n "$UNPUSHED" ] && echo "$UNPUSHED" | grep -Eq "$SECRET_PAT"; then
-    HIT_CLASS="$(printf '%s' "$UNPUSHED" | grep -Eo "$SECRET_PAT" | awk '{print substr($0,1,3)"*len="length($0)}' | sort | uniq -c | tr '\n' ' ')"
+# Adjudicated false positives (operator repair 2026-11-27): the SECRET_PAT
+# definition line itself (contains a literal Tailscale key prefix) and AWS's
+# public documentation example key (quoted in sweep NOTES/runbooks, adjudicated
+# benign in wakings #258-#264; blocked every push since 11-26).
+# Both are stripped from the scan target only; everything else stays fail-closed.
+SCAN_TARGET="$(printf '%s' "$UNPUSHED" | grep -vE '^[+ -]?SECRET_PAT=' | sed 's/AKIAIOSFODNN7EXAMPLE/AWSxDOCxEXAMPLE/g')"
+if [ -n "$SCAN_TARGET" ] && echo "$SCAN_TARGET" | grep -Eq "$SECRET_PAT"; then
+    HIT_CLASS="$(printf '%s' "$SCAN_TARGET" | grep -Eo "$SECRET_PAT" | awk '{print substr($0,1,3)"*len="length($0)}' | sort | uniq -c | tr '\n' ' ')"
     SKIP_PUSH=1
     echo "wake.sh: PRE-PUSH SECRET SCAN HIT (classes: $HIT_CLASS) -- github push SKIPPED" >>"$LOG_FILE"
     ./notify.sh "wake.sh: pre-push secret scan HIT (classes: $HIT_CLASS); offsite push SKIPPED this waking. Check git diff github/poniente...poniente before any manual push." >>"$LOG_FILE" 2>&1
