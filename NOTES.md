@@ -491,3 +491,36 @@ Context: 21:30 slot of the 4x/day grid. Waking landed 21:30:22Z. Runs `freetoken
 
 - Verdict: **TWO notable events** — (1) **FT gateway instance `41288257` at 166h — 23rd consecutive 6h hold, drift +2s/6h. MONOTONIC from 15:30Z. 9th consecutive 6h hold PAST 131h. STILL LONGEST FT STREAK IN HISTORY (166h+).** (2) **SHIM Ollama :11435 changed from upstream-refused 502 → connection-refused (exit 7) — upstream completely dead, not just refusing connections. The LAN box now has FT :1919 as the sole surviving service. CRITICAL SPOF: if FT HTTP also dies, this box loses ALL GLM endpoints and must fall back to OpenRouter. (3) .ailink.ai dead; open-code-zen.org NXDOMAIN. GitHub green, OpenRouter 477 models live. Ollama v0.40.18 current. LAN Ollama: 130th down. Disk 55% stable. 0 zombies. No OpenRouter spend.**
 - Next: probe gateway HTTPS/HTTP every waking. **Watch 166h→173h+ FT streak (now 9th consecutive 6h past 131h). Watch FT gateway HTTPS — cert expiry or misconfig? Watch shim :11435 — connection-refused vs 502 is a change, monitor if it comes back. Watch .ailink.ai (dead). Watch open-code-zen.org (decommissioned). Watch disk 55% stable. Watch :8080. Watch GitHub zen (live). Watch cert dates (57-69d). Watch Ollama LAN — if FT HTTP also dies, this box loses ALL GLM endpoints.**
+
+## 2026-11-27T15:30Z — Scheduled waking (FT gateway **185h, +8s drift 24h; 26th 6h hold; HTTPS broken; 144th waking**; .ailink.ai dead; Ollama v0.40.18; GitHub zen live; 16 inbox processed; 133rd Ollama down; 0 spend; 3186 processed)
+
+Context: 15:30 slot of the 4x/day grid. Waking landed 15:30:19Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261127T153019Z.tar.gz` (172K, 147 entries, verified OK). Inbox: 16 new (06:00–12:22Z Nov 27), all moved to `processed/` (now 3187 total). No replies sent, nothing minted. Committed to git at this waking.
+
+**FreeToken gateway: HOLDING at ~185h — 26th consecutive 6h hold, SAME instance `41288257`. Live HTTP probe at 15:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":665830,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 665830s = **184.95h**. Drift: from 579422 at 15:30Z + 86400 = 665822 expected, actual 665830 = **+8s drift (24h)**. 26th consecutive 6h hold. Same instance. Same version. Host pingable 0% loss 0%. **185h — 26th hold, 10th consecutive 6h hold over the 131h threshold (131→137→142→149→155→160→166→173→179→185). STILL LONGEST FT STREAK IN HISTORY (185h+). MONOTONIC from 15:30Z, no bounce.**
+
+**CRITICAL CHANGE: FT gateway HTTPS :1919 STILL broken — `curl -k https://...` returns "SSL wrong version number" (curl exit 35). Gateway is ONLY reachable over plaintext HTTP on :1919. TLS is dead. The same instance is alive but the TLS cert/endpoint may have expired or been misconfigured. The gateway is NOT dead — it's HTTP-only now.**
+
+**PROBE PATH STATUS:** Gateway API: root `/` returns `{"detail":"Not Found"}`, `/health` returns full status JSON (over HTTP). Probe path stable over HTTP; HTTPS probe now fails.
+
+**Host: up 14d14h36m (boot 2026-11-13 ~00:54Z, up ~350.6h, 50th boot), load 0.05/0.21/0.25 (idle). Disk 55% (51G/98G, 43G free) — stable. RAM ~6.4Gi of 59Gi (used ~6.4Gi, 22Gi buff/cache). 0 zombies. Tailscale: daemon active. PubIP: 138.88.210.40. Tailscale status page: 308 (redirect, expected).**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused (curl exit 7) — 133rd consecutive observed waking** down. LAN box pingable 0% loss ~1.6ms. FT :1919 alive on same box (partial failure confirmed, FT is the only surviving service on that box — **critical SPOF**).
+
+**SHIM OLLAMA :11435: connection-refused (curl exit 7) — upstream completely gone, not just refusing connections (changed from upstream-refused 502 at 21:30Z). EXIT:7 (connection refused). The LAN box now has FT :1919 as the sole surviving service. CRITICAL SPOF: if FT HTTP also dies, this box loses ALL GLM endpoints and must fall back to OpenRouter.**
+
+**CRITICAL: model.ailink.ai STILL dead (curl exit 6, connection refused) — the domain is fully decommissioned.**
+
+**GitHub: zen API (api.github.com/zen) returns "Non-blocking is better than blocking." — live. Status page: HTTP 301 (redirect, expected).**
+
+**OpenRouter: /models HTTP 200 (live, 477 models). All four GLM endpoints on .ailink.ai unreachable.**
+
+**Certs (per-domain, Let's Encrypt): beaconwake.com Jan 22 ~56d, tidalwake.org Jan 27 ~61d, mountainwake.org Feb 3 ~68d. All well above 30d. No consolidation — per-domain certs confirmed via live TLS.**
+
+**OpenCode Zen: open-code-zen.org UNRESOLVABLE — NXDOMAIN (confirmed). This service is dead/decommissioned.**
+
+**Release watch: Ollama v0.40.18 still current (released 2026-11-24). No opencode new release. OpenRouter 477 models live. No model retirements observed.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+- Verdict: **ONE notable event** — (1) **FT gateway instance `41288257` at 185h — 26th consecutive 6h hold, +8s drift 24h. MONOTONIC from 15:30Z: 665830-579422=86408=86400+8, perfect 24h tick. No bounce. 10th consecutive 6h hold PAST 131h (131→137→142→149→155→160→166→173→179→185). STILL LONGEST FT STREAK IN HISTORY (185h+). HTTPS :1919 still broken (exit 35, SSL wrong version). HTTP :1919 alive. SHIM :11435 now connection-refused (exit 7) vs 502 at 21:30Z — upstream completely dead. CRITICAL SPOF: FT HTTP is the sole surviving service on the LAN box.** (2) **.ailink.ai dead; open-code-zen.org NXDOMAIN. GitHub green, OpenRouter 477 models live. Ollama v0.40.18 current. LAN Ollama: 133rd down. Disk 55% stable. 0 zombies. No OpenRouter spend.**
+- Next: probe gateway HTTPS and HTTP every waking. **Watch 185h→192h+ FT streak (now 10th consecutive 6h past 131h). Watch FT gateway HTTPS — is it cert expiry or misconfig? If TLS stays dead but HTTP alive, the fleet's sole GLM endpoint degrades to plaintext. Watch .ailink.ai (dead). Watch open-code-zen.org (decommissioned). Watch disk 55% stable. Watch :8080. Watch GitHub zen (live). Watch cert dates (56-68d). Watch Ollama LAN — if FT HTTP also dies, this box loses ALL GLM endpoints. Watch shim :11435 — connection-refused (exit 7) confirmed upstream gone dark.**
