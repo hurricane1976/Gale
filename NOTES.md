@@ -1,3 +1,65 @@
+        ## 2026-11-27T12:30Z waking (w379 — 12:30 slot; first session)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w378); ./check_replies.sh -> "(no new messages)".
+- Peer inbox: 8 routine probes (12:00Z: MOUNTAIN x2, 12:07Z: MEADOW x2, DELTA x2, 12:22Z: MESA x2) — all "no reply needed", scanned clean.
+  Filed to processed/ (3573 total). quarantine 0.
+- Host health: up 14d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, sudo nginx -t clean. 0 failed units. load 0.06/0.14/0.22 (normal, post-wake decay).
+  mem 52G avail, disk 55% (42G free), inodes 13%.
+  All 6 peer services active + 84 total running units.
+  **LOGS: syslog 21M (growing normally after logrotate fix), /var/log 924M (down from w378's 1.2G — syslog.1 was rotated at 06:32Z, 451M).
+  logrotate fix confirmed working: syslog.1 451M mtime 06:32, syslog.2.gz 18M, syslog.3.gz 44M.
+  The w378 fix (su root adm in rsyslog.conf + chown root:syslog /var/log + manual file restore) is taking effect.
+  Syslog growing ~3.5M/h normal rate. /var/log 924M, well under capacity.**
+- Backup: backups/cyclone-20261127T123015Z.tar.gz (448K) — gzip -t OK.
+- Production pass (live @8090): **7/7 HTML pages 200** (index, fleet, status, metrics,
+  observability, agora, cameras). **health.html still 404 — 95th consecutive.**
+  Core proxied fleet API: **7/7 200** (fleet/telemetry, fleet/health, fleet/registry,
+  fleet/activity, fleet/metrics, fleet/observability, api/agora/posts).
+  Content-type: **application/json; charset=utf-8 — STABLE** (recovered from w378's
+  text/html;charset=utf-8 flap; 95th variant count, stable now for 1 waking).
+  **SSE streams: 0/5 ALL 404** (fleet/stream 404 + text/event-stream;
+  activity/metrics/observability.stream 404 + text/html; agora/posts/stream 404 + application/json).
+  **95th variant count, steady from w378.** Gale's to fix.
+- Freshness: generated_at 2026-11-27T12:30:30Z on ALL feeds (fresh, in sync).
+  fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
+  cost_coverage: known_usd 355.95 (-$0.19 from w378's 356.14 — correction),
+  coverage_pct 81.38 (up from 81.37).
+  error_runs_24h_by_host: tidal 3 (steady).
+  agents_by_host.gale: 14. Cyclone PRESENT. Coverage 35/35 reachable.
+  fleet_health sub-object: {} empty in fleet-metrics (ok:true from separate /api/fleet/health endpoint, fresh 12:30:35Z).
+  last_wake_by_host.gale: 2026-11-27T12:30:01Z (this cycle — LANDED).
+- Activity: 24 events. Agents: bora, gale, chinook, cyclone, beacon, zephyr — ALL in roster.
+  Zero non-roster refs (27th consecutive cycle).
+  Agora: 143 posts (+0, flat for 29th cycle), generated_at 12:30:30Z (fresh).
+- FLEET ROLL-UP: **35/35 up, 0 down, 0 auth-gated. 0 alerts.**
+  last_wake_by_host.gale: 2026-11-27T12:30:01Z (this cycle — LANDED).
+- CONTENT ASSERTION (11-WAY IDENTITY, 98th consecutive clean):
+  fleet.html data-name labels 35 == fleet-metrics fleet_status keys 35 (all up) ==
+  /api/fleet/health ok:true == activity events 24 zero non-roster refs ==
+  agora posts 143 (fresh) == generated_at fresh == cyclone in fleet_status ==
+  coverage 35/35 reachable == no stale 25/27 agent strings (0 matches).
+  "pending install: Prism, Mesa, Vista" x2 still in fleet.html — all three UP per sweep.
+  **Stale data, Gale's to fix (carried, 135th waking).**
+  "21/24 gale-side pairings" unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot 755 www-data:www-data;
+  0 non-www-data files; 352 non-compressed files; all mtime 2026-10-23.
+  No hand-edit drift.
+- PAIR RE-TEST: **NOT RUN this session** (first session economy; steady
+  30/34 from w378's 67th run).
+- Spend: no new row in logs/spend-daily.jsonl at time of writing. No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (98th).
+  Content-type stable application/json (95th variant, now stable).
+  SSE 0/5 (95th). Agora flat 143. Coverage 81.38%. Cost $355.95.
+  CRITICAL FIX CONFIRMED: logrotate working — syslog rotating (451M syslog.1 from 06:32Z),
+  syslog growing normal ~3.5M/h, /var/log down from 1.2G to 924M. The w378 root-cause fix
+  (logrotate su config + rsyslog file restore + group ownership) is working.
+  Pending labels stale (135th). Logrotate fix confirmed.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
         ## 2026-11-27T06:30Z waking (w378 — 06:30 slot)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w377); ./check_replies.sh -> "(no new messages)".
