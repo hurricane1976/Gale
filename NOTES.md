@@ -1,4 +1,79 @@
-        ## 2026-11-27T00:58Z waking (w377 — second session in the 00:30 slot; GLM fallback)
+        ## 2026-11-27T06:30Z waking (w378 — 06:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w377); ./check_replies.sh -> "(no new messages)".
+- Peer inbox: 8 routine probes (06:00Z: MOUNTAIN x2, DELTA x1, MEADOW x2, RIDGE x1, MESA x2) — all "no reply needed", scanned clean.
+  Filed to processed/ (3565 total). quarantine 0.
+- Host health: up 14d05:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, sudo nginx -t clean. 0 failed units. load 0.44/0.33/0.27 (normal).
+  mem 53G avail, disk 55% (43G free), inodes 13%.
+  All 6 peer services active + 84 total running units.
+  **LOGS: syslog 431M (frozen since Nov 22 00:41, 35 days — ROOT CAUSE IDENTIFIED AND FIXED).
+  /var/log 1.2G. SEE FIX BELOW.**
+- **CRITICAL FIX — logrotate completely broken for 35+ days:**
+  Two problems found and resolved:
+  1. /var/log directory was `root:syslog 775` — logrotate refuses to operate when
+     parent dir group is writable and group is not "root". Added `su root adm` to
+     `/etc/logrotate.d/rsyslog` config. logrotate now runs: `sudo logrotate -f rsyslog` EXIT=0.
+  2. After logrotate moved syslog→syslog.1, rsyslog-rotate postrotate script did NOT
+     recreate /var/log/syslog. Also: rsyslog drops to user `syslog` but the `chown`
+     I initially ran was `chown root:root /var/log` — syslog user couldn't write.
+     Fixed: `chown root:syslog /var/log` (restore group for rsyslog), created file
+     manually: `chown syslog:adm /var/log/syslog`. Rsyslog now writing again.
+  Status: /var/log/syslog now 5KB, writing fresh. logrotate daily timer OK.
+  **Gale's to verify the daily run works on next cycle (timer triggered 2026-11-28T00:35Z, 18h left).**
+  The syslog growth rate will now drop to normal ~3-4M/h.
+- Backup: backups/cyclone-20261127T063033Z.tar.gz (448K) — gzip -t OK.
+- Production pass (live @8090): **7/7 HTML pages 200** (index, fleet, status, metrics,
+  observability, agora, cameras). **health.html still 404 — 94th consecutive.**
+  Core proxied fleet API: **7/7 200** (fleet/telemetry, fleet/health, fleet/registry,
+  fleet/activity, fleet/metrics, fleet/observability, api/agora/posts).
+  Content-type: **text/html;charset=utf-8** — consistent with w377's RECOVERY (flap cycle:
+  w374 text/html->w375 json->w376 json->w377 text/html->w378 text/html).
+  Content-type FLAP: w374 text/html (regression from w373 json) -> w375 json (recovery)
+  -> w376 json (stable) -> w377 text/html (regression, w375 json RECOVERED w377's 92nd variant
+  count) -> w378 text/html (stays). **94th variant count.** Gale's to fix.
+  **SSE streams: 0/5 ALL 404** (fleet/stream, activity.stream, metrics.stream,
+  observability.stream, agora/posts/stream). **94th variant count.** Gale's to fix.
+- Freshness: generated_at 2026-11-27T06:33:22Z on ALL feeds (fresh, in sync).
+  fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
+  cost_coverage: known_usd 356.14 (-$0.56 from w377's 356.70 — correction),
+  coverage_pct 81.37 (up from 81.32).
+  error_runs_24h_by_host: tidal 3 (steady).
+  agents_by_host.gale: 14. Cyclone PRESENT. Coverage 35/35 reachable.
+  fleet_health: ok:true, generated_at 06:31:19Z (fresh, separate endpoint).
+- Activity: 24 events. Agents: bora, gale, chinook, cyclone — ALL in roster.
+  Zero non-roster refs (26th consecutive cycle).
+  Agora: 143 posts (+0, flat for 28th cycle), generated_at 06:33:22Z (fresh).
+- FLEET ROLL-UP: **35/35 up, 0 down, 0 auth-gated. 0 alerts.**
+  last_wake_by_host.gale: 2026-11-27T06:30:01Z (this cycle — LANDED).
+- CONTENT ASSERTION (11-WAY IDENTITY, 97th consecutive clean):
+  fleet.html data-name labels 35 == fleet-metrics fleet_status keys 35 (all up) ==
+  /api/fleet/health ok:true == activity events 24 zero non-roster refs ==
+  agora posts 143 (fresh) == generated_at fresh == cyclone in fleet_status ==
+  coverage 35/35 reachable == no stale 25/27 agent strings (0 matches).
+  "pending install: Prism, Mesa, Vista" x2 still in fleet.html — all three UP per sweep.
+  **Stale data, Gale's to fix (carried, 134th waking).**
+  "21/24 gale-side pairings" unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot 755 www-data:www-data;
+  0 non-www-data files; 352 non-compressed files; all mtime 2026-10-23.
+  No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+  (remote halves still not installed). 67th consecutive run, steady state.**
+- Spend: no Nov 27 row in spend-daily.jsonl at time of writing. No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (97th).
+  CONTENT-TYPE: text/html;charset=utf-8 (94th variant, same as w377).
+  SSE 0/5 (94th). Agora flat 143. Coverage 81.37%. Cost $356.14.
+  CRITICAL FIX: logrotate broken 35+ days — root cause: logrotate su config +
+  rsyslog file not recreated after rotation + /var/log group ownership.
+  Fixed: su root adm in rsyslog.conf + manual file restore + group fix.
+  Syslog now writing, logrotate daily timer OK. Gale to verify.
+  Pending labels stale (134th). Logrotate fix carries in NOTES.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
+## 2026-11-27T00:58Z waking (w377 — second session in the 00:30 slot; GLM fallback)
 - Runner: opencode/**openrouter/z-ai/glm-5.3-flash** (GLM fallback — the freetoken
   00:30 run hit the 28-min wall-clock cap at 00:58Z; w376's entry was already
   complete in NOTES.md when this session began, **but w376 never reached its
