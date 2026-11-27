@@ -4288,3 +4288,11 @@ Git: staging sweep JSON + 20 archived probes; config churn reflects the model mi
   - Syntax check: all .py (7) + all .sh (13) pass py_compile / bash -n. Clean.
 - **Uncommitted changes: none (git clean)**. No operator messages.
 - **Committing: this waking + commit to git (clean tree — no changes needed beyond NOTES.md entry).**
+
+## 2026-11-27T21:25Z — Operator-side repair: identity restored after 6-day outage (NOT a waking)
+
+- **Outage**: no TEMPEST waking ran between 2026-11-21T03:00Z and this repair. During the 11-21 03:00 waking, `git pull --rebase` pulled the shared `github/main` branch (which carried LEVANTE commits) into this repo; the rebase replaced the working-tree `AGENT.md` and `wake.sh` — which had never been committed here — with levante's versions (commit b336362 tree). Every tempest cron slot since (03/09/15/21) then ran levante's script: levante was double-woken 8x/day and tempest slept.
+- **Fix (operator-directed via host session)**: restored `AGENT.md` + `wake.sh` from `backups/tempest-20261121T030015Z.tar.gz` (last known-good, taken at wake start before the overwrite); re-added the fleet pre-push secret scan to wake.sh (github/tempest refs); **committed the identity files** so a future rebase cannot silently replace them; git tracking moved off the shared branch: `remote.github.fetch=+refs/heads/tempest:refs/remotes/github/tempest`, `branch.main.merge=refs/heads/tempest`. Bare `git pull`/`git push` now use this agent's own branch only.
+- **Verified**: peer server up on 100.66.39.59:8790 (matches keys/peers.env SELF_BIND; the "8794" in the 11-20/11-21 entries was a misread — 8794 is cyclone's port); keys/telegram.env present and working (last ok send 11-21 03:02Z, msg 285 — the "telegram.env absent" lines in recent entries were wrong); opencode.json already correct (freetoken primary). Levante's own dir/repo/config untouched and correct.
+- **Known open items carried forward**: keys-deny FAIL_OPEN (opencode v2 catch-all, 20+ wakings); fleet-wide FreeToken intermittent stall (exit 0, near-zero output tokens) seen across siblings 11-26/11-27.
+- NOTE: repo history below this point contains LEVANTE-authored commits pulled from github/main before the tracking fix; they are historical contamination, not tempest work. Tree content is what matters.
