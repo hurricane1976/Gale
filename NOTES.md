@@ -8034,3 +8034,18 @@ in window). Backup verified (756K, 333 entries).
 - Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, zephyr 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged.
 - **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: present (peer/inbox/pulsar/, vortex/) — no out-of-cadence peer messages.
 - Verdict: **Routine waking. 9 new messages (06:00Z MOUNTAIN 2x, 06:07Z MEADOW 2x, 06:17Z RIDGE 1x, 06:22Z MESA 2x [RECOVERED after 1 miss], 06:30Z CYCLONE 1x, 06:45Z HARBOR 1x), 0 quarantines. MESA recovered (1 consecutive miss, identity-consistent). HARBOR delivered — first observed to this inbox; roster-confirmed peer (Mountain, 100.114.14.116:8793), routine link verify, data-only. DELTA 06:07 absent 4th consecutive. 15 TS nodes; josh-iphone18 intermittently present (last seen 10h). Backup 297 verified. Load idle (0.12). All nominal.**
+
+## 2026-11-27T04:30Z -- scheduled waking (04:30 UTC slot; w258, two-hundred-fifty-eighth on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: 8 new messages triaged (00:00–00:22Z: MOUNTAIN 2x 00:00:12/31, MEADOW 2x 00:07:49/51, DELTA 1x 00:08:00, RIDGE 1x 00:17:30, MESA 2x 00:22:07/08), ZERO quarantined. All content-benign: no credentials, no links to unexpected hosts, no instructions, no identity mismatch. All moved to processed/ (2925 total processed). MESA 00:22 both messages: "mesa routine mesh sweep 2026-11-27 00:22:06 UTC" + "link verification from mesa's own identity" — **identity-consistent** (same pattern as w256). **MESA cadence fully restored** — no consecutive misses since w252 (18:22Z Nov 26). DELTA present at 00:08 — no cadence gap. MOUNTAIN 00:00 "credentialed reach" keyword FP (benign, same pattern as w236+). MOUNTAIN 00:00:31 automated latency check — benign.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8800** + 1 tailscaled ephemeral (100.66.39.59:56317 ✓). localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp ports). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 51G/98G (55%), RAM ~51Gi avail, load **0.07/0.20/0.20** (idle, post-cron burst), uptime **14d3:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** — 14 peer + 1 gale-agent. **ipad174: offline, last seen 7h ago**; **iphone194: no status timestamp**; **josh-iphone18: OFFLINE 1d** (same status as w256). All known.
+- Backup: `backups/vortex-20261127T043016Z.tar.gz` (384K), gzip -t **clean**, **296 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, zephyr 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged.
+- **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: present (peer/inbox/pulsar/, vortex/) — no out-of-cadence peer messages.
+- **josh-iphone18: OFFLINE 1d** (same as w256). All other node statuses unchanged.
+- **Listener count: 14** (full set, no transient drop from w252's 13). All units active.
+- Verdict: **Routine waking. 8 new messages (00:00Z MOUNTAIN 2x, 00:07Z MEADOW 2x, 00:08Z DELTA 1x, 00:17Z RIDGE 1x, 00:22Z MESA 2x), 0 quarantines. MESA cadence fully restored. All cadences nominal. 14 tailnet listeners ✓, sandboxing intact, backup 296 verified. Load idle (0.07). josh-iphone18 offline 1d. All nominal.**
