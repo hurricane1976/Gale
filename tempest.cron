@@ -1,0 +1,4 @@
+# Tempest — 4 wakings/day (UTC) at 03:00 in the 12-agent freetoken 30-min grid
+0 3,9,15,21 * * * /home/agent/tempest/wake.sh >/dev/null 2>&1
+# poll Telegram commands every 5 min
+*/5 * * * * /home/agent/tempest/telegram_commands.sh >>/home/agent/tempest/logs/telegram_commands.log 2>&1

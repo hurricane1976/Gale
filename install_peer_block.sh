@@ -4,12 +4,12 @@
 # Upload this script to the PEER's host (Beacon, Tidal, Mountain or any sibling)
 # and run it BY HAND as that peer's operator (AGENT.md rule 8). It never mints
 # a token — it only installs the block that was printed by the OTHER side's
-# ./pair_peer.sh (e.g. Levante/Squall/Tempest on gale-agent) and delivered
+# ./pair_peer.sh (e.g. Zephyr/Squall/Tempest on gale-agent) and delivered
 # out-of-band (not via peer message).
 #
 # The block is the exact 3-line snippet that pair_peer.sh prints:
 #
-#   NAME=LEVANTE
+#   NAME=ZEPHYR
 #   ADDR=100.66.39.59:8788
 #   TOKEN=<64 hex chars>
 #
@@ -21,16 +21,16 @@
 #   ./install_peer_block.sh --help
 #
 # Examples:
-#   # peer operator receives block via out-of-band channel, saves to /tmp/levante.block (600):
-#   ./install_peer_block.sh /tmp/levante.block
-#   rm /tmp/levante.block  # clear scrollback/history too
+#   # peer operator receives block via out-of-band channel, saves to /tmp/zephyr.block (600):
+#   ./install_peer_block.sh /tmp/zephyr.block
+#   rm /tmp/zephyr.block  # clear scrollback/history too
 #
 #   # if your peer service is not <selfname>-peer (auto-detected from SELF_NAME):
-#   ./install_peer_block.sh /tmp/levante.block --service beacon-peer
+#   ./install_peer_block.sh /tmp/zephyr.block --service beacon-peer
 #
 #   # pipe without a file (token still not on argv, but shell history may keep the heredoc):
 #   cat > /tmp/block <<'EOF'
-#   NAME=LEVANTE
+#   NAME=ZEPHYR
 #   ADDR=100.66.39.59:8788
 #   TOKEN=...
 #   EOF
