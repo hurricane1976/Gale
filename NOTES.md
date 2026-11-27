@@ -347,6 +347,35 @@ Context: 15:30 slot of the 4x/day grid. Waking landed 15:30:19Z. Runs `freetoken
 - Verdict: **FOUR notable events** — (1) **FT gateway instance `41288257` at ~89h, -5s drift 6h — near-atomic precision at 89h, 10th hold. Watching 89h→100h+ (2nd longest streak after 121h+ instance `569e9907`).** (2) **model.ailink.ai NXDOMAIN confirmed again; open-code-zen.org also NXDOMAIN (decommissioned services). .ailink.ai /models AND /status both dead.** (3) **Certs stable: 70-82d per-domain. GitHub zen + status green. OpenRouter 477 models live.** (4) **Ollama LAN: 119th down; :8080 absent 71st. No disk uptrend (55% stable). No zombie processes.**
 - Next: probe gateway every waking (expect uptime_s ≈341808 next waking at 21:30Z). **Watch 89h→100h+ FT streak. Watch .ailink.ai (dead, confirmed NXDOMAIN). Watch open-code-zen.org (decommissioned). Watch disk 55% stable. Watch :8080. Watch GitHub zen (live). Watch cert dates (70d+). Watch Ollama LAN — if FT :1919 also dies, this box loses all GLM endpoints and must fall back to OpenRouter.** (FT gateway **83h HOLD, -20s drift 6h; 130th waking**; .ai NXDOMAIN; GitHub zen live; 13 inbox processed; 118th Ollama down; 0 spend; 3071 processed) — Scheduled waking (FT gateway **83h, -20s drift 6h; 130th waking**; .ai NXDOMAIN; GitHub zen live; 13 inbox processed; 118th Ollama down; 0 spend; 3071 processed)
 
+## 2026-11-27T03:30Z — Scheduled waking (FT gateway **DEAD**; 143rd waking; 192.168.1.197:1919 completely offline — both HTTP+HTTPS; LAN box pingable; NO SSH access to restart; CRITICAL); .ailink.ai dead; Ollama v0.40.18; GitHub zen live; 7 inbox processed; 130th Ollama down; 0 spend; 3172 processed)
+
+Context: 03:30 slot of the 4x/day grid. Waking landed 03:30:14Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD. opencode **v2.3.2**. `check_replies.sh`: no new operator messages. Backup: `backups/sirocco-20261127T033015Z.tar.gz` (172K, verified OK). Inbox: 7 new (00:00–00:22Z Nov 27), all moved to `processed/` (now 3172 total): 2x MOUNTAIN (latency), 1x MEADOW (census), 1x DELTA (link-verify), 1x RIDGE (link-verify), 2x MESA (mesh sweep + link-verify). All "no reply needed, data only." No replies sent, nothing minted. Committed to git.
+
+**CRITICAL — FT GATEWAY COMPLETELY DEAD:** `curl http://192.168.1.197:1919/health` → connection refused (curl exit 7, no HTTP response). `curl -k https://192.168.1.197:1919/health` → connection refused (exit 7). **Both HTTP and HTTPS are dead on the FT gateway.** The gateway was alive (HTTP-only, no HTTPS) as recently as 15:30Z Nov 26 and 21:30Z Nov 26. Between 15:30Z and 03:30Z Nov 27, the gateway process on 192.168.1.197 crashed or was terminated. The LAN box itself is fully pingable (1.6ms, 0% loss) — this is NOT a network outage, just the gateway service died.
+
+**SSH to 192.168.1.197 fails (Permission denied, publickey,password)** — no matching key on this agent's account. **Cannot restart the gateway from this agent.** This requires operator or another agent with SSH access.
+
+**Host: up 14d2h36m (boot 2026-11-13 ~00:54Z, up ~338.6h, 51st boot), load 0.29/0.22/0.19 (idle). Disk 55% (51G/98G, 42G free) — stable. RAM ~6.4Gi of 59Gi (used ~6.4Gi, 22Gi buff/cache). 0 zombies. Tailscale: daemon active. PubIP: 138.88.210.40.**
+
+**LAN Ollama :11434 (192.168.1.197) STILL connection-refused — 130th consecutive observed waking** down. LAN box pingable 0% loss ~1.6ms. **Both GLM endpoints now dead on this LAN box (FT :1919 + Ollama :11434).**
+
+**CRITICAL: model.ailink.ai STILL dead (curl exit 6, connection refused) — the domain is fully decommissioned.**
+
+**GitHub: zen API returns "Approachable is better than simple." — live. Status page: HTTP 301 (redirect, expected).**
+
+**OpenRouter: /models HTTP 200 (live, 477 models). .ailink.ai /models AND /status both dead.**
+
+**Certs (per-domain, Let's Encrypt): beaconwake.com Jan 22 ~55d, tidalwake.org Jan 27 ~60d, mountainwake.org Feb 3 ~67d. All well above 30d.**
+
+**OpenCode Zen: open-code-zen.org UNRESOLVABLE — NXDOMAIN (confirmed). This service is dead/decommissioned.**
+
+**Release watch: Ollama v0.40.18 still current. No opencode new release. OpenRouter 477 models live. No model retirements.**
+
+**Spend: $0.00 (no OpenRouter usage recorded). All green.**
+
+- Verdict: **TWO notable events** — (1) **🚨 CRITICAL: FT gateway `41288257` on 192.168.1.197:1919 COMPLETELY DEAD (both HTTP + HTTPS, connection refused).** Was alive (HTTP-only) as of 21:30Z Nov 26, gone by 03:30Z Nov 27. LAN box pingable. No SSH access to restart. **This means the fleet's sole GLM endpoint is offline.** The fleet must fall back to OpenRouter immediately. Operator needs to restart the FT gateway (SSH to LAN box, `systemctl restart ft-gateway` or equivalent). **This is an urgent operational issue — no GLM inference available on this host.** (2) **All else green: GitHub zen, OpenRouter 477 models, certs 55-67d, disk 55%, 0 zombies, no OpenRouter spend.** .ailink.ai dead (confirmed), open-code-zen.org dead (confirmed). Ollama LAN 130th down.
+- Next: **🚨 URGENT: Operator must restart FT gateway on 192.168.1.197.** Until then, the fleet has NO local GLM endpoint. Next waking at 09:30Z will also fail unless the gateway is up. Monitor the gateway status — if it's just a process crash, a restart should fix it. Watch whether it stays dead or recovers. Watch 3172 processed inbox. Watch disk 55% stable. Watch :8080. Watch GitHub zen. Watch cert dates.
+
 Context: 09:30 slot of the 4x/day grid. Waking landed 09:30:14Z. Runs `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4` via committed HEAD (on-disk GLM config still present per prior ruling). opencode **v2.3.2**. `check_replies.sh`: no new operator messages.
 
 **FreeToken gateway: STILL holding, now ~83h — drift corrected to -20s (6h baseline).** Live probe at 09:30Z: `{"status":"ok","model":"Qwen3.8-35B-A3B-Distill-NVFP4","instance_id":"41288257-61f9-442c-b7ad-29f1bc861bd3","uptime_s":298610,"maintenance":"serving","version":"0.1.3+g9c635a157"}` — uptime 298610s = **82.95h**. Drift recalculation from 03:30Z (277030): expected 298630, actual 298610 = **-20s drift (6h)**, -5s from 21:30Z, -1s from 15:30Z, -2s from 24h-ago baseline (190612→107998 vs 108000). **The FT gateway is running at ~0.01ppm drift — near-atomic clock precision at 83h.** 9th consecutive 6h hold. Same instance. Same version. Host pingable 0% loss ~1.5ms.
