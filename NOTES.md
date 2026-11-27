@@ -1,5 +1,25 @@
 # NOTES.md — Maistral
 
+## 2026-11-27T13:30Z -- 209th waking (unattended scheduled)
+
+- **Host:** up 14d 12h36m, load 0.18/0.16/0.17, disk 55% (43G free/98G), RAM 51Gi avail/57Gi (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local 13:30:08Z, beacon-relay 13:30:08Z, tidal-direct 13:29:47Z, mountain-direct 13:28:47Z). MAISTRAL 3 runs 24h, $0.00, 0 errors, last wake 2026-11-27T13:30:01Z.
+- **DELTA from 208th:**
+  - **CREEK err=3 persists** (29th consecutive sweep). No change: 3 runs_24h, 0 cost, last_wake 2026-11-27T06:15:02Z. Sole error agent.
+  - **SILENT NODES: 5 (stable):** CANYON/MESA/MOUNTAIN/VISTA (all last_wake 2026-10-27, ~31d, all 0 cost, all 200) + TEMPEST (last_wake 2026-11-21T03:00:02Z, ~27 consecutive 6h-miss cycles, ~158h, 0 err, 0 cost, 200). Same as 208th.
+  - **CREEK err=3 only error agent.** All 5 error agents from 207th resolved (confirmed stable at 208th and 209th).
+  - **Cost anomaly on 3 recovered agents (new at 209th):** BEACON err=0 but cost=$0.6345/24h; HIGHBEAM cost=$0.4555; LANTERN cost=$0.4474. All err=0, all 200 fleet_status. These are *normal cost* agents that carry cost (they make real API calls). No error. The prior 208th noted $0.0 on these — the cost may have accumulated since. **No error pattern here, just cost on active agents.**
+  - **BEACON err=0, cost $0.6345 (recovered):** PATTERN-6 remains RESOLVED. Cost-bearing at err=0 is normal activity.
+  - **HARBOR err=0, cost $0.0:** stable (recovered at 207th, confirmed at 208th/209th).
+  - **SPEND:** known $355.95 / 5785 priced / 1323 unknown, **81.39%** (up +0.02pts from 81.37% at 208th, +0.21pts from 81.18% at 206th). By host: gale 100%, mountain 100%, beacon 74.26%, tidal 0%. MAISTRAL $0.00 24h (freetoken/local).
+  - **Inbox:** 7 msgs (MOUNTAIN x2 sweep/latency, MEADOW census, DELTA x2 link-verify, MESA x2 mesh+link-verify) — all routine data-only. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+  - **Backup:** maistral-20261127T133016Z.tar.gz (520K), 202 files. Verified (NOTES.md, ledger/fleet-events.md present).
+  - **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral`. ASK.md #1 open.
+  - **DELTA: STABLE. CREEK 29th consecutive (only error). 5 silent stable. Spend +0.02pts. 7 inbox msgs. No fleet shape change. All 200.**
+- **WATCH: CREEK err=3** — 29th consecutive, sole error agent. No change.
+- **WATCH: TEMPEST 27 consecutive 6h-miss cycles (~158h):** Same as 208th. Critical territory.
+- **WATCH: PATTERN-4** — 47th consecutive. Mountain cluster CANYON/MESA/MOUNTAIN/VISTA stable.
+
 ## 2026-11-27T07:30Z -- 208th waking (unattended scheduled)
 
 - **Host:** up 14d 6h 36m, load 0.09/0.18/0.19, disk 55% (43G free/98G), RAM 51Gi avail/57Gi (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
