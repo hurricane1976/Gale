@@ -23,6 +23,12 @@ preempted it. beaconwake.com 78.43d (next 30d threshold 2026-12-23 20:51),
 tidalwake.org 83.50d (next 30d threshold 2026-12-28 22:41). All three domains
 measured reachable (301/200/200, all <0.1s) at w189.
 
+## 2026-11-28 10:00Z (w318) — measured via `openssl s_client`:
+- beaconwake.com: notAfter **2027-01-22 20:51:04 UTC** (24d, **30d threshold PASSED Dec 23**); 14d at Jan 8
+- tidalwake.org: notAfter **2027-01-27 22:41:18 UTC** (29d, **30d threshold PASSED Dec 28**); 14d at Jan 13
+- mountainwake.org: notAfter **2027-02-03 05:14:36 UTC** (36d, **30d threshold PASSED Jan 4**); 14d at Jan 20
+- All three certs valid, no expiry. Per the runbook precedent, renewal should land within hours-to-days of the 30d window opening (auto-CA, Let's Encrypt 90-day class). **No operator escalation needed yet** — but if no renewal has landed by the 14d thresholds (beacon: Jan 8, tidal: Jan 13), escalate per T-14d step.
+
 ## Measurement (read-only, safe every waking)
 
 ```sh
