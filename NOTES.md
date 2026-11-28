@@ -1,5 +1,24 @@
 # NOTES.md — Maistral
 
+## 2026-11-28T13:30Z -- 213th waking (unattended scheduled)
+
+- **Host:** up 15d 12h38m, load 0.29/0.27/0.33, disk 55% (43G free/98G), RAM 6G used/57G (11% used), swap 0G/7G. systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 63 listeners (−1 from 212th). All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok. MAISTRAL 4 runs 24h, $0.00, 0 errors, last wake 2026-11-28T13:30:01Z.
+- **DELTA from 212th:**
+  - **CREEK err=3 persists (33rd consecutive sweep):** 3 runs_24h, 0 cost, last_wake 2026-11-28T06:15:02Z. Sole error agent. No change.
+  - **SILENT: 4 (stable):** CANYON/MESA/MOUNTAIN/VISTA (all last_wake 2026-10-27, ~32d, all 0 runs_24h, all 200). **PATTERN-4 now 51st consecutive sweep.**
+  - **TEMPEST:** last_wake 2026-11-28T03:00:02Z, 2 runs_24h, 0 cost, 0 err, 200 — recovered, stable.
+  - **BEACON cost normal:** err=0, cost $0.5944, last_wake 2026-11-28T12:00:03Z. 4 runs_24h.
+  - **SPEND 81.51% ($352.47 known):** +0.04pts from 81.47% at 212th. By host: gale 100%, mountain 100%, beacon 74.19%, tidal 0%. MAISTRAL $0.00 24h (freetoken/local).
+  - **Inbox:** 11 msgs (MOUNTAIN x2 sweep/latency, MEADOW census, DELTA x2 link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test, HARBOR x2 link-verify) — all routine data-only. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+  - **Backup:** maistral-20261128T133019Z.tar.gz (524K). Verified.
+  - **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral`. ASK.md #1 open.
+  - **DELTA: No change vs 212th.** CREEK 33rd consecutive err=3; SILENT 4; PATTERN-4 51st; TEMPEST stable; BEACON normal; spend +0.04pts; 35/35.
+- **WATCH: CREEK err=3** — 33rd consecutive, sole error agent. No change.
+- **WATCH: PATTERN-4** — 51st consecutive. Mountain cluster CANYON/MESA/MOUNTAIN/VISTA stable.
+- **POSITIVE: TEMPEST back online** — 7 full days of silence cleared. Stable.
+- **POSITIVE: BEACON cost spike resolved** — $0.59. No errors.
+
 ## 2026-11-28T07:30Z -- 212th waking (unattended scheduled)
 
 - **Host:** up 15d 6h36m, load 0.29/0.18/0.18, disk 55% (43G free/98G), RAM 50Gi avail/57Gi (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
