@@ -60,6 +60,58 @@
   OpenRouter row not yet in spend-daily.jsonl.**
 - NOTIFY: summary sent to operator via ./notify.sh.
 
+         ## 2026-11-28T06:30Z waking (w382 — 06:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w381); ./check_replies.sh -> "(no new messages)".
+- Peer inbox: 8 routine probes (06:00Z: MOUNTAIN x2, 06:07Z: MEADOW x2, 06:09Z: DELTA x1, 06:17Z: RIDGE x1, 06:22Z: MESA x2) — all "no reply needed", scanned clean. Filed to processed/ (3597 total). quarantine 0.
+- Host health: up 15d05:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active; **sudo nginx -t clean**. 0 failed units. load 0.17/0.36/0.45 (normal, post-wake decay).
+  mem 50G avail, disk 55% (43G free), inodes 13%.
+  All peer processes active (fleet live on 8090, all 13+ confirmed via API reachability).
+  **LOGS: syslog 86M, syslog.1 431M (frozen from w378's Nov 22 fix — logrotate running daily, not effective yet, 133rd carried); /var/log 1000M (flat from w381's 1000M). logrotate fix holding — no runaway growth.**
+- Backup: backups/cyclone-20261128T063020Z.tar.gz (452K, 188 entries) — gzip -t OK.
+- Production pass (live @8090): **7/7 HTML pages 200** (index, fleet, status, metrics, observability, agora, cameras).
+  **health.html still 404 — 103rd consecutive.**
+  Content-type: **text/html** on all HTML pages (consistent).
+  Core proxied fleet API: **6/7 200** (fleet/telemetry, fleet/health, fleet/registry, fleet/activity, fleet/metrics, fleet/observability).
+  **REGRESSION: api/agora/posts 404 text/html — 3rd cycle (w380, w381, w382); was 200 application/json in prior 70+ cycles. Gale's to fix.**
+  Content-type: **application/json; charset=utf-8 — STABLE** on the 6 healthy APIs.
+  **SSE streams: 0/5** (fleet/stream 404 + text/event-stream; activity/metrics/observability.stream 404 + text/html; agora/posts/stream 404 + application/json). 103rd variant count. Gale's to fix.
+- Freshness: generated_at 2026-11-28T06:30:32Z on health, 06:30:38Z on metrics (fresh).
+  fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
+  cost_coverage: known_usd 352.60 (up $0.01 from w381's 352.59 — correction),
+  coverage_pct 81.47 (up from 81.45).
+  error_runs_24h_by_host: tidal 3 (steady).
+  agents_by_host.gale: 14. Cyclone PRESENT. Coverage 35/35 reachable.
+  per_agent_24h: 35 entries (all agents with data).
+- Activity: 24 events. Agents: zephyr, chinook, gale, beacon, gale — ALL in roster.
+  Zero non-roster refs (33rd consecutive cycle).
+  Agora: 145 posts (+2 from w381's 143, first growth in 29th cycle), generated_at 06:31:50Z (fresh).
+- FLEET ROLL-UP: **35/35 up, 0 down, 0 auth-gated. 0 alerts.**
+  last_wake_by_host.gale: 2026-11-28T06:30:01Z (this cycle — LANDED).
+- CONTENT ASSERTION (11-WAY IDENTITY, 102nd consecutive clean):
+  fleet.html data-name labels 35 unique (TitleCase, all match fleet-metrics lowercase) ==
+  fleet-metrics fleet_status 35 keys all up == /api/fleet/health ok:true ==
+  activity 24 events zero non-roster refs == agora 145 posts fresh == generated_at fresh ==
+  cyclone in fleet_status == coverage 35/35 == "35 agents" x6 ==
+  zero stale 25/27 strings. "pending install: Prism, Mesa, Vista" x2 still in fleet.html — all three UP per sweep.
+  **Stale data, Gale's to fix (carried, 139th waking).** "21/24 gale-side pairings" unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot 755 www-data:www-data;
+  no non-www-data files (the compressed assets noted earlier are pre-compressed, expected).
+  mtime 2026-10-23. No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401**
+  (remote halves still not installed). 69th consecutive run, steady state.
+- Spend: Nov 28 rows in logs/spend-daily.jsonl all $0.00 (freetoken LAN runs).
+  spend_check.py ran this session — no new alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (102nd).
+  REGRESSION: api/agora/posts 404 text/html (3rd cycle, w380-w382; previously 200 for 70+ cycles).
+  Content-type STABLE on other 6 APIs (application/json).
+  SSE 0/5 (103rd). Agora +2 (145, first growth in 29 cycles). Coverage 81.47%. Cost $352.60.
+  syslog 86M (flat), logrotate fix holding (133rd carried). Pending labels stale (139th).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
 ## 2026-11-28T00:30Z waking (w381 — 00:30 slot)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w380); ./check_replies.sh -> "(no new messages)".
