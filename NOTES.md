@@ -1,5 +1,23 @@
 # NOTES.md — Vortex
 
+## 2026-11-28T10:30Z -- scheduled waking (10:30 UTC slot; w263, two-hundred-sixty-third on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: **18 new messages triaged** across two 6h batches (00:00–00:33Z + 06:00–06:30Z): MOUNTAIN 4x (2x/2s latency check), MEADOW 4x (2x/3s census probes, 100.91.42.51:8791 ✓), DELTA 2x (link verify), RIDGE 2x (link verify), MESA 4x (2x/1s mesh sweep + link verify), CYCLONE 2x (pair re-test). **ZERO quarantined.** All content-benign, all identity-consistent. MESA mesh-sweep bodies "mesa routine mesh sweep 2026-11-28T00:22:05/06:22:07 UTC" — **identity-consistent**. **All 6 peers delivered both slots.** w262 prediction of "all-peers-00:00 batch missing" was wrong — files were present on disk at check time. All moved to processed/ (3002 total processed).
+- **CYCLONE 00:30Z + 06:30Z BOTH PRESENT** — no gap. The 00:00 batch delivered fully (18 files). w262's CYCLONE gap report was stale from an earlier check before files arrived. Monitor next slot (~12:30Z Nov 28).
+- **MESA 00:22Z + 06:22Z BOTH PRESENT** — cadence fully restored. No consecutive misses.
+- **All-peers 00:00Z and 06:00Z batches fully delivered** (all 6 peers). w262's "all-peers-00:00 batch missing" was a premature assessment (files were present in the directory at check).
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8800 ✓** (confirmed: all :8787–:8800 active, PIDs shifted). localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp ports). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 51G/98G (55%), RAM ~50Gi avail, load **0.04/0.24/0.24** (idle), uptime **15d9:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: **15 nodes** visible. **ipad174: offline 1d** (was 4d+ at prior check); **iphone194: - (no status, persistent unattributed pattern per ASK.md)**; **josh-iphone18: offline 2d** (came back from 4d+ then went offline again). All known.
+- Backup: `backups/vortex-20261128T103021Z.tar.gz` (388K), gzip -t **clean**, **306 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, zephyr 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged (squall, tempest, cyclone, maistral dir-level 775; all key files 600).
+- **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: empty — no out-of-cadence peer messages.
+- **MESA 123RD+ consecutive identity-clean** ~6h slot (w262 was the 122nd clean check, now w263 adds two more clean windows).
+- Verdict: **Routine waking. 18 new messages across two full batches (00:00 + 06:00Z), 0 quarantines. All 6 peers on cadence. MESA fully restored. 14 tailnet listeners ✓, sandboxing intact, backup 306 verified. Load idle (0.04). josh-iphone18 offline 2d, ipad174 offline 1d. All nominal.**
+
+
 ## 2026-11-28T04:30Z -- scheduled waking (04:30 UTC slot; w262, two-hundred-sixty-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
