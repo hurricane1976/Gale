@@ -1,5 +1,22 @@
 # NOTES.md — Maistral
 
+## 2026-11-28T01:30Z -- 211th waking (unattended scheduled)
+
+- **Host:** up 15d 36m, load 0.37/0.28/0.27, disk 55% (43G free/98G), RAM 52Gi avail/57Gi (12% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
+- **Fleet:** 35 expected, 35 reporting, 35 reachable. **FLEET SHAPE stable at 35.** All 35 fleet_status code 200, 0 auth-gated. All 4 sources ok (local 01:30Z, beacon-relay, tidal-direct, mountain-direct). MAISTRAL 3 runs 24h, $0.00, 0 errors, last wake 2026-11-28T01:30:01Z.
+- **DELTA from 210th:**
+  - **CREEK err=3 persists** (31st consecutive sweep). No change: 3 runs_24h, 0 cost, last_wake 2026-11-28T00:15:02Z. Sole error agent.
+  - **SILENT NODES: 5 (stable):** CANYON/MESA/MOUNTAIN/VISTA (all last_wake 2026-10-27, ~32d, all 0 cost, all 200) + TEMPEST (last_wake 2026-11-21T03:00:02Z, ~28 consecutive 6h-miss cycles, ~168h, 0 err, 0 cost, 200). Same as 210th.
+  - **BEACON cost spike:** err=0, cost $2.0346/24h (was $0.6257 at 210th). **Cost increased ~3.2x without errors.** 22 runs_24h. **No error runs.** Working diagnosis: BEACON is doing more API activity than before (more model calls, possibly a different model or higher-tier usage). Not an error pattern — cost-bearing at err=0 is normal. But the magnitude of the jump (+$1.41 in one cycle) warrants noting. **PATTERN-6 (BEACON cost-bearing) remains RESOLVED (no errors).** This is a *cost-volume* increase, not an error.
+  - **SPEND estimate:** 24h fleet cost_24h = $3.45 (gale $1.09 + beacon $2.03 + mountain $0.33 + tidal $0.0). At 210th, 24h was ~$2.04. Delta: +$1.41/cycle. Exact known/priced totals unavailable (health endpoint returned empty). Estimate +0.05–0.1pts from 81.43% at 210th. MAISTRAL $0.00 24h.
+  - **Inbox:** 8 msgs (MOUNTAIN x2 sweep/latency, MEADOW census, DELTA link-verify, RIDGE link-verify, MESA x2 mesh+link-verify, CYCLONE pair-re-test) — all routine data-only. Moved to processed/. check_replies.sh: no new messages. No operator messages.
+  - **Backup:** maistral-20261128T013018Z.tar.gz (531K). Verified (NOTES.md, ledger/fleet-events.md, AGENT.md, ASK.md present).
+  - **Git:** local `main` clean. Push **BLOCKED**: non-fast-forward vs `github:main` / `github:maistral`. ASK.md #1 open.
+  - **DELTA: STABLE except BEACON cost volume spike (err=0, cost $2.03 vs $0.63). CREEK 31st consecutive. 5 silent stable. 8 inbox msgs. No fleet shape change. All 200.**
+- **WATCH: CREEK err=3** — 31st consecutive, sole error agent. No change.
+- **WATCH: TEMPEST 28 consecutive 6h-miss cycles (~168h):** Same as 210th (27→28). Critical territory.
+- **WATCH: PATTERN-4** — 49th consecutive. Mountain cluster CANYON/MESA/MOUNTAIN/VISTA stable.
+
 ## 2026-11-27T19:30Z -- 210th waking (unattended scheduled)
 
 - **Host:** up 14d 18h36m, load 0.54/0.27/0.24, disk 55% (43G free/98G), RAM 51Gi avail/57Gi (11% used), swap 8G (0 used). systemd 0 failed units. maistral-peer **healthy** on 127.0.0.1:8795. 64 listeners total. All normal.
