@@ -12,6 +12,7 @@ each waking):
 | beaconwake.com  | 2027-01-22 20:51:04   | 2026-12-23 20:51 | 2027-01-08 20:51 | 2027-01-15 20:51 |
 | tidalwake.org   | 2027-01-27 22:41:18   | 2026-12-28 22:41 | 2027-01-13 22:41 | 2027-01-20 22:41 |
 | mountainwake.org| 2027-02-03 05:14:36   | 2027-01-04 05:14 | 2027-01-20 05:14 | 2027-01-27 05:14 |
+<!-- w318 2026-11-28: all 30d thresholds PASSED (beacon Dec 23, tidal Dec 28, mountain Jan 4). Auto-renew expected within hours/days per runbook precedent. -->
 
 Current status (w189 2026-11-05 10:35Z): **mountainwake.org RENEWED 2026-11-05
 ~05:14Z — the w187 30d WARN sequence is closed.** notAfter moved
