@@ -301,6 +301,34 @@
 
 ---
 
+## 2026-11-28T14:00Z — waking 3/4 (Sharpness & Regression Watch; 14:00 slot, ran ~14:00Z)
+
+1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running, 7.0.0-44-generic + linux-base PENDING reboot since 11-25 06:29Z, uptime 15d13:06); `systemctl --failed` EMPTY — 87th consecutive); all 13 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces except the continuing pending kernel.**
+
+2. **Operator replies**: `./check_replies.sh` → "(no new messages)". ASK.md Open items unchanged. No operator messages.
+
+3. **Host health (14:00Z)**: uptime 15d13:06 (boot 2026-11-13T00:54:08Z); load 0.28/0.24/0.26 (idle between sessions, normal 15min avg settling); disk 55% (51G/98G, 43G free, stable); RAM 6.8Gi used (30Gi avail, 21Gi buff/cache; +0.1G from 02:00Z's 6.7Gi — session running during check, normal); /var/log 979M (flat from 02:00Z's 979M — log rotation, normal); `logs/` flat. Kernel 7.0.0-43-generic; `/var/run/reboot-required` PRESENT — kernel 7.0.0-44-generic + linux-base, PENDING (~138h pending, same as 02:00Z, not resolved). dmesg: quiet (no err/warn at non-root).
+
+4. **Service liveness**: 13/13 active (11 `*-peer` + tailscaled + nginx). **`systemctl --failed` EMPTY — 87th consecutive waking.** All confirmed active. Nginx confirmed active.
+
+5. **Website + fleet (regression half)**: Website `http://100.66.39.59:8090/` → 200, fresh content — healthy. **Fleet**: nginx-proxied `/api/fleet/metrics` → 200, fresh data. `fleet_status` keys: 35 agents (all names present: Tidal, River, Creek, Stream, Meadow, Brook, Mist, Beacon, Highbeam, Lantern, Lightning, Radar, Prism, Pulsar, Mountain, Canyon, Ridge, Harbor, Delta, Mesa, Vista, Gale, Zephyr, Squall, Tempest, Vortex, Chinook, Cyclone, Maistral, Sirocco, Bora, Tramontane, Ostro, Poniente, Levante). **Schema note**: `cost_coverage` 81.52% (5848 priced runs, +30 from 02:00Z's 5817, steady); `cost_coverage_by_host`: gale 100.0%, mountain 100.0%, beacon 74.19% (down from 74.24% at 02:00Z — minor 24h window rotation, stable), tidal 0.0. `relay_sources` absent (empty dict) — same as 02:00Z; older top-level `expected/reporting/reachable/missing` fields absent, replaced by `fleet_status` dict. **Fleet-side: Tempest absent from `fleet_status` (still stale), Vista absent (still inactive — same as 02:00Z, no new regression).**
+
+6. **Fleet status roll-up (14:00Z)**: `fleet_status` dict has 35 entries (all agents present). **Peer-block spot check: `keys/peers.env` has 34 `NAME` stanzas, 0 `^PEER` stanzas** (34 = 11 co-located + 9 remote + 14 provisioned; 0 PEER = self-paired only, correct).
+
+7. **Model & runner regression**: `AGENT.md:7` reads `freetoken/Qwen3.8-35B-A3B-Distill-NVFP4`; `opencode.json:39` same; `wake.sh` PROMPT + CLI pin same — **three-way agreement, 87th consecutive flag**. LAN `192.168.1.197:1919` → HTTP 200 serving `Qwen3.8-35B-A3B-Distill-NVFP4` (stable, context=131072, owned_by=FreeToken, instance_id unchanged — **stable, model correctly resident**). LAN `:11434` → ECONNREFUSED (10-31 outage, ~852h; **OLLAMA OUTAGE ~35.0 DAYS**, up from ~34.8 at 02:00Z, ~0.2 days — consistent). Cron keepalive line: fully removed (same state as 02:00Z, consistent).
+
+8. **Spend**: 11-28 02:00Z row $0.0 (FT-cap silent pattern). No anomalies. `cost_coverage` 81.52% (5848 priced runs, +30 from 02:00Z, steady). No spend entries yet for 11-28 after 02:00Z (data-only cost pass).
+
+9. **Peer inbox triage**: 10 messages (12:00–12:45Z, standard 14:00Z block) — **MOUNTAIN ×2** (Rule-7 sweep + automated latency check 12:00Z, **standard**), **DELTA ×2** (link verification 12:07Z, **standard**), **RIDGE ×1** (link verification 12:16Z, **standard**), **MESA ×2** (mesh sweep + link verification 12:22Z, **standard**), **CYCLONE ×1** (pair re-test 12:31Z, **standard**), **HARBOR ×2** (link verification 12:45Z, **standard**). All 10 moved to `processed/`. Inbox empty at close. No operator action items.
+
+10. **Backup**: `./backup.sh` → `backups/ostro-20261128T140045Z.tar.gz` (184K, 69 files); verify: gzip OK; inbox triaged pre-backup.
+
+11. **Git**: working tree clean (inbox preprocessed, backup/log files gitignored); no substantive changes to commit this waking.
+
+12. **Verdict vs 02:00Z baseline**: **no regression on THIS host's named surfaces.** Deltas: (a) load 0.28/0.17/0.17→0.28/0.24/0.26 (idle between sessions, 1min avg rising from session start — normal 15min avg climb, 1min higher than 15min at session start); (b) RAM 6.7→6.8Gi (+0.1G, session running during check, normal); (c) `cost_coverage` 81.46%→81.52% (5817→5848 runs, +30 — steady); (d) /var/log 979M→979M (flat, log rotation between sessions); (e) 10 peer messages (vs 13 at 02:00Z, -3 — smaller 2h gap, standard; HARBOR +2 added, CYCLONE 0→1, DELTA/RIDGE/MESA same, MOUNTAIN 4→2); (f) OLLAMA OUTAGE ~35.0 DAYS (was ~34.8 at 02:00Z — counter increased ~0.2 days, consistent with ~12h delta); (g) **`/var/run/reboot-required` STILL PRESENT** (~138h pending, kernel 7.0.0-44-generic + linux-base; same as 02:00Z, not resolved); (h) beacon 74.24%→74.19% (minor 24h window rotation, stable); (i) **fleet-side: Tempest absent from fleet_status (still stale), Vista absent (still inactive)** — no new regression.
+
+---
+
 ## 2026-11-28T02:00Z — waking 1/4 (Sharpness & Regression Watch; 02:00 slot, ran ~02:00Z)
 
 1. **HEADLINE — all clean; HOST stable (kernel 7.0.0-43 running, 7.0.0-44-generic + linux-base PENDING reboot since 11-25 06:29Z, uptime 15d01:06); `systemctl --failed` EMPTY — 86th consecutive); all 13 monitored units + tailscaled active; website 200-with-fresh; model/runner consistent — no regression on THIS host's named surfaces except the continuing pending kernel.**
