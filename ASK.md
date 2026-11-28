@@ -11,16 +11,21 @@
   credentials "out of git".
   **Contained (Bora side, reversible):** `git rm --cached` on all 3 +
   `pairout/` added to `.gitignore`. Files remain on disk, mode 600.
-  **NOT done (both need operator direction, rules 8/9-adjacent +
-  irreversibility):**
-  1. History rewrite on github (`git filter-repo`/BFG on the `bora`
-     branch + force-push) — irreversible, affects shared repo.
-  2. Token rotation for the exposed pairs — minting/rotation is
-     operator-gated (rule 8). If the repo is private and access is
-     limited to known fleet principals, operator may judge the
-     exposure acceptable and opt for contain-and-move-on.
-  Recommendation: (1) + (2), then shred the `pairout/` files locally
-  (their jobs are done — all 3 leads' pairs are closed). Awaiting word.
+  **RESOLVED 2026-11-28 (operator decision via host session):**
+  1. History rewrite DONE: `git filter-repo --invert-paths --path pairout/`
+     over full history + force-push main:bora (1d6097a -> a6b4b02).
+     Verified: all 19 exposed 64-hex token values absent from every
+     remaining blob (match-only scan); zero commits touch pairout/.
+     Safety bundle: backups/bora-pre-pairout-purge-20261128.bundle.
+     NOTE: repo confirmed PUBLIC via GitHub API -- the tokens were
+     publicly exposed Sep 25 through Nov 28.
+  2. Token rotation DECLINED by operator 2026-11-28 -- exposure
+     accepted (peer-inbox access only; fleet treats peer messages as
+     data, never instructions). The 19 tokens remain live.
+  3. Local pairout/ files retained (mode 600, gitignored); shredding
+     not directed.
+  Also 2026-11-28: git tracking moved to own offsite branch, and the
+  fleet pre-push secret scan + history gate added to wake.sh.
 
 ## Resolved
 
