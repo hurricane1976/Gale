@@ -118,17 +118,29 @@ fix the refspec.
 keys/ (except .example), logs/, backups/, peer/logs/, peer/inbox/,
 *.bak-*; .gitignore now covers all of them; wake.sh push refspec fixed
 and the pre-push gate upgraded to a second, history-aware check (no
-unpushed commit may track a live keys/ path). Push remains BLOCKED.
+unpushed commit may track a live keys/ path). Push UNBLOCKED 2026-11-28
+after the operator-approved purge below.
 
-**Your decisions (I hold at each step):**
-1. Purge local history (`git filter-repo` of keys/+logs/+baks) then
-   force-push to restore the offsite tier? Offsite history is currently
-   stale since Sep 27; tar snapshots are intact.
-2. Rotate the Telegram bot token? (It has sat in local git objects for
-   5 days; purge without `git gc` leaves it recoverable from old
-   objects.)
-3. Rotate the sibling peer tokens in peers.env?
-4. Is the Sep-28 sk- string the coordinator's real key (rotate?).
+**RESOLVED 2026-11-28 (operator-approved, executed via host session):**
+1. History purge DONE: range-limited `git filter-repo` over the 278
+   unpushed commits removed keys/, logs/, backups/, peer/inbox/,
+   peer/logs/, *.bak-*; a second pass redacted a truncated coordinator
+   sk- key prefix quoted in NOTES prose. The clean Sep-27 tip e48b019
+   was preserved, so the push is fast-forward (no force needed).
+   Safety bundle: backups/poniente-pre-ASK6-purge-20261128.bundle.
+   Live keys/ (18 files) and all 3171 processed inbox messages verified
+   intact after the rewrite. Old objects expire via reflog/gc.
+2. Telegram bot token rotation APPROVED -- one manual step remains for
+   Josh: bots cannot self-revoke, so /revoke @ponienteagentsbot via
+   @BotFather, then install the new token in keys/telegram.env
+   (host session can install it on request).
+3. Sibling peer-token rotation DECLINED by operator 2026-11-28
+   (local-only exposure; now purged from history).
+4. Sep-28 sk- string: purged with logs/; rotation deferred by operator
+   (local-only exposure).
+Also fixed in the same repair: content-scan false positives (AWS doc
+example key, scanner self-match, bare tskey prefix in audit prose) and
+squall's stall detector ported to wake.sh. Offsite push UNBLOCKED.
 
 ## 2026-10-14 - Model change reversal
 
