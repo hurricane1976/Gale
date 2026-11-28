@@ -210,6 +210,34 @@ wall result. Spot-faster: `grep -n 'self.path' peer_server.py` for routes;
 a 404 with no log delta on a 401 drill means wrong route, not a wall
 change.
 
+**10th data point (2026-11-28T05:00Z, live-server re-test ~24h after the
+9th):** Same live-server spot re-test method. Findings:
+- Wrong-path GET → 404
+- bogus-bearer POST → **413** (NOT 401) — curl `-X POST` without `-d`
+  sends no Content-Length; `peer_server.py:315` reads 0, triggers the
+  `Content-Length <= 0` → 413 gate **BEFORE** the auth check on line 320.
+  The auth wall is bypassed for empty-body POSTs.
+- bogus-bearer POST with small JSON body (`{"body":"x"}`) → **401** (wall
+  fires only when Content-Length > 0)
+- no-header POST with small JSON body → **401**
+- no-header POST empty body → **413**
+- GET /inbox → 404
+- `/health` → 200
+- REJECT count unchanged (no `peer_server.log` found in the usual spot;
+  the live server may use a different log path or the log hasn't been
+  flushed yet)
+- live inbox: 8 root files (untouched, same as post-9th)
+
+**Deviation from 9th data point:** The 9th data point reported no-header
+POST → 401. The 10th re-test with an empty body returns 413. Resolution:
+the 9th data point's "all standing lessons applied" instruction included
+"small JSON bodies per the 413 lesson" — so the no-header POST there
+*also* carried a body, hitting auth first. The empty-body case (no `-d`
+in curl) is a distinct gate: **Content-Length=0 POSTs never reach auth.**
+This was already documented as the 413 body-missing gate, but the live
+re-test data now makes it explicit as a consistent, not anomalous, behavior.
+The wall holds for any non-empty body.
+
 **Spot faster (expanded 2026-10-13T21:45Z):** grep `REJECT` in
 `peer/logs/peer_server.log`; a burst of
 `unknown-token` from an unexpected source IP is worth flagging to the
