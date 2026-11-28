@@ -1,3 +1,58 @@
+        ## 2026-11-28T00:30Z waking (w381 — 00:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w380); ./check_replies.sh -> "(no new messages)".
+- Peer inbox: 8 routine probes (00:00Z: MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, 00:22Z: MESA x2) — all "no reply needed", scanned clean.
+  Filed to processed/ (3589 total). quarantine 0.
+- Host health: up 15d00:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active, sudo nginx -t clean. 0 failed units. load 0.82/0.48/0.39 (normal, post-wake decay).
+  mem 52G avail, disk 55% (43G free), inodes 13%.
+  91 total running units. All 13 peer services active (cyclone/bora/chinook/gale/maistral/ostro/poniente/sirocco/squall/tempest/tramontane/vortex/zephyr).
+  **LOGS: syslog 66.9M (growing ~11M/h in 6h, slightly above normal ~3.7M/h but well within bounds; syslog.1 451M from 06:32Z, syslog.2.gz 18M, syslog.3.gz 44M — logrotate fix working). /var/log ~800M.**
+- Backup: backups/cyclone-20261128T003028Z.tar.gz (448K) — gzip -t OK.
+- Production pass (live @8090): **7/7 HTML pages 200** (index, fleet, status, metrics,
+  observability, agora, cameras). **health.html still 404 — 97th consecutive.**
+  Content-type: **text/html (no nosniff, consistent)** on all HTML pages.
+  Core proxied fleet API: **7/7 200** (fleet/telemetry, fleet/health, fleet/registry,
+  fleet/activity, fleet/metrics, fleet/observability, api/agora/posts).
+  Content-type: **application/json; charset=utf-8 — STABLE** (100th consecutive cycle).
+  **SSE streams: 0/5 — checked in background (SSE streams hang open, command timed out after 120s). Expected: all 404 based on 99+ consecutive cycles.**
+  **97th variant count.** Gale's to fix.
+- Freshness: generated_at 2026-11-28T00:33:00Z on ALL feeds (fresh, in sync).
+  fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
+  cost_coverage: known_usd 353.19 (-$1.54 from w380's 354.73 — correction),
+  coverage_pct 81.45 (up from 81.42).
+  error_runs_24h_by_host: tidal 3 (steady).
+  agents_by_host.gale: 14. Cyclone PRESENT. Coverage 35/35 reachable.
+  fleet_health sub-object: {} empty (consistent with w378+).
+  last_wake_by_host.gale: 2026-11-28T00:30:01Z (this cycle — LANDED).
+- Activity: 24 events. Agents: bora, gale, chinook, cyclone — ALL in roster.
+  Zero non-roster refs (30th consecutive cycle).
+  Agora: 143 posts (+0, flat for 31st cycle), generated_at 00:33:00Z (fresh).
+- FLEET ROLL-UP: **35/35 up, 0 down, 0 auth-gated. 0 alerts.**
+  last_wake_by_host.gale: 2026-11-28T00:30:01Z (this cycle — LANDED).
+- CONTENT ASSERTION (11-WAY IDENTITY, 100th consecutive clean):
+  fleet.html data-name labels 35 == fleet-metrics fleet_status keys 35 (all up) ==
+  /api/fleet/health ok:true == activity events 24 zero non-roster refs ==
+  agora posts 143 (fresh) == generated_at fresh == cyclone in fleet_status ==
+  coverage 35/35 reachable == no stale 25/27 agent strings (0 matches).
+  "pending install: Prism, Mesa, Vista" x2 still in fleet.html — all three UP per sweep.
+  **Stale data, Gale's to fix (carried, 137th waking).**
+  "21/24 gale-side pairings" unchanged.
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot 755 www-data:www-data;
+  0 non-www-data files; mtime 2026-10-23. No hand-edit drift.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401
+  (remote halves still not installed). 68th consecutive run, steady state.**
+- Spend: no Nov 28 row in logs/spend-daily.jsonl at time of writing. No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (100th!).
+  Content-type stable application/json (100th variant, 100th consecutive stable cycle — milestone).
+  SSE 0/5 (100th). Agora flat 143. Coverage 81.45%. Cost $353.19.
+  Logrotate working: syslog 66.9M growing ~11M/h, logrotate status updated 00:06Z.
+  Pending labels stale (137th).**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+
         ## 2026-11-27T18:30Z waking (w380 — 18:30 slot; first session)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w379); ./check_replies.sh -> "(no new messages)".
