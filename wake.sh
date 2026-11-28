@@ -217,9 +217,40 @@ fi
 # deploy key shared by all co-located agents -- operator chose the
 # one-repo layout 2026-09-22, tradeoff documented in gale's NOTES). Shell-side,
 # idempotent; failure is logged, never fatal, never Telegrams.
+# Pre-push secret scan + history gate (fleet rollout 2026-11-28,
+# operator-approved; design from poniente/zephyr). Fail-closed: on a hit
+# the push is SKIPPED and the operator alerted. Hit reporting is
+# class+length only -- never echo token material.
+SECRET_PAT='AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|xox[baprs]-|gh[pousr]_[A-Za-z0-9]{36,}|[0-9]{8,10}:AA[A-Za-z0-9_-]{30,}|tskey-auth-[A-Za-z0-9_-]{10,}|sk-[A-Za-z0-9_-]{20,}|Bearer [A-Za-z0-9._~-]{30,}'
+SKIP_PUSH=""
+UNPUSHED="$(git diff github/sirocco...main 2>/dev/null)"
+# Known benign: the scanner's own definition line; AWS's public doc
+# example key quoted in audit prose. Stripped from scan target only.
+SCAN_TARGET="$(printf '%s' "$UNPUSHED" | grep -vE '^[+ -]?SECRET_PAT=' | sed 's/AKIAIOSFODNN7EXAMPLE/AWSxDOCxEXAMPLE/g')"
+if [ -n "$SCAN_TARGET" ] && echo "$SCAN_TARGET" | grep -Eq "$SECRET_PAT"; then
+    HIT_CLASS="$(printf '%s' "$SCAN_TARGET" | grep -Eo "$SECRET_PAT" | awk '{print substr($0,1,3)"*len="length($0)}' | sort | uniq -c | tr '\n' ' ')"
+    SKIP_PUSH=1
+    echo "wake.sh: PRE-PUSH SECRET SCAN HIT (classes: $HIT_CLASS) -- github push SKIPPED" >>"$LOG_FILE"
+    ./notify.sh "wake.sh: pre-push secret scan HIT (classes: $HIT_CLASS); offsite push SKIPPED this waking. Check git diff github/sirocco...main before any manual push." >>"$LOG_FILE" 2>&1
+fi
+if [ -z "$SKIP_PUSH" ]; then
+    RANGE_BASE="$(git merge-base github/sirocco main 2>/dev/null || echo github/sirocco)"
+    SECRET_COMMIT="$(git rev-list "$RANGE_BASE..main" 2>/dev/null | while read -r c; do
+        if git ls-tree -r --name-only "$c" -- keys/ 2>/dev/null | grep -v '\.example$' | grep -q .; then
+            echo "$c"; break
+        fi
+    done)"
+    if [ -n "$SECRET_COMMIT" ]; then
+        SKIP_PUSH=1
+        echo "wake.sh: HISTORY GATE HIT: commit $SECRET_COMMIT tracks live keys/ path -- github push SKIPPED" >>"$LOG_FILE"
+        ./notify.sh "wake.sh: history gate HIT ($SECRET_COMMIT tracks live keys/ in unpushed history); offsite push SKIPPED." >>"$LOG_FILE" 2>&1
+    fi
+fi
+if [ -z "$SKIP_PUSH" ]; then
 PUSH_OUT="$(timeout 60 git push github main:sirocco 2>&1)"
 if [ $? -eq 0 ]; then
     echo "wake.sh: pushed to github ($(echo "$PUSH_OUT" | tail -n1))" >>"$LOG_FILE"
 else
     echo "wake.sh: github push failed: $(echo "$PUSH_OUT" | tail -n2 | tr '\n' ' ')" >>"$LOG_FILE"
+fi
 fi
