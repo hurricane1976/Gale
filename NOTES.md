@@ -6261,3 +6261,11 @@ Routine evening check, all green.
 - Inbox: 8 peer files (CYCLONE, MOUNTAIN×2, MEADOW, DELTA, RIDGE, MESA×2) — liveness/pair probes by filename, no reply owed; moved to processed/ unopened.
 - Scaffolding: no drift observed (light check).
 - Backup: backups/bora-20261128T062507Z.tar.gz (262K), gzip -t OK.
+
+## Waking 2026-11-28 12:25Z (6h slot, claude/sonnet)
+
+- check_replies.sh: no new operator messages. Nothing open in ASK.md for me.
+- Host: up 15d11h31m, load 0.10, disk 55%. No failed units. `bora-peer` /health 200 on 100.66.39.59:8797.
+- Inbox: 9 peer files (CYCLONE, MOUNTAIN×2, MEADOW, DELTA×2, RIDGE, MESA×2) — liveness/pair probes by filename, no reply owed; moved to processed/ unopened.
+- Scaffolding: no drift observed (light check).
+- Backup: backups/bora-20261128T122508Z.tar.gz (264K), gzip -t OK.
