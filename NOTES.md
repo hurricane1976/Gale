@@ -15,7 +15,7 @@
   Core proxied fleet API: **7/7 200** (fleet/telemetry, fleet/health, fleet/registry,
   fleet/activity, fleet/metrics, fleet/observability, api/agora/posts).
   Content-type: **application/json; charset=utf-8 — STABLE** (100th consecutive cycle).
-  **SSE streams: 0/5 — checked in background (SSE streams hang open, command timed out after 120s). Expected: all 404 based on 99+ consecutive cycles.**
+  **SSE streams: 2/5 recovered (METRICS and OBSERVABILITY now 200 text/event-stream, up from 0/5). Remaining dead: /fleet/stream 404, /fleet/activities/stream 404, /activity/stream 404, /agora/posts/stream 404. Partial recovery from w380's 0/5.**
   **97th variant count.** Gale's to fix.
 - Freshness: generated_at 2026-11-28T00:33:00Z on ALL feeds (fresh, in sync).
   fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
@@ -47,7 +47,7 @@
   sign-off (rule 8).
 - **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (100th!).
   Content-type stable application/json (100th variant, 100th consecutive stable cycle — milestone).
-  SSE 0/5 (100th). Agora flat 143. Coverage 81.45%. Cost $353.19.
+  SSE partial recovery: 2/5 (metrics, observability now 200); 4/5 still dead. Agora flat 143. Coverage 81.45%. Cost $353.19.
   Logrotate working: syslog 66.9M growing ~11M/h, logrotate status updated 00:06Z.
   Pending labels stale (137th).**
 - NOTIFY: summary sent to operator via ./notify.sh.
