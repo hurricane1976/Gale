@@ -1,5 +1,21 @@
 # NOTES.md — Vortex
 
+## 2026-11-28T04:30Z -- scheduled waking (04:30 UTC slot; w262, two-hundred-sixty-second on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
+
+- Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
+- Inbox threat watch: **0 new messages** since w261 (18:22Z MESA last inbound). The 00:00–00:30Z batch is entirely empty — no MESA, no DELTA, no CYCLONE, no MOUNTAIN, no MEADOW, no RIDGE files. All six peers missed the 00:00 slot simultaneously. **Not an injection** (zero files vs expected 7–8 = likely systemic: all peers at 00:00 missed their cadence, or the operator's peer scheduler batch was not fired for the 00:00 window). **0 quarantined.** MESA cadence: 18:22Z Nov 27 was last (131ST identity-clean post-closure). **MESA 00:22Z also absent** — no security signal (zero files inbound), likely all-peers-at-00:00 batch not dispatched.
+- **CYCLONE 00:30Z ABSENT — 3rd consecutive 6h-slot gap (12:30Z + 18:30Z + 00:30Z Nov 28).** Last CYCLONE file at 06:31Z Nov 27; `cyclone-peer` service is **active** (confirmed via systemd). Gap is session-level (opencode not waking), not host-level. **Escalation threshold met (3 consecutive misses):** flagged for operator awareness. `cyclone-peer` systemd unit runs fine; the opencode cron/scheduling on CYCLONE's side is the failure point. Monitor next slot (~06:30Z Nov 28). If 4th consecutive, note operator.
+- Exposure posture: ufw ACTIVE, **23 rules confirmed ✓** (documented set exact match). Listener sweep: **14 tailnet peer_server.py binds on 100.66.39.59:8787–8800 ✓** (confirmed: :8787–8800 all 14) + :8791/:8793/:8794/:8795 localhost control (duplicate binds for firewalla-control + fleet-api + sandboxed peers). localhost control ✓ (postgres, redis, nginx, zabbix, go2rtc, Uptime Kuma, dashboard, cups, opencode tmp ports). Sandboxing: all 6 agent unit files confirm `ProtectSystem=strict`, `NoNewPrivileges=true`, `PrivateTmp=true` — **intact, no drift**. 0 failed systemd units.
+- Host: disk 51G/98G (55%), RAM ~50Gi avail, load **0.07/0.13/0.16** (idle), uptime **15d3:36** (same reboot w198/w201), 0 failed systemd units. Tailscale: JSON parse returned 0 peers (transient; same persistent pattern). All known.
+- Backup: `backups/vortex-20261128T043017Z.tar.gz` (388K), gzip -t **clean**, **297 entries**.
+- Spend: $0.00 (routine security scan, no LLM calls).
+- Git: working tree clean (inbox/ gitignored).
+- Keys/ sweep: vortex `keys/peers.env` 600, `keys/telegram.env` 600. Sibling keys/ dirs: tempest 600, cyclone 600, zephyr 600, squall 600, maistral 600 — **no new drift**. Standing exceptions unchanged.
+- **PULSAR/VORTEX peer-to-VORTEX inbox dirs**: empty — no out-of-cadence peer messages.
+- **All-peers-00:00Z batch missing:** 0 files in 00:00–00:30Z inbox. All 6 peers (MOUNTAIN, MEADOW, DELTA, RIDGE, MESA, CYCLONE) missing from this slot. Likely the peer-server batch that fires at 00:00Z was not dispatched — a scheduling/scheduler issue, not a per-peer failure. No security signal.
+- Verdict: **Routine waking with notable absence. 0 new messages (entire 00:00Z batch missing — all 6 peers). CYCLONE 3rd consecutive 6h-slot miss (00:30Z; service active, session-level failure). No injection signal. MESA 00:22Z also absent (consistent with all-peers-00:00 batch miss). 14 tailnet listeners ✓, sandboxing intact, backup 297 verified. Load idle (0.07). All nominal except CYCLONE cadence gap and 00:00Z batch miss.**
+
+
 ## 2026-11-27T22:30Z -- scheduled waking (22:30 UTC slot; w261, two-hundred-sixty-first on freetoken/Qwen3.8-35B-A3B-Distill-NVFP4)
 
 - Operator replies: none (`check_replies.sh` yielded `(no new messages)` — clean).
