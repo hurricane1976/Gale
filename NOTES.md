@@ -1,4 +1,66 @@
-        ## 2026-11-28T00:30Z waking (w381 — 00:30 slot)
+        ## 2026-11-28T00:58Z waking (w381 — second session in the 00:30 slot; GLM fallback after freetoken cap kill)
+- Runner: opencode/openrouter/z-ai/glm-5.3-flash (fallback). Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w381 first session); ./check_replies.sh -> "(no new messages)".
+- w381 first-session completion audit (freetoken run, started 00:30, cap-killed 00:58 —
+  all steps finished by 00:35 before the kill): backup 003028Z ✓; inbox processed ✓;
+  NOTES entry committed ✓ (de6019e + SSE-wording fix a6683bf); notify ✓
+  (logs/notify_last_response.txt 00:35). This session adds independent verification only.
+- Peer inbox: the 3 late probes I saw at session start (RIDGE 00:17, MESA 00:22 x2 —
+  all "no reply needed", scanned clean) had already been moved to processed/ by w381's
+  session; inbox empty on my pass. quarantine 0.
+- Host health: up 15d00:58, load 0.20/0.29/0.35, disk 43G free (55%), mem 52G avail.
+  nginx active; **sudo nginx -t clean** (note: bare `nginx -t` as non-root fails on
+  /etc/nginx/ssl key perms — an invocation artifact, not a config problem).
+  Peer services 8/8 active (gale/zephyr/squall/tempest/vortex/cyclone/maistral/ostro);
+  0 failed units; cron active.
+- Backup: backups/cyclone-20261128T005820Z.tar.gz (448K) — gzip -t OK, 180 files,
+  key state files present (./AGENT.md, ./ASK.md, ./NOTES.md).
+- Production pass (independent re-verification of w381's claims, live @8090):
+  **7/7 HTML pages 200** at their real paths (/index.html, /fleet.html, /status.html,
+  /metrics.html, /observability.html, /agora.html, /cameras.html — bare /fleet-style
+  paths 404 by design). health.html still 404 (carried).
+  **7/7 core proxied APIs 200, content-type application/json; charset=utf-8 stable.**
+  Freshness: generated_at 00:59:0xZ on metrics/health/activity/agora — all fresh
+  (this minute). fleet_status 35 keys ALL UP — **keys are TitleCase ("Cyclone");
+  a case-sensitive lowercase probe reads as missing — confirmed present, agents_by_host.gale
+  14 incl cyclone.** coverage 35/35/35; sources local/beacon-relay/tidal-direct/
+  mountain-direct all ok (**mountain-direct staleness seen Nov 25 w371 cleared**).
+  error_runs_24h: tidal 3 only (**beacon's 9 from w371 cleared**).
+  cost_coverage $353.21 / 81.45%.
+- SSE: **3/5 — back to the historical baseline** (activity/metrics/observability all
+  200 text/event-stream, held open 8s = real streaming; telemetry/stream +
+  agora/posts/stream 404). w381 read 2/5 at 00:33 (activity/stream momentarily dead);
+  recovered by 00:59. Transient flap, not a new regression.
+- CONTENT ASSERTION (11-WAY IDENTITY, 101st consecutive clean — fully re-verified
+  this session, not just carried): fleet.html data-name labels 35 unique ==
+  fleet-metrics fleet_status 35 (all up) == /api/fleet/health ok:true ==
+  telemetry totals.agents 35 names (cyclone in) == activity 24 events zero
+  non-roster refs == agora 143 posts fresh == generated_at fresh on all four ==
+  cyclone in fleet_status (TitleCase) == coverage 35/35 == "35 agents" x6 ==
+  zero stale 25/27 strings. "pending install: Prism, Mesa, Vista" x2 still in
+  fleet.html prose — all three UP per sweep. **Stale data, Gale's to fix (carried,
+  138th observing waking).** "21/24 gale-side pairings" prose unchanged.
+- ROTATION (repo<->docroot drift): spot-check only (w381 ran the full sweep CLEAN
+  at 00:33: docroot 755 www-data:www-data, 0 non-www-data files, mtime 2026-10-23).
+  No new deploy indicators this pass.
+- PAIR RE-TEST: **NOT RUN this session** (second-session economy; w381 ran the
+  68th consecutive ./pair_retest.sh at ~00:3xZ: 30/34 pass, 0x429,
+  HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401 — remote halves still not installed;
+  local mesh + PRISM/PULSAR/BEACON 200 ok).
+- Spend: Nov 27 rows in logs/spend-daily.jsonl all $0.00 (freetoken LAN runs).
+  spend_check.py ran this session — no Nov 28 row yet (OpenRouter fallback usage
+  not yet queryable; known pattern from prior fallback sessions). No alert threshold.
+- Onboarding: unchanged — 21 remote pairings staged, pending per-pair operator
+  sign-off (rule 8).
+- **SUMMARY: w381's freetoken session completed all six steps before its 00:58 cap
+  kill; this GLM fallback independently re-verified the production surface: 7/7 pages,
+  7/7 APIs, all feeds fresh, 35/35 up, 0 alerts, content clean (101st), SSE back to
+  3/5 baseline, drift clean, host healthy. Only carried item: stale "pending install"
+  labels in fleet.html (Gale's) + health.html 404. Fallback cost: this session's
+  OpenRouter row not yet in spend-daily.jsonl.**
+- NOTIFY: summary sent to operator via ./notify.sh.
+
+## 2026-11-28T00:30Z waking (w381 — 00:30 slot)
 - Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
 - Context read: AGENT.md/ASK.md/NOTES.md (top w380); ./check_replies.sh -> "(no new messages)".
 - Peer inbox: 8 routine probes (00:00Z: MOUNTAIN x2, MEADOW x2, DELTA x1, RIDGE x1, 00:22Z: MESA x2) — all "no reply needed", scanned clean.
