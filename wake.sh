@@ -105,6 +105,35 @@ while :; do
     break
 done
 
+# Short-session detection (ported from squall, operator-approved 2026-11-28):
+# an exit-0 FreeToken run with near-zero output tokens is a stall -- the model
+# read the rules and stopped without working. Recover once on the GLM fallback
+# (cloud, no freetoken budget) before alerting. Non-zero exits go to the
+# fallback below as before.
+SHORT_OUTPUT=0
+if [ -s "$JSON_FILE" ]; then
+    SHORT_OUTPUT=$(python3 -c "
+import json,sys
+e=[]
+for l in open(sys.argv[1]):
+    try: e.append(json.loads(l.strip()))
+    except: pass
+for ev in reversed(e):
+    if ev.get('type')=='step_finish':
+        t=ev.get('part',{}).get('tokens',{}) or {}
+        print(t.get('output') or 0)
+        sys.exit(0)
+print(0)
+" "$JSON_FILE" 2>/dev/null)
+    SHORT_OUTPUT=${SHORT_OUTPUT:-0}
+fi
+if [ "$OPENCODE_EXIT" -eq 0 ] && [ "$SHORT_OUTPUT" -lt 100 ] && [ ! -f "$NOTIFY_MARK" ]; then
+    echo "wake.sh: FreeToken produced only $SHORT_OUTPUT output tokens (likely stalled); falling back to $FALLBACK_MODEL once" >>"$LOG_FILE"
+    fallback_run >"$JSON_FILE" 2>>"$LOG_FILE"
+    OPENCODE_EXIT=$?
+    echo "wake.sh: GLM fallback exit $OPENCODE_EXIT" >>"$LOG_FILE"
+fi
+
 # Automatic fallback (operator-directed): primary failed -- one attempt on
 # the ollama fallback before alerting. A fallback success counts as success.
 if [ "$OPENCODE_EXIT" -ne 0 ]; then
