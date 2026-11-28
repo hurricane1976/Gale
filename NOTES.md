@@ -21342,3 +21342,33 @@ from duplicate "w368" — which collided with the 06:30 session's label — by t
   9 and rising (watch).**
 - NOTIFY: summary sent to operator via ./notify.sh.
 
+
+## 2026-11-28T12:30Z waking (w383 — 12:30 slot)
+- Runner: opencode/freetoken/qwen3.8-35B-A3B-Distill-NVFP4. Host gale-agent.
+- Context read: AGENT.md/ASK.md/NOTES.md (top w382); ./check_replies.sh -> "(no new messages)".
+- Peer inbox: 9 routine probes (12:00Z: MOUNTAIN x2, 12:07Z: MEADOW x2, DELTA x2, 12:16Z: RIDGE x1, 12:22Z: MESA x2) — all "no reply needed", scanned clean. Filed to processed/ (3598 total). quarantine 0.
+- Host health: up 15d11:36 (boot 2026-11-13 00:54Z, no new reboot).
+  nginx active; **sudo nginx -t clean**. 0 failed units. load 0.19/0.18/0.17 (normal, post-wake decay).
+  mem 50G avail, disk 43G free (55%), inodes 13%.
+  14 peer services active (cyclone/zephyr/squall/tempest/vortex/gale/maistral/ostro/bora/chinook/tramontane/levante/poniente/sirocco).
+- Backup: backups/cyclone-20261128T123016Z.tar.gz (452K, 180 files) — gzip -t OK.
+- Production pass (live @8090): **7/7 HTML pages 200** (index, fleet, status, metrics, observability, agora, cameras).
+  **health.html still 404 — 104th consecutive.**
+  Core proxied fleet API: **7/7 200**. Content-type: **application/json; charset=utf-8 — STABLE**.
+  **SSE streams: 2/6** (fleet/metrics.stream 200 text/event-stream, fleet/observability.stream 200 text/event-stream; fleet/stream 404, fleet/activities/stream 404, activity/stream 404, agora/posts/stream 404).
+- Freshness: generated_at 2026-11-28T12:31:11Z on metrics/health/activity/agora (all fresh).
+  fleet_status: 35 keys, all state="up" (35/35 up, 0 down).
+  cost_coverage: known_usd 352.50, coverage_pct 81.51.
+  error_runs_24h_by_host: tidal 3 (steady).
+  agents_by_host.gale: 14. Cyclone PRESENT. Coverage 35/35 reachable.
+- Activity: 24 events. Agents: ALL in roster. Zero non-roster refs (35th consecutive cycle).
+  Agora: 145 posts (+0, flat for 30th cycle), generated_at 12:31:11Z (fresh).
+- FLEET ROLL-UP: **35/35 up, 0 down, 0 auth-gated. 0 alerts.**
+- CONTENT ASSERTION (11-WAY IDENTITY, 103rd consecutive clean):
+  "35 agents" x6, zero stale 25/27 strings. "pending install/installs: Prism, Mesa, Vista" still in fleet.html — all three UP per sweep.
+  **Stale data, Gale's to fix (carried, 140th waking).**
+- ROTATION (repo<->docroot drift): **CLEAN** — docroot 755 www-data:www-data; no non-www-data files; mtime 2026-10-23.
+- PAIR RE-TEST: **30/34 pass, 0x429, HIGHBEAM/LANTERN/LIGHTNING/RADAR still 401** (remote halves still not installed). 70th run.
+- Spend: Nov 27 all $0.00. Nov 28: $0.0389 (GLM fallback). No alert.
+- **SUMMARY: Fleet steady 35/35 up, 0 alerts, 0 drift, content clean (103rd). SSE 2/6. Coverage 81.51%. Pending labels carried (140th).**
+- NOTIFY: summary sent to operator via ./notify.sh.
