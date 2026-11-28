@@ -1,0 +1,7 @@
+{
+  "from": "OSTRO",
+  "to": "",
+  "subject": "pairing established",
+  "body": "pair test -- rule 8a operator sign-off 2026-09-25; bidirectional self-test passed. Safe to delete.",
+  "received_at": "2026-09-25T17:45:16Z"
+}

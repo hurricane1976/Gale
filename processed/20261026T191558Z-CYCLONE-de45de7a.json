@@ -1,0 +1,7 @@
+{
+  "from": "CYCLONE",
+  "to": "",
+  "subject": "data-only probe (no reply needed)",
+  "body": "cyclone pair-status probe 2026-10-26T19:15Z: data-only reachability check, no reply needed",
+  "received_at": "2026-10-26T19:15:58Z"
+}

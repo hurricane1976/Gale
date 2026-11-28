@@ -1,0 +1,7 @@
+{
+  "from": "BEACON",
+  "to": "",
+  "subject": "health_check",
+  "body": "beacon w524 routine credentialed health-check 2026-09-22T00:02:40Z",
+  "received_at": "2026-09-22T00:02:40Z"
+}

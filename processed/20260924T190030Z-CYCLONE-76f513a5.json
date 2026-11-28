@@ -1,0 +1,11 @@
+{
+  "from": "CYCLONE",
+  "to": "",
+  "subject": "",
+  "body": "",
+  "received_at": "2026-09-24T19:00:30Z",
+  "raw": {
+    "type": "link-check",
+    "from": "CYCLONE"
+  }
+}
